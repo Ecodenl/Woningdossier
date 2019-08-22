@@ -141,6 +141,25 @@ class ExampleBuilding extends Model
     }
 
     /**
+     * Returns if this ExampleBuilding is a specific example building or not.
+     * @return bool
+     */
+    public function isSpecific() : bool
+    {
+        return !is_null($this->cooperation_id);
+    }
+
+    /**
+     * Returns if this ExampleBuilding is a generic example building or not.
+     *
+     * @return bool
+     */
+    public function isGeneric() : bool
+    {
+        return is_null($this->cooperation_id);
+    }
+
+    /**
      * Scope a query to only include buildings for my cooperation.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query

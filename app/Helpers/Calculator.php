@@ -8,6 +8,7 @@ use App\Models\Building;
 use App\Models\BuildingTypeElementMaxSaving;
 use App\Models\Element;
 use App\Models\ElementValue;
+use App\Models\Log;
 use App\Models\MeasureApplication;
 use App\Models\PriceIndexing;
 use App\Models\UserEnergyHabit;
@@ -137,7 +138,8 @@ class Calculator
         $yearFactor = $toYear - $fromYear;
 
         if (is_null($index)) {
-            $index = PriceIndexing::where('short', 'common')->first();
+            //$index = PriceIndexing::where('short', 'common')->first();
+            $index = \App\Helpers\Cache\Calculator::getPriceIndex('common');
         }
         // default = 2%
         $costIndex = 2;
@@ -171,6 +173,7 @@ class Calculator
     public static function maxGasSavings(Building $building, UserEnergyHabit $energyHabit, Element $element)
     {
         $boiler = $building->getServiceValue('hr-boiler');
+
         $buildingType = $building->getBuildingType();
         $usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler, $energyHabit);
         $usage = $usages['heating']['bruto'];

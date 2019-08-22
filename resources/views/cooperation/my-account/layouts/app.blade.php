@@ -23,16 +23,20 @@
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.settings.index'])) active @endif">
                                     <a href="{{route('cooperation.my-account.settings.index')}}">
                                         @lang('my-account.side-nav.settings')
-                                        <span class="glyphicon glyphicon-cog"></span>
+{{--                                        <span class="glyphicon glyphicon-cog"></span>--}}
                                     </a>
                                 </li>
-                                {{--
+                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.hoom-settings.index'])) active @endif">
+                                    <a href="{{route('cooperation.my-account.hoom-settings.index')}}">
+                                        @lang('my-account.side-nav.hoom-settings')
+{{--                                        <span class="glyphicon glyphicon-cog"></span>--}}
+                                    </a>
+                                </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.notification-settings.index', 'cooperation.my-account.notification-settings.show'])) active @endif">
                                     <a href="{{route('cooperation.my-account.notification-settings.index')}}">
                                         @lang('my-account.side-nav.notification-settings')
                                     </a>
                                 </li>
-                                --}}
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.import-center.index', 'cooperation.my-account.import-center.edit'])) active @endif">
                                     <a href="{{route('cooperation.my-account.import-center.index')}}">
                                         @lang('my-account.side-nav.import')
@@ -56,32 +60,20 @@
 @endsection
 
 
-@prepend('css')
-    <link rel="stylesheet" href="{{asset('css/select2/select2.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.dataTables.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/dataTables.bootstrap.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('css/datatables/responsive.bootstrap.min.css')}}">
-@endprepend
-@prepend('js')
+@push('js')
 
-    <script src="{{ asset('js/datatables.js') }}"></script>
     <script src="{{ asset('js/disable-auto-fill.js') }}"></script>
-    <script src="{{asset('js/select2.js')}}"></script>
+    <script src="{{asset('js/hoomdossier.js')}}"></script>
 
     <script>
         $(document).ready(function () {
 
+            pollForMessageCount();
             $('.collapse').on('shown.bs.collapse', function(){
                 $(this).parent().find(".glyphicon-chevron-down").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
             }).on('hidden.bs.collapse', function(){
                 $(this).parent().find(".glyphicon-chevron-up").removeClass("glyphicon-chevron-up").addClass("glyphicon-chevron-down");
             });
         });
-
-        $.extend( true, $.fn.dataTable.defaults, {
-            language: {
-                url: "{{asset('js/datatables-dutch.json')}}"
-            },
-        });
     </script>
-@endprepend
+@endpush

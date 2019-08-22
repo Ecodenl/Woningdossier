@@ -3,125 +3,64 @@
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
+            {{--
+                When merging accept the $user->account stuff, remove all if else checks
+            --}}
             @lang('woningdossier.cooperation.admin.users.show.header', [
-                'name' => $userExists ? $user->getFullName() : '-',
-                'street-and-number' => $building->street.' '.$building->number,
-                'zipcode-and-city' => $building->postal_code.' '.$building->city,
-                'email' => $userExists ? $user->email : ''
+                'name' => $user->getFullName(),
+                'street-and-number' => $building->street.' '.$building->number.' '.$building->extension,
+                'zipcode-and-city' => !$building->postal_code.' '.$building->city,
+                'email' => $user->account->email
             ])
         </div>
 
         <input type="hidden" name="building[id]" value="{{$building->id}}">
         <input type="hidden" id="cooperation-id" value="{{\App\Helpers\HoomdossierSession::getCooperation()}}">
-        @if($userExists)
-            <input type="hidden" name="user[id]" value="{{$user->id}}">
-        @endif
+
+        <input type="hidden" name="user[id]" value="{{$user->id}}">
         <div class="panel-body">
-            {{--delete a pipo--}}
-            @if($userExists)
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="btn-group">
-                            @can('delete-user', $user)
-                                <button type="button" id="delete-user" class="btn btn-danger">
-                                    @lang('woningdossier.cooperation.admin.users.show.delete-account.label')
-                                    @lang('woningdossier.cooperation.admin.users.show.delete-account.button')
-                                </button>
-                            @endcan
-                            @can('access-building', $building)
-                                <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}"
-                                   id="observe-building" class="btn btn-primary">
-                                    @lang('woningdossier.cooperation.admin.users.show.observe-building.label')
-                                    @lang('woningdossier.cooperation.admin.users.show.observe-building.button')
+            {{-- delete a user --}}
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="btn-group">
+                        @can('delete-user', $user)
+                            <button type="button" id="delete-user" class="btn btn-danger">
+                                @lang('woningdossier.cooperation.admin.users.show.delete-account.label')
+                                @lang('woningdossier.cooperation.admin.users.show.delete-account.button')
+                            </button>
+                        @endcan
+                        @can('access-building', $building)
+                            <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}"
+                               id="observe-building" class="btn btn-primary">
+                                @lang('woningdossier.cooperation.admin.users.show.observe-building.label')
+                                @lang('woningdossier.cooperation.admin.users.show.observe-building.button')
+                            </a>
+                            @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
+                                <a href="{{route('cooperation.admin.tool.fill-for-user', ['buildingId' => $building->id])}}"
+                                   id="edit-building" class="btn btn-warning">
+                                    @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.label')
+                                    @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.button')
                                 </a>
-                                @if(Auth::user()->hasRoleAndIsCurrentRole('coach'))
-                                    <a href="{{route('cooperation.admin.tool.fill-for-user', ['buildingId' => $building->id])}}"
-                                       id="edit-building" class="btn btn-warning">
-                                        @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.label')
-                                        @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.button')
-                                    </a>
-                                @endif
-                            @endcan
-                        </div>
+                            @endif
+                        @endcan
                     </div>
                 </div>
-            @endif
-            {{--status and appointment date--}}
+            </div>
+            {{-- status and appointment date --}}
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.users.show.status.label')</label>
-                        <select autocomplete="off" class="form-control" name="user[building_coach_status][status]"
-                                id="building-coach-status">
-                            {{--the user got a coach connected and the building is active--}}
-                            @if($mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $building->isActive())
-                                <option disabled selected value="">
-                                    @lang('woningdossier.cooperation.admin.users.show.status.current')
-                                    {{\App\Models\BuildingCoachStatus::getTranslationForStatus($mostRecentBuildingCoachStatus->status)}}
-                                </option>
-                                {{--the user does not have a coach connected but the building is active--}}
-                            @elseif(!$mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $building->isActive())
-                                {{--The user had some sort of message history so, pending.--}}
-                                @if($publicMessages->isNotEmpty())
-                                    <option disabled selected>
-                                        @lang('woningdossier.cooperation.admin.users.show.status.current')
-                                        {{\App\Models\BuildingCoachStatus::getTranslationForStatus(\App\Models\BuildingCoachStatus::STATUS_PENDING)}}
-                                    </option>
-                                    {{--The user has no message history--}}
-                                @else
-                                    <option disabled selected>
-                                        @lang('woningdossier.cooperation.admin.users.show.status.current')
-                                        {{\App\Models\BuildingCoachStatus::getTranslationForStatus(\App\Models\BuildingCoachStatus::STATUS_ACTIVE)}}
-                                    </option>
-                                @endif
-                                {{--The user has no building coach status and his building is set to inactive--}}
-                            @else
-                                <option @if($building->isNotActive()) disabled selected @endif>
-                                    @lang('woningdossier.cooperation.admin.users.show.status.current')
-                                    {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
-                                </option>
-                            @endif
-                            {{--
-                                If there is no active coach connected to the building, then there is no point in setting these statuses
-                                and, it also cant be set since there arent ant coaches to give a status.
-                            --}}
-                            @if($coachesWithActiveBuildingCoachStatus->isNotEmpty())
-                                @foreach($manageableStatuses as $buildingCoachStatusKey => $buildingCoachStatusName)
-                                    <?php
-                                    // the if logic
-                                    $manageableStatusIsExecuted = $buildingCoachStatusKey == \App\Models\BuildingCoachStatus::STATUS_EXECUTED;
-                                    $hasAppointmentThatIsToday = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $mostRecentBuildingCoachStatus->hasAppointmentDate() && $mostRecentBuildingCoachStatus->appointment_date->isToday();
-                                    $mostRecentBuildingCoachStatusExists = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus;
+                        <select autocomplete="off" class="form-control" name="building[building_statuses][id]" id="building-status">
 
-                                    if ($mostRecentBuildingCoachStatusExists && $mostRecentBuildingCoachStatus->hasAppointmentDate() && $mostRecentBuildingCoachStatus->status != \App\Models\BuildingCoachStatus::STATUS_EXECUTED) {
-                                        // check if the appointment day is past.
-                                        $appointmentDayDateIsPast = ! $mostRecentBuildingCoachStatus->appointment_date->lessThan(\Carbon\Carbon::now()->format('Y-m-d'));
-                                    }
-                                    // if there is an appointment date then it isn't allowed to change the status
-                                    // but if that day is today and the manageable status is executed, then the coach may change it.
-                                    // else we just want to show all the manageable statuses
-                                    ?>
-                                    @if($mostRecentBuildingCoachStatusExists && $mostRecentBuildingCoachStatus->hasAppointmentDate() && (isset($appointmentDayDateIsPast) && $appointmentDayDateIsPast == true))
-                                        @if($hasAppointmentThatIsToday && $manageableStatusIsExecuted)
-                                            <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
-                                        @endif
-                                    @else
-                                        <option value="{{$buildingCoachStatusKey}}">{{$buildingCoachStatusName}}</option>
+                            @foreach($statuses as $status)
+                                <option {{$mostRecentStatus->status_id == $status->id ? 'selected="selected"' : ''}} value="{{$status->id}}">
+                                    @if($mostRecentStatus->status_id == $status->id)
+                                        @lang('woningdossier.cooperation.admin.users.show.status.current')
                                     @endif
-
-                                @endforeach
-                            @endif
-
-                            @if($building->isActive())
-                                {{--This status can ALWAYS be choosen.--}}
-                                <option value="{{\App\Models\Building::STATUS_IS_NOT_ACTIVE}}">
-                                    {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_NOT_ACTIVE)}}
+                                    {{$status->name}}
                                 </option>
-                            @else
-                                <option value="{{\App\Models\Building::STATUS_IS_ACTIVE}}">
-                                    {{\App\Models\Building::getTranslationForStatus(\App\Models\Building::STATUS_IS_ACTIVE)}}
-                                </option>
-                            @endif
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -129,16 +68,10 @@
                     <div class="form-group">
                         <label for="appointment-date">@lang('woningdossier.cooperation.admin.users.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
-                            <?php $hasCoachStatusAndAppointmentIsNotNull = $mostRecentBuildingCoachStatus instanceof \App\Models\BuildingCoachStatus && $mostRecentBuildingCoachStatus->hasAppointmentDate(); ?>
-                            <input autocomplete="off"
-                                   @if($userDoesNotExist || $coachesWithActiveBuildingCoachStatus->isEmpty() || $building->isNotActive())
-                                   disabled
+                            <input autocomplete="off" id="appointment-date" name="building[building_statuses][appointment_date]" type='text' class="form-control"
+                                   @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate())
+                                       value=" {{$mostRecentStatus->appointment_date->format('d-m-Y')}}"
                                    @endif
-                                   id="appointment-date" name="user[building_coach_status][appointment_date]"
-                                   type='text' class="form-control"
-                                   @if($hasCoachStatusAndAppointmentIsNotNull)
-                                   value=" {{$mostRecentBuildingCoachStatus->appointment_date->format('d-m-Y')}}"
-                                    @endif
                             />
 
 
@@ -151,66 +84,68 @@
             </div>
             {{--coaches and role--}}
             <div class="row">
-                @can('view-building-info', $building)
+                @if($publicMessages->isNotEmpty())
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="associated-coaches">@lang('woningdossier.cooperation.admin.users.show.associated-coach.label')</label>
-                            <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled
-                                    @endif name="user[associated_coaches]" id="associated-coaches" class="form-control"
-                                    multiple="multiple">
+                            <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif name="user[associated_coaches]" id="associated-coaches" class="form-control" multiple="multiple">
                                 @foreach($coaches as $coach)
-                                    <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id',
-                                            $coach->id) instanceof stdClass ?>
+                                    <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
                                     <option
                                             @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id))
-                                            selected="selected"
-                                            @endif value="{{$coach->id}}">{{$coach->getFullName()}}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                @endcan
-                @if($userExists)
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="role-select">@lang('woningdossier.cooperation.admin.users.show.role.label')</label>
-                            <select @if(Auth::user()->hasRoleAndIsCurrentRole('coach')) disabled
-                                    @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
-                                @foreach($roles as $role)
-                                    <option @if($user->hasNotMultipleRoles()) locked="locked"
-                                            @endif @if($user->hasRole($role)) selected="selected"
-                                            @endif value="{{$role->id}}">
-                                        {{$role->human_readable_name}}
+                                                selected="selected"
+                                            @endif
+                                            value="{{$coach->id}}">{{$coach->getFullName()}}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
                 @endif
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="role-select">@lang('woningdossier.cooperation.admin.users.show.role.label')</label>
+                        <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled
+                                @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
+                            @foreach($roles as $role)
+                                <option @if($user->hasNotMultipleRoles()) locked="locked"
+                                        @endif @if($user->hasRole($role)) selected="selected"
+                                        @endif value="{{$role->id}}">
+                                    {{$role->human_readable_name}}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
 
         <ul class="nav nav-tabs">
 
-            <li class="active">
+            <li @if(session('fragment') == 'messages-intern') class="active" @endif>
                 <a data-toggle="tab" href="#messages-intern">
                     @lang('woningdossier.cooperation.admin.users.show.tabs.messages-intern.title')
                 </a>
             </li>
+
             @can('talk-to-resident', [$building, $cooperation])
-                <li>
+                <li @if(session('fragment') == 'messages-public' || empty(session('fragment'))) class="active" @endif>
                     <a data-toggle="tab" href="#messages-public">
+                        @if($user->retrievesNotifications(\App\Models\NotificationType::PRIVATE_MESSAGE))
+                            <i class="glyphicon glyphicon-bell" data-placement="top" data-toggle="tooltip" title="@lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.user-notification.yes')"></i>
+                        @else
+                            <i class="glyphicon glyphicon-ban-circle" data-placement="top" data-toggle="tooltip" title="@lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.user-notification.no')"></i>
+                        @endif
                         @lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.title')
                     </a>
                 </li>
             @endcan
-            <li>
+            <li @if(session('fragment') == 'comments-on-building') class="active" @endif>
                 <a data-toggle="tab" href="#comments-on-building">
                     @lang('woningdossier.cooperation.admin.users.show.tabs.comments-on-building.title')
                 </a>
             </li>
-            @if(Auth::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
+            @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
                 <li>
                     <a data-toggle="tab" id="trigger-fill-in-history-tab" href="#fill-in-history">
                         @lang('woningdossier.cooperation.admin.users.show.tabs.fill-in-history.title')
@@ -221,19 +156,19 @@
 
         <div class="tab-content">
             {{--messages intern (cooperation to cooperation --}}
-            <div id="messages-intern" class="tab-pane fade in active">
+            <div id="messages-intern" class="tab-pane fade @if(session('fragment') == 'messages-intern' ) in active @endif">
                 @include('cooperation.admin.layouts.includes.intern-message-box', ['privateMessages' => $privateMessages, 'building' => $building])
             </div>
             @can('talk-to-resident', [$building, $cooperation])
                 {{--public messages / between the resident and cooperation--}}
-                <div id="messages-public" class="tab-pane fade">
+                <div id="messages-public" class="tab-pane fade @if(session('fragment') == 'messages-public' || empty(session('fragment'))) in active @endif">
                     @include('cooperation.admin.layouts.includes.resident-message-box', ['publicMessages' => $publicMessages, 'building' => $building])
                 </div>
             @endcan
 
 
             {{-- comments on the building, read only. --}}
-            <div id="comments-on-building" class="tab-pane fade">
+            <div id="comments-on-building" class="tab-pane fade @if(session('fragment') == 'comments-on-building' ) in active @endif">
                 <div class="panel">
                     <div class="panel-body">
                         @forelse($buildingNotes as $buildingNote)
@@ -249,8 +184,7 @@
                             <div class="form-group">
 
                                 <label for="building-note">@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.comments-on-building.note')</label>
-                                <textarea id="building-note" name="building[note]"
-                                          class="form-control">{{old('building.note')}}</textarea>
+                                <textarea id="building-note" name="building[note]" class="form-control">{{old('building.note')}}</textarea>
                             </div>
                             <button type="submit" class="btn btn-default">
                                 @lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.comments-on-building.save')
@@ -260,7 +194,7 @@
                 </div>
             </div>
             {{-- Fill in history or the log --}}
-            @if(Auth::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
+            @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
                 <div id="fill-in-history" class="tab-pane fade">
                     <div class="panel">
                         <div class="panel-body">
@@ -288,33 +222,29 @@
                 </div>
             @endif
         </div>
-        @if($userExists)
-            <div class="panel-footer">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="btn-group">
-                            <a @if(!is_null($previous)) href="{{route('cooperation.admin.buildings.show', ['id' => $previous])}}" @endif
-                               type="button" {{is_null($previous) ? 'disabled="disabled"' : '' }} id="previous" class="btn btn-default {{is_null($previous) ? 'btn-disabled' : '' }}">
-                                <i class="glyphicon glyphicon-chevron-left"></i>
-                                @lang('woningdossier.cooperation.admin.users.show.previous')
-                            </a>
-                            <a @if(!is_null($next)) href="{{route('cooperation.admin.buildings.show', ['id' => $next])}}" @endif
-                               id="observe-building" {{is_null($next) ? 'disabled="disabled"' : '' }} class="btn btn-default {{is_null($next) ? 'btn-disabled' : '' }}">
-                                @lang('woningdossier.cooperation.admin.users.show.next')
-                                <i class="glyphicon glyphicon-chevron-right"></i>
-                            </a>
-                        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="btn-group">
+                        <a @if(!is_null($previous)) href="{{route('cooperation.admin.buildings.show', ['id' => $previous])}}" @endif
+                           type="button" {{is_null($previous) ? 'disabled="disabled"' : '' }} id="previous" class="btn btn-default {{is_null($previous) ? 'btn-disabled' : '' }}">
+                            <i class="glyphicon glyphicon-chevron-left"></i>
+                            @lang('woningdossier.cooperation.admin.users.show.previous')
+                        </a>
+                        <a @if(!is_null($next)) href="{{route('cooperation.admin.buildings.show', ['id' => $next])}}" @endif
+                           id="observe-building" {{is_null($next) ? 'disabled="disabled"' : '' }} class="btn btn-default {{is_null($next) ? 'btn-disabled' : '' }}">
+                            @lang('woningdossier.cooperation.admin.users.show.next')
+                            <i class="glyphicon glyphicon-chevron-right"></i>
+                        </a>
                     </div>
                 </div>
             </div>
-        @endif
+        </div>
     </div>
 @endsection
 
 @push('js')
     <script>
-
-
         $(document).ready(function () {
 
             // get some basic information
@@ -334,12 +264,14 @@
                 $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();
             });
 
+            $('[data-toggle="tooltip"]').tooltip();
+
             // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.
             var originalAppointmentDate = appointmentDate.find('input').val();
 
-            keepNavTabOpenOnRedirect();
-            setUrlHashInHiddenInput();
             scrollChatToMostRecentMessage();
+            onFormSubmitAddFragmentToRequest();
+
 
             $('.nav-tabs .active a').trigger('shown.bs.tab');
 
@@ -354,18 +286,16 @@
                 showClear: true,
             }).on('dp.hide', function (event) {
                 var date = appointmentDate.find('input').val();
-                var confirmMessage = '';
+                var confirmMessage = "@lang('woningdossier.cooperation.admin.users.show.set-empty-appointment-date')";
 
                 if (date.length > 0) {
                     confirmMessage = "@lang('woningdossier.cooperation.admin.users.show.set-appointment-date')"
-                } else {
-                    confirmMessage = "@lang('woningdossier.cooperation.admin.users.show.set-empty-appointment-date')"
                 }
 
                 if (confirm(confirmMessage)) {
                     $.ajax({
                         method: 'POST',
-                        url: '{{route('cooperation.admin.building-coach-status.set-appointment-date')}}',
+                        url: '{{route('cooperation.admin.building-status.set-appointment-date')}}',
                         data: {
                             building_id: buildingOwnerId,
                             appointment_date: date
@@ -398,16 +328,16 @@
                 }
             });
 
-            $('#building-coach-status').select2({}).on('select2:selecting', function (event) {
+            $('#building-status').select2({}).on('select2:selecting', function (event) {
                 var statusToSelect = $(event.params.args.data.element);
 
                 if (confirm('@lang('woningdossier.cooperation.admin.users.show.set-status')')) {
                     $.ajax({
                         method: 'POST',
-                        url: '{{route('cooperation.admin.building-coach-status.set-status')}}',
+                        url: '{{route('cooperation.admin.building-status.set-status')}}',
                         data: {
                             building_id: buildingOwnerId,
-                            status: statusToSelect.val(),
+                            status_id: statusToSelect.val(),
                         }
                     }).done(function () {
                         location.reload();
@@ -528,45 +458,6 @@
         });
 
 
-        /**
-         * Sets the hash / fragment in the url.
-         */
-        function keepNavTabOpenOnRedirect() {
-            // get the current url
-            var url = document.location.href;
-
-            // scroll to top off page for less retarded behaviour
-            window.scrollTo(0, 0);
-
-            // check if the current url matches a hashtag
-            if (url.match('#')) {
-                // see if there is a tab and show it.
-                $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
-            }
-
-            // set the hash in url
-            $('.nav-tabs a').on('shown.bs.tab', function (e) {
-                window.location.hash = e.target.hash;
-            });
-        }
-
-        /**
-         * Function that sets the url has in a hidden input in all the forms on the page, so we can redirect back with the hash / fragment.
-         */
-        function setUrlHashInHiddenInput() {
-            // set the hash in url
-            $('.nav-tabs a').on('shown.bs.tab', function () {
-                var forms = $('form');
-                forms.each(function (index, form) {
-                    var fragmentInput = $(form).find('input[name=fragment]');
-                    if (fragmentInput.length > 0) {
-                        fragmentInput.val(window.location.hash);
-                    } else {
-                        $(form).append($('<input>').attr('type', 'hidden').attr('name', 'fragment').val(window.location.hash));
-                    }
-                });
-            });
-        }
 
         function scrollChatToMostRecentMessage() {
             $('.nav-tabs a').on('shown.bs.tab', function () {
@@ -574,12 +465,39 @@
                 var tabId = $(this).attr('href');
                 var tab = $(tabId);
                 var chat = tab.find('.panel-chat-body')[0];
+
                 if (typeof chat !== "undefined") {
                     chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+
+                    var isChatPublic = tab.find('[name=is_public]').val();
+                    var buildingId = tab.find('[name=building_id]').val();
+
+                    $.ajax({
+                        url: '{{route('cooperation.messages.participants.set-read')}}',
+                        method: 'post',
+                        data: {
+                            is_public: isChatPublic,
+                            building_id: buildingId
+                        },
+                        success: function () {
+                            updateTotalUnreadMessageCount();
+                        }
+                    })
                 }
             });
-
         }
+
+        function onFormSubmitAddFragmentToRequest()
+        {
+            $('form').submit(function (event) {
+                $(this).append($('<input>', {
+                    type: 'hidden',
+                    name: 'fragment',
+                    value: $(this).parents('.tab-pane').prop('id'),
+                }));
+            });
+        }
+        
 
     </script>
 @endpush

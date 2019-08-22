@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserProgress newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserProgress newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserProgress query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserProgress residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserProgress whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserProgress whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserProgress whereId($value)

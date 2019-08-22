@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Cooperation\ConversationRequest;
 
 use App\Events\UserAllowedAccessToHisBuilding;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\ConversationRequests\ConversationRequest;
+use App\Models\Building;
 use App\Models\Cooperation;
-use App\Models\Log;
 use App\Models\MeasureApplication;
 use App\Models\PrivateMessage;
-use Illuminate\Http\Request;
 
 class ConversationRequestController extends Controller
 {
@@ -56,28 +56,30 @@ class ConversationRequestController extends Controller
         $message     = $request->get('message', '');
         $allowAccess = 'on' == $request->get('allow_access', '');
 
-        $cooperationId = HoomdossierSession::getCooperation();
+        $cooperation = HoomdossierSession::getCooperation(true);
+        $building = HoomdossierSession::getBuilding(true);
 
         PrivateMessage::create(
             [
                 // we get the selected option from the language file, we can do this cause the submitted value = key from localization
                 'is_public'         => true,
-                'from_user_id'      => \Auth::id(),
-                'from_user'         => \Auth::user()->getFullName(),
+                'from_user_id'      => Hoomdossier::user()->id,
+                'from_user'         => \App\Helpers\Hoomdossier::user()->getFullName(),
                 'message'           => $message,
-                'to_cooperation_id' => $cooperationId,
-                'building_id'       => HoomdossierSession::getBuilding(),
+                'to_cooperation_id' => $cooperation->id,
+                'building_id'       => $building->id,
                 'request_type'      => $action,
                 'allow_access'      => $allowAccess,
             ]
         );
 
+
+        $building->setStatus('pending');
+
         // if the user allows access to his building on the request, log the activity.
         if ($allowAccess) {
             event(new UserAllowedAccessToHisBuilding());
         }
-
-        $cooperation = Cooperation::find($cooperationId);
 
         return redirect()->route('cooperation.tool.my-plan.index')
                          ->with('success', __('woningdossier.cooperation.conversation-requests.store.success', [

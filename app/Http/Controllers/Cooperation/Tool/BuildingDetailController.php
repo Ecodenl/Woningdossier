@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BuildingDetailRequest;
 use App\Models\Building;
@@ -17,6 +20,9 @@ use Illuminate\Http\Request;
 
 class BuildingDetailController extends Controller
 {
+    /**
+     * @var Step
+     */
     protected $step;
 
     public function __construct(Request $request)
@@ -27,7 +33,7 @@ class BuildingDetailController extends Controller
 
     public function index(Request $request, Cooperation $cooperation)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $buildingTypes = BuildingType::all();
 
         return view('cooperation.tool.building-detail.index', compact('building', 'buildingTypes'));
@@ -36,7 +42,7 @@ class BuildingDetailController extends Controller
     public function store(BuildingDetailRequest $request)
     {
         /** @var Building $building */
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $buildingId = $building->id;
         $inputSourceId = HoomdossierSession::getInputSource();
         $buildYear = $request->get('build_year');
@@ -88,7 +94,8 @@ class BuildingDetailController extends Controller
         }
 
         // finish the step
-        $building->complete($this->step);
+        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
+        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
         return redirect()->route('cooperation.tool.general-data.index');
     }

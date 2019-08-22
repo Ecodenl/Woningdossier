@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Events\StepDataHasBeenChangedEvent;
+use App\Calculations\HighEfficiencyBoiler;
+use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\HighEfficiencyBoilerCalculator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
@@ -29,6 +31,9 @@ use Illuminate\Support\Collection;
 
 class HighEfficiencyBoilerController extends Controller
 {
+    /**
+     * @var Step
+     */
     protected $step;
 
     public function __construct(Request $request)
@@ -46,7 +51,7 @@ class HighEfficiencyBoilerController extends Controller
     {
         $typeIds = [4];
 
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $habit = $buildingOwner->energyHabit;
         $energyHabitsForMe = UserEnergyHabit::forMe()->get();
@@ -68,54 +73,11 @@ class HighEfficiencyBoilerController extends Controller
 
     public function calculate(Request $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
-        $result = [
-            'savings_gas' => 0,
-            'savings_co2' => 0,
-            'savings_money' => 0,
-            'cost_indication' => 0,
-            'interest_comparable' => 0,
-        ];
+        $result = HighEfficiencyBoiler::calculate($building, $user, $request->all());
 
-        $services = $request->input('building_services', []);
-        // (there's only one..)
-        foreach ($services as $serviceId => $options) {
-            $boilerService = Service::find($serviceId);
-
-            if (array_key_exists('service_value_id', $options)) {
-                /** @var ServiceValue $boilerType */
-                $boilerType = ServiceValue::where('service_id', $boilerService->id)
-                    ->where('id', $options['service_value_id'])
-                    ->first();
-
-                $boilerEfficiency = $boilerType->keyFigureBoilerEfficiency;
-                if ($boilerEfficiency->heating > 95) {
-                    $result['boiler_advice'] = Translation::translate('boiler.already-efficient');
-                }
-
-                if (array_key_exists('extra', $options)) {
-                    $year = is_numeric(NumberFormatter::reverseFormat($options['extra'])) ? NumberFormatter::reverseFormat($options['extra']) : 0;
-
-                    $measure = MeasureApplication::byShort('high-efficiency-boiler-replace');
-                    //$measure = MeasureApplication::where('short', '=', 'high-efficiency-boiler-replace')->first();
-                    //$measure = MeasureApplication::translated('measure_name', 'Vervangen cv ketel', 'nl')->first(['measure_applications.*']);
-
-                    $amountGas = $request->input('habit.gas_usage', null);
-
-                    if ($user->energyHabit instanceof UserEnergyHabit) {
-                        $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $user->energyHabit, $amountGas);
-                    }
-                    $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
-                    $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
-                    //$result['cost_indication'] = Calculator::calculateCostIndication(1, $measure);
-                    $result['replace_year'] = HighEfficiencyBoilerCalculator::determineApplicationYear($measure, $year);
-                    $result['cost_indication'] = Calculator::calculateMeasureApplicationCosts($measure, 1, $result['replace_year'], false);
-                    $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
-                }
-            }
-        }
 
         return response()->json($result);
     }
@@ -129,7 +91,7 @@ class HighEfficiencyBoilerController extends Controller
      */
     public function store(HighEfficiencyBoilerFormRequest $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $buildingId = $building->id;
         $inputSourceId = HoomdossierSession::getInputSource();
@@ -174,9 +136,9 @@ class HighEfficiencyBoilerController extends Controller
 
         // Save progress
         $this->saveAdvices($request);
-        $building->complete($this->step);
-        ($this->step);
-        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
+        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
+        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
+        $cooperation = HoomdossierSession::getCooperation(true);
 
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
@@ -184,14 +146,13 @@ class HighEfficiencyBoilerController extends Controller
         if (! empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];
         }
-        \Event::dispatch(new StepDataHasBeenChangedEvent());
 
         return redirect($url);
     }
 
     protected function saveAdvices(Request $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
         /** @var JsonResponse $results */

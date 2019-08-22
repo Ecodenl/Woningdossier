@@ -4,7 +4,7 @@
 ])
 <br><br>
 <?php
-    $confirmUrl = route('cooperation.confirm', ['cooperation' => $userCooperation, 'u' => $user->email, 't' => $user->confirm_token]);
+    $confirmUrl = route('cooperation.auth.confirm.store', ['cooperation' => $userCooperation, 'u' => $user->account->email, 't' => $user->account->confirm_token]);
     $confirmHref = '<a target="_blank" href="'.$confirmUrl.'">'.$confirmUrl.'</a>';
 
     $cooperationHoomdossierLink = route('cooperation.home', ['cooperation' => $userCooperation]);

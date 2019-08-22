@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Scopes\CooperationScope;
-
 /**
  * App\Models\Role
  *
@@ -17,7 +15,7 @@ use App\Scopes\CooperationScope;
  * @property int $level
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Account[] $users
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Role newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\Spatie\Permission\Models\Role permission($permissions)

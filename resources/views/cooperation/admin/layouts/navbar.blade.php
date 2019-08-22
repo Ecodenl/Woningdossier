@@ -37,10 +37,10 @@
             </ul>
 
             @if(\App\Helpers\HoomdossierSession::getRole())
-                @hasrole('coach|coordinator|cooperation-admin|super-admin|superuser')
-                <a href="{{ route('cooperation.tool.index') }}" class="btn btn-warning navbar-btn">Naar tool</a>
-                @endhasrole
-        @endif
+                @if(\App\Helpers\Hoomdossier::user()->hasRole('coach|coordinator|cooperation-admin|super-admin|superuser'))
+                    <a href="{{ route('cooperation.tool.index') }}" class="btn btn-warning navbar-btn">Naar tool</a>
+                @endif
+            @endif
         @endif
 
         <!-- Right Side Of Navbar -->
@@ -48,20 +48,17 @@
                 <!-- Authentication Links -->
                 @guest
                 @else
-                    @if(Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin']))
+                    @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin']))
                         <li>
-                            <?php $messageUrl = route('cooperation.admin.messages.index'); ?>
-                            <a href="{{$messageUrl}}">
-                                <span class="glyphicon glyphicon-envelope"></span>
-                                <span class="badge">{{$myUnreadMessagesCount}}</span>
-                            </a>
+                            @include('cooperation.layouts.message-badge', ['messageUrl' => route('cooperation.admin.messages.index')])
                         </li>
+
                     @endif
 
-                    @if(Auth::user()->hasRoleAndIsCurrentRole(['super-admin','superuser']))
+                    @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['super-admin','superuser']))
                         <li><a href="{{ route('cooperation.admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
                     @endif
-                    @if(Auth::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
+                    @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
                         <li><a href="{{ route('cooperation.admin.example-buildings.index') }}">@lang('woningdossier.cooperation.admin.navbar.example-buildings')</a></li>
                     @endif
 
@@ -69,7 +66,7 @@
 
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
-                            {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}<span class="caret"></span>
+                            {{ \App\Helpers\Hoomdossier::user()->first_name }} {{ \App\Helpers\Hoomdossier::user()->last_name }}<span class="caret"></span>
                         </a>
 
                         <ul class="dropdown-menu">

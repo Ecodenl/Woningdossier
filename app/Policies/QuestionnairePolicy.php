@@ -33,7 +33,7 @@ class QuestionnairePolicy
     public function edit(User $user, Questionnaire $questionnaire)
     {
         // get the current cooperation
-        $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
+        $currentCooperation = HoomdossierSession::getCooperation(true);
 
         // check if the cooperation from the requested questionnaire is the same as the cooperation from the authenticated user
         if ($questionnaire->cooperation instanceof $currentCooperation) {
@@ -67,7 +67,7 @@ class QuestionnairePolicy
     public function store(User $user)
     {
         $userCooperations = $user->cooperations()->get();
-        $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
+        $currentCooperation = HoomdossierSession::getCooperation(true);
 
         // if the user has the role coordinator and the cooperations from the user has the current cooperation authorize him.
         if ($user->hasRole('coordinator') && $userCooperations->contains($currentCooperation)) {
@@ -85,7 +85,7 @@ class QuestionnairePolicy
     public function delete(User $user, Questionnaire $questionnaire)
     {
         $userCooperations = $user->cooperations()->get();
-        $currentCooperation = Cooperation::find(HoomdossierSession::getCooperation());
+        $currentCooperation = HoomdossierSession::getCooperation(true);
 
         // check if the user has the coordinator role and check the current cooperation
         if ($user->hasRole('coordinator') && $userCooperations->contains($currentCooperation)) {

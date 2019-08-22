@@ -22,14 +22,18 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Building $building
+ * @property-read \App\Models\BuildingHeating|null $buildingHeating
  * @property-read \App\Models\ElementValue|null $elementValue
- * @property-read \App\Models\BuildingHeating $heating
+ * @property-read \App\Models\BuildingHeating|null $heating
  * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\ElementValue|null $insulation
+ * @property-read \App\Models\MeasureApplication $measureApplication
  * @property-read \App\Models\RoofType $roofType
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereBuildingHeatingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereCreatedAt($value)
@@ -97,6 +101,16 @@ class BuildingRoofType extends Model
      */
     public function heating()
     {
+        return $this->belongsTo(BuildingHeating::class, 'building_heating_id');
+    }
+
+    public function buildingHeating(){
         return $this->belongsTo(BuildingHeating::class);
+    }
+
+    public function measureApplication()
+    {
+        \Log::critical(__METHOD__ . ": Dit werkt niet!!");
+        return $this->belongsTo(MeasureApplication::class);
     }
 }

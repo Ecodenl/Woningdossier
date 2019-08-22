@@ -361,33 +361,28 @@
 
                 </div>
             </div>
-            <div class="col-sm-12">
-                {{--loop through all the insulated glazings with ALL the input sources--}}
-                @foreach ($buildingInsulatedGlazingsForMe as $buildingInsulatedGlazingForMe)
-                    <?php
-                        $coachInputSource = App\Models\InputSource::findByShort('coach');
 
-
-                        $buildingInsulatedGlazing = $buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first();
-                        $buildingInsulatedGlazingExists = $buildingInsulatedGlazing instanceof \App\Models\BuildingInsulatedGlazing;
-
-                        $extraIsArray = $buildingInsulatedGlazingExists ? is_array($buildingInsulatedGlazing->extra) : false;
-
-                        $thereIsAComment = $extraIsArray ? array_key_exists('comment', $buildingInsulatedGlazing->extra) : false;
-                    ?>
-
-                    @if(($buildingInsulatedGlazingExists && $extraIsArray) && $thereIsAComment)
-                        ({{$coachInputSource->name}})
-                        @component('cooperation.tool.components.step-question', ['id' => '', 'translation' => 'general.specific-situation', 'required' => false])
-
-                            <textarea disabled="disabled" class="disabled form-control">{{$buildingInsulatedGlazingForMe->where('input_source_id', $coachInputSource->id)->first()->extra['comment']}}</textarea>
-                        @endcomponent
-
-                        @break
-                    @endif
-                @endforeach
-            </div>
         </div>
+        <?php
+            // we take the first one.
+            // this is due to the fact this is saved kinda weird
+            $insulatedGlazingWithCommentsAndHasExtra = collect($buildingInsulatedGlazingsForMe)->map(function ($buildingInsulatedGlazings) {
+                return $buildingInsulatedGlazings
+                    ->where('input_source_id', '!=', \App\Helpers\HoomdossierSession::getInputSource())
+                    ->where('extra', '!=', null)
+                    ->first();
+            })->first();
+        ?>
+        @if($insulatedGlazingWithCommentsAndHasExtra  instanceof \App\Models\BuildingInsulatedGlazing)
+            @include('cooperation.tool.includes.comment', [
+                 'collection' => collect()->push($insulatedGlazingWithCommentsAndHasExtra),
+                 'commentColumn' => 'extra.comment',
+                 'translation' => [
+                     'title' => 'general.specific-situation.title',
+                     'help' => 'general.specific-situation.help'
+                 ]
+             ])
+        @endif
 
         <div id="indication-for-costs">
             <hr>
@@ -507,7 +502,7 @@
                             $("input#cost_indication").val(hoomdossierRound(data.cost_indication));
                         }
                         if (data.hasOwnProperty('interest_comparable')) {
-                            $("input#interest_comparable").val(data.interest_comparable);
+                            $("input#interest_comparable").val(hoomdossierNumberFormat(data.interest_comparable, '{{ app()->getLocale() }}', 1));
                         }
                         if (data.hasOwnProperty('paintwork')) {
                             $("input#paintwork_costs").val(hoomdossierRound(data.paintwork.costs));

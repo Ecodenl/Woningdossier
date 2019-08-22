@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
-use App\Models\Cooperation;
+use App\Models\Account;
+use App\Models\User;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Illuminate\Http\Request;
 
 class ForgotPasswordController extends Controller
 {
@@ -39,5 +42,27 @@ class ForgotPasswordController extends Controller
     public function showLinkRequestForm()
     {
         return view('cooperation.auth.passwords.email');
+    }
+
+    /**
+     * Validate the email for the given request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
+    protected function validateEmail(Request $request)
+    {
+        $this->validate($request, ['email' => [
+                'required',
+                'email',
+                // we have to validate if the email is a member of this cooperation.
+                function ($attribute, $value, $fail) {
+                    $user = Account::where('email', $value)->first()->users()->withoutGlobalScopes()->where('cooperation_id', HoomdossierSession::getCooperation())->first();
+                    if (!$user instanceof User) {
+                       $fail($attribute.' is invalid.');
+                    }
+                },
+            ]
+        ]);
     }
 }

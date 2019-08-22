@@ -36,9 +36,6 @@ $('i.glyphicon-info-sign').click(function () {
     $(this).parent().parent().find('.modal').modal();
 });
 
-
-
-
 $(document).ready(function () {
 
     $('.input-source-group').on('click', 'li.change-input-value', function (event) {
@@ -153,7 +150,6 @@ $(".has-address-data #number, #house_number_extension").focusout(function(){
         });
     }
 );
-
 
 function removeErrorFields()
 {

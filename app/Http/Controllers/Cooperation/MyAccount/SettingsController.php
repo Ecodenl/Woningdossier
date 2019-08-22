@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use App\Events\DossierResetPerformed;
 use App\Events\UserChangedHisEmailEvent;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\PicoHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
+use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingFeature;
+use App\Models\Cooperation;
 use App\Models\Log;
 use App\Models\OldEmail;
 use App\Models\User;
+use App\Services\ToolSettingService;
 use App\Services\UserService;
 use function GuzzleHttp\Psr7\uri_for;
 use Illuminate\Auth\Passwords\DatabaseTokenRepository;
@@ -21,10 +26,11 @@ class SettingsController extends Controller
 {
     public function index()
     {
-        $user = \Auth::user();
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = Hoomdossier::user();
+        $account = Hoomdossier::account();
+        $building = HoomdossierSession::getBuilding(true);
 
-        return view('cooperation.my-account.settings.index', compact('user', 'building'));
+        return view('cooperation.my-account.settings.index', compact('user', 'building', 'account'));
     }
 
     /**
@@ -36,8 +42,8 @@ class SettingsController extends Controller
      */
     public function update(MyAccountSettingsFormRequest $request)
     {
-        $user = \Auth::user();
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $user = Hoomdossier::user();
+        $building = HoomdossierSession::getBuilding(true);
 
         $data = $request->all();
 
@@ -50,39 +56,17 @@ class SettingsController extends Controller
         );
 
         $userData['phone_number'] = $userData['phone_number'] ?? '';
-
         $buildingData['extension'] = $buildingData['extension'] ?? '';
-
         $buildingData['number'] = $buildingData['house_number'] ?? '';
         // try to obtain the address id from the api, else get the one from the request.
         $buildingData['bag_addressid'] = $picoAddressData['id'] ?? $buildingData['addressid'] ?? '';
 
 
-
-        // if the password is empty we remove all the password stuff from the user data
-        // else we do some checks and hash it!
-        if (empty($userData['password'])) {
-            unset($userData['password'], $userData['password_confirmation'], $userData['current_password']);
-        } else {
-            $currentPassword = $user->password;
-            $currentPasswordFromRequestToCheck = $userData['current_password'];
-
-            if (!\Hash::check($currentPasswordFromRequestToCheck, $currentPassword)) {
-                return redirect()->back()->withErrors(['current_password' => __('validation.current_password')]);
-            }
-            $userData['password'] = \Hash::make($userData['password']);
-        }
-
-        // check if the user changed his email, if so. We set the old email and send the user a email so he can change it back.
-        if ($user->email != $userData['email']) {
-            event(new UserChangedHisEmailEvent($user, $user->email, $userData['email']));
-        }
-
         // update the user stuff
         $user->update($userData);
-
-        // now update the building itself.
+        // now update the building itself
         $building->update($buildingData);
+
         // and update the building features with the data from pico.
         $building->buildingFeatures()->update([
             'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
@@ -101,10 +85,10 @@ class SettingsController extends Controller
      */
     public function resetFile()
     {
-        $user = \Auth::user();
+        $user = Hoomdossier::user();
 
         // only remove the example building id from the building
-        $building = $user->buildings()->first();
+        $building = $user->building;
         $building->example_building_id = null;
         $building->save();
 
@@ -124,13 +108,9 @@ class SettingsController extends Controller
         $building->currentInsulatedGlazing()->delete();
         // remove the paintwork from a building
         $building->currentPaintworkStatus()->delete();
-        // remove the user usage from a building
-        $building->userUsage()->delete();
         // remove all progress made in the tool
         $building->progress()->delete();
 
-        // remove the building usages from the user
-        $user->buildingUsage()->delete();
         // remove the action plan advices from the user
         $user->actionPlanAdvices()->delete();
         // remove the user interests
@@ -139,19 +119,32 @@ class SettingsController extends Controller
         $user->energyHabit()->delete();
         // remove the motivations from a user
         $user->motivations()->delete();
-        // remove the progress from a user
-        //$user->progress()->delete();
 
-        return redirect()->back()->with('success', __('my-account.settings.form.reset-file.success'));
+        DossierResetPerformed::dispatch($building);
+
+        return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));
     }
 
     // Delete account
     public function destroy()
     {
-        $user = \Auth::user();
+        $user = \App\Helpers\Hoomdossier::user();
+        $accountId = $user->account_id;
+        $cooperation = HoomdossierSession::getCooperation(true);
 
         UserService::deleteUser($user);
 
-        return redirect(url(''));
+        // delete, destroy and invalidate all session stuff.
+        HoomdossierSession::destroy();
+        \Auth::logout();
+        request()->session()->invalidate();
+
+        $stillActiveForOtherCooperations = Account::where('id', '=', $accountId)->exists();
+        $success = __('my-account.settings.destroy.success.cooperation');
+        if (!$stillActiveForOtherCooperations){
+            $success = __('my-account.settings.destroy.success.full');
+        }
+
+        return redirect()->route('cooperation.welcome', compact('cooperation'))->with('success', $success);
     }
 }

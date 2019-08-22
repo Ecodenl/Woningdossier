@@ -2,35 +2,28 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use App\Helpers\Hoomdossier;
 use App\Http\Requests\Cooperation\Admin\MessageRequest;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Services\MessageService;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class MessagesController extends Controller
 {
-    protected $fragment;
-
-    public function __construct(Cooperation $cooperation, Request $request)
-    {
-        if ($request->has('fragment')) {
-            $this->fragment = $request->get('fragment');
-        }
-    }
-
     public function index(Cooperation $cooperation)
     {
 
-        if (\Auth::user()->hasRoleAndIsCurrentRole('coach')) {
-            $connectedBuildingsByUserId = BuildingCoachStatus::getConnectedBuildingsByUser(\Auth::user(), $cooperation);
+        if (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
+            $connectedBuildingsByUserId = BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user(), $cooperation);
             $buildingIds                = $connectedBuildingsByUserId->pluck('building_id')->all();
         } else {
-            // get all the conversation requests that were send to my cooperation.
-            $privateMessages = PrivateMessage::forMyCooperation()->conversationRequest()->get();
+            $privateMessages = PrivateMessage::where('to_cooperation_id', $cooperation->id)
+                ->conversationRequest()
+                ->get();
+
             $buildingIds     = $privateMessages->pluck('building_id')->all();
         }
 
@@ -51,6 +44,6 @@ class MessagesController extends Controller
     {
         MessageService::create($request);
 
-        return redirect(back()->getTargetUrl().$this->fragment);
+        return redirect()->back()->with('fragment', $request->get('fragment'));
     }
 }

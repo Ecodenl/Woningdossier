@@ -23,13 +23,13 @@
                         <tbody>
                         <?php /** @var \App\Models\User $user */ ?>
                         @foreach($users as $user)
-                            <?php $building = $user->buildings()->first(); ?>
+                            <?php $building = $user->building; ?>
                             @if($building instanceof \App\Models\Building)
                             <tr>
                                 <td>{{$user->getFullName()}}</td>
                                 <td>
                                     <a href="{{route('cooperation.admin.cooperation.coaches.show', ['id' => $user->id])}}">
-                                        {{$building->street}} {{$building->number}}
+                                        {{$building->street}} {{$building->number}} {{$building->extension}}
                                     </a>
                                 </td>
                                 <td>{{$building->postal_code}}</td>
@@ -37,7 +37,7 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    {{$user->email}}
+                                    {{$user->account->email}}
                                 </td>
                                 <td>
                                     {{implode(',', $user->roles->pluck('human_readable_name')->toArray())}}

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {

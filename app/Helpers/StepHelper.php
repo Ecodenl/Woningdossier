@@ -4,8 +4,11 @@ namespace App\Helpers;
 
 use App\Models\Building;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\Questionnaire;
 use App\Models\Step;
+use App\Models\UserProgress;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Redirect;
 
@@ -73,7 +76,7 @@ class StepHelper
      */
     public static function hasInterestInStep(Step $step): bool
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
 
         if (array_key_exists($step->slug, self::STEP_INTERESTS)) {
             foreach (self::STEP_INTERESTS[$step->slug] as $type => $interestedIn) {
@@ -97,7 +100,7 @@ class StepHelper
     public static function getNextStep(Step $current, Questionnaire $currentQuestionnaire = null): array
     {
         // get all the steps
-        $steps = Cooperation::find(HoomdossierSession::getCooperation())->getActiveOrderedSteps();
+        $steps = HoomdossierSession::getCooperation(true)->getActiveOrderedSteps();
         // create new collection for the completed steps
         $completedSteps = collect();
 
@@ -167,5 +170,25 @@ class StepHelper
 
         // if the user has no steps left where they do not have any interest in, redirect them to their plan
         return ['route' => 'cooperation.tool.my-plan.index', 'tab_id' => ''];
+    }
+
+    /**
+     * Complete a step for a building.
+     *
+     * @param Step $step
+     * @param Building $building
+     * @param InputSource $inputSource
+     *
+     * @return Model|UserProgress
+     */
+    public static function complete(Step $step, Building $building, InputSource $inputSource)
+    {
+        return UserProgress::firstOrCreate([
+            'step_id' => $step->id,
+            //'input_source_id' => HoomdossierSession::getInputSource(),
+            'input_source_id' => $inputSource->id,
+            //'building_id' => HoomdossierSession::getBuilding(),
+            'building_id' => $building->id,
+        ]);
     }
 }

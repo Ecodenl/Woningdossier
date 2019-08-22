@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Models\Cooperation;
@@ -95,13 +96,13 @@ class Handler extends ExceptionHandler
         if ($exception instanceof RoleInSessionHasNoAssociationWithUser) {
 
             // try to obtain a role from the user.
-            $role = \Auth::user()->roles()->first();
+            $role = Hoomdossier::user()->roles()->first();
 
             if ($role instanceof Role) {
                 HoomdossierSession::setRole($role);
                 return redirect(route('cooperation.home'));
             } else {
-                \Auth::user()->logout();
+                Hoomdossier::user()->logout();
                 return redirect()->route('cooperation.home');
             }
         }
@@ -110,7 +111,7 @@ class Handler extends ExceptionHandler
         if ($exception instanceof SpatieUnauthorizedException && HoomdossierSession::hasRole()) {
 
             // the role the user currently has in his session
-            $authorizedRole = Role::find(HoomdossierSession::getRole());
+            $authorizedRole = HoomdossierSession::getRole(true);
 
             return redirect(
                 url(RoleHelper::getUrlByRoleName($authorizedRole->name))

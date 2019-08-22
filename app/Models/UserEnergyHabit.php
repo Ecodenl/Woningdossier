@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
 use App\Scopes\GetValueScope;
+use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -41,6 +42,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountElectricity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountGas($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountWater($value)
@@ -66,7 +68,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserEnergyHabit extends Model
 {
-    use GetValueTrait, ToolSettingTrait;
+    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
 
     protected $fillable = [
         'user_id',
@@ -85,43 +87,6 @@ class UserEnergyHabit extends Model
         'living_situation_extra',
         'motivation_extra',
     ];
-
-    /**
-     * Normally we would use the GetMyValuesTrait, but that uses the building_id to query on.
-     * The UserEnergyHabit uses the user_id instead of the building_id.
-     *
-     * @param $query
-     *
-     * @return mixed
-     */
-    public function scopeForMe($query)
-    {
-        $building = Building::find(HoomdossierSession::getBuilding());
-
-        return $query->withoutGlobalScope(GetValueScope::class)
-                     ->join('input_sources', $this->getTable().'.input_source_id', '=', 'input_sources.id')
-                     ->orderBy('input_sources.order', 'ASC')
-                     ->where('user_id', $building->user_id)
-                     ->select([$this->getTable().'.*']);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function inputSource()
-    {
-        return $this->belongsTo(InputSource::class);
-    }
-
-    /**
-     * Get a input source name.
-     *
-     * @return string InputSource name
-     */
-    public function getInputSourceName()
-    {
-        return $this->inputSource()->first()->name;
-    }
 
     /**
      * Get the user that belongsTo this habit.

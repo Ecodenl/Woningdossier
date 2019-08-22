@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Events\StepDataHasBeenChangedEvent;
+use App\Calculations\FloorInsulation;
+use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\FloorInsulationCalculator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\KeyFigures\FloorInsulation\Temperature;
 use App\Helpers\NumberFormatter;
@@ -29,6 +31,9 @@ use Illuminate\Http\Request;
 
 class FloorInsulationController extends Controller
 {
+    /**
+     * @var Step
+     */
     protected $step;
 
     public function __construct(Request $request)
@@ -46,7 +51,7 @@ class FloorInsulationController extends Controller
     {
         $typeIds = [4];
         /** @var Building $building */
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
 
         $buildingInsulation = $building->getBuildingElement('floor-insulation');
         $buildingInsulationForMe = $building->getBuildingElementsForMe('floor-insulation');
@@ -83,72 +88,10 @@ class FloorInsulationController extends Controller
         /**
          * @var Building
          */
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
-        $result = [
-            'savings_gas' => 0,
-            'savings_co2' => 0,
-            'savings_money' => 0,
-            'cost_indication' => 0,
-        ];
-
-        $crawlspace = Element::where('short', 'crawlspace')->first();
-
-        $elements = $request->get('element', []);
-        $buildingElements = $request->get('building_elements', []);
-        $buildingFeatures = $request->get('building_features', []);
-
-        $surface = array_key_exists('insulation_surface', $buildingFeatures) ? $buildingFeatures['insulation_surface'] : 0;
-
-        if (array_key_exists('crawlspace', $buildingElements)) {
-            // Check if crawlspace is accessible. If not: show warning!
-            if (in_array($buildingElements['crawlspace'], ['unknown'])) {
-                $result['crawlspace'] = 'warning';
-            }
-        }
-
-        $crawlspaceValue = null;
-        if (array_key_exists($crawlspace->id, $buildingElements)) {
-            if (array_key_exists('element_value_id', $buildingElements[$crawlspace->id])) {
-                $crawlspaceValue = ElementValue::where('element_id', $crawlspace->id)
-                    ->where('id', $buildingElements[$crawlspace->id]['element_value_id'])
-                    ->first();
-            }
-            if (array_key_exists('extra', $buildingElements[$crawlspace->id])) {
-                // Check if crawlspace is accessible. If not: show warning!
-                if (in_array($buildingElements[$crawlspace->id]['extra'], ['no', 'unknown'])) {
-                    $result['crawlspace_access'] = 'warning';
-                }
-            }
-        } else {
-            // first page request
-            $crawlspaceValue = $crawlspace->values()->orderBy('order')->first();
-        }
-
-        if ($crawlspaceValue instanceof ElementValue && $crawlspaceValue->calculate_value >= 45) {
-            $advice = Temperature::FLOOR_INSULATION_FLOOR;
-        } elseif ($crawlspaceValue instanceof ElementValue && $crawlspaceValue->calculate_value >= 30) {
-            $advice = Temperature::FLOOR_INSULATION_BOTTOM;
-        } else {
-            $advice = Temperature::FLOOR_INSULATION_RESEARCH;
-        }
-
-        $insulationAdvice = MeasureApplication::byShort($advice);
-        $result['insulation_advice'] = $insulationAdvice->measure_name;
-
-        $floorInsulation = Element::where('short', 'floor-insulation')->first();
-        if (array_key_exists($floorInsulation->id, $elements)) {
-            $floorInsulationValue = ElementValue::where('element_id', $floorInsulation->id)->where('id', $elements[$floorInsulation->id])->first();
-            if ($floorInsulationValue instanceof ElementValue && $user->energyHabit instanceof UserEnergyHabit) {
-                $result['savings_gas'] = FloorInsulationCalculator::calculateGasSavings($building, $floorInsulationValue, $user->energyHabit, $surface, $advice);
-            }
-
-            $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
-            $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
-            $result['cost_indication'] = Calculator::calculateCostIndication($surface, $insulationAdvice);
-            $result['interest_comparable'] = NumberFormatter::format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
-        }
+        $result = FloorInsulation::calculate($building, $user, $request->all());
 
         return response()->json($result);
     }
@@ -162,7 +105,7 @@ class FloorInsulationController extends Controller
      */
     public function store(FloorInsulationFormRequest $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $buildingId = $building->id;
         $inputSourceId = HoomdossierSession::getInputSource();
@@ -222,12 +165,12 @@ class FloorInsulationController extends Controller
             ]
         );
 
-        \Event::dispatch(new StepDataHasBeenChangedEvent());
         // Save progress
         $this->saveAdvices($request);
-        $building->complete($this->step);
-        ($this->step);
-        $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
+        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
+        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
+
+        $cooperation = HoomdossierSession::getCooperation(true);
 
         $nextStep = StepHelper::getNextStep($this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
@@ -244,7 +187,7 @@ class FloorInsulationController extends Controller
         // Remove old results
         UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
-        $user = Building::find(HoomdossierSession::getBuilding())->user;
+        $user = HoomdossierSession::getBuilding(true)->user;
         $floorInsulation = Element::where('short', 'floor-insulation')->first();
         $elements = $request->input('element');
 

@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    @stack('meta')
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -87,8 +88,11 @@
 <!-- tinymce -->
 <script src="{{asset('js/tinymce/tinymce.min.js')}}"></script>
 
+<script src="{{asset('js/hoomdossier.js')}}"></script>
+
 <script>
     $(document).ready(function () {
+        pollForMessageCount();
 
         $('.collapse').on('shown.bs.collapse', function () {
             $(this).parent().find(".glyphicon-chevron-down").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");

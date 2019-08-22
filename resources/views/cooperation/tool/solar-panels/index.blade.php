@@ -33,7 +33,7 @@
                             <select id="building_pv_panels_peak_power" class="form-control"
                                     name="building_pv_panels[peak_power]">
                                 @foreach(\App\Helpers\KeyFigures\PvPanels\KeyFigures::getPeakPowers() as $peakPower)
-                                    <option @if(old('building_pv_panels.peak_power') == $peakPower || ($buildingPvPanels instanceof \App\Models\BuildingPvPanel && $buildingPvPanels->peak_power == $peakPower)) selected
+                                    <option @if(old('building_pv_panels.peak_power', \App\Helpers\Hoomdossier::getMostCredibleValue($building->pvPanels(), 'peak_power') == $peakPower)) selected
                                             @endif value="{{ $peakPower }}">{{ $peakPower }}</option>
                                 @endforeach
                             </select>
@@ -264,7 +264,7 @@
                             $("input#cost_indication").val(hoomdossierRound(data.cost_indication));
                         }
                         if (data.hasOwnProperty('interest_comparable')) {
-                            $("input#interest_comparable").val(data.interest_comparable);
+                            $("input#interest_comparable").val(hoomdossierNumberFormat(data.interest_comparable, '{{ app()->getLocale() }}', 1));
                         }
                         if (data.hasOwnProperty('performance')) {
                             $("#performance-text").html("<strong>" + data.performance.text + "</strong>");

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Admin;
 
 use App\Events\FillingToolForUserEvent;
 use App\Events\ObservingToolForUserEvent;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\Cooperation;
@@ -36,9 +37,9 @@ class ToolController extends Controller
         //        $role = Role::findByName($user->roles->first()->name);
         $role = Role::findByName(HoomdossierSession::currentRole());
         // set the input source value to the coach itself
-        $inputSourceValue = InputSource::find(HoomdossierSession::getInputSource());
+        $inputSourceValue = HoomdossierSession::getInputSource(true);
 
-        $inputSource = InputSource::find(HoomdossierSession::getInputSource());
+        $inputSource = HoomdossierSession::getInputSource(true);
 
         // if the role has no inputsource redirect back with "probeer t later ff nog een keer"
         // or if the role is not a resident, we gonna throw them back.
@@ -51,7 +52,7 @@ class ToolController extends Controller
         // But the input source value is from the building owner so the coach can see the input, the coach can switch this in the tool itself.
         HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSourceValue, $role);
 
-        \Event::dispatch(new FillingToolForUserEvent($building, $user, \Auth::user()));
+        \Event::dispatch(new FillingToolForUserEvent($building, $user, Hoomdossier::user()));
         return redirect()->route('cooperation.tool.index');
     }
 
@@ -74,7 +75,7 @@ class ToolController extends Controller
         // set the input source value to the coach itself
         $inputSourceValue = InputSource::findByShort(InputSource::RESIDENT_SHORT);
 
-        $inputSource = InputSource::find(HoomdossierSession::getInputSource());
+        $inputSource = HoomdossierSession::getInputSource(true);
 
         // if the role has no inputsource redirect back with "probeer t later ff nog een keer"
         // or if the role is not a resident, we gonna throw them back.
@@ -90,7 +91,7 @@ class ToolController extends Controller
         // so the user isnt able to save anything
         HoomdossierSession::setIsObserving(true);
 
-        \Event::dispatch(new ObservingToolForUserEvent($building, $user, \Auth::user()));
+        \Event::dispatch(new ObservingToolForUserEvent($building, $user, Hoomdossier::user()));
 
         return redirect()->route('cooperation.tool.index');
     }

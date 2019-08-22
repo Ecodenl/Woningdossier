@@ -22,4 +22,10 @@ return [
     |
     */
     'supported_locales' => ['nl'],
+
+    'cache' => [
+        'times' => [
+            'default' => 15, // minutes (watch it: this will change with the latest Laravel versions!)
+        ],
+    ],
 ];

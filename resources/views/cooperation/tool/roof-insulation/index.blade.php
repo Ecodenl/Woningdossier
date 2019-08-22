@@ -13,7 +13,7 @@
 
                 <div class="row">
                     <div class="col-sm-12">
-                        <div class="form-group add-space {{ $errors->has('building_roof_types') ? ' has-error' : '' }}">
+                        <div class="form-group add-space {{ $errors->has('building_roof_types.id') ? ' has-error' : '' }}">
                             <label for="building_roof_types" class="control-label">
                                 <i data-toggle="modal" data-target="#roof-type-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
@@ -26,9 +26,9 @@
                                 @foreach($roofTypes as $roofType)
                                     <label class="checkbox-inline">
                                         <input data-calculate-value="{{$roofType->calculate_value}}"
-                                               type="checkbox" name="building_roof_types[]"
+                                               type="checkbox" name="building_roof_types[id][]"
                                                value="{{ $roofType->id }}"
-                                               @if(in_array($roofType->id, old('building_roof_types',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->roofTypes())) ])))
+                                               @if(empty(old()) && in_array($roofType->id, old('building_roof_types.id',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->roofTypes())) ])))
                                                checked="checked"
                                                 @endif
                                                 {{--@if((is_array(old('building_roof_types')) && in_array($roofType->id, old('building_roof_types'))) ||
@@ -40,9 +40,9 @@
                                 @endforeach
                             @endcomponent
 
-                            @if ($errors->has('building_roof_types'))
+                            @if($errors->has('building_roof_types.id'))
                                 <span class="help-block">
-                                    <strong>{{ $errors->first('building_roof_types') }}</strong>
+                                    <strong>{{ $errors->first('building_roof_types.id') }}</strong>
                                 </span>
                             @endif
 
@@ -63,10 +63,8 @@
                                         <select id="main_roof" class="form-control"
                                                 name="building_features[roof_type_id]">
                                             @foreach($roofTypes as $roofType)
-                                                @if($roofType->calculate_value < 5)
-                                                    <option @if(old('building_features.roof_type_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'roof_type_id')) == $roofType->id) selected="selected"
+                                                <option @if(old('building_features.roof_type_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'roof_type_id')) == $roofType->id) selected="selected"
                                                             @endif value="{{ $roofType->id }}">{{ $roofType->name }}</option>
-                                                @endif
                                             @endforeach
                                         </select>
                                     @endcomponent
@@ -376,14 +374,14 @@
     <script>
         $(document).ready(function () {
 
-
-            $('select[name*=element_value_id]').trigger('change');
+            //$('select[name*=element_value_id]').trigger('change');
 
             $("select, input[type=radio], input[type=text], input[type=number], input[type=checkbox]").change(formChange);
 
             function formChange() {
 
                 var form = $(this).closest("form").serialize();
+
                 $.ajax({
                     type: "POST",
                     url: '{{ route('cooperation.tool.roof-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',
@@ -422,7 +420,7 @@
                                 $("input#flat_cost_indication").val(hoomdossierRound(data.flat.cost_indication));
                             }
                             if (data.flat.hasOwnProperty('interest_comparable')) {
-                                $("input#flat_interest_comparable").val(data.flat.interest_comparable);
+                                $("input#flat_interest_comparable").val(hoomdossierNumberFormat(data.flat.interest_comparable, '{{ app()->getLocale() }}', 1));
                             }
                             if (data.flat.hasOwnProperty('replace')) {
                                 if (data.flat.replace.hasOwnProperty('year')) {
@@ -433,13 +431,11 @@
                                 }
                             }
                         } else {
-
                             $(".flat-roof").hide();
                         }
 
                         $(".cover-tiles").hide();
                         if (data.hasOwnProperty('pitched')) {
-
 
                             $(".pitched-roof").show();
                             if (data.pitched.hasOwnProperty('type')) {
@@ -465,7 +461,7 @@
                                 $("input#pitched_cost_indication").val(hoomdossierRound(data.pitched.cost_indication));
                             }
                             if (data.pitched.hasOwnProperty('interest_comparable')) {
-                                $("input#pitched_interest_comparable").val(data.pitched.interest_comparable);
+                                $("input#pitched_interest_comparable").val(hoomdossierNumberFormat(data.pitched.interest_comparable, '{{ app()->getLocale() }}', 1));
                             }
                             if (data.pitched.hasOwnProperty('replace')) {
                                 if (data.pitched.replace.hasOwnProperty('year')) {
@@ -494,17 +490,19 @@
         $('input[name*=roof_surface]').on('change', function () {
             var insulationRoofSurface = $(this).parent().parent().parent().next().find('input');
             if (insulationRoofSurface.length > 0) {
-                if ($(insulationRoofSurface).val().length == 0 || $(insulationRoofSurface).val() == "0,0" || $(insulationRoofSurface).val() == "0.00") {
-                    $(insulationRoofSurface).val($(this).val())
+                if ($(insulationRoofSurface).val().length === 0 || $(insulationRoofSurface).val() === "0,0" || $(insulationRoofSurface).val() === "0.00") {
+                    $(insulationRoofSurface).val($(this).val());
                 }
             }
         });
 
 
-        $('select[name^=interest]').on('change', function () {
+        /*$('select[name^=interest]').on('change', function () {
             $('select[name*=element_value_id]').trigger('change');
-        });
+        });*/
+
         $('select[name*=element_value_id]').on('change', function () {
+            @if(App::environment('local')) console.log("element_value_id change"); @endif
             var interestedCalculateValue = $('#interest_element_{{$roofInsulation->id}} option:selected').data('calculate-value');
             var elementCalculateValue = $(this).find(':selected').data('calculate-value');
 

@@ -11,6 +11,7 @@ use App\Traits\ToolSettingTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 /**
@@ -39,6 +40,7 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice whereCosts($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice whereId($value)
@@ -74,20 +76,6 @@ class UserActionPlanAdvice extends Model
         'planned' => 'boolean',
     ];
 
-    /**
-     * Normally we would use the GetMyValuesTrait, but that uses the building_id to query on.
-     * The UserEnergyHabit uses the user_id instead off the building_id.
-     *
-     * @param $query
-     *
-     * @return mixed
-     */
-    public function scopeForMe($query)
-    {
-        $building = Building::find(HoomdossierSession::getBuilding());
-
-        return $query->withoutGlobalScope(GetValueScope::class)->where('user_id', $building->user_id);
-    }
 
     /**
      * Scope a query to only include results for the particular step.
@@ -100,26 +88,6 @@ class UserActionPlanAdvice extends Model
     public function scopeForStep($query, Step $step)
     {
         return $query->where('step_id', $step->id);
-    }
-
-    /**
-     * Get the input Sources.
-     *
-     * @return BelongsTo
-     */
-    public function inputSource()
-    {
-        return $this->belongsTo('App\Models\InputSource');
-    }
-
-    /**
-     * Get a input source name.
-     *
-     * @return InputSource name
-     */
-    public function getInputSourceName()
-    {
-        return $this->inputSource()->first()->name;
     }
 
     public function user()
@@ -180,7 +148,7 @@ class UserActionPlanAdvice extends Model
      */
     public static function getAllCoachComments(): Collection
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $allInputForMe = collect();
         $coachComments = collect();
         $comment = '';
@@ -211,6 +179,15 @@ class UserActionPlanAdvice extends Model
         $installedBoilerForMe = $building->buildingServices()->forMe()->where('service_id', $boiler->id)->get();
         $allInputForMe->put('high-efficiency-boiler', $installedBoilerForMe);
 
+        /* sun panel*/
+        $buildingPvPanelForMe = BuildingPvPanel::forMe()->get();
+        $allInputForMe->put('solar-panels', $buildingPvPanelForMe);
+
+        /* heater */
+        $buildingHeaterForMe = BuildingHeater::forMe()->get();
+        $allInputForMe->put('heater', $buildingHeaterForMe);
+
+
         foreach ($allInputForMe as $step => $inputForMe) {
             // get the coach his input from the collection
             $coachInputSource = InputSource::findByShort('coach');
@@ -220,26 +197,29 @@ class UserActionPlanAdvice extends Model
             // loop through them and extract the comments from them
             foreach ($coachInputs as $coachInput) {
                 if (! is_null($coachInput)) {
+                    if ($step == 'general-data') {
+
+                    }
+
+
                     if (is_array($coachInput->extra) && array_key_exists('comment', $coachInput->extra)) {
-                        $comment = $coachInput->extra['comment'];
-                    } elseif (array_key_exists('additional_info', $coachInput->attributes)) {
-                        $comment = $coachInput->additional_info;
-                    } elseif (array_key_exists('living_situation_extra', $coachInput->attributes)) {
-                        $comment = $coachInput->living_situation_extra;
+                        $comments = [$coachInput->extra['comment']];
+                    } else {
+                        $possibleAttributes = ['comment', 'additional_info', 'living_situation_extra', 'motivation_extra'];
+
+                        $comments = Arr::only($coachInput->attributes, $possibleAttributes);
                     }
 
                     // for the rooftype there are multiple comments
                     if ($coachInput instanceof BuildingRoofType) {
-                        $coachComments->put($step.'-'.str_slug(RoofType::find($coachInput->roof_type_id)->name), $comment);
+                        $coachComments->put($step.'-'.str_slug(RoofType::find($coachInput->roof_type_id)->name), $comments);
                     } else {
                         // comment as key, yes. Comments will be unique.
-                        $coachComments->put($step, $comment);
+                        $coachComments->put($step, $comments);
                     }
                 }
             }
         }
-
-        $coachComments = $coachComments->unique();
 
         return $coachComments;
     }

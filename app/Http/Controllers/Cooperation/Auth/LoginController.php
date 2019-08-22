@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Auth;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Account;
 use App\Models\Cooperation;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Spatie\Permission\Models\Role;
@@ -82,13 +83,7 @@ class LoginController extends Controller
      */
     protected function credentials(Request $request)
     {
-        return array_merge(
-            $request->only($this->username(), 'password'),
-            [
-                'active'        => 1,
-                'confirm_token' => null
-            ]
-        );
+        return array_merge($request->only($this->username(), 'password'), ['active' => 1, 'confirm_token' => null]);
     }
 
     /**
@@ -116,25 +111,29 @@ class LoginController extends Controller
         // validate the credentials from the user
         if ($this->guard()->validate($this->credentials($request))) {
 
-            /** @var User $user */
-            $user = $this->guard()->getLastAttempted();
+            /** @var Account $account*/
+            $account = $this->guard()->getLastAttempted();
 
-            if (!$user->isAssociatedWith($cooperation)) {
+            if (!$account->isAssociatedWith($cooperation)) {
                 throw ValidationException::withMessages([
                     'cooperation' => [trans('auth.cooperation')],
                 ]);
             }
         }
 
+
         // check if the account is confirmed.
         if ($this->accountIsNotConfirmed($request->get('email'))) {
             $this->sendAccountNotConfirmedResponse();
         }
 
+
         // everything is ok with the user at this point, now we log him in.
         if ($this->attemptLogin($request)) {
 
-            $user = $this->guard()->user();
+            // the guard()->user() will return the auth model, in our case this is the Account model
+            // but we want the user from the account, so thats why we do ->user()->user();
+            $user = $this->guard()->user()->user();
 
             $role = Role::findByName($user->roles()->first()->name);
 
@@ -161,7 +160,7 @@ class LoginController extends Controller
     private function accountIsNotConfirmed($email): bool
     {
         // So it wasn't alright. Check if it was because of the confirm_token
-        $isPending = User::where('email', '=', $email)->whereNotNull('confirm_token')->count() > 0;
+        $isPending = Account::where('email', '=', $email)->whereNotNull('confirm_token')->count() > 0;
 
         return $isPending;
     }
@@ -174,7 +173,7 @@ class LoginController extends Controller
         // throw validation exception, with a confirmation resend link.
         throw ValidationException::withMessages([
             'confirm_token' => [
-                __('auth.inactive', ['resend-link' => route('cooperation.auth.form-resend-confirm-mail')])
+                __('auth.inactive', ['resend-link' => route('cooperation.auth.confirm.resend.show')])
             ],
         ]);
     }

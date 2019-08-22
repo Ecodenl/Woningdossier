@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\Cooperation;
@@ -28,7 +29,7 @@ class MessageService
         // if the is public is set to false
         // and the user current role is resident, then something isnt right.
         // since a resident cant access the private group chat
-        if (! $isPublic && 'resident' == Role::find(HoomdossierSession::getRole())->name) {
+        if (! $isPublic && 'resident' == HoomdossierSession::getRole(true)->name) {
             return redirect()->back();
         }
 
@@ -37,19 +38,18 @@ class MessageService
         // if the building exist create a message
         if ($building instanceof Building) {
             $privateMessageData = [
-                'cooperation_id' => HoomdossierSession::getCooperation(),
                 'is_public' => $isPublic,
                 'to_cooperation_id' => HoomdossierSession::getCooperation(),
-                'from_user' => \Auth::user()->getFullName(),
-                'from_user_id' => \Auth::id(),
+                'from_user' => \App\Helpers\Hoomdossier::user()->getFullName(),
+                'from_user_id' => Hoomdossier::user()->id,
                 'message' => $message,
                 'building_id' => $buildingId,
             ];
 
             // users that have the role coordinator and cooperation admin dont talk from themself but from a cooperation
-            if (\Auth::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+            if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
                 $privateMessageData['from_cooperation_id'] = HoomdossierSession::getCooperation();
-                $privateMessageData['from_user'] = Cooperation::find(HoomdossierSession::getCooperation())->name;
+                $privateMessageData['from_user'] = HoomdossierSession::getCooperation(true)->name;
             }
 
             PrivateMessage::create(

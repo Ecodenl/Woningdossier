@@ -30,15 +30,20 @@ class UserReportController extends Controller
         $pdfData = \Cache::get('test3');
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $stepSlugs = \DB::table('steps')->select('slug')->get()->pluck('slug')->flip()->toArray();
+        $commentsByStep = StepHelper::getAllCommentsByStep();
 
-        $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact('user', 'cooperation', 'pdfData', 'stepSlugs', 'userActionPlanAdvices'));
+        dd($commentsByStep);
+        $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
+            'user', 'cooperation', 'pdfData', 'stepSlugs', 'userActionPlanAdvices',
+            'commentsByStep'
+        ));
 
-        dd(StepHelper::getAllCommentsByStep());
-        dd(UserActionPlanAdvice::getAllCoachComments());
 
 
         return $pdf->stream();
-        return view('cooperation.pdf.user-report.index',  compact('user', 'cooperation', 'pdfData', 'stepSlugs', 'userActionPlanAdvices'));
+        return view('cooperation.pdf.user-report.index',  compact('user', 'cooperation', 'pdfData', 'stepSlugs', 'userActionPlanAdvices',
+        'commentsByStep'
+        ));
     }
 
     public function pdfData()

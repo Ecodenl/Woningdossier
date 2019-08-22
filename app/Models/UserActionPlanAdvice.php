@@ -197,10 +197,6 @@ class UserActionPlanAdvice extends Model
             // loop through them and extract the comments from them
             foreach ($coachInputs as $coachInput) {
                 if (! is_null($coachInput)) {
-                    if ($step == 'general-data') {
-
-                    }
-
 
                     if (is_array($coachInput->extra) && array_key_exists('comment', $coachInput->extra)) {
                         $comments = [$coachInput->extra['comment']];
@@ -220,7 +216,6 @@ class UserActionPlanAdvice extends Model
                 }
             }
         }
-
         return $coachComments;
     }
 

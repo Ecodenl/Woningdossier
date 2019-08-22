@@ -85,6 +85,17 @@
                 @endforeach
             @endif
 
+            <div class="question-answer-section">
+                <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.filled-in-data')}}</p>
+                @foreach($commentsByStep[$step] as $inputSourceName => $value)
+                    <div class="question-answer">
+                        <p class="w-300">{{$question}}</p>
+                        <p>{{$value}}</p>
+                    </div>
+                @endforeach
+            </div>
+
+
             </div>
         @endcomponent
     @endif

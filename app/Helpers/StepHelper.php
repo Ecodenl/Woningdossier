@@ -76,16 +76,15 @@ class StepHelper
     ];
 
     /**
-     * Method to return a collection of all comments, categorized under step and input source.
+     * Method to return a array of all comments, categorized under step and input source and more cats if needed.
      *
-     * @return \Illuminate\Support\Collection
+     * @return array
      */
-    public static function getAllCommentsByStep()
+    public static function getAllCommentsByStep(): array
     {
         $building = Building::find(HoomdossierSession::getBuilding());
         $allInputForMe = collect();
-        $commentsByStep = collect();
-        $comment = '';
+        $commentsByStep = [];
 
         /* General-data */
         $userEnergyHabitForMe = UserEnergyHabit::forMe()->get();
@@ -105,7 +104,7 @@ class StepHelper
         $allInputForMe->put('insulated-glazing', $insulatedGlazingsForMe);
 
         /* roof */
-        $currentRoofTypesForMe = $building->roofTypes()->forMe()->get();
+        $currentRoofTypesForMe = $building->roofTypes()->with('roofType')->forMe()->get();
         $allInputForMe->put('roof-insulation', $currentRoofTypesForMe);
 
         /* hr boiler ketel */
@@ -122,31 +121,37 @@ class StepHelper
         $allInputForMe->put('heater', $buildingHeaterForMe);
 
 
+        // the attributes that can contain any sort of comments.
+        $possibleAttributes = ['comment', 'additional_info', 'living_situation_extra', 'motivation_extra'];
+
         foreach ($allInputForMe as $step => $inputForMeByInputSource) {
             foreach ($inputForMeByInputSource as $inputForMe) {
 
+                // check if we need the extra column to extract the comment from.
                 if (is_array($inputForMe->extra) && array_key_exists('comment', $inputForMe->extra)) {
-                    $comments = array_filter(
-                        [$inputForMe->inputSource->name => $inputForMe->extra['comment']]
-                    );
-                } else {
-                    $possibleAttributes = ['comment', 'additional_info', 'living_situation_extra', 'motivation_extra'];
                     // get the comment fields, and filter out the empty ones.
-                    $comments = array_filter(
-                        [Arr::only($inputForMe->getAttributes(), $possibleAttributes)]
-                    );
-
-                    $comments = [$inputForMe->inputSource->name => $comments];
-
+                    $inputToFilter = $inputForMe->extra;
+                } else {
+                    $inputToFilter = $inputForMe->getAttributes();
                 }
 
-                if ($inputForMe instanceof BuildingRoofType) {
-                    $commentsByStep->put($step.'-'.str_slug(RoofType::find($inputForMe->roof_type_id)->name), $comments);
-                } else {
-                    $commentsByStep->put($step, $comments);
+                $comments = array_filter(
+                    Arr::only($inputToFilter, $possibleAttributes)
+                );
+
+                // if the comments are not empty, add it to the array with its input source
+                if (!empty($comments)) {
+                    // in this particular case a comment can be added to a specific roof type, so we add a key.
+                    if ($inputForMe instanceof BuildingRoofType) {
+                        $commentsByStep[$step][$inputForMe->inputSource->name][$inputForMe->roofType->name] = $comments;
+                    } else {
+                        $commentsByStep[$step][$inputForMe->inputSource->name] = $comments;
+                    }
                 }
             }
         }
+
+
         return $commentsByStep;
     }
 

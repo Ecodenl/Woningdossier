@@ -586,6 +586,7 @@ class CsvService
             'solar-panels.user_energy_habits.amount_electricity',
             // comfort niveau
             'heater.user_energy_habits.water_comfort_id',
+            'heater.calculation.production_heat.help',
         ];
 
         // build the header structure, we will set those in the csv and use it later on to get the answers from the users.
@@ -607,15 +608,16 @@ class CsvService
                         $headers = array_merge($headers, $deeperContents);
 
                     } else {
-                        $fullKey = sprintf('%s.%s', $stepSlug, $tableWithColumnOrAndId);
-                        if (!in_array($fullKey, $leaveOutTheseDuplicates)) {
-                            $headers[$stepSlug.'.'.$tableWithColumnOrAndId] = $step->name.': '.str_replace([
-                                    '&euro;', '€'
-                                ], ['euro', 'euro'], $contents['label']);
-                        }
+                        $headers[$stepSlug.'.'.$tableWithColumnOrAndId] = $step->name.': '.str_replace([
+                                '&euro;', '€'
+                            ], ['euro', 'euro'], $contents['label']);
                     }
                 }
             }
+        }
+
+        foreach($leaveOutTheseDuplicates as $leaveOut){
+            unset($headers[$leaveOut]);
         }
 
         //dump($headers);
@@ -692,6 +694,15 @@ class CsvService
             }
 
             $calculateData = static::getCalculateData($building, $user);
+
+            // one correction because of bad headers
+            if (isset($calculateData['heater']['production_heat']) && !is_array($calculateData['heater']['production_heat'])){
+                if (!isset($calculateData['heater']['production_heat']['title'])){
+                    $calculateData['heater']['production_heat'] = ['title' => $calculateData['heater']['production_heat']];
+                }
+            }
+
+            //dump($calculateData);
 
             // loop through the headers
             foreach ($headers as $tableWithColumnOrAndIdKey => $translatedInputName) {
@@ -1292,7 +1303,7 @@ class CsvService
             ],
         ]);
 
-        $solarPanelSavings = SolarPanel::calculate($building, $user, [
+        $solarPanelSavings = SolarPanel::calculate($building, [
             'building_pv_panels' => $buildingPvPanels instanceOf BuildingPvPanel ? $buildingPvPanels->toArray() : [],
             'user_energy_habits' => [
                 'amount_electricity' => $userEnergyHabit->amount_electricity ?? null,

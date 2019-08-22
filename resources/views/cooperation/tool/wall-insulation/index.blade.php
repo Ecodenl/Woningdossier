@@ -434,22 +434,22 @@
                             $("#insulation-advice").html("");
                         }
                         if (data.hasOwnProperty('savings_gas')) {
-                            $("input#savings_gas").val(Hoomdossier.round(data.savings_gas));
+                            $("input#savings_gas").val(hoomdossierRound(data.savings_gas));
                         }
                         if (data.hasOwnProperty('savings_co2')) {
-                            $("input#savings_co2").val(Hoomdossier.round(data.savings_co2));
+                            $("input#savings_co2").val(hoomdossierRound(data.savings_co2));
                         }
                         if (data.hasOwnProperty('savings_money')) {
-                            $("input#savings_money").val(Hoomdossier.round(data.savings_money));
+                            $("input#savings_money").val(hoomdossierRound(data.savings_money));
                         }
                         if (data.hasOwnProperty('cost_indication')) {
-                            $("input#cost_indication").val(Hoomdossier.round(data.cost_indication));
+                            $("input#cost_indication").val(hoomdossierRound(data.cost_indication));
                         }
                         if (data.hasOwnProperty('interest_comparable')) {
-                            $("input#interest_comparable").val(Hoomdossier.number_format(data.interest_comparable, '{{ app()->getLocale() }}', 1));
+                            $("input#interest_comparable").val(hoomdossierNumberFormat(data.interest_comparable, '{{ app()->getLocale() }}', 1));
                         }
                         if (data.hasOwnProperty('repair_joint')) {
-                            $("input#repair_joint").val(Hoomdossier.round(data.repair_joint.costs));
+                            $("input#repair_joint").val(hoomdossierRound(data.repair_joint.costs));
                             var contentYear = "";
                             if (data.repair_joint.year > 0) {
                                 contentYear = "(in " + data.repair_joint.year + ")";
@@ -457,7 +457,7 @@
                             $("span#repair_joint_year").html(contentYear);
                         }
                         if (data.hasOwnProperty('clean_brickwork')) {
-                            $("input#clean_brickwork").val(Hoomdossier.round(data.clean_brickwork.costs));
+                            $("input#clean_brickwork").val(hoomdossierRound(data.clean_brickwork.costs));
                             var contentYear = "";
                             if (data.clean_brickwork.year > 0) {
                                 contentYear = "(in " + data.clean_brickwork.year + ")";
@@ -465,7 +465,7 @@
                             $("span#clean_brickwork_year").html(contentYear);
                         }
                         if (data.hasOwnProperty('impregnate_wall')) {
-                            $("input#impregnate_wall").val(Hoomdossier.round(data.impregnate_wall.costs));
+                            $("input#impregnate_wall").val(hoomdossierRound(data.impregnate_wall.costs));
                             var contentYear = "";
                             if (data.impregnate_wall.year > 0) {
                                 contentYear = "(in " + data.impregnate_wall.year + ")";
@@ -473,7 +473,7 @@
                             $("span#impregnate_wall_year").html(contentYear);
                         }
                         if (data.hasOwnProperty('paint_wall')) {
-                            $("input#paint_wall").val(Hoomdossier.round(data.paint_wall.costs));
+                            $("input#paint_wall").val(hoomdossierRound(data.paint_wall.costs));
                             var contentYear = "";
                             if (data.paint_wall.year > 0) {
                                 contentYear = "(in " + data.paint_wall.year + ")";

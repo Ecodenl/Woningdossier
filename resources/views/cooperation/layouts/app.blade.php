@@ -33,28 +33,8 @@
 
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
+<script src="{{ asset('js/hoomdossier.js') }}"></script>
 
-<script>
-    class Hoomdossier {
-
-        static round(value, bucket) {
-            if (typeof bucket === "undefined") {
-                bucket = 5;
-            }
-
-            return Math.round(value / bucket) * bucket;
-        };
-
-        static number_format(value, locale, decimals){
-            if (typeof value === "string"){
-                value = parseFloat(value);
-            }
-            return value.toLocaleString(locale, { minimumFractionDigits: decimals });
-        };
-
-    }
-
-</script>
 
 @stack('js')
 </body>

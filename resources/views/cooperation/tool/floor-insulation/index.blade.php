@@ -289,19 +289,19 @@
                             $("#insulation-advice").html("");
                         }
                         if (data.hasOwnProperty('savings_gas')) {
-                            $("input#savings_gas").val(Hoomdossier.round(data.savings_gas));
+                            $("input#savings_gas").val(hoomdossierRound(data.savings_gas));
                         }
                         if (data.hasOwnProperty('savings_co2')) {
-                            $("input#savings_co2").val(Hoomdossier.round(data.savings_co2));
+                            $("input#savings_co2").val(hoomdossierRound(data.savings_co2));
                         }
                         if (data.hasOwnProperty('savings_money')) {
-                            $("input#savings_money").val(Hoomdossier.round(data.savings_money));
+                            $("input#savings_money").val(hoomdossierRound(data.savings_money));
                         }
                         if (data.hasOwnProperty('cost_indication')) {
-                            $("input#cost_indication").val(Hoomdossier.round(data.cost_indication));
+                            $("input#cost_indication").val(hoomdossierRound(data.cost_indication));
                         }
                         if (data.hasOwnProperty('interest_comparable')) {
-                            $("input#interest_comparable").val(Hoomdossier.number_format(data.interest_comparable, '{{ app()->getLocale() }}', 1));
+                            $("input#interest_comparable").val(hoomdossierNumberFormat(data.interest_comparable, '{{ app()->getLocale() }}', 1));
                         }
                         if (data.hasOwnProperty('crawlspace_access')) {
                             $("#crawlspace-no-access-error").show();

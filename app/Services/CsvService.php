@@ -318,8 +318,6 @@ class CsvService
 
         array_unshift($rows, $csvHeaders);
 
-        dd($rows);
-
         return $rows;
     }
 

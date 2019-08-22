@@ -15,31 +15,28 @@ class UserReportController extends Controller
     public function index(Cooperation $cooperation)
     {
 
-
         $user = Hoomdossier::user();
         $building = $user->building;
 
         $GLOBALS['_cooperation'] = $cooperation;
         $userActionPlanAdvices = $user->actionPlanAdvices()->with('measureApplication')->get();
 
-        set_time_limit(0);
 
+//        $pdfData = \Cache::forever('test3', $this->pdfData());
         $pdfData = \Cache::get('test3');
-        /** @var \Barryvdh\DomPDF\PDF $pdf */
+
         $stepSlugs = \DB::table('steps')->select('slug', 'id')->get()->pluck('slug', 'id')->flip()->toArray();
+        // retrieve all the comments by for each input source on a step
         $commentsByStep = StepHelper::getAllCommentsByStep();
 
+
+        /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'cooperation', 'pdfData', 'stepSlugs', 'userActionPlanAdvices',
             'commentsByStep'
         ));
 
-
-
         return $pdf->stream();
-        return view('cooperation.pdf.user-report.index',  compact('user', 'building', 'cooperation', 'pdfData', 'stepSlugs', 'userActionPlanAdvices',
-        'commentsByStep'
-        ));
     }
 
     public function pdfData()

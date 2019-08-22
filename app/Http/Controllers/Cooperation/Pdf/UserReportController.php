@@ -22,13 +22,14 @@ class UserReportController extends Controller
         $userActionPlanAdvices = $user->actionPlanAdvices()->with('measureApplication')->get();
 
 
+        dd($this->pdfData());
 //        $pdfData = \Cache::forever('test3', $this->pdfData());
         $pdfData = \Cache::get('test3');
+
 
         $stepSlugs = \DB::table('steps')->select('slug', 'id')->get()->pluck('slug', 'id')->flip()->toArray();
         // retrieve all the comments by for each input source on a step
         $commentsByStep = StepHelper::getAllCommentsByStep();
-
 
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(

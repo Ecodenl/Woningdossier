@@ -15,9 +15,8 @@ class WallInsulationTest extends TestCase
 
     public function testCalculate()
     {
-        //$this->markTestIncomplete("Work in progress with the input source related traits");
+        $this->markTestIncomplete("Work in progress with the input source related traits");
         $user = ExcelExample::user();
-        $habits = ExcelExample::userEnergyHabits();
 
         $building = ExcelExample::building();
 

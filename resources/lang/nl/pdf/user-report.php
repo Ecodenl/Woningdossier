@@ -64,5 +64,6 @@ return [
             'costs' => 'Kosten',
             'year' => 'Geadviseerd word'
         ],
+        'comments' => 'Toelichting op de maatregel'
     ],
 ];

@@ -10,10 +10,6 @@
 
 </head>
 
-<?php
-    $building = $user->building;
-?>
-
 {{-- This is the frontpage of the pdf, after this a new page must be started with the component. --}}
 <body>
     @include('cooperation.pdf.user-report.parts.footer-note')
@@ -53,6 +49,7 @@
                 <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.indicative-costs-and-benefits-for-measure')}}</p>
                 @foreach($stepData['calculation'] as $calculationResultType => $calculationResults)
                     <div class="question-answer-section">
+                        {{-- May change in the near future due to the new csv branch structure. --}}
                         @if($calculationResultType == 'indicative-costs-and-benefits-for-measure')
                             @foreach($calculationResults as $type => $value)
                                 <div class="question-answer">
@@ -60,39 +57,53 @@
                                     <p>{{$value}}</p>
                                 </div>
                             @endforeach
-                        @else
-                            <div class="measures">
-                                <p class="lead w-300">
-                                    {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.title')}}
-                                </p>
-                                <p class="lead w-150">
-                                    {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.costs')}}
-                                </p>
-                                <p class="lead w-150">
-                                    {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.year')}}
-                                </p>
-                            </div>
-
-                            @foreach($calculationResults as $type => $value)
-                                <div class="question-answer">
-                                    <p class="w-300">{{$type}}</p>
-                                    <p class="w-150">{{$value['costs'] ?? 'what'}}</p>
-                                    <p class="w-150">{{$value['year'] ?? 'what'}}</p>
-                                </div>
-                            @endforeach
                         @endif
                     </div>
                 @endforeach
+                    <div class="question-answer-section">
+                        <div class="measures">
+                            <p class="lead w-300">
+                                {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.title')}}
+                            </p>
+                            <p class="lead w-150">
+                                {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.costs')}}
+                            </p>
+                            <p class="lead w-150">
+                                {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.year')}}
+                            </p>
+                        </div>
+
+                        @foreach($userActionPlanAdvices->where('step_id', $stepSlugs[$step]) as $userActionPlanAdvice)
+                            <div class="question-answer">
+                                <p class="w-300">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
+                                <p class="w-150">{{$userActionPlanAdvice->costs}}</p>
+                                <p class="w-150">{{$userActionPlanAdvice->getAdviceYear()}}</p>
+                            </div>
+                        @endforeach
+                    </div>
+
             @endif
 
             <div class="question-answer-section">
-                <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.filled-in-data')}}</p>
-                @foreach($commentsByStep[$step] as $inputSourceName => $value)
-                    <div class="question-answer">
-                        <p class="w-300">{{$question}}</p>
-                        <p>{{$value}}</p>
+                <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.comments')}}</p>
+                @if(isset($commentsByStep[$step]))
+                    @foreach($commentsByStep[$step] as $inputSourceName => $commentsCategorizedUnderColumn)
+                        {{-- The column can be a category, this will be the case when the comment is stored under a catergory --}}
+                        @foreach($commentsCategorizedUnderColumn as $columnOrCategory => $comment)
+                            <div class="question-answer">
+                                @if(is_array($comment))
+                                    @foreach($comment as $column => $c)
+                                        <p class="w-300">{{$inputSourceName}} ({{$columnOrCategory}})</p>
+                                        <p>{{$c}}</p>
+                                    @endforeach
+                                @else
+                                <p class="w-300">{{$inputSourceName}}</p>
+                                <p>{{$comment}}</p>
+                                @endif
+                            @endforeach
+                        @endforeach
                     </div>
-                @endforeach
+                @endif
             </div>
 
 

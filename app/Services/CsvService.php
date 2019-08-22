@@ -203,6 +203,7 @@ class CsvService
         // get all the measures ordered by step
         $measures = MeasureApplication::leftJoin('steps', 'measure_applications.step_id', '=', 'steps.id')
             ->orderBy('steps.order')
+            ->orderBy('measure_applications.measure_type')
             ->select(['measure_applications.*'])
             ->get();
 
@@ -217,6 +218,9 @@ class CsvService
         // since we only want the reports from the resident
         $residentInputSource = InputSource::findByShort('resident');
 
+        /**
+         * @var User $user
+         */
         foreach ($users as $key => $user) {
             /** @var Building $building */
             $building = $user->building;
@@ -289,6 +293,11 @@ class CsvService
                 ->actionPlanAdvices()
                 ->withOutGlobalScope(GetValueScope::class)
                 ->residentInput()
+                ->leftJoin('measure_applications', 'user_action_plan_advices.measure_application_id', '=', 'measure_applications.id')
+                ->leftJoin('steps', 'measure_applications.step_id', '=', 'steps.id')
+                ->orderBy('steps.order')
+                ->orderBy('measure_applications.measure_type')
+                ->select(['user_action_plan_advices.*'])
                 ->get();
 
             // get the user measures / advices
@@ -577,6 +586,7 @@ class CsvService
             'solar-panels.user_energy_habits.amount_electricity',
             // comfort niveau
             'heater.user_energy_habits.water_comfort_id',
+            'heater.calculation.production_heat.help',
         ];
 
         // build the header structure, we will set those in the csv and use it later on to get the answers from the users.
@@ -598,15 +608,16 @@ class CsvService
                         $headers = array_merge($headers, $deeperContents);
 
                     } else {
-                        $fullKey = sprintf('%s.%s', $stepSlug, $tableWithColumnOrAndId);
-                        if (!in_array($fullKey, $leaveOutTheseDuplicates)) {
-                            $headers[$stepSlug.'.'.$tableWithColumnOrAndId] = $step->name.': '.str_replace([
-                                    '&euro;', '€'
-                                ], ['euro', 'euro'], $contents['label']);
-                        }
+                        $headers[$stepSlug.'.'.$tableWithColumnOrAndId] = $step->name.': '.str_replace([
+                                '&euro;', '€'
+                            ], ['euro', 'euro'], $contents['label']);
                     }
                 }
             }
+        }
+
+        foreach($leaveOutTheseDuplicates as $leaveOut){
+            unset($headers[$leaveOut]);
         }
 
         //dump($headers);
@@ -683,6 +694,15 @@ class CsvService
             }
 
             $calculateData = static::getCalculateData($building, $user);
+
+            // one correction because of bad headers
+            if (isset($calculateData['heater']['production_heat']) && !is_array($calculateData['heater']['production_heat'])){
+                if (!isset($calculateData['heater']['production_heat']['title'])){
+                    $calculateData['heater']['production_heat'] = ['title' => $calculateData['heater']['production_heat']];
+                }
+            }
+
+            //dump($calculateData);
 
             // loop through the headers
             foreach ($headers as $tableWithColumnOrAndIdKey => $translatedInputName) {

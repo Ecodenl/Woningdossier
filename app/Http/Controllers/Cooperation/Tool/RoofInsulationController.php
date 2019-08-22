@@ -56,7 +56,7 @@ class RoofInsulationController extends Controller
         $typeIds = [5];
 
         /** var Building $building */
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
 
         /** var BuildingFeature $features */
         $features = $building->buildingFeatures;
@@ -155,7 +155,7 @@ class RoofInsulationController extends Controller
 
         $result = [];
 
-        $user = Building::find(HoomdossierSession::getBuilding())->user;
+        $user = HoomdossierSession::getBuilding(true)->user;
 
         // Remove old results
         UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
@@ -300,7 +300,7 @@ class RoofInsulationController extends Controller
         $result = [];
 
         /** @var Building $building */
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
         $roofTypeIds = $request->input('building_roof_types.id', []);
@@ -445,7 +445,7 @@ class RoofInsulationController extends Controller
      */
     public function store(RoofInsulationFormRequest $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $buildingId = $building->id;
         $inputSourceId = HoomdossierSession::getInputSource();

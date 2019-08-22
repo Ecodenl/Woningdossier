@@ -29,7 +29,7 @@ class MessageService
         // if the is public is set to false
         // and the user current role is resident, then something isnt right.
         // since a resident cant access the private group chat
-        if (! $isPublic && 'resident' == Role::find(HoomdossierSession::getRole())->name) {
+        if (! $isPublic && 'resident' == HoomdossierSession::getRole(true)->name) {
             return redirect()->back();
         }
 
@@ -49,7 +49,7 @@ class MessageService
             // users that have the role coordinator and cooperation admin dont talk from themself but from a cooperation
             if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
                 $privateMessageData['from_cooperation_id'] = HoomdossierSession::getCooperation();
-                $privateMessageData['from_user'] = Cooperation::find(HoomdossierSession::getCooperation())->name;
+                $privateMessageData['from_user'] = HoomdossierSession::getCooperation(true)->name;
             }
 
             PrivateMessage::create(

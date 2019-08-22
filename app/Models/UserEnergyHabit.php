@@ -96,7 +96,7 @@ class UserEnergyHabit extends Model
      */
     public function scopeForMe($query)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
 
         return $query->withoutGlobalScope(GetValueScope::class)
                      ->join('input_sources', $this->getTable().'.input_source_id', '=', 'input_sources.id')

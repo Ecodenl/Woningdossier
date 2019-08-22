@@ -22,7 +22,7 @@ class FilledStep
     public function handle($request, Closure $next, $stepSlug)
     {
         // get the building from the user
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         if ($building instanceof Building) {
             // get the current step
             $step = Step::whereSlug($stepSlug)->first();
@@ -31,7 +31,7 @@ class FilledStep
             // if the user / building did not complete the given step redirect him back.
             if ($building->hasNotCompleted($step)) {
                 \Log::debug($debugMsg.".. And it wasn't. So, redirecting to that step..");
-                $cooperation = Cooperation::find(HoomdossierSession::getCooperation());
+                $cooperation = HoomdossierSession::getCooperation(true);
 
                 return redirect('/tool/'.$stepSlug.'/')->with(compact('cooperation'));
             }

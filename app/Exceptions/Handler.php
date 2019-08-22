@@ -111,7 +111,7 @@ class Handler extends ExceptionHandler
         if ($exception instanceof SpatieUnauthorizedException && HoomdossierSession::hasRole()) {
 
             // the role the user currently has in his session
-            $authorizedRole = Role::find(HoomdossierSession::getRole());
+            $authorizedRole = HoomdossierSession::getRole(true);
 
             return redirect(
                 url(RoleHelper::getUrlByRoleName($authorizedRole->name))

@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step ordered()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step translated($attribute, $name, $locale = 'nl')
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step whereCreatedAt($value)

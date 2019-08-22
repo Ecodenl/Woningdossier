@@ -28,7 +28,7 @@ class SettingsController extends Controller
     {
         $user = Hoomdossier::user();
         $account = Hoomdossier::account();
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
 
         return view('cooperation.my-account.settings.index', compact('user', 'building', 'account'));
     }
@@ -43,7 +43,7 @@ class SettingsController extends Controller
     public function update(MyAccountSettingsFormRequest $request)
     {
         $user = Hoomdossier::user();
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
 
         $data = $request->all();
 

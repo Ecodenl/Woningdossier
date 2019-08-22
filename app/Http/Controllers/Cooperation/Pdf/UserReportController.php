@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Services\CsvService;
 use App\Services\PdfService;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Arr;
 
 class UserReportController extends Controller
 {
@@ -21,8 +22,12 @@ class UserReportController extends Controller
         $GLOBALS['_cooperation'] = $cooperation;
         $userActionPlanAdvices = $user->actionPlanAdvices()->with('measureApplication')->get();
 
+        $reportForUser = CsvService::totalReport($cooperation, false);
 
-        dd($this->pdfData());
+        $reportTranslations = $reportForUser[0];
+        $reportData = $reportForUser[1];
+
+        dd(\App\Helpers\Arr::arrayUndot($reportData), $reportTranslations);
 //        $pdfData = \Cache::forever('test3', $this->pdfData());
         $pdfData = \Cache::get('test3');
 

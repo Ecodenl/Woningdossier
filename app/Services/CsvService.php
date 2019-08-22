@@ -528,7 +528,7 @@ class CsvService
      */
     public static function totalReport(Cooperation $cooperation, bool $anonymized): array
     {
-        $users = $cooperation->users()->whereHas('buildings')->get();
+        $users = $cooperation->users()->whereHas('buildings')->take(1)->get();
 
         if ($anonymized) {
             $headers = [
@@ -1073,7 +1073,6 @@ class CsvService
 
         //dd($rows);
 
-        dd($rows);
         return $rows;
     }
 
@@ -1284,7 +1283,7 @@ class CsvService
             ],
         ]);
 
-        $solarPanelSavings = SolarPanel::calculate($building, $user, [
+        $solarPanelSavings = SolarPanel::calculate($building, [
             'building_pv_panels' => $buildingPvPanels instanceOf BuildingPvPanel ? $buildingPvPanels->toArray() : [],
             'user_energy_habits' => [
                 'amount_electricity' => $userEnergyHabit->amount_electricity ?? null,

@@ -74,7 +74,7 @@ class MyPlanHelper
      */
     public static function isUserInterestedInMeasure(Step $step): bool
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
         foreach (self::STEP_INTERESTS[$step->slug] as $type => $interestedIn) {

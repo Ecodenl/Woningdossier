@@ -37,9 +37,9 @@ class ToolController extends Controller
         //        $role = Role::findByName($user->roles->first()->name);
         $role = Role::findByName(HoomdossierSession::currentRole());
         // set the input source value to the coach itself
-        $inputSourceValue = InputSource::find(HoomdossierSession::getInputSource());
+        $inputSourceValue = HoomdossierSession::getInputSource(true);
 
-        $inputSource = InputSource::find(HoomdossierSession::getInputSource());
+        $inputSource = HoomdossierSession::getInputSource(true);
 
         // if the role has no inputsource redirect back with "probeer t later ff nog een keer"
         // or if the role is not a resident, we gonna throw them back.
@@ -75,7 +75,7 @@ class ToolController extends Controller
         // set the input source value to the coach itself
         $inputSourceValue = InputSource::findByShort(InputSource::RESIDENT_SHORT);
 
-        $inputSource = InputSource::find(HoomdossierSession::getInputSource());
+        $inputSource = HoomdossierSession::getInputSource(true);
 
         // if the role has no inputsource redirect back with "probeer t later ff nog een keer"
         // or if the role is not a resident, we gonna throw them back.

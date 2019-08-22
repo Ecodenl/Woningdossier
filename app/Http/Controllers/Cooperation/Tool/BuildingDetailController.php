@@ -33,7 +33,7 @@ class BuildingDetailController extends Controller
 
     public function index(Request $request, Cooperation $cooperation)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $buildingTypes = BuildingType::all();
 
         return view('cooperation.tool.building-detail.index', compact('building', 'buildingTypes'));
@@ -42,7 +42,7 @@ class BuildingDetailController extends Controller
     public function store(BuildingDetailRequest $request)
     {
         /** @var Building $building */
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $buildingId = $building->id;
         $inputSourceId = HoomdossierSession::getInputSource();
         $buildYear = $request->get('build_year');

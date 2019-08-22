@@ -21,7 +21,7 @@ class HoomSettingsController extends Controller
     {
         $user = Hoomdossier::user();
         $account = Hoomdossier::account();
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
 
         return view('cooperation.my-account.hoom-settings.index', compact('user', 'building', 'account'));
     }

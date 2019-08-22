@@ -164,7 +164,7 @@ class StepHelper
      */
     public static function hasInterestInStep(Step $step): bool
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
 
         if (array_key_exists($step->slug, self::STEP_INTERESTS)) {
             foreach (self::STEP_INTERESTS[$step->slug] as $type => $interestedIn) {
@@ -188,7 +188,7 @@ class StepHelper
     public static function getNextStep(Step $current, Questionnaire $currentQuestionnaire = null): array
     {
         // get all the steps
-        $steps = Cooperation::find(HoomdossierSession::getCooperation())->getActiveOrderedSteps();
+        $steps = HoomdossierSession::getCooperation(true)->getActiveOrderedSteps();
         // create new collection for the completed steps
         $completedSteps = collect();
 

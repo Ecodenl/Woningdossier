@@ -33,8 +33,13 @@
 
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
+<script src="{{ asset('js/hoomdossier.js') }}"></script>
 
 <script>
+    $(document).ready(function () {
+        pollForMessageCount();
+    });
+
     function hoomdossierRound(valueToRound, bucket)
     {
         if (typeof bucket === "undefined") {

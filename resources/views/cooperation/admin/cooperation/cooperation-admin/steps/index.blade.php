@@ -62,9 +62,7 @@
                         step_active: $(this).prop('checked'),
                         step_id: $(this).data('step-id')
                     }
-                }).done(function () {
-                    console.log('bier!');
-                })
+                });
             });
         });
 

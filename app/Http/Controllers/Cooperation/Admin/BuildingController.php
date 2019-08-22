@@ -67,20 +67,6 @@ class BuildingController extends Controller
         $privateMessages = PrivateMessage::private()->conversation($buildingId)->get();
         $publicMessages  = PrivateMessage::public()->conversation($buildingId)->get();
 
-        // and set them all to read.
-        if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
-            PrivateMessageViewService::markAsReadByCooperation($privateMessages, $cooperation);
-            PrivateMessageViewService::markAsReadByCooperation($publicMessages, $cooperation);
-        }
-        elseif(Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
-            $inputSource = InputSource::findByShort(InputSource::COACH_SHORT);
-            PrivateMessageViewService::markAsReadByUser($privateMessages, Hoomdossier::user(), $inputSource);
-            PrivateMessageViewService::markAsReadByUser($privateMessages, Hoomdossier::user(), $inputSource);
-        }
-
-        //PrivateMessageViewService::setRead($privateMessages);
-        //PrivateMessageViewService::setRead($publicMessages);
-
         // get all the building notes
         $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
 

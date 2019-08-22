@@ -62,9 +62,7 @@ class SolarPanelsController extends Controller
     public function calculate(Request $request)
     {
         $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
-
-        $result = SolarPanel::calculate($building, $user, $request->all());
+        $result = SolarPanel::calculate($building, $request->all());
 
         return response()->json($result);
     }

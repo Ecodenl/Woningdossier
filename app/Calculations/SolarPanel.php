@@ -27,7 +27,7 @@ class SolarPanel {
      *
      * @return array
      */
-    public static function calculate(Building $building, User $user, array $calculateData)
+    public static function calculate(Building $building, array $calculateData)
     {
         $result = [
             'yield_electricity' => 0,
@@ -40,7 +40,7 @@ class SolarPanel {
         ];
 
         $buildingPvPanels = $calculateData['building_pv_panels'] ?? [];
-
+\Log::debug("Data input: " . json_encode($buildingPvPanels));
         $amountElectricity = $calculateData['user_energy_habits']['amount_electricity'] ?? 0;
         $peakPower = $buildingPvPanels['peak_power'] ?? 0;
         $panels = $buildingPvPanels['number'] ?? 0;

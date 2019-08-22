@@ -41,7 +41,7 @@ class MyPlanController extends Controller
     public function storeComment(MyPlanRequest $request)
     {
         $comment = $request->get('comment');
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
         // update or create the comment
@@ -116,7 +116,7 @@ class MyPlanController extends Controller
         $sortedAdvices = [];
 
         $myAdvices = $request->input('advice', []);
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
         foreach ($myAdvices as $adviceId => $data) {

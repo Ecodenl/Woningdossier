@@ -51,7 +51,7 @@ class FloorInsulationController extends Controller
     {
         $typeIds = [4];
         /** @var Building $building */
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
 
         $buildingInsulation = $building->getBuildingElement('floor-insulation');
         $buildingInsulationForMe = $building->getBuildingElementsForMe('floor-insulation');
@@ -88,7 +88,7 @@ class FloorInsulationController extends Controller
         /**
          * @var Building
          */
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
         $result = FloorInsulation::calculate($building, $user, $request->all());
@@ -105,7 +105,7 @@ class FloorInsulationController extends Controller
      */
     public function store(FloorInsulationFormRequest $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $buildingId = $building->id;
         $inputSourceId = HoomdossierSession::getInputSource();
@@ -187,7 +187,7 @@ class FloorInsulationController extends Controller
         // Remove old results
         UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
-        $user = Building::find(HoomdossierSession::getBuilding())->user;
+        $user = HoomdossierSession::getBuilding(true)->user;
         $floorInsulation = Element::where('short', 'floor-insulation')->first();
         $elements = $request->input('element');
 

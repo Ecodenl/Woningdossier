@@ -65,7 +65,7 @@ class InsulatedGlazingController extends Controller
         /**
          * @var Building
          */
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
         $interests = Interest::orderBy('order')->get();
@@ -146,7 +146,7 @@ class InsulatedGlazingController extends Controller
 
     protected function saveAdvices(Request $request)
     {
-        $user = Building::find(HoomdossierSession::getBuilding())->user;
+        $user = HoomdossierSession::getBuilding(true)->user;
         /** @var JsonResponse $results */
         $results = $this->calculate($request);
         $results = $results->getData(true);
@@ -190,7 +190,7 @@ class InsulatedGlazingController extends Controller
 
     public function calculate(Request $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
         $result = InsulatedGlazing::calculate($building, $user, $request->all());
@@ -207,7 +207,7 @@ class InsulatedGlazingController extends Controller
      */
     public function store(InsulatedGlazingFormRequest $request)
     {
-        $building = Building::find(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $buildingId = $building->id;
         $inputSourceId = HoomdossierSession::getInputSource();

@@ -36,6 +36,7 @@ use Spatie\Permission\Contracts\Role;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingStatus[] $buildingStatuses
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $completedSteps
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
  * @property-read \App\Models\BuildingPaintworkStatus $currentPaintworkStatus
@@ -96,6 +97,8 @@ class Building extends Model
 
     /**
      * Check if a step is completed for a building with matching input source id.
+     *
+     * @NeedsReview
      *
      * @param Step $step
      *

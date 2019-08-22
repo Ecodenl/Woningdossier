@@ -8,17 +8,18 @@ use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\ToolSetting
+ * App\Models\ToolSetting.
  *
- * @property int $id
- * @property int $changed_input_source_id
- * @property int|null $input_source_id
- * @property int $building_id
- * @property bool $has_changed
+ * @property int                             $id
+ * @property int                             $changed_input_source_id
+ * @property int|null                        $input_source_id
+ * @property int                             $building_id
+ * @property bool                            $has_changed
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\InputSource $changedInputSource
- * @property-read \App\Models\InputSource|null $inputSource
+ * @property \App\Models\InputSource         $changedInputSource
+ * @property \App\Models\InputSource|null    $inputSource
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting newQuery()
@@ -35,7 +36,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ToolSetting extends Model
 {
-    use GetValueTrait, GetMyValuesTrait;
+    use GetValueTrait;
+    use GetMyValuesTrait;
 
     protected $fillable = [
         'changed_input_source_id', 'has_changed', 'building_id',

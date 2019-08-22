@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddWebsiteUrlToCooperationsTable extends Migration
 {
@@ -14,7 +14,7 @@ class AddWebsiteUrlToCooperationsTable extends Migration
     public function up()
     {
         Schema::table('cooperations', function (Blueprint $table) {
-            if (!Schema::hasColumn('cooperations', 'website_url')) {
+            if (! Schema::hasColumn('cooperations', 'website_url')) {
                 $table->string('website_url')->nullable()->default(null);
             }
         });

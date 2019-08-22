@@ -121,17 +121,17 @@ class KeyFigures implements KeyFiguresInterface
         return self::$angles;
     }
 
-	/**
-	 * Returns the key figures from this class
-	 *
-	 * @return array
-	 */
-	public static function getKeyFigures()
-	{
-		$figures = [];
+    /**
+     * Returns the key figures from this class.
+     *
+     * @return array
+     */
+    public static function getKeyFigures()
+    {
+        $figures = [];
 
-		$figures['M3_GAS_TO_KWH'] = self::M3_GAS_TO_KWH;
+        $figures['M3_GAS_TO_KWH'] = self::M3_GAS_TO_KWH;
 
-		return $figures;
-	}
+        return $figures;
+    }
 }

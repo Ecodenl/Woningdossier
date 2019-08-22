@@ -1,6 +1,6 @@
 <?php
 if (isset($id)) {
-    $infoAlertId = $id . 'year-info';
+    $infoAlertId = $id.'year-info';
 } else {
     $infoAlertId = 'year-info';
 }

@@ -156,10 +156,10 @@ class RoomTemperatureCalculator
 
     protected function calculateTempLow($room)
     {
-        if ($this->rooms[$room]['temp high'] == 18) {
+        if (18 == $this->rooms[$room]['temp high']) {
             return $this->rooms[self::FLOOR_GROUND_ROOM_LIVING_ROOM]['temp low'] - 2;
         }
-        if ($this->rooms[$room]['temp high'] == 13) {
+        if (13 == $this->rooms[$room]['temp high']) {
             return 10;
         }
 

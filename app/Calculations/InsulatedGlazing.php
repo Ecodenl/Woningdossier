@@ -4,7 +4,6 @@ namespace App\Calculations;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
-use App\Helpers\HoomdossierSession;
 use App\Helpers\InsulatedGlazingCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
@@ -20,20 +19,19 @@ use App\Models\User;
 use App\Models\UserEnergyHabit;
 use App\Models\WoodRotStatus;
 
-class InsulatedGlazing {
-
+class InsulatedGlazing
+{
     /**
      * Return the calculate results for the insulated glazings.
      *
-     * @param  Building  $building
-     * @param  User  $user
+     * @param Building $building
+     * @param User     $user
      * @param $calculateData
      *
      * @return array
      */
     public static function calculate(Building $building, User $user, $calculateData): array
     {
-
         $result = [
             'savings_gas' => 0,
             'savings_co2' => 0,
@@ -97,7 +95,6 @@ class InsulatedGlazing {
 
         // only applies for wooden frames
         if ($frameElementValue instanceof ElementValue && 'frames' == $frameElementValue->element->short/* && $frameElementValue->calculate_value > 0*/) {
-
             $windowSurface = 0;
 
             $windowSurfaceFormatted = NumberFormatter::reverseFormat($calculateData['window_surface'] ?? 0);
@@ -124,7 +121,6 @@ class InsulatedGlazing {
 
             $measureApplication = MeasureApplication::where('short', 'paint-wood-elements')->first();
 
-
             $number = InsulatedGlazingCalculator::calculatePaintworkSurface($frameElementValue, $woodElementValues, NumberFormatter::reverseFormat($windowSurface));
 
             $buildingPaintworkStatuses = $calculateData['building_paintwork_statuses'] ?? [];
@@ -147,7 +143,7 @@ class InsulatedGlazing {
             $year = 0;
             $costs = 0;
 
-            if($measureApplication instanceof MeasureApplication && $paintworkStatus instanceof PaintworkStatus) {
+            if ($measureApplication instanceof MeasureApplication && $paintworkStatus instanceof PaintworkStatus) {
                 $year = InsulatedGlazingCalculator::determineApplicationYear($measureApplication, $paintworkStatus, $woodRotStatus, $lastPaintedYear);
                 $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
             }
@@ -190,5 +186,4 @@ class InsulatedGlazing {
 
         return $result;
     }
-
 }

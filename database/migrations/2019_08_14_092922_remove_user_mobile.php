@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class RemoveUserMobile extends Migration
 {
@@ -13,9 +13,9 @@ class RemoveUserMobile extends Migration
      */
     public function up()
     {
-        if (Schema::hasColumn('users', 'mobile')){
-            Schema::table('users', function(Blueprint $table){
-               $table->dropColumn('mobile');
+        if (Schema::hasColumn('users', 'mobile')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('mobile');
             });
         }
     }

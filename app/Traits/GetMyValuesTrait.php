@@ -11,7 +11,6 @@ use Illuminate\Support\Collection;
 
 trait GetMyValuesTrait
 {
-
     /**
      * Scope all the available input for a user.
      *
@@ -55,12 +54,13 @@ trait GetMyValuesTrait
             return [['building_id', '=', HoomdossierSession::getBuilding()]];
         } else {
             $building = Building::find(HoomdossierSession::getBuilding());
+
             return [['user_id', '=', $building->user_id]];
         }
     }
 
     /**
-     * Method to only scope the resident input source
+     * Method to only scope the resident input source.
      *
      * @param $query
      *

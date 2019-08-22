@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests;
 
-use App\Helpers\Hoomdossier;
 use App\Rules\HouseNumber;
 use App\Rules\HouseNumberExtension;
 use App\Rules\PhoneNumber;
 use App\Rules\PostalCode;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class MyAccountSettingsFormRequest extends FormRequest
 {
@@ -34,13 +32,11 @@ class MyAccountSettingsFormRequest extends FormRequest
             'user.last_name' => 'required|string|max:255',
             'user.phone_number' => ['nullable', new PhoneNumber()],
 
-
             'building.postal_code' => ['required', new PostalCode('nl')],
             'building.house_number' => ['required', 'numeric', new HouseNumber('nl')],
             'building.house_number_extension' => ['nullable', new HouseNumberExtension('nl')],
             'building.street' => 'required|string|max:255',
             'building.city' => 'required|string|max:255',
-
         ];
     }
 }

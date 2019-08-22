@@ -5,7 +5,6 @@ namespace App\Traits;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\InputSource;
-use App\Models\Log;
 use App\Services\ToolSettingService;
 use Illuminate\Database\Eloquent\Model;
 
@@ -47,7 +46,7 @@ trait ToolSettingTrait
 
     /**
      * Can be set on the models and return specific columns to check
-     * Sometimes we dont want to check all the columns on a model
+     * Sometimes we dont want to check all the columns on a model.
      *
      * @return array
      */
@@ -57,9 +56,9 @@ trait ToolSettingTrait
     }
 
     /**
-     * Check if a model has changed
+     * Check if a model has changed.
      *
-     * @param  Model  $model
+     * @param Model $model
      *
      * @return bool
      */
@@ -70,7 +69,7 @@ trait ToolSettingTrait
         $hasChanged = false;
 
         // if there are specific columns to check we will check the property for a change.
-        if (!empty($columnsToCheckForChanges)) {
+        if (! empty($columnsToCheckForChanges)) {
             // walk through it.
             foreach ($columnsToCheckForChanges as $column) {
                 // check if it is dirty, if so we will set the bool to true,
@@ -89,7 +88,6 @@ trait ToolSettingTrait
     public static function bootToolSettingTrait()
     {
         static::created(function (Model $model) {
-
             $hasChanged = static::hasChanged($model);
 
             if ($model instanceof Building) {
@@ -101,7 +99,7 @@ trait ToolSettingTrait
                 // performed on the BuildingDetails page and we set $hasChanged to false so no alert
                 // will be triggered.
                 $previousExampleBuildingId = $model->getOriginal('example_building_id');
-                if(is_null($previousExampleBuildingId)){
+                if (is_null($previousExampleBuildingId)) {
                     $hasChanged = false;
                 }
             }
@@ -114,7 +112,6 @@ trait ToolSettingTrait
         });
 
         static::updated(function (Model $model) {
-
             $hasChanged = static::hasChanged($model);
 
             if ($model instanceof Building) {
@@ -126,7 +123,7 @@ trait ToolSettingTrait
                 // performed on the BuildingDetails page and we set $hasChanged to false so no alert
                 // will be triggered.
                 $previousExampleBuildingId = $model->getOriginal('example_building_id');
-                if(is_null($previousExampleBuildingId)){
+                if (is_null($previousExampleBuildingId)) {
                     $hasChanged = false;
                 }
             }

@@ -2,42 +2,41 @@
 
 namespace App\Models;
 
-use App\Helpers\HoomdossierSession;
-use App\Scopes\GetValueScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UserEnergyHabit
+ * App\Models\UserEnergyHabit.
  *
- * @property int $id
- * @property int|null $user_id
- * @property int|null $input_source_id
- * @property int|null $resident_count
- * @property float|null $thermostat_high
- * @property float|null $thermostat_low
- * @property int|null $hours_high
- * @property int|null $heating_first_floor
- * @property int|null $heating_second_floor
- * @property int|null $heated_space_outside
- * @property int $cook_gas
- * @property int|null $water_comfort_id
- * @property int|null $amount_electricity
- * @property int|null $amount_gas
- * @property int|null $amount_water
- * @property string|null $living_situation_extra
- * @property string|null $motivation_extra
- * @property string|null $start_date
- * @property string|null $end_date
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\ComfortLevelTapWater|null $comfortLevelTapWater
- * @property-read \App\Models\BuildingHeating|null $heatingFirstFloor
- * @property-read \App\Models\BuildingHeating|null $heatingSecondFloor
- * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \App\Models\User|null $user
+ * @property int                                   $id
+ * @property int|null                              $user_id
+ * @property int|null                              $input_source_id
+ * @property int|null                              $resident_count
+ * @property float|null                            $thermostat_high
+ * @property float|null                            $thermostat_low
+ * @property int|null                              $hours_high
+ * @property int|null                              $heating_first_floor
+ * @property int|null                              $heating_second_floor
+ * @property int|null                              $heated_space_outside
+ * @property int                                   $cook_gas
+ * @property int|null                              $water_comfort_id
+ * @property int|null                              $amount_electricity
+ * @property int|null                              $amount_gas
+ * @property int|null                              $amount_water
+ * @property string|null                           $living_situation_extra
+ * @property string|null                           $motivation_extra
+ * @property string|null                           $start_date
+ * @property string|null                           $end_date
+ * @property \Illuminate\Support\Carbon|null       $created_at
+ * @property \Illuminate\Support\Carbon|null       $updated_at
+ * @property \App\Models\ComfortLevelTapWater|null $comfortLevelTapWater
+ * @property \App\Models\BuildingHeating|null      $heatingFirstFloor
+ * @property \App\Models\BuildingHeating|null      $heatingSecondFloor
+ * @property \App\Models\InputSource|null          $inputSource
+ * @property \App\Models\User|null                 $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit newQuery()
@@ -68,7 +67,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserEnergyHabit extends Model
 {
-    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
+    use GetValueTrait;
+    use GetMyValuesTrait;
+    use ToolSettingTrait;
 
     protected $fillable = [
         'user_id',

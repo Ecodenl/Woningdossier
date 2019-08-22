@@ -1,6 +1,6 @@
 <?php
 if (isset($id)) {
-    $infoAlertId = $id . 'interest-comparable-info';
+    $infoAlertId = $id.'interest-comparable-info';
 } else {
     $infoAlertId = 'interest-comparable-info';
 }

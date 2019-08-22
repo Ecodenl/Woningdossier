@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Events\Registered;
 use App\Events\UserAssociatedWithOtherCooperation;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\PicoHelper;
 use App\Helpers\RegistrationHelper;
-use App\Helpers\Str;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Cooperation\Auth\ConfirmRequest;
 use App\Http\Requests\RegisterFormRequest;
-use App\Http\Requests\ResendConfirmMailRequest;
-use App\Jobs\SendRequestAccountConfirmationEmail;
-use App\Listeners\LogUserAssociatedWithOtherCooperation;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingFeature;
@@ -22,7 +18,6 @@ use App\Models\NotificationType;
 use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
-use App\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 
@@ -69,11 +64,10 @@ class RegisterController extends Controller
         return view('cooperation.auth.register');
     }
 
-
     /**
      * Handle a registration request for the application.
      *
-     * @param  RegisterFormRequest  $request
+     * @param RegisterFormRequest $request
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
@@ -83,7 +77,7 @@ class RegisterController extends Controller
         $account = Account::where('email', $request->get('email'))->first();
 
         // if its not found we will create a new one.
-        if (!$account instanceof Account) {
+        if (! $account instanceof Account) {
             $account = $this->createNewAccount($request->only('email', 'password'));
         }
 
@@ -94,7 +88,6 @@ class RegisterController extends Controller
             $account
         )->save();
 
-
         if ($account->wasRecentlyCreated) {
             $successMessage = __('auth.register.form.message.success');
             \Event::dispatch(new Registered($cooperation, $user));
@@ -103,14 +96,13 @@ class RegisterController extends Controller
             \Event::dispatch(new UserAssociatedWithOtherCooperation($cooperation, $user));
         }
 
-
         return redirect($this->redirectPath())->with('success', $successMessage);
     }
 
     /**
-     * Create a new account
+     * Create a new account.
      *
-     * @param  array  $data
+     * @param array $data
      *
      * @return Account
      */
@@ -121,13 +113,12 @@ class RegisterController extends Controller
             'password'      => \Hash::make($data['password']),
             'confirm_token' => RegistrationHelper::generateConfirmToken(),
         ]);
-
     }
 
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param array $data
      *
      * @return User
      */
@@ -148,7 +139,7 @@ class RegisterController extends Controller
         );
 
         $data['bag_addressid'] = $picoAddressData['id'] ?? $data['addressid'] ?? '';
-	    $data['extension'] = $data['house_number_extension'] ?? null;
+        $data['extension'] = $data['house_number_extension'] ?? null;
 
         $features = new BuildingFeature([
             'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
@@ -178,7 +169,7 @@ class RegisterController extends Controller
         // turn on when merged
         $building->setStatus('active');
         $notificationTypes = NotificationType::all();
-        $interval          = NotificationInterval::where('short', 'no-interest')->first();
+        $interval = NotificationInterval::where('short', 'no-interest')->first();
 
         // we create for every notification type a setting with no-interest interval and set the last_notified_at to now
         foreach ($notificationTypes as $notificationType) {
@@ -195,15 +186,15 @@ class RegisterController extends Controller
     /**
      * Check if a email already exists in the user table, and if it exist check if the user is registering on the wrong cooperation.
      *
-     * @param  Cooperation  $cooperation
-     * @param  Request  $request
+     * @param Cooperation $cooperation
+     * @param Request     $request
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function checkExistingEmail(Cooperation $cooperation, Request $request)
     {
         $email = $request->get('email');
-        $account  = Account::where('email', $email)->first();
+        $account = Account::where('email', $email)->first();
 
         $response = ['email_exists' => false, 'user_is_already_member_of_cooperation' => false];
 
@@ -220,7 +211,4 @@ class RegisterController extends Controller
 
         return response()->json($response);
     }
-
-
-
 }

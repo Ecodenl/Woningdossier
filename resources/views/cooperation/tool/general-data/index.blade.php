@@ -40,7 +40,7 @@
                                             <?php
                                             // if the example building is not in the $exampleBuildings collection,
                                             // we select this empty value as default.
-                                            $currentNotInExampleBuildings = !$exampleBuildings->contains('id', '=', $building->example_building_id);
+                                            $currentNotInExampleBuildings = ! $exampleBuildings->contains('id', '=', $building->example_building_id);
                                             ?>
                                             @if(empty(old('example_building_id', $building->example_building_id)) || $currentNotInExampleBuildings) selected="selected"@endif >{{ \App\Helpers\Translation::translate('general-data.example-building.no-match.title') }}</option>
                                 </select>
@@ -317,7 +317,7 @@
                                     @if($service->values()->where('service_id', $service->id)->first() != null)
 
                                         <?php
-                                        $selectedSV = old('service.' . $service->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $service->id), 'service_value_id'));
+                                        $selectedSV = old('service.'.$service->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $service->id), 'service_value_id'));
 
                                         if (is_null($selectedSV)) {
                                             /** @var \App\Models\Service $service */
@@ -387,9 +387,9 @@
 
                                     <div id="{{$service->id.'-extra'}}">
                                     @if(strpos($service->name, 'geventileerd'))
-                                        <?php $translationKey = 'general-data.energy-saving-measures.house-ventilation.if-mechanic' ?>
+                                        <?php $translationKey = 'general-data.energy-saving-measures.house-ventilation.if-mechanic'; ?>
                                     @elseif($service->short == 'total-sun-panels')
-                                        <?php $translationKey = 'general-data.energy-saving-measures.solar-panels.if-yes' ?>
+                                        <?php $translationKey = 'general-data.energy-saving-measures.solar-panels.if-yes'; ?>
                                     @endif
                                     @component('cooperation.tool.components.step-question', ['id' => $service->id.'.extra', 'translation' => $translationKey, 'required' => false])
 
@@ -572,7 +572,6 @@
                                 }
 
                                 $selectedHFF = old('heating_first_floor', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'heating_first_floor', $defaultHFF));
-
 
                                 ?>
 

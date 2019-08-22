@@ -13,13 +13,13 @@ class LogUserAssociatedWithOtherCooperation
      */
     public function __construct()
     {
-        //
     }
 
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param object $event
+     *
      * @return void
      */
     public function handle($event)
@@ -29,7 +29,7 @@ class LogUserAssociatedWithOtherCooperation
             'building_id' => $event->user->building->id,
             'message' => __('woningdossier.log-messages.user-associated-with-other-cooperation', [
                 'full_name' => $event->user->getFullName(),
-                'cooperation_name' => $event->cooperation->name
+                'cooperation_name' => $event->cooperation->name,
             ]),
         ]);
     }

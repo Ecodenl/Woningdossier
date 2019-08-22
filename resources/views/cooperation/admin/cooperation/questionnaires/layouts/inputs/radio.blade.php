@@ -11,7 +11,7 @@
 
 <?php $questionOptionCount = 0; ?>
 @foreach($question->questionOptions as $questionOption)
-    <?php $questionOptionCount++; ?>
+    <?php ++$questionOptionCount; ?>
     <label for="">Optie {{$questionOptionCount}}</label>
     <div class="option-group">
         @foreach(config('woningdossier.supported_locales') as $locale)

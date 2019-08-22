@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class ChangeInterestsTranslations extends Migration
@@ -36,7 +34,6 @@ class ChangeInterestsTranslations extends Migration
      */
     public function down()
     {
-
         $moreInformation = DB::table('interests')->where('calculate_value', 3)->first();
         if ($moreInformation instanceof stdClass) {
             DB::table('translations')->where('key', $moreInformation->name)->update(['translation' => 'Meer informatie gewenst']);

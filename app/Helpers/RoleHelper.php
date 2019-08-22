@@ -16,7 +16,6 @@ class RoleHelper
      */
     public static function getUrlByRoleName(string $roleName, $checkUser = true)
     {
-
         // check if the user his role exists / is his
         if (! $checkUser || (\Auth::check() && \App\Helpers\Hoomdossier::user()->roles()->where('name', $roleName)->first() instanceof Role)) {
             switch ($roleName) {

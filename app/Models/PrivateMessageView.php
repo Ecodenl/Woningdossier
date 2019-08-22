@@ -4,23 +4,22 @@ namespace App\Models;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use Carbon\Carbon;
 use App\Traits\GetMyValuesTrait;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
 
 /**
- * App\Models\PrivateMessageView
+ * App\Models\PrivateMessageView.
  *
- * @property int $id
- * @property int $private_message_id
- * @property int|null $user_id
- * @property int|null $input_source_id
- * @property int|null $to_cooperation_id
+ * @property int                             $id
+ * @property int                             $private_message_id
+ * @property int|null                        $user_id
+ * @property int|null                        $input_source_id
+ * @property int|null                        $to_cooperation_id
  * @property \Illuminate\Support\Carbon|null $read_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\InputSource|null $inputSource
+ * @property \App\Models\InputSource|null    $inputSource
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView forCurrentInputSource()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView newModelQuery()
@@ -39,7 +38,6 @@ use Illuminate\Database\Query\Builder;
  */
 class PrivateMessageView extends Model
 {
-
     use GetMyValuesTrait;
 
     protected $fillable = [
@@ -50,28 +48,28 @@ class PrivateMessageView extends Model
         'read_at' => 'datetime',
     ];
 
-	/**
-     * Get the total unread messages for a user within its given cooperation and after a specific date
-	 *
-	 * @param  User  $user
-	 * @param  Cooperation  $cooperation
-	 * @param  $specificDate
-	 *
-	 * @return int
-	 */
-	public static function getTotalUnreadMessagesForUserAndCooperationAfterSpecificDate(User $user, Cooperation $cooperation, $specificDate): int
-	{
-		$cooperationUnreadMessagesCount = 0;
+    /**
+     * Get the total unread messages for a user within its given cooperation and after a specific date.
+     *
+     * @param User        $user
+     * @param Cooperation $cooperation
+     * @param  $specificDate
+     *
+     * @return int
+     */
+    public static function getTotalUnreadMessagesForUserAndCooperationAfterSpecificDate(User $user, Cooperation $cooperation, $specificDate): int
+    {
+        $cooperationUnreadMessagesCount = 0;
 
-		// if the user has the role coordinator or cooperation-admin get them as well
-		if ($user->hasRole(['coordinator', 'cooperation-admin'])) {
-			$cooperationUnreadMessagesCount = self::where('to_cooperation_id', $cooperation->id)
-			                                      ->where('created_at', '>=', $specificDate)
-			                                      ->where('read_at', null)
-			                                      ->count();
-		}
+        // if the user has the role coordinator or cooperation-admin get them as well
+        if ($user->hasRole(['coordinator', 'cooperation-admin'])) {
+            $cooperationUnreadMessagesCount = self::where('to_cooperation_id', $cooperation->id)
+                                                  ->where('created_at', '>=', $specificDate)
+                                                  ->where('read_at', null)
+                                                  ->count();
+        }
 
-		// get the unread messages for the user itself within its given cooperation after a given date.
+        // get the unread messages for the user itself within its given cooperation after a given date.
         $userUnreadMessages = static::select('private_messages.*')
             ->where('private_message_views.user_id', $user->id)
             ->where('read_at', null)
@@ -80,10 +78,10 @@ class PrivateMessageView extends Model
                 $query->on('private_message_views.private_message_id', '=', 'private_messages.id');
             })->count();
 
-		$totalUnreadMessagesCount = $userUnreadMessages + $cooperationUnreadMessagesCount;
+        $totalUnreadMessagesCount = $userUnreadMessages + $cooperationUnreadMessagesCount;
 
-		return $totalUnreadMessagesCount;
-	}
+        return $totalUnreadMessagesCount;
+    }
 
     /**
      * Query to scope records for the current input source.
@@ -104,8 +102,8 @@ class PrivateMessageView extends Model
     /**
      * Get the total unread messages for a user, this also counts the unread messages from the admin side.
      *
-     * @param  User         $user
-     * @param  Cooperation  $cooperation
+     * @param User        $user
+     * @param Cooperation $cooperation
      *
      * @return int
      */
@@ -131,7 +129,6 @@ class PrivateMessageView extends Model
         return $totalUnreadMessagesCount;
     }
 
-
     /**
      * Get the total unread messages from a auth user.
      *
@@ -150,6 +147,7 @@ class PrivateMessageView extends Model
 
     /**
      * Get the number messages that have been sent to the cooperation.
+     *
      * @param int $cooperationId
      *
      * @return int
@@ -169,21 +167,19 @@ class PrivateMessageView extends Model
                     ->where('input_source_id', '=', $inputSourceId)
                     ->where('read_at', null)
                     ->join('private_messages', function ($query) {
-                            $query->on('private_message_views.private_message_id', '=', 'private_messages.id');
+                        $query->on('private_message_views.private_message_id', '=', 'private_messages.id');
                     })->count();
     }
-
 
     /**
      * Get the unread messages count for a given building. The count will be determined on the auth user his role and user id.
      *
-     * @param  Building  $building
+     * @param Building $building
      *
      * @return int
      */
     public static function getTotalUnreadMessagesCountByBuildingForAuthUser(Building $building): int
     {
-
         // get all the private message id's for a building
         $privateMessageIdsForBuilding = $building->privateMessages()
                                                  ->select('id')
@@ -207,7 +203,7 @@ class PrivateMessageView extends Model
     }
 
     /**
-     * Check if a private message is left unread
+     * Check if a private message is left unread.
      *
      * @param $privateMessage
      *

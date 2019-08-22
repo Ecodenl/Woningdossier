@@ -53,7 +53,7 @@
                                     </td>
                                     <td>
                                         <ul>
-                                            <?php $file = $fileType->files()->mostRecent()->first();?>
+                                            <?php $file = $fileType->files()->mostRecent()->first(); ?>
                                             @if($file instanceof \App\Models\FileStorage)
                                                 <li>
                                                     <a @if(!$fileType->isBeingProcessed() )

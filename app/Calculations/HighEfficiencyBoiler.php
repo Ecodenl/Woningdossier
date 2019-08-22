@@ -14,11 +14,10 @@ use App\Models\ServiceValue;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
 
-class HighEfficiencyBoiler {
-
+class HighEfficiencyBoiler
+{
     public static function calculate(Building $building, User $user, $calculateData)
     {
-
         $result = [
             'savings_gas' => 0,
             'savings_co2' => 0,
@@ -39,9 +38,7 @@ class HighEfficiencyBoiler {
                                           ->where('id', $options['service_value_id'])
                                           ->first();
 
-
                 if ($boilerType instanceof ServiceValue) {
-
                     $boilerEfficiency = $boilerType->keyFigureBoilerEfficiency;
                     if ($boilerEfficiency->heating > 95) {
                         $result['boiler_advice'] = Translation::translate('boiler.already-efficient');

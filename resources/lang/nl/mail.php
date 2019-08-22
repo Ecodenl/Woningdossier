@@ -6,21 +6,21 @@ return [
         'subject' => 'Welkom in het Hoomdossier',
         'salutation' => 'Beste :first_name :last_name,',
         'text' => 'Er is een account voor u aangemaakt op :hoomdossier_link<br><br>Bevestig uw account door onderstaande link te volgen:<br><br>:confirm_url<br><br>Als u hierover vragen hebt, kunt u contact opnemen met :cooperation_link',
-        'kind_regards' => 'Met vriendelijke groet, <br>:app_name support'
+        'kind_regards' => 'Met vriendelijke groet, <br>:app_name support',
     ],
 
     'changed-email' => [
         'subject' => 'Hoomdossier: uw e-mail adres is aangepast.',
         'salutation' => 'Beste :first_name :last_name,',
         'text' => 'Het e-mailadres voor uw Hoomdossier is aangepast. Indien dit gewenst was hoeft u niets te doen. Als u deze activiteit niet herkent kunt u dit ongedaan maken door de onderstaande link te volgen. Wij raden u aan om vervolgens uw wachtwoord te resetten.<br><br>:recover_old_email_url<br><br>Als u hierover vragen hebt, kunt u contact opnemen met :cooperation_link',
-        'kind_regards' => 'Met vriendelijke groet, <br>:app_name support'
+        'kind_regards' => 'Met vriendelijke groet, <br>:app_name support',
     ],
 
     'confirm-account' => [
         'subject' => 'Welkom in het Hoomdossier',
         'salutation' => 'Beste :first_name :last_name,',
         'text' => 'U heeft een account aangevraagd op :hoomdossier_link<br><br>Bevestig uw account door onderstaande link te volgen:<br><br>:confirm_url<br><br>Als u hierover vragen hebt, kunt u contact opnemen met :cooperation_link',
-        'kind_regards' => 'Met vriendelijke groet, <br>:app_name support'
+        'kind_regards' => 'Met vriendelijke groet, <br>:app_name support',
     ],
 
     'reset_password' => [
@@ -30,10 +30,9 @@ return [
     ],
 
     'unread-message-count' => [
-	    'subject' => '{0} U heeft :unread_message_count ongelezen berichten|{1} U heeft :unread_message_count ongelezen bericht|[2,*] U heeft :unread_message_count ongelezen berichten',
+        'subject' => '{0} U heeft :unread_message_count ongelezen berichten|{1} U heeft :unread_message_count ongelezen bericht|[2,*] U heeft :unread_message_count ongelezen berichten',
         'salutation' => 'Beste :first_name :last_name,',
         'text' => 'Er staan :unread_message_count ongelezen bericht(en) voor u in het Hoomdossier:<br><br> :hoomdossier_link',
-        'kind_regards' => 'Met vriendelijke groet, <br>:app_name support'
+        'kind_regards' => 'Met vriendelijke groet, <br>:app_name support',
     ],
-
 ];

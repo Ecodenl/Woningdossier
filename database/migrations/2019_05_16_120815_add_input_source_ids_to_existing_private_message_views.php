@@ -14,7 +14,6 @@ class AddInputSourceIdsToExistingPrivateMessageViews extends Migration
      */
     public function up()
     {
-
         // get the private messages where we know we can get the used id from
         $privateMessages = DB::table('private_messages')
                              ->where('from_user_id', '!=', null)
@@ -25,8 +24,6 @@ class AddInputSourceIdsToExistingPrivateMessageViews extends Migration
 
             foreach ($groupParticipants as $groupParticipant) {
                 if ($groupParticipant instanceof \App\Models\User) {
-
-
                     // get the connected coaches for the current building
                     $connectedCoachesForBuilding = BuildingCoachStatus::getConnectedCoachesByBuildingId($privateMessage->building_id);
 

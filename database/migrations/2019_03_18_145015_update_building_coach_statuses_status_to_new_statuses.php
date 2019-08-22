@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class UpdateBuildingCoachStatusesStatusToNewStatuses extends Migration
@@ -22,7 +20,7 @@ class UpdateBuildingCoachStatusesStatusToNewStatuses extends Migration
 
         $bcsActives = DB::table('building_coach_statuses')->where('status', $statusActive)->get();
         DB::table('building_coach_statuses')->where('status', $statusActive)->update([
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
         // since we dont use the active status as a measurement to see if a coach has access or not
         // we have to update the active to pending and create a new row for it wit hstatus in progress
@@ -71,11 +69,11 @@ class UpdateBuildingCoachStatusesStatusToNewStatuses extends Migration
 
         // lets call it best effort >.<
         DB::table('building_coach_statuses')->where('status', 'pending')->update([
-            'status' => 'active'
+            'status' => 'active',
         ]);
 
         DB::table('building_coach_statuses')->where('status', 'executed')->update([
-            'status' => $statusDone
+            'status' => $statusDone,
         ]);
 
         DB::table('building_coach_statuses')->where('status', 'in_progress')->delete();

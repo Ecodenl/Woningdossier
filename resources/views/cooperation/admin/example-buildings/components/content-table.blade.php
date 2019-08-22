@@ -79,11 +79,10 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
                         </select>
                     @elseif($rowData['type'] == 'multiselect')
                         <?php
-                                if (empty($fallback)){
-                                	$fallback = [];
-                                }
-                                elseif(!is_array($fallback)){
-                                	$fallback = [ $fallback ];
+                                if (empty($fallback)) {
+                                    $fallback = [];
+                                } elseif (! is_array($fallback)) {
+                                    $fallback = [$fallback];
                                 }
                                 ?>
                         <select class="form-control" name="{{ $fname }}[]" multiple>

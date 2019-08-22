@@ -11,7 +11,6 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-
         $accounts = [
             [
                 'email' => 'demo@example.org',
@@ -30,7 +29,7 @@ class UsersTableSeeder extends Seeder
         /** @var \stdClass $cooperation */
         $cooperation = DB::table('cooperations')->where('slug', 'hoom')->first();
 
-        foreach($accounts as $account){
+        foreach ($accounts as $account) {
             $users = $account['users'];
             unset($account['users']);
 
@@ -45,6 +44,5 @@ class UsersTableSeeder extends Seeder
                 DB::table('users')->insert($user);
             }
         }
-
     }
 }

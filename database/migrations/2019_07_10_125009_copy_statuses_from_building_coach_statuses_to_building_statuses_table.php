@@ -13,8 +13,6 @@ class CopyStatusesFromBuildingCoachStatusesToBuildingStatusesTable extends Migra
      */
     public function up()
     {
-
-
         $buildingCoachStatuses = DB::table('building_coach_statuses')->get();
 
         // if there are building coach statuses then we need the statuses data
@@ -31,7 +29,7 @@ class CopyStatusesFromBuildingCoachStatusesToBuildingStatusesTable extends Migra
 
             $this->copyBuildingCoachStatuses($buildingCoachStatuses);
 
-            if ($building->status == 'in_active') {
+            if ('in_active' == $building->status) {
                 dump('Setting inactive status for building '.$building->id);
                 $this->setBuildingStatus($building, 'inactive');
             }
@@ -41,9 +39,8 @@ class CopyStatusesFromBuildingCoachStatusesToBuildingStatusesTable extends Migra
         DB::table('building_coach_statuses')
           ->where('status', 'pending')
           ->update([
-              'status' => 'added'
+              'status' => 'added',
           ]);
-
     }
 
     private function copyBuildingCoachStatuses($buildingCoachStatuses)
@@ -60,7 +57,7 @@ class CopyStatusesFromBuildingCoachStatusesToBuildingStatusesTable extends Migra
                     'building_id' => $buildingCoachStatus->building_id,
                     'status_id' => $statusId,
                     'appointment_date' => $buildingCoachStatus->appointment_date,
-                    'created_at' => $buildingCoachStatus->created_at
+                    'created_at' => $buildingCoachStatus->created_at,
                 ]);
 
                 if ($this->statusIsDeletable($buildingCoachStatus)) {
@@ -69,12 +66,11 @@ class CopyStatusesFromBuildingCoachStatusesToBuildingStatusesTable extends Migra
                 }
             }
         }
-
     }
 
     private function statusIsDeletable($buildingCoachStatus)
     {
-        return !in_array($buildingCoachStatus->status, ['pending', 'removed']);
+        return ! in_array($buildingCoachStatus->status, ['pending', 'removed']);
     }
 
     private function setBuildingStatus($building, $status)
@@ -82,10 +78,9 @@ class CopyStatusesFromBuildingCoachStatusesToBuildingStatusesTable extends Migra
         DB::table('building_statuses')->insert([
             'building_id' => $building->id,
             'status_id' => DB::table('statuses')->where('short', $status)->first()->id,
-            'created_at' => $building->created_at
+            'created_at' => $building->created_at,
         ]);
     }
-
 
     private function deleteBuildingCoachStatus($buildingCoachStatus)
     {
@@ -99,7 +94,7 @@ class CopyStatusesFromBuildingCoachStatusesToBuildingStatusesTable extends Migra
      */
     private function statusIsCopyable($buildingCoachStatus)
     {
-        return !in_array($buildingCoachStatus->status, ['removed']);
+        return ! in_array($buildingCoachStatus->status, ['removed']);
     }
 
     /**
@@ -114,7 +109,6 @@ class CopyStatusesFromBuildingCoachStatusesToBuildingStatusesTable extends Migra
                  ->first()->id;
     }
 
-
     /**
      * Reverse the migrations.
      *
@@ -122,6 +116,5 @@ class CopyStatusesFromBuildingCoachStatusesToBuildingStatusesTable extends Migra
      */
     public function down()
     {
-
     }
 }

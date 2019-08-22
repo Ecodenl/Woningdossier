@@ -29,13 +29,13 @@
                         {{csrf_field()}}
                         {{method_field('PUT')}}
                         @foreach($questions as $question)
-                            <?php // since we dont want the helptexts to show right here. ?>
+                            <?php // since we dont want the helptexts to show right here.?>
                             @if($question->isNotHelpText())
                                 <div class="translations panel panel-default">
                                     <div class="panel-body">
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <?php $treatTitleAsHelpText = ['home', 'ventilation-information', 'heat-pump'] ?>
+                                                <?php $treatTitleAsHelpText = ['home', 'ventilation-information', 'heat-pump']; ?>
 
                                                 @foreach($question->text as $locale => $text)
                                                     <div class="form-group">

@@ -4,10 +4,8 @@ namespace App\Calculations;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
-use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
-use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\ComfortLevelTapWater;
 use App\Models\HeaterComponentCost;
@@ -20,8 +18,8 @@ use App\Models\User;
 use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
 
-class Heater {
-
+class Heater
+{
     public static function calculate(Building $building, User $user, $calculateData)
     {
         $result = [
@@ -128,6 +126,7 @@ class Heater {
                 }
             }
         }
+
         return $result;
     }
 }

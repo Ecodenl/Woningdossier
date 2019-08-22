@@ -31,7 +31,6 @@ class AccessController extends Controller
         if ($request->has('allow_access')) {
             $conversationRequests->update(['allow_access' => true]);
             $this->giveAccess();
-            
         } else {
             $conversationRequests->update(['allow_access' => false]);
             $this->revokeAccess();
@@ -41,12 +40,11 @@ class AccessController extends Controller
     }
 
     /**
-     * Method to give building access to all the connected coaches
+     * Method to give building access to all the connected coaches.
      */
     protected function giveAccess()
     {
         $coachesWithAccessToResidentBuildingStatuses = BuildingCoachStatus::getConnectedCoachesByBuildingId(HoomdossierSession::getBuilding());
-
 
         event(new UserAllowedAccessToHisBuilding());
 
@@ -60,7 +58,7 @@ class AccessController extends Controller
     }
 
     /**
-     * Method to revoke the access for all the users connected to a building
+     * Method to revoke the access for all the users connected to a building.
      *
      * @throws \Exception
      */

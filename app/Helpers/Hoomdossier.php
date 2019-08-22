@@ -22,7 +22,7 @@ class Hoomdossier
             ->orderBy('input_sources.order', 'ASC');
 
         // if is not empty, we need to search the answers for a particular input source
-        if (!is_null($onlyReturnForInputSource)) {
+        if (! is_null($onlyReturnForInputSource)) {
             $inputSourceToReturn = InputSource::findByShort($onlyReturnForInputSource);
             $found = $baseQuery->where('input_source_id', $inputSourceToReturn->id);
         } else {
@@ -93,9 +93,10 @@ class Hoomdossier
     }
 
     /**
-     * Return the most credible input source for a relationship
+     * Return the most credible input source for a relationship.
      *
      * @param Relation $relation
+     *
      * @return int|mixed|null
      */
     public static function getMostCredibleInputSource(Relation $relation)
@@ -106,7 +107,7 @@ class Hoomdossier
             ->orderBy('input_sources.order', 'ASC')
             ->get([$relation->getRelated()->getTable().'.*', 'input_sources.short']);
 
-        $results = $found->pluck( 'short');
+        $results = $found->pluck('short');
 
         // Always check my own input source first. If that is properly filled
         // return that.
@@ -121,6 +122,7 @@ class Hoomdossier
         foreach ($results as $inputSourceShort) {
             return $inputSourceShort;
         }
+
         return null;
     }
 

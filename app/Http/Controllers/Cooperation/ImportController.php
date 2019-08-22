@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Cooperation;
 
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
-use App\Models\Building;
 use App\Models\InputSource;
 use App\Services\BuildingDataCopyService;
 use App\Services\ToolSettingService;
@@ -12,9 +11,8 @@ use Illuminate\Http\Request;
 
 class ImportController extends Controller
 {
-
     /**
-     * @param  Request  $request
+     * @param Request $request
      *
      * @note if there are "bugs" or problems, check if the tables have the right where columns etc.
      *

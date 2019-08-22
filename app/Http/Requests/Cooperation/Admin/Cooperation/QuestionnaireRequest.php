@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Cooperation\Admin\Cooperation;
 
-use App\Models\Questionnaire;
 use Illuminate\Foundation\Http\FormRequest;
 
 class QuestionnaireRequest extends FormRequest

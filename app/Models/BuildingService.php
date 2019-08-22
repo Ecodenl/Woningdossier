@@ -8,21 +8,22 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingService
+ * App\Models\BuildingService.
  *
- * @property int $id
- * @property int|null $building_id
- * @property int|null $input_source_id
- * @property int $service_id
- * @property int|null $service_value_id
- * @property array|null $extra
+ * @property int                             $id
+ * @property int|null                        $building_id
+ * @property int|null                        $input_source_id
+ * @property int                             $service_id
+ * @property int|null                        $service_value_id
+ * @property array|null                      $extra
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building|null $building
- * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \App\Models\Service $service
- * @property-read \App\Models\ServiceType $serviceType
- * @property-read \App\Models\ServiceValue|null $serviceValue
+ * @property \App\Models\Building|null       $building
+ * @property \App\Models\InputSource|null    $inputSource
+ * @property \App\Models\Service             $service
+ * @property \App\Models\ServiceType         $serviceType
+ * @property \App\Models\ServiceValue|null   $serviceValue
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService newQuery()
@@ -40,7 +41,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingService extends Model
 {
-    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
+    use GetValueTrait;
+    use GetMyValuesTrait;
+    use ToolSettingTrait;
 
     /**
      * The attributes that should be cast to native types.

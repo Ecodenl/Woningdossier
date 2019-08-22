@@ -46,7 +46,6 @@ class UserController extends Controller
         return view('cooperation.admin.cooperation.users.create', compact('roles', 'coaches'));
     }
 
-
     public function store(Cooperation $cooperation, UserRequest $request)
     {
         $firstName = $request->get('first_name', '');
@@ -97,7 +96,7 @@ class UserController extends Controller
                 'extension' => $extension,
                 'postal_code' => $postalCode,
                 'city' => $city,
-                'bag_addressid' => $picoAddressData['id'] ?? $addressId  ?? ''
+                'bag_addressid' => $picoAddressData['id'] ?? $addressId ?? '',
             ]
         );
 
@@ -114,7 +113,6 @@ class UserController extends Controller
         }
 
         $user->cooperation()->associate($cooperation)->save();
-
 
         // assign the roles to the user
         $user->assignRole($roles);
@@ -159,7 +157,7 @@ class UserController extends Controller
      * Send the mail to the created user.
      *
      * @param Cooperation $cooperation
-     * @param Request $request
+     * @param Request     $request
      */
     public function sendAccountConfirmationMail(Cooperation $cooperation, Request $request)
     {
@@ -175,25 +173,20 @@ class UserController extends Controller
      * Destroy a user.
      *
      * @param Cooperation $cooperation
-     * @param Request $request
+     * @param Request     $request
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     *
      */
     public function destroy(Cooperation $cooperation, Request $request)
     {
-
         $userId = $request->get('user_id');
 
         $user = User::find($userId);
-
 
         $this->authorize('destroy', $user);
 
         if ($user instanceof User) {
             UserService::deleteUser($user);
         }
-
     }
-
 }

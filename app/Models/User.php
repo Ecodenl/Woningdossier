@@ -13,36 +13,37 @@ use Illuminate\Support\Collection;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
- * App\Models\User
+ * App\Models\User.
  *
- * @property int $id
- * @property int|null $account_id
- * @property int|null $cooperation_id
- * @property string $first_name
- * @property string $last_name
- * @property string $phone_number
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Account|null $account
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
- * @property-read \App\Models\Building $building
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
- * @property-read \App\Models\Cooperation|null $cooperation
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
- * @property-read \App\Models\UserEnergyHabit $energyHabit
- * @property-read mixed $email
- * @property-read mixed $is_admin
- * @property-read mixed $old_email_token
- * @property-read mixed $oldemail
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $interests
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\NotificationSetting[] $notificationSettings
- * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdviceComments[] $userActionPlanAdviceComments
+ * @property int                                                                                 $id
+ * @property int|null                                                                            $account_id
+ * @property int|null                                                                            $cooperation_id
+ * @property string                                                                              $first_name
+ * @property string                                                                              $last_name
+ * @property string                                                                              $phone_number
+ * @property \Illuminate\Support\Carbon|null                                                     $created_at
+ * @property \Illuminate\Support\Carbon|null                                                     $updated_at
+ * @property \App\Models\Account|null                                                            $account
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[]         $actionPlanAdvices
+ * @property \App\Models\Building                                                                $building
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[]                $buildingNotes
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[]           $buildingPermissions
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Building[]                     $buildings
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[]                $completedQuestionnaires
+ * @property \App\Models\Cooperation|null                                                        $cooperation
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[]                  $cooperations
+ * @property \App\Models\UserEnergyHabit                                                         $energyHabit
+ * @property mixed                                                                               $email
+ * @property mixed                                                                               $is_admin
+ * @property mixed                                                                               $old_email_token
+ * @property mixed                                                                               $oldemail
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[]                 $interests
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[]               $motivations
+ * @property \Illuminate\Database\Eloquent\Collection|\App\NotificationSetting[]                 $notificationSettings
+ * @property \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[]     $permissions
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Role[]                         $roles
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdviceComments[] $userActionPlanAdviceComments
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User forMyCooperation($cooperationId)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newQuery()
@@ -61,8 +62,9 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Model implements AuthorizableContract
 {
-    use HasRoles, HasCooperationTrait, Authorizable;
-
+    use HasRoles;
+    use HasCooperationTrait;
+    use Authorizable;
 
     protected $guard_name = 'web';
 
@@ -77,33 +79,40 @@ class User extends Model implements AuthorizableContract
 
     // ------ User -> Account table / model migration stuff -------
 
-    public function getEmailAttribute(){
+    public function getEmailAttribute()
+    {
         return $this->getAccountProperty('email');
     }
 
-    public function getOldEmailTokenAttribute(){
+    public function getOldEmailTokenAttribute()
+    {
         return $this->getAccountProperty('old_email_token');
     }
 
-    public function getOldemailAttribute(){
+    public function getOldemailAttribute()
+    {
         return $this->getAccountProperty('old_email');
     }
 
-    public function getIsAdminAttribute(){
+    public function getIsAdminAttribute()
+    {
         return $this->getAccountProperty('is_admin');
     }
 
     /**
-     * Quick short hand helper for user to account data migration
+     * Quick short hand helper for user to account data migration.
+     *
      * @param string $property
+     *
      * @return mixed|null
      */
     public function getAccountProperty($property)
     {
-        \Log::debug("Account property " . $property . " is accessed via User!");
-        if ($this->account instanceof Account){
+        \Log::debug('Account property '.$property.' is accessed via User!');
+        if ($this->account instanceof Account) {
             return $this->account->$property;
         }
+
         return null;
     }
 
@@ -119,7 +128,7 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
-     * Return the notification settings from a user
+     * Return the notification settings from a user.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -129,7 +138,7 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
-     * Determine if a user retrieves a notification
+     * Determine if a user retrieves a notification.
      *
      * @param $notificationTypeShort
      *
@@ -139,7 +148,6 @@ class User extends Model implements AuthorizableContract
     {
         $notificationType = NotificationType::where('short', $notificationTypeShort)->first();
         $notInterestedInterval = NotificationInterval::where('short', 'no-interest')->first();
-
 
         $doesUserRetrievesNotifications =
 
@@ -230,7 +238,7 @@ class User extends Model implements AuthorizableContract
      * @param $type
      * @param $interestedInId
      *
-     * @return \Illuminate\Database\Eloquent\Model|null|object|static
+     * @return \Illuminate\Database\Eloquent\Model|object|static|null
      */
     public function getInterestedType($type, $interestedInId, InputSource $inputSource = null)
     {
@@ -270,7 +278,6 @@ class User extends Model implements AuthorizableContract
 
         return true;
     }
-
 
     /**
      * Get the human readable role name based on the role name.
@@ -429,7 +436,6 @@ class User extends Model implements AuthorizableContract
     public function hasNotMultipleRoles(): bool
     {
         return ! $this->hasMultipleRoles();
-
     }
 
     public function completedQuestionnaires()
@@ -451,6 +457,7 @@ class User extends Model implements AuthorizableContract
      * Check if a user gave permission to let cooperations access his building.
      *
      * @param $buildingId
+     *
      * @return bool
      */
     public function allowedAccessToHisBuilding($buildingId)
@@ -460,12 +467,12 @@ class User extends Model implements AuthorizableContract
         if ($conversationRequest instanceof PrivateMessage && $conversationRequest->allow_access) {
             return true;
         }
+
         return false;
     }
 
-
     /**
-     * Return the user its account information
+     * Return the user its account information.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -485,7 +492,7 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
-     * Get the user its email from the accounts table
+     * Get the user its email from the accounts table.
      *
      * @return string
      */
@@ -493,7 +500,6 @@ class User extends Model implements AuthorizableContract
     {
         return $this->account->email;
     }
-
 
     public function logout()
     {

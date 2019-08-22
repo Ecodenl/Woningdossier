@@ -7,10 +7,9 @@
         <ul class="dropdown-menu">
             <?php
                 /**
-                 * @var \Illuminate\Support\Collection $inputValues
+                 * @var \Illuminate\Support\Collection
                  * @var \Illuminate\Support\Collection $userInputValues
                  */
-
                 $hasAnswer = false;
 
                 // if there are multiple, it means a other input source did some work.
@@ -26,7 +25,7 @@
                             $possibleAnswerCount = $inputValues->count();
 
                             $userInputValueAnswers = explode('|', $userInputValues->first()->answer);
-                            $possibleAnswers       = $inputValues->pluck('id')->toArray();
+                            $possibleAnswers = $inputValues->pluck('id')->toArray();
 
                             // get the difference between the user answers and all the possible answers.
                             $differenceBetweenPossibleAndAnswers = array_diff($possibleAnswers, $userInputValueAnswers);

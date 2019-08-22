@@ -1,11 +1,11 @@
 <?php
 if (isset($id)) {
-    $infoAlertId = $id . '_gas-info';
+    $infoAlertId = $id.'_gas-info';
 } else {
     $infoAlertId = 'gas-info';
 }
 // if the step is not given, fallback to the default translation
-if (!isset($step)) {
+if (! isset($step)) {
     $step = 'general';
 }
 ?>

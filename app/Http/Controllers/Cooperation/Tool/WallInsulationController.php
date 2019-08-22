@@ -4,20 +4,14 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\WallInsulation;
 use App\Events\StepDataHasBeenChanged;
-use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculator;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\KeyFigures\WallInsulation\Temperature;
-use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\WallInsulationRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
-use App\Models\Cooperation;
-use App\Models\ElementValue;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
@@ -25,10 +19,8 @@ use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
-use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -140,8 +132,6 @@ class WallInsulationController extends Controller
                 'facade_plastered_painted' => $facadePlasteredOrPainted,
             ]
         );
-
-
 
         // Save progress
         $this->saveAdvices($request);

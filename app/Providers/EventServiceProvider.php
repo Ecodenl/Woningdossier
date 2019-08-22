@@ -9,6 +9,7 @@ use App\Events\ObservingToolForUserEvent;
 use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
 use App\Events\PrivateMessageReceiverEvent;
+use App\Events\Registered;
 use App\Events\StepDataHasBeenChanged;
 use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
@@ -30,7 +31,6 @@ use App\Listeners\StepDataHasBeenChangedListener;
 use App\Listeners\SuccessFullLoginListener;
 use App\Listeners\UserEventSubscriber;
 use Illuminate\Auth\Events\Login;
-use App\Events\Registered;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -60,16 +60,16 @@ class EventServiceProvider extends ServiceProvider
             SuccessFullLoginListener::class,
         ],
         Registered::class                         => [
-            LogRegisteredUserListener::class
+            LogRegisteredUserListener::class,
         ],
         UserAssociatedWithOtherCooperation::class => [
-            LogUserAssociatedWithOtherCooperation::class
+            LogUserAssociatedWithOtherCooperation::class,
         ],
         FillingToolForUserEvent::class            => [
-            FillingToolForUserListener::class
+            FillingToolForUserListener::class,
         ],
         ObservingToolForUserEvent::class          => [
-            ObservingToolForUserListener::class
+            ObservingToolForUserListener::class,
         ],
         StepDataHasBeenChanged::class             => [
             StepDataHasBeenChangedListener::class,
@@ -78,10 +78,10 @@ class EventServiceProvider extends ServiceProvider
             SetOldEmailListener::class,
         ],
         UserAllowedAccessToHisBuilding::class     => [
-            LogAllowedAccessToBuilding::class
+            LogAllowedAccessToBuilding::class,
         ],
         UserRevokedAccessToHisBuilding::class     => [
-            LogRevokedAccessToBuilding::class
+            LogRevokedAccessToBuilding::class,
         ],
     ];
 

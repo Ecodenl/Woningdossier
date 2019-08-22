@@ -8,23 +8,23 @@ return [
     'taking-into-account' => [
         'repair-joint' => [
             'year' => [
-                'title' => 'Jaar voegwerk'
-            ]
+                'title' => 'Jaar voegwerk',
+            ],
         ],
         'clean-brickwork' => [
             'year' => [
-                'title' => 'Jaar gevelreiniging'
+                'title' => 'Jaar gevelreiniging',
             ],
         ],
         'impregnate-wall' => [
             'year' => [
-                'title' => 'Jaar gevel impregneren'
+                'title' => 'Jaar gevel impregneren',
             ],
         ],
         'wall-painting' => [
             'year' => [
-                'title' => 'Jaar gevelschilderwerk'
-            ]
-        ]
-    ]
+                'title' => 'Jaar gevelschilderwerk',
+            ],
+        ],
+    ],
 ];

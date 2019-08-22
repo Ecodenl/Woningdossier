@@ -8,17 +8,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * App\Models\FileType
+ * App\Models\FileType.
  *
- * @property int $id
- * @property int $file_type_category_id
- * @property string $name
- * @property string $short
- * @property \Illuminate\Support\Carbon|null $duration
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\FileTypeCategory $category
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FileStorage[] $files
+ * @property int                                                                $id
+ * @property int                                                                $file_type_category_id
+ * @property string                                                             $name
+ * @property string                                                             $short
+ * @property \Illuminate\Support\Carbon|null                                    $duration
+ * @property \Illuminate\Support\Carbon|null                                    $created_at
+ * @property \Illuminate\Support\Carbon|null                                    $updated_at
+ * @property \App\Models\FileTypeCategory                                       $category
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\FileStorage[] $files
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType query()
@@ -42,7 +43,7 @@ class FileType extends Model
      * @var array
      */
     protected $casts = [
-        'duration' => 'datetime'
+        'duration' => 'datetime',
     ];
 
     public function getRouteKeyName()
@@ -51,7 +52,7 @@ class FileType extends Model
     }
 
     /**
-     * Return the belongsto relationship on a categort
+     * Return the belongsto relationship on a categort.
      *
      * @return BelongsTo
      */
@@ -61,7 +62,7 @@ class FileType extends Model
     }
 
     /**
-     * Return the hasMany relationship on the file storage
+     * Return the hasMany relationship on the file storage.
      *
      * @return HasMany
      */

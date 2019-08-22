@@ -13,7 +13,7 @@
             ])
             <div class="row">
                 <div class="col-sm-12">
-                    <?php // todo: something seems off with the name ?>
+                    <?php // todo: something seems off with the name?>
                     @component('cooperation.tool.components.step-question', ['id' => 'element_' . $facadeInsulation->element->id, 'name' => 'house_has_insulation', 'translation' => 'wall-insulation.intro.filled-insulation'])
 
                         @component('cooperation.tool.components.input-group',

@@ -35,12 +35,12 @@ class UserPolicy
         return false;
     }
 
-
     /**
      * Check if a user is authorized to delete a user.
      *
      * @param User $user
      * @param User $userToDelete
+     *
      * @return bool
      */
     public function deleteUser(User $user, User $userToDelete): bool
@@ -53,9 +53,9 @@ class UserPolicy
     }
 
     /**
-     * Determine if a user is authorize to delete his own account
+     * Determine if a user is authorize to delete his own account.
      *
-     * @param  User  $user
+     * @param User $user
      *
      * @return bool
      */
@@ -64,6 +64,7 @@ class UserPolicy
         if ($user->hasRole(['cooperation-admin'])) {
             return false;
         }
+
         return true;
     }
 
@@ -124,5 +125,4 @@ class UserPolicy
 
         return false;
     }
-
 }

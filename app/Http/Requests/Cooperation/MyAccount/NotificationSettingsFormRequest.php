@@ -25,7 +25,7 @@ class NotificationSettingsFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'notification_setting.interval_id' => ['int', 'required', Rule::exists('notification_intervals', 'id')]
+            'notification_setting.interval_id' => ['int', 'required', Rule::exists('notification_intervals', 'id')],
         ];
     }
 }

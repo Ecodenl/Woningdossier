@@ -4,7 +4,6 @@ namespace App\Http\ViewComposers;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
-use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\PrivateMessageView;

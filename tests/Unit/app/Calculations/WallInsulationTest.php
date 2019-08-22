@@ -4,8 +4,6 @@ namespace Tests\Unit\app\Calculations;
 
 use App\Calculations\WallInsulation;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Unit\data\ExcelExample;
 
 class WallInsulationTest extends TestCase
@@ -19,16 +17,15 @@ class WallInsulationTest extends TestCase
     {
         //$this->markTestIncomplete("Work in progress with the input source related traits");
         $user = ExcelExample::user();
-        $habits   = ExcelExample::userEnergyHabits();
+        $habits = ExcelExample::userEnergyHabits();
 
         $building = ExcelExample::building();
 
-        $habits   = ExcelExample::userEnergyHabits();
-
+        $habits = ExcelExample::userEnergyHabits();
 
         $calculate = [
             'cavity_wall' => 0,
-            'element' => [ 3 => 10, ], // 3 = wall insulation element, 10 = geen isolatie
+            'element' => [3 => 10], // 3 = wall insulation element, 10 = geen isolatie
             'insulation_wall_surface' => 33,
             'wall_joints' => 1, // nee
             'contaminated_wall_joints' => 1, // nee
@@ -65,6 +62,5 @@ class WallInsulationTest extends TestCase
               ]
             ]
          */
-
     }
 }

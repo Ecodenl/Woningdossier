@@ -2,8 +2,8 @@
 
 namespace App\Listeners;
 
-use App\Jobs\SendRequestAccountConfirmationEmail;
 use App\Events\Registered;
+use App\Jobs\SendRequestAccountConfirmationEmail;
 
 class UserEventSubscriber
 {

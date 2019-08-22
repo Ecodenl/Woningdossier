@@ -26,9 +26,9 @@
                         @foreach($keyfigures as $step => $keyfigureData)
                             @foreach($keyfigureData as $kengetalConstant => $kengetal)
                             <?php
-                                $translationKey = 'key-figures.' . $step . '.' .$kengetalConstant.'.title';
+                                $translationKey = 'key-figures.'.$step.'.'.$kengetalConstant.'.title';
                                 $kengetalTitle = __($translationKey);
-                                $unitTranslationKey = 'key-figures.' . $step . '.' .$kengetalConstant.'.unit';
+                                $unitTranslationKey = 'key-figures.'.$step.'.'.$kengetalConstant.'.unit';
                                 $kengetalUnit = __($unitTranslationKey);
                             ?>
                             <tr>

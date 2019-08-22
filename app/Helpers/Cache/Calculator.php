@@ -6,7 +6,6 @@ use App\Models\PriceIndexing;
 
 class Calculator
 {
-
     const CACHE_PRICE_INDEX = 'Calculator_getPriceIndex_%s';
 
     public static function getPriceIndex($short)
@@ -18,7 +17,5 @@ class Calculator
                 return PriceIndexing::where('short', $short)->first();
             }
         );
-
     }
-
 }

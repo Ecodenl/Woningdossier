@@ -12,19 +12,18 @@ return [
     'log-messages'            => [
         'logged-in'                  => ':full_name heeft ingelogd op de applicatie',
         'registered-user'            => ':full_name heeft geregistreerd',
-        'user-associated-with-other-cooperation' => ':full_name heeft zich gekoppeld aan de coöperatie :cooperation_name' ,
+        'user-associated-with-other-cooperation' => ':full_name heeft zich gekoppeld aan de coöperatie :cooperation_name',
         'step-data-has-been-changed' => ':full_name heeft een wijziging doorgevoerd in het actieplan',
         'filling-tool-for'           => ':full_name is ingelogd op de tool om gegevens aan te passen van :for_full_name',
         'observing-tool-for'         => ':full_name is ingelogd op de tool om de gegevens te bekijken van :for_full_name',
         'action-plan-changed'        => ':full_name heeft een wijziging doorgevoerd op het actieplan',
         'participant-added'          => ':full_name heeft :for_full_name gekoppeld aan deze woning',
         'user-gave-access' => ':full_name heeft toegang gegeven tot zijn woning',
-        'user-revoked-access' => ':full_name heeft de toegang ingetrokken voor zijn woning'
+        'user-revoked-access' => ':full_name heeft de toegang ingetrokken voor zijn woning',
     ],
     'building-coach-statuses' => [
         \App\Models\BuildingCoachStatus::STATUS_REMOVED => 'Verwijderd',
         \App\Models\BuildingCoachStatus::STATUS_ADDED => 'Toegevoegd',
-
     ],
     'cooperation'             => [
         'create-building' => [
@@ -88,7 +87,7 @@ return [
                         'header'   => 'Kengetallen',
                         'sections' => [
                             'general'              => 'Algemeen',
-                            'measure_applications' => 'Maatregelen'
+                            'measure_applications' => 'Maatregelen',
                         ],
                         'table'    => [
                             'title'                => 'Kengetal naam / type',
@@ -102,7 +101,7 @@ return [
                                 'cost-unit'            => 'Kosten per',
                                 'minimal-costs'        => 'Minimale kosten',
                                 'maintenance-interval' => 'Onderhoudsinterval',
-                                'maintenance-unit'     => 'Onderhoud per'
+                                'maintenance-unit'     => 'Onderhoud per',
                             ],
                         ],
                     ],
@@ -190,9 +189,9 @@ return [
                                 'table'  => [
                                     'name'    => 'Naam',
                                     'email'   => 'E-mail',
-                                    'actions' => 'Acties'
-                                ]
-                            ]
+                                    'actions' => 'Acties',
+                                ],
+                            ],
                         ],
                         'coordinator'                => [
                             'index' => [
@@ -200,8 +199,8 @@ return [
                                 'table'  => [
                                     'name'  => 'Naam',
                                     'email' => 'E-mail',
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'users'                      => [
                             'index' => [
@@ -211,15 +210,15 @@ return [
                                     'name'       => 'Naam',
                                     'email'      => 'E-mail',
                                     'actions'    => 'Acties',
-                                ]
+                                ],
                             ],
                             'show'  => [
                                 'header' => 'Overzicht van de gebruiker :name',
                                 'role'   => [
                                     'label' => 'Rol',
-                                    'alert' => 'Weet u zeker dat u deze rol wilt toepassen ?'
+                                    'alert' => 'Weet u zeker dat u deze rol wilt toepassen ?',
                                 ],
-                            ]
+                            ],
                         ],
                         'home'                       => [
                             'index' => [
@@ -227,7 +226,7 @@ return [
                                 'coach-count'       => 'Coaches',
                                 'resident-count'    => 'Bewoners',
                                 'coordinator-count' => 'Coordinatoren',
-                            ]
+                            ],
                         ],
                     ],
                 ],
@@ -260,7 +259,7 @@ return [
                 'text'   => 'Kies hier met welke rol u wilt doorgaan, u kunt dit op elk moment veranderen',
             ],
             'messages'          => [
-                'send' => 'Versturen'
+                'send' => 'Versturen',
             ],
             'users'             => [
                 'show' => [
@@ -268,33 +267,33 @@ return [
 
                     'observe-building' => [
                         'label'  => 'Woning bekijken',
-                        'button' => '<i class="glyphicon glyphicon-eye-open"></i>'
+                        'button' => '<i class="glyphicon glyphicon-eye-open"></i>',
                     ],
                     'delete-account'   => [
                         'label'  => 'Account verwijderen',
-                        'button' => '<i class="glyphicon glyphicon-trash"></i>'
+                        'button' => '<i class="glyphicon glyphicon-trash"></i>',
                     ],
                     'role'             => [
                         'label'  => 'Rol',
-                        'button' => 'Bijwerken'
+                        'button' => 'Bijwerken',
                     ],
                     'status'           => [
                         'current' => 'Huige status: ',
                         'label'   => 'Status: ',
-                        'button'  => 'Kies status'
+                        'button'  => 'Kies status',
                     ],
                     'associated-coach' => [
                         'label'  => 'Gekoppelde coaches',
-                        'button' => 'Kies coach'
+                        'button' => 'Kies coach',
                     ],
                     'appointment-date' => [
                         'label'  => 'Datum afspraak',
-                        'button' => 'Kies datum'
+                        'button' => 'Kies datum',
                     ],
 
                     'has-building-access' => [
                         'no'  => 'Geen toegang tot woning',
-                        'yes' => 'Toegang tot woning'
+                        'yes' => 'Toegang tot woning',
                     ],
 
                     'delete-user'              => 'Weet u zeker dat u deze gebruiker wilt verwijderen, deze actie kan niet ongedaan worden gemaakt',
@@ -311,22 +310,22 @@ return [
                         'messages-public'      => [
                             'user-notification' => [
                                 'yes' => 'Gebruiker heeft notificaties aanstaan, hij zal op de hoogte worden gesteld van de verstuurde berichten.',
-                                'no' => 'Gebruiker ontvangt hier geen melding van.'
+                                'no' => 'Gebruiker ontvangt hier geen melding van.',
                             ],
-                            'title' => 'Berichten bewoner'
+                            'title' => 'Berichten bewoner',
                         ],
                         'messages-intern'      => [
-                            'title' => 'Berichten intern'
+                            'title' => 'Berichten intern',
                         ],
                         'comments-on-building' => [
-                            'title' => 'Opmerkingen bij woning'
+                            'title' => 'Opmerkingen bij woning',
                         ],
                         'fill-in-history'      => [
-                            'title' => 'Invulhistorie'
-                        ]
+                            'title' => 'Invulhistorie',
+                        ],
                     ],
                     'next'     => 'Volgende',
-                    'previous' => 'Vorige'
+                    'previous' => 'Vorige',
                 ],
             ],
             /* translations for the coach environment */
@@ -365,10 +364,10 @@ return [
                                 'street-house-number'      => 'Straat en huisnummer',
                                 'zip-code'                 => 'Postcode',
                                 'city'                     => 'Stad',
-                                'unread-messages'          => 'Aantal ongelezen berichten'
+                                'unread-messages'          => 'Aantal ongelezen berichten',
                             ],
                         ],
-                    ]
+                    ],
                 ],
                 'buildings' => [
                     'index' => [
@@ -393,31 +392,31 @@ return [
 
                         'observe-building' => [
                             'label'  => 'Woning bekijken',
-                            'button' => '<i class="glyphicon glyphicon-eye-open"></i>'
+                            'button' => '<i class="glyphicon glyphicon-eye-open"></i>',
                         ],
                         'fill-for-user'    => [
                             'label'  => 'Woning als coach bewerken',
-                            'button' => '<i class="glyphicon glyphicon-edit"></i>'
+                            'button' => '<i class="glyphicon glyphicon-edit"></i>',
                         ],
                         'role'             => [
                             'label'  => 'Rol',
-                            'button' => 'Bijwerken'
+                            'button' => 'Bijwerken',
                         ],
                         'status'           => [
                             'label' => 'Kies status: ',
                         ],
                         'associated-coach' => [
                             'label'  => 'Gekoppelde coaches',
-                            'button' => 'Kies coach'
+                            'button' => 'Kies coach',
                         ],
                         'appointment-date' => [
                             'label'  => 'Datum afspraak',
-                            'button' => 'Kies datum'
+                            'button' => 'Kies datum',
                         ],
 
                         'has-building-access' => [
                             'no'  => 'Geen toegang tot woning',
-                            'yes' => 'Toegang tot woning'
+                            'yes' => 'Toegang tot woning',
                         ],
 
                         'set-status'                 => 'Weet u zeker dat u deze status aan de woning wilt hangen?',
@@ -425,10 +424,10 @@ return [
                         'set-empty-appointment-date' => 'Weet u zeker dat u de afspraak wilt verwijderen?',
                         'tabs'                       => [
                             'messages-public'      => [
-                                'title' => 'Berichten bewoner'
+                                'title' => 'Berichten bewoner',
                             ],
                             'messages-intern'      => [
-                                'title' => 'Berichten intern'
+                                'title' => 'Berichten intern',
                             ],
                             'comments-on-building' => [
                                 'title' => 'Opmerkingen bij woning',
@@ -443,20 +442,19 @@ return [
                                         'building'    => 'Actie voor woning',
                                         'for-user'    => 'Actie op gebruiker',
                                         'message'     => 'Bericht',
-                                        'happened-on' => 'Gebeurt op'
-                                    ]
-                                ]
-                            ]
+                                        'happened-on' => 'Gebeurt op',
+                                    ],
+                                ],
+                            ],
                         ],
                         'next'                       => 'Volgende',
-                        'previous'                   => 'Vorige'
+                        'previous'                   => 'Vorige',
                     ],
                 ],
             ],
 
             /* translations for the coordinator and cooperation-admin */
             'cooperation'       => [
-
                 'messages' => [
                     'index' => [
                         'header' => 'Overzicht van woningen waar een conversatie is',
@@ -468,10 +466,10 @@ return [
                                 'street-house-number'      => 'Straat en huisnummer',
                                 'zip-code'                 => 'Postcode',
                                 'city'                     => 'Stad',
-                                'unread-messages'          => 'Aantal ongelezen berichten'
+                                'unread-messages'          => 'Aantal ongelezen berichten',
                             ],
                         ],
-                    ]
+                    ],
                 ],
 
                 'coaches'           => [
@@ -486,7 +484,7 @@ return [
                                 'zip-code'            => 'Postcode',
                                 'city'                => 'Stad',
                                 'email'               => 'Email',
-                                'roles'               => 'Huidige rollen'
+                                'roles'               => 'Huidige rollen',
                             ],
                         ],
                     ],
@@ -510,19 +508,17 @@ return [
                 ],
                 'reports'           => [
                     'index' => [
-
                         'title'       => 'Rapportages',
                         'description' => 'Rapportage downloads',
-
 
                         'table' => [
                             'columns'         => [
                                 'name'             => 'Rapport type',
                                 'download'         => 'Download file',
-                                'available-report' => 'Beschikbaar rapport'
+                                'available-report' => 'Beschikbaar rapport',
                             ],
                             'report-in-queue' => 'Het rapport wordt gegenereerd',
-                            'generate-btn' => 'Genereer'
+                            'generate-btn' => 'Genereer',
                         ],
                     ],
 
@@ -560,11 +556,10 @@ return [
                                 'zip-code'            => 'Postcode',
                                 'city'                => 'Stad',
                                 'status'              => 'Status',
-                                'no-known-created-at' => 'Niet bekend'
+                                'no-known-created-at' => 'Niet bekend',
                             ],
                         ],
                     ],
-
 
                     'create' => [
                         'form' => [
@@ -656,7 +651,6 @@ return [
                         'questionnaires'    => 'Vragenlijsten',
                         'step'              => 'Stappen aan en uitzetten',
                     ],
-
 
                     'steps' => [
                         'index' => [
@@ -866,7 +860,6 @@ return [
                 'intro' => [
                     'title' => 'Vloerisolatie',
                 ],
-
             ],
 
             'roof-insulation' => [
@@ -924,7 +917,7 @@ return [
                     'roof-insulation-plat-dak'    => 'Dakisolatie - Plat dak',
                     'high-efficiency-boiler'      => 'HR Ketel',
                     'heater' => 'Zonneboiler',
-                    'solar-panels' => 'Zonnepanelen'
+                    'solar-panels' => 'Zonnepanelen',
                 ],
 
                 'conversation-requests'                => [
@@ -950,7 +943,6 @@ return [
             ],
 
             'ventilation-information' => [
-
                 'downloads' => [
                     'title'   => 'Downloadbare informatie.',
                     'content' => 'Pdf informatie...',

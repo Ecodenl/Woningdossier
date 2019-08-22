@@ -161,7 +161,7 @@ class ExampleBuildingController extends Controller
      */
     protected function getContentStructure()
     {
-	    return ExampleBuildingService::getContentStructure();
+        return ExampleBuildingService::getContentStructure();
 
         // Wall insulation
         $wallInsulation = Element::where('short', 'wall-insulation')->first();

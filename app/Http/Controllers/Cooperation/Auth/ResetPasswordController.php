@@ -83,7 +83,6 @@ class ResetPasswordController extends Controller
             : $this->sendResetFailedResponse($request, $response);
     }
 
-
     protected function resetPassword(Account $account, $password)
     {
         $account->password = \Hash::make($password);
@@ -109,7 +108,6 @@ class ResetPasswordController extends Controller
      */
     public function showResetForm(Request $request, Cooperation $cooperation, $token = null)
     {
-
         return view('cooperation.auth.passwords.reset')->with(
             ['token' => $token, 'email' => $request->email]
         );

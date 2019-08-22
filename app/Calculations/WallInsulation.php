@@ -4,9 +4,7 @@ namespace App\Calculations;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
-use App\Helpers\HoomdossierSession;
 use App\Helpers\KeyFigures\WallInsulation\Temperature;
-use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\ElementValue;
 use App\Models\FacadeDamagedPaintwork;
@@ -16,14 +14,14 @@ use App\Models\MeasureApplication;
 use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
 
-class WallInsulation {
-
+class WallInsulation
+{
     /**
-     * Calculate the wall insulation costs and savings etc
+     * Calculate the wall insulation costs and savings etc.
      *
-     * @param  Building  $building
-     * @param  UserEnergyHabit|null $energyHabit
-     * @param  array  $calculateData
+     * @param Building             $building
+     * @param UserEnergyHabit|null $energyHabit
+     * @param array                $calculateData
      *
      * @return array;
      */
@@ -32,7 +30,6 @@ class WallInsulation {
         $cavityWall = $calculateData['cavity_wall'] ?? -1;
         $elements = $calculateData['element'] ?? [];
         $facadeSurface = $calculateData['insulation_wall_surface'] ?? 0;
-
 
         $result = [
             'savings_gas' => 0,
@@ -45,11 +42,11 @@ class WallInsulation {
         $advice = Temperature::WALL_INSULATION_JOINTS;
         if (1 == $cavityWall) {
             $advice = Temperature::WALL_INSULATION_JOINTS;
-            //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.cavity-wall');
+        //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.cavity-wall');
             //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         } elseif (2 == $cavityWall) {
             $advice = Temperature::WALL_INSULATION_FACADE;
-            //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.facade-internal');
+        //$result['insulation_advice'] = trans('woningdossier.cooperation.tool.wall-insulation.insulation-advice.facade-internal');
             //$result['insulation_advice'] = MeasureApplication::byShort($advice)->measure_name;
         } elseif (0 == $cavityWall) {
             $advice = Temperature::WALL_INSULATION_RESEARCH;
@@ -64,7 +61,6 @@ class WallInsulation {
         if ($elementValue instanceof ElementValue && $energyHabit instanceof UserEnergyHabit) {
             $result['savings_gas'] = Calculator::calculateGasSavings($building, $elementValue, $energyHabit, $facadeSurface, $advice);
         }
-
 
         $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
         $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));

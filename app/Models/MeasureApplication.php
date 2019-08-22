@@ -6,21 +6,22 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\MeasureApplication
+ * App\Models\MeasureApplication.
  *
- * @property int $id
- * @property string $measure_type
- * @property string $measure_name
- * @property string $short
- * @property string $application
- * @property float $costs
- * @property string $cost_unit
- * @property float $minimal_costs
- * @property int $maintenance_interval
- * @property string $maintenance_unit
- * @property int $step_id
+ * @property int                             $id
+ * @property string                          $measure_type
+ * @property string                          $measure_name
+ * @property string                          $short
+ * @property string                          $application
+ * @property float                           $costs
+ * @property string                          $cost_unit
+ * @property float                           $minimal_costs
+ * @property int                             $maintenance_interval
+ * @property string                          $maintenance_unit
+ * @property int                             $step_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication query()
@@ -47,7 +48,7 @@ class MeasureApplication extends Model
     /**
      * @param string $short
      *
-     * @return MeasureApplication|Model|null|object
+     * @return MeasureApplication|Model|object|null
      */
     public static function byShort($short)
     {

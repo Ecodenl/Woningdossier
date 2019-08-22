@@ -4,28 +4,28 @@ namespace App\Models;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Traits\HasCooperationTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\PrivateMessage
+ * App\Models\PrivateMessage.
  *
- * @property int $id
- * @property int|null $building_id
- * @property bool|null $is_public
- * @property string $from_user
- * @property string|null $request_type
- * @property string $message
- * @property int|null $from_user_id
- * @property int|null $from_cooperation_id
- * @property int|null $to_cooperation_id
- * @property bool $allow_access
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building|null $building
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessageView[] $privateMessageViews
+ * @property int                                                                       $id
+ * @property int|null                                                                  $building_id
+ * @property bool|null                                                                 $is_public
+ * @property string                                                                    $from_user
+ * @property string|null                                                               $request_type
+ * @property string                                                                    $message
+ * @property int|null                                                                  $from_user_id
+ * @property int|null                                                                  $from_cooperation_id
+ * @property int|null                                                                  $to_cooperation_id
+ * @property bool                                                                      $allow_access
+ * @property \Illuminate\Support\Carbon|null                                           $created_at
+ * @property \Illuminate\Support\Carbon|null                                           $updated_at
+ * @property \App\Models\Building|null                                                 $building
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessageView[] $privateMessageViews
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage accessAllowed()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversation($buildingId)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversationRequest()
@@ -97,7 +97,7 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Scope a query to return all the conversation requests
+     * Scope a query to return all the conversation requests.
      *
      * @param $query
      *
@@ -111,7 +111,7 @@ class PrivateMessage extends Model
     /**
      * Determine if a private message is public.
      *
-     * @param  PrivateMessage  $privateMessage
+     * @param PrivateMessage $privateMessage
      *
      * @return bool
      */
@@ -127,7 +127,7 @@ class PrivateMessage extends Model
     /**
      * Determine if a private message is private.
      *
-     * @param  PrivateMessage  $privateMessage
+     * @param PrivateMessage $privateMessage
      *
      * @return bool
      */
@@ -145,7 +145,6 @@ class PrivateMessage extends Model
     {
         return $query->where('to_user_id', Hoomdossier::user()->id);
     }
-
 
     /**
      * Scope a query to return the conversation ordered on created_at.
@@ -225,36 +224,35 @@ class PrivateMessage extends Model
      * Get all the "group members"
      * returns a collection of all the participants for a chat from a building.
      *
-     * @param        $buildingId
-     * @param  bool  $publicConversation
+     * @param      $buildingId
+     * @param bool $publicConversation
      *
      * @return Collection
      */
     public static function getGroupParticipants($buildingId, $publicConversation = true): Collection
     {
-	    // create a collection of group members
-	    $groupMembers = collect();
+        // create a collection of group members
+        $groupMembers = collect();
 
-	    $building = Building::find($buildingId);
+        $building = Building::find($buildingId);
 
-	    if ($building instanceof Building) {
+        if ($building instanceof Building) {
+            // get the coaches with access to the building
+            $coachesWithAccess = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
 
-		    // get the coaches with access to the building
-		    $coachesWithAccess = BuildingCoachStatus::getConnectedCoachesByBuildingId( $buildingId );
+            // if its a public conversation we push the building owner in it
+            if ($publicConversation) {
+                // get the owner of the building,
+                if ($building->user instanceof User) {
+                    $groupMembers->push($building->user);
+                }
+            }
 
-		    // if its a public conversation we push the building owner in it
-		    if ( $publicConversation ) {
-			    // get the owner of the building,
-			    if ($building->user instanceof User) {
-				    $groupMembers->push( $building->user );
-			    }
-		    }
-
-		    // put the coaches with access to the groupmembers
-		    foreach ( $coachesWithAccess as $coachWithAccess ) {
-			    $groupMembers->push( User::find( $coachWithAccess->coach_id ) );
-		    }
-	    }
+            // put the coaches with access to the groupmembers
+            foreach ($coachesWithAccess as $coachWithAccess) {
+                $groupMembers->push(User::find($coachWithAccess->coach_id));
+            }
+        }
 
         return $groupMembers;
     }
@@ -274,7 +272,7 @@ class PrivateMessage extends Model
             // if a user would be a coach and a coordinator / cooperation-admin and he would be sending from the coordinator section.
             // after that switching back to the coach section and start to send message as a coach, he would be see the messages he sent as a coordinator as they were his messages
             // while this is true, its looks odd.
-        } else if (Hoomdossier::user()->id == $this->from_user_id && is_null($this->from_cooperation_id)) {
+        } elseif (Hoomdossier::user()->id == $this->from_user_id && is_null($this->from_cooperation_id)) {
             return true;
         }
 
@@ -326,7 +324,7 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Get the private message views
+     * Get the private message views.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

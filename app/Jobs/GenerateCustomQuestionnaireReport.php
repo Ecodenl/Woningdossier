@@ -10,15 +10,18 @@ use App\Models\FileType;
 use App\Models\InputSource;
 use App\Services\CsvService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Maatwebsite\Excel\Facades\Excel;
 
 class GenerateCustomQuestionnaireReport implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected $cooperation;
     protected $anonymizeData;
@@ -26,13 +29,12 @@ class GenerateCustomQuestionnaireReport implements ShouldQueue
     protected $fileStorage;
 
     /**
-     *
-     * @param  Cooperation  $cooperation
-     * @param  FileStorage $fileStorage
-     * @param  FileType $fileType
-     * @param  bool  $anonymizeData
+     * @param Cooperation $cooperation
+     * @param FileStorage $fileStorage
+     * @param FileType    $fileType
+     * @param bool        $anonymizeData
      */
-    public function __construct(Cooperation $cooperation, FileType $fileType, FileStorage $fileStorage,  bool $anonymizeData = false)
+    public function __construct(Cooperation $cooperation, FileType $fileType, FileStorage $fileStorage, bool $anonymizeData = false)
     {
         $this->fileType = $fileType;
         $this->fileStorage = $fileStorage;
@@ -63,7 +65,6 @@ class GenerateCustomQuestionnaireReport implements ShouldQueue
 
         // export the csv file
         Excel::store(new CsvExport($rows), $this->fileStorage->filename, 'downloads', \Maatwebsite\Excel\Excel::CSV);
-
 
         $this->fileStorage->isProcessed();
     }

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class HaveUserForEachCooperation extends Migration
 {
@@ -13,7 +13,7 @@ class HaveUserForEachCooperation extends Migration
      */
     public function up()
     {
-        if ( ! Schema::hasColumn('users', 'cooperation_id')) {
+        if (! Schema::hasColumn('users', 'cooperation_id')) {
             Schema::table('users', function (Blueprint $table) {
                 $table->unsignedInteger('cooperation_id')->nullable()->after('account_id');
                 $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
@@ -41,7 +41,7 @@ class HaveUserForEachCooperation extends Migration
                             'account_id'     => $user->account_id,
                             'cooperation_id' => $combination->cooperation_id,
                             'created_at'     => $user->created_at,
-                            'updated_at'     => $user->updated_at
+                            'updated_at'     => $user->updated_at,
                         ]);
                     }
                 }
@@ -81,42 +81,40 @@ class HaveUserForEachCooperation extends Migration
                       ->update(['model_id' => $sibling->id]);
                 }
             }
-
         }
 
         // Now drop the cooperation column on the roles table
-        if (Schema::hasColumn('model_has_roles', 'cooperation_id')){
-            Schema::table('model_has_roles', function(Blueprint $table){
+        if (Schema::hasColumn('model_has_roles', 'cooperation_id')) {
+            Schema::table('model_has_roles', function (Blueprint $table) {
                 $table->dropForeign(['cooperation_id']);
                 $table->dropColumn('cooperation_id');
             });
         }
 
         // ---------------------------------------------------------------------------------------------------------------
-        dump("--------------------------- siblings copy user_action_plan_advice_comments");
+        dump('--------------------------- siblings copy user_action_plan_advice_comments');
         $this->copyTableDataForSiblings('user_action_plan_advice_comments');
 
         // ---------------------------------------------------------------------------------------------------------------
-        dump("--------------------------- siblings copy user_action_plan_advices");
+        dump('--------------------------- siblings copy user_action_plan_advices');
         $this->copyTableDataForSiblings('user_action_plan_advices');
 
         // ---------------------------------------------------------------------------------------------------------------
-        dump("--------------------------- siblings copy user_energy_habits");
+        dump('--------------------------- siblings copy user_energy_habits');
         $this->copyTableDataForSiblings('user_energy_habits');
 
         // ---------------------------------------------------------------------------------------------------------------
-        dump("--------------------------- siblings copy user_interests");
+        dump('--------------------------- siblings copy user_interests');
         $this->copyTableDataForSiblings('user_interests');
 
         // ---------------------------------------------------------------------------------------------------------------
-        dump("--------------------------- siblings copy user_motivations");
+        dump('--------------------------- siblings copy user_motivations');
         $this->copyTableDataForSiblings('user_motivations');
 
-
         // ---------------------------------------------------------------------------------------------------------------
-        dump("Updating questionnaires..");
+        dump('Updating questionnaires..');
         $completedQuestionnaires = DB::table('completed_questionnaires')->get();
-        foreach( $completedQuestionnaires as $completedQuestionnaire ) {
+        foreach ($completedQuestionnaires as $completedQuestionnaire) {
             $questionnaire = DB::table('questionnaires')->find($completedQuestionnaire->questionnaire_id);
             if ($questionnaire instanceof stdClass) {
                 $user = DB::table('users')
@@ -134,9 +132,7 @@ class HaveUserForEachCooperation extends Migration
             }
         }
 
-
         Schema::drop('building_user_usages');
-
     }
 
     /**
@@ -150,10 +146,10 @@ class HaveUserForEachCooperation extends Migration
     {
         $rows = DB::table($table)->get();
         /** @var stdClass $row */
-        foreach($rows as $row){
+        foreach ($rows as $row) {
             // get current attached user
             $current = DB::table('users')->find($row->$userColumn);
-            if ($current instanceof stdClass){
+            if ($current instanceof stdClass) {
                 // get all siblings for the current attached user
                 $siblings = DB::table('users')
                               ->where('account_id', '=', $current->account_id)
@@ -164,10 +160,10 @@ class HaveUserForEachCooperation extends Migration
                         $data = (array) $row;
                         $data[$userColumn] = $sibling->id;
                         // if primary key exists: remove it
-                        if (array_key_exists($tablePrimaryKey, $data)){
+                        if (array_key_exists($tablePrimaryKey, $data)) {
                             unset($data[$tablePrimaryKey]);
                         }
-                        dump("Copy " . $table . " " . $current->id . " -> " . $sibling->id);
+                        dump('Copy '.$table.' '.$current->id.' -> '.$sibling->id);
                         DB::table($table)->insert($data);
                     }
                 }
@@ -183,7 +179,7 @@ class HaveUserForEachCooperation extends Migration
     public function down()
     {
         // put building_user_usages back
-        if (!Schema::hasTable('building_user_usages')) {
+        if (! Schema::hasTable('building_user_usages')) {
             Schema::create('building_user_usages', function (Blueprint $table) {
                 $table->increments('id');
 
@@ -205,15 +201,13 @@ class HaveUserForEachCooperation extends Migration
             });
         }
 
-
         // todo put a lot more stuff back
         //
         //
         //
 
-
         // Put column back
-        if (!Schema::hasColumn('model_has_roles', 'cooperation_id')){
+        if (! Schema::hasColumn('model_has_roles', 'cooperation_id')) {
             Schema::table('model_has_roles', function (Blueprint $table) {
                 $table->unsignedInteger('cooperation_id')->nullable()->after('model_id');
                 $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');
@@ -227,7 +221,7 @@ class HaveUserForEachCooperation extends Migration
         //
 
         // Link cooperation and users back
-        if ( ! Schema::hasTable('cooperation_user')) {
+        if (! Schema::hasTable('cooperation_user')) {
             Schema::create('cooperation_user', function (Blueprint $table) {
                 $table->integer('cooperation_id')->unsigned();
                 $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('restrict');
@@ -244,11 +238,11 @@ class HaveUserForEachCooperation extends Migration
                 $user->account_id)->get();
             // We know there's at least one, so below can be done safely
             $siblings = $siblings->sortBy('id');
-            $first    = $siblings->first();
+            $first = $siblings->first();
             foreach ($siblings as $sibling) {
                 if ($sibling->id == $first->id) {
                     // Attach the first user to the cooperation
-                    if ( ! is_null($first->cooperation_id)) {
+                    if (! is_null($first->cooperation_id)) {
                         $cooperationUser = DB::table('cooperation_user')
                                              ->where('user_id', '=', $first->id)
                                              ->where('cooperation_id', '=',

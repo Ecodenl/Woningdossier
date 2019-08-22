@@ -14,7 +14,10 @@ use Illuminate\Support\Facades\Mail;
 
 class SendRequestAccountConfirmationEmail implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * @var User
@@ -26,12 +29,12 @@ class SendRequestAccountConfirmationEmail implements ShouldQueue
      */
     protected $cooperation;
 
-
     /**
      * Create a new job instance.
      *
-     * @param User $user
+     * @param User        $user
      * @param Cooperation $cooperation
+     *
      * @return void
      */
     public function __construct(User $user, Cooperation $cooperation)

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateStatusesTable extends Migration
 {
@@ -20,7 +20,6 @@ class CreateStatusesTable extends Migration
             $table->integer('order');
             $table->timestamps();
         });
-
     }
 
     /**
@@ -32,5 +31,4 @@ class CreateStatusesTable extends Migration
     {
         Schema::dropIfExists('statuses');
     }
-
 }

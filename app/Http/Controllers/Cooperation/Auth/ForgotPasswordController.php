@@ -47,7 +47,8 @@ class ForgotPasswordController extends Controller
     /**
      * Validate the email for the given request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return void
      */
     protected function validateEmail(Request $request)
@@ -58,11 +59,11 @@ class ForgotPasswordController extends Controller
                 // we have to validate if the email is a member of this cooperation.
                 function ($attribute, $value, $fail) {
                     $user = Account::where('email', $value)->first()->users()->withoutGlobalScopes()->where('cooperation_id', HoomdossierSession::getCooperation())->first();
-                    if (!$user instanceof User) {
-                       $fail($attribute.' is invalid.');
+                    if (! $user instanceof User) {
+                        $fail($attribute.' is invalid.');
                     }
                 },
-            ]
+            ],
         ]);
     }
 }

@@ -12,8 +12,9 @@ class FileStorageDownload
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure                 $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -21,7 +22,6 @@ class FileStorageDownload
         $routeParameters = $request->route()->parameters();
         $fileType = $routeParameters['fileType'];
         $fileStorageFilename = $routeParameters['fileStorageFilename'];
-
 
         // some other logic for resident wil come in the near future.
         if (Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator'])) {

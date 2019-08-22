@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
-use App\Models\Cooperation;
 use App\Models\Step;
 use Closure;
 

@@ -17,9 +17,9 @@ class ConversationRequestController extends Controller
     /**
      * Show the form.
      *
-     * @param  Cooperation  $cooperation
-     * @param  null  $option
-     * @param  null  $measureApplicationShort
+     * @param Cooperation $cooperation
+     * @param null        $option
+     * @param null        $measureApplicationShort
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
@@ -42,7 +42,7 @@ class ConversationRequestController extends Controller
     /**
      * Save the conversation request for whatever the conversation request may be.
      *
-     * @param  ConversationRequest  $request
+     * @param ConversationRequest $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -52,8 +52,8 @@ class ConversationRequestController extends Controller
         if (HoomdossierSession::isUserObserving()) {
             return redirect()->route('cooperation.tool.my-plan.index');
         }
-        $action      = $request->get('action', '');
-        $message     = $request->get('message', '');
+        $action = $request->get('action', '');
+        $message = $request->get('message', '');
         $allowAccess = 'on' == $request->get('allow_access', '');
 
         $cooperation = HoomdossierSession::getCooperation(true);
@@ -73,7 +73,6 @@ class ConversationRequestController extends Controller
             ]
         );
 
-
         $building->setStatus('pending');
 
         // if the user allows access to his building on the request, log the activity.
@@ -83,7 +82,7 @@ class ConversationRequestController extends Controller
 
         return redirect()->route('cooperation.tool.my-plan.index')
                          ->with('success', __('woningdossier.cooperation.conversation-requests.store.success', [
-                             'url' => route('cooperation.my-account.messages.index', compact('cooperation'))
+                             'url' => route('cooperation.my-account.messages.index', compact('cooperation')),
                          ]));
     }
 }

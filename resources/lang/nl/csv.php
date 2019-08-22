@@ -7,6 +7,6 @@ return [
         'co2' => 'CO2 besparing :measure_name',
         'costs' => 'Kosten :measure_name',
         'year' => 'Jaar :measure_name',
-        'comparable_rent' => 'Vergelijkbare rente :measure_name'
-    ]
+        'comparable_rent' => 'Vergelijkbare rente :measure_name',
+    ],
 ];

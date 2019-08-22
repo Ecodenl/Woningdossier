@@ -138,6 +138,6 @@ return [
         'thermostat_low' => 'temperatuur van de thermostaat op lage stand',
         'building_insulated_glazings.*.m2' => 'hoeveel m2 glas wilt u vervangen?',
         'building_insulated_glazings.*.windows' => 'aantal te vervangen ruiten',
-        'window_surface' => 'totale raamopperlake van de woning'
+        'window_surface' => 'totale raamopperlake van de woning',
     ],
 ];

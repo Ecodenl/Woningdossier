@@ -8,7 +8,6 @@ use App\Models\Building;
 use App\Models\BuildingTypeElementMaxSaving;
 use App\Models\Element;
 use App\Models\ElementValue;
-use App\Models\Log;
 use App\Models\MeasureApplication;
 use App\Models\PriceIndexing;
 use App\Models\UserEnergyHabit;
@@ -77,7 +76,7 @@ class Calculator
      *
      * @param MeasureApplication $measure         The measure to apply
      * @param mixed              $number          The amount of measures. (might be m2, pieces, etc.)
-     * @param null|int           $applicationYear
+     * @param int|null           $applicationYear
      * @param bool               $applyIndexing   Whether or not to apply indexing
      *
      * @return float|int
@@ -123,7 +122,7 @@ class Calculator
      * @param float|int $costs    Amount indexed on $fromYear
      * @param int       $fromYear Previous year used for indexing
      * @param int       $toYear   New year to index
-     * @param null|int|float|PriceIndexing Null will fall back on default price index (from db). Otherwise a PriceIndex object or "just" a percentage (>= 0, <= 100)
+     * @param int|float|PriceIndexing|null Null will fall back on default price index (from db). Otherwise a PriceIndex object or "just" a percentage (>= 0, <= 100)
      *
      * @return float|int
      */

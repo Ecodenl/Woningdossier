@@ -9,21 +9,22 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * App\Models\FileStorage
+ * App\Models\FileStorage.
  *
- * @property int $id
- * @property int|null $cooperation_id
- * @property int|null $user_id
- * @property int $file_type_id
- * @property string $filename
- * @property string $content_type
+ * @property int                             $id
+ * @property int|null                        $cooperation_id
+ * @property int|null                        $user_id
+ * @property int                             $file_type_id
+ * @property string                          $filename
+ * @property string                          $content_type
  * @property \Illuminate\Support\Carbon|null $available_until
- * @property bool $is_being_processed
+ * @property bool                            $is_being_processed
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Cooperation|null $cooperation
- * @property-read \App\Models\FileType $fileType
- * @property-read \App\Models\User|null $user
+ * @property \App\Models\Cooperation|null    $cooperation
+ * @property \App\Models\FileType            $fileType
+ * @property \App\Models\User|null           $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage mostRecent()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage newQuery()
@@ -43,15 +44,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class FileStorage extends Model
 {
-
     public static function boot()
     {
         parent::boot();
-        
-        static::addGlobalScope(new AvailableScope);
-        static::addGlobalScope(new CooperationScope);
+
+        static::addGlobalScope(new AvailableScope());
+        static::addGlobalScope(new CooperationScope());
     }
-    
+
     protected $fillable = [
         'cooperation_id', 'filename', 'user_id', 'file_type_id', 'content_type', 'is_being_processed', 'available_until',
     ];
@@ -63,13 +63,13 @@ class FileStorage extends Model
      */
     protected $casts = [
         'is_being_processed' => 'bool',
-        'available_until' => 'datetime'
+        'available_until' => 'datetime',
     ];
 
     /**
      * Query to scope the expired files.
      *
-     * @param  Builder  $query
+     * @param Builder $query
      *
      * @return Builder
      */
@@ -81,7 +81,7 @@ class FileStorage extends Model
     /**
      * Query to scope the most recent report.
      *
-     * @param  Builder  $query
+     * @param Builder $query
      *
      * @return Builder
      */
@@ -89,7 +89,7 @@ class FileStorage extends Model
     {
         return $query->orderByDesc('created_at');
     }
-    
+
     /**
      * Return the belongsto relationship on a cooperation.
      *
@@ -116,7 +116,7 @@ class FileStorage extends Model
     }
 
     /**
-     * Check if a specific file is being processed
+     * Check if a specific file is being processed.
      *
      * @return bool
      */
@@ -135,5 +135,4 @@ class FileStorage extends Model
         $this->is_being_processed = false;
         $this->save();
     }
-
 }

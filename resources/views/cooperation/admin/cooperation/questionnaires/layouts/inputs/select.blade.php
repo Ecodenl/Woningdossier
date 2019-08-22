@@ -11,7 +11,7 @@
 
 <?php $questionOptionCount = 0; ?>
 @foreach($question->questionOptions as $questionOption)
-    <?php $questionOptionCount++; ?>
+    <?php ++$questionOptionCount; ?>
     <div class="option-group">
         <label for="">Optie {{$questionOptionCount}}</label>
         <input type="hidden" name="questions[{{$question->id}}][option][id]" class="question_option_id" value="{{$questionOption->id}}">

@@ -41,18 +41,18 @@ return [
                     'last-notified-at' => 'Laatst gestuurd op',
                     'actions' => 'Actie',
                 ],
-                'never-sent' => 'Notificatie is nooit verstuurd'
+                'never-sent' => 'Notificatie is nooit verstuurd',
             ],
         ],
         'show' => [
             'header' => 'Bewerk notificatie',
             'form' => [
                 'interval' => 'Notificatie interval voor :type',
-                'submit' => 'Interval opslaan'
+                'submit' => 'Interval opslaan',
             ],
         ],
         'update' => [
-            'success' => 'Interval is opgeslagen.'
+            'success' => 'Interval is opgeslagen.',
         ],
     ],
 
@@ -144,14 +144,14 @@ return [
                     'number' => 'Huisnummer',
                     'extension' => 'Toevoeging',
                     'postal-code' => 'Postcode',
-                    'city' => 'Stad'
+                    'city' => 'Stad',
                 ],
                 'user' => [
                     'first-name'            => 'Voornaam',
                     'last-name'             => 'Achternaam',
                     'phone_number'          => 'Telefoonnummer',
                 ],
-            ]
+            ],
         ],
         'store'      => [
             'success' => 'Gegevens succesvol gewijzigd',
@@ -168,7 +168,7 @@ return [
             'header'       => 'Account verwijderen',
             'are-you-sure' => [
                 'complete-delete' => 'Let op: dit verwijdert alle gegevens die wij hebben opgeslagen. Weet u zeker dat u wilt doorgaan?',
-                'delete-from-cooperation' => 'Let op: u bent bij meerdere cooperaties aangesloten, dit verwijdert uw account alleen bij de huidige coöperatie. Om uw account volledig te verwijderen dient u deze stap bij elke coöperatie uit te voeren.'
+                'delete-from-cooperation' => 'Let op: u bent bij meerdere cooperaties aangesloten, dit verwijdert uw account alleen bij de huidige coöperatie. Om uw account volledig te verwijderen dient u deze stap bij elke coöperatie uit te voeren.',
             ],
 
             'label'        => 'Mijn account verwijderen',
@@ -195,7 +195,7 @@ return [
                     'new-password-confirmation' => 'Nieuw wachtwoord (bevestigen)',
                     'current-password'      => 'Huidig wachtwoord',
                 ],
-            ]
+            ],
         ],
         'store'      => [
             'success' => 'Gegevens succesvol gewijzigd',

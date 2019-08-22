@@ -2,9 +2,7 @@
 
 namespace App\Helpers;
 
-use App\Models\Building;
 use App\Models\Interest;
-use App\Models\Log;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;

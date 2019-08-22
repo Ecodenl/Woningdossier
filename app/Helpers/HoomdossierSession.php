@@ -64,25 +64,25 @@ class HoomdossierSession extends Session
     }
 
     /**
-     * @param  bool  $object Set to true if you want to get an object back
+     * @param bool $object Set to true if you want to get an object back
      *
-     * @return int|null|Cooperation
+     * @return int|Cooperation|null
      */
     public static function getCooperation($object = false)
     {
         $cooperation = self::get('cooperation');
 
         // if there is no cooperation set and the application is not running in the console, we have a serious issue.
-        if (!is_int($cooperation) && !app()->runningInConsole()){
-            \Log::error("Cooperation was not an integer!! ");
+        if (! is_int($cooperation) && ! app()->runningInConsole()) {
+            \Log::error('Cooperation was not an integer!! ');
             \Log::error($cooperation);
         }
 
-        if ($object){
-    	    $cooperation = \App\Helpers\Cache\Cooperation::find($cooperation);
+        if ($object) {
+            $cooperation = \App\Helpers\Cache\Cooperation::find($cooperation);
         }
 
-    	return $cooperation;
+        return $cooperation;
     }
 
     /**
@@ -130,7 +130,7 @@ class HoomdossierSession extends Session
     }
 
     /**
-     * Set the observing boolean
+     * Set the observing boolean.
      *
      * @NOTE key meant to determine if a user is observing someones tool / building.
      *
@@ -142,7 +142,7 @@ class HoomdossierSession extends Session
     }
 
     /**
-     * Check if a user is observing someones tool / building
+     * Check if a user is observing someones tool / building.
      *
      * @return bool
      */
@@ -224,18 +224,19 @@ class HoomdossierSession extends Session
     }
 
     /**
-     * Returns the role or role_id
+     * Returns the role or role_id.
      *
      * @param bool $object Set to true if you want an object returned
      *
-     * @return int|null|Role
+     * @return int|Role|null
      */
     public static function getRole($object = false)
     {
         $id = self::getHoomdossierSession('role_id');
-        if(!$object){
+        if (! $object) {
             return $id;
         }
+
         return \App\Helpers\Cache\Role::find($id);
     }
 
@@ -260,14 +261,15 @@ class HoomdossierSession extends Session
      *
      * @param bool $object Set to true if you want an object returned
      *
-     * @return int|null|InputSource
+     * @return int|InputSource|null
      */
     public static function getInputSource($object = false)
     {
         $id = self::getHoomdossierSession('input_source_id');
-        if (!$object){
+        if (! $object) {
             return $id;
         }
+
         return \App\Helpers\Cache\InputSource::find($id);
     }
 
@@ -287,12 +289,12 @@ class HoomdossierSession extends Session
      *
      * @param bool $object Set to true if you want to get an object back
      *
-     * @return int|null|Building
+     * @return int|Building|null
      */
     public static function getBuilding($object = false)
     {
         $building = self::getHoomdossierSession('building_id');
-        if ($object){
+        if ($object) {
             $building = Building::find($building);
         }
 
@@ -330,7 +332,7 @@ class HoomdossierSession extends Session
     }
 
     /**
-     * Check if a user is observing a building / tool
+     * Check if a user is observing a building / tool.
      *
      * @return bool
      */

@@ -14,7 +14,7 @@
     $cooperationHoomdossierHref = '<a target="_blank" href="'.$cooperationHoomdossierLink.'">http://'.$userCooperation->slug.'.'.config('app.domain').'</a>';
 
     // the route to the website of the cooperation itself.
-    $cooperationWebsiteHref = '<a target="_blank" href="'.$userCooperation->website_url.'">'.$userCooperation->name.'</a>'
+    $cooperationWebsiteHref = '<a target="_blank" href="'.$userCooperation->website_url.'">'.$userCooperation->name.'</a>';
 
 ?>
 @lang('mail.account-created-by-cooperation.text', [

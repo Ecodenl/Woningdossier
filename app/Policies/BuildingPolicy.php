@@ -21,16 +21,14 @@ class BuildingPolicy
      */
     public function __construct()
     {
-
     }
 
-
     /**
-     * Determine if a user is allowed to see a building overview
+     * Determine if a user is allowed to see a building overview.
      *
      *
-     * @param  User  $user
-     * @param  Building  $building
+     * @param User     $user
+     * @param Building $building
      *
      * @return bool
      */
@@ -48,21 +46,19 @@ class BuildingPolicy
         return  $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
     }
 
-
     /**
-     * Determine if its possible / authorized to talk to a resident
+     * Determine if its possible / authorized to talk to a resident.
      *
      * Its possible when there is 1 public message from the resident itself.
      *
-     * @param  User  $user
-     * @param  Building  $building
+     * @param User     $user
+     * @param Building $building
      *
      * @return bool
      */
     public function talkToResident(User $user, Building $building, Cooperation $cooperation)
     {
         if ($user->hasRoleAndIsCurrentRole('coach')) {
-
             // get the buildings the user is connected to.
             $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser($user, $cooperation);
 
@@ -73,21 +69,19 @@ class BuildingPolicy
         return  $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
     }
 
-
     /**
-     * Determine if a user can access his building
+     * Determine if a user can access his building.
      *
      * With access we mean observing / filling the tool.
      *
-     * @param User $user
+     * @param User     $user
      * @param Building $building
+     *
      * @return bool
      */
     public function accessBuilding(User $user, Building $building): bool
     {
-
         if ($user->hasRoleAndIsCurrentRole('coach')) {
-
             // check if the coach has building permission
             $coachHasBuildingPermission = Building::withTrashed()->find($building->id)->buildingPermissions()->where('user_id', $user->id)->first() instanceof BuildingPermission;
 

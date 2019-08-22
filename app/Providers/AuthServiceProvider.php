@@ -31,7 +31,7 @@ class AuthServiceProvider extends ServiceProvider
         Cooperation::class => CooperationPolicy::class,
         User::class => UserPolicy::class,
         Building::class => BuildingPolicy::class,
-        NotificationSetting::class => NotificationSettingPolicy::class
+        NotificationSetting::class => NotificationSettingPolicy::class,
     ];
 
     /**
@@ -51,14 +51,12 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('access-building', BuildingPolicy::class.'@accessBuilding');
         Gate::define('delete-own-account', UserPolicy::class.'@deleteOwnAccount');
         Gate::define('talk-to-resident', UserPolicy::class.'@talkToResident');
-
     }
 
     public function register()
     {
-
         // custom user resolver via account
-        \Auth::resolveUsersUsing(function($guard = null) {
+        \Auth::resolveUsersUsing(function ($guard = null) {
             return \Auth::guard($guard)->user() instanceof Account ? \Auth::guard()->user()->user() : null;
         });
     }

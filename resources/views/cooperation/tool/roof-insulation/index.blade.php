@@ -253,7 +253,7 @@
                                     @component('cooperation.tool.components.step-question', ['id' => 'building_roof_types.'.$roofCat.'.extra.comment', 'translation' => 'general.specific-situation', 'required' => false])
 
                                         <?php
-                                        $default = isset($currentCategorizedRoofTypes[$roofCat]['extra']['comment']) ? $currentCategorizedRoofTypes[$roofCat]['extra']['comment'] : old('building_roof_types.' . $roofCat . '.extra.comment');
+                                        $default = isset($currentCategorizedRoofTypes[$roofCat]['extra']['comment']) ? $currentCategorizedRoofTypes[$roofCat]['extra']['comment'] : old('building_roof_types.'.$roofCat.'.extra.comment');
                                         ?>
 
 

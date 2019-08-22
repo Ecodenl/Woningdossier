@@ -66,7 +66,7 @@
                     @component('cooperation.tool.components.step-question', ['id' => 'building_services.' . $boiler->id . '.extra', 'translation' => 'high-efficiency-boiler.boiler-placed-date', 'required' => true])
 
                         <?php
-                            /** @var \Illuminate\Support\Collection $installedBoilerForMe */
+                        /** @var \Illuminate\Support\Collection $installedBoilerForMe */
                         $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('date', $installedBoiler->extra)) ? $installedBoiler->extra['date'] : '';
                         ?>
 

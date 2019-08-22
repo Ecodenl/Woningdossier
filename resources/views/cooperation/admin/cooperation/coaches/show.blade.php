@@ -33,8 +33,8 @@
                         @foreach($buildingCoachStatuses as $buildingCoachStatus)
                             <?php
                                 /**
-                                * @var \App\Models\Building $building
-                                */
+                                 * @var \App\Models\Building
+                                 */
                                 $building = $buildingCoachStatus->building;
                                 $user = $building->user;
                                 $buildingStatus = $building->buildingStatuses->first();

@@ -10,7 +10,7 @@
     $cooperationHoomdossierLink = route('cooperation.home', ['cooperation' => $userCooperation]);
     $cooperationHoomdossierHref = '<a target="_blank" href="'.$cooperationHoomdossierLink.'">https://'.$userCooperation->slug.'.'.config('app.domain').'</a>';
 
-    $cooperationWebsiteHref = '<a target="_blank" href="'.$userCooperation->website_url.'">'.$userCooperation->name.'</a>'
+    $cooperationWebsiteHref = '<a target="_blank" href="'.$userCooperation->website_url.'">'.$userCooperation->name.'</a>';
 
 ?>
 @lang('mail.confirm-account.text', [

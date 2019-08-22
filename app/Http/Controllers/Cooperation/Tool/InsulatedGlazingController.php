@@ -4,12 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\InsulatedGlazing;
 use App\Events\StepDataHasBeenChanged;
-use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\InsulatedGlazingCalculator;
-use App\Helpers\Kengetallen;
-use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InsulatedGlazingFormRequest;
@@ -19,7 +14,6 @@ use App\Models\BuildingFeature;
 use App\Models\BuildingHeating;
 use App\Models\BuildingInsulatedGlazing;
 use App\Models\BuildingPaintworkStatus;
-use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\InsulatingGlazing;
@@ -28,7 +22,6 @@ use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
@@ -56,7 +49,6 @@ class InsulatedGlazingController extends Controller
      */
     public function index()
     {
-
         // we do not want the user to set his interests for this step
 //        $typeIds = [1, 2];
 
@@ -358,7 +350,6 @@ class InsulatedGlazingController extends Controller
         if (! empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];
         }
-
 
         return redirect($url);
     }

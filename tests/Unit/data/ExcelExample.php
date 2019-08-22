@@ -25,11 +25,10 @@ class ExcelExample
 
         $u = self::user();
 
-
         // 'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension', 'is_active'
-        $b          = new \App\Models\Building([
+        $b = new \App\Models\Building([
             'street'      => 'Straat', 'number' => 1, 'city' => 'Nowhere',
-            'postal_code' => '2013 BC', 'bag_addressid' => '01234'
+            'postal_code' => '2013 BC', 'bag_addressid' => '01234',
         ]);
         $b->primary = 1;
 
@@ -44,11 +43,10 @@ class ExcelExample
         // 'facade_plastered_painted','facade_plastered_surface_id',
         // 'facade_damaged_paintwork_id','window_surface','roof_type_id',
         $bf = new BuildingFeature([
-
         ]);
 
-        $buildingType                  = new BuildingType();
-        $buildingType->name            = 'Tussenwoning';
+        $buildingType = new BuildingType();
+        $buildingType->name = 'Tussenwoning';
         $buildingType->calculate_value = 2;
         $buildingType->save();
 
@@ -73,7 +71,7 @@ class ExcelExample
     public static function user()
     {
         $u = User::firstOrCreate(['email' => 'test@test.test'], ['password' => bcrypt('testtest')]);
-        /** @var User $u */
+        /* @var User $u */
         return $u;
     }
 
@@ -100,7 +98,6 @@ class ExcelExample
             // water_comfort_id -> relation
             'amount_electricity' => 3018,
             'amount_gas' => 1398,
-
         ]);
         // Verwarmd, de meeste radiatoren staan aan
         $hff = new BuildingHeating();

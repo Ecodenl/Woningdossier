@@ -51,7 +51,7 @@
                                         name="user_interests[{{ $measureApplication->id }}]">
                                     <?php
                                         /** @var \Illuminate\Support\Collection $interests */
-                                        $oldInterestDataIsAvailable = $interests->contains('id', old('user_interests.' . $measureApplication->id));
+                                        $oldInterestDataIsAvailable = $interests->contains('id', old('user_interests.'.$measureApplication->id));
                                     ?>
                                     @foreach($interests as $interest)
                                         {{-- calculate_value 4 is the default --}}
@@ -352,7 +352,7 @@
                         <?php
                         // We do this because we store the comment with every glazing
                         $glazingWithComment = collect($buildingInsulatedGlazings)->where('extra', '!=', null)->first();
-                        $comment = !is_null($glazingWithComment) && array_key_exists('comment', $glazingWithComment->extra) ? $glazingWithComment->extra['comment'] : '';
+                        $comment = ! is_null($glazingWithComment) && array_key_exists('comment', $glazingWithComment->extra) ? $glazingWithComment->extra['comment'] : '';
                         ?>
 
                         <textarea name="comment" id="" class="form-control">{{ old('comment', $comment) }}</textarea>

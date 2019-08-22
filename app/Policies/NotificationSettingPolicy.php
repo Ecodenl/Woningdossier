@@ -17,14 +17,13 @@ class NotificationSettingPolicy
      */
     public function __construct()
     {
-        //
     }
 
     /**
-     * Determine if a user can see a notification setting
+     * Determine if a user can see a notification setting.
      *
-     * @param  User  $user
-     * @param  NotificationSetting  $notificationSetting
+     * @param User                $user
+     * @param NotificationSetting $notificationSetting
      *
      * @return bool
      */
@@ -34,10 +33,10 @@ class NotificationSettingPolicy
     }
 
     /**
-     * Determine if a user can update a notification setting
+     * Determine if a user can update a notification setting.
      *
-     * @param  User  $user
-     * @param  NotificationSetting  $notificationSetting
+     * @param User                $user
+     * @param NotificationSetting $notificationSetting
      *
      * @return bool
      */

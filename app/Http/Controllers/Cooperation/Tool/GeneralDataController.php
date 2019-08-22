@@ -17,7 +17,6 @@ use App\Models\BuildingService;
 use App\Models\BuildingType;
 use App\Models\CentralHeatingAge;
 use App\Models\ComfortLevelTapWater;
-use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\EnergyLabel;

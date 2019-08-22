@@ -32,7 +32,7 @@ class CooperationController extends Controller
         Cooperation::create([
             'name' => $cooperationName,
             'slug' => $cooperationSlug,
-            'website_url' => $cooperationWebsiteUrl
+            'website_url' => $cooperationWebsiteUrl,
         ]);
 
         return redirect()->route('cooperation.admin.super-admin.cooperations.index')

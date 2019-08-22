@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddCooperationIdColumnToPrivateMessagesTable extends Migration
 {
@@ -27,7 +27,7 @@ class AddCooperationIdColumnToPrivateMessagesTable extends Migration
     public function down()
     {
         Schema::table('private_messages', function (Blueprint $table) {
-	        $table->dropForeign('cooperation_id');
+            $table->dropForeign('cooperation_id');
             $table->dropColumn('cooperation_id');
         });
     }

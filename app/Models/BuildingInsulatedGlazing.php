@@ -8,24 +8,25 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingInsulatedGlazing
+ * App\Models\BuildingInsulatedGlazing.
  *
- * @property int $id
- * @property int $building_id
- * @property int|null $input_source_id
- * @property int $measure_application_id
- * @property int|null $insulating_glazing_id
- * @property int|null $building_heating_id
- * @property float|null $m2
- * @property int|null $windows
- * @property array|null $extra
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building $building
- * @property-read \App\Models\BuildingHeating|null $buildingHeating
- * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \App\Models\InsulatingGlazing|null $insulatedGlazing
- * @property-read \App\Models\MeasureApplication $measureApplication
+ * @property int                                $id
+ * @property int                                $building_id
+ * @property int|null                           $input_source_id
+ * @property int                                $measure_application_id
+ * @property int|null                           $insulating_glazing_id
+ * @property int|null                           $building_heating_id
+ * @property float|null                         $m2
+ * @property int|null                           $windows
+ * @property array|null                         $extra
+ * @property \Illuminate\Support\Carbon|null    $created_at
+ * @property \Illuminate\Support\Carbon|null    $updated_at
+ * @property \App\Models\Building               $building
+ * @property \App\Models\BuildingHeating|null   $buildingHeating
+ * @property \App\Models\InputSource|null       $inputSource
+ * @property \App\Models\InsulatingGlazing|null $insulatedGlazing
+ * @property \App\Models\MeasureApplication     $measureApplication
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing forMe()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing newQuery()
@@ -46,7 +47,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingInsulatedGlazing extends Model
 {
-    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
+    use GetValueTrait;
+    use GetMyValuesTrait;
+    use ToolSettingTrait;
     /**
      * The attributes that should be cast to native types.
      *

@@ -7,9 +7,9 @@
             </div>
             <div class="modal-body">
                 <?php
-                /**
-                 * @var \Illuminate\Support\HtmlString $slot
-                 */
+                    /**
+                     * @var \Illuminate\Support\HtmlString
+                     */
                     $htmlString = $slot->toHtml();
 //                    echo  $htmlString;
                 ?>

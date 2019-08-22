@@ -24,7 +24,7 @@
 
 <div class="form-group add-space{{ $errors->has($name) ? ' has-error' : '' }}" style="{{$labelStyling}}">
     <label for="{{ $id }}" class="control-label {{$labelClass}}" style="display: inline; ">
-        <?php // show help icon? ?>
+        <?php // show help icon??>
         @if(\App\Helpers\Translation::hasTranslation($translation . '.help'))
             <i data-target="#{{ $id }}-info"
                class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
@@ -38,14 +38,14 @@
 
     {{ $slot }}
 
-    <?php // show include modal for help icon? ?>
+    <?php // show include modal for help icon??>
     @if(\App\Helpers\Translation::hasTranslation($translation . '.help'))
     @component('cooperation.tool.components.help-modal', ['id' => $id . "-info"])
         {!!  \App\Helpers\Translation::translate($translation . '.help') !!}
     @endcomponent
     @endif
 
-	<?php // show error? ?>
+	<?php // show error??>
     @if ($errors->has($name))
         <span class="help-block">
             <strong>{{ $errors->first($name) }}</strong>

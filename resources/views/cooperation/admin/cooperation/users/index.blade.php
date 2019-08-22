@@ -24,7 +24,7 @@
                         <tbody>
                         <?php
                         /**
-                         * @var \App\Models\User $user
+                         * @var \App\Models\User
                          * @var \App\Models\Building $building
                          */
                         ?>

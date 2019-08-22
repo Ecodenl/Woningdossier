@@ -107,7 +107,6 @@ class MyPlanController extends Controller
 
         array_unshift($userPlanData, $headers);
 
-
         return Excel::download(new CsvExport($userPlanData), 'my-plan.csv', \Maatwebsite\Excel\Excel::CSV);
     }
 
@@ -130,9 +129,8 @@ class MyPlanController extends Controller
             // check if the advice exists, if the input source id is the current input source and if the buildingOwner id is the user id
             // check if the action plan exists, if the input source id from the advice is the inputsource itself or if the user is observing and the buildingOwner is the userId
             if ($actionPlanExists && $inputSourceIdIsInputSourceOrUserIsObserving && $buildingOwnerIdIsUserId) {
-
                 // if the user isnt observing a other building we allow changes, else we dont.
-                if (HoomdossierSession::isUserObserving() == false) {
+                if (false == HoomdossierSession::isUserObserving()) {
                     MyPlanHelper::saveUserInterests($request, $advice);
                 }
 

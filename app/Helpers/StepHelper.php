@@ -3,7 +3,6 @@
 namespace App\Helpers;
 
 use App\Models\Building;
-use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Questionnaire;
 use App\Models\Step;
@@ -175,8 +174,8 @@ class StepHelper
     /**
      * Complete a step for a building.
      *
-     * @param Step $step
-     * @param Building $building
+     * @param Step        $step
+     * @param Building    $building
      * @param InputSource $inputSource
      *
      * @return Model|UserProgress

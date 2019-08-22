@@ -88,7 +88,7 @@
                         <?php
                             $messageUrl = route('cooperation.my-account.messages.index');
 
-                            if(\App\Helpers\Hoomdossier::user()->can('access-admin') && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin'])) {
+                            if (\App\Helpers\Hoomdossier::user()->can('access-admin') && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin'])) {
                                 $messageUrl = route('cooperation.admin.messages.index');
                             }
                         ?>

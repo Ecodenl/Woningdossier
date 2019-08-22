@@ -11,33 +11,32 @@ class FileTypesTableSeeder extends Seeder
      */
     public function run()
     {
-
         $fileTypeCategory = DB::table('file_type_categories')->where('short', 'report')->first();
 
         $fileTypes = [
             [
                 'names' => [
-                    'nl' => 'Alle ingevulde gegevens, met adresgegevens'
+                    'nl' => 'Alle ingevulde gegevens, met adresgegevens',
                 ],
-                'short' => 'total-report'
+                'short' => 'total-report',
             ],
             [
                 'names' => [
-                    'nl' => 'Alle ingevulde gegevens, zonder adresgegevens'
+                    'nl' => 'Alle ingevulde gegevens, zonder adresgegevens',
                 ],
-                'short' => 'total-report-anonymized'
+                'short' => 'total-report-anonymized',
             ],
             [
                 'names' => [
-                    'nl' => 'Actieplan per maatregel, met adresgegevens'
+                    'nl' => 'Actieplan per maatregel, met adresgegevens',
                 ],
-                'short' => 'measure-report'
+                'short' => 'measure-report',
             ],
             [
                 'names' => [
-                    'nl' => 'Actieplan per maatregel, zonder adresgegevens'
+                    'nl' => 'Actieplan per maatregel, zonder adresgegevens',
                 ],
-                'short' => 'measure-report-anonymized'
+                'short' => 'measure-report-anonymized',
             ],
             /*[
                 'names' => [
@@ -51,7 +50,6 @@ class FileTypesTableSeeder extends Seeder
                 ],
                 'short' => 'custom-questionnaires-report-anonymized'
             ],*/
-
         ];
 
         foreach ($fileTypes as $fileType) {
@@ -69,7 +67,7 @@ class FileTypesTableSeeder extends Seeder
             DB::table('file_types')->insert([
                 'name' => $uuid,
                 'file_type_category_id' => $fileTypeCategory->id,
-                'short' => $fileType['short']
+                'short' => $fileType['short'],
             ]);
         }
     }

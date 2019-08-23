@@ -9,7 +9,7 @@
             @lang('woningdossier.cooperation.admin.users.show.header', [
                 'name' => $user->getFullName(),
                 'street-and-number' => $building->street.' '.$building->number.' '.$building->extension,
-                'zipcode-and-city' => $building->postal_code.' '.$building->city,
+                'zipcode-and-city' => !$building->postal_code.' '.$building->city,
                 'email' => $user->account->email
             ])
         </div>
@@ -122,14 +122,14 @@
 
         <ul class="nav nav-tabs">
 
-            <li class="active">
+            <li @if(session('fragment') == 'messages-intern') class="active" @endif>
                 <a data-toggle="tab" href="#messages-intern">
                     @lang('woningdossier.cooperation.admin.users.show.tabs.messages-intern.title')
                 </a>
             </li>
 
             @can('talk-to-resident', [$building, $cooperation])
-                <li>
+                <li @if(session('fragment') == 'messages-public' || empty(session('fragment'))) class="active" @endif>
                     <a data-toggle="tab" href="#messages-public">
                         @if($user->retrievesNotifications(\App\Models\NotificationType::PRIVATE_MESSAGE))
                             <i class="glyphicon glyphicon-bell" data-placement="top" data-toggle="tooltip" title="@lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.user-notification.yes')"></i>
@@ -140,7 +140,7 @@
                     </a>
                 </li>
             @endcan
-            <li>
+            <li @if(session('fragment') == 'comments-on-building') class="active" @endif>
                 <a data-toggle="tab" href="#comments-on-building">
                     @lang('woningdossier.cooperation.admin.users.show.tabs.comments-on-building.title')
                 </a>
@@ -156,19 +156,19 @@
 
         <div class="tab-content">
             {{--messages intern (cooperation to cooperation --}}
-            <div id="messages-intern" class="tab-pane fade in active">
+            <div id="messages-intern" class="tab-pane fade @if(session('fragment') == 'messages-intern' ) in active @endif">
                 @include('cooperation.admin.layouts.includes.intern-message-box', ['privateMessages' => $privateMessages, 'building' => $building])
             </div>
             @can('talk-to-resident', [$building, $cooperation])
                 {{--public messages / between the resident and cooperation--}}
-                <div id="messages-public" class="tab-pane fade">
+                <div id="messages-public" class="tab-pane fade @if(session('fragment') == 'messages-public' || empty(session('fragment'))) in active @endif">
                     @include('cooperation.admin.layouts.includes.resident-message-box', ['publicMessages' => $publicMessages, 'building' => $building])
                 </div>
             @endcan
 
 
             {{-- comments on the building, read only. --}}
-            <div id="comments-on-building" class="tab-pane fade">
+            <div id="comments-on-building" class="tab-pane fade @if(session('fragment') == 'comments-on-building' ) in active @endif">
                 <div class="panel">
                     <div class="panel-body">
                         @forelse($buildingNotes as $buildingNote)
@@ -245,8 +245,6 @@
 
 @push('js')
     <script>
-
-
         $(document).ready(function () {
 
             // get some basic information
@@ -272,6 +270,8 @@
             var originalAppointmentDate = appointmentDate.find('input').val();
 
             scrollChatToMostRecentMessage();
+            onFormSubmitAddFragmentToRequest();
+
 
             $('.nav-tabs .active a').trigger('shown.bs.tab');
 
@@ -465,12 +465,39 @@
                 var tabId = $(this).attr('href');
                 var tab = $(tabId);
                 var chat = tab.find('.panel-chat-body')[0];
+
                 if (typeof chat !== "undefined") {
                     chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+
+                    var isChatPublic = tab.find('[name=is_public]').val();
+                    var buildingId = tab.find('[name=building_id]').val();
+
+                    $.ajax({
+                        url: '{{route('cooperation.messages.participants.set-read')}}',
+                        method: 'post',
+                        data: {
+                            is_public: isChatPublic,
+                            building_id: buildingId
+                        },
+                        success: function () {
+                            updateTotalUnreadMessageCount();
+                        }
+                    })
                 }
             });
-
         }
+
+        function onFormSubmitAddFragmentToRequest()
+        {
+            $('form').submit(function (event) {
+                $(this).append($('<input>', {
+                    type: 'hidden',
+                    name: 'fragment',
+                    value: $(this).parents('.tab-pane').prop('id'),
+                }));
+            });
+        }
+        
 
     </script>
 @endpush

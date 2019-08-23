@@ -72,7 +72,7 @@ class ExcelExample
      */
     public static function user()
     {
-        $u = User::firstOrCreate(['email' => 'test@test.test'], ['password' => bcrypt('testtest')]);
+        $u = User::firstOrCreate(['first_name' => 'Foo', 'last_name' => 'Bar'], ['phone_number' => '1111111111', ]);
         /** @var User $u */
         return $u;
     }

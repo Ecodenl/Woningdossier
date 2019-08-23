@@ -6,6 +6,7 @@ use App\Calculations\InsulatedGlazing;
 use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\InsulatedGlazingCalculator;
 use App\Helpers\Kengetallen;

@@ -7,9 +7,9 @@ use App\Helpers\StepHelper;
 use App\Models\Cooperation;
 use App\Http\Controllers\Controller;
 use App\Services\CsvService;
+use App\Services\DumpService;
 use App\Services\PdfService;
 use Barryvdh\DomPDF\Facade as PDF;
-use Illuminate\Support\Arr;
 
 class UserReportController extends Controller
 {
@@ -22,14 +22,14 @@ class UserReportController extends Controller
         $GLOBALS['_cooperation'] = $cooperation;
         $userActionPlanAdvices = $user->actionPlanAdvices()->with('measureApplication')->get();
 
-        $reportForUser = CsvService::totalReport($cooperation, false);
+        $reportForUser = DumpService::totalDump($user, false);
 
         $reportTranslations = $reportForUser[0];
         // undot it so we can handle the data in view later on
         $reportData = \App\Helpers\Arr::arrayUndot($reportForUser[1]);
 
 //        $pdfData = \Cache::forever('test3', $this->pdfData());
-        $pdfData = \Cache::get('test3');
+//        $pdfData = \Cache::get('test3');
 
 
         $stepSlugs = \DB::table('steps')->select('slug', 'id')->get()->pluck('slug', 'id')->flip()->toArray();

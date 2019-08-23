@@ -65,6 +65,10 @@ class DumpService
     public static function totalDump(User $user, bool $anonymized, bool $withTranslationsForColumns = true): array
     {
 
+        $cooperation = $user->cooperation;
+        // get the content structure of the whole tool.
+        $structure = ToolHelper::getToolStructure();
+
         if ($anonymized) {
             $headers = [
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
@@ -98,8 +102,6 @@ class DumpService
             ];
         }
 
-        // get the content structure of the whole tool.
-        $structure = ToolHelper::getToolStructure();
 
         $leaveOutTheseDuplicates = [
             // hoofddak
@@ -115,31 +117,23 @@ class DumpService
             'heater.calculation.production_heat.help',
         ];
 
-        $cooperation = $user->cooperation;
-
-
         // build the header structure, we will set those in the csv and use it later on to get the answers from the users.
         // unfortunately we cant array dot the structure since we only need the labels
         foreach ($structure as $stepSlug => $stepStructure) {
             // building-detail contains data that is already present in the columns above
             if (!in_array($stepSlug, ['building-detail'])) {
-                $step = Step::whereSlug($stepSlug)->first();
                 foreach ($stepStructure as $tableWithColumnOrAndId => $contents) {
                     if ($tableWithColumnOrAndId == 'calculations') {
 
                         // If you want to go ahead and translate in a different namespace, do it here
-                        // we will dot the array, map it so we can add the step name to it
-                        $deeperContents = array_map(function ($content) use ($step) {
-                            return $step->name . ': ' . $content;
-                        }, \Illuminate\Support\Arr::dot($contents,
-                            $stepSlug . '.calculation.'));
+                        $deeperContents = \Illuminate\Support\Arr::dot($contents, $stepSlug . '.calculation.');
 
                         $headers = array_merge($headers, $deeperContents);
 
                     } else {
-                        $headers[$stepSlug . '.' . $tableWithColumnOrAndId] = $step->name . ': ' . str_replace([
-                                '&euro;', '€'
-                            ], ['euro', 'euro'], $contents['label']);
+                        $headers[$stepSlug . '.' . $tableWithColumnOrAndId] = str_replace([
+                            '&euro;', '€'
+                        ], ['euro', 'euro'], $contents['label']);
                     }
                 }
             }
@@ -150,7 +144,7 @@ class DumpService
         }
 
         if ($withTranslationsForColumns) {
-            $rows['translation-for-columns'] = $headers;
+            $rows['translations-for-columns'] = $headers;
         }
 
         // create a row where we will store the user data
@@ -166,7 +160,6 @@ class DumpService
             ->where('to_cooperation_id', $cooperation->id)->get();
 
         $createdAt = optional($user->created_at)->format('Y-m-d');
-        //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
         $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
         $allowAccess = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
         $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
@@ -250,7 +243,6 @@ class DumpService
                 } else {
                     $whereUserOrBuildingId = [['user_id', '=', $user->id]];
                 }
-
 
                 // handle the calculation table.
                 // No its not a table, but we treat it as in the structure array.
@@ -604,9 +596,8 @@ class DumpService
                 }
             }
         }
+
         $rows['user-data'] = $row[$buildingId];
-
-
 
         return $rows;
     }

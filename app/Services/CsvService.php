@@ -537,7 +537,7 @@ class CsvService
      */
     public static function totalReport(Cooperation $cooperation, bool $anonymized): array
     {
-        $users = $cooperation->users()->whereHas('buildings')->take(2)->get();
+        $users = $cooperation->users()->whereHas('buildings')->get();
 
         if ($anonymized) {
             $headers = [

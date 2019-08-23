@@ -24,10 +24,12 @@ class UserReportController extends Controller
 
         $reportForUser = DumpService::totalDump($user, false);
 
-        $reportTranslations = $reportForUser[0];
+        $reportTranslations = $reportForUser['translations-for-columns'];
         // undot it so we can handle the data in view later on
-        $reportData = \App\Helpers\Arr::arrayUndot($reportForUser[1]);
+        $reportData = \App\Helpers\Arr::arrayUndot($reportForUser['user-data']);
 
+
+//        dd($reportData, $reportTranslations);
 //        $pdfData = \Cache::forever('test3', $this->pdfData());
 //        $pdfData = \Cache::get('test3');
 

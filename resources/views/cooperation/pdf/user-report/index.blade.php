@@ -38,38 +38,39 @@
 
                     <div class="question-answer-section">
                         <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.filled-in-data')}}</p>
-                        @foreach (\Illuminate\Support\Arr::dot($data) as $translationKey => $value)
                         <?php
-                            $translationForAnswer = $reportTranslations[$step.'.'.$translationKey];
+                            $calculationsForStep = $data['calculation'] ?? [];
+                            unset($data['calculation']);
                         ?>
+                        @foreach (\Illuminate\Support\Arr::dot($data) as $translationKey => $value)
+                            <?php
+                                $translationForAnswer = $reportTranslations[$step.'.'.$translationKey];
+                            ?>
                             <div class="question-answer">
                                 <p class="w-300">{{$translationForAnswer}}</p>
                                 <p>{{$value}}</p>
                             </div>
-                    @endforeach
+                        @endforeach
                     </div>
 
+
                     {{--Todo: this should be refactored to the new $data / $reportData --}}
-                    @if(array_key_exists('calculation', $stepData))
-                        @foreach($stepData['calculation'] as $calculationResultType => $calculationResults)
+                    {{--@if(array_key_exists('calculation', $stepData))--}}
                             <div class="question-answer-section">
                                 <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.indicative-costs-and-benefits-for-measure')}}</p>
-                                May change in the near future due to the new csv branch structure.
-                                @if($calculationResultType == 'indicative-costs-and-benefits-for-measure')
-                                    @foreach($calculationResults as $type => $calculationResult)
-                                        <div class="question-answer">
-                                            <p class="w-300">{{$type}}</p>
-                                            @if(!empty($calculationResult))
-                                                <p>{{\App\Helpers\NumberFormatter::round($calculationResult)}}</p>
-                                            @else
-                                                <p>No value</p>
-                                            @endif
-                                        </div>
-                                    @endforeach
-                                @endif
+                                @foreach($calculationsForStep as $calculationType => $calculationResult)
+                                    <div class="question-answer">
+                                        <p class="w-300">{{$translationForAnswer}}</p>
+                                        @if(!empty($calculationResult) && !is_array($calculationResult))
+                                            <?php
+                                                $translationForAnswer = $reportTranslations[$step.'.calculation.'.$calculationType];
+                                            ?>
+                                            <p>{{\App\Helpers\NumberFormatter::round($calculationResult)}}</p>
+                                        @endif
+                                    </div>
+                                @endforeach
                             </div>
-                        @endforeach
-                    @endif
+                    {{--@endif--}}
 
                     <div class="question-answer-section">
                         <div class="measures">

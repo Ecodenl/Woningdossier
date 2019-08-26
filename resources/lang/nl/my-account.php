@@ -56,6 +56,13 @@ return [
         ],
     ],
 
+    'reports' => [
+        'index' => [
+            'header' => 'Uw rapporten',
+            'text' => 'U kunt hier uw gegenereerde rapporten downloaden'
+        ],
+    ],
+
     'access' => [
         'index' => [
             'form' => [

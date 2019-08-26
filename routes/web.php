@@ -94,6 +94,12 @@ Route::domain('{cooperation}.'.config('woningdossier.domain'))->group(function (
                     Route::post('reset-dossier', 'SettingsController@resetFile')->name('reset-file');
                 });
 
+
+                Route::group(['prefix' => 'report', 'as' => 'report.'], function () {
+                    Route::get('', 'ReportController@index')->name('index');
+                    Route::get('generate/{fileType}', 'ReportController@generate')->name('generate');
+                });
+
                 Route::resource('hoom-settings', 'HoomSettingsController');
 
 

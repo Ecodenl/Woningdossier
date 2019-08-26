@@ -20,19 +20,26 @@ class UserReportController extends Controller
         $building = $user->building;
 
         $GLOBALS['_cooperation'] = $cooperation;
-        $userActionPlanAdvices = $user->actionPlanAdvices()->with('measureApplication')->get();
+
+        $userActionPlanAdvicesQuery = $user->actionPlanAdvices();
+
+        $userActionPlanAdvices = $userActionPlanAdvicesQuery->get();
+
+        $userActionPlanAdvicesWithMaintenance = $userActionPlanAdvicesQuery
+            ->whereHas('measureApplication', function ($query) {
+                $query->where('measure_type', 'maintenance');
+            })->get();
+
+        $userActionPlanAdvicesWithEnergySaving = $userActionPlanAdvicesQuery
+            ->whereHas('measureApplication', function ($query) {
+                $query->where('measure_type', 'energy_saving');
+            })->get();
 
         $reportForUser = DumpService::totalDump($user, false);
 
         $reportTranslations = $reportForUser['translations-for-columns'];
         // undot it so we can handle the data in view later on
         $reportData = \App\Helpers\Arr::arrayUndot($reportForUser['user-data']);
-
-//        dd($reportData);
-
-//        dd($reportData, $reportTranslations);
-//        $pdfData = \Cache::forever('test3', $this->pdfData());
-//        $pdfData = \Cache::get('test3');
 
 
         $stepSlugs = \DB::table('steps')->select('slug', 'id')->get()->pluck('slug', 'id')->flip()->toArray();
@@ -41,8 +48,8 @@ class UserReportController extends Controller
 
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'cooperation', 'pdfData', 'stepSlugs', 'userActionPlanAdvices',
-            'commentsByStep', 'reportTranslations', 'reportData'
+            'user', 'building', 'cooperation', 'pdfData', 'stepSlugs', 'userActionPlanAdvicesWithMaintenance',
+            'userActionPlanAdvicesWithEnergySaving', 'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices'
         ));
 
         return $pdf->stream();

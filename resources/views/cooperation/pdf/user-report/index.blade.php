@@ -83,7 +83,7 @@
                             </p>
                         </div>
 
-                        @foreach($userActionPlanAdvices->where('step_id', $stepSlugs[$step]) as $userActionPlanAdvice)
+                        @foreach($userActionPlanAdvicesWithMaintenance as $userActionPlanAdvice)
                             <div class="question-answer">
                                 <p class="w-300">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
                                 <p class="w-150">{{\App\Helpers\NumberFormatter::round($userActionPlanAdvice->costs)}}</p>

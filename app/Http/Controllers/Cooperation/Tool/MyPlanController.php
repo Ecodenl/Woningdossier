@@ -140,12 +140,10 @@ class MyPlanController extends Controller
                 // check if a user is interested in a measure
                 //if (MyPlanHelper::isUserInterestedInMeasure($advice->step)) {
                 if ($advice->planned) {
-                    $year = isset($advice->planned_year) ? $advice->planned_year : $advice->year;
+
+                    $year = $advice->getYear();
+
                     if (is_null($year)) {
-                        $year = $advice->getAdviceYear();
-                    }
-                    if (is_null($year)) {
-                        $year = __('woningdossier.cooperation.tool.my-plan.no-year');
                         $costYear = Carbon::now()->year;
                     } else {
                         $costYear = $year;

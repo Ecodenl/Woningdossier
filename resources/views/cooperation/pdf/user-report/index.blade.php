@@ -31,7 +31,6 @@
 
 
 @foreach ($reportData as $step => $data)
-
     @if (is_string($step))
         @if(array_key_exists($step, $stepSlugs))
             @component('cooperation.pdf.components.new-page')
@@ -94,7 +93,7 @@
                             <div class="question-answer">
                                 <p class="w-300">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
                                 <p class="w-150">{{\App\Helpers\NumberFormatter::round($userActionPlanAdvice->costs)}}</p>
-                                <p class="w-150">{{$userActionPlanAdvice->getAdviceYear()}}</p>
+                                <p class="w-150">{{$userActionPlanAdvice->getYear()}}</p>
                             </div>
                         @endforeach
                     </div>

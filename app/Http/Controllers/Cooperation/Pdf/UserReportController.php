@@ -16,7 +16,7 @@ class UserReportController extends Controller
     /**
      * @deprecated
      *
-     * TESTING only,
+     * TESTING only, turn on the routes to use it.
      *
      * @param Cooperation $cooperation
      */
@@ -73,6 +73,7 @@ class UserReportController extends Controller
             'userActionPlanAdvicesWithEnergySaving', 'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices'
         ));
 
+        return $pdf->stream();
 
     }
 

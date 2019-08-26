@@ -11,6 +11,9 @@
         </tr>
         </thead>
         <tbody>
+        {{--
+        todo: these are just all the action plan advices, find out if these need to be the exact same as my plan 'Uw persoonlijke meerjarenonderhoudsplan'
+        --}}
         @foreach($userActionPlanAdvices as $userActionPlanAdvice)
             <tr>
                 <td>{{$userActionPlanAdvice->getAdviceYear()}}</td>

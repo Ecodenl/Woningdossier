@@ -19,7 +19,13 @@
 
 @component('cooperation.pdf.components.new-page')
     <div class="container">
-        @include('cooperation.pdf.user-report.steps.general-data')
+        @include('cooperation.pdf.user-report.steps.general-data-page-1')
+    </div>
+@endcomponent
+
+@component('cooperation.pdf.components.new-page')
+    <div class="container">
+        @include('cooperation.pdf.user-report.steps.general-data-page-2')
     </div>
 @endcomponent
 

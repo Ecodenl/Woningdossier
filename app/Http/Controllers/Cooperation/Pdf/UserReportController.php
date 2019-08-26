@@ -16,8 +16,10 @@ class UserReportController extends Controller
     public function index(Cooperation $cooperation)
     {
 
-        $user = Hoomdossier::user();
+        $user = Hoomdossier::user()->load(['building', 'motivations']);
+
         $building = $user->building;
+
 
         $GLOBALS['_cooperation'] = $cooperation;
 
@@ -35,14 +37,26 @@ class UserReportController extends Controller
                 $query->where('measure_type', 'energy_saving');
             })->get();
 
+        // full report for a user
         $reportForUser = DumpService::totalDump($user, false);
 
+
+        // the translations for the columns / tables in the user data
         $reportTranslations = $reportForUser['translations-for-columns'];
+
         // undot it so we can handle the data in view later on
         $reportData = \App\Helpers\Arr::arrayUndot($reportForUser['user-data']);
 
+        // steps that are considered to be measures.
+        $stepSlugs = \DB::table('steps')
+            ->where('slug', '!=', 'building-detail')
+            ->where('slug', '!=', 'general-data')
+            ->select('slug', 'id')
+            ->get()
+            ->pluck('slug', 'id')
+            ->flip()
+            ->toArray();
 
-        $stepSlugs = \DB::table('steps')->select('slug', 'id')->get()->pluck('slug', 'id')->flip()->toArray();
         // retrieve all the comments by for each input source on a step
         $commentsByStep = StepHelper::getAllCommentsByStep();
 

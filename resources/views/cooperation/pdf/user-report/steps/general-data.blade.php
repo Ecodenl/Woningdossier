@@ -37,9 +37,6 @@
         @endforeach
     </div>
 
-    <div class="question-answer-section">
-    <p>data</p>
-    </div>
 
     <div class="question-answer-section">
         <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.current-state.title')}}</p>
@@ -52,16 +49,20 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Jill</td>
-                    <td>Smith</td>
-                    <td>50</td>
-                </tr>
-                <tr>
-                    <td>Eve</td>
-                    <td>Jackson</td>
-                    <td>94</td>
-                </tr>
+                @foreach(array_only($reportData['general-data'], ['element', 'service']) as $table => $data)
+                    @foreach($data as $elementOrServiceId => $value)
+                        @if (!is_array($value))
+                        <?php
+                            $translationForAnswer = $reportTranslations['general-data.'.$table.'.'.$elementOrServiceId];
+                        ?>
+                        <tr>
+                            <td>{{$translationForAnswer}}</td>
+                            <td>{{$value}}</td>
+                            <td>{{$user->getInterestedType($table, $elementOrServiceId)->interest->name ?? 'x'}}</td>
+                        </tr>
+                        @endif
+                    @endforeach
+                @endforeach
             </tbody>
         </table>
     </div>

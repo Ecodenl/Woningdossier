@@ -37,7 +37,9 @@
 
 <script>
     $(document).ready(function () {
+        @if(Auth::check())
         pollForMessageCount();
+        @endif
     });
 </script>
 @stack('js')

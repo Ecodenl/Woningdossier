@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\RoleInSessionHasNoAssociationWithUser;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Role;
 use Closure;
@@ -21,6 +22,14 @@ class CurrentRoleMiddleware
     {
 
         $roles = is_array($role) ? $role : explode('|', $role);
+
+        // if no role is set, logout and invalidate the session.
+        if (empty(HoomdossierSession::getRole())) {
+            \Log::debug('Account id: '. Hoomdossier::account()->id. 'is logged in but has no role in his session');
+            \Auth::logout();
+            session()->invalidate();
+            return abort(401);
+        }
 
         $authorizedRole = Role::findById(HoomdossierSession::getRole());
 

@@ -71,7 +71,7 @@ class SuccessFullLoginListener
 
             Log::create([
                 'building_id' => $building->id,
-                'user_id' => $user->pid,
+                'user_id' => $user->id,
                 'message' => __('woningdossier.log-messages.logged-in', [
                     'full_name' => $user->getFullName(),
                 ])

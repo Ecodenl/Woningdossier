@@ -1,22 +1,43 @@
 <div id="general-data">
 
     <div class="question-answer-section">
-        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info')}}</p>
-        <p>Naam</p><p>Jan text</p>
+        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.title')}}</p>
+        <div class="question-answer">
+            <p class="w-300">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.name')}}</p>
+            <p>{{$user->getFullName()}}</p>
+        </div>
+        <div class="question-answer">
+            <p class="w-300">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.address')}}</p>
+            <p>{{$building->street}} {{$building->number}} {{$building->extension}}</p>
+        </div>
+        <div class="question-answer">
+            <p class="w-300">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.zip-code-city')}}</p>
+            <p>{{$building->postal_code}} {{$building->city}}</p>
+        </div>
     </div>
 
     <div class="question-answer-section">
-    <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info')}}</p>
-    <p>data</p>
+        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.building-info.title')}}</p>
+        <div class="question-answer">
+            <p class="w-300">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.zip-code-city')}}</p>
+            <p></p>
+        </div>
     </div>
 
     <div class="question-answer-section">
-    <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.building-info')}}</p>
-    <p>data</p>
+        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.usage-info.title')}}</p>
+        @foreach($reportData['general-data']['user_energy_habits'] as $column => $value)
+            <?php
+                $translationForAnswer = $reportTranslations['general-data.user_energy_habits.'.$column];
+            ?>
+            <div class="question-answer">
+                <p class="w-300">{{$translationForAnswer}}</p>
+                <p>{{$value}}</p>
+            </div>
+        @endforeach
     </div>
 
     <div class="question-answer-section">
-    <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.usage-info')}}</p>
     <p>data</p>
     </div>
 

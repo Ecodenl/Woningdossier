@@ -25,6 +25,7 @@
 
 
 @foreach ($reportData as $step => $data)
+
     @if (is_string($step))
         @if(array_key_exists($step, $stepSlugs))
             @component('cooperation.pdf.components.new-page')

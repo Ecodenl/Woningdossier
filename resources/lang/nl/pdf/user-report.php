@@ -8,9 +8,18 @@ return [
         ]
     ],
     'general-data' => [
-        'address-info' => 'Adres gegevens',
-        'building-info' => 'Algemene woninggegevens',
-        'usage-info' => 'Gegevens over het gebruik van de woning',
+        'address-info' => [
+            'title' => 'Adres gegevens',
+            'name' => 'Naam',
+            'address' => 'Adres',
+            'zip-code-city' => 'Postcode en plaatsnaam'
+        ],
+        'building-info' => [
+            'title' => 'Algemene woninggegevens'
+        ],
+        'usage-info' => [
+            'title' => 'Gegevens over het gebruik van de woning',
+        ],
         'current-state' => [
             'title' => 'Huidige staat van de woning',
             'table' => [

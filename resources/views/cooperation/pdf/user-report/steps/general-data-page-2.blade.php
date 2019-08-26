@@ -38,7 +38,7 @@
 
 <div class="question-answer-section">
     <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.next-steps.title')}}</p>
-    <p>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.next-steps.text', ['cooperation_name' => strtolower($cooperation->name)])}}</p>
+    <p>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.next-steps.text', ['cooperation_name' => 'Hoom'])}}</p>
 </div>
 
 <div class="question-answer-section">

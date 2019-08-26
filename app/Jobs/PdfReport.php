@@ -1,34 +1,68 @@
 <?php
 
-namespace App\Http\Controllers\Cooperation\Pdf;
+namespace App\Jobs;
 
+use App\Helpers\HoomdossierSession;
+use App\Models\FileStorage;
+use App\Models\FileType;
+use App\Models\InputSource;
+use App\Models\User;
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 use App\Helpers\Hoomdossier;
 use App\Helpers\StepHelper;
 use App\Models\Cooperation;
-use App\Http\Controllers\Controller;
-use App\Services\CsvService;
 use App\Services\DumpService;
-use App\Services\PdfService;
 use Barryvdh\DomPDF\Facade as PDF;
 
-class UserReportController extends Controller
+class PdfReport implements ShouldQueue
 {
-    /**
-     * @deprecated
-     *
-     * TESTING only,
-     *
-     * @param Cooperation $cooperation
-     */
-    public function index(Cooperation $cooperation)
-    {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-        $user = Hoomdossier::user()->load(['building', 'motivations']);
+    protected $user;
+    protected $anonymizeData;
+    protected $fileType;
+    protected $fileStorage;
+
+    /**
+     *
+     * @param  User $user
+     * @param  FileStorage $fileStorage
+     * @param  FileType $fileType
+     * @param  bool  $anonymizeData
+     */
+    public function __construct(User $user, FileType $fileType, FileStorage $fileStorage)
+    {
+        $this->fileType = $fileType;
+        $this->fileStorage = $fileStorage;
+        $this->user = $user;
+    }
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        if (\App::runningInConsole()) {
+            \Log::debug(__CLASS__.' Is running in the console with a maximum execution time of: '.ini_get('max_execution_time'));
+        }
+
+        $user = $this->user->load(['building', 'motivations']);
 
         $building = $user->building;
+        // temporary session to get the right data for the dumb.
+        $residentInputSource = InputSource::findByShort('resident');
+        HoomdossierSession::setInputSource($residentInputSource);
+        HoomdossierSession::setInputSourceValue($residentInputSource);
+        HoomdossierSession::setBuilding($building);
 
 
-        $GLOBALS['_cooperation'] = $cooperation;
+
+        $GLOBALS['_cooperation'] = $user->cooperation;
 
         $userActionPlanAdvicesQuery = $user->actionPlanAdvices();
 
@@ -74,15 +108,17 @@ class UserReportController extends Controller
         ));
 
 
+        // save the pdf report
+        \Storage::disk('downloads')->put($this->fileStorage->filename, $pdf->output());
+
+        \Session::forget('hoomdossier_session');
+
+        $this->fileStorage->isProcessed();
     }
 
-    public function pdfData()
+    public function failed(\Exception $exception)
     {
-        $user = Hoomdossier::user();
-
-        $calculateData = CsvService::getCalculateData($user->building, $user);
-        $userData = PdfService::totalReportForUser($user);
-
-        return ['user-data' => $userData, 'calculate-data' => $calculateData];
+        $this->fileStorage->delete();
     }
+
 }

@@ -18,7 +18,7 @@ class AddFileTypeToFileTypesTable extends Migration
         $fileTypes = [
             [
                 'names' => [
-                    'nl' => 'PDF Raportage'
+                    'nl' => 'PDF Rapportage'
                 ],
                 'short' => 'pdf-report'
             ],

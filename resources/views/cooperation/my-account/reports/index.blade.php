@@ -30,7 +30,7 @@
                                             data-toggle="tooltip"
                                             title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
                                             @else
-                                            href="{{route('cooperation.admin.cooperation.reports.generate', ['fileType' => $fileType->short])}}"
+                                            href="{{route('cooperation.my-account.report.generate', ['fileType' => $fileType->short])}}"
                                             @endif
                                             class="btn btn-{{$fileType->isBeingProcessed()  ? 'warning' : 'primary'}}">
 

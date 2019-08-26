@@ -22,14 +22,19 @@ class FileStorageDownload
         $fileType = $routeParameters['fileType'];
         $fileStorageFilename = $routeParameters['fileStorageFilename'];
 
+        $fileStorage = $fileType->files()->where('filename', $fileStorageFilename)->first();
 
         // some other logic for resident wil come in the near future.
         if (Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator'])) {
-            $fileStorage = $fileType->files()->where('filename', $fileStorageFilename)->first();
 
             if ($fileStorage instanceof FileStorage && $fileStorage->cooperation->id == HoomdossierSession::getCooperation()) {
                 return $next($request);
             }
+        }
+
+        // todo: extend to coach as well, but that needs more work on the pdf, generating it and retrieving the data.
+        if (Hoomdossier::user()->hasRoleAndIsCurrentRole(['resident']) && $fileStorage->user_id == Hoomdossier::user()->id) {
+            return $next($request);
         }
 
         return redirect()->back();

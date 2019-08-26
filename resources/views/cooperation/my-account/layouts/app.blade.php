@@ -42,6 +42,11 @@
                                         @lang('my-account.side-nav.import')
                                     </a>
                                 </li>
+                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.report.index'])) active @endif">
+                                    <a href="{{route('cooperation.my-account.report.index')}}">
+                                        @lang('my-account.side-nav.report')
+                                    </a>
+                                </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.my-account.access.index'])) active @endif">
                                     <a href="{{route('cooperation.my-account.access.index')}}">
                                         @lang('my-account.side-nav.access')

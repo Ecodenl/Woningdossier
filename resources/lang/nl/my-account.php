@@ -6,6 +6,7 @@ return [
         'notification-settings' => 'Notificatie instellingen',
         'label'       => 'Mijn account',
         'import'      => 'Import centrum',
+        'report' => 'Rapporten',
         'settings'    => 'Instellingen',
         'hoom-settings' => 'Hoomdossier instellingen',
         'access'      => 'Gebruikers met toegang tot uw woning',

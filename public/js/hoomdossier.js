@@ -26,7 +26,7 @@ function pollForMessageCount() {
 
     if (beenPolled) {
         // 10 seconds
-        timeout = 1000;
+        timeout = 10000;
     }
     setTimeout(function () {
         beenPolled = true;

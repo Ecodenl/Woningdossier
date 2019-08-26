@@ -58,15 +58,16 @@
                         <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.indicative-costs-and-benefits-for-measure')}}</p>
                         @foreach($calculationsForStep as $calculationType => $calculationResult)
                             <div class="question-answer">
-                                <p class="w-300">{{$translationForAnswer}}</p>
                                 @if(!empty($calculationResult) && !is_array($calculationResult))
                                     <?php
                                         $translationForAnswer = $reportTranslations[$step.'.calculation.'.$calculationType];
                                     ?>
+                                    <p class="w-300">{{$translationForAnswer}}</p>
                                     <p>{{\App\Helpers\NumberFormatter::round($calculationResult)}}</p>
                                 @endif
                             </div>
                         @endforeach
+
                     </div>
 
                     <div class="question-answer-section">

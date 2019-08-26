@@ -28,6 +28,7 @@ class UserReportController extends Controller
         // undot it so we can handle the data in view later on
         $reportData = \App\Helpers\Arr::arrayUndot($reportForUser['user-data']);
 
+//        dd($reportData);
 
 //        dd($reportData, $reportTranslations);
 //        $pdfData = \Cache::forever('test3', $this->pdfData());

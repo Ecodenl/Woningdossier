@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
+use App\Models\Account;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
@@ -22,40 +23,26 @@ class SuccessFullLoginListener
     }
 
     /**
-     * Handle the event.
+     * Handle the event
      *
-     * @param object $event
-     *
-     * @return void
+     * @param $event
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function handle($event)
     {
+
+        $account = $event->user;
+
+        // ensure the cooperation is set in the session
+        $this->ensureCooperationIsSet();
+
         /** @var User $user */
-        $user = $event->user->user();
+        // cooperation is set, so we can safely retrieve the user from the account.
+        $user = $account->user();
         // get the first building from the user
         $building = $user->building;
         // just get the first available role from the user
         $userRole = $user->roles()->first();
-
-        $cooperation = request()->route()->parameter('cooperation');
-
-        // if the user logs in through the remember the router is not booted yet.
-        if (!$cooperation instanceof Cooperation) {
-            $cooperation = Cooperation::where('slug', $cooperation)->first();
-        }
-
-        // double check, if there still is no cooperation we log out the user and forget its remember me cookie.
-        if (!$cooperation instanceof Cooperation) {
-            $user->logout();
-
-            $rememberMeCookie = \Auth::getRecallerName();
-            // Tell Laravel to forget this cookie
-            $cookie = \Cookie::forget($rememberMeCookie);
-
-            return redirect()->route('login')->withCookie($cookie);
-        }
-
-        HoomdossierSession::setCooperation($cooperation);
 
         // if the user for some odd reason had no role attached, attach the resident rol to him.
         if (!$userRole instanceof Role) {
@@ -95,4 +82,24 @@ class SuccessFullLoginListener
             return redirect()->route('cooperation.create-building.index')->with('warning', __('auth.login.warning'));
         }
     }
+
+    /**
+     * Method to ensure the cooperation is set in the session
+     *
+     * @return void
+     */
+    private function ensureCooperationIsSet()
+    {
+        /** @var Cooperation|string $cooperation */
+        $cooperation = request()->route('cooperation');
+
+        // if the user logs in through the remember the router is not booted yet.
+        if (!$cooperation instanceof Cooperation) {
+            $cooperation = Cooperation::where('slug', $cooperation)->first();
+        }
+
+
+        HoomdossierSession::setCooperation($cooperation);
+    }
+
 }

@@ -24,6 +24,7 @@ return [
     'supported_locales' => ['nl'],
 
     'cache' => [
+        'prefix' => env('CACHE_PREFIX', 'hoomdossier_'),
         'times' => [
             'default' => 15, // minutes (watch it: this will change with the latest Laravel versions!)
         ],

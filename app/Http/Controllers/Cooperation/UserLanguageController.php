@@ -10,7 +10,7 @@ class UserLanguageController extends Controller
 {
     public function switchLanguage(Request $request, Cooperation $cooperation, $locale)
     {
-        if (in_array($locale, config('woningdossier.supported_locales'))) {
+        if (in_array($locale, config('hoomdossier.supported_locales'))) {
             \Session::put('locale', $locale);
         }
 
@@ -27,7 +27,7 @@ class UserLanguageController extends Controller
         } else {
             // check if referer is in current domain
             $host = parse_url($referer, PHP_URL_HOST);
-            if (false === stristr($host, config('woningdossier.domain'))) {
+            if (false === stristr($host, config('hoomdossier.domain'))) {
                 return redirect()->route('cooperation.welcome', compact('cooperation'));
             }
 

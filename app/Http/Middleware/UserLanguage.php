@@ -23,7 +23,7 @@ class UserLanguage
             // Set the language from the URL segment (this allows us to later on
             // add a language switcher via URL for better front-site indexing).
             if (in_array($request->segment(1),
-                config('woningdossier.supported_locales'))) {
+                config('hoomdossier.supported_locales'))) {
                 Session::put('locale', $request->segment(1));
                 //return Redirect::to(substr($request->path(), 3));
             }
@@ -31,8 +31,7 @@ class UserLanguage
             // the request
             if (! Session::has('locale')) {
                 \Log::debug('Session does not have locale');
-                Session::put('locale',
-                    $request->getPreferredLanguage(config('woningdossier.supported_locales')));
+                Session::put('locale', $request->getPreferredLanguage(config('hoomdossier.supported_locales')));
             }
 
             // Check if the session has the language. If not, take the default

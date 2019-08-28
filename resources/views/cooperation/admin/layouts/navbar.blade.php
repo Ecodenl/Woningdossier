@@ -25,7 +25,7 @@
                         @lang('woningdossier.navbar.language')<span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        @foreach(config('woningdossier.supported_locales') as $locale)
+                        @foreach(config('hoomdossier.supported_locales') as $locale)
                             @if(app()->getLocale() != $locale)
                                 <li>
                                     <a href="{{ route('cooperation.switch-language', ['cooperation' => $cooperation, 'locale' => $locale]) }}">@lang('woningdossier.navbar.languages.'. $locale)</a>

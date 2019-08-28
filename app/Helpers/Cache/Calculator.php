@@ -2,9 +2,7 @@
 
 namespace App\Helpers\Cache;
 
-use App\Models\PriceIndexing;
-
-class Calculator
+class Calculator extends BaseCache
 {
 
     const CACHE_PRICE_INDEX = 'Calculator_getPriceIndex_%s';
@@ -12,10 +10,10 @@ class Calculator
     public static function getPriceIndex($short)
     {
         return \Cache::remember(
-            sprintf(static::CACHE_PRICE_INDEX, $short),
-            config('woningdossier.cache.times.default'),
+            self::getCacheKey(static::CACHE_PRICE_INDEX, $short),
+            config('hoomdossier.cache.times.default'),
             function () use ($short) {
-                return PriceIndexing::where('short', $short)->first();
+                return \App\Models\PriceIndexing::where('short', $short)->first();
             }
         );
 

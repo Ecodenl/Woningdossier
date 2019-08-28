@@ -22,7 +22,7 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-xs-12">
-                                    @foreach(config('woningdossier.supported_locales') as $locale)
+                                    @foreach(config('hoomdossier.supported_locales') as $locale)
                                         <div class="form-group {{ $errors->has('questionnaire.name.*') ? ' has-error' : '' }}">
                                         <label for="name">Naam:</label>
                                             <div class="input-group">

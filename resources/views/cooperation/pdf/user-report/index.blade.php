@@ -14,7 +14,7 @@
 <body>
     @include('cooperation.pdf.user-report.parts.footer-note')
 
-    @include('cooperation.pdf.user-report.parts.front-page', ['user' => $user])
+    @include('cooperation.pdf.user-report.parts.front-page')
 </body>
 
 {{--
@@ -35,10 +35,8 @@
 
 
 @foreach ($reportData as $step => $data)
-    @if (is_string($step))
-        @if(array_key_exists($step, $stepSlugs))
-            @include('cooperation.pdf.user-report.parts.measure-page')
-        @endif
+    @if (is_string($step) && array_key_exists($step, $stepSlugs))
+        @include('cooperation.pdf.user-report.parts.measure-page')
     @endif
 @endforeach
 

@@ -16,6 +16,7 @@
         </div>
     </div>
 
+    {{-- Not in order in the reportData, easier and more readable to do it like this. --}}
     <div class="question-answer-section">
         <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.building-info.title')}}</p>
         <div class="question-answer">
@@ -73,6 +74,7 @@
     </div>
 
 
+    {{-- Current state of the building, elements and services with its interest level. --}}
     <div class="question-answer-section">
         <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.current-state.title')}}</p>
         <table class="full-width">
@@ -102,6 +104,7 @@
         </table>
     </div>
 
+    {{-- Motivation on order. --}}
     <div class="question-answer-section">
     <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.motivation')}}</p>
         @foreach($user->motivations as $motivation)

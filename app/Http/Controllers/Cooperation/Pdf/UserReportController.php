@@ -31,9 +31,11 @@ class UserReportController extends Controller
         $building = $user->building;
         $buildingFeatures = $building->buildingFeatures;
 
-        $GLOBALS['_cooperation'] = $cooperation;
-
         $inputSource = InputSource::findByShort('resident');
+
+        $GLOBALS['_cooperation'] = $cooperation;
+        $GLOBALS['_inputSource'] = $inputSource;
+
 
         $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, $inputSource);
 
@@ -64,21 +66,11 @@ class UserReportController extends Controller
 
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'cooperation', 'pdfData', 'stepSlugs',
+            'user', 'building', 'cooperation', 'stepSlugs',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
             'buildingFeatures', 'advices'
         ));
 
         return $pdf->stream();
-    }
-
-    public function pdfData()
-    {
-        $user = Hoomdossier::user();
-
-//        $calculateData = CsvService::getCalculateData($user->building, $user);
-        $userData = PdfService::totalReportForUser($user);
-
-        return ['user-data' => $userData, 'calculate-data' => $calculateData];
     }
 }

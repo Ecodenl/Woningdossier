@@ -211,7 +211,7 @@ class DumpService
             ];
         }
 
-        $calculateData = static::getCalculateData($building, $user);
+        $calculateData = static::getCalculateData($user, $inputSource);
 
         // one correction because of bad headers
         if (isset($calculateData['heater']['production_heat']) && !is_array($calculateData['heater']['production_heat'])) {
@@ -598,10 +598,11 @@ class DumpService
     }
 
     /**
-     * Return the calculate data for each step, returns it in the format how the calculate classes expects it.
+     * Return the calculate data for each step, for a user, with its given inputsource.
      *
-     * @param  User $user
      *
+     * @param User $user
+     * @param InputSource $inputSource
      * @return array
      */
     public static function getCalculateData(User $user, InputSource $inputSource): array

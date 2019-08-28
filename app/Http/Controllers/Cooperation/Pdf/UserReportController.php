@@ -33,22 +33,11 @@ class UserReportController extends Controller
 
         $GLOBALS['_cooperation'] = $cooperation;
 
+        $inputSource = InputSource::findByShort('resident');
 
-        $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, InputSource::findByShort('resident'));
+        $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, $inputSource);
 
-        $userActionPlanAdvicesQuery = $user->actionPlanAdvices();
-
-//        $userActionPlanAdvicesWithMaintenance = $userActionPlanAdvicesQuery
-//            ->whereHas('measureApplication', function ($query) {
-//                $query->where('measure_type', 'maintenance');
-//            })->get();
-//
-//        $userActionPlanAdvicesWithEnergySaving = $userActionPlanAdvicesQuery
-//            ->whereHas('measureApplication', function ($query) {
-//                $query->where('measure_type', 'energy_saving');
-//            })->get();
-
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, HoomdossierSession::getInputSource(true));
+        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $inputSource);
 
         // full report for a user
         $reportForUser = DumpService::totalDump($user, false);
@@ -74,13 +63,12 @@ class UserReportController extends Controller
 
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'cooperation', 'pdfData', 'stepSlugs', 'userActionPlanAdvicesWithMaintenance',
-            'userActionPlanAdvicesWithEnergySaving', 'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
+            'user', 'building', 'cooperation', 'pdfData', 'stepSlugs',
+            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
             'buildingFeatures', 'advices'
         ));
 
         return $pdf->stream();
-
     }
 
     public function pdfData()

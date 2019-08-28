@@ -26,7 +26,7 @@ class UserReportController extends Controller
     public function index(Cooperation $cooperation)
     {
 
-        $user = Hoomdossier::user()->load(['building.buildingFeatures', 'motivations']);
+        $user = Hoomdossier::user()->load('motivations');
 
         $building = $user->building;
         $buildingFeatures = $building->buildingFeatures;

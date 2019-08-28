@@ -7,6 +7,7 @@ use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
 use App\Models\User;
+use App\Models\UserActionPlanAdvice;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -51,7 +52,7 @@ class PdfReport implements ShouldQueue
             \Log::debug(__CLASS__.' Is running in the console with a maximum execution time of: '.ini_get('max_execution_time'));
         }
 
-        $user = $this->user->load(['building', 'motivations']);
+        $user = $this->user->load(['motivations']);
 
         $building = $user->building;
         // temporary session to get the right data for the dumb.
@@ -60,27 +61,18 @@ class PdfReport implements ShouldQueue
         HoomdossierSession::setInputSourceValue($residentInputSource);
         HoomdossierSession::setBuilding($building);
 
-
+        $buildingFeatures = $building->buildingFeatures;
 
         $GLOBALS['_cooperation'] = $user->cooperation;
 
-        $userActionPlanAdvicesQuery = $user->actionPlanAdvices();
+        $inputSource = InputSource::findByShort('resident');
 
-        $userActionPlanAdvices = $userActionPlanAdvicesQuery->get();
+        $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, $inputSource);
 
-        $userActionPlanAdvicesWithMaintenance = $userActionPlanAdvicesQuery
-            ->whereHas('measureApplication', function ($query) {
-                $query->where('measure_type', 'maintenance');
-            })->get();
-
-        $userActionPlanAdvicesWithEnergySaving = $userActionPlanAdvicesQuery
-            ->whereHas('measureApplication', function ($query) {
-                $query->where('measure_type', 'energy_saving');
-            })->get();
+        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $inputSource);
 
         // full report for a user
         $reportForUser = DumpService::totalDump($user, false);
-
 
         // the translations for the columns / tables in the user data
         $reportTranslations = $reportForUser['translations-for-columns'];
@@ -100,11 +92,11 @@ class PdfReport implements ShouldQueue
 
         // retrieve all the comments by for each input source on a step
         $commentsByStep = StepHelper::getAllCommentsByStep();
-
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'cooperation', 'pdfData', 'stepSlugs', 'userActionPlanAdvicesWithMaintenance',
-            'userActionPlanAdvicesWithEnergySaving', 'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices'
+            'user', 'building', 'cooperation', 'pdfData', 'stepSlugs',
+            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
+            'buildingFeatures', 'advices'
         ));
 
 

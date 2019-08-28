@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Pdf;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Models\Cooperation;
 use App\Http\Controllers\Controller;
@@ -25,7 +26,6 @@ class UserReportController extends Controller
     public function index(Cooperation $cooperation)
     {
 
-        \DB::enableQueryLog();
         $user = Hoomdossier::user()->load(['building.buildingFeatures', 'motivations']);
 
         $building = $user->building;
@@ -38,15 +38,17 @@ class UserReportController extends Controller
 
         $userActionPlanAdvicesQuery = $user->actionPlanAdvices();
 
-        $userActionPlanAdvicesWithMaintenance = $userActionPlanAdvicesQuery
-            ->whereHas('measureApplication', function ($query) {
-                $query->where('measure_type', 'maintenance');
-            })->get();
+//        $userActionPlanAdvicesWithMaintenance = $userActionPlanAdvicesQuery
+//            ->whereHas('measureApplication', function ($query) {
+//                $query->where('measure_type', 'maintenance');
+//            })->get();
+//
+//        $userActionPlanAdvicesWithEnergySaving = $userActionPlanAdvicesQuery
+//            ->whereHas('measureApplication', function ($query) {
+//                $query->where('measure_type', 'energy_saving');
+//            })->get();
 
-        $userActionPlanAdvicesWithEnergySaving = $userActionPlanAdvicesQuery
-            ->whereHas('measureApplication', function ($query) {
-                $query->where('measure_type', 'energy_saving');
-            })->get();
+        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, HoomdossierSession::getInputSource(true));
 
         // full report for a user
         $reportForUser = DumpService::totalDump($user, false);
@@ -74,7 +76,7 @@ class UserReportController extends Controller
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'cooperation', 'pdfData', 'stepSlugs', 'userActionPlanAdvicesWithMaintenance',
             'userActionPlanAdvicesWithEnergySaving', 'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
-            'buildingFeatures'
+            'buildingFeatures', 'advices'
         ));
 
         return $pdf->stream();

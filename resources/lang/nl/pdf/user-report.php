@@ -77,9 +77,16 @@ return [
         'advice' => 'Geadviseerd wordt:',
         'indicative-costs-and-benefits-for-measure' => 'Indicatieve kosten en baten voor deze maatregel',
         'measures' => [
-            'title' => 'Onderhoudsmaatregelen',
-            'costs' => 'Kosten',
-            'year' => 'Geadviseerd word'
+            'maintenance' => [
+                'title' => 'Onderhoudsmaatregelen',
+                'costs' => 'Kosten',
+                'year' => 'Geadviseerd word'
+            ],
+            'energy-saving' => [
+                'title' => 'Onderhoudsmaatregelen',
+                'costs' => 'Kosten',
+                'year' => 'Geadviseerd word'
+            ],
         ],
         'comments' => 'Toelichting op de maatregel'
     ],

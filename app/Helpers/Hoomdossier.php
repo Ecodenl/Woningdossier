@@ -14,6 +14,52 @@ class Hoomdossier
         return str_replace(',', '.', $input);
     }
 
+    /**
+     * Check if a column contains a needle, wrapper for stristr
+     *
+     * @param string $column
+     * @param string $needle
+     * @return bool
+     */
+    public static function columnContains(string $column, string $needle)
+    {
+        return stristr($column, $needle) !== false;
+    }
+
+    /**
+     * Method to return a unit for a given column.
+     *
+     * @param $column
+     * @return mixed|string
+     */
+    public static function getUnitForColumn($column)
+    {
+
+        if (static::columnContains($column, 'surface') || static::columnContains($column, 'm2')) {
+            $unit = 'm2';
+        }
+
+        if (static::columnContains($column, 'amount_electricity')) {
+            $unit = 'kWh';
+        }
+
+        if (static::columnContains($column, 'amount_gas')) {
+            $unit = 'm3';
+        }
+
+        $unitsForCalculations = [
+            'savings_gas' => 'm3',
+            'savings_co2' => 'kg',
+            'savings_money' => 'm2',
+            'cost_indication' => 'm2',
+            'interest_comparable' => '%',
+            'costs' => '€',
+            'm2' => 'm2',
+        ];
+
+        return $unit ?? $unitsForCalculations[$column] ?? '';
+    }
+
     public static function getMostCredibleValue(Relation $relation, $column, $default = null, $onlyReturnForInputSource = null)
     {
         $baseQuery = $relation

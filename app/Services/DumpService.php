@@ -924,5 +924,4 @@ class DumpService
 
         return false;
     }
-
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 use App\Events\StepDataHasBeenChangedEvent;
 use App\Exports\Cooperation\CsvExport;
 use App\Helpers\Calculator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\MyPlanHelper;
 use App\Helpers\NumberFormatter;
@@ -23,7 +24,7 @@ class MyPlanController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner);
+        $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner, HoomdossierSession::getInputSource(true));
         $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
 

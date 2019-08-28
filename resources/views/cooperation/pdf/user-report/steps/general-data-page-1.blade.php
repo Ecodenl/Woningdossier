@@ -29,7 +29,7 @@
         </div>
         <div class="question-answer">
             <p class="w-300">@lang('pdf/user-report.general-data.building-info.surface')</p>
-            <p>{{$buildingFeatures->surface}}</p>
+            <p>{{$buildingFeatures->surface}} {{\App\Helpers\Hoomdossier::getUnitForColumn('surface')}}</p>
         </div>
         <div class="question-answer">
             <p class="w-300">@lang('pdf/user-report.general-data.building-info.building-layers')</p>
@@ -68,7 +68,7 @@
             ?>
             <div class="question-answer">
                 <p class="w-300">{{$translationForAnswer}}</p>
-                <p>{{$value}}</p>
+                <p>{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($column)}}</p>
             </div>
         @endforeach
     </div>
@@ -89,14 +89,14 @@
                 @foreach(\Illuminate\Support\Arr::only($reportData['general-data'], ['element', 'service']) as $table => $data)
                     @foreach($data as $elementOrServiceId => $value)
                         @if (!is_array($value))
-                        <?php
-                            $translationForAnswer = $reportTranslations['general-data.'.$table.'.'.$elementOrServiceId];
-                        ?>
-                        <tr>
-                            <td>{{$translationForAnswer}}</td>
-                            <td>{{$value}}</td>
-                            <td>{{$user->getInterestedType($table, $elementOrServiceId)->interest->name ?? 'x'}}</td>
-                        </tr>
+                            <?php
+                                $translationForAnswer = $reportTranslations['general-data.'.$table.'.'.$elementOrServiceId];
+                            ?>
+                            <tr>
+                                <td>{{$translationForAnswer}}</td>
+                                <td>{{$value}}</td>
+                                <td>{{$user->getInterestedType($table, $elementOrServiceId)->interest->name ?? 'x'}}</td>
+                            </tr>
                         @endif
                     @endforeach
                 @endforeach

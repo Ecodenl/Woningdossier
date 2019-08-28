@@ -18,8 +18,7 @@
                     $translationForAnswer = $reportTranslations[$step.'.'.$translationKey];
                 ?>
                 <div class="question-answer">
-{{--                    <p class="w-300">{{$translationForAnswer}}</p>--}}
-                    <p class="w-300">{{$translationKey}}</p>
+                    <p class="w-300">{{$translationForAnswer}}</p>
                     <p>{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</p>
                 </div>
             @endforeach

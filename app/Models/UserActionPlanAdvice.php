@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\NumberFormatter;
 use App\Scopes\GetValueScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
@@ -284,5 +285,62 @@ class UserActionPlanAdvice extends Model
         }
 
         return $year;
+    }
+
+
+    public function getPersonalPlan(User $user, InputSource $inputSource): array
+    {
+        $building = $user->building;
+        $buildingOwner = $user;
+
+        $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner, $inputSource);
+
+        $sortedAdvices = [];
+
+        foreach($advices as $measureType => $stepAdvices) {
+
+            foreach ($stepAdvices as $stepSlug => $advicesForStep) {
+
+                foreach ($advicesForStep as $advice) {
+                    if ($advice->planned) {
+                        $year = isset($advice->planned_year) ? $advice->planned_year : $advice->year;
+                        if (is_null($year)) {
+                            $year = $advice->getAdviceYear();
+                        }
+                        if (is_null($year)) {
+                            $year     = __('woningdossier.cooperation.tool.my-plan.no-year');
+                            $costYear = Carbon::now()->year;
+                        } else {
+                            $costYear = $year;
+                        }
+                        if ( ! array_key_exists($year, $sortedAdvices)) {
+                            $sortedAdvices[$year] = [];
+                        }
+
+                        // get step from advice
+                        $step = $advice->step;
+
+                        if ( ! array_key_exists($step->name, $sortedAdvices[$year])) {
+                            $sortedAdvices[$year][$step->name] = [];
+                        }
+
+                        $sortedAdvices[$year][$step->name][] = [
+                            'interested'          => $advice->planned,
+                            'advice_id' => $advice->id,
+                            'measure' => $advice->measureApplication->measure_name,
+                            'measure_short'       => $advice->measureApplication->short,                    // In the table the costs are indexed based on the advice year
+                            // Now re-index costs based on user planned year in the personal plan
+                            'costs'               => NumberFormatter::round(Calculator::indexCosts($advice->costs, $costYear)),
+                            'savings_gas'         => is_null($advice->savings_gas) ? 0 : NumberFormatter::round($advice->savings_gas),
+                            'savings_electricity' => is_null($advice->savings_electricity) ? 0 : NumberFormatter::round($advice->savings_electricity),
+                            'savings_money'       => is_null($advice->savings_money) ? 0 : NumberFormatter::round(Calculator::indexCosts($advice->savings_money, $costYear)),
+                        ];
+                    }
+                }
+            }
+        }
+        ksort($sortedAdvices);
+
+        return $sortedAdvices;
     }
 }

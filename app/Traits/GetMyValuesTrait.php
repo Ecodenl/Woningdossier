@@ -41,6 +41,19 @@ trait GetMyValuesTrait
     }
 
     /**
+     * Scope a query for a specific input source id
+     *
+     * @param  Builder  $query
+     * @param $inputSourceId
+     *
+     * @return Builder
+     */
+    public function scopeForInputSource(Builder $query, $inputSourceId)
+    {
+        return $query->withoutGlobalScopes()->where('input_source_id', $inputSourceId);
+    }
+
+    /**
      * Determine if we should query on the user or building id.
      *
      * @return array

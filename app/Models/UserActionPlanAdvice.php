@@ -106,41 +106,45 @@ class UserActionPlanAdvice extends Model
         return $this->belongsTo(Step::class);
     }
 
-    public static function getCategorizedActionPlan(User $user)
-    {
-        $result = [];
-        $advices = self::where('user_id', $user->id)
-                       ->orderBy('step_id', 'asc')
-                       ->orderBy('year', 'asc')
-                       ->get();
-        /** @var UserActionPlanAdvice $advice */
-        foreach ($advices as $advice) {
-            if ($advice->step instanceof Step) {
-                /** @var MeasureApplication $measureApplication */
-                $measureApplication = $advice->measureApplication;
-
-                if (is_null($advice->year)) {
-                    $advice->year = $advice->getAdviceYear();
-                    // re-index costs
-                    //$advice->costs = Calculator::reindexCosts($advice->costs, null, $advice->year);
-                }
-
-                if (! array_key_exists($measureApplication->measure_type, $result)) {
-                    $result[$measureApplication->measure_type] = [];
-                }
-
-                if (! array_key_exists($advice->step->slug, $result[$measureApplication->measure_type])) {
-                    $result[$measureApplication->measure_type][$advice->step->slug] = [];
-                }
-
-                $result[$measureApplication->measure_type][$advice->step->slug][] = $advice;
-            }
-        }
-
-        ksort($result);
-
-        return $result;
-    }
+    /**
+     *
+     * @deprecated
+     */
+//    public static function getCategorizedActionPlan(User $user)
+//    {
+//        $result = [];
+//        $advices = self::where('user_id', $user->id)
+//                       ->orderBy('step_id', 'asc')
+//                       ->orderBy('year', 'asc')
+//                       ->get();
+//        /** @var UserActionPlanAdvice $advice */
+//        foreach ($advices as $advice) {
+//            if ($advice->step instanceof Step) {
+//                /** @var MeasureApplication $measureApplication */
+//                $measureApplication = $advice->measureApplication;
+//
+//                if (is_null($advice->year)) {
+//                    $advice->year = $advice->getAdviceYear();
+//                    // re-index costs
+//                    //$advice->costs = Calculator::reindexCosts($advice->costs, null, $advice->year);
+//                }
+//
+//                if (! array_key_exists($measureApplication->measure_type, $result)) {
+//                    $result[$measureApplication->measure_type] = [];
+//                }
+//
+//                if (! array_key_exists($advice->step->slug, $result[$measureApplication->measure_type])) {
+//                    $result[$measureApplication->measure_type][$advice->step->slug] = [];
+//                }
+//
+//                $result[$measureApplication->measure_type][$advice->step->slug][] = $advice;
+//            }
+//        }
+//
+//        ksort($result);
+//
+//        return $result;
+//    }
 
     /**
      * Get all the comments that are saved in multiple tables.
@@ -288,12 +292,48 @@ class UserActionPlanAdvice extends Model
     }
 
 
-    public function getPersonalPlan(User $user, InputSource $inputSource): array
-    {
-        $building = $user->building;
-        $buildingOwner = $user;
 
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner, $inputSource);
+    public static function getCategorizedActionPlan(User $user, InputSource $inputSource)
+    {
+
+        $result = [];
+        $advices = self::forInputSource($inputSource->id)
+            ->where('user_id', $user->id)
+            ->orderBy('step_id', 'asc')
+            ->orderBy('year', 'asc')
+            ->get();
+
+        foreach ($advices as $advice) {
+
+            if ($advice->step instanceof Step) {
+
+                $measureApplication = $advice->measureApplication;
+
+                if (is_null($advice->year)) {
+                    $advice->year = $advice->getAdviceYear();
+                }
+
+                $result[$measureApplication->measure_type][$advice->step->slug][] = $advice;
+            }
+        }
+
+        ksort($result);
+
+        return $result;
+    }
+
+
+    /**
+     * Get the personal plan for a user and its input source
+     *
+     * @param User $user
+     * @param InputSource $inputSource
+     * @return array
+     */
+    public static function getPersonalPlan(User $user, InputSource $inputSource): array
+    {
+
+        $advices = self::getCategorizedActionPlan($user, $inputSource);
 
         $sortedAdvices = [];
 

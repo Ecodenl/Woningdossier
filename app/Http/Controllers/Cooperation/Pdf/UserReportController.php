@@ -6,6 +6,8 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\StepHelper;
 use App\Models\Cooperation;
 use App\Http\Controllers\Controller;
+use App\Models\InputSource;
+use App\Models\UserActionPlanAdvice;
 use App\Services\CsvService;
 use App\Services\DumpService;
 use App\Services\PdfService;
@@ -31,6 +33,8 @@ class UserReportController extends Controller
 
         $GLOBALS['_cooperation'] = $cooperation;
 
+
+        dd(UserActionPlanAdvice::getPersonalPlan($user, InputSource::findByShort('resident')));
         $userActionPlanAdvicesQuery = $user->actionPlanAdvices();
 
         $userActionPlanAdvices = $userActionPlanAdvicesQuery->get();

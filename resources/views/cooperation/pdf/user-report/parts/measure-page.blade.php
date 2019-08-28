@@ -10,12 +10,12 @@
         <div class="question-answer-section">
             <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.filled-in-data')}}</p>
             <?php
-            $calculationsForStep = $data['calculation'] ?? [];
-            unset($data['calculation']);
+                $calculationsForStep = $data['calculation'] ?? [];
+                unset($data['calculation']);
             ?>
             @foreach (\Illuminate\Support\Arr::dot($data) as $translationKey => $value)
                 <?php
-                $translationForAnswer = $reportTranslations[$step.'.'.$translationKey];
+                    $translationForAnswer = $reportTranslations[$step.'.'.$translationKey];
                 ?>
                 <div class="question-answer">
                     <p class="w-300">{{$translationForAnswer}}</p>
@@ -31,7 +31,7 @@
                 <div class="question-answer">
                     @if(!empty($calculationResult) && !is_array($calculationResult))
                         <?php
-                        $translationForAnswer = $reportTranslations[$step.'.calculation.'.$calculationType];
+                            $translationForAnswer = $reportTranslations[$step.'.calculation.'.$calculationType];
                         ?>
                         <p class="w-300">{{$translationForAnswer}}</p>
                         <p>{{\App\Helpers\NumberFormatter::round($calculationResult)}}</p>
@@ -79,10 +79,10 @@
                                 <p class="w-300">{{$inputSourceName}}</p>
                                 <p>{{$comment}}</p>
                             @endif
-                            @endforeach
-                            @endforeach
-                        </div>
-                        @endif
+                        @endforeach
+                    @endforeach
+                </div>
+            @endif
         </div>
     </div>
 @endcomponent

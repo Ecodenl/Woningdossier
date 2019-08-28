@@ -12,11 +12,18 @@
         </thead>
         <tbody>
         {{--
-        todo: these are just all the action plan advices, find out if these need to be the exact same as my plan 'Uw persoonlijke meerjarenonderhoudsplan'
+            todo: these are just all the action plan advices, find out if these need to be the exact same as my plan 'Uw persoonlijke meerjarenonderhoudsplan'
         --}}
         @foreach($userActionPlanAdvices as $userActionPlanAdvice)
+            <?php
+                // determine which year we will use
+                $year = isset($userActionPlanAdvice->planned_year) ? $userActionPlanAdvice->planned_year : $userActionPlanAdvice->year;
+                if (is_null($year)) {
+                    $year = $userActionPlanAdvice->getAdviceYear() ?? __('woningdossier.cooperation.tool.my-plan.no-year');
+                }
+            ?>
             <tr>
-                <td>{{$userActionPlanAdvice->getAdviceYear()}}</td>
+                <td>{{$userActionPlanAdvice->getYear()}}</td>
                 <td>{{$userActionPlanAdvice->planned ? 'Ja' : 'Nee'}}</td>
                 <td>{{$userActionPlanAdvice->measureApplication->measure_name}}</td>
                 <td>{{$userActionPlanAdvice->costs}}</td>

@@ -141,12 +141,10 @@ class MyPlanController extends Controller
                 //if (MyPlanHelper::isUserInterestedInMeasure($advice->step)) {
                 if ($advice->planned) {
 
-                    $year = isset($advice->planned_year) ? $advice->planned_year : $advice->year;
-                    if (is_null($year)) {
-                        $year = $advice->getAdviceYear();
-                    }
-                    if (is_null($year)) {
-                        $year = __('woningdossier.cooperation.tool.my-plan.no-year');
+                    $year = $advice->getYear();
+
+                    // if its a string, the $year contains 'geen jaartal'
+                    if (is_string($year)) {
                         $costYear = Carbon::now()->year;
                     } else {
                         $costYear = $year;

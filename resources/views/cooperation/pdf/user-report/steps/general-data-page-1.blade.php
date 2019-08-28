@@ -1,31 +1,66 @@
 <div id="general-data">
 
     <div class="question-answer-section">
-        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.title')}}</p>
+        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.front-page.address-info.title')}}</p>
         <div class="question-answer">
-            <p class="w-300">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.name')}}</p>
+            <p class="w-300">{{\App\Helpers\Translation::translate('pdf/user-report.front-page.address-info.name')}}</p>
             <p>{{$user->getFullName()}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-300">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.address')}}</p>
+            <p class="w-300">{{\App\Helpers\Translation::translate('pdf/user-report.front-page.address-info.address')}}</p>
             <p>{{$building->street}} {{$building->number}} {{$building->extension}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-300">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.zip-code-city')}}</p>
+            <p class="w-300">{{\App\Helpers\Translation::translate('pdf/user-report.front-page.address-info.zip-code-city')}}</p>
             <p>{{$building->postal_code}} {{$building->city}}</p>
         </div>
     </div>
 
     <div class="question-answer-section">
-        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.building-info.title')}}</p>
+        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.front-page.building-info.title')}}</p>
         <div class="question-answer">
-            <p class="w-300">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.zip-code-city')}}</p>
-            <p></p>
+            <p class="w-300">@lang('pdf/user-report.front-page.building-info.building-type')</p>
+            <p>{{$buildingFeatures->buildingType->name}}</p>
+        </div>
+        <div class="question-answer">
+            <p class="w-300">@lang('pdf/user-report.front-page.building-info.build-year')</p>
+            <p>{{$buildingFeatures->build_year}}</p>
+        </div>
+        <div class="question-answer">
+            <p class="w-300">@lang('pdf/user-report.front-page.building-info.surface')</p>
+            <p>{{$buildingFeatures->surface}}</p>
+        </div>
+        <div class="question-answer">
+            <p class="w-300">@lang('pdf/user-report.front-page.building-info.building-layers')</p>
+            <p>{{$buildingFeatures->building_layers}}</p>
+        </div>
+        <div class="question-answer">
+            <p class="w-300">@lang('pdf/user-report.front-page.building-info.roof-type')</p>
+            <p>{{$buildingFeatures->roofType->name}}</p>
+        </div>
+        <div class="question-answer">
+            <p class="w-300">@lang('pdf/user-report.front-page.building-info.current-energy-label')</p>
+            <p>{{$buildingFeatures->energyLabel->name}}</p>
+        </div>
+        <?php
+            $possibleAnswers = [
+                1 => \App\Helpers\Translation::translate('general.options.yes.title'),
+                2 => \App\Helpers\Translation::translate('general.options.no.title'),
+                0 => \App\Helpers\Translation::translate('general.options.unknown.title'),
+            ];
+        ?>
+        <div class="question-answer">
+            <p class="w-300">@lang('pdf/user-report.front-page.building-info.monument')</p>
+            <p>{{$possibleAnswers[$buildingFeatures->monument]}}</p>
+        </div>
+        <div class="question-answer">
+            <p class="w-300">@lang('pdf/user-report.front-page.building-info.example-building')</p>
+            <p>{{$building->exampleBuilding->name}}</p>
         </div>
     </div>
 
     <div class="question-answer-section">
-        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.usage-info.title')}}</p>
+        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.front-page.usage-info.title')}}</p>
         @foreach($reportData['general-data']['user_energy_habits'] as $column => $value)
             <?php
                 $translationForAnswer = $reportTranslations['general-data.user_energy_habits.'.$column];
@@ -39,13 +74,13 @@
 
 
     <div class="question-answer-section">
-        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.current-state.title')}}</p>
+        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.front-page.current-state.title')}}</p>
         <table class="full-width">
             <thead>
                 <tr>
-                    <th>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.current-state.table.measure')}}</th>
-                    <th>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.current-state.table.present-current-situation')}}</th>
-                    <th>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.current-state.table.interested-in-improvement')}}</th>
+                    <th>{{\App\Helpers\Translation::translate('pdf/user-report.front-page.current-state.table.measure')}}</th>
+                    <th>{{\App\Helpers\Translation::translate('pdf/user-report.front-page.current-state.table.present-current-situation')}}</th>
+                    <th>{{\App\Helpers\Translation::translate('pdf/user-report.front-page.current-state.table.interested-in-improvement')}}</th>
                 </tr>
             </thead>
             <tbody>
@@ -68,7 +103,7 @@
     </div>
 
     <div class="question-answer-section">
-    <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.motivation')}}</p>
+    <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.front-page.motivation')}}</p>
         @foreach($user->motivations as $motivation)
             <div class="question-answer">
                 <p class="w-300">Motivatie {{$motivation->order}}</p>
@@ -78,7 +113,7 @@
     </div>
 
     <div class="question-answer-section">
-        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.comment-usage-building')}}</p>
+        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.front-page.comment-usage-building')}}</p>
         @if(array_key_exists('general-data', $commentsByStep))
             @foreach($commentsByStep['general-data'] as $inputSourceName => $commentsCategorizedUnderColumn)
                 {{-- The column can be a category, this will be the case when the comment is stored under a catergory --}}

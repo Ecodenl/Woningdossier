@@ -5,9 +5,7 @@ return [
         'intro' => [
             'title' => 'Stappenplan voor het verduurzamen van uw woning',
             'text' => 'U hebt het Hoomdossier voor uw woning ingevuld. Hieronder ziet u een samenvatting van de ingevoerde gegevens, de resultaten van de berekeningen en de stappen die u kunt ondernemen om uw woning duurzamer te maken.'
-        ]
-    ],
-    'general-data' => [
+        ],
         'address-info' => [
             'title' => 'Adres gegevens',
             'name' => 'Naam',
@@ -15,7 +13,15 @@ return [
             'zip-code-city' => 'Postcode en plaatsnaam'
         ],
         'building-info' => [
-            'title' => 'Algemene woninggegevens'
+            'title' => 'Algemene woninggegevens',
+            'building-type' => 'Woning type',
+            'build-year' => 'Bouwjaar',
+            'surface' => 'Gebruiksoppervlakte',
+            'building-layers' => 'Aantal bouwlagen',
+            'roof-type' => 'Type dak',
+            'current-energy-label' => 'Huidig energielabel',
+            'monument' => 'Monumentale status',
+            'example-building' => 'Gekozen voorbeeldwoning'
         ],
         'usage-info' => [
             'title' => 'Gegevens over het gebruik van de woning',
@@ -62,7 +68,7 @@ return [
             'lead' => 'U hebt aangegeven interesse te hebben in de volgende maatregelen:',
 
             'text' => 'Op de volgende bladzijden ziet u per maatregel een samenvatting van de ingevoerde gegevens en berekeningen voor de hierboven genoemde maatregelen. Meer informatie over de maatregelen kunt u ook vinden op de maatregelbladen in het Hoomdossier of op <a href="www.milieucentraal.nl">www.milieucentraal.nl</a>.'
-        ]
+        ],
     ],
     'measure-pages' => [
         'filled-in-data' => 'Ingevoerde gegevens',

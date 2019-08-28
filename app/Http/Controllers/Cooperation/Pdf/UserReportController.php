@@ -23,10 +23,11 @@ class UserReportController extends Controller
     public function index(Cooperation $cooperation)
     {
 
-        $user = Hoomdossier::user()->load(['building', 'motivations']);
+        \DB::enableQueryLog();
+        $user = Hoomdossier::user()->load(['building.buildingFeatures', 'motivations']);
 
         $building = $user->building;
-
+        $buildingFeatures = $building->buildingFeatures;
 
         $GLOBALS['_cooperation'] = $cooperation;
 
@@ -46,7 +47,6 @@ class UserReportController extends Controller
 
         // full report for a user
         $reportForUser = DumpService::totalDump($user, false);
-
 
         // the translations for the columns / tables in the user data
         $reportTranslations = $reportForUser['translations-for-columns'];
@@ -70,7 +70,8 @@ class UserReportController extends Controller
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'cooperation', 'pdfData', 'stepSlugs', 'userActionPlanAdvicesWithMaintenance',
-            'userActionPlanAdvicesWithEnergySaving', 'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices'
+            'userActionPlanAdvicesWithEnergySaving', 'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
+            'buildingFeatures'
         ));
 
         return $pdf->stream();

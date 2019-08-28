@@ -23,11 +23,8 @@ use Carbon\Carbon;
 
 class Heater {
 
-    public static function calculate(Building $building, InputSource $inputSource, $calculateData)
+    public static function calculate(Building $building, $energyHabit, $calculateData)
     {
-        $user = $building->user;
-        $habit = $user->energyHabit()->forInputSource($inputSource)->get();
-
         $result = [
             'consumption' => [
                 'water' => 0,
@@ -51,8 +48,8 @@ class Heater {
         $comfortLevel = ComfortLevelTapWater::find($comfortLevelId);
         $interests = $calculateData['interest'] ?? '';
 
-        if ($habit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
-            $consumption = KeyFigures::getCurrentConsumption($habit, $comfortLevel);
+        if ($energyHabit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
+            $consumption = KeyFigures::getCurrentConsumption($energyHabit, $comfortLevel);
             if ($consumption instanceof KeyFigureConsumptionTapWater) {
                 $result['consumption'] = [
                     'water' => $consumption->water_consumption,

@@ -17,11 +17,8 @@ use App\Models\UserEnergyHabit;
 
 class HighEfficiencyBoiler {
 
-    public static function calculate(Building $building, InputSource $inputSource, $calculateData)
+    public static function calculate($energyHabit, $calculateData)
     {
-        $user = $building->user;
-        $energyHabit = $user->energyHabit()->forInputSource($inputSource)->get();
-
         $result = [
             'savings_gas' => 0,
             'savings_co2' => 0,

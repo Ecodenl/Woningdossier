@@ -777,8 +777,9 @@ class DumpService
             'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
         ]);
 
+        dd($userEnergyHabit, $inputSource);
 
-        $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $user, [
+        $insulatedGlazingSavings = InsulatedGlazing::calculate($userEnergyHabit, [
             'user_interests' => $userInterestsForInsulatedGlazing,
             'building_insulated_glazings' => $buildingInsulatedGlazingArray,
             'building_elements' => $buildingElementsArray,
@@ -786,17 +787,17 @@ class DumpService
             'building_paintwork_statuses' => $buildingPaintworkStatusesArray,
         ]);
 
-        $floorInsulationSavings = FloorInsulation::calculate($building, $user, [
+        $floorInsulationSavings = FloorInsulation::calculate($building, $userEnergyHabit, [
             'element' => [$floorInsulationElement->id => $floorInsulationElementValueId],
             'building_elements' => $floorInsulationBuildingElements,
             'building_features' => $floorBuildingFeatures,
         ]);
 
-        $roofInsulationSavings = RoofInsulation::calculate($building, $inputSource, [
+        $roofInsulationSavings = RoofInsulation::calculate($building, $userEnergyHabit, [
             'building_roof_types' => $buildingRoofTypesArray,
         ]);
 
-        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($building, $inputSource, [
+        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($userEnergyHabit, [
             'building_services' => $buildingBoilerArray,
             'habit' => [
                 'amount_gas' => $userEnergyHabit->amount_gas ?? null,
@@ -811,7 +812,7 @@ class DumpService
             'interest' => $userInterestsForSolarPanels,
         ]);
 
-        $heaterSavings = Heater::calculate($building, $user, [
+        $heaterSavings = Heater::calculate($building, $userEnergyHabit, [
             'building_heaters' => [
                 $buildingHeater instanceof BuildingHeater ? $buildingHeater->toArray() : [],
             ],

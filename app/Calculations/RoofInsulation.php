@@ -10,7 +10,6 @@ use App\Models\Building;
 use App\Models\BuildingHeating;
 use App\Models\Element;
 use App\Models\ElementValue;
-use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
@@ -20,11 +19,8 @@ use App\Helpers\RoofInsulation as RoofInsulationHelper;
 
 class RoofInsulation {
 
-    public static function calculate(Building $building, InputSource $inputSource, $calculateData)
+    public static function calculate(Building $building, $energyHabit, $calculateData)
     {
-        $user = $building->user;
-        $energyHabit = $user->energyHabit()->forInputSource($inputSource)->get();
-
         \Log::debug(__METHOD__);
         $result = [];
 

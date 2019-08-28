@@ -1,3 +1,36 @@
+{{-- Motivation on order. --}}
+<div class="question-answer-section">
+    <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.motivation')}}</p>
+    @foreach($user->motivations as $motivation)
+        <div class="question-answer">
+            <p class="w-300">Motivatie {{$motivation->order}}</p>
+            <p>{{$motivation->motivation->name}}</p>
+        </div>
+    @endforeach
+</div>
+
+<div class="question-answer-section">
+    <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.comment-usage-building')}}</p>
+    @if(array_key_exists('general-data', $commentsByStep))
+        @foreach($commentsByStep['general-data'] as $inputSourceName => $commentsCategorizedUnderColumn)
+            {{-- The column can be a category, this will be the case when the comment is stored under a catergory --}}
+            @foreach($commentsCategorizedUnderColumn as $columnOrCategory => $comment)
+                <div class="question-answer">
+                    @if(is_array($comment))
+                        @foreach($comment as $column => $c)
+                            <p class="w-300">{{$inputSourceName}} ({{$columnOrCategory}})</p>
+                            <p>{{$c}}</p>
+                        @endforeach
+                    @else
+                        <p class="w-300">{{$inputSourceName}}</p>
+                        <p>{{$comment}}</p>
+                    @endif
+                </div>
+            @endforeach
+        @endforeach
+    @endif
+</div>
+
 <div class="question-answer-section">
     <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.resume-energy-saving-measures.title')}}</p>
     <table class="full-width">

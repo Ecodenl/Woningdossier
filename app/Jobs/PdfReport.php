@@ -24,6 +24,7 @@ class PdfReport implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $user;
+    protected $inputSource;
     protected $anonymizeData;
     protected $fileType;
     protected $fileStorage;
@@ -35,10 +36,11 @@ class PdfReport implements ShouldQueue
      * @param  FileType $fileType
      * @param  bool  $anonymizeData
      */
-    public function __construct(User $user, FileType $fileType, FileStorage $fileStorage)
+    public function __construct(User $user, InputSource $inputSource, FileType $fileType, FileStorage $fileStorage)
     {
         $this->fileType = $fileType;
         $this->fileStorage = $fileStorage;
+        $this->inputSource = $inputSource;
         $this->user = $user;
     }
     /**
@@ -56,23 +58,22 @@ class PdfReport implements ShouldQueue
 
         $building = $user->building;
         // temporary session to get the right data for the dumb.
-        $residentInputSource = InputSource::findByShort('resident');
-        HoomdossierSession::setInputSource($residentInputSource);
-        HoomdossierSession::setInputSourceValue($residentInputSource);
-        HoomdossierSession::setBuilding($building);
+//        $residentInputSource = InputSource::findByShort('resident');
+//        HoomdossierSession::setInputSource($residentInputSource);
+//        HoomdossierSession::setInputSourceValue($residentInputSource);
+//        HoomdossierSession::setBuilding($building);
 
         $buildingFeatures = $building->buildingFeatures;
 
         $GLOBALS['_cooperation'] = $user->cooperation;
+        $GLOBALS['_inputSource'] = $this->inputSource;
 
-        $inputSource = InputSource::findByShort('resident');
+        $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, $this->inputSource);
 
-        $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, $inputSource);
-
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $inputSource);
+        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $this->inputSource);
 
         // full report for a user
-        $reportForUser = DumpService::totalDump($user, false);
+        $reportForUser = DumpService::totalDump($user, $this->inputSource, false);
 
         // the translations for the columns / tables in the user data
         $reportTranslations = $reportForUser['translations-for-columns'];
@@ -92,11 +93,11 @@ class PdfReport implements ShouldQueue
 
         // retrieve all the comments by for each input source on a step
         $commentsByStep = StepHelper::getAllCommentsByStep();
+
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'cooperation', 'pdfData', 'stepSlugs',
-            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
-            'buildingFeatures', 'advices'
+            'user', 'building', 'cooperation', 'stepSlugs', 'commentsByStep',
+            'reportTranslations', 'reportData', 'userActionPlanAdvices', 'buildingFeatures', 'advices'
         ));
 
 

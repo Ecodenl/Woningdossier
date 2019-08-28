@@ -76,7 +76,7 @@ class HighEfficiencyBoilerController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
-        $result = HighEfficiencyBoiler::calculate($building, $user, $request->all());
+        $result = HighEfficiencyBoiler::calculate($building, HoomdossierSession::getInputSource(true), $request->all());
 
 
         return response()->json($result);

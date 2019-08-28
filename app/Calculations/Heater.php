@@ -11,6 +11,7 @@ use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\ComfortLevelTapWater;
 use App\Models\HeaterComponentCost;
+use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\KeyFigureConsumptionTapWater;
 use App\Models\PvPanelLocationFactor;
@@ -22,8 +23,11 @@ use Carbon\Carbon;
 
 class Heater {
 
-    public static function calculate(Building $building, User $user, $calculateData)
+    public static function calculate(Building $building, InputSource $inputSource, $calculateData)
     {
+        $user = $building->user;
+        $habit = $user->energyHabit()->forInputSource($inputSource)->get();
+
         $result = [
             'consumption' => [
                 'water' => 0,
@@ -46,8 +50,6 @@ class Heater {
         $comfortLevelId = $calculateData['user_energy_habits']['water_comfort_id'] ?? 0;
         $comfortLevel = ComfortLevelTapWater::find($comfortLevelId);
         $interests = $calculateData['interest'] ?? '';
-
-        $habit = $user->energyHabit;
 
         if ($habit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
             $consumption = KeyFigures::getCurrentConsumption($habit, $comfortLevel);

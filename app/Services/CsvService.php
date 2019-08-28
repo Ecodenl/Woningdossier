@@ -828,11 +828,11 @@ class CsvService
             'building_features' => $floorBuildingFeatures,
         ]);
 
-        $roofInsulationSavings = RoofInsulation::calculate($building, $user, [
+        $roofInsulationSavings = RoofInsulation::calculate($building, $inputSource, [
             'building_roof_types' => $buildingRoofTypesArray,
         ]);
 
-        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($building, $user, [
+        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($building, $inputSource, [
             'building_services' => $buildingBoilerArray,
             'habit' => [
                 'amount_gas' => $userEnergyHabit->amount_gas ?? null,

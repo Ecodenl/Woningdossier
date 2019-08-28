@@ -9,6 +9,7 @@ use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\FileTypeCategory;
+use App\Models\InputSource;
 use App\Scopes\AvailableScope;
 use App\Http\Controllers\Controller;
 
@@ -59,7 +60,7 @@ class ReportController extends Controller
 
         switch ($fileType->short) {
             case 'pdf-report':
-                PdfReport::dispatch(Hoomdossier::user(), $fileType, $fileStorage);
+                PdfReport::dispatch(Hoomdossier::user(), InputSource::findByShort('coach'), $fileType, $fileStorage);
                 break;
 
         }

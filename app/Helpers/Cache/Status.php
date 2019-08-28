@@ -2,7 +2,7 @@
 
 namespace App\Helpers\Cache;
 
-class Status {
+class Status extends BaseCache {
 
     const CACHE_KEY_FIND = 'Status_find_%s';
 
@@ -14,8 +14,8 @@ class Status {
     public static function find($id)
     {
         return \Cache::remember(
-            sprintf(static::CACHE_KEY_FIND, $id),
-            config('woningdossier.cache.times.default'),
+            self::getCacheKey(static::CACHE_KEY_FIND, $id),
+            config('hoomdossier.cache.times.default'),
             function () use ($id) {
                 return \App\Models\Status::find($id);
             }

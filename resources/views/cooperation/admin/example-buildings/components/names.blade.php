@@ -1,6 +1,6 @@
 <?php
 // We want to unset keys once the input is placed
-$locales = array_flip(config('woningdossier.supported_locales'));
+$locales = array_flip(config('hoomdossier.supported_locales'));
 // default
 $translationKey = '';
 ?>

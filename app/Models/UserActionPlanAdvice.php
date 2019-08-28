@@ -297,7 +297,7 @@ class UserActionPlanAdvice extends Model
     {
 
         $result = [];
-        $advices = self::forInputSource($inputSource->id)
+        $advices = self::forInputSource($inputSource)
             ->where('user_id', $user->id)
             ->orderBy('step_id', 'asc')
             ->orderBy('year', 'asc')

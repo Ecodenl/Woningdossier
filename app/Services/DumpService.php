@@ -188,7 +188,7 @@ class DumpService
         // get the building features from the resident
         $buildingFeature = $building
             ->buildingFeatures()
-            ->forInputSource($inputSource->id)
+            ->forInputSource($inputSource)
             ->first();
 
         $buildingType = $buildingFeature->buildingType->name ?? '';
@@ -340,7 +340,7 @@ class DumpService
 
                     $buildingRoofType = BuildingRoofType::where('roof_type_id', $roofTypeId)
                         ->where($whereUserOrBuildingId)
-                        ->forInputSource($inputSource->id)
+                        ->forInputSource($inputSource)
                         ->first();
 
                     if ($buildingRoofType instanceof BuildingRoofType) {
@@ -395,7 +395,7 @@ class DumpService
                     $userInterest = UserInterest::where($whereUserOrBuildingId)
                         ->where('interested_in_id', $interestInId)
                         ->where('interested_in_type', $interestInType)
-                        ->forInputSource($inputSource->id)
+                        ->forInputSource($inputSource)
                         ->first();
 
 
@@ -411,7 +411,7 @@ class DumpService
                             /** @var BuildingElement $element */
                             $buildingElement = BuildingElement::where($whereUserOrBuildingId)
                                 ->where('element_id', $elementOrServiceId)
-                                ->forInputSource($inputSource->id)
+                                ->forInputSource($inputSource)
                                 ->first();
 
                             if ($buildingElement instanceof BuildingElement) {
@@ -431,7 +431,7 @@ class DumpService
                         case 'service':
                             $buildingService = BuildingService::where($whereUserOrBuildingId)
                                 ->where('service_id', $elementOrServiceId)
-                                ->forInputSource($inputSource->id)
+                                ->forInputSource($inputSource)
                                 ->first();
                             if ($buildingService instanceof BuildingService) {
 
@@ -461,7 +461,7 @@ class DumpService
                     /** @var BuildingInsulatedGlazing $buildingInsulatedGlazing */
                     $buildingInsulatedGlazing = BuildingInsulatedGlazing::where($whereUserOrBuildingId)
                         ->where('measure_application_id', $measureApplicationId)
-                        ->forInputSource($inputSource->id)
+                        ->forInputSource($inputSource)
                         ->first();
 
                     if ($buildingInsulatedGlazing instanceof BuildingInsulatedGlazing) {
@@ -488,7 +488,7 @@ class DumpService
 
                     /** @var BuildingPvPanel $buildingPvPanel */
                     $buildingPvPanel = BuildingPvPanel::where($whereUserOrBuildingId)
-                        ->forInputSource($inputSource->id)
+                        ->forInputSource($inputSource)
                         ->first();
 
                     if ($buildingPvPanel instanceof BuildingPvPanel) {
@@ -511,7 +511,7 @@ class DumpService
 
                     /** @var buildingHeater $buildingHeater */
                     $buildingHeater = BuildingHeater::where($whereUserOrBuildingId)
-                        ->forInputSource($inputSource->id)
+                        ->forInputSource($inputSource)
                         ->first();
 
                     if ($buildingHeater instanceof BuildingHeater) {
@@ -534,7 +534,7 @@ class DumpService
 
                     /** @var UserEnergyHabit $userEnergyHabit */
                     $userEnergyHabit = UserEnergyHabit::where($whereUserOrBuildingId)
-                        ->forInputSource($inputSource->id)
+                        ->forInputSource($inputSource)
                         ->first();
 
                     if ($userEnergyHabit instanceof UserEnergyHabit) {
@@ -570,7 +570,7 @@ class DumpService
 
                     /** @var BuildingPaintworkStatus $buildingPaintworkStatus */
                     $buildingPaintworkStatus = BuildingPaintworkStatus::where($whereUserOrBuildingId)
-                        ->forInputSource($inputSource->id)
+                        ->forInputSource($inputSource)
                         ->first();
 
                     if ($buildingPaintworkStatus instanceof BuildingPaintworkStatus) {
@@ -600,24 +600,26 @@ class DumpService
     /**
      * Return the calculate data for each step, returns it in the format how the calculate classes expects it.
      *
-     * @param  Building $building
      * @param  User $user
      *
      * @return array
      */
-    public static function getCalculateData(Building $building, User $user): array
+    public static function getCalculateData(User $user, InputSource $inputSource): array
     {
         // collect some info about their building
-        /** @var BuildingFeature $buildingFeature */
-        $buildingFeature = $building->buildingFeatures()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
-        $buildingElements = $building->buildingElements()->withoutGlobalScope(GetValueScope::class)->residentInput()->get();
-        $buildingPaintworkStatus = $building->currentPaintworkStatus()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
-        $buildingRoofTypes = $building->roofTypes()->withoutGlobalScope(GetValueScope::class)->residentInput()->get();
-        $buildingServices = $building->buildingServices()->withoutGlobalScope(GetValueScope::class)->residentInput()->get();
-        $buildingPvPanels = $building->pvPanels()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
-        $buildingHeater = $building->heater()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
+        $building = $user->building;
 
-        $userEnergyHabit = $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->residentInput()->first();
+
+        /** @var BuildingFeature $buildingFeature */
+        $buildingFeature = $building->buildingFeatures()->forInputSource($inputSource)->first();
+        $buildingElements = $building->buildingElements()->forInputSource($inputSource)->get();
+        $buildingPaintworkStatus = $building->currentPaintworkStatus()->forInputSource($inputSource)->first();
+        $buildingRoofTypes = $building->roofTypes()->forInputSource($inputSource)->get();
+        $buildingServices = $building->buildingServices()->forInputSource($inputSource)->get();
+        $buildingPvPanels = $building->pvPanels()->forInputSource($inputSource)->first();
+        $buildingHeater = $building->heater()->forInputSource($inputSource)->first();
+
+        $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
 
         $wallInsulationElement = Element::where('short', 'wall-insulation')->first();
         $woodElements = Element::where('short', 'wood-elements')->first();
@@ -639,8 +641,7 @@ class DumpService
         // val = interest_id
         $userInterestsForInsulatedGlazing = $user
             ->interests()
-            ->withoutGlobalScope(GetValueScope::class)
-            ->residentInput()
+            ->forInputSource($inputSource)
             ->where('interested_in_type', 'measure_application')
             ->select('interested_in_id', 'interest_id')
             ->get()
@@ -650,8 +651,7 @@ class DumpService
         /** @var Collection $buildingInsulatedGlazings */
         $buildingInsulatedGlazings = $building
             ->currentInsulatedGlazing()
-            ->withoutGlobalScope(GetValueScope::class)
-            ->residentInput()
+            ->forInputSource($inputSource)
             ->select('measure_application_id', 'insulating_glazing_id', 'building_heating_id', 'm2', 'windows')
             ->get();
 
@@ -744,8 +744,7 @@ class DumpService
         // get the user interests for the solar panels keyed by type
         $userInterestsForSolarPanels = $user
             ->interests()
-            ->withoutGlobalScope(GetValueScope::class)
-            ->residentInput()
+            ->forInputSource($inputSource)
             ->where('interested_in_type', 'service')
             ->where('interested_in_id', $solarPanelService->id)
             ->select('interested_in_id', 'interest_id', 'interested_in_type')
@@ -757,8 +756,7 @@ class DumpService
         // handle the heater stuff
         $userInterestsForHeater = $user
             ->interests()
-            ->withoutGlobalScope(GetValueScope::class)
-            ->residentInput()
+            ->forInputSource($inputSource)
             ->where('interested_in_type', 'service')
             ->where('interested_in_id', $heaterService->id)
             ->select('interested_in_id', 'interest_id', 'interested_in_type')

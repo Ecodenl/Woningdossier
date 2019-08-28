@@ -45,13 +45,13 @@ trait GetMyValuesTrait
      * Scope a query for a specific input source id
      *
      * @param  Builder  $query
-     * @param $inputSourceId
+     * @param  InputSource $inputSource
      *
      * @return Builder
      */
-    public function scopeForInputSource(Builder $query, $inputSourceId)
+    public function scopeForInputSource(Builder $query, InputSource $inputSource)
     {
-        return $query->withoutGlobalScopes()->where('input_source_id', $inputSourceId);
+        return $query->withoutGlobalScopes()->where('input_source_id', $inputSource->id);
     }
 
     /**

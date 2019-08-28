@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Scopes\GetValueScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 

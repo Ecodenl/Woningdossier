@@ -34,10 +34,9 @@ class UserReportController extends Controller
         $GLOBALS['_cooperation'] = $cooperation;
 
 
-        dd(UserActionPlanAdvice::getPersonalPlan($user, InputSource::findByShort('resident')));
-        $userActionPlanAdvicesQuery = $user->actionPlanAdvices();
+        $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, InputSource::findByShort('resident'));
 
-        $userActionPlanAdvices = $userActionPlanAdvicesQuery->get();
+        $userActionPlanAdvicesQuery = $user->actionPlanAdvices();
 
         $userActionPlanAdvicesWithMaintenance = $userActionPlanAdvicesQuery
             ->whereHas('measureApplication', function ($query) {

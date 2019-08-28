@@ -14,21 +14,25 @@
         {{--
             todo: these are just all the action plan advices, find out if these need to be the exact same as my plan 'Uw persoonlijke meerjarenonderhoudsplan'
         --}}
-        @foreach($userActionPlanAdvices as $userActionPlanAdvice)
+        @foreach($userActionPlanAdvices as $year => $advices)
+            @foreach($advices as $measureName => $adviceData)
+                @foreach($adviceData as $advice)
             <?php
-                // determine which year we will use
-                $year = isset($userActionPlanAdvice->planned_year) ? $userActionPlanAdvice->planned_year : $userActionPlanAdvice->year;
-                if (is_null($year)) {
-                    $year = $userActionPlanAdvice->getAdviceYear() ?? __('woningdossier.cooperation.tool.my-plan.no-year');
-                }
+//                 determine which year we will use
+//                $year = isset($userActionPlanAdvice->planned_year) ? $userActionPlanAdvice->planned_year : $userActionPlanAdvice->year;
+//                if (is_null($year)) {
+//                    $year = $userActionPlanAdvice->getAdviceYear() ?? __('woningdossier.cooperation.tool.my-plan.no-year');
+//                }
             ?>
             <tr>
-                <td>{{$userActionPlanAdvice->getYear()}}</td>
-                <td>{{$userActionPlanAdvice->planned ? 'Ja' : 'Nee'}}</td>
-                <td>{{$userActionPlanAdvice->measureApplication->measure_name}}</td>
-                <td>{{$userActionPlanAdvice->costs}}</td>
-                <td>{{$userActionPlanAdvice->savings_money}}</td>
+                <td>{{$year}}</td>
+                <td>{{$advice['interested'] ? 'Ja' : 'Nee'}}</td>
+                <td>{{$measureName}}</td>
+                <td>{{$advice['costs']}}</td>
+                <td>{{$advice['savings_money']}}</td>
             </tr>
+            @endforeach
+            @endforeach
         @endforeach
         </tbody>
     </table>

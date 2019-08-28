@@ -55,14 +55,16 @@ use Illuminate\Support\Collection;
 class DumpService
 {
     /**
-     * Method to generate a total dump from a user, this dump collects all possible data from a given user for the tool and returns it in an array.
+     * Method to generate a total dump from a user for a specific input source.
+     * This dump collects all possible data for a given user for the tool and returns it in an array.
      *
      * @param User $user
+     * @param InputSource $inputSource
      * @param bool $anonymized
      * @param bool $withTranslationsForColumns
      * @return array
      */
-    public static function totalDump(User $user, bool $anonymized, bool $withTranslationsForColumns = true): array
+    public static function totalDump(User $user, InputSource $inputSource, bool $anonymized, bool $withTranslationsForColumns = true): array
     {
 
         $cooperation = $user->cooperation;
@@ -182,15 +184,15 @@ class DumpService
         $city = $building->city;
         $postalCode = $building->postal_code;
 
+
         // get the building features from the resident
-        $buildingFeatures = $building
+        $buildingFeature = $building
             ->buildingFeatures()
-            ->withoutGlobalScope(GetValueScope::class)
-            ->residentInput()
+            ->forInputSource($inputSource->id)
             ->first();
 
-        $buildingType = $buildingFeatures->buildingType->name ?? '';
-        $buildYear = $buildingFeatures->build_year ?? '';
+        $buildingType = $buildingFeature->buildingType->name ?? '';
+        $buildYear = $buildingFeature->build_year ?? '';
         $exampleBuilding = optional($building->exampleBuilding)->isSpecific() ? $building->exampleBuilding->name : '';
 
         // set the personal userinfo
@@ -273,11 +275,6 @@ class DumpService
 
                 // handle the building_features table and its columns.
                 if ($table == 'building_features') {
-                    $buildingFeature = BuildingFeature::withoutGlobalScope(GetValueScope::class)
-                        ->where($whereUserOrBuildingId)
-                        ->residentInput()
-                        ->first();
-
                     if ($buildingFeature instanceof BuildingFeature) {
 
                         switch ($columnOrId) {
@@ -341,10 +338,9 @@ class DumpService
                     //$column     = $tableWithColumnOrAndId[3];
                     $column = $maybe1;
 
-                    $buildingRoofType = BuildingRoofType::withoutGlobalScope(GetValueScope::class)
-                        ->where('roof_type_id', $roofTypeId)
+                    $buildingRoofType = BuildingRoofType::where('roof_type_id', $roofTypeId)
                         ->where($whereUserOrBuildingId)
-                        ->residentInput()
+                        ->forInputSource($inputSource->id)
                         ->first();
 
                     if ($buildingRoofType instanceof BuildingRoofType) {
@@ -396,11 +392,11 @@ class DumpService
                         $interestInId = $tableWithColumnOrAndId[3];
                     }
 
-                    $userInterest = UserInterest::withoutGlobalScope(GetValueScope::class)
-                        ->where($whereUserOrBuildingId)
+                    $userInterest = UserInterest::where($whereUserOrBuildingId)
                         ->where('interested_in_id', $interestInId)
                         ->where('interested_in_type', $interestInType)
-                        ->residentInput()->first();
+                        ->forInputSource($inputSource->id)
+                        ->first();
 
 
                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $userInterest->interest->name ?? '';
@@ -413,10 +409,10 @@ class DumpService
                     switch ($table) {
                         case 'element':
                             /** @var BuildingElement $element */
-                            $buildingElement = BuildingElement::withoutGlobalScope(GetValueScope::class)
-                                ->where($whereUserOrBuildingId)
+                            $buildingElement = BuildingElement::where($whereUserOrBuildingId)
                                 ->where('element_id', $elementOrServiceId)
-                                ->residentInput()->first();
+                                ->forInputSource($inputSource->id)
+                                ->first();
 
                             if ($buildingElement instanceof BuildingElement) {
                                 // check if we need to get data from the extra column
@@ -433,10 +429,10 @@ class DumpService
                             }
                             break;
                         case 'service':
-                            $buildingService = BuildingService::withoutGlobalScope(GetValueScope::class)
-                                ->where($whereUserOrBuildingId)
+                            $buildingService = BuildingService::where($whereUserOrBuildingId)
                                 ->where('service_id', $elementOrServiceId)
-                                ->residentInput()->first();
+                                ->forInputSource($inputSource->id)
+                                ->first();
                             if ($buildingService instanceof BuildingService) {
 
                                 // check if we need to get data from the extra column
@@ -463,11 +459,10 @@ class DumpService
                     $column = $tableWithColumnOrAndId[3];
 
                     /** @var BuildingInsulatedGlazing $buildingInsulatedGlazing */
-                    $buildingInsulatedGlazing = BuildingInsulatedGlazing::withoutGlobalScope(GetValueScope::class)
-                        ->where($whereUserOrBuildingId)
-                        ->where('measure_application_id',
-                            $measureApplicationId)
-                        ->residentInput()->first();
+                    $buildingInsulatedGlazing = BuildingInsulatedGlazing::where($whereUserOrBuildingId)
+                        ->where('measure_application_id', $measureApplicationId)
+                        ->forInputSource($inputSource->id)
+                        ->first();
 
                     if ($buildingInsulatedGlazing instanceof BuildingInsulatedGlazing) {
                         switch ($column) {
@@ -492,9 +487,9 @@ class DumpService
                     $column = $columnOrId;
 
                     /** @var BuildingPvPanel $buildingPvPanel */
-                    $buildingPvPanel = BuildingPvPanel::withoutGlobalScope(GetValueScope::class)
-                        ->where($whereUserOrBuildingId)
-                        ->residentInput()->first();
+                    $buildingPvPanel = BuildingPvPanel::where($whereUserOrBuildingId)
+                        ->forInputSource($inputSource->id)
+                        ->first();
 
                     if ($buildingPvPanel instanceof BuildingPvPanel) {
                         switch ($column) {
@@ -515,9 +510,9 @@ class DumpService
                     $column = $columnOrId;
 
                     /** @var buildingHeater $buildingHeater */
-                    $buildingHeater = BuildingHeater::withoutGlobalScope(GetValueScope::class)
-                        ->where($whereUserOrBuildingId)
-                        ->residentInput()->first();
+                    $buildingHeater = BuildingHeater::where($whereUserOrBuildingId)
+                        ->forInputSource($inputSource->id)
+                        ->first();
 
                     if ($buildingHeater instanceof BuildingHeater) {
                         switch ($column) {
@@ -538,9 +533,9 @@ class DumpService
                     $column = $columnOrId;
 
                     /** @var UserEnergyHabit $userEnergyHabit */
-                    $userEnergyHabit = UserEnergyHabit::withoutGlobalScope(GetValueScope::class)
-                        ->where($whereUserOrBuildingId)
-                        ->residentInput()->first();
+                    $userEnergyHabit = UserEnergyHabit::where($whereUserOrBuildingId)
+                        ->forInputSource($inputSource->id)
+                        ->first();
 
                     if ($userEnergyHabit instanceof UserEnergyHabit) {
                         switch ($column) {
@@ -574,9 +569,9 @@ class DumpService
                     $column = $columnOrId;
 
                     /** @var BuildingPaintworkStatus $buildingPaintworkStatus */
-                    $buildingPaintworkStatus = BuildingPaintworkStatus::withoutGlobalScope(GetValueScope::class)
-                        ->where($whereUserOrBuildingId)
-                        ->residentInput()->first();
+                    $buildingPaintworkStatus = BuildingPaintworkStatus::where($whereUserOrBuildingId)
+                        ->forInputSource($inputSource->id)
+                        ->first();
 
                     if ($buildingPaintworkStatus instanceof BuildingPaintworkStatus) {
                         switch ($column) {

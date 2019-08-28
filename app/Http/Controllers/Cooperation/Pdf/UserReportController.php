@@ -40,7 +40,7 @@ class UserReportController extends Controller
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $inputSource);
 
         // full report for a user
-        $reportForUser = DumpService::totalDump($user, false);
+        $reportForUser = DumpService::totalDump($user, $inputSource, false);
 
         // the translations for the columns / tables in the user data
         $reportTranslations = $reportForUser['translations-for-columns'];
@@ -76,7 +76,7 @@ class UserReportController extends Controller
     {
         $user = Hoomdossier::user();
 
-        $calculateData = CsvService::getCalculateData($user->building, $user);
+//        $calculateData = CsvService::getCalculateData($user->building, $user);
         $userData = PdfService::totalReportForUser($user);
 
         return ['user-data' => $userData, 'calculate-data' => $calculateData];

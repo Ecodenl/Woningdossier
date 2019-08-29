@@ -49,6 +49,8 @@ class BankInterestCalculator
             $amount += $amountPerTerm;
         }
 
+        \Log::debug(__METHOD__ . " Interest of " . $amountPerTerm . " at " . $interest . "% for " . $period . " years is " . (int) $amount);
+
         return (int) $amount;
     }
 }

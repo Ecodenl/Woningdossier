@@ -61,8 +61,8 @@ class SolarPanel {
         }
 
         if ($peakPower > 0) {
-            $number = ceil(($amountElectricity / KeyFigures::SOLAR_PANEL_ELECTRICITY_COST_FACTOR) / $peakPower);
-            \Log::debug(__METHOD__ . " Advised number of panels: " . $number . " = ceil(( " . $amountElectricity . " / " . KeyFigures::SOLAR_PANEL_ELECTRICITY_COST_FACTOR . ") / " . $peakPower . ")");
+            $number = ceil(($amountElectricity / $helpFactor) / $peakPower);
+            \Log::debug(__METHOD__ . " Advised number of panels: " . $number . " = ceil(( " . $amountElectricity . " / " . $helpFactor . ") / " . $peakPower . ")");
             $result['advice'] = Translation::translate('solar-panels.advice-text', ['number' => $number]);
             $wp = $panels * $peakPower;
             $result['total_power'] = Translation::translate('solar-panels.total-power', ['wp' => $wp]);

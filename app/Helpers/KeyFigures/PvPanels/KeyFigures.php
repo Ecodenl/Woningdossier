@@ -9,7 +9,6 @@ use App\Models\PvPanelYield;
 
 class KeyFigures implements KeyFiguresInterface
 {
-    const SOLAR_PANEL_ELECTRICITY_COST_FACTOR = 0.92; // unit of measure??
     const SOLAR_PANEL_SURFACE = 1.6; // m2
 
     const COST_KWH = 0.23; // euro

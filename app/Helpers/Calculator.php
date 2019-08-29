@@ -184,7 +184,7 @@ class Calculator
         if ($maxSaving instanceof BuildingTypeElementMaxSaving) {
             $saving = $maxSaving->max_saving;
         }
-        self::debug('Max saving for building_type '.$buildingType->id.' + element '.$element->id.' = '.$saving.'%');
+        self::debug('Max saving for building_type '.$buildingType->id.' + element '.$element->id.' (' . $element->short . ') = '.$saving.'%');
         $result = $usage * ($saving / 100);
         self::debug($result.' = '.$usage.' * '.($saving / 100));
 

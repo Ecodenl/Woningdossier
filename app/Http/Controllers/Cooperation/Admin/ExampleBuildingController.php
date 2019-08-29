@@ -84,7 +84,7 @@ class ExampleBuildingController extends Controller
         $exampleBuilding = new ExampleBuilding();
 
         $translations = $request->input('name', []);
-        $translations = array_only($translations, config('woningdossier.supported_locales'));
+        $translations = array_only($translations, config('hoomdossier.supported_locales'));
         $exampleBuilding->createTranslations('name', $translations);
 
         $exampleBuilding->buildingType()->associate($buildingType);
@@ -559,7 +559,7 @@ class ExampleBuildingController extends Controller
         $cooperation = Cooperation::find($request->get('cooperation_id'));
 
         $translations = $request->input('name', []);
-        foreach (config('woningdossier.supported_locales') as $locale) {
+        foreach (config('hoomdossier.supported_locales') as $locale) {
             if (isset($translations[$locale]) && ! empty($translations[$locale])) {
                 $exampleBuilding->updateTranslation('name', $translations[$locale], $locale);
             }

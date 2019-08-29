@@ -2,7 +2,7 @@
 
 namespace App\Helpers\Cache;
 
-class Role
+class Role extends BaseCache
 {
     const CACHE_KEY_FIND = 'Role_find_%s';
 
@@ -14,8 +14,8 @@ class Role
     public static function find($id)
     {
         return \Cache::remember(
-            sprintf(static::CACHE_KEY_FIND, $id),
-            config('woningdossier.cache.times.default'),
+            self::getCacheKey(static::CACHE_KEY_FIND, $id),
+            config('hoomdossier.cache.times.default'),
             function () use ($id) {
                 return \App\Models\Role::find($id);
             }

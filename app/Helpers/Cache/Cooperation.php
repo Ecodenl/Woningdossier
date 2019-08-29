@@ -2,7 +2,7 @@
 
 namespace App\Helpers\Cache;
 
-class Cooperation
+class Cooperation extends BaseCache
 {
 
     const CACHE_KEY_FIND = 'Cooperation_find_%s';
@@ -16,8 +16,8 @@ class Cooperation
     public static function find($id)
     {
         return \Cache::remember(
-            sprintf(static::CACHE_KEY_FIND, $id),
-            config('woningdossier.cache.times.default'),
+            self::getCacheKey(static::CACHE_KEY_FIND, $id),
+            config('hoomdossier.cache.times.default'),
             function () use ($id) {
                 return \App\Models\Cooperation::where('id', '=', $id)->with('style')->first();
             }
@@ -35,8 +35,8 @@ class Cooperation
         }
 
         return \Cache::remember(
-            sprintf(static::CACHE_KEY_GET_STYLE, $cooperation->id),
-            config('woningdossier.cache.times.default'),
+            self::getCacheKey(static::CACHE_KEY_GET_STYLE, $cooperation->id),
+            config('hoomdossier.cache.times.default'),
             function () use ($cooperation) {
                 return $cooperation->style;
             }

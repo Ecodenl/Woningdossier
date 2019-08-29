@@ -10,6 +10,12 @@ function updateTotalUnreadMessageCount()
         success: function (response) {
             $('#total-unread-message-count').html(response.count);
         },
+        statusCode: {
+            401: function(){
+                // Redirec the to the login page.
+                window.location.href = '/login';
+            }
+        }
     });
 }
 

@@ -618,10 +618,14 @@ class DumpService
         $buildingRoofTypes = $building->roofTypes()->forInputSource($inputSource)->get();
         $buildingServices = $building->buildingServices()->forInputSource($inputSource)->get();
         $buildingPvPanels = $building->pvPanels()->forInputSource($inputSource)->first();
+
         $buildingHeater = $building->heater()->forInputSource($inputSource)->first();
 
+//        dd($user);
         $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
-
+//
+//        dd($userEnergyHabit, $user->energyHabit()->get());
+//
         $wallInsulationElement = Element::where('short', 'wall-insulation')->first();
         $woodElements = Element::where('short', 'wood-elements')->first();
         $frames = Element::where('short', 'frames')->first();
@@ -777,7 +781,7 @@ class DumpService
             'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
         ]);
 
-        dd($userEnergyHabit, $inputSource);
+//        dd($userEnergyHabit, $inputSource);
 
         $insulatedGlazingSavings = InsulatedGlazing::calculate($userEnergyHabit, [
             'user_interests' => $userInterestsForInsulatedGlazing,

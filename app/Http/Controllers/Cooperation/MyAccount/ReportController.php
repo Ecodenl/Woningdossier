@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\Str;
 use App\Jobs\PdfReport;
 use App\Models\Cooperation;
@@ -60,7 +61,7 @@ class ReportController extends Controller
 
         switch ($fileType->short) {
             case 'pdf-report':
-                PdfReport::dispatch(Hoomdossier::user(), InputSource::findByShort('coach'), $fileType, $fileStorage);
+                PdfReport::dispatch(Hoomdossier::user(), HoomdossierSession::getInputSource(true), $fileType, $fileStorage);
                 break;
 
         }

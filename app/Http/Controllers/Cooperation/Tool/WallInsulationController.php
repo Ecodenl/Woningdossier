@@ -208,7 +208,7 @@ class WallInsulationController extends Controller
         $user = $building->user;
         $userEnergyHabit = $user->energyHabit;
 
-        $result = WallInsulation::calculate($building, $userEnergyHabit, $request->toArray());
+        $result = WallInsulation::calculate($building, HoomdossierSession::getInputSource(true), $userEnergyHabit, $request->toArray());
 
         return response()->json($result);
     }

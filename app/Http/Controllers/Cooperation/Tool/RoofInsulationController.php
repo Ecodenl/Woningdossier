@@ -254,9 +254,8 @@ class RoofInsulationController extends Controller
     {
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
 
-        $result = \App\Calculations\RoofInsulation::calculate($building, HoomdossierSession::getInputSource(true), $request->all());
+        $result = \App\Calculations\RoofInsulation::calculate($building, HoomdossierSession::getInputSource(true), $building->user->energyHabit, $request->all());
 
         return response()->json($result);
     }

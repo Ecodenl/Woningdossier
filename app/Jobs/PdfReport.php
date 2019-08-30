@@ -92,7 +92,7 @@ class PdfReport implements ShouldQueue
             ->toArray();
 
         // retrieve all the comments by for each input source on a step
-        $commentsByStep = StepHelper::getAllCommentsByStep();
+        $commentsByStep = StepHelper::getAllCommentsByStep($user);
 
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\MyAccount;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\StepHelper;
 use App\Helpers\Str;
 use App\Jobs\PdfReport;
 use App\Models\Cooperation;
@@ -11,6 +12,7 @@ use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\FileTypeCategory;
 use App\Models\InputSource;
+use App\Models\User;
 use App\Scopes\AvailableScope;
 use App\Http\Controllers\Controller;
 
@@ -18,6 +20,8 @@ class ReportController extends Controller
 {
     public function index()
     {
+        dd(StepHelper::getAllCommentsByStep(Hoomdossier::user()));
+
         $reportFileTypeCategory = FileTypeCategory::short('report')->with(['fileTypes' => function ($query) {
             $query->where('short', 'pdf-report');
         }])->first();

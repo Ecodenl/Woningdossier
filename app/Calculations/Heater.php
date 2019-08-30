@@ -14,6 +14,7 @@ use App\Models\HeaterComponentCost;
 use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\KeyFigureConsumptionTapWater;
+use App\Models\Log;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
@@ -95,6 +96,7 @@ class Heater {
                 $result['cost_indication'] = $componentCostBoiler->cost + $componentCostCollector->cost;
 
                 $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
+
 
                 foreach ($interests as $type => $interestTypes) {
                     foreach ($interestTypes as $typeId => $interestId) {

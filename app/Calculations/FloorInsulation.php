@@ -11,6 +11,7 @@ use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\Element;
 use App\Models\ElementValue;
+use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
@@ -20,12 +21,13 @@ class FloorInsulation {
     /**
      * Method to calculate the floor insulation savings and such.
      *
-     * @param  Building  $building
+     * @param Building $building
+     * @param $energyHabit
+     * @param InputSource $inputSource
      * @param $calculateData
-     *
-     * @return array $result
+     * @return array
      */
-    public static function calculate(Building $building, $energyHabit, $calculateData): array
+    public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData): array
     {
 
         $result = [
@@ -85,7 +87,7 @@ class FloorInsulation {
         if (array_key_exists($floorInsulation->id, $elements)) {
             $floorInsulationValue = ElementValue::where('element_id', $floorInsulation->id)->where('id', $elements[$floorInsulation->id])->first();
             if ($floorInsulationValue instanceof ElementValue && $energyHabit instanceof UserEnergyHabit) {
-                $result['savings_gas'] = FloorInsulationCalculator::calculateGasSavings($building, $floorInsulationValue, $energyHabit, $surface, $advice);
+                $result['savings_gas'] = FloorInsulationCalculator::calculateGasSavings($building, $inputSource, $floorInsulationValue, $energyHabit, $surface, $advice);
             }
 
             $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);

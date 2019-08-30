@@ -10,6 +10,7 @@ use App\Models\Building;
 use App\Models\BuildingHeating;
 use App\Models\Element;
 use App\Models\ElementValue;
+use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
@@ -19,8 +20,9 @@ use App\Helpers\RoofInsulation as RoofInsulationHelper;
 
 class RoofInsulation {
 
-    public static function calculate(Building $building, $energyHabit, $calculateData)
+    public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData)
     {
+
         \Log::debug(__METHOD__);
         $result = [];
 
@@ -122,7 +124,7 @@ class RoofInsulation {
 
                 if ($roofInsulationValue instanceof ElementValue && $heating instanceof BuildingHeating && isset($advice)) {
                     if ($energyHabit instanceof UserEnergyHabit) {
-                        $catData['savings_gas'] = RoofInsulationCalculator::calculateGasSavings($building, $roofInsulationValue, $energyHabit, $heating, $surface, $totalSurface, $advice);
+                        $catData['savings_gas'] = RoofInsulationCalculator::calculateGasSavings($building, $inputSource, $roofInsulationValue, $energyHabit, $heating, $surface, $totalSurface, $advice);
                     }
                     $catData['savings_co2'] = Calculator::calculateCo2Savings($catData['savings_gas']);
                     $catData['savings_money'] = round(Calculator::calculateMoneySavings($catData['savings_gas']));

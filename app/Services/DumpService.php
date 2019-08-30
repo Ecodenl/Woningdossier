@@ -51,6 +51,7 @@ use App\Scopes\CooperationScope;
 use App\Scopes\GetValueScope;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class DumpService
 {
@@ -770,7 +771,7 @@ class DumpService
                 return [$item['interested_in_id'] => $item['interest_id']];
             })->toArray();
 
-        $wallInsulationSavings = WallInsulation::calculate($building, $userEnergyHabit, [
+        $wallInsulationSavings = WallInsulation::calculate($building, $inputSource, $userEnergyHabit, [
             'cavity_wall' => $buildingFeature->cavity_wall ?? null,
             'element' => [$wallInsulationElement->id => $wallInsulationBuildingElement->element_value_id ?? null],
             'insulation_wall_surface' => $buildingFeature->insulation_wall_surface ?? null,
@@ -781,7 +782,6 @@ class DumpService
             'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
         ]);
 
-//        dd($userEnergyHabit, $inputSource);
 
         $insulatedGlazingSavings = InsulatedGlazing::calculate($userEnergyHabit, [
             'user_interests' => $userInterestsForInsulatedGlazing,
@@ -791,13 +791,13 @@ class DumpService
             'building_paintwork_statuses' => $buildingPaintworkStatusesArray,
         ]);
 
-        $floorInsulationSavings = FloorInsulation::calculate($building, $userEnergyHabit, [
+        $floorInsulationSavings = FloorInsulation::calculate($building, $inputSource, $userEnergyHabit, [
             'element' => [$floorInsulationElement->id => $floorInsulationElementValueId],
             'building_elements' => $floorInsulationBuildingElements,
             'building_features' => $floorBuildingFeatures,
         ]);
 
-        $roofInsulationSavings = RoofInsulation::calculate($building, $userEnergyHabit, [
+        $roofInsulationSavings = RoofInsulation::calculate($building, $inputSource, $userEnergyHabit, [
             'building_roof_types' => $buildingRoofTypesArray,
         ]);
 

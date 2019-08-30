@@ -315,9 +315,10 @@ class Building extends Model
      *
      * @return BuildingService|null
      */
-    public function getBuildingService($short)
+    public function getBuildingService($short, InputSource $inputSource)
     {
         return $this->buildingServices()
+            ->forInputSource($inputSource)
             ->leftJoin('services as s', 'building_services.service_id', '=', 's.id')
             ->where('s.short', $short)->first(['building_services.*']);
     }
@@ -327,10 +328,10 @@ class Building extends Model
      *
      * @return ServiceValue|null
      */
-    public function getServiceValue($short)
+    public function getServiceValue($short, InputSource $inputSource)
     {
         /** @var BuildingService $buildingService */
-        $buildingService = $this->getBuildingService($short);
+        $buildingService = $this->getBuildingService($short, $inputSource);
         $serviceValue = $buildingService->serviceValue;
 
         return $serviceValue;
@@ -345,12 +346,17 @@ class Building extends Model
     }
 
     /**
+     * Return the building type from a builing through the building features
+     *
+     * @param InputSource $inputSource
      * @return BuildingType|null
      */
-    public function getBuildingType()
+    public function getBuildingType(InputSource $inputSource)
     {
-        if ($this->buildingFeatures instanceof BuildingFeature) {
-            return $this->buildingFeatures->buildingType;
+        $buildingFeature = $this->buildingFeatures()->forInputSource($inputSource)->first();
+
+        if ($buildingFeature instanceof BuildingFeature) {
+            return $buildingFeature->buildingType;
         }
 
         return null;

@@ -71,6 +71,7 @@ class UserReportController extends Controller
             'buildingFeatures', 'advices'
         ));
 
+
         return $pdf->stream();
     }
 }

@@ -13,15 +13,24 @@
                 $calculationsForStep = $data['calculation'] ?? [];
                 unset($data['calculation']);
             ?>
-            @foreach (\Illuminate\Support\Arr::dot($data) as $translationKey => $value)
-                <?php
-                    $translationForAnswer = $reportTranslations[$step.'.'.$translationKey];
-                ?>
-                <div class="question-answer">
-                    <p class="w-300">{{$translationForAnswer}}</p>
-                    <p>{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</p>
-                </div>
-            @endforeach
+
+            <div class="question-answer-section">
+                <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.resume-energy-saving-measures.title')}}</p>
+                <table class="full-width">
+                    <tbody>
+                    @foreach (\Illuminate\Support\Arr::dot($data) as $translationKey => $value)
+                        <?php
+                            $translationForAnswer = $reportTranslations[$step.'.'.$translationKey];
+                        ?>
+                        <tr style="border-bottom: 0px;">
+                            <td class="w-300" style="border-top: 0px;">{{$translationForAnswer}}</td>
+                            <td style="border-top: 0px;">{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+
         </div>
 
 

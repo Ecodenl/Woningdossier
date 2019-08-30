@@ -1,9 +1,8 @@
 @component('cooperation.pdf.components.new-page')
     <div class="container">
 
-        {{--            <img class="width: 50px; height: 50px;" src="{{public_path('images/'.$step.'.png')}}" alt=""><h2>{{$step}}</h2>--}}
         <div class="step-intro">
-            {{--                <img src="{{asset('images/'.$step.'.png')}}" alt="">--}}
+            <img style="width: 50px; height: 50px;" src="{{public_path('images/'.$step.'.png')}}" alt="">
             <h2>{{\App\Models\Step::whereSlug($step)->first()->name}}</h2>
         </div>
 
@@ -14,7 +13,6 @@
                 unset($data['calculation']);
             ?>
 
-            {{--<div class="question-answer-section">--}}
                 <table class="full-width">
                     <tbody>
                     @foreach (\Illuminate\Support\Arr::dot($data) as $translationKey => $value)
@@ -28,7 +26,6 @@
                     @endforeach
                     </tbody>
                 </table>
-            {{--</div>--}}
 
         </div>
 

@@ -71,7 +71,7 @@ class UserReportController extends Controller
             'buildingFeatures', 'advices'
         ));
 
-//        return $pdf->stream();
+        return $pdf->stream();
         return view('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'cooperation', 'stepSlugs', 'inputSource',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',

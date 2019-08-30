@@ -61,12 +61,12 @@ class UserReportController extends Controller
             ->toArray();
 
         // retrieve all the comments by for each input source on a step
-        $commentsByStep = StepHelper::getAllCommentsByStep();
+        $commentsByStep = StepHelper::getAllCommentsByStep($user);
 
 
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'cooperation', 'stepSlugs',
+            'user', 'building', 'cooperation', 'stepSlugs', 'inputSource',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
             'buildingFeatures', 'advices'
         ));

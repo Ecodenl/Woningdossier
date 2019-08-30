@@ -33,3 +33,9 @@
     width: unquote("#{$i}px")
   }
 }
+
+@for $i from 0 through 100 {
+  .h-#{$i} {
+    height: unquote("#{$i}px")
+  }
+}

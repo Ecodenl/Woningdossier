@@ -47,7 +47,7 @@
         @foreach($userActionPlanAdvices as $year => $advices)
             @foreach($advices as $measureName => $adviceData)
                 @foreach($adviceData as $advice)
-                <tr>
+                <tr class="border-bottom">
                     <td>{{$year}}</td>
                     <td>{{$advice['interested'] ? 'Ja' : 'Nee'}}</td>
                     <td>{{$measureName}}</td>

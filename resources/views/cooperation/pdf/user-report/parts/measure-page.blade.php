@@ -14,40 +14,44 @@
                 unset($data['calculation']);
             ?>
 
-            <div class="question-answer-section">
-                <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.resume-energy-saving-measures.title')}}</p>
+            {{--<div class="question-answer-section">--}}
                 <table class="full-width">
                     <tbody>
                     @foreach (\Illuminate\Support\Arr::dot($data) as $translationKey => $value)
                         <?php
                             $translationForAnswer = $reportTranslations[$step.'.'.$translationKey];
                         ?>
-                        <tr style="border-bottom: 0px;">
-                            <td class="w-300" style="border-top: 0px;">{{$translationForAnswer}}</td>
-                            <td style="border-top: 0px;">{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</td>
+                        <tr class="h-20">
+                            <td class="w-300">{{$translationForAnswer}}</td>
+                            <td>{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</td>
                         </tr>
                     @endforeach
                     </tbody>
                 </table>
-            </div>
+            {{--</div>--}}
 
         </div>
 
 
         <div class="question-answer-section">
             <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.indicative-costs-and-benefits-for-measure')}}</p>
-            @foreach($calculationsForStep as $calculationType => $calculationResult)
-                <div class="question-answer">
-                    @if(!empty($calculationResult) && !is_array($calculationResult))
-                        <?php
-                            $translationForAnswer = $reportTranslations[$step.'.calculation.'.$calculationType];
-                        ?>
-                        <p class="w-300">{{$translationForAnswer}}</p>
-                        <p>{{\App\Helpers\NumberFormatter::round($calculationResult)}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</p>
-                    @endif
-                </div>
-            @endforeach
 
+            <table class="full-width">
+                <tbody>
+                @foreach($calculationsForStep as $calculationType => $calculationResult)
+                    @if(!empty($calculationResult) && !is_array($calculationResult))
+
+                    <?php
+                        $translationForAnswer = $reportTranslations[$step.'.calculation.'.$calculationType];
+                    ?>
+                    <tr class="h-20">
+                        <td class="w-300">{{$translationForAnswer}}</td>
+                        <td>{{\App\Helpers\NumberFormatter::round($calculationResult)}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</td>
+                    </tr>
+                    @endif
+                @endforeach
+                </tbody>
+            </table>
         </div>
 
         <div class="question-answer-section">

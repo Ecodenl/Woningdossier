@@ -58,11 +58,15 @@ table {
   }
   tbody {
     background-color: $color-white;
-    td {
-      border-top: 1px solid $color-main;
-    }
-    tr:first-child {
-      border-bottom: 1px solid $color-main;
+    tr {
+      &.border-bottom {
+        &:first-child {
+          border-bottom: 1px solid $color-main;
+        }
+        td {
+          border-top: 1px solid $color-main;
+        }
+      }
     }
   }
 }

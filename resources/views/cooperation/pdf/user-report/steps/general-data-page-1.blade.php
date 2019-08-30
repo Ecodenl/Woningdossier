@@ -19,6 +19,7 @@
     {{-- Not in order in the reportData, easier and more readable to do it like this. --}}
     <div class="question-answer-section">
         <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.building-info.title')}}</p>
+
         <div class="question-answer">
             <p class="w-300">@lang('pdf/user-report.general-data.building-info.building-type')</p>
             <p>{{$buildingFeatures->buildingType->name}}</p>
@@ -62,15 +63,21 @@
 
     <div class="question-answer-section">
         <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.usage-info.title')}}</p>
-        @foreach($reportData['general-data']['user_energy_habits'] as $column => $value)
-            <?php
-                $translationForAnswer = $reportTranslations['general-data.user_energy_habits.'.$column];
-            ?>
-            <div class="question-answer">
-                <p class="w-300">{{$translationForAnswer}}</p>
-                <p>{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($column)}}</p>
-            </div>
-        @endforeach
+
+        <table class="full-width">
+            <tbody>
+            @foreach($reportData['general-data']['user_energy_habits'] as $column => $value)
+                <?php
+                    $translationForAnswer = $reportTranslations['general-data.user_energy_habits.'.$column];
+                ?>
+
+                <tr style="border-bottom: 0px;">
+                    <td class="w-300" style="border-top: 0px;">{{$translationForAnswer}}</td>
+                    <td style="border-top: 0px;">{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($column)}}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
     </div>
 
 
@@ -92,7 +99,7 @@
                             <?php
                                 $translationForAnswer = $reportTranslations['general-data.'.$table.'.'.$elementOrServiceId];
                             ?>
-                            <tr>
+                            <tr class="border-bottom">
                                 <td>{{$translationForAnswer}}</td>
                                 <td>{{$value}}</td>
                                 <td>{{$user->getInterestedType($table, $elementOrServiceId, $inputSource)->interest->name ?? 'x'}}</td>

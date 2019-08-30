@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Helpers\HoomdossierSession;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
@@ -13,9 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Helpers\Hoomdossier;
 use App\Helpers\StepHelper;
-use App\Models\Cooperation;
 use App\Services\DumpService;
 use Barryvdh\DomPDF\Facade as PDF;
 
@@ -30,11 +27,11 @@ class PdfReport implements ShouldQueue
     protected $fileStorage;
 
     /**
-     *
-     * @param  User $user
-     * @param  FileStorage $fileStorage
-     * @param  FileType $fileType
-     * @param  bool  $anonymizeData
+     * PdfReport constructor.
+     * @param User $user
+     * @param InputSource $inputSource
+     * @param FileType $fileType
+     * @param FileStorage $fileStorage
      */
     public function __construct(User $user, InputSource $inputSource, FileType $fileType, FileStorage $fileStorage)
     {
@@ -56,24 +53,24 @@ class PdfReport implements ShouldQueue
 
         $user = $this->user->load(['motivations']);
 
-        $building = $user->building;
-        // temporary session to get the right data for the dumb.
-//        $residentInputSource = InputSource::findByShort('resident');
-//        HoomdossierSession::setInputSource($residentInputSource);
-//        HoomdossierSession::setInputSourceValue($residentInputSource);
-//        HoomdossierSession::setBuilding($building);
+        $inputSource = $this->inputSource;
+
+        // load the buildingFeatures
+        $building = $user->building()->with(['buildingFeatures' => function ($query) use ($inputSource){
+                $query->forInputSource($inputSource)->with('roofType', 'buildingType', 'energyLabel');
+        }])->first();
 
         $buildingFeatures = $building->buildingFeatures;
 
         $GLOBALS['_cooperation'] = $user->cooperation;
         $GLOBALS['_inputSource'] = $this->inputSource;
 
-        $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, $this->inputSource);
+        $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, $inputSource);
 
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $this->inputSource);
+        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $inputSource);
 
         // full report for a user
-        $reportForUser = DumpService::totalDump($user, $this->inputSource, false);
+        $reportForUser = DumpService::totalDump($user, $inputSource, false);
 
         // the translations for the columns / tables in the user data
         $reportTranslations = $reportForUser['translations-for-columns'];
@@ -96,15 +93,12 @@ class PdfReport implements ShouldQueue
 
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'cooperation', 'stepSlugs', 'commentsByStep',
+            'user', 'building', 'cooperation', 'stepSlugs', 'commentsByStep', 'inputSource',
             'reportTranslations', 'reportData', 'userActionPlanAdvices', 'buildingFeatures', 'advices'
         ));
 
-
         // save the pdf report
         \Storage::disk('downloads')->put($this->fileStorage->filename, $pdf->output());
-
-        \Session::forget('hoomdossier_session');
 
         $this->fileStorage->isProcessed();
     }

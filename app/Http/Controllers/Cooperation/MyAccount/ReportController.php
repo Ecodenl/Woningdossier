@@ -15,13 +15,12 @@ use App\Models\InputSource;
 use App\Models\User;
 use App\Scopes\AvailableScope;
 use App\Http\Controllers\Controller;
+use function Couchbase\defaultDecoder;
 
 class ReportController extends Controller
 {
     public function index()
     {
-        dd(StepHelper::getAllCommentsByStep(Hoomdossier::user()));
-
         $reportFileTypeCategory = FileTypeCategory::short('report')->with(['fileTypes' => function ($query) {
             $query->where('short', 'pdf-report');
         }])->first();

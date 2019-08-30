@@ -95,7 +95,7 @@
                             <tr>
                                 <td>{{$translationForAnswer}}</td>
                                 <td>{{$value}}</td>
-                                <td>{{$user->getInterestedType($table, $elementOrServiceId)->interest->name ?? 'x'}}</td>
+                                <td>{{$user->getInterestedType($table, $elementOrServiceId, $inputSource)->interest->name ?? 'x'}}</td>
                             </tr>
                         @endif
                     @endforeach

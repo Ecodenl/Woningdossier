@@ -237,8 +237,7 @@ class User extends Model implements AuthorizableContract
         if ($inputSource instanceof InputSource) {
             return $this
                 ->interests()
-                ->withoutGlobalScope(GetValueScope::class)
-                ->where('input_source_id', $inputSource->id)
+                ->forInputSource($inputSource)
                 ->where('interested_in_type', $type)
                 ->where('interested_in_id', $interestedInId)->first();
         }

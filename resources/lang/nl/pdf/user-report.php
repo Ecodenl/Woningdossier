@@ -78,12 +78,12 @@ return [
         'indicative-costs-and-benefits-for-measure' => 'Indicatieve kosten en baten voor deze maatregel',
         'measures' => [
             'maintenance' => [
-                'title' => 'Energiebesparende maatregelen',
+                'title' => 'Onderhoudsmaatregelen',
                 'costs' => 'Kosten',
                 'year' => 'Geadviseerd word'
             ],
             'energy-saving' => [
-                'title' => 'Onderhoudsmaatregelen',
+                'title' => 'Energiebesparende maatregelen',
                 'costs' => 'Kosten',
                 'year' => 'Geadviseerd word'
             ],

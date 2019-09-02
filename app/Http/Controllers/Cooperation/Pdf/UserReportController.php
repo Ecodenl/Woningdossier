@@ -40,21 +40,11 @@ class UserReportController extends Controller
         $GLOBALS['_cooperation'] = $cooperation;
         $GLOBALS['_inputSource'] = $inputSource;
 
-
-//        $reportForUser = DumpService::totalDump($user, $inputSource, false);
-//        $reportData = \App\Helpers\Arr::arrayUndot($reportForUser['user-data']);
-
         $buildingInsulatedGlazings = BuildingInsulatedGlazing::where('building_id', $building->id)
             ->forInputSource($inputSource)
             ->with('measureApplication', 'insulatedGlazing', 'buildingHeating')
             ->get();
 
-//        $insulatedGlazingBuildingFeatures = $reportData['insulated-glazing']['building_insulated_glazings'];
-//        $insulatedGlazingUserInterests = $reportData['insulated-glazing']['user_interests'];
-//
-//        dd(
-//            $buildingInsulatedGlazings, $reportData, $reportData['insulated-glazing'], $insulatedGlazingBuildingFeatures, $insulatedGlazingUserInterests, Arr::dot($reportData['insulated-glazing'])
-//        );
         // the comments that have been made on the action plan
         $userActionPlanAdviceComments = UserActionPlanAdviceComments::withoutGlobalScope(GetValueScope::class)
             ->where('user_id', $user->id)

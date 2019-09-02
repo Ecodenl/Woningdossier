@@ -2,11 +2,14 @@
 
 namespace App\Jobs;
 
+use App\Models\BuildingInsulatedGlazing;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserActionPlanAdviceComments;
+use App\Scopes\GetValueScope;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -52,7 +55,7 @@ class PdfReport implements ShouldQueue
         }
 
         $user = $this->user->load(['motivations']);
-
+        $userCooperation= $this->user->cooperation;
         $inputSource = $this->inputSource;
 
         // load the buildingFeatures
@@ -62,8 +65,14 @@ class PdfReport implements ShouldQueue
 
         $buildingFeatures = $building->buildingFeatures;
 
-        $GLOBALS['_cooperation'] = $user->cooperation;
-        $GLOBALS['_inputSource'] = $this->inputSource;
+        $GLOBALS['_cooperation'] = $userCooperation;
+        $GLOBALS['_inputSource'] = $inputSource;
+
+
+        $buildingInsulatedGlazings = BuildingInsulatedGlazing::where('building_id', $building->id)
+            ->forInputSource($inputSource)
+            ->with('measureApplication', 'insulatedGlazing', 'buildingHeating')
+            ->get();
 
         // the comments that have been made on the action plan
         $userActionPlanAdviceComments = UserActionPlanAdviceComments::withoutGlobalScope(GetValueScope::class)
@@ -71,7 +80,7 @@ class PdfReport implements ShouldQueue
             ->with('inputSource')
             ->get();
 
-        $steps = $this->cooperation->getActiveOrderedSteps();
+        $steps = $userCooperation->getActiveOrderedSteps();
 
         $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, $inputSource);
 
@@ -101,9 +110,9 @@ class PdfReport implements ShouldQueue
 
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'cooperation', 'stepSlugs', 'commentsByStep', 'inputSource',
+            'user', 'building', 'userCooperation', 'stepSlugs', 'commentsByStep', 'inputSource',
             'reportTranslations', 'reportData', 'userActionPlanAdvices', 'buildingFeatures', 'advices',
-            'steps', 'userActionPlanAdviceComments'
+            'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings'
         ));
 
         // save the pdf report

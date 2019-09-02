@@ -1546,6 +1546,20 @@ h2 {
 body.new-page {
   padding-top: 50px; }
 
+.step-intro {
+  margin-bottom: 25px; }
+  .step-intro h2 {
+    display: block;
+    margin: 8px 0 0 0; }
+  .step-intro img {
+    width: 50px;
+    height: 50px;
+    display: block;
+    float: left; }
+  .step-intro p {
+    padding-top: 25px;
+    font-weight: bold; }
+
 p {
   color: #000000;
   font-size: 13.33px;
@@ -1603,6 +1617,8 @@ table {
     height: 50px;
     display: block;
     float: left; }
+  .step-intro p {
+    padding-top: 25px; }
 
 .measures p {
   display: inline-block; }

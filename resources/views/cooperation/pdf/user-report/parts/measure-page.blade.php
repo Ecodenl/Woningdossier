@@ -5,6 +5,7 @@
 {{--            <img src="{{public_path('images/icons/'.$step.'.png')}}" alt="">--}}
             <img src="{{asset('images/icons/'.$step.'.png')}}" alt="">
             <h2>{{\App\Models\Step::whereSlug($step)->first()->name}}</h2>
+            <p>@lang('pdf/user-report.step-description.'.$step)</p>
         </div>
 
         <div class="question-answer-section">

@@ -20,6 +20,7 @@
                 <?php
                 // the insulated glazing need a different layout / structure then the $data gives us.
                 // its easier, faster and more readable to do it in this way then do magic on all the array keys.
+                // however, we should avoid this as much a possible otherwise the code will be bloated
 
                 // we dont need it, we will use the $buildingInsulatedGlazings
                 unset($data['user_interests'], $data['building_insulated_glazings'])
@@ -38,7 +39,7 @@
                         </tr>
                         <tr class="h-20">
                             <td class="w-300">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.m2.title')}}</td>
-                            <td>{{$buildingInsulatedGlazing->m2}}</td>
+                            <td>{{$buildingInsulatedGlazing->m2}} m2</td>
                         </tr>
                         <tr class="h-20">
                             <td class="w-300">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.window-replace.title')}}</td>

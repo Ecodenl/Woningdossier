@@ -45,12 +45,12 @@
         </thead>
         <tbody>
         @foreach($userActionPlanAdvices as $year => $advices)
-            @foreach($advices as $measureName => $adviceData)
+            @foreach($advices as $adviceData)
                 @foreach($adviceData as $advice)
                 <tr class="border-bottom">
                     <td>{{$year}}</td>
                     <td>{{$advice['interested'] ? 'Ja' : 'Nee'}}</td>
-                    <td>{{$measureName}}</td>
+                    <td>{{$advice['measure']}}</td>
                     <td>{{$advice['costs']}}</td>
                     <td>{{$advice['savings_money']}}</td>
                 </tr>

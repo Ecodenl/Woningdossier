@@ -3,21 +3,16 @@
 namespace App\Http\Controllers\Cooperation\Pdf;
 
 use App\Helpers\Hoomdossier;
-use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Models\BuildingInsulatedGlazing;
 use App\Models\Cooperation;
 use App\Http\Controllers\Controller;
 use App\Models\InputSource;
-use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Scopes\GetValueScope;
-use App\Services\CsvService;
 use App\Services\DumpService;
-use App\Services\PdfService;
 use Barryvdh\DomPDF\Facade as PDF;
-use Illuminate\Support\Arr;
 
 class UserReportController extends Controller
 {

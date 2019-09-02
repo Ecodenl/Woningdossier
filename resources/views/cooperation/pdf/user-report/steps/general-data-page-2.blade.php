@@ -78,8 +78,8 @@
     <p>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.next-steps.text', ['cooperation_name' => 'Hoom'])}}</p>
 </div>
 
-<div class="question-answer-section">
-    <h2>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.attachment.title')}}</h2>
-    <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.attachment.lead')}}</p>
-    <p>{!!\App\Helpers\Translation::translate('pdf/user-report.general-data.attachment.text')!!}</p>
-</div>
+{{--<div class="question-answer-section">--}}
+    {{--<h2>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.attachment.title')}}</h2>--}}
+    {{--<p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.attachment.lead')}}</p>--}}
+    {{--<p>{!!\App\Helpers\Translation::translate('pdf/user-report.general-data.attachment.text')!!}</p>--}}
+{{--</div>--}}

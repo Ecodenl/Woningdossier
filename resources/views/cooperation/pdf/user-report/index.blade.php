@@ -33,6 +33,12 @@
     </div>
 @endcomponent
 
+@component('cooperation.pdf.components.new-page')
+    <div class="container">
+        @include('cooperation.pdf.user-report.steps.general-data-page-3')
+    </div>
+@endcomponent
+
 
 @foreach ($reportData as $step => $data)
     @if (is_string($step) && array_key_exists($step, $stepSlugs))

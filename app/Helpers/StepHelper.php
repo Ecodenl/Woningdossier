@@ -161,13 +161,12 @@ class StepHelper
     /**
      * Check is a user is interested in a step.
      *
+     * @param Building $building
      * @param Step $step
-     *
      * @return bool
      */
-    public static function hasInterestInStep(Step $step): bool
+    public static function hasInterestInStep(Building $building, Step $step): bool
     {
-        $building = HoomdossierSession::getBuilding(true);
 
         if (array_key_exists($step->slug, self::STEP_INTERESTS)) {
             foreach (self::STEP_INTERESTS[$step->slug] as $type => $interestedIn) {
@@ -183,15 +182,15 @@ class StepHelper
     /**
      * Get the next step for a user where the user shows interest in or the next questionnaire for a user.
      *
-     * @param Step          $current
-     * @param Questionnaire $currentQuestionnaire
-     *
+     * @param User $user
+     * @param Step $current
+     * @param Questionnaire|null $currentQuestionnaire
      * @return array
      */
-    public static function getNextStep(Step $current, Questionnaire $currentQuestionnaire = null): array
+    public static function getNextStep(User $user, Step $current, Questionnaire $currentQuestionnaire = null): array
     {
         // get all the steps
-        $steps = HoomdossierSession::getCooperation(true)->getActiveOrderedSteps();
+        $steps = $user->cooperation->getActiveOrderedSteps();
         // create new collection for the completed steps
         $completedSteps = collect();
 
@@ -252,7 +251,7 @@ class StepHelper
         // check if a user is interested
         // and if so return the route name
         foreach ($nonCompletedSteps as $nonCompletedStep) {
-            if (self::hasInterestInStep($nonCompletedStep)) {
+            if (self::hasInterestInStep($user->building, $nonCompletedStep)) {
                 $routeName = 'cooperation.tool.'.$nonCompletedStep->slug.'.index';
 
                 return ['route' => $routeName, 'tab_id' => ''];

@@ -8,6 +8,7 @@ use App\Helpers\StepHelper;
 use App\Models\Cooperation;
 use App\Http\Controllers\Controller;
 use App\Models\InputSource;
+use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Services\CsvService;
 use App\Services\DumpService;
@@ -17,7 +18,6 @@ use Barryvdh\DomPDF\Facade as PDF;
 class UserReportController extends Controller
 {
     /**
-     * @deprecated
      *
      * TESTING only, turn on the routes to use it.
      *
@@ -36,7 +36,6 @@ class UserReportController extends Controller
         $GLOBALS['_cooperation'] = $cooperation;
         $GLOBALS['_inputSource'] = $inputSource;
 
-
         $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, $inputSource);
 
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $inputSource);
@@ -49,6 +48,9 @@ class UserReportController extends Controller
 
         // undot it so we can handle the data in view later on
         $reportData = \App\Helpers\Arr::arrayUndot($reportForUser['user-data']);
+
+
+        $steps = $cooperation->getActiveOrderedSteps();
 
         // steps that are considered to be measures.
         $stepSlugs = \DB::table('steps')
@@ -68,14 +70,14 @@ class UserReportController extends Controller
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'cooperation', 'stepSlugs', 'inputSource',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
-            'buildingFeatures', 'advices'
+            'buildingFeatures', 'advices', 'steps'
         ));
 
         return $pdf->stream();
         return view('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'cooperation', 'stepSlugs', 'inputSource',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
-            'buildingFeatures', 'advices'
+            'buildingFeatures', 'advices', 'steps'
         ));
 
 

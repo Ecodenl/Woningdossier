@@ -1528,9 +1528,7 @@
   height: 100px; }
 
 * {
-  margin: 0; }
-
-h1, h2, h4, p, table {
+  margin: 0;
   font-family: Century Gothic, CenturyGothic, AppleGothic, sans-serif; }
 
 h1 {
@@ -1559,6 +1557,11 @@ body.new-page {
   .step-intro p {
     padding-top: 25px;
     font-weight: bold; }
+
+ol li {
+  font-weight: bold;
+  color: #000000;
+  font-size: 13.33px; }
 
 p {
   color: #000000;

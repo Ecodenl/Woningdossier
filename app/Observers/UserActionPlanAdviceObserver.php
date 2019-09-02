@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Models\UserActionPlanAdvice;
@@ -17,7 +18,7 @@ class UserActionPlanAdviceObserver
     public function creating(UserActionPlanAdvice $userActionPlanAdvice)
     {
         $step = $userActionPlanAdvice->step;
-        $planned = StepHelper::hasInterestInStep($step);
+        $planned = StepHelper::hasInterestInStep(HoomdossierSession::getBuilding(true), $step);
 
         $userActionPlanAdvice->input_source_id = HoomdossierSession::getInputSource();
         $userActionPlanAdvice->planned = $planned;

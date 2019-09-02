@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
@@ -47,7 +48,7 @@ class VentilationController extends Controller
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         $cooperation = HoomdossierSession::getCooperation(true);
 
-        $nextStep = StepHelper::getNextStep($this->step);
+        $nextStep = StepHelper::getNextStep(Hoomdossier::user(), $this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
 
         if (! empty($nextStep['tab_id'])) {

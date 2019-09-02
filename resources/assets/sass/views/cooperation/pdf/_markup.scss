@@ -1,8 +1,5 @@
 * {
   margin: 0;
-}
-
-h1, h2, h4, p, table {
   font-family: Century Gothic, CenturyGothic, AppleGothic, sans-serif;
 }
 
@@ -41,6 +38,14 @@ body {
     font-weight: bold;
   }
   margin-bottom: 25px;
+}
+
+ol {
+  li {
+    font-weight: bold;
+    color: $color-black;
+    font-size: $font-size-small;
+  }
 }
 
 p {

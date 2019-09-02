@@ -530,12 +530,12 @@ class CsvService
     /**
      * Get the total report for all users by the cooperation
      *
-     * @param  Cooperation  $cooperation
+     * @param Cooperation $cooperation
+     * @param InputSource $inputSource
      * @param bool $anonymized
-     *
      * @return array
      */
-    public static function totalReport(Cooperation $cooperation, bool $anonymized): array
+    public static function totalReport(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
     {
         $users = $cooperation->users()->whereHas('buildings')->get();
 
@@ -626,7 +626,7 @@ class CsvService
          * @var User $user
          */
         foreach ($users as $user) {
-            $rows[$user->building->id] = DumpService::totalDump($user, $anonymized, false)['user-data'];
+            $rows[$user->building->id] = DumpService::totalDump($user, $inputSource, $anonymized, false)['user-data'];
         }
 
         return $rows;

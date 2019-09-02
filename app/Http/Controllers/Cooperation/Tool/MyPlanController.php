@@ -63,8 +63,8 @@ class MyPlanController extends Controller
     public function export()
     {
         // get the data
-        $user = \App\Helpers\Hoomdossier::user();
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
+        $user = Hoomdossier::user();
+        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, HoomdossierSession::getInputSource(true));
 
         // Column names
         $headers = [

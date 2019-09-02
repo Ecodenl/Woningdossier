@@ -100,7 +100,7 @@
                                 $translationForAnswer = $reportTranslations['general-data.'.$table.'.'.$elementOrServiceId];
                             ?>
                             <tr class="border-bottom">
-                                <td>{{$translationForAnswer}}</td>
+                                <td class="w-300">{{$translationForAnswer}}</td>
                                 <td>{{$value}}</td>
                                 <td>{{$user->getInterestedType($table, $elementOrServiceId, $inputSource)->interest->name ?? 'x'}}</td>
                             </tr>

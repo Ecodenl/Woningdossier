@@ -45,7 +45,7 @@
                     ?>
                     <tr class="h-20">
                         <td class="w-300">{{$translationForAnswer}}</td>
-                        <td>{{\App\Helpers\NumberFormatter::round($calculationResult)}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</td>
+                        <td>{{(\App\Helpers\NumberFormatter::format($calculationResult, 0, true))}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</td>
                     </tr>
                     @endif
                 @endforeach

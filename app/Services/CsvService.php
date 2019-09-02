@@ -635,6 +635,8 @@ class CsvService
     /**
      * Return the calculate data for each step, returns it in the format how the calculate classes expects it.
      *
+     * @deprecated should not be used anymore, use DumpService instead.
+     *
      * @param  Building  $building
      * @param  User  $user
      *

@@ -15,20 +15,50 @@
                 unset($data['calculation']);
             ?>
 
-                <table class="full-width">
-                    <tbody>
-                    @foreach (\Illuminate\Support\Arr::dot($data) as $translationKey => $value)
-                        <?php
-                            $translationForAnswer = $reportTranslations[$step.'.'.$translationKey];
-                        ?>
-                        <tr class="h-20">
-                            <td class="w-300">{{$translationForAnswer}}</td>
-                            <td>{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
 
+            @if($step === 'insulated-glazing')
+                <?php
+                    // we dont need it, we will use the $buildingInsulatedGlazings
+                    unset($data['user_interests'], $data['building_insulated_glazings'])
+                ?>
+                @foreach($buildingInsulatedGlazings as $buildingInsulatedGlazing)
+                    <p class="sub-lead">{{$buildingInsulatedGlazing->measureApplication->measure_name}}</p>
+                    <table class="full-width">
+                        <tbody>
+                            <tr class="h-20">
+                                <td class="w-300">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
+                                <td>{{$buildingInsulatedGlazing->insulatedGlazing->name}}</td>
+                            </tr>
+                            <tr class="h-20">
+                                <td class="w-300">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.rooms-heated.title')}}</td>
+                                <td>{{$buildingInsulatedGlazing->buildingHeating->name}}</td>
+                            </tr>
+                            <tr class="h-20">
+                                <td class="w-300">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.m2.title')}}</td>
+                                <td>{{$buildingInsulatedGlazing->m2}}</td>
+                            </tr>
+                            <tr class="h-20">
+                                <td class="w-300">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.window-replace.title')}}</td>
+                                <td>{{$buildingInsulatedGlazing->windows}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                @endforeach
+            @endif
+
+            <table class="full-width">
+                <tbody>
+                @foreach (\Illuminate\Support\Arr::dot($data) as $translationKey => $value)
+                    <?php
+                        $translationForAnswer = $reportTranslations[$step.'.'.$translationKey];
+                    ?>
+                    <tr class="h-20">
+                        <td class="w-300">{{$translationForAnswer}}</td>
+                        <td>{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
         </div>
 
 

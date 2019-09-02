@@ -52,7 +52,10 @@ p {
   color: $color-black;
   font-size: $font-size-small;
   line-height: 1.5em;
-
+  &.sub-lead {
+    font-weight: bold;
+    color: $color-main;
+  }
   &.lead {
     font-weight: bold;
     color: $color-main;

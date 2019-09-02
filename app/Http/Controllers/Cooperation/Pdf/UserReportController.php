@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Pdf;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
+use App\Models\BuildingInsulatedGlazing;
 use App\Models\Cooperation;
 use App\Http\Controllers\Controller;
 use App\Models\InputSource;
@@ -16,6 +17,7 @@ use App\Services\CsvService;
 use App\Services\DumpService;
 use App\Services\PdfService;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Arr;
 
 class UserReportController extends Controller
 {
@@ -38,6 +40,21 @@ class UserReportController extends Controller
         $GLOBALS['_cooperation'] = $cooperation;
         $GLOBALS['_inputSource'] = $inputSource;
 
+
+//        $reportForUser = DumpService::totalDump($user, $inputSource, false);
+//        $reportData = \App\Helpers\Arr::arrayUndot($reportForUser['user-data']);
+
+        $buildingInsulatedGlazings = BuildingInsulatedGlazing::where('building_id', $building->id)
+            ->forInputSource($inputSource)
+            ->with('measureApplication', 'insulatedGlazing', 'buildingHeating')
+            ->get();
+
+//        $insulatedGlazingBuildingFeatures = $reportData['insulated-glazing']['building_insulated_glazings'];
+//        $insulatedGlazingUserInterests = $reportData['insulated-glazing']['user_interests'];
+//
+//        dd(
+//            $buildingInsulatedGlazings, $reportData, $reportData['insulated-glazing'], $insulatedGlazingBuildingFeatures, $insulatedGlazingUserInterests, Arr::dot($reportData['insulated-glazing'])
+//        );
         // the comments that have been made on the action plan
         $userActionPlanAdviceComments = UserActionPlanAdviceComments::withoutGlobalScope(GetValueScope::class)
             ->where('user_id', $user->id)
@@ -45,7 +62,7 @@ class UserReportController extends Controller
             ->get();
 
         $steps = $cooperation->getActiveOrderedSteps();
-
+        
         $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, $inputSource);
 
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $inputSource);
@@ -77,14 +94,14 @@ class UserReportController extends Controller
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'cooperation', 'stepSlugs', 'inputSource',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
-            'buildingFeatures', 'advices', 'steps', 'userActionPlanAdviceComments'
+            'buildingFeatures', 'advices', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings'
         ));
 
         return $pdf->stream();
         return view('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'cooperation', 'stepSlugs', 'inputSource',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
-            'buildingFeatures', 'advices', 'steps', 'userActionPlanAdviceComments'
+            'buildingFeatures', 'advices', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings'
         ));
 
 

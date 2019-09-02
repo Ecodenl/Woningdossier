@@ -1567,6 +1567,9 @@ p {
   color: #000000;
   font-size: 13.33px;
   line-height: 1.5em; }
+  p.sub-lead {
+    font-weight: bold;
+    color: #29A082; }
   p.lead {
     font-weight: bold;
     color: #29A082;

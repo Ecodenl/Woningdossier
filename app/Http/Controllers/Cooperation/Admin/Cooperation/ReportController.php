@@ -20,7 +20,12 @@ class ReportController extends Controller
 {
     public function index()
     {
-        $reportFileTypeCategory = FileTypeCategory::short('report')->with('fileTypes.files')->first();
+        $reportFileTypeCategory = FileTypeCategory::short('report')
+            ->with(['fileTypes' => function ($query) {
+                $query->where('short', '!=', 'pdf-report')
+                    ->with('files');
+            }])
+            ->first();
 
         $anyFilesBeingProcessed = FileStorage::withOutGlobalScope(new AvailableScope)->where('is_being_processed', true)->count();
 

@@ -65,6 +65,14 @@ class PdfReport implements ShouldQueue
         $GLOBALS['_cooperation'] = $user->cooperation;
         $GLOBALS['_inputSource'] = $this->inputSource;
 
+        // the comments that have been made on the action plan
+        $userActionPlanAdviceComments = UserActionPlanAdviceComments::withoutGlobalScope(GetValueScope::class)
+            ->where('user_id', $user->id)
+            ->with('inputSource')
+            ->get();
+
+        $steps = $this->cooperation->getActiveOrderedSteps();
+
         $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, $inputSource);
 
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $inputSource);
@@ -94,7 +102,8 @@ class PdfReport implements ShouldQueue
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'cooperation', 'stepSlugs', 'commentsByStep', 'inputSource',
-            'reportTranslations', 'reportData', 'userActionPlanAdvices', 'buildingFeatures', 'advices'
+            'reportTranslations', 'reportData', 'userActionPlanAdvices', 'buildingFeatures', 'advices',
+            'steps', 'userActionPlanAdviceComments'
         ));
 
         // save the pdf report

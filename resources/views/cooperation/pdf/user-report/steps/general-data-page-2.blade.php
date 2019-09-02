@@ -65,7 +65,13 @@
 
 <div class="question-answer-section">
     <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.comment-action-plan')}}</p>
-    <p>data</p>
+    {{-- The column can be a category, this will be the case when the comment is stored under a catergory --}}
+    @foreach($userActionPlanAdviceComments as $userActionPlanAdviceComment)
+        <div class="question-answer">
+            <p class="w-300">{{$userActionPlanAdviceComment->inputSource->name}}</p>
+            <p>{{$userActionPlanAdviceComment->comment}}</p>
+        </div>
+    @endforeach
 </div>
 
 <div class="question-answer-section">
@@ -75,11 +81,5 @@
 
 <div class="question-answer-section">
     <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.next-steps.title')}}</p>
-    <p>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.next-steps.text', ['cooperation_name' => 'Hoom'])}}</p>
+    <p>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.next-steps.text', ['cooperation_name' => $cooperation->name])}}</p>
 </div>
-
-{{--<div class="question-answer-section">--}}
-    {{--<h2>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.attachment.title')}}</h2>--}}
-    {{--<p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.attachment.lead')}}</p>--}}
-    {{--<p>{!!\App\Helpers\Translation::translate('pdf/user-report.general-data.attachment.text')!!}</p>--}}
-{{--</div>--}}

@@ -162,15 +162,16 @@ class StepHelper
      * Check is a user is interested in a step.
      *
      * @param Building $building
+     * @param InputSource $inputSource
      * @param Step $step
      * @return bool
      */
-    public static function hasInterestInStep(Building $building, Step $step): bool
+    public static function hasInterestInStep(Building $building, InputSource $inputSource, Step $step): bool
     {
 
         if (array_key_exists($step->slug, self::STEP_INTERESTS)) {
             foreach (self::STEP_INTERESTS[$step->slug] as $type => $interestedIn) {
-                if ($building->isInterestedInStep($type, $interestedIn)) {
+                if ($building->isInterestedInStep($inputSource, $type, $interestedIn)) {
                     return true;
                 }
             }
@@ -183,11 +184,12 @@ class StepHelper
      * Get the next step for a user where the user shows interest in or the next questionnaire for a user.
      *
      * @param User $user
+     * @param InputSource $inputSource
      * @param Step $current
      * @param Questionnaire|null $currentQuestionnaire
      * @return array
      */
-    public static function getNextStep(User $user, Step $current, Questionnaire $currentQuestionnaire = null): array
+    public static function getNextStep(User $user, InputSource $inputSource, Step $current, Questionnaire $currentQuestionnaire = null): array
     {
         // get all the steps
         $steps = $user->cooperation->getActiveOrderedSteps();
@@ -251,7 +253,7 @@ class StepHelper
         // check if a user is interested
         // and if so return the route name
         foreach ($nonCompletedSteps as $nonCompletedStep) {
-            if (self::hasInterestInStep($user->building, $nonCompletedStep)) {
+            if (self::hasInterestInStep($user->building, $inputSource, $nonCompletedStep)) {
                 $routeName = 'cooperation.tool.'.$nonCompletedStep->slug.'.index';
 
                 return ['route' => $routeName, 'tab_id' => ''];

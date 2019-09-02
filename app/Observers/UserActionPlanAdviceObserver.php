@@ -18,7 +18,7 @@ class UserActionPlanAdviceObserver
     public function creating(UserActionPlanAdvice $userActionPlanAdvice)
     {
         $step = $userActionPlanAdvice->step;
-        $planned = StepHelper::hasInterestInStep(HoomdossierSession::getBuilding(true), $step);
+        $planned = StepHelper::hasInterestInStep(HoomdossierSession::getBuilding(true), HoomdossierSession::getInputSource(true), $step);
 
         $userActionPlanAdvice->input_source_id = HoomdossierSession::getInputSource();
         $userActionPlanAdvice->planned = $planned;

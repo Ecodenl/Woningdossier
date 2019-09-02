@@ -25,9 +25,9 @@ class UserReportController extends Controller
      *
      * TESTING only, turn on the routes to use it.
      *
-     * @param Cooperation $cooperation
+     * @param Cooperation $userCooperation
      */
-    public function index(Cooperation $cooperation)
+    public function index(Cooperation $userCooperation)
     {
 
         $user = Hoomdossier::user()->load('motivations');
@@ -37,7 +37,7 @@ class UserReportController extends Controller
 
         $inputSource = InputSource::findByShort('resident');
 
-        $GLOBALS['_cooperation'] = $cooperation;
+        $GLOBALS['_cooperation'] = $userCooperation;
         $GLOBALS['_inputSource'] = $inputSource;
 
         $buildingInsulatedGlazings = BuildingInsulatedGlazing::where('building_id', $building->id)
@@ -51,7 +51,7 @@ class UserReportController extends Controller
             ->with('inputSource')
             ->get();
 
-        $steps = $cooperation->getActiveOrderedSteps();
+        $steps = $userCooperation->getActiveOrderedSteps();
         
         $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, $inputSource);
 
@@ -82,14 +82,14 @@ class UserReportController extends Controller
 
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'cooperation', 'stepSlugs', 'inputSource',
+            'user', 'building', 'userCooperation', 'stepSlugs', 'inputSource',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
             'buildingFeatures', 'advices', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings'
         ));
 
         return $pdf->stream();
         return view('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'cooperation', 'stepSlugs', 'inputSource',
+            'user', 'building', 'userCooperation', 'stepSlugs', 'inputSource',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
             'buildingFeatures', 'advices', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings'
         ));

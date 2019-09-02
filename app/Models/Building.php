@@ -134,12 +134,12 @@ class Building extends Model
     /**
      * Check if a user is interested in a step.
      *
-     * @param string $type
-     * @param array  $interestedInIds
-     *
+     * @param InputSource $inputSource
+     * @param $type
+     * @param array $interestedInIds
      * @return bool
      */
-    public function isInterestedInStep($type, $interestedInIds = [])
+    public function isInterestedInStep(InputSource $inputSource, $type, $interestedInIds = [])
     {
         // the interest ids that people select when they do not have any interest
         $noInterestIds = [4, 5];
@@ -152,13 +152,13 @@ class Building extends Model
 
         // go through the elementid and get the user interest id to put them into the array
         foreach ($interestedInIds as $key => $interestedInId) {
-            if ($this->user->getInterestedType($type, $interestedInId) instanceof UserInterest) {
-                array_push($interestedIds, $this->user->getInterestedType($type, $interestedInId)->interest_id);
+            if ($this->user->getInterestedType($type, $interestedInId, $inputSource) instanceof UserInterest) {
+                array_push($interestedIds, $this->user->getInterestedType($type, $interestedInId, $inputSource)->interest_id);
             }
         }
 
         // check if the user wants to do something with their glazing
-        if ($interestedIds == array_intersect($interestedIds, $noInterestIds) && $this->user->getInterestedType($type, $interestedInId) instanceof UserInterest) {
+        if ($interestedIds == array_intersect($interestedIds, $noInterestIds) && $this->user->getInterestedType($type, $interestedInId, $inputSource) instanceof UserInterest) {
             return false;
         }
 
@@ -173,9 +173,9 @@ class Building extends Model
      *
      * @return bool
      */
-    public function isNotInterestedInStep($type, $interestedInIds = [])
+    public function isNotInterestedInStep(InputSource $inputSource, $type, $interestedInIds = [])
     {
-        return ! $this->isInterestedInStep($type, $interestedInIds);
+        return ! $this->isInterestedInStep($inputSource, $type, $interestedInIds);
     }
 
     /**

@@ -41,7 +41,7 @@
 
 
 @foreach ($reportData as $step => $data)
-    @if ((is_string($step) && array_key_exists($step, $stepSlugs)) && \App\Helpers\StepHelper::hasInterestInStep($building, $steps->where('slug', $step)->first()))
+    @if ((is_string($step) && array_key_exists($step, $stepSlugs)) && \App\Helpers\StepHelper::hasInterestInStep($building, $inputSource, $steps->where('slug', $step)->first()))
         @include('cooperation.pdf.user-report.parts.measure-page')
     @endif
 @endforeach

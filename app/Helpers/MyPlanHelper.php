@@ -68,6 +68,8 @@ class MyPlanHelper
     /**
      * Check is a user is interested in a measure.
      *
+     * @deprecated method is not used anywhere at the moment.
+     *
      * @param Step $step
      *
      * @return bool

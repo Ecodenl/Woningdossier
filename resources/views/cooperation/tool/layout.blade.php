@@ -61,12 +61,18 @@
                                         @lang('default.buttons.next')
                                     @endif
                                 </button>
-                            @else
-                                @if(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']))
-                                    <a href="{{ route('cooperation.tool.my-plan.export', ['cooperation' => $cooperation]) }}" class="pull-right btn btn-primary">
-                                        {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
-                                    </a>
-                                @endif
+                            @elseif(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']))
+                                <a
+                                        @if($fileType->isBeingProcessed() )
+                                        disabled="disabled"
+                                        href="#"
+                                        data-toggle="tooltip"
+                                        title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
+                                        @else
+                                        href="{{route('cooperation.my-account.report.generate', ['fileType' => $fileType->short])}}"
+                                        @endif
+                                        class="btn btn-{{$fileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
+                                >{{ \App\Helpers\Translation::translate('my-plan.download.title') }}</a>
                             @endif
                             <div class="clearfix"></div>
                         </div>

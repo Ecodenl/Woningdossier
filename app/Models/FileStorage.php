@@ -45,7 +45,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class FileStorage extends Model
 {
-    use GetMyValuesTrait, GetValueTrait;
+    // notice: this model / table uses a based_input_source_id, this indicates on what the input source has been generated
 
     public static function boot()
     {
@@ -56,7 +56,7 @@ class FileStorage extends Model
     }
     
     protected $fillable = [
-        'cooperation_id', 'filename', 'user_id', 'file_type_id', 'content_type', 'is_being_processed', 'available_until',
+        'cooperation_id', 'filename', 'user_id', 'based_on_input_source_id', 'file_type_id', 'content_type', 'is_being_processed', 'available_until',
     ];
 
     /**

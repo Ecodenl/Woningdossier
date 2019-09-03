@@ -29,8 +29,15 @@ class FileStorageDownload
             return $next($request);
         }
 
-        if ((Hoomdossier::user()->hasRoleAndIsCurrentRole(['resident', 'coach']) && $fileStorage->building_id == HoomdossierSession::getBuilding()) && $fileStorage->input_source_id == HoomdossierSession::getInputSource()) {
-            return $next($request);
+        if ($fileStorage instanceof FileStorage) {
+
+            $userIsResidentOrCoach = Hoomdossier::user()->hasRoleAndIsCurrentRole(['resident', 'coach']);
+            $fileIsGeneratedByCurrentBuilding = $fileStorage->building_id == HoomdossierSession::getBuilding();
+            $fileInputSourceIsCurrentInputSource = $fileStorage->input_source_id == HoomdossierSession::getInputSource();
+
+            if ($userIsResidentOrCoach && $fileIsGeneratedByCurrentBuilding && $fileInputSourceIsCurrentInputSource) {
+                return $next($request);
+            }
         }
 
         return redirect()->back();

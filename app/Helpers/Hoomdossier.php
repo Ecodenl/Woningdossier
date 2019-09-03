@@ -47,11 +47,12 @@ class Hoomdossier
             $unit = 'm3';
         }
 
+
         $unitsForCalculations = [
             'savings_gas' => 'm3',
             'savings_co2' => 'kg',
-            'savings_money' => 'm2',
-            'cost_indication' => 'm2',
+            'savings_money' => '€',
+            'cost_indication' => '€',
             'interest_comparable' => '%',
             'costs' => '€',
             'm2' => 'm2',

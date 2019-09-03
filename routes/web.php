@@ -64,6 +64,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
 
 
             Route::group(['prefix' => 'file-storage', 'as' => 'file-storage.'], function () {
+                Route::post('{fileType}', 'FileStorageController@store')->name('store');
 
                 Route::get('download/{fileType}/{fileStorageFilename}', 'FileStorageController@download')
                     ->middleware('file-storage-download')
@@ -94,11 +95,6 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
                     Route::post('reset-dossier', 'SettingsController@resetFile')->name('reset-file');
                 });
 
-
-                Route::group(['prefix' => 'report', 'as' => 'report.'], function () {
-                    Route::get('', 'ReportController@index')->name('index');
-                    Route::get('generate/{fileType}', 'ReportController@generate')->name('generate');
-                });
 
                 Route::resource('hoom-settings', 'HoomSettingsController');
 

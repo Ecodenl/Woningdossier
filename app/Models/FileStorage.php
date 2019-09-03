@@ -57,7 +57,7 @@ class FileStorage extends Model
     }
     
     protected $fillable = [
-        'cooperation_id', 'filename', 'user_id', 'based_on_input_source_id', 'file_type_id', 'content_type', 'is_being_processed', 'available_until',
+        'cooperation_id', 'filename', 'user_id', 'input_source_id', 'file_type_id', 'content_type', 'is_being_processed', 'available_until',
     ];
 
     /**

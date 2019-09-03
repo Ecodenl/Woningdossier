@@ -98,17 +98,20 @@ class Heater {
                 $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
 
-                foreach ($interests as $type => $interestTypes) {
-                    foreach ($interestTypes as $typeId => $interestId) {
-                        $interest = Interest::find($interestId);
-                    }
-                }
+                if (!empty($interests)) {
 
-                $currentYear = Carbon::now()->year;
-                if (1 == $interest->calculate_value) {
-                    $result['year'] = $currentYear;
-                } elseif (2 == $interest->calculate_value) {
-                    $result['year'] = $currentYear + 5;
+                    foreach ($interests as $type => $interestTypes) {
+                        foreach ($interestTypes as $typeId => $interestId) {
+                            $interest = Interest::find($interestId);
+                        }
+                    }
+
+                    $currentYear = Carbon::now()->year;
+                    if (1 == $interest->calculate_value) {
+                        $result['year'] = $currentYear;
+                    } elseif (2 == $interest->calculate_value) {
+                        $result['year'] = $currentYear + 5;
+                    }
                 }
 
                 if ($helpFactor >= 0.84) {

@@ -156,6 +156,8 @@
           'help' => 'general.specific-situation.help'
         ]
     ])
+    <?php $file = $fileType->files()->mostRecent()->first();?>
+    @if($file instanceof \App\Models\FileStorage)
     <br>
     <div class="row">
         <div class="col-md-12">
@@ -163,44 +165,42 @@
                 <div class="panel-heading">@lang('default.buttons.download')</div>
                 <div class="panel-body">
                     <ol>
-                        <?php $file = $fileType->files()->mostRecent()->first();?>
-                        @if($file instanceof \App\Models\FileStorage)
-                            <li>
-                                <a @if(!$fileType->isBeingProcessed() )
-                                   href="{{route('cooperation.file-storage.download', [
-                                                        'fileType' => $fileType->short,
-                                                        'fileStorageFilename' => $file->filename
-                                       ])}}" @endif>{{$fileType->name}} ({{$file->created_at->format('Y-m-d H:i')}})</a>
-                            </li>
-                        @endif
+                        <li>
+                            <a @if(!$fileType->isBeingProcessed() )
+                               href="{{route('cooperation.file-storage.download', [
+                                    'fileType' => $fileType->short,
+                                    'fileStorageFilename' => $file->filename
+                               ])}}" @endif>{{$fileType->name}} ({{$file->created_at->format('Y-m-d H:i')}})</a>
+                        </li>
                     </ol>
                 </div>
             </div>
             <hr>
         </div>
     </div>
+    @endif
 
     <hr>
 
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
-                <a
-                    @if($fileType->isBeingProcessed() )
-                        disabled="disabled"
-                        href="#"
-                        data-toggle="tooltip"
-                        title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
-                    @else
-                        href="{{route('cooperation.my-account.report.generate', ['fileType' => $fileType->short])}}"
-                    @endif
-                        class="btn btn-{{$fileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
-                >
-                    {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
-                    @if($fileType->isBeingProcessed() )
-                        <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
-                    @endif
-                </a>
+                <form action="{{route('cooperation.file-storage.store', ['fileType' => $fileType->short])}}" method="post">
+                    {{csrf_field()}}
+                    <button style="margin-top: -35px"
+                            @if($fileType->isBeingProcessed()) disabled="disabled" type="button" data-toggle="tooltip"
+                            title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
+                            @else
+                            type="submit"
+                            @endif
+                            class="btn btn-{{$fileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
+                    >
+                        {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
+                        @if($fileType->isBeingProcessed() )
+                            <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
+                        @endif
+                    </button>
+                </form>
             </div>
         </div>
     </div>

@@ -27,10 +27,19 @@ class UserReportController extends Controller
 
         $user = Hoomdossier::user()->load('motivations');
 
-        $building = $user->building;
-        $buildingFeatures = $building->buildingFeatures;
+//        $building = $user->building;
 
-        $inputSource = InputSource::findByShort('resident');
+
+        $inputSource = InputSource::findByShort('coach');
+        // load the buildingFeatures
+        $building = $user->building;
+        dd($building);
+
+        $buildingFeatures = $building->buildingFeatures()->forInputSource($inputSource)->first();
+
+        dd($buildingFeatures);
+
+        $buildingFeatures = $building->buildingFeatures()->forInputSource($inputSource)->first();
 
         $GLOBALS['_cooperation'] = $userCooperation;
         $GLOBALS['_inputSource'] = $inputSource;

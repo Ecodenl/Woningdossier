@@ -13,6 +13,7 @@ use App\Jobs\GenerateMeasureReport;
 use App\Jobs\GenerateTotalReport;
 use App\Http\Controllers\Controller;
 use App\Models\InputSource;
+use App\Models\Service;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -40,7 +41,7 @@ class FileStorageController extends Controller
             if (\Storage::disk('downloads')->exists($fileStorageFilename)) {
 
                 return \Storage::disk('downloads')->download($fileStorageFilename, $fileStorageFilename, [
-                    'Content-type'  => $fileStorage->content_type,
+                    'Content-type'  => $fileStorage->fileType->content_type,
                     'Pragma'        => 'no-cache',
                     'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
                     'Expires'       => '0',
@@ -54,48 +55,55 @@ class FileStorageController extends Controller
     }
 
 
-
     public function store(Cooperation $cooperation, FileType $fileType)
     {
         if($fileType->isBeingProcessed()) {
             return redirect()->back();
         }
 
+        $building = HoomdossierSession::getBuilding(true);
+        $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
-        $user = Hoomdossier::user();
 
         // we will create the file storage here, if we would do it in the job itself it would bring confusion to the user.
         $fileName = $this->getFileNameForFileType($fileType, $user, $inputSource);
 
-        // and delete the other available files, will trigger the observer to delete the file on disk
-        foreach ($fileType->files as $fileStorage) {
-            $fileStorage->delete();
-            \Storage::disk('downloads')->delete($fileStorage->filename);
-        }
+        // and delete the other available files
+        if ($inputSource->short != InputSource::COOPERATION_SHORT) {
 
-        if ($inputSource->short == InputSource::COOPERATION_SHORT) {
-            // and we create the new file
-            $fileStorage = FileStorage::create([
-                'cooperation_id' => $cooperation->id,
-                'input_source_id' => $inputSource->id,
-                'file_type_id' => $fileType->id,
-                'content_type' => 'application/pdf',
-                'filename' => $fileName,
-            ]);
+            $fileStorage = $fileType->files()->forInputSource($inputSource)->where('building_id', $building->id)->first();
+
+            if ($fileStorage instanceof FileStorage) {
+                $fileStorage->delete();
+                \Storage::disk('downloads')->delete($fileStorage->filename);
+            }
+        } else {
+
+            $fileStorages = $fileType->files;
+            foreach ($fileStorages as $fileStorage) {
+                $fileStorage->delete();
+                \Storage::disk('downloads')->delete($fileStorage->filename);
+            }
         }
 
         // and we create the new file
-        $fileStorage = FileStorage::create([
-            'user_id' => $user->id,
+        $fileStorage = new FileStorage([
             'cooperation_id' => $cooperation->id,
+            'input_source_id' => $inputSource->id,
             'file_type_id' => $fileType->id,
-            'content_type' => 'application/pdf',
             'filename' => $fileName,
         ]);
 
+        // this is only needed when its not the cooperation generating a file.
+        if ($inputSource->short != InputSource::COOPERATION_SHORT) {
+            $fileStorage->building_id = $building->id;
+        }
+
+        $fileStorage->save();
+
         switch ($fileType->short) {
             case 'pdf-report':
-                PdfReport::dispatch(Hoomdossier::user(), $inputSource, $fileType, $fileStorage);
+                PdfReport::dispatch($user, $inputSource, $fileType, $fileStorage);
                 break;
             case 'total-report':
                 GenerateTotalReport::dispatch($cooperation, $fileType, $fileStorage);
@@ -117,6 +125,8 @@ class FileStorageController extends Controller
                 break;
 
         }
+
+        return redirect(back())->with('success', __('woningdossier.cooperation.admin.cooperation.reports.generate.success'));
 
     }
 

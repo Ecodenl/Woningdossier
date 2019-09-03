@@ -162,7 +162,20 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
-                <a href="{{ route('cooperation.tool.my-plan.export', ['cooperation' => $cooperation]) }}"  class="pull-right btn btn-primary">{{ \App\Helpers\Translation::translate('my-plan.download.title') }}</a>
+                <a
+                        @if($fileType->isBeingProcessed() )
+                        disabled="disabled"
+                        href="#"
+                        data-toggle="tooltip"
+                        title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
+                        @else
+                        href="{{route('cooperation.my-account.report.generate', ['fileType' => $fileType->short])}}"
+                        @endif
+                        class="btn btn-{{$fileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
+                >{{ \App\Helpers\Translation::translate('my-plan.download.title') }}</a>
+                {{--<a href="{{ route('cooperation.tool.my-plan.export', ['cooperation' => $cooperation]) }}"  class="pull-right btn btn-primary">--}}
+{{----}}
+                {{--</a>--}}
             </div>
         </div>
     </div>

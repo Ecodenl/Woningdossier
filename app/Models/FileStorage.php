@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Scopes\AvailableScope;
 use App\Scopes\CooperationScope;
+use App\Traits\GetMyValuesTrait;
+use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -43,6 +45,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class FileStorage extends Model
 {
+    use GetMyValuesTrait, GetValueTrait;
 
     public static function boot()
     {

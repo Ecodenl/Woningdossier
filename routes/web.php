@@ -208,7 +208,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
                 Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');
                 Route::post('my-plan/comment', 'MyPlanController@storeComment')->name('my-plan.store-comment');
                 Route::post('my-plan/store', 'MyPlanController@store')->name('my-plan.store');
-                Route::get('my-plan/export', 'MyPlanController@export')->name('my-plan.export');
+//                Route::get('my-plan/export', 'MyPlanController@export')->name('my-plan.export');
             });
 
             Route::group(['prefix'     => 'admin', 'as' => 'admin.', 'namespace' => 'Admin',

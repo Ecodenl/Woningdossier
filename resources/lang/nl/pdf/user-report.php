@@ -81,6 +81,7 @@ return [
             'text' => 'Op de volgende bladzijden ziet u per maatregel een samenvatting van de ingevoerde gegevens en berekeningen voor de hierboven genoemde maatregelen. Meer informatie over de maatregelen kunt u ook vinden op de maatregelbladen in het Hoomdossier of op <a href="www.milieucentraal.nl">www.milieucentraal.nl</a>.'
         ],
     ],
+
     'measure-pages' => [
         'filled-in-data' => 'Ingevoerde gegevens',
         'advice' => 'Geadviseerd wordt:',
@@ -98,5 +99,54 @@ return [
             ],
         ],
         'comments' => 'Toelichting op de maatregel'
+    ],
+
+    'outro' => [
+        'way-to-energy-neutral' => [
+            'title' => 'Bijlage 2: Op weg naar energieneutraal wonen',
+            'text' => 'In dit rapport ziet u een eerste aanzet welke energiebesparende maatregelen voor u op dit moment interessant kunnen zijn. Maar als u wilt, kunt u ook een stap verder gaan met als doel: een energieneutrale woning. Voor iedereen die nul op de meter wil, geven we hieronder tips voor aanvullende maatregelen.<br><br>In Nederland zijn we op weg naar energieneutraal wonen. Energieneutraal betekent dat er voor een woning per saldo geen energie van buitenaf nodig is om er te wonen en te leven. Er wordt net zoveel energie opgewekt als wat we zelf gebruiken. De aansluiting op het gasnetwerk is bij een energieneutrale woning niet langer nodig. En de aansluiting op het elektriciteitsnetwerk dient alleen om onbalans in de stroomvoorziening op te vangen. Want soms wekken we meer op dan we gebruiken en moeten we terugleveren. En soms is het precies andersom, dan gebruiken we meer dan we opwekken en moeten we wat extra elektriciteit afnemen. Maar per saldo staat aan het einde van het jaar nul op de meter. '
+        ],
+
+        'limit-energy-usage' => [
+            'title' => '1. Energiegebruik verder beperken',
+            'text' => 'De weg naar een energieneutrale woning bestaat uit twee stappen. In de eerste stap gaat u onderzoeken hoe u uw energiegebruik zoveel mogelijk kunt beperken. Want wat u niet gebruikt, hoeft u ook niet op te wekken. Als u de adviezen in dit Energiebespaaradvies heeft opgevolgd, realiseert u al een aanzienlijke besparing. Maar wellicht zijn er daarnaast nog aanvullende maatregelen die u kunt nemen om uw verbruik nog verder omlaag te krijgen:',
+            'points' => '<p class="sub-lead">Extra bouwkundige maatregelen</p>
+                        <p>Naast de isolerende maatregelen uit het Energiebespaaradvies kunt u eventueel aanvullende woningisolatie aanbrengen of bestaande isolatie verbeteren. Als u zoekt naar meer bouwkundige maatregelen om uw huis energiezuiniger te maken, wees dan ook alert op vocht. Vochtproblemen zijn niet alleen ongezond en oncomfortabel, maar leiden ook tot een hoger energiegebruik.<p>
+                        <br> 
+                        <p class="sub-lead">Kies zuinige installaties</p>
+                        <p>De nieuwste installaties voor verwarming, ventilatie en warm water zijn zeer efficiënt: ze gebruiken weinig energie en leveren een heel hoog rendement. Het is daarom absoluut de moeite waard om te onderzoeken wat uw huidige installaties gebruiken en hoeveel u zou kunnen besparen wanneer u nieuwe apparatuur aanschaft.</p>
+                        <br> 
+                        <p class="lead">Ventilatie met WTW</p>
+                        <p>Ventilatie is belangrijk voor een gezonde leefomgeving. Maar het gemiddelde ventilatiesysteem gebruikt veel energie en zorgt voor warmteverlies. Wilt u een energieneutrale woning dan is ventilatie met warmteterugwinning een voorwaarde. U kunt kiezen voor een centraal systeem of voor aparte, decentrale ventilatie-units met WTW per ruimte.</p>
+                        <br> 
+                        <p class="sub-lead">Bewust energiegebruik</p> 
+                        <p>Tot slot, maar zeker niet in de laatste plaats, kunt u door bewust gedrag veel energie besparen. Denk dan aan: ’s avonds gordijnen dicht bij koud weer, adapters niet ongebruikt in het stopcontact laten zitten en apparatuur uitzetten in plaats van in de slaapstand laten staan. Op www.milieucentraal.nl  kunt u tal van energiebesparingstips vinden.</p>
+                        ',
+
+        ],
+
+        'generate-energy' => [
+            'title' => '2. Zelf energie opwekken',
+            'text' => 'Nadat u uw energiegebruik zoveel mogelijk hebt teruggebracht, gaat u in de tweede stap kijken hoe u de resterende energie zelf (of in uw omgeving) kunt opwekken. Denk daarbij aan zonne-energie, biomassa, bodemwarmte of energie uit buitenlucht.',
+
+            'points' => '<p class="sub-lead">Zonne-energie</p>
+                        <p>Energie van de zon is gratis. Haal het maximale uit de mogelijkheden. Als uw woning geschikt is voor zonnepanelen, dan hebben wij u al geadviseerd om zonnepanelen aan te schaffen. Maar als u een stap verder wilt gaan, kunt u onderzoeken hoe u het dak nóg beter kunt benutten. Misschien kunt u nog extra panelen leggen, ook op daken die minder gunstig ten opzichte van de zon liggen. Of investeren in zonnepanelen met een groter vermogen. In sommige gevallen is een combi-cv-zonneboiler mogelijk die niet alleen warm tapwater opwarmt maar ook geschikt is voor de cv-installatie.</p>
+                        <br> 
+                        <p class="sub-lead">Biomassa</p>
+                        <p>In Nederland is de houtkachel in opkomst. De kachel verbrandt biomassa, vaak geperste houtsnippers. We spreken dan van een pelletkachel. Dit type ketel is een duurzaam alternatief voor de cv-ketel die op gas wordt gestookt. Koop dan wel pellets die in de regio worden geproduceerd. Met houtpellets uit bijvoorbeeld Canada schiet u uw duurzame doel voorbij. Het beste keurmerk dat op dit moment voorhanden is EN+A1.</p>
+                        <br> 
+                        <p class="sub-lead">Energie uit bodem en buitenlucht</p>
+                        <p>Een alternatief voor een cv-ketel zou ook een warmtepomp kunnen zijn. Een warmtepomp benut de vrij beschikbare energie uit de buitenlucht of de bodem en is een goed alternatief voor de conventionele wijze van verwarmen. De warmtepomp is met name geschikt in combinatie met vloer- of wandverwarming. In de praktijk is een warmtepomp met name het overwegen waard bij nieuwbouwhuizen of als een bestaande woning rigoureus wordt verbouwd. Raadpleeg een specialist voor het bepalen van het juiste type warmtepomp in uw situatie.</p>
+
+            '
+        ],
+        'sustainable-generation' => [
+            'title' => 'Collectieve duurzame opwekking',
+            'text' => 'Wanneer u uw energiegebruik zoveel mogelijk heeft gereduceerd en u de resterende energiebehoefte zelf opwekt, is uw huis energieneutraal. Als het niet lukt om uw eigen woonomgeving energieneutraal te maken, onderzoek dan of u kunt deelnemen aan collectieve duurzame energievoorzieningen, zoals een zonnepark of zonnedak in uw regio. Zo heeft u per saldo toch nul op de meter en draagt u bij aan het uiteindelijke doel: Een energieneutrale regio.',
+        ],
+        'more-information' => [
+            'title' => 'Meer informatie',
+            'text' => 'Veel mensen zijn u al voorgegaan op weg naar een energieneutrale woning. Op www.urgenda.nl/themas/bouw/energieneutraal/ vindt u handige informatie en inspirerende voorbeelden. Een echte aanrader!'
+        ]
     ],
 ];

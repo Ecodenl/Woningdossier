@@ -46,4 +46,10 @@
     @endif
 @endforeach
 
+@component('cooperation.pdf.components.new-page')
+    <div class="container">
+        @include('cooperation.pdf.user-report.parts.outro')
+    </div>
+@endcomponent
+
 </html>

@@ -163,7 +163,7 @@
           'help' => 'general.specific-situation.help'
         ]
     ])
-    <?php $file = $fileType->files()->mostRecent()->first();?>
+
     @if($file instanceof \App\Models\FileStorage)
     <br>
     <div class="row">
@@ -185,10 +185,9 @@
             <hr>
         </div>
     </div>
-    @endif
-
     <hr>
-
+    @endif
+    @if($buildingHasCompletedGeneralData)
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
@@ -211,6 +210,7 @@
             </div>
         </div>
     </div>
+    @endif
 
 
     <div id="warning-modal" class="modal fade">

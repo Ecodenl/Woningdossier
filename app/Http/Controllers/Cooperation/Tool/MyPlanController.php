@@ -12,6 +12,7 @@ use App\Http\Requests\MyPlanRequest;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\FileTypeCategory;
+use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Scopes\AvailableScope;
@@ -37,12 +38,17 @@ class MyPlanController extends Controller
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner, HoomdossierSession::getInputSource(true));
         $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
+        // so we can determine wheter we will show the actionplan button
+        $buildingHasCompletedGeneralData = $building->hasCompleted(Step::where('slug', 'general-data')->first());
+
 
         $fileType = FileType::where('short', 'pdf-report')->first();
 
+        $file = $fileType->files()->where('building_id', $building->id)->first();
+
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'coachCommentsByStep', 'actionPlanComments', 'fileType',
-            'anyFilesBeingProcessed', 'reportFileTypeCategory'
+            'advices', 'coachCommentsByStep', 'actionPlanComments', 'fileType', 'file',
+            'anyFilesBeingProcessed', 'reportFileTypeCategory', 'buildingHasCompletedGeneralData'
         ));
     }
 

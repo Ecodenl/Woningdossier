@@ -61,7 +61,7 @@
                                         @lang('default.buttons.next')
                                     @endif
                                 </button>
-                            @elseif(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']))
+                            @elseif(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']) && $buildingHasCompletedGeneralData)
                                 <form action="{{route('cooperation.file-storage.store', ['fileType' => $fileType->short])}}" method="post">
                                     {{csrf_field()}}
                                     <button style="margin-top: -35px"

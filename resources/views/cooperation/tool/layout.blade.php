@@ -71,8 +71,13 @@
                                         @else
                                         href="{{route('cooperation.my-account.report.generate', ['fileType' => $fileType->short])}}"
                                         @endif
-                                        class="btn btn-{{$fileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
-                                >{{ \App\Helpers\Translation::translate('my-plan.download.title') }}</a>
+                                        class="pull-right btn btn-{{$fileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
+                                >
+                                    {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
+                                    @if($fileType->isBeingProcessed() )
+                                        <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
+                                    @endif
+                                </a>
                             @endif
                             <div class="clearfix"></div>
                         </div>

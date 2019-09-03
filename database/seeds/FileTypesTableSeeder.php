@@ -39,6 +39,12 @@ class FileTypesTableSeeder extends Seeder
                 ],
                 'short' => 'measure-report-anonymized'
             ],
+            [
+                'names' => [
+                    'nl' => 'PDF Rapportage'
+                ],
+                'short' => 'pdf-report'
+            ]
             /*[
                 'names' => [
                     'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, met alle adresgegevens'

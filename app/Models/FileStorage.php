@@ -45,7 +45,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class FileStorage extends Model
 {
-    // notice: this model / table uses a based_input_source_id, this indicates on what the input source has been generated
+
+    use GetValueTrait, GetMyValuesTrait;
 
     public static function boot()
     {

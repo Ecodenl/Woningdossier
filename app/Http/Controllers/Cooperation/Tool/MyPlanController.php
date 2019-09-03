@@ -9,9 +9,12 @@ use App\Helpers\MyPlanHelper;
 use App\Helpers\NumberFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyPlanRequest;
+use App\Models\FileStorage;
 use App\Models\FileType;
+use App\Models\FileTypeCategory;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
+use App\Scopes\AvailableScope;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -19,6 +22,16 @@ class MyPlanController extends Controller
 {
     public function index()
     {
+
+        $reportFileTypeCategory = FileTypeCategory::short('report')
+            ->with(['fileTypes' => function ($query) {
+                $query->where('short', 'pdf-report');
+            }])->first();
+
+
+        $anyFilesBeingProcessed = FileStorage::withOutGlobalScope(new AvailableScope())->where('is_being_processed', true)->count();
+
+
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner, HoomdossierSession::getInputSource(true));
@@ -28,7 +41,8 @@ class MyPlanController extends Controller
         $fileType = FileType::where('short', 'pdf-report')->first();
 
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'coachCommentsByStep', 'actionPlanComments', 'fileType'
+            'advices', 'coachCommentsByStep', 'actionPlanComments', 'fileType',
+            'anyFilesBeingProcessed', 'reportFileTypeCategory'
         ));
     }
 

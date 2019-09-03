@@ -156,6 +156,29 @@
           'help' => 'general.specific-situation.help'
         ]
     ])
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">@lang('default.buttons.download')</div>
+                <div class="panel-body">
+                    <ol>
+                        <?php $file = $fileType->files()->mostRecent()->first();?>
+                        @if($file instanceof \App\Models\FileStorage)
+                            <li>
+                                <a @if(!$fileType->isBeingProcessed() )
+                                   href="{{route('cooperation.file-storage.download', [
+                                                        'fileType' => $fileType->short,
+                                                        'fileStorageFilename' => $file->filename
+                                       ])}}" @endif>{{$fileType->name}} ({{$file->created_at->format('Y-m-d H:i')}})</a>
+                            </li>
+                        @endif
+                    </ol>
+                </div>
+            </div>
+            <hr>
+        </div>
+    </div>
 
     <hr>
 
@@ -172,10 +195,12 @@
                         href="{{route('cooperation.my-account.report.generate', ['fileType' => $fileType->short])}}"
                     @endif
                         class="btn btn-{{$fileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
-                >{{ \App\Helpers\Translation::translate('my-plan.download.title') }}</a>
-                {{--<a href="{{ route('cooperation.tool.my-plan.export', ['cooperation' => $cooperation]) }}"  class="pull-right btn btn-primary">--}}
-{{----}}
-                {{--</a>--}}
+                >
+                    {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
+                    @if($fileType->isBeingProcessed() )
+                        <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
+                    @endif
+                </a>
             </div>
         </div>
     </div>

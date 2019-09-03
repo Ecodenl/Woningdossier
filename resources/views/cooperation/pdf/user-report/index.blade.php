@@ -22,6 +22,7 @@
     So have to create our own order.
 --}}
 @component('cooperation.pdf.components.new-page')
+    <h1>{{$buildingFeatures->buildingType->name}}</h1>
     <div class="container">
         @include('cooperation.pdf.user-report.steps.general-data-page-1', compact('buildingFeatures'))
     </div>

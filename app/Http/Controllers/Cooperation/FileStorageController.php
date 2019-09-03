@@ -6,6 +6,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Str;
 use App\Jobs\PdfReport;
+use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileType;
@@ -68,23 +69,8 @@ class FileStorageController extends Controller
         // we will create the file storage here, if we would do it in the job itself it would bring confusion to the user.
         $fileName = $this->getFileNameForFileType($fileType, $user, $inputSource);
 
-        // and delete the other available files
-        if ($inputSource->short != InputSource::COOPERATION_SHORT) {
 
-            $fileStorage = $fileType->files()->forInputSource($inputSource)->where('building_id', $building->id)->first();
-
-            if ($fileStorage instanceof FileStorage) {
-                $fileStorage->delete();
-                \Storage::disk('downloads')->delete($fileStorage->filename);
-            }
-        } else {
-
-            $fileStorages = $fileType->files;
-            foreach ($fileStorages as $fileStorage) {
-                $fileStorage->delete();
-                \Storage::disk('downloads')->delete($fileStorage->filename);
-            }
-        }
+        $this->handleExistingFiles($building, $inputSource, $fileType);
 
         // and we create the new file
         $fileStorage = new FileStorage([
@@ -128,6 +114,35 @@ class FileStorageController extends Controller
 
         return redirect($this->getRedirectUrl($inputSource))->with('success', __('woningdossier.cooperation.admin.cooperation.reports.generate.success'));
 
+    }
+
+    /**
+     * Handle the existing files, overwrite if needed
+     *
+     * @param Building $building
+     * @param InputSource $inputSource
+     * @param FileType $fileType
+     * @throws \Exception
+     */
+    private function handleExistingFiles(Building $building, InputSource $inputSource, FileType $fileType)
+    {
+        // and delete the other available files
+        if ($inputSource->short != InputSource::COOPERATION_SHORT) {
+
+            $fileStorage = $fileType->files()->forInputSource($inputSource)->where('building_id', $building->id)->first();
+
+            if ($fileStorage instanceof FileStorage) {
+                $fileStorage->delete();
+                \Storage::disk('downloads')->delete($fileStorage->filename);
+            }
+        } else {
+
+            $fileStorages = $fileType->files;
+            foreach ($fileStorages as $fileStorage) {
+                $fileStorage->delete();
+                \Storage::disk('downloads')->delete($fileStorage->filename);
+            }
+        }
     }
 
     private function getRedirectUrl(InputSource $inputSource)

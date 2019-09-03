@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Str;
 use App\Jobs\PdfReport;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
@@ -15,7 +16,6 @@ use App\Http\Controllers\Controller;
 use App\Models\InputSource;
 use App\Models\Service;
 use App\Models\User;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileStorageController extends Controller
@@ -126,8 +126,16 @@ class FileStorageController extends Controller
 
         }
 
-        return redirect(back())->with('success', __('woningdossier.cooperation.admin.cooperation.reports.generate.success'));
+        return redirect($this->getRedirectUrl($inputSource))->with('success', __('woningdossier.cooperation.admin.cooperation.reports.generate.success'));
 
+    }
+
+    private function getRedirectUrl(InputSource $inputSource)
+    {
+        if ($inputSource->short == InputSource::COOPERATION_SHORT) {
+            return route('cooperation.admin.cooperation.reports.index');
+        }
+        return route('cooperation.tool.my-plan.index');
     }
 
     /**
@@ -141,7 +149,7 @@ class FileStorageController extends Controller
     private function getFileNameForFileType(FileType $fileType, User $user, InputSource $inputSource)
     {
         if ($fileType->short == 'pdf-report') {
-            $fileName = time().'-'.Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
+            $fileName = time().'-'.\Illuminate\Support\Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
         } else {
 
             // create a short hash to prepend on the filename.
@@ -152,7 +160,7 @@ class FileStorageController extends Controller
             // we will create the file storage here, if we would do it in the job itself it would bring confusion to the user.
             // Because if there are multiple jobs in the queue, only the job thats being processed would show up as "generating"
             // remove the / to prevent unwanted directories
-            $fileName = str_replace('/', '',  $hash . Str::slug($fileType->name) . '.csv');
+            $fileName = str_replace('/', '',  $hash . \Illuminate\Support\Str::slug($fileType->name) . '.csv');
         }
 
         return $fileName;

@@ -2,6 +2,13 @@
 
 @section('step_title', \App\Helpers\Translation::translate('my-plan.title.title'))
 
+@push('meta')
+    @if($anyFilesBeingProcessed)
+        <meta http-equiv="refresh" content="5">
+    @endif
+@endpush
+
+
 @section('page_class', 'page-my-plan')
 
 @section('step_content')

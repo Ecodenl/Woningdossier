@@ -32,9 +32,7 @@ class FileStorageDownload
             }
         }
 
-        // todo: extend to coach as well, but that needs more work on the pdf, generating it and retrieving the data.
-        // todo: add input source id to file_storages
-        if (Hoomdossier::user()->hasRoleAndIsCurrentRole(['resident', 'coach']) && $fileStorage->user_id == Hoomdossier::user()->id) {
+        if ((Hoomdossier::user()->hasRoleAndIsCurrentRole(['resident', 'coach']) && $fileStorage->building_id == HoomdossierSession::getBuilding()) && $fileStorage->input_source_id == HoomdossierSession::getInputSource()) {
             return $next($request);
         }
 

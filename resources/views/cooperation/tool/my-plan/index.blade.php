@@ -164,8 +164,8 @@
         ]
     ])
 
-    @if($file instanceof \App\Models\FileStorage)
     <br>
+    @if($file instanceof \App\Models\FileStorage)
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-primary">
@@ -185,8 +185,8 @@
             <hr>
         </div>
     </div>
-    <hr>
     @endif
+
     @if($buildingHasCompletedGeneralData)
     <div class="row">
         <div class="col-md-12">

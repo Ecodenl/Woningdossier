@@ -69,7 +69,7 @@
         @if(isset($reportForUser['calculations'][$step]['insulation_advice']))
             <div class="question-answer-section">
                 <div class="question-answer">
-                    <p class="lead">@lang('pdf/user-report.measure-pages.advice')</p>
+                    <p class="lead w-300">@lang('pdf/user-report.measure-pages.advice')</p>
                     <p>{{$reportForUser['calculations'][$step]['insulation_advice']}}</p>
                 </div>
             </div>

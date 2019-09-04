@@ -19,30 +19,35 @@ class FileTypesTableSeeder extends Seeder
                 'names' => [
                     'nl' => 'Alle ingevulde gegevens, met adresgegevens'
                 ],
+                'content_type' => 'text/csv',
                 'short' => 'total-report'
             ],
             [
                 'names' => [
                     'nl' => 'Alle ingevulde gegevens, zonder adresgegevens'
                 ],
+                'content_type' => 'text/csv',
                 'short' => 'total-report-anonymized'
             ],
             [
                 'names' => [
                     'nl' => 'Actieplan per maatregel, met adresgegevens'
                 ],
+                'content_type' => 'text/csv',
                 'short' => 'measure-report'
             ],
             [
                 'names' => [
                     'nl' => 'Actieplan per maatregel, zonder adresgegevens'
                 ],
+                'content_type' => 'text/csv',
                 'short' => 'measure-report-anonymized'
             ],
             [
                 'names' => [
                     'nl' => 'PDF Rapportage'
                 ],
+                'content_type' => 'application/pdf',
                 'short' => 'pdf-report'
             ]
             /*[
@@ -75,7 +80,8 @@ class FileTypesTableSeeder extends Seeder
             DB::table('file_types')->insert([
                 'name' => $uuid,
                 'file_type_category_id' => $fileTypeCategory->id,
-                'short' => $fileType['short']
+                'short' => $fileType['short'],
+                'content_type' => $fileType['content_type']
             ]);
         }
     }

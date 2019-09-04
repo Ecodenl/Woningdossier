@@ -24,23 +24,26 @@ class AddFileTypeToFileTypesTable extends Migration
             ],
         ];
 
-        foreach ($fileTypes as $fileType) {
-            $uuid = \App\Helpers\Str::uuid();
 
-            // create the translations
-            foreach ($fileType['names'] as $locale => $translation) {
-                DB::table('translations')->insert([
-                    'key' => $uuid,
-                    'language' => $locale,
-                    'translation' => $translation,
+        if ($fileTypeCategory instanceof stdClass) {
+            foreach ($fileTypes as $fileType) {
+                $uuid = \App\Helpers\Str::uuid();
+
+                // create the translations
+                foreach ($fileType['names'] as $locale => $translation) {
+                    DB::table('translations')->insert([
+                        'key' => $uuid,
+                        'language' => $locale,
+                        'translation' => $translation,
+                    ]);
+                }
+                // create the file type itself
+                DB::table('file_types')->insert([
+                    'name' => $uuid,
+                    'file_type_category_id' => $fileTypeCategory->id,
+                    'short' => $fileType['short']
                 ]);
             }
-            // create the file type itself
-            DB::table('file_types')->insert([
-                'name' => $uuid,
-                'file_type_category_id' => $fileTypeCategory->id,
-                'short' => $fileType['short']
-            ]);
         }
     }
 

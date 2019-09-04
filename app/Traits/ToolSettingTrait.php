@@ -5,9 +5,9 @@ namespace App\Traits;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\InputSource;
-use App\Models\Log;
 use App\Services\ToolSettingService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 trait ToolSettingTrait
 {

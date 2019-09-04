@@ -20,13 +20,17 @@ class AddInputSourceIdToFileStoragesTable extends Migration
 
         $fileStorages = DB::table('file_storages')->get();
 
-        $cooperationInputSourceId = DB::table('input_sources')->where('short', 'cooperation')->first()->id;
+        $cooperationInputSource = DB::table('input_sources')->where('short', 'cooperation')->first();
 
-        foreach ($fileStorages as $fileStorage) {
-            DB::table('file_storages')->where('id', $fileStorage->id)
-                ->update([
-                    'input_source_id' => $cooperationInputSourceId
-                ]);
+        if ($cooperationInputSource instanceof stdClass) {
+
+            $cooperationInputSourceId = $cooperationInputSource->id;
+            foreach ($fileStorages as $fileStorage) {
+                DB::table('file_storages')->where('id', $fileStorage->id)
+                    ->update([
+                        'input_source_id' => $cooperationInputSourceId
+                    ]);
+            }
         }
     }
 

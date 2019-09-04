@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
+use App\Helpers\KeyFigures\WallInsulation\Temperature as WallInsulationTemperature;
+use App\Helpers\KeyFigures\FloorInsulation\Temperature as FloorInsulationTemperature;
 
 /**
  * App\Models\MeasureApplication
@@ -52,5 +54,25 @@ class MeasureApplication extends Model
     public static function byShort($short)
     {
         return self::where('short', '=', $short)->first();
+    }
+
+    /**
+     * Method to check whether a measure application is an advice
+     *
+     * @return bool
+     */
+    public function isAdvice(): bool
+    {
+        // array of measure shorts that are considered to be advices
+        $measureShortsThatAreAdvices = [
+            WallInsulationTemperature::WALL_INSULATION_JOINTS,
+            WallInsulationTemperature::WALL_INSULATION_FACADE,
+            WallInsulationTemperature::WALL_INSULATION_RESEARCH,
+            FloorInsulationTemperature::FLOOR_INSULATION_FLOOR,
+            FloorInsulationTemperature::FLOOR_INSULATION_BOTTOM,
+            FloorInsulationTemperature::FLOOR_INSULATION_RESEARCH,
+        ];
+
+        return in_array($this->short, $measureShortsThatAreAdvices);
     }
 }

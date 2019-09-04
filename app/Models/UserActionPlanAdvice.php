@@ -292,8 +292,15 @@ class UserActionPlanAdvice extends Model
     }
 
 
-
-    public static function getCategorizedActionPlan(User $user, InputSource $inputSource)
+    /**
+     * Get the action plan categorized under measure type
+     *
+     * @param User $user
+     * @param InputSource $inputSource
+     * @param bool $withAdvices
+     * @return array
+     */
+    public static function getCategorizedActionPlan(User $user, InputSource $inputSource, $withAdvices = true)
     {
 
         $result = [];
@@ -307,13 +314,24 @@ class UserActionPlanAdvice extends Model
 
             if ($advice->step instanceof Step) {
 
+                /** @var MeasureApplication $measureApplication */
                 $measureApplication = $advice->measureApplication;
 
                 if (is_null($advice->year)) {
                     $advice->year = $advice->getAdviceYear();
                 }
 
-                $result[$measureApplication->measure_type][$advice->step->slug][] = $advice;
+                // if advices are not desirable and the measureApplication is not an advice it will be added to the result
+                if (!$withAdvices && !$measureApplication->isAdvice()) {
+                    $result[$measureApplication->measure_type][$advice->step->slug][] = $advice;
+                }
+
+                // if advices are desirable we always add it.
+                if ($withAdvices) {
+                    $result[$measureApplication->measure_type][$advice->step->slug][] = $advice;
+                }
+
+
             }
         }
 

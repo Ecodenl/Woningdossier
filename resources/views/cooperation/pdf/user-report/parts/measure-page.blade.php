@@ -11,8 +11,8 @@
         <div class="question-answer-section">
             <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.filled-in-data')}}</p>
             <?php
-            $calculationsForStep = $data['calculation'] ?? [];
-            unset($data['calculation']);
+                $calculationsForStep = $data['calculation'] ?? [];
+                unset($data['calculation']);
             ?>
 
 
@@ -66,6 +66,14 @@
             </table>
         </div>
 
+        @if(isset($reportForUser['calculations'][$step]['insulation_advice']))
+            <div class="question-answer-section">
+                <div class="question-answer">
+                    <p class="lead">@lang('pdf/user-report.measure-pages.advice')</p>
+                    <p>{{$reportForUser['calculations'][$step]['insulation_advice']}}</p>
+                </div>
+            </div>
+        @endisset
 
         <div class="question-answer-section">
             <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.indicative-costs-and-benefits-for-measure')}}</p>

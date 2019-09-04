@@ -32,7 +32,6 @@ class UserReportController extends Controller
         $building = $user->building;
 
 
-
         $buildingFeatures = $building->buildingFeatures()->forInputSource($inputSource)->first();
 
         $GLOBALS['_cooperation'] = $userCooperation;
@@ -50,10 +49,11 @@ class UserReportController extends Controller
             ->get();
 
         $steps = $userCooperation->getActiveOrderedSteps();
-        
+
         $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, $inputSource);
 
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $inputSource);
+        // we don't want the advices, we need to show them in a different way.
+        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $inputSource, false);
 
         // full report for a user
         $reportForUser = DumpService::totalDump($user, $inputSource, false);
@@ -77,11 +77,10 @@ class UserReportController extends Controller
         // retrieve all the comments by for each input source on a step
         $commentsByStep = StepHelper::getAllCommentsByStep($user);
 
-
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'userCooperation', 'stepSlugs', 'inputSource',
-            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
+            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser',
             'buildingFeatures', 'advices', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings'
         ));
 

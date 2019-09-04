@@ -594,6 +594,7 @@ class DumpService
         }
 
         $rows['user-data'] = $row[$buildingId];
+        $rows['calculations'] = $calculateData;
 
         return $rows;
     }

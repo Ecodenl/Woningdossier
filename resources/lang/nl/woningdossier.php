@@ -135,6 +135,7 @@ return [
                         'success' => 'Vertalingen zijn bijgewerkt.',
                     ],
                 ],
+
                 'cooperations' => [
                     'index'                 => [
                         'header' => 'Cooperaties',

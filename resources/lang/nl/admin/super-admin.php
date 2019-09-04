@@ -3,7 +3,7 @@
 return [
     'users' => [
         'index'  => [
-            'header' => 'Zoeken naar gebruikers',
+            'header' => 'Gebruikers filteren',
             'form' => [
                 'user' => [
                     'title' => 'Filteren op gebruiker',

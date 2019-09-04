@@ -6,19 +6,19 @@
         <div class="col-sm-3">
             <div class="form-group">
                 <label for="">@lang('admin/super-admin.users.index.form.user.first-name')</label>
-                <input type="text" name="user[first_name]" value="{{$userData['first_name']}}" class="form-control">
+                <input type="text" name="user[first_name]" value="{{$userData['first_name'] ?? ''}}" class="form-control">
             </div>
         </div>
         <div class="col-sm-3">
             <div class="form-group">
                 <label for="">@lang('admin/super-admin.users.index.form.user.last-name')</label>
-                <input type="text" name="user[last_name]" value="{{$userData['last_name']}}" class="form-control">
+                <input type="text" name="user[last_name]" value="{{$userData['last_name'] ?? ''}}" class="form-control">
             </div>
         </div>
         <div class="col-sm-6">
             <div class="form-group">
                 <label for="">@lang('admin/super-admin.users.index.form.account.email')</label>
-                <input type="text" name="account[email]" value="{{$accountData['email']}}" class="form-control">
+                <input type="text" name="account[email]" value="{{$accountData['email'] ?? ''}}" class="form-control">
             </div>
         </div>
     </div>
@@ -30,13 +30,13 @@
         <div class="col-sm-3">
             <div class="form-group">
                 <label for="">@lang('admin/super-admin.users.index.form.building.postal-code')</label>
-                <input type="text" name="building[postal_code]" value="{{$buildingData['postal_code']}}" class="form-control">
+                <input type="text" name="building[postal_code]" value="{{$buildingData['postal_code'] ?? ''}}" class="form-control">
             </div>
         </div>
         <div class="col-sm-3">
             <div class="form-group">
                 <label for="">@lang('admin/super-admin.users.index.form.building.city')</label>
-                <input type="text" name="building[city]" value="{{$buildingData['city']}}" class="form-control">
+                <input type="text" name="building[city]" value="{{$buildingData['city'] ?? ''}}" class="form-control">
             </div>
         </div>
 

@@ -75,6 +75,7 @@ return [
                     'label'             => 'Super admin menu',
                     'home'              => 'Home',
                     'cooperations'      => 'Cooperaties',
+                    'users' => 'Gebruikers filteren',
                     'key-figures'       => 'Kengetallen',
                     'translations'      => 'Vertalingen',
                     'example-buildings' => 'Voorbeeld woningen',

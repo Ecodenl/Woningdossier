@@ -33,7 +33,6 @@ class InsulatedGlazing {
      */
     public static function calculate(Building $building, User $user, $calculateData): array
     {
-
         $result = [
             'savings_gas' => 0,
             'savings_co2' => 0,
@@ -61,6 +60,8 @@ class InsulatedGlazing {
                 $gasSavings = InsulatedGlazingCalculator::calculateGasSavings(
                     NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']),
                     $measureApplication,
+                    $building,
+                    $user->energyHabit,
                     $buildingHeating,
                     $insulatedGlazing
                 );

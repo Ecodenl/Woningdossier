@@ -2,13 +2,16 @@
 
 namespace App\Helpers;
 
+use App\Models\Building;
 use App\Models\BuildingHeating;
+use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\InsulatingGlazing;
 use App\Models\Interest;
 use App\Models\KeyFigureTemperature;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
+use App\Models\UserEnergyHabit;
 use App\Models\WoodRotStatus;
 use Carbon\Carbon;
 
@@ -35,7 +38,7 @@ class InsulatedGlazingCalculator
     }
 
     // in m3 per year
-    public static function calculateGasSavings($m2, MeasureApplication $measureApplication, BuildingHeating $heating, InsulatingGlazing $glazing = null)
+    public static function calculateGasSavings($m2, MeasureApplication $measureApplication, Building $building, UserEnergyHabit $energyHabit, BuildingHeating $heating, InsulatingGlazing $glazing = null)
     {
         $query = KeyFigureTemperature::where('measure_application_id', $measureApplication->id)
                 ->where('building_heating_id', $heating->id);
@@ -46,9 +49,15 @@ class InsulatedGlazingCalculator
 
         $saving = $m2 * $keyFigureTemperature->key_figure;
 
-        self::debug('Gas saving '.$saving.' = '.$m2.' * '.$keyFigureTemperature->key_figure);
+        /** @NeedsReview There is no element for insulated-glazing. Only the "general-data" variants of living-room-windows and sleeping-rooms-windows.. both having the same % */
+        /** @var Element $element */
+        $element = Element::where('short', '=', 'living-rooms-windows')->first();
 
-        return $saving;
+        $result = min($saving, Calculator::maxGasSavings($building, $energyHabit, $element));
+
+        self::debug(__METHOD__ . ' ' . $result.' = min('.$m2.' * '.$keyFigureTemperature->key_figure.', '.Calculator::maxGasSavings($building, $energyHabit, $element).')');
+
+        return $result;
     }
 
     public static function calculatePaintworkSurface(ElementValue $frame, array $woodElements, $windowSurface)

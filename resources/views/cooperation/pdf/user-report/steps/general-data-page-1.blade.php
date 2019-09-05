@@ -3,15 +3,15 @@
     <div class="question-answer-section">
         <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.title')}}</p>
         <div class="question-answer">
-            <p class="w-400">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.name')}}</p>
+            <p class="w-320">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.name')}}</p>
             <p>{{$user->getFullName()}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-400">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.address')}}</p>
+            <p class="w-320">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.address')}}</p>
             <p>{{$building->street}} {{$building->number}} {{$building->extension}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-400">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.zip-code-city')}}</p>
+            <p class="w-320">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.zip-code-city')}}</p>
             <p>{{$building->postal_code}} {{$building->city}}</p>
         </div>
     </div>
@@ -21,27 +21,27 @@
         <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.building-info.title')}}</p>
 
         <div class="question-answer">
-            <p class="w-400">@lang('pdf/user-report.general-data.building-info.building-type')</p>
+            <p class="w-320">@lang('pdf/user-report.general-data.building-info.building-type')</p>
             <p>{{$buildingFeatures->buildingType->name}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-400">@lang('pdf/user-report.general-data.building-info.build-year')</p>
+            <p class="w-320">@lang('pdf/user-report.general-data.building-info.build-year')</p>
             <p>{{$buildingFeatures->build_year}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-400">@lang('pdf/user-report.general-data.building-info.surface')</p>
+            <p class="w-320">@lang('pdf/user-report.general-data.building-info.surface')</p>
             <p>{{$buildingFeatures->surface}} {{\App\Helpers\Hoomdossier::getUnitForColumn('surface')}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-400">@lang('pdf/user-report.general-data.building-info.building-layers')</p>
+            <p class="w-320">@lang('pdf/user-report.general-data.building-info.building-layers')</p>
             <p>{{$buildingFeatures->building_layers}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-400">@lang('pdf/user-report.general-data.building-info.roof-type')</p>
+            <p class="w-320">@lang('pdf/user-report.general-data.building-info.roof-type')</p>
             <p>{{$buildingFeatures->roofType->name}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-400">@lang('pdf/user-report.general-data.building-info.current-energy-label')</p>
+            <p class="w-320">@lang('pdf/user-report.general-data.building-info.current-energy-label')</p>
             <p>{{$buildingFeatures->energyLabel->name}}</p>
         </div>
         <?php
@@ -52,11 +52,11 @@
             ];
         ?>
         <div class="question-answer">
-            <p class="w-400">@lang('pdf/user-report.general-data.building-info.monument')</p>
+            <p class="w-320">@lang('pdf/user-report.general-data.building-info.monument')</p>
             <p>{{$possibleAnswers[$buildingFeatures->monument]}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-400">@lang('pdf/user-report.general-data.building-info.example-building')</p>
+            <p class="w-320">@lang('pdf/user-report.general-data.building-info.example-building')</p>
             <p>{{$building->exampleBuilding->name}}</p>
         </div>
     </div>
@@ -72,8 +72,11 @@
                 ?>
 
                 <tr style="border-bottom: 0px;">
-                    <td class="w-400" style="border-top: 0px;">{{$translationForAnswer}}</td>
-                    <td style="border-top: 0px;">{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($column)}}</td>
+                    <td class="w-320" style="border-top: 0px;">{{$translationForAnswer}}</td>
+                    <td style="border-top: 0px;">
+                        {{in_array($column, ['amount_gas', 'amount_electricity']) ? \App\Helpers\NumberFormatter::format($value) : $value}}
+                        {{\App\Helpers\Hoomdossier::getUnitForColumn($column)}}
+                    </td>
                 </tr>
             @endforeach
             </tbody>
@@ -94,12 +97,24 @@
             <tbody>
                 @foreach(\Illuminate\Support\Arr::only($reportData['general-data'], ['element', 'service']) as $table => $data)
                     @foreach($data as $elementOrServiceId => $value)
-                        @if (!is_array($value))
+                        <?php
+                            // get the boiler, this is the service we want to ignore
+                            $boilerService = \App\Models\Service::where('short', 'boiler')->first()
+                        ?>
+                        @if (is_array($value) && $elementOrServiceId != $boilerService->id)
                             <?php
-                                $translationForAnswer = $reportTranslations['general-data.'.$table.'.'.$elementOrServiceId];
+                                $translationForAnswer = $reportTranslations['general-data.'.$table.'.'.$elementOrServiceId.'.service_value_id'] ?? $reportTranslations['general-data.'.$table.'.'.$elementOrServiceId.'.extra.value']
                             ?>
                             <tr class="border-bottom">
-                                <td class="w-400">{{$translationForAnswer}}</td>
+                                <td class="w-320">{{$translationForAnswer}}</td>
+                                <td>{{$value['service_value_id'] ?? $value['extra']['value']}}</td>
+                            </tr>
+                        @elseif(!is_array($value))
+                            <?php
+                            $translationForAnswer = $reportTranslations['general-data.'.$table.'.'.$elementOrServiceId];
+                            ?>
+                            <tr class="border-bottom">
+                                <td class="w-320">{{$translationForAnswer}}</td>
                                 <td>{{$value}}</td>
                             </tr>
                         @endif

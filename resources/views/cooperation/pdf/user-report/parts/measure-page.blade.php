@@ -23,30 +23,30 @@
                 // however, we should avoid this as much a possible otherwise the code will be bloated
 
                 // we dont need it, we will use the $buildingInsulatedGlazings
-//                unset($data['user_interests'], $data['building_insulated_glazings'])
+                unset($data['user_interests'], $data['building_insulated_glazings'])
                 ?>
                 @foreach($buildingInsulatedGlazings as $buildingInsulatedGlazing)
                     <p class="sub-lead">{{$buildingInsulatedGlazing->measureApplication->measure_name}}</p>
                     <table class="full-width">
                         <tbody>
                         <tr class="h-20">
-                            <td class="w-300">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
+                            <td class="w-320">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
                             <td>{{$buildingInsulatedGlazing->insulatedGlazing->name}}</td>
                         </tr>
                         <tr class="h-20">
-                            <td class="w-300">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
+                            <td class="w-320">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
                             <td>{{$buildingInsulatedGlazing->insulatedGlazing->name}}</td>
                         </tr>
                         <tr class="h-20">
-                            <td class="w-300">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.rooms-heated.title')}}</td>
+                            <td class="w-320">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.rooms-heated.title')}}</td>
                             <td>{{$buildingInsulatedGlazing->buildingHeating->name}}</td>
                         </tr>
                         <tr class="h-20">
-                            <td class="w-300">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.m2.title')}}</td>
+                            <td class="w-320">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.m2.title')}}</td>
                             <td>{{$buildingInsulatedGlazing->m2}} m2</td>
                         </tr>
                         <tr class="h-20">
-                            <td class="w-300">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.window-replace.title')}}</td>
+                            <td class="w-320">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.window-replace.title')}}</td>
                             <td>{{$buildingInsulatedGlazing->windows}}</td>
                         </tr>
                         </tbody>
@@ -63,7 +63,7 @@
                     ?>
                     @if(!\App\Helpers\Hoomdossier::columnContains($translationKey, 'user_interest'))
                         <tr class="h-20">
-                            <td class="w-300">{{$translationForAnswer}}</td>
+                            <td class="w-320">{{$translationForAnswer}}</td>
                             <td>{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</td>
                         </tr>
                     @endif
@@ -75,7 +75,7 @@
         @if(isset($reportForUser['calculations'][$step]['insulation_advice']))
             <div class="question-answer-section">
                 <div class="question-answer">
-                    <p class="lead w-300">@lang('pdf/user-report.measure-pages.advice')</p>
+                    <p class="lead w-320">@lang('pdf/user-report.measure-pages.advice')</p>
                     <p>{{$reportForUser['calculations'][$step]['insulation_advice']}}</p>
                 </div>
             </div>
@@ -93,7 +93,7 @@
                         $translationForAnswer = $reportTranslations[$step . '.calculation.' . $calculationType];
                         ?>
                         <tr class="h-20">
-                            <td class="w-300">{{$translationForAnswer}}</td>
+                            <td class="w-320">{{$translationForAnswer}}</td>
                             <td>{{(\App\Helpers\NumberFormatter::format($calculationResult, 0, true))}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</td>
                         </tr>
                     @endif
@@ -105,7 +105,7 @@
         @isset($advices['energy_saving'][$step])
             <div class="question-answer-section">
                 <div class="measures">
-                    <p class="lead w-300">
+                    <p class="lead w-320">
                         {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.energy-saving.title')}}
                     </p>
                     <p class="lead w-150">
@@ -117,7 +117,7 @@
                 </div>
                 @foreach($advices['energy_saving'][$step] as $userActionPlanAdvice)
                     <div class="question-answer">
-                        <p class="w-300">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
+                        <p class="w-320">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
                         <p class="w-150">{{\App\Helpers\NumberFormatter::round($userActionPlanAdvice->costs)}} {{\App\Helpers\Hoomdossier::getUnitForColumn('costs')}}</p>
                         <p class="w-150">{{$userActionPlanAdvice->getYear()}}</p>
                     </div>
@@ -129,7 +129,7 @@
         @isset($advices['maintenance'][$step])
             <div class="question-answer-section">
                 <div class="measures">
-                    <p class="lead w-300">
+                    <p class="lead w-320">
                         {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.maintenance.title')}}
                     </p>
                     <p class="lead w-150">
@@ -141,7 +141,7 @@
                 </div>
                 @foreach($advices['maintenance'][$step] as $userActionPlanAdvice)
                     <div class="question-answer">
-                        <p class="w-300">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
+                        <p class="w-320">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
                         <p class="w-150">{{\App\Helpers\NumberFormatter::round($userActionPlanAdvice->costs)}} {{\App\Helpers\Hoomdossier::getUnitForColumn('costs')}}</p>
                         <p class="w-150">{{$userActionPlanAdvice->getYear()}}</p>
                     </div>
@@ -158,11 +158,11 @@
                         <div class="question-answer">
                             @if(is_array($comment))
                                 @foreach($comment as $column => $c)
-                                    <p class="w-300">{{$inputSourceName}} ({{$columnOrCategory}})</p>
+                                    <p class="w-320">{{$inputSourceName}} ({{$columnOrCategory}})</p>
                                     <p>{{$c}}</p>
                                 @endforeach
                             @else
-                                <p class="w-300">{{$inputSourceName}}</p>
+                                <p class="w-320">{{$inputSourceName}}</p>
                                 <p>{{$comment}}</p>
                             @endif
                         </div>

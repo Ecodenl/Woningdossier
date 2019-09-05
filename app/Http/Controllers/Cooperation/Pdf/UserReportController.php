@@ -68,6 +68,7 @@ class UserReportController extends Controller
         // undot it so we can handle the data in view later on
         $reportData = \App\Helpers\Arr::arrayUndot($reportForUser['user-data']);
 
+
         // steps that are considered to be measures.
         $stepSlugs = \DB::table('steps')
             ->where('slug', '!=', 'building-detail')

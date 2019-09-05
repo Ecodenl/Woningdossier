@@ -8,6 +8,7 @@ use App\Models\Account;
 use App\Models\User;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ForgotPasswordController extends Controller
 {
@@ -57,9 +58,14 @@ class ForgotPasswordController extends Controller
                 'email',
                 // we have to validate if the email is a member of this cooperation.
                 function ($attribute, $value, $fail) {
-                    $user = Account::where('email', $value)->first()->users()->withoutGlobalScopes()->where('cooperation_id', HoomdossierSession::getCooperation())->first();
-                    if (!$user instanceof User) {
-                       $fail($attribute.' is invalid.');
+                    $accountWithUserForCurrentCooperation = Account::where('email', $value)->whereHas('users', function ($query) {
+                        $query->where('cooperation_id', HoomdossierSession::getCooperation());
+                    })->first();
+
+                    // if the account does not exist, then there is no user associated with the given cooperation.
+                    // or the email does not exist at al.
+                    if (!$accountWithUserForCurrentCooperation instanceof Account) {
+                        $fail(__('passwords.user'));
                     }
                 },
             ]

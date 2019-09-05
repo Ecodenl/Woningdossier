@@ -112,11 +112,13 @@
                     </p>
                 </div>
                 @foreach($advices['energy_saving'][$step] as $userActionPlanAdvice)
+                    @if(!$userActionPlanAdvice->measureApplication->isAdvice())
                     <div class="question-answer">
                         <p class="w-300">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
                         <p class="w-150">{{\App\Helpers\NumberFormatter::round($userActionPlanAdvice->costs)}} {{\App\Helpers\Hoomdossier::getUnitForColumn('costs')}}</p>
                         <p class="w-150">{{$userActionPlanAdvice->getYear()}}</p>
                     </div>
+                    @endif
                 @endforeach
             </div>
         @endisset

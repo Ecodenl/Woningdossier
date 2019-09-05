@@ -860,14 +860,18 @@ class ToolHelper
                     'options' => self::createOptions($sleepingRoomsWindows->values()->orderBy('order')->get(), 'value'),
                 ],
 
+
+
                 'element.'.$wallInsulation->id                  => [
-                    'label'   => Translation::translate('wall-insulation.intro.filled-insulation.title'),
+//                    'label'   => Translation::translate('wall-insulation.intro.filled-insulation.title'),
+                    'label' => $wallInsulation->name,
                     'type'    => 'select',
                     'options' => static::createOptions($wallInsulation->values()->orderBy('order')->get(), 'value'),
                 ],
 
                 'element.'.$floorInsulation->id                    => [
-                    'label'   => Translation::translate('floor-insulation.floor-insulation.title'),
+//                    'label'   => Translation::translate('floor-insulation.floor-insulation.title'),
+                    'label'   => $floorInsulation->name,
                     'type'    => 'select',
                     'options' => static::createOptions($floorInsulation->values()->orderBy('order')->get(), 'value'),
                 ],

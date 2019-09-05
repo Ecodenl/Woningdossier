@@ -23,12 +23,16 @@
                 // however, we should avoid this as much a possible otherwise the code will be bloated
 
                 // we dont need it, we will use the $buildingInsulatedGlazings
-                unset($data['user_interests'], $data['building_insulated_glazings'])
+//                unset($data['user_interests'], $data['building_insulated_glazings'])
                 ?>
                 @foreach($buildingInsulatedGlazings as $buildingInsulatedGlazing)
                     <p class="sub-lead">{{$buildingInsulatedGlazing->measureApplication->measure_name}}</p>
                     <table class="full-width">
                         <tbody>
+                        <tr class="h-20">
+                            <td class="w-300">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
+                            <td>{{$buildingInsulatedGlazing->insulatedGlazing->name}}</td>
+                        </tr>
                         <tr class="h-20">
                             <td class="w-300">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
                             <td>{{$buildingInsulatedGlazing->insulatedGlazing->name}}</td>

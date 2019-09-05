@@ -1,13 +1,3 @@
-{{-- Motivation on order. --}}
-<div class="question-answer-section">
-    <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.motivation')}}</p>
-    @foreach($user->motivations as $motivation)
-        <div class="question-answer">
-            <p class="w-300">Motivatie {{$motivation->order}}</p>
-            <p>{{$motivation->motivation->name}}</p>
-        </div>
-    @endforeach
-</div>
 
 <div class="question-answer-section">
     <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.comment-usage-building')}}</p>

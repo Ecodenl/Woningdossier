@@ -3,15 +3,15 @@
     <div class="question-answer-section">
         <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.title')}}</p>
         <div class="question-answer">
-            <p class="w-300">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.name')}}</p>
+            <p class="w-400">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.name')}}</p>
             <p>{{$user->getFullName()}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-300">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.address')}}</p>
+            <p class="w-400">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.address')}}</p>
             <p>{{$building->street}} {{$building->number}} {{$building->extension}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-300">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.zip-code-city')}}</p>
+            <p class="w-400">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.zip-code-city')}}</p>
             <p>{{$building->postal_code}} {{$building->city}}</p>
         </div>
     </div>
@@ -21,27 +21,27 @@
         <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.building-info.title')}}</p>
 
         <div class="question-answer">
-            <p class="w-300">@lang('pdf/user-report.general-data.building-info.building-type')</p>
+            <p class="w-400">@lang('pdf/user-report.general-data.building-info.building-type')</p>
             <p>{{$buildingFeatures->buildingType->name}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-300">@lang('pdf/user-report.general-data.building-info.build-year')</p>
+            <p class="w-400">@lang('pdf/user-report.general-data.building-info.build-year')</p>
             <p>{{$buildingFeatures->build_year}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-300">@lang('pdf/user-report.general-data.building-info.surface')</p>
+            <p class="w-400">@lang('pdf/user-report.general-data.building-info.surface')</p>
             <p>{{$buildingFeatures->surface}} {{\App\Helpers\Hoomdossier::getUnitForColumn('surface')}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-300">@lang('pdf/user-report.general-data.building-info.building-layers')</p>
+            <p class="w-400">@lang('pdf/user-report.general-data.building-info.building-layers')</p>
             <p>{{$buildingFeatures->building_layers}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-300">@lang('pdf/user-report.general-data.building-info.roof-type')</p>
+            <p class="w-400">@lang('pdf/user-report.general-data.building-info.roof-type')</p>
             <p>{{$buildingFeatures->roofType->name}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-300">@lang('pdf/user-report.general-data.building-info.current-energy-label')</p>
+            <p class="w-400">@lang('pdf/user-report.general-data.building-info.current-energy-label')</p>
             <p>{{$buildingFeatures->energyLabel->name}}</p>
         </div>
         <?php
@@ -52,11 +52,11 @@
             ];
         ?>
         <div class="question-answer">
-            <p class="w-300">@lang('pdf/user-report.general-data.building-info.monument')</p>
+            <p class="w-400">@lang('pdf/user-report.general-data.building-info.monument')</p>
             <p>{{$possibleAnswers[$buildingFeatures->monument]}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-300">@lang('pdf/user-report.general-data.building-info.example-building')</p>
+            <p class="w-400">@lang('pdf/user-report.general-data.building-info.example-building')</p>
             <p>{{$building->exampleBuilding->name}}</p>
         </div>
     </div>
@@ -72,7 +72,7 @@
                 ?>
 
                 <tr style="border-bottom: 0px;">
-                    <td class="w-300" style="border-top: 0px;">{{$translationForAnswer}}</td>
+                    <td class="w-400" style="border-top: 0px;">{{$translationForAnswer}}</td>
                     <td style="border-top: 0px;">{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($column)}}</td>
                 </tr>
             @endforeach
@@ -89,7 +89,6 @@
                 <tr>
                     <th>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.current-state.table.measure')}}</th>
                     <th>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.current-state.table.present-current-situation')}}</th>
-                    <th>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.current-state.table.interested-in-improvement')}}</th>
                 </tr>
             </thead>
             <tbody>
@@ -100,9 +99,8 @@
                                 $translationForAnswer = $reportTranslations['general-data.'.$table.'.'.$elementOrServiceId];
                             ?>
                             <tr class="border-bottom">
-                                <td class="w-300">{{$translationForAnswer}}</td>
+                                <td class="w-400">{{$translationForAnswer}}</td>
                                 <td>{{$value}}</td>
-                                <td>{{$user->getInterestedType($table, $elementOrServiceId, $inputSource)->interest->name ?? ''}}</td>
                             </tr>
                         @endif
                     @endforeach

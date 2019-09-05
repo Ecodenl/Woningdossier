@@ -4,10 +4,14 @@ namespace App\Http\Controllers\Cooperation\Pdf;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\StepHelper;
+use App\Models\BuildingElement;
 use App\Models\BuildingInsulatedGlazing;
+use App\Models\BuildingService;
 use App\Models\Cooperation;
 use App\Http\Controllers\Controller;
+use App\Models\Element;
 use App\Models\InputSource;
+use App\Models\Service;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Scopes\GetValueScope;
@@ -25,7 +29,7 @@ class UserReportController extends Controller
     public function index(Cooperation $userCooperation)
     {
 
-        $user = Hoomdossier::user()->load('motivations');
+        $user = Hoomdossier::user();
 
         $inputSource = InputSource::findByShort('resident');
         // load the buildingFeatures

@@ -42,7 +42,6 @@ return [
             'table' => [
                 'measure' => 'Maatregel',
                 'present-current-situation' => 'Aanwezig in huidige situatie',
-                'interested-in-improvement' => 'Interesse in verbetering',
             ]
         ],
 
@@ -90,12 +89,12 @@ return [
             'maintenance' => [
                 'title' => 'Onderhoudsmaatregelen',
                 'costs' => 'Kosten',
-                'year' => 'Geadviseerd word'
+                'year' => 'Geadviseerd wordt'
             ],
             'energy-saving' => [
                 'title' => 'Energiebesparende maatregelen',
                 'costs' => 'Kosten',
-                'year' => 'Geadviseerd word'
+                'year' => 'Geadviseerd wordt'
             ],
         ],
         'comments' => 'Toelichting op de maatregel'

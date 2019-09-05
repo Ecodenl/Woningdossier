@@ -84,7 +84,8 @@ class PdfReport implements ShouldQueue
 
         $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, $inputSource);
 
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $inputSource);
+        // we dont wat the actual advices, we have to show them in a different way
+        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $inputSource, false);
 
         // full report for a user
         $reportForUser = DumpService::totalDump($user, $inputSource, false);

@@ -34,6 +34,7 @@ use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
 use App\Services\ModelService;
+use function Couchbase\defaultDecoder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -191,10 +192,9 @@ class InsulatedGlazingController extends Controller
 
     public function calculate(Request $request)
     {
-        $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
+        $energyHabit = Hoomdossier::user()->energyHabit;
 
-        $result = InsulatedGlazing::calculate($building, $user, $request->all());
+        $result = InsulatedGlazing::calculate($energyHabit, $request->all());
 
         return response()->json($result);
     }

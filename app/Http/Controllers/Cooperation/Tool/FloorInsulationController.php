@@ -91,7 +91,7 @@ class FloorInsulationController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
-        $result = FloorInsulation::calculate($building, HoomdossierSession::getInputSource(true), $user, $request->all());
+        $result = FloorInsulation::calculate($building, HoomdossierSession::getInputSource(true), $user->energyHabit, $request->all());
 
         return response()->json($result);
     }

@@ -82,7 +82,7 @@ class HeaterController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
-        $result = Heater::calculate($building, $user, $request->all());
+        $result = Heater::calculate($building, $user->energyHabit, $request->all());
 
         return response()->json($result);
     }

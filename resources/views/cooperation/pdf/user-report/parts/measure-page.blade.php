@@ -26,9 +26,21 @@
                 unset($data['user_interests'], $data['building_insulated_glazings'])
                 ?>
                 @foreach($buildingInsulatedGlazings as $buildingInsulatedGlazing)
+
+                    <?php
+
+                    ?>
                     <p class="sub-lead">{{$buildingInsulatedGlazing->measureApplication->measure_name}}</p>
                     <table class="full-width">
                         <tbody>
+                        <tr class="h-20">
+                            <td align="top" class="w-320">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.title.title')}}</td>
+                            <td align="top">{{$user->getInterestedType('measure_application', $buildingInsulatedGlazing->measureApplication->id)->interest->name}}</td>
+                        </tr>
+                        <tr class="h-20">
+                            <td class="w-320">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
+                            <td>{{$buildingInsulatedGlazing->insulatedGlazing->name}}</td>
+                        </tr>
                         <tr class="h-20">
                             <td class="w-320">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
                             <td>{{$buildingInsulatedGlazing->insulatedGlazing->name}}</td>
@@ -55,6 +67,9 @@
                 <br>
             @endif
 
+            @if($stepSlug === 'insulated-glazing')
+                <p class="lead">Vragen over schilderwerk</p>
+            @endif
             <table class="full-width">
                 <tbody>
                 @foreach (\Illuminate\Support\Arr::dot($data) as $translationKey => $value)
@@ -118,7 +133,7 @@
                 @foreach($advices['energy_saving'][$stepSlug] as $userActionPlanAdvice)
                     <div class="question-answer">
                         <p class="w-320">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
-                        <p class="w-150">{{\App\Helpers\NumberFormatter::round($userActionPlanAdvice->costs)}} {{\App\Helpers\Hoomdossier::getUnitForColumn('costs')}}</p>
+                        <p class="w-150">{{\App\Helpers\NumberFormatter::format($userActionPlanAdvice->costs, 0, true)}} {{\App\Helpers\Hoomdossier::getUnitForColumn('costs')}}</p>
                         <p class="w-150">{{$userActionPlanAdvice->getYear()}}</p>
                     </div>
                 @endforeach
@@ -142,7 +157,7 @@
                 @foreach($advices['maintenance'][$stepSlug] as $userActionPlanAdvice)
                     <div class="question-answer">
                         <p class="w-320">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
-                        <p class="w-150">{{\App\Helpers\NumberFormatter::round($userActionPlanAdvice->costs)}} {{\App\Helpers\Hoomdossier::getUnitForColumn('costs')}}</p>
+                        <p class="w-150">{{\App\Helpers\NumberFormatter::format($userActionPlanAdvice->costs, 0, true)}} {{\App\Helpers\Hoomdossier::getUnitForColumn('costs')}}</p>
                         <p class="w-150">{{$userActionPlanAdvice->getYear()}}</p>
                     </div>
                 @endforeach

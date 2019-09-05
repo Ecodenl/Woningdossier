@@ -230,7 +230,7 @@ class User extends Model implements AuthorizableContract
      * @param $type
      * @param $interestedInId
      *
-     * @return \Illuminate\Database\Eloquent\Model|null|object|static
+     * @return UserInterest
      */
     public function getInterestedType($type, $interestedInId, InputSource $inputSource = null)
     {

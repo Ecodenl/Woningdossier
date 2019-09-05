@@ -79,59 +79,6 @@ class MyPlanController extends Controller
         return redirect()->route('cooperation.tool.my-plan.index');
     }
 
-//    public function export()
-//    {
-//        // get the data
-//        $user = Hoomdossier::user();
-//        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, HoomdossierSession::getInputSource(true));
-//
-//        // Column names
-//        $headers = [
-//            __('woningdossier.cooperation.tool.my-plan.csv-columns.year-or-planned'),
-//            __('woningdossier.cooperation.tool.my-plan.csv-columns.interest'),
-//            __('woningdossier.cooperation.tool.my-plan.csv-columns.measure'),
-//            __('woningdossier.cooperation.tool.my-plan.csv-columns.costs'),
-//            __('woningdossier.cooperation.tool.my-plan.csv-columns.savings-gas'),
-//            __('woningdossier.cooperation.tool.my-plan.csv-columns.savings-electricity'),
-//            __('woningdossier.cooperation.tool.my-plan.csv-columns.savings-costs'),
-//            __('woningdossier.cooperation.tool.my-plan.csv-columns.advice-year'),
-//            __('woningdossier.cooperation.tool.my-plan.csv-columns.costs-advice-year'),
-//        ];
-//
-//        $userPlanData = [];
-//
-//        foreach ($advices as $measureType => $stepAdvices) {
-//            foreach ($stepAdvices as $step => $advicesForStep) {
-//                foreach ($advicesForStep as $advice) {
-//                    // check if the planned year is set and if not use the year
-//                    $plannedYear = null == $advice->planned_year ? $advice->year : $advice->planned_year;
-//                    // check if a user is interested in the measure
-//                    $isInterested = 1 == $advice->planned ? __('default.yes') : __('default.no');
-//                    $costs = round($advice->costs);
-//                    $measure = $advice->measureApplication->measure_name;
-//                    $gasSavings = round($advice->savings_gas);
-//                    $electricitySavings = round($advice->savings_electricity);
-//                    $savingsInEuro = round($advice->savings_money);
-//                    $advicedYear = $advice->year;
-//                    //$costsAdvisedYear = round(Calculator::reindexCosts($costs, $advicedYear, $plannedYear));
-//                    $costsAdvisedYear = round(Calculator::indexCosts($costs, $plannedYear));
-//
-//                    // push the plan data to the array
-//                    $userPlanData[$plannedYear][$measure] = [$plannedYear, $isInterested, $measure, $costs, $gasSavings, $electricitySavings, $savingsInEuro, $advicedYear, $costsAdvisedYear];
-//                }
-//            }
-//        }
-//
-//        ksort($userPlanData);
-//
-//        $userPlanData = array_flatten($userPlanData, 1);
-//
-//        array_unshift($userPlanData, $headers);
-//
-//
-//        return Excel::download(new CsvExport($userPlanData), 'my-plan.csv', \Maatwebsite\Excel\Excel::CSV);
-//    }
-
     public function store(Request $request)
     {
         $sortedAdvices = [];

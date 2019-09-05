@@ -107,46 +107,6 @@ class UserActionPlanAdvice extends Model
     }
 
     /**
-     *
-     * @deprecated
-     */
-//    public static function getCategorizedActionPlan(User $user)
-//    {
-//        $result = [];
-//        $advices = self::where('user_id', $user->id)
-//                       ->orderBy('step_id', 'asc')
-//                       ->orderBy('year', 'asc')
-//                       ->get();
-//        /** @var UserActionPlanAdvice $advice */
-//        foreach ($advices as $advice) {
-//            if ($advice->step instanceof Step) {
-//                /** @var MeasureApplication $measureApplication */
-//                $measureApplication = $advice->measureApplication;
-//
-//                if (is_null($advice->year)) {
-//                    $advice->year = $advice->getAdviceYear();
-//                    // re-index costs
-//                    //$advice->costs = Calculator::reindexCosts($advice->costs, null, $advice->year);
-//                }
-//
-//                if (! array_key_exists($measureApplication->measure_type, $result)) {
-//                    $result[$measureApplication->measure_type] = [];
-//                }
-//
-//                if (! array_key_exists($advice->step->slug, $result[$measureApplication->measure_type])) {
-//                    $result[$measureApplication->measure_type][$advice->step->slug] = [];
-//                }
-//
-//                $result[$measureApplication->measure_type][$advice->step->slug][] = $advice;
-//            }
-//        }
-//
-//        ksort($result);
-//
-//        return $result;
-//    }
-
-    /**
      * Get all the comments that are saved in multiple tables.
      *
      * @return Collection

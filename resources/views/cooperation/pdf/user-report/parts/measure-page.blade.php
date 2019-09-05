@@ -55,12 +55,14 @@
                 <tbody>
                 @foreach (\Illuminate\Support\Arr::dot($data) as $translationKey => $value)
                     <?php
-                    $translationForAnswer = $reportTranslations[$step . '.' . $translationKey];
+                        $translationForAnswer = $reportTranslations[$step . '.' . $translationKey];
                     ?>
-                    <tr class="h-20">
-                        <td class="w-300">{{$translationForAnswer}}</td>
-                        <td>{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</td>
-                    </tr>
+                    @if(!\App\Helpers\Hoomdossier::columnContains($translationKey, 'user_interest'))
+                        <tr class="h-20">
+                            <td class="w-300">{{$translationForAnswer}}</td>
+                            <td>{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</td>
+                        </tr>
+                    @endif
                 @endforeach
                 </tbody>
             </table>

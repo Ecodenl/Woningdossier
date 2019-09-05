@@ -3,7 +3,7 @@
     <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.attachment.lead')}}</p>
     <ol>
         @foreach($steps as $step)
-            @if(\App\Helpers\StepHelper::hasInterestInStep($building, $inputSource, $step))
+            @if(\App\Models\UserActionPlanAdvice::hasInterestInMeasure($building, $inputSource, $step))
             <li>{{$step->name}}</li>
             @endif
         @endforeach

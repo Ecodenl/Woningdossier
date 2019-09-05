@@ -2,10 +2,10 @@
     <div class="container">
 
         <div class="step-intro">
-            {{--            <img src="{{public_path('images/icons/'.$step.'.png')}}" alt="">--}}
-            <img src="{{asset('images/icons/'.$step.'.png')}}" alt="">
-            <h2>{{\App\Models\Step::whereSlug($step)->first()->name}}</h2>
-            <p>@lang('pdf/user-report.step-description.'.$step)</p>
+            {{--            <img src="{{public_path('images/icons/'.$stepSlug.'.png')}}" alt="">--}}
+            <img src="{{asset('images/icons/'.$stepSlug.'.png')}}" alt="">
+            <h2>{{\App\Models\Step::whereSlug($stepSlug)->first()->name}}</h2>
+            <p>@lang('pdf/user-report.step-description.'.$stepSlug)</p>
         </div>
 
         <div class="question-answer-section">
@@ -16,7 +16,7 @@
             ?>
 
 
-            @if($step === 'insulated-glazing')
+            @if($stepSlug === 'insulated-glazing')
                 <?php
                 // the insulated glazing need a different layout / structure then the $data gives us.
                 // its easier, faster and more readable to do it in this way then do magic on all the array keys.
@@ -59,7 +59,7 @@
                 <tbody>
                 @foreach (\Illuminate\Support\Arr::dot($data) as $translationKey => $value)
                     <?php
-                        $translationForAnswer = $reportTranslations[$step . '.' . $translationKey];
+                        $translationForAnswer = $reportTranslations[$stepSlug . '.' . $translationKey];
                     ?>
                     @if(!\App\Helpers\Hoomdossier::columnContains($translationKey, 'user_interest'))
                         <tr class="h-20">
@@ -72,11 +72,11 @@
             </table>
         </div>
 
-        @if(isset($reportForUser['calculations'][$step]['insulation_advice']))
+        @if(isset($reportForUser['calculations'][$stepSlug]['insulation_advice']))
             <div class="question-answer-section">
                 <div class="question-answer">
                     <p class="lead w-320">@lang('pdf/user-report.measure-pages.advice')</p>
-                    <p>{{$reportForUser['calculations'][$step]['insulation_advice']}}</p>
+                    <p>{{$reportForUser['calculations'][$stepSlug]['insulation_advice']}}</p>
                 </div>
             </div>
         @endisset
@@ -90,7 +90,7 @@
                     @if(!empty($calculationResult) && !is_array($calculationResult))
 
                         <?php
-                        $translationForAnswer = $reportTranslations[$step . '.calculation.' . $calculationType];
+                        $translationForAnswer = $reportTranslations[$stepSlug . '.calculation.' . $calculationType];
                         ?>
                         <tr class="h-20">
                             <td class="w-320">{{$translationForAnswer}}</td>
@@ -102,7 +102,7 @@
             </table>
         </div>
 
-        @isset($advices['energy_saving'][$step])
+        @isset($advices['energy_saving'][$stepSlug])
             <div class="question-answer-section">
                 <div class="measures">
                     <p class="lead w-320">
@@ -115,7 +115,7 @@
                         {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.energy-saving.year')}}
                     </p>
                 </div>
-                @foreach($advices['energy_saving'][$step] as $userActionPlanAdvice)
+                @foreach($advices['energy_saving'][$stepSlug] as $userActionPlanAdvice)
                     <div class="question-answer">
                         <p class="w-320">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
                         <p class="w-150">{{\App\Helpers\NumberFormatter::round($userActionPlanAdvice->costs)}} {{\App\Helpers\Hoomdossier::getUnitForColumn('costs')}}</p>
@@ -126,7 +126,7 @@
         @endisset
 
 
-        @isset($advices['maintenance'][$step])
+        @isset($advices['maintenance'][$stepSlug])
             <div class="question-answer-section">
                 <div class="measures">
                     <p class="lead w-320">
@@ -139,7 +139,7 @@
                         {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.maintenance.year')}}
                     </p>
                 </div>
-                @foreach($advices['maintenance'][$step] as $userActionPlanAdvice)
+                @foreach($advices['maintenance'][$stepSlug] as $userActionPlanAdvice)
                     <div class="question-answer">
                         <p class="w-320">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
                         <p class="w-150">{{\App\Helpers\NumberFormatter::round($userActionPlanAdvice->costs)}} {{\App\Helpers\Hoomdossier::getUnitForColumn('costs')}}</p>
@@ -151,8 +151,8 @@
 
         <div class="question-answer-section">
             <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.comments')}}</p>
-            @if(array_key_exists($step, $commentsByStep))
-                @foreach($commentsByStep[$step] as $inputSourceName => $commentsCategorizedUnderColumn)
+            @if(array_key_exists($stepSlug, $commentsByStep))
+                @foreach($commentsByStep[$stepSlug] as $inputSourceName => $commentsCategorizedUnderColumn)
                     {{-- The column can be a category, this will be the case when the comment is stored under a catergory --}}
                     @foreach($commentsCategorizedUnderColumn as $columnOrCategory => $comment)
                         <div class="question-answer">

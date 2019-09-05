@@ -40,8 +40,8 @@
 @endcomponent
 
 
-@foreach ($reportData as $step => $data)
-    @if ((is_string($step) && array_key_exists($step, $stepSlugs)) && \App\Helpers\StepHelper::hasInterestInStep($building, $inputSource, $steps->where('slug', $step)->first()))
+@foreach ($reportData as $stepSlug => $data)
+    @if ((is_string($stepSlug) && array_key_exists($stepSlug, $stepSlugs)) && \App\Models\UserActionPlanAdvice::hasInterestInMeasure($building, $inputSource, $steps->where('slug', $stepSlug)->first()))
         @include('cooperation.pdf.user-report.parts.measure-page')
     @endif
 @endforeach

@@ -302,6 +302,25 @@ class UserActionPlanAdvice extends Model
 
 
     /**
+     * Check whether someone is interested in the measure
+     *
+     * @param Building $building
+     * @param InputSource $inputSource
+     * @param Step $step
+     *
+     * @return bool
+     */
+    public static function hasInterestInMeasure(Building $building, InputSource $inputSource, Step $step): bool
+    {
+        return self::forInputSource($inputSource)
+            ->where('user_id', $building->user_id)
+            ->where('step_id', $step->id)
+            ->where('planned', true)
+            ->first() instanceof UserActionPlanAdvice;
+    }
+
+
+    /**
      * Get the personal plan for a user and its input source
      *
      * @param User $user

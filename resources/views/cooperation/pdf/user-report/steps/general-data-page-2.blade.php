@@ -38,11 +38,11 @@
             @foreach($advices as $adviceData)
                 @foreach($adviceData as $advice)
                 <tr class="border-bottom">
-                    <td>{{$year}}</td>
-                    <td>{{$advice['interested'] ? 'Ja' : 'Nee'}}</td>
+                    <td align="center">{{$year}}</td>
+                    <td align="center">{{$advice['interested'] ? 'Ja' : 'Nee'}}</td>
                     <td>{{$advice['measure']}}</td>
-                    <td>{{$advice['costs']}}</td>
-                    <td>{{$advice['savings_money']}}</td>
+                    <td align="right">{{\App\Helpers\NumberFormatter::format($advice['costs'])}}</td>
+                    <td align="right">{{\App\Helpers\NumberFormatter::format($advice['savings_money'])}}</td>
                 </tr>
                 @endforeach
             @endforeach

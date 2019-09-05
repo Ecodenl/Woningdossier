@@ -172,6 +172,10 @@ class RoomTemperatureCalculator
     {
         $total = 0;
         $surface = 0;
+
+        \Log::debug(__METHOD__ . " Rooms:");
+        \Log::debug(json_encode($this->rooms));
+
         foreach ($this->rooms as $room => $values) {
             $total += $values['m2'] * $values['average'];
             $surface += $values['m2'];

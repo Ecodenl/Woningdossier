@@ -23,16 +23,16 @@ class Calculator
 
         $roomTempCalculator = new RoomTemperatureCalculator($energyHabit);
         $averageHouseTemperature = $roomTempCalculator->getAverageHouseTemperature();
-        self::debug('Average house temperature = '.$averageHouseTemperature);
+        self::debug(__METHOD__ . ' Average house temperature = '.$averageHouseTemperature);
         $kengetalEnergySaving = Temperature::energySavingFigureWallInsulation($measureAdvice, $averageHouseTemperature);
-        self::debug('Kengetal energiebesparing = '.$kengetalEnergySaving);
+        self::debug(__METHOD__ . ' Kengetal energiebesparing = '.$kengetalEnergySaving);
 
         if (isset($element->calculate_value) && $element->calculate_value < 3) {
             $result = min(
                 $surface * $kengetalEnergySaving,
                 self::maxGasSavings($building, $energyHabit, $element->element)
             );
-            self::debug($result.' = min('.$surface.' * '.$kengetalEnergySaving.', '.self::maxGasSavings($building, $energyHabit, $element->element).')');
+            self::debug(__METHOD__ . ' ' . $result.' = min('.$surface.' * '.$kengetalEnergySaving.', '.self::maxGasSavings($building, $energyHabit, $element->element).')');
         }
 
         return $result;
@@ -41,7 +41,7 @@ class Calculator
     public static function calculateCo2Savings($gasSavings)
     {
         $result = $gasSavings * Kengetallen::CO2_SAVING_GAS;
-        self::debug('CO2 besparing: '.$result.' = '.$gasSavings.' * '.Kengetallen::CO2_SAVING_GAS);
+        self::debug(__METHOD__ . ' CO2 besparing: '.$result.' = '.$gasSavings.' * '.Kengetallen::CO2_SAVING_GAS);
 
         return $result;
     }
@@ -49,7 +49,7 @@ class Calculator
     public static function calculateMoneySavings($gasSavings)
     {
         $result = $gasSavings * Kengetallen::EURO_SAVINGS_GAS;
-        self::debug("Euro's besparing: ".$result.' = '.$gasSavings.' * '.Kengetallen::EURO_SAVINGS_GAS);
+        self::debug(__METHOD__ . " Euro's besparing: ".$result.' = '.$gasSavings.' * '.Kengetallen::EURO_SAVINGS_GAS);
 
         return $result;
     }
@@ -66,7 +66,7 @@ class Calculator
             $result = max($surface * $measureApplication->costs, $measureApplication->minimal_costs);
         }
 
-        self::debug('Cost indication: '.$result.' = max('.$surface.' * '.$measureApplication->costs.', '.$measureApplication->minimal_costs.')');
+        self::debug(__METHOD__ . ' Cost indication: '.$result.' = max('.$surface.' * '.$measureApplication->costs.', '.$measureApplication->minimal_costs.')');
 
         return $result;
     }
@@ -172,7 +172,7 @@ class Calculator
     // in m3 per year
     public static function maxGasSavings(Building $building, UserEnergyHabit $energyHabit, Element $element)
     {
-        $boiler = $building->getServiceValue('hr-boiler');
+        $boiler = $building->getServiceValue('boiler');
 
         $buildingType = $building->getBuildingType();
         $usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler, $energyHabit);
@@ -184,9 +184,9 @@ class Calculator
         if ($maxSaving instanceof BuildingTypeElementMaxSaving) {
             $saving = $maxSaving->max_saving;
         }
-        self::debug('Max saving for building_type '.$buildingType->id.' + element '.$element->id.' (' . $element->short . ') = '.$saving.'%');
+        self::debug(__METHOD__ . ' Max saving for building_type '.$buildingType->id.' + element '.$element->id.' (' . $element->short . ') = '.$saving.'%');
         $result = $usage * ($saving / 100);
-        self::debug($result.' = '.$usage.' * '.($saving / 100));
+        self::debug(__METHOD__ . ' ' . $result.' = '.$usage.' * '.($saving / 100));
 
         return $result;
     }

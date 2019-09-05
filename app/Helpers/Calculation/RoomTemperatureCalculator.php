@@ -3,6 +3,7 @@
 namespace App\Helpers\Calculation;
 
 use App\Models\BuildingHeating;
+use App\Models\Log;
 use App\Models\UserEnergyHabit;
 
 class RoomTemperatureCalculator

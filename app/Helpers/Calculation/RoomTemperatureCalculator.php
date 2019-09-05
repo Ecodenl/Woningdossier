@@ -86,6 +86,31 @@ class RoomTemperatureCalculator
 
     public function __construct(UserEnergyHabit $habits)
     {
+        // new logic:
+        // if the heating_(first/second)_floor is Not applicable (calculate_value 4):
+        // set ALL m2 for that FLOOR to 0
+        if ($habits->heatingFirstFloor->calculate_value == 5){
+            $firstFloorRooms = [
+                self::FLOOR_ONE_ROOM_BEDROOM1,
+                self::FLOOR_ONE_ROOM_BEDROOM2,
+                self::FLOOR_ONE_ROOM_HALL,
+                self::ROOM_BATHROOM,
+            ];
+            \Log::debug("No heating on first floor, setting the following rooms to 0 m2: " . implode(", ", $firstFloorRooms));
+            foreach($firstFloorRooms as $firstFloorRoom){
+                $this->rooms[$firstFloorRoom]['m2'] = 0;
+            }
+        }
+        if ($habits->heatingSecondFloor->calculate_value == 5){
+            $secondFloorRooms = [
+                self::ROOM_ATTIC,
+            ];
+            \Log::debug("No heating on second floor, setting the following rooms to 0 m2: " . implode(", ", $secondFloorRooms));
+            foreach($secondFloorRooms as $secondFloorRoom){
+                $this->rooms[$secondFloorRoom]['m2'] = 0;
+            }
+        }
+
         // living room
         $this->rooms[self::FLOOR_GROUND_ROOM_LIVING_ROOM]['temp high'] = $habits->thermostat_high;
         $this->rooms[self::FLOOR_GROUND_ROOM_LIVING_ROOM]['hours high'] = $habits->hours_high;

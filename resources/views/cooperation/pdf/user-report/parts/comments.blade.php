@@ -7,11 +7,11 @@
             <div class="question-answer">
                 @if(is_array($comment))
                     @foreach($comment as $column => $c)
-                        <p class="w-320">{{$inputSourceName}} ({{$columnOrCategory}})</p>
+                        <p class="w-380">{{$inputSourceName}} ({{$columnOrCategory}})</p>
                         <p>{{$c}}</p>
                     @endforeach
                 @else
-                    <p class="w-320">{{$inputSourceName}}</p>
+                    <p class="w-380">{{$inputSourceName}}</p>
                     <p>{{$comment}}</p>
                 @endif
             </div>

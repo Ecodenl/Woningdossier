@@ -8,7 +8,7 @@
             ?>
             @if(!\App\Helpers\Hoomdossier::columnContains($translationKey, 'user_interest'))
                 <tr class="h-20">
-                    <td class="w-320">{{$translationForAnswer}}</td>
+                    <td class="w-380">{{$translationForAnswer}}</td>
                     <td>{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</td>
                 </tr>
             @endif

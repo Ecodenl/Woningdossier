@@ -31,31 +31,31 @@
                         <table class="full-width">
                             <tbody>
                             <tr class="h-20">
-                                <td align="top" class="w-320">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.title.title')}}</td>
+                                <td align="top" class="w-380">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.title.title')}}</td>
                                 <td align="top">{{$user->getInterestedType('measure_application', $buildingInsulatedGlazing->measureApplication->id)->interest->name}}</td>
                             </tr>
                             <tr class="h-20">
-                                <td class="w-320">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
+                                <td class="w-380">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
                                 <td>{{$buildingInsulatedGlazing->insulatedGlazing->name}}</td>
                             </tr>
                             <tr class="h-20">
-                                <td class="w-320">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
+                                <td class="w-380">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
                                 <td>{{$buildingInsulatedGlazing->insulatedGlazing->name}}</td>
                             </tr>
                             <tr class="h-20">
-                                <td class="w-320">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
+                                <td class="w-380">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
                                 <td>{{$buildingInsulatedGlazing->insulatedGlazing->name}}</td>
                             </tr>
                             <tr class="h-20">
-                                <td class="w-320">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.rooms-heated.title')}}</td>
+                                <td class="w-380">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.rooms-heated.title')}}</td>
                                 <td>{{$buildingInsulatedGlazing->buildingHeating->name}}</td>
                             </tr>
                             <tr class="h-20">
-                                <td class="w-320">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.m2.title')}}</td>
+                                <td class="w-380">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.m2.title')}}</td>
                                 <td>{{$buildingInsulatedGlazing->m2}} m2</td>
                             </tr>
                             <tr class="h-20">
-                                <td class="w-320">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.window-replace.title')}}</td>
+                                <td class="w-380">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.window-replace.title')}}</td>
                                 <td>{{$buildingInsulatedGlazing->windows}}</td>
                             </tr>
                             </tbody>
@@ -79,7 +79,7 @@
                             $translationForAnswer = $reportTranslations[$stepSlug . '.' . $translationKey];
                         ?>
                         <tr class="h-20">
-                            <td class="w-320">{{$translationForAnswer}}</td>
+                            <td class="w-380">{{$translationForAnswer}}</td>
                             <td>{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</td>
                         </tr>
                     @endforeach

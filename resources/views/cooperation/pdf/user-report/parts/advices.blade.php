@@ -1,7 +1,7 @@
 {{--@isset($advices['energy_saving'][$stepSlug])--}}
     {{--<div class="question-answer-section">--}}
         {{--<div class="measures">--}}
-            {{--<p class="lead w-320">--}}
+            {{--<p class="lead w-380">--}}
                 {{--{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.energy-saving.title')}}--}}
             {{--</p>--}}
             {{--<p class="lead w-150">--}}
@@ -13,7 +13,7 @@
         {{--</div>--}}
         {{--@foreach($advices['energy_saving'][$stepSlug] as $userActionPlanAdvice)--}}
             {{--<div class="question-answer">--}}
-                {{--<p class="w-320">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>--}}
+                {{--<p class="w-380">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>--}}
                 {{--<p class="w-150">{{\App\Helpers\NumberFormatter::format($userActionPlanAdvice->costs, 0, true)}} {{\App\Helpers\Hoomdossier::getUnitForColumn('costs')}}</p>--}}
                 {{--<p class="w-150">{{$userActionPlanAdvice->getYear()}}</p>--}}
             {{--</div>--}}
@@ -25,7 +25,7 @@
 @isset($advices['maintenance'][$stepSlug])
     <div class="question-answer-section">
         <div class="measures">
-            <p class="lead w-320">
+            <p class="lead w-380">
                 {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.maintenance.title')}}
             </p>
             <p class="lead w-150">
@@ -37,7 +37,7 @@
         </div>
         @foreach($advices['maintenance'][$stepSlug] as $userActionPlanAdvice)
             <div class="question-answer">
-                <p class="w-320">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
+                <p class="w-380">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
                 <p class="w-150">{{\App\Helpers\NumberFormatter::format($userActionPlanAdvice->costs, 0, true)}} {{\App\Helpers\Hoomdossier::getUnitForColumn('costs')}}</p>
                 <p class="w-150">{{$userActionPlanAdvice->getYear()}}</p>
             </div>

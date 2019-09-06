@@ -10,7 +10,7 @@
                 $translationForAnswer = $reportTranslations[$stepSlug . '.calculation.' . $calculationType];
                 ?>
                 <tr class="h-20">
-                    <td class="w-320">{{$translationForAnswer}}</td>
+                    <td class="w-380">{{$translationForAnswer}}</td>
                     <td>{{(\App\Helpers\NumberFormatter::format($calculationResult, 0, true))}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</td>
                 </tr>
             @endif

@@ -54,7 +54,6 @@
                                         {{$mostRecentBuildingStatus->status->name}}
                                     </td>
                                 </tr>
-
                         @endforeach
                         </tbody>
                     </table>

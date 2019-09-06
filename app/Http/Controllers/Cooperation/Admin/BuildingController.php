@@ -38,6 +38,9 @@ class BuildingController extends Controller
         })->first();
 
 
+        // easier and clean then writing policies.
+        $userIsShowingHimself = $user->id == Hoomdossier::user()->id;
+
         if (!$user instanceof User) {
             \Illuminate\Support\Facades\Log::debug('A admin tried to show a building that does not seem to exists with id: '.$buildingId);
             return redirect(route('cooperation.admin.index'));
@@ -96,7 +99,7 @@ class BuildingController extends Controller
 
 
         return view('cooperation.admin.buildings.show', compact(
-                'user', 'building', 'roles', 'coaches',
+                'user', 'building', 'roles', 'coaches', 'userIsShowingHimself',
                 'coachesWithActiveBuildingCoachStatus', 'mostRecentStatus', 'privateMessages',
                 'publicMessages', 'buildingNotes', 'previous', 'next', 'statuses', 'logs'
             )

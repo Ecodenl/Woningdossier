@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helpers\Hoomdossier;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
@@ -9,6 +10,7 @@ use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Log;
 
 class BuildingPolicy
 {
@@ -86,6 +88,11 @@ class BuildingPolicy
     public function accessBuilding(User $user, Building $building): bool
     {
 
+        // While a user is allowed to see his own stuff, he is not allowed to do anything in it.
+        if ($user->id == $building->user_id) {
+            return false;
+        }
+
         if ($user->hasRoleAndIsCurrentRole('coach')) {
 
             // check if the coach has building permission
@@ -96,5 +103,29 @@ class BuildingPolicy
 
         // they can always access a building (if the user / resident gave access)
         return  PrivateMessage::allowedAccess($building->id) && $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
+    }
+
+    /**
+     * Check whether its allowed to set an appointment on a building
+     *
+     * @param User $user
+     * @param Building $building
+     * @return bool
+     */
+    public function setAppointment(User $user, Building $building): bool
+    {
+        return $user->id != $building->user_id;
+    }
+
+    /**
+     * Check whether its allowed to set an status on a building
+     *
+     * @param User $user
+     * @param Building $building
+     * @return bool
+     */
+    public function setStatus(User $user, Building $building): bool
+    {
+        return $user->id != $building->user_id;
     }
 }

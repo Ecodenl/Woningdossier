@@ -27,8 +27,8 @@ class UserController extends Controller
         // change the relationship to building on merge.
         $users = $cooperation
             ->users()
-            ->whereHas('buildings')
-            ->with(['buildings' => function ($query) {
+            ->whereHas('building')
+            ->with(['building' => function ($query) {
                 $query->with(['buildingStatuses' => function ($query) {
                     $query->mostRecent();
                 }]);

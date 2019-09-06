@@ -35,18 +35,6 @@
                                 <td>{{$user->getInterestedType('measure_application', $buildingInsulatedGlazing->measureApplication->id, $inputSource)->interest->name}}</td>
                             </tr>
                             <tr class="h-20">
-                                <td class="w-380">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
-                                <td>{{$buildingInsulatedGlazing->insulatedGlazing->name}}</td>
-                            </tr>
-                            <tr class="h-20">
-                                <td class="w-380">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
-                                <td>{{$buildingInsulatedGlazing->insulatedGlazing->name}}</td>
-                            </tr>
-                            <tr class="h-20">
-                                <td class="w-380">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>
-                                <td>{{$buildingInsulatedGlazing->insulatedGlazing->name}}</td>
-                            </tr>
-                            <tr class="h-20">
                                 <td class="w-380">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.rooms-heated.title')}}</td>
                                 <td>{{$buildingInsulatedGlazing->buildingHeating->name}}</td>
                             </tr>

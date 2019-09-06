@@ -40,7 +40,7 @@
 @endcomponent
 
 
-@foreach ($reportData as $stepSlug => $data)
+@foreach ($reportData as $stepSlug => $dataForStep)
     @if ((is_string($stepSlug) && array_key_exists($stepSlug, $stepSlugs)) && \App\Models\UserActionPlanAdvice::hasInterestInMeasure($building, $inputSource, $steps->where('slug', $stepSlug)->first()))
         @include('cooperation.pdf.user-report.parts.measure-page')
     @endif

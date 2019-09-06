@@ -112,7 +112,8 @@ class DumpService
             // bewoners, gasverbruik en type ketel
             'high-efficiency-boiler.user_energy_habits.resident_count',
             'high-efficiency-boiler.user_energy_habits.amount_gas',
-            'high-efficiency-boiler.service.5.service_value_id',
+            // had to be added according to the pdf feedback, so now it will be displayed in the general data and on the high efficiency boiler page.
+//            'high-efficiency-boiler.service.5.service_value_id',
             // elektriciteitsverbruik
             'solar-panels.user_energy_habits.amount_electricity',
             // comfort niveau
@@ -443,6 +444,8 @@ class DumpService
 
                                     // if is array, try to get the answer from the extra column, does the key not exist set a default value.
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $extraIsArray ? $buildingService->extra[$extraKey] ?? '' : '';
+
+
                                 } else {
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingService->serviceValue->value ?? '';
                                 }

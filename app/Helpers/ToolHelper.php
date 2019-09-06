@@ -32,10 +32,12 @@ class ToolHelper
     public static function createOptions(Collection $collection, $value = 'name', $id = 'id', $nullPlaceholder = true)
     {
         $options = [];
+
         if ($nullPlaceholder) {
             $options[''] = '-';
         }
         foreach ($collection as $item) {
+
             $options[$item->$id] = $item->$value;
         }
 
@@ -1216,7 +1218,8 @@ class ToolHelper
                 'service.'.$boiler->id.'.service_value_id' => [
                     'label' => Translation::translate('high-efficiency-boiler.boiler-type.title'),
                     'type' => 'select',
-                    'options' => $boilerTypes
+//                    'options' => $boilerTypes
+                    'options' => static::createOptions($boilerTypes, 'value'),
                 ],
                 'service.'.$boiler->id.'.extra.date' => [
                     'label' => Translation::translate('boiler.boiler-placed-date.title'),

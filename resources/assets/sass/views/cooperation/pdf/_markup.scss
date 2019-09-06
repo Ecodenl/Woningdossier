@@ -86,6 +86,7 @@ table {
   tbody {
     background-color: $color-white;
     tr {
+      vertical-align: top;
       &.border-bottom {
         &:first-child {
           border-bottom: 1px solid $color-main;

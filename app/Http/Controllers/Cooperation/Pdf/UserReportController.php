@@ -90,11 +90,11 @@ class UserReportController extends Controller
         ));
 
         return $pdf->stream();
-        return view('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'userCooperation', 'stepSlugs', 'inputSource',
-            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
-            'buildingFeatures', 'advices', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings'
-        ));
+//        return view('cooperation.pdf.user-report.index', compact(
+//            'user', 'building', 'userCooperation', 'stepSlugs', 'inputSource',
+//            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
+//            'buildingFeatures', 'advices', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings'
+//        ));
 
 
     }

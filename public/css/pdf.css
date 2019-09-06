@@ -1592,10 +1592,12 @@ table {
     color: #ffffff; }
   table tbody {
     background-color: #ffffff; }
-    table tbody tr.border-bottom:first-child {
-      border-bottom: 1px solid #29A082; }
-    table tbody tr.border-bottom td {
-      border-top: 1px solid #29A082; }
+    table tbody tr {
+      vertical-align: top; }
+      table tbody tr.border-bottom:first-child {
+        border-bottom: 1px solid #29A082; }
+      table tbody tr.border-bottom td {
+        border-top: 1px solid #29A082; }
 
 #front-page #img-front-page {
   position: fixed;

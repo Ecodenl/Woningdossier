@@ -31,8 +31,8 @@
                         <table class="full-width">
                             <tbody>
                             <tr class="h-20">
-                                <td align="top" class="w-380">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.title.title')}}</td>
-                                <td align="top">{{$user->getInterestedType('measure_application', $buildingInsulatedGlazing->measureApplication->id)->interest->name}}</td>
+                                <td class="w-380">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.title.title')}}</td>
+                                <td>{{$user->getInterestedType('measure_application', $buildingInsulatedGlazing->measureApplication->id)->interest->name}}</td>
                             </tr>
                             <tr class="h-20">
                                 <td class="w-380">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.current-glass.title')}}</td>

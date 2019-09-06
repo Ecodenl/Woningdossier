@@ -164,7 +164,11 @@ class FileStorageController extends Controller
     private function getFileNameForFileType(FileType $fileType, User $user, InputSource $inputSource)
     {
         if ($fileType->short == 'pdf-report') {
-            $fileName = time().'-'.\Illuminate\Support\Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
+//            2013es14-Bewonster-A-g-Bewoner.pdf;
+
+            $fileName = trim($user->building->postal_code).$user->building->number.\Illuminate\Support\Str::slug($user->getFullName()).'.pdf';
+
+//            $fileName = time().'-'.\Illuminate\Support\Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
         } else {
 
             // create a short hash to prepend on the filename.

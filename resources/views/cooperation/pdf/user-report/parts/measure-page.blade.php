@@ -17,14 +17,9 @@
             <div class="question-answer-section">
                 <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.filled-in-data')}}</p>
 
-
-
                     <?php
-                        // the insulated glazing need a different layout / structure then the $dataForStep gives us.
-                        // its easier, faster and more readable to do it in this way then do magic on all the array keys.
-                        // however, we should avoid this as much a possible otherwise the code will be bloated
-
                         // we dont need it, we will use the $buildingInsulatedGlazings
+                        // we also MUST unset them otherwise they will be picked up later on and we will get duplicates
                         unset($dataForStep['user_interests'], $dataForStep['building_insulated_glazings'])
                     ?>
                     @foreach($buildingInsulatedGlazings as $buildingInsulatedGlazing)

@@ -359,15 +359,19 @@ class DumpService
                                     $extraKey = explode('extra.', $tableWithColumnOrAndIdKey)[1];
                                     if (in_array($extraKey, ['tiles_condition', 'measure_application_id'])) {
                                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->extra[$extraKey] ?? '';
-                                        if (!empty($buildingRoofType->extra[$extraKey])) {
-                                            if ($extraKey == 'tiles_condition') {
-                                                $status = RoofTileStatus::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
-                                                $row[$buildingId][$tableWithColumnOrAndIdKey] = ($status instanceof RoofTileStatus) ? $status->name : '';
-                                            }
-                                            if ($extraKey == 'measure_application_id') {
-                                                $measureApplication = MeasureApplication::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
-                                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : '';
-                                            }
+
+                                        if (!empty($buildingRoofType->extra[$extraKey]) && $extraKey == 'tiles_condition') {
+                                            $status = RoofTileStatus::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
+                                            $row[$buildingId][$tableWithColumnOrAndIdKey] = ($status instanceof RoofTileStatus) ? $status->name : '';
+                                        }
+                                        if ($extraKey == 'measure_application_id') {
+//                                            dd($extraKey, $buildingRoofType, $buildingRoofType->extra[$extraKey], $buildingRoofType->extra[$extraKey] == null && $extraKey == 'measure_application_id');
+                                        }
+                                        // The measure application id, in this case. can be 0, this means the option: "niet" has been chosen the option is not saved as a measure application
+                                        if ($extraKey == 'measure_application_id') {
+
+                                            $measureApplication = MeasureApplication::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
+                                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : __('roof-insulation.measure-application.no.title');
                                         }
                                     } else {
                                         // literal

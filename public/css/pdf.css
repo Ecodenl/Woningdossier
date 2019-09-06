@@ -1613,7 +1613,7 @@ table {
   height: 150px;
   padding-top: 5%; }
 #front-page #intro {
-  padding: 5rem; }
+  padding: 2rem 5rem 5rem 5rem; }
 
 .step-intro {
   margin-bottom: 25px; }

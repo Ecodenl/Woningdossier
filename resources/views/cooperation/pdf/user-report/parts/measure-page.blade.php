@@ -81,14 +81,12 @@
                     <tbody>
                     @foreach (\Illuminate\Support\Arr::dot($dataForStep) as $translationKey => $value)
                         <?php
-                        $translationForAnswer = $reportTranslations[$stepSlug . '.' . $translationKey];
+                            $translationForAnswer = $reportTranslations[$stepSlug . '.' . $translationKey];
                         ?>
-                        @if(!\App\Helpers\Hoomdossier::columnContains($translationKey, 'user_interest'))
-                            <tr class="h-20">
-                                <td class="w-320">{{$translationForAnswer}}</td>
-                                <td>{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</td>
-                            </tr>
-                        @endif
+                        <tr class="h-20">
+                            <td class="w-320">{{$translationForAnswer}}</td>
+                            <td>{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</td>
+                        </tr>
                     @endforeach
                     </tbody>
                 </table>

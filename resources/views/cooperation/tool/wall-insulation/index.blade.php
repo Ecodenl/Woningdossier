@@ -345,14 +345,13 @@
                     </div>
                 </div>
             </div>
+
+
             @include('cooperation.tool.includes.comment', [
-               'collection' => $buildingFeaturesForMe,
-               'commentColumn' => 'additional_info',
-               'translation' => [
-                   'title' => 'general.specific-situation.title',
-                   'help' => 'general.specific-situation.help'
-               ]
-           ])
+                'columnName' => 'additional_info',
+                 'translation' => 'general.specific-situation'
+             ])
+
 
             <div class="row">
                 <div class="col-md-12">

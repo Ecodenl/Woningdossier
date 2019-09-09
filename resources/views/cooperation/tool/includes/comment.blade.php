@@ -4,9 +4,10 @@
     $slug = str_replace('/tool/', '', request()->getRequestUri());
 
     $currentInputSource = \App\Helpers\HoomdossierSession::getInputSource(true);
-
     // if not, we have to place a extra field so he can add a comment
     $currentInputSourceHasNoPlacedComment = isset($commentsByStep[$slug][$currentInputSource->name]);
+
+    $columnName = $columnName ?? 'comment';
 ?>
 @isset($commentsByStep[$slug])
 @foreach($commentsByStep[$slug] as $inputSourceName => $commentsCategorizedUnderColumn)
@@ -23,7 +24,7 @@
                     </label>
 
                     @if($inputSourceName === $currentInputSource->name)
-                        <textarea name="comment" class="form-control">{{old('comment', $comment)}}</textarea>
+                        <textarea name="{{$columnName}}" class="form-control">{{old($columnName, $comment)}}</textarea>
                     @else
                         <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
                     @endif
@@ -49,7 +50,7 @@
                 {{\App\Helpers\Translation::translate($translation.'.title')}}
             </label>
 
-            <textarea name="comment" class="form-control">{{old('comment')}}</textarea>
+            <textarea name="{{$columnName}}" class="form-control">{{old($columnName)}}</textarea>
 
             @component('cooperation.tool.components.help-modal')
                 {{\App\Helpers\Translation::translate($translation.'.help')}}

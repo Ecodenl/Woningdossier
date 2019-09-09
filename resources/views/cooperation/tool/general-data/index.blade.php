@@ -672,15 +672,11 @@
                             @endcomponent
                         </div>
                     </div>
-                    @include('cooperation.tool.includes.comment', [
-                        'collection' => $userEnergyHabitsForMe,
-                        'commentColumn' => 'living_situation_extra',
-                        'translation' => [
-                            'title' => 'general-data.data-about-usage.additional-info.title',
-                            'help' => 'general-data.data-about-usage.additional-info.help'
-                        ]
-                    ])
 
+                    @include('cooperation.tool.includes.comment', [
+                        'columnName' => 'living_situation_extra',
+                        'translation' => 'general-data.data-about-usage.additional-info'
+                    ])
                     <div class="row">
                         <div class="col-sm-12">
                             @include('cooperation.tool.includes.section-title', [

@@ -105,6 +105,9 @@ class GeneralDataController extends Controller
         $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
         $userInterestsForMe = UserInterest::forMe()->get();
 
+
+
+dd($userEnergyHabitsForMe);
         return view('cooperation.tool.general-data.index', compact(
             'building', 'step',
             'coachEnergyHabitRemarks', 'userInterestsForMe',

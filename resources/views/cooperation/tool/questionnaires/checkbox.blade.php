@@ -5,7 +5,7 @@
             <br>
             <?php
                 // explode it on pipe | and create a collection from it.
-                $answers = collect(explode('|', $question->getAnswerForCurrentInputSource()));
+                $answers = collect(explode('|', \App\Helpers\Hoomdossier::getMostCredibleValue($question->questionAnswers()->where('building_id', \App\Helpers\HoomdossierSession::getBuilding()), 'answer')));
             ?>
             @component('cooperation.tool.questionnaires.components.input-group',
             ['inputType' => 'checkbox', 'inputValues' => $question->questionOptions, 'userInputValues' => $question->questionAnswers()->forMe()->get()])

@@ -16,6 +16,7 @@ class Hoomdossier
 
     public static function getMostCredibleValue(Relation $relation, $column, $default = null, $onlyReturnForInputSource = null)
     {
+
         $baseQuery = $relation
             ->withoutGlobalScope(GetValueScope::class)
             ->join('input_sources', $relation->getRelated()->getTable().'.input_source_id', '=', 'input_sources.id')

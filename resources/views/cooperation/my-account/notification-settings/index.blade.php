@@ -15,30 +15,25 @@
                             <th>@lang('my-account.notification-settings.index.table.columns.name')</th>
                             <th>@lang('my-account.notification-settings.index.table.columns.interval')</th>
                             <th>@lang('my-account.notification-settings.index.table.columns.last-notified-at')</th>
-                            <th>@lang('my-account.notification-settings.index.table.columns.actions')</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($notificationSettings as $i => $notificationSetting)
                             <tr>
                                 <td>{{ $notificationSetting->type->name }}</td>
-                                <td>{{ $notificationSetting->interval->name }}</td>
-                                <td>{{ is_null($notificationSetting->last_notified_at) ? __('my-account.notification-settings.index.table.never-sent') : $notificationSetting->last_notified_at->format('Y-m-d') }}</td>
                                 <td>
 
-                                    <form action="{{route('cooperation.my-account.notification-settings.update', $notificationSetting->id)}}" method="post">
-                                        {{csrf_field()}}
-                                        {{method_field('put')}}
-                                        <select name="notification_setting[{{$notificationSetting->id}}][interval_id]" class="form-control change-interval">
-                                            @foreach($notificationIntervals as $notificationInterval)
-                                                <option @if(old('notification_setting.interval_id', $notificationSetting->interval_id) == $notificationInterval->id) selected="selected" @endif value="{{$notificationInterval->id}}">{{$notificationInterval->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </form>
-                                    {{--<a href="{{route('cooperation.my-account.notification-settings.show', ['id' => $notificationSetting->id])}}" class="btn btn-default">--}}
-                                        {{--<i class="glyphicon glyphicon-th"></i>--}}
-                                    {{--</a>--}}
+                                <form action="{{route('cooperation.my-account.notification-settings.update', $notificationSetting->id)}}" method="post">
+                                    {{csrf_field()}}
+                                    {{method_field('put')}}
+                                    <select name="notification_setting[{{$notificationSetting->id}}][interval_id]" class="form-control change-interval">
+                                        @foreach($notificationIntervals as $notificationInterval)
+                                            <option @if(old('notification_setting.interval_id', $notificationSetting->interval_id) == $notificationInterval->id) selected="selected" @endif value="{{$notificationInterval->id}}">{{$notificationInterval->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </form>
                                 </td>
+                                <td>{{ is_null($notificationSetting->last_notified_at) ? __('my-account.notification-settings.index.table.never-sent') : $notificationSetting->last_notified_at->format('Y-m-d') }}</td>
                             </tr>
                         @endforeach
                         </tbody>

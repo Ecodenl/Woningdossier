@@ -3,10 +3,18 @@
 namespace App\Helpers;
 
 use App\Models\Building;
+use App\Models\BuildingElement;
+use App\Models\BuildingFeature;
+use App\Models\BuildingHeater;
+use App\Models\BuildingPvPanel;
+use App\Models\BuildingRoofType;
 use App\Models\Cooperation;
+use App\Models\Element;
 use App\Models\InputSource;
 use App\Models\Questionnaire;
+use App\Models\Service;
 use App\Models\Step;
+use App\Models\UserEnergyHabit;
 use App\Models\UserProgress;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;

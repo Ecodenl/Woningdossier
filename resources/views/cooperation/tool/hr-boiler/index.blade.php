@@ -82,26 +82,6 @@
 
 
                 </div>
-
-                <div class="col-sm-12">
-                    @component('cooperation.tool.components.step-question', ['id' => 'comment', 'translation' => 'general.specific-situation', 'required' => false])
-                        <?php
-                        $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('comment', $installedBoiler->extra)) ? $installedBoiler->extra['comment'] : '';
-                        if (\App\Helpers\Hoomdossier::user()->hasRole('resident')) {
-                            $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('comment', $installedBoiler->extra)) ? $installedBoiler->extra['comment'] : '';
-                        } elseif (\App\Helpers\Hoomdossier::user()->hasRole('coach')) {
-                            $coachInputSource = \App\Models\BuildingService::getCoachInput($installedBoilerForMe);
-
-                            $default = ($coachInputSource instanceof \App\Models\BuildingService && is_array($coachInputSource->extra) && array_key_exists('comment', $coachInputSource->extra)) ? $coachInputSource->extra['comment'] : '';
-                        }
-                        ?>
-
-                        <textarea name="comment" id=""
-                                  class="form-control">{{old('comment', $default)}}</textarea>
-
-                    @endcomponent
-
-                </div>
             </div>
         </div>
         <div class="row advice">
@@ -149,15 +129,11 @@
             </div>
         </div>
 
-        @include('cooperation.tool.includes.comment', [
-             'collection' => $installedBoilerForMe,
-             'commentColumn' => 'extra.comment',
-             'translation' => [
-                 'title' => 'general.specific-situation.title',
-                 'help' => 'general.specific-situation.help'
-            ]
-        ])
 
+        @include('cooperation.tool.includes.comment', [
+             'columnName' => 'comment',
+             'translation' => 'general.specific-situation'
+         ])
 
         <div class="row">
             <div class="col-md-12">

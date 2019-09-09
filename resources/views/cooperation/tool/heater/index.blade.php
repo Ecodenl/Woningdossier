@@ -57,24 +57,6 @@
                 </div>
 
             </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    @component('cooperation.tool.components.step-question', ['id' => 'comment', 'translation' => 'general.specific-situation', 'required' => false])
-
-                        <textarea id="additional-info" class="form-control"
-                                  name="comment">{{old('comment', isset($currentHeater) ? $currentHeater->comment : '')}}</textarea>
-                    @endcomponent
-                </div>
-            </div>
-            @include('cooperation.tool.includes.comment', [
-                'collection' => $currentHeatersForMe,
-                'commentColumn' => 'comment',
-                'translation' => [
-                  'title' => 'general.specific-situation.title',
-                  'help' => 'general.specific-situation.help'
-                ]
-            ])
-
 
             <div id="estimated-usage">
                 <hr>
@@ -200,6 +182,11 @@
                     </div>
                 </div>
             </div>
+
+
+            @include('cooperation.tool.includes.comment', [
+                 'translation' => 'general.specific-situation'
+             ])
 
             <div class="row">
                 <div class="col-md-12">

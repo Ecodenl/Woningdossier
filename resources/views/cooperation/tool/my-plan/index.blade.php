@@ -148,14 +148,6 @@
         </div>
     </div>
 
-    @include('cooperation.tool.includes.comment', [
-        'collection' => $actionPlanComments,
-        'commentColumn' => 'comment',
-        'translation' => [
-          'title' => 'general.specific-situation.title',
-          'help' => 'general.specific-situation.help'
-        ]
-    ])
 
     <hr>
 

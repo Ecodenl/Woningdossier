@@ -145,6 +145,7 @@ class StepHelper
                     $inputWithComments
                 );
 
+
                 // if the comments are not empty, add it to the array with its input source
                 if (!empty($comments)) {
                     // in this particular case a comment can be added to a specific roof type, so we add a key.

@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Models\User;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
@@ -19,7 +20,7 @@ trait GetMyValuesTrait
      *
      * @return mixed
      */
-    public function scopeForMe($query)
+    public function scopeForMe($query, User $user = null)
     {
         $whereUserOrBuildingId = $this->determineWhereColumn();
 
@@ -45,19 +46,24 @@ trait GetMyValuesTrait
      *
      * @return array
      */
-    protected function determineWhereColumn(): array
+    protected function determineWhereColumn(User $user = null): array
     {
+
+        // because recent changes in the application with jobs / commands running on the commandline we need to obtain data from objects as much as possible
+        // so for now, if the user is given we will get the building from that and otherwise from the session. In the future we should get rid of session usage in methods as much as we can.
+        $building = $user->building ?? HoomdossierSession::getBuilding(true);
+
         // determine what table we are using
         $currentTable = $this->table ?? $this->getTable();
 
         // determine which column we should use.
         if (\Schema::hasColumn($currentTable, 'building_id')) {
-            return [['building_id', '=', HoomdossierSession::getBuilding()]];
+            return [['building_id', '=', $building->id]];
         } else {
-            $building = Building::find(HoomdossierSession::getBuilding());
             return [['user_id', '=', $building->user_id]];
         }
     }
+
 
     /**
      * Method to only scope the resident input source

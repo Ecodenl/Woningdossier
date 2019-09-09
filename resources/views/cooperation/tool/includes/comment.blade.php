@@ -1,40 +1,55 @@
 <?php
-    /** @var $inputFromAllInputSources \Illuminate\Database\Eloquent\Collection */
-    $inputFromAllInputSources = $collection;
-
-    // get the answer for all the current input source, except for the current input source.
-    $answersFromInputSourceExceptCurrent = $inputFromAllInputSources->where('input_source_id', '!=', \App\Helpers\HoomdossierSession::getInputSource());
+    $helpId = time();
+    // get the step slug
+    $slug = str_replace('/tool/', '', request()->getRequestUri());
 ?>
-
-@foreach($answersFromInputSourceExceptCurrent as $i => $answerFromInputSourceExceptCurrent)
-    <?php
-        // check if the commentColumn is dotted, if so: use array get.
-        if (false !== strpos($commentColumn, '.')) {
-            $comment = array_get($answerFromInputSourceExceptCurrent, $commentColumn);
-        } else {
-            $comment = $answerFromInputSourceExceptCurrent->$commentColumn;
-        }
-        $inputSourceName = $answerFromInputSourceExceptCurrent->inputSource->name;
-        // generate a id for the help block
-        $helpId = mt_rand(20, 100).$inputSourceName.$i;
-    ?>
-    @if(!empty($comment))
+@foreach($commentsByStep[$slug] as $inputSourceName => $commentsCategorizedUnderColumn)
+    {{-- The column can be a category, this will be the case when the comment is stored under a catergory --}}
+    @foreach($commentsCategorizedUnderColumn as $columnOrCategory => $comment)
         <div class="row">
             <div class="col-sm-12">
                 <div class="form-group add-space">
+                    @if(is_array($comment))
+                        @foreach($comment as $column => $c)
 
-                    <label for="" class=" control-label">
-                        <i data-toggle="modal" data-target="#{{$helpId}}" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-                        {{\App\Helpers\Translation::translate($translation['title'])}} ({{$inputSourceName}})
-                    </label>
+                            <label for="" class=" control-label">
+                                <i data-toggle="modal" data-target="#{{$helpId}}" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                                {{\App\Helpers\Translation::translate($translation.'.title')}} {{$inputSourceName}} ({{$columnOrCategory}})
+                            </label>
 
-                    <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                            @if($inputSourceName === \App\Helpers\HoomdossierSession::getInputSource(true)->name)
+                                <textarea name="comment" class="form-control">{{old('comment', $c)}}</textarea>
+                            @else
+                                <textarea disabled="disabled" class="disabled form-control">{{$c}}</textarea>
+                            @endif
 
-                    @component('cooperation.tool.components.help-modal')
-                        {{\App\Helpers\Translation::translate($translation['help'])}}
-                    @endcomponent
+                            @component('cooperation.tool.components.help-modal')
+                                {{\App\Helpers\Translation::translate($translation.'.help')}}
+                            @endcomponent
+
+
+                        @endforeach
+                    @else
+
+                        <label for="" class=" control-label">
+                            <i data-toggle="modal" data-target="#{{$helpId}}" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                            {{\App\Helpers\Translation::translate($translation.'.title')}} ({{$inputSourceName}})
+                        </label>
+
+                        @if($inputSourceName === \App\Helpers\HoomdossierSession::getInputSource(true)->name)
+                            <textarea name="comment" class="form-control">{{old('comment', $comment)}}</textarea>
+                        @else
+                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                        @endif
+
+                        @component('cooperation.tool.components.help-modal')
+                            {{\App\Helpers\Translation::translate($translation.'.help')}}
+                        @endcomponent
+                    @endif
+
                 </div>
             </div>
         </div>
-    @endif
+    @endforeach
+
 @endforeach

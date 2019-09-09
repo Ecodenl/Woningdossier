@@ -428,13 +428,10 @@
         })->first();
         ?>
         @if($insulatedGlazingWithCommentsAndHasExtra  instanceof \App\Models\BuildingInsulatedGlazing)
+
             @include('cooperation.tool.includes.comment', [
-                 'collection' => collect()->push($insulatedGlazingWithCommentsAndHasExtra),
-                 'commentColumn' => 'extra.comment',
-                 'translation' => [
-                     'title' => 'general.specific-situation.title',
-                     'help' => 'general.specific-situation.help'
-                 ]
+                 'columnName' => 'extra.comment',
+                 'translation' => 'general.specific-situation'
              ])
         @endif
 

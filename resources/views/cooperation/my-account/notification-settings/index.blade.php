@@ -24,9 +24,20 @@
                                 <td>{{ $notificationSetting->type->name }}</td>
                                 <td>{{ $notificationSetting->interval->name }}</td>
                                 <td>{{ is_null($notificationSetting->last_notified_at) ? __('my-account.notification-settings.index.table.never-sent') : $notificationSetting->last_notified_at->format('Y-m-d') }}</td>
-                                <td><a href="{{route('cooperation.my-account.notification-settings.show', ['id' => $notificationSetting->id])}}" class="btn btn-default">
-                                        <i class="glyphicon glyphicon-th"></i>
-                                    </a>
+                                <td>
+
+                                    <form action="{{route('cooperation.my-account.notification-settings.update', $notificationSetting->id)}}" method="post">
+                                        {{csrf_field()}}
+                                        {{method_field('put')}}
+                                        <select name="notification_setting[{{$notificationSetting->id}}][interval_id]" class="form-control change-interval">
+                                            @foreach($notificationIntervals as $notificationInterval)
+                                                <option @if(old('notification_setting.interval_id', $notificationSetting->interval_id) == $notificationInterval->id) selected="selected" @endif value="{{$notificationInterval->id}}">{{$notificationInterval->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </form>
+                                    {{--<a href="{{route('cooperation.my-account.notification-settings.show', ['id' => $notificationSetting->id])}}" class="btn btn-default">--}}
+                                        {{--<i class="glyphicon glyphicon-th"></i>--}}
+                                    {{--</a>--}}
                                 </td>
                             </tr>
                         @endforeach
@@ -37,3 +48,14 @@
         </div>
     </div>
 @endsection
+
+
+@push('js')
+    <script>
+        $(document).ready(function () {
+            $('.change-interval').change(function () {
+                $(this).parent().submit();
+            });
+        })
+    </script>
+@endpush

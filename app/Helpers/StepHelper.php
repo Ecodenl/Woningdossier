@@ -68,6 +68,87 @@ class StepHelper
     ];
 
     /**
+     * Method to return a array of all comments, categorized under step and input source and more cats if needed.
+     *
+     * @return array
+     */
+    public static function getAllCommentsByStep(User $user): array
+    {
+        $building = $user->building;
+
+        $allInputForMe = collect();
+        $commentsByStep = [];
+
+        /* General-data */
+        $userEnergyHabitForMe = UserEnergyHabit::forMe($user)->get();
+        $allInputForMe->put('general-data', $userEnergyHabitForMe);
+
+        /* wall insulation */
+        $buildingFeaturesForMe = BuildingFeature::forMe($user)->get();
+        $allInputForMe->put('wall-insulation', $buildingFeaturesForMe);
+
+        /* floor insualtion */
+        $crawlspace = Element::where('short', 'crawlspace')->first();
+        $buildingElementsForMe = BuildingElement::forMe($user)->get();
+        $allInputForMe->put('floor-insulation', $buildingElementsForMe->where('element_id', $crawlspace->id));
+
+        /* beglazing */
+        $insulatedGlazingsForMe = $building->currentInsulatedGlazing()->forMe($user)->get();
+        $allInputForMe->put('insulated-glazing', $insulatedGlazingsForMe);
+
+        /* roof */
+        $currentRoofTypesForMe = $building->roofTypes()->with('roofType')->forMe($user)->get();
+        $allInputForMe->put('roof-insulation', $currentRoofTypesForMe);
+
+        /* hr boiler ketel */
+        $boiler = Service::where('short', 'boiler')->first();
+        $installedBoilerForMe = $building->buildingServices()->forMe($user)->where('service_id', $boiler->id)->get();
+        $allInputForMe->put('high-efficiency-boiler', $installedBoilerForMe);
+
+        /* sun panel*/
+        $buildingPvPanelForMe = BuildingPvPanel::forMe($user)->get();
+        $allInputForMe->put('solar-panels', $buildingPvPanelForMe);
+
+        /* heater */
+        $buildingHeaterForMe = BuildingHeater::forMe($user)->get();
+        $allInputForMe->put('heater', $buildingHeaterForMe);
+
+
+        // the attributes that can contain any sort of comments.
+        $possibleAttributes = ['comment', 'additional_info', 'living_situation_extra', 'motivation_extra'];
+
+        foreach ($allInputForMe as $step => $inputForMeByInputSource) {
+            foreach ($inputForMeByInputSource as $inputForMe) {
+
+                // check if we need the extra column to extract the comment from.
+                if (is_array($inputForMe->extra) && array_key_exists('comment', $inputForMe->extra)) {
+                    // get the comment fields, and filter out the empty ones.
+                    $inputToFilter = $inputForMe->extra;
+                } else {
+                    $inputToFilter = $inputForMe->getAttributes();
+                }
+
+                $comments = array_filter(
+                    Arr::only($inputToFilter, $possibleAttributes)
+                );
+
+                // if the comments are not empty, add it to the array with its input source
+                if (!empty($comments)) {
+                    // in this particular case a comment can be added to a specific roof type, so we add a key.
+                    if ($inputForMe instanceof BuildingRoofType) {
+                        $commentsByStep[$step][$inputForMe->inputSource->name][$inputForMe->roofType->name] = $comments;
+                    } else {
+                        $commentsByStep[$step][$inputForMe->inputSource->name] = $comments;
+                    }
+                }
+            }
+        }
+
+
+        return $commentsByStep;
+    }
+
+    /**
      * Check is a user is interested in a step.
      *
      * @param Step $step

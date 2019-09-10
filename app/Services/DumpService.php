@@ -791,7 +791,7 @@ class DumpService
         ]);
 
 
-        $insulatedGlazingSavings = InsulatedGlazing::calculate($userEnergyHabit, [
+        $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $userEnergyHabit, [
             'user_interests' => $userInterestsForInsulatedGlazing,
             'building_insulated_glazings' => $buildingInsulatedGlazingArray,
             'building_elements' => $buildingElementsArray,

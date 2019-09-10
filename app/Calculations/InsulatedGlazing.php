@@ -26,11 +26,12 @@ class InsulatedGlazing {
     /**
      * Return the calculate results for the insulated glazings.
      *
-     * @param UserEnergyHabit $energyHabit
+     * @param Building $building
+     * @param $energyHabit
      * @param $calculateData
      * @return array
      */
-    public static function calculate($energyHabit, $calculateData): array
+    public static function calculate(Building $building, $energyHabit, $calculateData): array
     {
         $result = [
             'savings_gas' => 0,

@@ -78,6 +78,7 @@ class UserReportController extends Controller
             ->flip()
             ->toArray();
 
+//        dd($reportForUser);
 
         // retrieve all the comments by for each input source on a step
         $commentsByStep = StepHelper::getAllCommentsByStep($user);

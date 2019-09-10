@@ -56,6 +56,11 @@ class Hoomdossier
             'interest_comparable' => '%',
             'costs' => '€',
             'm2' => 'm2',
+            'yield_electricity' => 'kWh',
+            'raise_own_consumption' => '%',
+            'peak_power' => 'Wp',
+            'angle' => '°'
+
         ];
 
         return $unit ?? $unitsForCalculations[$column] ?? '';

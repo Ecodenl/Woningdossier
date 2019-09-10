@@ -233,6 +233,7 @@ class ExampleBuildingService
                     }
                 }
                 if ('building_features' == $columnOrTable) {
+//                    dd($values, $features);
                     $features = array_replace_recursive($features, $values);
                 }
                 if ('building_paintwork_statuses' == $columnOrTable) {

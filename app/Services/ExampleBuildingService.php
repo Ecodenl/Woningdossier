@@ -82,16 +82,50 @@ class ExampleBuildingService
                     self::log('Skipping '.$columnOrTable.' (empty)');
                     continue;
                 }
-                if ('user_interest' == $columnOrTable) {
+                if ('user_interest' == $columnOrTable || 'user_interests' == $columnOrTable) {
                     foreach($values as $inType => $interests){
-                    	if (in_array($inType, ['element', 'service',])){
+                        // for some reason the measure applications are not categorized, the $inType = the measure application id and the $interests = interest id
+                        // this is not dry, but cant be because structure
+                        if (is_int($inType)) {
+                            $typeId = $inType;
+                            $interestId = $interests;
+                            $inType = 'measure_application';
+
+                            $interest = Interest::find($interestId);
+                            if (!$interest instanceof Interest){
+                                self::log("Skipping: No valid interest for ('{$inType}') with ID " . $interestId);
+                                continue;
+                            }
+                            $type = null;
+
+                            switch($inType){
+                                case 'measure_application':
+                                    $type = MeasureApplication::find($typeId);
+                                    break;
+                            }
+
+                            if (!$type instanceof Model){
+                                self::log("Skipping: No valid type found for interest (" . $inType . ") with ID " . $typeId);
+                                continue;
+                            }
+                            // we have:
+                            //  - $interest (FK relation)
+                            //  - $type (only int will be needed)
+                            $userInterest = new UserInterest(['interested_in_type' => $inType, 'interested_in_id' => $type->id]);
+                            $userInterest->user()->associate($userBuilding->user);
+                            $userInterest->inputSource()->associate($inputSource);
+                            $userInterest->interest()->associate($interest);
+                            $userInterest->save();
+                            self::log("Added user interest for " . $inType . " with ID " . $type->id . " -> " . $interest->name);
+                        }
+                    	else if (in_array($inType, ['element', 'service'])){
 							foreach($interests as $typeId => $interestId){
 								$typeId = (int) $typeId;
 								$interestId = (int) $interestId;
 
 								$interest = Interest::find($interestId);
 								if (!$interest instanceof Interest){
-									self::log("Skipping: No valid interest for ID " . $interestId);
+									self::log("Skipping: No valid interest for ('{$inType}') with ID " . $interestId);
 									continue;
 								}
 
@@ -233,7 +267,6 @@ class ExampleBuildingService
                     }
                 }
                 if ('building_features' == $columnOrTable) {
-//                    dd($values, $features);
                     $features = array_replace_recursive($features, $values);
                 }
                 if ('building_paintwork_statuses' == $columnOrTable) {
@@ -256,6 +289,9 @@ class ExampleBuildingService
                 if ('building_insulated_glazings' == $columnOrTable) {
                     foreach ($values as $measureApplicationId => $glazingData) {
                         $glazingData['measure_application_id'] = $measureApplicationId;
+
+                        //todo: so the insulated_glazing_id is non existent in the table, this is a typo and should be fixed in the tool structure
+                        $glazingData['insulating_glazing_id'] = $glazingData['insulated_glazing_id'];
 
                         $buildingInsulatedGlazing = new BuildingInsulatedGlazing($glazingData);
 

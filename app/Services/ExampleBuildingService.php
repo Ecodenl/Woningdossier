@@ -64,6 +64,7 @@ class ExampleBuildingService
         // traverse the contents:
         $exampleData = $contents->content;
 
+//        dd($exampleData);
         self::log('Applying Example Building '.$exampleBuilding->name.' ('.$exampleBuilding->id.', '.$contents->build_year.')');
 
         self::clearExampleBuilding($userBuilding);

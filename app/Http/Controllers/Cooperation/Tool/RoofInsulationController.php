@@ -95,6 +95,7 @@ class RoofInsulationController extends Controller
                 }
             }
         }
+//        dd($roofTypes, $building->buildingFeatures()->forMe()->get());
 
         return view('cooperation.tool.roof-insulation.index', compact(
             'building', 'features', 'roofTypes', 'typeIds', 'buildingFeaturesForMe',

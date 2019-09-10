@@ -29,6 +29,9 @@ return [
 
             'table' => [
                 'columns' => [
+                    'email' => 'Email',
+                    'cooperation'         => 'Coöperatie',
+                    'roles'               => 'Rollen',
                     'date'                => 'Datum',
                     'name'                => 'Naam',
                     'street-house-number' => 'Straat en huisnummer',

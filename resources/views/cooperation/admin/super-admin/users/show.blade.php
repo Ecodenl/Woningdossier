@@ -19,12 +19,13 @@
                     <table id="table" class="table table-striped table-bordered compact nowrap table-responsive">
                         <thead>
                         <tr>
-                            <th>@lang('admin/super-admin.users.show.table.columns.date')</th>
+                            <th>@lang('admin/super-admin.users.show.table.columns.cooperation')</th>
+                            <th>@lang('admin/super-admin.users.show.table.columns.email')</th>
                             <th>@lang('admin/super-admin.users.show.table.columns.name')</th>
                             <th>@lang('admin/super-admin.users.show.table.columns.street-house-number')</th>
                             <th>@lang('admin/super-admin.users.show.table.columns.zip-code')</th>
                             <th>@lang('admin/super-admin.users.show.table.columns.city')</th>
-                            <th>@lang('admin/super-admin.users.show.table.columns.status')</th>
+                            <th>@lang('admin/super-admin.users.show.table.columns.roles')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -32,14 +33,14 @@
                                 @if($user->building instanceof \App\Models\Building)
                                 <?php
                                     $building = $user->building;
-                                    $mostRecentBuildingStatus = $building->getMostRecentBuildingStatus();
 
-                                    $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
-                                    $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
                                 ?>
                                 <tr>
-                                    <td data-sort="{{$userCreatedAtStrotime}}">
-                                        {{$userCreatedAtFormatted ?? '-'}}
+                                    <td>
+                                        {{$user->cooperation->name}}
+                                    </td>
+                                    <td>
+                                        {{$user->account->email}}
                                     </td>
                                     <td>{{$user->getFullName()}}</td>
                                     <td>
@@ -50,7 +51,7 @@
                                         {{$building->city}}
                                     </td>
                                     <td>
-                                        {{$mostRecentBuildingStatus->status->name}}
+                                        {{$user->roles()->first()->name}}
                                     </td>
                                 </tr>
                                 @endif

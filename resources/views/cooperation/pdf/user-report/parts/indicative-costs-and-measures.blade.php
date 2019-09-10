@@ -11,7 +11,7 @@
                 ?>
                 <tr class="h-20">
                     <td class="w-380">{{$translationForAnswer}}</td>
-                    <td>{{(\App\Helpers\NumberFormatter::format($calculationResult, 0, true))}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</td>
+                    <td>{{!\App\Helpers\Hoomdossier::columnContains($calculationType, 'year') ? \App\Helpers\NumberFormatter::format($calculationResult, 0, true) : $calculationResult}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</td>
                 </tr>
 
             @elseif($stepSlug == 'roof-insulation')
@@ -23,7 +23,7 @@
                         ?>
                         <tr class="h-20">
                             <td class="w-380">{{$translationForAnswer}}</td>
-                            <td>{{(\App\Helpers\NumberFormatter::format($result, 0, true))}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</td>
+                            <td>{{!\App\Helpers\Hoomdossier::columnContains($calculationType, 'year') ? \App\Helpers\NumberFormatter::format($result, 0, true) : $result}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</td>
                         </tr>
                     @endif
                 @endforeach

@@ -462,6 +462,7 @@ class ToolHelper
                 // rest will be added later on
             ],
             'high-efficiency-boiler' => [
+                // todo: this should be extra.date. But then we need to update al example building data
                 'service.'.$boiler->id.'.extra.year' => [
                     'label' => Translation::translate('boiler.boiler-placed-date.title'),
                     'type'  => 'text',

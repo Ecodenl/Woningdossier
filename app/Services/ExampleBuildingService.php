@@ -39,6 +39,7 @@ use App\Models\ServiceValue;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
+use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -57,6 +58,8 @@ class ExampleBuildingService
 
             return;
         }
+
+        $boilerService = Service::where('short', 'boiler')->first();
 
         // used for throwing the event at the end
         $oldExampleBuilding = $userBuilding->exampleBuilding;
@@ -232,7 +235,11 @@ class ExampleBuildingService
                     if (is_array($values)) {
                         foreach ($values as $serviceId => $serviceValueData) {
                             $extra = null;
-
+//                            if ($serviceId == 5) {
+                                dump($stepSlug);
+                                dump($serviceId);
+                                dump($columnOrTable);
+//                            }
                             // note: in the case of solar panels the service_value_id can be null!!
                             if (is_array($serviceValueData)) {
                                 if (! array_key_exists('service_value_id', $serviceValueData)) {
@@ -251,17 +258,41 @@ class ExampleBuildingService
                             $service = Service::find($serviceId);
                             if ($service instanceof Service) {
 
-                                $buildingService = new BuildingService(['extra' => $extra]);
-                                $buildingService->inputSource()->associate($inputSource);
-                                $buildingService->service()->associate($service);
-                                $buildingService->building()->associate($userBuilding);
+                                // try to obtain a existing service
+                                $existingBuildingService = BuildingService::withoutGlobalScope(GetValueScope::class)
+                                    ->forMe()
+                                    ->where('input_source_id', $inputSource->id)
+                                    ->where('service_id', $serviceId)->first();
+
+                                // see if it already exists, if so we need to add data to that service
+
+                                // this is for example the case with the hr boiler, data is added on general-data and on the hr page itself
+                                // but this can only be saved under one row, so we have to update it
+                                if ($existingBuildingService instanceof BuildingService) {
+                                    $buildingService = $existingBuildingService;
+                                } else {
+                                    $buildingService = new BuildingService();
+                                    $buildingService->inputSource()->associate($inputSource);
+                                    $buildingService->service()->associate($service);
+                                    $buildingService->building()->associate($userBuilding);
+                                }
+
+                                if (is_array($extra)) {
+
+                                    // we have to do this because the structure is wrong, see ToolHelper line 465
+                                    if ($boilerService->id == $serviceId) {
+                                        $extra = ['date' => $extra['year']];
+                                    }
+                                    $buildingService->extra = $extra;
+                                }
 
                                 if (!is_null($serviceValueId)){
-	                                $serviceValue = $service->values()->where('id', $serviceValueId)->first();
-	                                $buildingService->serviceValue()->associate($serviceValue);
+                                    $serviceValue = $service->values()->where('id', $serviceValueId)->first();
+                                    $buildingService->serviceValue()->associate($serviceValue);
                                 }
 
                                 $buildingService->save();
+
                                 self::log('Saving building service '.json_encode($buildingService->toArray()));
                             }
                         }

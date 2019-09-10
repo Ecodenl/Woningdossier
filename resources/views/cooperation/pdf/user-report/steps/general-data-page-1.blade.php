@@ -53,7 +53,7 @@
         ?>
         <div class="question-answer">
             <p class="w-380">@lang('pdf/user-report.general-data.building-info.monument')</p>
-            <p>{{$possibleAnswers[$buildingFeatures->monument]}}</p>
+            <p>{{$possibleAnswers[$buildingFeatures->monument] ?? $possibleAnswers[0]}}</p>
         </div>
         <div class="question-answer">
             <p class="w-380">@lang('pdf/user-report.general-data.building-info.example-building')</p>

@@ -1628,7 +1628,9 @@ table {
   .step-intro p {
     padding-top: 25px; }
 
-.measures p {
-  display: inline-block; }
+.measures {
+  margin-bottom: -20px; }
+  .measures p {
+    display: inline-block; }
 
 /*# sourceMappingURL=pdf.css.map */

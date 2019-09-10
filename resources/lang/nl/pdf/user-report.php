@@ -89,12 +89,7 @@ return [
             'maintenance' => [
                 'title' => 'Onderhoudsmaatregelen',
                 'costs' => 'Kosten',
-                'year' => 'Geadviseerd wordt'
-            ],
-            'energy-saving' => [
-                'title' => 'Energiebesparende maatregelen',
-                'costs' => 'Kosten',
-                'year' => 'Geadviseerd wordt'
+                'year' => 'Uitvoering'
             ],
         ],
         'comments' => 'Toelichting op de maatregel'

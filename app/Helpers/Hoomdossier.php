@@ -47,6 +47,9 @@ class Hoomdossier
             'contaminated_wall_joints',
             'monument',
             'building_layers',
+
+            'energy_label_id',
+            'extra.date'
         ];
 
         // Always check my own input source first. If that is properly filled
@@ -71,7 +74,6 @@ class Hoomdossier
 
         // .. My own input source was not (properly) filled.
         // Return the best match. Treat the results in order.
-
         foreach ($results as $inputSourceShort => $value) {
             if (false !== stristr($column, 'surface') && $value <= 0) {
                 // skip this one

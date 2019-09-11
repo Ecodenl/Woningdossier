@@ -17,6 +17,10 @@
             @foreach($advices as $adviceData)
                 @foreach($adviceData as $advice)
                 <tr class="border-bottom">
+                    <?php
+                        // if its a string, the $year contains 'geen jaartal'
+                        is_string($year) ? $year = \Carbon\Carbon::now()->year : $year;
+                    ?>
                     <td align="center">{{$year}}</td>
                     <td align="center">{{$advice['interested'] ? 'Ja' : 'Nee'}}</td>
                     <td>{{$advice['measure']}}</td>

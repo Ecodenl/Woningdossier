@@ -28,7 +28,10 @@ class UserController extends Controller
         $accountData = $request->input('account');
 
         // prepare the base query to filter on.
-        $user = $user->newQuery()->withoutGlobalScope(CooperationScope::class)->with('building');
+        $user = $user->newQuery()->withoutGlobalScope(CooperationScope::class)
+            ->whereHas('building')
+            ->whereHas('cooperation')
+            ->with('building');
 
         if (!is_null($userData['first_name'])) {
             $user->whereLike('first_name', $userData['first_name']);

@@ -30,7 +30,6 @@
                         </thead>
                         <tbody>
                             @foreach($users as $user)
-                                @if($user->building instanceof \App\Models\Building)
                                 <?php
                                     $building = $user->building;
                                 ?>
@@ -56,7 +55,6 @@
                                         {{implode(', ', $user->roles()->get()->pluck('human_readable_name')->toArray())}}
                                     </td>
                                 </tr>
-                                @endif
                             @endforeach
                         </tbody>
                     </table>

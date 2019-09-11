@@ -71,6 +71,7 @@ class Hoomdossier
 
         // .. My own input source was not (properly) filled.
         // Return the best match. Treat the results in order.
+
         foreach ($results as $inputSourceShort => $value) {
             if (false !== stristr($column, 'surface') && $value <= 0) {
                 // skip this one
@@ -82,6 +83,8 @@ class Hoomdossier
             }
             if (InputSource::RESIDENT_SHORT == $inputSourceShort) {
                 // no matter what
+
+                // since 'no matter what' it will also return a empty value, even when there may be a non null value from a other input source.
                 return $value;
             }
             if (! is_null($value) && '' !== $value) {

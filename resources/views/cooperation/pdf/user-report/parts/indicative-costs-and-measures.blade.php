@@ -6,7 +6,10 @@
         @foreach($calculationsForStep as $calculationType => $calculationResult)
             @if(!empty($calculationResult) && !is_array($calculationResult))
 
-                <?php
+                <?php if ($stepSlug == 'heater') {
+                    Log::debug($calculationType);
+
+                }
                 $translationForAnswer = $reportTranslations[$stepSlug . '.calculation.' . $calculationType];
                 ?>
                 <tr class="h-20">

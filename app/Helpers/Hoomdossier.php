@@ -34,6 +34,19 @@ class Hoomdossier
      */
     public static function getUnitForColumn($column)
     {
+        $unitsForCalculations = [
+            'savings_gas' => 'm3',
+            'savings_co2' => 'kg',
+            'savings_money' => '€',
+            'cost_indication' => '€',
+            'costs' => '€',
+            'm2' => 'm2',
+            'yield_electricity' => 'kWh',
+            'raise_own_consumption' => '%',
+            'interest_comparable' => '%',
+            'percentage_consumption' => '%'
+
+        ];
 
         if (static::columnContains($column, 'surface') || static::columnContains($column, 'm2')) {
             $unit = 'm2';
@@ -47,21 +60,13 @@ class Hoomdossier
             $unit = 'm3';
         }
 
+        if (static::columnContains($column, 'peak_power')) {
+            $unit = 'Wp';
+        }
 
-        $unitsForCalculations = [
-            'savings_gas' => 'm3',
-            'savings_co2' => 'kg',
-            'savings_money' => '€',
-            'cost_indication' => '€',
-            'interest_comparable' => '%',
-            'costs' => '€',
-            'm2' => 'm2',
-            'yield_electricity' => 'kWh',
-            'raise_own_consumption' => '%',
-            'peak_power' => 'Wp',
-            'angle' => '°'
-
-        ];
+        if (static::columnContains($column, 'angle')) {
+            $unit = '°';
+        }
 
         return $unit ?? $unitsForCalculations[$column] ?? '';
     }

@@ -43,7 +43,10 @@
                                     </td>
                                     <td>{{$user->getFullName()}}</td>
                                     <td>
-                                        {{$building->street}} {{$building->number}} {{$building->extension}}
+                                        <a href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.show', [
+                                            'cooperationToManage' => $user->cooperation,
+                                            'user' => $user->id
+                                    ])}}">{{$building->street}} {{$building->number}} {{$building->extension}}</a>
                                     </td>
                                     <td>{{$building->postal_code}}</td>
                                     <td>

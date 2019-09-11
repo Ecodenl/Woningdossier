@@ -27,6 +27,7 @@
             <div class="form-group">
                 <label for="">@lang('admin/super-admin.users.index.form.user.role')</label>
                 <select name="user[role_id]" class="form-control">
+                    <option selected ="selected" value="">---</option>
                     <?php $selectedRoleId = $userData['role_id'] ?? null; ?>
                     @foreach($roles as $role)
                         <option @if($role->id == $selectedRoleId) selected="selected" @endif value="{{$role->id}}">{{$role->human_readable_name}}</option>

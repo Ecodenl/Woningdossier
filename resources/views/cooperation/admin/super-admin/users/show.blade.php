@@ -16,7 +16,7 @@
             <div class="row">
                 <div class="col-sm-12">
 
-                    <table id="table" class="table table-striped table-bordered compact nowrap table-responsive">
+                    <table id="table" class="table table-striped table-bordered compact nowrap table-responsive" style="width: 100%">
                         <thead>
                         <tr>
                             <th>@lang('admin/super-admin.users.show.table.columns.cooperation')</th>

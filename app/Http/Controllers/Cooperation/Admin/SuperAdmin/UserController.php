@@ -46,7 +46,6 @@ class UserController extends Controller
 
         if (!is_null($buildingData['city'])) {
             $user->whereHas('building', function ($query) use ($buildingData) {
-//               $query->where('city', 'LIKE', '%'.$buildingData['city'].'%');
                $query->whereLike('city', $buildingData['city']);
             });
         }

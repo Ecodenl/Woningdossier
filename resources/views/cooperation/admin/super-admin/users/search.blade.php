@@ -52,19 +52,6 @@
                 <input type="text" name="building[city]" value="{{$buildingData['city'] ?? ''}}" class="form-control">
             </div>
         </div>
-
-        {{--<div class="col-lg-3 col-sm-12">--}}
-            {{--<div class="form-group">--}}
-                {{--<label for="">@lang('admin/super-admin.users.index.form.building.street')</label>--}}
-                {{--<input type="text" name="building[street]" class="form-control">--}}
-            {{--</div>--}}
-        {{--</div>--}}
-        {{--<div class="col-lg-3 col-sm-12">--}}
-            {{--<div class="form-group">--}}
-                {{--<label for="">@lang('admin/super-admin.users.index.form.building.number')</label>--}}
-                {{--<input type="text" name="building[number]" class="form-control">--}}
-            {{--</div>--}}
-        {{--</div>--}}
     </div>
 
     <button type="submit" class="btn btn-default">@lang('admin/super-admin.users.index.form.submit')</button>

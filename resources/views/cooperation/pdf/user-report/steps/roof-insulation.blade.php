@@ -26,13 +26,7 @@
         </div>
 
         @include('cooperation.pdf.user-report.parts.insulation-advice')
-    </div>
 
-@endcomponent
-
-@component('cooperation.pdf.components.new-page')
-
-<div class="container">
         {{-- Indicative costs and measures  --}}
         <div class="question-answer-section">
             @foreach($calculationsForStep as $roofTypeShort => $calculationResultsForRoofType)
@@ -55,7 +49,13 @@
                 @endforeach
             @endforeach
         </div>
+    </div>
 
+@endcomponent
+
+@component('cooperation.pdf.components.new-page')
+
+    <div class="container">
         @include('cooperation.pdf.user-report.parts.advices')
 
         @include('cooperation.pdf.user-report.parts.comments')

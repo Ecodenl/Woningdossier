@@ -783,7 +783,7 @@
                         // End Firefox fix
 
                         $.ajax({
-                            type: "GET",
+                            type: "POST",
                             url: '{{ route('cooperation.tool.apply-example-building', compact('cooperation')) }}',
                             data: {example_building_id: current_eb},
                             success: function (data) {

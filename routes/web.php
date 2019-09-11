@@ -140,8 +140,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
                 Route::get('/', 'ToolController@index')->name('index');
 
-                Route::get('general-data/apply-example-building',
-                    'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
+                Route::post('general-data/apply-example-building', 'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
                 Route::resource('building-detail', 'BuildingDetailController', ['only' => ['index', 'store']]);
 
                 Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {

@@ -38,10 +38,9 @@
 
 <div class="question-answer-section">
     <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.comment-action-plan')}}</p>
-    {{-- The column can be a category, this will be the case when the comment is stored under a catergory --}}
     @foreach($userActionPlanAdviceComments as $userActionPlanAdviceComment)
         <div class="question-answer">
-            <p class="w-380">{{$userActionPlanAdviceComment->inputSource->name}}</p>
+            <p class="w-100">{{$userActionPlanAdviceComment->inputSource->name}}</p>
             <p>{{$userActionPlanAdviceComment->comment}}</p>
         </div>
     @endforeach

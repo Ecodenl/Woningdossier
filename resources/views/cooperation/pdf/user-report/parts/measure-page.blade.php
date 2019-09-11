@@ -1,15 +1,17 @@
 <?php
-// the insulated glazing need a different layout / structure then the $data gives us.
-// its easier, faster and more readable to do it in this way then do magic on all the array keys.
-// however, we should avoid this as much a possible otherwise the code will be bloated
+    // some pages need a different layout / structure then the data gives us.
+    // its easier, faster and more readable to do it in this way then do magic on all the array keys.
+    // however, we should avoid this as much a possible otherwise the code will be bloated
+    // spoiler: it became bloated.
 
     // calculations
     $calculationsForStep = $dataForStep['calculation'] ?? [];
     unset($dataForStep['calculation']);
 ?>
-@if($stepSlug === 'insulated-glazing')
 
-    @component('cooperation.pdf.components.new-page')
+@switch($stepSlug)
+    @case('insulated-glazing')
+        @component('cooperation.pdf.components.new-page')
         <div class="container">
 
             @include('cooperation.pdf.user-report.parts.step-intro')
@@ -52,8 +54,7 @@
             </div>
         </div>
     @endcomponent
-
-    @component('cooperation.pdf.components.new-page')
+        @component('cooperation.pdf.components.new-page')
         <div class="container">
 
             <br>
@@ -84,8 +85,14 @@
             @include('cooperation.pdf.user-report.parts.comments')
         </div>
     @endcomponent
-@else
-    @component('cooperation.pdf.components.new-page')
+    @break
+
+    @case('roof-insulation')
+        @include('cooperation.pdf.user-report.steps.roof-insulation')
+    @break
+
+    @default
+        @component('cooperation.pdf.components.new-page')
         <div class="container">
 
             @include('cooperation.pdf.user-report.parts.step-intro')
@@ -101,4 +108,6 @@
             @include('cooperation.pdf.user-report.parts.comments')
         </div>
     @endcomponent
-@endif
+    @break
+
+@endswitch

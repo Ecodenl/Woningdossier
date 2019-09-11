@@ -16,6 +16,7 @@ return [
             'text' => 'U hebt het Hoomdossier voor uw woning ingevuld. Hieronder ziet u een samenvatting van de ingevoerde gegevens, de resultaten van de berekeningen en de stappen die u kunt ondernemen om uw woning duurzamer te maken.'
         ],
     ],
+
     'general-data' => [
         'address-info' => [
             'title' => 'Adres gegevens',
@@ -53,7 +54,7 @@ return [
             'title' => 'Samenvatting van mogelijke energiebesparende maatregelen en onderhoudsmaatregelen',
             'text' => 'Is er iets veranderd of past de volgorde van maatregelen niet bij uw persoonlijke planning? In het Hoomdossier kunt u alle gegevens aanpassen en bijhouden. In de bijlage vindt u alle details per maatregel.',
             'table' => [
-                'planned-year' => 'Jaar geplanned',
+                'planned-year' => 'Jaar geplaned',
                 'interested' => 'Interesse',
                 'measure' => 'Maatregel',
                 'costs' => 'Kosten (€)',
@@ -81,6 +82,12 @@ return [
         ],
     ],
 
+    'roof-insulation' => [
+        'indicative-costs-and-benefits-for-measure' => [
+            'flat' => 'Indicatie voor kosten en baten voor het platte dak',
+            'pitched' => 'Indicatie voor kosten en baten voor het hellende dak'
+        ],
+    ],
     'measure-pages' => [
         'filled-in-data' => 'Ingevoerde gegevens',
         'advice' => 'Geadviseerd wordt:',

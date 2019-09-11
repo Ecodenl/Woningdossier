@@ -235,11 +235,6 @@ class ExampleBuildingService
                     if (is_array($values)) {
                         foreach ($values as $serviceId => $serviceValueData) {
                             $extra = null;
-//                            if ($serviceId == 5) {
-                                dump($stepSlug);
-                                dump($serviceId);
-                                dump($columnOrTable);
-//                            }
                             // note: in the case of solar panels the service_value_id can be null!!
                             if (is_array($serviceValueData)) {
                                 if (! array_key_exists('service_value_id', $serviceValueData)) {

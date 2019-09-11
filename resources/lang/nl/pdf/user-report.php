@@ -54,7 +54,7 @@ return [
             'title' => 'Samenvatting van mogelijke energiebesparende maatregelen en onderhoudsmaatregelen',
             'text' => 'Is er iets veranderd of past de volgorde van maatregelen niet bij uw persoonlijke planning? In het Hoomdossier kunt u alle gegevens aanpassen en bijhouden. In de bijlage vindt u alle details per maatregel.',
             'table' => [
-                'planned-year' => 'Jaar geplaned',
+                'planned-year' => 'Jaar gepland',
                 'interested' => 'Interesse',
                 'measure' => 'Maatregel',
                 'costs' => 'Kosten (€)',

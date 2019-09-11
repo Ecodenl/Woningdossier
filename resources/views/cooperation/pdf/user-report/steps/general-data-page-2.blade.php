@@ -39,10 +39,12 @@
 <div class="question-answer-section">
     <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.comment-action-plan')}}</p>
     @foreach($userActionPlanAdviceComments as $userActionPlanAdviceComment)
-        <div class="question-answer">
-            <p class="w-100">{{$userActionPlanAdviceComment->inputSource->name}}</p>
-            <p>{{$userActionPlanAdviceComment->comment}}</p>
-        </div>
+        <table class="full-width">
+            <tr>
+                <td class="w-100">{{$userActionPlanAdviceComment->inputSource->name}}</td>
+                <td>{{$userActionPlanAdviceComment->comment}}</td>
+            </tr>
+        </table>
     @endforeach
 </div>
 

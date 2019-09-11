@@ -6,6 +6,7 @@ return [
             'header' => 'Gebruikers filteren',
             'form' => [
                 'user' => [
+                    'role' => 'Rol',
                     'title' => 'Filteren op gebruiker',
                     'first-name' => 'Voornaam',
                     'last-name' => 'Achternaam'

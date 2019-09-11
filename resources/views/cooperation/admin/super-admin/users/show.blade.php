@@ -33,7 +33,6 @@
                                 @if($user->building instanceof \App\Models\Building)
                                 <?php
                                     $building = $user->building;
-
                                 ?>
                                 <tr>
                                     <td>
@@ -51,7 +50,7 @@
                                         {{$building->city}}
                                     </td>
                                     <td>
-                                        {{$user->roles()->first()->name}}
+                                        {{implode(', ', $user->roles()->get()->pluck('human_readable_name')->toArray())}}
                                     </td>
                                 </tr>
                                 @endif

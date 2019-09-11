@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
 use App\Helpers\Arr;
+use App\Models\Role;
 use App\Models\User;
 use App\Scopes\CooperationScope;
 use function Couchbase\defaultDecoder;
@@ -13,11 +14,15 @@ class UserController extends Controller
 {
     public function index()
     {
-        return view('cooperation.admin.super-admin.users.index');
+        $roles = Role::whereIn('name', ['coach', 'cooperation-admin', 'coordinator'])->get();
+
+        return view('cooperation.admin.super-admin.users.index', compact('roles'));
     }
 
     public function filter(Request $request, User $user)
     {
+        $roles = Role::whereIn('name', ['coach', 'cooperation-admin', 'coordinator'])->get();
+
         $userData = $request->input('user');
         $buildingData = $request->input('building');
         $accountData = $request->input('account');
@@ -39,18 +44,6 @@ class UserController extends Controller
             });
         }
 
-//        if (!is_null($buildingData['street'])) {
-//            $user->whereHas('building', function ($query) use ($buildingData) {
-//               $query->whereLike('street', $buildingData['street']);
-//            });
-//        }
-//
-//        if (!is_null($buildingData['number'])) {
-//            $user->whereHas('building', function ($query) use ($buildingData) {
-//               $query->whereLike('number', $buildingData['number']);
-//            });
-//        }
-
         if (!is_null($buildingData['city'])) {
             $user->whereHas('building', function ($query) use ($buildingData) {
 //               $query->where('city', 'LIKE', '%'.$buildingData['city'].'%');
@@ -65,9 +58,13 @@ class UserController extends Controller
             });
         }
 
+        if (!is_null($userData['role_id'])) {
+            $user = $user->role($userData['role_id']);
+        }
+
         $users = $user->get();
 
-        return view('cooperation.admin.super-admin.users.show', compact('users', 'userData', 'buildingData', 'accountData'));
+        return view('cooperation.admin.super-admin.users.show', compact('users', 'userData', 'buildingData', 'accountData', 'roles'));
     }
 
     public function show()

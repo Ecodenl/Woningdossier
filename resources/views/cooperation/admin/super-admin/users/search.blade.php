@@ -22,6 +22,19 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="">@lang('admin/super-admin.users.index.form.user.role')</label>
+                <select name="user[role_id]" class="form-control">
+                    <?php $selectedRoleId = $userData['role_id'] ?? null; ?>
+                    @foreach($roles as $role)
+                        <option @if($role->id == $selectedRoleId) selected="selected" @endif value="{{$role->id}}">{{$role->human_readable_name}}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-sm-12">

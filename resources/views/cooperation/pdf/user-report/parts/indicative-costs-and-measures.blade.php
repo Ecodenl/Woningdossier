@@ -5,12 +5,8 @@
             <tbody>
         @foreach($calculationsForStep as $calculationType => $calculationResult)
             @if(!empty($calculationResult) && !is_array($calculationResult))
-
-                <?php if ($stepSlug == 'heater') {
-                    Log::debug($calculationType);
-
-                }
-                $translationForAnswer = $reportTranslations[$stepSlug . '.calculation.' . $calculationType];
+                <?php
+                    $translationForAnswer = $reportTranslations[$stepSlug . '.calculation.' . $calculationType];
                 ?>
                 <tr class="h-20">
                     <td class="w-380">{{$translationForAnswer}}</td>

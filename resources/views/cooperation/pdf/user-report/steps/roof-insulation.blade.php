@@ -1,7 +1,7 @@
 @component('cooperation.pdf.components.new-page')
     <div class="container">
 
-        @include('cooperation.pdf.user-report.parts.step-intro')
+        @include('cooperation.pdf.user-report.parts.measure-page.step-intro')
 
         <div class="question-answer-section">
             <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.filled-in-data')}}</p>
@@ -25,7 +25,7 @@
             @endforeach
         </div>
 
-        @include('cooperation.pdf.user-report.parts.insulation-advice')
+        @include('cooperation.pdf.user-report.parts.measure-page.insulation-advice')
 
         {{-- Indicative costs and measures  --}}
         <div class="question-answer-section">
@@ -56,8 +56,8 @@
 @component('cooperation.pdf.components.new-page')
 
     <div class="container">
-        @include('cooperation.pdf.user-report.parts.advices')
+        @include('cooperation.pdf.user-report.parts.measure-page.advices')
 
-        @include('cooperation.pdf.user-report.parts.comments')
+        @include('cooperation.pdf.user-report.parts.measure-page.comments')
     </div>
 @endcomponent

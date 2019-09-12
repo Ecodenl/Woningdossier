@@ -20,6 +20,14 @@
   #intro {
     padding: 2rem 5rem 5rem 5rem;
   }
+
+  // height should be given in the element itself
+  .page-footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
 }
 
 

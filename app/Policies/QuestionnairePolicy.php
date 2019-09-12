@@ -66,11 +66,8 @@ class QuestionnairePolicy
      */
     public function store(User $user)
     {
-        $userCooperations = $user->cooperations()->get();
-        $currentCooperation = HoomdossierSession::getCooperation(true);
-
-        // if the user has the role coordinator and the cooperations from the user has the current cooperation authorize him.
-        if ($user->hasRole('coordinator') && $userCooperations->contains($currentCooperation)) {
+        // if the user has the right roles
+        if ($user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
             return true;
         }
 
@@ -84,17 +81,14 @@ class QuestionnairePolicy
 
     public function delete(User $user, Questionnaire $questionnaire)
     {
-        $userCooperations = $user->cooperations()->get();
         $currentCooperation = HoomdossierSession::getCooperation(true);
 
-        // check if the user has the coordinator role and check the current cooperation
-        if ($user->hasRole('coordinator') && $userCooperations->contains($currentCooperation)) {
-            // and check if the questionnaire from the question has a relation with the cooperation
-            $cooperationFromQuestionnaire = $questionnaire->cooperation;
+        // and check if the questionnaire from the question has a relation with the cooperation
+        $cooperationFromQuestionnaire = $questionnaire->cooperation;
 
-            if ($cooperationFromQuestionnaire == $currentCooperation) {
-                return true;
-            }
+        // check if the user has the right roles
+        if ($user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && $cooperationFromQuestionnaire == $currentCooperation) {
+            return true;
         }
 
         return false;

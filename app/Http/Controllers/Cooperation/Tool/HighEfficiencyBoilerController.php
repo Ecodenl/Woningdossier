@@ -127,6 +127,7 @@ class HighEfficiencyBoilerController extends Controller
         UserEnergyHabit::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'user_id' => $user->id,
+                'input_source_id' => $inputSourceId,
             ],
             [
                 'resident_count' => $residentCount,

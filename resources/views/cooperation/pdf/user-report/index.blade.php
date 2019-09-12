@@ -7,7 +7,6 @@
 
     <link rel="stylesheet" href="{{asset('css/pdf.css')}}">
     <title>Document</title>
-
 </head>
 
 {{-- This is the frontpage of the pdf, after this a new page must be started with the component. --}}

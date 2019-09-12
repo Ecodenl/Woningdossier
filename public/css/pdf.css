@@ -1,6 +1,9 @@
 .text-uppercase {
   text-transform: uppercase; }
 
+.page-break {
+  page-break-before: always; }
+
 .turquoise {
   color: #29A082; }
 
@@ -11,12 +14,6 @@
   max-width: 960px;
   padding-right: 80px;
   padding-left: 80px; }
-
-.page-footer {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0; }
 
 .full-width {
   width: 100%; }

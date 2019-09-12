@@ -36,6 +36,8 @@
 </div>
 
 
+
+
 <div class="question-answer-section">
     <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.comment-action-plan')}}</p>
     @foreach($userActionPlanAdviceComments as $userActionPlanAdviceComment)
@@ -48,7 +50,23 @@
     @endforeach
 </div>
 
-<div class="question-answer-section">
+<?php
+    // if the total comment count exceeds a specific amount, we will create a new page otherwise it will overflow the footer..
+    $comments = $userActionPlanAdviceComments->pluck('comment')->toArray();
+
+    // map the array to count the total comments, and then sum it.
+    $totalCommentCount = array_sum(
+        array_map(function ($comment) {
+            return strlen($comment);
+        }, $comments)
+    );
+?>
+
+@if($totalCommentCount >= 2700)
+    <div class="page-break"></div>
+@endif
+
+<div class="question-answer-section" >
     <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.calculations-are-indicative.title')}}</p>
     <p>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.calculations-are-indicative.text')}}</p>
 </div>

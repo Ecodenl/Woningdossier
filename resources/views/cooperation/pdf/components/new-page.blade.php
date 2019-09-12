@@ -5,5 +5,5 @@
 </head>
 
 <body class="new-page">
-{{$slot}}
+    {{$slot}}
 </body>

@@ -73,11 +73,7 @@ class HighEfficiencyBoilerController extends Controller
 
     public function calculate(Request $request)
     {
-        $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
-
-        $result = HighEfficiencyBoiler::calculate($building, $user, $request->all());
-
+        $result = HighEfficiencyBoiler::calculate(Hoomdossier::user()->energyHabit, $request->all());
 
         return response()->json($result);
     }
@@ -127,6 +123,7 @@ class HighEfficiencyBoilerController extends Controller
         UserEnergyHabit::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'user_id' => $user->id,
+                'input_source_id' => $inputSourceId,
             ],
             [
                 'resident_count' => $residentCount,
@@ -140,7 +137,7 @@ class HighEfficiencyBoilerController extends Controller
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
         $cooperation = HoomdossierSession::getCooperation(true);
 
-        $nextStep = StepHelper::getNextStep($this->step);
+        $nextStep = StepHelper::getNextStep(Hoomdossier::user(), HoomdossierSession::getInputSource(true), $this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
 
         if (! empty($nextStep['tab_id'])) {

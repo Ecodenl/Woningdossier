@@ -53,12 +53,8 @@ class GenerateTotalReport implements ShouldQueue
 
         // temporary session to get the right data for the dumb.
         $residentInputSource = InputSource::findByShort('resident');
-        HoomdossierSession::setInputSource($residentInputSource);
-        HoomdossierSession::setInputSourceValue($residentInputSource);
 
-        $rows = CsvService::totalReport($this->cooperation, $this->anonymizeData);
-
-        \Session::forget('hoomdossier_session');
+        $rows = CsvService::totalReport($this->cooperation, $residentInputSource, $this->anonymizeData);
 
         // export the csv file
         Excel::store(new CsvExport($rows), $this->fileStorage->filename, 'downloads', \Maatwebsite\Excel\Excel::CSV);

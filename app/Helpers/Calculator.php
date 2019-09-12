@@ -8,6 +8,7 @@ use App\Models\Building;
 use App\Models\BuildingTypeElementMaxSaving;
 use App\Models\Element;
 use App\Models\ElementValue;
+use App\Models\InputSource;
 use App\Models\Log;
 use App\Models\MeasureApplication;
 use App\Models\PriceIndexing;
@@ -16,10 +17,10 @@ use Carbon\Carbon;
 
 class Calculator
 {
-    public static function calculateGasSavings(Building $building, ElementValue $element, UserEnergyHabit $energyHabit, $surface, $measureAdvice)
+    public static function calculateGasSavings(Building $building, InputSource $inputSource, ElementValue $element, UserEnergyHabit $energyHabit, $surface, $measureAdvice)
     {
         $result = 0;
-        $building->getBuildingType();
+        $building->getBuildingType($inputSource);
 
         $roomTempCalculator = new RoomTemperatureCalculator($energyHabit);
         $averageHouseTemperature = $roomTempCalculator->getAverageHouseTemperature();
@@ -30,9 +31,9 @@ class Calculator
         if (isset($element->calculate_value) && $element->calculate_value < 3) {
             $result = min(
                 $surface * $kengetalEnergySaving,
-                self::maxGasSavings($building, $energyHabit, $element->element)
+                self::maxGasSavings($building, $inputSource, $energyHabit, $element->element)
             );
-            self::debug($result.' = min('.$surface.' * '.$kengetalEnergySaving.', '.self::maxGasSavings($building, $energyHabit, $element->element).')');
+            self::debug($result.' = min('.$surface.' * '.$kengetalEnergySaving.', '.self::maxGasSavings($building, $inputSource, $energyHabit, $element->element).')');
         }
 
         return $result;
@@ -170,17 +171,18 @@ class Calculator
     }
 
     // in m3 per year
-    public static function maxGasSavings(Building $building, UserEnergyHabit $energyHabit, Element $element)
+    public static function maxGasSavings(Building $building, InputSource $inputSource, UserEnergyHabit $energyHabit, Element $element)
     {
-        $boiler = $building->getServiceValue('hr-boiler');
+        $boiler = $building->getServiceValue('hr-boiler', $inputSource);
 
-        $buildingType = $building->getBuildingType();
+        $buildingType = $building->getBuildingType($inputSource);
         $usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler, $energyHabit);
         $usage = $usages['heating']['bruto'];
         $saving = 0;
         $maxSaving = BuildingTypeElementMaxSaving::where('building_type_id', $buildingType->id)
                                                  ->where('element_id', $element->id)
                                                  ->first();
+
         if ($maxSaving instanceof BuildingTypeElementMaxSaving) {
             $saving = $maxSaving->max_saving;
         }

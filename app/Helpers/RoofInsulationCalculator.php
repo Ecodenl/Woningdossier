@@ -6,19 +6,20 @@ use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Models\Building;
 use App\Models\BuildingHeating;
 use App\Models\ElementValue;
+use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
 
 class RoofInsulationCalculator
 {
-    public static function calculateGasSavings(Building $building, ElementValue $element, UserEnergyHabit $energyHabit, BuildingHeating $heating, $surface, $totalSurface, $measureAdvice)
+    public static function calculateGasSavings(Building $building, InputSource $inputSource, ElementValue $element, UserEnergyHabit $energyHabit, BuildingHeating $heating, $surface, $totalSurface, $measureAdvice)
     {
         if (0 == $totalSurface) {
             return 0;
         }
         $result = 0;
-        $building->getBuildingType();
+        $building->getBuildingType($inputSource);
 
         $kengetalEnergySaving = Temperature::energySavingFigureRoofInsulation($measureAdvice, $heating);
         self::debug('Kengetal energebesparing = '.$kengetalEnergySaving);
@@ -26,9 +27,9 @@ class RoofInsulationCalculator
         if (isset($element->calculate_value) && $element->calculate_value < 3) {
             $result = min(
                 $surface * $kengetalEnergySaving,
-                ($surface / $totalSurface) * Calculator::maxGasSavings($building, $energyHabit, $element->element)
+                ($surface / $totalSurface) * Calculator::maxGasSavings($building, $inputSource, $energyHabit, $element->element)
             );
-            self::debug($result.' = min('.$surface.' * '.$kengetalEnergySaving.', ('.$surface / $totalSurface.') * '.Calculator::maxGasSavings($building, $energyHabit, $element->element).')');
+            self::debug($result.' = min('.$surface.' * '.$kengetalEnergySaving.', ('.$surface / $totalSurface.') * '.Calculator::maxGasSavings($building, $inputSource, $energyHabit, $element->element).')');
         }
 
         return $result;

@@ -254,9 +254,8 @@ class RoofInsulationController extends Controller
     {
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
 
-        $result = \App\Calculations\RoofInsulation::calculate($building, $user, $request->all());
+        $result = \App\Calculations\RoofInsulation::calculate($building, HoomdossierSession::getInputSource(true), $building->user->energyHabit, $request->all());
 
         return response()->json($result);
     }
@@ -346,7 +345,7 @@ class RoofInsulationController extends Controller
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
         $cooperation = HoomdossierSession::getCooperation(true);
 
-        $nextStep = StepHelper::getNextStep($this->step);
+        $nextStep = StepHelper::getNextStep(Hoomdossier::user(), HoomdossierSession::getInputSource(true), $this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
 
         if (! empty($nextStep['tab_id'])) {

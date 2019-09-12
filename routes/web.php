@@ -54,11 +54,12 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
 
             Route::get('messages/count', 'MessagesController@getTotalUnreadMessageCount')->name('message.get-total-unread-message-count');
 
-            Route::group(['as' => 'pdf.', 'namespace' => 'Pdf', 'prefix' => 'pdf'], function () {
-                Route::group(['as' => 'user-report.', 'prefix' => 'user-report'], function () {
-                    Route::get('', 'UserReportController@index')->name('index');
-                });
-            });
+            // debug purpose only
+//            Route::group(['as' => 'pdf.', 'namespace' => 'Pdf', 'prefix' => 'pdf'], function () {
+//                Route::group(['as' => 'user-report.', 'prefix' => 'user-report'], function () {
+//                    Route::get('', 'UserReportController@index')->name('index');
+//                });
+//            });
 
             Route::get('home', 'HomeController@index')->name('home')->middleware('deny-if-filling-for-other-building');
 

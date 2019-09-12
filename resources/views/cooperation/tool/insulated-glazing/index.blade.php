@@ -271,16 +271,16 @@
                                 @else
                                 @foreach ($woodElements->values()->orderBy('order')->get() as $woodElement)
                                     <?php
-                                    $myWoodElement = $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id)->first();
-                                    $notNull = null != $myWoodElement;
+                                    $myWoodElements = $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id);
+
                                     ?>
-                                    @if ($notNull && $myWoodElement->element_value_id == $woodElement->id)
-                                        <li class="change-input-value" data-input-value="{{$woodElement->id}}"
-                                            data-input-source-short="{{$myWoodElement->inputSource()->first()->short}}">
-                                            <a href="#">{{$myWoodElement->getInputSourceName()}}
-                                                : {{$woodElement->value}}</a>
-                                        </li>
-                                    @endif
+                                    @foreach($myWoodElements as $myWoodElement)
+                                        @if (!is_null($myWoodElement) && $myWoodElement->element_value_id == $woodElement->id)
+                                            <li class="change-input-value" data-input-value="{{$woodElement->id}}" data-input-source-short="{{$myWoodElement->inputSource()->first()->short}}">
+                                                <a href="#">{{$myWoodElement->getInputSourceName()}}: {{$woodElement->value}}</a>
+                                            </li>
+                                        @endif
+                                    @endforeach
                                 @endforeach
                                 @endif
                             </ul>

@@ -5,11 +5,12 @@ namespace App\Helpers;
 use App\Helpers\KeyFigures\FloorInsulation\Temperature;
 use App\Models\Building;
 use App\Models\ElementValue;
+use App\Models\InputSource;
 use App\Models\UserEnergyHabit;
 
 class FloorInsulationCalculator
 {
-    public static function calculateGasSavings(Building $building, ElementValue $element, UserEnergyHabit $energyHabit, $surface, $measureAdvice)
+    public static function calculateGasSavings(Building $building, InputSource $inputSource, ElementValue $element, UserEnergyHabit $energyHabit, $surface, $measureAdvice)
     {
         $result = 0;
 
@@ -19,9 +20,9 @@ class FloorInsulationCalculator
         if (isset($element->calculate_value) && $element->calculate_value < 3) {
             $result = min(
                 $surface * $kengetalEnergySaving,
-                Calculator::maxGasSavings($building, $energyHabit, $element->element)
+                Calculator::maxGasSavings($building, $inputSource, $energyHabit, $element->element)
             );
-            self::debug($result.' = min('.$surface.' * '.$kengetalEnergySaving.', '.Calculator::maxGasSavings($building, $energyHabit, $element->element).')');
+            self::debug($result.' = min('.$surface.' * '.$kengetalEnergySaving.', '.Calculator::maxGasSavings($building, $inputSource, $energyHabit, $element->element).')');
         } else {
             self::debug('No gas savings..');
         }

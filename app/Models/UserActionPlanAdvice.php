@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\NumberFormatter;
 use App\Scopes\GetValueScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
@@ -105,42 +106,6 @@ class UserActionPlanAdvice extends Model
         return $this->belongsTo(Step::class);
     }
 
-    public static function getCategorizedActionPlan(User $user)
-    {
-        $result = [];
-        $advices = self::where('user_id', $user->id)
-                       ->orderBy('step_id', 'asc')
-                       ->orderBy('year', 'asc')
-                       ->get();
-        /** @var UserActionPlanAdvice $advice */
-        foreach ($advices as $advice) {
-            if ($advice->step instanceof Step) {
-                /** @var MeasureApplication $measureApplication */
-                $measureApplication = $advice->measureApplication;
-
-                if (is_null($advice->year)) {
-                    $advice->year = $advice->getAdviceYear();
-                    // re-index costs
-                    //$advice->costs = Calculator::reindexCosts($advice->costs, null, $advice->year);
-                }
-
-                if (! array_key_exists($measureApplication->measure_type, $result)) {
-                    $result[$measureApplication->measure_type] = [];
-                }
-
-                if (! array_key_exists($advice->step->slug, $result[$measureApplication->measure_type])) {
-                    $result[$measureApplication->measure_type][$advice->step->slug] = [];
-                }
-
-                $result[$measureApplication->measure_type][$advice->step->slug][] = $advice;
-            }
-        }
-
-        ksort($result);
-
-        return $result;
-    }
-
     /**
      * Get all the comments that are saved in multiple tables.
      *
@@ -197,10 +162,6 @@ class UserActionPlanAdvice extends Model
             // loop through them and extract the comments from them
             foreach ($coachInputs as $coachInput) {
                 if (! is_null($coachInput)) {
-                    if ($step == 'general-data') {
-
-                    }
-
 
                     if (is_array($coachInput->extra) && array_key_exists('comment', $coachInput->extra)) {
                         $comments = [$coachInput->extra['comment']];
@@ -220,7 +181,6 @@ class UserActionPlanAdvice extends Model
                 }
             }
         }
-
         return $coachComments;
     }
 
@@ -273,5 +233,150 @@ class UserActionPlanAdvice extends Model
         }
 
         return null;
+    }
+
+    /**
+     * Method to return a year for the personal plan
+     *
+     * @return array|int|null|string
+     */
+    public function getYear()
+    {
+        $year = isset($this->planned_year) ? $this->planned_year : $this->year;
+
+        if (is_null($year)) {
+            $year = $this->getAdviceYear() ?? __('woningdossier.cooperation.tool.my-plan.no-year');
+        }
+
+        return $year;
+    }
+
+
+    /**
+     * Get the action plan categorized under measure type
+     *
+     * @param User $user
+     * @param InputSource $inputSource
+     * @param bool $withAdvices
+     * @return array
+     */
+    public static function getCategorizedActionPlan(User $user, InputSource $inputSource, $withAdvices = true)
+    {
+
+        $result = [];
+        $advices = self::forInputSource($inputSource)
+            ->where('user_id', $user->id)
+            ->orderBy('step_id', 'asc')
+            ->orderBy('year', 'asc')
+            ->get();
+
+        foreach ($advices as $advice) {
+
+            if ($advice->step instanceof Step) {
+
+                /** @var MeasureApplication $measureApplication */
+                $measureApplication = $advice->measureApplication;
+
+                if (is_null($advice->year)) {
+                    $advice->year = $advice->getAdviceYear();
+                }
+
+                // if advices are not desirable and the measureApplication is not an advice it will be added to the result
+                if (!$withAdvices && !$measureApplication->isAdvice()) {
+                    $result[$measureApplication->measure_type][$advice->step->slug][] = $advice;
+                }
+
+                // if advices are desirable we always add it.
+                if ($withAdvices) {
+                    $result[$measureApplication->measure_type][$advice->step->slug][] = $advice;
+                }
+
+
+            }
+        }
+
+        ksort($result);
+
+        return $result;
+    }
+
+
+    /**
+     * Check whether someone is interested in the measure
+     *
+     * @param Building $building
+     * @param InputSource $inputSource
+     * @param Step $step
+     *
+     * @return bool
+     */
+    public static function hasInterestInMeasure(Building $building, InputSource $inputSource, Step $step): bool
+    {
+        return self::forInputSource($inputSource)
+            ->where('user_id', $building->user_id)
+            ->where('step_id', $step->id)
+            ->where('planned', true)
+            ->first() instanceof UserActionPlanAdvice;
+    }
+
+
+    /**
+     * Get the personal plan for a user and its input source
+     *
+     * @param User $user
+     * @param InputSource $inputSource
+     * @return array
+     */
+    public static function getPersonalPlan(User $user, InputSource $inputSource): array
+    {
+
+        $advices = self::getCategorizedActionPlan($user, $inputSource);
+
+        $sortedAdvices = [];
+
+        foreach($advices as $measureType => $stepAdvices) {
+
+            foreach ($stepAdvices as $stepSlug => $advicesForStep) {
+
+                foreach ($advicesForStep as $advice) {
+                    $year = isset($advice->planned_year) ? $advice->planned_year : $advice->year;
+
+                    if (is_null($year)) {
+                        $year = $advice->getAdviceYear();
+                    }
+                    if (is_null($year)) {
+                        $year     = __('woningdossier.cooperation.tool.my-plan.no-year');
+                        $costYear = Carbon::now()->year;
+                    } else {
+                        $costYear = $year;
+                    }
+                    if ( ! array_key_exists($year, $sortedAdvices)) {
+                        $sortedAdvices[$year] = [];
+                    }
+
+                    // get step from advice
+                    $step = $advice->step;
+
+                    if ( ! array_key_exists($step->name, $sortedAdvices[$year])) {
+                        $sortedAdvices[$year][$step->name] = [];
+                    }
+
+                    $sortedAdvices[$year][$step->name][] = [
+                        'interested'          => $advice->planned,
+                        'advice_id' => $advice->id,
+                        'measure' => $advice->measureApplication->measure_name,
+                        'measure_short'       => $advice->measureApplication->short,                    // In the table the costs are indexed based on the advice year
+                        // Now re-index costs based on user planned year in the personal plan
+                        'costs'               => NumberFormatter::round(Calculator::indexCosts($advice->costs, $costYear)),
+                        'savings_gas'         => is_null($advice->savings_gas) ? 0 : NumberFormatter::round($advice->savings_gas),
+                        'savings_electricity' => is_null($advice->savings_electricity) ? 0 : NumberFormatter::round($advice->savings_electricity),
+                        'savings_money'       => is_null($advice->savings_money) ? 0 : NumberFormatter::round(Calculator::indexCosts($advice->savings_money, $costYear)),
+                    ];
+                }
+            }
+        }
+        ksort($sortedAdvices);
+
+        return $sortedAdvices;
     }
 }

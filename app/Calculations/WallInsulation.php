@@ -12,6 +12,7 @@ use App\Models\ElementValue;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
+use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
@@ -27,7 +28,7 @@ class WallInsulation {
      *
      * @return array;
      */
-    public static function calculate(Building $building, $energyHabit, array $calculateData): array
+    public static function calculate(Building $building, InputSource $inputSource, $energyHabit, array $calculateData): array
     {
         $cavityWall = $calculateData['cavity_wall'] ?? -1;
         $elements = $calculateData['element'] ?? [];
@@ -62,7 +63,7 @@ class WallInsulation {
         $elementValueId = array_shift($elements);
         $elementValue = ElementValue::find($elementValueId);
         if ($elementValue instanceof ElementValue && $energyHabit instanceof UserEnergyHabit) {
-            $result['savings_gas'] = Calculator::calculateGasSavings($building, $elementValue, $energyHabit, $facadeSurface, $advice);
+            $result['savings_gas'] = Calculator::calculateGasSavings($building, $inputSource, $elementValue, $energyHabit, $facadeSurface, $advice);
         }
 
 

@@ -19,7 +19,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             return view('cooperation.welcome');
         })->name('welcome');
 
-
         Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
 
         Auth::routes();
@@ -55,10 +54,18 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
             Route::get('messages/count', 'MessagesController@getTotalUnreadMessageCount')->name('message.get-total-unread-message-count');
 
+            // debug purpose only
+//            Route::group(['as' => 'pdf.', 'namespace' => 'Pdf', 'prefix' => 'pdf'], function () {
+//                Route::group(['as' => 'user-report.', 'prefix' => 'user-report'], function () {
+//                    Route::get('', 'UserReportController@index')->name('index');
+//                });
+//            });
+
             Route::get('home', 'HomeController@index')->name('home')->middleware('deny-if-filling-for-other-building');
 
 
             Route::group(['prefix' => 'file-storage', 'as' => 'file-storage.'], function () {
+                Route::post('{fileType}', 'FileStorageController@store')->name('store');
 
                 Route::get('download/{fileType}/{fileStorageFilename}', 'FileStorageController@download')
                     ->middleware('file-storage-download')
@@ -88,6 +95,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::delete('destroy', 'SettingsController@destroy')->name('destroy');
                     Route::post('reset-dossier', 'SettingsController@resetFile')->name('reset-file');
                 });
+
 
                 Route::resource('hoom-settings', 'HoomSettingsController');
 
@@ -196,7 +204,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');
                 Route::post('my-plan/comment', 'MyPlanController@storeComment')->name('my-plan.store-comment');
                 Route::post('my-plan/store', 'MyPlanController@store')->name('my-plan.store');
-                Route::get('my-plan/export', 'MyPlanController@export')->name('my-plan.export');
+//                Route::get('my-plan/export', 'MyPlanController@export')->name('my-plan.export');
             });
 
             Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['role:cooperation-admin|coordinator|coach|super-admin|superuser']], function () {

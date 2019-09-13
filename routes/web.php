@@ -63,6 +63,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
             Route::get('home', 'HomeController@index')->name('home')->middleware('deny-if-filling-for-other-building');
 
+            Route::resource('privacy', 'PrivacyController')->only('index');
+            Route::resource('disclaimer', 'DisclaimController')->only('index');
 
             Route::group(['prefix' => 'file-storage', 'as' => 'file-storage.'], function () {
                 Route::post('{fileType}', 'FileStorageController@store')->name('store');
@@ -127,9 +129,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             });
 
             // conversation requests
-            Route::group(['prefix' => 'request', 'as' => 'conversation-requests.',
-                'namespace' => 'ConversationRequest'
-            ], function () {
+            Route::group(['prefix' => 'request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
                 Route::get('/edit/{action?}', 'ConversationRequestController@edit')->name('edit');
                 Route::get('{action?}/{measureApplicationShort?}',
                     'ConversationRequestController@index')->name('index');
@@ -253,9 +253,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
 
                 /* Section for the cooperation-admin and coordinator */
-                Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation',
-                    'middleware' => ['current-role:cooperation-admin|coordinator']
-                ], function () {
+                Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['current-role:cooperation-admin|coordinator']], function () {
                     Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
                         Route::get('', 'UserController@index')->name('index');
                         Route::get('create', 'UserController@create')->name('create');
@@ -291,9 +289,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
 
                     /* Section for the coordinator */
-                    Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator',
-                        'middleware' => ['current-role:coordinator']
-                    ], function () {
+                    Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['current-role:coordinator']], function () {
 
                         // needs to be the last route due to the param
                         Route::get('home', 'CoordinatorController@index')->name('index');

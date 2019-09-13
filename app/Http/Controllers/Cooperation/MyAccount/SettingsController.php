@@ -24,14 +24,6 @@ use Illuminate\Support\Str;
 
 class SettingsController extends Controller
 {
-    public function index()
-    {
-        $user = Hoomdossier::user();
-        $account = Hoomdossier::account();
-        $building = HoomdossierSession::getBuilding(true);
-
-        return view('cooperation.my-account.settings.index', compact('user', 'building', 'account'));
-    }
 
     /**
      * Update the account.

@@ -12,12 +12,6 @@ use Illuminate\Http\Request;
 
 class ImportCenterController extends Controller
 {
-    public function index()
-    {
-        $toolSettings = ToolSetting::getChangedSettings(HoomdossierSession::getBuilding());
-
-        return view('cooperation.my-account.import-center.index', compact('toolSettings'));
-    }
 
     /**
      * Set the compare sessions, if the user is not comparing set the compare to true; else we leave it to false.

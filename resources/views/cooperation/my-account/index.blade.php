@@ -3,7 +3,7 @@
 @section('my_account_content')
     <div class="container">
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">@lang('my-account.index.header')</div>
                 </div>
@@ -352,8 +352,171 @@
                     </div>
                 @endcan
 
+                {{-- Notification settings --}}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        @lang('my-account.notification-settings.index.header')
+                    </div>
 
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th>@lang('my-account.notification-settings.index.table.columns.name')</th>
+                                        <th>@lang('my-account.notification-settings.index.table.columns.interval')</th>
+                                        <th>@lang('my-account.notification-settings.index.table.columns.last-notified-at')</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($notificationSettings as $i => $notificationSetting)
+                                        <tr>
+                                            <td>{{ $notificationSetting->type->name }}</td>
+                                            <td>
+
+                                                <form action="{{route('cooperation.my-account.notification-settings.update', $notificationSetting->id)}}" method="post">
+                                                    {{csrf_field()}}
+                                                    {{method_field('put')}}
+                                                    <select name="notification_setting[{{$notificationSetting->id}}][interval_id]" class="form-control change-interval">
+                                                        @foreach($notificationIntervals as $notificationInterval)
+                                                            <option @if(old('notification_setting.interval_id', $notificationSetting->interval_id) == $notificationInterval->id) selected="selected" @endif value="{{$notificationInterval->id}}">{{$notificationInterval->name}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </form>
+                                            </td>
+                                            <td>{{ is_null($notificationSetting->last_notified_at) ? __('my-account.notification-settings.index.table.never-sent') : $notificationSetting->last_notified_at->format('Y-m-d') }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{--Access--}}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        @lang('my-account.access.index.header')
+                    </div>
+
+                    <div class="panel-body">
+                        @if($conversationRequests->isNotEmpty())
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form id="allow-access-form" action="{{route('cooperation.my-account.access.allow-access')}}" method="post">
+                                        {{csrf_field()}}
+                                        <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
+                                            <label for="allow_access">
+                                                <input id="allow_access" name="allow_access" type="checkbox"
+                                                       @if(old('allow_access') && old('allow_access') == 'on' || $conversationRequests->contains('allow_access', true))
+                                                       checked="checked"
+                                                        @endif>
+                                                @lang('my-account.access.index.form.allow_access', ['cooperation' => \App\Models\Cooperation::find(\App\Helpers\HoomdossierSession::getCooperation())->name])
+                                            </label>
+                                            @if ($errors->has('allow_access'))
+                                                <span class="help-block">
+                                    <strong>{{ $errors->first('allow_access') }}</strong>
+                                </span>
+                                            @endif
+                                            <p>@lang('my-account.access.index.text-allow-access')</p>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        @endif
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th>@lang('my-account.access.index.table.columns.coach')</th>
+                                        <th>@lang('my-account.access.index.table.columns.actions')</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($buildingPermissions as $i => $buildingPermission)
+                                        <form id="revoke-access-{{$buildingPermission->id}}" action="{{route('cooperation.messages.participants.revoke-access')}}" method="post">
+                                            {{csrf_field()}}
+                                            <input type="hidden" name="user_id" value="{{$buildingPermission->user_id}}">
+                                            <input type="hidden" name="building_owner_id" value="{{$buildingPermission->building_id}}">
+                                        </form>
+                                        <tr>
+                                            <td>{{ $buildingPermission->user->getFullName() }}</td>
+                                            <td>
+                                                <a data-form-id="revoke-access-{{$buildingPermission->id}}" class="revoke-access btn btn-danger"><i class="glyphicon glyphicon-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 @endsection
+
+
+@push('js')
+    <script>
+        $(document).ready(function () {
+            $('.change-interval').change(function () {
+                $(this).parent().submit();
+            });
+
+            $('.revoke-access').click(function () {
+                if (confirm('Weet u zeker dat u deze gebruiker de toegang wilt ontzetten ?')) {
+                    var formId = $(this).data('form-id');
+                    $('form#'+formId).submit();
+                }
+            });
+
+            $('#allow_access').change(function () {
+                // if access gets turned of, we want to show them a alert
+                // else we dont!
+                if ($(this).prop('checked') === false) {
+                    if (confirm('Weet u zeker dat u de toegang wilt ontzeggen voor elk gekoppelde coach ?')) {
+                        $('#allow-access-form').submit();
+                    } else {
+                        // otherwise this may seems weird, so on cancel. we check the box again.
+                        $(this).prop('checked', true);
+                    }
+                }  else {
+                    $('#allow-access-form').submit();
+                }
+            });
+
+
+            var areYouSure = '@lang('my-account.settings.reset-file.are-you-sure')';
+            $('#reset-account').click(function (event) {
+                if (confirm(areYouSure)) {
+                    $(this).closest('form').submit();
+                } else {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+            var userCooperationCount = '{{$account->users()->count()}}';
+
+            var areYouSureToDestroy = '@lang('my-account.settings.destroy.are-you-sure.delete-from-cooperation')';
+
+            if (userCooperationCount === 1) {
+                areYouSureToDestroy = '@lang('my-account.settings.destroy.are-you-sure.complete-delete')';
+            }
+
+            $('#delete-account').click(function (event) {
+                if (confirm(areYouSureToDestroy)) {
+                    $(this).closest('form').submit();
+                } else {
+                    event.preventDefault();
+                    return false;
+                }
+            })
+        })
+    </script>
+@endpush

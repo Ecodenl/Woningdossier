@@ -66,7 +66,7 @@ class SettingsController extends Controller
         ]);
 
 
-        return redirect()->route('cooperation.my-account.settings.index')
+        return redirect()->route('cooperation.my-account.index')
                          ->with('success', __('my-account.settings.store.success'));
     }
 
@@ -120,7 +120,7 @@ class SettingsController extends Controller
     // Delete account
     public function destroy()
     {
-        $user = \App\Helpers\Hoomdossier::user();
+        $user = Hoomdossier::user();
         $accountId = $user->account_id;
         $cooperation = HoomdossierSession::getCooperation(true);
 

@@ -92,7 +92,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::get('', 'MyAccountController@index')->name('index');
 
                 Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
-                    Route::get('', 'SettingsController@index')->name('index');
                     Route::put('', 'SettingsController@update')->name('update');
                     Route::delete('destroy', 'SettingsController@destroy')->name('destroy');
                     Route::post('reset-dossier', 'SettingsController@resetFile')->name('reset-file');
@@ -103,28 +102,22 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
 
                 Route::group(['as' => 'import-center.', 'prefix' => 'import-centrum'], function () {
-                    Route::get('', 'ImportCenterController@index')->name('index');
-                    Route::get('set-compare-session/{inputSourceShort}',
-                        'ImportCenterController@setCompareSession')->name('set-compare-session');
-                    Route::post('dismiss-notification',
-                        'ImportCenterController@dismissNotification')->name('dismiss-notification');
+                    Route::get('set-compare-session/{inputSourceShort}', 'ImportCenterController@setCompareSession')->name('set-compare-session');
+                    Route::post('dismiss-notification', 'ImportCenterController@dismissNotification')->name('dismiss-notification');
                 });
 
                 Route::resource('notification-settings', 'NotificationSettingsController')->only([
                     'index', 'show', 'update'
                 ]);
 
-                Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
+                Route::group(['as' => 'messages.', 'prefix' => 'messages'], function () {
                     Route::get('', 'MessagesController@index')->name('index');
                     Route::get('edit', 'MessagesController@edit')->name('edit');
                     Route::post('edit', 'MessagesController@store')->name('store');
                     Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
                 });
 
-                Route::group(['as' => 'access.', 'prefix' => 'access'], function () {
-                    Route::get('', 'AccessController@index')->name('index');
-                    Route::post('allow-access', 'AccessController@allowAccess')->name('allow-access');
-                });
+                Route::post('access/allow-access', 'AccessController@allowAccess')->name('access.allow-access');
 
             });
 

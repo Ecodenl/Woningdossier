@@ -6,9 +6,11 @@ use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserRevokedAccessToHisBuilding;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
+use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
 use App\Models\PrivateMessage;
+use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -73,7 +75,7 @@ class AccessController extends Controller
 
         // and revoke them the access to the building
         foreach ($connectedCoachesToBuilding as $connectedCoachToBuilding) {
-            BuildingCoachStatusService::revokeAccess($connectedCoachToBuilding->coach_id, $connectedCoachToBuilding->building_id);
+            BuildingCoachStatusService::revokeAccess(User::find($connectedCoachToBuilding->coach_id), Building::find($connectedCoachToBuilding->building_id));
         }
 
         // delete all the building permissions for this building

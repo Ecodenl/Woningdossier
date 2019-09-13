@@ -5,8 +5,8 @@
 
     $currentInputSource = \App\Helpers\HoomdossierSession::getInputSource(true);
     // if not, we have to place a extra field so he can add a comment
-    $currentInputSourceHasNoPlacedComment = isset($commentsByStep[$slug][$currentInputSource->name]);
 
+    $currentInputSourceHasNoPlacedComment = !isset($commentsByStep[$slug][$currentInputSource->name]);
     $columnName = $columnName ?? 'comment';
 ?>
 @isset($commentsByStep[$slug])
@@ -40,7 +40,7 @@
 @endforeach
 @endisset
 
-@if(!$currentInputSourceHasNoPlacedComment)
+@if($currentInputSourceHasNoPlacedComment)
 <div class="row">
     <div class="col-sm-12">
         <div class="form-group add-space">

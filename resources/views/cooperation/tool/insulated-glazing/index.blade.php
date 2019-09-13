@@ -399,7 +399,7 @@
         </div>
 
         @include('cooperation.tool.includes.comment', [
-            'translation' => 'general.specific-situation'
+            'translation' => 'insulated-glazing.comment'
         ])
 
         <div class="row">

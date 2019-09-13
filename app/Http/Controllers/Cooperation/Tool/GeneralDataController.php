@@ -106,8 +106,9 @@ class GeneralDataController extends Controller
         $userInterestsForMe = UserInterest::forMe()->get();
 
 
+//        dd(StepHelper::getAllCommentsByStep(Hoomdossier::user() ));
 
-dd($userEnergyHabitsForMe);
+//dd($userEnergyHabitsForMe);
         return view('cooperation.tool.general-data.index', compact(
             'building', 'step',
             'coachEnergyHabitRemarks', 'userInterestsForMe',

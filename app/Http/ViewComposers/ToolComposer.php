@@ -29,7 +29,7 @@ class ToolComposer
 
         if (! in_array($view->getName(), $excludedViews)) {
 
-            $view->with('commentsByStep', StepHelper::getAllCommentsByStep(Hoomdossier::user(), true));
+            $view->with('commentsByStep', StepHelper::getAllCommentsByStep(Hoomdossier::user()));
             $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
             $view->with('myUnreadMessagesCount', PrivateMessageView::getTotalUnreadMessagesForCurrentRole());
 

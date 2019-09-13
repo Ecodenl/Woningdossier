@@ -213,9 +213,8 @@
 
 
             @include('cooperation.tool.includes.comment', [
-                 'columnName' => 'comment',
-                 'translation' => 'general.specific-situation'
-             ])
+                 'translation' => 'floor-insulation.comment'
+            ])
 
 
             <div class="row">

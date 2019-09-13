@@ -132,7 +132,7 @@
 
         @include('cooperation.tool.includes.comment', [
              'columnName' => 'comment',
-             'translation' => 'general.specific-situation'
+             'translation' => 'boiler.comment'
          ])
 
         <div class="row">

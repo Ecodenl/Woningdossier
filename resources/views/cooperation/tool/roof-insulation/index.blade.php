@@ -249,21 +249,6 @@
                                     </div>
                                 </div>
                             </div>
-                            {{--<div class="row">--}}
-                                {{--<div class="col-sm-12">--}}
-                                    {{--@component('cooperation.tool.components.step-question', ['id' => 'building_roof_types.'.$roofCat.'.extra.comment', 'translation' => 'general.specific-situation', 'required' => false])--}}
-{{----}}
-<!--                                        --><?php
-//                                        $default = isset($currentCategorizedRoofTypes[$roofCat]['extra']['comment']) ? $currentCategorizedRoofTypes[$roofCat]['extra']['comment'] : old('building_roof_types.' . $roofCat . '.extra.comment');
-//                                        ?>
-<!---->
-{{----}}
-                                        {{--<textarea name="building_roof_types[{{ $roofCat }}][extra][comment]" id=""--}}
-                                                  {{--class="form-control">{{ $default }}</textarea>--}}
-                                    {{--@endcomponent--}}
-{{----}}
-                                {{--</div>--}}
-                            {{--</div>--}}
                         </div>
                     @endforeach
                 </div>
@@ -333,8 +318,7 @@
 
 
         @include('cooperation.tool.includes.comment', [
-           'columnName' => 'extra.comment',
-           'translation' => 'general.specific-situation'
+           'translation' => 'roof-insulation.comment'
         ])
 
         <div class="row">

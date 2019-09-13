@@ -23,21 +23,14 @@
                         <tbody>
                         <?php /** @var \App\Models\User $user */ ?>
                         @foreach($users as $user)
-                            <?php
-                                $building = $user->building;
-                                $userIsAuthUser = $user->id == \App\Helpers\Hoomdossier::user()->id;
-                            ?>
+                            <?php $building = $user->building; ?>
                             @if($building instanceof \App\Models\Building)
                             <tr>
                                 <td>{{$user->getFullName()}}</td>
                                 <td>
-                                    @if($userIsAuthUser)
-                                        <p>{{$building->street}} {{$building->number}} {{$building->extension}}</p>
-                                    @else
                                     <a href="{{route('cooperation.admin.cooperation.coaches.show', ['id' => $user->id])}}">
                                         {{$building->street}} {{$building->number}} {{$building->extension}}
                                     </a>
-                                    @endif
                                 </td>
                                 <td>{{$building->postal_code}}</td>
                                 <td>

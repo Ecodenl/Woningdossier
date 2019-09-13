@@ -12016,6 +12016,10 @@ button.close {
   height: 500px;
 }
 
+.full-width {
+  width: 100%;
+}
+
 @-webkit-keyframes glyphicon-spin-r {
   0% {
     -webkit-transform: rotate(0deg);

@@ -23,7 +23,7 @@
 
                             </div>
                             <div class="col-sm-6">
-                                <img src="{{asset('images/pdf-main-images.jpg')}}" class="h-500" alt="">
+                                <img src="{{asset('images/pdf-main-images.jpg')}}" class="h-500 full-width" alt="">
                             </div>
                         </div>
                         <div class="row">

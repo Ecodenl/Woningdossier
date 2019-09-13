@@ -13,15 +13,14 @@
 
 @section('step_content')
 
-
     <?php
         //filter out the coach comments so we can check if there are any.
         $coachCommentsByStep = [];
         foreach ($commentsByStep as $stepSlug => $commentsByInputSource) {
             // filter the coach comments and leave out empty stuff
-            $coachCommentsByStep[$stepSlug] = array_filter($commentsByInputSource, function ($comment, $inputSource) {
+            $coachCommentsByStep[$stepSlug] = array_filter($commentsByInputSource, function ($inputSource) {
                 return $inputSource === \App\Models\InputSource::findByShort('coach')->name;
-            }, ARRAY_FILTER_USE_BOTH);
+            }, ARRAY_FILTER_USE_KEY);
         }
         $coachCommentsByStep = array_filter($coachCommentsByStep);
     ?>

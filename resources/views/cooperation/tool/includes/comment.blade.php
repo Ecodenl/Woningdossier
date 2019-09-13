@@ -10,9 +10,8 @@
     $columnName = $columnName ?? 'comment';
 ?>
 @isset($commentsByStep[$slug])
-@foreach($commentsByStep[$slug] as $inputSourceName => $commentsCategorizedUnderColumn)
-    {{-- The column can be a category, this will be the case when the comment is stored under a catergory --}}
-    @foreach($commentsCategorizedUnderColumn as $columnOrCategory => $comment)
+    @foreach($commentsByStep[$slug] as $inputSourceName => $comment)
+        {{-- The column can be a category, this will be the case when the comment is stored under a catergory --}}
         @if(!empty($comment))
         <div class="row">
             <div class="col-sm-12">
@@ -37,7 +36,6 @@
         </div>
         @endif
     @endforeach
-@endforeach
 @endisset
 
 @if($currentInputSourceHasNoPlacedComment)

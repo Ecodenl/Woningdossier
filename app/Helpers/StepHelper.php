@@ -151,6 +151,7 @@ class StepHelper
                 ));
 
                 // if the comments are not empty, add it to the array with its input source
+                // only add the comment, not the key / column name.
                 if (!empty($comments)) {
                     $commentsByStep[$step][$inputForMe->inputSource->name] = $comments[0];
                 }

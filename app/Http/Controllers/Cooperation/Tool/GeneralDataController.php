@@ -70,11 +70,11 @@ class GeneralDataController extends Controller
         $energyLabels = EnergyLabel::where('country_code', 'nl')->get();
 
         //$exampleBuildings = ExampleBuilding::forAnyOrMyCooperation()->orderBy('order')->get();
-        $buildingType = $building->getBuildingType();
+        $buildingType = $building->getBuildingType(HoomdossierSession::getInputSource(true));
         $exampleBuildings = collect([]);
         if ($buildingType instanceof BuildingType) {
             $exampleBuildings = ExampleBuilding::forMyCooperation()
-                ->where('building_type_id', '=', $building->getBuildingType()->id)
+                ->where('building_type_id', '=', $buildingType->id)
                 ->get();
         }
 
@@ -126,7 +126,7 @@ class GeneralDataController extends Controller
         // There is one strange option: "Er is geen passende voorbeeldwoning"
         if (is_null($exampleBuildingId) && ! is_null($buildYear)) {
             // No fitting? Try to set the generic.
-            $btype = $building->getBuildingType();
+            $btype = $building->getBuildingType(HoomdossierSession::getInputSource(true));
             if ($btype instanceof BuildingType) {
                 $generic = ExampleBuilding::generic()->where('building_type_id', $btype->id)->first();
                 if ($generic instanceof ExampleBuilding) {
@@ -357,7 +357,7 @@ class GeneralDataController extends Controller
 
         $cooperation = HoomdossierSession::getCooperation(true);
 
-        $nextStep = StepHelper::getNextStep($this->step);
+        $nextStep = StepHelper::getNextStep(Hoomdossier::user(), HoomdossierSession::getInputSource(true), $this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
 
         if (! empty($nextStep['tab_id'])) {

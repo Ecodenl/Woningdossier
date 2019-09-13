@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Dusk\DuskServiceProvider;
@@ -31,6 +32,11 @@ class AppServiceProvider extends ServiceProvider
 
             return __('validation.custom.needs_to_be_lower_or_same_as', ['otherfield' => $compareFieldName]);
         });
+
+        Builder::macro('whereLike', function(string $attribute, string $searchTerm) {
+            return $this->where($attribute, 'LIKE', "%{$searchTerm}%");
+        });
+
     }
 
     /**

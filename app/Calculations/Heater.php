@@ -11,8 +11,10 @@ use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\ComfortLevelTapWater;
 use App\Models\HeaterComponentCost;
+use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\KeyFigureConsumptionTapWater;
+use App\Models\Log;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
@@ -22,7 +24,7 @@ use Carbon\Carbon;
 
 class Heater {
 
-    public static function calculate(Building $building, User $user, $calculateData)
+    public static function calculate(Building $building, $energyHabit, $calculateData)
     {
         $result = [
             'consumption' => [
@@ -47,10 +49,8 @@ class Heater {
         $comfortLevel = ComfortLevelTapWater::find($comfortLevelId);
         $interests = $calculateData['interest'] ?? '';
 
-        $habit = $user->energyHabit;
-
-        if ($habit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
-            $consumption = KeyFigures::getCurrentConsumption($habit, $comfortLevel);
+        if ($energyHabit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
+            $consumption = KeyFigures::getCurrentConsumption($energyHabit, $comfortLevel);
             if ($consumption instanceof KeyFigureConsumptionTapWater) {
                 $result['consumption'] = [
                     'water' => $consumption->water_consumption,
@@ -97,17 +97,21 @@ class Heater {
 
                 $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
-                foreach ($interests as $type => $interestTypes) {
-                    foreach ($interestTypes as $typeId => $interestId) {
-                        $interest = Interest::find($interestId);
-                    }
-                }
 
-                $currentYear = Carbon::now()->year;
-                if (1 == $interest->calculate_value) {
-                    $result['year'] = $currentYear;
-                } elseif (2 == $interest->calculate_value) {
-                    $result['year'] = $currentYear + 5;
+                if (!empty($interests)) {
+
+                    foreach ($interests as $type => $interestTypes) {
+                        foreach ($interestTypes as $typeId => $interestId) {
+                            $interest = Interest::find($interestId);
+                        }
+                    }
+
+                    $currentYear = Carbon::now()->year;
+                    if (1 == $interest->calculate_value) {
+                        $result['year'] = $currentYear;
+                    } elseif (2 == $interest->calculate_value) {
+                        $result['year'] = $currentYear + 5;
+                    }
                 }
 
                 if ($helpFactor >= 0.84) {

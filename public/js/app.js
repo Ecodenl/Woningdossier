@@ -71,7 +71,8 @@ __webpack_require__(1);
 __webpack_require__(8);
 __webpack_require__(9);
 __webpack_require__(10);
-module.exports = __webpack_require__(11);
+__webpack_require__(11);
+module.exports = __webpack_require__(12);
 
 
 /***/ }),
@@ -30217,7 +30218,7 @@ if (typeof jQuery === 'undefined') {
 /* 9 */
 /***/ (function(module, exports) {
 
-// removed by extract-text-webpack-plugin
+throw new Error("Module build failed: ModuleBuildError: Module build failed: Error: write EPIPE\n    at WriteWrap.afterWrite [as oncomplete] (net.js:868:14)\n    at runLoaders (/vagrant/node_modules/webpack/lib/NormalModule.js:195:19)\n    at /vagrant/node_modules/loader-runner/lib/LoaderRunner.js:364:11\n    at /vagrant/node_modules/loader-runner/lib/LoaderRunner.js:230:18\n    at context.callback (/vagrant/node_modules/loader-runner/lib/LoaderRunner.js:111:13)\n    at /vagrant/node_modules/img-loader/index.js:45:31\n    at <anonymous>\n    at process._tickCallback (internal/process/next_tick.js:189:7)");
 
 /***/ }),
 /* 10 */
@@ -30227,6 +30228,12 @@ if (typeof jQuery === 'undefined') {
 
 /***/ }),
 /* 11 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

@@ -134,12 +134,12 @@ class Building extends Model
     /**
      * Check if a user is interested in a step.
      *
-     * @param string $type
-     * @param array  $interestedInIds
-     *
+     * @param InputSource $inputSource
+     * @param $type
+     * @param array $interestedInIds
      * @return bool
      */
-    public function isInterestedInStep($type, $interestedInIds = [])
+    public function isInterestedInStep(InputSource $inputSource, $type, $interestedInIds = [])
     {
         // the interest ids that people select when they do not have any interest
         $noInterestIds = [4, 5];
@@ -152,13 +152,13 @@ class Building extends Model
 
         // go through the elementid and get the user interest id to put them into the array
         foreach ($interestedInIds as $key => $interestedInId) {
-            if ($this->user->getInterestedType($type, $interestedInId) instanceof UserInterest) {
-                array_push($interestedIds, $this->user->getInterestedType($type, $interestedInId)->interest_id);
+            if ($this->user->getInterestedType($type, $interestedInId, $inputSource) instanceof UserInterest) {
+                array_push($interestedIds, $this->user->getInterestedType($type, $interestedInId, $inputSource)->interest_id);
             }
         }
 
         // check if the user wants to do something with their glazing
-        if ($interestedIds == array_intersect($interestedIds, $noInterestIds) && $this->user->getInterestedType($type, $interestedInId) instanceof UserInterest) {
+        if ($interestedIds == array_intersect($interestedIds, $noInterestIds) && $this->user->getInterestedType($type, $interestedInId, $inputSource) instanceof UserInterest) {
             return false;
         }
 
@@ -173,9 +173,9 @@ class Building extends Model
      *
      * @return bool
      */
-    public function isNotInterestedInStep($type, $interestedInIds = [])
+    public function isNotInterestedInStep(InputSource $inputSource, $type, $interestedInIds = [])
     {
-        return ! $this->isInterestedInStep($type, $interestedInIds);
+        return ! $this->isInterestedInStep($inputSource, $type, $interestedInIds);
     }
 
     /**
@@ -315,9 +315,10 @@ class Building extends Model
      *
      * @return BuildingService|null
      */
-    public function getBuildingService($short)
+    public function getBuildingService($short, InputSource $inputSource)
     {
         return $this->buildingServices()
+            ->forInputSource($inputSource)
             ->leftJoin('services as s', 'building_services.service_id', '=', 's.id')
             ->where('s.short', $short)->first(['building_services.*']);
     }
@@ -327,10 +328,10 @@ class Building extends Model
      *
      * @return ServiceValue|null
      */
-    public function getServiceValue($short)
+    public function getServiceValue($short, InputSource $inputSource)
     {
         /** @var BuildingService $buildingService */
-        $buildingService = $this->getBuildingService($short);
+        $buildingService = $this->getBuildingService($short, $inputSource);
         $serviceValue = $buildingService->serviceValue;
 
         return $serviceValue;
@@ -345,12 +346,17 @@ class Building extends Model
     }
 
     /**
+     * Return the building type from a builing through the building features
+     *
+     * @param InputSource $inputSource
      * @return BuildingType|null
      */
-    public function getBuildingType()
+    public function getBuildingType(InputSource $inputSource)
     {
-        if ($this->buildingFeatures instanceof BuildingFeature) {
-            return $this->buildingFeatures->buildingType;
+        $buildingFeature = $this->buildingFeatures()->forInputSource($inputSource)->first();
+
+        if ($buildingFeature instanceof BuildingFeature) {
+            return $buildingFeature->buildingType;
         }
 
         return null;

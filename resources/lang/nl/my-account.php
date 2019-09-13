@@ -6,6 +6,7 @@ return [
         'notification-settings' => 'Notificatie instellingen',
         'label'       => 'Mijn account',
         'import'      => 'Import centrum',
+        'report' => 'Rapporten',
         'settings'    => 'Instellingen',
         'hoom-settings' => 'Hoomdossier instellingen',
         'access'      => 'Gebruikers met toegang tot uw woning',
@@ -53,6 +54,13 @@ return [
         ],
         'update' => [
             'success' => 'Interval is opgeslagen.'
+        ],
+    ],
+
+    'reports' => [
+        'index' => [
+            'header' => 'Uw rapporten',
+            'text' => 'U kunt hier uw gegenereerde rapporten downloaden'
         ],
     ],
 

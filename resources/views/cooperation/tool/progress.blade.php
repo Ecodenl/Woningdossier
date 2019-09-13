@@ -79,7 +79,7 @@
                 @if(Route::currentRouteName() != 'cooperation.tool.' . $step->slug . '.index')
                     @foreach ($stepInterests as $interestedInType => $interestedInNames)
                         @foreach ($interestedInNames as $interestedInName => $interestedInIds)
-                            @if ($interestedInName == $step->slug && $building->isNotInterestedInStep($interestedInType, $interestedInIds) == true)
+                            @if ($interestedInName == $step->slug && $building->isNotInterestedInStep(\App\Helpers\HoomdossierSession::getInputSource(true), $interestedInType, $interestedInIds) == true)
                               not-available
                             @endif
                         @endforeach
@@ -92,7 +92,7 @@
 
                             @if ($interestedInName == $step->slug)
                                 href="{{ route('cooperation.tool.' . $step->slug . '.index', ['cooperation' => $cooperation]) }}">
-                                <img src="{{ asset('images/icons/' . $step->slug . '.png') }}" title="{{ $step->name }}@if($building->isNotInterestedInStep($interestedInType, $interestedInIds)) - @lang('default.progress.disabled')@endif" alt="{{ $step->name }}" class="img-circle"/>
+                                <img src="{{ asset('images/icons/' . $step->slug . '.png') }}" title="{{ $step->name }}@if($building->isNotInterestedInStep(\App\Helpers\HoomdossierSession::getInputSource(true), $interestedInType, $interestedInIds)) - @lang('default.progress.disabled')@endif" alt="{{ $step->name }}" class="img-circle"/>
                             @endif
 
                         @endforeach

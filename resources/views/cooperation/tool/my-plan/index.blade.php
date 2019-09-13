@@ -2,6 +2,13 @@
 
 @section('step_title', \App\Helpers\Translation::translate('my-plan.title.title'))
 
+@push('meta')
+    @if($anyFilesBeingProcessed)
+        <meta http-equiv="refresh" content="5">
+    @endif
+@endpush
+
+
 @section('page_class', 'page-my-plan')
 
 @section('step_content')
@@ -149,15 +156,53 @@
     </div>
 
 
-    <hr>
+    <br>
+    @if($file instanceof \App\Models\FileStorage)
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">@lang('default.buttons.download')</div>
+                <div class="panel-body">
+                    <ol>
+                        <li>
+                            <a @if(!$fileType->isBeingProcessed() )
+                               href="{{route('cooperation.file-storage.download', [
+                                    'fileType' => $fileType->short,
+                                    'fileStorageFilename' => $file->filename
+                               ])}}" @endif>{{$fileType->name}} ({{$file->created_at->format('Y-m-d H:i')}})</a>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <hr>
+        </div>
+    </div>
+    @endif
 
+    @if($buildingHasCompletedGeneralData)
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
-                <a href="{{ route('cooperation.tool.my-plan.export', ['cooperation' => $cooperation]) }}"  class="pull-right btn btn-primary">{{ \App\Helpers\Translation::translate('my-plan.download.title') }}</a>
+                <form action="{{route('cooperation.file-storage.store', ['fileType' => $fileType->short])}}" method="post">
+                    {{csrf_field()}}
+                    <button style="margin-top: -35px"
+                            @if($fileType->isBeingProcessed()) disabled="disabled" type="button" data-toggle="tooltip"
+                            title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
+                            @else
+                            type="submit"
+                            @endif
+                            class="btn btn-{{$fileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
+                    >
+                        {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
+                        @if($fileType->isBeingProcessed() )
+                            <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
+                        @endif
+                    </button>
+                </form>
             </div>
         </div>
     </div>
+    @endif
 
 
     <div id="warning-modal" class="modal fade">

@@ -34,22 +34,22 @@
                                     <td>{{$fileType->name}}</td>
 
                                     <td>
-                                        <a
-                                            @if($fileType->isBeingProcessed() )
-                                                disabled="disabled"
-                                                href="#"
-                                                data-toggle="tooltip"
-                                                title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
-                                            @else
-                                                href="{{route('cooperation.admin.cooperation.reports.generate', ['fileType' => $fileType->short])}}"
-                                            @endif
-                                            class="btn btn-{{$fileType->isBeingProcessed()  ? 'warning' : 'primary'}}">
-
-                                            {{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.generate-btn')}}
-                                            @if($fileType->isBeingProcessed() )
-                                                <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
-                                            @endif
-                                        </a>
+                                        <form action="{{route('cooperation.file-storage.store', ['fileType' => $fileType->short])}}" method="post">
+                                            {{csrf_field()}}
+                                            <button
+                                                    @if($fileType->isBeingProcessed()) disabled="disabled" type="button" data-toggle="tooltip"
+                                                    title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
+                                                    @else
+                                                    type="submit"
+                                                    @endif
+                                                    class="btn btn-{{$fileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
+                                            >
+                                                {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
+                                                @if($fileType->isBeingProcessed() )
+                                                    <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
+                                                @endif
+                                            </button>
+                                        </form>
                                     </td>
                                     <td>
                                         <ul>

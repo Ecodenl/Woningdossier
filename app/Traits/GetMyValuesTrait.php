@@ -7,6 +7,7 @@ use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\User;
 use App\Scopes\GetValueScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 
@@ -17,12 +18,12 @@ trait GetMyValuesTrait
      * Scope all the available input for a user.
      *
      * @param $query
-     *
+     * @param User|null $user
      * @return mixed
      */
     public function scopeForMe($query, User $user = null)
     {
-        $whereUserOrBuildingId = $this->determineWhereColumn();
+        $whereUserOrBuildingId = $this->determineWhereColumn($user);
 
         return $query->withoutGlobalScope(GetValueScope::class)
                      ->where($whereUserOrBuildingId)
@@ -39,6 +40,19 @@ trait GetMyValuesTrait
     public function inputSource()
     {
         return $this->belongsTo(InputSource::class);
+    }
+
+    /**
+     * Scope a query for a specific input source id
+     *
+     * @param  Builder  $query
+     * @param  InputSource $inputSource
+     *
+     * @return Builder
+     */
+    public function scopeForInputSource(Builder $query, InputSource $inputSource)
+    {
+        return $query->withoutGlobalScopes()->where('input_source_id', $inputSource->id);
     }
 
     /**

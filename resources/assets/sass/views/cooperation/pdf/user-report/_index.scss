@@ -1,0 +1,55 @@
+#front-page {
+  #img-front-page {
+    position: fixed;
+    left: 0pt;
+    top: -25.515pt;
+    right: 0px;
+    bottom: 0px;
+    text-align: center;
+    z-index: -1000;
+
+    img {
+      width: 595.28pt;
+    }
+  }
+  #user-info {
+    height: 150px;
+    padding-top: 5%
+  }
+
+  #intro {
+    padding: 2rem 5rem 5rem 5rem;
+  }
+
+  // height should be given in the element itself
+  .page-footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+
+.step-intro {
+  h2 {
+    display: block;
+    margin: 8px 0 0 0;
+  }
+  img {
+    width: 50px;
+    height: 50px;
+    display: block;
+    float: left;
+  }
+  p {
+    padding-top: 25px;
+  }
+  margin-bottom: 25px;
+}
+.measures {
+  margin-bottom: -20px;
+  p {
+    display: inline-block;
+  }
+}

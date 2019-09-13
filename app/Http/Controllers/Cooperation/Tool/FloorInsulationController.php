@@ -91,7 +91,7 @@ class FloorInsulationController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
 
-        $result = FloorInsulation::calculate($building, $user, $request->all());
+        $result = FloorInsulation::calculate($building, HoomdossierSession::getInputSource(true), $user->energyHabit, $request->all());
 
         return response()->json($result);
     }
@@ -172,7 +172,7 @@ class FloorInsulationController extends Controller
 
         $cooperation = HoomdossierSession::getCooperation(true);
 
-        $nextStep = StepHelper::getNextStep($this->step);
+        $nextStep = StepHelper::getNextStep(Hoomdossier::user(), HoomdossierSession::getInputSource(true), $this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
 
         if (! empty($nextStep['tab_id'])) {

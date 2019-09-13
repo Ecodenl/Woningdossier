@@ -166,7 +166,7 @@ class UserActionPlanAdvice extends Model
                     if (is_array($coachInput->extra) && array_key_exists('comment', $coachInput->extra)) {
                         $comments = [$coachInput->extra['comment']];
                     } else {
-                        $possibleAttributes = ['comment', 'additional_info', 'living_situation_extra', 'motivation_extra'];
+                        $possibleAttributes = ['comment', 'additional_info', 'living_situation_extra'];
 
                         $comments = Arr::only($coachInput->attributes, $possibleAttributes);
                     }

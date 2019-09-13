@@ -126,7 +126,7 @@ class StepHelper
 
 
         // the attributes that can contain any sort of comments.
-        $possibleAttributes = ['comment', 'additional_info', 'living_situation_extra', 'motivation_extra'];
+        $possibleAttributes = ['comment', 'additional_info', 'living_situation_extra'];
 
         foreach ($allInputForMe as $step => $inputForMeByInputSource) {
             foreach ($inputForMeByInputSource as $inputForMe) {

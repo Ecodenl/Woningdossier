@@ -17,7 +17,7 @@
         <div class="row">
             <div class="col-md-12">
                 <p>{!! \App\Helpers\Translation::translate('my-plan.description.title') !!}</p>
-                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#messagesModal">{{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}</button>
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#messagesModal">{{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}</button>
             </div>
         </div>
 
@@ -26,13 +26,18 @@
                 {{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}
             @endslot
 
-            @foreach($coachCommentsByStep as $stepName => $coachComments)
-                <h4>@lang('woningdossier.cooperation.tool.my-plan.coach-comments.'.$stepName)</h4>
-                @foreach($coachComments as $coachComment)
-                    <p>{{$coachComment}}</p>
-                    <hr>
+            @foreach($commentsByStep as $stepSlug => $commentsByStep)
+                <h4>{{\App\Models\Step::where('slug', $stepSlug)->first()->name}}</h4>
+               @foreach($commentsByStep as $inputSourceName => $commentsCategorizedUnderColumn)
+                   @if($inputSourceName == \App\Models\InputSource::findByShort('coach')->name)
+                    @foreach($commentsCategorizedUnderColumn as $column => $comment)
+                        <p>{{$comment}}</p>
+                    @endforeach
+                    @endif
                 @endforeach
+                <hr>
             @endforeach
+
         @endcomponent
     @endif
 

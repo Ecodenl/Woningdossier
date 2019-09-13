@@ -146,13 +146,13 @@ class StepHelper
 
                 $inputWithComments = \Illuminate\Support\Arr::only($inputToFilter, $possibleAttributes);
 
-                $comments = $withEmptyComments ? $inputWithComments : array_filter(
+                $comments = array_values($withEmptyComments ? $inputWithComments : array_filter(
                     $inputWithComments
-                );
+                ));
 
                 // if the comments are not empty, add it to the array with its input source
                 if (!empty($comments)) {
-                    $commentsByStep[$step][$inputForMe->inputSource->name] = $comments;
+                    $commentsByStep[$step][$inputForMe->inputSource->name] = $comments[0];
                 }
             }
         }

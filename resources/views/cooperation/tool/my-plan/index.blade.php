@@ -13,7 +13,19 @@
 
 @section('step_content')
 
-    @if(!\App\Helpers\HoomdossierSession::isUserObserving())
+
+    <?php
+        //filter out the coach comments so we can check if there are any.
+        $coachCommentsByStep = [];
+        foreach ($commentsByStep as $stepSlug => $commentsByInputSource) {
+            // filter the coach comments and leave out empty stuff
+            $coachCommentsByStep[$stepSlug] = array_filter($commentsByInputSource, function ($comment, $inputSource) {
+                return $inputSource === \App\Models\InputSource::findByShort('coach')->name;
+            }, ARRAY_FILTER_USE_BOTH);
+        }
+        $coachCommentsByStep = array_filter($coachCommentsByStep);
+    ?>
+    @if(!\App\Helpers\HoomdossierSession::isUserObserving() && !empty($coachCommentsByStep))
         <div class="row">
             <div class="col-md-12">
                 <p>{!! \App\Helpers\Translation::translate('my-plan.description.title') !!}</p>
@@ -26,17 +38,14 @@
                 {{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}
             @endslot
 
-            @foreach($commentsByStep as $stepSlug => $commentsByStep)
+            @foreach($coachCommentsByStep as $stepSlug => $commentsFromCoach)
                 <h4>{{\App\Models\Step::where('slug', $stepSlug)->first()->name}}</h4>
-               @foreach($commentsByStep as $inputSourceName => $commentsCategorizedUnderColumn)
-                   @if($inputSourceName == \App\Models\InputSource::findByShort('coach')->name)
-                    @foreach($commentsCategorizedUnderColumn as $column => $comment)
+               @foreach($commentsFromCoach as $inputSourceName => $comment)
                         <p>{{$comment}}</p>
                     @endforeach
-                    @endif
-                @endforeach
                 <hr>
             @endforeach
+
 
         @endcomponent
     @endif

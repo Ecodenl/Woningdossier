@@ -185,7 +185,7 @@
 
 
             @include('cooperation.tool.includes.comment', [
-                 'translation' => 'general.specific-situation'
+                 'translation' => 'heater.comment'
              ])
 
             <div class="row">

@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
@@ -38,6 +39,9 @@ class BuildingPolicy
      */
     public function show(User $user, Building $building, Cooperation $cooperation)
     {
+        if ($building->id === HoomdossierSession::getBuilding(true)->id) {
+            return false;
+        }
         if ($user->hasRoleAndIsCurrentRole('coach')) {
             // get the buildings the user is connected to.
             $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser($user, $cooperation);
@@ -47,7 +51,7 @@ class BuildingPolicy
         }
 
         // they can always view a building.
-        return  $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
+        return $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
     }
 
 
@@ -72,7 +76,7 @@ class BuildingPolicy
             return  $connectedBuildingsForUser->contains('building_id', $building->id) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
         }
 
-        return  $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
+        return $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
     }
 
 

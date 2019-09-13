@@ -51,7 +51,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.users.show.status.label')</label>
-                        <select @if($userIsShowingHimself) disabled="disabled" @endif autocomplete="off" class="form-control" name="building[building_statuses][id]" id="building-status">
+                        <select autocomplete="off" class="form-control" name="building[building_statuses][id]" id="building-status">
                             @foreach($statuses as $status)
                                 <option {{$mostRecentStatus->status_id == $status->id ? 'selected="selected"' : ''}} value="{{$status->id}}">
                                     @if($mostRecentStatus->status_id == $status->id)
@@ -67,7 +67,7 @@
                     <div class="form-group">
                         <label for="appointment-date">@lang('woningdossier.cooperation.admin.users.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
-                            <input @if($userIsShowingHimself) disabled="disabled" @endif autocomplete="off" id="appointment-date" name="building[building_statuses][appointment_date]" type='text' class="form-control"
+                            <input autocomplete="off" id="appointment-date" name="building[building_statuses][appointment_date]" type='text' class="form-control"
                                    @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate())
                                        value=" {{$mostRecentStatus->appointment_date->format('d-m-Y')}}"
                                    @endif
@@ -87,7 +87,7 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="associated-coaches">@lang('woningdossier.cooperation.admin.users.show.associated-coach.label')</label>
-                            <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach') || $userIsShowingHimself) disabled @endif name="user[associated_coaches]" id="associated-coaches" class="form-control" multiple="multiple">
+                            <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif name="user[associated_coaches]" id="associated-coaches" class="form-control" multiple="multiple">
                                 @foreach($coaches as $coach)
                                     <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
                                     <option
@@ -104,7 +104,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="role-select">@lang('woningdossier.cooperation.admin.users.show.role.label')</label>
-                        <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach') || $userIsShowingHimself) disabled
+                        <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled
                                 @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                             @foreach($roles as $role)
                                 <option @if($user->hasNotMultipleRoles()) locked="locked"
@@ -119,7 +119,6 @@
             </div>
         </div>
 
-        @if(!$userIsShowingHimself)
         <ul class="nav nav-tabs">
 
             <li @if(session('fragment') == 'messages-intern') class="active" @endif>
@@ -222,7 +221,6 @@
                 </div>
             @endif
         </div>
-        @endif
         <div class="panel-footer">
             <div class="row">
                 <div class="col-sm-12">

@@ -15,6 +15,7 @@ use App\Models\Questionnaire;
 use App\Models\Service;
 use App\Models\Step;
 use App\Models\User;
+use App\Models\UserActionPlanAdviceComments;
 use App\Models\UserEnergyHabit;
 use App\Models\UserProgress;
 use Illuminate\Database\Eloquent\Model;
@@ -125,6 +126,10 @@ class StepHelper
         $allInputForMe->put('heater', $buildingHeaterForMe);
 
 
+        /* my plan */
+//        $allInputForMe->put('my-plan', UserActionPlanAdviceComments::forMe($user)->get());
+
+
         // the attributes that can contain any sort of comments.
         $possibleAttributes = ['comment', 'additional_info', 'living_situation_extra'];
 
@@ -145,15 +150,9 @@ class StepHelper
                     $inputWithComments
                 );
 
-
                 // if the comments are not empty, add it to the array with its input source
                 if (!empty($comments)) {
-                    // in this particular case a comment can be added to a specific roof type, so we add a key.
-//                    if ($inputForMe instanceof BuildingRoofType) {
-//                        $commentsByStep[$step][$inputForMe->inputSource->name][$inputForMe->roofType->name] = $comments;
-//                    } else {
-                        $commentsByStep[$step][$inputForMe->inputSource->name] = $comments;
-//                    }
+                    $commentsByStep[$step][$inputForMe->inputSource->name] = $comments;
                 }
             }
         }

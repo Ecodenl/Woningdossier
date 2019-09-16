@@ -25,6 +25,10 @@ class MyPlanController extends Controller
     public function index()
     {
 
+        $inputSource = HoomdossierSession::getInputSource(true);
+        $building = HoomdossierSession::getBuilding(true);
+        $buildingOwner = $building->user;
+
         $reportFileTypeCategory = FileTypeCategory::short('report')
             ->with(['fileTypes' => function ($query) {
                 $query->where('short', 'pdf-report');
@@ -33,9 +37,7 @@ class MyPlanController extends Controller
 
         $anyFilesBeingProcessed = FileStorage::withOutGlobalScope(new AvailableScope())->where('is_being_processed', true)->count();
 
-        $building = HoomdossierSession::getBuilding(true);
-        $buildingOwner = $building->user;
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner, HoomdossierSession::getInputSource(true));
+        $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner, $inputSource);
         $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
         // so we can determine wheter we will show the actionplan button
@@ -44,6 +46,26 @@ class MyPlanController extends Controller
         $fileType = FileType::where('short', 'pdf-report')->first();
 
         $file = $fileType->files()->where('building_id', $building->id)->first();
+
+        // get the input sources that have an action plan for the current building
+        // we do this by grouping on input source id, and map on the actionplanadvice to return the relationship.
+        $inputSourcesForPersonalPlanModal = UserActionPlanAdvice::forMe()
+            ->whereHas('inputSource', function ($query) use ($inputSource) {
+                $query->where('short', '!=', $inputSource->short);
+            })
+            ->select('input_source_id')
+            ->groupBy('input_source_id')
+            ->get()
+            ->map(function ($userActionPlanAdvice) {
+                return $userActionPlanAdvice->inputSource;
+            });
+        // so we have to create modals, with personal plan info within.
+        // but, only for different input sources then the current one.
+        $personalPlanForVariousInputSources = [];
+        foreach ($inputSourcesForPersonalPlanModal as $inputSource) {
+            $personalPlanForVariousInputSources[$inputSource->name] = $this->getPersonalPlan($buildingOwner, $inputSource);
+        }
+        dd($personalPlanForVariousInputSources);
 
         return view('cooperation.tool.my-plan.index', compact(
             'advices', 'coachCommentsByStep', 'actionPlanComments', 'fileType', 'file',
@@ -109,6 +131,13 @@ class MyPlanController extends Controller
         return response()->json($this->getPersonalPlan($buildingOwner, $inputSource));
     }
 
+    /**
+     * Get the personal plan for a user and its inputsource
+     *
+     * @param $user
+     * @param $inputSource
+     * @return array
+     */
     public function getPersonalPlan($user, $inputSource)
     {
 

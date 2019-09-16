@@ -13,6 +13,7 @@ use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\FileTypeCategory;
 use App\Models\Step;
+use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Scopes\AvailableScope;
@@ -32,7 +33,6 @@ class MyPlanController extends Controller
 
         $anyFilesBeingProcessed = FileStorage::withOutGlobalScope(new AvailableScope())->where('is_being_processed', true)->count();
 
-
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner, HoomdossierSession::getInputSource(true));
@@ -40,7 +40,6 @@ class MyPlanController extends Controller
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
         // so we can determine wheter we will show the actionplan button
         $buildingHasCompletedGeneralData = $building->hasCompleted(Step::where('slug', 'general-data')->first());
-
 
         $fileType = FileType::where('short', 'pdf-report')->first();
 
@@ -81,18 +80,18 @@ class MyPlanController extends Controller
 
     public function store(Request $request)
     {
-        $sortedAdvices = [];
 
-        $myAdvices = $request->input('advice', []);
         $building = HoomdossierSession::getBuilding(true);
+        $inputSource = HoomdossierSession::getInputSource(true);
         $buildingOwner = $building->user;
+        $myAdvices = $request->input('advice', []);
 
         foreach ($myAdvices as $adviceId => $data) {
             $advice = UserActionPlanAdvice::find($adviceId);
 
             // set the statements in variable for better readability
             $actionPlanExists = $advice instanceof UserActionPlanAdvice;
-            $inputSourceIdIsInputSourceOrUserIsObserving = $advice->input_source_id == HoomdossierSession::getInputSource() || HoomdossierSession::isUserObserving();
+            $inputSourceIdIsInputSourceOrUserIsObserving = $advice->input_source_id == $inputSource->id || HoomdossierSession::isUserObserving();
             $buildingOwnerIdIsUserId = $buildingOwner->id == $advice->user_id;
 
             // check if the advice exists, if the input source id is the current input source and if the buildingOwner id is the user id
@@ -103,48 +102,63 @@ class MyPlanController extends Controller
                 if (HoomdossierSession::isUserObserving() == false) {
                     MyPlanHelper::saveUserInterests($request, $advice);
                 }
+            }
 
-                // check if a user is interested in a measure
-                //if (MyPlanHelper::isUserInterestedInMeasure($advice->step)) {
-                if ($advice->planned) {
+        }
 
-                    $year = $advice->getYear();
+        return response()->json($this->getPersonalPlan($buildingOwner, $inputSource));
+    }
 
-                    // if its a string, the $year contains 'geen jaartal'
-                    if (is_string($year)) {
-                        $costYear = Carbon::now()->year;
-                    } else {
-                        $costYear = $year;
+    public function getPersonalPlan($user, $inputSource)
+    {
+
+        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $inputSource);
+
+        $sortedAdvices = [];
+
+        foreach($advices as $measureType => $stepAdvices) {
+
+            foreach ($stepAdvices as $stepSlug => $advicesForStep) {
+
+                foreach ($advicesForStep as $advice) {
+                    // check if a user is interested in a measure
+                    if ($advice->planned) {
+
+                        $year = $advice->getYear();
+
+                        // if its a string, the $year contains 'geen jaartal'
+                        if (is_string($year)) {
+                            $costYear = Carbon::now()->year;
+                        } else {
+                            $costYear = $year;
+                        }
+                        if (!array_key_exists($year, $sortedAdvices)) {
+                            $sortedAdvices[$year] = [];
+                        }
+
+                        // get step from advice
+                        $step = $advice->step;
+
+                        if (!array_key_exists($step->name, $sortedAdvices[$year])) {
+                            $sortedAdvices[$year][$step->name] = [];
+                        }
+
+                        $sortedAdvices[$year][$step->name][] = [
+                            'interested' => $advice->planned,
+                            'advice_id' => $advice->id,
+                            'measure' => $advice->measureApplication->measure_name,
+                            'measure_short' => $advice->measureApplication->short,
+                            // In the table the costs are indexed based on the advice year
+                            // Now re-index costs based on user planned year in the personal plan
+                            'costs' => NumberFormatter::round(Calculator::indexCosts($advice->costs, $costYear)),
+                            'savings_gas' => is_null($advice->savings_gas) ? 0 : NumberFormatter::round($advice->savings_gas),
+                            'savings_electricity' => is_null($advice->savings_electricity) ? 0 : NumberFormatter::round($advice->savings_electricity),
+                            'savings_money' => is_null($advice->savings_money) ? 0 : NumberFormatter::round(Calculator::indexCosts($advice->savings_money, $costYear)),
+                        ];
                     }
-                    if (! array_key_exists($year, $sortedAdvices)) {
-                        $sortedAdvices[$year] = [];
-                    }
-
-                    // get step from advice
-                    $step = $advice->step;
-
-                    if (! array_key_exists($step->name, $sortedAdvices[$year])) {
-                        $sortedAdvices[$year][$step->name] = [];
-                    }
-
-                    $sortedAdvices[$year][$step->name][] = [
-                        'interested' => $advice->planned,
-                        'advice_id' => $advice->id,
-                        'measure' => $advice->measureApplication->measure_name,
-                        'measure_short' => $advice->measureApplication->short,
-                        // In the table the costs are indexed based on the advice year
-                        // Now re-index costs based on user planned year in the personal plan
-                        'costs' => NumberFormatter::round(Calculator::indexCosts($advice->costs, $costYear)),
-                        'savings_gas' => is_null($advice->savings_gas) ? 0 : NumberFormatter::round($advice->savings_gas),
-                        'savings_electricity' => is_null($advice->savings_electricity) ? 0 : NumberFormatter::round($advice->savings_electricity),
-                        'savings_money' => is_null($advice->savings_money) ? 0 : NumberFormatter::round(Calculator::indexCosts($advice->savings_money, $costYear)),
-                    ];
                 }
             }
         }
-
-        ksort($sortedAdvices);
-
-        return response()->json($sortedAdvices);
+        return $sortedAdvices;
     }
 }

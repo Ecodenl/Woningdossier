@@ -329,6 +329,7 @@ class UserActionPlanAdvice extends Model
      */
     public static function getPersonalPlan(User $user, InputSource $inputSource): array
     {
+        $inputSource = InputSource::findByShort('coach');
 
         $advices = self::getCategorizedActionPlan($user, $inputSource);
 

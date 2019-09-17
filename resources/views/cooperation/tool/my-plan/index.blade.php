@@ -165,7 +165,7 @@
     ])
 
     <br>
-    @if($file instanceof \App\Models\FileStorage)
+    @if($file instanceof \App\Models\FileStorage && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-primary">
@@ -187,7 +187,8 @@
     </div>
     @endif
 
-    @if($buildingHasCompletedGeneralData)
+    <br>
+    @if($buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">

@@ -21,6 +21,10 @@ class BuildingDataCopyService
 
         // the tables that have a the where_column is used to query on the resident his answers.
         $tables = [
+            'user_interests' => [
+                'where_column' => 'interested_in_type',
+                'additional_where_column' => 'interested_in_id',
+            ],
             'building_features',
             'building_elements' => [
                 'where_column' => 'element_id',
@@ -52,10 +56,6 @@ class BuildingDataCopyService
                 'where_column' => 'measure_application_id',
             ],
             'user_energy_habits',
-            'user_interests' => [
-                'where_column' => 'interested_in_type',
-                'additional_where_column' => 'interested_in_id',
-            ],
         ];
 
         foreach ($tables as $tableOrInt => $tableOrWhereColumns) {
@@ -108,6 +108,7 @@ class BuildingDataCopyService
                             ->where($whereColumn, $fromValue->$whereColumn)
                             ->count();
 
+
                         // if there are multiple, then we need to add another where to the query.
                         // else, we dont need to query further an can get the first result and use that to update it.
                         if ($toValueCount > 1) {
@@ -122,6 +123,8 @@ class BuildingDataCopyService
                             // cast the results to a array
                             $toValue = (array)$toValue;
                             $fromValue = (array)$fromValue;
+
+//                                dump($fromValue, $toValue);
 
                             // if it exists, we need to update it. Else we need to insert a new row.
                             if (!empty($toValue)) {

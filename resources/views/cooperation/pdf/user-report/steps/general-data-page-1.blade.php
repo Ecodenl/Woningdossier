@@ -57,7 +57,7 @@
         </div>
         <div class="question-answer">
             <p class="w-380">@lang('pdf/user-report.general-data.building-info.example-building')</p>
-            <p>{{$building->exampleBuilding->name}}</p>
+            <p>{{$building->exampleBuilding->name ?? \App\Helpers\Translation::translate('general-data.example-building.no-match.title')}}</p>
         </div>
     </div>
 

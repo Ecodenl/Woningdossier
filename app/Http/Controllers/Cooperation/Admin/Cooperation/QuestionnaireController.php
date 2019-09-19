@@ -241,10 +241,10 @@ class QuestionnaireController extends Controller
         // however, if a new option to a existing question is added, we set a uuid.
         // so if the $questionOptionId = a valid uuid we need to create a new QuestionOption and the translations.
         foreach ($editedQuestion['options'] as $questionOptionId => $translations) {
-            if (Str::isValidUuid($questionOptionId) && $this->isNotEmptyTranslation($translations)) {
+            if (Str::isValidGuid($questionOptionId) && $this->isNotEmptyTranslation($translations)) {
                 // if the uuid is valid a pomp it to a array and create new question options
                 $allNewOptions = collect($editedQuestion['options'])->filter(function ($value, $key) {
-                    return Str::isValidUuid($key);
+                    return Str::isValidGuid($key);
                 })->toArray();
 
                 // create the options

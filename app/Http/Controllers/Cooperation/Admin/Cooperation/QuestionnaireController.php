@@ -203,32 +203,21 @@ class QuestionnaireController extends Controller
     public function updateQuestionOptions(array $editedQuestion, $question)
     {
 
+        // we will store the new options for the question here.
         $allNewOptions = [];
-//        dump($editedQuestion['options']);
-        // $questionOptionId will mostly contain the id of a QuestionOption
-        // however, if a new option to a existing question is added, we set a uuid.
-        // so if the $questionOptionId = a valid uuid we need to create a new QuestionOption and the translations.
-//        dump($editedQuestion['options']);
-        foreach ($editedQuestion['options'] as $questionOptionId => $translations) {
-            if (Str::isValidGuid($questionOptionId) && $this->isNotEmptyTranslation($translations)) {
-                $allNewOptions[$questionOptionId] = $translations;
-                // if the uuid is valid a pomp it to a array and create new question options
-//                dump('bier');
-//                $allNewOptions = collect($editedQuestion['options'])->filter(function ($value, $key) use($questionOptionId) {
-//                    dump($key, $questionOptionId);
-//                    return Str::isValidGuid($key);
-//                })->toArray();
-//
-//                 create the options
-//                foreach ($allNewOptions as $newOptions) {
-//                    $this->createQuestionOptions($newOptions, $question);
-//                }
 
+        // $questionOptionId will mostly contain the id of a QuestionOption
+        // however, if a new option to a existing question is added, we set a guid.
+        // so if the $questionOptionId = a valid guid we need to create a new QuestionOption and the translation for it.
+        foreach ($editedQuestion['options'] as $questionOptionId => $translations) {
+            // check whether its a guid and its not empty
+            if (Str::isValidGuid($questionOptionId) && $this->isNotEmptyTranslation($translations)) {
+                // its a new option, add it to the array
+                $allNewOptions[$questionOptionId] = $translations;
 
             } elseif ($this->isNotEmptyTranslation($translations)) {
                 // for every translation we need to create a new, you wont guess! Translation.
                 foreach ($translations as $locale => $option) {
-//                    dd($locale, $option);
                     if (empty($option)) {
                         $option = current(array_filter($translations));
                     }
@@ -237,6 +226,7 @@ class QuestionnaireController extends Controller
             }
         }
 
+        // add the options
         foreach ($allNewOptions as $newOptions) {
             $this->createQuestionOptions($newOptions, $question);
         }

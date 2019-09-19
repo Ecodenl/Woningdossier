@@ -30,6 +30,7 @@ class Hoomdossier
             $found = $baseQuery->get([$relation->getRelated()->getTable().'.*', 'input_sources.short']);
         }
 
+
         $results = $found->pluck($column, 'short');
 
         // if the column name contains 'surface' there is particular logic:
@@ -47,6 +48,7 @@ class Hoomdossier
             'contaminated_wall_joints',
             'monument',
             'building_layers',
+            'roof_type_id',
 
             'energy_label_id',
             'extra.date'

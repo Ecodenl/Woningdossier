@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
@@ -62,7 +63,7 @@ class QuestionnaireController extends Controller
 
         \App\Helpers\Hoomdossier::user()->completeQuestionnaire($questionnaire);
 
-        $nextStep = StepHelper::getNextStep($questionnaire->step, $questionnaire);
+        $nextStep = StepHelper::getNextStep(Hoomdossier::user(), HoomdossierSession::getInputSource(true), $questionnaire->step, $questionnaire);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
 
         if (! empty($nextStep['tab_id'])) {

@@ -33,6 +33,7 @@ use Illuminate\Database\Eloquent\Model;
 class Step extends Model
 {
     protected $fillable = ['slug', 'name', 'order'];
+
     use TranslatableTrait;
 
     /**
@@ -70,6 +71,10 @@ class Step extends Model
         return false;
     }
 
+    public function scopeOrdered(Builder $query){
+        return $query->orderBy('order', 'asc');
+    }
+
     /**
      * Get the measure applications from a step
      *
@@ -78,9 +83,5 @@ class Step extends Model
     public function measureApplications()
     {
         return $this->hasMany(MeasureApplication::class);
-    }
-
-    public function scopeOrdered(Builder $query){
-        return $query->orderBy('order', 'asc');
     }
 }

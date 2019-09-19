@@ -14,7 +14,7 @@ class BuildingHeatingsTableSeeder extends Seeder
         $buildingHeatings = [
             [
                 'names' => [
-                    'nl' => 'Verwarmd, de meeste radiatoren staan aan',
+                    'nl' => 'Verwarmd',
                 ],
                 'degree' => 18,
                 'calculate_value' => 2,
@@ -22,7 +22,7 @@ class BuildingHeatingsTableSeeder extends Seeder
             ],
             [
                 'names' => [
-                    'nl' => 'Matig verwarmd, de meeste radiatoren staan hoger dan * of een aantal radiatoren staan hoog',
+                    'nl' => 'Matig verwarmd',
                 ],
                 'degree' => 13,
                 'calculate_value' => 3,
@@ -30,7 +30,7 @@ class BuildingHeatingsTableSeeder extends Seeder
             ],
             [
                 'names' => [
-                    'nl' => 'Onverwarmd, de radiatoren staan op * of uit',
+                    'nl' => 'Onverwarmd',
                 ],
                 'degree' => 10,
                 'calculate_value' => 4,

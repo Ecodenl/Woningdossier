@@ -254,6 +254,7 @@ class QuestionnaireController extends Controller
             } elseif ($this->isNotEmptyTranslation($translations)) {
                 // for every translation we need to create a new, you wont guess! Translation.
                 foreach ($translations as $locale => $option) {
+//                    dd($locale, $option);
                     if (empty($option)) {
                         $option = current(array_filter($translations));
                     }

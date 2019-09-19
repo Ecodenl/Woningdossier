@@ -33,10 +33,10 @@ class RevokeBuildingPermissionForCoaches
     {
         $building = $event->building;
 
-        $conversationRequests = PrivateMessage::conversationRequestByBuildingId($building);
+        $conversationRequests = PrivateMessage::conversationRequestByBuildingId($building->id);
         $conversationRequests->update(['allow_access' => false]);
         // get all the connected coaches to the building
-        $connectedCoachesToBuilding = BuildingCoachStatus::getConnectedCoachesByBuildingId($building);
+        $connectedCoachesToBuilding = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
 
         // and revoke them the access to the building
         foreach ($connectedCoachesToBuilding as $connectedCoachToBuilding) {
@@ -44,6 +44,6 @@ class RevokeBuildingPermissionForCoaches
         }
 
         // delete all the building permissions for this building
-        BuildingPermission::where('building_id', $building)->delete();
+        BuildingPermission::where('building_id', $building->id)->delete();
     }
 }

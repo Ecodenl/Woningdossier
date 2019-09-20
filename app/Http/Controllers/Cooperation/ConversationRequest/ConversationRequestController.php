@@ -11,6 +11,7 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\MeasureApplication;
 use App\Models\PrivateMessage;
+use function Couchbase\defaultDecoder;
 
 class ConversationRequestController extends Controller
 {
@@ -25,6 +26,8 @@ class ConversationRequestController extends Controller
      */
     public function index(Cooperation $cooperation, $option = null, $measureApplicationShort = null)
     {
+        $userAlreadyHadContactWithCooperation = PrivateMessage::public()->conversation(HoomdossierSession::getBuilding())->first() instanceof PrivateMessage;
+
         // if the user is observing, he has nothing to do here.
         if (HoomdossierSession::isUserObserving()) {
             return redirect()->route('cooperation.tool.my-plan.index');
@@ -36,7 +39,7 @@ class ConversationRequestController extends Controller
 
         $selectedOption = $option;
 
-        return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName'));
+        return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName', 'userAlreadyHadContactWithCooperation'));
     }
 
     /**

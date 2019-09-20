@@ -80,7 +80,7 @@
                                 </form>
 
                                 @foreach($inputSourcesForPersonalPlanModal as $inputSource)
-                                    <button type="button" data-toggle="modal" data-target="#{{$inputSource->name}}" class="btn pull-right btn-primary">
+                                    <button style="margin-top: -35px" type="button" data-toggle="modal" data-target="#{{$inputSource->name}}" class="btn pull-right btn-primary">
                                         {{$inputSource->name}}
                                     </button>
                                 @endforeach

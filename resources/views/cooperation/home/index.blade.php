@@ -16,7 +16,7 @@
                                     <div class="col-sm-12 text-center">
                                         <a class="start-button"
                                            href="{{route('cooperation.tool.building-detail.index', ['cooperation' => $cooperation])}}">
-                                            <img src="{{asset('images/start-icon.png')}}" class="h-250">
+                                            <img src="{{asset('images/start-icon.png')}}" class="h-150">
                                         </a>
                                     </div>
                                 </div>

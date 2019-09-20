@@ -6,6 +6,7 @@ use App\Models\BuildingInsulatedGlazing;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
+use App\Models\Interest;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
@@ -109,11 +110,13 @@ class PdfReport implements ShouldQueue
         // retrieve all the comments by for each input source on a step
         $commentsByStep = StepHelper::getAllCommentsByStep($user);
 
+        $noInterest = Interest::where('calculate_value', 4)->first();
+
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'userCooperation', 'stepSlugs', 'commentsByStep', 'inputSource',
             'reportTranslations', 'reportData', 'userActionPlanAdvices', 'buildingFeatures', 'advices',
-            'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'reportForUser'
+            'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'reportForUser', 'noInterest'
         ));
 
         // save the pdf report

@@ -41,7 +41,7 @@ class BuildingPaintworkStatus extends Model
 {
     use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
 
-    protected $fillable = ['building_id', 'input_source_id', 'last_painted_year', 'paintwork_status_id', 'wood_rot_status_id'];
+    protected $fillable = ['building_id', 'input_source_id', 'last_painted_year',  'paintwork_status_id', 'wood_rot_status_id'];
 
     public function building()
     {

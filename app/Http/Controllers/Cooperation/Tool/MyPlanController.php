@@ -66,11 +66,12 @@ class MyPlanController extends Controller
         foreach ($inputSourcesForPersonalPlanModal as $inputSource) {
             $personalPlanForVariousInputSources[$inputSource->name] = $this->getPersonalPlan($buildingOwner, $inputSource);
         }
-        dd($personalPlanForVariousInputSources);
+//        dd($personalPlanForVariousInputSources);
+//        dd($personalPlanForVariousInputSources);
 
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'coachCommentsByStep', 'actionPlanComments', 'fileType', 'file',
-            'anyFilesBeingProcessed', 'reportFileTypeCategory', 'buildingHasCompletedGeneralData'
+            'advices', 'coachCommentsByStep', 'actionPlanComments', 'fileType', 'file', 'inputSourcesForPersonalPlanModal',
+            'anyFilesBeingProcessed', 'reportFileTypeCategory', 'buildingHasCompletedGeneralData', 'personalPlanForVariousInputSources'
         ));
     }
 
@@ -154,7 +155,7 @@ class MyPlanController extends Controller
                     // check if a user is interested in a measure
                     if ($advice->planned) {
 
-                        $year = $advice->getYear();
+                        $year = $advice->getYear($inputSource);
 
                         // if its a string, the $year contains 'geen jaartal'
                         if (is_string($year)) {
@@ -172,6 +173,7 @@ class MyPlanController extends Controller
                         if (!array_key_exists($step->name, $sortedAdvices[$year])) {
                             $sortedAdvices[$year][$step->name] = [];
                         }
+//                        dump($costYear);
 
                         $sortedAdvices[$year][$step->name][] = [
                             'interested' => $advice->planned,

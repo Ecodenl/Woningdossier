@@ -240,12 +240,12 @@ class UserActionPlanAdvice extends Model
      *
      * @return array|int|null|string
      */
-    public function getYear()
+    public function getYear(InputSource $inputSource)
     {
         $year = isset($this->planned_year) ? $this->planned_year : $this->year;
 
         if (is_null($year)) {
-            $year = $this->getAdviceYear() ?? __('woningdossier.cooperation.tool.my-plan.no-year');
+            $year = $this->getAdviceYear($inputSource) ?? __('woningdossier.cooperation.tool.my-plan.no-year');
         }
 
         return $year;

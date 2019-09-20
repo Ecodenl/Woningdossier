@@ -36,6 +36,10 @@
         @endcomponent
     @endif
 
+    @foreach($personalPlanForVariousInputSources as $inputSourceName => $measuresByYear)
+        @include('cooperation.tool.my-plan.parts.personal-plan-modal-for-other-input-source')
+    @endforeach
+
     <form class="form-horizontal" action="{{ route('cooperation.tool.my-plan.store', ['cooperation' => $cooperation]) }}" method="post">
         {{ csrf_field() }}
     @foreach($advices as $measureType => $stepAdvices)
@@ -262,6 +266,7 @@
 
                     $("ul#years").html("");
                     $.each(data, function(year, steps){
+                        console.log(year);
                         var slugYear = year;
                         var header = "<h1>" + year + "</h1>";
 

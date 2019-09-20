@@ -2,32 +2,54 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Exports\Cooperation\CsvExport;
+use App\Events\StepDataHasBeenChangedEvent;
 use App\Helpers\Calculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\MyPlanHelper;
 use App\Helpers\NumberFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyPlanRequest;
-use App\Models\Building;
+use App\Models\FileStorage;
+use App\Models\FileType;
+use App\Models\FileTypeCategory;
+use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
+use App\Scopes\AvailableScope;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
 
 class MyPlanController extends Controller
 {
     public function index()
     {
+
+        $reportFileTypeCategory = FileTypeCategory::short('report')
+            ->with(['fileTypes' => function ($query) {
+                $query->where('short', 'pdf-report');
+            }])->first();
+
+
+        $anyFilesBeingProcessed = FileStorage::withOutGlobalScope(new AvailableScope())->where('is_being_processed', true)->count();
+
+
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner);
+        $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner, HoomdossierSession::getInputSource(true));
         $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
 
+        // so we can determine wheter we will show the actionplan button
+        $buildingHasCompletedGeneralData = $building->hasCompleted(Step::where('slug', 'general-data')->first());
+
+
+        $fileType = FileType::where('short', 'pdf-report')->first();
+
+        $file = $fileType->files()->where('building_id', $building->id)->first();
+
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'coachCommentsByStep', 'actionPlanComments'
+            'advices', 'coachCommentsByStep', 'actionPlanComments', 'fileType', 'file',
+            'anyFilesBeingProcessed', 'reportFileTypeCategory', 'buildingHasCompletedGeneralData'
         ));
     }
 
@@ -58,59 +80,6 @@ class MyPlanController extends Controller
         return redirect()->route('cooperation.tool.my-plan.index');
     }
 
-    public function export()
-    {
-        // get the data
-        $user = \App\Helpers\Hoomdossier::user();
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user);
-
-        // Column names
-        $headers = [
-            __('woningdossier.cooperation.tool.my-plan.csv-columns.year-or-planned'),
-            __('woningdossier.cooperation.tool.my-plan.csv-columns.interest'),
-            __('woningdossier.cooperation.tool.my-plan.csv-columns.measure'),
-            __('woningdossier.cooperation.tool.my-plan.csv-columns.costs'),
-            __('woningdossier.cooperation.tool.my-plan.csv-columns.savings-gas'),
-            __('woningdossier.cooperation.tool.my-plan.csv-columns.savings-electricity'),
-            __('woningdossier.cooperation.tool.my-plan.csv-columns.savings-costs'),
-            __('woningdossier.cooperation.tool.my-plan.csv-columns.advice-year'),
-            __('woningdossier.cooperation.tool.my-plan.csv-columns.costs-advice-year'),
-        ];
-
-        $userPlanData = [];
-
-        foreach ($advices as $measureType => $stepAdvices) {
-            foreach ($stepAdvices as $step => $advicesForStep) {
-                foreach ($advicesForStep as $advice) {
-                    // check if the planned year is set and if not use the year
-                    $plannedYear = null == $advice->planned_year ? $advice->year : $advice->planned_year;
-                    // check if a user is interested in the measure
-                    $isInterested = 1 == $advice->planned ? __('default.yes') : __('default.no');
-                    $costs = round($advice->costs);
-                    $measure = $advice->measureApplication->measure_name;
-                    $gasSavings = round($advice->savings_gas);
-                    $electricitySavings = round($advice->savings_electricity);
-                    $savingsInEuro = round($advice->savings_money);
-                    $advicedYear = $advice->year;
-                    //$costsAdvisedYear = round(Calculator::reindexCosts($costs, $advicedYear, $plannedYear));
-                    $costsAdvisedYear = round(Calculator::indexCosts($costs, $plannedYear));
-
-                    // push the plan data to the array
-                    $userPlanData[$plannedYear][$measure] = [$plannedYear, $isInterested, $measure, $costs, $gasSavings, $electricitySavings, $savingsInEuro, $advicedYear, $costsAdvisedYear];
-                }
-            }
-        }
-
-        ksort($userPlanData);
-
-        $userPlanData = array_flatten($userPlanData, 1);
-
-        array_unshift($userPlanData, $headers);
-
-
-        return Excel::download(new CsvExport($userPlanData), 'my-plan.csv', \Maatwebsite\Excel\Excel::CSV);
-    }
-
     public function store(Request $request)
     {
         $sortedAdvices = [];
@@ -139,12 +108,11 @@ class MyPlanController extends Controller
                 // check if a user is interested in a measure
                 //if (MyPlanHelper::isUserInterestedInMeasure($advice->step)) {
                 if ($advice->planned) {
-                    $year = isset($advice->planned_year) ? $advice->planned_year : $advice->year;
-                    if (is_null($year)) {
-                        $year = $advice->getAdviceYear();
-                    }
-                    if (is_null($year)) {
-                        $year = __('woningdossier.cooperation.tool.my-plan.no-year');
+
+                    $year = $advice->getYear();
+
+                    // if its a string, the $year contains 'geen jaartal'
+                    if (is_string($year)) {
                         $costYear = Carbon::now()->year;
                     } else {
                         $costYear = $year;

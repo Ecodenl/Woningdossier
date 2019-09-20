@@ -38,7 +38,7 @@ class MyPlanController extends Controller
 
         $anyFilesBeingProcessed = FileStorage::withOutGlobalScope(new AvailableScope())->where('is_being_processed', true)->count();
 
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner, $inputSource);
+        $advices = UserActionPlanAdviceService::getCategorizedActionPlan($buildingOwner, $inputSource);
         $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
 
@@ -60,7 +60,7 @@ class MyPlanController extends Controller
         // but, only for different input sources then the current one.
         $personalPlanForVariousInputSources = [];
         foreach ($inputSourcesForPersonalPlanModal as $inputSource) {
-            $personalPlanForVariousInputSources[$inputSource->name] = $this->getPersonalPlan($buildingOwner, $inputSource);
+            $personalPlanForVariousInputSources[$inputSource->name] = UserActionPlanAdviceService::getPersonalPlan($buildingOwner, $inputSource);
         }
 
         return view('cooperation.tool.my-plan.index', compact(
@@ -124,66 +124,6 @@ class MyPlanController extends Controller
 
         }
 
-        return response()->json($this->getPersonalPlan($buildingOwner, $inputSource));
-    }
-
-    /**
-     * Get the personal plan for a user and its inputsource
-     *
-     * @param $user
-     * @param $inputSource
-     * @return array
-     */
-    public function getPersonalPlan($user, $inputSource)
-    {
-
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $inputSource);
-
-        $sortedAdvices = [];
-
-        foreach($advices as $measureType => $stepAdvices) {
-
-            foreach ($stepAdvices as $stepSlug => $advicesForStep) {
-
-                foreach ($advicesForStep as $advice) {
-                    // check if a user is interested in a measure
-                    if ($advice->planned) {
-
-                        $year = $advice->getYear($inputSource);
-
-                        // if its a string, the $year contains 'geen jaartal'
-                        if (is_string($year)) {
-                            $costYear = Carbon::now()->year;
-                        } else {
-                            $costYear = $year;
-                        }
-                        if (!array_key_exists($year, $sortedAdvices)) {
-                            $sortedAdvices[$year] = [];
-                        }
-
-                        // get step from advice
-                        $step = $advice->step;
-
-                        if (!array_key_exists($step->name, $sortedAdvices[$year])) {
-                            $sortedAdvices[$year][$step->name] = [];
-                        }
-
-                        $sortedAdvices[$year][$step->name][] = [
-                            'interested' => $advice->planned,
-                            'advice_id' => $advice->id,
-                            'measure' => $advice->measureApplication->measure_name,
-                            'measure_short' => $advice->measureApplication->short,
-                            // In the table the costs are indexed based on the advice year
-                            // Now re-index costs based on user planned year in the personal plan
-                            'costs' => NumberFormatter::round(Calculator::indexCosts($advice->costs, $costYear)),
-                            'savings_gas' => is_null($advice->savings_gas) ? 0 : NumberFormatter::round($advice->savings_gas),
-                            'savings_electricity' => is_null($advice->savings_electricity) ? 0 : NumberFormatter::round($advice->savings_electricity),
-                            'savings_money' => is_null($advice->savings_money) ? 0 : NumberFormatter::round(Calculator::indexCosts($advice->savings_money, $costYear)),
-                        ];
-                    }
-                }
-            }
-        }
-        return $sortedAdvices;
+        return response()->json(UserActionPlanAdviceService::getPersonalPlan($buildingOwner, $inputSource));
     }
 }

@@ -18,7 +18,6 @@ class UserActionPlanAdviceService {
      * Method to return input sources that have an action plan advice, on a building
      *
      * @param  User $user
-     * @param InputSource $exceptForInputSource
      * @return UserActionPlanAdvice[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
     public static function availableInputSourcesForActionPlan(User $user)

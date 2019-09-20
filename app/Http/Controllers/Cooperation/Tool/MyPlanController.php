@@ -40,6 +40,7 @@ class MyPlanController extends Controller
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner, $inputSource);
         $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
+
         // so we can determine wheter we will show the actionplan button
         $buildingHasCompletedGeneralData = $building->hasCompleted(Step::where('slug', 'general-data')->first());
 

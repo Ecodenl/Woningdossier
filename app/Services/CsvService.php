@@ -256,8 +256,7 @@ class CsvService
             // get the building features from the resident
             $buildingFeatures = $building
                 ->buildingFeatures()
-                ->withoutGlobalScope(GetValueScope::class)
-                ->residentInput()
+                ->forInputSource($residentInputSource)
                 ->first();
 
 
@@ -291,8 +290,7 @@ class CsvService
             // get the action plan advices for the user, but only for the resident his input source
             $userActionPlanAdvices = $user
                 ->actionPlanAdvices()
-                ->withOutGlobalScope(GetValueScope::class)
-                ->residentInput()
+                ->forInputSource($residentInputSource)
                 ->leftJoin('measure_applications', 'user_action_plan_advices.measure_application_id', '=', 'measure_applications.id')
                 ->leftJoin('steps', 'measure_applications.step_id', '=', 'steps.id')
                 ->orderBy('steps.order')
@@ -336,6 +334,8 @@ class CsvService
                                        ->where('cooperation_id', $cooperation->id)
                                        ->get();
         $rows           = [];
+
+        $residentInputSource = InputSource::findByShort('resident');
 
         if ($anonymize) {
             $headers = [
@@ -407,15 +407,14 @@ class CsvService
                 // get the building features from the resident
                 $buildingFeatures = $building
                     ->buildingFeatures()
-                    ->withoutGlobalScope(GetValueScope::class)
-                    ->residentInput()
+                    ->forInputSource($residentInputSource)
                     ->first();
 
                 $buildingType = $buildingFeatures->buildingType->name ?? '';
                 $buildYear    = $buildingFeatures->build_year ?? '';
 
                 // set the personal user info only if the user has question answers.
-                if ($building->questionAnswers()->withoutGlobalScope(GetValueScope::class)->residentInput()->count() > 0) {
+                if ($building->questionAnswers()->forInputSource($residentInputSource)->count() > 0) {
                     if ($anonymize) {
                         $rows[$building->id] = [
                             $createdAt, $buildingStatus, $allowAccess, $postalCode, $city,

@@ -69,7 +69,6 @@ class FileStorageController extends Controller
         // we will create the file storage here, if we would do it in the job itself it would bring confusion to the user.
         $fileName = $this->getFileNameForFileType($fileType, $user, $inputSource);
 
-
         $this->handleExistingFiles($building, $inputSource, $fileType);
 
         // and we create the new file
@@ -79,6 +78,8 @@ class FileStorageController extends Controller
             'file_type_id' => $fileType->id,
             'filename' => $fileName,
         ]);
+
+        $this->authorize('store', [$fileStorage, $fileType]);
 
         // this is only needed when its not the cooperation generating a file.
         if ($inputSource->short != InputSource::COOPERATION_SHORT) {

@@ -1,7 +1,7 @@
 @extends('cooperation.layouts.app')
 
 @section('content')
-    <div class="container">
+    <div class="container" id="home">
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
@@ -14,8 +14,7 @@
                                         <div class="clearfix"></div>
                                     </div>
                                     <div class="col-sm-12 text-center">
-                                        <a class="start-button"
-                                           href="{{route('cooperation.tool.building-detail.index', ['cooperation' => $cooperation])}}">
+                                        <a class="start-button" href="{{route('cooperation.tool.building-detail.index', ['cooperation' => $cooperation])}}">
                                             <img src="{{asset('images/start-icon.png')}}" class="h-150">
                                         </a>
                                     </div>
@@ -23,7 +22,7 @@
 
                             </div>
                             <div class="col-sm-6">
-                                <img src="{{asset('images/pdf-main-images.jpg')}}" class="h-500 full-width" alt="">
+                                <img src="{{asset('images/pdf-main-images.jpg')}}" class="h-500 full-width home-img" alt="">
                             </div>
                         </div>
                         <div class="row">

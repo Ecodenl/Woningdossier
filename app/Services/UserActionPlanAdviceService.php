@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Helpers\Calculator;
 use App\Helpers\NumberFormatter;
 use App\Models\InputSource;
+use App\Models\MeasureApplication;
+use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
@@ -109,7 +111,7 @@ class UserActionPlanAdviceService {
 
             if ($advice->step instanceof Step) {
 
-                /** @var MeasureApplication $measureApplication */
+                /** @var MeasureApplication$measureApplication */
                 $measureApplication = $advice->measureApplication;
 
                 if (is_null($advice->year)) {

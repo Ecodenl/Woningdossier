@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Scopes\AvailableScope;
+use App\Services\UserActionPlanAdviceService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -49,25 +50,18 @@ class MyPlanController extends Controller
         $file = $fileType->files()->where('building_id', $building->id)->first();
 
         // get the input sources that have an action plan for the current building
-        // we do this by grouping on input source id, and map on the actionplanadvice to return the relationship.
-        $inputSourcesForPersonalPlanModal = UserActionPlanAdvice::forMe()
-            ->whereHas('inputSource', function ($query) use ($inputSource) {
-                $query->where('short', '!=', $inputSource->short);
-            })
-            ->select('input_source_id')
-            ->groupBy('input_source_id')
-            ->get()
-            ->map(function ($userActionPlanAdvice) {
-                return $userActionPlanAdvice->inputSource;
+        // and filter out the current one
+        $inputSourcesForPersonalPlanModal = UserActionPlanAdviceService::availableInputSourcesForActionPlan($buildingOwner)
+            ->filter(function ($inputSourceForActionPlan) use ($inputSource) {
+                return $inputSourceForActionPlan->short !== $inputSource->short;
             });
+
         // so we have to create modals, with personal plan info within.
         // but, only for different input sources then the current one.
         $personalPlanForVariousInputSources = [];
         foreach ($inputSourcesForPersonalPlanModal as $inputSource) {
             $personalPlanForVariousInputSources[$inputSource->name] = $this->getPersonalPlan($buildingOwner, $inputSource);
         }
-//        dd($personalPlanForVariousInputSources);
-//        dd($personalPlanForVariousInputSources);
 
         return view('cooperation.tool.my-plan.index', compact(
             'advices', 'coachCommentsByStep', 'actionPlanComments', 'fileType', 'file', 'inputSourcesForPersonalPlanModal',
@@ -173,7 +167,6 @@ class MyPlanController extends Controller
                         if (!array_key_exists($step->name, $sortedAdvices[$year])) {
                             $sortedAdvices[$year][$step->name] = [];
                         }
-//                        dump($costYear);
 
                         $sortedAdvices[$year][$step->name][] = [
                             'interested' => $advice->planned,

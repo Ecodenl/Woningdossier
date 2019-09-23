@@ -12,6 +12,7 @@ use App\Models\Building;
 use App\Models\BuildingHeating;
 use App\Models\Element;
 use App\Models\ElementValue;
+use App\Models\InputSource;
 use App\Models\InsulatingGlazing;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
@@ -25,13 +26,12 @@ class InsulatedGlazing {
     /**
      * Return the calculate results for the insulated glazings.
      *
-     * @param  Building  $building
-     * @param  User  $user
+     * @param Building $building
+     * @param $energyHabit
      * @param $calculateData
-     *
      * @return array
      */
-    public static function calculate(Building $building, User $user, $calculateData): array
+    public static function calculate(Building $building, $energyHabit, $calculateData): array
     {
         $result = [
             'savings_gas' => 0,
@@ -170,7 +170,6 @@ class InsulatedGlazing {
         }
         $crackSealingElement = ElementValue::find($crackSealingId);
         if ($crackSealingElement instanceof ElementValue && 'crack-sealing' == $crackSealingElement->element->short && $crackSealingElement->calculate_value > 1) {
-            $energyHabit = $user->energyHabit;
             $gas = 0;
             if ($energyHabit instanceof UserEnergyHabit) {
                 $gas = $energyHabit->amount_gas;

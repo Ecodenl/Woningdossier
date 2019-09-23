@@ -8,6 +8,7 @@ use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\NumberFormatter;
 use App\Helpers\Translation;
 use App\Models\Building;
+use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\ServiceValue;
@@ -16,9 +17,8 @@ use App\Models\UserEnergyHabit;
 
 class HighEfficiencyBoiler {
 
-    public static function calculate(Building $building, User $user, $calculateData)
+    public static function calculate($energyHabit, $calculateData)
     {
-
         $result = [
             'savings_gas' => 0,
             'savings_co2' => 0,
@@ -57,8 +57,8 @@ class HighEfficiencyBoiler {
 
                     $amountGas = $calculateData['habit']['gas_usage'] ?? null;
 
-                    if ($user->energyHabit instanceof UserEnergyHabit) {
-                        $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $user->energyHabit, $amountGas) ?? '';
+                    if ($energyHabit instanceof UserEnergyHabit) {
+                        $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $energyHabit, $amountGas) ?? '';
                     }
                     $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
                     $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));

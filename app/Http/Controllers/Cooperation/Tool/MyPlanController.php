@@ -24,12 +24,6 @@ class MyPlanController extends Controller
     public function index()
     {
 
-        $reportFileTypeCategory = FileTypeCategory::short('report')
-            ->with(['fileTypes' => function ($query) {
-                $query->where('short', 'pdf-report');
-            }])->first();
-
-
         $anyFilesBeingProcessed = FileStorage::forMe()->withExpired()->beingProcessed()->count();
 
         $building = HoomdossierSession::getBuilding(true);
@@ -50,8 +44,8 @@ class MyPlanController extends Controller
 
 
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'coachCommentsByStep', 'actionPlanComments', 'pdfReportFileType', 'file',
-            'anyFilesBeingProcessed', 'reportFileTypeCategory', 'buildingHasCompletedGeneralData'
+            'advices', 'coachCommentsByStep', 'actionPlanComments', 'file',
+            'anyFilesBeingProcessed', 'pdfReportFileType', 'buildingHasCompletedGeneralData'
         ));
     }
 

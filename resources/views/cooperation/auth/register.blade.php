@@ -215,60 +215,82 @@
 
             var email = $('#email');
 
+            email.on('change', function () {
+                checkEmailForTypo();
+            })
             email.on('keyup change', function () {
-                $.ajax({
-                    url: '{{route('cooperation.check-existing-email')}}',
-                    method: "GET",
-                    data: {email: $(this).val()},
-                }).done(function (data) {
-                    var emailIsAlreadyRegistered =  $('#email-is-already-registered');
+                    $.ajax({
+                        url: '{{route('cooperation.check-existing-email')}}',
+                        method: "GET",
+                        data: {email: $(this).val()},
+                    }).done(function (data) {
+                        var emailIsAlreadyRegistered =  $('#email-is-already-registered');
 
-                    var passwordInput = $('#password');
-                    var passwordConfirmInput = $('#password-confirm');
-                    var emailInput = $('#email');
+                        var passwordInput = $('#password');
+                        var passwordConfirmInput = $('#password-confirm');
+                        var emailInput = $('#email');
 
-                    // email exists
-                    if (data.email_exists) {
-                        var isAlreadyMemberMessage = $('#is-already-member');
-                        var emailExistsDiv = $('.email-exist');
+                        // email exists
+                        if (data.email_exists) {
+                            var isAlreadyMemberMessage = $('#is-already-member');
+                            var emailExistsDiv = $('.email-exist');
 
-                        emailIsAlreadyRegistered.show();
+                            emailIsAlreadyRegistered.show();
 
-                        emailInput.prop('required', false);
-                        passwordInput.prop('required', false);
-                        passwordConfirmInput.prop('required', false);
+                            emailInput.prop('required', false);
+                            passwordInput.prop('required', false);
+                            passwordConfirmInput.prop('required', false);
 
 
-                        console.log(data);
-                        // check if the email is connected to the current cooperation
-                        // and show the matching messages
-                        if (data.user_is_already_member_of_cooperation) {
-                            // hide the account stuff
-                            isAlreadyMemberMessage.show();
-                            emailExistsDiv.hide();
-                            $('.user-info').hide();
-                        } else {
-                            $('.account-info').hide();
-                            isAlreadyMemberMessage.hide();
-                            emailExistsDiv.show();
+                            console.log(data);
+                            // check if the email is connected to the current cooperation
+                            // and show the matching messages
+                            if (data.user_is_already_member_of_cooperation) {
+                                // hide the account stuff
+                                isAlreadyMemberMessage.show();
+                                emailExistsDiv.hide();
+                                $('.user-info').hide();
+                            } else {
+                                $('.account-info').hide();
+                                isAlreadyMemberMessage.hide();
+                                emailExistsDiv.show();
+                            }
+
+                        } else  {
+                            emailIsAlreadyRegistered.hide();
+                            $('.user-info').show();
+                            $('.account-info').show();
+                            emailInput.prop('required', true);
+                            passwordInput.prop('required', true);
+                            passwordConfirmInput.prop('required', true);
                         }
+                    });
 
-                    } else  {
-                        emailIsAlreadyRegistered.hide();
-                        $('.user-info').show();
-                        $('.account-info').show();
-                        emailInput.prop('required', true);
-                        passwordInput.prop('required', true);
-                        passwordConfirmInput.prop('required', true);
-                    }
-                });
             });
 
             if ($('.form-error').length) {
                 email.trigger('change');
             }
-
-
         });
+
+
+        function addError(input, message) {
+            var helpBlock = '<span class="help-block"></span>';
+            input.parent().parent().addClass('has-error');
+            input.parent().append($(helpBlock).append('<strong>' + message + '</strong>'));
+        }
+
+        function checkEmailForTypo()
+        {
+            var goodDomains = /\b(nl|be|net|com|info|nu|de)\b/;
+
+            // if the email does not contain a good domain return a message
+            if (!goodDomains.test(email)) {
+                addError(email, 'Klopt niet')
+            }
+
+        }
+
+
     </script>
 @endpush

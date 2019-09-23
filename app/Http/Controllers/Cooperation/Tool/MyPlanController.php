@@ -118,7 +118,7 @@ class MyPlanController extends Controller
 
                 // if the user isnt observing a other building we allow changes, else we dont.
                 if (HoomdossierSession::isUserObserving() == false) {
-                    MyPlanHelper::saveUserInterests($request, $advice);
+                    MyPlanHelper::saveUserInterests($advice, $request->input("advice.{$advice->id}"));
                 }
             }
 

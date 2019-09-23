@@ -5,12 +5,14 @@ namespace App\Providers;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\Cooperation;
+use App\Models\FileStorage;
 use App\Models\PrivateMessage;
 use App\Models\Questionnaire;
 use App\Models\User;
 use App\NotificationSetting;
 use App\Policies\BuildingPolicy;
 use App\Policies\CooperationPolicy;
+use App\Policies\FileStoragePolicy;
 use App\Policies\NotificationSettingPolicy;
 use App\Policies\PrivateMessagePolicy;
 use App\Policies\QuestionnairePolicy;
@@ -31,7 +33,8 @@ class AuthServiceProvider extends ServiceProvider
         Cooperation::class => CooperationPolicy::class,
         User::class => UserPolicy::class,
         Building::class => BuildingPolicy::class,
-        NotificationSetting::class => NotificationSettingPolicy::class
+        NotificationSetting::class => NotificationSettingPolicy::class,
+        FileStorage::class => FileStoragePolicy::class
     ];
 
     /**

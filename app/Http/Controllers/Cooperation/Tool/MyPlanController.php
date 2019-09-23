@@ -40,6 +40,7 @@ class MyPlanController extends Controller
         $buildingOwner = $building->user;
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner, HoomdossierSession::getInputSource(true));
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
+
         // so we can determine wheter we will show the actionplan button
         $buildingHasCompletedGeneralData = $building->hasCompleted(Step::where('slug', 'general-data')->first());
 

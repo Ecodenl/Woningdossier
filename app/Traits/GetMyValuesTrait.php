@@ -82,6 +82,7 @@ trait GetMyValuesTrait
     /**
      * Method to only scope the resident input source
      *
+     * @deprecated
      * @param $query
      *
      * @return mixed

@@ -62,18 +62,18 @@
                                     @endif
                                 </button>
                             @elseif(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']) && $buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
-                                <form action="{{route('cooperation.file-storage.store', ['fileType' => $fileType->short])}}" method="post">
+                                <form action="{{route('cooperation.file-storage.store', ['fileType' => $pdfReportFileType->short])}}" method="post">
                                     {{csrf_field()}}
                                     <button style="margin-top: -35px"
-                                            @if($fileType->isBeingProcessed()) disabled="disabled" type="button" data-toggle="tooltip"
+                                            @if($pdfReportFileType->isBeingProcessed()) disabled="disabled" type="button" data-toggle="tooltip"
                                             title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
                                             @else
                                             type="submit"
                                             @endif
-                                            class="pull-right btn btn-{{$fileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
+                                            class="pull-right btn btn-{{$pdfReportFileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
                                     >
                                         {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
-                                        @if($fileType->isBeingProcessed() )
+                                        @if($pdfReportFileType->isBeingProcessed() )
                                             <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
                                         @endif
                                     </button>

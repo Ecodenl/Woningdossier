@@ -47,9 +47,12 @@ class MyPlanController extends Controller
         // so we can determine wheter we will show the actionplan button
         $buildingHasCompletedGeneralData = $building->hasCompleted(Step::where('slug', 'general-data')->first());
 
-        $fileType = FileType::where('short', 'pdf-report')->first();
+        $pdfReportFileType = FileType::where('short', 'pdf-report')
+            ->with(['files' => function ($query) {
+                $query->forMe();
+            }])->first();
 
-        $file = $fileType->files()->forMe()->first();
+        $file = $pdfReportFileType->files->first();
 
         // get the input sources that have an action plan for the current building
         // and filter out the current one
@@ -66,7 +69,7 @@ class MyPlanController extends Controller
         }
 
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'coachCommentsByStep', 'actionPlanComments', 'fileType', 'file', 'inputSourcesForPersonalPlanModal',
+            'advices', 'coachCommentsByStep', 'actionPlanComments', 'pdfReportFileType', 'file', 'inputSourcesForPersonalPlanModal',
             'anyFilesBeingProcessed', 'reportFileTypeCategory', 'buildingHasCompletedGeneralData', 'personalPlanForVariousInputSources'
         ));
     }

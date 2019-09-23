@@ -91,11 +91,11 @@
                 <div class="panel-body">
                     <ol>
                         <li>
-                            <a @if(!$fileType->isBeingProcessed() )
+                            <a @if(!$pdfReportFileType->isBeingProcessed() )
                                href="{{route('cooperation.file-storage.download', [
-                                    'fileType' => $fileType->short,
+                                    'fileType' => $pdfReportFileType->short,
                                     'fileStorageFilename' => $file->filename
-                               ])}}" @endif>{{$fileType->name}} ({{$file->created_at->format('Y-m-d H:i')}})</a>
+                               ])}}" @endif>{{$pdfReportFileType->name}} ({{$file->created_at->format('Y-m-d H:i')}})</a>
                         </li>
                     </ol>
                 </div>
@@ -110,18 +110,18 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
-                <form action="{{route('cooperation.file-storage.store', ['fileType' => $fileType->short])}}" method="post">
+                <form action="{{route('cooperation.file-storage.store', ['fileType' => $pdfReportFileType->short])}}" method="post">
                     {{csrf_field()}}
                     <button style="margin-top: -35px"
-                            @if($fileType->isBeingProcessed()) disabled="disabled" type="button" data-toggle="tooltip"
+                            @if($pdfReportFileType->isBeingProcessed()) disabled="disabled" type="button" data-toggle="tooltip"
                             title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
                             @else
                             type="submit"
                             @endif
-                            class="btn btn-{{$fileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
+                            class="btn btn-{{$pdfReportFileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
                     >
                         {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
-                        @if($fileType->isBeingProcessed() )
+                        @if($pdfReportFileType->isBeingProcessed() )
                             <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
                         @endif
                     </button>

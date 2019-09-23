@@ -30,8 +30,7 @@ class MyPlanController extends Controller
             }])->first();
 
 
-        $anyFilesBeingProcessed = FileStorage::withOutGlobalScope(new AvailableScope())->where('is_being_processed', true)->count();
-
+        $anyFilesBeingProcessed = FileStorage::forMe()->withExpired()->beingProcessed()->count();
 
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
@@ -42,13 +41,16 @@ class MyPlanController extends Controller
         // so we can determine wheter we will show the actionplan button
         $buildingHasCompletedGeneralData = $building->hasCompleted(Step::where('slug', 'general-data')->first());
 
+        $pdfReportFileType = FileType::where('short', 'pdf-report')
+            ->with(['files' => function ($query) {
+                $query->forMe();
+            }])->first();
 
-        $fileType = FileType::where('short', 'pdf-report')->first();
+        $file = $pdfReportFileType->files->first();
 
-        $file = $fileType->files()->where('building_id', $building->id)->first();
 
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'coachCommentsByStep', 'actionPlanComments', 'fileType', 'file',
+            'advices', 'coachCommentsByStep', 'actionPlanComments', 'pdfReportFileType', 'file',
             'anyFilesBeingProcessed', 'reportFileTypeCategory', 'buildingHasCompletedGeneralData'
         ));
     }

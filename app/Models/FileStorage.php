@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Scopes\AvailableScope;
 use App\Scopes\CooperationScope;
+use App\Traits\GetMyValuesTrait;
+use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -44,6 +46,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class FileStorage extends Model
 {
 
+    use GetValueTrait, GetMyValuesTrait;
+
     public static function boot()
     {
         parent::boot();
@@ -53,7 +57,7 @@ class FileStorage extends Model
     }
     
     protected $fillable = [
-        'cooperation_id', 'filename', 'user_id', 'file_type_id', 'content_type', 'is_being_processed', 'available_until',
+        'cooperation_id', 'filename', 'user_id', 'input_source_id', 'file_type_id', 'content_type', 'is_being_processed', 'available_until',
     ];
 
     /**

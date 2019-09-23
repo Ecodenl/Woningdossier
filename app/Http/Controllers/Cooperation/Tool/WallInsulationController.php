@@ -149,7 +149,7 @@ class WallInsulationController extends Controller
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
         $cooperation = HoomdossierSession::getCooperation(true);
 
-        $nextStep = StepHelper::getNextStep($this->step);
+        $nextStep = StepHelper::getNextStep(Hoomdossier::user(), HoomdossierSession::getInputSource(true), $this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
 
         if (! empty($nextStep['tab_id'])) {
@@ -208,7 +208,7 @@ class WallInsulationController extends Controller
         $user = $building->user;
         $userEnergyHabit = $user->energyHabit;
 
-        $result = WallInsulation::calculate($building, $userEnergyHabit, $request->toArray());
+        $result = WallInsulation::calculate($building, HoomdossierSession::getInputSource(true), $userEnergyHabit, $request->toArray());
 
         return response()->json($result);
     }

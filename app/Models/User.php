@@ -230,15 +230,14 @@ class User extends Model implements AuthorizableContract
      * @param $type
      * @param $interestedInId
      *
-     * @return \Illuminate\Database\Eloquent\Model|null|object|static
+     * @return UserInterest
      */
     public function getInterestedType($type, $interestedInId, InputSource $inputSource = null)
     {
         if ($inputSource instanceof InputSource) {
             return $this
                 ->interests()
-                ->withoutGlobalScope(GetValueScope::class)
-                ->where('input_source_id', $inputSource->id)
+                ->forInputSource($inputSource)
                 ->where('interested_in_type', $type)
                 ->where('interested_in_id', $interestedInId)->first();
         }

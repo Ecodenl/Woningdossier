@@ -1,0 +1,100 @@
+* {
+  margin: 0;
+  font-family: Century Gothic, CenturyGothic, AppleGothic, sans-serif;
+}
+
+h1 {
+  font-size: 26px;
+  font-weight: bold;
+  color: $color-main;
+}
+
+h2 {
+  font-size: 21.33px;
+  font-weight: bold;
+  color: $color-main;
+}
+
+body {
+  &.new-page {
+    padding-top: 50px;
+  }
+}
+
+
+.step-intro {
+  h2 {
+    display: block;
+    margin: 8px 0 0 0;
+  }
+  img {
+    width: 50px;
+    height: 50px;
+    display: block;
+    float: left;
+  }
+  p {
+    padding-top: 25px;
+    font-weight: bold;
+  }
+  margin-bottom: 25px;
+}
+
+ol {
+  li {
+    font-weight: bold;
+    color: $color-black;
+    font-size: $font-size-small;
+  }
+}
+
+p {
+  color: $color-black;
+  font-size: $font-size-small;
+  line-height: 1.5em;
+  &.sub-lead {
+    font-weight: bold;
+    color: $color-main;
+  }
+  &.lead {
+    font-weight: bold;
+    color: $color-main;
+    font-size: 16px;
+  }
+}
+.question-answer-section {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  p.lead {
+    margin-bottom: 1px;
+  }
+  .question-answer {
+    p {
+      display: inline-block;
+    }
+  }
+}
+
+table {
+  border-collapse: collapse;
+  font-size: $font-size-small;
+  margin-bottom: 5px;
+  thead {
+    background-color: $color-main;
+    color: $color-white;
+  }
+  tbody {
+    background-color: $color-white;
+    tr {
+      vertical-align: top;
+      &.border-bottom {
+        &:first-child {
+          border-bottom: 1px solid $color-main;
+        }
+        td {
+          border-top: 1px solid $color-main;
+        }
+      }
+    }
+  }
+}

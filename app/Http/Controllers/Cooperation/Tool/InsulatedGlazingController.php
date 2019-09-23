@@ -4,13 +4,8 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\InsulatedGlazing;
 use App\Events\StepDataHasBeenChanged;
-use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculator;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\InsulatedGlazingCalculator;
-use App\Helpers\Kengetallen;
-use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InsulatedGlazingFormRequest;
@@ -20,7 +15,6 @@ use App\Models\BuildingFeature;
 use App\Models\BuildingHeating;
 use App\Models\BuildingInsulatedGlazing;
 use App\Models\BuildingPaintworkStatus;
-use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\InsulatingGlazing;
@@ -29,7 +23,6 @@ use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
@@ -191,10 +184,9 @@ class InsulatedGlazingController extends Controller
 
     public function calculate(Request $request)
     {
-        $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
+        $energyHabit = Hoomdossier::user()->energyHabit;
 
-        $result = InsulatedGlazing::calculate($building, $user, $request->all());
+        $result = InsulatedGlazing::calculate(HoomdossierSession::getBuilding(true), $energyHabit, $request->all());
 
         return response()->json($result);
     }
@@ -331,7 +323,7 @@ class InsulatedGlazingController extends Controller
             [
                 'last_painted_year' => $lastPaintedYear,
                 'paintwork_status_id' => $paintWorkStatuses['paintwork_status_id'],
-                'wood_rot_status_id' => $paintWorkStatuses['paintwork_status_id'],
+                'wood_rot_status_id' => $paintWorkStatuses['wood_rot_status_id'],
             ]
         );
 
@@ -353,7 +345,7 @@ class InsulatedGlazingController extends Controller
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
         $cooperation = HoomdossierSession::getCooperation(true);
 
-        $nextStep = StepHelper::getNextStep($this->step);
+        $nextStep = StepHelper::getNextStep(Hoomdossier::user(), HoomdossierSession::getInputSource(true), $this->step);
         $url = route($nextStep['route'], ['cooperation' => $cooperation]);
 
         if (! empty($nextStep['tab_id'])) {

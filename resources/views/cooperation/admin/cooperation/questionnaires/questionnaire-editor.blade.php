@@ -619,6 +619,7 @@
             event.preventDefault();
 
 
+            var deleteQuestionRoute = '{{route('cooperation.admin.cooperation.questionnaires.delete', ['questionId' => ':question_id'])}}';
             if (confirm('Dit verwijderd de vraag, u kunt deze actie NIET terugdraaien. Weet u zeker dat u wilt verdergaan ?')) {
 
                 var questionId = $(this).parent().parent().parent().parent().parent().parent().find('.question_id').val();
@@ -629,11 +630,9 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: '{{url('admin/cooperatie/coordinator/questionnaire/delete-question')}}/'+questionId,
-                    // CentOS + DirectAdmin retard-mode = crying with onions.
-                    //method: "DELETE"
+                    url: deleteQuestionRoute.replace(':question_id', questionId),
                     type: 'post',
-                    data: { _method: 'delete' }
+                    method: 'delete'
                 });
 
                 $(this).parent().parent().parent().parent().parent().parent().remove();
@@ -647,12 +646,11 @@
          */
         $('body').on('click', '.glyphicon-remove', function (event) {
             event.preventDefault();
+            var deleteOptionRoute = '{{route('cooperation.admin.cooperation.questionnaires.delete-question-option', ['questionId' => ':question_id', 'optionId' => ':option_id'])}}';
             var currentOptionGroup = $(this).parent().parent().parent().parent().parent();
             var question = currentOptionGroup.parent();
             var questionId = question.find('.question_id').val();
             var questionOptionId = currentOptionGroup.find('.question_option_id').val();
-
-            console.log(currentOptionGroup, question);
 
             if (confirm('Dit verwijderd de optie van deze vraag, u kunt deze actie NIET terugdraaien. Weet u zeker dat u wilt verdergaan ?')) {
 
@@ -661,11 +659,10 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        url: '{{url('admin/cooperatie/coordinator/questionnaire/delete-option')}}/'+questionId+'/'+questionOptionId,
-                        // CentOS + DirectAdmin retard-mode = crying with onions.
-                        //method: "DELETE"
+                        // this is what is to be considered a pro gamer move.
+                        url: deleteOptionRoute.replace(':question_id', questionId).replace(':option_id', questionOptionId),
                         type: 'post',
-                        data: { _method: 'delete' }
+                        method: 'delete'
                     });
                 }
 

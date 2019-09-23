@@ -36,11 +36,7 @@ class QuestionnairePolicy
         $currentCooperation = HoomdossierSession::getCooperation(true);
 
         // check if the cooperation from the requested questionnaire is the same as the cooperation from the authenticated user
-        if ($questionnaire->cooperation instanceof $currentCooperation) {
-            return true;
-        }
-
-        return false;
+        return $questionnaire->cooperation->slug == $currentCooperation->slug;
     }
 
     /**
@@ -67,11 +63,7 @@ class QuestionnairePolicy
     public function store(User $user)
     {
         // if the user has the right roles
-        if ($user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
-            return true;
-        }
-
-        return false;
+        return $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
     }
 
     public function update(User $user, Questionnaire $questionnaire)
@@ -87,10 +79,6 @@ class QuestionnairePolicy
         $cooperationFromQuestionnaire = $questionnaire->cooperation;
 
         // check if the user has the right roles
-        if ($user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && $cooperationFromQuestionnaire == $currentCooperation) {
-            return true;
-        }
-
-        return false;
+        return $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && $cooperationFromQuestionnaire->slug == $currentCooperation->slug;
     }
 }

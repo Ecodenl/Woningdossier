@@ -22,7 +22,14 @@ class FileStorageDownload
         $fileType = $routeParameters['fileType'];
         $fileStorageFilename = $routeParameters['fileStorageFilename'];
 
-        $fileStorage = $fileType->files()->where('filename', $fileStorageFilename)->first();
+        switch ($fileType->short) {
+            case 'pdf-report':
+                $fileStorage = $fileType->files()->forMe()->where('filename', $fileStorageFilename)->first();
+                break;
+            default:
+                $fileStorage = $fileType->files()->where('filename', $fileStorageFilename)->first();
+                break;
+        }
 
         // some other logic for resident wil come in the near future.
         if (Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']) && ($fileStorage instanceof FileStorage && $fileStorage->cooperation->id == HoomdossierSession::getCooperation())) {

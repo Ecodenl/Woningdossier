@@ -15,10 +15,10 @@ class ReportController extends Controller
             ->with(['fileTypes' => function ($query) {
                 $query->where('short', '!=', 'pdf-report')
                     ->with('files');
-            }])
-            ->first();
+            }])->first();
 
-        $anyFilesBeingProcessed = FileStorage::withOutGlobalScope(new AvailableScope)->where('is_being_processed', true)->count();
+        // Is there any file being processed for my cooperation
+        $anyFilesBeingProcessed = FileStorage::leaveOutPersonalFiles()->withExpired()->beingProcessed()->count();
 
         return view('cooperation.admin.cooperation.reports.index', compact('reportFileTypeCategory', 'anyFilesBeingProcessed'));
     }

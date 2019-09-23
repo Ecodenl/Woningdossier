@@ -60,7 +60,7 @@
                         {{\App\Helpers\Translation::translate('general.specific-situation.title')}} ({{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSource())->name}})
                     </label>
 
-                    <textarea name="comment" class="form-control">{{old('comment', $myActionPlanComment instanceof \App\Models\UserActionPlanAdviceComments ? $myActionPlanComment->comment : '')}}</textarea>
+                    <textarea @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled" @endif name="comment" class="form-control">{{old('comment', $myActionPlanComment instanceof \App\Models\UserActionPlanAdviceComments ? $myActionPlanComment->comment : '')}}</textarea>
 
                     @component('cooperation.tool.components.help-modal', ['id' => 'my-plan-own-comment-info'])
                         {{\App\Helpers\Translation::translate('general.specific-situation.title')}}

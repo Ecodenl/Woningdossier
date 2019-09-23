@@ -78,7 +78,7 @@ class FileType extends Model
     public function isBeingProcessed(): bool
     {
         return FileType::whereHas('files', function ($q) {
-            $q->withExpired()->where('is_being_processed', true);
+            $q->withExpired()->beingProcessed();
         })->where('id', $this->id)->first() instanceof FileType;
     }
 }

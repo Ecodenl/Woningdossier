@@ -20,6 +20,7 @@ use App\Scopes\AvailableScope;
 use App\Services\UserActionPlanAdviceService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Spatie\TranslationLoader\TranslationLoaders\Db;
 
 class MyPlanController extends Controller
 {
@@ -36,9 +37,10 @@ class MyPlanController extends Controller
             }])->first();
 
 
-        $anyFilesBeingProcessed = FileStorage::withOutGlobalScope(new AvailableScope())->where('is_being_processed', true)->count();
-
+        $anyFilesBeingProcessed = FileStorage::forMe()->withExpired()->beingProcessed()->count();
         $advices = UserActionPlanAdviceService::getCategorizedActionPlan($buildingOwner, $inputSource);
+
+        // when the comment branch is merged, move this method to the service
         $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
 
@@ -47,7 +49,7 @@ class MyPlanController extends Controller
 
         $fileType = FileType::where('short', 'pdf-report')->first();
 
-        $file = $fileType->files()->where('building_id', $building->id)->first();
+        $file = $fileType->files()->forMe()->first();
 
         // get the input sources that have an action plan for the current building
         // and filter out the current one

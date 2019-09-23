@@ -17,8 +17,7 @@ class ReportController extends Controller
                     ->with(['files' => function ($query) {
                         $query->leaveOutPersonalFiles();
                     }]);
-            }])
-            ->first();
+            }])->first();
 
         $anyFilesBeingProcessed = FileStorage::leaveOutPersonalFiles()->withExpired()->beingProcessed()->count();
 

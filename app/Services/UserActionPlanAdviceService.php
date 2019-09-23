@@ -106,6 +106,7 @@ class UserActionPlanAdviceService {
             ->orderBy('year', 'asc')
             ->get();
 
+        /** @var UserActionPlanAdvice $advice */
         foreach ($advices as $advice) {
 
             if ($advice->step instanceof Step) {
@@ -114,7 +115,7 @@ class UserActionPlanAdviceService {
                 $measureApplication = $advice->measureApplication;
 
                 if (is_null($advice->year)) {
-                    $advice->year = $advice->getAdviceYear();
+                    $advice->year = $advice->getAdviceYear($inputSource);
                 }
                 // if advices are not desirable and the measureApplication is not an advice it will be added to the result
                 if (!$withAdvices && !$measureApplication->isAdvice()) {

@@ -43,15 +43,8 @@
 
     @include('cooperation.tool.my-plan.parts.my-plan-form')
 
+    @include('cooperation.tool.my-plan.parts.personal-plan')
 
-    <div class="row">
-        <div class="plan-preview col-md-12">
-            <h2>{{ \App\Helpers\Translation::translate('my-plan.maintenance-plan.title') }}</h2>
-            <ul id="years">
-
-            </ul>
-        </div>
-    </div>
     <div class="row">
         <div class="col-sm-12">
             <?php

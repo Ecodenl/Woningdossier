@@ -36,7 +36,7 @@ class UserRequest extends FormRequest
             'coach_id' => ['nullable', Rule::exists('users', 'id')],
 
             'postal_code' => [new PostalCode()],
-            'number' => [new HouseNumber()],
+            'number' => ['numeric', new HouseNumber()],
             'street' => 'required|string',
             'city' => 'required|string',
         ];

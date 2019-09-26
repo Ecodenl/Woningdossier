@@ -4,6 +4,7 @@ namespace App\Calculations;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
+use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\InsulatedGlazingCalculator;
 use App\Helpers\Kengetallen;
@@ -27,11 +28,12 @@ class InsulatedGlazing {
      * Return the calculate results for the insulated glazings.
      *
      * @param Building $building
+     * @param InputSource $inputSource
      * @param $energyHabit
      * @param $calculateData
      * @return array
      */
-    public static function calculate(Building $building, $energyHabit, $calculateData): array
+    public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData): array
     {
         $result = [
             'savings_gas' => 0,
@@ -61,7 +63,7 @@ class InsulatedGlazing {
                     NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']),
                     $measureApplication,
                     $building,
-                    $user->energyHabit,
+                    $energyHabit,
                     $buildingHeating,
                     $insulatedGlazing
                 );
@@ -156,6 +158,9 @@ class InsulatedGlazing {
             $result['paintwork'] = compact('costs', 'year');
         }
 
+        // Crack sealing gives a percentage of savings. This is dependent on the application (place or replace)
+        // and the gas usage (for heating)
+
         $result['crack-sealing'] = [
             'costs' => 0,
             'savings_gas' => 0,
@@ -172,7 +177,9 @@ class InsulatedGlazing {
         if ($crackSealingElement instanceof ElementValue && 'crack-sealing' == $crackSealingElement->element->short && $crackSealingElement->calculate_value > 1) {
             $gas = 0;
             if ($energyHabit instanceof UserEnergyHabit) {
-                $gas = $energyHabit->amount_gas;
+                $boiler = $building->getServiceValue('boiler', $inputSource);
+                $usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler, $energyHabit);
+                $gas = $usages['heating']['bruto'];
             }
 
             if (2 == $crackSealingElement->calculate_value) {

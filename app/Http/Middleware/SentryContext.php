@@ -19,12 +19,10 @@ class SentryContext
      */
     public function handle($request, Closure $next)
     {
+        // If logged in and sentry is found, add extra contextual information
+        // which helps debugging exceptions
         if (auth()->check() && app()->bound('sentry')) {
 
-            \Log::debug("Context:");
-            \Log::debug(json_encode(HoomdossierSession::getAll()));
-
-            \Log::debug("-- sentry scope --");
             /** @var Account $account */
             $account = Hoomdossier::account();
             $user = Hoomdossier::user();
@@ -48,16 +46,9 @@ class SentryContext
                 'building:owner' => $building->user->id,
             ];
 
-            \Log::debug("User:");
-            \Log::debug(json_encode($u));
-            \Log::debug("Tags:");
-            \Log::debug(json_encode($tags));
-
-            \Log::debug("-- end sentry scope --");
-
             \Sentry\configureScope(function (Scope $scope) use($u, $tags) {
                 $scope->setUser($u);
-                $scope->setTags($tags);
+                $scope->setExtras($tags);
             });
         }
 

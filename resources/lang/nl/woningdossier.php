@@ -81,8 +81,11 @@ return [
                     'example-buildings' => 'Voorbeeld woningen',
                 ],
                 'index'        => [
-                    'header' => 'Super admin panel',
-                    'text'   => 'Beheer de applicatie',
+                    'header'            => 'Super admin panel',
+                    'text'              => 'Beheer de applicatie',
+                    'cooperations'      => 'Cooperaties',
+                    'users'             => 'Gebruikers',
+                    'buildings'         => 'Woningen',
                 ],
                 'key-figures'  => [
                     'index' => [

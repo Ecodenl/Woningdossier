@@ -21,10 +21,10 @@ class CreateBuildingPaintworkStatusesTable extends Migration
 
             $table->integer('last_painted_year')->unsigned();
 
-            $table->integer('paintwork_status_id')->unsigned();
+            $table->integer('paintwork_status_id')->unsigned()->nullable();
             $table->foreign('paintwork_status_id')->references('id')->on('paintwork_statuses')->onDelete('restrict');
 
-            $table->integer('wood_rot_status_id')->unsigned();
+            $table->integer('wood_rot_status_id')->unsigned()->nullable();
             $table->foreign('wood_rot_status_id')->references('id')->on('wood_rot_statuses')->onDelete('restrict');
 
             $table->timestamps();

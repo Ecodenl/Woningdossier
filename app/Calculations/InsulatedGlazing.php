@@ -63,6 +63,7 @@ class InsulatedGlazing {
                     NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']),
                     $measureApplication,
                     $building,
+                    $inputSource,
                     $energyHabit,
                     $buildingHeating,
                     $insulatedGlazing

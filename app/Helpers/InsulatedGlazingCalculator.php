@@ -6,6 +6,7 @@ use App\Models\Building;
 use App\Models\BuildingHeating;
 use App\Models\Element;
 use App\Models\ElementValue;
+use App\Models\InputSource;
 use App\Models\InsulatingGlazing;
 use App\Models\Interest;
 use App\Models\KeyFigureTemperature;
@@ -38,7 +39,7 @@ class InsulatedGlazingCalculator
     }
 
     // in m3 per year
-    public static function calculateGasSavings($m2, MeasureApplication $measureApplication, Building $building, UserEnergyHabit $energyHabit, BuildingHeating $heating, InsulatingGlazing $glazing = null)
+    public static function calculateGasSavings($m2, MeasureApplication $measureApplication, Building $building, InputSource $inputSource, UserEnergyHabit $energyHabit, BuildingHeating $heating, InsulatingGlazing $glazing = null)
     {
         $query = KeyFigureTemperature::where('measure_application_id', $measureApplication->id)
                 ->where('building_heating_id', $heating->id);
@@ -53,9 +54,9 @@ class InsulatedGlazingCalculator
         /** @var Element $element */
         $element = Element::where('short', '=', 'living-rooms-windows')->first();
 
-        $result = min($saving, Calculator::maxGasSavings($building, $energyHabit, $element));
+        $result = min($saving, Calculator::maxGasSavings($building, $inputSource, $energyHabit, $element));
 
-        self::debug(__METHOD__ . ' ' . $result.' = min('.$m2.' * '.$keyFigureTemperature->key_figure.', '.Calculator::maxGasSavings($building, $energyHabit, $element).')');
+        self::debug(__METHOD__ . ' ' . $result.' = min('.$m2.' * '.$keyFigureTemperature->key_figure.', '.Calculator::maxGasSavings($building, $inputSource, $energyHabit, $element).')');
 
         return $result;
     }

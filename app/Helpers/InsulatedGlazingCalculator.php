@@ -38,8 +38,19 @@ class InsulatedGlazingCalculator
         return Calculator::calculateMeasureApplicationCosts($measureApplication, $calcM2, null, false);
     }
 
-    // in m3 per year
-    public static function calculateGasSavings($m2, MeasureApplication $measureApplication, Building $building, InputSource $inputSource, UserEnergyHabit $energyHabit, BuildingHeating $heating, InsulatingGlazing $glazing = null)
+    /**
+     * Returns the RAW calculated savings for the given $m2 of $measureApplication.
+     * For insulated glazing, all should be added. Therefore the max cap will
+     * be done later (via the calculateNetGasSavings).
+     *
+     * @param $m2
+     * @param  MeasureApplication  $measureApplication
+     * @param  BuildingHeating  $heating
+     * @param  InsulatingGlazing|null  $glazing
+     *
+     * @return float|int
+     */
+    public static function calculateRawGasSavings($m2, MeasureApplication $measureApplication, BuildingHeating $heating, InsulatingGlazing $glazing = null)
     {
         $query = KeyFigureTemperature::where('measure_application_id', $measureApplication->id)
                 ->where('building_heating_id', $heating->id);
@@ -50,13 +61,19 @@ class InsulatedGlazingCalculator
 
         $saving = $m2 * $keyFigureTemperature->key_figure;
 
+        self::debug(__METHOD__ .  ' ' . $saving . ' = ' . $m2 . ' * ' . $keyFigureTemperature->key_figure);
+
+        return $saving;
+    }
+
+    public static function calculateNetGasSavings($saving, Building $building, InputSource $inputSource, UserEnergyHabit $energyHabit){
         /** @NeedsReview There is no element for insulated-glazing. Only the "general-data" variants of living-room-windows and sleeping-rooms-windows.. both having the same % */
         /** @var Element $element */
         $element = Element::where('short', '=', 'living-rooms-windows')->first();
 
         $result = min($saving, Calculator::maxGasSavings($building, $inputSource, $energyHabit, $element));
 
-        self::debug(__METHOD__ . ' ' . $result.' = min('.$m2.' * '.$keyFigureTemperature->key_figure.', '.Calculator::maxGasSavings($building, $inputSource, $energyHabit, $element).')');
+        self::debug(__METHOD__ . ' ' . $result.' = min('.$saving.', '.Calculator::maxGasSavings($building, $inputSource, $energyHabit, $element).')');
 
         return $result;
     }
@@ -65,9 +82,10 @@ class InsulatedGlazingCalculator
     {
         $number = $frame->calculate_value * $windowSurface;
         self::debug(__METHOD__.' '.$number.' = '.$frame->calculate_value.' * '.$windowSurface);
+        /** @var ElementValue $woodElement */
         foreach ($woodElements as $woodElement) {
             $number += $woodElement->calculate_value;
-            self::debug($woodElement->calculate_value.' -> '.$number);
+            self::debug(__METHOD__ . " Adding wood element (calculate value) " . $woodElement->calculate_value . " to the paintwork surface (-> ".$number . ")");
         }
 
         return $number;
@@ -78,7 +96,7 @@ class InsulatedGlazingCalculator
         self::debug(__METHOD__);
 
         if ($lastPaintedYear + $measureApplication->maintenance_interval <= Carbon::now()->year) {
-            self::debug('Last painted is longer than '.$measureApplication->maintenance_interval.' years ago.');
+            self::debug(__METHOD__ . ' Last painted is longer than '.$measureApplication->maintenance_interval.' years ago.');
             $year = Carbon::now()->year;
         } else {
             $year = $lastPaintedYear + $measureApplication->maintenance_interval;

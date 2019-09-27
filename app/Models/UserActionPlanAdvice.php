@@ -36,7 +36,8 @@ use Illuminate\Support\Collection;
  * @property-read \App\Models\MeasureApplication $measureApplication
  * @property-read \App\Models\Step $step
  * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice forStep(\App\Models\Step $step)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice newQuery()

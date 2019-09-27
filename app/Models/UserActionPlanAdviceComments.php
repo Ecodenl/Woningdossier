@@ -18,7 +18,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource $inputSource
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdviceComments forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdviceComments forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdviceComments forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdviceComments newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdviceComments newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdviceComments query()

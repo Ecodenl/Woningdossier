@@ -15,31 +15,37 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property int $id
  * @property int|null $cooperation_id
- * @property int|null $user_id
+ * @property int|null $building_id
+ * @property int|null $input_source_id
  * @property int $file_type_id
  * @property string $filename
- * @property string $content_type
  * @property \Illuminate\Support\Carbon|null $available_until
  * @property bool $is_being_processed
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Cooperation|null $cooperation
  * @property-read \App\Models\FileType $fileType
- * @property-read \App\Models\User|null $user
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage beingProcessed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage leaveOutPersonalFiles()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage mostRecent()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage residentInput()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereAvailableUntil($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereContentType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereCooperationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereFileTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereFilename($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereInputSourceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereIsBeingProcessed($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage withExpired()
  * @mixin \Eloquent
  */

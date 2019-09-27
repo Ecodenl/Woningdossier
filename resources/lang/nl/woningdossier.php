@@ -62,6 +62,8 @@ return [
 
         'navbar' => [
             'my-account' => 'Mijn account',
+            'disclaimer' => 'Disclaimer',
+            'privacy' => 'Privacy',
             'start' => 'Start',
         ],
         'admin'  => [

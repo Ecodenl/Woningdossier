@@ -273,10 +273,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         Route::get('edit/{id}', 'QuestionnaireController@edit')->name('edit');
                         Route::post('create-questionnaire', 'QuestionnaireController@store')->name('store');
 
-                        Route::delete('delete-question/{questionId}',
-                            'QuestionnaireController@deleteQuestion')->name('delete');
-                        Route::delete('delete-option/{questionId}/{optionId}',
-                            'QuestionnaireController@deleteQuestionOption')->name('delete-question-option');
+                        Route::delete('delete-question/{questionId}', 'QuestionnaireController@deleteQuestion')->name('delete');
+                        Route::delete('delete-option/{questionId}/{optionId}', 'QuestionnaireController@deleteQuestionOption')->name('delete-question-option');
                         Route::post('set-active', 'QuestionnaireController@setActive')->name('set-active');
                     });
 

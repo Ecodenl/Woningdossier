@@ -40,10 +40,11 @@ class SolarPanel {
         ];
 
         $buildingPvPanels = $calculateData['building_pv_panels'] ?? [];
-\Log::debug("Data input: " . json_encode($buildingPvPanels));
+        \Log::debug("Data input: " . json_encode($buildingPvPanels));
         $amountElectricity = $calculateData['user_energy_habits']['amount_electricity'] ?? 0;
         $peakPower = $buildingPvPanels['peak_power'] ?? 0;
-        $panels = $buildingPvPanels['number'] ?? 0;
+        // check if its set and if its a number since input like 12-14 is allowed.
+        $panels = isset($buildingPvPanels['number']) && is_numeric($buildingPvPanels['number']) ? $buildingPvPanels['number'] : 0;
         $orientationId = $buildingPvPanels['pv_panel_orientation_id'] ?? 0;
         $angle = $buildingPvPanels['angle'] ?? 0;
 

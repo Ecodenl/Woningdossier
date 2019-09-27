@@ -79,7 +79,29 @@ class FileStorage extends Model
      */
     public function scopeWithExpired(Builder $query)
     {
-        return $query->withoutGlobalScope(AvailableScope::class);
+        return $query->withoutGlobalScope(new AvailableScope);
+    }
+
+    /**
+     * Query to leave out the personal files
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeLeaveOutPersonalFiles(Builder $query)
+    {
+        return $query->whereNull('building_id');
+    }
+
+    /**
+     * Query to scope the file's that are being processed
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeBeingProcessed(Builder $query)
+    {
+        return $query->where('is_being_processed', true);
     }
 
     /**

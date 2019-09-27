@@ -108,8 +108,9 @@ class InsulatedGlazing {
             $rawMeasureSavingsGas = $result['measure'][$maId]['savings_gas'];
             // prevent $rawMeasureSavingsGas  / $rawTotalSavings gas to be > 1
             // otherwise we could still end up saving more than the building would allow..
-            $result['measure'][$maId]['savings_gas'] = $rawTotalSavingsGas > 0 ? min(1, ($rawMeasureSavingsGas / $rawTotalSavingsGas)) * $result['savings_gas'] : 0;
-            \Log::debug(__METHOD__ . " Measure " . $maId . " factor: " . min(1, ($rawMeasureSavingsGas / $rawTotalSavingsGas)));
+            $measureGasSavings = $rawTotalSavingsGas > 0 ? min(1, ($rawMeasureSavingsGas / $rawTotalSavingsGas)) * $result['savings_gas'] : 0;
+            $result['measure'][$maId]['savings_gas'] = $measureGasSavings;
+            \Log::debug(__METHOD__ . " Measure " . $maId . " factor: " . $measureGasSavings);
             $result['measure'][$maId]['savings_co2'] = Calculator::calculateCo2Savings($result['measure'][$maId]['savings_gas']);
             $result['measure'][$maId]['savings_money'] = Calculator::calculateMoneySavings($result['measure'][$maId]['savings_gas']);
         }

@@ -11,6 +11,7 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\MeasureApplication;
 use App\Models\PrivateMessage;
+use function Couchbase\defaultDecoder;
 
 class ConversationRequestController extends Controller
 {
@@ -25,6 +26,8 @@ class ConversationRequestController extends Controller
      */
     public function index(Cooperation $cooperation, $option = null, $measureApplicationShort = null)
     {
+        $userAlreadyHadContactWithCooperation = PrivateMessage::public()->conversation(HoomdossierSession::getBuilding())->first() instanceof PrivateMessage;
+
         // if the user is observing, he has nothing to do here.
         if (HoomdossierSession::isUserObserving()) {
             return redirect()->route('cooperation.tool.my-plan.index');
@@ -36,7 +39,7 @@ class ConversationRequestController extends Controller
 
         $selectedOption = $option;
 
-        return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName'));
+        return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName', 'userAlreadyHadContactWithCooperation'));
     }
 
     /**
@@ -56,15 +59,15 @@ class ConversationRequestController extends Controller
         $message     = $request->get('message', '');
         $allowAccess = 'on' == $request->get('allow_access', '');
 
-        $cooperation = HoomdossierSession::getCooperation(true);
         $building = HoomdossierSession::getBuilding(true);
+        $user = $building->user;
 
         PrivateMessage::create(
             [
                 // we get the selected option from the language file, we can do this cause the submitted value = key from localization
                 'is_public'         => true,
-                'from_user_id'      => Hoomdossier::user()->id,
-                'from_user'         => \App\Helpers\Hoomdossier::user()->getFullName(),
+                'from_user_id'      => $user->id,
+                'from_user'         => $user->getFullName(),
                 'message'           => $message,
                 'to_cooperation_id' => $cooperation->id,
                 'building_id'       => $building->id,
@@ -73,12 +76,11 @@ class ConversationRequestController extends Controller
             ]
         );
 
-
         $building->setStatus('pending');
 
-        // if the user allows access to his building on the request, log the activity.
+        // if the user allows access we handle this with the event
         if ($allowAccess) {
-            event(new UserAllowedAccessToHisBuilding());
+            UserAllowedAccessToHisBuilding::dispatch($building);
         }
 
         return redirect()->route('cooperation.tool.my-plan.index')

@@ -66,6 +66,7 @@
                                 </div>
                             </div>
 
+                            @if(!$userAlreadyHadContactWithCooperation)
                             <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
                                     <label for="allow_access">
@@ -80,6 +81,7 @@
                                     <p>@lang('woningdossier.cooperation.conversation-requests.index.text')</p>
                                 </div>
                             </div>
+                            @endif
 
                             <div class="form-group">
                                 <div class="col-md-12 ">

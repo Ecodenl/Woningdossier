@@ -344,45 +344,6 @@
 
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="form-group add-space {{ $errors->has('comments') ? ' has-error' : '' }}">
-                    @component('cooperation.tool.components.step-question', ['id' => 'comments', 'translation' => 'insulated-glazing.paint-work.comments-paintwork', 'required' => false])
-
-                        <?php
-                        // We do this because we store the comment with every glazing
-                        $glazingWithComment = collect($buildingInsulatedGlazings)->where('extra', '!=', null)->first();
-                        $comment = !is_null($glazingWithComment) && array_key_exists('comment', $glazingWithComment->extra) ? $glazingWithComment->extra['comment'] : '';
-                        ?>
-
-                        <textarea name="comment" id="" class="form-control">{{ old('comment', $comment) }}</textarea>
-
-                    @endcomponent
-
-                </div>
-            </div>
-
-        </div>
-        <?php
-            // we take the first one.
-            // this is due to the fact this is saved kinda weird
-            $insulatedGlazingWithCommentsAndHasExtra = collect($buildingInsulatedGlazingsForMe)->map(function ($buildingInsulatedGlazings) {
-                return $buildingInsulatedGlazings
-                    ->where('input_source_id', '!=', \App\Helpers\HoomdossierSession::getInputSource())
-                    ->where('extra', '!=', null)
-                    ->first();
-            })->first();
-        ?>
-        @if($insulatedGlazingWithCommentsAndHasExtra  instanceof \App\Models\BuildingInsulatedGlazing)
-            @include('cooperation.tool.includes.comment', [
-                 'collection' => collect()->push($insulatedGlazingWithCommentsAndHasExtra),
-                 'commentColumn' => 'extra.comment',
-                 'translation' => [
-                     'title' => 'general.specific-situation.title',
-                     'help' => 'general.specific-situation.help'
-                 ]
-             ])
-        @endif
 
         <div id="indication-for-costs">
             <hr>
@@ -437,6 +398,9 @@
             </div>
         </div>
 
+        @include('cooperation.tool.includes.comment', [
+            'translation' => 'insulated-glazing.comment'
+        ])
 
         <div class="row">
             <div class="col-md-12">

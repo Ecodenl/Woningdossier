@@ -49,7 +49,7 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         if ($this->app->environment('local', 'testing')) {
-            $this->app->register(DuskServiceProvider::class);
+            //$this->app->register(DuskServiceProvider::class);
         }
         if ($this->app->environment('local')) {
             //$this->app->register(IdeHelperServiceProvider::class);

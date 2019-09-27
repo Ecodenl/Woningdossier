@@ -10,8 +10,7 @@
 
     ?>
 
-    <form class="form-horizontal" method="POST" id="main-form"
-          action="{{ route('cooperation.tool.general-data.store', ['cooperation' => $cooperation]) }}">
+    <form class="form-horizontal" method="POST" id="main-form" action="{{ route('cooperation.tool.general-data.store', ['cooperation' => $cooperation]) }}" autocomplete="off">
         {{ csrf_field() }}
         <div class="row">
 

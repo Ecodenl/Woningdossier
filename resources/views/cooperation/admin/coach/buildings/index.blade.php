@@ -34,6 +34,8 @@
 
                                 $appointmentDateFormatted = optional($buildingStatus->appointment_date)->format('d-m-Y');
                                 $appointmentDateStrotime = strtotime($appointmentDateFormatted);
+
+                                $userIsAuthUser = $user->id == \App\Helpers\Hoomdossier::user()->id;
                             ?>
                             <tr>
                                 <td data-sort="{{$appointmentDateStrotime ?? '-'}}">
@@ -41,9 +43,13 @@
                                 </td>
                                 <td>{{$user->getFullName()}}</td>
                                 <td>
-                                    <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
-                                        {{$building->street}} {{$building->number}} {{$building->extension}}
-                                    </a>
+                                    @if($userIsAuthUser)
+                                        <p>{{$building->street}} {{$building->number}} {{$building->extension}}</p>
+                                    @else
+                                        <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
+                                            {{$building->street}} {{$building->number}} {{$building->extension}}
+                                        </a>
+                                    @endif
                                 </td>
                                 <td>{{$building->postal_code}}</td>
                                 <td>

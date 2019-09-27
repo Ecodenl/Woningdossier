@@ -27,6 +27,7 @@ use App\Models\Interest;
 use App\Models\Motivation;
 use App\Models\PresentHeatPump;
 use App\Models\PresentWindow;
+use App\Models\Question;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\ServiceValue;
@@ -64,6 +65,7 @@ class GeneralDataController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
+
 
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();

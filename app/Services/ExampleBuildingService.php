@@ -379,6 +379,7 @@ class ExampleBuildingService
 
     public static function clearExampleBuilding(Building $building)
     {
+        /** @var InputSource $inputSource */
         $inputSource = InputSource::findByShort('example-building');
 
         return BuildingDataService::clearBuildingFromInputSource($building, $inputSource);

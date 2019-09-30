@@ -11,4 +11,14 @@ return [
             'label' => 'Vervanging dakpannen / dakbedekking'
         ],
     ],
+    'current-situation' => [
+        'insulation-pitched-zinc-surface' => [
+            'help' => '',
+            'title' => 'Zink oppervlak hellend dak',
+        ],
+        'insulation-flat-zinc-surface' => [
+            'help' => '',
+            'title' => 'Zink oppervlak plat dak',
+        ],
+    ],
 ];

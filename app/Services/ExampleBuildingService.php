@@ -396,6 +396,7 @@ class ExampleBuildingService
 
         return ToolHelper::getContentStructure();
 
+        /*
 	    // General data - Elements (that are not queried later on step basis)
 	    $livingRoomsWindows = Element::where('short', 'living-rooms-windows')->first();
 	    $sleepingRoomsWindows = Element::where('short', 'sleeping-rooms-windows')->first();
@@ -421,7 +422,6 @@ class ExampleBuildingService
 	    $woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
 	    // Floor insulation
-	    /** @var Element $floorInsulation */
 	    $floorInsulation = Element::where('short', 'floor-insulation')->first();
 	    $crawlspace = Element::where('short', 'crawlspace')->first();
 
@@ -753,11 +753,6 @@ class ExampleBuildingService
 				    'type' => 'select',
 				    'options' => static::createOptions($roofInsulation->values()->orderBy('order')->get(), 'value'),
 			    ],
-			    /*'building_roof_types.roof_type_id' => [
-				    'label' => Translation::translate('roof-insulation.current-situation.roof-types.title'),
-				    'type' => 'multiselect',
-				    'options' => static::createOptions($roofTypes),
-			    ],*/
 			    'building_features.roof_type_id' => [
 				    'label' => Translation::translate('roof-insulation.current-situation.main-roof.title'),
 				    'type' => 'select',
@@ -815,23 +810,6 @@ class ExampleBuildingService
 			    ],
 		    ],
 	    ];
-
-		/*
-		// From GeneralDataController
-		$interestElements = Element::whereIn('short', [
-			'living-rooms-windows', 'sleeping-rooms-windows',
-		])->orderBy('order')->get();
-
-		foreach ($interestElements as $interestElement) {
-			$k = 'user_interest.element.'.$interestElement->id;
-			$structure['general-data'][$k] = [
-				'label' => 'Interest in '.$interestElement->name,
-				'type' => 'select',
-				'options' => $interestOptions,
-			];
-		}
-		*/
-
 
 	    // Insulated glazing
 	    $igShorts = [
@@ -900,6 +878,11 @@ class ExampleBuildingService
 			    'type' => 'text',
 			    'unit' => Translation::translate('general.unit.square-meters.title'),
 		    ];
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.zinc_surface'] = [
+                'label' => Translation::translate('roof-insulation.current-situation.insulation-'.$roofType->short.'-zinc-surface.title'),
+                'type' => 'text',
+                'unit' => Translation::translate('general.unit.square-meters.title'),
+            ];
 		    $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.extra.zinc_replaced_date'] = [
 			    'label' => Translation::translate('roof-insulation.current-situation.zinc-replaced.title'),
 			    'type' => 'text',
@@ -932,8 +915,10 @@ class ExampleBuildingService
 	    }
 
 	    return $structure;
+	    */
     }
 
+    /*
 	protected static function createOptions(Collection $collection, $value = 'name', $id = 'id', $nullPlaceholder = true)
 	{
 		$options = [];
@@ -946,4 +931,5 @@ class ExampleBuildingService
 
 		return $options;
 	}
+    */
 }

@@ -655,6 +655,11 @@ class ToolHelper
                 'type'  => 'text',
                 'unit'  => Translation::translate('general.unit.square-meters.title'),
             ];
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.zinc_surface']  = [
+                'label' => Translation::translate('roof-insulation.current-situation.insulation-'.$roofType->short.'-zinc-surface.title'),
+                'type'  => 'text',
+                'unit'  => Translation::translate('general.unit.square-meters.title'),
+            ];
             $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.extra.zinc_replaced_date'] = [
                 'label' => Translation::translate('roof-insulation.current-situation.zinc-replaced.title'),
                 'type'  => 'text',

@@ -154,21 +154,23 @@ return [
                         'create' => 'Aanmaken',
                     ],
                     'create'                => [
-                        'header' => 'Cooperaie toevoegen',
+                        'header' => 'Cooperatie toevoegen',
                         'form'   => [
-                            'name'        => 'Naam van de cooperatie *',
-                            'slug'        => 'Slug / subdomein *',
-                            'website_url' => 'Website URL',
-                            'create'      => 'Aanmaken',
+                            'name'              => 'Naam van de cooperatie *',
+                            'slug'              => 'Slug / subdomein *',
+                            'cooperation_email' => 'Cooperatie contact e-mailadres',
+                            'website_url'       => 'Website URL',
+                            'create'            => 'Aanmaken',
                         ],
                     ],
                     'edit'                  => [
                         'header' => 'Cooperatie :name bewerken',
                         'form'   => [
-                            'name'        => 'Naam van de cooperatie *',
-                            'slug'        => 'Slug / subdomein *',
-                            'website_url' => 'Website URL',
-                            'update'      => 'Bijwerken',
+                            'name'              => 'Naam van de cooperatie *',
+                            'slug'              => 'Slug / subdomein *',
+                            'cooperation_email' => 'Cooperatie contact e-mailadres',
+                            'website_url'       => 'Website URL',
+                            'update'            => 'Bijwerken',
                         ],
                     ],
                     'store'                 => [

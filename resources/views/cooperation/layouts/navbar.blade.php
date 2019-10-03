@@ -22,10 +22,13 @@
                 @if (\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
                     <a href="{{route('cooperation.admin.stop-session')}}" class="btn btn-warning navbar-btn">Stop sessie</a>
                 @endif
+                @if(\App\Helpers\Hoomdossier::user()->can('access-admin') && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin', 'super-admin']))
+                    <a href="{{ route('cooperation.admin.index') }}" class="btn btn-success navbar-btn">Naar coöperatie omgeving</a>
+                @endif
             </ul>
         @endauth
 
-        @if(App::environment() == 'local') {{-- currently only for local --}}
+        @if(App::environment() == 'local') {{-- currently only for local development --}}
             <!-- Left Side Of Navbar -->
             <ul class="nav navbar-nav">
                 @if(count(config('hoomdossier.supported_locales')) > 1)

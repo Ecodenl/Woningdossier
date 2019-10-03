@@ -145,7 +145,7 @@ class UserPolicy
             return in_array($role->name, ['coordinator', 'coach', 'resident']);
         }
         if ($user->hasRoleAndIsCurrentRole('coordinator')){
-            return in_array($role->name, ['coach', 'resident']);
+            return in_array($role->name, ['coordinator', 'coach', 'resident']);
         }
         return false;
     }

@@ -22,7 +22,7 @@
                 @if (\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
                     <a href="{{route('cooperation.admin.stop-session')}}" class="btn btn-warning navbar-btn">Stop sessie</a>
                 @endif
-                @if(\App\Helpers\Hoomdossier::user()->can('access-admin') && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin', 'super-admin']))
+                @if(\App\Helpers\Hoomdossier::user()->can('access-admin'))
                     <a href="{{ route('cooperation.admin.index') }}" class="btn btn-success navbar-btn">Naar coöperatie omgeving</a>
                 @endif
             </ul>

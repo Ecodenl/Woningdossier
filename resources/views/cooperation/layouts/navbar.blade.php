@@ -22,9 +22,6 @@
                 @if (\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
                     <a href="{{route('cooperation.admin.stop-session')}}" class="btn btn-warning navbar-btn">Stop sessie</a>
                 @endif
-                @if(\App\Helpers\Hoomdossier::user()->can('access-admin'))
-                    <a href="{{ route('cooperation.admin.index') }}" class="btn btn-success navbar-btn">Naar coöperatie omgeving</a>
-                @endif
             </ul>
         @endauth
 

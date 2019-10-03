@@ -78,14 +78,16 @@ class UserController extends Controller
             ]
         );
 
-        $user->account()->associate(
-            Account::create(
-                [
+        // check if account exists. If so: attach.
+        $account = Account::where('email','=', $email)->first();
+        if (!$account instanceof Account){
+            $account = Account::create([
                     'email' => $email,
                     'password' => \Hash::make(Str::randomPassword()),
-                ]
-            )
-        )->save();
+            ]);
+        }
+
+        $user->account()->associate($account)->save();
 
         // now get the pico address data.
         $picoAddressData = PicoHelper::getAddressData(

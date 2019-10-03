@@ -73,18 +73,22 @@
                     <li><a href="{{ route('cooperation.login', ['cooperation' => $cooperation]) }}">@lang('auth.login.form.header')</a></li>
                     <li><a href="{{ route('cooperation.register', ['cooperation' => $cooperation]) }}">@lang('auth.register.form.header')</a></li>
                 @else
-                    @if (!\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
-                    <li>
-                        <a href="{{url('/home')}}">@lang('woningdossier.cooperation.navbar.start')</a>
-                    </li>
+
+                    {{-- for residents only show 'Start' and 'Basisadvies' --}}
+                    @if(\App\Helpers\Hoomdossier::user()->hasRole('resident'))
+                        @if (!\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
+                        <li>
+                            <a href="{{url('/home')}}">@lang('woningdossier.cooperation.navbar.start')</a>
+                        </li>
+                        @endif
+                        <li>
+                            <a href="{{
+                                        \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->hasCompleted(\App\Models\Step::where('slug', 'building-detail')->first()) ? route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) : route('cooperation.tool.building-detail.index', ['cooperation' => $cooperation])
+                                     }}">
+                                @lang('woningdossier.cooperation.tool.title')
+                            </a>
+                        </li>
                     @endif
-                    <li>
-                        <a href="{{
-                                    \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->hasCompleted(\App\Models\Step::where('slug', 'building-detail')->first()) ? route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) : route('cooperation.tool.building-detail.index', ['cooperation' => $cooperation])
-                                 }}">
-                            @lang('woningdossier.cooperation.tool.title')
-                        </a>
-                    </li>
 
                     @if (!\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
 

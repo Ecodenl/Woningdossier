@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Cooperation;
@@ -10,6 +11,7 @@ use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 class ResetPasswordController extends Controller
 {
@@ -78,6 +80,17 @@ class ResetPasswordController extends Controller
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
+
+        // same as for login controller: redirect to appropriate page
+        // the guard()->user() will return the auth model, in our case this is the Account model
+        // but we want the user from the account, so thats why we do ->user()->user();
+        $user = $this->guard()->user()->user();
+
+        $role = Role::findByName($user->roles()->first()->name);
+
+        $user->roles->count() == 1 ? $this->redirectTo = RoleHelper::getUrlByRole($role) : $this->redirectTo = '/home';
+
+
         return Password::PASSWORD_RESET == $response
             ? $this->sendResetResponse($response)
             : $this->sendResetFailedResponse($request, $response);

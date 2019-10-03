@@ -98,6 +98,7 @@ class Hoomdossier
         // the user actually gets to that step (building_features fields)
         // these fields also get a 'fallthrough' via $fallthroughColumns
         $falltroughColumns = [
+            'cavity_wall',
             'facade_plastered_painted',
             'facade_plastered_surface_id',
             'facade_damaged_paintwork_id',

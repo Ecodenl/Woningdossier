@@ -761,7 +761,7 @@ return [
 
                 'form' => [
                     'no-measure-application-name-title' => 'Contact opnemen',
-                    'title'                             => 'Actie ondernemen met :measure_application_name',
+                    'title'                             => 'Contact over :measure_application_name',
                     'allow_access'                      => 'Ik geef toesteming aan :cooperation om de gegevens uit mijn Hoomdossier in te zien en in overleg met mij deze gegevens aan te passen.',
                     'are-you-sure'                      => 'Weet u zeker dat u de Coöperatie geen toegang wilt geven tot uw dossier?',
                     'action'                            => 'Actie',

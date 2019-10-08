@@ -15,7 +15,7 @@
                         <form class="form-horizontal" method="POST" action="{{ route('cooperation.conversation-requests.store', ['cooperation' => $cooperation]) }}">
                             {{ csrf_field() }}
 
-                            @if($measureApplicationName == "")
+                            @if(empty($measureApplicationName))
                                 <h2>@lang('woningdossier.cooperation.conversation-requests.index.form.no-measure-application-name-title')</h2>
                             @else
                                 <h2>@lang('woningdossier.cooperation.conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName])</h2>
@@ -30,7 +30,7 @@
                                             @lang('woningdossier.cooperation.conversation-requests.index.form.selected-option')
                                         </option>
                                         @foreach(__('woningdossier.cooperation.conversation-requests.index.form.options') as $value => $label)
-                                            <option @if(((isset($selectedOption)) && $value == $selectedOption) || old('action') == $value ) checked @endif value="{{ $value }}" type="radio">
+                                            <option @if(((isset($selectedOption)) && old('action', $value) == $selectedOption)) selected="selected" @endif value="{{ $value }}">
                                                 {{$label}}
                                             </option>
                                         @endforeach
@@ -93,6 +93,7 @@
 
 @push('js')
     <script src="{{asset('js/select2.js')}}"></script>
+
     <script type="text/javascript">
         $(document).ready(function () {
             var helpPlaceholderText = '@lang('woningdossier.cooperation.conversation-requests.index.form.selected-option')';
@@ -103,20 +104,15 @@
             // when the form gets submited check if the user agreed with the allow_access
             // if so submit, else do nothing
             $('form').on('submit', function () {
-
                 if ($('input[name=allow_access]').is(':checked')  == false) {
 
-                    if (confirm('@lang('woningdossier.cooperation.conversation-requests.index.form.are-you-sure')')) {
-
-                    } else {
+                    if (!confirm('@lang('woningdossier.cooperation.conversation-requests.index.form.are-you-sure')')) {
                         return false;
                         event.preventDefault();
                     }
                 }
-            })
-
-        })
-
+            });
+        });
     </script>
 
 @endpush

@@ -35,7 +35,6 @@ class ConversationRequestController extends Controller
         $measureApplicationName = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : '';
 
         $selectedOption = $option;
-
         return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName'));
     }
 

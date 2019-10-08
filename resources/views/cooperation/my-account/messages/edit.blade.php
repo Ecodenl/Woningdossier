@@ -3,20 +3,20 @@
 @section('my_account_content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @include('cooperation.layouts.chat.group-participants', ['groupParticipants' => $groupParticipants, 'buildingId' => $buildingId])
+            @include('cooperation.messages.parts.group-participants', ['groupParticipants' => $groupParticipants, 'buildingId' => $buildingId])
         </div>
         <div class="panel-body panel-chat-body" id="chat">
             <form id="revoke-access-form" action="{{route('cooperation.my-account.messages.revoke-access')}}" method="post">
                 {{csrf_field()}}
             </form>
-            @component('cooperation.layouts.chat.messages')
+            @component('cooperation.messages.parts.messages')
                 @foreach($privateMessages as $privateMessage)
                     @include('cooperation.messages.parts.message', compact('privateMessage'))
                 @endforeach
             @endcomponent
         </div>
         <div class="panel-footer">
-            @component('cooperation.layouts.chat.input', [
+            @component('cooperation.messages.parts.input', [
                 'privateMessages' => $privateMessages,
                 'buildingId' => \App\Helpers\HoomdossierSession::getBuilding(),
                 'url' => route('cooperation.my-account.messages.store')

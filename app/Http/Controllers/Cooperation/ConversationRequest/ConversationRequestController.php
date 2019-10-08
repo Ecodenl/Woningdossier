@@ -37,7 +37,18 @@ class ConversationRequestController extends Controller
         $selectedOption = $option;
         $shouldShowOptionList = is_null($option) ? true : false;
 
-        return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName', 'shouldShowOptionList'));
+
+        // why make it simple and clean, when you can't ?
+        if(is_null($measureApplicationName)) {
+            $title = __('conversation-requests.index.form.no-measure-application-name-title');
+        } elseif ($measureApplicationName == PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION) {
+            $title = __('conversation-requests.edit.form.'.PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION);
+        } else {
+            $title =  __('conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName]);
+        }
+
+
+        return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName', 'shouldShowOptionList', 'title'));
     }
 
     /**

@@ -15,12 +15,7 @@
                         <form class="form-horizontal" method="POST" action="{{ route('cooperation.conversation-requests.store', ['cooperation' => $cooperation]) }}">
                             {{ csrf_field() }}
 
-                            @if(is_null($measureApplicationName))
-                                <h2>@lang('conversation-requests.index.form.no-measure-application-name-title')</h2>
-                            @else
-                                <h2>@lang('conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName])</h2>
-                            @endif
-
+                            <h2>{{$title}}</h2>
                             <input type="hidden" value="{{ $measureApplicationName }}" name="measure_application_name">
 
                             @if($shouldShowOptionList)

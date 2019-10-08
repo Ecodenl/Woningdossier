@@ -16,6 +16,8 @@ return [
             'submit' => 'Opsturen <span class="glyphicon glyphicon-envelope"></span>',
 
             'selected-option' => 'Waar kunnen we u bij helpen?:',
+
+            \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek aanvragen',
             'options' => [
                 \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
                 \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst',

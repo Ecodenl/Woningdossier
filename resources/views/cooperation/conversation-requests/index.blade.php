@@ -16,9 +16,9 @@
                             {{ csrf_field() }}
 
                             @if(is_null($measureApplicationName))
-                                <h2>@lang('woningdossier.cooperation.conversation-requests.index.form.no-measure-application-name-title')</h2>
+                                <h2>@lang('conversation-requests.index.form.no-measure-application-name-title')</h2>
                             @else
-                                <h2>@lang('woningdossier.cooperation.conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName])</h2>
+                                <h2>@lang('conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName])</h2>
                             @endif
 
                             <input type="hidden" value="{{ $measureApplicationName }}" name="measure_application_name">
@@ -27,7 +27,7 @@
                             <div class="form-group {{ $errors->has('action') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
                                     <select name="action" id="take-action" class="form-control">
-                                        @foreach(__('woningdossier.cooperation.conversation-requests.index.form.options') as $value => $label)
+                                        @foreach(__('conversation-requests.index.form.options') as $value => $label)
                                             <option @if(((isset($selectedOption)) && old('action', $value) == $selectedOption)) selected="selected" @endif value="{{ $value }}">
                                                 {{$label}}
                                             </option>
@@ -46,8 +46,8 @@
 
                             <div class="form-group{{ $errors->has('message') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
-                                    <label for="">@lang('woningdossier.cooperation.conversation-requests.index.form.message')</label>
-                                    <textarea name="message" class="form-control" placeholder="@lang('woningdossier.cooperation.conversation-requests.index.form.message')">{{old('message')}}</textarea>
+                                    <label for="">@lang('conversation-requests.index.form.message')</label>
+                                    <textarea name="message" class="form-control" placeholder="@lang('conversation-requests.index.form.message')">{{old('message')}}</textarea>
 
                                     @if ($errors->has('message'))
                                         <span class="help-block">
@@ -61,14 +61,14 @@
                                 <div class="col-sm-12">
                                     <label for="allow_access">
                                         <input id="allow_access" name="allow_access" type="checkbox" @if(old('allow_access') && old('allow_access') == 'on')checked="checked"@endif>
-                                        @lang('woningdossier.cooperation.conversation-requests.index.form.allow_access', ['cooperation' => \App\Models\Cooperation::find(\App\Helpers\HoomdossierSession::getCooperation())->name])
+                                        @lang('conversation-requests.index.form.allow_access', ['cooperation' => \App\Models\Cooperation::find(\App\Helpers\HoomdossierSession::getCooperation())->name])
                                     </label>
                                     @if ($errors->has('allow_access'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('allow_access') }}</strong>
                                         </span>
                                     @endif
-                                    <p>@lang('woningdossier.cooperation.conversation-requests.index.text')</p>
+                                    <p>@lang('conversation-requests.index.text')</p>
                                 </div>
                             </div>
 
@@ -76,9 +76,9 @@
                                 <div class="col-md-12 ">
                                     <button type="submit" class="btn btn-primary">
                                         @if(isset($privateMessage))
-                                            @lang('woningdossier.cooperation.conversation-requests.index.form.update')
+                                            @lang('conversation-requests.index.form.update')
                                         @else
-                                            @lang('woningdossier.cooperation.conversation-requests.index.form.submit')
+                                            @lang('conversation-requests.index.form.submit')
                                         @endif
                                     </button>
                                 </div>
@@ -97,7 +97,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            var helpPlaceholderText = '@lang('woningdossier.cooperation.conversation-requests.index.form.selected-option')';
+            var helpPlaceholderText = '@lang('conversation-requests.index.form.selected-option')';
             $('#take-action').select2({
                 placeholder: helpPlaceholderText
             });
@@ -107,7 +107,7 @@
             $('form').on('submit', function () {
                 if ($('input[name=allow_access]').is(':checked')  == false) {
 
-                    if (!confirm('@lang('woningdossier.cooperation.conversation-requests.index.form.are-you-sure')')) {
+                    if (!confirm('@lang('conversation-requests.index.form.are-you-sure')')) {
                         return false;
                         event.preventDefault();
                     }

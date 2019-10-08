@@ -33,7 +33,7 @@ class ConversationRequestController extends Controller
         $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
 
         // set the measure application name if there is a measure application
-        $measureApplicationName = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : '';
+        $measureApplicationName = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : null;
         $selectedOption = $option;
         $shouldShowOptionList = is_null($option) ? true : false;
 
@@ -60,7 +60,7 @@ class ConversationRequestController extends Controller
 
         return redirect()
             ->route('cooperation.tool.my-plan.index')
-            ->with('success', __('woningdossier.cooperation.conversation-requests.store.success', [
+            ->with('success', __('conversation-requests.store.success', [
                 'url' => route('cooperation.my-account.messages.index', compact('cooperation'))
              ]));
     }

@@ -11,6 +11,7 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\MeasureApplication;
 use App\Models\PrivateMessage;
+use App\Services\PrivateMessageService;
 
 class ConversationRequestController extends Controller
 {
@@ -52,30 +53,10 @@ class ConversationRequestController extends Controller
         if (HoomdossierSession::isUserObserving()) {
             return redirect()->route('cooperation.tool.my-plan.index');
         }
-        $action      = $request->get('action', '');
-        $message     = strip_tags($request->get('message', ''));
-        $measureApplicationName = $request->get('measure_application_name', null);
-        $allowAccess = 'on' == $request->get('allow_access', '');
-        $message = is_null($measureApplicationName) ? $message : "<b>{$measureApplicationName}: </b>{$message}";
 
-        $cooperation = HoomdossierSession::getCooperation(true);
         $building = HoomdossierSession::getBuilding(true);
 
-
-        PrivateMessage::create(
-            [
-                // we get the selected option from the language file, we can do this cause the submitted value = key from localization
-                'is_public'         => true,
-                'from_user_id'      => Hoomdossier::user()->id,
-                'from_user'         => \App\Helpers\Hoomdossier::user()->getFullName(),
-                'message'           => $message,
-                'to_cooperation_id' => $cooperation->id,
-                'building_id'       => $building->id,
-                'request_type'      => $action,
-                'allow_access'      => $allowAccess,
-            ]
-        );
-
+        PrivateMessageService::createConversationRequest(Hoomdossier::user(), $request);
 
         $building->setStatus('pending');
 

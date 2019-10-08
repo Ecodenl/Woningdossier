@@ -10,6 +10,7 @@ use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\PrivateMessage;
 use App\Services\MessageService;
+use App\Services\PrivateMessageService;
 use App\Services\PrivateMessageViewService;
 use Illuminate\Http\Request;
 
@@ -46,7 +47,7 @@ class MessagesController extends Controller
 
     public function store(ChatRequest $request)
     {
-        MessageService::create($request);
+        PrivateMessageService::create($request);
 
         return redirect()->back();
     }

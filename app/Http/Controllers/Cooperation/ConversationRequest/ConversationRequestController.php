@@ -39,10 +39,11 @@ class ConversationRequestController extends Controller
 
 
         // why make it simple and clean, when you can't ?
-        if(is_null($measureApplicationName)) {
+        if ($option == PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION) {
+            $title = __('conversation-requests.edit.form.' . PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION);
+        }
+        elseif (is_null($measureApplicationName)) {
             $title = __('conversation-requests.index.form.no-measure-application-name-title');
-        } elseif ($measureApplicationName == PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION) {
-            $title = __('conversation-requests.edit.form.'.PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION);
         } else {
             $title =  __('conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName]);
         }

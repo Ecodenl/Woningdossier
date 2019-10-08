@@ -8,31 +8,7 @@
              */
             ?>
             @foreach($messages as $privateMessage)
-
-                <li class="@if($privateMessage->isMyMessage()) right @else left @endif clearfix">
-                    <div class="chat-body clearfix">
-                        <div class="header">
-                            @if($privateMessage->isMyMessage())
-
-                                <small class="text-muted">
-                                    <span class="glyphicon glyphicon-time"></span>{{$privateMessage->created_at->diffForHumans()}}
-                                </small>
-                                <strong class="pull-right primary-font">{{$privateMessage->getSender()}}</strong>
-
-                            @else
-
-                                <strong class="primary-font">{{$privateMessage->getSender()}}</strong>
-                                <small class="pull-right text-muted">
-                                    <span class="glyphicon glyphicon-time"></span>{{$privateMessage->created_at->diffForHumans()}}
-                                </small>
-
-                            @endif
-                        </div>
-                        <p>
-                            {{$privateMessage->message}}
-                        </p>
-                    </div>
-                </li>
+                @include('cooperation.messages.parts.message', compact('privateMessage'))
             @endforeach
         @endcomponent
     </div>

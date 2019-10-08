@@ -54,20 +54,14 @@ class ConversationRequestController extends Controller
             return redirect()->route('cooperation.tool.my-plan.index');
         }
 
-        $building = HoomdossierSession::getBuilding(true);
-
         PrivateMessageService::createConversationRequest(Hoomdossier::user(), $request);
 
-        $building->setStatus('pending');
+        HoomdossierSession::getBuilding(true)->setStatus('pending');
 
-        // if the user allows access to his building on the request, log the activity.
-        if ($allowAccess) {
-            event(new UserAllowedAccessToHisBuilding());
-        }
-
-        return redirect()->route('cooperation.tool.my-plan.index')
-                         ->with('success', __('woningdossier.cooperation.conversation-requests.store.success', [
-                             'url' => route('cooperation.my-account.messages.index', compact('cooperation'))
-                         ]));
+        return redirect()
+            ->route('cooperation.tool.my-plan.index')
+            ->with('success', __('woningdossier.cooperation.conversation-requests.store.success', [
+                'url' => route('cooperation.my-account.messages.index', compact('cooperation'))
+             ]));
     }
 }

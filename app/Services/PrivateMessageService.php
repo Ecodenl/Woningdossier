@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\UserAllowedAccessToHisBuilding;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
@@ -88,5 +89,10 @@ class PrivateMessageService
                 'allow_access'      => $allowAccess,
             ]
         );
+
+        // if the user allows access to his building on the request, log the activity.
+        if ($allowAccess) {
+            event(new UserAllowedAccessToHisBuilding());
+        }
     }
 }

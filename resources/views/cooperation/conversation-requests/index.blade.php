@@ -8,8 +8,6 @@
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
-                    <div class="panel-heading">@lang('woningdossier.cooperation.conversation-requests.index.header')</div>
-
                     <div class="panel-body">
                         <form class="form-horizontal" method="POST" action="{{ route('cooperation.conversation-requests.store', ['cooperation' => $cooperation]) }}">
                             {{ csrf_field() }}

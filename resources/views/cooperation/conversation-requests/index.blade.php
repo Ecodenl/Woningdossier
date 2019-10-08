@@ -1,5 +1,8 @@
 @extends('cooperation.layouts.app')
 
+@push('css')
+    <link rel="stylesheet" href="{{asset('css/select2/select2.min.css')}}">
+@endpush
 @section('content')
     <style>
 
@@ -22,27 +25,16 @@
 
                             <div class="form-group {{ $errors->has('action') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
-                                    <label for="">@lang('woningdossier.cooperation.conversation-requests.index.form.take-action')</label>
-                                    <div class="input-group" id="take-action">
-                                        <input disabled placeholder="@lang('woningdossier.cooperation.conversation-requests.index.form.selected-option')" type="text" class="form-control disabled" aria-label="...">
-                                        <div class="input-group-btn">
-                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                @lang('woningdossier.cooperation.conversation-requests.index.form.action')
-                                                <span class="caret"></span>
-                                            </button>
-                                            <ul class="dropdown-menu dropdown-menu-right">
-
-                                                @foreach(__('woningdossier.cooperation.conversation-requests.index.form.options') as $value => $label)
-                                                    <li>
-                                                        <label>
-                                                            <input name="action" @if(((isset($selectedOption)) && $value == $selectedOption) || old('action') == $value ) checked @endif value="{{ $value }}" type="radio">
-                                                            {{$label}}
-                                                        </label>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        </div><!-- /btn-group -->
-                                    </div><!-- /input-group -->
+                                    <select name="action" id="take-action" class="form-control">
+                                        <option value="" disabled="disabled" selected="selected">
+                                            @lang('woningdossier.cooperation.conversation-requests.index.form.selected-option')
+                                        </option>
+                                        @foreach(__('woningdossier.cooperation.conversation-requests.index.form.options') as $value => $label)
+                                            <option @if(((isset($selectedOption)) && $value == $selectedOption) || old('action') == $value ) checked @endif value="{{ $value }}" type="radio">
+                                                {{$label}}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                     @if ($errors->has('action'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('action') }}</strong>
@@ -100,25 +92,13 @@
 @endsection
 
 @push('js')
+    <script src="{{asset('js/select2.js')}}"></script>
     <script type="text/javascript">
-        function capitalizeFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
         $(document).ready(function () {
-
-            // put the label text from the selected option inside the input for ux
-            var takeAction = $('#take-action');
-            var input = $(takeAction).find('input.form-control');
-            var dropdown = $(takeAction).find('input[type=radio]');
-
-            $(dropdown).change(function () {
-                var radioLabel = $('input[type=radio]:checked').parent().text().trim().toLowerCase();
-                $(input).val();
-                $(input).val(capitalizeFirstLetter(radioLabel));
+            var helpPlaceholderText = '@lang('woningdossier.cooperation.conversation-requests.index.form.selected-option')';
+            $('#take-action').select2({
+                placeholder: helpPlaceholderText
             });
-
-            // trigger the change for the old or selected request type
-            $(dropdown).trigger('change');
 
             // when the form gets submited check if the user agreed with the allow_access
             // if so submit, else do nothing

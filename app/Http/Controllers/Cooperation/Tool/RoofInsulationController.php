@@ -204,7 +204,7 @@ class RoofInsulationController extends Controller
 
                 if ($zincReplaceYear > 0 && $zincSurface > 0) {
                     /** @var MeasureApplication $zincReplaceMeasure */
-                    $zincReplaceMeasure = MeasureApplication::where('short', 'replace-zinc')->first();
+                    $zincReplaceMeasure = MeasureApplication::where('short', 'replace-zinc-' . $roofCat)->first();
 
                     $year = RoofInsulationCalculator::determineApplicationYear($zincReplaceMeasure, $zincReplaceYear, 1);
                     $costs = Calculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $zincSurface, $year, false);

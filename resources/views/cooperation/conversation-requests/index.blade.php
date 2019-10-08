@@ -15,7 +15,7 @@
                         <form class="form-horizontal" method="POST" action="{{ route('cooperation.conversation-requests.store', ['cooperation' => $cooperation]) }}">
                             {{ csrf_field() }}
 
-                            @if(empty($measureApplicationName))
+                            @if(is_null($measureApplicationName))
                                 <h2>@lang('woningdossier.cooperation.conversation-requests.index.form.no-measure-application-name-title')</h2>
                             @else
                                 <h2>@lang('woningdossier.cooperation.conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName])</h2>
@@ -23,12 +23,10 @@
 
                             <input type="hidden" value="{{ $measureApplicationName }}" name="measure_application_name">
 
+                            @if($shouldShowOptionList)
                             <div class="form-group {{ $errors->has('action') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
                                     <select name="action" id="take-action" class="form-control">
-                                        <option value="" disabled="disabled" selected="selected">
-                                            @lang('woningdossier.cooperation.conversation-requests.index.form.selected-option')
-                                        </option>
                                         @foreach(__('woningdossier.cooperation.conversation-requests.index.form.options') as $value => $label)
                                             <option @if(((isset($selectedOption)) && old('action', $value) == $selectedOption)) selected="selected" @endif value="{{ $value }}">
                                                 {{$label}}
@@ -42,6 +40,9 @@
                                     @endif
                                 </div>
                             </div>
+                            @else
+                                <input type="hidden" name="action" value="{{$selectedOption}}">
+                            @endif
 
                             <div class="form-group{{ $errors->has('message') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">

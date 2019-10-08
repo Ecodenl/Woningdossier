@@ -33,9 +33,10 @@ class ConversationRequestController extends Controller
 
         // set the measure application name if there is a measure application
         $measureApplicationName = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : '';
-
         $selectedOption = $option;
-        return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName'));
+        $shouldShowOptionList = is_null($option) ? true : false;
+
+        return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName', 'shouldShowOptionList'));
     }
 
     /**
@@ -52,11 +53,14 @@ class ConversationRequestController extends Controller
             return redirect()->route('cooperation.tool.my-plan.index');
         }
         $action      = $request->get('action', '');
-        $message     = $request->get('message', '');
+        $message     = strip_tags($request->get('message', ''));
+        $measureApplicationName = $request->get('measure_application_name', null);
         $allowAccess = 'on' == $request->get('allow_access', '');
+        $message = is_null($measureApplicationName) ? $message : "<b>{$measureApplicationName}: </b>{$message}";
 
         $cooperation = HoomdossierSession::getCooperation(true);
         $building = HoomdossierSession::getBuilding(true);
+
 
         PrivateMessage::create(
             [

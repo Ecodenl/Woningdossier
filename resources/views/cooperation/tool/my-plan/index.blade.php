@@ -353,7 +353,6 @@
 
                                     var linksForDropdown = buildDropdownLinksForMeasure(stepData.measure_short);
 
-                                    console.log(linksForDropdown);
                                     table += "<tr>" +
                                         "<td>" +
                                         "<a type=\"#\" class='turn-on-click' data-toggle=\"collapse\" data-target=\"#more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "\">" +

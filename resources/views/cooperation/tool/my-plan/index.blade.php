@@ -255,12 +255,6 @@
         requestTypes[MORE_INFORMATION] = 'Meer informatie gewenst';
         requestTypes[OTHER] = 'Anders...';
 
-        function getTranslationForRequestType(requestType)
-        {
-            // create the object to store the translations..
-            return requestTypes[requestType];
-        }
-
         $(window).keydown(function (event) {
             if (event.keyCode == 13) {
                 event.preventDefault();

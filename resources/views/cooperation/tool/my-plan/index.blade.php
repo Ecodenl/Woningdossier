@@ -293,27 +293,6 @@
                 }
             });
 
-            /**
-             * Function to build the links that will have to go inside the dropdown of the button next to the measure in the table
-             *
-             * @param measureShort
-             * @returns {*}
-             */
-            function buildDropdownLinksForMeasure(measureShort) {
-                var dropdownLinksForMeasure = '';
-                $.each(requestTypes, function (requestType, requestTypeTranslation) {
-
-                    dropdownLinksForMeasure +=
-                        "<li>" +
-                        "<a href='" + conversationRequestRoute.replace('action', requestType).replace('measure_application_short', measureShort) + "'>"
-                        + "<span>" + requestTypeTranslation + "</span>" +
-                        "</a>" +
-                        "</li>"
-                });
-
-                return dropdownLinksForMeasure;
-            }
-
             $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function () {
 
                 // var data = $(this).parent().parent().find('input').serialize();
@@ -351,7 +330,6 @@
 
                                     var slug = stepName.replace(/\s+/g, '');
 
-                                    var linksForDropdown = buildDropdownLinksForMeasure(stepData.measure_short);
 
                                     table += "<tr>" +
                                         "<td>" +
@@ -360,10 +338,7 @@
                                         "</a>" +
                                         "</td>" +
                                         "<td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td><td>" +
-                                        "<div class='input-group'>" +
-                                        "<div class='input-group-btn'>" +
-                                        "<button class='take-action btn btn-default' type='button'>{{ \App\Helpers\Translation::translate('my-plan.columns.take-action.title') }}</button> " +
-                                        "<button data-toggle='dropdown' class='btn btn-default dropdown-toggle' type='button'><span class='caret'></span> </button> <ul class='dropdown-menu'>" + linksForDropdown + "</ul></div></div></td></tr>";
+                                        "<a href='"+conversationRequestRoute.replace('action', 'null').replace('measure_application_short', stepData.measure_short).replace('/action', '')+"' class='take-action btn btn-default' type='button'>@lang('my-plan.columns.take-action.title')</a></td></tr>";
                                     table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "' > <td colspan='1'></td><td colspan=''> <strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-gas.title') }}:</strong> <br><strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-electricity.title') }}:</strong> </td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup> <br>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh </td><td colspan='1'></td></tr>";
                                 });
 

@@ -340,11 +340,11 @@ class PrivateMessage extends Model
      */
     public static function getTranslationForRequestType($requestType)
     {
-        $requestTypesThatAreTranslatable = [
+        $requestTypesThatAreTranslatable = array_flip([
             self::REQUEST_TYPE_COACH_CONVERSATION,
             self::REQUEST_TYPE_MORE_INFORMATION,
             self::REQUEST_TYPE_OTHER,
-        ];
+        ]);
 
         return isset($requestTypesThatAreTranslatable[$requestType]) ? __('conversation-requests.request-types.'.$requestType) : null;
     }

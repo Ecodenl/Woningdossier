@@ -74,7 +74,8 @@ class PrivateMessageService
         $message     = strip_tags($request->get('message', ''));
         $measureApplicationName = $request->get('measure_application_name', null);
         $allowAccess = 'on' == $request->get('allow_access', '');
-        $message = is_null($measureApplicationName) ? $message : "<b>{$measureApplicationName}: </b>{$message}";
+        $requestType = PrivateMessage::getTranslationForRequestType($action);
+        $message = is_null($measureApplicationName) ? "<b>{$requestType}: </b>$message" : "<b>{$measureApplicationName}: </b>{$message}";
 
         PrivateMessage::create(
             [

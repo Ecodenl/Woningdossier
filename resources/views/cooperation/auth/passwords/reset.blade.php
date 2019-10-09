@@ -2,6 +2,11 @@
 
 @section('content')
 <div class="container">
+    @if(session()->has('token_invalid'))
+        @component('cooperation.tool.components.alert', ['alertType' => 'danger'])
+            {!! session('token_invalid') !!}
+        @endcomponent
+    @endif
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">

@@ -11,6 +11,7 @@ return [
     'index' => [
         'header' => 'Actie ondernemen',
         'text' => 'De gegevens worden uitsluitend door de coöperatie gebruikt om u in uw bewonersreis te ondersteunen. Uw persoonlijke gegevens worden niet doorgegeven aan derden. Meer informatie over de verwerking van uw data en wat we ermee doen kunt u vinden in ons privacy statement.',
+        'request-coach-conversation' => 'Coachgesprek aanvragen',
 
         'form' => [
             'no-measure-application-name-title' => 'Contact opnemen',
@@ -22,8 +23,6 @@ return [
             'submit' => 'Opsturen <span class="glyphicon glyphicon-envelope"></span>',
 
             'selected-option' => 'Waar kunnen we u bij helpen?:',
-
-            \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Coachgesprek aanvragen',
         ],
     ],
 

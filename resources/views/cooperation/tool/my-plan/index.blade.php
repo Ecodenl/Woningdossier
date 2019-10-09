@@ -327,6 +327,7 @@
                             var slug = stepName.replace(/\s+/g, '');
 
                             var linksForDropdown = buildDropdownLinksForMeasure(stepData.measure_short);
+
                             console.log(linksForDropdown);
                                 table += "<tr>" +
                                     "<td>" +

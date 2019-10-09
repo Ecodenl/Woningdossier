@@ -26,7 +26,7 @@
                                         <option value="">-</option>
                                         @foreach(__('conversation-requests.request-types') as $requestType => $requestTypeTranslation)
                                             <option @if(old('action', $requestType) == $selectedOption) selected="selected" @endif value="{{ $requestTypeTranslation }}">
-                                                {{$label}}
+                                                {{$requestTypeTranslation}}
                                             </option>
                                         @endforeach
                                     </select>
@@ -103,12 +103,12 @@
 
             // when the form gets submited check if the user agreed with the allow_access
             // if so submit, else do nothing
-            $('form').on('submit', function () {
-                if ($('input[name=allow_access]').is(':checked')  == false) {
+            $('form').on('submit', function (event) {
+                if ($('input[name=allow_access]').is(':checked') === false) {
 
                     if (!confirm('@lang('conversation-requests.index.form.are-you-sure')')) {
-                        return false;
                         event.preventDefault();
+                        return false;
                     }
                 }
             });

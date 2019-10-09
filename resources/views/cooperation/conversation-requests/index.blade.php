@@ -22,8 +22,10 @@
                             <div class="form-group {{ $errors->has('action') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
                                     <select name="action" id="take-action" class="form-control">
-                                        @foreach(__('conversation-requests.index.form.options') as $value => $label)
-                                            <option @if(((isset($selectedOption)) && old('action', $value) == $selectedOption)) selected="selected" @endif value="{{ $value }}">
+                                        {{--A empty option is needed to allow the placeholder to be shown, as long as the value is empty select2 will not display it. --}}
+                                        <option value="">-</option>
+                                        @foreach(__('conversation-requests.request-types') as $requestType => $requestTypeTranslation)
+                                            <option @if(old('action', $requestType) == $selectedOption) selected="selected" @endif value="{{ $requestTypeTranslation }}">
                                                 {{$label}}
                                             </option>
                                         @endforeach
@@ -93,7 +95,9 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var helpPlaceholderText = '@lang('conversation-requests.index.form.selected-option')';
+            console.log(helpPlaceholderText);
             $('#take-action').select2({
+                allowClear: true,
                 placeholder: helpPlaceholderText
             });
 

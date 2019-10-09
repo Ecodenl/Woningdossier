@@ -55,11 +55,11 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::get('messages/count', 'MessagesController@getTotalUnreadMessageCount')->name('message.get-total-unread-message-count');
 
             // debug purpose only
-            Route::group(['as' => 'pdf.', 'namespace' => 'Pdf', 'prefix' => 'pdf'], function () {
-                Route::group(['as' => 'user-report.', 'prefix' => 'user-report'], function () {
-                    Route::get('', 'UserReportController@index')->name('index');
-                });
-            });
+//            Route::group(['as' => 'pdf.', 'namespace' => 'Pdf', 'prefix' => 'pdf'], function () {
+//                Route::group(['as' => 'user-report.', 'prefix' => 'user-report'], function () {
+//                    Route::get('', 'UserReportController@index')->name('index');
+//                });
+//            });
 
             Route::get('home', 'HomeController@index')->name('home')->middleware('deny-if-filling-for-other-building');
 
@@ -122,14 +122,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             });
 
             // conversation requests
-            Route::group(['prefix' => 'request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
-                Route::get('/edit/{action?}', 'ConversationRequestController@edit')->name('edit');
-                Route::get('{action?}/{measureApplicationShort?}',
-                    'ConversationRequestController@index')->name('index');
-
+            Route::group(['prefix' => 'conversation-request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
+                Route::get('{action?}/{measureApplicationShort?}', 'ConversationRequestController@index')->name('index');
                 Route::post('', 'ConversationRequestController@store')->name('store');
-                Route::post('/edit', 'ConversationRequestController@update')->name('update');
-
             });
 
             // the tool

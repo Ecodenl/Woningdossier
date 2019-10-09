@@ -53,14 +53,9 @@ use Illuminate\Support\Collection;
  */
 class PrivateMessage extends Model
 {
-    const STATUS_LINKED_TO_COACH = 'gekoppeld aan coach';
-    const STATUS_IN_CONSIDERATION = 'in behandeling';
-    const STATUS_APPLICATION_SENT = 'aanvraag verzonden';
-
     const REQUEST_TYPE_USER_CREATED_BY_COOPERATION = 'user-created-by-cooperation';
     const REQUEST_TYPE_COACH_CONVERSATION = 'coach-conversation';
     const REQUEST_TYPE_MORE_INFORMATION = 'more-information';
-    const REQUEST_TYPE_QUOTATION = 'quotation';
     const REQUEST_TYPE_OTHER = 'other';
 
     protected $fillable = [
@@ -266,15 +261,17 @@ class PrivateMessage extends Model
      */
     public function isMyMessage(): bool
     {
+        $user = Hoomdossier::user();
+
         // a coordinator and cooperation admin talks from a cooperation, not from his own name.
-        if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+        if ($user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
             if ($this->from_cooperation_id == HoomdossierSession::getCooperation()) {
                 return true;
             }
             // if a user would be a coach and a coordinator / cooperation-admin and he would be sending from the coordinator section.
             // after that switching back to the coach section and start to send message as a coach, he would be see the messages he sent as a coordinator as they were his messages
             // while this is true, its looks odd.
-        } else if (Hoomdossier::user()->id == $this->from_user_id && is_null($this->from_cooperation_id)) {
+        } else if ($user->id == $this->from_user_id && is_null($this->from_cooperation_id)) {
             return true;
         }
 
@@ -333,5 +330,22 @@ class PrivateMessage extends Model
     public function privateMessageViews(): HasMany
     {
         return $this->hasMany(PrivateMessageView::class);
+    }
+
+    /**
+     * Method to return the translation of a request type
+     *
+     * @param $requestType
+     * @return null|string
+     */
+    public static function getTranslationForRequestType($requestType)
+    {
+        $requestTypesThatAreTranslatable = [
+            self::REQUEST_TYPE_COACH_CONVERSATION,
+            self::REQUEST_TYPE_MORE_INFORMATION,
+            self::REQUEST_TYPE_OTHER,
+        ];
+
+        return isset($requestTypesThatAreTranslatable[$requestType]) ? __('conversation-requests.request-types.'.$requestType) : null;
     }
 }

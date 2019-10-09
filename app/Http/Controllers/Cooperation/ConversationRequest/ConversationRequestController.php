@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers\Cooperation\ConversationRequest;
 
-use App\Events\UserAllowedAccessToHisBuilding;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\ConversationRequests\ConversationRequest;
-use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\MeasureApplication;
 use App\Models\PrivateMessage;
-use function Couchbase\defaultDecoder;
+use App\Services\PrivateMessageService;
 
 class ConversationRequestController extends Controller
 {
@@ -35,11 +33,23 @@ class ConversationRequestController extends Controller
         $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
 
         // set the measure application name if there is a measure application
-        $measureApplicationName = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : '';
-
+        $measureApplicationName = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : null;
         $selectedOption = $option;
+        $shouldShowOptionList = is_null($option) ? true : false;
 
-        return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName', 'userAlreadyHadContactWithCooperation'));
+
+        // why make it simple and clean, when you can't ?
+        if ($option == PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION) {
+            $title = __('conversation-requests.index.request-coach-conversation');
+        }
+        elseif (is_null($measureApplicationName)) {
+            $title = __('conversation-requests.index.form.no-measure-application-name-title');
+        } else {
+            $title =  __('conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName]);
+        }
+
+
+        return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName', 'shouldShowOptionList', 'title'));
     }
 
     /**
@@ -51,41 +61,13 @@ class ConversationRequestController extends Controller
      */
     public function store(ConversationRequest $request, Cooperation $cooperation)
     {
-        // if the user is observing, he has nothing to do here.
-        if (HoomdossierSession::isUserObserving()) {
-            return redirect()->route('cooperation.tool.my-plan.index');
-        }
-        $action      = $request->get('action', '');
-        $message     = $request->get('message', '');
-        $allowAccess = 'on' == $request->get('allow_access', '');
+        PrivateMessageService::createConversationRequest(Hoomdossier::user(), $request);
 
-        $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
+        HoomdossierSession::getBuilding(true)->setStatus('pending');
 
-        PrivateMessage::create(
-            [
-                // we get the selected option from the language file, we can do this cause the submitted value = key from localization
-                'is_public'         => true,
-                'from_user_id'      => $user->id,
-                'from_user'         => $user->getFullName(),
-                'message'           => $message,
-                'to_cooperation_id' => $cooperation->id,
-                'building_id'       => $building->id,
-                'request_type'      => $action,
-                'allow_access'      => $allowAccess,
-            ]
-        );
-
-        $building->setStatus('pending');
-
-        // if the user allows access we handle this with the event
-        if ($allowAccess) {
-            UserAllowedAccessToHisBuilding::dispatch($building);
-        }
-
-        return redirect()->route('cooperation.tool.my-plan.index')
-                         ->with('success', __('woningdossier.cooperation.conversation-requests.store.success', [
-                             'url' => route('cooperation.my-account.messages.index', compact('cooperation'))
-                         ]));
+        return redirect(route('cooperation.tool.my-plan.index'))
+            ->with('success', __('conversation-requests.store.success', [
+                'url' => route('cooperation.my-account.messages.index', compact('cooperation'))
+            ]));
     }
 }

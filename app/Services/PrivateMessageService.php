@@ -80,7 +80,7 @@ class PrivateMessageService
             [
                 // we get the selected option from the language file, we can do this cause the submitted value = key from localization
                 'is_public'         => true,
-                'from_user_id'      => Hoomdossier::user()->id,
+                'from_user_id'      => $user->id,
                 'from_user'         => $user->getFullName(),
                 'message'           => $message,
                 'to_cooperation_id' => $user->cooperation->id,

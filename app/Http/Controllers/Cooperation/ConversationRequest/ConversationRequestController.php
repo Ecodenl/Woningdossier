@@ -70,10 +70,9 @@ class ConversationRequestController extends Controller
 
         HoomdossierSession::getBuilding(true)->setStatus('pending');
 
-        return redirect()
-            ->route('cooperation.tool.my-plan.index')
+        return redirect(route('cooperation.tool.my-plan.index'))
             ->with('success', __('conversation-requests.store.success', [
                 'url' => route('cooperation.my-account.messages.index', compact('cooperation'))
-             ]));
+            ]));
     }
 }

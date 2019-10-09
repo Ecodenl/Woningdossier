@@ -26,7 +26,6 @@ class MyPlanController extends Controller
 {
     public function index()
     {
-
         $anyFilesBeingProcessed = FileStorage::forMe()->withExpired()->beingProcessed()->count();
 
         $building = HoomdossierSession::getBuilding(true);
@@ -91,12 +90,12 @@ class MyPlanController extends Controller
 
             // set the statements in variable for better readability
             $actionPlanExists = $advice instanceof UserActionPlanAdvice;
-            $inputSourceIdIsInputSourceOrUserIsObserving = $advice->input_source_id == HoomdossierSession::getInputSource() || HoomdossierSession::isUserObserving();
-            $buildingOwnerIdIsUserId = $buildingOwner->id == $advice->user_id;
+            $inputSourceIdIsInputSourceOrUserIsObserving = $actionPlanExists && $advice->input_source_id == HoomdossierSession::getInputSource() || HoomdossierSession::isUserObserving();
+            $buildingOwnerIdIsUserId = $actionPlanExists && $buildingOwner->id == $advice->user_id;
 
             // check if the advice exists, if the input source id is the current input source and if the buildingOwner id is the user id
             // check if the action plan exists, if the input source id from the advice is the inputsource itself or if the user is observing and the buildingOwner is the userId
-            if ($actionPlanExists && $inputSourceIdIsInputSourceOrUserIsObserving && $buildingOwnerIdIsUserId) {
+            if ($inputSourceIdIsInputSourceOrUserIsObserving && $buildingOwnerIdIsUserId) {
 
                 // if the user isnt observing a other building we allow changes, else we dont.
                 if (HoomdossierSession::isUserObserving() == false) {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Cooperation\ConversationRequests;
 
+use App\Helpers\HoomdossierSession;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -15,7 +16,7 @@ class ConversationRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::check();
+        return Auth::check() && !HoomdossierSession::isUserObserving();
     }
 
     /**

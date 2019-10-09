@@ -4,9 +4,7 @@
     <link rel="stylesheet" href="{{asset('css/select2/select2.min.css')}}">
 @endpush
 @section('content')
-    <style>
-
-    </style>
+    <input type="hidden" value="{{$userAlreadyHadContactWithCooperation}}" id="user-already-had-contact-with-cooperation">
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
@@ -106,7 +104,7 @@
             // when the form gets submited check if the user agreed with the allow_access
             // if so submit, else do nothing
             $('form').on('submit', function (event) {
-                if ($('input[name=allow_access]').is(':checked') === false) {
+                if ($('input[name=allow_access]').is(':checked') === false && $('#user-already-had-contact-with-cooperation').val() == false) {
 
                     if (!confirm('@lang('conversation-requests.index.form.are-you-sure')')) {
                         event.preventDefault();

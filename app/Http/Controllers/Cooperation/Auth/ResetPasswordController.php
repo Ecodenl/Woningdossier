@@ -81,7 +81,19 @@ class ResetPasswordController extends Controller
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
+        return Password::PASSWORD_RESET == $response
+            ? $this->sendResetResponse($response)
+            : $this->sendResetFailedResponse($request, $response);
+    }
 
+    /**
+     * Get the response for a successful password reset.
+     *
+     * @param $response
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function sendResetResponse($response)
+    {
         // same as for login controller: redirect to appropriate page
         // the guard()->user() will return the auth model, in our case this is the Account model
         // but we want the user from the account, so thats why we do ->user()->user();
@@ -91,10 +103,7 @@ class ResetPasswordController extends Controller
 
         $user->roles->count() == 1 ? $this->redirectTo = RoleHelper::getUrlByRole($role) : $this->redirectTo = '/home';
 
-
-        return Password::PASSWORD_RESET == $response
-            ? $this->sendResetResponse($response)
-            : $this->sendResetFailedResponse($request, $response);
+        return redirect($this->redirectPath())->with('status', trans($response));
     }
 
     public function sendResetFailedResponse($request, $response)

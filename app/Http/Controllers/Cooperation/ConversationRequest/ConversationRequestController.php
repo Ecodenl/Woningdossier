@@ -49,7 +49,7 @@ class ConversationRequestController extends Controller
         }
 
 
-        return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName', 'shouldShowOptionList', 'title'));
+        return view('cooperation.conversation-requests.index', compact('selectedOption', 'userAlreadyHadContactWithCooperation', 'measureApplicationName', 'shouldShowOptionList', 'title'));
     }
 
     /**

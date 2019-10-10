@@ -104,7 +104,7 @@
             // when the form gets submited check if the user agreed with the allow_access
             // if so submit, else do nothing
             $('form').on('submit', function (event) {
-                if ($('input[name=allow_access]').is(':checked') === false && $('#user-already-had-contact-with-cooperation').val() == false || $('#user-did-not-allow-access-to-his-building').val() == true) {
+                if (!$('input[name=allow_access]').is(':checked') && $('#user-did-not-allow-access-to-his-building').val() || $('#user-already-had-contact-with-cooperation').val() == false || $('#user-did-not-allow-access-to-his-building').val() == true) {
 
                     if (!confirm('@lang('conversation-requests.index.form.are-you-sure')')) {
                         event.preventDefault();

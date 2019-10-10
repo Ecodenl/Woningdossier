@@ -106,12 +106,11 @@
             $('form').on('submit', function (event) {
                 if ($('input[name=allow_access]').is(':checked') === false && $('#user-already-had-contact-with-cooperation').val() == false || $('#user-did-not-allow-access-to-his-building').val() == true) {
 
-                        if (!confirm('@lang('conversation-requests.index.form.are-you-sure')')) {
-                            event.preventDefault();
-                            return false;
-                        }
+                    if (!confirm('@lang('conversation-requests.index.form.are-you-sure')')) {
+                        event.preventDefault();
+                        return false;
                     }
-                });
+                }
             });
         });
     </script>

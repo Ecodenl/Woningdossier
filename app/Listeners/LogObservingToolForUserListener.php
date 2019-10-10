@@ -29,13 +29,13 @@ class LogObservingToolForUserListener implements ShouldQueue
     {
         $building = $event->building;
         $buildingOwner = $building->user;
-        $userThatIsFillingTool = $event->userThatIsFillingTool;
+        $userThatIsObservingTool = $event->userThatIsObservingTool;
 
         Log::create([
-            'user_id' => $userThatIsFillingTool->id,
+            'user_id' => $userThatIsObservingTool->id,
             'building_id' => $building->id,
             'message' => __('woningdossier.log-messages.observing-tool-for', [
-                'full_name' => $userThatIsFillingTool->getFullName(),
+                'full_name' => $userThatIsObservingTool->getFullName(),
                 'for_full_name' => $buildingOwner->getFullName(),
                 'time' => Carbon::now(),
             ]),

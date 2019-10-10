@@ -4,9 +4,7 @@
     <link rel="stylesheet" href="{{asset('css/select2/select2.min.css')}}">
 @endpush
 @section('content')
-    <style>
-
-    </style>
+    <input type="hidden" id="user-did-not-allow-access-to-his-building" value="{{$userDidNotAllowAccessToBuilding}}">
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
@@ -106,13 +104,17 @@
             // when the form gets submited check if the user agreed with the allow_access
             // if so submit, else do nothing
             $('form').on('submit', function (event) {
-                if ($('input[name=allow_access]').is(':checked') === false) {
+                // when the form gets submited check if the user agreed with the allow_access
+                // if so submit, else do nothing
+                $('form').on('submit', function (event) {
+                    if ($('input[name=allow_access]').is(':checked') === false && $('#user-did-not-allow-access-to-his-building').val() == true) {
 
-                    if (!confirm('@lang('conversation-requests.index.form.are-you-sure')')) {
-                        event.preventDefault();
-                        return false;
+                        if (!confirm('@lang('conversation-requests.index.form.are-you-sure')')) {
+                            event.preventDefault();
+                            return false;
+                        }
                     }
-                }
+                });
             });
         });
     </script>

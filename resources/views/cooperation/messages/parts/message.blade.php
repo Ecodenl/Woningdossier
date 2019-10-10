@@ -19,6 +19,7 @@
                     \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION,
                     \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION,
                     \App\Models\PrivateMessage::REQUEST_TYPE_OTHER,
+                    \App\Models\PrivateMessage::REQUEST_TYPE_MEASURE,
                 ];
             ?>
             @if(in_array($privateMessage->request_type, $messagesThatMayContainHtml))

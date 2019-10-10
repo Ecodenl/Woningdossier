@@ -57,6 +57,8 @@ class PrivateMessage extends Model
     const REQUEST_TYPE_COACH_CONVERSATION = 'coach-conversation';
     const REQUEST_TYPE_MORE_INFORMATION = 'more-information';
     const REQUEST_TYPE_OTHER = 'other';
+    // only used when a user comes from the my-plan page and clicks the "actie ondernemen" button.
+    const REQUEST_TYPE_MEASURE = 'measure';
 
     protected $fillable = [
         'message', 'from_user_id', 'cooperation_id', 'from_cooperation_id', 'to_cooperation_id',

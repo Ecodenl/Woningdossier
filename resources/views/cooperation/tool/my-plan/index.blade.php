@@ -278,18 +278,9 @@
             const ROOF_INSULATION_PITCHED_REPLACE_TILES = "roof-insulation-pitched-replace-tiles";
             const REPLACE_TILES = "replace-tiles";
 
-            const COACH_CONVERSATION = '{{\App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION}}';
-            const MORE_INFORMATION = '{{\App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION}}';
-            const OTHER = '{{\App\Models\PrivateMessage::REQUEST_TYPE_OTHER}}';
-
+            const MEASURE = '{{\App\Models\PrivateMessage::REQUEST_TYPE_MEASURE}}';
             // build the base route, we can replace te params later on.
             var conversationRequestRoute = '{{route('cooperation.conversation-requests.index', ['action' => 'action', 'measureApplicationShort' => 'measure_application_short'])}}';
-
-            var requestTypes = {};
-
-            requestTypes[COACH_CONVERSATION] = 'Ondersteuning door een energiecoach';
-            requestTypes[MORE_INFORMATION] = 'Meer informatie gewenst';
-            requestTypes[OTHER] = 'Anders...';
 
             $(window).keydown(function (event) {
                 if (event.keyCode == 13) {
@@ -297,27 +288,6 @@
                     return false;
                 }
             });
-
-            /**
-             * Function to build the links that will have to go inside the dropdown of the button next to the measure in the table
-             *
-             * @param measureShort
-             * @returns {*}
-             */
-            function buildDropdownLinksForMeasure(measureShort) {
-                var dropdownLinksForMeasure = '';
-                $.each(requestTypes, function (requestType, requestTypeTranslation) {
-
-                    dropdownLinksForMeasure +=
-                        "<li>" +
-                        "<a href='" + conversationRequestRoute.replace('action', requestType).replace('measure_application_short', measureShort) + "'>"
-                        + "<span>" + requestTypeTranslation + "</span>" +
-                        "</a>" +
-                        "</li>"
-                });
-
-                return dropdownLinksForMeasure;
-            }
 
             $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function () {
 
@@ -356,7 +326,6 @@
 
                                     var slug = stepName.replace(/\s+/g, '');
 
-                                    var linksForDropdown = buildDropdownLinksForMeasure(stepData.measure_short);
 
                                     table += "<tr>" +
                                         "<td>" +
@@ -365,10 +334,7 @@
                                         "</a>" +
                                         "</td>" +
                                         "<td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td><td>" +
-                                        "<div class='input-group'>" +
-                                        "<div class='input-group-btn'>" +
-                                        "<button class='take-action btn btn-default' type='button'>{{ \App\Helpers\Translation::translate('my-plan.columns.take-action.title') }}</button> " +
-                                        "<button data-toggle='dropdown' class='btn btn-default dropdown-toggle' type='button'><span class='caret'></span> </button> <ul class='dropdown-menu'>" + linksForDropdown + "</ul></div></div></td></tr>";
+                                        "<a href='"+conversationRequestRoute.replace('action', MEASURE).replace('measure_application_short', stepData.measure_short)+"' class='take-action btn btn-default' type='button'>@lang('my-plan.columns.take-action.title')</a></td></tr>";
                                     table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "' > <td colspan='1'></td><td colspan=''> <strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-gas.title') }}:</strong> <br><strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-electricity.title') }}:</strong> </td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup> <br>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh </td><td colspan='1'></td></tr>";
                                 });
 

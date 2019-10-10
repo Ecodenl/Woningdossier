@@ -22,7 +22,7 @@ class ConversationRequestController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function index(Cooperation $cooperation, $option = null, $measureApplicationShort = null)
+    public function index(Cooperation $cooperation, $requestType = null, $measureApplicationShort = null)
     {
         $userAlreadyHadContactWithCooperation = PrivateMessage::public()->conversation(HoomdossierSession::getBuilding())->first() instanceof PrivateMessage;
 
@@ -34,12 +34,12 @@ class ConversationRequestController extends Controller
 
         // set the measure application name if there is a measure application
         $measureApplicationName = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : null;
-        $selectedOption = $option;
-        $shouldShowOptionList = is_null($option) ? true : false;
+        $selectedOption = $requestType;
+        $shouldShowOptionList = is_null($requestType) ? true : false;
 
 
         // why make it simple and clean, when you can't ?
-        if ($option == PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION) {
+        if ($requestType == PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION) {
             $title = __('conversation-requests.index.request-coach-conversation');
         }
         elseif (is_null($measureApplicationName)) {

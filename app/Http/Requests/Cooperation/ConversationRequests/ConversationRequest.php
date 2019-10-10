@@ -27,7 +27,7 @@ class ConversationRequest extends FormRequest
     public function rules()
     {
         return [
-            'action' => 'required',
+            'action' => 'sometimes|required',
             'message' => 'required',
         ];
     }

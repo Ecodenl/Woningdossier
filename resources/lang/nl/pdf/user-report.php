@@ -71,7 +71,10 @@ return [
 
         'next-steps' => [
             'title' => 'Vervolgstappen',
-            'text' => 'Het Hoomdossier wordt u aangeboden door :cooperation_name. Bij vragen over het Hoomdossier of als u hulp bij de uitvoering van de hierboven genoemde maatregelen nodig hebt kunt u altijd contact opnemen met ons via info@:cooperation_name.nl. We helpen u graag verder. Meer informatie en onze volledige contactgegevens kunt u vinden op '
+            'text-1' => 'Het Hoomdossier wordt u aangeboden door :cooperation_name.',
+            'text-2' => 'Bij vragen over het Hoomdossier of als u hulp bij de uitvoering van de hierboven genoemde maatregelen nodig hebt kunt u altijd contact opnemen met ons via <a href="mailto::cooperation_email">:cooperation_email</a>. We helpen u graag verder.',
+            'text-3' => 'Meer informatie en onze volledige contactgegevens kunt u vinden op <a href=":website_url">:website_url</a>',
+            //'text' => 'Het Hoomdossier wordt u aangeboden door :cooperation_name. Bij vragen over het Hoomdossier of als u hulp bij de uitvoering van de hierboven genoemde maatregelen nodig hebt kunt u altijd contact opnemen met ons via <a href="mailto::cooperation_email">:cooperation_email</a>. We helpen u graag verder. Meer informatie en onze volledige contactgegevens kunt u vinden op <a href=":website_url">:website_url</a>',
         ],
 
         'attachment' => [

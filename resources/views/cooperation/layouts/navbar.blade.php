@@ -105,6 +105,8 @@
 
                                 <ul class="dropdown-menu">
                                     <li><a href="{{ route('cooperation.my-account.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.navbar.my-account')</a></li>
+                                    <li><a href="{{ route('cooperation.privacy.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.navbar.privacy')</a></li>
+                                    <li><a href="{{ route('cooperation.disclaimer.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.navbar.disclaimer')</a></li>
                                     {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('my-account.cooperations.form.header')</a></li>--}}
                                     <li>
                                         <a href="{{ route('cooperation.logout', ['cooperation' => $cooperation]) }}"

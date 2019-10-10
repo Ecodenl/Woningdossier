@@ -33,7 +33,6 @@ class AuthServiceProvider extends ServiceProvider
         Cooperation::class => CooperationPolicy::class,
         User::class => UserPolicy::class,
         Building::class => BuildingPolicy::class,
-        NotificationSetting::class => NotificationSettingPolicy::class,
         FileStorage::class => FileStoragePolicy::class
     ];
 

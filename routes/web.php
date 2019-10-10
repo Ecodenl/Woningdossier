@@ -53,9 +53,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
         // group can be accessed by everyone that's authorized and has a role in its session
         Route::group(['middleware' => ['auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser']], function () {
 
-            Route::get('test', function () {
-                return new  \App\Mail\UserAssociatedWithCooperation(\App\Models\Cooperation::find(1),\App\Models\User::find(1095));
-            });
             Route::get('messages/count', 'MessagesController@getTotalUnreadMessageCount')->name('message.get-total-unread-message-count');
 
             // debug purpose only

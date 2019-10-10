@@ -24,14 +24,6 @@ use Illuminate\Support\Str;
 
 class SettingsController extends Controller
 {
-    public function index()
-    {
-        $user = Hoomdossier::user();
-        $account = Hoomdossier::account();
-        $building = HoomdossierSession::getBuilding(true);
-
-        return view('cooperation.my-account.settings.index', compact('user', 'building', 'account'));
-    }
 
     /**
      * Update the account.
@@ -74,7 +66,7 @@ class SettingsController extends Controller
         ]);
 
 
-        return redirect()->route('cooperation.my-account.settings.index')
+        return redirect()->route('cooperation.my-account.index')
                          ->with('success', __('my-account.settings.store.success'));
     }
 
@@ -128,7 +120,7 @@ class SettingsController extends Controller
     // Delete account
     public function destroy()
     {
-        $user = \App\Helpers\Hoomdossier::user();
+        $user = Hoomdossier::user();
         $accountId = $user->account_id;
         $cooperation = HoomdossierSession::getCooperation(true);
 

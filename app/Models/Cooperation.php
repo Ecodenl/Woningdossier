@@ -33,7 +33,7 @@ class Cooperation extends Model
 {
     public $fillable
         = [
-            'name', 'website_url', 'slug',
+            'name', 'website_url', 'slug', 'cooperation_email',
         ];
 
     /**

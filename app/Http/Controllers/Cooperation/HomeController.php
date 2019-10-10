@@ -24,6 +24,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('cooperation.home');
+        return view('cooperation.home.index');
     }
 }

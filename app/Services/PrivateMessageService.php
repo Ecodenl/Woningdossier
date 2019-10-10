@@ -93,7 +93,7 @@ class PrivateMessageService
 
         // if the user allows access to his building on the request, log the activity.
         if ($allowAccess) {
-            event(new UserAllowedAccessToHisBuilding());
+            UserAllowedAccessToHisBuilding::dispatch($user->building);
         }
     }
 }

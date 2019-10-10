@@ -17,16 +17,6 @@ use Illuminate\Support\Collection;
 
 class AccessController extends Controller
 {
-    public function index()
-    {
-        $buildingPermissions = BuildingPermission::where('building_id', HoomdossierSession::getBuilding())->get();
-
-        /* @var Collection $conversationRequests */
-        $conversationRequests = PrivateMessage::conversationRequestByBuildingId(HoomdossierSession::getBuilding())->get();
-
-        return view('cooperation.my-account.access.index', compact('buildingPermissions', 'conversationRequests'));
-    }
-
     public function allowAccess(Request $request)
     {
         $conversationRequests = PrivateMessage::conversationRequestByBuildingId(HoomdossierSession::getBuilding());

@@ -33,12 +33,13 @@ class ToolController extends Controller
         // get the owner of the building
         $user = $cooperation->users()->findOrFail($building->user_id);
 
-        // we cant query on the Spatie\Role model so we first get the result on the "original model"
-        //        $role = Role::findByName($user->roles->first()->name);
+        // get the current role.
         $role = Role::findByName(HoomdossierSession::currentRole());
         // set the input source value to the coach itself
-        $inputSourceValue = HoomdossierSession::getInputSource(true);
 
+        // for the tool filling we set the value to our own input source, we want to see our own values
+        $inputSourceValue = HoomdossierSession::getInputSource(true);
+        // and for saving ofcourse our own.
         $inputSource = HoomdossierSession::getInputSource(true);
 
         // if the role has no inputsource redirect back with "probeer t later ff nog een keer"
@@ -72,10 +73,10 @@ class ToolController extends Controller
         // we cant query on the Spatie\Role model so we first get the result on the "original model"
 
         $role = Role::findByName(HoomdossierSession::currentRole());
-        // set the input source value to the coach itself
-        $inputSourceValue = InputSource::findByShort(InputSource::RESIDENT_SHORT);
 
-        $inputSource = HoomdossierSession::getInputSource(true);
+        // when we observe the tool, we want to see the tool as a resident it would see.
+        $inputSourceValue = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
 
         // if the role has no inputsource redirect back with "probeer t later ff nog een keer"
         // or if the role is not a resident, we gonna throw them back.

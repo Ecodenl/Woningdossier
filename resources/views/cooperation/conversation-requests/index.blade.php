@@ -25,7 +25,7 @@
                                         {{--A empty option is needed to allow the placeholder to be shown, as long as the value is empty select2 will not display it. --}}
                                         <option value="">-</option>
                                         @foreach(__('conversation-requests.request-types') as $requestType => $requestTypeTranslation)
-                                            <option @if(old('action', $requestType) == $selectedOption) selected="selected" @endif value="{{ $requestTypeTranslation }}">
+                                            <option @if(old('action', $requestType) == $selectedOption) selected="selected" @endif value="{{ $requestType }}">
                                                 {{$requestTypeTranslation}}
                                             </option>
                                         @endforeach
@@ -54,6 +54,7 @@
                                 </div>
                             </div>
 
+                            @if($userDidNotAllowAccessToBuilding)
                             <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
                                     <label for="allow_access">
@@ -68,6 +69,7 @@
                                     <p>@lang('conversation-requests.index.text')</p>
                                 </div>
                             </div>
+                            @endif
 
                             <div class="form-group">
                                 <div class="col-md-12 ">

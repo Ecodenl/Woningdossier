@@ -315,13 +315,13 @@ class PrivateMessage extends Model
     /**
      * Check if its allowed to access a building by its given building id.
      *
-     * @param $buildingId
+     * @param Building $building
      *
      * @return bool
      */
-    public static function allowedAccess($buildingId)
+    public static function allowedAccess(Building $building)
     {
-        return static::conversationRequestByBuildingId($buildingId)->accessAllowed()->first() instanceof PrivateMessage;
+        return static::conversationRequestByBuildingId($building->id)->accessAllowed()->first() instanceof PrivateMessage;
     }
 
     /**

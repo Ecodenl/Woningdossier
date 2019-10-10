@@ -830,6 +830,7 @@ return [
                 'liter'         => 'liter',
                 'day'           => 'dag',
                 'pieces'        => 'stuks',
+                'meters'        => 'm',
                 'square-meters' => 'm<sup>2</sup>',
                 'cubic-meters'  => 'm<sup>3</sup>',
                 'co2'           => 'CO<sub>2</sub>',

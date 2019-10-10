@@ -14,11 +14,11 @@ return [
     'current-situation' => [
         'insulation-pitched-zinc-surface' => [
             'help' => '',
-            'title' => 'Zink oppervlak hellend dak',
+            'title' => 'Hoeveelheid zinkwerk hellend dak',
         ],
         'insulation-flat-zinc-surface' => [
             'help' => '',
-            'title' => 'Zink oppervlak plat dak',
+            'title' => 'Hoeveelheid zinkwerk plat dak',
         ],
     ],
 ];

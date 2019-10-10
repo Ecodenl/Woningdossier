@@ -36,8 +36,7 @@ class ConversationRequestController extends Controller
         $measureApplicationName = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : null;
         $selectedOption = $requestType;
         $shouldShowOptionList = is_null($requestType) ? true : false;
-
-
+        $userDidNotAllowAccessToBuilding = !PrivateMessage::allowedAccess(HoomdossierSession::getBuilding(true));
         // why make it simple and clean, when you can't ?
         if ($requestType == PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION) {
             $title = __('conversation-requests.index.request-coach-conversation');
@@ -49,7 +48,7 @@ class ConversationRequestController extends Controller
         }
 
 
-        return view('cooperation.conversation-requests.index', compact('selectedOption', 'userAlreadyHadContactWithCooperation', 'measureApplicationName', 'shouldShowOptionList', 'title'));
+        return view('cooperation.conversation-requests.index', compact('selectedOption', 'userAlreadyHadContactWithCooperation', 'measureApplicationName', 'shouldShowOptionList', 'title', 'userDidNotAllowAccessToBuilding'));
     }
 
     /**

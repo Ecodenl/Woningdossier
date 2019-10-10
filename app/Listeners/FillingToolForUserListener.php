@@ -28,20 +28,14 @@ class FillingToolForUserListener
      */
     public function handle($event)
     {
-
         // the building the user wants to fill
         $building = $event->building;
 
         // for the tool filling we set the value to our own input source, we want to see our own values
         $inputSourceValue = HoomdossierSession::getInputSource(true);
-        // and for saving ofcourse our own.
-        $inputSource = HoomdossierSession::getInputSource(true);
-
 
         HoomdossierSession::setBuilding($building);
-        HoomdossierSession::setInputSource($inputSource);
         HoomdossierSession::setInputSourceValue($inputSourceValue);
-
 
     }
 }

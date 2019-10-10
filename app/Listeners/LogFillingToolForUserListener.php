@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class LogFillingToolForUserListener
+class LogFillingToolForUserListener implements ShouldQueue
 {
     /**
      * Create the event listener.

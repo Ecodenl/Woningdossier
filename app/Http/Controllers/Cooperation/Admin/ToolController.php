@@ -28,7 +28,7 @@ class ToolController extends Controller
     public function fillForUser(Cooperation $cooperation, $buildingId)
     {
         // The building the coach wants to edit
-        $building = Building::find($buildingId);
+        $building = Building::find($buildingId)->load('user');
 
         FillingToolForUserEvent::dispatch($building, Hoomdossier::user());
 

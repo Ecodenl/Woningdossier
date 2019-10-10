@@ -29,7 +29,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\ElementValue|null $insulation
  * @property-read \App\Models\MeasureApplication $measureApplication
  * @property-read \App\Models\RoofType $roofType
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType query()

@@ -23,7 +23,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Service $service
  * @property-read \App\Models\ServiceType $serviceType
  * @property-read \App\Models\ServiceValue|null $serviceValue
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService query()

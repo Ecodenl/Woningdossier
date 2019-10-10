@@ -21,7 +21,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Building $building
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\PvPanelOrientation|null $orientation
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingHeater query()

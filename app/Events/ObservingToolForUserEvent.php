@@ -23,13 +23,12 @@ class ObservingToolForUserEvent
      * create new event instantionnn.
      *
      * @param Building $building
-     * @param User $buildingOwner
-     * @param User $userThatIsFillingTool
+     * @param User $userThatIsObservingTool
      */
     public function __construct(Building $building, User $userThatIsObservingTool)
     {
         $this->building = $building;
-        $this->userThatIsFillingTool = $userThatIsObservingTool;
+        $this->userThatIsObservingTool = $userThatIsObservingTool;
     }
 
     /**

@@ -83,8 +83,11 @@ return [
                     'example-buildings' => 'Voorbeeldwoningen',
                 ],
                 'index'        => [
-                    'header' => 'Super admin panel',
-                    'text'   => 'Beheer de applicatie',
+                    'header'            => 'Super admin panel',
+                    'text'              => 'Beheer de applicatie',
+                    'cooperations'      => 'Cooperaties',
+                    'users'             => 'Gebruikers',
+                    'buildings'         => 'Woningen',
                 ],
                 'key-figures'  => [
                     'index' => [
@@ -150,15 +153,15 @@ return [
                             ],
                         ],
                         'edit'   => 'Bewerken',
-                        'show'   => 'Details van deze cooperatië',
+                        'show'   => 'Details van deze coöperatie',
                         'create' => 'Aanmaken',
                     ],
                     'create'                => [
                         'header' => 'Cooperatie toevoegen',
                         'form'   => [
-                            'name'              => 'Naam van de cooperatie *',
+                            'name'              => 'Naam van de coöperatie *',
                             'slug'              => 'Slug / subdomein *',
-                            'cooperation_email' => 'Cooperatie contact e-mailadres',
+                            'cooperation_email' => 'Coöperatie contact e-mailadres',
                             'website_url'       => 'Website URL',
                             'create'            => 'Aanmaken',
                         ],
@@ -166,9 +169,9 @@ return [
                     'edit'                  => [
                         'header' => 'Cooperatie :name bewerken',
                         'form'   => [
-                            'name'              => 'Naam van de cooperatie *',
+                            'name'              => 'Naam van de coöperatie *',
                             'slug'              => 'Slug / subdomein *',
-                            'cooperation_email' => 'Cooperatie contact e-mailadres',
+                            'cooperation_email' => 'Coöperatie contact e-mailadres',
                             'website_url'       => 'Website URL',
                             'update'            => 'Bijwerken',
                         ],
@@ -180,7 +183,7 @@ return [
                         'success' => 'Cooperatie is bijgewerkt.',
                     ],
                     'cooperation-to-manage' => [
-                        'alert-on-top'               => 'Alle wijzigingen die u nu doorvoert zullen worden gedaan op de cooperatie <strong>:cooperation</strong>',
+                        'alert-on-top'               => 'Alle wijzigingen die u nu doorvoert zullen worden gedaan op de coöperatie <strong>:cooperation</strong>',
                         'back-to-normal-environment' => 'Keer terug naar de admin omgeving',
                         'side-nav'                   => [
                             'label'             => ':cooperation_name menu',
@@ -192,7 +195,7 @@ return [
                         ],
                         'cooperation-admin'          => [
                             'index' => [
-                                'header' => 'Overzicht van alle cooperatie admins',
+                                'header' => 'Overzicht van alle coöperatie admins',
                                 'table'  => [
                                     'name'    => 'Naam',
                                     'email'   => 'E-mail',
@@ -229,7 +232,7 @@ return [
                         ],
                         'home'                       => [
                             'index' => [
-                                'header'            => 'Overzicht van de cooperatie :cooperation',
+                                'header'            => 'Overzicht van de coöperatie :cooperation',
                                 'coach-count'       => 'Coaches',
                                 'resident-count'    => 'Bewoners',
                                 'coordinator-count' => 'Coordinatoren',
@@ -610,7 +613,7 @@ return [
                 ],
                 'questionnaires'    => [
                     'index'  => [
-                        'header' => 'Alle vragenlijsten voor uw cooperatie',
+                        'header' => 'Alle vragenlijsten voor uw coöperatie',
                         'table'  => [
                             'columns' => [
                                 'questionnaire-name' => 'Vragenlijst naam',

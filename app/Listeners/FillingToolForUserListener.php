@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Helpers\HoomdossierSession;
 use App\Models\Log;
 use Carbon\Carbon;
 use Illuminate\Queue\InteractsWithQueue;
@@ -27,19 +28,20 @@ class FillingToolForUserListener
      */
     public function handle($event)
     {
-        $building = $event->building;
-        $buildingOwner = $event->buildingOwner;
-        $userThatIsFillingTool = $event->userThatIsFillingTool;
 
-        Log::create([
-            'user_id' => $userThatIsFillingTool->id,
-            'building_id' => $building->id,
-            'message' => __('woningdossier.log-messages.filling-tool-for', [
-                'full_name' => $userThatIsFillingTool->getFullName(),
-                'for_full_name' => $buildingOwner->getFullName(),
-                'time' => Carbon::now(),
-            ]),
-            'for_user_id' => $buildingOwner->id,
-        ]);
+        // the building the user wants to fill
+        $building = $event->building;
+
+        // for the tool filling we set the value to our own input source, we want to see our own values
+        $inputSourceValue = HoomdossierSession::getInputSource(true);
+        // and for saving ofcourse our own.
+        $inputSource = HoomdossierSession::getInputSource(true);
+
+
+        HoomdossierSession::setBuilding($building);
+        HoomdossierSession::setInputSource($inputSource);
+        HoomdossierSession::setInputSourceValue($inputSourceValue);
+
+
     }
 }

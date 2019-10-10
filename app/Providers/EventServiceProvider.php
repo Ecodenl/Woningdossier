@@ -17,6 +17,7 @@ use App\Events\UserRevokedAccessToHisBuilding;
 use App\Listeners\DossierResetListener;
 use App\Listeners\FillingToolForUserListener;
 use App\Listeners\LogAllowedAccessToBuilding;
+use App\Listeners\LogFillingToolForUserListener;
 use App\Listeners\LogObservingToolForUserListener;
 use App\Listeners\LogRegisteredUserListener;
 use App\Listeners\LogRevokedAccessToBuilding;
@@ -67,7 +68,8 @@ class EventServiceProvider extends ServiceProvider
             LogUserAssociatedWithOtherCooperation::class
         ],
         FillingToolForUserEvent::class            => [
-            FillingToolForUserListener::class
+            FillingToolForUserListener::class,
+            LogFillingToolForUserListener::class
         ],
         ObservingToolForUserEvent::class          => [
             ObservingToolForUserListener::class,

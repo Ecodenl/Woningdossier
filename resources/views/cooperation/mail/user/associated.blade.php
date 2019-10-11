@@ -4,12 +4,18 @@
 ])
 <br><br>
 <?php
-$cooperation = $userCooperation->name;
 // the route to the homepage.
 $hoomdossier_link = route('cooperation.home', ['cooperation' => $userCooperation]);
-// the link to the website of the cooperation itself.
-$cooperation_link = '<a target="_blank" href="'.$userCooperation->website_url.'">'.$userCooperation->name.'</a>';
+
+// the url to the website of the cooperation itself.
+$cooperation_link = $userCooperation->website_url;
+// the name of the cooperation itself
+$cooperation_name = $userCooperation->name;
+// imploded names from all the cooperations the user is associated with
+$cooperation_names = $cooperations->pluck('name')->implode(', ');
+
+$hoomdossier_reset_link = route('cooperation.password.request', ['cooperation' => $userCooperation]);
 ?>
-@lang('mail.account-associated-with-cooperation.text', compact('hoomdossier_link', 'cooperation', 'cooperation_link'))
+@lang('mail.account-associated-with-cooperation.text', compact('hoomdossier_link', 'cooperation_name', 'cooperation_link', 'cooperation_names', 'hoomdossier_reset_link'))
 <br><br>
 @lang('mail.account-associated-with-cooperation.kind_regards', ['app_name' => config('app.name')])

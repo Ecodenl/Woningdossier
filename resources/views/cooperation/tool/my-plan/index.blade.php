@@ -47,11 +47,13 @@
             @endforeach
         @endcomponent
 
+    @endif
+
+    @if(!\App\Helpers\HoomdossierSession::isUserObserving())
         {{-- Create the modals with personal plan info for the other input source --}}
         @foreach($personalPlanForVariousInputSources as $inputSourceName => $measuresByYear)
             @include('cooperation.tool.my-plan.parts.personal-plan-modal-for-other-input-source')
         @endforeach
-
     @endif
 
     {{-- Our plan, which the users can edit --}}

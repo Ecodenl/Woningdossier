@@ -20,6 +20,7 @@ class MyPlanController extends Controller
     public function index()
     {
 
+
         $inputSource = HoomdossierSession::getInputSource(true);
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
@@ -33,8 +34,7 @@ class MyPlanController extends Controller
         $anyFilesBeingProcessed = FileStorage::forMe()->withExpired()->beingProcessed()->count();
         $advices = UserActionPlanAdviceService::getCategorizedActionPlan($buildingOwner, $inputSource);
 
-        // when the comment branch is merged, move this method to the service
-        $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
+  $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
 
         // so we can determine wheter we will show the actionplan button
@@ -46,6 +46,9 @@ class MyPlanController extends Controller
             }])->first();
 
         $file = $pdfReportFileType->files->first();
+
+        $file = $fileType->files()->where('building_id', $building->id)->first();
+
 
         // get the input sources that have an action plan for the current building
         // and filter out the current one
@@ -62,7 +65,7 @@ class MyPlanController extends Controller
         }
 
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'coachCommentsByStep', 'actionPlanComments', 'pdfReportFileType', 'file', 'inputSourcesForPersonalPlanModal',
+            'actionPlanComments', 'pdfReportFileType',  'file', 'inputSourcesForPersonalPlanModal',
             'anyFilesBeingProcessed', 'reportFileTypeCategory', 'buildingHasCompletedGeneralData', 'personalPlanForVariousInputSources'
         ));
     }

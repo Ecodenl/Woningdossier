@@ -66,7 +66,8 @@ class InsulatedGlazingCalculator
         return $saving;
     }
 
-    public static function calculateNetGasSavings($saving, Building $building, InputSource $inputSource, UserEnergyHabit $energyHabit){
+    public static function calculateNetGasSavings($saving, Building $building, InputSource $inputSource, UserEnergyHabit $energyHabit)
+    {
         /** @NeedsReview There is no element for insulated-glazing. Only the "general-data" variants of living-room-windows and sleeping-rooms-windows.. both having the same % */
         /** @var Element $element */
         $element = Element::where('short', '=', 'living-rooms-windows')->first();

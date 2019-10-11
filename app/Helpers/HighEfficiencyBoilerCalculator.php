@@ -41,9 +41,9 @@ class HighEfficiencyBoilerCalculator
         return $result;
     }
 
-    public static function calculateGasUsage(ServiceValue $boiler, UserEnergyHabit $habit, $amountGas = null)
+    public static function calculateGasUsage(ServiceValue $boiler, UserEnergyHabit $habit, $amountGas = 0)
     {
-        $amountGas = is_null($amountGas) ? $habit->amount_gas : $amountGas;
+        $amountGas = $habit->amount_gas ?? $amountGas;
 
         $result = [
             'heating' => [
@@ -61,16 +61,20 @@ class HighEfficiencyBoilerCalculator
 
         self::debug(__METHOD__ . " boiler efficiencies of boiler: " . $boilerEfficiency->heating . "% (heating) and " . $boilerEfficiency->wtw . "% (tap water)");
 
-        if (1 == $habit->cook_gas) {
-            $result['cooking'] = 65; // m3
-        }
 
-        // From solar boiler / heater
-        $comfortLevel = $habit->comfortLevelTapWater;
-        if ($comfortLevel instanceof ComfortLevelTapWater) {
-            $consumption = KeyFigures::getCurrentConsumption($habit, $comfortLevel);
-            if ($consumption instanceof KeyFigureConsumptionTapWater) {
-                $brutoTapWater = $consumption->energy_consumption;
+        if ($habit instanceof UserEnergyHabit) {
+            if (1 == $habit->cook_gas) {
+                $result['cooking'] = 65; // m3
+            }
+
+            // From solar boiler / heater
+            $comfortLevel = $habit->comfortLevelTapWater;
+            if ($comfortLevel instanceof ComfortLevelTapWater) {
+                $consumption = KeyFigures::getCurrentConsumption($habit,
+                    $comfortLevel);
+                if ($consumption instanceof KeyFigureConsumptionTapWater) {
+                    $brutoTapWater = $consumption->energy_consumption;
+                }
             }
         }
 

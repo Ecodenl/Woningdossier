@@ -97,7 +97,7 @@ class InsulatedGlazing {
         // note: first no instanceof was used
         // now calculate the net gas savings (based on the sum of all measure applications)
         // + calculate and add savings_co2 and savings_money to the result structure
-        $result['savings_gas'] = $energyHabit instanceof UserEnergyHabit ? InsulatedGlazingCalculator::calculateNetGasSavings($rawTotalSavingsGas, $building, $inputSource, $energyHabit) : 0;
+        $result['savings_gas'] = InsulatedGlazingCalculator::calculateNetGasSavings($rawTotalSavingsGas, $building, $inputSource, $energyHabit);
 
         \Log::debug(__METHOD__ . " Net total gas savings: " . $result['savings_gas']);
 

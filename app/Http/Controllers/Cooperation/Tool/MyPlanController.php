@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\MyPlanHelper;
 use App\Http\Controllers\Controller;
@@ -20,7 +21,6 @@ class MyPlanController extends Controller
     public function index()
     {
 
-
         $inputSource = HoomdossierSession::getInputSource(true);
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
@@ -34,21 +34,21 @@ class MyPlanController extends Controller
         $anyFilesBeingProcessed = FileStorage::forMe()->withExpired()->beingProcessed()->count();
         $advices = UserActionPlanAdviceService::getCategorizedActionPlan($buildingOwner, $inputSource);
 
-  $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
+        $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
 
         // so we can determine wheter we will show the actionplan button
         $buildingHasCompletedGeneralData = $building->hasCompleted(Step::where('slug', 'general-data')->first());
 
         $pdfReportFileType = FileType::where('short', 'pdf-report')
-            ->with(['files' => function ($query) {
-                $query->forMe();
+            ->with(['files' => function ($query) use ($buildingOwner) {
+                $query->forMe($buildingOwner);
             }])->first();
 
-        $file = $pdfReportFileType->files->first();
 
-        $file = $fileType->files()->where('building_id', $building->id)->first();
+        $file = $pdfReportFileType->files()->forMe($buildingOwner)->forInputSource($inputSource)->first();
 
+        dd($file);
 
         // get the input sources that have an action plan for the current building
         // and filter out the current one
@@ -65,7 +65,7 @@ class MyPlanController extends Controller
         }
 
         return view('cooperation.tool.my-plan.index', compact(
-            'actionPlanComments', 'pdfReportFileType',  'file', 'inputSourcesForPersonalPlanModal',
+            'actionPlanComments', 'pdfReportFileType',  'file', 'inputSourcesForPersonalPlanModal', 'coachCommentsByStep', 'advices',
             'anyFilesBeingProcessed', 'reportFileTypeCategory', 'buildingHasCompletedGeneralData', 'personalPlanForVariousInputSources'
         ));
     }

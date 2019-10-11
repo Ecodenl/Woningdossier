@@ -37,18 +37,16 @@ class MyPlanController extends Controller
         $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
 
-        // so we can determine wheter we will show the actionplan button
+        // so we can determine whether we will show the actionplan button
         $buildingHasCompletedGeneralData = $building->hasCompleted(Step::where('slug', 'general-data')->first());
 
+        // get the pdf report, and the report file for the building owner with the current input source.
         $pdfReportFileType = FileType::where('short', 'pdf-report')
-            ->with(['files' => function ($query) use ($buildingOwner) {
-                $query->forMe($buildingOwner);
+            ->with(['files' => function ($query) use ($buildingOwner, $inputSource) {
+                $query->forMe($buildingOwner)->forInputSource($inputSource);
             }])->first();
 
-
-        $file = $pdfReportFileType->files()->forMe($buildingOwner)->forInputSource($inputSource)->first();
-
-        dd($file);
+        $file = $pdfReportFileType->files->first();
 
         // get the input sources that have an action plan for the current building
         // and filter out the current one

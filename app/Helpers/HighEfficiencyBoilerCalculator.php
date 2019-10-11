@@ -41,7 +41,13 @@ class HighEfficiencyBoilerCalculator
         return $result;
     }
 
-    public static function calculateGasUsage(ServiceValue $boiler, UserEnergyHabit $habit, $amountGas = 0)
+    /**
+     * @param ServiceValue $boiler
+     * @param UserEnergyHabit|null $habit
+     * @param int $amountGas
+     * @return array
+     */
+    public static function calculateGasUsage(ServiceValue $boiler, $habit, $amountGas = 0)
     {
         $amountGas = $habit->amount_gas ?? $amountGas;
 

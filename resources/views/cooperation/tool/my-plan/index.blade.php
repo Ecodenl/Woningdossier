@@ -35,14 +35,17 @@
             @endforeach
         @endcomponent
 
+        {{-- Create the modals with personal plan info for the other input source --}}
         @foreach($personalPlanForVariousInputSources as $inputSourceName => $measuresByYear)
             @include('cooperation.tool.my-plan.parts.personal-plan-modal-for-other-input-source')
         @endforeach
 
     @endif
 
+    {{-- Our plan, which the users can edit --}}
     @include('cooperation.tool.my-plan.parts.my-plan-form')
 
+    {{-- The personal plan, will be generated with js --}}
     @include('cooperation.tool.my-plan.parts.personal-plan')
 
     <div class="row">

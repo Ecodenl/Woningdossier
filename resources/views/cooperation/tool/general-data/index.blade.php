@@ -663,30 +663,16 @@
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-sm-12">
-                            @component('cooperation.tool.components.step-question', ['id' => 'living_situation_extra', 'translation' => 'general-data.data-about-usage.additional-info', 'required' => false])
-                                <textarea id="additional-info" class="form-control"
-                                          name="living_situation_extra">{{ old('living_situation_extra', optional($energyHabit)->living_situation_extra) }}</textarea>
-                            @endcomponent
-                        </div>
-                    </div>
-                    @include('cooperation.tool.includes.comment', [
-                        'collection' => $userEnergyHabitsForMe,
-                        'commentColumn' => 'living_situation_extra',
-                        'translation' => [
-                            'title' => 'general-data.data-about-usage.additional-info.title',
-                            'help' => 'general-data.data-about-usage.additional-info.help'
-                        ]
-                    ])
+                    {{--<div class="row">--}}
+                        {{--<div class="col-sm-12">--}}
+                            {{--@component('cooperation.tool.components.step-question', ['id' => 'living_situation_extra', 'translation' => 'general-data.data-about-usage.additional-info', 'required' => false])--}}
+                                {{--<textarea id="additional-info" class="form-control"--}}
+                                          {{--name="living_situation_extra">{{ old('living_situation_extra', optional($energyHabit)->living_situation_extra) }}</textarea>--}}
+                            {{--@endcomponent--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
 
                     <div class="row">
-                        <div class="col-sm-12">
-                            @include('cooperation.tool.includes.section-title', [
-                                'translation' => 'general-data.motivation.title',
-                                'id' => 'motivation'
-                            ])
-                        </div>
 
                         {{-- Start at 1 so the translation will too. --}}
                         @for($i = 1; $i < 5; $i++)
@@ -721,25 +707,10 @@
                         @endfor
                     </div>
 
-                    <div class="row">
-                        <div class="col-sm-12">
-                            @component('cooperation.tool.components.step-question', ['id' => 'motivation_extra', 'translation' => 'general-data.motivation-extra', 'required' => false])
-                                <textarea id="motivation-extra" class="form-control"
-                                          name="motivation_extra">@if(old('motivation_extra') != ""){{ old('motivation_extra') }}@elseif(isset($energyHabit)){{ $energyHabit->motivation_extra }}@endif</textarea>
-
-                            @endcomponent
-
-                        </div>
-                    </div>
                     @include('cooperation.tool.includes.comment', [
-                            'collection' => $userEnergyHabitsForMe,
-                            'commentColumn' => 'motivation_extra',
-                            'translation' => [
-                                'title' => 'general-data.motivation-extra.title',
-                                'help' => 'general-data.motivation-extra.help'
-                            ]
+                        'columnName' => 'living_situation_extra',
+                        'translation' => 'general-data.data-about-usage.additional-info'
                     ])
-
 
                     @if(!\App\helpers\HoomdossierSession::isUserObserving())
                     <div class="row">

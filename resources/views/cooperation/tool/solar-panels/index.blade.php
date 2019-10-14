@@ -117,29 +117,6 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group add-space{{ $errors->has('') ? ' has-error' : '' }}">
-                        @component('cooperation.tool.components.step-question', ['id' => 'comment', 'translation' => 'general.specific-situation', 'required' => false])
-
-                            <textarea id="additional-info" class="form-control"
-                                      name="comment">{{old('comment', isset($buildingPvPanels) ? $buildingPvPanels->comment : '')}}</textarea>
-
-                        @endcomponent
-
-
-                    </div>
-                </div>
-            </div>
-
-            @include('cooperation.tool.includes.comment', [
-                 'collection' => $buildingPvPanelsForMe,
-                 'commentColumn' => 'comment',
-                 'translation' => [
-                     'title' => 'general.specific-situation.title',
-                     'help' => 'general.specific-situation.help'
-                ]
-            ])
 
 
             <div id="indication-for-costs">
@@ -196,6 +173,12 @@
                 </div>
             </div>
         </div>
+
+
+        @include('cooperation.tool.includes.comment', [
+             'translation' => 'solar-panels.comment'
+         ])
+
 
         <div class="row">
             <div class="col-md-12">

@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Auth;
 class GeneralDataFormRequest extends FormRequest
 {
     use DecimalReplacementTrait;
-    use ValidatorTrait;
 
     /**
      * Determine if the user is authorized to make this request.

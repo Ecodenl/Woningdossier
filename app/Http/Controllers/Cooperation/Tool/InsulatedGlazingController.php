@@ -8,7 +8,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\InsulatedGlazingFormRequest;
+use App\Http\Requests\Cooperation\Tool\InsulatedGlazingFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;

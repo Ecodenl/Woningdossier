@@ -23,7 +23,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\Interest $interest
  * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest query()

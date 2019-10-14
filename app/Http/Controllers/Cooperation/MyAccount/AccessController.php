@@ -17,68 +17,17 @@ use Illuminate\Support\Collection;
 
 class AccessController extends Controller
 {
-    public function index()
-    {
-        $buildingPermissions = BuildingPermission::where('building_id', HoomdossierSession::getBuilding())->get();
-
-        /* @var Collection $conversationRequests */
-        $conversationRequests = PrivateMessage::conversationRequestByBuildingId(HoomdossierSession::getBuilding())->get();
-
-        return view('cooperation.my-account.access.index', compact('buildingPermissions', 'conversationRequests'));
-    }
-
     public function allowAccess(Request $request)
     {
-        $conversationRequests = PrivateMessage::conversationRequestByBuildingId(HoomdossierSession::getBuilding());
+        $building = HoomdossierSession::getBuilding(true);
+
         if ($request->has('allow_access')) {
-            $conversationRequests->update(['allow_access' => true]);
-            $this->giveAccess();
-            
+            UserAllowedAccessToHisBuilding::dispatch($building);
         } else {
-            $conversationRequests->update(['allow_access' => false]);
-            $this->revokeAccess();
+            UserRevokedAccessToHisBuilding::dispatch($building);
         }
 
         return redirect()->back();
     }
 
-    /**
-     * Method to give building access to all the connected coaches
-     */
-    protected function giveAccess()
-    {
-        $coachesWithAccessToResidentBuildingStatuses = BuildingCoachStatus::getConnectedCoachesByBuildingId(HoomdossierSession::getBuilding());
-
-
-        event(new UserAllowedAccessToHisBuilding());
-
-        // we give the coaches that have "permission" to talk to a resident the permissions to access the building from the resident.
-        foreach ($coachesWithAccessToResidentBuildingStatuses as $coachWithAccessToResidentBuildingStatus) {
-            BuildingPermission::create([
-                'user_id' => $coachWithAccessToResidentBuildingStatus->coach_id,
-                'building_id' => $coachWithAccessToResidentBuildingStatus->building_id,
-            ]);
-        }
-    }
-
-    /**
-     * Method to revoke the access for all the users connected to a building
-     *
-     * @throws \Exception
-     */
-    protected function revokeAccess()
-    {
-        // get all the connected coaches to the building
-        $connectedCoachesToBuilding = BuildingCoachStatus::getConnectedCoachesByBuildingId(HoomdossierSession::getBuilding());
-
-        event(new UserRevokedAccessToHisBuilding());
-
-        // and revoke them the access to the building
-        foreach ($connectedCoachesToBuilding as $connectedCoachToBuilding) {
-            BuildingCoachStatusService::revokeAccess(User::find($connectedCoachToBuilding->coach_id), Building::find($connectedCoachToBuilding->building_id));
-        }
-
-        // delete all the building permissions for this building
-        BuildingPermission::where('building_id', HoomdossierSession::getBuilding())->delete();
-    }
 }

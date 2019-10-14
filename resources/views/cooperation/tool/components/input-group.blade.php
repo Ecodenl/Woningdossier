@@ -6,9 +6,9 @@
             <?php
                 // we need to check if there is a answer from one input source
                 if($userInputValues instanceof \Illuminate\Support\Collection) {
-                    $hasAnswer = $userInputValues->contains($userInputColumn, '!=', '');
+                    $hasAnswer = $userInputValues->contains($userInputColumn, '!==', '');
                 } else {
-                    $hasAnswer = collect($userInputValues)->contains($userInputColumn, '!=', '');
+                    $hasAnswer = collect($userInputValues)->contains($userInputColumn, '!==', '');
                 }
             ?>
             @if(!$hasAnswer)

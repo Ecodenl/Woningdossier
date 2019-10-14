@@ -66,6 +66,42 @@ class FileStorageController extends Controller
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
 
+
+
+        \Log::debug("Generate " . $fileType->short . " file..");
+        \Log::debug("Context:");
+        $account = Hoomdossier::account();
+        $inputSourceValue = HoomdossierSession::getInputSourceValue();
+        if (!is_null($inputSourceValue)){
+            $inputSourceValue = \App\Helpers\Cache\InputSource::find($inputSourceValue);
+        }
+
+        $u = [
+            'account' => $account->id,
+            'id' => $user->id,
+            'role' => HoomdossierSession::currentRole(),
+            'is_observing' => HoomdossierSession::isUserObserving() ? 'yes' : 'no',
+            'is_comparing' => HoomdossierSession::isUserComparingInputSources() ? 'yes' : 'no',
+            'input_source' => $inputSource->short,
+            'operating_on_own_building' => $building->user->id == $user->id ? 'yes' : 'no',
+            'operating_as' => $inputSourceValue->short,
+        ];
+        $tags = [
+            'building:id' => $building->id,
+            'building:owner' => $building->user->id,
+        ];
+
+        \Log::debug("User info:");
+        \Log::debug(json_encode($u));
+        \Log::debug("Building info:");
+        \Log::debug(json_encode($tags));
+
+        \Log::debug("--- end of debug log stuff ---");
+        \Log::debug(" ");
+
+
+
+
         // we will create the file storage here, if we would do it in the job itself it would bring confusion to the user.
         $fileName = $this->getFileNameForFileType($fileType, $user, $inputSource);
 

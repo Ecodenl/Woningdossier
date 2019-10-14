@@ -7,8 +7,6 @@ use Illuminate\Support\ServiceProvider;
 
 class PasswordResetServiceProvider extends ServiceProvider
 {
-    protected $defer = true;
-
     public function register()
     {
         $this->registerPasswordBrokerManager();

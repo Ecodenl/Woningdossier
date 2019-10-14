@@ -80,7 +80,7 @@ return [
                     'users' => 'Gebruikers filteren',
                     'key-figures'       => 'Kengetallen',
                     'translations'      => 'Vertalingen',
-                    'example-buildings' => 'Voorbeeld woningen',
+                    'example-buildings' => 'Voorbeeldwoningen',
                 ],
                 'index'        => [
                     'header' => 'Super admin panel',
@@ -241,7 +241,7 @@ return [
             'navbar'            => [
                 'current-role'      => 'Uw huidige rol:',
                 'reports'           => 'Rapportages',
-                'example-buildings' => 'Example buildings',
+                'example-buildings' => 'Voorbeeldwoningen',
             ],
             'custom-fields'     => [
                 'index' => [

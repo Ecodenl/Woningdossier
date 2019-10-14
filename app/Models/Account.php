@@ -75,7 +75,7 @@ class Account extends Authenticatable
      */
     public function sendPasswordResetNotification($token)
     {
-        $this->notify(new ResetPasswordNotification($token, $this->user()->cooperation));
+        $this->notify(new ResetPasswordNotification($token, $this, $this->user()->cooperation));
     }
 
     /**

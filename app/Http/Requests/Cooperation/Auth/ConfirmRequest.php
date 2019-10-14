@@ -57,7 +57,7 @@ class ConfirmRequest extends FormRequest
         Log::debug('The confirm account failed, email: '. $this->get('u').' token: '. $this->get('t'));
 
         throw (new ValidationException($validator))
-            ->withMessages([__('confirm.already-confirmed', ['password_request_link' => route('cooperation.password.request')])])
+            ->withMessages([__('confirm.already-confirmed', ['password_request_link' => route('cooperation.auth.password.request.index')])])
             ->redirectTo($this->getRedirectUrl());
 
 //        parent::failedValidation($validator);

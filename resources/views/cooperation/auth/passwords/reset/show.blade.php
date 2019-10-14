@@ -7,13 +7,14 @@
             {!! session('token_invalid') !!}
         @endcomponent
     @endif
+    @if(!session()->has('token_invalid'))
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
                 <div class="panel-heading">@lang('auth.reset.form.header')</div>
 
                 <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="{{ route('cooperation.password.request', ['cooperation' => $cooperation]) }}">
+                    <form class="form-horizontal" method="POST" action="{{ route('cooperation.auth.password.reset.update', ['cooperation' => $cooperation]) }}">
                         {{ csrf_field() }}
 
                         <input type="hidden" name="token" value="{{ $token }}">
@@ -71,5 +72,6 @@
             </div>
         </div>
     </div>
+    @endif
 </div>
 @endsection

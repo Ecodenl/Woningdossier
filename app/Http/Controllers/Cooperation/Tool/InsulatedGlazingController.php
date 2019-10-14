@@ -204,6 +204,7 @@ class InsulatedGlazingController extends Controller
      */
     public function store(InsulatedGlazingFormRequest $request)
     {
+        dd($request->rules(), $request->all());
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $buildingId = $building->id;

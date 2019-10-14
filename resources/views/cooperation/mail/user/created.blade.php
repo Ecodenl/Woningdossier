@@ -6,7 +6,7 @@
 <?php
 
     // the confirm route.
-    $resetUrl = route('cooperation.password.reset', ['token' => $token, 'cooperation' => $userCooperation->slug]);
+    $resetUrl = route('cooperation.auth.password.reset.show', ['token' => $token, 'cooperation' => $userCooperation, 'email' => encrypt($createdUser->account->email)]);
     $resetHref = '<a target="_blank" href="'.$resetUrl.'">'.$resetUrl.'</a>';
 
     // the route to the hoompage.

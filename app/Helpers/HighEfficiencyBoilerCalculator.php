@@ -2,6 +2,10 @@
 
 namespace App\Helpers;
 
+use App\Helpers\KeyFigures\Heater\KeyFigures;
+use App\Models\ComfortLevelTapWater;
+use App\Models\KeyFigureConsumptionTapWater;
+use App\Models\Log;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\UserEnergyHabit;
@@ -37,7 +41,6 @@ class HighEfficiencyBoilerCalculator
         return $result;
     }
 
-    // todo solar boiler should be put in this formula as well
     public static function calculateGasUsage(ServiceValue $boiler, UserEnergyHabit $habit, $amountGas = null)
     {
         $amountGas = is_null($amountGas) ? $habit->amount_gas : $amountGas;
@@ -56,18 +59,29 @@ class HighEfficiencyBoilerCalculator
 
         $boilerEfficiency = $boiler->keyFigureBoilerEfficiency;
 
+        self::debug(__METHOD__ . " boiler efficiencies of boiler: " . $boilerEfficiency->heating . "% (heating) and " . $boilerEfficiency->wtw . "% (tap water)");
+
         if (1 == $habit->cook_gas) {
             $result['cooking'] = 65; // m3
         }
 
+        // From solar boiler / heater
+        $comfortLevel = $habit->comfortLevelTapWater;
+        if ($comfortLevel instanceof ComfortLevelTapWater) {
+            $consumption = KeyFigures::getCurrentConsumption($habit, $comfortLevel);
+            if ($consumption instanceof KeyFigureConsumptionTapWater) {
+                $brutoTapWater = $consumption->energy_consumption;
+            }
+        }
+
         // todo use solar boiler gas usage here
-        $result['tap_water']['bruto'] = 0;
-        $result['tap_water']['netto'] = $result['tap_water']['bruto'] * ($boilerEfficiency['wtw'] / 100);
+        $result['tap_water']['bruto'] = $brutoTapWater ?? 0;
+        $result['tap_water']['netto'] = $result['tap_water']['bruto'] * ($boilerEfficiency->wtw / 100);
 
         $result['heating']['bruto'] = $amountGas - $result['tap_water']['bruto'] - $result['cooking'];
-        $result['heating']['netto'] = $result['heating']['bruto'] * ($boilerEfficiency['heating'] / 100);
+        $result['heating']['netto'] = $result['heating']['bruto'] * ($boilerEfficiency->heating / 100);
 
-        self::debug('Gas usage: '.json_encode($result));
+        self::debug(__METHOD__ . ' Gas usage: '.json_encode($result));
 
         return $result;
     }

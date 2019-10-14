@@ -4,15 +4,18 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Events\StepDataHasBeenChangedEvent;
 use App\Helpers\Calculator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\MyPlanHelper;
 use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyPlanRequest;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\FileTypeCategory;
 use App\Models\Step;
+use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Scopes\AvailableScope;
@@ -29,7 +32,6 @@ class MyPlanController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner, HoomdossierSession::getInputSource(true));
-        $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
 
         // so we can determine wheter we will show the actionplan button

@@ -55,14 +55,16 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::get('messages/count', 'MessagesController@getTotalUnreadMessageCount')->name('message.get-total-unread-message-count');
 
             // debug purpose only
-//            Route::group(['as' => 'pdf.', 'namespace' => 'Pdf', 'prefix' => 'pdf'], function () {
-//                Route::group(['as' => 'user-report.', 'prefix' => 'user-report'], function () {
-//                    Route::get('', 'UserReportController@index')->name('index');
-//                });
-//            });
+            Route::group(['as' => 'pdf.', 'namespace' => 'Pdf', 'prefix' => 'pdf'], function () {
+                Route::group(['as' => 'user-report.', 'prefix' => 'user-report'], function () {
+                    Route::get('', 'UserReportController@index')->name('index');
+                });
+            });
 
             Route::get('home', 'HomeController@index')->name('home')->middleware('deny-if-filling-for-other-building');
 
+            Route::resource('privacy', 'PrivacyController')->only('index');
+            Route::resource('disclaimer', 'DisclaimController')->only('index');
 
             Route::group(['prefix' => 'file-storage', 'as' => 'file-storage.'], function () {
                 Route::post('{fileType}', 'FileStorageController@store')->name('store');
@@ -90,7 +92,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::get('', 'MyAccountController@index')->name('index');
 
                 Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
-                    Route::get('', 'SettingsController@index')->name('index');
                     Route::put('', 'SettingsController@update')->name('update');
                     Route::delete('destroy', 'SettingsController@destroy')->name('destroy');
                     Route::post('reset-dossier', 'SettingsController@resetFile')->name('reset-file');
@@ -101,35 +102,27 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
 
                 Route::group(['as' => 'import-center.', 'prefix' => 'import-centrum'], function () {
-                    Route::get('', 'ImportCenterController@index')->name('index');
-                    Route::get('set-compare-session/{inputSourceShort}',
-                        'ImportCenterController@setCompareSession')->name('set-compare-session');
-                    Route::post('dismiss-notification',
-                        'ImportCenterController@dismissNotification')->name('dismiss-notification');
+                    Route::get('set-compare-session/{inputSourceShort}', 'ImportCenterController@setCompareSession')->name('set-compare-session');
+                    Route::post('dismiss-notification', 'ImportCenterController@dismissNotification')->name('dismiss-notification');
                 });
 
                 Route::resource('notification-settings', 'NotificationSettingsController')->only([
                     'index', 'show', 'update'
                 ]);
 
-                Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
+                Route::group(['as' => 'messages.', 'prefix' => 'messages'], function () {
                     Route::get('', 'MessagesController@index')->name('index');
                     Route::get('edit', 'MessagesController@edit')->name('edit');
                     Route::post('edit', 'MessagesController@store')->name('store');
                     Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
                 });
 
-                Route::group(['as' => 'access.', 'prefix' => 'access'], function () {
-                    Route::get('', 'AccessController@index')->name('index');
-                    Route::post('allow-access', 'AccessController@allowAccess')->name('allow-access');
-                });
+                Route::post('access/allow-access', 'AccessController@allowAccess')->name('access.allow-access');
 
             });
 
             // conversation requests
-            Route::group(['prefix' => 'request', 'as' => 'conversation-requests.',
-                'namespace' => 'ConversationRequest'
-            ], function () {
+            Route::group(['prefix' => 'request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
                 Route::get('/edit/{action?}', 'ConversationRequestController@edit')->name('edit');
                 Route::get('{action?}/{measureApplicationShort?}',
                     'ConversationRequestController@index')->name('index');
@@ -147,8 +140,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
                 Route::get('/', 'ToolController@index')->name('index');
 
-                Route::post('general-data/apply-example-building',
-                    'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
+                Route::post('general-data/apply-example-building', 'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
                 Route::resource('building-detail', 'BuildingDetailController', ['only' => ['index', 'store']]);
 
                 Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
@@ -253,9 +245,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
 
                 /* Section for the cooperation-admin and coordinator */
-                Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation',
-                    'middleware' => ['current-role:cooperation-admin|coordinator']
-                ], function () {
+                Route::group(['prefix' => 'cooperatie', 'as' => 'cooperation.', 'namespace' => 'Cooperation', 'middleware' => ['current-role:cooperation-admin|coordinator']], function () {
                     Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
                         Route::get('', 'UserController@index')->name('index');
                         Route::get('create', 'UserController@create')->name('create');
@@ -289,9 +279,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
 
                     /* Section for the coordinator */
-                    Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator',
-                        'middleware' => ['current-role:coordinator']
-                    ], function () {
+                    Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['current-role:coordinator']], function () {
 
                         // needs to be the last route due to the param
                         Route::get('home', 'CoordinatorController@index')->name('index');

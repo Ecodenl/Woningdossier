@@ -15,7 +15,7 @@ return [
     ],
 
     'index'         => [
-        'header' => 'Mijn account',
+        'header' => 'Instellingen',
         'text'   => 'U kunt vanaf hier naar uw instellingen gaan om uw account te wijzigen, voortgang te resetten of om het account te verwijderen. Of u kunt naar uw berichten gaan om deze te zien.',
 
         'settings' => 'Instellingen <span class="glyphicon glyphicon-cog">',

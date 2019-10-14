@@ -71,7 +71,7 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
         $email = encrypt($this->account->email);
         return (new MailMessage())
             ->line(__('mail.reset_password.why'))
-            ->action(__('mail.reset_password.action'), route('cooperation.auth.password.reset.store', ['cooperation' => $this->cooperation, 'token' => $this->token, 'email' => $email]))
+            ->action(__('mail.reset_password.action'), route('cooperation.auth.password.reset.show', ['cooperation' => $this->cooperation, 'token' => $this->token, 'email' => $email]))
             //->action('Reset Password', url(config('app.url').route('password.reset', $this->token, false)))
             ->line(__('mail.reset_password.not_requested'));
     }

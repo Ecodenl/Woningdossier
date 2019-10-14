@@ -92,7 +92,6 @@ class ResetPasswordController extends Controller
         return redirect()->back()
             ->withInput($request->only('email'))
             ->with('token_invalid', __($response, ['password_request_link' => route('cooperation.auth.password.request.index')]));
-//            ->withErrors(['email' => 'Check link']);
     }
 
 
@@ -120,6 +119,7 @@ class ResetPasswordController extends Controller
     public function show(Request $request, Cooperation $cooperation, $token, $email)
     {
         $response = '';
+
         if ($this->emailEncryptionIsValid($email)) {
             $email = decrypt($email);
 
@@ -135,7 +135,7 @@ class ResetPasswordController extends Controller
             ];
 
             // so, check if the token and email are valid.
-            $response = $this->broker()->reset($credentials, function (){});
+            $response = $response = $this->broker()->validateReset($credentials);
 
             if ($response == PasswordBroker::INVALID_TOKEN) {
                 $request->session()->flash('token_invalid',  __($response, ['password_request_link' => route('cooperation.auth.password.request.index')]));

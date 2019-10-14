@@ -3,7 +3,6 @@
 namespace App\Auth\Passwords;
 
 use Illuminate\Auth\Passwords\PasswordBroker as BasePasswordBroker;
-use Illuminate\Contracts\Auth\CanResetPassword;
 
 class PasswordBroker extends BasePasswordBroker
 {

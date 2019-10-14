@@ -135,9 +135,9 @@ class ResetPasswordController extends Controller
             ];
 
             // so, check if the token and email are valid.
-            $response = $response = $this->broker()->validateReset($credentials);
+            $validationResponse = $this->broker()->validateReset($credentials);
 
-            if ($response == PasswordBroker::INVALID_TOKEN) {
+            if ($validationResponse == PasswordBroker::INVALID_TOKEN) {
                 $request->session()->flash('token_invalid',  __($response, ['password_request_link' => route('cooperation.auth.password.request.index')]));
             }
         }

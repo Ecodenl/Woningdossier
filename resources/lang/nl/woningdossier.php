@@ -80,7 +80,7 @@ return [
                     'users' => 'Gebruikers filteren',
                     'key-figures'       => 'Kengetallen',
                     'translations'      => 'Vertalingen',
-                    'example-buildings' => 'Voorbeeld woningen',
+                    'example-buildings' => 'Voorbeeldwoningen',
                 ],
                 'index'        => [
                     'header' => 'Super admin panel',
@@ -241,7 +241,7 @@ return [
             'navbar'            => [
                 'current-role'      => 'Uw huidige rol:',
                 'reports'           => 'Rapportages',
-                'example-buildings' => 'Example buildings',
+                'example-buildings' => 'Voorbeeldwoningen',
             ],
             'custom-fields'     => [
                 'index' => [
@@ -922,17 +922,6 @@ return [
                 'no-year'     => 'Geen jaartal',
                 'add-comment' => 'Opmerking opslaan',
 
-                'coach-comments' => [
-                    'general-data'                => 'Algemene gegevens',
-                    'wall-insulation'             => 'Gevelisolatie',
-                    'floor-insulation'            => 'Vloerisolatie',
-                    'insulated-glazing'           => 'Isolerende beglazing',
-                    'roof-insulation-hellend-dak' => 'Dakisolatie - Hellend dak',
-                    'roof-insulation-plat-dak'    => 'Dakisolatie - Plat dak',
-                    'high-efficiency-boiler'      => 'HR Ketel',
-                    'heater' => 'Zonneboiler',
-                    'solar-panels' => 'Zonnepanelen'
-                ],
 
                 'conversation-requests'                => [
                     'request'        => 'Coachgesprek aanvragen',

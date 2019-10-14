@@ -333,26 +333,14 @@
                     </div>
                 </div>
 
-
-                <div class="row">
-                    <div class="col-sm-12">
-                        @component('cooperation.tool.components.step-question', ['id' => 'additional_info', 'translation' => 'general.specific-situation', 'required' => false])
-
-                            <textarea id="additional-info" class="form-control"
-                                      name="additional_info">@if(old('additional_info')){{old('additional_info')}}@elseif(isset($buildingFeature)){{$buildingFeature->additional_info}}@endif</textarea>
-
-                        @endcomponent
-                    </div>
-                </div>
             </div>
+
+
             @include('cooperation.tool.includes.comment', [
-               'collection' => $buildingFeaturesForMe,
-               'commentColumn' => 'additional_info',
-               'translation' => [
-                   'title' => 'general.specific-situation.title',
-                   'help' => 'general.specific-situation.help'
-               ]
-           ])
+                'columnName' => 'additional_info',
+                'translation' => 'wall-insulation.comment'
+            ])
+
 
             <div class="row">
                 <div class="col-md-12">

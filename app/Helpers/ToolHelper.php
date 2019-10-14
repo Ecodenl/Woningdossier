@@ -464,6 +464,7 @@ class ToolHelper
                 // rest will be added later on
             ],
             'high-efficiency-boiler' => [
+                // todo: this should be extra.date. But then we need to update al example building data
                 'service.'.$boiler->id.'.extra.year' => [
                     'label' => Translation::translate('boiler.boiler-placed-date.title'),
                     'type'  => 'text',
@@ -572,6 +573,8 @@ class ToolHelper
         foreach ($igShorts as $igShort) {
             $measureApplication = MeasureApplication::where('short', $igShort)->first();
             if ($measureApplication instanceof MeasureApplication) {
+                // todo: this should be the case, with the type. But then we need to update al example building data
+//                $structure['insulated-glazing']['user_interests.measure_application.'.$measureApplication->id]                                      = [
                 $structure['insulated-glazing']['user_interests.'.$measureApplication->id]                                      = [
                     //'label' => 'Interest in '.$measureApplication->measure_name,
                     'label'   => Translation::translate('general.change-interested.title',

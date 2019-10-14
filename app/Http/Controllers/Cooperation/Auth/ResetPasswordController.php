@@ -111,6 +111,7 @@ class ResetPasswordController extends Controller
     /**
      * Display the password reset view for the given token.
      *
+     * @param Request $request
      * @param Cooperation $cooperation
      * @param $token
      * @param $email
@@ -118,31 +119,42 @@ class ResetPasswordController extends Controller
      */
     public function show(Request $request, Cooperation $cooperation, $token, $email)
     {
-        $response = '';
+        return $this->emailEncryptionIsValid($email) ? $this->showPasswordResetForm($request, $token, $email) : $this->sendBackHome();
+    }
 
-        if ($this->emailEncryptionIsValid($email)) {
-            $email = decrypt($email);
+    public function sendBackHome()
+    {
+        return redirect(route('cooperation.welcome'));
+    }
 
-            $password = str_random(6);
+    /**
+     * Method to display the reset form
+     *
+     * @param Request $request
+     * @param $token
+     * @param $email
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function showPasswordResetForm(Request $request, $token, $email)
+    {
+        $email = decrypt($email);
 
-            // here we will make up the credentials, the broker needs credentials to return a proper response.
-            // we only need the broker for the validateReset method, but its protected and creating a custom broker seems overkill to me.
-            $credentials = [
-                'token' => $token,
-                'email' => $email,
-                'password' => $password,
-                'password_confirmation' => $password
-            ];
+        // here we will make up the credentials, the broker needs credentials to return a proper response.
+        // we only need the broker for the validateReset method, but its protected and creating a custom broker seems overkill to me.
+        $password = str_random(6);
+        $credentials = [
+            'token' => $token,
+            'email' => $email,
+            'password' => $password,
+            'password_confirmation' => $password
+        ];
 
-            // so, check if the token and email are valid.
-            $validationResponse = $this->broker()->validateReset($credentials);
+        // so, check if the token and email are valid.
+        $validationResponse = $this->broker()->validateReset($credentials);
 
-            if ($validationResponse == PasswordBroker::INVALID_TOKEN) {
-                $request->session()->flash('token_invalid',  __($response, ['password_request_link' => route('cooperation.auth.password.request.index')]));
-            }
+        if ($validationResponse == PasswordBroker::INVALID_TOKEN) {
+            $request->session()->flash('token_invalid',  __($validationResponse, ['password_request_link' => route('cooperation.auth.password.request.index')]));
         }
-
-
         return view('cooperation.auth.passwords.reset.show', compact('token', 'email', 'response'));
     }
 
@@ -155,9 +167,10 @@ class ResetPasswordController extends Controller
     public function emailEncryptionIsValid($encryption)
     {
         try {
-            return decrypt($encryption);
+            decrypt($encryption);
         } catch (DecryptException $decryptException) {
-            return redirect(route('cooperation.welcome'));
+            return false;
         }
+        return true;
     }
 }

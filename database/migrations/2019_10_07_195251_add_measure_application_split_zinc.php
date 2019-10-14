@@ -36,11 +36,11 @@ class AddMeasureApplicationSplitZinc extends Migration
         DB::table('translations')
           ->where('language', '=', 'nl')
           ->where('translation', '=', 'Zinkwerk')
-          ->update(['translation' => 'Hoeveelheid zinkwerk hellend dak']);
+          ->update(['translation' => 'Zinkwerk hellend dak']);
 
         $mTrans = DB::table('translations')
                     ->where('language', '=', 'nl')
-                    ->where('translation', '=', 'Hoeveelheid zinkwerk hellend dak')
+                    ->where('translation', '=', 'Zinkwerk hellend dak')
                     ->first();
 
         $mnUuid = $mTrans->key;
@@ -60,7 +60,7 @@ class AddMeasureApplicationSplitZinc extends Migration
         // Measure name
         $flatMeasureName = DB::table('translations')
                              ->where('language', '=', 'nl')
-                             ->where('translation', '=', 'Hoeveelheid zinkwerk plat dak')
+                             ->where('translation', '=', 'Zinkwerk plat dak')
                              ->first();
 
         if ( ! $flatMeasureName) {
@@ -68,7 +68,7 @@ class AddMeasureApplicationSplitZinc extends Migration
             \DB::table('translations')->insert([
                 'key'         => $fmnUuid,
                 'language'    => 'nl',
-                'translation' => 'Hoeveelheid zinkwerk plat dak',
+                'translation' => 'Zinkwerk plat dak',
             ]);
         } else {
             $fmnUuid = $flatMeasureName->key;
@@ -128,7 +128,7 @@ class AddMeasureApplicationSplitZinc extends Migration
         // Measure name
         DB::table('translations')
           ->where('language', '=', 'nl')
-          ->where('translation', '=', 'Hoeveelheid zinkwerk hellend dak')
+          ->where('translation', '=', 'Zinkwerk hellend dak')
           ->update(['translation' => 'Zinkwerk']);
 
         $mTrans = DB::table('translations')

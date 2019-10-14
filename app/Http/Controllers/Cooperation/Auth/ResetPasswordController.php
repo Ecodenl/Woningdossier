@@ -6,7 +6,6 @@ use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Cooperation;
-use function Couchbase\defaultDecoder;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -89,6 +88,13 @@ class ResetPasswordController extends Controller
             : $this->sendResetFailedResponse($request, $response);
     }
 
+    public function sendResetFailedResponse($request, $response)
+    {
+        return redirect()->back()
+                         ->withInput($request->only('email'))
+                         ->with('token_invalid', __($response, ['password_request_link' => route('cooperation.password.request')]));
+    }
+
     /**
      * Get the response for a successful password reset.
      *
@@ -108,14 +114,6 @@ class ResetPasswordController extends Controller
 
         return redirect($this->redirectPath())->with('status', trans($response));
     }
-
-    public function sendResetFailedResponse($request, $response)
-    {
-        return redirect()->back()
-            ->withInput($request->only('email'))
-            ->with('token_invalid', __($response, ['password_request_link' => route('cooperation.auth.password.request.index')]));
-    }
-
 
     protected function resetPassword(Account $account, $password)
     {

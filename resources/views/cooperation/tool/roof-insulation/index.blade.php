@@ -60,7 +60,7 @@
 
                                 @component('cooperation.tool.components.step-question', ['id' => 'building_features.roof_type_id', 'translation' => 'roof-insulation.current-situation.main-roof', 'required' => false])
 
-                                    @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'id'])
+                                    @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'roof_type_id'])
                                         <select id="main_roof" class="form-control"
                                                 name="building_features[roof_type_id]">
                                             @foreach($roofTypes as $roofType)

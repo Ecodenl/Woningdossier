@@ -87,6 +87,7 @@ class Hoomdossier
             $found = $baseQuery->get([$relation->getRelated()->getTable().'.*', 'input_sources.short']);
         }
 
+
         $results = $found->pluck($column, 'short');
 
         // if the column name contains 'surface' there is particular logic:
@@ -97,6 +98,7 @@ class Hoomdossier
         // the user actually gets to that step (building_features fields)
         // these fields also get a 'fallthrough' via $fallthroughColumns
         $falltroughColumns = [
+            'cavity_wall',
             'facade_plastered_painted',
             'facade_plastered_surface_id',
             'facade_damaged_paintwork_id',
@@ -104,6 +106,10 @@ class Hoomdossier
             'contaminated_wall_joints',
             'monument',
             'building_layers',
+            'roof_type_id',
+
+            'energy_label_id',
+            'extra.date'
         ];
 
         // Always check my own input source first. If that is properly filled
@@ -139,6 +145,8 @@ class Hoomdossier
             }
             if (InputSource::RESIDENT_SHORT == $inputSourceShort) {
                 // no matter what
+
+                // since 'no matter what' it will also return a empty value, even when there may be a non null value from a other input source.
                 return $value;
             }
             if (! is_null($value) && '' !== $value) {

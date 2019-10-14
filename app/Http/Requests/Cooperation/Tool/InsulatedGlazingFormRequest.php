@@ -46,7 +46,6 @@ class InsulatedGlazingFormRequest extends FormRequest
         $rules = [
             'building_elements.*' => 'required|exists:element_values,id',
             'building_elements.*.*' => 'exists:element_values,id',
-//            'building_insulated_glazings.*.m2' => 'numeric|min:1',
             'window_surface' => 'numeric|min:1',
             'building_paintwork_statuses.wood_rot_status_id' => 'required|exists:wood_rot_statuses,id',
             'building_paintwork_statuses.paintwork_status_id' => 'required|exists:paintwork_statuses,id',

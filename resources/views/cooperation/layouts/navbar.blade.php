@@ -67,7 +67,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <!-- Authentication Links -->
                 @guest
-                    <li><a href="{{ route('cooperation.login', ['cooperation' => $cooperation]) }}">@lang('auth.login.form.header')</a></li>
+                    <li><a href="{{ route('cooperation.auth.login', ['cooperation' => $cooperation]) }}">@lang('auth.login.form.header')</a></li>
                     <li><a href="{{ route('cooperation.register', ['cooperation' => $cooperation]) }}">@lang('auth.register.form.header')</a></li>
                 @else
                     @if (!\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
@@ -109,13 +109,13 @@
                                     <li><a href="{{ route('cooperation.disclaimer.index', ['cooperation' => $cooperation]) }}">@lang('woningdossier.cooperation.navbar.disclaimer')</a></li>
                                     {{--<li><a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">@lang('my-account.cooperations.form.header')</a></li>--}}
                                     <li>
-                                        <a href="{{ route('cooperation.logout', ['cooperation' => $cooperation]) }}"
+                                        <a href="{{ route('cooperation.auth.logout', ['cooperation' => $cooperation]) }}"
                                            onclick="event.preventDefault();
                                                              document.getElementById('logout-form').submit();">
                                             Logout
                                         </a>
 
-                                        <form id="logout-form" action="{{ route('cooperation.logout', ['cooperation' => $cooperation]) }}" method="POST" style="display: none;">
+                                        <form id="logout-form" action="{{ route('cooperation.auth.logout', ['cooperation' => $cooperation]) }}" method="POST" style="display: none;">
                                             {{ csrf_field() }}
                                         </form>
                                     </li>

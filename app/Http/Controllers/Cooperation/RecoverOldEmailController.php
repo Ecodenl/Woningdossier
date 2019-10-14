@@ -50,7 +50,7 @@ class RecoverOldEmailController extends Controller
         }
 
         return redirect()
-            ->route('cooperation.login')
+            ->route('cooperation.auth.login')
             ->with('warning', __('recover-old-email.recover.warning'));
     }
 }

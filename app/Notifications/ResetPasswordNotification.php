@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Account;
 use App\Models\Cooperation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -27,14 +28,21 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
     public $cooperation;
 
     /**
-     * Create a notification instance.
+     * The account that wants a password reset
      *
-     * @param string $token
-     *
-     * @return void
+     * @var Account
      */
-    public function __construct($token, $cooperation)
+    public $account;
+
+    /**
+     * Create a notification instance.
+     * @param $token
+     * @param Account $account
+     * @param $cooperation
+     */
+    public function __construct($token, Account $account, $cooperation)
     {
+        $this->account = $account;
         $this->token = $token;
         $this->cooperation = $cooperation;
     }
@@ -60,9 +68,10 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
+        $email = encrypt($this->account->email);
         return (new MailMessage())
             ->line(__('mail.reset_password.why'))
-            ->action(__('mail.reset_password.action'), route('cooperation.password.reset', ['cooperation' => $this->cooperation, 'token' => $this->token]))
+            ->action(__('mail.reset_password.action'), route('cooperation.auth.password.reset.store', ['cooperation' => $this->cooperation, 'token' => $this->token, 'email' => $email]))
             //->action('Reset Password', url(config('app.url').route('password.reset', $this->token, false)))
             ->line(__('mail.reset_password.not_requested'));
     }

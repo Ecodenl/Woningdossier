@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    <form class="form-horizontal" method="POST" action="{{ route('cooperation.password.email', ['cooperation' => $cooperation]) }}">
+                    <form class="form-horizontal" method="POST" action="{{ route('cooperation.auth.password.request.store', ['cooperation' => $cooperation]) }}">
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">

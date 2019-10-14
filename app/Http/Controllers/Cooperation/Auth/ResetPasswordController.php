@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Cooperation\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Cooperation;
+use function Couchbase\defaultDecoder;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Auth\Passwords\PasswordBroker;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -50,7 +53,7 @@ class ResetPasswordController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function reset(Request $request)
+    public function update(Request $request)
     {
         $this->validate($request, $this->rules(), $this->validationErrorMessages());
 
@@ -73,7 +76,7 @@ class ResetPasswordController extends Controller
             //$this->guard()->logout();
             \Log::debug('The user has resetted his password, but has not confirmed his account. Redirecting to login page with a message..');
 
-            return redirect(route('cooperation.login'))->with('warning', __('auth.reset.inactive'));
+            return redirect(route('cooperation.auth.login'))->with('warning', __('auth.reset.inactive'));
         }
 
         // If the password was successfully reset, we will redirect the user back to
@@ -88,7 +91,7 @@ class ResetPasswordController extends Controller
     {
         return redirect()->back()
             ->withInput($request->only('email'))
-            ->with('token_invalid', __($response, ['password_request_link' => route('cooperation.password.request')]));
+            ->with('token_invalid', __($response, ['password_request_link' => route('cooperation.auth.password.request.index')]));
 //            ->withErrors(['email' => 'Check link']);
     }
 
@@ -109,18 +112,52 @@ class ResetPasswordController extends Controller
     /**
      * Display the password reset view for the given token.
      *
-     * If no token is present, display the link request form.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param string|null              $token
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Cooperation $cooperation
+     * @param $token
+     * @param $email
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      */
-    public function showResetForm(Request $request, Cooperation $cooperation, $token = null)
+    public function show(Request $request, Cooperation $cooperation, $token, $email)
     {
+        $response = '';
+        if ($this->emailEncryptionIsValid($email)) {
+            $email = decrypt($email);
 
-        return view('cooperation.auth.passwords.reset')->with(
-            ['token' => $token, 'email' => $request->email]
-        );
+            $password = str_random(6);
+
+            // here we will make up the credentials, the broker needs credentials to return a proper response.
+            // we only need the broker for the validateReset method, but its protected and creating a custom broker seems overkill to me.
+            $credentials = [
+                'token' => $token,
+                'email' => $email,
+                'password' => $password,
+                'password_confirmation' => $password
+            ];
+
+            // so, check if the token and email are valid.
+            $response = $this->broker()->reset($credentials, function (){});
+
+            if ($response == PasswordBroker::INVALID_TOKEN) {
+                $request->session()->flash('token_invalid',  __($response, ['password_request_link' => route('cooperation.auth.password.request.index')]));
+            }
+        }
+
+
+        return view('cooperation.auth.passwords.reset.show', compact('token', 'email', 'response'));
+    }
+
+    /**
+     * Check whether the email encryption is valid
+     *
+     * @param $encryption
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|string
+     */
+    public function emailEncryptionIsValid($encryption)
+    {
+        try {
+            return decrypt($encryption);
+        } catch (DecryptException $decryptException) {
+            return redirect(route('cooperation.welcome'));
+        }
     }
 }

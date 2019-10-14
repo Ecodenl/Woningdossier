@@ -3,15 +3,12 @@
 namespace App\Http\Controllers\Cooperation\ConversationRequest;
 
 use App\Events\UserAllowedAccessToHisBuilding;
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\ConversationRequests\ConversationRequest;
-use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\MeasureApplication;
 use App\Models\PrivateMessage;
-use function Couchbase\defaultDecoder;
 
 class ConversationRequestController extends Controller
 {

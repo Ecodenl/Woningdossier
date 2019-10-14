@@ -160,21 +160,6 @@
                             @endcomponent
                         </div>
                     </div>
-
-                    <div class="row additional-info">
-                        <div class="col-sm-12">
-                            @component('cooperation.tool.components.step-question', ['id' => 'comment', 'translation' => 'general.specific-situation', 'required' => false])
-                                <?php
-                                $default = isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment']) ? $buildingElement->where('element_id', $crawlspace->id)->first()->extra['comment'] : '';
-                                ?>
-
-                                <textarea name="comment" id=""
-                                          class="form-control">{{old('comment', $default)}}</textarea>
-
-                            @endcomponent
-
-                        </div>
-                    </div>
                 </div>
 
 
@@ -215,14 +200,6 @@
                     </div>
                 </div>
             </div>
-            @include('cooperation.tool.includes.comment', [
-               'collection' => $buildingElementsForMe->where('element_id', $crawlspace->id),
-               'commentColumn' => 'extra.comment',
-               'translation' => [
-                   'title' => 'general.specific-situation.title',
-                   'help' => 'general.specific-situation.help'
-               ]
-            ])
 
             <div class="row" id="no-crawlspace-error">
                 <div class="col-md-12">
@@ -231,6 +208,14 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+
+
+            @include('cooperation.tool.includes.comment', [
+                 'translation' => 'floor-insulation.comment'
+            ])
+
 
             <div class="row">
                 <div class="col-md-12">

@@ -60,7 +60,7 @@
 
                                 @component('cooperation.tool.components.step-question', ['id' => 'building_features.roof_type_id', 'translation' => 'roof-insulation.current-situation.main-roof', 'required' => false])
 
-                                    @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'id'])
+                                    @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'roof_type_id'])
                                         <select id="main_roof" class="form-control"
                                                 name="building_features[roof_type_id]">
                                             @foreach($roofTypes as $roofType)
@@ -249,21 +249,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    @component('cooperation.tool.components.step-question', ['id' => 'building_roof_types.'.$roofCat.'.extra.comment', 'translation' => 'general.specific-situation', 'required' => false])
-
-                                        <?php
-                                        $default = isset($currentCategorizedRoofTypes[$roofCat]['extra']['comment']) ? $currentCategorizedRoofTypes[$roofCat]['extra']['comment'] : old('building_roof_types.' . $roofCat . '.extra.comment');
-                                        ?>
-
-
-                                        <textarea name="building_roof_types[{{ $roofCat }}][extra][comment]" id=""
-                                                  class="form-control">{{ $default }}</textarea>
-                                    @endcomponent
-
-                                </div>
-                            </div>
                         </div>
                     @endforeach
                 </div>
@@ -332,16 +317,10 @@
         @endforeach
 
 
-        @foreach(['flat', 'pitched'] as $roofCat)
-            @include('cooperation.tool.includes.comment', [
-              'collection' => collect($currentCategorizedRoofTypesForMe[$roofCat]),
-              'commentColumn' => 'extra.comment',
-              'translation' => [
-                  'title' => 'general.specific-situation.title',
-                  'help' => 'general.specific-situation.help'
-              ]
-            ])
-        @endforeach
+        @include('cooperation.tool.includes.comment', [
+           'translation' => 'roof-insulation.comment'
+        ])
+
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-primary">

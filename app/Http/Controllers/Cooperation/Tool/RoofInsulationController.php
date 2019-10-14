@@ -95,6 +95,7 @@ class RoofInsulationController extends Controller
                 }
             }
         }
+//        dd($roofTypes, $building->buildingFeatures()->forMe()->get());
 
         return view('cooperation.tool.roof-insulation.index', compact(
             'building', 'features', 'roofTypes', 'typeIds', 'buildingFeaturesForMe',
@@ -282,6 +283,8 @@ class RoofInsulationController extends Controller
 
         $roofTypes = $request->input('building_roof_types', []);
 
+        $comment = $request->get('comment');
+
         $createData = [];
         foreach ($roofTypeIds as $roofTypeId) {
             $roofType = RoofType::findOrFail($roofTypeId);
@@ -302,7 +305,6 @@ class RoofInsulationController extends Controller
                 $extraTilesCondition = isset($roofTypes[$cat]['extra']['tiles_condition']) ? $roofTypes[$cat]['extra']['tiles_condition'] : '';
 
                 $buildingHeating = isset($roofTypes[$cat]['building_heating_id']) ? $roofTypes[$cat]['building_heating_id'] : null;
-                $comment = isset($roofTypes[$cat]['extra']['comment']) ? $roofTypes[$cat]['extra']['comment'] : null;
 
                 BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                     [

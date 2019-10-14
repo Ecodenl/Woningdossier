@@ -23,8 +23,10 @@ use App\Listeners\LogUserAssociatedWithOtherCooperation;
 use App\Listeners\ObservingToolForUserListener;
 use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
+use App\Listeners\GiveCoachesBuildingPermission;
 use App\Listeners\PreventChangeNotificationWhenStarting;
 use App\Listeners\PrivateMessageReceiverListener;
+use App\Listeners\RevokeBuildingPermissionForCoaches;
 use App\Listeners\SetOldEmailListener;
 use App\Listeners\StepDataHasBeenChangedListener;
 use App\Listeners\SuccessFullLoginListener;
@@ -56,32 +58,34 @@ class EventServiceProvider extends ServiceProvider
         ParticipantAddedEvent::class => [
             ParticipantAddedListener::class,
         ],
-        Login::class                              => [
+        Login::class => [
             SuccessFullLoginListener::class,
         ],
-        Registered::class                         => [
+        Registered::class => [
             LogRegisteredUserListener::class
         ],
         UserAssociatedWithOtherCooperation::class => [
             LogUserAssociatedWithOtherCooperation::class
         ],
-        FillingToolForUserEvent::class            => [
+        FillingToolForUserEvent::class => [
             FillingToolForUserListener::class
         ],
-        ObservingToolForUserEvent::class          => [
+        ObservingToolForUserEvent::class => [
             ObservingToolForUserListener::class
         ],
-        StepDataHasBeenChanged::class             => [
+        StepDataHasBeenChanged::class => [
             StepDataHasBeenChangedListener::class,
         ],
-        UserChangedHisEmailEvent::class           => [
+        UserChangedHisEmailEvent::class => [
             SetOldEmailListener::class,
         ],
-        UserAllowedAccessToHisBuilding::class     => [
+        UserAllowedAccessToHisBuilding::class => [
+            GiveCoachesBuildingPermission::class,
             LogAllowedAccessToBuilding::class
         ],
-        UserRevokedAccessToHisBuilding::class     => [
-            LogRevokedAccessToBuilding::class
+        UserRevokedAccessToHisBuilding::class => [
+            LogRevokedAccessToBuilding::class,
+            RevokeBuildingPermissionForCoaches::class
         ],
     ];
 

@@ -25,15 +25,8 @@ class CooperationController extends Controller
     public function store(Cooperation $cooperation, CooperationRequest $request)
     {
         $this->authorize('create', Cooperation::class);
-        $cooperationName = $request->get('name');
-        $cooperationSlug = $request->get('slug');
-        $cooperationWebsiteUrl = $request->get('website_url');
 
-        Cooperation::create([
-            'name' => $cooperationName,
-            'slug' => $cooperationSlug,
-            'website_url' => $cooperationWebsiteUrl
-        ]);
+        Cooperation::create($request->all());
 
         return redirect()->route('cooperation.admin.super-admin.cooperations.index')
             ->with('success', __('woningdossier.cooperation.admin.super-admin.cooperations.store.success'));
@@ -48,18 +41,13 @@ class CooperationController extends Controller
 
     public function update(Cooperation $cooperation, CooperationRequest $request)
     {
-        $cooperationName = $request->get('name');
-        $cooperationSlug = $request->get('slug');
-        $cooperationWebsiteUrl = $request->get('website_url');
         $cooperationId = $request->get('cooperation_id');
 
         $cooperationToUpdate = Cooperation::find($cooperationId);
 
         $this->authorize('update', $cooperationToUpdate);
         if ($cooperationToUpdate instanceof Cooperation) {
-            $cooperationToUpdate->name = $cooperationName;
-            $cooperationToUpdate->slug = $cooperationSlug;
-            $cooperationToUpdate->website_url = $cooperationWebsiteUrl;
+            $cooperationToUpdate->fill($request->all());
             $cooperationToUpdate->save();
         }
 

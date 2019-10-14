@@ -22,7 +22,8 @@ use Illuminate\Database\Query\Builder;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource|null $inputSource
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView forCurrentInputSource()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView query()

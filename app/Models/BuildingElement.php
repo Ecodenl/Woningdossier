@@ -22,7 +22,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Element $element
  * @property-read \App\Models\ElementValue|null $elementValue
  * @property-read \App\Models\InputSource|null $inputSource
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingElement query()

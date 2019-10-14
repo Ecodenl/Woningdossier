@@ -22,10 +22,14 @@
                 @if (\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
                     <a href="{{route('cooperation.admin.stop-session')}}" class="btn btn-warning navbar-btn">Stop sessie</a>
                 @endif
+                {{-- only show the "back to cooperation button when the user is an admin without resident role AND we're on the settings page AND there's only one --}}
+                @if(\App\Helpers\Hoomdossier::user()->can('access-admin') && !\App\Helpers\Hoomdossier::user()->hasRole('resident') && \App\Helpers\Hoomdossier::user()->getRoleNames()->count() <= 1 && !\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
+                    <a href="{{ route('cooperation.admin.index') }}" class="btn btn-success navbar-btn">Naar coöperatie omgeving</a>
+                @endif
             </ul>
         @endauth
 
-        @if(App::environment() == 'local') {{-- currently only for local --}}
+        @if(App::environment() == 'local') {{-- currently only for local development --}}
             <!-- Left Side Of Navbar -->
             <ul class="nav navbar-nav">
                 @if(count(config('hoomdossier.supported_locales')) > 1)

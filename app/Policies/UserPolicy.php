@@ -29,7 +29,7 @@ class UserPolicy
      */
     public function accessAdmin(User $user): bool
     {
-        if ($user->hasAnyRole(['coordinator', 'super-user', 'coach', 'cooperation-admin'])) {
+        if ($user->hasAnyRole(['coordinator', 'superuser', 'super-admin', 'coach', 'cooperation-admin'])) {
             return true;
         }
 

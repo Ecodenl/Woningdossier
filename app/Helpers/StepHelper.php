@@ -12,10 +12,10 @@ use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\InputSource;
 use App\Models\Questionnaire;
-use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
 use App\Models\User;
+use App\Models\UserActionPlanAdviceComments;
 use App\Models\UserEnergyHabit;
 use App\Models\UserProgress;
 use Illuminate\Database\Eloquent\Model;
@@ -80,9 +80,11 @@ class StepHelper
     /**
      * Method to return a array of all comments, categorized under step and input source and more cats if needed.
      *
+     * @param User $user
+     * @param bool $withEmptyComments
      * @return array
      */
-    public static function getAllCommentsByStep(User $user): array
+    public static function getAllCommentsByStep(User $user, $withEmptyComments = false): array
     {
         $building = $user->building;
 
@@ -124,8 +126,12 @@ class StepHelper
         $allInputForMe->put('heater', $buildingHeaterForMe);
 
 
+        /* my plan */
+//        $allInputForMe->put('my-plan', UserActionPlanAdviceComments::forMe($user)->get());
+
+
         // the attributes that can contain any sort of comments.
-        $possibleAttributes = ['comment', 'additional_info', 'living_situation_extra', 'motivation_extra'];
+        $possibleAttributes = ['comment', 'additional_info', 'living_situation_extra'];
 
         foreach ($allInputForMe as $step => $inputForMeByInputSource) {
             foreach ($inputForMeByInputSource as $inputForMe) {
@@ -138,22 +144,19 @@ class StepHelper
                     $inputToFilter = $inputForMe->getAttributes();
                 }
 
-                $comments = array_filter(
-                    Arr::only($inputToFilter, $possibleAttributes)
-                );
+                $inputWithComments = \Illuminate\Support\Arr::only($inputToFilter, $possibleAttributes);
+
+                $comments = array_values($withEmptyComments ? $inputWithComments : array_filter(
+                    $inputWithComments
+                ));
 
                 // if the comments are not empty, add it to the array with its input source
+                // only add the comment, not the key / column name.
                 if (!empty($comments)) {
-                    // in this particular case a comment can be added to a specific roof type, so we add a key.
-                    if ($inputForMe instanceof BuildingRoofType) {
-                        $commentsByStep[$step][$inputForMe->inputSource->name][$inputForMe->roofType->name] = $comments;
-                    } else {
-                        $commentsByStep[$step][$inputForMe->inputSource->name] = $comments;
-                    }
+                    $commentsByStep[$step][$inputForMe->inputSource->name] = $comments[0];
                 }
             }
         }
-
 
         return $commentsByStep;
     }

@@ -64,6 +64,7 @@ class ResetPasswordController extends Controller
                 $this->resetPassword($user, $password);
             }
         );
+
         // Sorry.. creating a complete custom password broker service provider
         // (https://stackoverflow.com/questions/40532296/laravel-5-3-password-broker-customization)
         // seems a LOT more overkill than this..
@@ -83,6 +84,13 @@ class ResetPasswordController extends Controller
         return Password::PASSWORD_RESET == $response
             ? $this->sendResetResponse($response)
             : $this->sendResetFailedResponse($request, $response);
+    }
+
+    public function sendResetFailedResponse($request, $response)
+    {
+        return redirect()->back()
+                         ->withInput($request->only('email'))
+                         ->with('token_invalid', __($response, ['password_request_link' => route('cooperation.password.request')]));
     }
 
     /**

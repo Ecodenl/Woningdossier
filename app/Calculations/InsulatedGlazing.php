@@ -4,6 +4,7 @@ namespace App\Calculations;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
+use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\InsulatedGlazingCalculator;
 use App\Helpers\Kengetallen;
@@ -15,6 +16,7 @@ use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\InsulatingGlazing;
 use App\Models\Interest;
+use App\Models\Log;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
 use App\Models\User;
@@ -27,11 +29,12 @@ class InsulatedGlazing {
      * Return the calculate results for the insulated glazings.
      *
      * @param Building $building
+     * @param InputSource $inputSource
      * @param $energyHabit
      * @param $calculateData
      * @return array
      */
-    public static function calculate(Building $building, $energyHabit, $calculateData): array
+    public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData): array
     {
         $result = [
             'savings_gas' => 0,
@@ -57,7 +60,7 @@ class InsulatedGlazing {
                 $buildingHeating instanceof BuildingHeating &&
                 $interest instanceof Interest &&
                 array_key_exists($measureApplicationId, $userInterests) && $userInterests[$measureApplicationId] <= 3) {
-                $gasSavings = InsulatedGlazingCalculator::calculateGasSavings(
+                $gasSavings = InsulatedGlazingCalculator::calculateRawGasSavings(
                     NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']),
                     $measureApplication,
                     $buildingHeating,
@@ -67,17 +70,52 @@ class InsulatedGlazing {
                 $result['measure'][$measureApplication->id] = [
                     'costs' => InsulatedGlazingCalculator::calculateCosts($measureApplication, $interest, (int) $buildingInsulatedGlazingsData['m2'], (int) $buildingInsulatedGlazingsData['windows']),
                     'savings_gas' => $gasSavings,
-                    'savings_co2' => Calculator::calculateCo2Savings($gasSavings),
-                    'savings_money' => Calculator::calculateMoneySavings($gasSavings),
+                    // calculated outside this foreach
+                    //'savings_co2' => Calculator::calculateCo2Savings($gasSavings),
+                    //'savings_money' => Calculator::calculateMoneySavings($gasSavings),
                 ];
+
 
                 $result['cost_indication'] += $result['measure'][$measureApplication->id]['costs'];
                 $result['savings_gas'] += $gasSavings;
-
+                // calculated outside this foreach
+                /*
                 $result['savings_co2'] += $result['measure'][$measureApplication->id]['savings_co2'];
                 $result['savings_money'] += $result['measure'][$measureApplication->id]['savings_money'];
+                */
             }
         }
+
+        // normalize the measures (glazing options). This should be done as follows:
+        // result[savings_gas] = gas savings, taking into account the max gas savings
+        // after that, for every glazing measure the savings_gas for that measure
+        // should be relative to that
+        $rawTotalSavingsGas = $result['savings_gas'];
+
+        \Log::debug(__METHOD__ . " Raw total gas savings: " . $rawTotalSavingsGas);
+
+        // now calculate the net gas savings (based on the sum of all measure applications)
+        // + calculate and add savings_co2 and savings_money to the result structure
+        $result['savings_gas'] = InsulatedGlazingCalculator::calculateNetGasSavings($rawTotalSavingsGas, $building, $inputSource, $energyHabit);
+
+        \Log::debug(__METHOD__ . " Net total gas savings: " . $result['savings_gas']);
+
+        $result['savings_co2'] += Calculator::calculateCo2Savings($result['savings_gas']);
+        $result['savings_money'] += Calculator::calculateMoneySavings($result['savings_gas']);
+
+        // Normalize (update) and add data to the result per measure
+        foreach($result['measure'] as $maId => $measureCalculationResults) {
+            $rawMeasureSavingsGas = $result['measure'][$maId]['savings_gas'];
+            // prevent $rawMeasureSavingsGas  / $rawTotalSavings gas to be > 1
+            // otherwise we could still end up saving more than the building would allow..
+            $measureGasSavings = $rawTotalSavingsGas > 0 ? min(1, ($rawMeasureSavingsGas / $rawTotalSavingsGas)) * $result['savings_gas'] : 0;
+            $result['measure'][$maId]['savings_gas'] = $measureGasSavings;
+            \Log::debug(__METHOD__ . " Measure " . $maId . " factor: " . $measureGasSavings);
+            $result['measure'][$maId]['savings_co2'] = Calculator::calculateCo2Savings($result['measure'][$maId]['savings_gas']);
+            $result['measure'][$maId]['savings_money'] = Calculator::calculateMoneySavings($result['measure'][$maId]['savings_gas']);
+        }
+
+        // normalization done
 
         $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
@@ -154,6 +192,9 @@ class InsulatedGlazing {
             $result['paintwork'] = compact('costs', 'year');
         }
 
+        // Crack sealing gives a percentage of savings. This is dependent on the application (place or replace)
+        // and the gas usage (for heating)
+
         $result['crack-sealing'] = [
             'costs' => 0,
             'savings_gas' => 0,
@@ -170,7 +211,9 @@ class InsulatedGlazing {
         if ($crackSealingElement instanceof ElementValue && 'crack-sealing' == $crackSealingElement->element->short && $crackSealingElement->calculate_value > 1) {
             $gas = 0;
             if ($energyHabit instanceof UserEnergyHabit) {
-                $gas = $energyHabit->amount_gas;
+                $boiler = $building->getServiceValue('boiler', $inputSource);
+                $usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler, $energyHabit);
+                $gas = $usages['heating']['bruto'];
             }
 
             if (2 == $crackSealingElement->calculate_value) {

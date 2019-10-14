@@ -62,6 +62,8 @@ return [
 
         'navbar' => [
             'my-account' => 'Mijn account',
+            'disclaimer' => 'Disclaimer',
+            'privacy' => 'Privacy',
             'start' => 'Start',
         ],
         'admin'  => [
@@ -152,21 +154,23 @@ return [
                         'create' => 'Aanmaken',
                     ],
                     'create'                => [
-                        'header' => 'Cooperaie toevoegen',
+                        'header' => 'Cooperatie toevoegen',
                         'form'   => [
-                            'name'        => 'Naam van de cooperatie *',
-                            'slug'        => 'Slug / subdomein *',
-                            'website_url' => 'Website URL',
-                            'create'      => 'Aanmaken',
+                            'name'              => 'Naam van de cooperatie *',
+                            'slug'              => 'Slug / subdomein *',
+                            'cooperation_email' => 'Cooperatie contact e-mailadres',
+                            'website_url'       => 'Website URL',
+                            'create'            => 'Aanmaken',
                         ],
                     ],
                     'edit'                  => [
                         'header' => 'Cooperatie :name bewerken',
                         'form'   => [
-                            'name'        => 'Naam van de cooperatie *',
-                            'slug'        => 'Slug / subdomein *',
-                            'website_url' => 'Website URL',
-                            'update'      => 'Bijwerken',
+                            'name'              => 'Naam van de cooperatie *',
+                            'slug'              => 'Slug / subdomein *',
+                            'cooperation_email' => 'Cooperatie contact e-mailadres',
+                            'website_url'       => 'Website URL',
+                            'update'            => 'Bijwerken',
                         ],
                     ],
                     'store'                 => [
@@ -917,17 +921,6 @@ return [
                 'no-year'     => 'Geen jaartal',
                 'add-comment' => 'Opmerking opslaan',
 
-                'coach-comments' => [
-                    'general-data'                => 'Algemene gegevens',
-                    'wall-insulation'             => 'Gevelisolatie',
-                    'floor-insulation'            => 'Vloerisolatie',
-                    'insulated-glazing'           => 'Isolerende beglazing',
-                    'roof-insulation-hellend-dak' => 'Dakisolatie - Hellend dak',
-                    'roof-insulation-plat-dak'    => 'Dakisolatie - Plat dak',
-                    'high-efficiency-boiler'      => 'HR Ketel',
-                    'heater' => 'Zonneboiler',
-                    'solar-panels' => 'Zonnepanelen'
-                ],
 
                 'conversation-requests'                => [
                     'request'        => 'Coachgesprek aanvragen',

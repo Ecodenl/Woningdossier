@@ -26,9 +26,6 @@ class UpdateKeyFigures extends Migration
             'roof-insulation-flat-current' => [
                 'costs' => 65,
             ],
-            'roof-insulation-flat-replace-current' => [
-                'maintenance_interval' => 50,
-            ],
             'high-efficiency-boiler-replace' => [
                 'costs' => 2100,
             ],

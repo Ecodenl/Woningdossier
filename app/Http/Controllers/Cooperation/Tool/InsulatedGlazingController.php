@@ -214,6 +214,7 @@ class InsulatedGlazingController extends Controller
         // Saving the insulate glazings
         $interests = collect();
         foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazing) {
+
             $insulatedGlazingId = $buildingInsulatedGlazing['insulated_glazing_id'];
             $buildingHeatingId = $buildingInsulatedGlazing['building_heating_id'];
             $m2 = isset($buildingInsulatedGlazing['m2']) ? $buildingInsulatedGlazing['m2'] : 0;

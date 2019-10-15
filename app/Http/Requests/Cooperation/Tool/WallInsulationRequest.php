@@ -33,7 +33,6 @@ class WallInsulationRequest extends FormRequest
      */
     public function rules()
     {
-        dd($this->all());
         return [
             // heeft deze woning spouwmuur / huidige staat
             'element' => 'exists:element_values,id|required',

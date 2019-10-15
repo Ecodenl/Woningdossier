@@ -34,6 +34,7 @@ trait DecimalReplacementTrait
      */
     protected function decimals(array $keys)
     {
+        //todo: when value is null, do nothing otherwise the numeric and min will always be "required"
         $merges = [];
 
         foreach ($keys as $mainInputKey => $inputKey) {
@@ -48,10 +49,8 @@ trait DecimalReplacementTrait
                     $decimal = NumberFormatter::reverseFormat($subjectValue);
                     $merges = array_replace_recursive($merges, Arr::arrayUndot([$mainInputKey.'.'.$subjectKey => $decimal]));
                 }
-
-            } else {
+            }  else {
                 $decimal = $this->input($inputKey);
-
                 $dec = NumberFormatter::reverseFormat($decimal);
                 $merges = array_merge_recursive($merges, Arr::arrayUndot([$inputKey => $dec]));
             }

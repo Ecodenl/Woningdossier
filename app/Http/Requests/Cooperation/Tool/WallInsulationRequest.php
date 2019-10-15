@@ -33,6 +33,7 @@ class WallInsulationRequest extends FormRequest
      */
     public function rules()
     {
+        dd($this->all());
         return [
             // heeft deze woning spouwmuur / huidige staat
             'element' => 'exists:element_values,id|required',
@@ -47,9 +48,9 @@ class WallInsulationRequest extends FormRequest
             'wall_joints' => 'exists:facade_surfaces,id',
             'contaminated_wall_joints' => 'exists:facade_surfaces,id',
             // gevel oppervlakte van de woning
-            'wall_surface' => 'numeric|min:1',
+            'wall_surface' => 'nullable|numeric|min:1',
             // te isoleren oppervlakte
-            'insulation_wall_surface' => 'numeric|min:0|needs_to_be_lower_or_same_as:wall_surface',
+            'insulation_wall_surface' => 'nullable|numeric|min:0|needs_to_be_lower_or_same_as:wall_surface',
         ];
     }
 }

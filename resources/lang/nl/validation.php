@@ -140,5 +140,6 @@ return [
         'building_insulated_glazings.*.windows' => 'aantal te vervangen ruiten',
         'window_surface' => 'totale raamopperlake van de woning',
         'building_services.*.extra' => __('high-efficiency-boiler.boiler-placed-date.title'),
+        'build_year' => 'bouwjaar',
     ],
 ];

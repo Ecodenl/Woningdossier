@@ -4,22 +4,14 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\HighEfficiencyBoiler;
 use App\Events\StepDataHasBeenChanged;
-use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculator;
-use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
-use App\Helpers\Translation;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\HighEfficiencyBoilerFormRequest;
-use App\Models\Building;
+use App\Http\Requests\Cooperation\Tool\HighEfficiencyBoilerFormRequest;
 use App\Models\BuildingService;
-use App\Models\Cooperation;
 use App\Models\MeasureApplication;
 use App\Models\Service;
-use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
@@ -81,9 +73,8 @@ class HighEfficiencyBoilerController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
+     * @param HighEfficiencyBoilerFormRequest $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function store(HighEfficiencyBoilerFormRequest $request)
     {

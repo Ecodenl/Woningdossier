@@ -23,7 +23,7 @@ return [
     'before'               => 'De :attribute moet een datum zijn voor :date.',
     'before_or_equal'      => 'De :attribute moet een datum zijn van :date of eerder.',
     'between'              => [
-        'numeric' => 'De :attribute moet tussen :min en :max liggen.',
+        'numeric' => 'Het :attribute moet tussen :min en :max liggen.',
         'file'    => 'De :attribute moet tussen :min en :max kilobytes groot zijn.',
         'string'  => 'De :attribute moet tussen :min en :max tekens zijn.',
         'array'   => 'De :attribute moet tussen :min en :max items bevatten.',
@@ -138,6 +138,7 @@ return [
         'thermostat_low' => 'temperatuur van de thermostaat op lage stand',
         'building_insulated_glazings.*.m2' => 'hoeveel m2 glas wilt u vervangen?',
         'building_insulated_glazings.*.windows' => 'aantal te vervangen ruiten',
-        'window_surface' => 'totale raamopperlake van de woning'
+        'window_surface' => 'totale raamopperlake van de woning',
+        'building_services.*.extra' => __('high-efficiency-boiler.boiler-placed-date.title'),
     ],
 ];

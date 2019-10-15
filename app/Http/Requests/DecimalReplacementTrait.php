@@ -36,7 +36,6 @@ trait DecimalReplacementTrait
      */
     protected function decimals(array $keys)
     {
-        //todo: when value is null, do nothing otherwise the numeric and min will always be "required"
 
         foreach ($keys as $mainInputKey => $inputKey) {
             // check if a main input key is set

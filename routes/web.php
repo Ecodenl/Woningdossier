@@ -370,5 +370,12 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
 
 Route::get('/', function () {
+
+    if(stristr(\Request::url(), '://www.')){
+        // The user has prefixed the subdomain with a www subdomain.
+        // Remove the www part and redirect to that.
+        return redirect(str_replace('://www.', '://', Request::url()));
+    }
+
     return view('welcome');
 })->name('index');

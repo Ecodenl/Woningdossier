@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -28,7 +29,7 @@ class UserPolicy
      */
     public function accessAdmin(User $user): bool
     {
-        if ($user->hasAnyRole(['coordinator', 'super-user', 'coach', 'cooperation-admin'])) {
+        if ($user->hasAnyRole(['coordinator', 'superuser', 'super-admin', 'coach', 'cooperation-admin'])) {
             return true;
         }
 
@@ -45,6 +46,11 @@ class UserPolicy
      */
     public function deleteUser(User $user, User $userToDelete): bool
     {
+        // While a user is allowed to see his own stuff, he is not allowed to do anything in it.
+        if ($userToDelete->id == Hoomdossier::user()->id) {
+            return false;
+        }
+
         if ($user->hasRoleAndIsCurrentRole(['super-admin', 'cooperation-admin']) && $userToDelete->id != $user->id) {
             return true;
         }

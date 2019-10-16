@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Cooperation\Tool;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\MyPlanHelper;
+use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyPlanRequest;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\FileTypeCategory;
 use App\Models\Step;
+use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Services\UserActionPlanAdviceService;
@@ -23,17 +26,10 @@ class MyPlanController extends Controller
         $inputSource = HoomdossierSession::getInputSource(true);
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
-
-        $reportFileTypeCategory = FileTypeCategory::short('report')
-            ->with(['fileTypes' => function ($query) {
-                $query->where('short', 'pdf-report');
-            }])->first();
-
-        $anyFilesBeingProcessed = FileStorage::forMe()->withExpired()->beingProcessed()->count();
         $advices = UserActionPlanAdviceService::getCategorizedActionPlan($buildingOwner, $inputSource);
-
-        $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
+        $anyFilesBeingProcessed = FileStorage::forMe()->withExpired()->beingProcessed()->count();
+        $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
 
         // so we can determine whether we will show the actionplan button
         $buildingHasCompletedGeneralData = $building->hasCompleted(Step::where('slug', 'general-data')->first());

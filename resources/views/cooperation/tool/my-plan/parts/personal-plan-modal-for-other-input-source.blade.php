@@ -2,6 +2,17 @@
     @slot('title')
         {{$inputSourceName}}
     @endslot
+    <h1>@lang('my-plan.personal-plan-modal-for-other-input-source.title', ['input_source_name' => $inputSourceName])</h1>
+    <p class="lead">@lang('my-plan.personal-plan-modal-for-other-input-source.text', ['input_source_name' => $inputSourceName])</p>
+    @foreach($coachCommentsByStep as $stepSlug => $commentsFromCoach)
+        <h4>{{\App\Models\Step::where('slug', $stepSlug)->first()->name}}</h4>
+        @foreach($commentsFromCoach as $inputSourceName => $comment)
+            <p>{{$comment}}</p>
+        @endforeach
+        <hr>
+    @endforeach
+    <hr><hr>
+
     @foreach($measuresByYear as $year => $stepMeasures)
         <li style="list-style: none;">
             <h1>{{$year}}</h1>

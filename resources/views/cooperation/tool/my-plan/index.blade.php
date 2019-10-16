@@ -24,36 +24,19 @@
         }
         $coachCommentsByStep = array_filter($coachCommentsByStep);
     ?>
-    @if(!\App\Helpers\HoomdossierSession::isUserObserving() && !empty($coachCommentsByStep))
+{{--    @if(!\App\Helpers\HoomdossierSession::isUserObserving() && !empty($coachCommentsByStep))--}}
         <div class="row">
             <div class="col-md-12">
                 <p>{!! \App\Helpers\Translation::translate('my-plan.description.title') !!}</p>
                 <button type="button" class="btn btn-default" data-toggle="modal" data-target="#messagesModal">{{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}</button>
             </div>
         </div>
-
-        @component('cooperation.tool.components.modal', ['id' => 'messagesModal'])
-            @slot('title')
-                {{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}
-            @endslot
-
-            @foreach($coachCommentsByStep as $stepSlug => $commentsFromCoach)
-                <h4>{{\App\Models\Step::where('slug', $stepSlug)->first()->name}}</h4>
-               @foreach($commentsFromCoach as $inputSourceName => $comment)
-                        <p>{{$comment}}</p>
-                    @endforeach
-                <hr>
-            @endforeach
-
-
-        @endcomponent
-
         {{-- Create the modals with personal plan info for the other input source --}}
         @foreach($personalPlanForVariousInputSources as $inputSourceName => $measuresByYear)
             @include('cooperation.tool.my-plan.parts.personal-plan-modal-for-other-input-source')
         @endforeach
 
-    @endif
+    {{--@endif--}}
 
     {{-- Our plan, which the users can edit --}}
     @include('cooperation.tool.my-plan.parts.my-plan-form')

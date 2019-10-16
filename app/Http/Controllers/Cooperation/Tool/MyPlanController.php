@@ -29,7 +29,6 @@ class MyPlanController extends Controller
         $advices = UserActionPlanAdviceService::getCategorizedActionPlan($buildingOwner, $inputSource);
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
         $anyFilesBeingProcessed = FileStorage::forMe()->withExpired()->beingProcessed()->count();
-        $coachCommentsByStep = UserActionPlanAdvice::getAllCoachComments();
 
         // so we can determine whether we will show the actionplan button
         $buildingHasCompletedGeneralData = $building->hasCompleted(Step::where('slug', 'general-data')->first());
@@ -57,7 +56,7 @@ class MyPlanController extends Controller
         }
 
         return view('cooperation.tool.my-plan.index', compact(
-            'actionPlanComments', 'pdfReportFileType',  'file', 'inputSourcesForPersonalPlanModal', 'coachCommentsByStep', 'advices',
+            'actionPlanComments', 'pdfReportFileType',  'file', 'inputSourcesForPersonalPlanModal', 'advices',
             'anyFilesBeingProcessed', 'reportFileTypeCategory', 'buildingHasCompletedGeneralData', 'personalPlanForVariousInputSources'
         ));
     }

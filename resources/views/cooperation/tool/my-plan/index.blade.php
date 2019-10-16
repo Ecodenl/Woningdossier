@@ -261,7 +261,9 @@
                         disableGenerateReportButton();
                     }
                 } else {
-                    addReportDownloadLink(response);
+                    if (response.file_download_link.length > 0) {
+                        addReportDownloadLink(response);
+                    }
                     $('#download-section').show();
                     enableGenerateReportButton();
                 }
@@ -288,7 +290,7 @@
 
         // add the download link, and show the panel.
         function addReportDownloadLink(response) {
-            var downloadLink = $('<a>').attr('href', response.downloadLink).append(response.file_type_name + ' (' + response.file_created_at + ')');
+            var downloadLink = $('<a>').prop('href', response.file_download_link).append(response.file_type_name + ' (' + response.file_created_at + ')');
             $('li.download-link').append(downloadLink);
         }
 

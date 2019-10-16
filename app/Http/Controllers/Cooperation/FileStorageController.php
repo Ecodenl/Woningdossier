@@ -76,16 +76,17 @@ class FileStorageController extends Controller
                 'fileStorageFilename' => $file->filename
             ]);
         } else {
-            $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForUser($fileType, $user, HoomdossierSession::getInputSource(true));
-            $file = $fileType->files()->forMe($user)->forInputSource(HoomdossierSession::getInputSource(true))->first();
-            $downloadLinkForFileType = route('cooperation.file-storage.download', [
+            $buildingOwner = HoomdossierSession::getBuilding(true);
+            $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForUser($fileType, $buildingOwner->user, HoomdossierSession::getInputSource(true));
+            $file = $fileType->files()->forMe($buildingOwner->user)->forInputSource(HoomdossierSession::getInputSource(true))->first();
+            $downloadLinkForFileType = $file instanceof FileStorage ? route('cooperation.file-storage.download', [
                 'fileType' => $fileType->short,
                 'fileStorageFilename' => $file->filename,
-            ]);
+            ]) : null;
         }
 
         return response()->json([
-            'file_created_at' => $file->created_at->format('Y-m-d H:i'),
+            'file_created_at' => $file instanceof FileStorage ? $file->created_at->format('Y-m-d H:i') : null,
             'file_type_name' => $fileType->name,
             'is_file_being_processed' => $isFileBeingProcessed,
             'file_download_link' => $downloadLinkForFileType,

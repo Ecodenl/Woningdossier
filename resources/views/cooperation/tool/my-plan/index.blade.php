@@ -14,17 +14,21 @@
 @section('step_content')
 
 
-{{--    @if(!\App\Helpers\HoomdossierSession::isUserObserving() && !empty($coachCommentsByStep))--}}
-        <div class="row">
-            <div class="col-md-12">
-                <p>{!! \App\Helpers\Translation::translate('my-plan.description.title') !!}</p>
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#messagesModal">{{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}</button>
-            </div>
+{{--    @if(!\App\Helpers\HoomdossierSession::isUserObserving())--}}
+
+    <div class="row">
+        <div class="col-md-12">
+            <p>{!! \App\Helpers\Translation::translate('my-plan.description.title') !!}</p>
+            @foreach($inputSourcesForPersonalPlanModal as $inputSource)
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#{{$inputSource->name}}">{{ \App\Helpers\Translation::translate('my-plan.trigger-modal-for-other-input-source.title', ['input_source_name' => strtolower($inputSource->name)]) }}</button>
+            @endforeach
         </div>
-        {{-- Create the modals with personal plan info for the other input source --}}
-        @foreach($personalPlanForVariousInputSources as $inputSourceName => $measuresByYear)
-            @include('cooperation.tool.my-plan.parts.personal-plan-modal-for-other-input-source')
-        @endforeach
+    </div>
+
+    {{-- Create the modals with personal plan info for the other input source --}}
+    @foreach($personalPlanForVariousInputSources as $inputSourceName => $measuresByYear)
+        @include('cooperation.tool.my-plan.parts.modal-for-other-input-source')
+    @endforeach
 
     {{--@endif--}}
 

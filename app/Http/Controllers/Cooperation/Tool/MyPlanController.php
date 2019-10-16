@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MyPlanRequest;
 use App\Models\FileStorage;
 use App\Models\FileType;
-use App\Models\FileTypeCategory;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
@@ -22,16 +21,10 @@ class MyPlanController extends Controller
         $inputSource = HoomdossierSession::getInputSource(true);
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
-
-        $reportFileTypeCategory = FileTypeCategory::short('report')
-            ->with(['fileTypes' => function ($query) {
-                $query->where('short', 'pdf-report');
-            }])->first();
-
-        $anyFilesBeingProcessed = FileStorage::forMe()->withExpired()->beingProcessed()->count();
         $advices = UserActionPlanAdviceService::getCategorizedActionPlan($buildingOwner, $inputSource);
 
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
+        $anyFilesBeingProcessed = FileStorage::forMe()->withExpired()->beingProcessed()->count();
 
         // so we can determine whether we will show the actionplan button
         $buildingHasCompletedGeneralData = $building->hasCompleted(Step::where('slug', 'general-data')->first());

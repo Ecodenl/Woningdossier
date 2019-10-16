@@ -203,7 +203,7 @@ class FileStorageController extends Controller
         if ($fileType->short == 'pdf-report') {
 //            2013es14-Bewonster-A-g-Bewoner.pdf;
 
-            $fileName = trim($user->building->postal_code).$user->building->number.'-'.\Illuminate\Support\Str::slug($user->getFullName()).'.pdf';
+            $fileName = trim($user->building->postal_code).$user->building->number.'-'.\Illuminate\Support\Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
 
 //            $fileName = time().'-'.\Illuminate\Support\Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
         } else {

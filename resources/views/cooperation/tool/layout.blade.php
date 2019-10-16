@@ -65,17 +65,9 @@
                                 <form action="{{route('cooperation.file-storage.store', ['fileType' => $pdfReportFileType->short])}}" method="post">
                                     {{csrf_field()}}
                                     <button style="margin-top: -35px"
-                                            @if($pdfReportFileType->isBeingProcessed()) disabled="disabled" type="button" data-toggle="tooltip"
-                                            title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
-                                            @else
                                             type="submit"
-                                            @endif
-                                            class="pull-right btn btn-{{$pdfReportFileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
-                                    >
+                                            class="pull-right btn btn-primary pdf-report">
                                         {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
-                                        @if($pdfReportFileType->isBeingProcessed() )
-                                            <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
-                                        @endif
                                     </button>
                                 </form>
                             @endif

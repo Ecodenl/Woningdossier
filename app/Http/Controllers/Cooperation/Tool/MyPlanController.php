@@ -8,18 +8,13 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\MyPlanHelper;
 use App\Helpers\NumberFormatter;
-use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyPlanRequest;
 use App\Models\FileStorage;
 use App\Models\FileType;
-use App\Models\FileTypeCategory;
-use App\Models\InputSource;
 use App\Models\Step;
-use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
-use App\Scopes\AvailableScope;
 use App\Services\FileStorageService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -28,11 +23,6 @@ class MyPlanController extends Controller
 {
     public function index()
     {
-
-        dd(FileStorageService::isFileTypeBeingProcessedForUser(FileType::whereShort('pdf-report')->first(), Hoomdossier::user(), HoomdossierSession::getInputSource(true)));
-
-        $anyFilesBeingProcessed = FileStorage::forMe()->withExpired()->beingProcessed()->count();
-
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $advices = UserActionPlanAdvice::getCategorizedActionPlan($buildingOwner, HoomdossierSession::getInputSource(true));
@@ -50,8 +40,7 @@ class MyPlanController extends Controller
 
 
         return view('cooperation.tool.my-plan.index', compact(
-            'advices', 'coachCommentsByStep', 'actionPlanComments', 'file',
-            'anyFilesBeingProcessed', 'pdfReportFileType', 'buildingHasCompletedGeneralData'
+            'advices', 'coachCommentsByStep', 'actionPlanComments', 'file', 'pdfReportFileType', 'buildingHasCompletedGeneralData'
         ));
     }
 

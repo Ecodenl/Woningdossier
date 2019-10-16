@@ -14,8 +14,8 @@
     @slot('title')
         {{$inputSourceName}}
     @endslot
-    <h1>@lang('my-plan.personal-plan-modal-for-other-input-source.title', ['input_source_name' => strtolower($inputSourceName)])</h1>
-    <p>@lang('my-plan.personal-plan-modal-for-other-input-source.text', ['input_source_name' => strtolower($inputSourceName)])</p>
+    <h1>@lang('my-plan.modal-for-other-input-source.title', ['input_source_name' => strtolower($inputSourceName)])</h1>
+    <p>@lang('my-plan.modal-for-other-input-source.text', ['input_source_name' => strtolower($inputSourceName)])</p>
     <hr>
     @foreach($commentsForInputSource  as $stepSlug => $commentForInputSource)
         <h4>{{\App\Models\Step::where('slug', $stepSlug)->first()->name}}</h4>

@@ -1,26 +1,27 @@
 <?php
-//filter out the coach comments so we can check if there are any.
-$commentsForInputSource = [];
-foreach ($commentsByStep as $stepSlug => $commentsByInputSource) {
-    // filter the coach comments and leave out empty stuff
-    $commentsForInputSource[$stepSlug] = array_filter($commentsByInputSource, function ($inputSource) use ($inputSourceName) {
-        return $inputSource === $inputSourceName;
-    }, ARRAY_FILTER_USE_KEY);
-}
-$commentsForInputSource = array_filter($commentsForInputSource);
+    //filter out the coach comments so we can check if there are any.
+    $commentsForInputSource = [];
+    foreach ($commentsByStep as $stepSlug => $commentsByInputSource) {
+        // filter the coach comments and leave out empty stuff
+        $commentsForInputSource[$stepSlug] = array_filter($commentsByInputSource, function ($inputSource) use ($inputSourceName) {
+            return $inputSource === $inputSourceName;
+        }, ARRAY_FILTER_USE_KEY);
+    }
+    $commentsForInputSource = array_filter($commentsForInputSource);
 ?>
 
 @component('cooperation.tool.components.modal', ['id' => $inputSourceName, 'class' => 'modal-lg'])
     @slot('title')
         {{$inputSourceName}}
     @endslot
-    <h1>@lang('my-plan.personal-plan-modal-for-other-input-source.title', ['input_source_name' => $inputSourceName])</h1>
-    <p class="lead">@lang('my-plan.personal-plan-modal-for-other-input-source.text', ['input_source_name' => $inputSourceName])</p>
+    <h1>@lang('my-plan.personal-plan-modal-for-other-input-source.title', ['input_source_name' => strtolower($inputSourceName)])</h1>
+    <p>@lang('my-plan.personal-plan-modal-for-other-input-source.text', ['input_source_name' => strtolower($inputSourceName)])</p>
+    <hr>
     @foreach($commentsForInputSource  as $stepSlug => $commentForInputSource)
         <h4>{{\App\Models\Step::where('slug', $stepSlug)->first()->name}}</h4>
-        @foreach($commentForInputSource as $comment)
-            <p>{{$comment}}</p>
-        @endforeach
+            @foreach($commentForInputSource as $comment)
+                <p>{{$comment}}</p>
+            @endforeach
         <hr>
     @endforeach
 

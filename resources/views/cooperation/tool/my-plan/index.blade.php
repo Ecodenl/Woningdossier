@@ -2,13 +2,6 @@
 
 @section('step_title', \App\Helpers\Translation::translate('my-plan.title.title'))
 
-@push('meta')
-    @if($anyFilesBeingProcessed)
-        <meta http-equiv="refresh" content="5">
-    @endif
-@endpush
-
-
 @section('page_class', 'page-my-plan')
 
 @section('step_content')
@@ -73,50 +66,33 @@
 
 
     <br>
-    @if($file instanceof \App\Models\FileStorage && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">@lang('default.buttons.download')</div>
-                    <div class="panel-body">
-                        <ol>
-                            <li>
-                                <a @if(!$pdfReportFileType->isBeingProcessed() )
-                                   href="{{route('cooperation.file-storage.download', [
-                                    'fileType' => $pdfReportFileType->short,
-                                    'fileStorageFilename' => $file->filename
-                               ])}}" @endif>{{$pdfReportFileType->name}} ({{$file->created_at->format('Y-m-d H:i')}}
-                                    )</a>
-                            </li>
-                        </ol>
-                    </div>
+    {{--    @if($file instanceof \App\Models\FileStorage && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))--}}
+    <div class="row" id="download-section" style="display: none;">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">@lang('default.buttons.download')</div>
+                <div class="panel-body">
+                    <ol>
+                        <li class="download-link">
+                        </li>
+                    </ol>
                 </div>
-                <hr>
             </div>
+            <hr>
         </div>
-    @endif
+    </div>
+    {{--@endif--}}
 
     <br>
     @if($buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
-                    <form action="{{route('cooperation.file-storage.store', ['fileType' => $pdfReportFileType->short])}}"
+                    <form action="{{route('cooperation.file-storage.store', ['fileType' => $pdfReportFileType])}}"
                           method="post">
                         {{csrf_field()}}
-                        <button style="margin-top: -35px"
-                                @if($pdfReportFileType->isBeingProcessed()) disabled="disabled" type="button"
-                                data-toggle="tooltip"
-                                title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
-                                @else
-                                type="submit"
-                                @endif
-                                class="btn btn-{{$pdfReportFileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
-                        >
+                        <button style="margin-top: -35px" type="submit" class="btn btn-primary pdf-report">
                             {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
-                            @if($pdfReportFileType->isBeingProcessed() )
-                                <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
-                            @endif
                         </button>
                     </form>
                 </div>
@@ -146,7 +122,49 @@
 @push('js')
     <script>
 
-        $(document).ready(function () {
+    var reportInQueueTranslation = '@lang('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')';
+        var pdfReportButton = $('button.pdf-report');
+        var checkIfFileIsBeingProcessedRoute = '{{route('cooperation.file-storage.check-if-file-is-being-processed', ['fileType' => $pdfReportFileType])}}';
+
+        function pollForFileProcessing() {
+            $.get(checkIfFileIsBeingProcessedRoute, function (response) {
+
+                if (response.is_file_being_processed === true) {
+                    $('#download-section').show();
+                    if (pdfReportButton.find('span').length === 0) {
+                        disableGenerateReportButton();
+                    }
+                } else {
+                    addReportDownloadLink(response);
+                    $('#download-section').show();
+                    enableGenerateReportButton();
+                }
+
+                // only poll when the file is being processed.
+                if (response.is_file_being_processed) {
+                    setTimeout(pollForFileProcessing, 5000);
+                }
+            });
+        }
+
+        // disable the button, add a title, warning color and a spinner.
+        function disableGenerateReportButton() {
+            pdfReportButton.prop('disabled', true).prop('title', reportInQueueTranslation).prop('type', 'button').addClass('btn-warning').removeClass('btn-primary').append(
+                '<span class="glyphicon glyphicon-repeat fast-right-spinner"></span>'
+            )
+        }
+
+        // enable it, remove the disable srtuff
+        function enableGenerateReportButton() {
+            pdfReportButton.removeAttr('disabled').removeAttr('title').prop('type', 'submit').addClass('btn-primary').removeClass('btn-warning');
+            pdfReportButton.find('span').remove();
+        }
+
+        // add the download link, and show the panel.
+        function addReportDownloadLink(response) {
+            var downloadLink = $('<a>').attr('href', response.downloadLink).append(response.file_type_name + ' (' + response.file_created_at + ')');
+            $('li.download-link').append(downloadLink);
+        }    $(document).ready(function () {var pageHasAlreadyBeenScrolledToDownloadSection = false;
             const ROOF_INSULATION_FLAT_REPLACE_CURRENT = "roof-insulation-flat-replace-current";
             const REPLACE_ROOF_INSULATION = "replace-roof-insulation";
 
@@ -164,7 +182,7 @@
                 }
             });
 
-            $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function () {
+            pollForFileProcessing();$("select, input[type=radio], input[type=text], input[type=checkbox]").change(function () {
 
                 // var data = $(this).parent().parent().find('input').serialize();
 
@@ -251,6 +269,16 @@
 
                         checkCoupledMeasuresAndMaintenance();
 
+
+                // only when its not done yet, otherwise on every change it will scroll to the download section
+                        if (!pageHasAlreadyBeenScrolledToDownloadSection) {
+                        // we will have to do this after the change, otherwise it will be scrolled to the download section. And then the personal plan appends and poof its gone.
+                            $('html, body').animate({
+                                scrollTop: $(window.location.hash).offset().top
+                            }, 'slow');
+                        }
+
+                        pageHasAlreadyBeenScrolledToDownloadSection = true;
                     }
                 });
 

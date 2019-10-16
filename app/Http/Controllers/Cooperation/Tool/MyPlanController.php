@@ -14,11 +14,13 @@ use App\Http\Requests\MyPlanRequest;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\FileTypeCategory;
+use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Scopes\AvailableScope;
+use App\Services\FileStorageService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -26,6 +28,8 @@ class MyPlanController extends Controller
 {
     public function index()
     {
+
+        dd(FileStorageService::isFileTypeBeingProcessedForUser(FileType::whereShort('pdf-report')->first(), Hoomdossier::user(), HoomdossierSession::getInputSource(true)));
 
         $anyFilesBeingProcessed = FileStorage::forMe()->withExpired()->beingProcessed()->count();
 

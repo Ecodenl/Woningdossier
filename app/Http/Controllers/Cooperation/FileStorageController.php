@@ -55,6 +55,10 @@ class FileStorageController extends Controller
         return redirect()->back();
     }
 
+    public function checkIfFileIsBeingProcessed()
+    {
+
+    }
 
     public function store(Cooperation $cooperation, FileType $fileType)
     {
@@ -174,7 +178,7 @@ class FileStorageController extends Controller
             }
         } else {
 
-            $fileStorages = $fileType->files;
+            $fileStorages = $fileType->files()->withExpired()->get();
             foreach ($fileStorages as $fileStorage) {
                 $fileStorage->delete();
                 \Storage::disk('downloads')->delete($fileStorage->filename);

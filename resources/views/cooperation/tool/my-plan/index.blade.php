@@ -65,8 +65,10 @@
     </div>
 
 
+
     <br>
     {{--    @if($file instanceof \App\Models\FileStorage && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))--}}
+    @if(!\App\Helpers\HoomdossierSession::isUserObserving() && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
     <div class="row" id="download-section" style="display: none;">
         <div class="col-md-12">
             <div class="panel panel-primary">
@@ -81,10 +83,10 @@
             <hr>
         </div>
     </div>
-    {{--@endif--}}
+    @endif
 
     <br>
-    @if($buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
+    @if($buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']) && !\App\Helpers\HoomdossierSession::isUserObserving())
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
@@ -135,7 +137,9 @@
                         disableGenerateReportButton();
                     }
                 } else {
-                    addReportDownloadLink(response);
+                    if (response.file_download_link.length > 0) {
+                        addReportDownloadLink(response);
+                    }
                     $('#download-section').show();
                     enableGenerateReportButton();
                 }
@@ -162,7 +166,7 @@
 
         // add the download link, and show the panel.
         function addReportDownloadLink(response) {
-            var downloadLink = $('<a>').attr('href', response.downloadLink).append(response.file_type_name + ' (' + response.file_created_at + ')');
+            var downloadLink = $('<a>').prop('href', response.file_download_link).append(response.file_type_name + ' (' + response.file_created_at + ')');
             $('li.download-link').append(downloadLink);
         }    $(document).ready(function () {var pageHasAlreadyBeenScrolledToDownloadSection = false;
             const ROOF_INSULATION_FLAT_REPLACE_CURRENT = "roof-insulation-flat-replace-current";

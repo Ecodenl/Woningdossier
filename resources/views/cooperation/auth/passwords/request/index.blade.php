@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">@lang('auth.reset.form.header')</div>
+                <div class="panel-heading">@lang('auth.email.form.header')</div>
 
                 <div class="panel-body">
                     @if (session('status'))
@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    <form class="form-horizontal" method="POST" action="{{ route('cooperation.password.email', ['cooperation' => $cooperation]) }}">
+                    <form class="form-horizontal" method="POST" action="{{ route('cooperation.auth.password.request.store', ['cooperation' => $cooperation]) }}">
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
@@ -34,7 +34,7 @@
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
-                                    @lang('auth.reset.form.send-reset-link')
+                                    @lang('auth.email.form.send-reset-link')
                                 </button>
                             </div>
                         </div>

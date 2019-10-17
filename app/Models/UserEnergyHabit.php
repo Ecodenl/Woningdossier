@@ -28,7 +28,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $amount_gas
  * @property int|null $amount_water
  * @property string|null $living_situation_extra
- * @property string|null $motivation_extra
  * @property string|null $start_date
  * @property string|null $end_date
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -86,7 +85,6 @@ class UserEnergyHabit extends Model
         'amount_gas',
         'amount_water',
         'living_situation_extra',
-        'motivation_extra',
     ];
 
     /**

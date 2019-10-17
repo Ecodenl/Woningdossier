@@ -27,32 +27,11 @@ class ToolController extends Controller
      */
     public function fillForUser(Cooperation $cooperation, $buildingId)
     {
-
         // The building the coach wants to edit
-        $building = Building::find($buildingId);
-        // get the owner of the building
-        $user = $cooperation->users()->findOrFail($building->user_id);
+        $building = Building::find($buildingId)->load('user');
 
-        // we cant query on the Spatie\Role model so we first get the result on the "original model"
-        //        $role = Role::findByName($user->roles->first()->name);
-        $role = Role::findByName(HoomdossierSession::currentRole());
-        // set the input source value to the coach itself
-        $inputSourceValue = HoomdossierSession::getInputSource(true);
+        FillingToolForUserEvent::dispatch($building, Hoomdossier::user());
 
-        $inputSource = HoomdossierSession::getInputSource(true);
-
-        // if the role has no inputsource redirect back with "probeer t later ff nog een keer"
-        // or if the role is not a resident, we gonna throw them back.
-        if (! $inputSourceValue instanceof InputSource || ! $inputSource instanceof InputSource && $inputSource->isResident()) {
-            return redirect()->back()->with('warning', __('woningdossier.cooperation.admin.coach.buildings.fill-for-user.warning'));
-        }
-
-        // We set the building to the building the coach wants to "edit"
-        // The inputSource is just the coach one
-        // But the input source value is from the building owner so the coach can see the input, the coach can switch this in the tool itself.
-        HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSourceValue, $role);
-
-        \Event::dispatch(new FillingToolForUserEvent($building, $user, Hoomdossier::user()));
         return redirect()->route('cooperation.tool.index');
     }
 
@@ -65,33 +44,10 @@ class ToolController extends Controller
      */
     public function observeToolForUser(Cooperation $cooperation, $buildingId)
     {
-        // The building the coach wants to edit
-        $building = Building::find($buildingId);
-        // get the owner of the building
-        $user = $cooperation->users()->findOrFail($building->user_id);
-        // we cant query on the Spatie\Role model so we first get the result on the "original model"
+        // The building the user wants to observe
+        $building = Building::find($buildingId)->load('user');
 
-        $role = Role::findByName(HoomdossierSession::currentRole());
-        // set the input source value to the coach itself
-        $inputSourceValue = InputSource::findByShort(InputSource::RESIDENT_SHORT);
-
-        $inputSource = HoomdossierSession::getInputSource(true);
-
-        // if the role has no inputsource redirect back with "probeer t later ff nog een keer"
-        // or if the role is not a resident, we gonna throw them back.
-        if (! $inputSourceValue instanceof InputSource || ! $inputSource instanceof InputSource && $inputSource->isResident()) {
-            return redirect()->back()->with('warning', __('woningdossier.cooperation.admin.coach.buildings.fill-for-user.warning'));
-        }
-
-        // We set the building to the building the coach wants to "edit"
-        // The inputSource is just the coach one
-        // But the input source value is from the building owner so the coach can see the input, the coach can switch this in the tool itself.
-        HoomdossierSession::setHoomdossierSessions($building, $inputSource, $inputSourceValue, $role);
-
-        // so the user isnt able to save anything
-        HoomdossierSession::setIsObserving(true);
-
-        \Event::dispatch(new ObservingToolForUserEvent($building, $user, Hoomdossier::user()));
+        ObservingToolForUserEvent::dispatch($building, Hoomdossier::user());
 
         return redirect()->route('cooperation.tool.index');
     }

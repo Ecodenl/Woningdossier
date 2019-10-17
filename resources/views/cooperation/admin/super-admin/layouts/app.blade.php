@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row">
-            @include('cooperation.admin.cooperation.sidebar-menu')
+            @include('cooperation.admin.layouts.sidebar-menu')
             <div class="col-md-9">
                 @yield('super_admin_content')
             </div>

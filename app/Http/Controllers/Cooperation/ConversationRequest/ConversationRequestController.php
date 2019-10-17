@@ -60,8 +60,7 @@ class ConversationRequestController extends Controller
      */
     public function store(ConversationRequest $request, Cooperation $cooperation)
     {
-        // todo: send building owner
-        PrivateMessageService::createConversationRequest(Hoomdossier::user(), $request);
+        PrivateMessageService::createConversationRequest(HoomdossierSession::getBuilding(true), Hoomdossier::user(), $request);
 
         HoomdossierSession::getBuilding(true)->setStatus('pending');
 

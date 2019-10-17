@@ -63,12 +63,13 @@ class PrivateMessageService
     }
 
     /**
-     * Method to create a conversation request for a user.
+     * Method to create a conversation request for a building on a user.
      *
+     * @param Building $building
      * @param User $user
      * @param Request $request
      */
-    public static function createConversationRequest(User $user, Request $request)
+    public static function createConversationRequest(Building $building, User $user, Request $request)
     {
         $action      = $request->get('action', '');
         $message     = strip_tags($request->get('message', ''));
@@ -85,7 +86,7 @@ class PrivateMessageService
                 'from_user'         => $user->getFullName(),
                 'message'           => $message,
                 'to_cooperation_id' => $user->cooperation->id,
-                'building_id'       => $user->building->id,
+                'building_id'       => $building->id,
                 'request_type'      => $action,
                 'allow_access'      => $allowAccess,
             ]

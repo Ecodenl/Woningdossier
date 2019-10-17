@@ -22,4 +22,9 @@ trait HasCooperationTrait {
     {
         return $builder->where('cooperation_id', $cooperationId);
     }
+
+    public function scopeForAllCooperations(Builder $query)
+    {
+        return $query->withoutGlobalScope(new CooperationScope());
+    }
 }

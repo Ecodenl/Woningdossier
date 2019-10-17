@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Ramsey\Uuid\Uuid;
+
 class Translation
 {
     /**
@@ -30,6 +32,9 @@ class Translation
      */
     public static function translate(string $translationString, array $replaceArray = [])
     {
+        if (Uuid::isValid($translationString)){
+            \Log::debug("Deprecate me: UUID translation is used: " . $translationString . " with replaceArray: " . json_encode($replaceArray));
+        }
         // Get the uuid from the translation file key
         $translation = __($translationString, $replaceArray);
 

@@ -50,9 +50,15 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('participate-in-group-chat', 'App\Policies\UserPolicy@participateInGroupChat');
         Gate::define('remove-participant-from-chat', 'App\Policies\UserPolicy@removeParticipantFromChat');
 
+        Gate::define('talk-to-resident', BuildingPolicy::class.'@talkToResident');
         Gate::define('access-building', BuildingPolicy::class.'@accessBuilding');
+        Gate::define('set-appointment', BuildingPolicy::class.'@setAppointment');
+        Gate::define('set-status', BuildingPolicy::class.'@setStatus');
+
         Gate::define('delete-own-account', UserPolicy::class.'@deleteOwnAccount');
-        Gate::define('talk-to-resident', UserPolicy::class.'@talkToResident');
+        Gate::define('talk-to-intern', UserPolicy::class.'@talkToIntern');
+        Gate::define('assign-role', UserPolicy::class.'@assignRole');
+        Gate::define('assign-role-to-user', UserPolicy::class.'@assignRoleToUser');
 
     }
 

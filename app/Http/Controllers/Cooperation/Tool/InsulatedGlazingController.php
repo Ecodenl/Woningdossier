@@ -100,20 +100,22 @@ class InsulatedGlazingController extends Controller
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
                 }
                 // get interests for the measure
-                $measureInterest = $buildingOwner->interests()
+                $measureInterestId = Hoomdossier::getMostCredibleValue($buildingOwner->interests()
                     ->where('interested_in_type', 'measure_application')
-                    ->where('interested_in_id', $measureApplication->id)
-                    ->first();
+                    ->where('interested_in_id', $measureApplication->id), 'interest_id');
 
-                if ($measureInterest instanceof UserInterest) {
+
+
+                if (!empty($measureInterestId)) {
                     // We only have to check on the interest ID, so we don't put
                     // full objects in the array
-                    $userInterests[$measureApplication->id] = $measureInterest->interest_id;
+                    $userInterests[$measureApplication->id] = $measureInterestId;
                 }
 
                 $measureApplications[] = $measureApplication;
             }
         }
+
 
 //        $inputValues = $woodElements;
 //
@@ -345,10 +347,9 @@ class InsulatedGlazingController extends Controller
         // Save progress
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
-        $cooperation = HoomdossierSession::getCooperation(true);
 
-        $nextStep = StepHelper::getNextStep(Hoomdossier::user(), HoomdossierSession::getInputSource(true), $this->step);
-        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
+        $url = $nextStep['url'];
 
         if (! empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];

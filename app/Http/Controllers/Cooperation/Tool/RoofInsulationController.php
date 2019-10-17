@@ -95,6 +95,7 @@ class RoofInsulationController extends Controller
                 }
             }
         }
+//        dd($roofTypes, $building->buildingFeatures()->forMe()->get());
 
         return view('cooperation.tool.roof-insulation.index', compact(
             'building', 'features', 'roofTypes', 'typeIds', 'buildingFeaturesForMe',
@@ -110,7 +111,8 @@ class RoofInsulationController extends Controller
 
         $result = [];
 
-        $user = HoomdossierSession::getBuilding(true)->user;
+        $building = HoomdossierSession::getBuilding(true);
+        $user = $building->user;
 
         // Remove old results
         UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
@@ -187,12 +189,25 @@ class RoofInsulationController extends Controller
             $extra = $request->input('building_roof_types.'.$roofCat.'.extra', []);
             if (array_key_exists('zinc_replaced_date', $extra)) {
                 $zincReplaceYear = (int) $extra['zinc_replaced_date'];
-                $surface = $request->input('building_roof_types.'.$roofCat.'.insulation_roof_surface', 0);
-                if ($zincReplaceYear > 0 && $surface > 0) {
-                    $zincReplaceMeasure = MeasureApplication::where('short', 'replace-zinc')->first();
+                // todo Get surface for $roofCat from building_roof_types (or elsewhere) for this input source
+                // Default: get from building_roof_types table for this input source
+                $roofType = RoofType::where('short', '=', $roofCat)->first();
+
+                $zincSurface = 0;
+                if ($roofType instanceof RoofType) {
+                    $buildingRoofType = $building->roofTypes()->where('roof_type_id', '=', $roofType->id)->first();
+                    $zincSurface = $buildingRoofType->zinc_surface;
+                }
+                // Note there's no such request input just yet. We're not sure this will be available for the user
+                // to fill in.
+                $zincSurface = $request->input('building_roof_types.'.$roofCat.'.zinc_surface', $zincSurface);
+
+                if ($zincReplaceYear > 0 && $zincSurface > 0) {
+                    /** @var MeasureApplication $zincReplaceMeasure */
+                    $zincReplaceMeasure = MeasureApplication::where('short', 'replace-zinc-' . $roofCat)->first();
 
                     $year = RoofInsulationCalculator::determineApplicationYear($zincReplaceMeasure, $zincReplaceYear, 1);
-                    $costs = Calculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $surface, $year, false);
+                    $costs = Calculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $zincSurface, $year, false);
 
                     $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
                     $actionPlanAdvice->user()->associate($user);
@@ -282,6 +297,8 @@ class RoofInsulationController extends Controller
 
         $roofTypes = $request->input('building_roof_types', []);
 
+        $comment = $request->get('comment');
+
         $createData = [];
         foreach ($roofTypeIds as $roofTypeId) {
             $roofType = RoofType::findOrFail($roofTypeId);
@@ -294,6 +311,13 @@ class RoofInsulationController extends Controller
 
                 $roofSurface = isset($roofTypes[$cat]['roof_surface']) ? $roofTypes[$cat]['roof_surface'] : 0;
                 $insulationRoofSurface = isset($roofTypes[$cat]['insulation_roof_surface']) ? $roofTypes[$cat]['insulation_roof_surface'] : 0;
+
+                $buildingRoofType = $building->roofTypes()->where('roof_type_id', '=', $roofType->id)->first();
+                $zincSurface = $buildingRoofType instanceof BuildingRoofType ? $buildingRoofType->zinc_surface : 0;
+                // Note there's no such request input just yet. We're not sure this will be available for the user
+                // to fill in.
+                $zincSurface = $roofTypes[$cat]['zinc_surface'] ?? $zincSurface;
+
                 $elementValueId = isset($roofTypes[$cat]['element_value_id']) ? $roofTypes[$cat]['element_value_id'] : null;
 
                 $extraMeasureApplication = isset($roofTypes[$cat]['measure_application_id']) ? $roofTypes[$cat]['measure_application_id'] : '';
@@ -302,7 +326,6 @@ class RoofInsulationController extends Controller
                 $extraTilesCondition = isset($roofTypes[$cat]['extra']['tiles_condition']) ? $roofTypes[$cat]['extra']['tiles_condition'] : '';
 
                 $buildingHeating = isset($roofTypes[$cat]['building_heating_id']) ? $roofTypes[$cat]['building_heating_id'] : null;
-                $comment = isset($roofTypes[$cat]['extra']['comment']) ? $roofTypes[$cat]['extra']['comment'] : null;
 
                 BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                     [
@@ -319,6 +342,7 @@ class RoofInsulationController extends Controller
                     'element_value_id' => $elementValueId,
                     'roof_surface' => $roofSurface,
                     'insulation_roof_surface' => $insulationRoofSurface,
+                    'zinc_surface' => $zincSurface,
                     'building_heating_id' => $buildingHeating,
                     'extra' => [
                         'measure_application_id' => $extraMeasureApplication,
@@ -343,10 +367,9 @@ class RoofInsulationController extends Controller
         $this->saveAdvices($request);
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
-        $cooperation = HoomdossierSession::getCooperation(true);
 
-        $nextStep = StepHelper::getNextStep(Hoomdossier::user(), HoomdossierSession::getInputSource(true), $this->step);
-        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
+        $url = $nextStep['url'];
 
         if (! empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];

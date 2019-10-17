@@ -2,15 +2,17 @@
 
 namespace App\Services;
 
+use App\Events\UserAllowedAccessToHisBuilding;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
 
-class MessageService
+class PrivateMessageService
 {
     /**
      * Create a new message between a user and user.
@@ -58,5 +60,41 @@ class MessageService
         }
 
         return true;
+    }
+
+    /**
+     * Method to create a conversation request for a building on a user.
+     *
+     * @param Building $building
+     * @param User $user
+     * @param Request $request
+     */
+    public static function createConversationRequest(Building $building, User $user, Request $request)
+    {
+        $action      = $request->get('action', '');
+        $message     = strip_tags($request->get('message', ''));
+        $measureApplicationName = $request->get('measure_application_name', null);
+        $allowAccess = 'on' == $request->get('allow_access', '');
+        $requestType = PrivateMessage::getTranslationForRequestType($action);
+        $message = is_null($measureApplicationName) ? "<b>{$requestType}: </b>$message" : "<b>{$measureApplicationName}: </b>{$message}";
+
+        PrivateMessage::create(
+            [
+                // we get the selected option from the language file, we can do this cause the submitted value = key from localization
+                'is_public'         => true,
+                'from_user_id'      => $user->id,
+                'from_user'         => $user->getFullName(),
+                'message'           => $message,
+                'to_cooperation_id' => $user->cooperation->id,
+                'building_id'       => $building->id,
+                'request_type'      => $action,
+                'allow_access'      => $allowAccess,
+            ]
+        );
+
+        // if the user allows access to his building on the request, log the activity.
+        if ($allowAccess) {
+            UserAllowedAccessToHisBuilding::dispatch($user->building);
+        }
     }
 }

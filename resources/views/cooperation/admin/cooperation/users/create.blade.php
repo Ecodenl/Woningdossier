@@ -9,43 +9,30 @@
                 <form class="has-address-data" action="{{route('cooperation.admin.cooperation.users.store')}}" method="post">
                     {{csrf_field()}}
                     <input id="addressid" name="addressid" type="text" value="" style="display:none;">
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group {{ $errors->has('first_name') ? ' has-error' : '' }}">
-                                    <label for="first-name">@lang('woningdossier.cooperation.admin.cooperation.users.create.form.first-name')</label>
-                                    <input value="{{old('first_name')}}" type="text" class="form-control"
-                                           name="first_name"
-                                           placeholder="@lang('woningdossier.cooperation.admin.cooperation.users.create.form.first-name')...">
-                                    @if ($errors->has('first_name'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('first_name') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group {{ $errors->has('last_name') ? ' has-error' : '' }}">
-                                    <label for="last_name">@lang('woningdossier.cooperation.admin.cooperation.users.create.form.last-name')</label>
-                                    <input value="{{old('last_name')}}" type="text" class="form-control"
-                                           placeholder="@lang('woningdossier.cooperation.admin.cooperation.users.create.form.last-name')..."
-                                           name="last_name">
-                                    @if ($errors->has('last_name'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('last_name') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
 
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="form-group" id="email-is-already-registered" style="display: none;">
+                                <div class="col-md-12">
+                                    @component('cooperation.tool.components.alert', ['alertType' => 'info'])
+                                        <div id="is-already-member">
+                                            @lang('woningdossier.cooperation.admin.cooperation.users.create.form.already-member')
+                                        </div>
+                                        <div class="email-exist">
+                                            @lang('woningdossier.cooperation.admin.cooperation.users.create.form.e-mail-exists')
+                                        </div>
+                                    @endcomponent
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
                                     <label for="email">@lang('woningdossier.cooperation.admin.cooperation.users.create.form.email')</label>
-                                    <input type="email" value="{{old('email')}}" class="form-control"
+                                    <input id="email" type="email" value="{{old('email')}}" class="form-control"
                                            placeholder="@lang('woningdossier.cooperation.admin.cooperation.users.create.form.email')..."
                                            name="email">
                                     @if ($errors->has('email'))
@@ -56,21 +43,55 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group" {{ $errors->has('roles') ? ' has-error' : '' }}>
-                                    <label for="roles">@lang('woningdossier.cooperation.admin.cooperation.users.create.form.roles')</label>
-                                    <select name="roles[]" class="roles form-control" id="roles" multiple="multiple">
-                                        @foreach($roles as $role)
-                                            <option value="{{$role->id}}">{{$role->human_readable_name}}</option>
-                                        @endforeach
-                                    </select>
 
-                                    @if ($errors->has('roles'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('roles') }}</strong>
-                                        </span>
-                                    @endif
+                        <div class="user-info">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group {{ $errors->has('first_name') ? ' has-error' : '' }}">
+                                        <label for="first-name">@lang('woningdossier.cooperation.admin.cooperation.users.create.form.first-name')</label>
+                                        <input value="{{old('first_name')}}" type="text" class="form-control"
+                                               name="first_name"
+                                               placeholder="@lang('woningdossier.cooperation.admin.cooperation.users.create.form.first-name')...">
+                                        @if ($errors->has('first_name'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('first_name') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group {{ $errors->has('last_name') ? ' has-error' : '' }}">
+                                        <label for="last_name">@lang('woningdossier.cooperation.admin.cooperation.users.create.form.last-name')</label>
+                                        <input value="{{old('last_name')}}" type="text" class="form-control"
+                                               placeholder="@lang('woningdossier.cooperation.admin.cooperation.users.create.form.last-name')..."
+                                               name="last_name">
+                                        @if ($errors->has('last_name'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('last_name') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group" {{ $errors->has('roles') ? ' has-error' : '' }}>
+                                        <label for="roles">@lang('woningdossier.cooperation.admin.cooperation.users.create.form.roles')</label>
+                                        <select name="roles[]" class="roles form-control" id="roles" multiple="multiple">
+                                            @foreach($roles as $role)
+                                                <option value="{{$role->id}}">{{$role->human_readable_name}}</option>
+                                            @endforeach
+                                        </select>
+
+                                        @if ($errors->has('roles'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('roles') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -184,7 +205,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-12">
+                    <div class="col-sm-12 save-button">
                         <button class="btn btn-primary btn-block"
                                 type="submit">@lang('woningdossier.cooperation.admin.cooperation.users.create.form.submit')
                             <span class="glyphicon glyphicon-plus"></span></button>
@@ -221,9 +242,55 @@
                 maximumSelectionLength: Infinity,
                 allowClear: true
             }).val(null).trigger("change");
+
+
+            var email = $('#email');
+
+            email.on('keyup change', function () {
+                $.ajax({
+                    url: '{{route('cooperation.check-existing-email')}}',
+                    method: "GET",
+                    data: {email: $(this).val()},
+                }).done(function (data) {
+                    var emailIsAlreadyRegistered =  $('#email-is-already-registered');
+
+                    // email exists
+                    if (data.email_exists) {
+                        var isAlreadyMemberMessage = $('#is-already-member');
+                        var emailExistsDiv = $('.email-exist');
+
+                        emailIsAlreadyRegistered.show();
+
+                        // check if the email is connected to the current cooperation
+                        // and show the matching messages
+                        if (data.user_is_already_member_of_cooperation) {
+                            // hide the account stuff
+                            isAlreadyMemberMessage.show();
+                            emailExistsDiv.hide();
+                            $('.user-info').hide();
+                            $('#resident-info').hide();
+                            $('.save-button').hide();
+                        } else {
+                            isAlreadyMemberMessage.hide();
+                            emailExistsDiv.show();
+                            $('.user-info').show();
+                            $('#resident-info').show();
+                            $('.save-button').show();
+                        }
+
+                    } else  {
+                        emailIsAlreadyRegistered.hide();
+                        $('.user-info').show();
+                        $('#resident-info').show();
+                        $('.save-button').show();
+                    }
+                });
+            });
+
+            if ($('.form-error').length) {
+                email.trigger('change');
+            }
         });
 
     </script>
 @endpush
-
-

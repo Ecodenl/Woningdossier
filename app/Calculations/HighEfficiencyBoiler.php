@@ -58,7 +58,7 @@ class HighEfficiencyBoiler {
                     $amountGas = $calculateData['habit']['gas_usage'] ?? null;
 
                     if ($energyHabit instanceof UserEnergyHabit) {
-                        $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $energyHabit, $amountGas) ?? '';
+                        $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $energyHabit, $amountGas);
                     }
                     $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
                     $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));

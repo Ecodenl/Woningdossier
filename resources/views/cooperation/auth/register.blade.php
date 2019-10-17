@@ -238,8 +238,6 @@
                         passwordInput.prop('required', false);
                         passwordConfirmInput.prop('required', false);
 
-
-                        console.log(data);
                         // check if the email is connected to the current cooperation
                         // and show the matching messages
                         if (data.user_is_already_member_of_cooperation) {
@@ -267,7 +265,6 @@
             if ($('.form-error').length) {
                 email.trigger('change');
             }
-
 
         });
     </script>

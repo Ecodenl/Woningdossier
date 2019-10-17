@@ -177,17 +177,6 @@ class RegisterController extends Controller
         $user->assignRole($residentRole);
         // turn on when merged
         $building->setStatus('active');
-        $notificationTypes = NotificationType::all();
-        $interval          = NotificationInterval::where('short', 'no-interest')->first();
-
-        // we create for every notification type a setting with no-interest interval and set the last_notified_at to now
-        foreach ($notificationTypes as $notificationType) {
-            $user->notificationSettings()->create([
-                'type_id'     => $notificationType->id,
-                'interval_id' => $interval->id,
-                'last_notified_at' => Carbon::now(),
-            ]);
-        }
 
         return $user;
     }

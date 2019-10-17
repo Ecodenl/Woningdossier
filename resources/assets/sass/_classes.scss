@@ -2,6 +2,27 @@
   Helper classes for the html markup
  */
 
+@for $i from 100 through 500 {
+  .w-#{$i} {
+    width: unquote("#{$i}px")
+  }
+}
+
+@for $i from 100 through 500 {
+  .top-#{$i} {
+    top: unquote("#{$i}%")
+  }
+}
+
+@for $i from 0 through 500 {
+  .h-#{$i} {
+    height: unquote("#{$i}px")
+  }
+}
+
+.full-width {
+  width: 100%;
+}
 
 @-webkit-keyframes glyphicon-spin-r {
   0% {

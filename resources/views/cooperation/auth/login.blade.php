@@ -14,7 +14,7 @@
                 <div class="panel-heading">@lang('auth.login.form.header')</div>
 
                 <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="{{ route('cooperation.login', ['cooperation' => $cooperation]) }}">
+                    <form class="form-horizontal" method="POST" action="{{ route('cooperation.auth.login', ['cooperation' => $cooperation]) }}">
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
@@ -61,7 +61,7 @@
                                     @lang('auth.login.form.button')
                                 </button>
 
-                                <a class="btn btn-link" href="{{ route('cooperation.password.request', ['cooperation' => $cooperation]) }}">
+                                <a class="btn btn-link" href="{{ route('cooperation.auth.password.request.index', ['cooperation' => $cooperation]) }}">
                                     @lang('auth.login.form.forgot_password')
                                 </a>
                             </div>

@@ -22,7 +22,7 @@ class ConfirmAccountController extends Controller
         $account->confirm_token = null;
         $account->save();
 
-        return redirect()->route('cooperation.login', ['cooperation' => $cooperation])
+        return redirect()->route('cooperation.auth.login', ['cooperation' => $cooperation])
                          ->with('success', __('auth.confirm.success'));
     }
 

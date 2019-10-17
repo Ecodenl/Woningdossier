@@ -6,7 +6,7 @@
             ['inputType' => 'select', 'inputValues' => $question->questionOptions, 'userInputValues' => $question->questionAnswers()->forMe()->get(), 'userInputColumn' => 'answer'])
                 <select name="questions[{{$question->id}}]" class="form-control">
                     @foreach($question->questionOptions as $option)
-                        <option @if(old('questions.'.$question->id) == $option->id || $question->getAnswerForCurrentInputSource() == $option->id) selected data-input-value="{{$option->id}}" @endif value="{{$option->id}}">{{$option->name}}</option>
+                        <option @if(old('questions.'.$question->id) == $option->id || \App\Helpers\Hoomdossier::getMostCredibleValue($question->questionAnswers()->where('building_id', \App\Helpers\HoomdossierSession::getBuilding()), 'answer') == $option->id) selected data-input-value="{{$option->id}}" @endif value="{{$option->id}}">{{$option->name}}</option>
                     @endforeach
                 </select>
             @endcomponent

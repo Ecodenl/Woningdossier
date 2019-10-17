@@ -17,20 +17,17 @@ class FillingToolForUserEvent
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $building;
-    public $buildingOwner;
     public $userThatIsFillingTool;
 
     /**
-     * create new event instantionnn.
+     * FillingToolForUserEvent constructor.
      *
      * @param Building $building
-     * @param User $buildingOwner
      * @param User $userThatIsFillingTool
      */
-    public function __construct(Building $building, User $buildingOwner, User $userThatIsFillingTool)
+    public function __construct(Building $building, User $userThatIsFillingTool)
     {
         $this->building = $building;
-        $this->buildingOwner = $buildingOwner;
         $this->userThatIsFillingTool = $userThatIsFillingTool;
     }
 

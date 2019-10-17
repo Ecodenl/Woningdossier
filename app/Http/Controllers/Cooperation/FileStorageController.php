@@ -17,6 +17,7 @@ use App\Http\Controllers\Controller;
 use App\Models\InputSource;
 use App\Models\Service;
 use App\Models\User;
+use App\Services\FileStorageService;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileStorageController extends Controller
@@ -55,6 +56,42 @@ class FileStorageController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * Check whether a file type is being processed for the user / input source.
+     *
+     * @param Cooperation $cooperation
+     * @param FileType $fileType
+     *
+     * @return bool
+     */
+    public function checkIfFileIsBeingProcessed(Cooperation $cooperation, FileType $fileType)
+    {
+        $user = Hoomdossier::user();
+
+        if ($user->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']) && $fileType->short != 'pdf-report') {
+            $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForCooperation($fileType, $cooperation);
+            $file = $fileType->files()->first();
+            $downloadLinkForFileType = route('cooperation.file-storage.download', [
+                'fileType' => $fileType->short,
+                'fileStorageFilename' => $file->filename
+            ]);
+        } else {
+            $buildingOwner = HoomdossierSession::getBuilding(true);
+            $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForUser($fileType, $buildingOwner->user, HoomdossierSession::getInputSource(true));
+            $file = $fileType->files()->forMe($buildingOwner->user)->forInputSource(HoomdossierSession::getInputSource(true))->first();
+            $downloadLinkForFileType = $file instanceof FileStorage ? route('cooperation.file-storage.download', [
+                'fileType' => $fileType->short,
+                'fileStorageFilename' => $file->filename,
+            ]) : null;
+        }
+
+        return response()->json([
+            'file_created_at' => $file instanceof FileStorage ? $file->created_at->format('Y-m-d H:i') : null,
+            'file_type_name' => $fileType->name,
+            'is_file_being_processed' => $isFileBeingProcessed,
+            'file_download_link' => $downloadLinkForFileType,
+        ]);
+    }
 
     public function store(Cooperation $cooperation, FileType $fileType)
     {
@@ -65,6 +102,40 @@ class FileStorageController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
+
+
+
+        \Log::debug("Generate " . $fileType->short . " file..");
+        \Log::debug("Context:");
+        $account = Hoomdossier::account();
+        $inputSourceValue = HoomdossierSession::getInputSourceValue();
+        if (!is_null($inputSourceValue)){
+            $inputSourceValue = \App\Helpers\Cache\InputSource::find($inputSourceValue);
+        }
+
+        $u = [
+            'account' => $account->id,
+            'id' => $user->id,
+            'role' => HoomdossierSession::currentRole(),
+            'is_observing' => HoomdossierSession::isUserObserving() ? 'yes' : 'no',
+            'is_comparing' => HoomdossierSession::isUserComparingInputSources() ? 'yes' : 'no',
+            'input_source' => $inputSource->short,
+            'operating_on_own_building' => $building->user->id == $user->id ? 'yes' : 'no',
+            'operating_as' => $inputSourceValue->short,
+        ];
+        $tags = [
+            'building:id' => $building->id,
+            'building:owner' => $building->user->id,
+        ];
+
+        \Log::debug("User info:");
+        \Log::debug(json_encode($u));
+        \Log::debug("Building info:");
+        \Log::debug(json_encode($tags));
+
+        \Log::debug("--- end of debug log stuff ---");
+        \Log::debug(" ");
+
 
         // we will create the file storage here, if we would do it in the job itself it would bring confusion to the user.
         $fileName = $this->getFileNameForFileType($fileType, $user, $inputSource);
@@ -130,7 +201,7 @@ class FileStorageController extends Controller
         // and delete the other available files
         if ($inputSource->short != InputSource::COOPERATION_SHORT) {
 
-            $fileStorage = $fileType->files()->forInputSource($inputSource)->where('building_id', $building->id)->first();
+            $fileStorage = $fileType->files()->forMe($building->user)->forInputSource($inputSource)->first();
 
             if ($fileStorage instanceof FileStorage) {
                 $fileStorage->delete();
@@ -138,7 +209,7 @@ class FileStorageController extends Controller
             }
         } else {
 
-            $fileStorages = $fileType->files;
+            $fileStorages = $fileType->files()->withExpired()->get();
             foreach ($fileStorages as $fileStorage) {
                 $fileStorage->delete();
                 \Storage::disk('downloads')->delete($fileStorage->filename);
@@ -151,7 +222,7 @@ class FileStorageController extends Controller
         if ($inputSource->short == InputSource::COOPERATION_SHORT) {
             return route('cooperation.admin.cooperation.reports.index');
         }
-        return route('cooperation.tool.my-plan.index');
+        return route('cooperation.tool.my-plan.index').'#download-section';
     }
 
     /**
@@ -167,7 +238,7 @@ class FileStorageController extends Controller
         if ($fileType->short == 'pdf-report') {
 //            2013es14-Bewonster-A-g-Bewoner.pdf;
 
-            $fileName = trim($user->building->postal_code).$user->building->number.'-'.\Illuminate\Support\Str::slug($user->getFullName()).'.pdf';
+            $fileName = trim($user->building->postal_code).$user->building->number.'-'.\Illuminate\Support\Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
 
 //            $fileName = time().'-'.\Illuminate\Support\Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
         } else {

@@ -5,6 +5,7 @@
 @endpush
 @section('content')
     <input type="hidden" id="user-did-not-allow-access-to-his-building" value="{{$userDidNotAllowAccessToBuilding}}">
+    <input type="hidden" value="{{$userAlreadyHadContactWithCooperation}}" id="user-already-had-contact-with-cooperation">
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
@@ -52,7 +53,7 @@
                                 </div>
                             </div>
 
-                            @if($userDidNotAllowAccessToBuilding)
+                            @if($userDidNotAllowAccessToBuilding || !$userAlreadyHadContactWithCooperation)
                             <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
                                     <label for="allow_access">

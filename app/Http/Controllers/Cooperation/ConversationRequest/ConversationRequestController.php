@@ -48,7 +48,7 @@ class ConversationRequestController extends Controller
         }
 
 
-        return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName', 'shouldShowOptionList', 'title', 'userDidNotAllowAccessToBuilding'));
+        return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName', 'shouldShowOptionList', 'title', 'userDidNotAllowAccessToBuilding', 'userAlreadyHadContactWithCooperation'));
     }
 
     /**

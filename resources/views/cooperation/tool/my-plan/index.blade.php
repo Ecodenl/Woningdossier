@@ -13,17 +13,24 @@
         <div class="col-md-12">
             <p>{!! \App\Helpers\Translation::translate('my-plan.description.title') !!}</p>
             @foreach($inputSourcesForPersonalPlanModal as $inputSource)
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#{{$inputSource->name}}">{{ \App\Helpers\Translation::translate('my-plan.trigger-modal-for-other-input-source.title', ['input_source_name' => strtolower($inputSource->name)]) }}</button>
+                <button type="button" class="btn btn-default" data-toggle="modal"
+                        data-target="#{{$inputSource->name}}">{{ \App\Helpers\Translation::translate('my-plan.trigger-modal-for-other-input-source.title', ['input_source_name' => strtolower($inputSource->name)]) }}</button>
             @endforeach
-        </div>
-    </div>
 
-    {{-- Create the modals with personal plan info for the other input source --}}
+
+                </div>
+
+
+
+                </div>
+
+            {{-- Create the modals with personal plan info for the other input source --}}
     @foreach($personalPlanForVariousInputSources as $inputSourceName => $measuresByYear)
         @include('cooperation.tool.my-plan.parts.modal-for-other-input-source')
     @endforeach
 
-    {{--@endif--}}
+    {{--@endif
+                --}}
 
     {{-- Our plan, which the users can edit --}}
     @include('cooperation.tool.my-plan.parts.my-plan-form')
@@ -68,7 +75,7 @@
 
     <br>
     {{--    @if($file instanceof \App\Models\FileStorage && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))--}}
-    @if(!\App\Helpers\HoomdossierSession::isUserObserving() && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
+        @if(!\App\Helpers\HoomdossierSession::isUserObserving() && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
     <div class="row" id="download-section" style="display: none;">
         <div class="col-md-12">
             <div class="panel panel-primary">
@@ -124,7 +131,8 @@
 @push('js')
     <script>
 
-    var reportInQueueTranslation = '@lang('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')';
+
+        var reportInQueueTranslation = '@lang('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')';
         var pdfReportButton = $('button.pdf-report');
         var checkIfFileIsBeingProcessedRoute = '{{route('cooperation.file-storage.check-if-file-is-being-processed', ['fileType' => $pdfReportFileType])}}';
 
@@ -174,19 +182,18 @@
 
             const ROOF_INSULATION_PITCHED_REPLACE_TILES = "roof-insulation-pitched-replace-tiles";
             const REPLACE_TILES = "replace-tiles";
-
             const MEASURE = '{{\App\Models\PrivateMessage::REQUEST_TYPE_MEASURE}}';
             // build the base route, we can replace te params later on.
-            var conversationRequestRoute = '{{route('cooperation.conversation-requests.index', ['action' => 'action', 'measureApplicationShort' => 'measure_application_short'])}}';
-
-            $(window).keydown(function (event) {
+            var conversationRequestRoute = '{{route('cooperation.conversation-requests.index', ['action' => 'action', 'measureApplicationShort' => 'measure_application_short'])}}';$(window).keydown(function (event) {
                 if (event.keyCode == 13) {
                     event.preventDefault();
                     return false;
                 }
             });
 
-            pollForFileProcessing();$("select, input[type=radio], input[type=text], input[type=checkbox]").change(function () {
+            pollForFileProcessing();
+
+            $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function () {
 
                 // var data = $(this).parent().parent().find('input').serialize();
 
@@ -222,7 +229,6 @@
                                     totalSavingsMoney += parseFloat(stepData.savings_money);
 
                                     var slug = stepName.replace(/\s+/g, '');
-
 
                                     table += "<tr>" +
                                         "<td>" +

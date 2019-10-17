@@ -69,13 +69,13 @@ class EventServiceProvider extends ServiceProvider
         UserAssociatedWithOtherCooperation::class => [
             LogUserAssociatedWithOtherCooperation::class
         ],
-        FillingToolForUserEvent::class            => [
+        FillingToolForUserEvent::class => [
             FillingToolForUserListener::class,
-            LogFillingToolForUserListener::class
+            LogFillingToolForUserListener::class,
         ],
-        ObservingToolForUserEvent::class          => [
+        ObservingToolForUserEvent::class => [
             ObservingToolForUserListener::class,
-            LogObservingToolForUserListener::class
+            LogObservingToolForUserListener::class,
         ],
         StepDataHasBeenChanged::class => [
             StepDataHasBeenChangedListener::class,

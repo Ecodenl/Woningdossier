@@ -2,13 +2,6 @@
 
 @section('step_title', \App\Helpers\Translation::translate('my-plan.title.title'))
 
-@push('meta')
-    @if($anyFilesBeingProcessed)
-        <meta http-equiv="refresh" content="5">
-    @endif
-@endpush
-
-
 @section('page_class', 'page-my-plan')
 
 @section('step_content')
@@ -24,18 +17,20 @@
                         data-target="#{{$inputSource->name}}">{{ \App\Helpers\Translation::translate('my-plan.trigger-modal-for-other-input-source.title', ['input_source_name' => strtolower($inputSource->name)]) }}</button>
             @endforeach
 
-            </div>
 
                 </div>
 
-                {{-- Create the modals with personal plan info for the other input source --}}
+
+
+                </div>
+
+            {{-- Create the modals with personal plan info for the other input source --}}
 
                         @foreach($personalPlanForVariousInputSources as $inputSourceName => $measuresByYear)
 
                                     @include('cooperation.tool.my-plan.parts.modal-for-other-input-source')
-                        @endforeach
-
-                    {{--@endif
+        @endforeach
+    {{--@endif
                 --}}
 
     {{-- Our plan, which the users can edit --}}
@@ -78,21 +73,17 @@
     </div>
 
 
+
     <br>
-    @if($file instanceof \App\Models\FileStorage && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">@lang('default.buttons.download')</div>
-                    <div class="panel-body">
-                        <ol>
-                            <li>
-                                <a @if(!$pdfReportFileType->isBeingProcessed() )
-                                   href="{{route('cooperation.file-storage.download', [
-                                    'fileType' => $pdfReportFileType->short,
-                                    'fileStorageFilename' => $file->filename
-                               ])}}" @endif>{{$pdfReportFileType->name}} ({{$file->created_at->format('Y-m-d H:i')}}
-                                    )</a>
+    {{--    @if($file instanceof \App\Models\FileStorage && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))--}}
+        @if(!\App\Helpers\HoomdossierSession::isUserObserving() && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
+    <div class="row" id="download-section" style="display: none;">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">@lang('default.buttons.download')</div>
+                <div class="panel-body">
+                    <ol>
+                        <li class="download-link">
                             </li>
                         </ol>
                     </div>
@@ -103,26 +94,15 @@
     @endif
 
     <br>
-    @if($buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
+    @if($buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']) && !\App\Helpers\HoomdossierSession::isUserObserving())
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
-                    <form action="{{route('cooperation.file-storage.store', ['fileType' => $pdfReportFileType->short])}}"
+                    <form action="{{route('cooperation.file-storage.store', ['fileType' => $pdfReportFileType])}}"
                           method="post">
                         {{csrf_field()}}
-                        <button style="margin-top: -35px"
-                                @if($pdfReportFileType->isBeingProcessed()) disabled="disabled" type="button"
-                                data-toggle="tooltip"
-                                title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
-                                @else
-                                type="submit"
-                                @endif
-                                class="btn btn-{{$pdfReportFileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
-                        >
+                        <button style="margin-top: -35px" type="submit" class="btn btn-primary pdf-report">
                             {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
-                            @if($pdfReportFileType->isBeingProcessed() )
-                                <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
-                            @endif
                         </button>
                     </form>
                 </div>
@@ -152,7 +132,56 @@
 @push('js')
     <script>
 
+
+        var reportInQueueTranslation = '@lang('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')';
+        var pdfReportButton = $('button.pdf-report');
+        var checkIfFileIsBeingProcessedRoute = '{{route('cooperation.file-storage.check-if-file-is-being-processed', ['fileType' => $pdfReportFileType])}}';
+
+        function pollForFileProcessing() {
+            $.get(checkIfFileIsBeingProcessedRoute, function (response) {
+
+                if (response.is_file_being_processed === true) {
+                    $('#download-section').show();
+                    if (pdfReportButton.find('span').length === 0) {
+                        disableGenerateReportButton();
+                    }
+                } else {
+                    if (response.file_download_link.length > 0) {
+                        addReportDownloadLink(response);
+                    }
+                    $('#download-section').show();
+                    enableGenerateReportButton();
+                }
+
+                // only poll when the file is being processed.
+                if (response.is_file_being_processed) {
+                    setTimeout(pollForFileProcessing, 5000);
+                }
+            });
+        }
+
+        // disable the button, add a title, warning color and a spinner.
+        function disableGenerateReportButton() {
+            pdfReportButton.prop('disabled', true).prop('title', reportInQueueTranslation).prop('type', 'button').addClass('btn-warning').removeClass('btn-primary').append(
+                '<span class="glyphicon glyphicon-repeat fast-right-spinner"></span>'
+            )
+        }
+
+        // enable it, remove the disable srtuff
+        function enableGenerateReportButton() {
+            pdfReportButton.removeAttr('disabled').removeAttr('title').prop('type', 'submit').addClass('btn-primary').removeClass('btn-warning');
+            pdfReportButton.find('span').remove();
+        }
+
+        // add the download link, and show the panel.
+        function addReportDownloadLink(response) {
+            var downloadLink = $('<a>').prop('href', response.file_download_link).append(response.file_type_name + ' (' + response.file_created_at + ')');
+            $('li.download-link').append(downloadLink);
+        }
+
+
         $(document).ready(function () {
+            var pageHasAlreadyBeenScrolledToDownloadSection = false;
             const ROOF_INSULATION_FLAT_REPLACE_CURRENT = "roof-insulation-flat-replace-current";
             const REPLACE_ROOF_INSULATION = "replace-roof-insulation";
 
@@ -161,14 +190,14 @@
 
             const MEASURE = '{{\App\Models\PrivateMessage::REQUEST_TYPE_MEASURE}}';
             // build the base route, we can replace te params later on.
-            var conversationRequestRoute = '{{route('cooperation.conversation-requests.index', ['action' => 'action', 'measureApplicationShort' => 'measure_application_short'])}}';
-
-            $(window).keydown(function (event) {
+            var conversationRequestRoute = '{{route('cooperation.conversation-requests.index', ['action' => 'action', 'measureApplicationShort' => 'measure_application_short'])}}';$(window).keydown(function (event) {
                 if (event.keyCode == 13) {
                     event.preventDefault();
                     return false;
                 }
             });
+
+            pollForFileProcessing();
 
             $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function () {
 
@@ -206,7 +235,6 @@
                                     totalSavingsMoney += parseFloat(stepData.savings_money);
 
                                     var slug = stepName.replace(/\s+/g, '');
-
 
                                     table += "<tr>" +
                                         "<td>" +
@@ -257,6 +285,16 @@
 
                         checkCoupledMeasuresAndMaintenance();
 
+
+                        // only when its not done yet, otherwise on every change it will scroll to the download section
+                        if (!pageHasAlreadyBeenScrolledToDownloadSection) {
+                        // we will have to do this after the change, otherwise it will be scrolled to the download section. And then the personal plan appends and poof its gone.
+                            $('html, body').animate({
+                                scrollTop: $(window.location.hash).offset().top
+                            }, 'slow');
+                        }
+
+                        pageHasAlreadyBeenScrolledToDownloadSection = true;
                     }
                 });
 

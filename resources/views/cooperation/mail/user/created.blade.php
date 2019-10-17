@@ -5,7 +5,7 @@
 <br><br>
 <?php
     $hoomdossier_link = route('cooperation.home', ['cooperation' => $userCooperation]);
-    $confirm_url = route('cooperation.password.reset', ['token' => $token, 'cooperation' => $userCooperation->slug]);
+    $confirm_url = route('cooperation.auth.password.reset.show', ['token' => $token, 'cooperation' => $userCooperation, 'email' => encrypt($createdUser->account->email)]);
     $cooperation_link = '<a target="_blank" href="'.$userCooperation->website_url.'">'.$userCooperation->name.'</a>';
 ?>
 

@@ -11,6 +11,7 @@
 |
 */
 
+
 Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function () {
 
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
@@ -55,11 +56,11 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::get('messages/count', 'MessagesController@getTotalUnreadMessageCount')->name('message.get-total-unread-message-count');
 
             // debug purpose only
-//            Route::group(['as' => 'pdf.', 'namespace' => 'Pdf', 'prefix' => 'pdf'], function () {
-//                Route::group(['as' => 'user-report.', 'prefix' => 'user-report'], function () {
-//                    Route::get('', 'UserReportController@index')->name('index');
-//                });
-//            });
+            Route::group(['as' => 'pdf.', 'namespace' => 'Pdf', 'prefix' => 'pdf'], function () {
+                Route::group(['as' => 'user-report.', 'prefix' => 'user-report'], function () {
+                    Route::get('', 'UserReportController@index')->name('index');
+                });
+            });
 
             Route::get('home', 'HomeController@index')->name('home')->middleware('deny-if-filling-for-other-building');
 
@@ -140,8 +141,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
                 Route::get('/', 'ToolController@index')->name('index');
 
-                Route::post('general-data/apply-example-building',
-                    'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
+                Route::post('general-data/apply-example-building', 'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
                 Route::resource('building-detail', 'BuildingDetailController', ['only' => ['index', 'store']]);
 
                 Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
@@ -359,5 +359,12 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
 
 Route::get('/', function () {
+
+    if(stristr(\Request::url(), '://www.')){
+        // The user has prefixed the subdomain with a www subdomain.
+        // Remove the www part and redirect to that.
+        return redirect(str_replace('://www.', '://', Request::url()));
+    }
+
     return view('welcome');
 })->name('index');

@@ -1,4 +1,4 @@
-#Hoomdossier session handling
+# Hoomdossier session handling
 #### Filename:  HoomdossierSession.php
 
 We try to handle all the sessions in the hoomdossiersession.php file

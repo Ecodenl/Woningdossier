@@ -23,7 +23,6 @@ class CoachController extends Controller
         $users = $cooperation
             ->users()
             ->role(['coach', 'coordinator'])
-            ->where('id', '!=', Hoomdossier::user()->id)
             ->get();
 
 

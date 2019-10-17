@@ -91,8 +91,8 @@ class ResetPasswordController extends Controller
     public function sendResetFailedResponse($request, $response)
     {
         return redirect()->back()
-                         ->withInput($request->only('email'))
-                         ->with('token_invalid', __($response, ['password_request_link' => route('cooperation.password.request')]));
+            ->withInput($request->only('email'))
+            ->with('token_invalid', __($response, ['password_request_link' => route('cooperation.auth.password.request.index')]));
     }
 
     /**

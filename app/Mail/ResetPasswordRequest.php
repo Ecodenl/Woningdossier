@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -14,7 +15,8 @@ class ResetPasswordRequest extends Mailable
     use Queueable, SerializesModels;
 
     public $userCooperation;
-    public $user;
+    public $email;
+    public $account;
     public $token;
 
     /**
@@ -24,9 +26,11 @@ class ResetPasswordRequest extends Mailable
      *
      * @param Cooperation $cooperation
      */
-    public function __construct(Cooperation $cooperation, $token)
+    public function __construct(Cooperation $cooperation, Account $account, $token)
     {
         $this->token = $token;
+        $this->email = encrypt($account->email);
+        $this->account = $account;
         $this->userCooperation = $cooperation;
     }
 
@@ -38,6 +42,7 @@ class ResetPasswordRequest extends Mailable
     public function build()
     {
         return $this
+            ->to($this->account->email, sprintf("%s %s", $this->account->user()->first_name, $this->account->user()->last_name))
             ->subject(__('mail.reset_password.subject'))
             ->view('cooperation.mail.user.password-reset-request');
     }

@@ -123,14 +123,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             });
 
             // conversation requests
-            Route::group(['prefix' => 'request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
-                Route::get('/edit/{action?}', 'ConversationRequestController@edit')->name('edit');
-                Route::get('{action?}/{measureApplicationShort?}',
-                    'ConversationRequestController@index')->name('index');
-
+            Route::group(['prefix' => 'conversation-request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
+                Route::get('{requestType?}/{measureApplicationShort?}', 'ConversationRequestController@index')->name('index');
                 Route::post('', 'ConversationRequestController@store')->name('store');
-                Route::post('/edit', 'ConversationRequestController@update')->name('update');
-
             });
 
             // the tool

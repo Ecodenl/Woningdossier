@@ -102,11 +102,11 @@ class BuildingPolicy
             // check if the coach has building permission
             $coachHasBuildingPermission = Building::withTrashed()->find($building->id)->buildingPermissions()->where('user_id', $user->id)->first() instanceof BuildingPermission;
 
-            return  PrivateMessage::allowedAccess($building->id) && $coachHasBuildingPermission;
+            return  PrivateMessage::allowedAccess($building) && $coachHasBuildingPermission;
         }
 
         // they can always access a building (if the user / resident gave access)
-        return  PrivateMessage::allowedAccess($building->id) && $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
+        return  PrivateMessage::allowedAccess($building) && $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
     }
 
     /**

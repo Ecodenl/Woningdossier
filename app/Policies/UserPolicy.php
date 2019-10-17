@@ -6,6 +6,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Spatie\Permission\Models\Role;
 
 class UserPolicy
 {
@@ -130,5 +131,50 @@ class UserPolicy
 
         return false;
     }
+
+
+    /**
+     * Returns if a user can assign a particular role (just if the user is
+     * allowed to assign roles).
+     *
+     * @param  User  $user
+     * @param  Role  $role The role which is to be assigned
+     *
+     * @return bool
+     */
+    public function assignRole(User $user, Role $role)
+    {
+        if ($user->hasRoleAndIsCurrentRole('super-admin')){
+            return true;
+        }
+        if ($user->hasRoleAndIsCurrentRole('cooperation-admin')){
+            return in_array($role->name, ['coordinator', 'coach', 'resident']);
+        }
+        if ($user->hasRoleAndIsCurrentRole('coordinator')){
+            return in_array($role->name, ['coordinator', 'coach', 'resident']);
+        }
+        return false;
+    }
+
+    /**
+     * Returns if a user can assign a particular role to another user.
+     * This checks the cooperation, and the role of the 'giving' user.
+     *
+     * @param  User  $user
+     * @param  Role  $role The role which is to be assigned
+     * @param  User  $toUser The user who should get the role
+     *
+     * @return bool
+     */
+    public function assignRoleToUser(User $user, Role $role, User $toUser)
+    {
+        \Log::debug(__METHOD__ . " cooperation check: " . $user->cooperation_id . " vs " . $toUser->cooperation_id);
+        if ($user->cooperation_id !== $toUser->cooperation_id){
+            return false;
+        }
+
+        return $this->assignRole($user, $role);
+    }
+
 
 }

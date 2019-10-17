@@ -11,6 +11,7 @@
 |
 */
 
+
 Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function () {
 
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
@@ -124,14 +125,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             });
 
             // conversation requests
-            Route::group(['prefix' => 'request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
-                Route::get('/edit/{action?}', 'ConversationRequestController@edit')->name('edit');
-                Route::get('{action?}/{measureApplicationShort?}',
-                    'ConversationRequestController@index')->name('index');
-
+            Route::group(['prefix' => 'conversation-request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
+                Route::get('{requestType?}/{measureApplicationShort?}', 'ConversationRequestController@index')->name('index');
                 Route::post('', 'ConversationRequestController@store')->name('store');
-                Route::post('/edit', 'ConversationRequestController@update')->name('update');
-
             });
 
             // the tool
@@ -360,5 +356,12 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
 
 Route::get('/', function () {
+
+    if(stristr(\Request::url(), '://www.')){
+        // The user has prefixed the subdomain with a www subdomain.
+        // Remove the www part and redirect to that.
+        return redirect(str_replace('://www.', '://', Request::url()));
+    }
+
     return view('welcome');
 })->name('index');

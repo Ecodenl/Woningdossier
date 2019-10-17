@@ -39,7 +39,7 @@
             <div class="question-answer">
                 <p class="w-380">{{$userActionPlanAdvice->measureApplication->measure_name}}</p>
                 <p class="w-150">{{\App\Helpers\NumberFormatter::format($userActionPlanAdvice->costs, 0, true)}} {{\App\Helpers\Hoomdossier::getUnitForColumn('costs')}}</p>
-                <p class="w-100">{{$userActionPlanAdvice->getYear()}}</p>
+                <p class="w-100">{{$userActionPlanAdvice->getYear($inputSource)}}</p>
             </div>
         @endforeach
     </div>

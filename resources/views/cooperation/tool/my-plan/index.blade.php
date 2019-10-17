@@ -6,156 +6,39 @@
 
 @section('step_content')
 
-    <?php
-    //filter out the coach comments so we can check if there are any.
-    $coachCommentsByStep = [];
-    foreach ($commentsByStep as $stepSlug => $commentsByInputSource) {
-        // filter the coach comments and leave out empty stuff
-        $coachCommentsByStep[$stepSlug] = array_filter($commentsByInputSource, function ($inputSource) {
-            return $inputSource === \App\Models\InputSource::findByShort('coach')->name;
-        }, ARRAY_FILTER_USE_KEY);
-    }
-    $coachCommentsByStep = array_filter($coachCommentsByStep);
-    ?>
-    @if(!\App\Helpers\HoomdossierSession::isUserObserving() && !empty($coachCommentsByStep))
-        <div class="row">
-            <div class="col-md-12">
-                <p>{!! \App\Helpers\Translation::translate('my-plan.description.title') !!}</p>
+
+{{--    @if(!\App\Helpers\HoomdossierSession::isUserObserving())--}}
+
+    <div class="row">
+        <div class="col-md-12">
+            <p>{!! \App\Helpers\Translation::translate('my-plan.description.title') !!}</p>
+            @foreach($inputSourcesForPersonalPlanModal as $inputSource)
                 <button type="button" class="btn btn-default" data-toggle="modal"
-                        data-target="#messagesModal">{{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}</button>
-            </div>
-        </div>
-
-        @component('cooperation.tool.components.modal', ['id' => 'messagesModal'])
-            @slot('title')
-                {{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}
-            @endslot
-
-            @foreach($coachCommentsByStep as $stepSlug => $commentsFromCoach)
-                <h4>{{\App\Models\Step::where('slug', $stepSlug)->first()->name}}</h4>
-                @foreach($commentsFromCoach as $inputSourceName => $comment)
-                    <p>{{$comment}}</p>
-                @endforeach
-                <hr>
+                        data-target="#{{$inputSource->name}}">{{ \App\Helpers\Translation::translate('my-plan.trigger-modal-for-other-input-source.title', ['input_source_name' => strtolower($inputSource->name)]) }}</button>
             @endforeach
 
 
-        @endcomponent
-    @endif
-
-    <form class="form-horizontal"
-          action="{{ route('cooperation.tool.my-plan.store', ['cooperation' => $cooperation]) }}" method="post">
-        {{ csrf_field() }}
-        @foreach($advices as $measureType => $stepAdvices)
-            <div class="row">
-
-                <div class="col-md-12">
-                    <h2>@if($measureType == 'energy_saving') {{ \App\Helpers\Translation::translate('my-plan.energy-saving-measures.title') }} @else {{ \App\Helpers\Translation::translate('my-plan.maintenance-measures.title') }} @endif</h2>
                 </div>
 
 
-                <div class="col-md-12">
-                    <table class="table table-condensed table-responsive">
-                        <thead>
-                        <tr>
-                            <th style="width: 8%">{{ \App\Helpers\Translation::translate('my-plan.columns.more-info.title') }}</th>
-                            <th style="width: 5%">{{ \App\Helpers\Translation::translate('my-plan.columns.interest.title') }}</th>
-                            <th style="width: 45%">{{ \App\Helpers\Translation::translate('my-plan.columns.measure.title') }}</th>
-                            <th style="width: 12%">{{ \App\Helpers\Translation::translate('my-plan.columns.costs.title') }}</th>
-                            <th style="width: 12%">{{ \App\Helpers\Translation::translate('my-plan.columns.savings-costs.title') }}</th>
-                            <th style="width: 9%">{{ \App\Helpers\Translation::translate('my-plan.columns.advice-year.title') }}</th>
-                            <th style="width: 9%">{{ \App\Helpers\Translation::translate('my-plan.columns.planned-year.title') }}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
 
-                        @foreach($stepAdvices as $stepSlug => $advicesForStep)
-                            @foreach($advicesForStep as $advice)
-                                <?php $step = \App\Models\Step::where('slug', $stepSlug)->first(); ?>
-                                <tr>
-                                    <input type="hidden" name="advice[{{ $advice->id }}][{{$stepSlug}}][measure_type]"
-                                           value="{{$measureType}}">
-                                    <input type="hidden" class="measure_short"
-                                           value="{{$advice->measureApplication->short}}">
-                                    <td>
-                                        <a type="#" data-toggle="collapse" data-target="#more-info-{{$advice->id}}"> <i
-                                                    class="glyphicon glyphicon-chevron-down"></i> </a>
-                                    </td>
-
-                                    <td>
-                                        <input @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled"
-                                               @endif class="interested-checker"
-                                               name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1"
-                                               type="checkbox" id="advice-{{$advice->id}}-planned"
-                                               @if($advice->planned) checked @endif />
-                                    </td>
-                                    <td>
-                                        {{ $advice->measureApplication->measure_name }} <a href="#warning-modal"
-                                                                                           role="button"
-                                                                                           class="measure-warning"
-                                                                                           data-toggle="modal"
-                                                                                           style="display:none;"><i
-                                                    class="glyphicon glyphicon-warning-sign" role="button"
-                                                    data-toggle="modal" title="" style="color: #ffc107"></i></a>
-                                    </td>
-                                    <td>
-                                        &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs, 0, true) }}
-                                    </td>
-                                    <td>
-                                        &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money, 0, true) }}
-                                    </td>
-                                    <td class="advice-year">
-                                        {{ $advice->year }}
-                                    </td>
-                                    <td>
-                                        <input @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled"
-                                               @endif type="text" maxlength="4" size="4"
-                                               class="form-control planned-year"
-                                               name="advice[{{ $advice->id }}][{{ $stepSlug }}][planned_year]"
-                                               value="{{ $advice->planned_year }}"/>
-                                    </td>
-                                </tr>
-                                <tr class="collapse" id="more-info-{{$advice->id}}">
-                                    <td colspan="2"></td>
-                                    <td colspan="">
-                                        <strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-gas.title') }}
-                                            :</strong>
-                                        <br>
-                                        <strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-electricity.title') }}
-                                            :</strong>
-                                    </td>
-                                    <td>
-                                        {{ \App\Helpers\NumberFormatter::format($advice->savings_gas, 0, true) }} m<sup>3</sup>
-                                        <br>
-                                        {{ \App\Helpers\NumberFormatter::format($advice->savings_electricity, 0, true) }}
-                                        kWh
-                                    </td>
-                                    <td colspan="3">
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endforeach
-                        </tbody>
-                    </table>
-                    @if(!\App\Helpers\HoomdossierSession::isUserObserving())
-                        <a href="{{route('cooperation.conversation-requests.index',  ['cooperation' => $cooperation, 'action' => \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION])}}"
-                           class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.request')</a>
-                    @endif
                 </div>
 
-            </div>
+            {{-- Create the modals with personal plan info for the other input source --}}
+
+                        @foreach($personalPlanForVariousInputSources as $inputSourceName => $measuresByYear)
+
+                                    @include('cooperation.tool.my-plan.parts.modal-for-other-input-source')
         @endforeach
-    </form>
+    {{--@endif
+                --}}
 
+    {{-- Our plan, which the users can edit --}}
+    @include('cooperation.tool.my-plan.parts.my-plan-form')
 
-    <div class="row">
-        <div class="plan-preview col-md-12">
-            <h2>{{ \App\Helpers\Translation::translate('my-plan.maintenance-plan.title') }}</h2>
-            <ul id="years">
+    {{-- The personal plan, will be generated with js --}}
+    @include('cooperation.tool.my-plan.parts.personal-plan')
 
-            </ul>
-        </div>
-    </div>
     <div class="row">
         <div class="col-sm-12">
             <?php
@@ -174,7 +57,7 @@
                             ({{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSource())->name}})
                         </label>
 
-                        <textarea name="comment"
+                        <textarea @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled" @endif name="comment"
                                   class="form-control">{{old('comment', $myActionPlanComment instanceof \App\Models\UserActionPlanAdviceComments ? $myActionPlanComment->comment : '')}}</textarea>
 
                         @component('cooperation.tool.components.help-modal', ['id' => 'my-plan-own-comment-info'])
@@ -193,7 +76,7 @@
 
     <br>
     {{--    @if($file instanceof \App\Models\FileStorage && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))--}}
-    @if(!\App\Helpers\HoomdossierSession::isUserObserving() && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
+        @if(!\App\Helpers\HoomdossierSession::isUserObserving() && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
     <div class="row" id="download-section" style="display: none;">
         <div class="col-md-12">
             <div class="panel panel-primary">
@@ -201,13 +84,13 @@
                 <div class="panel-body">
                     <ol>
                         <li class="download-link">
-                        </li>
-                    </ol>
+                            </li>
+                        </ol>
+                    </div>
                 </div>
+                <hr>
             </div>
-            <hr>
         </div>
-    </div>
     @endif
 
     <br>
@@ -305,7 +188,9 @@
             const ROOF_INSULATION_PITCHED_REPLACE_TILES = "roof-insulation-pitched-replace-tiles";
             const REPLACE_TILES = "replace-tiles";
 
-            $(window).keydown(function (event) {
+            const MEASURE = '{{\App\Models\PrivateMessage::REQUEST_TYPE_MEASURE}}';
+            // build the base route, we can replace te params later on.
+            var conversationRequestRoute = '{{route('cooperation.conversation-requests.index', ['action' => 'action', 'measureApplicationShort' => 'measure_application_short'])}}';$(window).keydown(function (event) {
                 if (event.keyCode == 13) {
                     event.preventDefault();
                     return false;
@@ -351,7 +236,14 @@
 
                                     var slug = stepName.replace(/\s+/g, '');
 
-                                    table += "<tr><td><a type=\"#\" class='turn-on-click' data-toggle=\"collapse\" data-target=\"#more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "\"><i class=\"glyphicon glyphicon-chevron-down\"></i></a></td><td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td><td><div class='input-group'><div class='input-group-btn'><button class='take-action btn btn-default' type='button'>{{ \App\Helpers\Translation::translate('my-plan.columns.take-action.title') }}</button><button data-toggle='dropdown' class='btn btn-default dropdown-toggle' type='button'><span class='caret'></span> </button> <ul class='dropdown-menu'><li><a href='{{ url('request/coach-conversation') }}'><span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION)</span></a></li><li><a href='{{ url('request/more-information') }}/" + stepData.measure_short + "'><span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION)</span></a></li><li><a href='{{ url('request/other') }}/" + stepData.measure_short + "'><span>@lang('woningdossier.cooperation.tool.my-plan.options.'.\App\Models\PrivateMessage::REQUEST_TYPE_OTHER)</span></a></li></ul></div></div></td></tr>";
+                                    table += "<tr>" +
+                                        "<td>" +
+                                        "<a type=\"#\" class='turn-on-click' data-toggle=\"collapse\" data-target=\"#more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "\">" +
+                                        "<i class=\"glyphicon glyphicon-chevron-down\"></i>" +
+                                        "</a>" +
+                                        "</td>" +
+                                        "<td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td><td>" +
+                                        "<a href='"+conversationRequestRoute.replace('action', MEASURE).replace('measure_application_short', stepData.measure_short)+"' class='take-action btn btn-default' type='button'>@lang('my-plan.columns.take-action.title')</a></td></tr>";
                                     table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "' > <td colspan='1'></td><td colspan=''> <strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-gas.title') }}:</strong> <br><strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-electricity.title') }}:</strong> </td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup> <br>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh </td><td colspan='1'></td></tr>";
                                 });
 

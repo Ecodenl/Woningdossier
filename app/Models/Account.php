@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Collection;
 
 /**
  * App\Models\Account
@@ -75,6 +76,22 @@ class Account extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token, $this->user()->cooperation));
+    }
+
+    /**
+     * Return a collection of cooperations that belongto the users associated with the current account
+     *
+     * @return Collection
+     */
+    public function cooperations(): Collection
+    {
+        /** @var Collection $users */
+        $users = $this->users()->forAllCooperations()->with('cooperation')->get();
+        $cooperations = $users->map(function ($user) {
+            return $user->cooperation;
+        });
+
+        return $cooperations;
     }
 
     /**

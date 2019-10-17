@@ -13,11 +13,22 @@
 
 @section('step_content')
 
-    @if(!\App\Helpers\HoomdossierSession::isUserObserving())
+    <?php
+        //filter out the coach comments so we can check if there are any.
+        $coachCommentsByStep = [];
+        foreach ($commentsByStep as $stepSlug => $commentsByInputSource) {
+            // filter the coach comments and leave out empty stuff
+            $coachCommentsByStep[$stepSlug] = array_filter($commentsByInputSource, function ($inputSource) {
+                return $inputSource === \App\Models\InputSource::findByShort('coach')->name;
+            }, ARRAY_FILTER_USE_KEY);
+        }
+        $coachCommentsByStep = array_filter($coachCommentsByStep);
+    ?>
+    @if(!\App\Helpers\HoomdossierSession::isUserObserving() && !empty($coachCommentsByStep))
         <div class="row">
             <div class="col-md-12">
                 <p>{!! \App\Helpers\Translation::translate('my-plan.description.title') !!}</p>
-                <button type="button" class="btn btn-info" data-toggle="modal"
+                <button type="button" class="btn btn-default" data-toggle="modal"
                         data-target="#messagesModal">{{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}</button>
             </div>
         </div>
@@ -27,13 +38,15 @@
                 {{ \App\Helpers\Translation::translate('my-plan.coach-comments.title') }}
             @endslot
 
-            @foreach($coachCommentsByStep as $stepName => $coachComments)
-                <h4>@lang('woningdossier.cooperation.tool.my-plan.coach-comments.'.$stepName)</h4>
-                @foreach($coachComments as $coachComment)
-                    <p>{{$coachComment}}</p>
-                    <hr>
-                @endforeach
+            @foreach($coachCommentsByStep as $stepSlug => $commentsFromCoach)
+                <h4>{{\App\Models\Step::where('slug', $stepSlug)->first()->name}}</h4>
+               @foreach($commentsFromCoach as $inputSourceName => $comment)
+                        <p>{{$comment}}</p>
+                    @endforeach
+                <hr>
             @endforeach
+
+
         @endcomponent
     @endif
 
@@ -183,14 +196,6 @@
         </div>
     </div>
 
-    @include('cooperation.tool.includes.comment', [
-        'collection' => $actionPlanComments,
-        'commentColumn' => 'comment',
-        'translation' => [
-          'title' => 'general.specific-situation.title',
-          'help' => 'general.specific-situation.help'
-        ]
-    ])
 
     <br>
     @if($file instanceof \App\Models\FileStorage && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))

@@ -2,6 +2,8 @@
 
 namespace App\Policies;
 
+use App\Helpers\Hoomdossier;
+use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
@@ -9,6 +11,7 @@ use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Log;
 
 class BuildingPolicy
 {
@@ -36,6 +39,9 @@ class BuildingPolicy
      */
     public function show(User $user, Building $building, Cooperation $cooperation)
     {
+        if ($building->id === HoomdossierSession::getBuilding(true)->id) {
+            return false;
+        }
         if ($user->hasRoleAndIsCurrentRole('coach')) {
             // get the buildings the user is connected to.
             $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser($user, $cooperation);
@@ -45,7 +51,7 @@ class BuildingPolicy
         }
 
         // they can always view a building.
-        return  $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
+        return $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
     }
 
 
@@ -70,7 +76,7 @@ class BuildingPolicy
             return  $connectedBuildingsForUser->contains('building_id', $building->id) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
         }
 
-        return  $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
+        return $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
     }
 
 
@@ -86,6 +92,11 @@ class BuildingPolicy
     public function accessBuilding(User $user, Building $building): bool
     {
 
+        // While a user is allowed to see his own stuff, he is not allowed to do anything in it.
+        if ($user->id == $building->user_id) {
+            return false;
+        }
+
         if ($user->hasRoleAndIsCurrentRole('coach')) {
 
             // check if the coach has building permission
@@ -96,5 +107,29 @@ class BuildingPolicy
 
         // they can always access a building (if the user / resident gave access)
         return  PrivateMessage::allowedAccess($building) && $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
+    }
+
+    /**
+     * Check whether its allowed to set an appointment on a building
+     *
+     * @param User $user
+     * @param Building $building
+     * @return bool
+     */
+    public function setAppointment(User $user, Building $building): bool
+    {
+        return $user->id != $building->user_id;
+    }
+
+    /**
+     * Check whether its allowed to set an status on a building
+     *
+     * @param User $user
+     * @param Building $building
+     * @return bool
+     */
+    public function setStatus(User $user, Building $building): bool
+    {
+        return $user->id != $building->user_id;
     }
 }

@@ -62,6 +62,8 @@ return [
 
         'navbar' => [
             'my-account' => 'Mijn account',
+            'disclaimer' => 'Disclaimer',
+            'privacy' => 'Privacy',
             'start' => 'Start',
         ],
         'admin'  => [
@@ -78,11 +80,14 @@ return [
                     'users' => 'Gebruikers filteren',
                     'key-figures'       => 'Kengetallen',
                     'translations'      => 'Vertalingen',
-                    'example-buildings' => 'Voorbeeld woningen',
+                    'example-buildings' => 'Voorbeeldwoningen',
                 ],
                 'index'        => [
-                    'header' => 'Super admin panel',
-                    'text'   => 'Beheer de applicatie',
+                    'header'            => 'Super admin panel',
+                    'text'              => 'Beheer de applicatie',
+                    'cooperations'      => 'Cooperaties',
+                    'users'             => 'Gebruikers',
+                    'buildings'         => 'Woningen',
                 ],
                 'key-figures'  => [
                     'index' => [
@@ -148,25 +153,27 @@ return [
                             ],
                         ],
                         'edit'   => 'Bewerken',
-                        'show'   => 'Details van deze cooperatië',
+                        'show'   => 'Details van deze coöperatie',
                         'create' => 'Aanmaken',
                     ],
                     'create'                => [
-                        'header' => 'Cooperaie toevoegen',
+                        'header' => 'Cooperatie toevoegen',
                         'form'   => [
-                            'name'        => 'Naam van de cooperatie *',
-                            'slug'        => 'Slug / subdomein *',
-                            'website_url' => 'Website URL',
-                            'create'      => 'Aanmaken',
+                            'name'              => 'Naam van de coöperatie *',
+                            'slug'              => 'Slug / subdomein *',
+                            'cooperation_email' => 'Coöperatie contact e-mailadres',
+                            'website_url'       => 'Website URL',
+                            'create'            => 'Aanmaken',
                         ],
                     ],
                     'edit'                  => [
                         'header' => 'Cooperatie :name bewerken',
                         'form'   => [
-                            'name'        => 'Naam van de cooperatie *',
-                            'slug'        => 'Slug / subdomein *',
-                            'website_url' => 'Website URL',
-                            'update'      => 'Bijwerken',
+                            'name'              => 'Naam van de coöperatie *',
+                            'slug'              => 'Slug / subdomein *',
+                            'cooperation_email' => 'Coöperatie contact e-mailadres',
+                            'website_url'       => 'Website URL',
+                            'update'            => 'Bijwerken',
                         ],
                     ],
                     'store'                 => [
@@ -176,7 +183,7 @@ return [
                         'success' => 'Cooperatie is bijgewerkt.',
                     ],
                     'cooperation-to-manage' => [
-                        'alert-on-top'               => 'Alle wijzigingen die u nu doorvoert zullen worden gedaan op de cooperatie <strong>:cooperation</strong>',
+                        'alert-on-top'               => 'Alle wijzigingen die u nu doorvoert zullen worden gedaan op de coöperatie <strong>:cooperation</strong>',
                         'back-to-normal-environment' => 'Keer terug naar de admin omgeving',
                         'side-nav'                   => [
                             'label'             => ':cooperation_name menu',
@@ -188,7 +195,7 @@ return [
                         ],
                         'cooperation-admin'          => [
                             'index' => [
-                                'header' => 'Overzicht van alle cooperatie admins',
+                                'header' => 'Overzicht van alle coöperatie admins',
                                 'table'  => [
                                     'name'    => 'Naam',
                                     'email'   => 'E-mail',
@@ -225,7 +232,7 @@ return [
                         ],
                         'home'                       => [
                             'index' => [
-                                'header'            => 'Overzicht van de cooperatie :cooperation',
+                                'header'            => 'Overzicht van de coöperatie :cooperation',
                                 'coach-count'       => 'Coaches',
                                 'resident-count'    => 'Bewoners',
                                 'coordinator-count' => 'Coordinatoren',
@@ -237,7 +244,7 @@ return [
             'navbar'            => [
                 'current-role'      => 'Uw huidige rol:',
                 'reports'           => 'Rapportages',
-                'example-buildings' => 'Example buildings',
+                'example-buildings' => 'Voorbeeldwoningen',
             ],
             'custom-fields'     => [
                 'index' => [
@@ -604,7 +611,7 @@ return [
                 ],
                 'questionnaires'    => [
                     'index'  => [
-                        'header' => 'Alle vragenlijsten voor uw cooperatie',
+                        'header' => 'Alle vragenlijsten voor uw coöperatie',
                         'table'  => [
                             'columns' => [
                                 'questionnaire-name' => 'Vragenlijst naam',
@@ -768,6 +775,7 @@ return [
                 'liter'         => 'liter',
                 'day'           => 'dag',
                 'pieces'        => 'stuks',
+                'meters'        => 'm',
                 'square-meters' => 'm<sup>2</sup>',
                 'cubic-meters'  => 'm<sup>3</sup>',
                 'co2'           => 'CO<sub>2</sub>',
@@ -859,17 +867,6 @@ return [
                 'no-year'     => 'Geen jaartal',
                 'add-comment' => 'Opmerking opslaan',
 
-                'coach-comments' => [
-                    'general-data'                => 'Algemene gegevens',
-                    'wall-insulation'             => 'Gevelisolatie',
-                    'floor-insulation'            => 'Vloerisolatie',
-                    'insulated-glazing'           => 'Isolerende beglazing',
-                    'roof-insulation-hellend-dak' => 'Dakisolatie - Hellend dak',
-                    'roof-insulation-plat-dak'    => 'Dakisolatie - Plat dak',
-                    'high-efficiency-boiler'      => 'HR Ketel',
-                    'heater' => 'Zonneboiler',
-                    'solar-panels' => 'Zonnepanelen'
-                ],
 
                 'conversation-requests'                => [
                     'request'        => 'Coachgesprek aanvragen',

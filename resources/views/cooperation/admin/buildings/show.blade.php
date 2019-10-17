@@ -52,7 +52,6 @@
                     <div class="form-group">
                         <label for="building-coach-status">@lang('woningdossier.cooperation.admin.users.show.status.label')</label>
                         <select autocomplete="off" class="form-control" name="building[building_statuses][id]" id="building-status">
-
                             @foreach($statuses as $status)
                                 <option {{$mostRecentStatus->status_id == $status->id ? 'selected="selected"' : ''}} value="{{$status->id}}">
                                     @if($mostRecentStatus->status_id == $status->id)

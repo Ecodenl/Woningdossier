@@ -24,6 +24,8 @@ class ConversationRequestController extends Controller
      */
     public function index(Cooperation $cooperation, $requestType = null, $measureApplicationShort = null)
     {
+        $userAlreadyHadContactWithCooperation = PrivateMessage::public()->conversation(HoomdossierSession::getBuilding())->first() instanceof PrivateMessage;
+
         // if the user is observing, he has nothing to do here.
         if (HoomdossierSession::isUserObserving()) {
             return redirect()->route('cooperation.tool.my-plan.index');
@@ -58,6 +60,7 @@ class ConversationRequestController extends Controller
      */
     public function store(ConversationRequest $request, Cooperation $cooperation)
     {
+        // todo: send building owner
         PrivateMessageService::createConversationRequest(Hoomdossier::user(), $request);
 
         HoomdossierSession::getBuilding(true)->setStatus('pending');

@@ -28,7 +28,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $amount_gas
  * @property int|null $amount_water
  * @property string|null $living_situation_extra
- * @property string|null $motivation_extra
  * @property string|null $start_date
  * @property string|null $end_date
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -38,7 +37,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\BuildingHeating|null $heatingSecondFloor
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\User|null $user
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit query()
@@ -85,7 +85,6 @@ class UserEnergyHabit extends Model
         'amount_gas',
         'amount_water',
         'living_situation_extra',
-        'motivation_extra',
     ];
 
     /**

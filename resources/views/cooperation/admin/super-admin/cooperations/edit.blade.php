@@ -34,6 +34,17 @@
                             @endif
                         </div>
 
+                        <div class="form-group {{ $errors->has('cooperation_email') ? ' has-error' : '' }}">
+                            <label for="">@lang('woningdossier.cooperation.admin.super-admin.cooperations.edit.form.cooperation_email')</label>
+                            <input value="{{old('cooperation_email', $cooperationToEdit->cooperation_email)}}" type="text" class="form-control" name="cooperation_email" placeholder="@lang('woningdossier.cooperation.admin.super-admin.cooperations.edit.form.cooperation_email')">
+
+                            @if ($errors->has('cooperation_email'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('cooperation_email') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+
                         <div class="form-group {{ $errors->has('website_url') ? ' has-error' : '' }}">
                             <label for="">@lang('woningdossier.cooperation.admin.super-admin.cooperations.edit.form.website_url')</label>
                             <input value="{{old('website_url', $cooperationToEdit->website_url)}}"  type="text" class="form-control" name="website_url" placeholder="@lang('woningdossier.cooperation.admin.super-admin.cooperations.edit.form.website_url')">

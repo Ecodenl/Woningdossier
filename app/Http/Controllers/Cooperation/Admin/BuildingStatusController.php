@@ -31,6 +31,8 @@ class BuildingStatusController extends Controller
         /** @var Building $building */
         $building = Building::withTrashed()->findOrFail($buildingId);
 
+        $this->authorize('set-status', $building);
+
         $building->setStatus($status);
     }
 
@@ -49,6 +51,8 @@ class BuildingStatusController extends Controller
 
         /** @var Building $building */
         $building = Building::withTrashed()->findOrFail($buildingId);
+
+        $this->authorize('set-appointment', $building);
 
         $building->setAppointmentDate(is_null($appointmentDate) ? null : Carbon::parse($appointmentDate));
 

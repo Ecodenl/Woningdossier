@@ -47,7 +47,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\FacadePlasteredSurface|null $plasteredSurface
  * @property-read \App\Models\RoofType|null $roofType
  * @property-read \App\Models\FacadeSurface|null $wallJoints
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingFeature query()
@@ -108,6 +109,7 @@ class BuildingFeature extends Model
         'facade_damaged_paintwork_id',
         'window_surface',
         'roof_type_id',
+        'energy_label_id'
     ];
 
     public function building()

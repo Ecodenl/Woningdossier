@@ -86,7 +86,7 @@ class GeneralDataFormRequest extends FormRequest
             'energy_label_id' => 'required|exists:energy_labels,id',
 
             // data about usage of the building
-            'resident_count' => 'nullable|numeric|min:1|max:10',
+            'resident_count' => 'required|numeric|min:1|max:10',
             'cook_gas' => 'required|numeric',
             //'thermostat_high' => 'nullable|numeric|min:10|max:30|gte:thermostat_low',
             //'thermostat_low' => 'nullable|numeric|min:10|max:30|lte:thermostat_low',

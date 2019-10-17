@@ -577,13 +577,15 @@ return [
 
                     'create' => [
                         'form' => [
-                            'first-name'  => 'Voornaam',
-                            'last-name'   => 'Achternaam',
-                            'roles'       => 'Rol toewijzen aan gebruiker',
-                            'email'       => 'E-mail adres',
-                            'role'        => 'Koppel rol aan de nieuwe gebruiker',
-                            'select-role' => 'Selecteer een rol...',
-                            'password'    => [
+                            'already-member' => 'De gebruiker met dit e-mailadres is al actief bij deze coöperatie!',
+                            'e-mail-exists'  => 'Er is al een account met dit e-mailadres. Indien u doorgaat wordt dit account aan uw cooperatie gekoppeld met de rollen die u opgeeft.',
+                            'first-name'     => 'Voornaam',
+                            'last-name'      => 'Achternaam',
+                            'roles'          => 'Rol toewijzen aan gebruiker',
+                            'email'          => 'E-mail adres',
+                            'role'           => 'Koppel rol aan de nieuwe gebruiker',
+                            'select-role'    => 'Selecteer een rol...',
+                            'password'       => [
                                 'header'      => 'Wachtwoord instellen',
                                 'label'       => 'Wachtwoord',
                                 'placeholder' => 'Wachtwoord invullen...',
@@ -659,7 +661,7 @@ return [
                         'label'             => 'Coöperatie admin menu',
                         'home'              => 'Account overzicht',
                         'coaches'           => 'Coaches / coördinatoren',
-                        'create-user'       => 'Voeg Coach/bewoner toe',
+                        'create-user'       => 'Gebruiker toevoegen',
                         'reports'           => 'Rapporten',
                         'example-buildings' => 'Voorbeeldwoningen',
                         'questionnaires'    => 'Vragenlijsten',
@@ -712,7 +714,7 @@ return [
                         'label'    => 'Coördinator menu',
                         'home'     => 'Account overzicht',
                         'coaches'  => 'Coaches / coördinatoren',
-                        'add-user' => 'Voeg Coach / Bewoner toe',
+                        'add-user' => 'Gebruiker toevoegen',
                         'reports'  => 'Rapporten',
                     ],
                 ],

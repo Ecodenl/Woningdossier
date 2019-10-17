@@ -17,21 +17,18 @@ class ObservingToolForUserEvent
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $building;
-    public $buildingOwner;
-    public $userThatIsFillingTool;
+    public $userThatIsObservingTool;
 
     /**
      * create new event instantionnn.
      *
      * @param Building $building
-     * @param User $buildingOwner
-     * @param User $userThatIsFillingTool
+     * @param User $userThatIsObservingTool
      */
-    public function __construct(Building $building, User $buildingOwner, User $userThatIsFillingTool)
+    public function __construct(Building $building, User $userThatIsObservingTool)
     {
         $this->building = $building;
-        $this->buildingOwner = $buildingOwner;
-        $this->userThatIsFillingTool = $userThatIsFillingTool;
+        $this->userThatIsObservingTool = $userThatIsObservingTool;
     }
 
     /**

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Events\ParticipantAddedEvent;
+use App\Helpers\Hoomdossier;
 use App\Helpers\PicoHelper;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\UserRequest;
+use App\Mail\UserAssociatedWithCooperation;
 use App\Mail\UserCreatedEmail;
 use App\Models\Account;
 use App\Models\Building;
@@ -40,7 +42,14 @@ class UserController extends Controller
 
     public function create(Cooperation $cooperation)
     {
-        $roles = Role::where('name', 'coach')->orWhere('name', 'resident')->get();
+        $possibleRoles = Role::all();
+        $roles = [];
+        foreach($possibleRoles as $possibleRole){
+            if (Hoomdossier::user()->can('assign-role', $possibleRole)){
+                $roles[]= $possibleRole;
+            }
+        }
+        $roles = collect($roles);
         $coaches = $cooperation->getCoaches()->get();
 
         return view('cooperation.admin.cooperation.users.create', compact('roles', 'coaches'));
@@ -70,14 +79,18 @@ class UserController extends Controller
             ]
         );
 
-        $user->account()->associate(
-            Account::create(
-                [
+        // check if account exists. If so: attach.
+        $account = Account::where('email','=', $email)->first();
+        $existed = true;
+        if (!$account instanceof Account) {
+            $existed = false;
+            $account = Account::create([
                     'email' => $email,
                     'password' => \Hash::make(Str::randomPassword()),
-                ]
-            )
-        )->save();
+            ]);
+        }
+
+        $user->account()->associate($account)->save();
 
         // now get the pico address data.
         $picoAddressData = PicoHelper::getAddressData(
@@ -104,17 +117,18 @@ class UserController extends Controller
         // save the building feature and the building itself and accociate the new user with it
         $building->user()->associate($user)->save();
         $features->building()->associate($building)->save();
+        $user->cooperation()->associate($cooperation)->save();
 
         // give the user his role
         $roleIds = $request->get('roles', '');
         $roles = [];
         foreach ($roleIds as $roleId) {
             $role = Role::find($roleId);
-            array_push($roles, $role->name);
+            if (Hoomdossier::user()->can('assign-role-to-user', [$role, $user])) {
+                \Log::debug("User can assign role " . $role->name);
+                array_push($roles, $role->name);
+            }
         }
-
-        $user->cooperation()->associate($cooperation)->save();
-
 
         // assign the roles to the user
         $user->assignRole($roles);
@@ -147,8 +161,13 @@ class UserController extends Controller
             event(new ParticipantAddedEvent($user, $building));
             event(new ParticipantAddedEvent($coach, $building));
         }
-        // and send the account confirmation mail.
-        $this->sendAccountConfirmationMail($cooperation, $request);
+        if (!$existed) {
+            // and send the account confirmation mail.
+            $this->sendAccountConfirmationMail($cooperation, $account);
+        }
+        else {
+            $this->sendAccountAssociatedMail($cooperation, $account);
+        }
 
         return redirect()
             ->route('cooperation.admin.cooperation.users.index')
@@ -161,14 +180,17 @@ class UserController extends Controller
      * @param Cooperation $cooperation
      * @param Request $request
      */
-    public function sendAccountConfirmationMail(Cooperation $cooperation, Request $request)
+    public function sendAccountConfirmationMail(Cooperation $cooperation, Account $account)
     {
-        $account = Account::where('email', $request->get('email'))->first();
-
         $token = app('auth.password.broker')->createToken($account);
 
         // send a mail to the user
         \Mail::to($account->email)->sendNow(new UserCreatedEmail($cooperation, $account->user(), $token));
+    }
+
+    public function sendAccountAssociatedMail(Cooperation $cooperation, Account $account)
+    {
+        \Mail::to($account->email)->sendNow(new UserAssociatedWithCooperation($cooperation, $account->user()));
     }
 
     /**

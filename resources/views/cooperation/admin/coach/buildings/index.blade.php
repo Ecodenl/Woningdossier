@@ -74,18 +74,18 @@
 
 @push('js')
     <script>
-
-        $('#table').DataTable({
-            responsive: true,
-            columnDefs: [
-                {responsivePriority: 4, targets: 4},
-                {responsivePriority: 5, targets: 3},
-                {responsivePriority: 3, targets: 2},
-                {responsivePriority: 2, targets: 1},
-                {responsivePriority: 1, targets: 0}
-            ],
+        $(document).ready(function () {
+            $('#table').DataTable({
+                responsive: true,
+                columnDefs: [
+                    {responsivePriority: 4, targets: 4},
+                    {responsivePriority: 5, targets: 3},
+                    {responsivePriority: 3, targets: 2},
+                    {responsivePriority: 2, targets: 1},
+                    {responsivePriority: 1, targets: 0}
+                ],
+            });
         });
-
     </script>
 @endpush
 

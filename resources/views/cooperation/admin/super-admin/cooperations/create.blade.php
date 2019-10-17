@@ -68,12 +68,14 @@
 @push('js')
     <script>
 
-        $('#table').DataTable({
-            responsive: true,
-            columnDefs: [
-                {responsivePriority: 2, targets: 1},
-                {responsivePriority: 1, targets: 0}
-            ],
+        $(document).ready(function () {
+            $('#table').DataTable({
+                responsive: true,
+                columnDefs: [
+                    {responsivePriority: 2, targets: 1},
+                    {responsivePriority: 1, targets: 0}
+                ],
+            });
         });
 
     </script>

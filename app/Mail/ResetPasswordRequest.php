@@ -17,6 +17,7 @@ class ResetPasswordRequest extends Mailable
     public $userCooperation;
     public $email;
     public $account;
+    public $user;
     public $token;
 
     /**
@@ -31,6 +32,7 @@ class ResetPasswordRequest extends Mailable
         $this->token = $token;
         $this->email = encrypt($account->email);
         $this->account = $account;
+        $this->user = $account->user();
         $this->userCooperation = $cooperation;
     }
 
@@ -42,7 +44,7 @@ class ResetPasswordRequest extends Mailable
     public function build()
     {
         return $this
-            ->to($this->account->email, sprintf("%s %s", $this->account->user()->first_name, $this->account->user()->last_name))
+            ->to($this->account->email, sprintf("%s %s", $this->user->first_name, $this->user->last_name))
             ->subject(__('mail.reset_password.subject'))
             ->view('cooperation.mail.user.password-reset-request');
     }

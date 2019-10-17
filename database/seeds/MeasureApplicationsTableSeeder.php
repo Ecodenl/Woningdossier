@@ -103,7 +103,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'facade-wall-insulation',
                 'application' => 'place',
-                'costs' => 90, // euro
+                'costs' => 96, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -229,7 +229,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation-pitched-inside',
                 'application' => 'place',
-                'costs' => 90, // euro
+                'costs' => 96, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -265,7 +265,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'roof-insulation-flat-current',
                 'application' => 'place',
-                'costs' => 40, // euro
+                'costs' => 65, // euro
                 'cost_unit' => [
                     'nl' => 'per m2',
                 ],
@@ -301,7 +301,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'high-efficiency-boiler-replace',
                 'application' => 'replace',
-                'costs' => 2200, // euro
+                'costs' => 2100, // euro
                 'cost_unit' => [
                     'nl' => 'per stuk',
                 ],
@@ -320,7 +320,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'short' => 'heater-place-replace',
                 'application' => 'place',
-                'costs' => 3800, // euro
+                'costs' => 3000, // euro
                 'cost_unit' => [
                     'nl' => 'per installatie',
                 ],

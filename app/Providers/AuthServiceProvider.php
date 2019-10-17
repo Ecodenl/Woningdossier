@@ -57,6 +57,8 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('delete-own-account', UserPolicy::class.'@deleteOwnAccount');
         Gate::define('talk-to-intern', UserPolicy::class.'@talkToIntern');
+        Gate::define('assign-role', UserPolicy::class.'@assignRole');
+        Gate::define('assign-role-to-user', UserPolicy::class.'@assignRoleToUser');
 
     }
 

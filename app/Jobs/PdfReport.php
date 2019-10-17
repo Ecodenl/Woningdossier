@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Scopes\GetValueScope;
+use App\Services\UserActionPlanAdviceService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -83,10 +84,10 @@ class PdfReport implements ShouldQueue
 
         $steps = $userCooperation->getActiveOrderedSteps();
 
-        $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, $inputSource);
+        $userActionPlanAdvices = UserActionPlanAdviceService::getPersonalPlan($user, $inputSource);
 
         // we dont wat the actual advices, we have to show them in a different way
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $inputSource, false);
+        $advices = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
         // full report for a user
         $reportForUser = DumpService::totalDump($user, $inputSource, false);

@@ -10,6 +10,7 @@ use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Services\MessageService;
 use App\Http\Controllers\Controller;
+use App\Services\PrivateMessageService;
 
 class MessagesController extends Controller
 {
@@ -42,7 +43,7 @@ class MessagesController extends Controller
      */
     public function sendMessage(Cooperation $cooperation, MessageRequest $request)
     {
-        MessageService::create($request);
+        PrivateMessageService::create($request);
 
         return redirect()->back()->with('fragment', $request->get('fragment'));
     }

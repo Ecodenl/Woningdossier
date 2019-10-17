@@ -577,13 +577,15 @@ return [
 
                     'create' => [
                         'form' => [
-                            'first-name'  => 'Voornaam',
-                            'last-name'   => 'Achternaam',
-                            'roles'       => 'Rol toewijzen aan gebruiker',
-                            'email'       => 'E-mail adres',
-                            'role'        => 'Koppel rol aan de nieuwe gebruiker',
-                            'select-role' => 'Selecteer een rol...',
-                            'password'    => [
+                            'already-member' => 'De gebruiker met dit e-mailadres is al actief bij deze coöperatie!',
+                            'e-mail-exists'  => 'Er is al een account met dit e-mailadres. Indien u doorgaat wordt dit account aan uw cooperatie gekoppeld met de rollen die u opgeeft.',
+                            'first-name'     => 'Voornaam',
+                            'last-name'      => 'Achternaam',
+                            'roles'          => 'Rol toewijzen aan gebruiker',
+                            'email'          => 'E-mail adres',
+                            'role'           => 'Koppel rol aan de nieuwe gebruiker',
+                            'select-role'    => 'Selecteer een rol...',
+                            'password'       => [
                                 'header'      => 'Wachtwoord instellen',
                                 'label'       => 'Wachtwoord',
                                 'placeholder' => 'Wachtwoord invullen...',
@@ -659,7 +661,7 @@ return [
                         'label'             => 'Coöperatie admin menu',
                         'home'              => 'Account overzicht',
                         'coaches'           => 'Coaches / coördinatoren',
-                        'create-user'       => 'Voeg Coach/bewoner toe',
+                        'create-user'       => 'Gebruiker toevoegen',
                         'reports'           => 'Rapporten',
                         'example-buildings' => 'Voorbeeldwoningen',
                         'questionnaires'    => 'Vragenlijsten',
@@ -712,7 +714,7 @@ return [
                         'label'    => 'Coördinator menu',
                         'home'     => 'Account overzicht',
                         'coaches'  => 'Coaches / coördinatoren',
-                        'add-user' => 'Voeg Coach / Bewoner toe',
+                        'add-user' => 'Gebruiker toevoegen',
                         'reports'  => 'Rapporten',
                     ],
                 ],
@@ -761,64 +763,6 @@ return [
             'title' => 'Disclaimer',
         ],
 
-        'conversation-requests' => [
-            'index' => [
-                'header' => 'Actie ondernemen',
-                'text'   => 'De gegevens worden uitsluitend door de coöperatie gebruikt om u in uw bewonersreis te ondersteunen. Uw persoonlijke gegevens worden niet doorgegeven aan derden. Meer informatie over de verwerking van uw data en wat we ermee doen kunt u vinden in ons privacy statement.',
-
-                'form' => [
-                    'no-measure-application-name-title' => 'Gesprek aanvragen',
-                    'title'                             => 'Actie ondernemen met :measure_application_name',
-                    'allow_access'                      => 'Ik geef toesteming aan :cooperation om de gegevens uit mijn Hoomdossier in te zien en in overleg met mij deze gegevens aan te passen.',
-                    'are-you-sure'                      => 'Weet u zeker dat u de Coöperatie geen toegang wilt geven tot uw dossier?',
-                    'action'                            => 'Actie',
-                    'take-action'                       => 'Actie ondernemen',
-                    'message'                           => 'Nadere toelichting op uw vraag',
-                    'submit'                            => 'Opsturen <span class="glyphicon glyphicon-envelope"></span>',
-
-                    'selected-option' => 'Waar kunnen we u bij helpen?:',
-                    'options'         => [
-                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION   => 'Meer informatie gewenst',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_OTHER              => 'Anders...',
-                    ],
-                ],
-            ],
-
-            'edit' => [
-                'header' => 'Bewerk uw huidige :request_type',
-                'text'   => 'De gegevens worden uitsluitend door de coöperatie gebruikt om u in uw bewonersreis te ondersteunen. Uw persoonlijke gegevens worden niet doorgegeven aan derden. Meer informatie over de verwerking van uw data en wat we ermee doen kunt u vinden in ons privacy statement.',
-
-                'form' => [
-                    'allow_access' => 'Ik geef toesteming aan :cooperation om de gegevens uit mijn Hoomdossier in te zien en in overleg met mij deze gegevens aan te passen.',
-                    'are-you-sure' => 'Weet u zeker dat u de Coöperatie geen toegang wilt geven tot uw dossier?',
-                    'action'       => 'Actie',
-                    'take-action'  => 'Actie ondernemen',
-                    'message'      => 'Uw bericht aan de coöperatie',
-                    'update'       => 'Aanvraag bijwerken <span class="glyphicon glyphicon-envelope"></span>',
-
-                    'selected-option' => 'Waar kunnen we u bij helpen?:',
-
-                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION   => 'Meer informatie gewenst',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_OTHER              => 'Anders...',
-
-                    'options' => [
-                        \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION   => 'Meer informatie gewenst',
-                        \App\Models\PrivateMessage::REQUEST_TYPE_OTHER              => 'Anders...',
-                    ],
-                ],
-            ],
-
-            'store'  => [
-                'success' => 'Uw aanvraag is sucessvol verstuurd, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url"">hier uw berichten bekijken</a> </strong> ',
-            ],
-            'update' => [
-                'success' => 'Uw aanvraag is sucessvol bijgewerkt, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url"">hier uw berichten bekijken</a> </strong> ',
-                'warning' => 'U heeft al een :request_type open staan, u kunt niet meerdere :request_type open hebben staan. Deze moet eerst worden afgehandeld zijn, u kunt deze hier wel bewerken.',
-            ],
-        ],
         'tool'                  => [
             'current-building-address'        => 'Huidig adres: :street :number, :zip_code :city',
             'filling-for'                     => 'U bewerkt de woning van :first_name :last_name als :input_source_name.',

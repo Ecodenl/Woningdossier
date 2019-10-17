@@ -171,7 +171,7 @@ class Calculator
     }
 
     // in m3 per year
-    public static function maxGasSavings(Building $building, InputSource $inputSource, UserEnergyHabit $energyHabit, Element $element)
+    public static function maxGasSavings(Building $building, InputSource $inputSource, $energyHabit, Element $element)
     {
         $boiler = $building->getServiceValue('boiler', $inputSource);
 

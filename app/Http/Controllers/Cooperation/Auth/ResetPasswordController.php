@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Cooperation;
@@ -13,6 +14,7 @@ use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 class ResetPasswordController extends Controller
 {
@@ -94,6 +96,25 @@ class ResetPasswordController extends Controller
             ->with('token_invalid', __($response, ['password_request_link' => route('cooperation.auth.password.request.index')]));
     }
 
+    /**
+     * Get the response for a successful password reset.
+     *
+     * @param $response
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function sendResetResponse($response)
+    {
+        // same as for login controller: redirect to appropriate page
+        // the guard()->user() will return the auth model, in our case this is the Account model
+        // but we want the user from the account, so thats why we do ->user()->user();
+        $user = $this->guard()->user()->user();
+
+        $role = Role::findByName($user->roles()->first()->name);
+
+        $user->roles->count() == 1 ? $this->redirectTo = RoleHelper::getUrlByRole($role) : $this->redirectTo = '/home';
+
+        return redirect($this->redirectPath())->with('status', trans($response));
+    }
 
     protected function resetPassword(Account $account, $password)
     {

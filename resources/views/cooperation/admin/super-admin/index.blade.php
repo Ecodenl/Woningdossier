@@ -19,7 +19,7 @@
                                     </div>
                                     <div class="col-xs-9 text-right">
                                         <div class="huge" style="font-size: 3em;font-weight: 600;">{{$cooperationCount}}</div>
-                                        <div>Cooperations</div>
+                                        <div>@lang('woningdossier.cooperation.admin.super-admin.index.cooperations')</div>
                                     </div>
                                 </div>
                             </div>
@@ -41,7 +41,7 @@
                                     </div>
                                     <div class="col-xs-9 text-right">
                                         <div class="huge" style="font-size: 3em;font-weight: 600;">{{$userCount}}</div>
-                                        <div>Users</div>
+                                        <div>@lang('woningdossier.cooperation.admin.super-admin.index.users')</div>
                                     </div>
                                 </div>
                             </div>
@@ -56,7 +56,7 @@
                                     </div>
                                     <div class="col-xs-9 text-right">
                                         <div class="huge" style="font-size: 3em;font-weight: 600;">{{$buildingCount}}</div>
-                                        <div>Buildings</div>
+                                        <div>@lang('woningdossier.cooperation.admin.super-admin.index.buildings')</div>
                                     </div>
                                 </div>
                             </div>

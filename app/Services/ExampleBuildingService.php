@@ -39,6 +39,7 @@ use App\Models\ServiceValue;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
+use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -58,12 +59,15 @@ class ExampleBuildingService
             return;
         }
 
+        $boilerService = Service::where('short', 'boiler')->first();
+
         // used for throwing the event at the end
         $oldExampleBuilding = $userBuilding->exampleBuilding;
 
         // traverse the contents:
         $exampleData = $contents->content;
 
+//        dd($exampleData);
         self::log('Applying Example Building '.$exampleBuilding->name.' ('.$exampleBuilding->id.', '.$contents->build_year.')');
 
         self::clearExampleBuilding($userBuilding);
@@ -82,16 +86,50 @@ class ExampleBuildingService
                     self::log('Skipping '.$columnOrTable.' (empty)');
                     continue;
                 }
-                if ('user_interest' == $columnOrTable) {
+                if ('user_interest' == $columnOrTable || 'user_interests' == $columnOrTable) {
                     foreach($values as $inType => $interests){
-                    	if (in_array($inType, ['element', 'service',])){
+                        // for some reason the measure applications are not categorized, the $inType = the measure application id and the $interests = interest id
+                        // this is not dry, but cant be because structure
+                        if (is_int($inType)) {
+                            $typeId = $inType;
+                            $interestId = $interests;
+                            $inType = 'measure_application';
+
+                            $interest = Interest::find($interestId);
+                            if (!$interest instanceof Interest){
+                                self::log("Skipping: No valid interest for ('{$inType}') with ID " . $interestId);
+                                continue;
+                            }
+                            $type = null;
+
+                            switch($inType){
+                                case 'measure_application':
+                                    $type = MeasureApplication::find($typeId);
+                                    break;
+                            }
+
+                            if (!$type instanceof Model){
+                                self::log("Skipping: No valid type found for interest (" . $inType . ") with ID " . $typeId);
+                                continue;
+                            }
+                            // we have:
+                            //  - $interest (FK relation)
+                            //  - $type (only int will be needed)
+                            $userInterest = new UserInterest(['interested_in_type' => $inType, 'interested_in_id' => $type->id]);
+                            $userInterest->user()->associate($userBuilding->user);
+                            $userInterest->inputSource()->associate($inputSource);
+                            $userInterest->interest()->associate($interest);
+                            $userInterest->save();
+                            self::log("Added user interest for " . $inType . " with ID " . $type->id . " -> " . $interest->name);
+                        }
+                    	else if (in_array($inType, ['element', 'service'])){
 							foreach($interests as $typeId => $interestId){
 								$typeId = (int) $typeId;
 								$interestId = (int) $interestId;
 
 								$interest = Interest::find($interestId);
 								if (!$interest instanceof Interest){
-									self::log("Skipping: No valid interest for ID " . $interestId);
+									self::log("Skipping: No valid interest for ('{$inType}') with ID " . $interestId);
 									continue;
 								}
 
@@ -197,7 +235,6 @@ class ExampleBuildingService
                     if (is_array($values)) {
                         foreach ($values as $serviceId => $serviceValueData) {
                             $extra = null;
-
                             // note: in the case of solar panels the service_value_id can be null!!
                             if (is_array($serviceValueData)) {
                                 if (! array_key_exists('service_value_id', $serviceValueData)) {
@@ -216,17 +253,41 @@ class ExampleBuildingService
                             $service = Service::find($serviceId);
                             if ($service instanceof Service) {
 
-                                $buildingService = new BuildingService(['extra' => $extra]);
-                                $buildingService->inputSource()->associate($inputSource);
-                                $buildingService->service()->associate($service);
-                                $buildingService->building()->associate($userBuilding);
+                                // try to obtain a existing service
+                                $existingBuildingService = BuildingService::withoutGlobalScope(GetValueScope::class)
+                                    ->forMe()
+                                    ->where('input_source_id', $inputSource->id)
+                                    ->where('service_id', $serviceId)->first();
+
+                                // see if it already exists, if so we need to add data to that service
+
+                                // this is for example the case with the hr boiler, data is added on general-data and on the hr page itself
+                                // but this can only be saved under one row, so we have to update it
+                                if ($existingBuildingService instanceof BuildingService) {
+                                    $buildingService = $existingBuildingService;
+                                } else {
+                                    $buildingService = new BuildingService();
+                                    $buildingService->inputSource()->associate($inputSource);
+                                    $buildingService->service()->associate($service);
+                                    $buildingService->building()->associate($userBuilding);
+                                }
+
+                                if (is_array($extra)) {
+
+                                    // we have to do this because the structure is wrong, see ToolHelper line 465
+                                    if ($boilerService->id == $serviceId) {
+                                        $extra = ['date' => $extra['year']];
+                                    }
+                                    $buildingService->extra = $extra;
+                                }
 
                                 if (!is_null($serviceValueId)){
-	                                $serviceValue = $service->values()->where('id', $serviceValueId)->first();
-	                                $buildingService->serviceValue()->associate($serviceValue);
+                                    $serviceValue = $service->values()->where('id', $serviceValueId)->first();
+                                    $buildingService->serviceValue()->associate($serviceValue);
                                 }
 
                                 $buildingService->save();
+
                                 self::log('Saving building service '.json_encode($buildingService->toArray()));
                             }
                         }
@@ -255,6 +316,9 @@ class ExampleBuildingService
                 if ('building_insulated_glazings' == $columnOrTable) {
                     foreach ($values as $measureApplicationId => $glazingData) {
                         $glazingData['measure_application_id'] = $measureApplicationId;
+
+                        //todo: so the insulated_glazing_id is non existent in the table, this is a typo and should be fixed in the tool structure
+                        $glazingData['insulating_glazing_id'] = $glazingData['insulated_glazing_id'];
 
                         $buildingInsulatedGlazing = new BuildingInsulatedGlazing($glazingData);
 
@@ -315,6 +379,7 @@ class ExampleBuildingService
 
     public static function clearExampleBuilding(Building $building)
     {
+        /** @var InputSource $inputSource */
         $inputSource = InputSource::findByShort('example-building');
 
         return BuildingDataService::clearBuildingFromInputSource($building, $inputSource);
@@ -331,6 +396,7 @@ class ExampleBuildingService
 
         return ToolHelper::getContentStructure();
 
+        /*
 	    // General data - Elements (that are not queried later on step basis)
 	    $livingRoomsWindows = Element::where('short', 'living-rooms-windows')->first();
 	    $sleepingRoomsWindows = Element::where('short', 'sleeping-rooms-windows')->first();
@@ -356,7 +422,6 @@ class ExampleBuildingService
 	    $woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
 	    // Floor insulation
-	    /** @var Element $floorInsulation */
 	    $floorInsulation = Element::where('short', 'floor-insulation')->first();
 	    $crawlspace = Element::where('short', 'crawlspace')->first();
 
@@ -688,11 +753,6 @@ class ExampleBuildingService
 				    'type' => 'select',
 				    'options' => static::createOptions($roofInsulation->values()->orderBy('order')->get(), 'value'),
 			    ],
-			    /*'building_roof_types.roof_type_id' => [
-				    'label' => Translation::translate('roof-insulation.current-situation.roof-types.title'),
-				    'type' => 'multiselect',
-				    'options' => static::createOptions($roofTypes),
-			    ],*/
 			    'building_features.roof_type_id' => [
 				    'label' => Translation::translate('roof-insulation.current-situation.main-roof.title'),
 				    'type' => 'select',
@@ -750,23 +810,6 @@ class ExampleBuildingService
 			    ],
 		    ],
 	    ];
-
-		/*
-		// From GeneralDataController
-		$interestElements = Element::whereIn('short', [
-			'living-rooms-windows', 'sleeping-rooms-windows',
-		])->orderBy('order')->get();
-
-		foreach ($interestElements as $interestElement) {
-			$k = 'user_interest.element.'.$interestElement->id;
-			$structure['general-data'][$k] = [
-				'label' => 'Interest in '.$interestElement->name,
-				'type' => 'select',
-				'options' => $interestOptions,
-			];
-		}
-		*/
-
 
 	    // Insulated glazing
 	    $igShorts = [
@@ -835,6 +878,11 @@ class ExampleBuildingService
 			    'type' => 'text',
 			    'unit' => Translation::translate('general.unit.square-meters.title'),
 		    ];
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.zinc_surface'] = [
+                'label' => Translation::translate('roof-insulation.current-situation.insulation-'.$roofType->short.'-zinc-surface.title'),
+                'type' => 'text',
+                'unit' => Translation::translate('general.unit.square-meters.title'),
+            ];
 		    $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.extra.zinc_replaced_date'] = [
 			    'label' => Translation::translate('roof-insulation.current-situation.zinc-replaced.title'),
 			    'type' => 'text',
@@ -867,8 +915,10 @@ class ExampleBuildingService
 	    }
 
 	    return $structure;
+	    */
     }
 
+    /*
 	protected static function createOptions(Collection $collection, $value = 'name', $id = 'id', $nullPlaceholder = true)
 	{
 		$options = [];
@@ -881,4 +931,5 @@ class ExampleBuildingService
 
 		return $options;
 	}
+    */
 }

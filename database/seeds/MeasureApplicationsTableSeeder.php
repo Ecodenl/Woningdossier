@@ -500,13 +500,31 @@ class MeasureApplicationsTableSeeder extends Seeder
             [
                 'measure_type' => 'maintenance',
                 'measure_names' => [
-                    'nl' => 'Zinkwerk',
+                    'nl' => 'Zinkwerk hellend dak',
                 ],
-                'short' => 'replace-zinc',
+                'short' => 'replace-zinc-pitched',
                 'application' => 'replace',
-                'costs' => 125, // euro
+                'costs' => 100, // euro
                 'cost_unit' => [
-                    'nl' => 'per m2',
+                    'nl' => 'per m',
+                ],
+                'minimal_costs' => 250,
+                'maintenance_interval' => 25,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'roof-insulation',
+            ],
+            [
+                'measure_type' => 'maintenance',
+                'measure_names' => [
+                    'nl' => 'Zinkwerk plat dak',
+                ],
+                'short' => 'replace-zinc-flat',
+                'application' => 'replace',
+                'costs' => 25, // euro
+                'cost_unit' => [
+                    'nl' => 'per m',
                 ],
                 'minimal_costs' => 250,
                 'maintenance_interval' => 25,

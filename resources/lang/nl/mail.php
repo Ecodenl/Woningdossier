@@ -24,8 +24,9 @@ return [
     ],
 
     'reset_password' => [
+        'subject' => 'Wachtwoord reset aangevraagd',
         'why' => 'U ontvangt deze mail omdat iemand een wachtwoord reset heeft aangevraagd voor uw account.',
-        'action' => 'Wachtwoord resetten',
+        'action' => 'U kunt uw wachtwoord resetten via de volgende URL:',
         'not_requested' => 'N.B.: Uit veiligheidsoverwegingen is deze link slechts eenmalig te gebruiken! Als u geen wachtwoord reset heeft aangevraagd hoeft u geen actie te ondernemen.',
     ],
 

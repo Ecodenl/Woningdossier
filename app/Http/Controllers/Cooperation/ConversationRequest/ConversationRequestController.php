@@ -7,6 +7,7 @@ use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\ConversationRequests\ConversationRequest;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\PrivateMessage;
 use App\Services\PrivateMessageService;
@@ -64,9 +65,9 @@ class ConversationRequestController extends Controller
 
         HoomdossierSession::getBuilding(true)->setStatus('pending');
 
+        $successMessage = HoomdossierSession::getInputSource(true)->short == InputSource::RESIDENT_SHORT ?  __('conversation-requests.store.success.'.InputSource::RESIDENT_SHORT, ['url' => route('cooperation.my-account.messages.index', compact('cooperation'))]) : __('conversation-requests.store.success.'.InputSource::COACH_SHORT);
+
         return redirect(route('cooperation.tool.my-plan.index'))
-            ->with('success', __('conversation-requests.store.success', [
-                'url' => route('cooperation.my-account.messages.index', compact('cooperation'))
-            ]));
+            ->with('success', $successMessage);
     }
 }

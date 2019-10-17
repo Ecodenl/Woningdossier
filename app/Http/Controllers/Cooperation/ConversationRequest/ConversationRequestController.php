@@ -48,7 +48,7 @@ class ConversationRequestController extends Controller
         }
 
 
-        return view('cooperation.conversation-requests.index', compact('selectedOption', 'userAlreadyHadContactWithCooperation', 'measureApplicationName', 'shouldShowOptionList', 'title', 'userDidNotAllowAccessToBuilding'));
+        return view('cooperation.conversation-requests.index', compact('selectedOption', 'userAlreadyHadContactWithCooperation', 'measureApplicationName', 'shouldShowOptionList', 'title', 'userDidNotAllowAccessToBuilding', 'userAlreadyHadContactWithCooperation'));
     }
 
     /**
@@ -60,7 +60,7 @@ class ConversationRequestController extends Controller
      */
     public function store(ConversationRequest $request, Cooperation $cooperation)
     {
-        PrivateMessageService::createConversationRequest(Hoomdossier::user(), $request);
+        PrivateMessageService::createConversationRequest(HoomdossierSession::getBuilding(true), Hoomdossier::user(), $request);
 
         HoomdossierSession::getBuilding(true)->setStatus('pending');
 

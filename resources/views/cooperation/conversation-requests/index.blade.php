@@ -4,8 +4,8 @@
     <link rel="stylesheet" href="{{asset('css/select2/select2.min.css')}}">
 @endpush
 @section('content')
-    <input type="hidden" value="{{$userAlreadyHadContactWithCooperation}}" id="user-already-had-contact-with-cooperation">
     <input type="hidden" id="user-did-not-allow-access-to-his-building" value="{{$userDidNotAllowAccessToBuilding}}">
+    <input type="hidden" value="{{$userAlreadyHadContactWithCooperation}}" id="user-already-had-contact-with-cooperation">
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">

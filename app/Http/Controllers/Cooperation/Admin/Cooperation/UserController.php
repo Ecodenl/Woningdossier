@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Events\ParticipantAddedEvent;
+use App\Helpers\Hoomdossier;
 use App\Helpers\PicoHelper;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
@@ -28,8 +29,8 @@ class UserController extends Controller
         // change the relationship to building on merge.
         $users = $cooperation
             ->users()
-            ->whereHas('buildings')
-            ->with(['buildings' => function ($query) {
+            ->whereHas('building')
+            ->with(['building' => function ($query) {
                 $query->with(['buildingStatuses' => function ($query) {
                     $query->mostRecent();
                 }]);
@@ -41,7 +42,14 @@ class UserController extends Controller
 
     public function create(Cooperation $cooperation)
     {
-        $roles = Role::where('name', 'coach')->orWhere('name', 'resident')->get();
+        $possibleRoles = Role::all();
+        $roles = [];
+        foreach($possibleRoles as $possibleRole){
+            if (Hoomdossier::user()->can('assign-role', $possibleRole)){
+                $roles[]= $possibleRole;
+            }
+        }
+        $roles = collect($roles);
         $coaches = $cooperation->getCoaches()->get();
 
         return view('cooperation.admin.cooperation.users.create', compact('roles', 'coaches'));
@@ -109,17 +117,18 @@ class UserController extends Controller
         // save the building feature and the building itself and accociate the new user with it
         $building->user()->associate($user)->save();
         $features->building()->associate($building)->save();
+        $user->cooperation()->associate($cooperation)->save();
 
         // give the user his role
         $roleIds = $request->get('roles', '');
         $roles = [];
         foreach ($roleIds as $roleId) {
             $role = Role::find($roleId);
-            array_push($roles, $role->name);
+            if (Hoomdossier::user()->can('assign-role-to-user', [$role, $user])) {
+                \Log::debug("User can assign role " . $role->name);
+                array_push($roles, $role->name);
+            }
         }
-
-        $user->cooperation()->associate($cooperation)->save();
-
 
         // assign the roles to the user
         $user->assignRole($roles);

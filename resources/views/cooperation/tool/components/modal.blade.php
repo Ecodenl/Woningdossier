@@ -1,5 +1,5 @@
 <div id="{{$id}}" class="modal fade" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog {{$class ?? ''}}">
 
         <!-- Modal content-->
         <div class="modal-content">

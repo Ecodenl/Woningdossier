@@ -1,9 +1,7 @@
 @extends('cooperation.layouts.app')
 
 @section('content')
-    <style>
-
-    </style>
+    <input type="hidden" value="{{$userAlreadyHadContactWithCooperation}}" id="user-already-had-contact-with-cooperation">
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
@@ -66,6 +64,7 @@
                                 </div>
                             </div>
 
+                            @if(!$userAlreadyHadContactWithCooperation)
                             <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
                                     <label for="allow_access">
@@ -80,6 +79,7 @@
                                     <p>@lang('woningdossier.cooperation.conversation-requests.index.text')</p>
                                 </div>
                             </div>
+                            @endif
 
                             <div class="form-group">
                                 <div class="col-md-12 ">
@@ -108,6 +108,7 @@
         }
         $(document).ready(function () {
 
+
             // put the label text from the selected option inside the input for ux
             var takeAction = $('#take-action');
             var input = $(takeAction).find('input.form-control');
@@ -126,13 +127,11 @@
             // if so submit, else do nothing
             $('form').on('submit', function () {
 
-                if ($('input[name=allow_access]').is(':checked')  == false) {
+                if ($('input[name=allow_access]').is(':checked')  == false && $('#user-already-had-contact-with-cooperation').val() == false) {
 
-                    if (confirm('@lang('woningdossier.cooperation.conversation-requests.index.form.are-you-sure')')) {
-
-                    } else {
-                        return false;
+                    if (!confirm('@lang('woningdossier.cooperation.conversation-requests.index.form.are-you-sure')')) {
                         event.preventDefault();
+                        return false;
                     }
                 }
             })

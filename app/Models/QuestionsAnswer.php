@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
+use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -18,7 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource $inputSource
  * @property-read \App\Models\Question $question
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer query()
@@ -34,7 +36,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class QuestionsAnswer extends Model
 {
-    use GetValueTrait, GetMyValuesTrait;
+    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
 
     protected $fillable = [
         'question_id', 'building_id', 'input_source_id', 'answer',

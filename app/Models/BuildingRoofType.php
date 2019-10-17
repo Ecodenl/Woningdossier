@@ -29,7 +29,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\ElementValue|null $insulation
  * @property-read \App\Models\MeasureApplication $measureApplication
  * @property-read \App\Models\RoofType $roofType
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType forMe()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType query()
@@ -61,7 +62,9 @@ class BuildingRoofType extends Model
     ];
 
     protected $fillable = [
-        'building_id', 'roof_type_id', 'input_source_id', 'element_value_id', 'roof_surface', 'building_heating_id', 'extra', 'insulation_roof_surface',
+        'building_id', 'roof_type_id', 'input_source_id', 'element_value_id',
+        'roof_surface', 'insulation_roof_surface', 'zinc_surface',
+        'building_heating_id', 'extra',
     ];
 
     /**

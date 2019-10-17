@@ -5,7 +5,7 @@ namespace App\Providers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Dusk\DuskServiceProvider;
+//use Laravel\Dusk\DuskServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -49,7 +49,7 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         if ($this->app->environment('local', 'testing')) {
-            $this->app->register(DuskServiceProvider::class);
+            //$this->app->register(DuskServiceProvider::class);
         }
         if ($this->app->environment('local')) {
             //$this->app->register(IdeHelperServiceProvider::class);

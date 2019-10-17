@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Building;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -14,14 +15,16 @@ class UserAllowedAccessToHisBuilding
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $building;
+
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Building $building)
     {
-        //
+        $this->building = $building;
     }
 
     /**

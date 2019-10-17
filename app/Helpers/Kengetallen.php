@@ -5,9 +5,9 @@ namespace App\Helpers;
 class Kengetallen
 {
     // D95
-    const EURO_SAVINGS_GAS = 0.64; // euro / m3 gas
+    const EURO_SAVINGS_GAS = 0.79; // euro / m3 gas
     // D96
-    const EURO_SAVINGS_ELECTRICITY = 0.2; // euro / kWh
+    const EURO_SAVINGS_ELECTRICITY = 0.23; // euro / kWh
     // D99
     const CO2_SAVING_GAS = 1.88; // kg / m3 gas
     // D100

@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Cooperation\ConversationRequest;
 
-use App\Events\UserAllowedAccessToHisBuilding;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\ConversationRequests\ConversationRequest;
-use App\Models\Building;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\PrivateMessage;
+use App\Services\PrivateMessageService;
 
 class ConversationRequestController extends Controller
 {
@@ -23,8 +23,10 @@ class ConversationRequestController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function index(Cooperation $cooperation, $option = null, $measureApplicationShort = null)
+    public function index(Cooperation $cooperation, $requestType = null, $measureApplicationShort = null)
     {
+        $userAlreadyHadContactWithCooperation = PrivateMessage::public()->conversation(HoomdossierSession::getBuilding())->first() instanceof PrivateMessage;
+
         // if the user is observing, he has nothing to do here.
         if (HoomdossierSession::isUserObserving()) {
             return redirect()->route('cooperation.tool.my-plan.index');
@@ -32,11 +34,22 @@ class ConversationRequestController extends Controller
         $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
 
         // set the measure application name if there is a measure application
-        $measureApplicationName = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : '';
+        $measureApplicationName = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : null;
+        $selectedOption = $requestType;
+        $shouldShowOptionList = is_null($requestType) ? true : false;
+        $userDidNotAllowAccessToBuilding = !PrivateMessage::allowedAccess(HoomdossierSession::getBuilding(true));
+        // why make it simple and clean, when you can't ?
+        if ($requestType == PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION) {
+            $title = __('conversation-requests.index.request-coach-conversation');
+        }
+        elseif (is_null($measureApplicationName)) {
+            $title = __('conversation-requests.index.form.no-measure-application-name-title');
+        } else {
+            $title =  __('conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName]);
+        }
 
-        $selectedOption = $option;
 
-        return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName'));
+        return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName', 'shouldShowOptionList', 'title', 'userDidNotAllowAccessToBuilding', 'userAlreadyHadContactWithCooperation'));
     }
 
     /**
@@ -48,42 +61,13 @@ class ConversationRequestController extends Controller
      */
     public function store(ConversationRequest $request, Cooperation $cooperation)
     {
-        // if the user is observing, he has nothing to do here.
-        if (HoomdossierSession::isUserObserving()) {
-            return redirect()->route('cooperation.tool.my-plan.index');
-        }
-        $action      = $request->get('action', '');
-        $message     = $request->get('message', '');
-        $allowAccess = 'on' == $request->get('allow_access', '');
+        PrivateMessageService::createConversationRequest(HoomdossierSession::getBuilding(true), Hoomdossier::user(), $request);
 
-        $cooperation = HoomdossierSession::getCooperation(true);
-        $building = HoomdossierSession::getBuilding(true);
+        HoomdossierSession::getBuilding(true)->setStatus('pending');
 
-        PrivateMessage::create(
-            [
-                // we get the selected option from the language file, we can do this cause the submitted value = key from localization
-                'is_public'         => true,
-                'from_user_id'      => Hoomdossier::user()->id,
-                'from_user'         => \App\Helpers\Hoomdossier::user()->getFullName(),
-                'message'           => $message,
-                'to_cooperation_id' => $cooperation->id,
-                'building_id'       => $building->id,
-                'request_type'      => $action,
-                'allow_access'      => $allowAccess,
-            ]
-        );
+        $successMessage = HoomdossierSession::getInputSource(true)->short == InputSource::RESIDENT_SHORT ?  __('conversation-requests.store.success.'.InputSource::RESIDENT_SHORT, ['url' => route('cooperation.my-account.messages.index', compact('cooperation'))]) : __('conversation-requests.store.success.'.InputSource::COACH_SHORT);
 
-
-        $building->setStatus('pending');
-
-        // if the user allows access to his building on the request, log the activity.
-        if ($allowAccess) {
-            event(new UserAllowedAccessToHisBuilding());
-        }
-
-        return redirect()->route('cooperation.tool.my-plan.index')
-                         ->with('success', __('woningdossier.cooperation.conversation-requests.store.success', [
-                             'url' => route('cooperation.my-account.messages.index', compact('cooperation'))
-                         ]));
+        return redirect(route('cooperation.tool.my-plan.index'))
+            ->with('success', $successMessage);
     }
 }

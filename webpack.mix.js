@@ -46,6 +46,7 @@ mix.js('resources/assets/js/app.js', 'public/js')
     )
     .copy('resources/assets/images', 'public/images')
     .sass('resources/assets/sass/app.scss', 'public/css')
+    .sass('resources/assets/sass/pdf.scss', 'public/css')
     .sass('resources/assets/sass/datatables/_responsive_bootstrap.scss', 'public/css/datatables/responsive.bootstrap.min.css')
     .sass('resources/assets/sass/datatables/_responsive_datatables.scss', 'public/css/datatables/responsive.dataTables.min.css')
     .sass('resources/assets/sass/datatables/_dataTables_bootstrap.scss', 'public/css/datatables/dataTables.bootstrap.min.css');

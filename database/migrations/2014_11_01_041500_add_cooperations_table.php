@@ -17,6 +17,8 @@ class AddCooperationsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('slug');
+            $table->string('website_url')->nullable()->default(null);
+            $table->string('cooperation_email')->nullable()->default(null);
             $table->timestamps();
         });
     }

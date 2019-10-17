@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\ValidationException;
 
 class ConfirmRequest extends FormRequest
 {
@@ -54,6 +55,11 @@ class ConfirmRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         Log::debug('The confirm account failed, email: '. $this->get('u').' token: '. $this->get('t'));
-        parent::failedValidation($validator);
+
+        throw (new ValidationException($validator))
+            ->withMessages([__('confirm.already-confirmed', ['password_request_link' => route('cooperation.auth.password.request.index')])])
+            ->redirectTo($this->getRedirectUrl());
+
+//        parent::failedValidation($validator);
     }
 }

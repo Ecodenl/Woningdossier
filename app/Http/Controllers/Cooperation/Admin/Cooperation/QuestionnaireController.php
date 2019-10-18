@@ -91,7 +91,7 @@ class QuestionnaireController extends Controller
             }
         }
 
-        return redirect(route('cooperation.admin.cooperation.questionnaires.index'))
+        return redirect(route('cooperation.admin.cooperation.questionnaires.edit', compact('questionnaire')))
             ->with('success', __('woningdossier.cooperation.admin.cooperation.questionnaires.edit.success'));
     }
 

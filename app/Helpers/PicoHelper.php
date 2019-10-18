@@ -33,9 +33,9 @@ class PicoHelper
     /**
      * Returns the address data from pico in a more usable form.
      *
-     * @param        $postalCode
-     * @param        $number
-     * @param  null  $houseNumberExtension
+     * @param  string $postalCode
+     * @param  int $number
+     * @param  string|null $houseNumberExtension Default: null
      *
      * @return array
      */

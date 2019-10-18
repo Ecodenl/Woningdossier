@@ -29,7 +29,7 @@ class AddInputSourceIdToToolSettings extends Migration
     public function down()
     {
         Schema::table('tool_settings', function (Blueprint $table) {
-            $table->dropForeign('user_interests_input_source_id_foreign');
+            $table->dropForeign(['input_source_id']);
             $table->dropColumn('input_source_id');
         });
     }

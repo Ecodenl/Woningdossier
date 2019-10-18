@@ -537,6 +537,7 @@ class CsvService
     public static function totalReport(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
     {
         $users = $cooperation->users()->whereHas('buildings')->get();
+        $rows = [];
 
         if ($anonymized) {
             $headers = [
@@ -632,7 +633,6 @@ class CsvService
     }
 
     protected static function formatFieldOutput($column, $value, $maybe1, $maybe2){
-        //dump("formatFieldOutput (" . $column . ", " . $value . ", " . $maybe1 . ", " . $maybe2 . ")");
         $decimals = 0;
         $shouldRound = false;
 
@@ -669,7 +669,6 @@ class CsvService
      * @return float|int|string
      */
     protected static function formatOutput($column, $value, $decimals = 0, $shouldRound = false){
-        //dump("formatOutput (" . $column . ", " . $value . ", " . $decimals . ", " . $shouldRound . ")");
 
         if (in_array($column, ['percentage_consumption',]) ||
             stristr($column, 'savings_') !== false ||

@@ -50,33 +50,32 @@ class QuestionnaireService {
      * Method to create a new question for a questionnaire
      *
      * @param Questionnaire $questionnaire
-     * @param array $requestQuestion
+     * @param array $questionData
      * @param string $questionType
      * @param array $validation
      * @param $order
      */
-    public static function createQuestion(Questionnaire $questionnaire, array $requestQuestion, string $questionType, array $validation, $order)
+    public static function createQuestion(Questionnaire $questionnaire, array $questionData, string $questionType, array $validation, $order)
     {
-
-        $required = array_key_exists('required', $requestQuestion);
+        dd($questionnaire, $questionData, $questionType, $validation, $order);
+        $required = array_key_exists('required', $questionData);
         $uuid = Str::uuid();
 
-
-        if (self::isNotEmptyTranslation($requestQuestion['question'])) {
+        if (self::isNotEmptyTranslation($questionData['question'])) {
             // if the translations are not present, we do not want to create a question
             $createdQuestion = $questionnaire->questions()->create([
                 'name' => $uuid,
                 'type' => $questionType,
                 'order' => $order,
                 'required' => $required,
-                'validation' => self::getValidationRule($requestQuestion, $validation),
+                'validation' => self::getValidationRule($questionData, $validation),
             ]);
 
-            self::createTranslationsForQuestion($requestQuestion['question'], $uuid);
+            self::createTranslationsForQuestion($questionData['question'], $uuid);
 
             if (self::hasQuestionOptions($questionType) && $createdQuestion instanceof Question) {
                 // create the options for the question
-                foreach ($requestQuestion['options'] as $newOptions) {
+                foreach ($questionData['options'] as $newOptions) {
                     self::createQuestionOptions($newOptions, $createdQuestion);
                 }
             }
@@ -273,15 +272,15 @@ class QuestionnaireService {
     /**
      * Returns the validation rule in a array.
      *
-     * @param array $requestQuestion
+     * @param array $questionData
      * @param array $validation
      *
      * @return array
      */
-    public static function getValidationRule(array $requestQuestion, array $validation): array
+    public static function getValidationRule(array $questionData, array $validation): array
     {
         // get the validation for the current question
-        $validationForCurrentQuestion = self::getValidationForCurrentQuestion($requestQuestion, $validation);
+        $validationForCurrentQuestion = self::getValidationForCurrentQuestion($questionData, $validation);
 
         if (! empty($validationForCurrentQuestion)) {
             // built the validation rule array
@@ -308,18 +307,18 @@ class QuestionnaireService {
     /**
      * Return the validation for the current question.
      *
-     * @param array $requestQuestion
+     * @param array $questionData
      * @param array $validation
      *
      * @return array
      */
-    public static function getValidationForCurrentQuestion(array $requestQuestion, array $validation): array
+    public static function getValidationForCurrentQuestion(array $questionData, array $validation): array
     {
         // first check if the question has a guid and check if the guid exists in the validation
-        if (array_key_exists('guid', $requestQuestion) && array_key_exists($requestQuestion['guid'], $validation)) {
-            return $validation[$requestQuestion['guid']];
-        } elseif (array_key_exists('question_id', $requestQuestion) && array_key_exists($requestQuestion['question_id'], $validation)) {
-            return $validation[$requestQuestion['question_id']];
+        if (array_key_exists('guid', $questionData) && array_key_exists($questionData['guid'], $validation)) {
+            return $validation[$questionData['guid']];
+        } elseif (array_key_exists('question_id', $questionData) && array_key_exists($questionData['question_id'], $validation)) {
+            return $validation[$questionData['question_id']];
         }
 
         return [];

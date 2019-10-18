@@ -2,13 +2,18 @@
 
 namespace Tests\Unit\app\Services;
 
+use App\Models\Questionnaire;
+use App\Models\User;
 use App\Services\QuestionnaireService;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class QuestionnaireServiceTest extends TestCase
 {
+    use RefreshDatabase;
+
     public static function hasQuestionOptionsProvider()
     {
         return [
@@ -53,6 +58,8 @@ class QuestionnaireServiceTest extends TestCase
             [['en' => '', 'nl' => 'Dit is een nederlandse vertaling',], false,],
             [['fr' => 'franse vertaling', 'en' => '', 'nl' => null,],  false,],
             [['fr' => '', 'en' => '', 'nl' => '',],  true,],
+            [['fr' => '', 'en' => null, 'nl' => '',],  true,],
+            [['fr' => null, 'en' => null, 'nl' => '', 'de' => 'duitse tekst'],  false,],
         ];
     }
 
@@ -62,5 +69,32 @@ class QuestionnaireServiceTest extends TestCase
     public function testIsEmptyTranslation($translations, $expected)
     {
         $this->assertEquals($expected, QuestionnaireService::isEmptyTranslation($translations));
+    }
+
+    public function createQuestionProvider()
+    {
+
+
+//        return [
+//            [
+//                Questionnaire::find(1),
+//                [
+//                    'question' => [
+//                        'nl' => 'Dit is een kort antwoord'
+//                    ],
+//                    'type' => 'text',
+//                    'guid' => com_create_guid()
+//                ]
+//            ]
+//        ];
+    }
+
+    public function testCreateQuestion()
+    {
+        $this->seed(\UsersTableSeeder::class);
+        $this->assertEquals(1, User::all()->count());
+//        $this->refreshDatabase();
+//        $questionnaire, $questionData, $questionType, $validation, $order
+//        $this->assertDatabaseHas('cooperations');
     }
 }

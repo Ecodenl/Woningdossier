@@ -85,11 +85,13 @@ class SolarPanel {
                 }
             }
 
-            $currentYear = Carbon::now()->year;
-            if (1 == $interest->calculate_value) {
-                $result['year'] = $currentYear;
-            } elseif (2 == $interest->calculate_value) {
-                $result['year'] = $currentYear + 5;
+            if (isset($interest) && $interest instanceof Interest) {
+                $currentYear = Carbon::now()->year;
+                if (1 == $interest->calculate_value) {
+                    $result['year'] = $currentYear;
+                } elseif (2 == $interest->calculate_value) {
+                    $result['year'] = $currentYear + 5;
+                }
             }
         }
 

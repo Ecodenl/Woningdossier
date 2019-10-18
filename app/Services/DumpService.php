@@ -71,6 +71,7 @@ class DumpService
         $cooperation = $user->cooperation;
         // get the content structure of the whole tool.
         $structure = ToolHelper::getToolStructure();
+        $rows = [];
 
         if ($anonymized) {
             $headers = [
@@ -683,6 +684,7 @@ class DumpService
 
 
         // handle the wood / frame / crack sealing elements for the insulated glazing
+        $buildingElementsArray = [];
 
         $buildingWoodElement = $buildingElements->where('element_id', $woodElements->id)->pluck('element_value_id')->toArray();
         $buildingElementsArray[$woodElements->short][$woodElements->id] = array_combine($buildingWoodElement, $buildingWoodElement) ?? null;

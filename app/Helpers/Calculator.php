@@ -17,6 +17,20 @@ use Carbon\Carbon;
 
 class Calculator
 {
+
+    /**
+     * Calculate the gas savings for the given building when applying the
+     * given Element.
+     *
+     * @param  Building  $building
+     * @param  InputSource  $inputSource
+     * @param  ElementValue  $element
+     * @param  UserEnergyHabit  $energyHabit
+     * @param $surface
+     * @param $measureAdvice
+     *
+     * @return int|mixed
+     */
     public static function calculateGasSavings(Building $building, InputSource $inputSource, ElementValue $element, UserEnergyHabit $energyHabit, $surface, $measureAdvice)
     {
         $result = 0;
@@ -39,6 +53,13 @@ class Calculator
         return $result;
     }
 
+    /**
+     * Calculate the CO2 savings in kg / m3 gas based on the key figure.
+     *
+     * @param float|int $gasSavings
+     *
+     * @return float|int
+     */
     public static function calculateCo2Savings($gasSavings)
     {
         $result = $gasSavings * Kengetallen::CO2_SAVING_GAS;
@@ -47,6 +68,13 @@ class Calculator
         return $result;
     }
 
+    /**
+     * Calculate the money savings in euro / m3 gas based on the key figure.
+     *
+     * @param float|int $gasSavings
+     *
+     * @return float|int
+     */
     public static function calculateMoneySavings($gasSavings)
     {
         $result = $gasSavings * Kengetallen::EURO_SAVINGS_GAS;
@@ -124,7 +152,7 @@ class Calculator
      * @param float|int $costs    Amount indexed on $fromYear
      * @param int       $fromYear Previous year used for indexing
      * @param int       $toYear   New year to index
-     * @param null|int|float|PriceIndexing Null will fall back on default price index (from db). Otherwise a PriceIndex object or "just" a percentage (>= 0, <= 100)
+     * @param null|int|float|PriceIndexing $index Null will fall back on default price index (from db). Otherwise a PriceIndex object or "just" a percentage (>= 0, <= 100)
      *
      * @return float|int
      */
@@ -170,7 +198,18 @@ class Calculator
         return self::reindexCosts($costs, null, $toYear);
     }
 
-    // in m3 per year
+    /**
+     * Calculate the maximum gas savings in m3 per year.
+     * Based on the building, only a max percentage of gas can be saved for
+     * particular Elements.
+     *
+     * @param  Building  $building
+     * @param  InputSource  $inputSource
+     * @param UserEnergyHabit|null $energyHabit
+     * @param  Element  $element
+     *
+     * @return float|int
+     */
     public static function maxGasSavings(Building $building, InputSource $inputSource, $energyHabit, Element $element)
     {
         $boiler = $building->getServiceValue('boiler', $inputSource);

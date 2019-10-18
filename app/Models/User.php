@@ -257,21 +257,6 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
-     * Returns whether or not a user has completed a particular step.
-     *
-     * @param Step $step
-     *
-     * @return bool
-     */
-    public function hasCompleted(Step $step)
-    {
-        \Log::debug(__METHOD__.'is still being used somewhere, this should not be');
-
-        return true;
-    }
-
-
-    /**
      * Get the human readable role name based on the role name.
      *
      * @param $roleName
@@ -369,9 +354,9 @@ class User extends Model implements AuthorizableContract
      *
      * @return bool
      */
-    public function hasMultipleRoles($cooperationId = null): bool
+    public function hasMultipleRoles(): bool
     {
-        if ($this->getRoleNames($cooperationId)->count() > 1) {
+        if ($this->getRoleNames()->count() > 1) {
             return true;
         }
 
@@ -413,7 +398,7 @@ class User extends Model implements AuthorizableContract
         $currentRole = HoomdossierSession::getRole(true);
 
         // check if the user has the role, and if the current role is set in the role
-        if ($this->hasRole($roles) && in_array($currentRole->name, $roleNames)) {
+        if (is_array($roleNames) && $this->hasRole($roles) && in_array($currentRole->name, $roleNames)) {
             return true;
         }
 
@@ -428,7 +413,6 @@ class User extends Model implements AuthorizableContract
     public function hasNotMultipleRoles(): bool
     {
         return ! $this->hasMultipleRoles();
-
     }
 
     public function completedQuestionnaires()
@@ -443,7 +427,7 @@ class User extends Model implements AuthorizableContract
      */
     public function completeQuestionnaire(Questionnaire $questionnaire)
     {
-        $this->completedQuestionnaires()->syncWithoutDetaching($questionnaire);
+        $this->completedQuestionnaires()->syncWithoutDetaching(/** @scrutinizer ignore-type, uses parseIds method. */ $questionnaire);
     }
 
     /**

@@ -24,6 +24,29 @@ class QuestionnaireService {
     }
 
     /**
+     * Update a questionnaire itself, its name and step.
+     *
+     * @param Questionnaire $questionnaire
+     * @param $questionnaireNameTranslations
+     * @param $stepId
+     */
+    public static function updateQuestionnaire(Questionnaire $questionnaire, $questionnaireNameTranslations, $stepId)
+    {
+        // update the step
+        $questionnaire->update([
+            'step_id' => $stepId,
+        ]);
+
+        // and update the translations
+        foreach ($questionnaireNameTranslations as $locale => $questionnaireNameTranslation) {
+
+            $questionnaireNameTranslation = self::getTranslation($questionnaireNameTranslations, $questionnaireNameTranslation);
+
+            $questionnaire->updateTranslation('name', $questionnaireNameTranslation, $locale);
+        }
+
+    }
+    /**
      * Method to create a new question for a questionnaire
      *
      * @param Questionnaire $questionnaire

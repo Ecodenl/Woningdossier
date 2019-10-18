@@ -59,30 +59,17 @@ class QuestionnaireController extends Controller
     {
         // get the data for the questionnaire
         $questionnaireNameTranslations = $request->input('questionnaire.name');
-        $stepId = $request->input('questionnaire.step_id');
         $questionnaireId = $request->input('questionnaire.id');
+        $validation = $request->get('validation', []);
+        $stepId = $request->input('questionnaire.step_id');
+        $order = 0;
 
         // find the current questionnaire
         $questionnaire = Questionnaire::find($questionnaireId);
 
         $this->authorize('update', $questionnaire);
-        // update the step
-        $questionnaire->update([
-            'step_id' => $stepId,
-        ]);
 
-        // and update the translations
-        foreach ($questionnaireNameTranslations as $locale => $questionnaireNameTranslation) {
-            if (empty($questionnaireNameTranslation)) {
-                $questionnaireNameTranslation = current(array_filter($questionnaireNameTranslations));
-            }
-            $questionnaire->updateTranslation('name', $questionnaireNameTranslation, $locale);
-        }
-
-        $order = 0;
-
-        $validation = $request->get('validation', []);
-
+        QuestionnaireService::updateQuestionnaire($questionnaire, $stepId, $questionnaireNameTranslations);
 
         if ($request->has('questions')) {
             foreach ($request->get('questions') as $questionIdOrUuid => $questionData) {

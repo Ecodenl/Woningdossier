@@ -6,7 +6,6 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Models\Building;
-use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\PrivateMessageView;
@@ -28,7 +27,6 @@ class ToolComposer
         $excludedViews = ['cooperation.tool.components.alert'];
 
         if (! in_array($view->getName(), $excludedViews)) {
-
             $view->with('commentsByStep', StepHelper::getAllCommentsByStep(Hoomdossier::user()));
             $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
             $view->with('myUnreadMessagesCount', PrivateMessageView::getTotalUnreadMessagesForCurrentRole());

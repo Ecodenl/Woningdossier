@@ -2,10 +2,7 @@
 
 namespace App\Services;
 
-use App\Helpers\Hoomdossier;
-use App\Helpers\HoomdossierSession;
 use App\Models\Account;
-use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\User;
 use App\Scopes\GetValueScope;
@@ -41,10 +38,9 @@ class UserService
         $user->delete();
 
         // if the account has no users anymore then we delete the account itself too.
-        if (User::withoutGlobalScopes()->where('account_id', $accountId)->count() == 0) {
+        if (0 == User::withoutGlobalScopes()->where('account_id', $accountId)->count()) {
             // bye !
             Account::find($accountId)->delete();
         }
     }
-
 }

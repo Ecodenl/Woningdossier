@@ -2,12 +2,12 @@
 
 namespace App\Helpers\Cache;
 
-class Status extends BaseCache {
-
+class Status extends BaseCache
+{
     const CACHE_KEY_FIND = 'Status_find_%s';
 
     /**
-     * @param  int  $id
+     * @param int $id
      *
      * @return \App\Models\Status|null
      */

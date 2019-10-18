@@ -5,15 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingNotes
+ * App\Models\BuildingNotes.
  *
- * @property int $id
- * @property string $note
- * @property int|null $coach_id
- * @property int|null $building_id
+ * @property int                             $id
+ * @property string                          $note
+ * @property int|null                        $coach_id
+ * @property int|null                        $building_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building|null $building
+ * @property \App\Models\Building|null       $building
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingNotes newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingNotes newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingNotes query()

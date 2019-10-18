@@ -3,14 +3,11 @@
 namespace App\Listeners;
 
 use App\Events\ExampleBuildingChanged;
-use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Cache\Step;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\ToolSetting;
 use App\Scopes\GetValueScope;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
 
 class PreventChangeNotificationWhenStarting
@@ -22,21 +19,21 @@ class PreventChangeNotificationWhenStarting
      */
     public function __construct()
     {
-        //
     }
 
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param object $event
      *
      * @return void
      */
     public function handle(ExampleBuildingChanged $event)
     {
         // check if we come from nothing
-        if (is_null($event->from)){
+        if (is_null($event->from)) {
             $this->suppressExampleBuildingNotification($event->building);
+
             return; // and exit here
         }
 
@@ -48,19 +45,20 @@ class PreventChangeNotificationWhenStarting
         // notifications (in this case: of input source 'example building')
 
         /**
-         * @var Collection $steps
+         * @var Collection
          */
         $steps = Step::getOrdered();
         if ($steps->count() > 1) {
             // get next
             $second = $steps->get(1);
-            if ( ! $event->building->hasCompleted($second)) {
+            if (! $event->building->hasCompleted($second)) {
                 $this->suppressExampleBuildingNotification($event->building);
             }
         }
     }
 
-    protected function suppressExampleBuildingNotification(Building $building){
+    protected function suppressExampleBuildingNotification(Building $building)
+    {
         // second step was not completed yet: if a notification for
         // the input source 'example-building' is set, set it to false
         $inputSourceExampleBuilding = InputSource::findByShort('example-building');
@@ -72,7 +70,6 @@ class PreventChangeNotificationWhenStarting
                            $inputSourceExampleBuilding->id)
                        ->where('has_changed', '=', true)
                        ->update(['has_changed' => false]);
-
         }
     }
 }

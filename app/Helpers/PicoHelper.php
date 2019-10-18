@@ -6,7 +6,6 @@ use Ecodenl\PicoWrapper\PicoClient;
 
 class PicoHelper
 {
-
     /**
      * Returns the raw address data from pico.
      *
@@ -29,13 +28,12 @@ class PicoHelper
         return $response;
     }
 
-
     /**
      * Returns the address data from pico in a more usable form.
      *
-     * @param  string $postalCode
-     * @param  string|int $number
-     * @param  string|null $houseNumberExtension Default: null
+     * @param string      $postalCode
+     * @param string|int  $number
+     * @param string|null $houseNumberExtension Default: null
      *
      * @return array
      */
@@ -44,14 +42,14 @@ class PicoHelper
         $options = collect(static::getBagAddressData($postalCode, $number))->keyBy('huisletter');
 
         // get the best address option for the result.
-        if (empty($houseNumberExtension) || !isset($options[$houseNumberExtension])) {
+        if (empty($houseNumberExtension) || ! isset($options[$houseNumberExtension])) {
             $best = 'None';
         } else {
             $best = $houseNumberExtension;
         }
 
         $option = [];
-        if ($options->has($best)){
+        if ($options->has($best)) {
             $option = $options->get($best);
         }
 
@@ -64,7 +62,7 @@ class PicoHelper
             'house_number_extension' => $houseNumberExtension,
             'city'                   => $option['woonplaats'] ?? '',
             'build_year'             => $option['bouwjaar'] ?? '',
-            'surface'                => $option['adresopp'] ?? ''
+            'surface'                => $option['adresopp'] ?? '',
         ];
 
         return $result;

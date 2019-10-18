@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
 use App\Events\DossierResetPerformed;
-use App\Events\UserChangedHisEmailEvent;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\PicoHelper;
@@ -11,24 +10,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Account;
 use App\Models\Building;
-use App\Models\BuildingFeature;
-use App\Models\Cooperation;
-use App\Models\Log;
-use App\Models\OldEmail;
 use App\Models\User;
-use App\Services\ToolSettingService;
 use App\Services\UserService;
-use function GuzzleHttp\Psr7\uri_for;
-use Illuminate\Auth\Passwords\DatabaseTokenRepository;
-use Illuminate\Support\Str;
 
 class SettingsController extends Controller
 {
-
     /**
      * Update the account.
      *
-     * @param  MyAccountSettingsFormRequest  $request
+     * @param MyAccountSettingsFormRequest $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -53,7 +43,6 @@ class SettingsController extends Controller
         // try to obtain the address id from the api, else get the one from the request.
         $buildingData['bag_addressid'] = $picoAddressData['id'] ?? $buildingData['addressid'] ?? '';
 
-
         // update the user stuff
         $user->update($userData);
         // now update the building itself
@@ -64,7 +53,6 @@ class SettingsController extends Controller
             'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
             'build_year' => empty($picoAddressData['build_year']) ? null : $picoAddressData['build_year'],
         ]);
-
 
         return redirect()->route('cooperation.my-account.index')
                          ->with('success', __('my-account.settings.store.success'));
@@ -133,7 +121,7 @@ class SettingsController extends Controller
 
         $stillActiveForOtherCooperations = Account::where('id', '=', $accountId)->exists();
         $success = __('my-account.settings.destroy.success.cooperation');
-        if (!$stillActiveForOtherCooperations){
+        if (! $stillActiveForOtherCooperations) {
             $success = __('my-account.settings.destroy.success.full');
         }
 

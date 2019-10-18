@@ -6,8 +6,8 @@ use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Models\MeasureApplication;
 use App\Models\RoofType;
 
-class RoofInsulation {
-
+class RoofInsulation
+{
     public static function getRoofTypeCategory(RoofType $roofType)
     {
         if ($roofType->calculate_value <= 2) {

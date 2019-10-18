@@ -5,8 +5,6 @@ namespace App\Listeners;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
 use App\Models\PrivateMessage;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class GiveCoachesBuildingPermission
 {
@@ -17,13 +15,13 @@ class GiveCoachesBuildingPermission
      */
     public function __construct()
     {
-        //
     }
 
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param object $event
+     *
      * @return void
      */
     public function handle($event)

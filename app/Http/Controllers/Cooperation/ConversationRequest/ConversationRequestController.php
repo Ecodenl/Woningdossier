@@ -17,9 +17,9 @@ class ConversationRequestController extends Controller
     /**
      * Show the form.
      *
-     * @param  Cooperation  $cooperation
-     * @param  string|null  $requestType Default: null
-     * @param  string|null  $measureApplicationShort Default: null
+     * @param Cooperation $cooperation
+     * @param string|null $requestType             Default: null
+     * @param string|null $measureApplicationShort Default: null
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
@@ -37,17 +37,15 @@ class ConversationRequestController extends Controller
         $measureApplicationName = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : null;
         $selectedOption = $requestType;
         $shouldShowOptionList = is_null($requestType) ? true : false;
-        $userDidNotAllowAccessToBuilding = !PrivateMessage::allowedAccess(HoomdossierSession::getBuilding(true));
+        $userDidNotAllowAccessToBuilding = ! PrivateMessage::allowedAccess(HoomdossierSession::getBuilding(true));
         // why make it simple and clean, when you can't ?
-        if ($requestType == PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION) {
+        if (PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION == $requestType) {
             $title = __('conversation-requests.index.request-coach-conversation');
-        }
-        elseif (is_null($measureApplicationName)) {
+        } elseif (is_null($measureApplicationName)) {
             $title = __('conversation-requests.index.form.no-measure-application-name-title');
         } else {
-            $title =  __('conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName]);
+            $title = __('conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName]);
         }
-
 
         return view('cooperation.conversation-requests.index', compact('selectedOption', 'measureApplicationName', 'shouldShowOptionList', 'title', 'userDidNotAllowAccessToBuilding', 'userAlreadyHadContactWithCooperation'));
     }
@@ -55,7 +53,7 @@ class ConversationRequestController extends Controller
     /**
      * Save the conversation request for whatever the conversation request may be.
      *
-     * @param  ConversationRequest  $request
+     * @param ConversationRequest $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -65,7 +63,7 @@ class ConversationRequestController extends Controller
 
         HoomdossierSession::getBuilding(true)->setStatus('pending');
 
-        $successMessage = HoomdossierSession::getInputSource(true)->short == InputSource::RESIDENT_SHORT ?  __('conversation-requests.store.success.'.InputSource::RESIDENT_SHORT, ['url' => route('cooperation.my-account.messages.index', compact('cooperation'))]) : __('conversation-requests.store.success.'.InputSource::COACH_SHORT);
+        $successMessage = InputSource::RESIDENT_SHORT == HoomdossierSession::getInputSource(true)->short ? __('conversation-requests.store.success.'.InputSource::RESIDENT_SHORT, ['url' => route('cooperation.my-account.messages.index', compact('cooperation'))]) : __('conversation-requests.store.success.'.InputSource::COACH_SHORT);
 
         return redirect(route('cooperation.tool.my-plan.index'))
             ->with('success', $successMessage);

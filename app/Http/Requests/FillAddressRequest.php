@@ -29,7 +29,7 @@ class FillAddressRequest extends FormRequest
     {
         return [
             'number' => ['required', new HouseNumber('nl'), 'numeric'],
-            'postal_code' => ['required', new PostalCode('nl')]
+            'postal_code' => ['required', new PostalCode('nl')],
         ];
     }
 }

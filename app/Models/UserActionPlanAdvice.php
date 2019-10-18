@@ -2,40 +2,34 @@
 
 namespace App\Models;
 
-use App\Helpers\Calculator;
-use App\Helpers\HoomdossierSession;
-use App\Helpers\NumberFormatter;
-use App\Scopes\GetValueScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 
 /**
- * App\Models\UserActionPlanAdvice
+ * App\Models\UserActionPlanAdvice.
  *
- * @property int $id
- * @property int $user_id
- * @property int|null $input_source_id
- * @property int $measure_application_id
- * @property float|null $costs
- * @property float|null $savings_gas
- * @property float|null $savings_electricity
- * @property float|null $savings_money
- * @property int|null $year
- * @property bool $planned
- * @property int|null $planned_year
- * @property int $step_id
+ * @property int                             $id
+ * @property int                             $user_id
+ * @property int|null                        $input_source_id
+ * @property int                             $measure_application_id
+ * @property float|null                      $costs
+ * @property float|null                      $savings_gas
+ * @property float|null                      $savings_electricity
+ * @property float|null                      $savings_money
+ * @property int|null                        $year
+ * @property bool                            $planned
+ * @property int|null                        $planned_year
+ * @property int                             $step_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \App\Models\MeasureApplication $measureApplication
- * @property-read \App\Models\Step $step
- * @property-read \App\Models\User $user
+ * @property \App\Models\InputSource|null    $inputSource
+ * @property \App\Models\MeasureApplication  $measureApplication
+ * @property \App\Models\Step                $step
+ * @property \App\Models\User                $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice forStep(\App\Models\Step $step)
@@ -61,7 +55,9 @@ use Illuminate\Support\Collection;
  */
 class UserActionPlanAdvice extends Model
 {
-    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
+    use GetValueTrait;
+    use GetMyValuesTrait;
+    use ToolSettingTrait;
 
     public $fillable = [
         'user_id', 'measure_application_id', // old
@@ -77,7 +73,6 @@ class UserActionPlanAdvice extends Model
     protected $casts = [
         'planned' => 'boolean',
     ];
-
 
     /**
      * Scope a query to only include results for the particular step.
@@ -159,9 +154,9 @@ class UserActionPlanAdvice extends Model
     }
 
     /**
-     * Method to return a year for the personal plan
+     * Method to return a year for the personal plan.
      *
-     * @return array|int|null|string
+     * @return array|int|string|null
      */
     public function getYear(InputSource $inputSource)
     {
@@ -174,13 +169,12 @@ class UserActionPlanAdvice extends Model
         return $year;
     }
 
-
     /**
-     * Check whether someone is interested in the measure
+     * Check whether someone is interested in the measure.
      *
-     * @param Building $building
+     * @param Building    $building
      * @param InputSource $inputSource
-     * @param Step $step
+     * @param Step        $step
      *
      * @return bool
      */

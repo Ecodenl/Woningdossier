@@ -5,120 +5,117 @@ namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures as KeyFigures;
+use App\Http\Controllers\Controller;
 use App\Models\BuildingTypeElementMaxSaving;
 use App\Models\Cooperation;
 use App\Models\KeyFigureTemperature;
 use App\Models\MeasureApplication;
 use App\Models\PriceIndexing;
 use App\Models\Service;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
-class KeyFiguresController extends Controller {
-	public function index( Cooperation $cooperation )
-	{
-		// we handle translations in the view.
-		$keyfigures = [
-			'general'   => ( new \ReflectionClass( Kengetallen::class ) )->getConstants(),
-		];
+class KeyFiguresController extends Controller
+{
+    public function index(Cooperation $cooperation)
+    {
+        // we handle translations in the view.
+        $keyfigures = [
+            'general'   => ( new \ReflectionClass(Kengetallen::class) )->getConstants(),
+        ];
 
-		// Bank
-		$keyfigures['general']['BANK_INTEREST_PER_YEAR'] = BankInterestCalculator::BANK_INTEREST_PER_YEAR;
-		$keyfigures['general']['INTEREST_PERIOD']        = BankInterestCalculator::INTEREST_PERIOD;
+        // Bank
+        $keyfigures['general']['BANK_INTEREST_PER_YEAR'] = BankInterestCalculator::BANK_INTEREST_PER_YEAR;
+        $keyfigures['general']['INTEREST_PERIOD'] = BankInterestCalculator::INTEREST_PERIOD;
 
-		$keyfigures['max-savings']   = $this->maxSavings();
-		$keyfigures['price-indexes'] = $this->priceIndexes();
+        $keyfigures['max-savings'] = $this->maxSavings();
+        $keyfigures['price-indexes'] = $this->priceIndexes();
 
-		$keyfigures['wall-insulation']   = KeyFigures\WallInsulation\Temperature::getKeyFigures();
-		$keyfigures['roof-insulation']   = KeyFigures\RoofInsulation\Temperature::getKeyFigures();
-		$keyfigures['floor-insulation']  = KeyFigures\FloorInsulation\Temperature::getKeyFigures();
-		$keyfigures['insulated-glazing'] = $this->keyFiguresInsulatedGlazing();
-		$keyfigures['heater']            = KeyFigures\Heater\KeyFigures::getKeyFigures();
-		$keyfigures['boiler']         = $this->keyFiguresBoiler();
-		$keyfigures['pv-panels'] = KeyFigures\PvPanels\KeyFigures::getKeyFigures();
+        $keyfigures['wall-insulation'] = KeyFigures\WallInsulation\Temperature::getKeyFigures();
+        $keyfigures['roof-insulation'] = KeyFigures\RoofInsulation\Temperature::getKeyFigures();
+        $keyfigures['floor-insulation'] = KeyFigures\FloorInsulation\Temperature::getKeyFigures();
+        $keyfigures['insulated-glazing'] = $this->keyFiguresInsulatedGlazing();
+        $keyfigures['heater'] = KeyFigures\Heater\KeyFigures::getKeyFigures();
+        $keyfigures['boiler'] = $this->keyFiguresBoiler();
+        $keyfigures['pv-panels'] = KeyFigures\PvPanels\KeyFigures::getKeyFigures();
 
+        $measureApplications = MeasureApplication::all();
 
-		$measureApplications = MeasureApplication::all();
+        return view('cooperation.admin.super-admin.key-figures.index',
+            compact(
+                'keyfigures',
+                'measureApplications'
+            ));
+    }
 
-		return view( 'cooperation.admin.super-admin.key-figures.index',
-			compact(
-				'keyfigures',
-				'measureApplications'
-			) );
-	}
+    // todo refactor
+    protected function keyFiguresInsulatedGlazing()
+    {
+        $figures = [];
 
-	// todo refactor
-	protected function keyFiguresInsulatedGlazing()
-	{
-		$figures = [];
+        // Insulated glazing key figures
+        $igMeasures = MeasureApplication::whereIn('short',
+            [
+                'glass-in-lead',
+                'hrpp-glass-only',
+                'hrpp-glass-frames',
+                'hr3p-frames',
+            ])->get();
+        $igmIds = $igMeasures->pluck('id');
 
-		// Insulated glazing key figures
-		$igMeasures = MeasureApplication::whereIn( 'short',
-			[
-				'glass-in-lead',
-				'hrpp-glass-only',
-				'hrpp-glass-frames',
-				'hr3p-frames',
-			] )->get();
-		$igmIds     = $igMeasures->pluck( 'id' );
+        $keyFigureTemperatures = KeyFigureTemperature::whereIn('measure_application_id',
+            $igmIds)->get();
 
-		$keyFigureTemperatures = KeyFigureTemperature::whereIn( 'measure_application_id',
-			$igmIds )->get();
+        /** @var KeyFigureTemperature $keyFigureTemperature */
+        foreach ($keyFigureTemperatures as $keyFigureTemperature) {
+            $k = sprintf('%s (%s) %s',
+                $keyFigureTemperature->measureApplication->measure_name,
+                $keyFigureTemperature->insulatingGlazing->name,
+                $keyFigureTemperature->buildingHeating->name
+            );
+            $figures[$k] = $keyFigureTemperature->key_figure;
+        }
 
-		/** @var KeyFigureTemperature $keyFigureTemperature */
-		foreach ( $keyFigureTemperatures as $keyFigureTemperature ) {
+        return $figures;
+    }
 
+    // todo refactor
+    protected function maxSavings()
+    {
+        $figures = [];
 
-			$k             = sprintf( '%s (%s) %s',
-				$keyFigureTemperature->measureApplication->measure_name,
-				$keyFigureTemperature->insulatingGlazing->name,
-				$keyFigureTemperature->buildingHeating->name
-			);
-			$figures[ $k ] = $keyFigureTemperature->key_figure;
-		}
+        $maxSavings = BuildingTypeElementMaxSaving::all();
+        /** @var BuildingTypeElementMaxSaving $maxSaving */
+        foreach ($maxSavings as $maxSaving) {
+            $k = sprintf('%s %s - %s',
+                __('key-figures.max-savings.prefix'),
+                $maxSaving->buildingType->name,
+                $maxSaving->element->name);
+            $figures[$k] = $maxSaving->max_saving.'%';
+        }
 
-		return $figures;
-	}
+        return $figures;
+    }
 
-	// todo refactor
-	protected function maxSavings()
-	{
-		$figures = [];
+    // todo refactor
+    protected function priceIndexes()
+    {
+        $indexes = PriceIndexing::all();
 
-		$maxSavings = BuildingTypeElementMaxSaving::all();
-		/** @var BuildingTypeElementMaxSaving $maxSaving */
-		foreach ( $maxSavings as $maxSaving ) {
-			$k             = sprintf( '%s %s - %s',
-				__( 'key-figures.max-savings.prefix' ),
-				$maxSaving->buildingType->name,
-				$maxSaving->element->name );
-			$figures[ $k ] = $maxSaving->max_saving . '%';
-		}
+        return $indexes->pluck('percentage', 'short')->toArray();
+    }
 
-		return $figures;
-	}
+    protected function keyFiguresBoiler()
+    {
+        $figures = [];
+        $hrBoiler = Service::where('short', '=', 'boiler')->first();
+        if ($hrBoiler instanceof Service) {
+            foreach ($hrBoiler->values as $boiler) {
+                $efficiency = $boiler->keyFigureBoilerEfficiency;
+                foreach (['heating', 'wtw'] as $for) {
+                    $figures[$boiler->value.' '.__('key-figures.boiler.'.$for)] = $efficiency->$for.'%';
+                }
+            }
+        }
 
-	// todo refactor
-	protected function priceIndexes()
-	{
-		$indexes = PriceIndexing::all();
-
-		return $indexes->pluck( 'percentage', 'short' )->toArray();
-	}
-
-	protected function keyFiguresBoiler()
-	{
-		$figures  = [];
-		$hrBoiler = Service::where( 'short', '=', 'boiler' )->first();
-		if ( $hrBoiler instanceof Service ) {
-			foreach($hrBoiler->values as $boiler){
-				$efficiency = $boiler->keyFigureBoilerEfficiency;
-				foreach(['heating', 'wtw'] as $for){
-					$figures[$boiler->value . ' ' . __('key-figures.boiler.' . $for)] = $efficiency->$for . '%';
-				}
-			}
-		}
-
-		return $figures;
-	}
+        return $figures;
+    }
 }

@@ -4,18 +4,15 @@ namespace App\Http\Controllers\Cooperation\MyAccount;
 
 use App\Events\UserChangedHisEmailEvent;
 use App\Helpers\Hoomdossier;
-use App\Helpers\HoomdossierSession;
-use App\Http\Requests\Cooperation\MyAccount\HoomSettingsRequest;
-use App\Models\Building;
-use App\Models\Cooperation;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Cooperation\MyAccount\HoomSettingsRequest;
 
 class HoomSettingsController extends Controller
 {
     /**
-     * Update the account settings
+     * Update the account settings.
      *
-     * @param  HoomSettingsRequest  $request
+     * @param HoomSettingsRequest $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -44,9 +41,7 @@ class HoomSettingsController extends Controller
         // update the account data
         $account->update($accountData);
 
-
         return redirect()->route('cooperation.my-account.index')
                          ->with('success', __('my-account.hoom-settings.store.success'));
-
     }
 }

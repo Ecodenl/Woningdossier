@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Auth;
 
 class InsulatedGlazingFormRequest extends FormRequest
 {
-    use ValidatorTrait, DecimalReplacementTrait;
+    use ValidatorTrait;
+    use DecimalReplacementTrait;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -27,7 +28,7 @@ class InsulatedGlazingFormRequest extends FormRequest
         $this->decimals(
             [
                 'building_insulated_glazings' => 'm2',
-                'window_surface'
+                'window_surface',
             ]);
     }
 

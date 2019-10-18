@@ -7,16 +7,17 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Step
+ * App\Models\Step.
  *
- * @property int $id
- * @property string $slug
- * @property string $name
- * @property int $order
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureApplication[] $measureApplications
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
+ * @property int                                                                       $id
+ * @property string                                                                    $slug
+ * @property string                                                                    $name
+ * @property int                                                                       $order
+ * @property \Illuminate\Support\Carbon|null                                           $created_at
+ * @property \Illuminate\Support\Carbon|null                                           $updated_at
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureApplication[] $measureApplications
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[]      $questionnaires
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step ordered()
@@ -71,12 +72,13 @@ class Step extends Model
         return false;
     }
 
-    public function scopeOrdered(Builder $query){
+    public function scopeOrdered(Builder $query)
+    {
         return $query->orderBy('order', 'asc');
     }
 
     /**
-     * Get the measure applications from a step
+     * Get the measure applications from a step.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

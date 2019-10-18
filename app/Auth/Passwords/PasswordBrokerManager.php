@@ -2,20 +2,21 @@
 
 namespace App\Auth\Passwords;
 
+use Illuminate\Auth\Passwords\PasswordBrokerManager as BasePasswordBrokerManager;
+use Illuminate\Contracts\Auth\PasswordBrokerFactory as FactoryContract;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use \Illuminate\Auth\Passwords\PasswordBrokerManager as BasePasswordBrokerManager;
-use Illuminate\Contracts\Auth\PasswordBrokerFactory as FactoryContract;
 
 class PasswordBrokerManager extends BasePasswordBrokerManager implements FactoryContract
 {
     /**
      * Resolve the given broker.
      *
-     * @param  string  $name
-     * @return \Illuminate\Contracts\Auth\PasswordBroker
+     * @param string $name
      *
      * @throws \InvalidArgumentException
+     *
+     * @return \Illuminate\Contracts\Auth\PasswordBroker
      */
     protected function resolve($name)
     {
@@ -37,7 +38,8 @@ class PasswordBrokerManager extends BasePasswordBrokerManager implements Factory
     /**
      * Create a token repository instance based on the given configuration.
      *
-     * @param  array  $config
+     * @param array $config
+     *
      * @return \Illuminate\Auth\Passwords\TokenRepositoryInterface
      */
     protected function createTokenRepository(array $config)
@@ -58,5 +60,4 @@ class PasswordBrokerManager extends BasePasswordBrokerManager implements Factory
             $config['expire']
         );
     }
-
 }

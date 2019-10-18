@@ -47,12 +47,11 @@ class RegisterFormRequest extends FormRequest
         $account = Account::where('email', $this->get('email'))->first();
         // if the account exists but the user is not associated with the current cooperation
         // then we unset the email and password rule because we dont need to validate them, we handle them in the controller
-        if ($account instanceof Account && !$account->isAssociatedWith($this->route('cooperation'))) {
+        if ($account instanceof Account && ! $account->isAssociatedWith($this->route('cooperation'))) {
             unset($rules['email'], $rules['password']);
         }
 
         return $rules;
-
     }
 
     /**

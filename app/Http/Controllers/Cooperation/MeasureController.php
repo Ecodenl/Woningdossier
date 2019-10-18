@@ -54,7 +54,7 @@ class MeasureController extends Controller
                     }
                 }
                 if (isset($image)) {
-                    if ( ! array_key_exists($image, $files)) {
+                    if (! array_key_exists($image, $files)) {
                         $files[$image] = [];
                     }
                     $files[$image][] = $file;

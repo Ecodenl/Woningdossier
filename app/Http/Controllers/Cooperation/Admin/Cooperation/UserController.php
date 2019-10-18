@@ -44,9 +44,9 @@ class UserController extends Controller
     {
         $possibleRoles = Role::all();
         $roles = [];
-        foreach($possibleRoles as $possibleRole){
-            if (Hoomdossier::user()->can('assign-role', $possibleRole)){
-                $roles[]= $possibleRole;
+        foreach ($possibleRoles as $possibleRole) {
+            if (Hoomdossier::user()->can('assign-role', $possibleRole)) {
+                $roles[] = $possibleRole;
             }
         }
         $roles = collect($roles);
@@ -54,7 +54,6 @@ class UserController extends Controller
 
         return view('cooperation.admin.cooperation.users.create', compact('roles', 'coaches'));
     }
-
 
     public function store(Cooperation $cooperation, UserRequest $request)
     {
@@ -80,9 +79,9 @@ class UserController extends Controller
         );
 
         // check if account exists. If so: attach.
-        $account = Account::where('email','=', $email)->first();
+        $account = Account::where('email', '=', $email)->first();
         $existed = true;
-        if (!$account instanceof Account) {
+        if (! $account instanceof Account) {
             $existed = false;
             $account = Account::create([
                     'email' => $email,
@@ -110,7 +109,7 @@ class UserController extends Controller
                 'extension' => $extension,
                 'postal_code' => $postalCode,
                 'city' => $city,
-                'bag_addressid' => $picoAddressData['id'] ?? $addressId  ?? ''
+                'bag_addressid' => $picoAddressData['id'] ?? $addressId ?? '',
             ]
         );
 
@@ -125,7 +124,7 @@ class UserController extends Controller
         foreach ($roleIds as $roleId) {
             $role = Role::find($roleId);
             if (Hoomdossier::user()->can('assign-role-to-user', [$role, $user])) {
-                \Log::debug("User can assign role " . $role->name);
+                \Log::debug('User can assign role '.$role->name);
                 array_push($roles, $role->name);
             }
         }
@@ -161,11 +160,10 @@ class UserController extends Controller
             event(new ParticipantAddedEvent($user, $building));
             event(new ParticipantAddedEvent($coach, $building));
         }
-        if (!$existed) {
+        if (! $existed) {
             // and send the account confirmation mail.
             $this->sendAccountConfirmationMail($cooperation, $account);
-        }
-        else {
+        } else {
             $this->sendAccountAssociatedMail($cooperation, $account);
         }
 
@@ -178,7 +176,7 @@ class UserController extends Controller
      * Send the mail to the created user.
      *
      * @param Cooperation $cooperation
-     * @param Request $request
+     * @param Request     $request
      */
     public function sendAccountConfirmationMail(Cooperation $cooperation, Account $account)
     {
@@ -197,25 +195,20 @@ class UserController extends Controller
      * Destroy a user.
      *
      * @param Cooperation $cooperation
-     * @param Request $request
+     * @param Request     $request
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     *
      */
     public function destroy(Cooperation $cooperation, Request $request)
     {
-
         $userId = $request->get('user_id');
 
         $user = User::find($userId);
-
 
         $this->authorize('destroy', $user);
 
         if ($user instanceof User) {
             UserService::deleteUser($user);
         }
-
     }
-
 }

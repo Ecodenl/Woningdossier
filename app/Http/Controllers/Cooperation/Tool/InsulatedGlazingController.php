@@ -50,7 +50,6 @@ class InsulatedGlazingController extends Controller
      */
     public function index()
     {
-
         // we do not want the user to set his interests for this step
 //        $typeIds = [1, 2];
 
@@ -104,9 +103,7 @@ class InsulatedGlazingController extends Controller
                     ->where('interested_in_type', 'measure_application')
                     ->where('interested_in_id', $measureApplication->id), 'interest_id');
 
-
-
-                if (!empty($measureInterestId)) {
+                if (! empty($measureInterestId)) {
                     // We only have to check on the interest ID, so we don't put
                     // full objects in the array
                     $userInterests[$measureApplication->id] = $measureInterestId;
@@ -115,7 +112,6 @@ class InsulatedGlazingController extends Controller
                 $measureApplications[] = $measureApplication;
             }
         }
-
 
 //        $inputValues = $woodElements;
 //
@@ -354,7 +350,6 @@ class InsulatedGlazingController extends Controller
         if (! empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];
         }
-
 
         return redirect($url);
     }

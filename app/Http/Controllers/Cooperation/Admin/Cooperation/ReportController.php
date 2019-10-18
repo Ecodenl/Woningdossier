@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 use App\Http\Controllers\Controller;
 use App\Models\FileStorage;
 use App\Models\FileTypeCategory;
-use App\Scopes\AvailableScope;
 
 class ReportController extends Controller
 {

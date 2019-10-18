@@ -8,8 +8,6 @@ use App\Models\BuildingPermission;
 use App\Models\PrivateMessage;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class RevokeBuildingPermissionForCoaches
 {
@@ -20,13 +18,13 @@ class RevokeBuildingPermissionForCoaches
      */
     public function __construct()
     {
-        //
     }
 
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param object $event
+     *
      * @return void
      */
     public function handle($event)

@@ -3,7 +3,6 @@
 namespace App\Helpers\Calculation;
 
 use App\Models\BuildingHeating;
-use App\Models\Log;
 use App\Models\UserEnergyHabit;
 
 class RoomTemperatureCalculator
@@ -89,24 +88,24 @@ class RoomTemperatureCalculator
         // new logic:
         // if the heating_(first/second)_floor is Not applicable (calculate_value 4):
         // set ALL m2 for that FLOOR to 0
-        if ($habits->heatingFirstFloor->calculate_value == 5){
+        if (5 == $habits->heatingFirstFloor->calculate_value) {
             $firstFloorRooms = [
                 self::FLOOR_ONE_ROOM_BEDROOM1,
                 self::FLOOR_ONE_ROOM_BEDROOM2,
                 self::FLOOR_ONE_ROOM_HALL,
                 self::ROOM_BATHROOM,
             ];
-            \Log::debug("No heating on first floor, setting the following rooms to 0 m2: " . implode(", ", $firstFloorRooms));
-            foreach($firstFloorRooms as $firstFloorRoom){
+            \Log::debug('No heating on first floor, setting the following rooms to 0 m2: '.implode(', ', $firstFloorRooms));
+            foreach ($firstFloorRooms as $firstFloorRoom) {
                 $this->rooms[$firstFloorRoom]['m2'] = 0;
             }
         }
-        if ($habits->heatingSecondFloor->calculate_value == 5){
+        if (5 == $habits->heatingSecondFloor->calculate_value) {
             $secondFloorRooms = [
                 self::ROOM_ATTIC,
             ];
-            \Log::debug("No heating on second floor, setting the following rooms to 0 m2: " . implode(", ", $secondFloorRooms));
-            foreach($secondFloorRooms as $secondFloorRoom){
+            \Log::debug('No heating on second floor, setting the following rooms to 0 m2: '.implode(', ', $secondFloorRooms));
+            foreach ($secondFloorRooms as $secondFloorRoom) {
                 $this->rooms[$secondFloorRoom]['m2'] = 0;
             }
         }
@@ -173,7 +172,7 @@ class RoomTemperatureCalculator
         $total = 0;
         $surface = 0;
 
-        \Log::debug(__METHOD__ . " Rooms:");
+        \Log::debug(__METHOD__.' Rooms:');
         \Log::debug(json_encode($this->rooms));
 
         foreach ($this->rooms as $room => $values) {
@@ -186,10 +185,10 @@ class RoomTemperatureCalculator
 
     protected function calculateTempLow($room)
     {
-        if ($this->rooms[$room]['temp high'] == 18) {
+        if (18 == $this->rooms[$room]['temp high']) {
             return $this->rooms[self::FLOOR_GROUND_ROOM_LIVING_ROOM]['temp low'] - 2;
         }
-        if ($this->rooms[$room]['temp high'] == 13) {
+        if (13 == $this->rooms[$room]['temp high']) {
             return 10;
         }
 

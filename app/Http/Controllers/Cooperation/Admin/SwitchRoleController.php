@@ -47,7 +47,6 @@ class SwitchRoleController extends Controller
         HoomdossierSession::setBuilding($building);
         HoomdossierSession::setIsObserving(false);
 
-
         if ($request->has('return')) {
             return redirect()->back();
         }

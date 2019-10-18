@@ -7,14 +7,14 @@ use App\Models\FileType;
 use App\Models\InputSource;
 use App\Models\User;
 
-class FileStorageService {
-
-
+class FileStorageService
+{
     /**
-     * Check whether a file type is being processed for a given cooperation
+     * Check whether a file type is being processed for a given cooperation.
      *
-     * @param FileType $fileType
+     * @param FileType    $fileType
      * @param Cooperation $cooperation
+     *
      * @return bool
      */
     public static function isFileTypeBeingProcessedForCooperation(FileType $fileType, Cooperation $cooperation): bool
@@ -25,11 +25,12 @@ class FileStorageService {
     }
 
     /**
-     * Check whether a file type is being processed for a given user and its input source
+     * Check whether a file type is being processed for a given user and its input source.
      *
-     * @param FileType $fileType
-     * @param User $user
+     * @param FileType    $fileType
+     * @param User        $user
      * @param InputSource $inputSource
+     *
      * @return bool
      */
     public static function isFileTypeBeingProcessedForUser(FileType $fileType, User $user, InputSource $inputSource): bool

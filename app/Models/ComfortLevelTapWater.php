@@ -6,14 +6,15 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\ComfortLevelTapWater
+ * App\Models\ComfortLevelTapWater.
  *
- * @property int $id
- * @property string $name
- * @property int $calculate_value
- * @property int $order
+ * @property int                             $id
+ * @property string                          $name
+ * @property int                             $calculate_value
+ * @property int                             $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComfortLevelTapWater newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComfortLevelTapWater newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComfortLevelTapWater query()

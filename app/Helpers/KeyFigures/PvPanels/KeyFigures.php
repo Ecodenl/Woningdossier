@@ -75,16 +75,16 @@ class KeyFigures implements KeyFiguresInterface
         return self::$peakPowers;
     }
 
-	/**
-	 * Returns the key figures from this class
-	 *
-	 * @return array
-	 */
-	public static function getKeyFigures()
-	{
-		return [
-			'COST_KWH' => self::COST_KWH,
-			'COST_WP' => self::COST_WP,
-		];
-	}
+    /**
+     * Returns the key figures from this class.
+     *
+     * @return array
+     */
+    public static function getKeyFigures()
+    {
+        return [
+            'COST_KWH' => self::COST_KWH,
+            'COST_WP' => self::COST_WP,
+        ];
+    }
 }

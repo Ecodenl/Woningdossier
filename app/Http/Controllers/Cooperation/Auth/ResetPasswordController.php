@@ -6,7 +6,6 @@ use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Cooperation;
-use function Couchbase\defaultDecoder;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -75,7 +74,6 @@ class ResetPasswordController extends Controller
 
         $isPending = Account::where('email', '=', $userEmail)->whereNotNull('confirm_token')->count() > 0;
         if ($isPending) {
-            //$this->guard()->logout();
             \Log::debug('The user has resetted his password, but has not confirmed his account. Redirecting to login page with a message..');
 
             return redirect(route('cooperation.auth.login'))->with('warning', __('auth.reset.inactive'));
@@ -100,6 +98,7 @@ class ResetPasswordController extends Controller
      * Get the response for a successful password reset.
      *
      * @param $response
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     protected function sendResetResponse($response)
@@ -111,7 +110,7 @@ class ResetPasswordController extends Controller
 
         $role = Role::findByName($user->roles()->first()->name);
 
-        $user->roles->count() == 1 ? $this->redirectTo = RoleHelper::getUrlByRole($role) : $this->redirectTo = '/home';
+        1 == $user->roles->count() ? $this->redirectTo = RoleHelper::getUrlByRole($role) : $this->redirectTo = '/home';
 
         return redirect($this->redirectPath())->with('status', trans($response));
     }
@@ -132,10 +131,11 @@ class ResetPasswordController extends Controller
     /**
      * Display the password reset view for the given token.
      *
-     * @param Request $request
+     * @param Request     $request
      * @param Cooperation $cooperation
      * @param $token
      * @param $email
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      */
     public function show(Request $request, Cooperation $cooperation, $token, $email)
@@ -149,11 +149,12 @@ class ResetPasswordController extends Controller
     }
 
     /**
-     * Method to display the reset form
+     * Method to display the reset form.
      *
      * @param Request $request
      * @param $token
      * @param $email
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function showPasswordResetForm(Request $request, $token, $email)
@@ -167,23 +168,25 @@ class ResetPasswordController extends Controller
             'token' => $token,
             'email' => $email,
             'password' => $password,
-            'password_confirmation' => $password
+            'password_confirmation' => $password,
         ];
 
         // so, check if the token and email are valid.
         $validationResponse = $this->broker()->validateReset($credentials);
 
-        if ($validationResponse == PasswordBroker::INVALID_TOKEN) {
-            $request->session()->flash('token_invalid',  __($validationResponse, ['password_request_link' => route('cooperation.auth.password.request.index')]));
+        if (PasswordBroker::INVALID_TOKEN == $validationResponse) {
+            $request->session()->flash('token_invalid', __($validationResponse, ['password_request_link' => route('cooperation.auth.password.request.index')]));
         }
+
         return view('cooperation.auth.passwords.reset.show', compact('token', 'email', 'response'));
     }
 
     /**
-     * Check whether the email encryption is valid
+     * Check whether the email encryption is valid.
      *
      * @param $encryption
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|string
+     *
+     * @return bool
      */
     public function emailEncryptionIsValid($encryption)
     {
@@ -192,6 +195,7 @@ class ResetPasswordController extends Controller
         } catch (DecryptException $decryptException) {
             return false;
         }
+
         return true;
     }
 }

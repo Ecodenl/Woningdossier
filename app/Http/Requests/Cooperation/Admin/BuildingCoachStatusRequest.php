@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests\Cooperation\Admin;
 
-use App\Models\Building;
-use App\Models\BuildingCoachStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -28,11 +26,11 @@ class BuildingCoachStatusRequest extends FormRequest
     {
         return [
             'building_id' => [
-                Rule::exists('buildings', 'id')
+                Rule::exists('buildings', 'id'),
             ],
             'status_id' => [
-                Rule::exists('statuses', 'id')
-            ]
+                Rule::exists('statuses', 'id'),
+            ],
         ];
     }
 }

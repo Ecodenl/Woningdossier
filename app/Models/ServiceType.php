@@ -6,16 +6,17 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\ServiceType
+ * App\Models\ServiceType.
  *
- * @property int $id
- * @property string $name
- * @property string $iso
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Element[] $elements
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Measure[] $measures
+ * @property int                                                                    $id
+ * @property string                                                                 $name
+ * @property string                                                                 $iso
+ * @property \Illuminate\Support\Carbon|null                                        $created_at
+ * @property \Illuminate\Support\Carbon|null                                        $updated_at
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Element[]         $elements
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Measure[]         $measures
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType query()

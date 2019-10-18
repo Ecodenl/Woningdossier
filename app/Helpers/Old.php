@@ -34,8 +34,8 @@ class Old
     /**
      * Set a value with key in the _modified_old_input session.
      *
-     * @param string $key Key to be set in the _modified_old_input session
-     * @param string $value Defaults to empty. Value to be set in the given key
+     * @param string|array $value Defaults to empty. Value to be set in the given key
+     * @param string       $key   Key to be set in the _modified_old_input session
      */
     public static function put($value, $key = '')
     {

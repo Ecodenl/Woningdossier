@@ -25,22 +25,21 @@ class PrivateMessageViewService
         event(new PrivateMessageReceiverEvent($privateMessage));
     }
 
-
     /**
      * Make a collection of private messages as read by a resident or coach
      * These have a user ID - input source ID combination.
      *
-     * @param  Collection  $privateMessages
-     * @param  User  $user
-     * @param  InputSource  $inputSource
+     * @param Collection  $privateMessages
+     * @param User        $user
+     * @param InputSource $inputSource
      */
-    public static function markAsReadByUser(Collection $privateMessages, User $user, InputSource $inputSource){
-        foreach($privateMessages as $privateMessage){
+    public static function markAsReadByUser(Collection $privateMessages, User $user, InputSource $inputSource)
+    {
+        foreach ($privateMessages as $privateMessage) {
             PrivateMessageView::where('private_message_id', '=', $privateMessage->id)
                 ->where('user_id', '=', $user->id)
                 ->where('input_source_id', '=', $inputSource->id)
                 ->update(['read_at' => Carbon::now()]);
-
         }
     }
 
@@ -48,18 +47,19 @@ class PrivateMessageViewService
      * Mark a collection of private messages as read by a cooperation
      * These have a cooperation ID.
      *
-     * @param  Collection  $privateMessages
-     * @param  Cooperation  $cooperation
+     * @param Collection  $privateMessages
+     * @param Cooperation $cooperation
      */
-    public static function markAsReadByCooperation(Collection $privateMessages, Cooperation $cooperation){
-        foreach($privateMessages as $privateMessage){
-            PrivateMessageView::where('private_message_id','=', $privateMessage->id)
+    public static function markAsReadByCooperation(Collection $privateMessages, Cooperation $cooperation)
+    {
+        foreach ($privateMessages as $privateMessage) {
+            PrivateMessageView::where('private_message_id', '=', $privateMessage->id)
                 ->where('to_cooperation_id', $cooperation->id)
                 ->update(['read_at' => Carbon::now()]);
         }
     }
 
-    /**
+    /*
      * Sets the incoming messages to read.
      *
      * @param Collection $privateMessages

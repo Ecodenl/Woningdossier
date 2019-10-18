@@ -8,17 +8,18 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\QuestionsAnswer
+ * App\Models\QuestionsAnswer.
  *
- * @property int $id
- * @property int $question_id
- * @property int|null $building_id
- * @property int $input_source_id
- * @property string $answer
+ * @property int                             $id
+ * @property int                             $question_id
+ * @property int|null                        $building_id
+ * @property int                             $input_source_id
+ * @property string                          $answer
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\InputSource $inputSource
- * @property-read \App\Models\Question $question
+ * @property \App\Models\InputSource         $inputSource
+ * @property \App\Models\Question            $question
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\QuestionsAnswer newModelQuery()
@@ -36,7 +37,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class QuestionsAnswer extends Model
 {
-    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
+    use GetValueTrait;
+    use GetMyValuesTrait;
+    use ToolSettingTrait;
 
     protected $fillable = [
         'question_id', 'building_id', 'input_source_id', 'answer',

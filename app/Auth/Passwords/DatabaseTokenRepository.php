@@ -2,16 +2,17 @@
 
 namespace App\Auth\Passwords;
 
+use Illuminate\Auth\Passwords\DatabaseTokenRepository as BaseDatabaseTokenRepository;
 use Illuminate\Auth\Passwords\TokenRepositoryInterface;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use \Illuminate\Auth\Passwords\DatabaseTokenRepository as BaseDatabaseTokenRepository;
 
 class DatabaseTokenRepository extends BaseDatabaseTokenRepository implements TokenRepositoryInterface
 {
     /**
      * Create a new token record.
      *
-     * @param  \Illuminate\Contracts\Auth\CanResetPassword $user
+     * @param \Illuminate\Contracts\Auth\CanResetPassword $user
+     *
      * @return string
      */
     public function create(CanResetPasswordContract $user)
@@ -31,8 +32,9 @@ class DatabaseTokenRepository extends BaseDatabaseTokenRepository implements Tok
     /**
      * Determine if a token record exists and is valid.
      *
-     * @param  \Illuminate\Contracts\Auth\CanResetPassword $user
-     * @param  string $token
+     * @param \Illuminate\Contracts\Auth\CanResetPassword $user
+     * @param string                                      $token
+     *
      * @return bool
      */
     public function exists(CanResetPasswordContract $user, $token)
@@ -43,10 +45,11 @@ class DatabaseTokenRepository extends BaseDatabaseTokenRepository implements Tok
         )->get();
 
         foreach ($records as $record) {
-            if (!$this->tokenExpired($record->created_at) && $this->hasher->check($token, $record->token)) {
+            if (! $this->tokenExpired($record->created_at) && $this->hasher->check($token, $record->token)) {
                 return true;
             }
         }
+
         return false;
     }
 }

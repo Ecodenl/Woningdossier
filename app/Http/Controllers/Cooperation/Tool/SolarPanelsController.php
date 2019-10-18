@@ -17,7 +17,6 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
-use Doctrine\DBAL\Schema\AbstractAsset;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

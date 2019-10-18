@@ -13,8 +13,9 @@ class SentryContext
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure                 $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -22,7 +23,6 @@ class SentryContext
         // If logged in and sentry is found, add extra contextual information
         // which helps debugging exceptions
         if (auth()->check() && app()->bound('sentry')) {
-
             /** @var Account $account */
             $account = Hoomdossier::account();
             $user = Hoomdossier::user();
@@ -46,7 +46,7 @@ class SentryContext
                 'building:owner' => $building->user->id,
             ];
 
-            \Sentry\configureScope(function (Scope $scope) use($u, $tags) {
+            \Sentry\configureScope(function (Scope $scope) use ($u, $tags) {
                 $scope->setUser($u);
                 $scope->setExtras($tags);
             });

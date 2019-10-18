@@ -8,21 +8,22 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingPvPanel
+ * App\Models\BuildingPvPanel.
  *
- * @property int $id
- * @property int $building_id
- * @property int|null $input_source_id
- * @property int|null $peak_power
- * @property int $number
- * @property int|null $pv_panel_orientation_id
- * @property int|null $angle
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $comment
- * @property-read \App\Models\Building $building
- * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \App\Models\PvPanelOrientation|null $orientation
+ * @property int                                 $id
+ * @property int                                 $building_id
+ * @property int|null                            $input_source_id
+ * @property int|null                            $peak_power
+ * @property int                                 $number
+ * @property int|null                            $pv_panel_orientation_id
+ * @property int|null                            $angle
+ * @property \Illuminate\Support\Carbon|null     $created_at
+ * @property \Illuminate\Support\Carbon|null     $updated_at
+ * @property string|null                         $comment
+ * @property \App\Models\Building                $building
+ * @property \App\Models\InputSource|null        $inputSource
+ * @property \App\Models\PvPanelOrientation|null $orientation
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPvPanel newModelQuery()
@@ -43,7 +44,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingPvPanel extends Model
 {
-    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
+    use GetValueTrait;
+    use GetMyValuesTrait;
+    use ToolSettingTrait;
 
     protected $fillable = [
         'building_id',

@@ -39,13 +39,13 @@ class LegacyPrivateMessageCleanup extends Command
     public function handle()
     {
         $buildings = Building::withTrashed()->whereNotNull('deleted_at')->get();
-        $this->line("Got " . $buildings->count() . " buildings that have been deleted");
-        foreach($buildings as $building){
-            $privateMessages  = $building->privateMessages;
-            if ($privateMessages->count() > 0){
-                $this->line("There is/are " . $privateMessages->count() . " private message(s) for building " .  $building->id);
-                foreach($privateMessages as $privateMessage){
-                    $this->info("Deleting private message " . $privateMessage->id . " for building " . $building->id);
+        $this->line('Got '.$buildings->count().' buildings that have been deleted');
+        foreach ($buildings as $building) {
+            $privateMessages = $building->privateMessages;
+            if ($privateMessages->count() > 0) {
+                $this->line('There is/are '.$privateMessages->count().' private message(s) for building '.$building->id);
+                foreach ($privateMessages as $privateMessage) {
+                    $this->info('Deleting private message '.$privateMessage->id.' for building '.$building->id);
                     $privateMessage->delete();
                 }
             }

@@ -398,7 +398,7 @@ class User extends Model implements AuthorizableContract
         $currentRole = HoomdossierSession::getRole(true);
 
         // check if the user has the role, and if the current role is set in the role
-        if ($this->hasRole($roles) && in_array($currentRole->name, $roleNames)) {
+        if (is_array($roleNames) && $this->hasRole($roles) && in_array($currentRole->name, $roleNames)) {
             return true;
         }
 

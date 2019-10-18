@@ -183,7 +183,7 @@ class ResetPasswordController extends Controller
      * Check whether the email encryption is valid
      *
      * @param $encryption
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|string
+     * @return bool
      */
     public function emailEncryptionIsValid($encryption)
     {

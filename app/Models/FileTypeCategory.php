@@ -3,19 +3,20 @@
 namespace App\Models;
 
 use App\Helpers\TranslatableTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Builder;
 
 /**
- * App\Models\FileTypeCategory
+ * App\Models\FileTypeCategory.
  *
- * @property int $id
- * @property string $name
- * @property string $short
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FileType[] $fileTypes
+ * @property int                                                             $id
+ * @property string                                                          $name
+ * @property string                                                          $short
+ * @property \Illuminate\Support\Carbon|null                                 $created_at
+ * @property \Illuminate\Support\Carbon|null                                 $updated_at
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\FileType[] $fileTypes
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileTypeCategory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileTypeCategory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileTypeCategory query()
@@ -33,9 +34,9 @@ class FileTypeCategory extends Model
     use TranslatableTrait;
 
     /**
-     * Scope on the short column
+     * Scope on the short column.
      *
-     * @param  Builder  $query
+     * @param Builder $query
      * @param $short
      *
      * @return Builder
@@ -46,7 +47,7 @@ class FileTypeCategory extends Model
     }
 
     /**
-     * Return the hasMany relationship on the filetypes
+     * Return the hasMany relationship on the filetypes.
      *
      * @return HasMany
      */

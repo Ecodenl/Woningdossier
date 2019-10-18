@@ -51,7 +51,7 @@ class MyPlanController extends Controller
         }
 
         return view('cooperation.tool.my-plan.index', compact(
-            'actionPlanComments', 'pdfReportFileType',  'file', 'inputSourcesForPersonalPlanModal', 'advices',
+            'actionPlanComments', 'pdfReportFileType', 'file', 'inputSourcesForPersonalPlanModal', 'advices',
             'anyFilesBeingProcessed', 'reportFileTypeCategory', 'buildingHasCompletedGeneralData', 'personalPlanForVariousInputSources'
         ));
     }
@@ -85,7 +85,6 @@ class MyPlanController extends Controller
 
     public function store(Request $request)
     {
-
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $buildingOwner = $building->user;
@@ -102,13 +101,11 @@ class MyPlanController extends Controller
             // check if the advice exists, if the input source id is the current input source and if the buildingOwner id is the user id
             // check if the action plan exists, if the input source id from the advice is the inputsource itself or if the user is observing and the buildingOwner is the userId
             if ($inputSourceIdIsInputSourceOrUserIsObserving && $buildingOwnerIdIsUserId) {
-
                 // if the user isnt observing a other building we allow changes, else we dont.
-                if (HoomdossierSession::isUserObserving() == false) {
+                if (false == HoomdossierSession::isUserObserving()) {
                     MyPlanHelper::saveUserInterests($advice, $request->input("advice.{$advice->id}"));
                 }
             }
-
         }
 
         return response()->json(UserActionPlanAdviceService::getPersonalPlan($buildingOwner, $inputSource));

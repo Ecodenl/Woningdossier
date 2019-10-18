@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Helpers\PicoHelper;
-use App\Http\Requests\FillAddressRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FillAddressRequest;
 
 class GeoController extends Controller
 {
-
     public function getAddressData(FillAddressRequest $request)
     {
         $postalCode = trim(strip_tags($request->get('postal_code', '')));
@@ -19,5 +18,4 @@ class GeoController extends Controller
 
         return response()->json($address);
     }
-
 }

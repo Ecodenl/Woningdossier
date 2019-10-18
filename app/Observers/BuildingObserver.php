@@ -7,11 +7,10 @@ use App\Scopes\GetValueScope;
 
 class BuildingObserver
 {
-
     /**
      * Deleting event.
      *
-     * @param  Building  $building
+     * @param Building $building
      */
     public function deleting(Building $building)
     {

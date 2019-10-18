@@ -18,18 +18,17 @@ class Registered
     public $user;
 
     /**
-     * The current cooperation
+     * The current cooperation.
      *
      * @var Cooperation
      */
     public $cooperation;
 
-
     /**
      * Registered constructor.
      *
-     * @param  Cooperation  $cooperation
-     * @param  User         $user
+     * @param Cooperation $cooperation
+     * @param User        $user
      */
     public function __construct(Cooperation $cooperation, User $user)
     {

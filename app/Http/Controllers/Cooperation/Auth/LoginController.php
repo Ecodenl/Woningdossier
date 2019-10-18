@@ -7,12 +7,12 @@ use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Cooperation;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Spatie\Permission\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Spatie\Permission\Models\Role;
 
 class LoginController extends Controller
 {
@@ -57,7 +57,7 @@ class LoginController extends Controller
     }
 
     /**
-     * @param  Request  $request
+     * @param Request $request
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
@@ -77,7 +77,7 @@ class LoginController extends Controller
     /**
      * Get the needed authorization credentials from the request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      *
      * @return array
      */
@@ -89,11 +89,12 @@ class LoginController extends Controller
     /**
      * Handle a login request to the application.
      *
-     * @param  Request      $request
-     * @param  Cooperation  $cooperation
+     * @param Request     $request
+     * @param Cooperation $cooperation
+     *
+     * @throws ValidationException
      *
      * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response|void
-     * @throws ValidationException
      */
     public function login(Request $request, Cooperation $cooperation)
     {
@@ -105,39 +106,36 @@ class LoginController extends Controller
         // the IP address of the client making these requests into this application.
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
+
             return $this->sendLockoutResponse($request);
         }
 
         // validate the credentials from the user
         if ($this->guard()->validate($this->credentials($request))) {
-
-            /** @var Account $account*/
+            /** @var Account $account */
             $account = $this->guard()->getLastAttempted();
 
-            if (!$account->isAssociatedWith($cooperation)) {
+            if (! $account->isAssociatedWith($cooperation)) {
                 throw ValidationException::withMessages([
                     'cooperation' => [trans('auth.cooperation')],
                 ]);
             }
         }
 
-
         // check if the account is confirmed.
         if ($this->accountIsNotConfirmed($request->get('email'))) {
             $this->sendAccountNotConfirmedResponse();
         }
 
-
         // everything is ok with the user at this point, now we log him in.
         if ($this->attemptLogin($request)) {
-
             // the guard()->user() will return the auth model, in our case this is the Account model
             // but we want the user from the account, so thats why we do ->user()->user();
             $user = $this->guard()->user()->user();
 
             $role = Role::findByName($user->roles()->first()->name);
 
-            $user->roles->count() == 1 ? $this->redirectTo = RoleHelper::getUrlByRole($role) : $this->redirectTo = '/admin';
+            1 == $user->roles->count() ? $this->redirectTo = RoleHelper::getUrlByRole($role) : $this->redirectTo = '/admin';
 
             return $this->sendLoginResponse($request);
         }
@@ -151,7 +149,7 @@ class LoginController extends Controller
     }
 
     /**
-     * Check if a account is confirmed based on its email address
+     * Check if a account is confirmed based on its email address.
      *
      * @param $email
      *
@@ -166,14 +164,14 @@ class LoginController extends Controller
     }
 
     /**
-     * Send account not confirmed response
+     * Send account not confirmed response.
      */
     private function sendAccountNotConfirmedResponse()
     {
         // throw validation exception, with a confirmation resend link.
         throw ValidationException::withMessages([
             'confirm_token' => [
-                __('auth.inactive', ['resend-link' => route('cooperation.auth.confirm.resend.show')])
+                __('auth.inactive', ['resend-link' => route('cooperation.auth.confirm.resend.show')]),
             ],
         ]);
     }

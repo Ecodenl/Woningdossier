@@ -12,12 +12,13 @@ use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
 use Carbon\Carbon;
 
-class UserActionPlanAdviceService {
-
+class UserActionPlanAdviceService
+{
     /**
-     * Method to return input sources that have an action plan advice, on a building
+     * Method to return input sources that have an action plan advice, on a building.
      *
-     * @param  User $user
+     * @param User $user
+     *
      * @return UserActionPlanAdvice[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
     public static function availableInputSourcesForActionPlan(User $user)
@@ -33,10 +34,11 @@ class UserActionPlanAdviceService {
     }
 
     /**
-     * Get the personal plan for a user and its input source
+     * Get the personal plan for a user and its input source.
      *
-     * @param User $user
+     * @param User        $user
      * @param InputSource $inputSource
+     *
      * @return array
      */
     public static function getPersonalPlan(User $user, InputSource $inputSource): array
@@ -45,12 +47,9 @@ class UserActionPlanAdviceService {
 
         $sortedAdvices = [];
 
-        foreach($advices as $measureType => $stepAdvices) {
-
+        foreach ($advices as $measureType => $stepAdvices) {
             foreach ($stepAdvices as $stepSlug => $advicesForStep) {
-
                 foreach ($advicesForStep as $advice) {
-
                     $year = $advice->getYear($inputSource);
 
                     // if its a string, the $year contains 'geen jaartal'
@@ -59,13 +58,13 @@ class UserActionPlanAdviceService {
                     } else {
                         $costYear = $year;
                     }
-                    if (!array_key_exists($year, $sortedAdvices)) {
+                    if (! array_key_exists($year, $sortedAdvices)) {
                         $sortedAdvices[$year] = [];
                     }
                     // get step from advice
                     $step = $advice->step;
 
-                    if ( ! array_key_exists($step->name, $sortedAdvices[$year])) {
+                    if (! array_key_exists($step->name, $sortedAdvices[$year])) {
                         $sortedAdvices[$year][$step->name] = [];
                     }
 
@@ -89,16 +88,16 @@ class UserActionPlanAdviceService {
     }
 
     /**
-     * Get the action plan categorized under measure type
+     * Get the action plan categorized under measure type.
      *
-     * @param User $user
+     * @param User        $user
      * @param InputSource $inputSource
-     * @param bool $withAdvices
+     * @param bool        $withAdvices
+     *
      * @return array
      */
     public static function getCategorizedActionPlan(User $user, InputSource $inputSource, $withAdvices = true)
     {
-
         $result = [];
         $advices = UserActionPlanAdvice::forInputSource($inputSource)
             ->where('user_id', $user->id)
@@ -108,9 +107,7 @@ class UserActionPlanAdviceService {
 
         /** @var UserActionPlanAdvice $advice */
         foreach ($advices as $advice) {
-
             if ($advice->step instanceof Step) {
-
                 /** @var MeasureApplication$measureApplication */
                 $measureApplication = $advice->measureApplication;
 
@@ -118,7 +115,7 @@ class UserActionPlanAdviceService {
                     $advice->year = $advice->getAdviceYear($inputSource);
                 }
                 // if advices are not desirable and the measureApplication is not an advice it will be added to the result
-                if (!$withAdvices && !$measureApplication->isAdvice()) {
+                if (! $withAdvices && ! $measureApplication->isAdvice()) {
                     $result[$measureApplication->measure_type][$advice->step->slug][] = $advice;
                 }
 

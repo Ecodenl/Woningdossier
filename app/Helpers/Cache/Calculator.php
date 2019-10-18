@@ -4,7 +4,6 @@ namespace App\Helpers\Cache;
 
 class Calculator extends BaseCache
 {
-
     const CACHE_PRICE_INDEX = 'Calculator_getPriceIndex_%s';
 
     public static function getPriceIndex($short)
@@ -16,7 +15,5 @@ class Calculator extends BaseCache
                 return \App\Models\PriceIndexing::where('short', $short)->first();
             }
         );
-
     }
-
 }

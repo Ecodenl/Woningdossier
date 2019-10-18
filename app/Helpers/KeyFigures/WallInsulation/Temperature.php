@@ -34,7 +34,7 @@ class Temperature implements KeyFiguresInterface
      * @param string $measure Use WALL_INSULATION_* consts
      * @param $avgHouseTemp
      *
-     * @return null|string Null on failure
+     * @return string|null Null on failure
      */
     public static function energySavingFigureWallInsulation($measure, $avgHouseTemp)
     {
@@ -47,21 +47,21 @@ class Temperature implements KeyFiguresInterface
         return number_format($calcValues['default'] + $calcValues['correction'] * ($avgHouseTemp - self::AVERAGE_TEMPERATURE_NORM), 2);
     }
 
-	/**
-	 * Returns the key figures from this class
-	 *
-	 * @return array
-	 */
-	public static function getKeyFigures()
-	{
-		return [
-			'AVERAGE_TEMPERATURE_NORM' => self::AVERAGE_TEMPERATURE_NORM,
-			'WALL_INSULATION_JOINTS_DEFAULT' => self::$calculationValues[self::WALL_INSULATION_JOINTS]['default'],
-			'WALL_INSULATION_JOINTS_CORRECTION' => self::$calculationValues[self::WALL_INSULATION_JOINTS]['correction'],
-			'WALL_INSULATION_FACADE_DEFAULT' => self::$calculationValues[self::WALL_INSULATION_FACADE]['default'],
-			'WALL_INSULATION_FACADE_CORRECTION' => self::$calculationValues[self::WALL_INSULATION_FACADE]['correction'],
-			'WALL_INSULATION_RESEARCH_DEFAULT' => self::$calculationValues[self::WALL_INSULATION_RESEARCH]['default'],
-			'WALL_INSULATION_RESEARCH_CORRECTION' => self::$calculationValues[self::WALL_INSULATION_RESEARCH]['correction'],
-		];
-	}
+    /**
+     * Returns the key figures from this class.
+     *
+     * @return array
+     */
+    public static function getKeyFigures()
+    {
+        return [
+            'AVERAGE_TEMPERATURE_NORM' => self::AVERAGE_TEMPERATURE_NORM,
+            'WALL_INSULATION_JOINTS_DEFAULT' => self::$calculationValues[self::WALL_INSULATION_JOINTS]['default'],
+            'WALL_INSULATION_JOINTS_CORRECTION' => self::$calculationValues[self::WALL_INSULATION_JOINTS]['correction'],
+            'WALL_INSULATION_FACADE_DEFAULT' => self::$calculationValues[self::WALL_INSULATION_FACADE]['default'],
+            'WALL_INSULATION_FACADE_CORRECTION' => self::$calculationValues[self::WALL_INSULATION_FACADE]['correction'],
+            'WALL_INSULATION_RESEARCH_DEFAULT' => self::$calculationValues[self::WALL_INSULATION_RESEARCH]['default'],
+            'WALL_INSULATION_RESEARCH_CORRECTION' => self::$calculationValues[self::WALL_INSULATION_RESEARCH]['correction'],
+        ];
+    }
 }

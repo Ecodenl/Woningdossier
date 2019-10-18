@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Building;
 use App\Models\BuildingCurrentHeating;
-use App\Models\Cooperation;
 use App\Models\HeatSource;
 use App\Models\PresentHeatPump;
 use App\Models\Step;

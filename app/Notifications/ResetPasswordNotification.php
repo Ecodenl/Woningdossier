@@ -2,13 +2,12 @@
 
 namespace App\Notifications;
 
-use App\Models\Account;
 use App\Mail\ResetPasswordRequest;
+use App\Models\Account;
 use App\Models\Cooperation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class ResetPasswordNotification extends Notification implements ShouldQueue
@@ -30,7 +29,7 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
     public $cooperation;
 
     /**
-     * The account that wants a password reset
+     * The account that wants a password reset.
      *
      * @var Account
      */
@@ -38,6 +37,7 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
 
     /**
      * Create a notification instance.
+     *
      * @param $token
      * @param Account $account
      * @param $cooperation

@@ -66,13 +66,13 @@ class PrivateMessageService
      * Method to create a conversation request for a building on a user.
      *
      * @param Building $building
-     * @param User $user
-     * @param Request $request
+     * @param User     $user
+     * @param Request  $request
      */
     public static function createConversationRequest(Building $building, User $user, Request $request)
     {
-        $action      = $request->get('action', '');
-        $message     = strip_tags($request->get('message', ''));
+        $action = $request->get('action', '');
+        $message = strip_tags($request->get('message', ''));
         $measureApplicationName = $request->get('measure_application_name', null);
         $allowAccess = 'on' == $request->get('allow_access', '');
         $requestType = PrivateMessage::getTranslationForRequestType($action);

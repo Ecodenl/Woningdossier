@@ -30,7 +30,7 @@ class ResendConfirmMailRequest extends FormRequest
                 'email',
                 Rule::exists('accounts', 'email')->where(function ($query) {
                     $query->where('confirm_token', '!=', null);
-                })
+                }),
             ],
         ];
     }

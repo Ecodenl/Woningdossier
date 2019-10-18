@@ -5,7 +5,6 @@ namespace App\Helpers;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Models\ComfortLevelTapWater;
 use App\Models\KeyFigureConsumptionTapWater;
-use App\Models\Log;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\UserEnergyHabit;
@@ -42,9 +41,10 @@ class HighEfficiencyBoilerCalculator
     }
 
     /**
-     * @param ServiceValue $boiler
+     * @param ServiceValue         $boiler
      * @param UserEnergyHabit|null $habit
-     * @param int $amountGas
+     * @param int                  $amountGas
+     *
      * @return array
      */
     public static function calculateGasUsage(ServiceValue $boiler, $habit, $amountGas = 0)
@@ -65,8 +65,7 @@ class HighEfficiencyBoilerCalculator
 
         $boilerEfficiency = $boiler->keyFigureBoilerEfficiency;
 
-        self::debug(__METHOD__ . " boiler efficiencies of boiler: " . $boilerEfficiency->heating . "% (heating) and " . $boilerEfficiency->wtw . "% (tap water)");
-
+        self::debug(__METHOD__.' boiler efficiencies of boiler: '.$boilerEfficiency->heating.'% (heating) and '.$boilerEfficiency->wtw.'% (tap water)');
 
         if ($habit instanceof UserEnergyHabit) {
             if (1 == $habit->cook_gas) {
@@ -91,7 +90,7 @@ class HighEfficiencyBoilerCalculator
         $result['heating']['bruto'] = $amountGas - $result['tap_water']['bruto'] - $result['cooking'];
         $result['heating']['netto'] = $result['heating']['bruto'] * ($boilerEfficiency->heating / 100);
 
-        self::debug(__METHOD__ . ' Gas usage: '.json_encode($result));
+        self::debug(__METHOD__.' Gas usage: '.json_encode($result));
 
         return $result;
     }

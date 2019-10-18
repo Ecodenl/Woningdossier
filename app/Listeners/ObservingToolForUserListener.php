@@ -4,10 +4,6 @@ namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\InputSource;
-use App\Models\Log;
-use Carbon\Carbon;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class ObservingToolForUserListener
 {
@@ -18,13 +14,13 @@ class ObservingToolForUserListener
      */
     public function __construct()
     {
-        //
     }
 
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param object $event
+     *
      * @return void
      */
     public function handle($event)
@@ -42,7 +38,5 @@ class ObservingToolForUserListener
 
         // so the user isnt able to save anything
         HoomdossierSession::setIsObserving(true);
-
-
     }
 }

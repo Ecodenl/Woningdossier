@@ -2,22 +2,22 @@
 
 namespace App\Models;
 
-use App\Helpers\Hoomdossier;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\BuildingCoachStatus
+ * App\Models\BuildingCoachStatus.
  *
- * @property int $id
- * @property int|null $coach_id
- * @property int|null $building_id
- * @property string $status
+ * @property int                             $id
+ * @property int|null                        $coach_id
+ * @property int|null                        $building_id
+ * @property string                          $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building|null $building
- * @property-read \App\Models\User|null $coach
- * @property-read \App\Models\User|null $user
+ * @property \App\Models\Building|null       $building
+ * @property \App\Models\User|null           $coach
+ * @property \App\Models\User|null           $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus query()
@@ -31,7 +31,6 @@ use Illuminate\Support\Collection;
  */
 class BuildingCoachStatus extends Model
 {
-
     protected $table = 'building_coach_statuses';
 
     protected $fillable = [
@@ -43,7 +42,6 @@ class BuildingCoachStatus extends Model
 
     // when a user is removed from a building
     const STATUS_REMOVED = 'removed';
-
 
     /**
      * Get the building from the status.
@@ -79,13 +77,13 @@ class BuildingCoachStatus extends Model
      * Returns the 'connected' coaches from a given building id.
      * A coach is considered to be connected when he has more pending statuses then removed statuses.
      *
-     * @param  int  $buildingId
+     * @param int $buildingId
      *
      * @return \Illuminate\Support\Collection
      */
     public static function getConnectedCoachesByBuildingId(int $buildingId): Collection
     {
-        $pendingCount            = \DB::raw('(
+        $pendingCount = \DB::raw('(
                 SELECT coach_id, building_id, count(`status`) AS count_pending
 	            FROM building_coach_statuses
 	            WHERE coach_id is not null
@@ -94,14 +92,14 @@ class BuildingCoachStatus extends Model
 	            AND `status` = \''.BuildingCoachStatus::STATUS_ADDED.' \'
 	            group by coach_id, building_id
             )  AS bcs2');
-        $removedCount            = \DB::raw('(
+        $removedCount = \DB::raw('(
                 SELECT building_id, coach_id, count(`status`) AS count_removed
 	            FROM building_coach_statuses
 	            
 	            WHERE coach_id is not null
-	            AND building_id = ' . $buildingId . ' 
+	            AND building_id = '.$buildingId.' 
 	            AND `coach_id` IS NOT NULL 
-	            AND `status` = \'' . BuildingCoachStatus::STATUS_REMOVED . ' \'
+	            AND `status` = \''.BuildingCoachStatus::STATUS_REMOVED.' \'
 	            group by coach_id, building_id
             ) AS bcs3');
         $buildingPermissionCount = \DB::raw('(
@@ -111,9 +109,8 @@ class BuildingCoachStatus extends Model
 	            GROUP BY user_id
             ) as bp');
 
-
         /**
-         * Retrieves the coaches that have a pending building status, also returns the building_permission count so we can check if the coach can access the building
+         * Retrieves the coaches that have a pending building status, also returns the building_permission count so we can check if the coach can access the building.
          */
         $coachesWithPendingBuildingCoachStatus =
             \DB::query()->select('bcs2.coach_id', 'bcs2.building_id', 'bcs2.count_pending AS count_pending',
@@ -128,19 +125,17 @@ class BuildingCoachStatus extends Model
         return $coachesWithPendingBuildingCoachStatus;
     }
 
-
-
     /**
-     * Returns all the connected buildings from a user (coach)
+     * Returns all the connected buildings from a user (coach).
      *
-     * @param  User         $user, the user we want the connected buildings from.
-     * @param  Cooperation  $cooperation, from which cooperation we want to retrieve it.
+     * @param User        $user,        the user we want the connected buildings from
+     * @param Cooperation $cooperation, from which cooperation we want to retrieve it
      *
      * @return Collection
      */
     public static function getConnectedBuildingsByUser(User $user, Cooperation $cooperation): Collection
     {
-        $userId        = $user->id;
+        $userId = $user->id;
         $cooperationId = $cooperation->id;
 
         $pendingCount = \DB::raw('(
@@ -162,7 +157,6 @@ class BuildingCoachStatus extends Model
 	            GROUP BY user_id
             ) as bp');
 
-
         // query to get the buildings a user is connected to
         $buildingsTheCoachIsConnectedTo =
             \DB::query()->select('bcs2.coach_id', 'bcs2.building_id', 'bcs2.count_pending AS count_pending',
@@ -179,7 +173,6 @@ class BuildingCoachStatus extends Model
                ->leftJoin('buildings', 'bcs2.building_id', '=', 'buildings.id')
                 // check if the building its user / resident is associated with the given cooperation
 
-
                 // accept from the cooperation-building-link
                ->join('users', function ($joinUsers) use ($cooperationId) {
                    $joinUsers->on('buildings.user_id', '=', 'users.id')
@@ -192,17 +185,15 @@ class BuildingCoachStatus extends Model
                ->groupBy('building_id', 'users.cooperation_id', 'coach_id', 'count_removed', 'count_pending', 'count_building_permission')
                ->get();
 
-
         return $buildingsTheCoachIsConnectedTo;
     }
-
 
     /**
      * Get the current status for a given building id, can return the translation or the status key
      * will return the translation by default.
      *
-     * @param  int   $buildingId
-     * @param  bool  $returnTranslation
+     * @param int  $buildingId
+     * @param bool $returnTranslation
      *
      * @return string
      */
@@ -218,5 +209,4 @@ class BuildingCoachStatus extends Model
 
         return '';
     }
-
 }

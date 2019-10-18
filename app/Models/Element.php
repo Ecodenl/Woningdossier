@@ -6,18 +6,19 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Element
+ * App\Models\Element.
  *
- * @property int $id
- * @property string $name
- * @property string $short
- * @property int $service_type_id
- * @property int $order
- * @property string $info
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\ServiceType $serviceType
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ElementValue[] $values
+ * @property int                                                                 $id
+ * @property string                                                              $name
+ * @property string                                                              $short
+ * @property int                                                                 $service_type_id
+ * @property int                                                                 $order
+ * @property string                                                              $info
+ * @property \Illuminate\Support\Carbon|null                                     $created_at
+ * @property \Illuminate\Support\Carbon|null                                     $updated_at
+ * @property \App\Models\ServiceType                                             $serviceType
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\ElementValue[] $values
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Element newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Element newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Element query()

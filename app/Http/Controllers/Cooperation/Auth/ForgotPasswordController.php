@@ -8,7 +8,6 @@ use App\Models\Account;
 use App\Models\User;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 
 class ForgotPasswordController extends Controller
@@ -49,7 +48,8 @@ class ForgotPasswordController extends Controller
     /**
      * Send a reset link to the given user.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
@@ -63,7 +63,7 @@ class ForgotPasswordController extends Controller
             $request->only('email')
         );
 
-        return $response == Password::RESET_LINK_SENT
+        return Password::RESET_LINK_SENT == $response
             ? $this->sendResetLinkResponse($response)
             : $this->sendResetLinkFailedResponse($request, $response);
     }
@@ -71,7 +71,8 @@ class ForgotPasswordController extends Controller
     /**
      * Validate the email for the given request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return void
      */
     protected function validateEmail(Request $request)
@@ -87,11 +88,11 @@ class ForgotPasswordController extends Controller
 
                     // if the account does not exist, then there is no user associated with the given cooperation.
                     // or the email does not exist at al.
-                    if (!$accountWithUserForCurrentCooperation instanceof Account) {
+                    if (! $accountWithUserForCurrentCooperation instanceof Account) {
                         $fail(__('passwords.user'));
                     }
                 },
-            ]
+            ],
         ]);
     }
 }

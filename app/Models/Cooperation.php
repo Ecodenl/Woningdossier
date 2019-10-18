@@ -7,17 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\Cooperation
+ * App\Models\Cooperation.
  *
- * @property int $id
- * @property string $name
- * @property string $slug
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $website_url
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
- * @property-read \App\Models\CooperationStyle $style
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property int                                                         $id
+ * @property string                                                      $name
+ * @property string                                                      $slug
+ * @property \Illuminate\Support\Carbon|null                             $created_at
+ * @property \Illuminate\Support\Carbon|null                             $updated_at
+ * @property string|null                                                 $website_url
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
+ * @property \App\Models\CooperationStyle                                $style
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cooperation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cooperation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cooperation query()
@@ -62,14 +63,14 @@ class Cooperation extends Model
     /**
      * Check if the cooperation has a active step.
      *
-     * @param  Step  $step
+     * @param Step $step
      *
      * @return bool
      */
     public function isStepActive(Step $step): bool
     {
         $cooperationSteps = $this->steps();
-        $cooperationStep  = $cooperationSteps->find($step->id);
+        $cooperationStep = $cooperationSteps->find($step->id);
         if ($cooperationStep instanceof Step) {
             if ($cooperationStep->pivot->is_active) {
                 return true;
@@ -106,13 +107,12 @@ class Cooperation extends Model
         return $coaches;
     }
 
-
     /**
-     * Return a collection of users for the cooperation and given role
+     * Return a collection of users for the cooperation and given role.
      *
      * This does not apply any scopes and should probably only be used in admin environments.
      *
-     * @param  Role  $role
+     * @param Role $role
      *
      * @return Collection
      */
@@ -125,9 +125,7 @@ class Cooperation extends Model
                ->leftJoin('users', config('permission.table_names.model_has_roles').'.'.config('permission.column_names.model_morph_key'), '=', 'users.id')
                ->get()->toArray()
         );
-
     }
-
 
 //    public function scopeUsersWithRole(Builder $query, Role $role)
 //    {
@@ -138,5 +136,4 @@ class Cooperation extends Model
 //            ->select('users.*');
 //    }
 //
-
 }

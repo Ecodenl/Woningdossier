@@ -5,13 +5,14 @@ namespace App\Mail;
 use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class UserAssociatedWithCooperation extends Mailable implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public $cooperation;
     public $associatedUser;
@@ -20,7 +21,8 @@ class UserAssociatedWithCooperation extends Mailable implements ShouldQueue
      * Create new message instance.
      *
      * UserCreatedEmail constructor.
-     * @param User $user
+     *
+     * @param User        $user
      * @param Cooperation $cooperation
      */
     public function __construct(Cooperation $cooperation, User $user)

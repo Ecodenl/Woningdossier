@@ -202,7 +202,6 @@ class QuestionnaireController extends Controller
      */
     public function updateQuestionOptions(array $editedQuestion, $question)
     {
-
         // we will store the new options for the question here.
         $allNewOptions = [];
 
@@ -214,7 +213,6 @@ class QuestionnaireController extends Controller
             if (Str::isValidGuid($questionOptionId) && $this->isNotEmptyTranslation($translations)) {
                 // its a new option, add it to the array
                 $allNewOptions[$questionOptionId] = $translations;
-
             } elseif ($this->isNotEmptyTranslation($translations)) {
                 // for every translation we need to create a new, you wont guess! Translation.
                 foreach ($translations as $locale => $option) {

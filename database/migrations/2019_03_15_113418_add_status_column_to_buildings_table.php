@@ -25,8 +25,10 @@ class AddStatusColumnToBuildingsTable extends Migration
      */
     public function down()
     {
-        Schema::table('buildings', function (Blueprint $table) {
-            $table->dropColumn('status');
-        });
+        if (Schema::hasColumn('buildings', 'status')) {
+            Schema::table('buildings', function (Blueprint $table) {
+                $table->dropColumn('status');
+            });
+        }
     }
 }

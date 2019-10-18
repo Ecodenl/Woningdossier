@@ -93,28 +93,21 @@ class HaveUserForEachCooperation extends Migration
         }
 
         // ---------------------------------------------------------------------------------------------------------------
-        dump("--------------------------- siblings copy user_action_plan_advice_comments");
         $this->copyTableDataForSiblings('user_action_plan_advice_comments');
 
         // ---------------------------------------------------------------------------------------------------------------
-        dump("--------------------------- siblings copy user_action_plan_advices");
         $this->copyTableDataForSiblings('user_action_plan_advices');
 
         // ---------------------------------------------------------------------------------------------------------------
-        dump("--------------------------- siblings copy user_energy_habits");
         $this->copyTableDataForSiblings('user_energy_habits');
 
         // ---------------------------------------------------------------------------------------------------------------
-        dump("--------------------------- siblings copy user_interests");
         $this->copyTableDataForSiblings('user_interests');
 
         // ---------------------------------------------------------------------------------------------------------------
-        dump("--------------------------- siblings copy user_motivations");
         $this->copyTableDataForSiblings('user_motivations');
 
-
         // ---------------------------------------------------------------------------------------------------------------
-        dump("Updating questionnaires..");
         $completedQuestionnaires = DB::table('completed_questionnaires')->get();
         foreach( $completedQuestionnaires as $completedQuestionnaire ) {
             $questionnaire = DB::table('questionnaires')->find($completedQuestionnaire->questionnaire_id);

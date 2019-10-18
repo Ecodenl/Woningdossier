@@ -17,6 +17,7 @@
                 {{$groupParticipant->getFullName()}}
                 @can('remove-participant-from-chat', $groupParticipant)
                     {{-- If the group participant is the owner of the building, we cant cick him out. --}}
+                    {{--todo: needs review, this still uses the buildings relationship, it could be changed to just ->building->id--}}
                     @if(!$groupParticipant->buildings->contains('id', $buildingId))
                         <span data-building-owner-id="{{$buildingId}}" data-user-id="{{$groupParticipant->id}}" class="glyphicon glyphicon-remove"></span>
                     @endif

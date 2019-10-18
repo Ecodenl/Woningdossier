@@ -118,6 +118,7 @@ class BuildingPolicy
      */
     public function setAppointment(User $user, Building $building): bool
     {
+        // a user cant set an appointment on its own building
         return $user->id != $building->user_id;
     }
 
@@ -130,6 +131,7 @@ class BuildingPolicy
      */
     public function setStatus(User $user, Building $building): bool
     {
+        // a user cant set the building status on its own building
         return $user->id != $building->user_id;
     }
 }

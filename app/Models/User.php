@@ -257,21 +257,6 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
-     * Returns whether or not a user has completed a particular step.
-     *
-     * @param Step $step
-     *
-     * @return bool
-     */
-    public function hasCompleted(Step $step)
-    {
-        \Log::debug(__METHOD__.'is still being used somewhere, this should not be');
-
-        return true;
-    }
-
-
-    /**
      * Get the human readable role name based on the role name.
      *
      * @param $roleName
@@ -362,20 +347,6 @@ class User extends Model implements AuthorizableContract
     public function hasNotRole($roles): bool
     {
         return ! $this->hasRole($roles);
-    }
-
-    /**
-     * Check if a user has multiple roles.
-     *
-     * @return bool
-     */
-    public function hasMultipleRoles($cooperationId = null): bool
-    {
-        if ($this->getRoleNames($cooperationId)->count() > 1) {
-            return true;
-        }
-
-        return false;
     }
 
     /**

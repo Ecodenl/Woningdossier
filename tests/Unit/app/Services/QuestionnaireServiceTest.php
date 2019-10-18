@@ -91,7 +91,7 @@ class QuestionnaireServiceTest extends TestCase
 
     public function testCreateQuestion()
     {
-        $this->seed(\UsersTableSeeder::class);
+        $this->seed();
         $this->assertEquals(1, User::all()->count());
 //        $this->refreshDatabase();
 //        $questionnaire, $questionData, $questionType, $validation, $order

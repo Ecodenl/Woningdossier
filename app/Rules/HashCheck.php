@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 class HashCheck implements Rule
 {
     /**
-     * The hashed string that will be matched against the given value
+     * The hashed string that will be matched against the given value.
      *
      * @var string
      */
@@ -29,8 +29,9 @@ class HashCheck implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed  $value
+     *
      * @return bool
      */
     public function passes($attribute, $value)

@@ -7,7 +7,6 @@ use App\Events\ParticipantRevokedEvent;
 use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
-use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\PrivateMessage;
@@ -16,7 +15,6 @@ use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\PrivateMessageViewService;
 use Illuminate\Http\Request;
-use function Sodium\crypto_box_publickey_from_secretkey;
 
 class ParticipantController extends Controller
 {
@@ -39,7 +37,6 @@ class ParticipantController extends Controller
         $building = Building::find($buildingOwnerId);
 
         $revokedParticipant = User::find($groupParticipantUserId);
-
 
         if ($building instanceof Building) {
             // revoke the access for the coach to talk with the resident
@@ -74,7 +71,7 @@ class ParticipantController extends Controller
 
             if ($privateMessage->allow_access) {
                 // give the coach permission to the resident his building
-                BuildingPermissionService::givePermission($user, $residentBuilding );
+                BuildingPermissionService::givePermission($user, $residentBuilding);
             }
 
             BuildingCoachStatusService::giveAccess($user, $residentBuilding);
@@ -88,10 +85,10 @@ class ParticipantController extends Controller
     }
 
     /**
-     * Method to set a collection of messages to read
+     * Method to set a collection of messages to read.
      *
-     * @param  Cooperation  $cooperation
-     * @param  Request  $request
+     * @param Cooperation $cooperation
+     * @param Request     $request
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
@@ -114,12 +111,10 @@ class ParticipantController extends Controller
 
         if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
             PrivateMessageViewService::markAsReadByCooperation($messagesToSetRead, $cooperation);
-        }
-        elseif(Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
+        } elseif (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
             $inputSource = InputSource::findByShort(InputSource::COACH_SHORT);
             PrivateMessageViewService::markAsReadByUser($messagesToSetRead, Hoomdossier::user(), $inputSource);
-        }
-        else {
+        } else {
             $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
             PrivateMessageViewService::markAsReadByUser($messagesToSetRead, Hoomdossier::user(), $inputSource);
         }

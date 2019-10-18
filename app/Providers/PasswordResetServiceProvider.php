@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Auth\Passwords\PasswordBrokerManager;
-use Illuminate\Support\ServiceProvider;
 
 class PasswordResetServiceProvider extends \Illuminate\Auth\Passwords\PasswordResetServiceProvider
 {
@@ -49,5 +48,4 @@ class PasswordResetServiceProvider extends \Illuminate\Auth\Passwords\PasswordRe
     {
         return ['auth.password', 'auth.password.broker'];
     }
-
 }

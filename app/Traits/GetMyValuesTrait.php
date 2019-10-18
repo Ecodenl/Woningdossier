@@ -13,12 +13,12 @@ use Illuminate\Support\Collection;
 
 trait GetMyValuesTrait
 {
-
     /**
      * Scope all the available input for a user.
      *
      * @param $query
      * @param User|null $user
+     *
      * @return mixed
      */
     public function scopeForMe($query, User $user = null)
@@ -43,10 +43,10 @@ trait GetMyValuesTrait
     }
 
     /**
-     * Scope a query for a specific input source id
+     * Scope a query for a specific input source id.
      *
-     * @param  Builder  $query
-     * @param  InputSource $inputSource
+     * @param Builder     $query
+     * @param InputSource $inputSource
      *
      * @return Builder
      */
@@ -62,7 +62,6 @@ trait GetMyValuesTrait
      */
     protected function determineWhereColumn(User $user = null): array
     {
-
         // because recent changes in the application with jobs / commands running on the commandline we need to obtain data from objects as much as possible
         // so for now, if the user is given we will get the building from that and otherwise from the session. In the future we should get rid of session usage in methods as much as we can.
         $building = $user->building ?? HoomdossierSession::getBuilding(true);
@@ -78,11 +77,11 @@ trait GetMyValuesTrait
         }
     }
 
-
     /**
-     * Method to only scope the resident input source
+     * Method to only scope the resident input source.
      *
      * @deprecated
+     *
      * @param $query
      *
      * @return mixed

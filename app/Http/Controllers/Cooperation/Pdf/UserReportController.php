@@ -2,19 +2,12 @@
 
 namespace App\Http\Controllers\Cooperation\Pdf;
 
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
-use App\Models\BuildingElement;
-use App\Models\BuildingInsulatedGlazing;
-use App\Models\BuildingService;
-use App\Models\Cooperation;
 use App\Http\Controllers\Controller;
-use App\Models\Element;
-use App\Models\InputSource;
+use App\Models\BuildingInsulatedGlazing;
+use App\Models\Cooperation;
 use App\Models\Interest;
-use App\Models\Service;
-use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Scopes\GetValueScope;
 use App\Services\DumpService;
@@ -24,7 +17,6 @@ use Barryvdh\DomPDF\Facade as PDF;
 class UserReportController extends Controller
 {
     /**
-     *
      * TESTING only, turn on the routes to use it.
      *
      * @param Cooperation $userCooperation
@@ -44,7 +36,6 @@ class UserReportController extends Controller
             ->forInputSource($inputSource)
             ->with('measureApplication', 'insulatedGlazing', 'buildingHeating')
             ->get();
-
 
         // the comments that have been made on the action plan
         $userActionPlanAdviceComments = UserActionPlanAdviceComments::withoutGlobalScope(GetValueScope::class)
@@ -78,7 +69,6 @@ class UserReportController extends Controller
             ->flip()
             ->toArray();
 
-
         // retrieve all the comments by for each input source on a step
         $commentsByStep = StepHelper::getAllCommentsByStep($user);
 
@@ -92,12 +82,11 @@ class UserReportController extends Controller
         ));
 
         return $pdf->stream();
+
         return view('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'userCooperation', 'stepSlugs', 'inputSource',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
             'buildingFeatures', 'advices', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings'
         ));
-
-
     }
 }

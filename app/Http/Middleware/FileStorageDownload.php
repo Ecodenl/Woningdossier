@@ -12,8 +12,9 @@ class FileStorageDownload
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure                 $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -37,7 +38,6 @@ class FileStorageDownload
         }
 
         if ($fileStorage instanceof FileStorage) {
-
             $userIsResidentOrCoach = Hoomdossier::user()->hasRoleAndIsCurrentRole(['resident', 'coach']);
             $fileIsGeneratedByCurrentBuilding = $fileStorage->building_id == HoomdossierSession::getBuilding();
             $fileInputSourceIsCurrentInputSource = $fileStorage->input_source_id == HoomdossierSession::getInputSource();

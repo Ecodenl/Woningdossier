@@ -36,8 +36,8 @@ class Handler extends ExceptionHandler
     /**
      * Convert an authentication exception into an unauthenticated response.
      *
-     * @param  \Illuminate\Http\Request                  $request
-     * @param  \Illuminate\Auth\AuthenticationException  $exception
+     * @param \Illuminate\Http\Request                 $request
+     * @param \Illuminate\Auth\AuthenticationException $exception
      *
      * @return \Illuminate\Http\Response
      */
@@ -56,10 +56,9 @@ class Handler extends ExceptionHandler
         }
 
         $cooperation = Cooperation::find($cooperationId);
-        if (!$cooperation instanceof Cooperation) {
+        if (! $cooperation instanceof Cooperation) {
             return redirect()->route('index');
         }
-
 
         return redirect()->route('cooperation.auth.login', compact('cooperation'));
     }
@@ -69,13 +68,13 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  \Exception  $exception
+     * @param \Exception $exception
      *
      * @return void
      */
     public function report(Exception $exception)
     {
-        if (app()->bound('sentry') && $this->shouldReport($exception)){
+        if (app()->bound('sentry') && $this->shouldReport($exception)) {
             app('sentry')->captureException($exception);
         }
 
@@ -85,8 +84,8 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  Exception                 $exception
+     * @param \Illuminate\Http\Request $request
+     * @param Exception                $exception
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Symfony\Component\HttpFoundation\Response
      */
@@ -94,22 +93,22 @@ class Handler extends ExceptionHandler
     {
         // Handle the exception if the role in the session is not associated with the user itself.
         if ($exception instanceof RoleInSessionHasNoAssociationWithUser) {
-
             // try to obtain a role from the user.
             $role = Hoomdossier::user()->roles()->first();
 
             if ($role instanceof Role) {
                 HoomdossierSession::setRole($role);
+
                 return redirect(route('cooperation.home'));
             } else {
                 Hoomdossier::user()->logout();
+
                 return redirect()->route('cooperation.home');
             }
         }
 
         // Handle the exception if the user is not authorized / has the right roles
         if ($exception instanceof SpatieUnauthorizedException && HoomdossierSession::hasRole()) {
-
             // the role the user currently has in his session
             $authorizedRole = HoomdossierSession::getRole(true);
 
@@ -118,7 +117,6 @@ class Handler extends ExceptionHandler
             )->with('warning', __('default.messages.exceptions.no-right-roles'));
         }
 
-
         // The user is not authorized at all.
         if ($exception instanceof UnauthorizedException) {
             return redirect()->route('cooperation.home');
@@ -126,5 +124,4 @@ class Handler extends ExceptionHandler
 
         return parent::render($request, $exception);
     }
-
 }

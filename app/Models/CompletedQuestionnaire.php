@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\CompletedQuestionnaire
+ * App\Models\CompletedQuestionnaire.
  *
- * @property int $id
- * @property int $user_id
- * @property int $questionnaire_id
+ * @property int                             $id
+ * @property int                             $user_id
+ * @property int                             $questionnaire_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedQuestionnaire newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedQuestionnaire newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CompletedQuestionnaire query()

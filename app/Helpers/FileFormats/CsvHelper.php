@@ -8,9 +8,9 @@ class CsvHelper
      * Convert a csv to a associative array with the header / first row of the csv as array keys.
      * when $csvHeaderAsArrayKeys is set to false it will use normal array indexes.
      *
-     * @param  string  $file
-     * @param  string  $delimiter
-     * @param  bool  $csvHeaderAsArrayKeys
+     * @param string $file
+     * @param string $delimiter
+     * @param bool   $csvHeaderAsArrayKeys
      *
      * @return array
      */
@@ -19,17 +19,17 @@ class CsvHelper
         $delimiter = ',',
         $csvHeaderAsArrayKeys = true
     ): array {
-        $header        = null;
+        $header = null;
         $updatedHeader = null;
-        $data          = [];
+        $data = [];
 
         if (false !== ($handle = fopen($file, 'r'))) {
             while (false !== ($row = fgetcsv($handle, 0, $delimiter))) {
                 if ($csvHeaderAsArrayKeys) {
-                    if ( ! $header) {
+                    if (! $header) {
                         $header = $row;
                         foreach ($header as $key) {
-                            $trimmedKey      = strtolower(trim($key));
+                            $trimmedKey = strtolower(trim($key));
                             $updatedHeader[] = $trimmedKey;
                         }
                     } else {
@@ -52,7 +52,7 @@ class CsvHelper
 
     public static function escapeLeadingZero($string)
     {
-        if (substr($string, 0, 1) == '0') {
+        if ('0' == substr($string, 0, 1)) {
             $string = "'".$string;
         }
 

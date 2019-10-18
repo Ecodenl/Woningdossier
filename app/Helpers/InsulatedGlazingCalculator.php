@@ -44,9 +44,9 @@ class InsulatedGlazingCalculator
      * be done later (via the calculateNetGasSavings).
      *
      * @param $m2
-     * @param  MeasureApplication  $measureApplication
-     * @param  BuildingHeating  $heating
-     * @param  InsulatingGlazing|null  $glazing
+     * @param MeasureApplication     $measureApplication
+     * @param BuildingHeating        $heating
+     * @param InsulatingGlazing|null $glazing
      *
      * @return float|int
      */
@@ -61,7 +61,7 @@ class InsulatedGlazingCalculator
 
         $saving = $m2 * $keyFigureTemperature->key_figure;
 
-        self::debug(__METHOD__ .  ' ' . $saving . ' = ' . $m2 . ' * ' . $keyFigureTemperature->key_figure);
+        self::debug(__METHOD__.' '.$saving.' = '.$m2.' * '.$keyFigureTemperature->key_figure);
 
         return $saving;
     }
@@ -78,7 +78,7 @@ class InsulatedGlazingCalculator
         }
         $result = min($saving, $maxGasSavings);
 
-        self::debug(__METHOD__ . ' ' . $result.' = min('.$saving.', '.$maxGasSavings.')');
+        self::debug(__METHOD__.' '.$result.' = min('.$saving.', '.$maxGasSavings.')');
 
         return $result;
     }
@@ -90,7 +90,7 @@ class InsulatedGlazingCalculator
         /** @var ElementValue $woodElement */
         foreach ($woodElements as $woodElement) {
             $number += $woodElement->calculate_value;
-            self::debug(__METHOD__ . " Adding wood element (calculate value) " . $woodElement->calculate_value . " to the paintwork surface (-> ".$number . ")");
+            self::debug(__METHOD__.' Adding wood element (calculate value) '.$woodElement->calculate_value.' to the paintwork surface (-> '.$number.')');
         }
 
         return $number;
@@ -101,7 +101,7 @@ class InsulatedGlazingCalculator
         self::debug(__METHOD__);
 
         if ($lastPaintedYear + $measureApplication->maintenance_interval <= Carbon::now()->year) {
-            self::debug(__METHOD__ . ' Last painted is longer than '.$measureApplication->maintenance_interval.' years ago.');
+            self::debug(__METHOD__.' Last painted is longer than '.$measureApplication->maintenance_interval.' years ago.');
             $year = Carbon::now()->year;
         } else {
             $year = $lastPaintedYear + $measureApplication->maintenance_interval;

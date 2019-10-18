@@ -22,7 +22,7 @@ class Temperature implements KeyFiguresInterface
      * @param string $measure Use WALL_INSULATION_* consts
      * @param $avgHouseTemp
      *
-     * @return null|string Null on failure
+     * @return string|null Null on failure
      */
     public static function energySavingFigureFloorInsulation($measure)
     {
@@ -33,25 +33,25 @@ class Temperature implements KeyFiguresInterface
         return number_format(self::$calculationValues[$measure], 2);
     }
 
-	/**
-	 * Returns the key figures from this class
-	 *
-	 * @return array
-	 */
-	public static function getKeyFigures()
-	{
-		$figures = [];
+    /**
+     * Returns the key figures from this class.
+     *
+     * @return array
+     */
+    public static function getKeyFigures()
+    {
+        $figures = [];
 
-		$consts = [
-			'FLOOR_INSULATION_FLOOR',
-			'FLOOR_INSULATION_BOTTOM',
-			'FLOOR_INSULATION_RESEARCH',
-		];
+        $consts = [
+            'FLOOR_INSULATION_FLOOR',
+            'FLOOR_INSULATION_BOTTOM',
+            'FLOOR_INSULATION_RESEARCH',
+        ];
 
-		foreach($consts as $const){
-			$figures[$const] = self::$calculationValues[constant("self::$const")];
-		}
+        foreach ($consts as $const) {
+            $figures[$const] = self::$calculationValues[constant("self::$const")];
+        }
 
-		return $figures;
-	}
+        return $figures;
+    }
 }

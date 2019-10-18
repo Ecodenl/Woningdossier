@@ -5,48 +5,47 @@ namespace App\Models;
 use App\Helpers\HoomdossierSession;
 use App\Scopes\GetValueScope;
 use App\Traits\ToolSettingTrait;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Permission\Contracts\Role;
 
 /**
- * App\Models\Building
+ * App\Models\Building.
  *
- * @property int $id
- * @property int|null $user_id
- * @property string $street
- * @property string $number
- * @property string $extension
- * @property string $city
- * @property string $postal_code
- * @property string $country_code
- * @property int|null $owner
- * @property int $primary
- * @property string $bag_addressid
- * @property int|null $example_building_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingCoachStatus[] $buildingCoachStatuses
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[] $buildingElements
- * @property-read \App\Models\BuildingFeature $buildingFeatures
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingStatus[] $buildingStatuses
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $completedSteps
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
- * @property-read \App\Models\BuildingPaintworkStatus $currentPaintworkStatus
- * @property-read \App\Models\ExampleBuilding|null $exampleBuilding
- * @property-read \App\Models\BuildingHeater $heater
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[] $privateMessages
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[] $progress
- * @property-read \App\Models\BuildingPvPanel $pvPanels
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[] $questionAnswers
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[] $roofTypes
- * @property-read \App\Models\User|null $user
+ * @property int                                                                             $id
+ * @property int|null                                                                        $user_id
+ * @property string                                                                          $street
+ * @property string                                                                          $number
+ * @property string                                                                          $extension
+ * @property string                                                                          $city
+ * @property string                                                                          $postal_code
+ * @property string                                                                          $country_code
+ * @property int|null                                                                        $owner
+ * @property int                                                                             $primary
+ * @property string                                                                          $bag_addressid
+ * @property int|null                                                                        $example_building_id
+ * @property \Illuminate\Support\Carbon|null                                                 $created_at
+ * @property \Illuminate\Support\Carbon|null                                                 $updated_at
+ * @property \Illuminate\Support\Carbon|null                                                 $deleted_at
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingCoachStatus[]      $buildingCoachStatuses
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[]          $buildingElements
+ * @property \App\Models\BuildingFeature                                                     $buildingFeatures
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[]            $buildingNotes
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[]       $buildingPermissions
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[]          $buildingServices
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingStatus[]           $buildingStatuses
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[]             $completedSteps
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
+ * @property \App\Models\BuildingPaintworkStatus                                             $currentPaintworkStatus
+ * @property \App\Models\ExampleBuilding|null                                                $exampleBuilding
+ * @property \App\Models\BuildingHeater                                                      $heater
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[]           $privateMessages
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[]             $progress
+ * @property \App\Models\BuildingPvPanel                                                     $pvPanels
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[]          $questionAnswers
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[]         $roofTypes
+ * @property \App\Models\User|null                                                           $user
+ *
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building newQuery()
@@ -74,18 +73,19 @@ use Spatie\Permission\Contracts\Role;
  */
 class Building extends Model
 {
-    use SoftDeletes, ToolSettingTrait;
+    use SoftDeletes;
+    use ToolSettingTrait;
 
     protected $dates = [
         'deleted_at',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
     public $fillable = [
-        'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension', 'is_active'
+        'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension', 'is_active',
     ];
 
     public static function toolSettingColumnsToCheck()
@@ -137,6 +137,7 @@ class Building extends Model
      * @param InputSource $inputSource
      * @param $type
      * @param array $interestedInIds
+     *
      * @return bool
      */
     public function isInterestedInStep(InputSource $inputSource, $type, $interestedInIds = [])
@@ -169,8 +170,8 @@ class Building extends Model
      * Check if a user is not interested in a step.
      *
      * @param InputSource $inputSource
-     * @param string $type
-     * @param array  $interestedInIds
+     * @param string      $type
+     * @param array       $interestedInIds
      *
      * @return bool
      */
@@ -227,7 +228,7 @@ class Building extends Model
     }
 
     /**
-     * @return null|ExampleBuilding
+     * @return ExampleBuilding|null
      */
     public function getExampleBuilding()
     {
@@ -347,9 +348,10 @@ class Building extends Model
     }
 
     /**
-     * Return the building type from a builing through the building features
+     * Return the building type from a builing through the building features.
      *
      * @param InputSource $inputSource
+     *
      * @return BuildingType|null
      */
     public function getBuildingType(InputSource $inputSource)
@@ -442,7 +444,7 @@ class Building extends Model
     }
 
     /**
-     * Get all the statuses from a building
+     * Get all the statuses from a building.
      *
      * @return HasMany
      */
@@ -452,7 +454,7 @@ class Building extends Model
     }
 
     /**
-     * Get the most recent BuildingStatus
+     * Get the most recent BuildingStatus.
      *
      * @return BuildingStatus|null
      */
@@ -460,7 +462,6 @@ class Building extends Model
     {
         return $this->buildingStatuses()->with('status')->mostRecent()->first();
     }
-
 
     private function resolveStatusModel($status)
     {
@@ -478,7 +479,7 @@ class Building extends Model
     }
 
     /**
-     * convenient way of setting a status on a building
+     * convenient way of setting a status on a building.
      *
      * @param string|Status $status
      *
@@ -495,7 +496,7 @@ class Building extends Model
     }
 
     /**
-     * convenient way of setting a appointment date on a building
+     * convenient way of setting a appointment date on a building.
      *
      * @param string
      *
@@ -505,8 +506,7 @@ class Building extends Model
     {
         $this->buildingStatuses()->create([
             'status_id' => $this->getMostRecentBuildingStatus()->status_id,
-            'appointment_date' => $appointmentDate
+            'appointment_date' => $appointmentDate,
         ]);
     }
-
 }

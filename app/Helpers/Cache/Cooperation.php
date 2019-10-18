@@ -4,12 +4,11 @@ namespace App\Helpers\Cache;
 
 class Cooperation extends BaseCache
 {
-
     const CACHE_KEY_FIND = 'Cooperation_find_%s';
     const CACHE_KEY_GET_STYLE = 'Cooperation_getStyle_%s';
 
     /**
-     * @param  int  $id
+     * @param int $id
      *
      * @return \App\Models\Cooperation|null
      */
@@ -26,11 +25,11 @@ class Cooperation extends BaseCache
 
     public static function getStyle($cooperation)
     {
-        if (!$cooperation instanceof \App\Models\Cooperation){
+        if (! $cooperation instanceof \App\Models\Cooperation) {
             $cooperation = self::find($cooperation);
         }
 
-        if (!$cooperation instanceof \App\Models\Cooperation){
+        if (! $cooperation instanceof \App\Models\Cooperation) {
             return null;
         }
 
@@ -42,5 +41,4 @@ class Cooperation extends BaseCache
             }
         );
     }
-
 }

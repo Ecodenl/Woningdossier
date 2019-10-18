@@ -3,10 +3,6 @@
 namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
-use App\Models\Log;
-use Carbon\Carbon;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class FillingToolForUserListener
 {
@@ -17,13 +13,13 @@ class FillingToolForUserListener
      */
     public function __construct()
     {
-        //
     }
 
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param object $event
+     *
      * @return void
      */
     public function handle($event)
@@ -36,6 +32,5 @@ class FillingToolForUserListener
 
         HoomdossierSession::setBuilding($building);
         HoomdossierSession::setInputSourceValue($inputSourceValue);
-
     }
 }

@@ -50,7 +50,7 @@ trait TranslatableTrait
 
     /**
      * @param string      $attribute Model attribute
-     * @param null|string $lang      Locale to translate to
+     * @param string|null $lang      Locale to translate to
      *
      * @return mixed|string
      */

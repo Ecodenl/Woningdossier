@@ -17,7 +17,6 @@ use App\Models\BuildingService;
 use App\Models\BuildingType;
 use App\Models\CentralHeatingAge;
 use App\Models\ComfortLevelTapWater;
-use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\EnergyLabel;
@@ -27,7 +26,6 @@ use App\Models\Interest;
 use App\Models\Motivation;
 use App\Models\PresentHeatPump;
 use App\Models\PresentWindow;
-use App\Models\Question;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\ServiceValue;
@@ -65,7 +63,6 @@ class GeneralDataController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
-
 
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();
@@ -106,7 +103,6 @@ class GeneralDataController extends Controller
         $step = $this->step;
         $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
         $userInterestsForMe = UserInterest::forMe()->get();
-
 
         return view('cooperation.tool.general-data.index', compact(
             'building', 'step',

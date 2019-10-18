@@ -5,15 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingStatus
+ * App\Models\BuildingStatus.
  *
- * @property int $id
- * @property int $building_id
- * @property int $status_id
+ * @property int                             $id
+ * @property int                             $building_id
+ * @property int                             $status_id
  * @property \Illuminate\Support\Carbon|null $appointment_date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Status $status
+ * @property \App\Models\Status              $status
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingStatus mostRecent()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingStatus newQuery()
@@ -29,11 +30,11 @@ use Illuminate\Database\Eloquent\Model;
 class BuildingStatus extends Model
 {
     protected $fillable = [
-        'status_id', 'building_id', 'appointment_date'
+        'status_id', 'building_id', 'appointment_date',
     ];
 
     protected $casts = [
-        'appointment_date' => 'datetime'
+        'appointment_date' => 'datetime',
     ];
 
     public function scopeMostRecent($query)

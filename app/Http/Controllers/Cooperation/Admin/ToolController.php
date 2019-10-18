@@ -5,18 +5,13 @@ namespace App\Http\Controllers\Cooperation\Admin;
 use App\Events\FillingToolForUserEvent;
 use App\Events\ObservingToolForUserEvent;
 use App\Helpers\Hoomdossier;
-use App\Helpers\HoomdossierSession;
+use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\Cooperation;
-use App\Models\InputSource;
-use App\Models\Role;
 use App\Models\User;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class ToolController extends Controller
 {
-
     /**
      * Set the sessions and after that redirect them to the tool.
      *
@@ -36,10 +31,11 @@ class ToolController extends Controller
     }
 
     /**
-     * Sessions that need to be set so we can let a user observe a building / tool
+     * Sessions that need to be set so we can let a user observe a building / tool.
      *
      * @param Cooperation $cooperation
      * @param $buildingId
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function observeToolForUser(Cooperation $cooperation, $buildingId)

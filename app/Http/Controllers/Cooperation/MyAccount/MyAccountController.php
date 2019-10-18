@@ -23,7 +23,6 @@ class MyAccountController extends Controller
         $notificationSettings = Hoomdossier::user()->notificationSettings;
         $notificationIntervals = NotificationInterval::all();
 
-
         // for the access parts
         $buildingPermissions = BuildingPermission::where('building_id', HoomdossierSession::getBuilding())->get();
         /* @var Collection $conversationRequests */

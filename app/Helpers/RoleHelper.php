@@ -10,13 +10,12 @@ class RoleHelper
      * Get the right route / url by a role name.
      *
      * @param string $roleName
-     * @param bool $checkUser whether or not to check the user's role against the role name. Defaults to true.
+     * @param bool   $checkUser whether or not to check the user's role against the role name. Defaults to true.
      *
      * @return string The target url
      */
     public static function getUrlByRoleName(string $roleName, $checkUser = true)
     {
-
         // check if the user his role exists / is his
         if (! $checkUser || (\Auth::check() && Hoomdossier::user()->roles()->where('name', $roleName)->first() instanceof Role)) {
             switch ($roleName) {

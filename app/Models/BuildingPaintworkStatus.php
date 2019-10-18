@@ -8,20 +8,21 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingPaintworkStatus
+ * App\Models\BuildingPaintworkStatus.
  *
- * @property int $id
- * @property int $building_id
- * @property int|null $input_source_id
- * @property int|null $last_painted_year
- * @property int|null $paintwork_status_id
- * @property int|null $wood_rot_status_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building $building
- * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \App\Models\PaintworkStatus|null $paintworkStatus
- * @property-read \App\Models\WoodRotStatus|null $woodRotStatus
+ * @property int                              $id
+ * @property int                              $building_id
+ * @property int|null                         $input_source_id
+ * @property int|null                         $last_painted_year
+ * @property int|null                         $paintwork_status_id
+ * @property int|null                         $wood_rot_status_id
+ * @property \Illuminate\Support\Carbon|null  $created_at
+ * @property \Illuminate\Support\Carbon|null  $updated_at
+ * @property \App\Models\Building             $building
+ * @property \App\Models\InputSource|null     $inputSource
+ * @property \App\Models\PaintworkStatus|null $paintworkStatus
+ * @property \App\Models\WoodRotStatus|null   $woodRotStatus
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPaintworkStatus forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPaintworkStatus forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingPaintworkStatus newModelQuery()
@@ -40,7 +41,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingPaintworkStatus extends Model
 {
-    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
+    use GetValueTrait;
+    use GetMyValuesTrait;
+    use ToolSettingTrait;
 
     protected $fillable = ['building_id', 'input_source_id', 'last_painted_year',  'paintwork_status_id', 'wood_rot_status_id'];
 

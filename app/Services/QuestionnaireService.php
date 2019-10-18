@@ -4,12 +4,55 @@ namespace App\Services;
 
 use App\Helpers\Str;
 use App\Models\Question;
+use App\Models\Questionnaire;
 use App\Models\QuestionOption;
 use App\Models\Translation;
 
 class QuestionnaireService {
 
-    public static function createQuestion(int $questionnaireId, array $requestQuestion, string $questionType, array $validation, $order, bool $questionHasOptions = false)
+    /**
+     * Determine whether a question has options based on the type
+     *
+     * @param $questionType
+     * @return bool
+     */
+    public static function hasQuestionOptions($questionType)
+    {
+        $questionTypeThatHaveOptions = ['select', 'radio', 'checkbox'];
+
+        return in_array($questionType, $questionTypeThatHaveOptions);
+    }
+
+    /**
+     * Create or update an question from a questionnaire
+     *
+     * @param Questionnaire $questionnaire
+     * @param int|string $questionIdOrUuid
+     * @param array $questionData
+     * @param $validation
+     * @param $order
+     */
+    public static function createOrUpdateQuestion(Questionnaire $questionnaire, $questionIdOrUuid, array $questionData, $validation, $order)
+    {
+        // $questionIdOrUuid is either a guid or a id, when its a guid its a new question otherwise its an existing question and we will update it
+        if (Str::isValidUuid($questionIdOrUuid)) {
+            self::createQuestion($questionnaire, $questionData, $questionData['type'], $validation, $order);
+        } else {
+            self::updateQuestion($questionIdOrUuid, $questionData, $validation, $order);
+        }
+    }
+
+    /**
+     * Method to create a new question for a questionnaire
+     *
+     * @param Questionnaire $questionnaire
+     * @param array $requestQuestion
+     * @param string $questionType
+     * @param array $validation
+     * @param $order
+     * @param bool $questionHasOptions
+     */
+    public static function createQuestion(Questionnaire $questionnaire, array $requestQuestion, string $questionType, array $validation, $order, bool $questionHasOptions = false)
     {
         $required = false;
 
@@ -21,13 +64,12 @@ class QuestionnaireService {
 
         if (self::isNotEmptyTranslation($requestQuestion['question'])) {
             // if the translations are not present, we do not want to create a question
-            $createdQuestion = Question::create([
+            $createdQuestion = $questionnaire->questions()->create([
                 'name' => $uuid,
                 'type' => $questionType,
                 'order' => $order,
                 'required' => $required,
                 'validation' => self::getValidationRule($requestQuestion, $validation),
-                'questionnaire_id' => $questionnaireId,
             ]);
 
             // multiple translations can be available
@@ -45,7 +87,7 @@ class QuestionnaireService {
                 ]);
             }
 
-            if ($questionHasOptions && $createdQuestion instanceof Question) {
+            if (self::hasQuestionOptions($questionType) && $createdQuestion instanceof Question) {
                 // create the options for the question
                 foreach ($requestQuestion['options'] as $newOptions) {
                     self::createQuestionOptions($newOptions, $createdQuestion);
@@ -95,9 +137,8 @@ class QuestionnaireService {
      * @param int   $questionId
      * @param array $editedQuestion
      * @param array $validation
-     * @param bool  $questionHasOptions
      */
-    public static function updateQuestion(int $questionId, array $editedQuestion, array $validation, $order, bool $questionHasOptions = false)
+    public static function updateQuestion(int $questionId, array $editedQuestion, array $validation, $order)
     {
         $required = false;
 
@@ -123,7 +164,7 @@ class QuestionnaireService {
             }
         }
 
-        if ($questionHasOptions) {
+        if (self::hasQuestionOptions($currentQuestion->type)) {
             self::updateQuestionOptions($editedQuestion, $currentQuestion);
         }
     }
@@ -168,8 +209,6 @@ class QuestionnaireService {
     }
 
 
-
-
     /**
      * Check if the translations from the request are empty.
      *
@@ -188,6 +227,13 @@ class QuestionnaireService {
         return true;
     }
 
+    /**
+     * Returns the inverse of isEmptyTranslation.
+     *
+     * @param array $translations
+     *
+     * @return bool
+     */
     public static function isNotEmptyTranslation(array $translations): bool
     {
         return ! self::isEmptyTranslation($translations);

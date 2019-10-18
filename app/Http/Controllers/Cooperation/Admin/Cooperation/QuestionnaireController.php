@@ -83,67 +83,15 @@ class QuestionnaireController extends Controller
 
         $validation = $request->get('validation', []);
 
+
         if ($request->has('questions')) {
-            foreach ($request->get('questions') as $key => $allRequestQuestion) {
+            foreach ($request->get('questions') as $questionIdOrUuid => $questionData) {
                 ++$order;
-
-                // if the key is a valid uuid, we know it is a new question
-                // existing questions will have a questionId as key
-                if (Str::isValidGuid($key)) {
-                    $questionType = $allRequestQuestion['type'];
-                    $requestQuestion = $allRequestQuestion;
-
-                    switch ($questionType) {
-                        case 'text':
-                            QuestionnaireService::createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order);
-                            break;
-                        case 'select':
-                            QuestionnaireService::createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order, true);
-                            break;
-                        case 'date':
-                            QuestionnaireService::createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order);
-                            break;
-                        case 'radio':
-                            QuestionnaireService::createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order, true);
-                            break;
-                        case 'checkbox':
-                            QuestionnaireService::createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order, true);
-                            break;
-                        case 'textarea':
-                            QuestionnaireService::createQuestion($questionnaireId, $requestQuestion, $questionType, $validation, $order);
-                            break;
-                    }
-                } else {
-                    $editedQuestionType = $allRequestQuestion['type'];
-                    $questionId = $key;
-                    $editedQuestion = $allRequestQuestion;
-
-                    switch ($editedQuestionType) {
-                        case 'text':
-                            QuestionnaireService::updateQuestion($questionId, $editedQuestion, $validation, $order);
-                            break;
-                        case 'select':
-                            QuestionnaireService::updateQuestion($questionId, $editedQuestion, $validation, $order, true);
-                            break;
-                        case 'date':
-                            QuestionnaireService::updateQuestion($questionId, $editedQuestion, $validation, $order);
-                            break;
-                        case 'radio':
-                            QuestionnaireService::updateQuestion($questionId, $editedQuestion, $validation, $order, true);
-                            break;
-                        case 'checkbox':
-                            QuestionnaireService::updateQuestion($questionId, $editedQuestion, $validation, $order, true);
-                            break;
-                        case 'textarea':
-                            QuestionnaireService::updateQuestion($questionId, $editedQuestion, $validation, $order);
-                            break;
-                    }
-                }
+                QuestionnaireService::createOrUpdateQuestion($questionnaire, $questionIdOrUuid, $questionData, $validation, $order);
             }
         }
 
-        return redirect()
-            ->route('cooperation.admin.cooperation.questionnaires.index')
+        return redirect(route('cooperation.admin.cooperation.questionnaires.index'))
             ->with('success', __('woningdossier.cooperation.admin.cooperation.questionnaires.edit.success'));
     }
 

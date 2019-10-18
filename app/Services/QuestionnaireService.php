@@ -250,7 +250,7 @@ class QuestionnaireService {
     public static function isEmptyTranslation(array $translations): bool
     {
         foreach ($translations as $locale => $translation) {
-            if (! is_null($translation)) {
+            if (!empty($translation)) {
                 return false;
             }
         }

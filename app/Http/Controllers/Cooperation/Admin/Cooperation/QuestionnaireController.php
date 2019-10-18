@@ -20,6 +20,7 @@ class QuestionnaireController extends Controller
 {
     public function index()
     {
+
         $questionnaires = Questionnaire::all();
 
         return view('cooperation.admin.cooperation.questionnaires.index', compact('questionnaires'));
@@ -69,7 +70,7 @@ class QuestionnaireController extends Controller
 
         $this->authorize('update', $questionnaire);
 
-        QuestionnaireService::updateQuestionnaire($questionnaire, $stepId, $questionnaireNameTranslations);
+        QuestionnaireService::updateQuestionnaire($questionnaire, $questionnaireNameTranslations, $stepId);
 
         if ($request->has('questions')) {
             foreach ($request->get('questions') as $questionIdOrUuid => $questionData) {

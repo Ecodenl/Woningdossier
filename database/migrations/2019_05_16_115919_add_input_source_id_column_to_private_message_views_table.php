@@ -27,7 +27,7 @@ class AddInputSourceIdColumnToPrivateMessageViewsTable extends Migration
     public function down()
     {
         Schema::table('private_message_views', function (Blueprint $table) {
-            $table->dropForeign('input_source_id')->references('id')->on('input_sources')->onDelete(null);
+            $table->dropForeign(['input_source_id']);
             $table->dropColumn('input_source_id');
         });
     }

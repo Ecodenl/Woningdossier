@@ -195,7 +195,7 @@ class BuildingDataCopyService
     /**
      * Check if a key / column name needs a update.
      *
-     * @param $key | Column name
+     * @param string $key Column name
      *
      * @return bool
      */

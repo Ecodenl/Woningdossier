@@ -74,7 +74,6 @@ class ResetPasswordController extends Controller
 
         $isPending = Account::where('email', '=', $userEmail)->whereNotNull('confirm_token')->count() > 0;
         if ($isPending) {
-            //$this->guard()->logout();
             \Log::debug('The user has resetted his password, but has not confirmed his account. Redirecting to login page with a message..');
 
             return redirect(route('cooperation.auth.login'))->with('warning', __('auth.reset.inactive'));
@@ -182,7 +181,7 @@ class ResetPasswordController extends Controller
      * Check whether the email encryption is valid
      *
      * @param $encryption
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|string
+     * @return bool
      */
     public function emailEncryptionIsValid($encryption)
     {

@@ -18,8 +18,8 @@ class ConversationRequestController extends Controller
      * Show the form.
      *
      * @param  Cooperation  $cooperation
-     * @param  null  $option
-     * @param  null  $measureApplicationShort
+     * @param  string|null  $requestType Default: null
+     * @param  string|null  $measureApplicationShort Default: null
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */

@@ -168,6 +168,7 @@ class Building extends Model
     /**
      * Check if a user is not interested in a step.
      *
+     * @param InputSource $inputSource
      * @param string $type
      * @param array  $interestedInIds
      *

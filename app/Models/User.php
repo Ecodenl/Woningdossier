@@ -413,7 +413,6 @@ class User extends Model implements AuthorizableContract
     public function hasNotMultipleRoles(): bool
     {
         return ! $this->hasMultipleRoles();
-
     }
 
     public function completedQuestionnaires()
@@ -428,7 +427,7 @@ class User extends Model implements AuthorizableContract
      */
     public function completeQuestionnaire(Questionnaire $questionnaire)
     {
-        $this->completedQuestionnaires()->syncWithoutDetaching($questionnaire);
+        $this->completedQuestionnaires()->syncWithoutDetaching(/** @scrutinizer ignore-type, uses parseIds method. */ $questionnaire);
     }
 
     /**

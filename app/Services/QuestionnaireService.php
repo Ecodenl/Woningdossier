@@ -24,6 +24,44 @@ class QuestionnaireService {
     }
 
     /**
+     * Method to create a new question for a questionnaire
+     *
+     * @param Questionnaire $questionnaire
+     * @param array $requestQuestion
+     * @param string $questionType
+     * @param array $validation
+     * @param $order
+     * @param bool $questionHasOptions
+     */
+    public static function createQuestion(Questionnaire $questionnaire, array $requestQuestion, string $questionType, array $validation, $order)
+    {
+
+        $required = array_key_exists('required', $requestQuestion);
+        $uuid = Str::uuid();
+
+
+        if (self::isNotEmptyTranslation($requestQuestion['question'])) {
+            // if the translations are not present, we do not want to create a question
+            $createdQuestion = $questionnaire->questions()->create([
+                'name' => $uuid,
+                'type' => $questionType,
+                'order' => $order,
+                'required' => $required,
+                'validation' => self::getValidationRule($requestQuestion, $validation),
+            ]);
+
+            self::createTranslationsForQuestion($requestQuestion['question'], $uuid);
+
+            if (self::hasQuestionOptions($questionType) && $createdQuestion instanceof Question) {
+                // create the options for the question
+                foreach ($requestQuestion['options'] as $newOptions) {
+                    self::createQuestionOptions($newOptions, $createdQuestion);
+                }
+            }
+        }
+    }
+
+    /**
      * Create or update an question from a questionnaire
      *
      * @param Questionnaire $questionnaire
@@ -43,46 +81,11 @@ class QuestionnaireService {
     }
 
     /**
-     * Method to create a new question for a questionnaire
+     * Method to create translations for a question
      *
-     * @param Questionnaire $questionnaire
-     * @param array $requestQuestion
-     * @param string $questionType
-     * @param array $validation
-     * @param $order
-     * @param bool $questionHasOptions
+     * @param $translationForQuestions
+     * @param $translationKey
      */
-    public static function createQuestion(Questionnaire $questionnaire, array $requestQuestion, string $questionType, array $validation, $order, bool $questionHasOptions = false)
-    {
-
-        $required = array_key_exists('required', $requestQuestion);
-        $uuid = Str::uuid();
-
-
-        if (self::isNotEmptyTranslation($requestQuestion['question'])) {
-            // if the translations are not present, we do not want to create a question
-            $createdQuestion = $questionnaire->questions()->create([
-                'name' => $uuid,
-                'type' => $questionType,
-                'order' => $order,
-                'required' => $required,
-                'validation' => self::getValidationRule($requestQuestion, $validation),
-            ]);
-
-            self::createTranslationsForQuestion($requestQuestion['question'], $uuid);
-
-
-
-
-            if (self::hasQuestionOptions($questionType) && $createdQuestion instanceof Question) {
-                // create the options for the question
-                foreach ($requestQuestion['options'] as $newOptions) {
-                    self::createQuestionOptions($newOptions, $createdQuestion);
-                }
-            }
-        }
-    }
-
     public static function createTranslationsForQuestion($translationForQuestions, $translationKey)
     {
         // multiple translations can be available
@@ -121,17 +124,7 @@ class QuestionnaireService {
 
             if (self::isNotEmptyTranslation($newOptions)) {
                 // for every translation we need to create a new, you wont guess! Translation.
-                foreach ($newOptions as $locale => $translation) {
-                    if (empty($translation)) {
-                        $translation = current(array_filter($newOptions));
-                    }
-
-                    Translation::create([
-                        'key' => $optionNameUuid,
-                        'translation' => $translation,
-                        'language' => $locale,
-                    ]);
-                }
+                self::createTranslationsForQuestion($newOptions, $optionNameUuid);
             }
         }
     }

@@ -31,7 +31,6 @@ class QuestionnaireService {
      * @param string $questionType
      * @param array $validation
      * @param $order
-     * @param bool $questionHasOptions
      */
     public static function createQuestion(Questionnaire $questionnaire, array $requestQuestion, string $questionType, array $validation, $order)
     {
@@ -89,20 +88,18 @@ class QuestionnaireService {
     public static function createTranslationsForQuestion($translationForQuestions, $translationKey)
     {
         // multiple translations can be available
-        foreach ($translationForQuestions as $locale => $question) {
+        foreach ($translationForQuestions as $locale => $translation) {
 
-            // when the translation is empty, try to obtain a translation in a different lang
-            if (empty($question)) {
-                $question = current(array_filter($translationForQuestions));
-            }
+            $translation = self::getTranslation($translationForQuestions, $translation);
 
             Translation::create([
                 'key' => $translationKey,
-                'translation' => $question,
+                'translation' => $translation,
                 'language' => $locale,
             ]);
         }
     }
+
 
     /**
      * Create the options for a question.
@@ -114,7 +111,8 @@ class QuestionnaireService {
      */
     public static function createQuestionOptions(array $newOptions, Question $question)
     {
-        if (! self::isEmptyTranslation($newOptions)) {
+        if (self::isNotEmptyTranslation($newOptions)) {
+
             $optionNameUuid = Str::uuid();
             // for every option we need to create a option input
             QuestionOption::create([
@@ -122,10 +120,8 @@ class QuestionnaireService {
                 'name' => $optionNameUuid,
             ]);
 
-            if (self::isNotEmptyTranslation($newOptions)) {
-                // for every translation we need to create a new, you wont guess! Translation.
-                self::createTranslationsForQuestion($newOptions, $optionNameUuid);
-            }
+            // for every translation we need to create a new, you wont guess! Translation.
+            self::createTranslationsForQuestion($newOptions, $optionNameUuid);
         }
     }
 
@@ -153,9 +149,9 @@ class QuestionnaireService {
             } elseif (self::isNotEmptyTranslation($translations)) {
                 // for every translation we need to create a new, you wont guess! Translation.
                 foreach ($translations as $locale => $option) {
-                    if (empty($option)) {
-                        $option = current(array_filter($translations));
-                    }
+
+                    $option = self::getTranslation($translations, $option);
+
                     QuestionOption::find($questionOptionId)->updateTranslation('name', $option, $locale);
                 }
             }
@@ -168,6 +164,25 @@ class QuestionnaireService {
     }
 
     /**
+     * Method to return the translation for an array of translations
+     *
+     * @param array $translations array of all the translations
+     * @param string|null $translation the current translation
+     *
+     * @return string
+     */
+    public static function getTranslation(array $translations, $translation)
+    {
+        // if a translation is empty, try to obtain a other translation.
+        // so we never have empty translations for questions
+        if (empty($translation)) {
+            $translation = current(array_filter($translations));
+        }
+
+        return $translation;
+    }
+
+    /**
      * Update a question, if the question has options we will update the question options as well.
      *
      * @param int   $questionId
@@ -176,11 +191,8 @@ class QuestionnaireService {
      */
     public static function updateQuestion(int $questionId, array $editedQuestion, array $validation, $order)
     {
-        $required = false;
+        $required = array_key_exists('required', $editedQuestion);
 
-        if (array_key_exists('required', $editedQuestion)) {
-            $required = true;
-        }
 
         $currentQuestion = Question::find($questionId);
 
@@ -193,9 +205,9 @@ class QuestionnaireService {
         if (self::isNotEmptyTranslation($editedQuestion['question'])) {
             // multiple translations can be available
             foreach ($editedQuestion['question'] as $locale => $question) {
-                if (empty($question)) {
-                    $question = current(array_filter($editedQuestion['question']));
-                }
+
+                $question = self::getTranslation($editedQuestion['question'], $question);
+
                 $currentQuestion->updateTranslation('name', $question, $locale);
             }
         }
@@ -280,16 +292,11 @@ class QuestionnaireService {
      */
     public static function getValidationForCurrentQuestion(array $requestQuestion, array $validation): array
     {
-        // first check if the requestquestion has a guid
-        if (array_key_exists('guid', $requestQuestion)) {
-            // after that check if the guid exists in the validation
-            if (array_key_exists($requestQuestion['guid'], $validation)) {
-                return $validation[$requestQuestion['guid']];
-            }
-        } elseif (array_key_exists('question_id', $requestQuestion)) {
-            if (array_key_exists($requestQuestion['question_id'], $validation)) {
-                return $validation[$requestQuestion['question_id']];
-            }
+        // first check if the question has a guid and check if the guid exists in the validation
+        if (array_key_exists('guid', $requestQuestion) && array_key_exists($requestQuestion['guid'], $validation)) {
+            return $validation[$requestQuestion['guid']];
+        } elseif (array_key_exists('question_id', $requestQuestion) && array_key_exists($requestQuestion['question_id'], $validation)) {
+            return $validation[$requestQuestion['question_id']];
         }
 
         return [];

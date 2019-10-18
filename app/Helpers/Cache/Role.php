@@ -7,7 +7,7 @@ class Role extends BaseCache
     const CACHE_KEY_FIND = 'Role_find_%s';
 
     /**
-     * @param  int  $id
+     * @param int $id
      *
      * @return \App\Models\Role|null
      */

@@ -6,19 +6,11 @@ use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\InputSource;
-use App\Models\ToolSetting;
 use App\Services\ToolSettingService;
 use Illuminate\Http\Request;
 
 class ImportCenterController extends Controller
 {
-    public function index()
-    {
-        $toolSettings = ToolSetting::getChangedSettings(HoomdossierSession::getBuilding());
-
-        return view('cooperation.my-account.import-center.index', compact('toolSettings'));
-    }
-
     /**
      * Set the compare sessions, if the user is not comparing set the compare to true; else we leave it to false.
      *

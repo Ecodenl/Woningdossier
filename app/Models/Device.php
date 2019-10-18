@@ -7,19 +7,20 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Device
+ * App\Models\Device.
  *
- * @property int $id
- * @property int|null $measure_id
- * @property int|null $building_id
- * @property int|null $input_source_id
- * @property int|null $device_type_id
- * @property string $name
+ * @property int                             $id
+ * @property int|null                        $measure_id
+ * @property int|null                        $building_id
+ * @property int|null                        $input_source_id
+ * @property int|null                        $device_type_id
+ * @property string                          $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building|null $building
- * @property-read \App\Models\DeviceType|null $deviceType
- * @property-read \App\Models\Measure|null $measure
+ * @property \App\Models\Building|null       $building
+ * @property \App\Models\DeviceType|null     $deviceType
+ * @property \App\Models\Measure|null        $measure
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Device query()
@@ -35,7 +36,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Device extends Model
 {
-    use GetValueTrait, ToolSettingTrait;
+    use GetValueTrait;
+    use ToolSettingTrait;
 
     public function measure()
     {

@@ -3,25 +3,27 @@
 namespace App\Models;
 
 use App\Notifications\ResetPasswordNotification;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 
 /**
- * App\Models\Account
+ * App\Models\Account.
  *
- * @property int $id
- * @property string $email
- * @property string $password
- * @property string|null $remember_token
- * @property string|null $confirm_token
- * @property string|null $old_email
- * @property string|null $old_email_token
- * @property int $active
- * @property bool $is_admin
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property int                                                                                                       $id
+ * @property string                                                                                                    $email
+ * @property string                                                                                                    $password
+ * @property string|null                                                                                               $remember_token
+ * @property string|null                                                                                               $confirm_token
+ * @property string|null                                                                                               $old_email
+ * @property string|null                                                                                               $old_email_token
+ * @property int                                                                                                       $active
+ * @property bool                                                                                                      $is_admin
+ * @property \Illuminate\Support\Carbon|null                                                                           $created_at
+ * @property \Illuminate\Support\Carbon|null                                                                           $updated_at
+ * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\User[]                                               $users
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Account newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Account newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Account query()
@@ -44,7 +46,7 @@ class Account extends Authenticatable
 
     protected $fillable = [
         'first_name', 'last_name', 'email', 'password', 'phone_number',
-        'confirm_token', 'old_email', 'old_email_token'
+        'confirm_token', 'old_email', 'old_email_token',
     ];
 
     /**
@@ -74,11 +76,27 @@ class Account extends Authenticatable
      */
     public function sendPasswordResetNotification($token)
     {
-        $this->notify(new ResetPasswordNotification($token, $this->user()->cooperation));
+        $this->notify(new ResetPasswordNotification($token, $this, $this->user()->cooperation));
     }
 
     /**
-     * Will return the user from the account and cooperation that is being used
+     * Return a collection of cooperations that belongto the users associated with the current account.
+     *
+     * @return Collection
+     */
+    public function cooperations(): Collection
+    {
+        /** @var Collection $users */
+        $users = $this->users()->forAllCooperations()->with('cooperation')->get();
+        $cooperations = $users->map(function ($user) {
+            return $user->cooperation;
+        });
+
+        return $cooperations;
+    }
+
+    /**
+     * Will return the user from the account and cooperation that is being used.
      *
      * This will work because the global cooperation scope is applied.
      *
@@ -109,6 +127,5 @@ class Account extends Authenticatable
     public function isAssociatedWith(Cooperation $cooperation)
     {
         return $this->users()->withoutGlobalScopes()->where('cooperation_id', '=', $cooperation->id)->count() > 0;
-
     }
 }

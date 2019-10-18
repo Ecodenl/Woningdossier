@@ -8,18 +8,20 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingAppliance
+ * App\Models\BuildingAppliance.
  *
- * @property int $id
- * @property int|null $building_id
- * @property int|null $input_source_id
- * @property int|null $appliance_id
+ * @property int                             $id
+ * @property int|null                        $building_id
+ * @property int|null                        $input_source_id
+ * @property int|null                        $appliance_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Appliance|null $appliance
- * @property-read \App\Models\Building|null $building
- * @property-read \App\Models\InputSource|null $inputSource
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance forMe()
+ * @property \App\Models\Appliance|null      $appliance
+ * @property \App\Models\Building|null       $building
+ * @property \App\Models\InputSource|null    $inputSource
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingAppliance query()
@@ -34,7 +36,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingAppliance extends Model
 {
-    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
+    use GetValueTrait;
+    use GetMyValuesTrait;
+    use ToolSettingTrait;
 
     public function building()
     {

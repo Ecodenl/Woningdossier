@@ -5,18 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Log
+ * App\Models\Log.
  *
- * @property int $id
- * @property int|null $user_id
- * @property int|null $building_id
- * @property int|null $for_user_id
- * @property string $message
+ * @property int                             $id
+ * @property int|null                        $user_id
+ * @property int|null                        $building_id
+ * @property int|null                        $for_user_id
+ * @property string                          $message
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building|null $building
- * @property-read \App\Models\User|null $forUser
- * @property-read \App\Models\User|null $user
+ * @property \App\Models\Building|null       $building
+ * @property \App\Models\User|null           $forUser
+ * @property \App\Models\User|null           $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Log forBuildingId($buildingId)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Log newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Log newQuery()
@@ -33,14 +34,15 @@ use Illuminate\Database\Eloquent\Model;
 class Log extends Model
 {
     protected $fillable = [
-        'user_id', 'building_id', 'message', 'for_user_id'
+        'user_id', 'building_id', 'message', 'for_user_id',
     ];
 
     /**
-     * Scope a query to return all the logs for a given building id
+     * Scope a query to return all the logs for a given building id.
      *
      * @param $query
      * @param $buildingId
+     *
      * @return mixed
      */
     public function scopeForBuildingId($query, $buildingId)
@@ -49,7 +51,7 @@ class Log extends Model
     }
 
     /**
-     * Return the user that did the action
+     * Return the user that did the action.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -59,7 +61,7 @@ class Log extends Model
     }
 
     /**
-     * Return the user whom the action was performed on
+     * Return the user whom the action was performed on.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -69,7 +71,7 @@ class Log extends Model
     }
 
     /**
-     * Return the building whom the action was performed on
+     * Return the building whom the action was performed on.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

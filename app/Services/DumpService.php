@@ -9,7 +9,6 @@ use App\Calculations\InsulatedGlazing;
 use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
 use App\Calculations\WallInsulation;
-use App\Helpers\Arr;
 use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\NumberFormatter;
 use App\Helpers\ToolHelper;
@@ -25,7 +24,6 @@ use App\Models\BuildingPaintworkStatus;
 use App\Models\BuildingPvPanel;
 use App\Models\BuildingRoofType;
 use App\Models\BuildingService;
-use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\EnergyLabel;
@@ -35,23 +33,15 @@ use App\Models\FacadeSurface;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\PrivateMessage;
-use App\Models\Question;
-use App\Models\Questionnaire;
-use App\Models\QuestionOption;
-use App\Models\Role;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
 use App\Models\User;
-use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Scopes\CooperationScope;
-use App\Scopes\GetValueScope;
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class DumpService
 {
@@ -59,18 +49,19 @@ class DumpService
      * Method to generate a total dump from a user for a specific input source.
      * This dump collects all possible data for a given user for the tool and returns it in an array.
      *
-     * @param User $user
+     * @param User        $user
      * @param InputSource $inputSource
-     * @param bool $anonymized
-     * @param bool $withTranslationsForColumns
+     * @param bool        $anonymized
+     * @param bool        $withTranslationsForColumns
+     *
      * @return array
      */
     public static function totalDump(User $user, InputSource $inputSource, bool $anonymized, bool $withTranslationsForColumns = true): array
     {
-
         $cooperation = $user->cooperation;
         // get the content structure of the whole tool.
         $structure = ToolHelper::getToolStructure();
+        $rows = [];
 
         if ($anonymized) {
             $headers = [
@@ -105,7 +96,6 @@ class DumpService
             ];
         }
 
-
         $leaveOutTheseDuplicates = [
             // hoofddak
             'roof-insulation.building_features.roof_type_id',
@@ -125,18 +115,16 @@ class DumpService
         // unfortunately we cant array dot the structure since we only need the labels
         foreach ($structure as $stepSlug => $stepStructure) {
             // building-detail contains data that is already present in the columns above
-            if (!in_array($stepSlug, ['building-detail'])) {
+            if (! in_array($stepSlug, ['building-detail'])) {
                 foreach ($stepStructure as $tableWithColumnOrAndId => $contents) {
-                    if ($tableWithColumnOrAndId == 'calculations') {
-
+                    if ('calculations' == $tableWithColumnOrAndId) {
                         // If you want to go ahead and translate in a different namespace, do it here
-                        $deeperContents = \Illuminate\Support\Arr::dot($contents, $stepSlug . '.calculation.');
+                        $deeperContents = \Illuminate\Support\Arr::dot($contents, $stepSlug.'.calculation.');
 
                         $headers = array_merge($headers, $deeperContents);
-
                     } else {
-                        $headers[$stepSlug . '.' . $tableWithColumnOrAndId] = str_replace([
-                            '&euro;', '€'
+                        $headers[$stepSlug.'.'.$tableWithColumnOrAndId] = str_replace([
+                            '&euro;', '€',
                         ], ['euro', 'euro'], $contents['label']);
                     }
                 }
@@ -159,7 +147,7 @@ class DumpService
         $buildingId = $building->id;
 
         /** @var Collection $conversationRequestsForBuilding */
-        $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope)
+        $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope())
             ->conversationRequestByBuildingId($building->id)
             ->where('to_cooperation_id', $cooperation->id)->get();
 
@@ -185,7 +173,6 @@ class DumpService
         $number = $building->number;
         $city = $building->city;
         $postalCode = $building->postal_code;
-
 
         // get the building features from the resident
         $buildingFeature = $building
@@ -216,17 +203,15 @@ class DumpService
         $calculateData = static::getCalculateData($user, $inputSource);
 
         // one correction because of bad headers
-        if (isset($calculateData['heater']['production_heat']) && !is_array($calculateData['heater']['production_heat'])) {
-            if (!isset($calculateData['heater']['production_heat']['title'])) {
+        if (isset($calculateData['heater']['production_heat']) && ! is_array($calculateData['heater']['production_heat'])) {
+            if (! isset($calculateData['heater']['production_heat']['title'])) {
                 $calculateData['heater']['production_heat'] = ['title' => $calculateData['heater']['production_heat']];
             }
         }
 
-
         // loop through the headers
         foreach ($headers as $tableWithColumnOrAndIdKey => $translatedInputName) {
             if (is_string($tableWithColumnOrAndIdKey)) {
-
                 // explode it so we can do stuff with it.
                 $tableWithColumnOrAndId = explode('.', $tableWithColumnOrAndIdKey);
 
@@ -250,7 +235,7 @@ class DumpService
 
                 // handle the calculation table.
                 // No its not a table, but we treat it as in the structure array.
-                if ($table == 'calculation') {
+                if ('calculation' == $table) {
                     // works in most cases, otherwise they will be renamed etc.
                     $column = $columnOrId;
                     $costsOrYear = $tableWithColumnOrAndId[3] ?? null;
@@ -276,9 +261,8 @@ class DumpService
                 }
 
                 // handle the building_features table and its columns.
-                if ($table == 'building_features') {
+                if ('building_features' == $table) {
                     if ($buildingFeature instanceof BuildingFeature) {
-
                         switch ($columnOrId) {
                             case 'roof_type_id':
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->roofType instanceof RoofType ? $buildingFeature->roofType->name : '';
@@ -335,7 +319,7 @@ class DumpService
                 }
 
                 // handle the building_roof_types table and its columns.
-                if ($table == 'building_roof_types') {
+                if ('building_roof_types' == $table) {
                     $roofTypeId = $columnOrId;
                     //$column     = $tableWithColumnOrAndId[3];
                     $column = $maybe1;
@@ -360,17 +344,16 @@ class DumpService
                                     if (in_array($extraKey, ['tiles_condition', 'measure_application_id'])) {
                                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->extra[$extraKey] ?? '';
 
-                                        if (!empty($buildingRoofType->extra[$extraKey]) && $extraKey == 'tiles_condition') {
-                                            $status = RoofTileStatus::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
+                                        if (! empty($buildingRoofType->extra[$extraKey]) && 'tiles_condition' == $extraKey) {
+                                            $status = RoofTileStatus::find((int) $row[$buildingId][$tableWithColumnOrAndIdKey]);
                                             $row[$buildingId][$tableWithColumnOrAndIdKey] = ($status instanceof RoofTileStatus) ? $status->name : '';
                                         }
-                                        if ($extraKey == 'measure_application_id') {
+                                        if ('measure_application_id' == $extraKey) {
 //                                            dd($extraKey, $buildingRoofType, $buildingRoofType->extra[$extraKey], $buildingRoofType->extra[$extraKey] == null && $extraKey == 'measure_application_id');
                                         }
                                         // The measure application id, in this case. can be 0, this means the option: "niet" has been chosen the option is not saved as a measure application
-                                        if ($extraKey == 'measure_application_id') {
-
-                                            $measureApplication = MeasureApplication::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
+                                        if ('measure_application_id' == $extraKey) {
+                                            $measureApplication = MeasureApplication::find((int) $row[$buildingId][$tableWithColumnOrAndIdKey]);
                                             $row[$buildingId][$tableWithColumnOrAndIdKey] = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : __('roof-insulation.measure-application.no.title');
                                         }
                                     } else {
@@ -381,7 +364,6 @@ class DumpService
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->$column ?? '';
                                 }
                                 break;
-
                         }
                     } else {
                         $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
@@ -390,7 +372,7 @@ class DumpService
 
                 // handle the user_interest table and its columns.
                 if (in_array($table, ['user_interest', 'user_interests'])) {
-                    if ($step == 'insulated-glazing') {
+                    if ('insulated-glazing' == $step) {
                         $interestInType = 'measure_application';
                         $interestInId = $tableWithColumnOrAndId[2];
                     } else {
@@ -403,7 +385,6 @@ class DumpService
                         ->where('interested_in_type', $interestInType)
                         ->forInputSource($inputSource)
                         ->first();
-
 
                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $userInterest->interest->name ?? '';
                 }
@@ -440,7 +421,6 @@ class DumpService
                                 ->forInputSource($inputSource)
                                 ->first();
                             if ($buildingService instanceof BuildingService) {
-
                                 // check if we need to get data from the extra column
                                 if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
                                     $extraKey = explode('extra.', $tableWithColumnOrAndIdKey)[1];
@@ -448,8 +428,6 @@ class DumpService
 
                                     // if is array, try to get the answer from the extra column, does the key not exist set a default value.
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $extraIsArray ? $buildingService->extra[$extraKey] ?? '' : '';
-
-
                                 } else {
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingService->serviceValue->value ?? '';
                                 }
@@ -457,12 +435,11 @@ class DumpService
                                 // always set defaults
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
                             }
-
                     }
                 }
 
                 // handle the building_insulated_glazing table and its columns.
-                if ($table == 'building_insulated_glazings') {
+                if ('building_insulated_glazings' == $table) {
                     $measureApplicationId = $columnOrId;
                     $column = $tableWithColumnOrAndId[3];
 
@@ -483,7 +460,6 @@ class DumpService
                             default:
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingInsulatedGlazing->$column ?? '';
                                 break;
-
                         }
                     } else {
                         $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
@@ -491,7 +467,7 @@ class DumpService
                 }
 
                 // handle the building_pv_panels table and its column
-                if ($table == 'building_pv_panels') {
+                if ('building_pv_panels' == $table) {
                     $column = $columnOrId;
 
                     /** @var BuildingPvPanel $buildingPvPanel */
@@ -514,7 +490,7 @@ class DumpService
                 }
 
                 // handle the building_heaters table and its column
-                if ($table == 'building_heaters') {
+                if ('building_heaters' == $table) {
                     $column = $columnOrId;
 
                     /** @var buildingHeater $buildingHeater */
@@ -537,7 +513,7 @@ class DumpService
                 }
 
                 // handle the user_energy_habits table and its column
-                if ($table == 'user_energy_habits') {
+                if ('user_energy_habits' == $table) {
                     $column = $columnOrId;
 
                     /** @var UserEnergyHabit $userEnergyHabit */
@@ -573,7 +549,7 @@ class DumpService
                 }
 
                 // handle the building_paintwork_statuses table and its column
-                if ($table == 'building_paintwork_statuses') {
+                if ('building_paintwork_statuses' == $table) {
                     $column = $columnOrId;
 
                     /** @var BuildingPaintworkStatus $buildingPaintworkStatus */
@@ -610,15 +586,15 @@ class DumpService
      * Return the calculate data for each step, for a user, with its given inputsource.
      *
      *
-     * @param User $user
+     * @param User        $user
      * @param InputSource $inputSource
+     *
      * @return array
      */
     public static function getCalculateData(User $user, InputSource $inputSource): array
     {
         // collect some info about their building
         $building = $user->building;
-
 
         /** @var BuildingFeature $buildingFeature */
         $buildingFeature = $building->buildingFeatures()->forInputSource($inputSource)->first();
@@ -669,7 +645,6 @@ class DumpService
             ->select('measure_application_id', 'insulating_glazing_id', 'building_heating_id', 'm2', 'windows')
             ->get();
 
-
         // build the right structure for the calculation
         $buildingInsulatedGlazingArray = [];
         foreach ($buildingInsulatedGlazings as $buildingInsulatedGlazing) {
@@ -681,8 +656,8 @@ class DumpService
             ];
         }
 
-
         // handle the wood / frame / crack sealing elements for the insulated glazing
+        $buildingElementsArray = [];
 
         $buildingWoodElement = $buildingElements->where('element_id', $woodElements->id)->pluck('element_value_id')->toArray();
         $buildingElementsArray[$woodElements->short][$woodElements->id] = array_combine($buildingWoodElement, $buildingWoodElement) ?? null;
@@ -692,7 +667,6 @@ class DumpService
 
         $buildingCrackSealingElement = $buildingElements->where('element_id', $crackSealing->id)->first();
         $buildingElementsArray[$crackSealing->id][$crackSealing->short] = $buildingCrackSealingElement->element_value_id ?? null;
-
 
         $buildingPaintworkStatusesArray = [
             'last_painted_year' => $buildingPaintworkStatus->last_painted_year ?? null,
@@ -737,7 +711,7 @@ class DumpService
             // this is needed as the tiles condition has a different type of calculation
             // than bitumen has
             if (array_key_exists('tiles_condition', $buildingRoofTypesArray[$short]['extra'])) {
-                if ($short == 'flat' || empty($buildingRoofTypesArray[$short]['extra']['tiles_condition'])) {
+                if ('flat' == $short || empty($buildingRoofTypesArray[$short]['extra']['tiles_condition'])) {
                     unset($buildingRoofTypesArray[$short]['extra']['tiles_condition']);
                 }
             }
@@ -790,8 +764,7 @@ class DumpService
             'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
         ]);
 
-
-        $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $userEnergyHabit, [
+        $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit, [
             'user_interests' => $userInterestsForInsulatedGlazing,
             'building_insulated_glazings' => $buildingInsulatedGlazingArray,
             'building_elements' => $buildingElementsArray,
@@ -817,7 +790,7 @@ class DumpService
         ]);
 
         $solarPanelSavings = SolarPanel::calculate($building, [
-            'building_pv_panels' => $buildingPvPanels instanceOf BuildingPvPanel ? $buildingPvPanels->toArray() : [],
+            'building_pv_panels' => $buildingPvPanels instanceof BuildingPvPanel ? $buildingPvPanels->toArray() : [],
             'user_energy_habits' => [
                 'amount_electricity' => $userEnergyHabit->amount_electricity ?? null,
             ],
@@ -855,17 +828,17 @@ class DumpService
             return $value;
         }
 
-        if (!is_numeric($value)) {
+        if (! is_numeric($value)) {
             return $value;
         }
 
-        if (in_array($column, ['interest_comparable',])) {
+        if (in_array($column, ['interest_comparable'])) {
             $decimals = 1;
         }
-        if ($column == 'specs' && $maybe1 == 'size_collector') {
+        if ('specs' == $column && 'size_collector' == $maybe1) {
             $decimals = 1;
         }
-        if ($column == 'paintwork' && $maybe1 == 'costs') {
+        if ('paintwork' == $column && 'costs' == $maybe1) {
             /// round the cost for paintwork
             $shouldRound = true;
         }
@@ -877,9 +850,9 @@ class DumpService
      * Format the output of the given column and value.
      *
      * @param string $column
-     * @param mixed $value
-     * @param  int $decimals
-     * @param  bool $shouldRound
+     * @param mixed  $value
+     * @param int    $decimals
+     * @param bool   $shouldRound
      *
      * @return float|int|string
      */
@@ -887,8 +860,8 @@ class DumpService
     {
         //dump("formatOutput (" . $column . ", " . $value . ", " . $decimals . ", " . $shouldRound . ")");
 
-        if (in_array($column, ['percentage_consumption',]) ||
-            stristr($column, 'savings_') !== false ||
+        if (in_array($column, ['percentage_consumption']) ||
+            false !== stristr($column, 'savings_') ||
             stristr($column, 'cost')) {
             $value = NumberFormatter::round($value);
         }
@@ -896,7 +869,7 @@ class DumpService
             $value = NumberFormatter::round($value);
         }
         // We should let Excel do the separation of thousands
-        return number_format($value, $decimals, ",", "");
+        return number_format($value, $decimals, ',', '');
         //return NumberFormatter::format($value, $decimals, $shouldRound);
     }
 
@@ -904,12 +877,13 @@ class DumpService
     {
         if (in_array($value, ['yes', 'no', 'unknown'])) {
             $key = 'general.options.%s.title';
+
             return Translation::translate(sprintf($key, $value));
         }
     }
 
     /**
-     * Returns whether or not two (optional!) columns contain a year or not
+     * Returns whether or not two (optional!) columns contain a year or not.
      *
      * @param string $column
      * @param string $extraValue
@@ -918,11 +892,11 @@ class DumpService
      */
     protected static function isYear($column, $extraValue = '')
     {
-        if (!is_null($column)) {
-            if (stristr($column, 'year') !== false) {
+        if (! is_null($column)) {
+            if (false !== stristr($column, 'year')) {
                 return true;
             }
-            if ($column == 'extra') {
+            if ('extra' == $column) {
                 return in_array($extraValue, [
                     'year',
                 ]);

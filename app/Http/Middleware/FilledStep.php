@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
-use App\Models\Cooperation;
 use App\Models\Step;
 use Closure;
 
@@ -31,9 +30,8 @@ class FilledStep
             // if the user / building did not complete the given step redirect him back.
             if ($building->hasNotCompleted($step)) {
                 \Log::debug($debugMsg.".. And it wasn't. So, redirecting to that step..");
-                $cooperation = HoomdossierSession::getCooperation(true);
 
-                return redirect('/tool/'.$stepSlug.'/')->with(compact('cooperation'));
+                return redirect('/tool/'.$stepSlug.'/');
             }
             \Log::debug($debugMsg.'.. And it was :-)');
         } else {

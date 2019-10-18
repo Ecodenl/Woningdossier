@@ -4,22 +4,15 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\HighEfficiencyBoiler;
 use App\Events\StepDataHasBeenChanged;
-use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculator;
-use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
-use App\Helpers\Translation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HighEfficiencyBoilerFormRequest;
 use App\Models\Building;
 use App\Models\BuildingService;
-use App\Models\Cooperation;
 use App\Models\MeasureApplication;
 use App\Models\Service;
-use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
@@ -63,7 +56,6 @@ class HighEfficiencyBoilerController extends Controller
         $installedBoiler = $building->buildingServices()->where('service_id', $boiler->id)->first();
         /** @var Collection $installedBoilerForMe */
         $installedBoilerForMe = $building->buildingServices()->forMe()->where('service_id', $boiler->id)->get();
-
 
         return view('cooperation.tool.hr-boiler.index', compact('building',
             'habit', 'boiler', 'boilerTypes', 'installedBoiler',
@@ -137,8 +129,8 @@ class HighEfficiencyBoilerController extends Controller
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
         $cooperation = HoomdossierSession::getCooperation(true);
 
-        $nextStep = StepHelper::getNextStep(Hoomdossier::user(), HoomdossierSession::getInputSource(true), $this->step);
-        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
+        $url = $nextStep['url'];
 
         if (! empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];

@@ -4,26 +4,21 @@ namespace App\Calculations;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
-use App\Helpers\HoomdossierSession;
 use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\Heater\KeyFigures;
-use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\ComfortLevelTapWater;
 use App\Models\HeaterComponentCost;
-use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\KeyFigureConsumptionTapWater;
-use App\Models\Log;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
-use App\Models\User;
 use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
 
-class Heater {
-
+class Heater
+{
     public static function calculate(Building $building, $energyHabit, $calculateData)
     {
         $result = [
@@ -97,20 +92,20 @@ class Heater {
 
                 $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
-
-                if (!empty($interests)) {
-
+                if (! empty($interests)) {
                     foreach ($interests as $type => $interestTypes) {
                         foreach ($interestTypes as $typeId => $interestId) {
                             $interest = Interest::find($interestId);
                         }
                     }
 
-                    $currentYear = Carbon::now()->year;
-                    if (1 == $interest->calculate_value) {
-                        $result['year'] = $currentYear;
-                    } elseif (2 == $interest->calculate_value) {
-                        $result['year'] = $currentYear + 5;
+                    if (isset($interest) && $interest instanceof Interest) {
+                        $currentYear = Carbon::now()->year;
+                        if (1 == $interest->calculate_value) {
+                            $result['year'] = $currentYear;
+                        } elseif (2 == $interest->calculate_value) {
+                            $result['year'] = $currentYear + 5;
+                        }
                     }
                 }
 
@@ -132,6 +127,7 @@ class Heater {
                 }
             }
         }
+
         return $result;
     }
 }

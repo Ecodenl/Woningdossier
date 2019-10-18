@@ -17,7 +17,6 @@ use App\Models\BuildingService;
 use App\Models\BuildingType;
 use App\Models\CentralHeatingAge;
 use App\Models\ComfortLevelTapWater;
-use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\EnergyLabel;
@@ -347,7 +346,6 @@ class GeneralDataController extends Controller
                 'amount_gas' => $request->get('amount_gas'),
                 'amount_water' => $request->get('amount_water'),
                 'living_situation_extra' => $request->get('living_situation_extra'),
-                'motivation_extra' => $request->get('motivation_extra'),
             ]
         );
 
@@ -357,8 +355,8 @@ class GeneralDataController extends Controller
 
         $cooperation = HoomdossierSession::getCooperation(true);
 
-        $nextStep = StepHelper::getNextStep(Hoomdossier::user(), HoomdossierSession::getInputSource(true), $this->step);
-        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
+        $url = $nextStep['url'];
 
         if (! empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];

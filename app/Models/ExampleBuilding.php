@@ -8,19 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\ExampleBuilding
+ * App\Models\ExampleBuilding.
  *
- * @property int $id
- * @property string $name
- * @property int|null $building_type_id
- * @property int|null $cooperation_id
- * @property int|null $order
- * @property bool $is_default
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\BuildingType|null $buildingType
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuildingContent[] $contents
- * @property-read \App\Models\Cooperation|null $cooperation
+ * @property int                                                                           $id
+ * @property string                                                                        $name
+ * @property int|null                                                                      $building_type_id
+ * @property int|null                                                                      $cooperation_id
+ * @property int|null                                                                      $order
+ * @property bool                                                                          $is_default
+ * @property \Illuminate\Support\Carbon|null                                               $created_at
+ * @property \Illuminate\Support\Carbon|null                                               $updated_at
+ * @property \App\Models\BuildingType|null                                                 $buildingType
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuildingContent[] $contents
+ * @property \App\Models\Cooperation|null                                                  $cooperation
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding forAnyOrMyCooperation()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding forMyCooperation()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding generic()
@@ -142,11 +143,12 @@ class ExampleBuilding extends Model
 
     /**
      * Returns if this ExampleBuilding is a specific example building or not.
+     *
      * @return bool
      */
-    public function isSpecific() : bool
+    public function isSpecific(): bool
     {
-        return !is_null($this->cooperation_id);
+        return ! is_null($this->cooperation_id);
     }
 
     /**
@@ -154,7 +156,7 @@ class ExampleBuilding extends Model
      *
      * @return bool
      */
-    public function isGeneric() : bool
+    public function isGeneric(): bool
     {
         return is_null($this->cooperation_id);
     }

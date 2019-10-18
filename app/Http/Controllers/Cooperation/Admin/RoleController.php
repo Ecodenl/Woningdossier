@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\Cooperation\Admin;
 
 use App\Helpers\Hoomdossier;
+use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class RoleController extends Controller
 {
-
     public function assignRole(Cooperation $cooperation, Request $request)
     {
         // the user id to assign the role to

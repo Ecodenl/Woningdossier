@@ -6,14 +6,15 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Status
+ * App\Models\Status.
  *
- * @property int $id
- * @property string $name
- * @property string $short
- * @property int $order
+ * @property int                             $id
+ * @property string                          $name
+ * @property string                          $short
+ * @property int                             $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Status newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Status newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Status ordered()

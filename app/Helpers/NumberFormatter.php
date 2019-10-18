@@ -43,18 +43,18 @@ class NumberFormatter
      * Round a number.
      *
      * @param $number
-     * @param  int  $bucket
+     * @param int $bucket
      *
      * @return float|int
      */
     public static function round($number, $bucket = 5)
     {
-        if (!is_numeric($number)) {
+        if (! is_numeric($number)) {
             $number = static::reverseFormat($number);
         }
+
         return round($number / $bucket) * $bucket;
     }
-
 
     public static function format($number, $decimals = 0, $shouldRoundNumber = false)
     {
@@ -66,7 +66,6 @@ class NumberFormatter
         // if the number is numeric we can format it
         // else we return the value thats not a correct number
         if (is_numeric($number)) {
-
             if ($shouldRoundNumber) {
                 $number = static::round($number);
             }
@@ -78,9 +77,7 @@ class NumberFormatter
                 self::$formatLocaleSeparators[$locale]['thousands']
             );
 
-
             return $formattedNumber;
-
         } else {
             return $number;
         }
@@ -100,7 +97,6 @@ class NumberFormatter
             ['', ''],
             $number
         );
-
 
         return str_replace(self::$reverseLocaleSeparators[$locale]['decimal'],
             '.',

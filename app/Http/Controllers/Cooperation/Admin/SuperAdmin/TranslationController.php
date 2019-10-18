@@ -53,13 +53,11 @@ class TranslationController extends Controller
     {
         $step = Step::where('slug', $stepSlug)->first();
         if ($step instanceof Step) {
-
             $questions = LanguageLine::where('step_id', $step->id)
                 ->mainQuestions()
                 ->get();
 
-
-            // if it isn't a instance, then its a general translation group
+        // if it isn't a instance, then its a general translation group
         } elseif (in_array($stepSlug, ['general', 'my-plan', 'home'])) {
             $questions = LanguageLine::where('group', $stepSlug)
                 ->mainQuestions()
@@ -86,7 +84,7 @@ class TranslationController extends Controller
             foreach ($languageLineData as $type => $languageLines) {
                 // we dont do stuff with the type yet, could be helpfull in the future.
                 foreach ($languageLines as $languageLineId => $text) {
-					$text = $text ?? "";
+                    $text = $text ?? '';
                     $languageLine = LanguageLine::find($languageLineId);
                     if ($languageLine instanceof LanguageLine) {
                         $languageLine->setTranslation($locale, $text);

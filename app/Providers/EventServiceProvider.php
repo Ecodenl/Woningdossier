@@ -9,6 +9,7 @@ use App\Events\ObservingToolForUserEvent;
 use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
 use App\Events\PrivateMessageReceiverEvent;
+use App\Events\Registered;
 use App\Events\StepDataHasBeenChanged;
 use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
@@ -16,7 +17,10 @@ use App\Events\UserChangedHisEmailEvent;
 use App\Events\UserRevokedAccessToHisBuilding;
 use App\Listeners\DossierResetListener;
 use App\Listeners\FillingToolForUserListener;
+use App\Listeners\GiveCoachesBuildingPermission;
 use App\Listeners\LogAllowedAccessToBuilding;
+use App\Listeners\LogFillingToolForUserListener;
+use App\Listeners\LogObservingToolForUserListener;
 use App\Listeners\LogRegisteredUserListener;
 use App\Listeners\LogRevokedAccessToBuilding;
 use App\Listeners\LogUserAssociatedWithOtherCooperation;
@@ -25,12 +29,12 @@ use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
 use App\Listeners\PreventChangeNotificationWhenStarting;
 use App\Listeners\PrivateMessageReceiverListener;
+use App\Listeners\RevokeBuildingPermissionForCoaches;
 use App\Listeners\SetOldEmailListener;
 use App\Listeners\StepDataHasBeenChangedListener;
 use App\Listeners\SuccessFullLoginListener;
 use App\Listeners\UserEventSubscriber;
 use Illuminate\Auth\Events\Login;
-use App\Events\Registered;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -56,32 +60,36 @@ class EventServiceProvider extends ServiceProvider
         ParticipantAddedEvent::class => [
             ParticipantAddedListener::class,
         ],
-        Login::class                              => [
+        Login::class => [
             SuccessFullLoginListener::class,
         ],
-        Registered::class                         => [
-            LogRegisteredUserListener::class
+        Registered::class => [
+            LogRegisteredUserListener::class,
         ],
         UserAssociatedWithOtherCooperation::class => [
-            LogUserAssociatedWithOtherCooperation::class
+            LogUserAssociatedWithOtherCooperation::class,
         ],
-        FillingToolForUserEvent::class            => [
-            FillingToolForUserListener::class
+        FillingToolForUserEvent::class => [
+            FillingToolForUserListener::class,
+            LogFillingToolForUserListener::class,
         ],
-        ObservingToolForUserEvent::class          => [
-            ObservingToolForUserListener::class
+        ObservingToolForUserEvent::class => [
+            ObservingToolForUserListener::class,
+            LogObservingToolForUserListener::class,
         ],
-        StepDataHasBeenChanged::class             => [
+        StepDataHasBeenChanged::class => [
             StepDataHasBeenChangedListener::class,
         ],
-        UserChangedHisEmailEvent::class           => [
+        UserChangedHisEmailEvent::class => [
             SetOldEmailListener::class,
         ],
-        UserAllowedAccessToHisBuilding::class     => [
-            LogAllowedAccessToBuilding::class
+        UserAllowedAccessToHisBuilding::class => [
+            GiveCoachesBuildingPermission::class,
+            LogAllowedAccessToBuilding::class,
         ],
-        UserRevokedAccessToHisBuilding::class     => [
-            LogRevokedAccessToBuilding::class
+        UserRevokedAccessToHisBuilding::class => [
+            LogRevokedAccessToBuilding::class,
+            RevokeBuildingPermissionForCoaches::class,
         ],
     ];
 

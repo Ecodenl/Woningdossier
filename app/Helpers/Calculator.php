@@ -9,7 +9,6 @@ use App\Models\BuildingTypeElementMaxSaving;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\InputSource;
-use App\Models\Log;
 use App\Models\MeasureApplication;
 use App\Models\PriceIndexing;
 use App\Models\UserEnergyHabit;
@@ -17,6 +16,19 @@ use Carbon\Carbon;
 
 class Calculator
 {
+    /**
+     * Calculate the gas savings for the given building when applying the
+     * given Element.
+     *
+     * @param Building        $building
+     * @param InputSource     $inputSource
+     * @param ElementValue    $element
+     * @param UserEnergyHabit $energyHabit
+     * @param $surface
+     * @param $measureAdvice
+     *
+     * @return int|mixed
+     */
     public static function calculateGasSavings(Building $building, InputSource $inputSource, ElementValue $element, UserEnergyHabit $energyHabit, $surface, $measureAdvice)
     {
         $result = 0;
@@ -24,33 +36,47 @@ class Calculator
 
         $roomTempCalculator = new RoomTemperatureCalculator($energyHabit);
         $averageHouseTemperature = $roomTempCalculator->getAverageHouseTemperature();
-        self::debug('Average house temperature = '.$averageHouseTemperature);
+        self::debug(__METHOD__.' Average house temperature = '.$averageHouseTemperature);
         $kengetalEnergySaving = Temperature::energySavingFigureWallInsulation($measureAdvice, $averageHouseTemperature);
-        self::debug('Kengetal energiebesparing = '.$kengetalEnergySaving);
+        self::debug(__METHOD__.' Kengetal energiebesparing = '.$kengetalEnergySaving);
 
         if (isset($element->calculate_value) && $element->calculate_value < 3) {
             $result = min(
                 $surface * $kengetalEnergySaving,
                 self::maxGasSavings($building, $inputSource, $energyHabit, $element->element)
             );
-            self::debug($result.' = min('.$surface.' * '.$kengetalEnergySaving.', '.self::maxGasSavings($building, $inputSource, $energyHabit, $element->element).')');
+            self::debug(__METHOD__.' '.$result.' = min('.$surface.' * '.$kengetalEnergySaving.', '.self::maxGasSavings($building, $inputSource, $energyHabit, $element->element).')');
         }
 
         return $result;
     }
 
+    /**
+     * Calculate the CO2 savings in kg / m3 gas based on the key figure.
+     *
+     * @param float|int $gasSavings
+     *
+     * @return float|int
+     */
     public static function calculateCo2Savings($gasSavings)
     {
         $result = $gasSavings * Kengetallen::CO2_SAVING_GAS;
-        self::debug('CO2 besparing: '.$result.' = '.$gasSavings.' * '.Kengetallen::CO2_SAVING_GAS);
+        self::debug(__METHOD__.' CO2 besparing: '.$result.' = '.$gasSavings.' * '.Kengetallen::CO2_SAVING_GAS);
 
         return $result;
     }
 
+    /**
+     * Calculate the money savings in euro / m3 gas based on the key figure.
+     *
+     * @param float|int $gasSavings
+     *
+     * @return float|int
+     */
     public static function calculateMoneySavings($gasSavings)
     {
         $result = $gasSavings * Kengetallen::EURO_SAVINGS_GAS;
-        self::debug("Euro's besparing: ".$result.' = '.$gasSavings.' * '.Kengetallen::EURO_SAVINGS_GAS);
+        self::debug(__METHOD__." Euro's besparing: ".$result.' = '.$gasSavings.' * '.Kengetallen::EURO_SAVINGS_GAS);
 
         return $result;
     }
@@ -67,7 +93,7 @@ class Calculator
             $result = max($surface * $measureApplication->costs, $measureApplication->minimal_costs);
         }
 
-        self::debug('Cost indication: '.$result.' = max('.$surface.' * '.$measureApplication->costs.', '.$measureApplication->minimal_costs.')');
+        self::debug(__METHOD__.' Cost indication: '.$result.' = max('.$surface.' * '.$measureApplication->costs.', '.$measureApplication->minimal_costs.')');
 
         return $result;
     }
@@ -78,7 +104,7 @@ class Calculator
      *
      * @param MeasureApplication $measure         The measure to apply
      * @param mixed              $number          The amount of measures. (might be m2, pieces, etc.)
-     * @param null|int           $applicationYear
+     * @param int|null           $applicationYear
      * @param bool               $applyIndexing   Whether or not to apply indexing
      *
      * @return float|int
@@ -121,10 +147,10 @@ class Calculator
     }
 
     /**
-     * @param float|int $costs    Amount indexed on $fromYear
-     * @param int       $fromYear Previous year used for indexing
-     * @param int       $toYear   New year to index
-     * @param null|int|float|PriceIndexing Null will fall back on default price index (from db). Otherwise a PriceIndex object or "just" a percentage (>= 0, <= 100)
+     * @param float|int                    $costs    Amount indexed on $fromYear
+     * @param int                          $fromYear Previous year used for indexing
+     * @param int                          $toYear   New year to index
+     * @param int|float|PriceIndexing|null $index    Null will fall back on default price index (from db). Otherwise a PriceIndex object or "just" a percentage (>= 0, <= 100)
      *
      * @return float|int
      */
@@ -170,8 +196,19 @@ class Calculator
         return self::reindexCosts($costs, null, $toYear);
     }
 
-    // in m3 per year
-    public static function maxGasSavings(Building $building, InputSource $inputSource, UserEnergyHabit $energyHabit, Element $element)
+    /**
+     * Calculate the maximum gas savings in m3 per year.
+     * Based on the building, only a max percentage of gas can be saved for
+     * particular Elements.
+     *
+     * @param Building             $building
+     * @param InputSource          $inputSource
+     * @param UserEnergyHabit|null $energyHabit
+     * @param Element              $element
+     *
+     * @return float|int
+     */
+    public static function maxGasSavings(Building $building, InputSource $inputSource, $energyHabit, Element $element)
     {
         $boiler = $building->getServiceValue('boiler', $inputSource);
 
@@ -186,9 +223,9 @@ class Calculator
         if ($maxSaving instanceof BuildingTypeElementMaxSaving) {
             $saving = $maxSaving->max_saving;
         }
-        self::debug('Max saving for building_type '.$buildingType->id.' + element '.$element->id.' (' . $element->short . ') = '.$saving.'%');
+        self::debug(__METHOD__.' Max saving for building_type '.$buildingType->id.' + element '.$element->id.' ('.$element->short.') = '.$saving.'%');
         $result = $usage * ($saving / 100);
-        self::debug($result.' = '.$usage.' * '.($saving / 100));
+        self::debug(__METHOD__.' '.$result.' = '.$usage.' * '.($saving / 100));
 
         return $result;
     }

@@ -58,9 +58,17 @@ class KeyFigures implements KeyFiguresInterface
      */
     public static function getCurrentConsumption(UserEnergyHabit $habit, ComfortLevelTapWater $comfortLevel)
     {
-        return KeyFigureConsumptionTapWater::where('resident_count', $habit->resident_count)
+        $consumption = KeyFigureConsumptionTapWater::where('resident_count', $habit->resident_count)
                                            ->where('comfort_level_tap_water_id', $comfortLevel->id)
                                            ->first();
+
+        \Log::debug(__METHOD__.' consumption: for '.
+                    $habit->resident_count.' residents on comfort level '.
+                    $comfortLevel->name.' is '.
+                    $consumption->water_consumption.' (water) and '.
+                    $consumption->energy_consumption.' (gas)');
+
+        return $consumption;
     }
 
     /**
@@ -121,17 +129,17 @@ class KeyFigures implements KeyFiguresInterface
         return self::$angles;
     }
 
-	/**
-	 * Returns the key figures from this class
-	 *
-	 * @return array
-	 */
-	public static function getKeyFigures()
-	{
-		$figures = [];
+    /**
+     * Returns the key figures from this class.
+     *
+     * @return array
+     */
+    public static function getKeyFigures()
+    {
+        $figures = [];
 
-		$figures['M3_GAS_TO_KWH'] = self::M3_GAS_TO_KWH;
+        $figures['M3_GAS_TO_KWH'] = self::M3_GAS_TO_KWH;
 
-		return $figures;
-	}
+        return $figures;
+    }
 }

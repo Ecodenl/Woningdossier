@@ -7,7 +7,7 @@
             ['inputType' => 'radio', 'inputValues' => $question->questionOptions, 'userInputValues' => $question->questionAnswers()->forMe()->get(), 'userInputColumn' => 'id'])
             @foreach($question->questionOptions as $option)
                 <label class="radio-inline">
-                    <input type="radio" name="questions[{{$question->id}}]" value="{{$option->id}}" @if(old('questions.'.$question->id, $question->getAnswerForCurrentInputSource()) == $option->id) checked @endif>
+                    <input type="radio" name="questions[{{$question->id}}]" value="{{$option->id}}" @if(old('questions.'.$question->id, \App\Helpers\Hoomdossier::getMostCredibleValue($question->questionAnswers()->where('building_id', \App\Helpers\HoomdossierSession::getBuilding()), 'answer')) == $option->id) checked @endif>
                     {{$option->name}}
                 </label>
             @endforeach

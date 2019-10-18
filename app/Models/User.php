@@ -350,6 +350,20 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
+     * Check if a user has multiple roles.
+     *
+     * @return bool
+     */
+    public function hasMultipleRoles(): bool
+    {
+        if ($this->getRoleNames()->count() > 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Function to check if a user has a role, and if the user has that role check if the role is set in the Hoomdossier session.
      *
      * @param string|array|\Spatie\Permission\Contracts\Role|\Illuminate\Support\Collection $roles

@@ -142,6 +142,10 @@ return [
         'building_services.*.extra' => __('high-efficiency-boiler.boiler-placed-date.title'),
         'building_roof_types.pitched.roof_surface' => __('roof-insulation.current-situation.pitched-roof-surface.title'),
         'building_roof_types.flat.roof_surface' => __('roof-insulation.current-situation.flat-roof-surface.title'),
+        'building_roof_types.flat.extra.zinc_replaced_date' =>  __('roof-insulation.current-situation.zinc-replaced.title'),
+        'building_roof_types.flat.extra.bitumen_replaced_date' =>  __('roof-insulation.current-situation.bitumen-insulated.title'),
+
+
         'build_year' => 'bouwjaar',
     ],
 ];

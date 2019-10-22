@@ -57,16 +57,12 @@ class RoofInsulationFormRequest extends FormRequest
      */
     public function rules()
     {
-        $max = Carbon::now()->year;
-
         return [
             'building_roof_types.id' => 'bail|required|exists:roof_types,id',
             'building_roof_types.*.roof_surface' => 'nullable|numeric',
-            'building_roof_types.*.zinc_surface' => 'nullable|numeric',
+//            'building_roof_types.*.zinc_surface' => 'nullable|numeric',
             'building_roof_types.*.element_value_id' => 'exists:element_values,id',
             'building_roof_types.*.building_heating_id' => 'exists:building_heatings,id',
-            'building_roof_types.*.extra.zinc_replaced_date' => 'nullable|numeric|between:1960,'.$max,
-            'building_roof_types.*.extra.bitumen_replaced_date' => 'nullable|numeric|between:1970,'.$max,
             'building_roof_types.*.extra.tiles_condition' => 'numeric|exists:roof_tile_statuses,id',
             'building_roof_types.*.extra.measure_application_id' => 'exists:measure_applications,id',
             'building_roof_types.roof_type_id' => 'exists:roof_types,id',
@@ -87,6 +83,8 @@ class RoofInsulationFormRequest extends FormRequest
 
     public function withValidator(Validator $validator)
     {
+        $max = Carbon::now()->year;
+
         // retrieve the selected roof type ids
         $roofTypeIds = $this->input('building_roof_types.id');
 
@@ -100,9 +98,16 @@ class RoofInsulationFormRequest extends FormRequest
             // when the roof type category exists add validation
             if (!empty($roofTypeCategory)) {
                 $validator->addRules([
+                    $brt.'.'.$roofTypeCategory.'.extra.zinc_replaced_date' => 'nullable|numeric|between:1960,'.$max,
                     $brt.'.'.$roofTypeCategory.'.roof_surface' => 'required|numeric|min:0',
                     $brt.'.'.$roofTypeCategory.'.insulation_roof_surface' => 'nullable|min:0|needs_to_be_lower_or_same_as:'.$brt.'.'.$roofTypeCategory.'.roof_surface',
                 ]);
+
+                if ($roofTypeCategory === 'flat') {
+                    $validator->addRules([
+                        $brt.'.'.$roofTypeCategory.'.extra.bitumen_replaced_date' => 'nullable|numeric|between:1970,'.$max,
+                    ]);
+                }
             }
         }
         /*

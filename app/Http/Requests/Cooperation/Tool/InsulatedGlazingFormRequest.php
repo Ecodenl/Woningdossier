@@ -63,8 +63,8 @@ class InsulatedGlazingFormRequest extends FormRequest
             // when the user his interest level is high enough, we should add rules. Otherwise there is no need to validate the fields.
             if ($this->isUserInterested($userInterest)) {
                 $validator->addRules([
-                    $big . $measureApplicationId . '.m2' => 'numeric|min:1',
-                    $big . $measureApplicationId . '.windows' => 'numeric|min:1'
+                    $big . $measureApplicationId . '.m2' => 'required|numeric|min:1',
+                    $big . $measureApplicationId . '.windows' => 'required|numeric|min:1'
                 ]);
             }
         }

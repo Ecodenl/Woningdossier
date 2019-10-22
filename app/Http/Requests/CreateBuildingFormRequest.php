@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Account;
+use App\Models\Building;
 use App\Rules\HouseNumber;
 use App\Rules\HouseNumberExtension;
 use App\Rules\PostalCode;
@@ -17,6 +19,8 @@ class CreateBuildingFormRequest extends FormRequest
     public function authorize()
     {
         return true;
+        // allowed when there is no building attached
+//        return !Account::where('email', $this->get('email'))->first()->user()->building instanceof Building;
     }
 
     /**
@@ -27,8 +31,7 @@ class CreateBuildingFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|exists:users,email',
-            'password' => 'required',
+            'email' => 'required|email|exists:accounts,email',
             'postal_code' => ['required', new PostalCode('nl')],
             'number' => ['required', new HouseNumber('nl')],
             'house_number_extension' => [new HouseNumberExtension('nl')],

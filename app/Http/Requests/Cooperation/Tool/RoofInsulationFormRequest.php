@@ -59,8 +59,6 @@ class RoofInsulationFormRequest extends FormRequest
     {
         return [
             'building_roof_types.id' => 'bail|required|exists:roof_types,id',
-            'building_roof_types.*.roof_surface' => 'nullable|numeric',
-//            'building_roof_types.*.zinc_surface' => 'nullable|numeric',
             'building_roof_types.*.element_value_id' => 'exists:element_values,id',
             'building_roof_types.*.building_heating_id' => 'exists:building_heatings,id',
             'building_roof_types.*.extra.tiles_condition' => 'numeric|exists:roof_tile_statuses,id',
@@ -98,9 +96,9 @@ class RoofInsulationFormRequest extends FormRequest
             // when the roof type category exists add validation
             if (!empty($roofTypeCategory)) {
                 $validator->addRules([
-                    $brt.'.'.$roofTypeCategory.'.extra.zinc_replaced_date' => 'nullable|numeric|between:1960,'.$max,
                     $brt.'.'.$roofTypeCategory.'.roof_surface' => 'required|numeric|min:0',
                     $brt.'.'.$roofTypeCategory.'.insulation_roof_surface' => 'nullable|min:0|needs_to_be_lower_or_same_as:'.$brt.'.'.$roofTypeCategory.'.roof_surface',
+                    $brt.'.'.$roofTypeCategory.'.extra.zinc_replaced_date' => 'nullable|numeric|between:1960,'.$max,
                 ]);
 
 

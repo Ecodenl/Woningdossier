@@ -11,7 +11,6 @@ yarn-error.log
 .env
 phpunit.xml
 
-
 # translation file
 resources/lang/*/uuid.php
 

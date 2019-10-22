@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Validator;
 
 class RoofInsulationFormRequest extends FormRequest
 {
@@ -59,7 +60,7 @@ class RoofInsulationFormRequest extends FormRequest
         $max = Carbon::now()->year;
 
         return [
-            'building_roof_types.id' => 'required|exists:roof_types,id',
+            'building_roof_types.id' => 'bail|required|exists:roof_types,id',
             'building_roof_types.*.roof_surface' => 'nullable|numeric',
             'building_roof_types.pitched.insulation_roof_surface' => 'nullable|numeric|needs_to_be_lower_or_same_as:building_roof_types.pitched.roof_surface',
             'building_roof_types.flat.insulation_roof_surface' => 'nullable|numeric|needs_to_be_lower_or_same_as:building_roof_types.flat.roof_surface',
@@ -86,16 +87,36 @@ class RoofInsulationFormRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator)
+    public function withValidator(Validator $validator)
     {
+        // retrieve the selected roof type ids
+        $roofTypeIds = $this->input('building_roof_types.id');
+
+        $brt = 'building_roof_types';
+        // loop through them, and validate it
+        foreach ($roofTypeIds as $roofTypeId) {
+            $roofType = RoofType::find($roofTypeId);
+
+            $roofTypeCategory = $this->getRoofTypeCategory($roofType);
+
+            // when the roof type category exists add validation
+            if (!empty($roofTypeCategory)) {
+                $validator->addRules([
+                    $brt.'.'.$roofTypeCategory.'.roof_surface' => 'required|numeric|min:0',
+                    $brt.'.'.$roofTypeCategory.'.insulation_roof_surface' => 'needs_to_be_lower_or_same_as:'.$brt.'.'.$roofTypeCategory.'.roof_surface',
+                ]);
+            }
+        }
+        dd('bier', $validator->errors());
+        /*
         // get the rooftypes
         $roofTypes = $this->request->get('building_roof_types', []);
-
         foreach ($roofTypes as $i => $details) {
             // Validate the roof type values
             if (is_numeric($i) && is_numeric($details)) {
                 $roofType = RoofType::find($details);
 
+//                dd($roofType);
                 $cat = $this->getRoofTypeCategory($roofType);
                 if ('' != $cat) {
                     // add as key to result array
@@ -127,6 +148,7 @@ class RoofInsulationFormRequest extends FormRequest
                 }
             }
         }
+        */
     }
 
     /**

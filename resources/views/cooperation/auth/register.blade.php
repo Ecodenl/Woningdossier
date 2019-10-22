@@ -216,8 +216,8 @@
             var email = $('#email');
 
             email.on('change', function () {
-                checkEmailForTypo();
-            })
+                checkEmailForTypo($(this));
+            });
             email.on('keyup change', function () {
                     $.ajax({
                         url: '{{route('cooperation.check-existing-email')}}',
@@ -267,7 +267,6 @@
                     });
 
             });
-
             if ($('.form-error').length) {
                 email.trigger('change');
             }
@@ -280,15 +279,23 @@
             input.parent().append($(helpBlock).append('<strong>' + message + '</strong>'));
         }
 
-        function checkEmailForTypo()
+        function removeError(input) {
+            input.parents('.has-error').removeClass('has-error');
+            input.next('.help-block').remove()
+        }
+
+        function checkEmailForTypo(emailElement)
         {
+            var emailWarning = '{{__('auth.register.form.possible-wrong-email')}}';
             var goodDomains = /\b(nl|be|net|com|info|nu|de)\b/;
 
             // if the email does not contain a good domain return a message
-            if (!goodDomains.test(email)) {
-                addError(email, 'Klopt niet')
+            if (!goodDomains.test(emailElement.val())) {
+                addError(emailElement, emailWarning)
+            } else {
+                console.log('is gewoon goed', emailElement);
+                removeError(emailElement);
             }
-
         }
 
     </script>

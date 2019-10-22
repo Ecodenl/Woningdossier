@@ -113,17 +113,4 @@ class RoofInsulationFormRequest extends FormRequest
             }
         }
     }
-
-    /**
-     * Check whether the user has interest in the particular measure.
-     *
-     * @param $userInterest
-     * @return bool
-     */
-    public function isUserInterested($userInterest)
-    {
-        $noInterestIds = Interest::where('calculate_value', 4)->orWhere('calculate_value', 5)->select('id')->get()->pluck('id')->toArray();
-
-        return !in_array($userInterest, $noInterestIds);
-    }
 }

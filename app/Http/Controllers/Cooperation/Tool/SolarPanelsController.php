@@ -8,7 +8,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SolarPanelFormRequest;
+use App\Http\Requests\Cooperation\Tool\SolarPanelFormRequest;
 use App\Models\BuildingPvPanel;
 use App\Models\MeasureApplication;
 use App\Models\PvPanelOrientation;

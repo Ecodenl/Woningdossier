@@ -1,14 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Cooperation\Tool;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class HeaterFormRequest extends FormRequest
 {
-    use ValidatorTrait;
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -16,7 +13,7 @@ class HeaterFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::check();
+        return \Auth::check();
     }
 
     /**

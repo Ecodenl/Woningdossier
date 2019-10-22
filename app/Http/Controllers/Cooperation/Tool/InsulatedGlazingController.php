@@ -8,7 +8,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\InsulatedGlazingFormRequest;
+use App\Http\Requests\Cooperation\Tool\InsulatedGlazingFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
@@ -210,6 +210,7 @@ class InsulatedGlazingController extends Controller
         // Saving the insulate glazings
         $interests = collect();
         foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazing) {
+
             $insulatedGlazingId = $buildingInsulatedGlazing['insulated_glazing_id'];
             $buildingHeatingId = $buildingInsulatedGlazing['building_heating_id'];
             $m2 = isset($buildingInsulatedGlazing['m2']) ? $buildingInsulatedGlazing['m2'] : 0;
@@ -307,7 +308,7 @@ class InsulatedGlazingController extends Controller
         // Save the paintwork statuses
         $paintWorkStatuses = $request->get('building_paintwork_statuses', '');
 
-        $lastPaintedYear = 2000;
+        $lastPaintedYear = null;
         if (array_key_exists('last_painted_year', $paintWorkStatuses)) {
             $year = (int) $paintWorkStatuses['last_painted_year'];
             if ($year > 1950) {

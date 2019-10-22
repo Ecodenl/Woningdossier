@@ -8,7 +8,7 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\GeneralDataFormRequest;
+use App\Http\Requests\Cooperation\Tool\GeneralDataFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
@@ -150,13 +150,6 @@ class GeneralDataController extends Controller
         return response()->json([], 500);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param FormRequest $request
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function store(GeneralDataFormRequest $request)
     {
         /** @var Building $building */

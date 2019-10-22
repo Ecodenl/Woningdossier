@@ -25,11 +25,21 @@
                             ['inputType' => 'checkbox', 'inputValues' => $roofTypes, 'userInputValues' => $currentRoofTypesForMe, 'userInputColumn' => 'roof_type_id'])
 
                                 @foreach($roofTypes as $roofType)
+{{--                                    {{--}}
+                                    {{--dd(--}}
+                                        {{--old('building_roof_types'),--}}
+                                        {{--old('building_roof_types.id',[--}}
+                                            {{--\App\Helpers\Hoomdossier::getMostCredibleValue(--}}
+                                                {{--$building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->roofTypes()))--}}
+                                            {{--]--}}
+                                        {{--)--}}
+                                    {{--)--}}
+                                    {{--}}--}}
                                     <label class="checkbox-inline">
                                         <input data-calculate-value="{{$roofType->calculate_value}}"
                                                type="checkbox" name="building_roof_types[id][]"
                                                value="{{ $roofType->id }}"
-                                               @if(empty(old()) && in_array($roofType->id, old('building_roof_types.id',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->roofTypes())) ])))
+                                               @if(in_array($roofType->id, old('building_roof_types.id',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->roofTypes())) ])))
                                                checked="checked"
                                                 @endif
                                                 {{--@if((is_array(old('building_roof_types')) && in_array($roofType->id, old('building_roof_types'))) ||
@@ -128,14 +138,12 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6">
 
-                                    @component('cooperation.tool.components.step-question', ['id' => 'building_roof_types.' . $roofCat . '.insulation_roof_surface', 'translation' => 'roof-insulation.current-situation.insulation-'.$roofCat.'-roof-surface', 'required' => true])
+                                    @component('cooperation.tool.components.step-question', ['id' => 'building_roof_types.' . $roofCat . '.insulation_roof_surface', 'translation' => 'roof-insulation.current-situation.insulation-'.$roofCat.'-roof-surface', 'required' => false])
 
                                         @component('cooperation.tool.components.input-group',
                                     ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'insulation_roof_surface'])
                                             <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                                            <input type="text" class="form-control"
-                                                   name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]"
-                                                   value="{{ old('building_roof_types.' . $roofCat . '.insulation_roof_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'insulation_roof_surface')) }}">
+                                            <input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]" value="{{ old('building_roof_types.' . $roofCat . '.insulation_roof_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'insulation_roof_surface')) }}">
                                             {{--<input type="text"  class="form-control" name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface'] : old('building_roof_types.' . $roofCat . '.insulation_roof_surface')}}">--}}
                                         @endcomponent
                                     @endcomponent

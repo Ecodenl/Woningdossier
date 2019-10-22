@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Cooperation\Tool;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BuildingDetailRequest extends FormRequest
@@ -23,9 +24,11 @@ class BuildingDetailRequest extends FormRequest
      */
     public function rules()
     {
+        $max = Carbon::now()->year;
+
         return [
             'building_type_id' => 'required|exists:building_types,id',
-            'build_year' => 'required|numeric',
+            'build_year' => 'required|numeric|between:1000,'.$max,
         ];
     }
 }

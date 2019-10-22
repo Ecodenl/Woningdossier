@@ -125,7 +125,6 @@ class LoginController extends Controller
             return $this->sendLockoutResponse($request);
         }
 
-//        bertarendonk@hetnet.nl
         // validate the credentials from the user
         if ($this->guard()->validate($this->credentials($request))) {
             /** @var Account $account */

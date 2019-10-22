@@ -25,24 +25,6 @@
                                     @endif
                                 </div>
                             </div>
-
-                            <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                                <label for="password"
-                                       class="col-md-4 control-label">@lang('auth.register.form.password')<span
-                                            class="required">*</span></label>
-
-                                <div class="col-md-8">
-                                    <input id="password" type="password" class="form-control" name="password" required>
-
-                                    @if ($errors->has('password'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('password') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-
-
                         </div>
                     </div>
                 </div>

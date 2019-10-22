@@ -150,7 +150,10 @@
                     }
                     $('#download-section').show();
                     enableGenerateReportButton();
+                    // hide the first alert, which is the report gets downloaded alert
+                    $('.alert').first().alert('close');
                 }
+
 
                 // only poll when the file is being processed.
                 if (response.is_file_being_processed) {
@@ -191,7 +194,9 @@
                 }
             });
 
-            pollForFileProcessing();
+            if (window.location.hash !== "") {
+                pollForFileProcessing();
+            }
 
             $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function () {
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\PicoHelper;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateBuildingFormRequest;
@@ -44,16 +45,18 @@ class CreateBuildingController extends Controller
         $user = $account->user();
 
         // a user has to give up his mail and password again, so we can verify he is only creating the building for himself.
-
-
         $data = $request->all();
 
-        $address = $this->getAddressData($data['postal_code'], $data['number'], $data['addressid']);
-        $data['bag_addressid'] = isset($address['bag_adresid']) ? $address['bag_adresid'] : '';
+        // now get the picoaddress data.
+        $picoAddressData = PicoHelper::getAddressData(
+            $data['postal_code'], $data['number']
+        );
+
+        $data['bag_addressid'] = isset($picoAddressData['bag_adresid']) ? $picoAddressData ['bag_adresid'] : '';
 
         $features = new BuildingFeature([
-            'surface' => array_key_exists('adresopp', $address) ? $address['adresopp'] : null,
-            'build_year' => array_key_exists('bouwjaar', $address) ? $address['bouwjaar'] : null,
+            'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
+            'build_year' => empty($picoAddressData['build_year']) ? null : $picoAddressData['build_year'],
         ]);
 
         $address = new Building($data);
@@ -65,29 +68,4 @@ class CreateBuildingController extends Controller
     }
 
 
-
-    protected function getAddressData($postalCode, $number, $pointer = null)
-    {
-        \Log::debug($postalCode.' '.$number.' '.$pointer);
-        /** @var PicoClient $pico */
-        $pico = app()->make('pico');
-        $postalCode = str_replace(' ', '', trim($postalCode));
-
-        $response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
-
-        if (! is_null($pointer)) {
-            foreach ($response as $addrInfo) {
-                if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])) {
-                    //$data['bag_addressid'] = $addrInfo['bag_adresid'];
-                    \Log::debug(json_encode($addrInfo));
-
-                    return $addrInfo;
-                }
-            }
-
-            return [];
-        }
-
-        return $response;
-    }
 }

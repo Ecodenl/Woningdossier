@@ -18,8 +18,9 @@ class CreateBuildingFormRequest extends FormRequest
      */
     public function authorize()
     {
+        return true;
         // allowed when there is no building attached
-        return !Account::where('email', $this->get('email'))->first()->user()->building instanceof Building;
+//        return !Account::where('email', $this->get('email'))->first()->user()->building instanceof Building;
     }
 
     /**

@@ -25,7 +25,7 @@ class SolarPanelFormRequest extends FormRequest
     {
         return [
             'building_pv_panels.peak_power' => 'required|numeric|between:260,330',
-            'building_pv_panels.number' => 'required|numeric|min:0',
+            'building_pv_panels.number' => 'required|numeric|min:0|max:50',
             'building_pv_panels.angle' => 'required|numeric',
             'building_pv_panels.pv_panel_orientation_id' => 'required|exists:pv_panel_orientations,id',
 

@@ -216,7 +216,9 @@
             var email = $('#email');
 
             email.on('change', function () {
-                checkEmailForTypo($(this));
+                if ($(this).val().length > 0) {
+                    checkEmailForTypo($(this));
+                }
             });
             email.on('keyup change', function () {
                     $.ajax({

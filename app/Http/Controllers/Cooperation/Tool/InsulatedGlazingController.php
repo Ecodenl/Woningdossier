@@ -308,7 +308,7 @@ class InsulatedGlazingController extends Controller
         // Save the paintwork statuses
         $paintWorkStatuses = $request->get('building_paintwork_statuses', '');
 
-        $lastPaintedYear = 2000;
+        $lastPaintedYear = null;
         if (array_key_exists('last_painted_year', $paintWorkStatuses)) {
             $year = (int) $paintWorkStatuses['last_painted_year'];
             if ($year > 1950) {

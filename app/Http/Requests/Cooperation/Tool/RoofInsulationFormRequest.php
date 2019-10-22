@@ -101,7 +101,7 @@ class RoofInsulationFormRequest extends FormRequest
             if (!empty($roofTypeCategory)) {
                 $validator->addRules([
                     $brt.'.'.$roofTypeCategory.'.roof_surface' => 'required|numeric|min:0',
-                    $brt.'.'.$roofTypeCategory.'.insulation_roof_surface' => 'needs_to_be_lower_or_same_as:'.$brt.'.'.$roofTypeCategory.'.roof_surface',
+                    $brt.'.'.$roofTypeCategory.'.insulation_roof_surface' => 'nullable|min:0|needs_to_be_lower_or_same_as:'.$brt.'.'.$roofTypeCategory.'.roof_surface',
                 ]);
             }
         }

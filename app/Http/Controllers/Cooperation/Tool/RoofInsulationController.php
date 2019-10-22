@@ -283,7 +283,7 @@ class RoofInsulationController extends Controller
      */
     public function store(RoofInsulationFormRequest $request)
     {
-        dd($request->all(), 'congo');
+//        dd($request->all(), 'congo');
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $buildingId = $building->id;

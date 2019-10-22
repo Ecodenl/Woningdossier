@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Auth\ConfirmRequest;
 use App\Models\Account;
 use App\Models\Cooperation;
-use App\Models\Role;
-use App\Models\User;
-use App\Http\Controllers\Controller;
 
 class ConfirmAccountController extends Controller
 {
-
     public function store(ConfirmRequest $request, Cooperation $cooperation)
     {
         $email = $request->get('u');
@@ -22,9 +19,7 @@ class ConfirmAccountController extends Controller
         $account->confirm_token = null;
         $account->save();
 
-        return redirect()->route('cooperation.login', ['cooperation' => $cooperation])
+        return redirect()->route('cooperation.auth.login', ['cooperation' => $cooperation])
                          ->with('success', __('auth.confirm.success'));
     }
-
-
 }

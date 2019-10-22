@@ -131,7 +131,7 @@ class RoofInsulationController extends Controller
         }
 
         foreach (array_keys($result) as $roofCat) {
-            $isBitumenOnPitchedRoof = 'pitched' == $roofCat && $results['pitched']['type'] == 'bitumen';
+            $isBitumenOnPitchedRoof = 'pitched' == $roofCat && 'bitumen' == $results['pitched']['type'];
             // It's a bitumen roof is the category is not pitched or none (so currently only: flat)
             $isBitumenRoof = ! in_array($roofCat, ['none', 'pitched']) || $isBitumenOnPitchedRoof;
 
@@ -204,7 +204,7 @@ class RoofInsulationController extends Controller
 
                 if ($zincReplaceYear > 0 && $zincSurface > 0) {
                     /** @var MeasureApplication $zincReplaceMeasure */
-                    $zincReplaceMeasure = MeasureApplication::where('short', 'replace-zinc-' . $roofCat)->first();
+                    $zincReplaceMeasure = MeasureApplication::where('short', 'replace-zinc-'.$roofCat)->first();
 
                     $year = RoofInsulationCalculator::determineApplicationYear($zincReplaceMeasure, $zincReplaceYear, 1);
                     $costs = Calculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $zincSurface, $year, false);
@@ -367,10 +367,9 @@ class RoofInsulationController extends Controller
         $this->saveAdvices($request);
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
-        $cooperation = HoomdossierSession::getCooperation(true);
 
-        $nextStep = StepHelper::getNextStep(Hoomdossier::user(), HoomdossierSession::getInputSource(true), $this->step);
-        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
+        $url = $nextStep['url'];
 
         if (! empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];

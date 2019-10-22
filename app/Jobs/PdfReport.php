@@ -2,27 +2,30 @@
 
 namespace App\Jobs;
 
+use App\Helpers\StepHelper;
 use App\Models\BuildingInsulatedGlazing;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\User;
-use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Scopes\GetValueScope;
+use App\Services\DumpService;
+use App\Services\UserActionPlanAdviceService;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Helpers\StepHelper;
-use App\Services\DumpService;
-use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class PdfReport implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected $user;
     protected $inputSource;
@@ -32,9 +35,10 @@ class PdfReport implements ShouldQueue
 
     /**
      * PdfReport constructor.
-     * @param User $user
+     *
+     * @param User        $user
      * @param InputSource $inputSource
-     * @param FileType $fileType
+     * @param FileType    $fileType
      * @param FileStorage $fileStorage
      */
     public function __construct(User $user, InputSource $inputSource, FileType $fileType, FileStorage $fileStorage)
@@ -44,6 +48,7 @@ class PdfReport implements ShouldQueue
         $this->inputSource = $inputSource;
         $this->user = $user;
     }
+
     /**
      * Execute the job.
      *
@@ -56,19 +61,18 @@ class PdfReport implements ShouldQueue
         }
 
         $user = $this->user;
-        $userCooperation= $this->user->cooperation;
+        $userCooperation = $this->user->cooperation;
         $inputSource = $this->inputSource;
 
         // load the buildingFeatures
-        $building = $user->building()->with(['buildingFeatures' => function ($query) use ($inputSource){
-                $query->forInputSource($inputSource)->with('roofType', 'buildingType', 'energyLabel');
+        $building = $user->building()->with(['buildingFeatures' => function ($query) use ($inputSource) {
+            $query->forInputSource($inputSource)->with('roofType', 'buildingType', 'energyLabel');
         }])->first();
 
         $buildingFeatures = $building->buildingFeatures;
 
         $GLOBALS['_cooperation'] = $userCooperation;
         $GLOBALS['_inputSource'] = $inputSource;
-
 
         $buildingInsulatedGlazings = BuildingInsulatedGlazing::where('building_id', $building->id)
             ->forInputSource($inputSource)
@@ -83,10 +87,10 @@ class PdfReport implements ShouldQueue
 
         $steps = $userCooperation->getActiveOrderedSteps();
 
-        $userActionPlanAdvices = UserActionPlanAdvice::getPersonalPlan($user, $inputSource);
+        $userActionPlanAdvices = UserActionPlanAdviceService::getPersonalPlan($user, $inputSource);
 
         // we dont wat the actual advices, we have to show them in a different way
-        $advices = UserActionPlanAdvice::getCategorizedActionPlan($user, $inputSource, false);
+        $advices = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
         // full report for a user
         $reportForUser = DumpService::totalDump($user, $inputSource, false);
@@ -129,5 +133,4 @@ class PdfReport implements ShouldQueue
     {
         $this->fileStorage->delete();
     }
-
 }

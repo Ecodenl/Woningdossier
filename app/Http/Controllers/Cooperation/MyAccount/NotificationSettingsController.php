@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\MyAccount\NotificationSettingsFormRequest;
 use App\Models\Cooperation;
-use App\Models\NotificationInterval;
 use App\NotificationSetting;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class NotificationSettingsController extends Controller
 {
@@ -16,7 +14,7 @@ class NotificationSettingsController extends Controller
         $intervalId = $request->input('notification_setting.'.$notificationSettingId.'.interval_id', null);
 
         NotificationSetting::where('id', $notificationSettingId)->update([
-            'interval_id' => $intervalId
+            'interval_id' => $intervalId,
         ]);
 
         return redirect()->route('cooperation.my-account.index')

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 use App\Http\Controllers\Controller;
 use App\Models\FileStorage;
 use App\Models\FileTypeCategory;
-use App\Scopes\AvailableScope;
 
 class ReportController extends Controller
 {
@@ -14,7 +13,9 @@ class ReportController extends Controller
         $reportFileTypeCategory = FileTypeCategory::short('report')
             ->with(['fileTypes' => function ($query) {
                 $query->where('short', '!=', 'pdf-report')
-                    ->with('files');
+                    ->with(['files' => function ($query) {
+                        $query->leaveOutPersonalFiles();
+                    }]);
             }])->first();
 
         // Is there any file being processed for my cooperation

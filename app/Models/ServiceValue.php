@@ -6,17 +6,18 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\ServiceValue
+ * App\Models\ServiceValue.
  *
- * @property int $id
- * @property int|null $service_id
- * @property string $value
- * @property int|null $calculate_value
- * @property int $order
- * @property bool $is_default
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\KeyFigureBoilerEfficiency $keyFigureBoilerEfficiency
+ * @property int                                   $id
+ * @property int|null                              $service_id
+ * @property string                                $value
+ * @property int|null                              $calculate_value
+ * @property int                                   $order
+ * @property bool                                  $is_default
+ * @property \Illuminate\Support\Carbon|null       $created_at
+ * @property \Illuminate\Support\Carbon|null       $updated_at
+ * @property \App\Models\KeyFigureBoilerEfficiency $keyFigureBoilerEfficiency
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceValue newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceValue newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceValue query()

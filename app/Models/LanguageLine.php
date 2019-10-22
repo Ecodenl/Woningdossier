@@ -3,19 +3,20 @@
 namespace App\Models;
 
 /**
- * App\Models\LanguageLine
+ * App\Models\LanguageLine.
  *
- * @property int $id
- * @property string $group
- * @property string $key
- * @property array $text
- * @property int|null $step_id
- * @property int|null $main_language_line_id
- * @property int|null $help_language_line_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\LanguageLine $helpText
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\LanguageLine[] $subQuestions
+ * @property int                                                                 $id
+ * @property string                                                              $group
+ * @property string                                                              $key
+ * @property array                                                               $text
+ * @property int|null                                                            $step_id
+ * @property int|null                                                            $main_language_line_id
+ * @property int|null                                                            $help_language_line_id
+ * @property \Illuminate\Support\Carbon|null                                     $created_at
+ * @property \Illuminate\Support\Carbon|null                                     $updated_at
+ * @property \App\Models\LanguageLine                                            $helpText
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\LanguageLine[] $subQuestions
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine mainQuestions()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine newQuery()
@@ -49,7 +50,7 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
     }
 
     /**
-     * Scope a query to only return the main questions
+     * Scope a query to only return the main questions.
      *
      * @param $query
      *
@@ -61,7 +62,7 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
     }
 
     /**
-     * Check if a language line is a helptext
+     * Check if a language line is a helptext.
      *
      * It is considered to be a helptext is the help_language_line_id is null
      *
@@ -77,6 +78,7 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
         if (is_null($this->help_language_line_id) && $questionFromHelpText instanceof LanguageLine) {
             return true;
         }
+
         return false;
     }
 
@@ -87,7 +89,7 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
      */
     public function isNotHelpText(): bool
     {
-        return !$this->isHelpText();
+        return ! $this->isHelpText();
     }
 
     /**

@@ -2,13 +2,6 @@
 
 namespace App\Services;
 
-use App\Calculations\FloorInsulation;
-use App\Calculations\Heater;
-use App\Calculations\HighEfficiencyBoiler;
-use App\Calculations\InsulatedGlazing;
-use App\Calculations\RoofInsulation;
-use App\Calculations\SolarPanel;
-use App\Calculations\WallInsulation;
 use App\Helpers\Arr;
 use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\NumberFormatter;
@@ -16,22 +9,7 @@ use App\Helpers\ToolHelper;
 use App\Helpers\Translation;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
-use App\Models\BuildingElement;
-use App\Models\BuildingFeature;
-use App\Models\buildingHeater;
-use App\Models\BuildingHeating;
-use App\Models\BuildingInsulatedGlazing;
-use App\Models\BuildingPaintworkStatus;
-use App\Models\BuildingPvPanel;
-use App\Models\BuildingRoofType;
-use App\Models\BuildingService;
 use App\Models\Cooperation;
-use App\Models\Element;
-use App\Models\ElementValue;
-use App\Models\EnergyLabel;
-use App\Models\FacadeDamagedPaintwork;
-use App\Models\FacadePlasteredSurface;
-use App\Models\FacadeSurface;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\PrivateMessage;
@@ -39,14 +17,9 @@ use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\QuestionOption;
 use App\Models\Role;
-use App\Models\RoofTileStatus;
-use App\Models\RoofType;
-use App\Models\Service;
 use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserEnergyHabit;
-use App\Models\UserInterest;
 use App\Scopes\CooperationScope;
 use App\Scopes\GetValueScope;
 use Carbon\Carbon;
@@ -55,11 +28,11 @@ use Illuminate\Support\Collection;
 class CsvService
 {
     /**
-     * CSV Report that returns the measures by year, not used anymore. Its just here in case
+     * CSV Report that returns the measures by year, not used anymore. Its just here in case.
      *
      * @deprecated
      *
-     * @param  string  $filename
+     * @param string $filename
      *
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
@@ -155,7 +128,7 @@ class CsvService
     }*/
 
     /**
-     * CSV Report that returns the measures with year with full address data
+     * CSV Report that returns the measures with year with full address data.
      *
      * @param $cooperation
      * @param $anonymize
@@ -219,22 +192,22 @@ class CsvService
         $residentInputSource = InputSource::findByShort('resident');
 
         /**
-         * @var User $user
+         * @var User
          */
         foreach ($users as $key => $user) {
             /** @var Building $building */
             $building = $user->building;
 
             /** @var Collection $conversationRequestsForBuilding */
-            $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope)
+            $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope())
                                                              ->conversationRequestByBuildingId($building->id)
                                                              ->where('to_cooperation_id', $cooperation->id)->get();
 
-            $createdAt           = optional($user->created_at)->format('Y-m-d');
+            $createdAt = optional($user->created_at)->format('Y-m-d');
             //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
             $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
-            $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
-            $connectedCoaches    = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
+            $allowAccess = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
+            $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
             $connectedCoachNames = [];
             // get the names from the coaches and add them to a array
             foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
@@ -243,14 +216,14 @@ class CsvService
             // implode it.
             $connectedCoachNames = implode($connectedCoachNames, ', ');
 
-            $firstName    = $user->first_name;
-            $lastName     = $user->last_name;
-            $email        = $user->account->email;
-            $phoneNumber  = CsvHelper::escapeLeadingZero($user->phone_number);
+            $firstName = $user->first_name;
+            $lastName = $user->last_name;
+            $email = $user->account->email;
+            $phoneNumber = CsvHelper::escapeLeadingZero($user->phone_number);
 
-            $street     = $building->street;
-            $number     = $building->number;
-            $city       = $building->city;
+            $street = $building->street;
+            $number = $building->number;
+            $city = $building->city;
             $postalCode = $building->postal_code;
 
             // get the building features from the resident
@@ -259,10 +232,8 @@ class CsvService
                 ->forInputSource($residentInputSource)
                 ->first();
 
-
-
-            $buildingType    = $buildingFeatures->buildingType->name ?? '';
-            $buildYear       = $buildingFeatures->build_year ?? '';
+            $buildingType = $buildingFeatures->buildingType->name ?? '';
+            $buildYear = $buildingFeatures->build_year ?? '';
             $exampleBuilding = optional($building->exampleBuilding)->isSpecific() ? $building->exampleBuilding->name : '';
 
             if ($anonymize) {
@@ -280,7 +251,6 @@ class CsvService
                     $buildingType, $buildYear, $exampleBuilding,
                 ];
             }
-
 
             // Set a default: all measures to empty
             foreach ($measures as $measure) {
@@ -319,21 +289,20 @@ class CsvService
         return $rows;
     }
 
-
     /**
-     * CSV Report that returns the questionnaire results
+     * CSV Report that returns the questionnaire results.
      *
-     * @param  Cooperation  $cooperation
-     * @param  bool  $anonymize
+     * @param Cooperation $cooperation
+     * @param bool        $anonymize
      *
      * @return array
      */
     public static function questionnaireResults(Cooperation $cooperation, bool $anonymize): array
     {
-        $questionnaires = Questionnaire::withoutGlobalScope(new CooperationScope)
+        $questionnaires = Questionnaire::withoutGlobalScope(new CooperationScope())
                                        ->where('cooperation_id', $cooperation->id)
                                        ->get();
-        $rows           = [];
+        $rows = [];
 
         $residentInputSource = InputSource::findByShort('resident');
 
@@ -367,7 +336,6 @@ class CsvService
             ];
         }
 
-
         // get the users from the current cooperation that have the resident role
         $usersFromCooperation = $cooperation->getUsersWithRole(Role::findByName('resident'));
 
@@ -375,17 +343,16 @@ class CsvService
         foreach ($usersFromCooperation as $user) {
             $building = $user->building;
             if ($building instanceof Building && $user->hasRole('resident', $cooperation->id)) {
-
                 /** @var Collection $conversationRequestsForBuilding */
-                $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope)
+                $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope())
                                                                  ->conversationRequestByBuildingId($building->id)
                                                                  ->where('to_cooperation_id', $cooperation->id)->get();
 
-                $createdAt           = optional($user->created_at)->format('Y-m-d');
+                $createdAt = optional($user->created_at)->format('Y-m-d');
                 //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
                 $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
-                $allowAccess         = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
-                $connectedCoaches    = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
+                $allowAccess = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
+                $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
                 $connectedCoachNames = [];
                 // get the names from the coaches and add them to a array
                 foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
@@ -394,14 +361,14 @@ class CsvService
                 // implode it.
                 $connectedCoachNames = implode($connectedCoachNames, ', ');
 
-                $firstName    = $user->first_name;
-                $lastName     = $user->last_name;
-                $email        = $user->account->email;
-                $phoneNumber  = CsvHelper::escapeLeadingZero($user->phone_number);
+                $firstName = $user->first_name;
+                $lastName = $user->last_name;
+                $email = $user->account->email;
+                $phoneNumber = CsvHelper::escapeLeadingZero($user->phone_number);
 
-                $street     = $building->street;
-                $number     = $building->number;
-                $city       = $building->city;
+                $street = $building->street;
+                $number = $building->number;
+                $city = $building->city;
                 $postalCode = $building->postal_code;
 
                 // get the building features from the resident
@@ -411,7 +378,7 @@ class CsvService
                     ->first();
 
                 $buildingType = $buildingFeatures->buildingType->name ?? '';
-                $buildYear    = $buildingFeatures->build_year ?? '';
+                $buildYear = $buildingFeatures->build_year ?? '';
 
                 // set the personal user info only if the user has question answers.
                 if ($building->questionAnswers()->forInputSource($residentInputSource)->count() > 0) {
@@ -421,7 +388,6 @@ class CsvService
                             $buildingType, $buildYear,
                         ];
                     } else {
-
                         $rows[$building->id] = [
                             $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
                             $firstName, $lastName, $email, $phoneNumber,
@@ -431,7 +397,6 @@ class CsvService
                     }
                 }
                 foreach ($questionnaires as $questionnaire) {
-
                     $questionAnswersForCurrentQuestionnaire =
                         \DB::table('questionnaires')
                            ->where('questionnaires.id', $questionnaire->id)
@@ -449,10 +414,9 @@ class CsvService
                                'translations.translation as question_name')
                            ->get();
 
-
                     // loop through the answers for ONE questionnaire
                     foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {
-                        $answer          = $questionAnswerForCurrentQuestionnaire->answer;
+                        $answer = $questionAnswerForCurrentQuestionnaire->answer;
                         $currentQuestion = Question::withTrashed()->find($questionAnswerForCurrentQuestionnaire->question_id);
 
                         // check if the question
@@ -475,7 +439,7 @@ class CsvService
 
                                 // the questionOptionAnswer can be empty if the the if statements did not pass
                                 // so we check that before assigning it.
-                                if ( ! empty($questionOptionAnswer)) {
+                                if (! empty($questionOptionAnswer)) {
                                     // implode it
                                     $answer = implode($questionOptionAnswer, '|');
                                 }
@@ -505,11 +469,10 @@ class CsvService
         return $rows;
     }
 
-
     /**
-     * Get the year from the action plan advice
+     * Get the year from the action plan advice.
      *
-     * @param  UserActionPlanAdvice  $actionPlanAdvice
+     * @param UserActionPlanAdvice $actionPlanAdvice
      *
      * @return int
      */
@@ -527,16 +490,18 @@ class CsvService
     }
 
     /**
-     * Get the total report for all users by the cooperation
+     * Get the total report for all users by the cooperation.
      *
      * @param Cooperation $cooperation
      * @param InputSource $inputSource
-     * @param bool $anonymized
+     * @param bool        $anonymized
+     *
      * @return array
      */
     public static function totalReport(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
     {
         $users = $cooperation->users()->whereHas('buildings')->get();
+        $rows = [];
 
         if ($anonymized) {
             $headers = [
@@ -592,11 +557,10 @@ class CsvService
         // unfortunately we cant array dot the structure since we only need the labels
         foreach ($structure as $stepSlug => $stepStructure) {
             // building-detail contains data that is already present in the columns above
-            if (!in_array($stepSlug, ['building-detail'])) {
+            if (! in_array($stepSlug, ['building-detail'])) {
                 $step = Step::whereSlug($stepSlug)->first();
                 foreach ($stepStructure as $tableWithColumnOrAndId => $contents) {
-                    if ($tableWithColumnOrAndId == 'calculations') {
-
+                    if ('calculations' == $tableWithColumnOrAndId) {
                         // If you want to go ahead and translate in a different namespace, do it here
                         // we will dot the array, map it so we can add the step name to it
                         $deeperContents = array_map(function ($content) use ($step) {
@@ -604,17 +568,16 @@ class CsvService
                         }, \Illuminate\Support\Arr::dot($contents, $stepSlug.'.calculation.'));
 
                         $headers = array_merge($headers, $deeperContents);
-
                     } else {
                         $headers[$stepSlug.'.'.$tableWithColumnOrAndId] = $step->name.': '.str_replace([
-                            '&euro;', '€'
+                            '&euro;', '€',
                             ], ['euro', 'euro'], $contents['label']);
                     }
                 }
             }
         }
 
-        foreach($leaveOutTheseDuplicates as $leaveOut){
+        foreach ($leaveOutTheseDuplicates as $leaveOut) {
             unset($headers[$leaveOut]);
         }
 
@@ -622,7 +585,8 @@ class CsvService
 
         /**
          * Get the data for every user.
-         * @var User $user
+         *
+         * @var User
          */
         foreach ($users as $user) {
             $rows[$user->building->id] = DumpService::totalDump($user, $inputSource, $anonymized, false)['user-data'];
@@ -631,26 +595,26 @@ class CsvService
         return $rows;
     }
 
-    protected static function formatFieldOutput($column, $value, $maybe1, $maybe2){
-        //dump("formatFieldOutput (" . $column . ", " . $value . ", " . $maybe1 . ", " . $maybe2 . ")");
+    protected static function formatFieldOutput($column, $value, $maybe1, $maybe2)
+    {
         $decimals = 0;
         $shouldRound = false;
 
-        if(self::isYear($column) || self::isYear($maybe1, $maybe2)){
+        if (self::isYear($column) || self::isYear($maybe1, $maybe2)) {
             return $value;
         }
 
-        if (!is_numeric($value)){
+        if (! is_numeric($value)) {
             return $value;
         }
 
-        if (in_array($column, ['interest_comparable',])){
+        if (in_array($column, ['interest_comparable'])) {
             $decimals = 1;
         }
-        if ($column == 'specs' && $maybe1 == 'size_collector'){
+        if ('specs' == $column && 'size_collector' == $maybe1) {
             $decimals = 1;
         }
-        if ($column == 'paintwork' && $maybe1 == 'costs'){
+        if ('paintwork' == $column && 'costs' == $maybe1) {
             /// round the cost for paintwork
             $shouldRound = true;
         }
@@ -662,49 +626,51 @@ class CsvService
      * Format the output of the given column and value.
      *
      * @param string $column
-     * @param mixed $value
-     * @param  int  $decimals
-     * @param  bool  $shouldRound
+     * @param mixed  $value
+     * @param int    $decimals
+     * @param bool   $shouldRound
      *
      * @return float|int|string
      */
-    protected static function formatOutput($column, $value, $decimals = 0, $shouldRound = false){
-        //dump("formatOutput (" . $column . ", " . $value . ", " . $decimals . ", " . $shouldRound . ")");
-
-        if (in_array($column, ['percentage_consumption',]) ||
-            stristr($column, 'savings_') !== false ||
-            stristr($column, 'cost')){
+    protected static function formatOutput($column, $value, $decimals = 0, $shouldRound = false)
+    {
+        if (in_array($column, ['percentage_consumption']) ||
+            false !== stristr($column, 'savings_') ||
+            stristr($column, 'cost')) {
             $value = NumberFormatter::round($value);
         }
-        if ($shouldRound){
+        if ($shouldRound) {
             $value = NumberFormatter::round($value);
         }
         // We should let Excel do the separation of thousands
-        return number_format($value, $decimals, ",", "");
+        return number_format($value, $decimals, ',', '');
         //return NumberFormatter::format($value, $decimals, $shouldRound);
     }
 
-    protected static function translateExtraValueIfNeeded($value){
-        if (in_array($value, ['yes', 'no', 'unknown'])){
+    protected static function translateExtraValueIfNeeded($value)
+    {
+        if (in_array($value, ['yes', 'no', 'unknown'])) {
             $key = 'general.options.%s.title';
+
             return Translation::translate(sprintf($key, $value));
         }
     }
 
     /**
-     * Returns whether or not two (optional!) columns contain a year or not
+     * Returns whether or not two (optional!) columns contain a year or not.
      *
      * @param string $column
      * @param string $extraValue
      *
      * @return bool
      */
-    protected static function isYear($column, $extraValue = ''){
-        if (!is_null($column)){
-            if (stristr($column, 'year') !== false){
+    protected static function isYear($column, $extraValue = '')
+    {
+        if (! is_null($column)) {
+            if (false !== stristr($column, 'year')) {
                 return true;
             }
-            if ($column == 'extra'){
+            if ('extra' == $column) {
                 return in_array($extraValue, [
                     'year',
                 ]);
@@ -713,5 +679,4 @@ class CsvService
 
         return false;
     }
-
 }

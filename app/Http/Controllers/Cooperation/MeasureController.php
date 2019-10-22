@@ -53,10 +53,12 @@ class MeasureController extends Controller
                         $image = $categoryImage;
                     }
                 }
-                if (! array_key_exists($image, $files)) {
-                    $files[$image] = [];
+                if (isset($image)) {
+                    if (! array_key_exists($image, $files)) {
+                        $files[$image] = [];
+                    }
+                    $files[$image][] = $file;
                 }
-                $files[$image][] = $file;
 
                 // push them inside a collection
                 //$files->push($fileData);

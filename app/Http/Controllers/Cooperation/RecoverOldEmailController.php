@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Cooperation;
 
 use App\Helpers\HoomdossierSession;
+use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\User;
-use App\Http\Controllers\Controller;
 
 class RecoverOldEmailController extends Controller
 {
     /**
-     * Method to recover the old email adres based on the old_email_token
+     * Method to recover the old email adres based on the old_email_token.
      *
-     * @param  Cooperation  $cooperation
+     * @param Cooperation $cooperation
      * @param $token
      *
      * @return \Illuminate\Http\RedirectResponse
@@ -29,12 +29,11 @@ class RecoverOldEmailController extends Controller
         $account = Account::where('old_email_token', $token)->first();
 
         if ($account instanceof Account) {
-
             // recover the old email address and set he old stuff to null.
             $account->update([
                 'email'           => $account->old_email,
                 'old_email'       => null,
-                'old_email_token' => null
+                'old_email_token' => null,
             ]);
 
             // generate a token and create a row in the password_resets
@@ -45,12 +44,12 @@ class RecoverOldEmailController extends Controller
 
             // redirect them to the password reset
             return redirect()
-                ->route('cooperation.password.reset', ['token' => $token, 'cooperation' => $cooperation->slug])
+                ->route('cooperation.auth.password.reset.show', ['token' => $token, 'cooperation' => $cooperation, 'email' => encrypt($account->email)])
                 ->with('success', __('recover-old-email.recover.success'));
         }
 
         return redirect()
-            ->route('cooperation.login')
+            ->route('cooperation.auth.login')
             ->with('warning', __('recover-old-email.recover.warning'));
     }
 }

@@ -11,22 +11,23 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * App\Models\FileStorage
+ * App\Models\FileStorage.
  *
- * @property int $id
- * @property int|null $cooperation_id
- * @property int|null $building_id
- * @property int|null $input_source_id
- * @property int $file_type_id
- * @property string $filename
+ * @property int                             $id
+ * @property int|null                        $cooperation_id
+ * @property int|null                        $building_id
+ * @property int|null                        $input_source_id
+ * @property int                             $file_type_id
+ * @property string                          $filename
  * @property \Illuminate\Support\Carbon|null $available_until
- * @property bool $is_being_processed
+ * @property bool                            $is_being_processed
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Cooperation|null $cooperation
- * @property-read \App\Models\FileType $fileType
- * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \App\Models\User $user
+ * @property \App\Models\Cooperation|null    $cooperation
+ * @property \App\Models\FileType            $fileType
+ * @property \App\Models\InputSource|null    $inputSource
+ * @property \App\Models\User                $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage beingProcessed()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileStorage forMe(\App\Models\User $user = null)
@@ -51,17 +52,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class FileStorage extends Model
 {
-
-    use GetValueTrait, GetMyValuesTrait;
+    use GetValueTrait;
+    use GetMyValuesTrait;
 
     public static function boot()
     {
         parent::boot();
-        
-        static::addGlobalScope(new AvailableScope);
-        static::addGlobalScope(new CooperationScope);
+
+        static::addGlobalScope(new AvailableScope());
+        static::addGlobalScope(new CooperationScope());
     }
-    
+
     protected $fillable = [
         'cooperation_id', 'filename', 'user_id', 'input_source_id', 'file_type_id', 'content_type', 'is_being_processed', 'available_until',
     ];
@@ -73,25 +74,26 @@ class FileStorage extends Model
      */
     protected $casts = [
         'is_being_processed' => 'bool',
-        'available_until' => 'datetime'
+        'available_until' => 'datetime',
     ];
 
     /**
      * Query to scope the expired files.
      *
-     * @param  Builder  $query
+     * @param Builder $query
      *
      * @return Builder
      */
     public function scopeWithExpired(Builder $query)
     {
-        return $query->withoutGlobalScope(new AvailableScope);
+        return $query->withoutGlobalScope(new AvailableScope());
     }
 
     /**
-     * Query to leave out the personal files
+     * Query to leave out the personal files.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeLeaveOutPersonalFiles(Builder $query)
@@ -100,9 +102,10 @@ class FileStorage extends Model
     }
 
     /**
-     * Query to scope the file's that are being processed
+     * Query to scope the file's that are being processed.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeBeingProcessed(Builder $query)
@@ -113,7 +116,7 @@ class FileStorage extends Model
     /**
      * Query to scope the most recent report.
      *
-     * @param  Builder  $query
+     * @param Builder $query
      *
      * @return Builder
      */
@@ -121,7 +124,7 @@ class FileStorage extends Model
     {
         return $query->orderByDesc('created_at');
     }
-    
+
     /**
      * Return the belongsto relationship on a cooperation.
      *
@@ -148,7 +151,7 @@ class FileStorage extends Model
     }
 
     /**
-     * Check if a specific file is being processed
+     * Check if a specific file is being processed.
      *
      * @return bool
      */
@@ -167,5 +170,4 @@ class FileStorage extends Model
         $this->is_being_processed = false;
         $this->save();
     }
-
 }

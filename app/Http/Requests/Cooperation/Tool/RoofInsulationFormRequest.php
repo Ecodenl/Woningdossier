@@ -82,7 +82,7 @@ class RoofInsulationFormRequest extends FormRequest
     public function attributes()
     {
         return [
-            'building_roof_types.id' => 'daktypes'
+            'building_roof_types.id' => 'daktypes',
         ];
     }
 

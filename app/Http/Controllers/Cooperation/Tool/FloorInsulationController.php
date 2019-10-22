@@ -4,26 +4,19 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\FloorInsulation;
 use App\Events\StepDataHasBeenChanged;
-use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculator;
-use App\Helpers\FloorInsulationCalculator;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\KeyFigures\FloorInsulation\Temperature;
-use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\FloorInsulationFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
-use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use Illuminate\Http\JsonResponse;
@@ -170,10 +163,8 @@ class FloorInsulationController extends Controller
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
-        $cooperation = HoomdossierSession::getCooperation(true);
-
-        $nextStep = StepHelper::getNextStep(Hoomdossier::user(), HoomdossierSession::getInputSource(true), $this->step);
-        $url = route($nextStep['route'], ['cooperation' => $cooperation]);
+        $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
+        $url = $nextStep['url'];
 
         if (! empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];

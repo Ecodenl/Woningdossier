@@ -10,7 +10,8 @@ use Illuminate\Queue\SerializesModels;
 
 class UserChangedHisEmail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public $account;
     public $user;
@@ -20,8 +21,8 @@ class UserChangedHisEmail extends Mailable
     /**
      * UserChangedHisEmail constructor.
      *
-     * @param  User  $user
-     * @param  Account  $account
+     * @param User    $user
+     * @param Account $account
      * @param $newMail
      * @param $oldMail
      */

@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Cooperation;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Auth\Passwords\PasswordBroker;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -52,7 +54,7 @@ class ResetPasswordController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function reset(Request $request)
+    public function update(Request $request)
     {
         $this->validate($request, $this->rules(), $this->validationErrorMessages());
 
@@ -72,10 +74,9 @@ class ResetPasswordController extends Controller
 
         $isPending = Account::where('email', '=', $userEmail)->whereNotNull('confirm_token')->count() > 0;
         if ($isPending) {
-            //$this->guard()->logout();
             \Log::debug('The user has resetted his password, but has not confirmed his account. Redirecting to login page with a message..');
 
-            return redirect(route('cooperation.login'))->with('warning', __('auth.reset.inactive'));
+            return redirect(route('cooperation.auth.login'))->with('warning', __('auth.reset.inactive'));
         }
 
         // If the password was successfully reset, we will redirect the user back to
@@ -89,14 +90,15 @@ class ResetPasswordController extends Controller
     public function sendResetFailedResponse($request, $response)
     {
         return redirect()->back()
-                         ->withInput($request->only('email'))
-                         ->with('token_invalid', __($response, ['password_request_link' => route('cooperation.password.request')]));
+            ->withInput($request->only('email'))
+            ->with('token_invalid', __($response, ['password_request_link' => route('cooperation.auth.password.request.index')]));
     }
 
     /**
      * Get the response for a successful password reset.
      *
      * @param $response
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     protected function sendResetResponse($response)
@@ -108,7 +110,7 @@ class ResetPasswordController extends Controller
 
         $role = Role::findByName($user->roles()->first()->name);
 
-        $user->roles->count() == 1 ? $this->redirectTo = RoleHelper::getUrlByRole($role) : $this->redirectTo = '/home';
+        1 == $user->roles->count() ? $this->redirectTo = RoleHelper::getUrlByRole($role) : $this->redirectTo = '/home';
 
         return redirect($this->redirectPath())->with('status', trans($response));
     }
@@ -129,18 +131,71 @@ class ResetPasswordController extends Controller
     /**
      * Display the password reset view for the given token.
      *
-     * If no token is present, display the link request form.
+     * @param Request     $request
+     * @param Cooperation $cooperation
+     * @param $token
+     * @param $email
      *
-     * @param \Illuminate\Http\Request $request
-     * @param string|null              $token
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+     */
+    public function show(Request $request, Cooperation $cooperation, $token, $email)
+    {
+        return $this->emailEncryptionIsValid($email) ? $this->showPasswordResetForm($request, $token, $email) : $this->sendBackHome();
+    }
+
+    public function sendBackHome()
+    {
+        return redirect(route('cooperation.welcome'));
+    }
+
+    /**
+     * Method to display the reset form.
+     *
+     * @param Request $request
+     * @param $token
+     * @param $email
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function showResetForm(Request $request, Cooperation $cooperation, $token = null)
+    public function showPasswordResetForm(Request $request, $token, $email)
     {
+        $email = decrypt($email);
 
-        return view('cooperation.auth.passwords.reset')->with(
-            ['token' => $token, 'email' => $request->email]
-        );
+        // here we will make up the credentials, the broker needs credentials to return a proper response.
+        // we only need the broker for the validateReset method, but its protected and creating a custom broker seems overkill to me.
+        $password = str_random(6);
+        $credentials = [
+            'token' => $token,
+            'email' => $email,
+            'password' => $password,
+            'password_confirmation' => $password,
+        ];
+
+        // so, check if the token and email are valid.
+        $validationResponse = $this->broker()->validateReset($credentials);
+
+        if (PasswordBroker::INVALID_TOKEN == $validationResponse) {
+            $request->session()->flash('token_invalid', __($validationResponse, ['password_request_link' => route('cooperation.auth.password.request.index')]));
+        }
+
+        return view('cooperation.auth.passwords.reset.show', compact('token', 'email', 'response'));
+    }
+
+    /**
+     * Check whether the email encryption is valid.
+     *
+     * @param $encryption
+     *
+     * @return bool
+     */
+    public function emailEncryptionIsValid($encryption)
+    {
+        try {
+            decrypt($encryption);
+        } catch (DecryptException $decryptException) {
+            return false;
+        }
+
+        return true;
     }
 }

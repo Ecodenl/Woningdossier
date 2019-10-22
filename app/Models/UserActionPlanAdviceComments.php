@@ -2,22 +2,21 @@
 
 namespace App\Models;
 
-use App\Helpers\HoomdossierSession;
-use App\Scopes\GetValueScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UserActionPlanAdviceComments
+ * App\Models\UserActionPlanAdviceComments.
  *
- * @property int $id
- * @property int $user_id
- * @property int $input_source_id
- * @property string $comment
+ * @property int                             $id
+ * @property int                             $user_id
+ * @property int                             $input_source_id
+ * @property string                          $comment
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\InputSource $inputSource
+ * @property \App\Models\InputSource         $inputSource
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdviceComments forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdviceComments forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdviceComments newModelQuery()
@@ -34,8 +33,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserActionPlanAdviceComments extends Model
 {
-    use GetValueTrait, GetMyValuesTrait;
+    use GetValueTrait;
+    use GetMyValuesTrait;
 
     protected $fillable = ['user_id', 'input_source_id', 'comment'];
-
 }

@@ -4,7 +4,6 @@ namespace App\Events;
 
 use App\Models\Building;
 use App\Models\User;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -12,7 +11,9 @@ use Illuminate\Queue\SerializesModels;
 
 class ParticipantAddedEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     public $addedParticipant;
     public $building;

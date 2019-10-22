@@ -7,13 +7,13 @@ use App\Models\NotificationType;
 use App\Models\User;
 use Carbon\Carbon;
 
-class UserObserver {
-
-    public function created(User $user){
-
+class UserObserver
+{
+    public function created(User $user)
+    {
         // we create for every notification type a setting with daily interval and set the last_notified_at to now
         $notificationTypes = NotificationType::all();
-        $interval          = NotificationInterval::where('short', 'daily')->first();
+        $interval = NotificationInterval::where('short', 'daily')->first();
 
         foreach ($notificationTypes as $notificationType) {
             $user->notificationSettings()->create([
@@ -22,6 +22,5 @@ class UserObserver {
                 'last_notified_at' => Carbon::now(),
             ]);
         }
-
     }
 }

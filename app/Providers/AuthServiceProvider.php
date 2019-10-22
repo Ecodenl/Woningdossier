@@ -9,11 +9,9 @@ use App\Models\FileStorage;
 use App\Models\PrivateMessage;
 use App\Models\Questionnaire;
 use App\Models\User;
-use App\NotificationSetting;
 use App\Policies\BuildingPolicy;
 use App\Policies\CooperationPolicy;
 use App\Policies\FileStoragePolicy;
-use App\Policies\NotificationSettingPolicy;
 use App\Policies\PrivateMessagePolicy;
 use App\Policies\QuestionnairePolicy;
 use App\Policies\UserPolicy;
@@ -33,7 +31,7 @@ class AuthServiceProvider extends ServiceProvider
         Cooperation::class => CooperationPolicy::class,
         User::class => UserPolicy::class,
         Building::class => BuildingPolicy::class,
-        FileStorage::class => FileStoragePolicy::class
+        FileStorage::class => FileStoragePolicy::class,
     ];
 
     /**
@@ -45,26 +43,23 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::define('access-admin', 'App\Policies\UserPolicy@accessAdmin');
-        Gate::define('delete-user', 'App\Policies\UserPolicy@deleteUser');
-        Gate::define('participate-in-group-chat', 'App\Policies\UserPolicy@participateInGroupChat');
-        Gate::define('remove-participant-from-chat', 'App\Policies\UserPolicy@removeParticipantFromChat');
-
         Gate::define('talk-to-resident', BuildingPolicy::class.'@talkToResident');
         Gate::define('access-building', BuildingPolicy::class.'@accessBuilding');
         Gate::define('set-appointment', BuildingPolicy::class.'@setAppointment');
         Gate::define('set-status', BuildingPolicy::class.'@setStatus');
 
         Gate::define('delete-own-account', UserPolicy::class.'@deleteOwnAccount');
-        Gate::define('talk-to-intern', UserPolicy::class.'@talkToIntern');
-
+        Gate::define('assign-role', UserPolicy::class.'@assignRole');
+        Gate::define('assign-role-to-user', UserPolicy::class.'@assignRoleToUser');
+        Gate::define('access-admin', UserPolicy::class.'@accessAdmin');
+        Gate::define('delete-user', UserPolicy::class.'@deleteUser');
+        Gate::define('remove-participant-from-chat', UserPolicy::class.'@removeParticipantFromChat');
     }
 
     public function register()
     {
-
         // custom user resolver via account
-        \Auth::resolveUsersUsing(function($guard = null) {
+        \Auth::resolveUsersUsing(function ($guard = null) {
             return \Auth::guard($guard)->user() instanceof Account ? \Auth::guard()->user()->user() : null;
         });
     }

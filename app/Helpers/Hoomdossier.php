@@ -15,21 +15,23 @@ class Hoomdossier
     }
 
     /**
-     * Check if a column contains a needle, wrapper for stristr
+     * Check if a column contains a needle, wrapper for stristr.
      *
      * @param string $column
      * @param string $needle
+     *
      * @return bool
      */
     public static function columnContains(string $column, string $needle)
     {
-        return stristr($column, $needle) !== false;
+        return false !== stristr($column, $needle);
     }
 
     /**
      * Method to return a unit for a given column.
      *
      * @param $column
+     *
      * @return mixed|string
      */
     public static function getUnitForColumn($column)
@@ -44,8 +46,7 @@ class Hoomdossier
             'yield_electricity' => 'kWh',
             'raise_own_consumption' => '%',
             'interest_comparable' => '%',
-            'percentage_consumption' => '%'
-
+            'percentage_consumption' => '%',
         ];
 
         if (static::columnContains($column, 'surface') || static::columnContains($column, 'm2')) {
@@ -73,21 +74,19 @@ class Hoomdossier
 
     public static function getMostCredibleValue(Relation $relation, $column, $default = null, $onlyReturnForInputSource = null)
     {
-
         $baseQuery = $relation
             ->withoutGlobalScope(GetValueScope::class)
             ->join('input_sources', $relation->getRelated()->getTable().'.input_source_id', '=', 'input_sources.id')
             ->orderBy('input_sources.order', 'ASC');
 
         // if is not empty, we need to search the answers for a particular input source
-        if (!is_null($onlyReturnForInputSource)) {
+        if (! is_null($onlyReturnForInputSource)) {
             $inputSourceToReturn = InputSource::findByShort($onlyReturnForInputSource);
             $found = $baseQuery->where('input_source_id', $inputSourceToReturn->id);
         } else {
             // if the $onlyReturnForInputSource is empty, the base query is enough
             $found = $baseQuery->get([$relation->getRelated()->getTable().'.*', 'input_sources.short']);
         }
-
 
         $results = $found->pluck($column, 'short');
 
@@ -110,7 +109,7 @@ class Hoomdossier
             'roof_type_id',
 
             'energy_label_id',
-            'extra.date'
+            'extra.date',
         ];
 
         // Always check my own input source first. If that is properly filled
@@ -159,9 +158,10 @@ class Hoomdossier
     }
 
     /**
-     * Return the most credible input source for a relationship
+     * Return the most credible input source for a relationship.
      *
      * @param Relation $relation
+     *
      * @return int|mixed|null
      */
     public static function getMostCredibleInputSource(Relation $relation)
@@ -172,7 +172,7 @@ class Hoomdossier
             ->orderBy('input_sources.order', 'ASC')
             ->get([$relation->getRelated()->getTable().'.*', 'input_sources.short']);
 
-        $results = $found->pluck( 'short');
+        $results = $found->pluck('short');
 
         // Always check my own input source first. If that is properly filled
         // return that.
@@ -187,6 +187,7 @@ class Hoomdossier
         foreach ($results as $inputSourceShort) {
             return $inputSourceShort;
         }
+
         return null;
     }
 

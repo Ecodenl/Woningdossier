@@ -62,8 +62,6 @@ class RoofInsulationFormRequest extends FormRequest
         return [
             'building_roof_types.id' => 'bail|required|exists:roof_types,id',
             'building_roof_types.*.roof_surface' => 'nullable|numeric',
-            'building_roof_types.pitched.insulation_roof_surface' => 'nullable|numeric|needs_to_be_lower_or_same_as:building_roof_types.pitched.roof_surface',
-            'building_roof_types.flat.insulation_roof_surface' => 'nullable|numeric|needs_to_be_lower_or_same_as:building_roof_types.flat.roof_surface',
             'building_roof_types.*.zinc_surface' => 'nullable|numeric',
             'building_roof_types.*.element_value_id' => 'exists:element_values,id',
             'building_roof_types.*.building_heating_id' => 'exists:building_heatings,id',
@@ -107,7 +105,6 @@ class RoofInsulationFormRequest extends FormRequest
                 ]);
             }
         }
-        dd('bier', $validator->errors());
         /*
         // get the rooftypes
         $roofTypes = $this->request->get('building_roof_types', []);

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Account;
 use App\Models\Building;
+use App\Models\User;
 use App\Rules\HouseNumber;
 use App\Rules\HouseNumberExtension;
 use App\Rules\PostalCode;
@@ -18,9 +19,11 @@ class CreateBuildingFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        $account = Account::where('email', $this->get('email'))->first();
+        $user = $account->user();
+
         // allowed when there is no building attached
-//        return !Account::where('email', $this->get('email'))->first()->user()->building instanceof Building;
+        return $user instanceof User && !$user->building instanceof Building;
     }
 
     /**

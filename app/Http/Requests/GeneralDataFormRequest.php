@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Motivation;
 use App\Models\Service;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
@@ -105,7 +104,7 @@ class GeneralDataFormRequest extends FormRequest
     public function isFillingToolForUserRules()
     {
         return [
-            'cook_gas' => 'required|numeric'
+            'cook_gas' => 'required|numeric',
         ];
     }
 }

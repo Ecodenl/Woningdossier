@@ -2,10 +2,11 @@
 
 namespace App\Http\Requests\Cooperation\Auth;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
-use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\ValidationException;
 
 class ConfirmRequest extends FormRequest
 {
@@ -16,7 +17,7 @@ class ConfirmRequest extends FormRequest
      */
     public function authorize()
     {
-        return !\Auth::check();
+        return ! \Auth::check();
     }
 
     public function prepareForValidation()
@@ -33,7 +34,6 @@ class ConfirmRequest extends FormRequest
     public function rules()
     {
         return [
-
             'u' => [
                 'required',
                 'email',
@@ -46,14 +46,19 @@ class ConfirmRequest extends FormRequest
                 'alpha_num',
                 Rule::exists('accounts', 'confirm_token')->where(function ($query) {
                     $query->where('email', '=', $this->get('u'));
-                })
-            ]
+                }),
+            ],
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
-        Log::debug('The confirm account failed, email: '. $this->get('u').' token: '. $this->get('t'));
-        parent::failedValidation($validator);
+        Log::debug('The confirm account failed, email: '.$this->get('u').' token: '.$this->get('t'));
+
+        throw (new ValidationException($validator))
+            ->withMessages([__('confirm.already-confirmed', ['password_request_link' => route('cooperation.auth.password.request.index')])])
+            ->redirectTo($this->getRedirectUrl());
+
+//        parent::failedValidation($validator);
     }
 }

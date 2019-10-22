@@ -29,7 +29,7 @@ class CooperationRequest extends FormRequest
         return [
             'name' => 'required',
             'slug' => ['required', Rule::unique('cooperations', 'slug')->ignore($cooperationId)],
-            'website_url' => 'nullable|url'
+            'website_url' => 'nullable|url',
         ];
     }
 }

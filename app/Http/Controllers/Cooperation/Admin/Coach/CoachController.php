@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Cooperation\Admin\Coach;
 
 use App\Http\Controllers\Controller;
-use App\Models\Cooperation;
 
 class CoachController extends Controller
 {

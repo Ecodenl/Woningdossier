@@ -5,19 +5,16 @@ namespace App\Calculations;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\FloorInsulationCalculator;
-use App\Helpers\HoomdossierSession;
 use App\Helpers\KeyFigures\FloorInsulation\Temperature;
-use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
-use App\Models\User;
 use App\Models\UserEnergyHabit;
 
-class FloorInsulation {
-
+class FloorInsulation
+{
     /**
      * Method to calculate the floor insulation savings and such.
      *
@@ -25,11 +22,11 @@ class FloorInsulation {
      * @param $energyHabit
      * @param InputSource $inputSource
      * @param $calculateData
+     *
      * @return array
      */
     public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData): array
     {
-        
         $result = [
             'savings_gas' => 0,
             'savings_co2' => 0,
@@ -43,7 +40,6 @@ class FloorInsulation {
 
         $buildingElements = $calculateData['building_elements'] ?? [];
         $buildingFeatures = $calculateData['building_features'] ?? [];
-
 
         $surface = array_key_exists('insulation_surface', $buildingFeatures) ? $buildingFeatures['insulation_surface'] : 0;
 

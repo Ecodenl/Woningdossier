@@ -8,21 +8,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * App\Models\FileType
+ * App\Models\FileType.
  *
- * @property int $id
- * @property int $file_type_category_id
- * @property string $name
- * @property string $short
- * @property \Illuminate\Support\Carbon|null $duration
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\FileTypeCategory $category
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\FileStorage[] $files
+ * @property int                                                                $id
+ * @property int                                                                $file_type_category_id
+ * @property string                                                             $name
+ * @property string                                                             $short
+ * @property string                                                             $content_type
+ * @property \Illuminate\Support\Carbon|null                                    $duration
+ * @property \Illuminate\Support\Carbon|null                                    $created_at
+ * @property \Illuminate\Support\Carbon|null                                    $updated_at
+ * @property \App\Models\FileTypeCategory                                       $category
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\FileStorage[] $files
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType translated($attribute, $name, $locale = 'nl')
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType whereContentType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType whereDuration($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\FileType whereFileTypeCategoryId($value)
@@ -42,7 +45,7 @@ class FileType extends Model
      * @var array
      */
     protected $casts = [
-        'duration' => 'datetime'
+        'duration' => 'datetime',
     ];
 
     public function getRouteKeyName()
@@ -51,7 +54,7 @@ class FileType extends Model
     }
 
     /**
-     * Return the belongsto relationship on a categort
+     * Return the belongsto relationship on a categort.
      *
      * @return BelongsTo
      */
@@ -61,7 +64,7 @@ class FileType extends Model
     }
 
     /**
-     * Return the hasMany relationship on the file storage
+     * Return the hasMany relationship on the file storage.
      *
      * @return HasMany
      */
@@ -78,7 +81,7 @@ class FileType extends Model
     public function isBeingProcessed(): bool
     {
         return FileType::whereHas('files', function ($q) {
-            $q->withExpired()->where('is_being_processed', true);
+            $q->withExpired()->beingProcessed();
         })->where('id', $this->id)->first() instanceof FileType;
     }
 }

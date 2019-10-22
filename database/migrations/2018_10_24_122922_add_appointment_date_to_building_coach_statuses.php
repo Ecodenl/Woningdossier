@@ -28,9 +28,12 @@ class AddAppointmentDateToBuildingCoachStatuses extends Migration
      */
     public function down()
     {
-        // just in case
-        Schema::table('building_coach_statuses', function (Blueprint $table) {
-            $table->dropColumn('appointment_date');
-        });
+        if (Schema::hasColumn('building_coach_statuses', 'appointment_date')) {
+            // just in case
+            Schema::table('building_coach_statuses',
+                function (Blueprint $table) {
+                    $table->dropColumn('appointment_date');
+                });
+        }
     }
 }

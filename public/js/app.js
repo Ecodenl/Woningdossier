@@ -219,7 +219,8 @@ $(".has-address-data #number, #house_number_extension").focusout(function () {
             var errorMessage = $.parseJSON(request.responseText);
 
             $.each(errorMessage.errors, function (fieldName, message) {
-                var inputWithError = $('input[name=' + fieldName + ']');
+                // on name because some input name fields will be scrambeled to prevent the browser from pefilling it.
+                var inputWithError = $('input[id=' + fieldName + ']');
                 inputWithError.parent().parent().addClass('has-error');
                 inputWithError.parent().append($(helpBlock).append('<strong>' + message + '</strong>'));
             });

@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
-use App\Helpers\Hoomdossier;
+use App\Http\Controllers\Controller;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class CoachController extends Controller
 {
     /**
-     * Show all the coaches and coordinators
+     * Show all the coaches and coordinators.
      *
      * @param Cooperation $cooperation
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Cooperation $cooperation)
@@ -23,9 +22,7 @@ class CoachController extends Controller
         $users = $cooperation
             ->users()
             ->role(['coach', 'coordinator'])
-            ->where('id', '!=', Hoomdossier::user()->id)
             ->get();
-
 
         $roles = Role::all();
 
@@ -33,16 +30,15 @@ class CoachController extends Controller
     }
 
     /**
-     * Show a list of a coach its connected buildings
+     * Show a list of a coach its connected buildings.
      *
-     * @param  Cooperation  $cooperation
+     * @param Cooperation $cooperation
      * @param $userId
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function show(Cooperation $cooperation, $userId)
     {
-
         $userToShow = User::findOrFail($userId);
         $buildingFromUser = $userToShow->building;
 
@@ -54,8 +50,6 @@ class CoachController extends Controller
             ->groupBy(['building_id', 'coach_id'])
             ->select(['building_id', 'coach_id'])
             ->get();
-
-
 
         $roles = $userToShow->roles->pluck('human_readable_name')->toArray();
 

@@ -23,14 +23,14 @@ class SuccessFullLoginListener
     }
 
     /**
-     * Handle the event
+     * Handle the event.
      *
      * @param $event
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function handle($event)
     {
-
         $account = $event->user;
 
         // ensure the cooperation is set in the session
@@ -45,7 +45,7 @@ class SuccessFullLoginListener
         $userRole = $user->roles()->first();
 
         // if the user for some odd reason had no role attached, attach the resident rol to him.
-        if (!$userRole instanceof Role) {
+        if (! $userRole instanceof Role) {
             $residentRole = Role::findByName('resident');
             $user->assignRole($residentRole);
         }
@@ -54,7 +54,6 @@ class SuccessFullLoginListener
         // else, redirect him to a page where he needs to create a building
         // without a building the application is useless.
         if ($building instanceof Building) {
-
             // we cant query on the Spatie\Role model so we first get the result on the "original model"
             $role = Role::findByName($user->roles()->first()->name);
 
@@ -74,17 +73,17 @@ class SuccessFullLoginListener
                 'user_id' => $user->id,
                 'message' => __('woningdossier.log-messages.logged-in', [
                     'full_name' => $user->getFullName(),
-                ])
+                ]),
             ]);
-
         } else {
             $user->logout();
+
             return redirect()->route('cooperation.create-building.index')->with('warning', __('auth.login.warning'));
         }
     }
 
     /**
-     * Method to ensure the cooperation is set in the session
+     * Method to ensure the cooperation is set in the session.
      *
      * @return void
      */
@@ -94,12 +93,10 @@ class SuccessFullLoginListener
         $cooperation = request()->route('cooperation');
 
         // if the user logs in through the remember the router is not booted yet.
-        if (!$cooperation instanceof Cooperation) {
+        if (! $cooperation instanceof Cooperation) {
             $cooperation = Cooperation::where('slug', $cooperation)->first();
         }
 
-
         HoomdossierSession::setCooperation($cooperation);
     }
-
 }

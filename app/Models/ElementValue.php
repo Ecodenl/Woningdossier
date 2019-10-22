@@ -6,16 +6,17 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\ElementValue
+ * App\Models\ElementValue.
  *
- * @property int $id
- * @property int $element_id
- * @property string $value
- * @property float|null $calculate_value
- * @property int $order
+ * @property int                             $id
+ * @property int                             $element_id
+ * @property string                          $value
+ * @property float|null                      $calculate_value
+ * @property int                             $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Element $element
+ * @property \App\Models\Element             $element
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ElementValue newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ElementValue newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ElementValue query()

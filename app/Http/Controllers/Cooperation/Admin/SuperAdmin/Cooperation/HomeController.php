@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Cooperation;
 
-use App\Models\Cooperation;
-use App\Models\Role;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Cooperation;
 
 class HomeController extends Controller
 {
@@ -15,10 +13,10 @@ class HomeController extends Controller
             [
                 'route' => 'cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index',
                 'url' => route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index', [
-                    'cooperation-to-manage' => $cooperationToManage
+                    'cooperation-to-manage' => $cooperationToManage,
                 ]),
                 'name' => $cooperationToManage->name,
-            ]
+            ],
         ];
 
         $coachCount = $cooperationToManage->users()->withoutGlobalScopes()->role('coach')->count();

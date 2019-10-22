@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests;
 
-use App\Helpers\HoomdossierSession;
 use App\Models\User;
 use Illuminate\Validation\Factory;
 
 trait ValidatorTrait
 {
-
     /**
      * The rules that apply when a user (mostly a coach), is filling the tool for a user (mostly a resident).
      *
@@ -32,7 +30,7 @@ trait ValidatorTrait
     /**
      * Validate the request.
      *
-     * @param  Factory  $factory
+     * @param Factory $factory
      *
      * @return \Illuminate\Validation\Validator|null
      */

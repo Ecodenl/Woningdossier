@@ -12,8 +12,9 @@ class FileStorageDownload
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure                 $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -22,7 +23,14 @@ class FileStorageDownload
         $fileType = $routeParameters['fileType'];
         $fileStorageFilename = $routeParameters['fileStorageFilename'];
 
-        $fileStorage = $fileType->files()->where('filename', $fileStorageFilename)->first();
+        switch ($fileType->short) {
+            case 'pdf-report':
+                $fileStorage = $fileType->files()->forMe()->where('filename', $fileStorageFilename)->first();
+                break;
+            default:
+                $fileStorage = $fileType->files()->where('filename', $fileStorageFilename)->first();
+                break;
+        }
 
         // some other logic for resident wil come in the near future.
         if (Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']) && ($fileStorage instanceof FileStorage && $fileStorage->cooperation->id == HoomdossierSession::getCooperation())) {
@@ -30,7 +38,6 @@ class FileStorageDownload
         }
 
         if ($fileStorage instanceof FileStorage) {
-
             $userIsResidentOrCoach = Hoomdossier::user()->hasRoleAndIsCurrentRole(['resident', 'coach']);
             $fileIsGeneratedByCurrentBuilding = $fileStorage->building_id == HoomdossierSession::getBuilding();
             $fileInputSourceIsCurrentInputSource = $fileStorage->input_source_id == HoomdossierSession::getInputSource();

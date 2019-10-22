@@ -44,6 +44,8 @@
 
                                 $appointmentDateFormatted = optional($buildingStatus->appointment_date)->format('d-m-Y');
                                 $appointmentDateStrotime = strtotime($appointmentDateFormatted);
+
+                                $userIsAuthUser = $user->id == \App\Helpers\Hoomdossier::user()->id;
                             ?>
                             <tr>
                                 <td data-sort="{{$userCreatedAtStrotime}}">
@@ -51,9 +53,13 @@
                                 </td>
                                 <td>{{$user->getFullName()}}</td>
                                 <td>
+                                    @if($userIsAuthUser)
+                                        <p>{{$building->street}} {{$building->number}} {{$building->extension}}</p>
+                                    @else
                                     <a href="{{route('cooperation.admin.buildings.show', ['id' => $building->id])}}">
                                         {{$building->street}} {{$building->number}} {{$building->extension}}
                                     </a>
+                                    @endif
                                 </td>
                                 <td>{{$building->postal_code}}</td>
                                 <td>
@@ -78,16 +84,17 @@
 
 @push('js')
     <script>
-
-        $('#table').DataTable({
-            responsive: true,
-            columnDefs: [
-                {responsivePriority: 4, targets: 4},
-                {responsivePriority: 5, targets: 3},
-                {responsivePriority: 3, targets: 2},
-                {responsivePriority: 2, targets: 1},
-                {responsivePriority: 1, targets: 0}
-            ],
+        $(document).ready(function () {
+            $('#table').DataTable({
+                responsive: true,
+                columnDefs: [
+                    {responsivePriority: 4, targets: 4},
+                    {responsivePriority: 5, targets: 3},
+                    {responsivePriority: 3, targets: 2},
+                    {responsivePriority: 2, targets: 1},
+                    {responsivePriority: 1, targets: 0}
+                ],
+            });
         });
 
     </script>

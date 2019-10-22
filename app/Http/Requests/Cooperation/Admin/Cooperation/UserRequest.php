@@ -31,12 +31,12 @@ class UserRequest extends FormRequest
             'first_name' => ['required', new AlphaSpace()],
             'last_name' => ['required', new AlphaSpace()],
             'password' => 'nullable|min:6',
-            'email' => 'required|email|unique:accounts,email',
+            'email' => 'required|email',
             'roles' => 'required|exists:roles,id',
             'coach_id' => ['nullable', Rule::exists('users', 'id')],
 
             'postal_code' => [new PostalCode()],
-            'number' => [new HouseNumber()],
+            'number' => ['numeric', new HouseNumber()],
             'street' => 'required|string',
             'city' => 'required|string',
         ];

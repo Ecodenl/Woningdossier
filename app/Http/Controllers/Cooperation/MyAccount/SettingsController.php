@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Cooperation\MyAccount;
 
 use App\Events\DossierResetPerformed;
-use App\Events\UserChangedHisEmailEvent;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\PicoHelper;
@@ -11,32 +10,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Account;
 use App\Models\Building;
-use App\Models\BuildingFeature;
-use App\Models\Cooperation;
-use App\Models\Log;
-use App\Models\OldEmail;
 use App\Models\User;
-use App\Services\ToolSettingService;
 use App\Services\UserService;
-use function GuzzleHttp\Psr7\uri_for;
-use Illuminate\Auth\Passwords\DatabaseTokenRepository;
-use Illuminate\Support\Str;
 
 class SettingsController extends Controller
 {
-    public function index()
-    {
-        $user = Hoomdossier::user();
-        $account = Hoomdossier::account();
-        $building = HoomdossierSession::getBuilding(true);
-
-        return view('cooperation.my-account.settings.index', compact('user', 'building', 'account'));
-    }
-
     /**
      * Update the account.
      *
-     * @param  MyAccountSettingsFormRequest  $request
+     * @param MyAccountSettingsFormRequest $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -61,7 +43,6 @@ class SettingsController extends Controller
         // try to obtain the address id from the api, else get the one from the request.
         $buildingData['bag_addressid'] = $picoAddressData['id'] ?? $buildingData['addressid'] ?? '';
 
-
         // update the user stuff
         $user->update($userData);
         // now update the building itself
@@ -73,8 +54,7 @@ class SettingsController extends Controller
             'build_year' => empty($picoAddressData['build_year']) ? null : $picoAddressData['build_year'],
         ]);
 
-
-        return redirect()->route('cooperation.my-account.settings.index')
+        return redirect()->route('cooperation.my-account.index')
                          ->with('success', __('my-account.settings.store.success'));
     }
 
@@ -128,7 +108,7 @@ class SettingsController extends Controller
     // Delete account
     public function destroy()
     {
-        $user = \App\Helpers\Hoomdossier::user();
+        $user = Hoomdossier::user();
         $accountId = $user->account_id;
         $cooperation = HoomdossierSession::getCooperation(true);
 
@@ -141,7 +121,7 @@ class SettingsController extends Controller
 
         $stillActiveForOtherCooperations = Account::where('id', '=', $accountId)->exists();
         $success = __('my-account.settings.destroy.success.cooperation');
-        if (!$stillActiveForOtherCooperations){
+        if (! $stillActiveForOtherCooperations) {
             $success = __('my-account.settings.destroy.success.full');
         }
 

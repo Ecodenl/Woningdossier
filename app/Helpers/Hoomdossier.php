@@ -15,21 +15,23 @@ class Hoomdossier
     }
 
     /**
-     * Check if a column contains a needle, wrapper for stristr
+     * Check if a column contains a needle, wrapper for stristr.
      *
      * @param string $column
      * @param string $needle
+     *
      * @return bool
      */
     public static function columnContains(string $column, string $needle)
     {
-        return stristr($column, $needle) !== false;
+        return false !== stristr($column, $needle);
     }
 
     /**
      * Method to return a unit for a given column.
      *
      * @param $column
+     *
      * @return mixed|string
      */
     public static function getUnitForColumn($column)
@@ -44,8 +46,7 @@ class Hoomdossier
             'yield_electricity' => 'kWh',
             'raise_own_consumption' => '%',
             'interest_comparable' => '%',
-            'percentage_consumption' => '%'
-
+            'percentage_consumption' => '%',
         ];
 
         if (static::columnContains($column, 'surface') || static::columnContains($column, 'm2')) {
@@ -79,7 +80,7 @@ class Hoomdossier
             ->orderBy('input_sources.order', 'ASC');
 
         // if is not empty, we need to search the answers for a particular input source
-        if (!is_null($onlyReturnForInputSource)) {
+        if (! is_null($onlyReturnForInputSource)) {
             $inputSourceToReturn = InputSource::findByShort($onlyReturnForInputSource);
             $found = $baseQuery->where('input_source_id', $inputSourceToReturn->id);
         } else {
@@ -97,6 +98,7 @@ class Hoomdossier
         // the user actually gets to that step (building_features fields)
         // these fields also get a 'fallthrough' via $fallthroughColumns
         $falltroughColumns = [
+            'cavity_wall',
             'facade_plastered_painted',
             'facade_plastered_surface_id',
             'facade_damaged_paintwork_id',
@@ -104,6 +106,10 @@ class Hoomdossier
             'contaminated_wall_joints',
             'monument',
             'building_layers',
+            'roof_type_id',
+
+            'energy_label_id',
+            'extra.date',
         ];
 
         // Always check my own input source first. If that is properly filled
@@ -139,6 +145,8 @@ class Hoomdossier
             }
             if (InputSource::RESIDENT_SHORT == $inputSourceShort) {
                 // no matter what
+
+                // since 'no matter what' it will also return a empty value, even when there may be a non null value from a other input source.
                 return $value;
             }
             if (! is_null($value) && '' !== $value) {
@@ -150,9 +158,10 @@ class Hoomdossier
     }
 
     /**
-     * Return the most credible input source for a relationship
+     * Return the most credible input source for a relationship.
      *
      * @param Relation $relation
+     *
      * @return int|mixed|null
      */
     public static function getMostCredibleInputSource(Relation $relation)
@@ -163,7 +172,7 @@ class Hoomdossier
             ->orderBy('input_sources.order', 'ASC')
             ->get([$relation->getRelated()->getTable().'.*', 'input_sources.short']);
 
-        $results = $found->pluck( 'short');
+        $results = $found->pluck('short');
 
         // Always check my own input source first. If that is properly filled
         // return that.
@@ -178,6 +187,7 @@ class Hoomdossier
         foreach ($results as $inputSourceShort) {
             return $inputSourceShort;
         }
+
         return null;
     }
 

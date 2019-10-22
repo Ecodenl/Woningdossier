@@ -2,13 +2,17 @@
 
 namespace App\Helpers;
 
+use App\Models\Building;
 use App\Models\BuildingHeating;
+use App\Models\Element;
 use App\Models\ElementValue;
+use App\Models\InputSource;
 use App\Models\InsulatingGlazing;
 use App\Models\Interest;
 use App\Models\KeyFigureTemperature;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
+use App\Models\UserEnergyHabit;
 use App\Models\WoodRotStatus;
 use Carbon\Carbon;
 
@@ -34,8 +38,19 @@ class InsulatedGlazingCalculator
         return Calculator::calculateMeasureApplicationCosts($measureApplication, $calcM2, null, false);
     }
 
-    // in m3 per year
-    public static function calculateGasSavings($m2, MeasureApplication $measureApplication, BuildingHeating $heating, InsulatingGlazing $glazing = null)
+    /**
+     * Returns the RAW calculated savings for the given $m2 of $measureApplication.
+     * For insulated glazing, all should be added. Therefore the max cap will
+     * be done later (via the calculateNetGasSavings).
+     *
+     * @param $m2
+     * @param MeasureApplication     $measureApplication
+     * @param BuildingHeating        $heating
+     * @param InsulatingGlazing|null $glazing
+     *
+     * @return float|int
+     */
+    public static function calculateRawGasSavings($m2, MeasureApplication $measureApplication, BuildingHeating $heating, InsulatingGlazing $glazing = null)
     {
         $query = KeyFigureTemperature::where('measure_application_id', $measureApplication->id)
                 ->where('building_heating_id', $heating->id);
@@ -46,18 +61,36 @@ class InsulatedGlazingCalculator
 
         $saving = $m2 * $keyFigureTemperature->key_figure;
 
-        self::debug('Gas saving '.$saving.' = '.$m2.' * '.$keyFigureTemperature->key_figure);
+        self::debug(__METHOD__.' '.$saving.' = '.$m2.' * '.$keyFigureTemperature->key_figure);
 
         return $saving;
+    }
+
+    public static function calculateNetGasSavings($saving, Building $building, InputSource $inputSource, $energyHabit)
+    {
+        $maxGasSavings = 0;
+        /** @NeedsReview There is no element for insulated-glazing. Only the "general-data" variants of living-room-windows and sleeping-rooms-windows.. both having the same % */
+        /** @var Element $element */
+        $element = Element::where('short', '=', 'living-rooms-windows')->first();
+
+        if ($energyHabit instanceof UserEnergyHabit) {
+            $maxGasSavings = Calculator::maxGasSavings($building, $inputSource, $energyHabit, $element);
+        }
+        $result = min($saving, $maxGasSavings);
+
+        self::debug(__METHOD__.' '.$result.' = min('.$saving.', '.$maxGasSavings.')');
+
+        return $result;
     }
 
     public static function calculatePaintworkSurface(ElementValue $frame, array $woodElements, $windowSurface)
     {
         $number = $frame->calculate_value * $windowSurface;
         self::debug(__METHOD__.' '.$number.' = '.$frame->calculate_value.' * '.$windowSurface);
+        /** @var ElementValue $woodElement */
         foreach ($woodElements as $woodElement) {
             $number += $woodElement->calculate_value;
-            self::debug($woodElement->calculate_value.' -> '.$number);
+            self::debug(__METHOD__.' Adding wood element (calculate value) '.$woodElement->calculate_value.' to the paintwork surface (-> '.$number.')');
         }
 
         return $number;
@@ -68,7 +101,7 @@ class InsulatedGlazingCalculator
         self::debug(__METHOD__);
 
         if ($lastPaintedYear + $measureApplication->maintenance_interval <= Carbon::now()->year) {
-            self::debug('Last painted is longer than '.$measureApplication->maintenance_interval.' years ago.');
+            self::debug(__METHOD__.' Last painted is longer than '.$measureApplication->maintenance_interval.' years ago.');
             $year = Carbon::now()->year;
         } else {
             $year = $lastPaintedYear + $measureApplication->maintenance_interval;

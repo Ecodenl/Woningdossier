@@ -34,8 +34,8 @@ class Old
     /**
      * Set a value with key in the _modified_old_input session.
      *
-     * @param $key | key to be set in the _modified_old_input session
-     * @param $value | value to be set in the given key
+     * @param string|array $value Defaults to empty. Value to be set in the given key
+     * @param string       $key   Key to be set in the _modified_old_input session
      */
     public static function put($value, $key = '')
     {
@@ -49,8 +49,8 @@ class Old
     /**
      * Get a value from the _modified_old_input session.
      *
-     * @param string $key     | old value to retrieve
-     * @param string $default | if the key does not exist in the session, return the default value
+     * @param string $key     Defaults to empty. Old value to retrieve
+     * @param string $default Defaults to empty. If the key does not exist in the session, return the default value
      *
      * @return mixed|string
      */

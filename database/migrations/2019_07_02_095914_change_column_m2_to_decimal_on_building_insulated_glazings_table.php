@@ -26,7 +26,7 @@ class ChangeColumnM2ToDecimalOnBuildingInsulatedGlazingsTable extends Migration
     public function down()
     {
         Schema::table('building_insulated_glazings', function (Blueprint $table) {
-            $table->integer('m2')->unsigned()->nullable()->default(null);
+            $table->integer('m2')->unsigned()->nullable()->default(null)->change();
         });
     }
 }

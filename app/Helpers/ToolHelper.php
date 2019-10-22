@@ -6,7 +6,6 @@ use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Models\BuildingHeating;
-use App\Models\BuildingPaintworkStatus;
 use App\Models\BuildingType;
 use App\Models\ComfortLevelTapWater;
 use App\Models\Element;
@@ -27,8 +26,6 @@ use Illuminate\Support\Collection;
 
 class ToolHelper
 {
-
-
     public static function createOptions(Collection $collection, $value = 'name', $id = 'id', $nullPlaceholder = true)
     {
         $options = [];
@@ -37,7 +34,6 @@ class ToolHelper
             $options[''] = '-';
         }
         foreach ($collection as $item) {
-
             $options[$item->$id] = $item->$value;
         }
 
@@ -54,37 +50,37 @@ class ToolHelper
         // General data
 
         // General data - Elements (that are not queried later on step basis)
-        $livingRoomsWindows   = Element::where('short', 'living-rooms-windows')->first();
+        $livingRoomsWindows = Element::where('short', 'living-rooms-windows')->first();
         $sleepingRoomsWindows = Element::where('short', 'sleeping-rooms-windows')->first();
         // General data - Services (that are not queried later on step basis)
         $heatpumpHybrid = Service::where('short', 'hybrid-heat-pump')->first();
-        $heatpumpFull   = Service::where('short', 'full-heat-pump')->first();
-        $ventilation    = Service::where('short', 'house-ventilation')->first();
+        $heatpumpFull = Service::where('short', 'full-heat-pump')->first();
+        $ventilation = Service::where('short', 'house-ventilation')->first();
 
         // Wall insulation
-        $wallInsulation          = Element::where('short', 'wall-insulation')->first();
-        $facadeDamages           = FacadeDamagedPaintwork::orderBy('order')->get();
-        $surfaces                = FacadeSurface::orderBy('order')->get();
+        $wallInsulation = Element::where('short', 'wall-insulation')->first();
+        $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
+        $surfaces = FacadeSurface::orderBy('order')->get();
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
-        $energyLabels            = EnergyLabel::all();
+        $energyLabels = EnergyLabel::all();
 
         // Insulated glazing
         $insulatedGlazings = InsulatingGlazing::all();
-        $heatings          = BuildingHeating::where('calculate_value', '<', 5)->get(); // we don't want n.v.t.
-        $crackSealing      = Element::where('short', 'crack-sealing')->first();
-        $frames            = Element::where('short', 'frames')->first();
-        $woodElements      = Element::where('short', 'wood-elements')->first();
+        $heatings = BuildingHeating::where('calculate_value', '<', 5)->get(); // we don't want n.v.t.
+        $crackSealing = Element::where('short', 'crack-sealing')->first();
+        $frames = Element::where('short', 'frames')->first();
+        $woodElements = Element::where('short', 'wood-elements')->first();
         $paintworkStatuses = PaintworkStatus::orderBy('order')->get();
-        $woodRotStatuses   = WoodRotStatus::orderBy('order')->get();
+        $woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
         // Floor insulation
         /** @var Element $floorInsulation */
         $floorInsulation = Element::where('short', 'floor-insulation')->first();
-        $crawlspace      = Element::where('short', 'crawlspace')->first();
+        $crawlspace = Element::where('short', 'crawlspace')->first();
 
         // Roof insulation
-        $roofInsulation   = Element::where('short', 'roof-insulation')->first();
-        $roofTypes        = RoofType::all();
+        $roofInsulation = Element::where('short', 'roof-insulation')->first();
+        $roofTypes = RoofType::all();
         $roofTileStatuses = RoofTileStatus::orderBy('order')->get();
         // Same as RoofInsulationController->getMeasureApplicationsAdviceMap()
         $roofInsulationMeasureApplications = [
@@ -105,18 +101,18 @@ class ToolHelper
         // High efficiency boiler
         // NOTE: building element hr-boiler tells us if it's there
         $hrBoiler = Service::where('short', 'hr-boiler')->first();
-        $boiler   = Service::where('short', 'boiler')->first();
+        $boiler = Service::where('short', 'boiler')->first();
 
         // Solar panels
-        $solarPanels                 = Service::where('short', 'total-sun-panels')->first();
+        $solarPanels = Service::where('short', 'total-sun-panels')->first();
         $solarPanelsOptionsPeakPower = ['' => '-'] + SolarPanelsKeyFigures::getPeakPowers();
-        $solarPanelsOptionsAngle     = ['' => '-'] + SolarPanelsKeyFigures::getAngles();
+        $solarPanelsOptionsAngle = ['' => '-'] + SolarPanelsKeyFigures::getAngles();
 
-        $heater             = Service::where('short', 'sun-boiler')->first();
+        $heater = Service::where('short', 'sun-boiler')->first();
         $heaterOptionsAngle = ['' => '-'] + HeaterKeyFigures::getAngles();
 
         // Common
-        $interests       = Interest::orderBy('order')->get();
+        $interests = Interest::orderBy('order')->get();
         $interestOptions = static::createOptions($interests);
 
         $structure = [
@@ -261,7 +257,6 @@ class ToolHelper
                     'unit'  => Translation::translate('general.unit.year.title'),
                 ],
 
-
                 // habits
                 'user_energy_habits.cook_gas'                   => [
                     'label'   => Translation::translate('general-data.data-about-usage.cooked-on-gas.title'),
@@ -327,7 +322,7 @@ class ToolHelper
                     'label'        => Translation::translate('wall-insulation.intro.damage-paintwork.title'),
                     'type'         => 'select',
                     'options'      => static::createOptions($facadeDamages),
-                    'relationship' => 'damagedPaintwork'
+                    'relationship' => 'damagedPaintwork',
                 ],
                 'building_features.wall_joints'                 => [
                     'label'   => Translation::translate('wall-insulation.optional.flushing.title'),
@@ -364,9 +359,8 @@ class ToolHelper
                     'paint_wall' => [
                         'costs' => Translation::translate('wall-insulation.taking-into-account.wall-painting.title'),
                         'year'  => Translation::translate('wall-insulation.taking-into-account.wall-painting.year.title'),
-                    ]
-
-                ]
+                    ],
+                ],
             ],
 
             'insulated-glazing' => [
@@ -399,7 +393,7 @@ class ToolHelper
                     'label'        => Translation::translate('insulated-glazing.paint-work.paint-damage-visible.title'),
                     'type'         => 'select',
                     'options'      => static::createOptions($paintworkStatuses),
-                    'relationship' => 'paintworkStatus'
+                    'relationship' => 'paintworkStatus',
                 ],
                 'building_paintwork_statuses.wood_rot_status_id'  => [
                     'label'   => Translation::translate('insulated-glazing.paint-work.wood-rot-visible.title'),
@@ -446,7 +440,7 @@ class ToolHelper
                     'savings_money'       => Translation::translate('general.costs.savings-in-euro.title'),
                     'cost_indication'     => Translation::translate('general.costs.indicative-costs.title'),
                     'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
-                ]
+                ],
             ],
 
             'roof-insulation'        => [
@@ -459,11 +453,12 @@ class ToolHelper
                     'label'        => Translation::translate('roof-insulation.current-situation.main-roof.title'),
                     'type'         => 'select',
                     'options'      => static::createOptions($roofTypes),
-                    'relationship' => 'roofType'
+                    'relationship' => 'roofType',
                 ],
                 // rest will be added later on
             ],
             'high-efficiency-boiler' => [
+                // todo: this should be extra.date. But then we need to update al example building data
                 'service.'.$boiler->id.'.extra.year' => [
                     'label' => Translation::translate('boiler.boiler-placed-date.title'),
                     'type'  => 'text',
@@ -476,8 +471,8 @@ class ToolHelper
                     'cost_indication'     => Translation::translate('general.costs.indicative-costs.title'),
                     'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
 
-                    'replace_year' => Translation::translate('high-efficiency-boiler.indication-for-costs.indicative-replacement.title')
-                ]
+                    'replace_year' => Translation::translate('high-efficiency-boiler.indication-for-costs.indicative-replacement.title'),
+                ],
             ],
 
             'solar-panels' => [
@@ -495,7 +490,7 @@ class ToolHelper
                     'label'        => Translation::translate('solar-panels.pv-panel-orientation-id.title'),
                     'type'         => 'select',
                     'options'      => static::createOptions(PvPanelOrientation::orderBy('order')->get()),
-                    'relationship' => 'orientation'
+                    'relationship' => 'orientation',
                 ],
                 'building_pv_panels.angle'                   => [
                     'label'   => Translation::translate('solar-panels.angle.title'),
@@ -523,7 +518,7 @@ class ToolHelper
                     'label'        => Translation::translate('heater.pv-panel-orientation-id.title'),
                     'type'         => 'select',
                     'options'      => static::createOptions(PvPanelOrientation::orderBy('order')->get()),
-                    'relationship' => 'orientation'
+                    'relationship' => 'orientation',
                 ],
                 'building_heaters.angle'                   => [
                     'label'   => Translation::translate('heater.angle.title'),
@@ -548,7 +543,7 @@ class ToolHelper
                     'savings_money'       => Translation::translate('general.costs.savings-in-euro.title'),
                     'cost_indication'     => Translation::translate('general.costs.indicative-costs.title'),
                     'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
-                ]
+                ],
             ],
         ];
 
@@ -572,7 +567,9 @@ class ToolHelper
         foreach ($igShorts as $igShort) {
             $measureApplication = MeasureApplication::where('short', $igShort)->first();
             if ($measureApplication instanceof MeasureApplication) {
-                $structure['insulated-glazing']['user_interests.'.$measureApplication->id]                                      = [
+                // todo: this should be the case, with the type. But then we need to update al example building data
+//                $structure['insulated-glazing']['user_interests.measure_application.'.$measureApplication->id]                                      = [
+                $structure['insulated-glazing']['user_interests.'.$measureApplication->id] = [
                     //'label' => 'Interest in '.$measureApplication->measure_name,
                     'label'   => Translation::translate('general.change-interested.title',
                         ['item' => $measureApplication->measure_name]),
@@ -583,26 +580,26 @@ class ToolHelper
                     'label'        => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.'.$measureApplication->short.'.current-glass.title'),
                     'type'         => 'select',
                     'options'      => static::createOptions($insulatedGlazings),
-                    'relationship' => 'insulatedGlazing'
+                    'relationship' => 'insulatedGlazing',
                 ];
-                $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.building_heating_id']  = [
+                $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.building_heating_id'] = [
                     'label'        => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.'.$measureApplication->short.'.rooms-heated.title'),
                     'type'         => 'select',
                     'options'      => static::createOptions($heatings),
-                    'relationship' => 'buildingHeating'
+                    'relationship' => 'buildingHeating',
                 ];
-                $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.m2']                   = [
+                $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.m2'] = [
                     'label' => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.'.$measureApplication->short.'.m2.title'),
                     'type'  => 'text',
                     'unit'  => Translation::translate('general.unit.square-meters.title'),
                 ];
-                $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.windows']              = [
+                $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.windows'] = [
                     'label' => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.'.$measureApplication->short.'.window-replace.title'),
                     'type'  => 'text',
                 ];
             }
         }
-        foreach($insulatedGlazingStuffSoFar as $igK => $igV){
+        foreach ($insulatedGlazingStuffSoFar as $igK => $igV) {
             $structure['insulated-glazing'][$igK] = $igV;
         }
 
@@ -617,40 +614,44 @@ class ToolHelper
             'paintwork' => [
                 'costs' => Translation::translate('insulated-glazing.taking-into-account.paintwork.title'),
                 'year'  => Translation::translate('insulated-glazing.taking-into-account.paintwork_year.title'),
-            ]
+            ],
         ];
-
 
         // Roof insulation
         // have to refactor this
         // pitched = 1
         // flat = 2
-        $pitched        = new \stdClass();
-        $pitched->id    = 1;
+        $pitched = new \stdClass();
+        $pitched->id = 1;
         $pitched->short = 'pitched';
-        $flat           = new \stdClass();
-        $flat->id       = 2;
-        $flat->short    = 'flat';
-        $roofTypes1     = collect([$pitched, $flat]);
+        $flat = new \stdClass();
+        $flat->id = 2;
+        $flat->short = 'flat';
+        $roofTypes1 = collect([$pitched, $flat]);
 
         // $roofTypes1 should become $roofTypes->where('short', '!=', 'none');
 
         foreach ($roofTypes1 as $roofType) {
-            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.element_value_id']         = [
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.element_value_id'] = [
                 'label'        => Translation::translate('roof-insulation.current-situation.is-'.$roofType->short.'-roof-insulated.title'),
                 'type'         => 'select',
                 'options'      => static::createOptions($roofInsulation->values, 'value'),
-                'relationship' => 'elementValue'
+                'relationship' => 'elementValue',
             ];
-            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.roof_surface']             = [
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.roof_surface'] = [
                 'label' => Translation::translate('roof-insulation.current-situation.'.$roofType->short.'-roof-surface.title'),
                 'type'  => 'text',
                 'unit'  => Translation::translate('general.unit.square-meters.title'),
             ];
-            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.insulation_roof_surface']  = [
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.insulation_roof_surface'] = [
                 'label' => Translation::translate('roof-insulation.current-situation.insulation-'.$roofType->short.'-roof-surface.title'),
                 'type'  => 'text',
                 'unit'  => Translation::translate('general.unit.square-meters.title'),
+            ];
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.zinc_surface'] = [
+                'label' => Translation::translate('roof-insulation.current-situation.insulation-'.$roofType->short.'-zinc-surface.title'),
+                'type'  => 'text',
+                'unit'  => Translation::translate('general.unit.meters.title'),
             ];
             $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.extra.zinc_replaced_date'] = [
                 'label' => Translation::translate('roof-insulation.current-situation.zinc-replaced.title'),
@@ -676,17 +677,16 @@ class ToolHelper
                 'type'         => 'select',
                 'options'      => static::createOptions(collect($roofInsulationMeasureApplications[$roofType->short]),
                     'measure_name'),
-                'relationship' => 'measureApplication'
+                'relationship' => 'measureApplication',
             ];
-            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.building_heating_id']          = [
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.building_heating_id'] = [
                 'label'        => Translation::translate('roof-insulation.'.$roofType->short.'-roof.situation.title'),
                 'type'         => 'select',
                 'options'      => static::createOptions($heatings),
-                'relationship' => 'heating'
+                'relationship' => 'heating',
             ];
 
             if ($roofType->short == $roofTypes1->last()->short) {
-
                 $structure['roof-insulation']['calculations'] = [
                     'flat'    => [
                         'savings_gas'         => Translation::translate('roof-insulation.flat.costs.gas.title'),
@@ -697,8 +697,8 @@ class ToolHelper
 
                         'replace' => [
                             'costs' => Translation::translate('roof-insulation.flat.indicative-costs-replacement.title'),
-                            'year' => Translation::translate('roof-insulation.flat.indicative-replacement.year.title')
-                        ]
+                            'year' => Translation::translate('roof-insulation.flat.indicative-replacement.year.title'),
+                        ],
                     ],
                     'pitched' => [
                         'savings_gas'         => Translation::translate('roof-insulation.pitched.costs.gas.title'),
@@ -707,14 +707,11 @@ class ToolHelper
                         'cost_indication'     => Translation::translate('general.costs.indicative-costs.title'),
                         'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
 
-
                         'replace' => [
                             'costs' => Translation::translate('roof-insulation.pitched.indicative-costs-replacement.title'),
-                            'year' => Translation::translate('roof-insulation.pitched.indicative-replacement.year.title')
-                        ]
-
-
-                    ]
+                            'year' => Translation::translate('roof-insulation.pitched.indicative-replacement.year.title'),
+                        ],
+                    ],
                 ];
             }
         }
@@ -722,10 +719,8 @@ class ToolHelper
         return $structure;
     }
 
-
-
     /**
-     * Called the tool structure, which it is, but like the excel hoom logic
+     * Called the tool structure, which it is, but like the excel hoom logic.
      *
      * @return array
      */
@@ -734,37 +729,37 @@ class ToolHelper
         // General data
 
         // General data - Elements (that are not queried later on step basis)
-        $livingRoomsWindows   = Element::where('short', 'living-rooms-windows')->first();
+        $livingRoomsWindows = Element::where('short', 'living-rooms-windows')->first();
         $sleepingRoomsWindows = Element::where('short', 'sleeping-rooms-windows')->first();
         // General data - Services (that are not queried later on step basis)
         $heatpumpHybrid = Service::where('short', 'hybrid-heat-pump')->first();
-        $heatpumpFull   = Service::where('short', 'full-heat-pump')->first();
-        $ventilation    = Service::where('short', 'house-ventilation')->first();
+        $heatpumpFull = Service::where('short', 'full-heat-pump')->first();
+        $ventilation = Service::where('short', 'house-ventilation')->first();
 
         // Wall insulation
-        $wallInsulation          = Element::where('short', 'wall-insulation')->first();
-        $facadeDamages           = FacadeDamagedPaintwork::orderBy('order')->get();
-        $surfaces                = FacadeSurface::orderBy('order')->get();
+        $wallInsulation = Element::where('short', 'wall-insulation')->first();
+        $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
+        $surfaces = FacadeSurface::orderBy('order')->get();
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
-        $energyLabels            = EnergyLabel::all();
+        $energyLabels = EnergyLabel::all();
 
         // Insulated glazing
         $insulatedGlazings = InsulatingGlazing::all();
-        $heatings          = BuildingHeating::where('calculate_value', '<', 5)->get(); // we don't want n.v.t.
-        $crackSealing      = Element::where('short', 'crack-sealing')->first();
-        $frames            = Element::where('short', 'frames')->first();
-        $woodElements      = Element::where('short', 'wood-elements')->first();
+        $heatings = BuildingHeating::where('calculate_value', '<', 5)->get(); // we don't want n.v.t.
+        $crackSealing = Element::where('short', 'crack-sealing')->first();
+        $frames = Element::where('short', 'frames')->first();
+        $woodElements = Element::where('short', 'wood-elements')->first();
         $paintworkStatuses = PaintworkStatus::orderBy('order')->get();
-        $woodRotStatuses   = WoodRotStatus::orderBy('order')->get();
+        $woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
         // Floor insulation
         /** @var Element $floorInsulation */
         $floorInsulation = Element::where('short', 'floor-insulation')->first();
-        $crawlspace      = Element::where('short', 'crawlspace')->first();
+        $crawlspace = Element::where('short', 'crawlspace')->first();
 
         // Roof insulation
-        $roofInsulation   = Element::where('short', 'roof-insulation')->first();
-        $roofTypes        = RoofType::all();
+        $roofInsulation = Element::where('short', 'roof-insulation')->first();
+        $roofTypes = RoofType::all();
         $roofTileStatuses = RoofTileStatus::orderBy('order')->get();
         // Same as RoofInsulationController->getMeasureApplicationsAdviceMap()
         $roofInsulationMeasureApplications = [
@@ -785,16 +780,15 @@ class ToolHelper
         // High efficiency boiler
         // NOTE: building element hr-boiler tells us if it's there
         $hrBoiler = Service::where('short', 'hr-boiler')->first();
-        $boiler   = Service::where('short', 'boiler')->first();
+        $boiler = Service::where('short', 'boiler')->first();
 
         // Solar panels
-        $solarPanels                 = Service::where('short', 'total-sun-panels')->first();
+        $solarPanels = Service::where('short', 'total-sun-panels')->first();
         $solarPanelsOptionsPeakPower = ['' => '-'] + SolarPanelsKeyFigures::getPeakPowers();
-        $solarPanelsOptionsAngle     = ['' => '-'] + SolarPanelsKeyFigures::getAngles();
+        $solarPanelsOptionsAngle = ['' => '-'] + SolarPanelsKeyFigures::getAngles();
 
-        $heater             = Service::where('short', 'sun-boiler')->first();
+        $heater = Service::where('short', 'sun-boiler')->first();
         $heaterOptionsAngle = ['' => '-'] + HeaterKeyFigures::getAngles();
-
 
         $comfortLevelsTapWater = ComfortLevelTapWater::all();
 
@@ -803,7 +797,7 @@ class ToolHelper
         $boilerTypes = $boiler->values()->orderBy('order')->get();
 
         // Common
-        $interests       = Interest::orderBy('order')->get();
+        $interests = Interest::orderBy('order')->get();
         $interestOptions = static::createOptions($interests);
 
         $structure = [
@@ -811,7 +805,7 @@ class ToolHelper
                 'building_features.building_type_id' => [
                     'label' => Translation::translate('building-detail.building-type.what-type.title'),
                     'type' => 'select',
-                    'options' => $buildingTypes
+                    'options' => $buildingTypes,
                 ],
                 'building_features.build_year' => [
                     'label' => Translation::translate('building-detail.building-type.what-building-year.title'),
@@ -861,8 +855,6 @@ class ToolHelper
                     'type'    => 'select',
                     'options' => self::createOptions($sleepingRoomsWindows->values()->orderBy('order')->get(), 'value'),
                 ],
-
-
 
                 'element.'.$wallInsulation->id                  => [
 //                    'label'   => Translation::translate('wall-insulation.intro.filled-insulation.title'),
@@ -952,7 +944,7 @@ class ToolHelper
 
                 'user_energy_habits.resident_count' => [
                     'label' => Translation::translate('general-data.data-about-usage.total-citizens.title'),
-                    'type' => 'text'
+                    'type' => 'text',
                 ],
                 // habits
                 'user_energy_habits.cook_gas'                   => [
@@ -985,19 +977,19 @@ class ToolHelper
                 'user_energy_habits.heating_first_floor' => [
                     'label' => Translation::translate('general-data.data-about-usage.situation-first-floor.title'),
                     'type' => 'select',
-                    'options' => $buildingHeatings
+                    'options' => $buildingHeatings,
                 ],
 
                 'user_energy_habits.heating_second_floor' => [
                     'label' => Translation::translate('general-data.data-about-usage.situation-second-floor.title'),
                     'type' => 'select',
-                    'options' => $buildingHeatings
+                    'options' => $buildingHeatings,
                 ],
 
                 'user_energy_habits.water_comfort_id' => [
                     'label' => Translation::translate('general-data.data-about-usage.comfortniveau-warm-tapwater.title'),
                     'type' => 'select',
-                    'options' => $comfortLevelsTapWater
+                    'options' => $comfortLevelsTapWater,
                 ],
 
                 'user_energy_habits.amount_electricity'         => [
@@ -1010,7 +1002,6 @@ class ToolHelper
                     'type'  => 'text',
                     'unit'  => Translation::translate('general.unit.cubic-meters.title'),
                 ],
-
 
                 // user interests
             ],
@@ -1049,7 +1040,7 @@ class ToolHelper
                     'label'        => Translation::translate('wall-insulation.intro.damage-paintwork.title'),
                     'type'         => 'select',
                     'options'      => static::createOptions($facadeDamages),
-                    'relationship' => 'damagedPaintwork'
+                    'relationship' => 'damagedPaintwork',
                 ],
                 'building_features.wall_joints'                 => [
                     'label'   => Translation::translate('wall-insulation.optional.flushing.title'),
@@ -1096,9 +1087,8 @@ class ToolHelper
                     'paint_wall' => [
                         'costs' => Translation::translate('wall-insulation.taking-into-account.wall-painting.title'),
                         'year'  => Translation::translate('wall-insulation.taking-into-account.wall-painting.year.title'),
-                    ]
-
-                ]
+                    ],
+                ],
             ],
 
             'insulated-glazing' => [
@@ -1131,14 +1121,13 @@ class ToolHelper
                     'label'        => Translation::translate('insulated-glazing.paint-work.paint-damage-visible.title'),
                     'type'         => 'select',
                     'options'      => static::createOptions($paintworkStatuses),
-                    'relationship' => 'paintworkStatus'
+                    'relationship' => 'paintworkStatus',
                 ],
                 'building_paintwork_statuses.wood_rot_status_id'  => [
                     'label'   => Translation::translate('insulated-glazing.paint-work.wood-rot-visible.title'),
                     'type'    => 'select',
                     'options' => static::createOptions($woodRotStatuses),
                 ],
-
             ],
 
             'floor-insulation'       => [
@@ -1180,7 +1169,7 @@ class ToolHelper
                     'savings_money'       => Translation::translate('general.costs.savings-in-euro.title'),
                     'cost_indication'     => Translation::translate('general.costs.indicative-costs.title'),
                     'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
-                ]
+                ],
             ],
 
             'roof-insulation'        => [
@@ -1194,7 +1183,7 @@ class ToolHelper
                     'label'        => Translation::translate('roof-insulation.current-situation.main-roof.title'),
                     'type'         => 'select',
                     'options'      => static::createOptions($roofTypes),
-                    'relationship' => 'roofType'
+                    'relationship' => 'roofType',
                 ],
                 // rest will be added later on
             ],
@@ -1208,7 +1197,7 @@ class ToolHelper
                 ],
                 'user_energy_habits.resident_count' => [
                     'label' => Translation::translate('general-data.data-about-usage.total-citizens.title'),
-                    'type' => 'text'
+                    'type' => 'text',
                 ],
                 'user_energy_habits.amount_gas'                 => [
                     'label' => Translation::translate('general-data.data-about-usage.gas-usage-past-year.title'),
@@ -1233,8 +1222,8 @@ class ToolHelper
                     'cost_indication'     => Translation::translate('general.costs.indicative-costs.title'),
                     'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
 
-                    'replace_year' => Translation::translate('high-efficiency-boiler.indication-for-costs.indicative-replacement.title')
-                ]
+                    'replace_year' => Translation::translate('high-efficiency-boiler.indication-for-costs.indicative-replacement.title'),
+                ],
             ],
 
             'solar-panels' => [
@@ -1263,7 +1252,7 @@ class ToolHelper
                     'label'        => Translation::translate('solar-panels.pv-panel-orientation-id.title'),
                     'type'         => 'select',
                     'options'      => static::createOptions(PvPanelOrientation::orderBy('order')->get()),
-                    'relationship' => 'orientation'
+                    'relationship' => 'orientation',
                 ],
                 'building_pv_panels.angle'                   => [
                     'label'   => Translation::translate('solar-panels.angle.title'),
@@ -1292,13 +1281,13 @@ class ToolHelper
                 'user_energy_habits.water_comfort_id' => [
                     'label' => Translation::translate('heater.comfort-level-warm-tap-water.title'),
                     'type' => 'select',
-                    'options' => $comfortLevelsTapWater
+                    'options' => $comfortLevelsTapWater,
                 ],
                 'building_heaters.pv_panel_orientation_id' => [
                     'label'        => Translation::translate('heater.pv-panel-orientation-id.title'),
                     'type'         => 'select',
                     'options'      => static::createOptions(PvPanelOrientation::orderBy('order')->get()),
-                    'relationship' => 'orientation'
+                    'relationship' => 'orientation',
                 ],
                 'building_heaters.angle'                   => [
                     'label'   => Translation::translate('heater.angle.title'),
@@ -1323,7 +1312,7 @@ class ToolHelper
                     'savings_money'       => Translation::translate('general.costs.savings-in-euro.title'),
                     'cost_indication'     => Translation::translate('general.costs.indicative-costs.title'),
                     'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
-                ]
+                ],
             ],
         ];
 
@@ -1347,7 +1336,7 @@ class ToolHelper
         foreach ($igShorts as $igShort) {
             $measureApplication = MeasureApplication::where('short', $igShort)->first();
             if ($measureApplication instanceof MeasureApplication) {
-                $structure['insulated-glazing']['user_interests.'.$measureApplication->id]                                      = [
+                $structure['insulated-glazing']['user_interests.'.$measureApplication->id] = [
                     //'label' => 'Interest in '.$measureApplication->measure_name,
                     'label'   => Translation::translate('general.change-interested.title',
                         ['item' => $measureApplication->measure_name]),
@@ -1358,26 +1347,26 @@ class ToolHelper
                     'label'        => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.'.$measureApplication->short.'.current-glass.title'),
                     'type'         => 'select',
                     'options'      => static::createOptions($insulatedGlazings),
-                    'relationship' => 'insulatedGlazing'
+                    'relationship' => 'insulatedGlazing',
                 ];
-                $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.building_heating_id']  = [
+                $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.building_heating_id'] = [
                     'label'        => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.'.$measureApplication->short.'.rooms-heated.title'),
                     'type'         => 'select',
                     'options'      => static::createOptions($heatings),
-                    'relationship' => 'buildingHeating'
+                    'relationship' => 'buildingHeating',
                 ];
-                $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.m2']                   = [
+                $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.m2'] = [
                     'label' => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.'.$measureApplication->short.'.m2.title'),
                     'type'  => 'text',
                     'unit'  => Translation::translate('general.unit.square-meters.title'),
                 ];
-                $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.windows']              = [
+                $structure['insulated-glazing']['building_insulated_glazings.'.$measureApplication->id.'.windows'] = [
                     'label' => $measureApplication->measure_name.': '.Translation::translate('insulated-glazing.'.$measureApplication->short.'.window-replace.title'),
                     'type'  => 'text',
                 ];
             }
         }
-        foreach($insulatedGlazingStuffSoFar as $igK => $igV){
+        foreach ($insulatedGlazingStuffSoFar as $igK => $igV) {
             $structure['insulated-glazing'][$igK] = $igV;
         }
 
@@ -1392,37 +1381,36 @@ class ToolHelper
             'paintwork' => [
                 'costs' => Translation::translate('insulated-glazing.taking-into-account.paintwork.title'),
                 'year'  => Translation::translate('insulated-glazing.taking-into-account.paintwork_year.title'),
-            ]
+            ],
         ];
-
 
         // Roof insulation
         // have to refactor this
         // pitched = 1
         // flat = 2
-        $pitched        = new \stdClass();
-        $pitched->id    = 1;
+        $pitched = new \stdClass();
+        $pitched->id = 1;
         $pitched->short = 'pitched';
-        $flat           = new \stdClass();
-        $flat->id       = 2;
-        $flat->short    = 'flat';
-        $roofTypes1     = collect([$pitched, $flat]);
+        $flat = new \stdClass();
+        $flat->id = 2;
+        $flat->short = 'flat';
+        $roofTypes1 = collect([$pitched, $flat]);
 
         // $roofTypes1 should become $roofTypes->where('short', '!=', 'none');
 
         foreach ($roofTypes1 as $roofType) {
-            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.element_value_id']         = [
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.element_value_id'] = [
                 'label'        => Translation::translate('roof-insulation.current-situation.is-'.$roofType->short.'-roof-insulated.title'),
                 'type'         => 'select',
                 'options'      => static::createOptions($roofInsulation->values, 'value'),
-                'relationship' => 'elementValue'
+                'relationship' => 'elementValue',
             ];
-            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.roof_surface']             = [
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.roof_surface'] = [
                 'label' => Translation::translate('roof-insulation.current-situation.'.$roofType->short.'-roof-surface.title'),
                 'type'  => 'text',
                 'unit'  => Translation::translate('general.unit.square-meters.title'),
             ];
-            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.insulation_roof_surface']  = [
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.insulation_roof_surface'] = [
                 'label' => Translation::translate('roof-insulation.current-situation.insulation-'.$roofType->short.'-roof-surface.title'),
                 'type'  => 'text',
                 'unit'  => Translation::translate('general.unit.square-meters.title'),
@@ -1451,17 +1439,16 @@ class ToolHelper
                 'type'         => 'select',
                 'options'      => static::createOptions(collect($roofInsulationMeasureApplications[$roofType->short]),
                     'measure_name'),
-                'relationship' => 'measureApplication'
+                'relationship' => 'measureApplication',
             ];
-            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.building_heating_id']          = [
+            $structure['roof-insulation']['building_roof_types.'.$roofType->id.'.building_heating_id'] = [
                 'label'        => Translation::translate('roof-insulation.'.$roofType->short.'-roof.situation.title'),
                 'type'         => 'select',
                 'options'      => static::createOptions($heatings),
-                'relationship' => 'heating'
+                'relationship' => 'heating',
             ];
 
             if ($roofType->short == $roofTypes1->last()->short) {
-
                 $structure['roof-insulation']['calculations'] = [
                     'flat'    => [
                         'savings_gas'         => Translation::translate('roof-insulation.flat.costs.gas.title'),
@@ -1472,8 +1459,8 @@ class ToolHelper
 
                         'replace' => [
                             'costs' => Translation::translate('roof-insulation.flat.indicative-costs-replacement.title'),
-                            'year' => Translation::translate('roof-insulation.flat.indicative-replacement.year.title')
-                        ]
+                            'year' => Translation::translate('roof-insulation.flat.indicative-replacement.year.title'),
+                        ],
                     ],
                     'pitched' => [
                         'savings_gas'         => Translation::translate('roof-insulation.pitched.costs.gas.title'),
@@ -1482,14 +1469,11 @@ class ToolHelper
                         'cost_indication'     => Translation::translate('general.costs.indicative-costs.title'),
                         'interest_comparable' => Translation::translate('general.costs.comparable-rent.title'),
 
-
                         'replace' => [
                             'costs' => Translation::translate('roof-insulation.pitched.indicative-costs-replacement.title'),
-                            'year' => Translation::translate('roof-insulation.pitched.indicative-replacement.year.title')
-                        ]
-
-
-                    ]
+                            'year' => Translation::translate('roof-insulation.pitched.indicative-replacement.year.title'),
+                        ],
+                    ],
                 ];
             }
         }

@@ -43,7 +43,6 @@ class PrivateMessageReceiverListener
             // check the group participant is the owner of the building and the send message is private
             $isMessagePrivateAndGroupParticipantOwnerFromBuilding = $buildingFromOwner->user_id == $groupParticipant->id && PrivateMessage::isPrivate($privateMessage);
 
-
             // check if the current group participant id added to the buildingCoachStatus
             // if so the $inputSourceId will be the coach input source id
             // if not, the group participant is a resident.

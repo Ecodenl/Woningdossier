@@ -2,7 +2,6 @@
 
 namespace App\Http\ViewComposers;
 
-use App\Models\InputSource;
 use Illuminate\View\View;
 
 class CooperationComposer

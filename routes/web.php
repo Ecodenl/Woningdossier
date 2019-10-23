@@ -78,6 +78,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
             });
 
+            Route::view('test', 'test');
             Route::get('home', 'HomeController@index')->name('home')->middleware('deny-if-filling-for-other-building');
 
             Route::resource('privacy', 'PrivacyController')->only('index');
@@ -160,6 +161,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
                     Route::post('', 'QuestionnaireController@store')->name('store');
                 });
+
+                Route::resource('{step}/{subStep}', 'GeneralDataController', ['only' => ['index', 'store']]);
 
                 Route::group(['middleware' => 'filled-step:building-detail'], function () {
                     Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);

@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-md-12 text-center">
                 @include('cooperation.tool.includes.top-alerts')
-                @include('cooperation.tool.progress')
+{{--                @include('cooperation.tool.progress')--}}
             </div>
         </div>
 

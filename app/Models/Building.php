@@ -220,14 +220,6 @@ class Building extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function progress()
-    {
-        return $this->hasMany(CompletedStep::class);
-    }
-
-    /**
      * @return ExampleBuilding|null
      */
     public function getExampleBuilding()

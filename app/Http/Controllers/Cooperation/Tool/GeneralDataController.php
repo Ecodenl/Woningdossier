@@ -17,6 +17,7 @@ use App\Models\BuildingService;
 use App\Models\BuildingType;
 use App\Models\CentralHeatingAge;
 use App\Models\ComfortLevelTapWater;
+use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\EnergyLabel;
@@ -59,8 +60,10 @@ class GeneralDataController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Cooperation $cooperation, Step $step, Step $subStep)
     {
+//        dd($step, $subStep);
+
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 

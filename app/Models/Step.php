@@ -38,6 +38,10 @@ class Step extends Model
     use TranslatableTrait;
 
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
     /**
      * Return the children or so called "sub steps" of a step
      *
@@ -46,6 +50,45 @@ class Step extends Model
     public function subSteps()
     {
         return $this->hasMany(Step::class, 'parent_id', 'id');
+    }
+
+    /**
+     * Check whether a step has substeps
+     *
+     * @return bool
+     */
+    public function hasSubSteps()
+    {
+        return $this->subSteps()->exists();
+    }
+
+    /**
+     * Method to scope the active steps in a ordered order.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeActiveOrderedSteps(Builder $query)
+    {
+        return $query->where('steps.short', '!=', 'building-detail')
+            ->orderBy('cooperation_steps.order')
+            ->where('cooperation_steps.is_active', '1');
+    }
+
+    public function scopeSubStepsForStep(Builder $query, Step $step)
+    {
+        return $query->where('parent_id', $step->id);
+    }
+
+    /**
+     * Method to leave out the sub steps
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeWithoutSubSteps(Builder $query)
+    {
+        return $query->where('parent_id', null);
     }
 
     /**

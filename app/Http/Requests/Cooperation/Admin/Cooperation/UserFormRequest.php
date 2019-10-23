@@ -4,11 +4,12 @@ namespace App\Http\Requests\Cooperation\Admin\Cooperation;
 
 use App\Rules\AlphaSpace;
 use App\Rules\HouseNumber;
+use App\Rules\HouseNumberExtension;
 use App\Rules\PostalCode;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UserRequest extends FormRequest
+class UserFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,17 +29,16 @@ class UserRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name' => ['required', new AlphaSpace()],
-            'last_name' => ['required', new AlphaSpace()],
-            'password' => 'nullable|min:6',
             'email' => 'required|email',
-            'roles' => 'required|exists:roles,id',
-            'coach_id' => ['nullable', Rule::exists('users', 'id')],
-
-            'postal_code' => [new PostalCode()],
-            'number' => ['numeric', new HouseNumber()],
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'postal_code' => ['required', new PostalCode('nl')],
+            'number' => ['required', new HouseNumber('nl')],
+            'house_number_extension' => [new HouseNumberExtension('nl')],
             'street' => 'required|string',
             'city' => 'required|string',
+            'roles' => 'required|exists:roles,id',
+            'coach_id' => ['nullable', Rule::exists('users', 'id')],
         ];
     }
 }

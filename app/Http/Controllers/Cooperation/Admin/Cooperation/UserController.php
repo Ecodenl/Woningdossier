@@ -7,7 +7,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\PicoHelper;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Cooperation\Admin\Cooperation\UserRequest;
+use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;
 use App\Mail\UserAssociatedWithCooperation;
 use App\Mail\UserCreatedEmail;
 use App\Models\Account;
@@ -55,7 +55,7 @@ class UserController extends Controller
         return view('cooperation.admin.cooperation.users.create', compact('roles', 'coaches'));
     }
 
-    public function store(Cooperation $cooperation, UserRequest $request)
+    public function store(UserFormRequest $request, Cooperation $cooperation)
     {
         $firstName = $request->get('first_name', '');
         $lastName = $request->get('last_name', '');

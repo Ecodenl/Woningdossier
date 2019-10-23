@@ -5,7 +5,6 @@
         // we get the building-detail and general-data
         $generalDataStep = $steps->where('slug', 'general-data')->first();
 
-        $routeIsCurrentRoute = Route::currentRouteName() == 'cooperation.tool.' . $step->slug . '.index';
         $inputSource = \App\Helpers\HoomdossierSession::getInputSource(true);
     ?>
 
@@ -14,7 +13,10 @@
         to make it look like it is 1 step.
     --}}
     @foreach($steps as $step)
-        <?php $userDoesNotHaveInterestInStep = !\App\Helpers\StepHelper::hasInterestInStep($building, $inputSource, $step) ?>
+        <?php
+            $userDoesNotHaveInterestInStep = !\App\Helpers\StepHelper::hasInterestInStep($building, $inputSource, $step);
+            $routeIsCurrentRoute = Route::is('cooperation.tool.' . $step->slug . '.index');
+        ?>
         {{-- There is no interest for the general-data so we skip that --}}
         <li class="list-inline-item @if($routeIsCurrentRoute) active @elseif($building->hasCompleted($step)) done @endif @if($step->short != 'general-data' && !$routeIsCurrentRoute && $userDoesNotHaveInterestInStep) not-available @endif">
             <a href="{{ route('cooperation.tool.' . $step->slug . '.index', ['cooperation' => $cooperation]) }}">
@@ -27,5 +29,4 @@
             <img src="{{ asset('images/icons/my-plan.png') }}" class="img-circle" />
         </a>
     </li>
-
 </ul>

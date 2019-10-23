@@ -162,7 +162,23 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::post('', 'QuestionnaireController@store')->name('store');
                 });
 
-                Route::resource('{step}/{subStep}', 'GeneralDataController', ['only' => ['index', 'store']]);
+                Route::group(['namespace' => 'GeneralData', 'as' => 'general-data.', 'prefix' => 'general-data'], function () {
+
+                    Route::group(['prefix' => 'gebouw-kenmerken', 'as' => 'building-characteristics.'], function () {
+                        Route::get('', 'BuildingCharacteristicsController@index')->name('index');
+                    });
+
+                    Route::group(['prefix' => 'huidige-staat', 'as' => 'current-state.'], function () {
+                        Route::get('', 'BuildingCharacteristicsController@index')->name('index');
+                    });
+
+                    Route::group(['prefix' => 'verbruik', 'as' => 'usage.'], function () {
+                        Route::get('', 'BuildingCharacteristicsController@index')->name('index');
+                    });
+                    Route::group(['prefix' => 'interesse', 'as' => 'interest.'], function () {
+                        Route::get('', 'BuildingCharacteristicsController@index')->name('index');
+                    });
+                });
 
                 Route::group(['middleware' => 'filled-step:building-detail'], function () {
                     Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);

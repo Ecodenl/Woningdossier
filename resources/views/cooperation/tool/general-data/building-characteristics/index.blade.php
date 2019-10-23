@@ -1,23 +1,13 @@
 @extends('cooperation.tool.layout')
 
 @section('content')
-    <?php
-        /** @var \App\Models\Cooperation $cooperation */
-        $steps = $cooperation->steps()->activeOrderedSteps()->withoutSubSteps()->get();
-
-        foreach ($steps as $step) {
-//        echo $step->name;
-            $subSteps = $cooperation->getSubStepsForStep($step);
-        }
-
-        $thingThatShouldComeFromUrl = 'building-characteristics';
-    ?>
 
     <div class="container">
 
         <div class="row">
             <div class="col-md-12">
                 <div class="text-center">
+                    @include('cooperation.tool.includes.top-alerts')
                     @include('cooperation.tool.parts.progress')
                 </div>
             </div>
@@ -34,8 +24,8 @@
                     </li>
                     @if($currentStep->hasSubSteps())
                         @foreach($cooperation->getSubStepsForStep($currentStep) as $subStep)
-                            <li @if($subStep->slug == $thingThatShouldComeFromUrl)class="active"@endif>
-                                <a href="# {{--urlnaasubstep--}}" >{{$subStep->name}}</a>
+                            <li @if($subStep->short == $currentSubStep->short)class="active"@endif>
+                                <a href="{{route("cooperation.tool.{$currentStep->short}.{$subStep->short}.index")}}" >{{$subStep->name}}</a>
                             </li>
                         @endforeach
                     @endif

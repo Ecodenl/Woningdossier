@@ -27,6 +27,11 @@ class ToolComposer
         $excludedViews = ['cooperation.tool.components.alert'];
 
         if (! in_array($view->getName(), $excludedViews)) {
+            $toolUrl = explode('/', request()->getRequestUri());
+            $view->with('currentStep', Step::where('slug', $toolUrl[2])->first());
+            $view->with('currentSubStep', Step::where('slug', $toolUrl[3])->first());
+
+
             $view->with('commentsByStep', StepHelper::getAllCommentsByStep(Hoomdossier::user()));
             $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
             $view->with('myUnreadMessagesCount', PrivateMessageView::getTotalUnreadMessagesForCurrentRole());
@@ -34,7 +39,7 @@ class ToolComposer
 
             $view->with('steps', $cooperation->steps()->activeOrderedSteps()->withoutSubSteps()->get());
             $view->with('interests', Interest::orderBy('order')->get());
-            $view->with('currentStep', Step::where('slug', explode('/', request()->getRequestUri())[2])->first());
+
             $currentBuilding = HoomdossierSession::getBuilding(true);
             if ($currentBuilding instanceof Building) {
                 $view->with('buildingOwner', $currentBuilding->user);

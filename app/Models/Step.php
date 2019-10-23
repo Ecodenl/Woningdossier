@@ -37,6 +37,10 @@ class Step extends Model
 
     use TranslatableTrait;
 
+    public static function findByShort($short)
+    {
+        return static::where('short', $short)->first();
+    }
 
     public function getRouteKeyName()
     {

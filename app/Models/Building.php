@@ -34,13 +34,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[]       $buildingPermissions
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[]          $buildingServices
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingStatus[]           $buildingStatuses
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[]             $completedSteps
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[]             $completedSteps
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
  * @property \App\Models\BuildingPaintworkStatus                                             $currentPaintworkStatus
  * @property \App\Models\ExampleBuilding|null                                                $exampleBuilding
  * @property \App\Models\BuildingHeater                                                      $heater
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[]           $privateMessages
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[]             $progress
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[]             $progress
  * @property \App\Models\BuildingPvPanel                                                     $pvPanels
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[]          $questionAnswers
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[]         $roofTypes
@@ -128,7 +128,7 @@ class Building extends Model
      */
     public function completedSteps()
     {
-        return $this->hasMany(UserProgress::class);
+        return $this->hasMany(CompletedStep::class);
     }
 
     /**
@@ -224,7 +224,7 @@ class Building extends Model
      */
     public function progress()
     {
-        return $this->hasMany(UserProgress::class);
+        return $this->hasMany(CompletedStep::class);
     }
 
     /**

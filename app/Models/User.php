@@ -178,13 +178,6 @@ class User extends Model implements AuthorizableContract
         return $this->hasMany(UserActionPlanAdviceComments::class);
     }
 
-    /*
-    public function progress()
-    {
-        return $this->hasMany(UserProgress::class);
-    }
-    */
-
     public function motivations()
     {
         return $this->hasMany(UserMotivation::class);
@@ -256,7 +249,7 @@ class User extends Model implements AuthorizableContract
     {
         \Log::debug(__METHOD__.' is still being used, this should not be');
 
-        return UserProgress::firstOrCreate([
+        return CompletedStep::firstOrCreate([
             'step_id' => $step->id,
             'input_source_id' => HoomdossierSession::getInputSource(),
             'building_id' => HoomdossierSession::getBuilding(),

@@ -38,9 +38,25 @@ class Step extends Model
     use TranslatableTrait;
 
 
-    public function children()
+    /**
+     * Return the children or so called "sub steps" of a step
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function subSteps()
     {
         return $this->hasMany(Step::class, 'parent_id', 'id');
+    }
+
+    /**
+     * Check whether a step is a sub step
+     *
+     * @return bool
+     */
+    public function isSubStep(): bool
+    {
+        // when the parent id is null, its a parent else its a sub step / child.
+        return !is_null($this->parent_id);
     }
 
     public function questionnaires()

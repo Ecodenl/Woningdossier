@@ -28,7 +28,7 @@ class UserService
         // remove the notification settings
         $user->notificationSettings()->delete();
         // remove the progress from a user
-        $building->progress()->delete();
+        $building->completedSteps()->delete();
         // first detach the roles from the user
         $user->roles()->detach($user->roles);
         // delete the private messages from the cooperation

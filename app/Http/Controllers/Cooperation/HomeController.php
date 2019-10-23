@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Cooperation;
 
 use App\Http\Controllers\Controller;
-use App\Models\Step;
 
 class HomeController extends Controller
 {

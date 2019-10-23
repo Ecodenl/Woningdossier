@@ -15,7 +15,7 @@ use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdviceComments;
 use App\Models\UserEnergyHabit;
-use App\Models\UserProgress;
+use App\Models\CompletedStep;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 
@@ -258,11 +258,11 @@ class StepHelper
      * @param Building    $building
      * @param InputSource $inputSource
      *
-     * @return Model|UserProgress
+     * @return Model|CompletedStep
      */
     public static function complete(Step $step, Building $building, InputSource $inputSource)
     {
-        return UserProgress::firstOrCreate([
+        return CompletedStep::firstOrCreate([
             'step_id' => $step->id,
             //'input_source_id' => HoomdossierSession::getInputSource(),
             'input_source_id' => $inputSource->id,

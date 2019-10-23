@@ -39,7 +39,7 @@
             ],
         ];
 
-        $building = \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding());
+        $building = \App\Helpers\HoomdossierSession::getBuilding(true);
 
         // we get the building-detail and general-data
         $buildingDetailStep = $steps->where('slug', 'building-detail')->first();

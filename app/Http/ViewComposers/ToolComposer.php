@@ -31,9 +31,10 @@ class ToolComposer
             $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
             $view->with('myUnreadMessagesCount', PrivateMessageView::getTotalUnreadMessagesForCurrentRole());
 
-            $view->with('steps', $cooperation->getActiveOrderedSteps());
+
+            $view->with('steps', $cooperation->steps()->activeOrderedSteps()->withoutSubSteps()->get());
             $view->with('interests', Interest::orderBy('order')->get());
-            $view->with('currentStep', Step::where('slug', str_replace(['tool', '/'], '', request()->getRequestUri()))->first());
+            $view->with('currentStep', Step::where('slug', explode('/', request()->getRequestUri())[2])->first());
             $currentBuilding = HoomdossierSession::getBuilding(true);
             if ($currentBuilding instanceof Building) {
                 $view->with('buildingOwner', $currentBuilding->user);

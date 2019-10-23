@@ -64,6 +64,7 @@ class GeneralDataController extends Controller
     {
 //        dd($step, $subStep);
 
+        return view('cooperation.tool.general-data.building-characteristics.index');
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 

@@ -2,47 +2,54 @@
 
 @section('content')
     <?php
-    /** @var \App\Models\Cooperation $cooperation */
-    $steps = $cooperation->steps()->activeOrderedSteps()->withoutSubSteps()->get();
+        /** @var \App\Models\Cooperation $cooperation */
+        $steps = $cooperation->steps()->activeOrderedSteps()->withoutSubSteps()->get();
 
-    foreach ($steps as $step) {
+        foreach ($steps as $step) {
 //        echo $step->name;
-        $subSteps = $cooperation->getSubStepsForStep($step);
-    }
+            $subSteps = $cooperation->getSubStepsForStep($step);
+        }
 
-    $thingThatShouldComeFromUrl = 'building-characteristics';
-    $currentStep = \App\Models\Step::find(1);
+        $thingThatShouldComeFromUrl = 'building-characteristics';
     ?>
 
     <div class="container">
 
+        <div class="row">
+            <div class="col-md-12">
+                <div class="text-center">
+                    @include('cooperation.tool.parts.progress')
+                </div>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-md-12">
                 {{--
                    We check if the current step is the building detail
                 --}}
-
-                @if($currentStep->hasSubSteps())
-                    <ul class="nav nav-tabs">
-                        @foreach($cooperation->getSubStepsForStep($step) as $subStep)
-                            <li @if($subSteps->slug == $thingThatShouldComeFromUrl)class="active"@endif>
-                                <a href="# {{--urlnaasubstep--}}" >@lang('woningdossier.cooperation.step.building-detail')</a>
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#main-tab" data-toggle="tab">{{$currentStep->name}}</a>
+                    </li>
+                    @if($currentStep->hasSubSteps())
+                        @foreach($cooperation->getSubStepsForStep($currentStep) as $subStep)
+                            <li @if($subStep->slug == $thingThatShouldComeFromUrl)class="active"@endif>
+                                <a href="# {{--urlnaasubstep--}}" >{{$subStep->name}}</a>
                             </li>
                         @endforeach
-                    </ul>
-                @endif
-                @if(isset($currentStep) && $currentStep->hasQuestionnaires())
-                    <ul class="nav nav-tabs">
-                        <li class="active">
-                            <a href="#main-tab" data-toggle="tab">{{$currentStep->name}}</a></li>
+                    @endif
+
+                    @if(isset($currentStep) && $currentStep->hasQuestionnaires())
                         @foreach($currentStep->questionnaires as $questionnaire)
                             @if($questionnaire->isActive())
-                                <li><a href="#questionnaire-{{$questionnaire->id}}" data-toggle="tab">{{$questionnaire->name}}</a></li>
+                                <li>
+                                    <a href="#questionnaire-{{$questionnaire->id}}" data-toggle="tab">{{$questionnaire->name}}</a>
+                                </li>
                             @endif
                         @endforeach
-                    </ul>
-                @endif
+                    @endif
+                </ul>
 
                 <div class="tab-content">
                     @include('cooperation.layouts.custom-questionnaire')

@@ -41,4 +41,15 @@ class UserFormRequest extends FormRequest
             'coach_id' => ['nullable', Rule::exists('users', 'id')],
         ];
     }
+
+    /**
+     * so fields can be modified or added before validation.
+     */
+    public function prepareForValidation()
+    {
+        // Add new data field before it gets sent to the validator
+        $this->merge([
+            'house_number_extension' => strtolower(preg_replace("/[\s-]+/", '', $this->get('house_number_extension', ''))),
+        ]);
+    }
 }

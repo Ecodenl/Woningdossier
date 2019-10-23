@@ -10,12 +10,14 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
+use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Observer\BuildingObserver;
 use App\Observer\CooperationObserver;
 use App\Observers\PrivateMessageObserver;
 use App\Observers\PrivateMessageViewObserver;
+use App\Observers\StepObserver;
 use App\Observers\UserActionPlanAdviceObserver;
 use App\Observers\UserObserver;
 use Illuminate\Auth\SessionGuard;
@@ -32,6 +34,7 @@ class WoningdossierServiceProvider extends ServiceProvider
     public function boot()
     {
         Cooperation::observe(CooperationObserver::class);
+        Step::observe(StepObserver::class);
         PrivateMessage::observe(PrivateMessageObserver::class);
         UserActionPlanAdvice::observe(UserActionPlanAdviceObserver::class);
         PrivateMessageView::observe(PrivateMessageViewObserver::class);

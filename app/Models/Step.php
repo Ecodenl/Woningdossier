@@ -37,25 +37,10 @@ class Step extends Model
 
     use TranslatableTrait;
 
-    /**
-     * The "booting" method of the model.
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
 
-        static::created(function (Step $step) {
-            foreach (Cooperation::all() as $cooperation) {
-                $cooperationStepsQuery = $cooperation->steps();
-                $cooperationStepsQuery->attach($step->id);
-                $cooperationStep = $cooperationStepsQuery->find($step->id);
-                $cooperationStepsQuery->updateExistingPivot($cooperationStep->id, ['order' => $step->order]);
-            }
-        });
-        // for now, we keep it in kees.
-//        static::addGlobalScope(new CooperationScope());
+    public function children()
+    {
+        return $this->hasMany(Step::class, 'parent_id', 'id');
     }
 
     public function questionnaires()

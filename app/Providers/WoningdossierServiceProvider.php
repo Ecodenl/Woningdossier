@@ -41,7 +41,7 @@ class WoningdossierServiceProvider extends ServiceProvider
         Building::observe(BuildingObserver::class);
         User::observe(UserObserver::class);
 
-        \View::creator('cooperation.tool.*', ToolComposer::class);
+        \View::creator('cooperation.tool.layout', ToolComposer::class);
         \View::creator('*', CooperationComposer::class);
         \View::creator('cooperation.admin.*', AdminComposer::class);
         \View::creator('cooperation.my-account.*', MyAccountComposer::class);

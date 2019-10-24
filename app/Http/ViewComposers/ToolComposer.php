@@ -11,6 +11,7 @@ use App\Models\Interest;
 use App\Models\PrivateMessageView;
 use App\Models\Step;
 use App\Models\ToolSetting;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class ToolComposer
@@ -28,11 +29,18 @@ class ToolComposer
 
         if (! in_array($view->getName(), $excludedViews)) {
             $toolUrl = explode('/', request()->getRequestUri());
+            $currentSubStep = isset($toolUrl[3]) ? Step::where('slug', $toolUrl[3])->first() : null;
+            $currentBuilding = HoomdossierSession::getBuilding(true);
+            $user = Hoomdossier::user();
+
+            $view->with('user', $user);
+
             $view->with('currentStep', Step::where('slug', $toolUrl[2])->first());
-            $view->with('currentSubStep', Step::where('slug', $toolUrl[3])->first());
+            $view->with('currentSubStep', $currentSubStep);
 
+            Log::debug(__METHOD__);
 
-            $view->with('commentsByStep', StepHelper::getAllCommentsByStep(Hoomdossier::user()));
+            $view->with('commentsByStep', StepHelper::getAllCommentsByStep($user));
             $view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
             $view->with('myUnreadMessagesCount', PrivateMessageView::getTotalUnreadMessagesForCurrentRole());
 
@@ -40,8 +48,9 @@ class ToolComposer
             $view->with('steps', $cooperation->steps()->activeOrderedSteps()->withoutSubSteps()->get());
             $view->with('interests', Interest::orderBy('order')->get());
 
-            $currentBuilding = HoomdossierSession::getBuilding(true);
+
             if ($currentBuilding instanceof Building) {
+                $view->with('building', $currentBuilding);
                 $view->with('buildingOwner', $currentBuilding->user);
             }
 

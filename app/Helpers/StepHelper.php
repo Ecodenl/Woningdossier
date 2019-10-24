@@ -18,6 +18,7 @@ use App\Models\UserEnergyHabit;
 use App\Models\CompletedStep;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\Log;
 
 class StepHelper
 {
@@ -84,43 +85,47 @@ class StepHelper
      */
     public static function getAllCommentsByStep(User $user, $withEmptyComments = false): array
     {
+        // todo: one request = 20 times this method will be called.
+        // aka 500 queries.
+        Log::debug(__METHOD__.''.__CLASS__);
         $building = $user->building;
 
         $allInputForMe = collect();
         $commentsByStep = [];
 
+
         /* General-data */
-        $userEnergyHabitForMe = UserEnergyHabit::forMe($user)->get();
+        $userEnergyHabitForMe = UserEnergyHabit::forMe($user)->with('inputSource')->get();
         $allInputForMe->put('general-data', $userEnergyHabitForMe);
 
         /* wall insulation */
-        $buildingFeaturesForMe = BuildingFeature::forMe($user)->get();
+        $buildingFeaturesForMe = BuildingFeature::forMe($user)->with('inputSource')->get();
         $allInputForMe->put('wall-insulation', $buildingFeaturesForMe);
 
         /* floor insualtion */
         $crawlspace = Element::where('short', 'crawlspace')->first();
-        $buildingElementsForMe = BuildingElement::forMe($user)->get();
+        $buildingElementsForMe = BuildingElement::forMe($user)->with('inputSource')->get();
         $allInputForMe->put('floor-insulation', $buildingElementsForMe->where('element_id', $crawlspace->id));
 
         /* beglazing */
-        $insulatedGlazingsForMe = $building->currentInsulatedGlazing()->forMe($user)->get();
+        $insulatedGlazingsForMe = $building->currentInsulatedGlazing()->forMe($user)->with('inputSource')->get();
         $allInputForMe->put('insulated-glazing', $insulatedGlazingsForMe);
 
         /* roof */
-        $currentRoofTypesForMe = $building->roofTypes()->with('roofType')->forMe($user)->get();
+        $currentRoofTypesForMe = $building->roofTypes()->with('roofType')->forMe($user)->with('inputSource')->get();
         $allInputForMe->put('roof-insulation', $currentRoofTypesForMe);
 
         /* hr boiler ketel */
         $boiler = Service::where('short', 'boiler')->first();
-        $installedBoilerForMe = $building->buildingServices()->forMe($user)->where('service_id', $boiler->id)->get();
+        $installedBoilerForMe = $building->buildingServices()->forMe($user)->where('service_id', $boiler->id)->with('inputSource')->get();
         $allInputForMe->put('high-efficiency-boiler', $installedBoilerForMe);
 
         /* sun panel*/
-        $buildingPvPanelForMe = BuildingPvPanel::forMe($user)->get();
+        $buildingPvPanelForMe = BuildingPvPanel::forMe($user)->with('inputSource')->get();
         $allInputForMe->put('solar-panels', $buildingPvPanelForMe);
 
         /* heater */
-        $buildingHeaterForMe = BuildingHeater::forMe($user)->get();
+        $buildingHeaterForMe = BuildingHeater::forMe($user)->with('inputSource')->get();
         $allInputForMe->put('heater', $buildingHeaterForMe);
 
         /* my plan */
@@ -129,6 +134,7 @@ class StepHelper
         // the attributes that can contain any sort of comments.
         $possibleAttributes = ['comment', 'additional_info', 'living_situation_extra'];
 
+//        dd($allInputForMe);
         foreach ($allInputForMe as $step => $inputForMeByInputSource) {
             foreach ($inputForMeByInputSource as $inputForMe) {
                 // check if we need the extra column to extract the comment from.

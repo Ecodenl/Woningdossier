@@ -146,6 +146,28 @@ return [
         'building_roof_types.flat.extra.bitumen_replaced_date' =>  __('roof-insulation.current-situation.bitumen-insulated.title'),
 
 
+        'insulated_glazings.*.windows' => 'Hoeveel m2 glas wilt u vervangen?',
+        'building_layers' => __('general-data.building-type.how-much-building-layers.title'),
+        'surface' => __('general-data.building-type.what-user-surface.title'),
+//        'extra.year' => 'jaartal',
+
         'build_year' => 'bouwjaar',
+
+        // wall insu
+        'wall_surface' => __('wall-insulation.optional.facade-surface.title'),
+        'insulation_wall_surface' => __('wall-insulation.optional.insulated-surface.title'),
+
+
+        'building_insulated_glazings.7.m2' => 'Hoeveel m2 glas wilt u vervangen?',
+        'building_insulated_glazings.8.m2' => 'Hoeveel m2 glas wilt u vervangen?',
+        'building_insulated_glazings.9.m2' => 'Hoeveel m2 glas wilt u vervangen?',
+        'building_insulated_glazings.10.m2' => 'Hoeveel m2 glas wilt u vervangen?',
+        'building_insulated_glazings.7.windows' => 'Het aantal te vervangen ruiten?',
+        'building_insulated_glazings.8.windows' => 'Het aantal te vervangen ruiten?',
+        'building_insulated_glazings.9.windows' => 'Het aantal te vervangen ruiten?',
+        'building_insulated_glazings.10.windows' => 'Het aantal te vervangen ruiten?',
+
+        'building_pv_panels.number' => __('solar-panels.number.title'),
+        'building_pv_panels.peak_power' => __('solar-panels.peak-power.title')
     ],
 ];

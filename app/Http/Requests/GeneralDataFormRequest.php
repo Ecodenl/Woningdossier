@@ -103,6 +103,5 @@ class GeneralDataFormRequest extends FormRequest
             'amount_gas' => 'required|numeric|min:0|max:10000',
             'motivation.*' => 'numeric',
         ];
-
     }
 }

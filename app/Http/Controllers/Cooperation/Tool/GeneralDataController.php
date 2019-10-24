@@ -152,7 +152,6 @@ class GeneralDataController extends Controller
 
     public function store(GeneralDataFormRequest $request)
     {
-        return redirect(back())->with('success', 'kapot');
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
         $buildingId = $building->id;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Observer;
+namespace App\Observers;
 
 use App\Models\Cooperation;
 

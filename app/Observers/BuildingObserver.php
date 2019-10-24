@@ -1,12 +1,17 @@
 <?php
 
-namespace App\Observer;
+namespace App\Observers;
 
 use App\Models\Building;
 use App\Scopes\GetValueScope;
 
 class BuildingObserver
 {
+
+    public function updated(Building $building){
+        \App\Helpers\Cache\Building::wipe($building->id);
+    }
+
     /**
      * Deleting event.
      *

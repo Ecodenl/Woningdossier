@@ -12,6 +12,7 @@ use App\Models\InputSource;
 use App\Models\Questionnaire;
 use App\Models\Service;
 use App\Models\Step;
+use App\Models\StepComment;
 use App\Models\User;
 use App\Models\UserActionPlanAdviceComments;
 use App\Models\UserEnergyHabit;
@@ -81,9 +82,10 @@ class StepHelper
      * @param User $user
      * @param bool $withEmptyComments
      *
+     * @note not used anymore, code can be used to remove the old stuff.
      * @return array
      */
-    public static function getAllCommentsByStep(User $user, $withEmptyComments = false): array
+    public static function getAllCommentsByStepOld(User $user, $withEmptyComments = false): array
     {
         $building = $user->building;
 
@@ -158,6 +160,24 @@ class StepHelper
                     $commentsByStep[$step][$inputForMe->inputSource->name] = $comments[0];
                 }
             }
+        }
+
+        return $commentsByStep;
+    }
+
+    public static function getAllCommentsByStep(User $user, $withEmptyComments = false): array
+    {
+        $building = $user->building;
+        $commentsByStep = [];
+
+        if (!$building instanceof Building) {
+            return [];
+        }
+
+        $stepComments = StepComment::forMe($user)->with('step', 'inputSource')->get();
+
+        foreach ($stepComments as $stepComment) {
+            $commentsByStep[$stepComment->step->short][$stepComment->inputSource->name] = $stepComment->comment;
         }
 
         return $commentsByStep;

@@ -39,4 +39,9 @@ class BuildingCharacteristicsController extends Controller
             'building', 'buildingOwner', 'buildingTypes', 'energyLabels', 'roofTypes', 'exampleBuildings', 'myBuildingFeatures'
         ));
     }
+
+    public function store(Request $request)
+    {
+
+    }
 }

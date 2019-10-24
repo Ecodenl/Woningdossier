@@ -49,7 +49,7 @@
                             </h3>
 
                             @if(!in_array(Route::currentRouteName(), ['cooperation.tool.index', 'cooperation.tool.my-plan.index']) && !\App\helpers\HoomdossierSession::isUserObserving())
-                                <button id="submit-main-form" class="pull-right btn btn-primary">
+                                <button class="pull-right btn btn-primary submit-main-form">
                                     @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index', 'cooperation.tool.heat-pump.index']))
                                         @lang('default.buttons.next-page')
                                     @else

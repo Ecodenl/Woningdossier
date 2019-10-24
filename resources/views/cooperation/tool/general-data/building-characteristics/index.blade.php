@@ -15,9 +15,9 @@
                         'userInputModel' => 'buildingType',
                         'userInputColumn' => 'building_type_id'
                     ])
-                        <select id="building_type_id" class="form-control" name="building_type_id">
+                        <select id="building_type_id" class="form-control" name="building_features[building_type_id]">
                             @foreach($buildingTypes as $buildingType)
-                                <option @if($buildingType->id == old('building_type_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'building_type_id')))
+                                <option @if($buildingType->id == old('building_features.building_type_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'building_type_id')))
                                         selected="selected"
                                         @endif value="{{ $buildingType->id }}">{{ $buildingType->name }}
                                 </option>
@@ -34,8 +34,8 @@
 
                     @component('cooperation.tool.components.input-group',
                     ['inputType' => 'input', 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'build_year'])
-                        <input id="build_year" type="text" class="form-control" name="build_year"
-                               value="{{ old('build_year', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'build_year')) }}"
+                        <input id="build_year" type="text" class="form-control" name="building_features[build_year]"
+                               value="{{ old('building_features.build_year', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'build_year')) }}"
                                required autofocus>
                     @endcomponent
 
@@ -54,9 +54,9 @@
 
                             @component('cooperation.tool.components.step-question', ['id' => 'example_building_id', 'translation' => 'general-data/building-characteristics.example-building',])
 
-                                <select id="example_building_id" class="form-control" name="example_building_id" data-ays-ignore="true"> {{-- data-ays-ignore="true" makes sure this field is not picked up by Are You Sure --}}
+                                <select id="example_building_id" class="form-control" name="buildings[example_building_id]" data-ays-ignore="true"> {{-- data-ays-ignore="true" makes sure this field is not picked up by Are You Sure --}}
                                     @foreach($exampleBuildings as $exampleBuilding)
-                                        <option @if(is_null(old('example_building_id')) && is_null($building->example_building_id) && !$building->hasCompleted($step) && $exampleBuilding->is_default)
+                                        <option @if(is_null(old('buildings.example_building_id')) && is_null($building->example_building_id) && !$building->hasCompleted($step) && $exampleBuilding->is_default)
                                                 selected="selected"
                                                 @elseif($exampleBuilding->id == old('example_building_id'))
                                                 selected="selected"
@@ -71,7 +71,7 @@
                                             // we select this empty value as default.
                                             $currentNotInExampleBuildings = !$exampleBuildings->contains('id', '=', $building->example_building_id);
                                             ?>
-                                            @if(empty(old('example_building_id', $building->example_building_id)) || $currentNotInExampleBuildings) selected="selected"@endif >{{ \App\Helpers\Translation::translate('general-data/building-characteristics.example-building.no-match.title') }}</option>
+                                            @if(empty(old('buildings.example_building_id', $building->example_building_id)) || $currentNotInExampleBuildings) selected="selected"@endif >{{ \App\Helpers\Translation::translate('general-data/building-characteristics.example-building.no-match.title') }}</option>
                                 </select>
 
                             @endcomponent
@@ -87,8 +87,8 @@
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'surface', 'needsFormat' => true])
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                                <input id="surface" type="text" class="form-control" name="surface"
-                                       value="{{ old('surface', \App\Helpers\NumberFormatter::format(\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'surface'), 1)) }}"
+                                <input id="surface" type="text" class="form-control" name="building_features[surface]"
+                                       value="{{ old('building_features.surface', \App\Helpers\NumberFormatter::format(\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'surface'), 1)) }}"
                                        required autofocus>
                             @endcomponent
 
@@ -101,8 +101,8 @@
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'building_layers', 'needsFormat' => true, 'decimals' => 0])
-                                <input id="building_layers" type="text" class="form-control" name="building_layers"
-                                       value="{{ old('building_layers', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'building_layers')) }}"
+                                <input id="building_layers" type="text" class="form-control" name="building_features[building_layers]"
+                                       value="{{ old('building_features.building_layers', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'building_layers')) }}"
                                        autofocus>
                             @endcomponent
 
@@ -117,10 +117,10 @@
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $myBuildingFeatures, 'userInputModel' => 'roofType', 'userInputColumn' => 'roof_type_id'])
-                                <select id="roof_type_id" class="form-control" name="roof_type_id">
+                                <select id="roof_type_id" class="form-control" name="building_features[roof_type_id]">
                                     @foreach($roofTypes as $roofType)
                                         <option
-                                                @if(old('roof_type_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'roof_type_id')) == $roofType->id)
+                                                @if(old('building_features.roof_type_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'roof_type_id')) == $roofType->id)
                                                 selected="selected"
                                                 @endif
                                                 value="{{ $roofType->id }}">{{ $roofType->name }}</option>
@@ -139,7 +139,7 @@
                             //  2) db value
                             //  3) default (G)
 
-                            $selected = old('energy_label_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'energy_label_id'));
+                            $selected = old('building_features.energy_label_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'energy_label_id'));
 
                             /*
                                 if (is_null($selected)){
@@ -155,7 +155,7 @@
                             ?>
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => $energyLabels, 'userInputValues' => $myBuildingFeatures, 'userInputModel' => 'energyLabel', 'userInputColumn' => 'energy_label_id'])
-                                <select id="energy_label_id" class="form-control" name="energy_label_id">
+                                <select id="energy_label_id" class="form-control" name="building_features[energy_label_id]">
                                     @foreach($energyLabels as $energyLabel)
                                         <option
                                                 @if(!is_null($selected) && $energyLabel->id == $selected)
@@ -177,16 +177,16 @@
                         <div class="input-group input-source-group">
                             @component('cooperation.tool.components.step-question', ['id' => 'monument', 'translation' => 'general-data/building-characteristics.monument', 'required' => false])
                                 <?php
-                                $checked = old('monument', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'monument'));
+                                $checked = old('building_features.monument', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'monument'));
                                 ?>
                                 <label class="radio-inline">
-                                    <input type="radio" name="monument" value="1" @if($checked === 1) checked @endif>{{\App\Helpers\Translation::translate('general.options.yes.title')}}
+                                    <input type="radio" name="building_features[monument]" value="1" @if($checked === 1) checked @endif>{{\App\Helpers\Translation::translate('general.options.yes.title')}}
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" name="monument" value="2" @if($checked === 2) checked @endif>{{\App\Helpers\Translation::translate('general.options.no.title')}}
+                                    <input type="radio" name="building_features[monument]" value="2" @if($checked === 2) checked @endif>{{\App\Helpers\Translation::translate('general.options.no.title')}}
                                 </label>
                                 <label class="radio-inline">
-                                    <input type="radio" name="monument" value="0" @if($checked === 0) checked @endif>{{\App\Helpers\Translation::translate('general.options.unknown.title')}}
+                                    <input type="radio" name="building_features[monument]" value="0" @if($checked === 0) checked @endif>{{\App\Helpers\Translation::translate('general.options.unknown.title')}}
                                 </label>
 
                             @endcomponent

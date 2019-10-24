@@ -51,7 +51,7 @@ return [
     'ipv6'                 => 'De :attribute moet een geldig IPv6 adres zijn.',
     'json'                 => 'De :attribute moet een geldige JSON string zijn.',
     'max'                  => [
-        'numeric' => 'De :attribute mag niet groter dan :max zijn.',
+        'numeric' => 'Het :attribute mag niet groter dan :max zijn.',
         'file'    => 'De :attribute mag niet groter dan :max kilobytes zijn.',
         'string'  => 'De :attribute mag niet meer dan :max karakters bevatten.',
         'array'   => 'De :attribute mag niet meer dan :max items bevatten.',
@@ -134,30 +134,35 @@ return [
         'account.current_password' => 'huidig wachtwoord',
         'account.password' => 'wachtwoord',
         'account.password_confirmation' => 'wachtwoord bevestigen',
+
+        // general data
+        'building_layers' => __('general-data.building-type.how-much-building-layers.title'),
+        'resident_count' => 'bewoners aantal',
+        'surface' => __('general-data.building-type.what-user-surface.title'),
         'thermostat_high' => 'temperatuur van de thermostaat op hoge stand',
         'thermostat_low' => 'temperatuur van de thermostaat op lage stand',
-        'building_insulated_glazings.*.m2' => 'hoeveel m2 glas wilt u vervangen?',
-        'building_insulated_glazings.*.windows' => 'aantal te vervangen ruiten',
         'window_surface' => 'totale raamopperlake van de woning',
-        'building_services.*.extra' => __('high-efficiency-boiler.boiler-placed-date.title'),
+        'build_year' => 'bouwjaar',
+        '6.extra.year' => 'jaartal',
+        '7.extra.year' => 'jaartal',
+        'service.7' => 'aantal zonnepanelen',
+
         'building_roof_types.pitched.roof_surface' => __('roof-insulation.current-situation.pitched-roof-surface.title'),
         'building_roof_types.flat.roof_surface' => __('roof-insulation.current-situation.flat-roof-surface.title'),
         'building_roof_types.flat.extra.zinc_replaced_date' =>  __('roof-insulation.current-situation.zinc-replaced.title'),
         'building_roof_types.flat.extra.bitumen_replaced_date' =>  __('roof-insulation.current-situation.bitumen-insulated.title'),
 
 
-        'insulated_glazings.*.windows' => 'Hoeveel m2 glas wilt u vervangen?',
-        'building_layers' => __('general-data.building-type.how-much-building-layers.title'),
-        'surface' => __('general-data.building-type.what-user-surface.title'),
+
 //        'extra.year' => 'jaartal',
 
-        'build_year' => 'bouwjaar',
 
-        // wall insu
+
+        // wall insulation
         'wall_surface' => __('wall-insulation.optional.facade-surface.title'),
         'insulation_wall_surface' => __('wall-insulation.optional.insulated-surface.title'),
 
-
+        // glass insulation
         'building_insulated_glazings.7.m2' => 'Hoeveel m2 glas wilt u vervangen?',
         'building_insulated_glazings.8.m2' => 'Hoeveel m2 glas wilt u vervangen?',
         'building_insulated_glazings.9.m2' => 'Hoeveel m2 glas wilt u vervangen?',

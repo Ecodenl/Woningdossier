@@ -112,12 +112,20 @@ class Hoomdossier
             'extra.date',
         ];
 
+        $falltroughColumnsThatCanContainZero = [
+            'insulation_wall_surface'
+        ];
+
         // Always check my own input source first. If that is properly filled
         // return that.
         $myInputSource = HoomdossierSession::getInputSource(true);
 
         if ($results->has($myInputSource->short)) {
             $value = $results->get($myInputSource->short);
+
+            if (in_array($column, $falltroughColumnsThatCanContainZero) && in_array($value, ['0.00', '0.0', '0', 0])) {
+                return $value;
+            }
 
             if (false !== stristr($column, 'surface') && $value <= 0) {
                 // skip this one
@@ -127,6 +135,7 @@ class Hoomdossier
                 // skip this one
                 $value = null;
             }
+
             if (! is_null($value) && '' !== $value) {
                 return $value;
             }

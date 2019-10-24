@@ -28,7 +28,7 @@ class HighEfficiencyBoilerFormRequest extends FormRequest
         $max = Carbon::now()->year;
         return [
             'habit.gas_usage' => 'required|numeric|min:0|max:10000',
-            'habit.resident_count' => 'nullable|numeric|min:1|max:10',
+            'habit.resident_count' => 'nullable|numeric|min:1|max:8',
 //            'habit.*' => 'required|numeric',
             'building_services.*.service_value_id' => 'exists:service_values,id',
             'building_services.*.extra' => 'nullable|numeric|between:1970,'.$max,

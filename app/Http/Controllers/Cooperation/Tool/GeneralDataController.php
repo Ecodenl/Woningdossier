@@ -60,11 +60,11 @@ class GeneralDataController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Cooperation $cooperation, Step $step, Step $subStep)
+    public function index(Cooperation $cooperation)
     {
 //        dd($step, $subStep);
 
-        return view('cooperation.tool.general-data.building-characteristics.index');
+//        return view('cooperation.tool.general-data.building-characteristics.index');
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 

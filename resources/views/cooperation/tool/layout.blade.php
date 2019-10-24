@@ -70,6 +70,18 @@
                         <div class="panel-body">
                             @yield('step_content', '')
                         </div>
+
+                        <div class="panel-footer bg-white">
+                            @if(!\App\helpers\HoomdossierSession::isUserObserving())
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button class="pull-right btn btn-primary submit-main-form">
+                                            @lang('default.buttons.next')
+                                        </button>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
@@ -108,9 +120,9 @@
             })
         });
 
-        $('#submit-main-form').click(function () {
+        $('.submit-main-form').click(function () {
             // submit the main form / tool tab
-            $('.panel#main-tab form button[type=submit]').click();
+            $('.panel#main-tab form').submit();
         });
 
         $('#copy-coach-input').on('submit', function (event) {

@@ -85,10 +85,11 @@ class StepHelper
      */
     public static function getAllCommentsByStep(User $user, $withEmptyComments = false): array
     {
-        // todo: one request = 20 times this method will be called.
-        // aka 500 queries.
-        Log::debug(__METHOD__.''.__CLASS__);
         $building = $user->building;
+
+        if (!$building instanceof Building) {
+            return [];
+        }
 
         $allInputForMe = collect();
         $commentsByStep = [];

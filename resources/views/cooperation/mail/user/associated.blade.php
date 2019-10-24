@@ -14,7 +14,7 @@ $cooperation_name = $userCooperation->name;
 // imploded names from all the cooperations the user is associated with
 $cooperation_names = $cooperations->pluck('name')->implode(', ');
 
-$hoomdossier_reset_link = route('cooperation.password.request', ['cooperation' => $userCooperation]);
+$hoomdossier_reset_link = route('cooperation.auth.password.request.index', ['cooperation' => $userCooperation]);
 ?>
 @lang('mail.account-associated-with-cooperation.text', compact('hoomdossier_link', 'cooperation_name', 'cooperation_link', 'cooperation_names', 'hoomdossier_reset_link'))
 <br><br>

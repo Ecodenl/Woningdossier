@@ -41,7 +41,7 @@ class WoningdossierServiceProvider extends ServiceProvider
         \View::creator('cooperation.tool.*', ToolComposer::class);
         \View::creator('*', CooperationComposer::class);
         \View::creator('cooperation.admin.*', AdminComposer::class);
-        \View::creator('cooperation.my-account.*', MyAccountComposer::class);
+        //\View::creator('cooperation.my-account.*', MyAccountComposer::class);
 
         SessionGuard::macro('account', function () {
             return auth()->user();
@@ -55,6 +55,9 @@ class WoningdossierServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->singleton(ToolComposer::class);
+        $this->app->singleton(CooperationComposer::class);
+
         $this->app->bind('Cooperation', function () {
             $cooperation = null;
             if (\Session::has('cooperation')) {

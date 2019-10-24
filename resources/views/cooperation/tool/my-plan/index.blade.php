@@ -76,7 +76,7 @@
 
     <br>
     {{--    @if($file instanceof \App\Models\FileStorage && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))--}}
-        @if(!\App\Helpers\HoomdossierSession::isUserObserving() && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
+    @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
     <div class="row" id="download-section" style="display: none;">
         <div class="col-md-12">
             <div class="panel panel-primary">
@@ -94,7 +94,7 @@
     @endif
 
     <br>
-    @if($buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']) && !\App\Helpers\HoomdossierSession::isUserObserving())
+    @if($buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
@@ -151,7 +151,10 @@
                     }
                     $('#download-section').show();
                     enableGenerateReportButton();
+                    // hide the first alert, which is the report gets downloaded alert
+                    $('.alert').first().alert('close');
                 }
+
 
                 // only poll when the file is being processed.
                 if (response.is_file_being_processed) {
@@ -197,7 +200,9 @@
                 }
             });
 
-            pollForFileProcessing();
+            if (window.location.hash !== "") {
+                pollForFileProcessing();
+            }
 
             $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function () {
 

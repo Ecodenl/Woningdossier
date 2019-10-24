@@ -4,13 +4,16 @@ namespace App\Http\Controllers\Cooperation\Tool\GeneralData;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
+use App\Models\BuildingFeature;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\EnergyLabel;
 use App\Models\ExampleBuilding;
 use App\Models\RoofType;
 use App\Models\Step;
+use App\Models\StepComment;
 use App\Models\User;
+use App\Scopes\GetValueScope;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -42,6 +45,19 @@ class BuildingCharacteristicsController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
+        $building = HoomdossierSession::getBuilding(true);
+        $inputSource = HoomdossierSession::getInputSource(true);
+
+        BuildingFeature::forMe()->updateOrCreate([
+            'building_id' => $building->id,
+            'input_source_id' => $inputSource->id,
+        ], $request->input('building_features'));
+
+        StepComment::forMe()->updateOrCreate([
+            'building_id' => $building->id,
+            'input_source_id' => $inputSource->id,
+        ], $request->input('step_comments'));
+
+        return redirect(back());
     }
 }

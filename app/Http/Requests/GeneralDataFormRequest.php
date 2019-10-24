@@ -79,7 +79,7 @@ class GeneralDataFormRequest extends FormRequest
             // start
             'example_building_id' => 'nullable|sometimes|exists:example_buildings,id',
             'surface' => 'required|numeric|min:20|max:600',
-            'building_layers' => 'numeric|digits_between:1,5',
+            'building_layers' => 'numeric|between:1,5',
             'roof_type_id' => 'required|exists:roof_types,id',
             'monument' => 'nullable|sometimes|numeric|digits_between:0,2',
 

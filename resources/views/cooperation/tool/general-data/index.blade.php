@@ -3,7 +3,6 @@
 @section('step_title', \App\Helpers\Translation::translate('general-data.title.title'))
 
 @section('step_content')
-
     <?php
         // Page wide usage
         $myBuildingFeatures = $building->buildingFeatures()->forMe()->get();
@@ -390,7 +389,7 @@
                                     @elseif($service->short == 'total-sun-panels')
                                         <?php $translationKey = 'general-data.energy-saving-measures.solar-panels.if-yes' ?>
                                     @endif
-                                    @component('cooperation.tool.components.step-question', ['id' => $service->id.'.extra', 'translation' => $translationKey, 'required' => false])
+                                    @component('cooperation.tool.components.step-question', ['id' => $service->id.'.extra.year', 'translation' => $translationKey, 'required' => false])
 
                                         <?php
                                         if (isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['year'])) {

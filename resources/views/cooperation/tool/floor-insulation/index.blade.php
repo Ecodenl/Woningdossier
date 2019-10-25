@@ -146,8 +146,7 @@
                             @endcomponent
                         </div>
                         <div class="col-sm-6">
-                            @component('cooperation.tool.components.step-question',
-                            ['id' => 'building_features.insulation_surface', 'translation' => 'floor-insulation.insulation-surface', 'required' => false])
+                            @component('cooperation.tool.components.step-question', ['id' => 'building_features.insulation_surface', 'translation' => 'floor-insulation.insulation-surface', 'required' => false])
                                 @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'insulation_surface', 'needsFormat' => true])
                                     <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>

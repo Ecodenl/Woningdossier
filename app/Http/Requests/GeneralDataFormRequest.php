@@ -79,14 +79,14 @@ class GeneralDataFormRequest extends FormRequest
             // start
             'example_building_id' => 'nullable|sometimes|exists:example_buildings,id',
             'surface' => 'required|numeric|min:20|max:600',
-            'building_layers' => 'numeric|digits_between:1,5',
+            'building_layers' => 'numeric|between:1,5',
             'roof_type_id' => 'required|exists:roof_types,id',
             'monument' => 'nullable|sometimes|numeric|digits_between:0,2',
 
             'energy_label_id' => 'required|exists:energy_labels,id',
 
             // data about usage of the building
-            'resident_count' => 'required|numeric|min:1|max:10',
+            'resident_count' => 'required|numeric|min:1|max:8',
             'cook_gas' => 'required|numeric',
             //'thermostat_high' => 'nullable|numeric|min:10|max:30|gte:thermostat_low',
             //'thermostat_low' => 'nullable|numeric|min:10|max:30|lte:thermostat_low',
@@ -103,6 +103,5 @@ class GeneralDataFormRequest extends FormRequest
             'amount_gas' => 'required|numeric|min:0|max:10000',
             'motivation.*' => 'numeric',
         ];
-
     }
 }

@@ -17,9 +17,9 @@
                                     @lang('general-data.element.'.$element->short.'.title')
                                 </label>
 
-                                @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $element->values()->orderBy('order')->get(), 'userInputValues' => $building->buildingElements()->forMe()->where('element_id', $element->id)->get(), 'userInputColumn' => 'element_value_id'])
+                                @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $element->values, 'userInputValues' => $building->buildingElements()->forMe()->where('element_id', $element->id)->get(), 'userInputColumn' => 'element_value_id'])
                                     <select id="element_{{ $element->id }}" class="form-control" name="element[{{ $element->id }}]">
-                                        @foreach($element->values()->orderBy('order')->get() as $elementValue)
+                                        @foreach($element->values as $elementValue)
                                             <option @if(old('element.' . $element->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $element->id), 'element_value_id')) == $elementValue->id) selected="selected" @endif value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
                                         @endforeach
                                     </select>

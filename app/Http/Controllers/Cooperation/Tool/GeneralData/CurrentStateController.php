@@ -22,7 +22,9 @@ class CurrentStateController extends Controller
         $elements = Element::whereIn('short', [
             'sleeping-rooms-windows', 'living-rooms-windows',
             'wall-insulation', 'floor-insulation', 'roof-insulation',
-        ])->orderBy('order')->get();
+        ])->orderBy('order')->with(['values' => function ($query) {
+            $query->orderBy('order');
+        }])->get();
 
         return view('cooperation.tool.general-data.current-state.index', compact(
             'building', 'buildingOwner', 'elements', 'services', 'userInterestsForMe'

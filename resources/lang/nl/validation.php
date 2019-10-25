@@ -103,11 +103,19 @@ return [
     */
 
     'custom' => [
+        'needs_to_be_lower_or_same_as' => 'Dit veld moet gelijk of kleiner zijn dan het veld :attribute',
         'alpha_space' => 'Het veld :attribute mag alleen letters en spaties bevatten.',
-        'needs_to_be_lower_or_same_as' => 'Dit veld moet gelijk of kleiner zijn dan het veld :otherfield',
         'surface' => 'Dit veld is verplicht als u een dak type heeft gekozen.',
         'is-user-member-of-cooperation' => 'De opgegeven gebruiker is geen lid van de huidige cooperatie',
         'needs-to-be-filled' => 'Dit veld moet gevuld zijn',
+
+//        'building_roof_types.*.insulation_roof_surface' => [
+//            'needs_to_be_lower_or_same_as' => '"Te isoleren oppervlakte van het hellende dak" moet gelijk of kleiner zijn dan het veld "Dakoppervlak hellend dak"'
+//        ],
+
+        'building_roof_types.flat.insulation_roof_surface' => [
+            'needs_to_be_lower_or_same_as' => '"Te isoleren oppervlakte van het plate dak" moet gelijk of kleiner zijn dan het veld "Dakoppervlak platte dak"'
+        ],
 
         'building_insulated_glazings.*.m2' => [
             'required' => '"Hoeveel m2 glas wilt u vervangen?" is een verplicht veld.',
@@ -120,8 +128,6 @@ return [
             'min' => '"Het aantal te vervangen ruiten?" moet tenminste :min zijn.',
         ]
     ],
-
-    'needs_to_be_lower_or_same_as' => 'Dit veld moet gelijk of kleiner zijn dan het veld :otherfield',
 
     /*
     |--------------------------------------------------------------------------
@@ -155,7 +161,11 @@ return [
 
         // roof insulation
         'building_roof_types.pitched.roof_surface' => __('roof-insulation.current-situation.pitched-roof-surface.title'),
+        'building_roof_types.pitched.insulation_roof_surface' => __('roof-insulation.current-situation.insulation-pitched-roof-surface.title'),
+
         'building_roof_types.flat.roof_surface' => __('roof-insulation.current-situation.flat-roof-surface.title'),
+        'building_roof_types.flat.insulation_roof_surface' => __('roof-insulation.current-situation.insulation-flat-roof-surface.title'),
+
         'building_roof_types.flat.extra.zinc_replaced_date' =>  __('roof-insulation.current-situation.zinc-replaced.title'),
         'building_roof_types.flat.extra.bitumen_replaced_date' =>  __('roof-insulation.current-situation.bitumen-insulated.title'),
 
@@ -165,6 +175,10 @@ return [
 
         // glass insulation
         'building_paintwork_statuses.last_painted_year' => __('insulated-glazing.paint-work.last-paintjob.title'),
+
+        // floor insulation
+        'building_features.floor_surface' => __('floor-insulation.surface.title'),
+        'building_features.insulation_surface' => __('floor-insulation.insulation-surface.title'),
 
         // solar panels
         'building_pv_panels.number' => __('solar-panels.number.title'),

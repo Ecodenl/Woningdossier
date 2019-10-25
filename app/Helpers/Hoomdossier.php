@@ -112,8 +112,8 @@ class Hoomdossier
             'extra.date',
         ];
 
-        $falltroughColumnsThatCanContainZero = [
-            'insulation_wall_surface'
+        $valuesThatMayReturnZeroValues = [
+            'insulation_wall_surface', 'insulation_surface'
         ];
 
         // Always check my own input source first. If that is properly filled
@@ -123,11 +123,7 @@ class Hoomdossier
         if ($results->has($myInputSource->short)) {
             $value = $results->get($myInputSource->short);
 
-            if (in_array($column, $falltroughColumnsThatCanContainZero) && in_array($value, ['0.00', '0.0', '0', 0])) {
-                return $value;
-            }
-
-            if (false !== stristr($column, 'surface') && $value <= 0) {
+            if ((false !== stristr($column, 'surface') && $value <= 0) && !in_array($column, $valuesThatMayReturnZeroValues)) {
                 // skip this one
                 $value = null;
             }

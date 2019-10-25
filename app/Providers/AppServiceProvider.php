@@ -31,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
         \Validator::replacer('needs_to_be_lower_or_same_as', function ($message, $attribute, $rule, $parameters) {
             $compareFieldName = $parameters[0];
 
-            return __('validation.custom.needs_to_be_lower_or_same_as', ['otherfield' => $compareFieldName]);
+            return __('validation.custom')[$attribute][$rule] ?? __('validation.custom.needs_to_be_lower_or_same_as', ['attribute' => $compareFieldName]);
         });
 
         Builder::macro('whereLike', function (string $attribute, string $searchTerm) {

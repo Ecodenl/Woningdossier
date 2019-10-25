@@ -67,6 +67,7 @@ class RoofInsulationFormRequest extends FormRequest
         ];
     }
 
+
     /**
      * small translation of the attribute.
      *
@@ -81,6 +82,7 @@ class RoofInsulationFormRequest extends FormRequest
 
     public function withValidator(Validator $validator)
     {
+
         $max = Carbon::now()->year;
 
         // retrieve the selected roof type ids

@@ -19,8 +19,9 @@ class CurrentStateController extends Controller
         $userInterestsForMe = UserInterest::forMe()->get();
 
         $services = Service::orderBy('order')->get();
+
         $elements = Element::whereIn('short', [
-            'sleeping-rooms-windows', 'living-rooms-windows',
+            'sleeping-rooms-windows', 'living-rooms-windows', 'crack-sealing',
             'wall-insulation', 'floor-insulation', 'roof-insulation',
         ])->orderBy('order')->with(['values' => function ($query) {
             $query->orderBy('order');

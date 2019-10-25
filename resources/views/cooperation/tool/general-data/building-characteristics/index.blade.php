@@ -240,5 +240,39 @@
 @endsection
 
 @push('js')
+    <script>
+        $(document).ready(function () {
 
+            $(window).keydown(function (event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+            var previous_bt = "{{ $prevBt }}";
+            var previous_by = "{{ $prevBy }}";
+
+            $("form.form-horizontal").on('submit', function () {
+                // Store the current value on focus and on change
+                var bt_now = $("select#building_type_id").val();
+                var by_now = $("input#build_year").val();
+
+                if (bt_now !== previous_bt || by_now !== previous_by){
+                    if (previous_bt === "" && previous_by === "" || confirm('{{ \App\Helpers\Translation::translate('building-detail.warning.title') }}')) {
+                        @if(App::environment('local'))
+                        console.log("Building Type was changed, but it was empty or a wanted change. Proceed.");
+                        @endif
+                    }
+                    else {
+                        // the dirty class by areYouSure is removed on submit.
+                        // set it back to prevent confusion for the user
+                        $(this).addClass('dirty');
+                        // don't submit
+                        return false;
+                    }
+                }
+            });
+        });
+    </script>
 @endpush

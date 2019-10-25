@@ -65,7 +65,7 @@ return [
         'array'   => 'De :attribute moet tenminste :min items bevatten.',
     ],
     'not_in'               => 'De geselecteerde :attribute is ongeldig.',
-    'numeric'              => 'Het veld moet een getal bevatten',
+    'numeric'              => 'Het :attribute moet een getal bevatten',
     'present'              => 'De :attribute moet gevuld zijn.',
     'phone_number'         => 'Het veld Telefoonnummer bevat geen geldig telefoonnummer.',
     'postal_code'          => 'De opgegeven postcode is ongeldig.',
@@ -109,12 +109,16 @@ return [
         'is-user-member-of-cooperation' => 'De opgegeven gebruiker is geen lid van de huidige cooperatie',
         'needs-to-be-filled' => 'Dit veld moet gevuld zijn',
 
-        'building_paintwork_statuses' => [
-            'last_painted_year' => [
-                'required' => 'Wanneer is uw schilderwerk voor het laatst gedaan?',
-                'between' => 'Wanneer het schilderwerk voor het laatst gedaan is moet een geldig jaartal bevatten',
-            ],
+        'building_insulated_glazings.*.m2' => [
+            'required' => '"Hoeveel m2 glas wilt u vervangen?" is een verplicht veld.',
+            'numeric' => '"Hoeveel m2 glas wilt u vervangen?" moet een getal bevatten.',
+            'min' => '"Hoeveel m2 glas wilt u vervangen?" moet tenminste :min zijn.',
         ],
+        'building_insulated_glazings.*.windows' => [
+            'required' => '"Het aantal te vervangen ruiten?" is een verplicht veld.',
+            'numeric' => '"Het aantal te vervangen ruiten?" moet een getal bevatten.',
+            'min' => '"Het aantal te vervangen ruiten?" moet tenminste :min zijn.',
+        ]
     ],
 
     'needs_to_be_lower_or_same_as' => 'Dit veld moet gelijk of kleiner zijn dan het veld :otherfield',
@@ -130,6 +134,8 @@ return [
     |
     */
 
+    // note, when a key needs a wildcard add it to the custom array.
+    // A wildcard wont work in the attributes array but will in the custom array, needs more work but at least we dont need to hardcode the * numbers.
     'attributes' => [
         'account.current_password' => 'huidig wachtwoord',
         'account.password' => 'wachtwoord',
@@ -147,31 +153,20 @@ return [
         '7.extra.year' => 'jaartal',
         'service.7' => 'aantal zonnepanelen',
 
+        // roof insulation
         'building_roof_types.pitched.roof_surface' => __('roof-insulation.current-situation.pitched-roof-surface.title'),
         'building_roof_types.flat.roof_surface' => __('roof-insulation.current-situation.flat-roof-surface.title'),
         'building_roof_types.flat.extra.zinc_replaced_date' =>  __('roof-insulation.current-situation.zinc-replaced.title'),
         'building_roof_types.flat.extra.bitumen_replaced_date' =>  __('roof-insulation.current-situation.bitumen-insulated.title'),
-
-
-
-//        'extra.year' => 'jaartal',
-
-
 
         // wall insulation
         'wall_surface' => __('wall-insulation.optional.facade-surface.title'),
         'insulation_wall_surface' => __('wall-insulation.optional.insulated-surface.title'),
 
         // glass insulation
-        'building_insulated_glazings.7.m2' => 'Hoeveel m2 glas wilt u vervangen?',
-        'building_insulated_glazings.8.m2' => 'Hoeveel m2 glas wilt u vervangen?',
-        'building_insulated_glazings.9.m2' => 'Hoeveel m2 glas wilt u vervangen?',
-        'building_insulated_glazings.10.m2' => 'Hoeveel m2 glas wilt u vervangen?',
-        'building_insulated_glazings.7.windows' => 'Het aantal te vervangen ruiten?',
-        'building_insulated_glazings.8.windows' => 'Het aantal te vervangen ruiten?',
-        'building_insulated_glazings.9.windows' => 'Het aantal te vervangen ruiten?',
-        'building_insulated_glazings.10.windows' => 'Het aantal te vervangen ruiten?',
+        'building_paintwork_statuses.last_painted_year' => __('insulated-glazing.paint-work.last-paintjob.title'),
 
+        // solar panels
         'building_pv_panels.number' => __('solar-panels.number.title'),
         'building_pv_panels.peak_power' => __('solar-panels.peak-power.title')
     ],

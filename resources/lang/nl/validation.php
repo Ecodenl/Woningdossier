@@ -109,12 +109,12 @@ return [
         'is-user-member-of-cooperation' => 'De opgegeven gebruiker is geen lid van de huidige cooperatie',
         'needs-to-be-filled' => 'Dit veld moet gevuld zijn',
 
-//        'building_roof_types.*.insulation_roof_surface' => [
-//            'needs_to_be_lower_or_same_as' => '"Te isoleren oppervlakte van het hellende dak" moet gelijk of kleiner zijn dan het veld "Dakoppervlak hellend dak"'
-//        ],
-
         'building_roof_types.flat.insulation_roof_surface' => [
             'needs_to_be_lower_or_same_as' => '"Te isoleren oppervlakte van het plate dak" moet gelijk of kleiner zijn dan het veld "Dakoppervlak platte dak"'
+        ],
+
+        'building_roof_types.pitched.insulation_roof_surface' => [
+            'needs_to_be_lower_or_same_as' => '"Te isoleren oppervlakte van het hellende dak" moet gelijk of kleiner zijn dan het veld "Dakoppervlak hellend dak"'
         ],
 
         'building_insulated_glazings.*.m2' => [

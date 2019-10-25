@@ -171,7 +171,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     });
 
                     Route::group(['prefix' => 'huidige-staat', 'as' => 'current-state.'], function () {
-                        Route::get('', 'BuildingCharacteristicsController@index')->name('index');
+                        Route::get('', 'CurrentStateController@index')->name('index');
+                        Route::post('', 'CurrentStateController@store')->name('store');
                     });
 
                     Route::group(['prefix' => 'verbruik', 'as' => 'usage.'], function () {

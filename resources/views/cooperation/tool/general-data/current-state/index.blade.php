@@ -11,8 +11,6 @@
                     <div class="row">
                 @endif
                         <div class=" col-sm-4 ">
-
-
                             @component('cooperation.tool.components.step-question', ['id' => 'element.'.$element->id, 'translation' => 'general-data.element.'.$element->short])
                                 @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $element->values, 'userInputValues' => $building->buildingElements()->forMe()->where('element_id', $element->id)->get(), 'userInputColumn' => 'element_value_id'])
                                     <select id="element_{{ $element->id }}" class="form-control" name="element[{{ $element->id }}]">
@@ -31,7 +29,7 @@
 
         @include('cooperation.tool.includes.comment', [
             'columnName' => 'step_comments[comment]',
-            'translation' => 'general-data/building-characteristics.comment'
+            'translation' => 'general-data/current-state.comment'
         ])
     </form>
 @endsection

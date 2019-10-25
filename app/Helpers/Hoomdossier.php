@@ -112,8 +112,9 @@ class Hoomdossier
             'extra.date',
         ];
 
+        // the columns that may return zero values from a resident
         $valuesThatMayReturnZeroValues = [
-            'insulation_wall_surface', 'insulation_surface'
+            'insulation_wall_surface', 'insulation_surface', 'insulation_roof_surface'
         ];
 
         // Always check my own input source first. If that is properly filled

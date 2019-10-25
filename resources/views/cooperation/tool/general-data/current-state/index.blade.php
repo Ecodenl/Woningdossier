@@ -21,9 +21,9 @@
                                 @endcomponent
                             @endcomponent
                         </div>
-                    @if(!in_array($element->short, ['sleeping-rooms-windows', 'living-rooms-windows']))
-                        </div>
-                    @endif
+                @if(!in_array($element->short, ['sleeping-rooms-windows', 'living-rooms-windows']))
+                    </div>
+                @endif
             @endforeach
         </div>
 

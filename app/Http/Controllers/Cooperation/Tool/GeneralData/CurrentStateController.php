@@ -27,8 +27,10 @@ class CurrentStateController extends Controller
             $query->orderBy('order');
         }])->get();
 
+        $services = Service::orderBy('order')->get();
+
         return view('cooperation.tool.general-data.current-state.index', compact(
-            'building', 'buildingOwner', 'elements', 'services', 'userInterestsForMe'
+            'building', 'buildingOwner', 'elements', 'services', 'userInterestsForMe', 'services'
         ));
     }
 }

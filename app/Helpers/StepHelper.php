@@ -23,6 +23,20 @@ use Illuminate\Support\Facades\Log;
 
 class StepHelper
 {
+    const ELEMENT_TO_SHORT = [
+        'sleeping-rooms-windows' => 'insulated-glazing',
+        'living-rooms-windows' => 'insulated-glazing',
+        'crack-sealing' => 'insulated-glazing',
+        'wall-insulation' => 'wall-insulation',
+        'floor-insulation' => 'floor-insulation',
+        'roof-insulation' => 'roof-insulation',
+    ];
+    const SERVICE_TO_SHORT = [
+        'hr-boiler' => 'high-efficiency-boiler',
+        'boiler' => 'high-efficiency-boiler',
+        'house-ventilation' => 'ventilation'
+    ];
+
     const STEP_INTERESTS = [
         'ventilation-information' => [
             'service' => [

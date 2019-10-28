@@ -254,38 +254,31 @@ class ServiceValuesTableSeeder extends Seeder
                 'service_values' => [
                     [
                         'values' => [
-                            'nl' => 'Natuurlijk',
+                            'nl' => 'Natuurlijke ventilatie',
                         ],
                         'order' => 1,
                         'calculate_value' => 1,
                     ],
                     [
                         'values' => [
-                            'nl' => 'Mechanisch',
+                            'nl' => 'Mechanische ventilatie',
                         ],
                         'order' => 2,
                         'calculate_value' => 2,
                     ],
                     [
                         'values' => [
-                            'nl' => 'Gebalanceerd',
+                            'nl' => 'Gebalanceerde ventilatie',
                         ],
                         'order' => 3,
                         'calculate_value' => 3,
                     ],
                     [
                         'values' => [
-                            'nl' => 'Decentraal mechanisch',
+                            'nl' => 'Decentrale mechanische ventilatie',
                         ],
                         'order' => 4,
                         'calculate_value' => 4,
-                    ],
-                    [
-                        'values' => [
-                            'nl' => 'Vraaggestuurd',
-                        ],
-                        'order' => 5,
-                        'calculate_value' => 5,
                     ],
                 ],
             ],

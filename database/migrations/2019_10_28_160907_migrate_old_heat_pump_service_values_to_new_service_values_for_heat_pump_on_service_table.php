@@ -27,6 +27,8 @@ class MigrateOldHeatPumpServiceValuesToNewServiceValuesForHeatPumpOnServiceTable
         $buildings = \DB::table('buildings')->get();
         // modify data for all the buildings
         foreach ($buildings as $building) {
+            $this->line('-------------------------------------------------');
+            $this->line('migrating data for building id: '.$building->id);
             // get the full and hybrid heat pump values for a building
             $buildingServicesForAllHeatPumps = \DB::table('building_services')
                 ->where('building_id', $building->id)
@@ -47,6 +49,8 @@ class MigrateOldHeatPumpServiceValuesToNewServiceValuesForHeatPumpOnServiceTable
 
                 // when nothing its selected its a example building input source or some old account, skip it.
                 if (is_null($answerForHybridHeatPump->service_value_id) &&  is_null($answerForFullHeatPump->service_value_id)) {
+                    $this->line('service_value_id is empty for the hybrid and full heat pump on building id :'.$building->id);
+                    $this->line('continue...');
                     continue;
                 }
                 // get the calculate values for the selected service values
@@ -66,13 +70,8 @@ class MigrateOldHeatPumpServiceValuesToNewServiceValuesForHeatPumpOnServiceTable
                     $newCalculateValueForAnswer = $calculateValueForFullHeatPump;
                 }
 
-                // and delete the old hybrid and full heat pump building services for the building
-                \DB::table('building_services')
-                    ->where('building_id', $building->id)
-                    ->where(function ($query) use ($fullHeatPumpService, $hybridHeatPump) {
-                        $query->where('service_id', $fullHeatPumpService->id)
-                            ->orWhere('service_id', $hybridHeatPump->id);
-                    })->delete();
+                $this->line('the determined calculate value will be: '.$newCalculateValueForAnswer);
+                $this->line('the new service value id will be: '.$heatPumpServiceValues[$newCalculateValueForAnswer]->id);
 
 
                 // and insert the new rows.
@@ -84,6 +83,17 @@ class MigrateOldHeatPumpServiceValuesToNewServiceValuesForHeatPumpOnServiceTable
                 ]);
             }
         }
+
+        // and delete all the old hybrid and full heat pump building services.
+        \DB::table('building_services')
+            ->where('service_id', $fullHeatPumpService->id)
+            ->orWhere('service_id', $hybridHeatPump->id)
+            ->delete();
+    }
+
+    private function line($msg)
+    {
+        echo "{$msg} \r\n";
     }
 
     /**

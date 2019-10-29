@@ -28,7 +28,12 @@ class VentilationController extends Controller
      */
     public function index()
     {
-        return view('cooperation.tool.ventilation-information.index');
+        $building = HoomdossierSession::getBuilding(true);
+
+        $buildingVentilation = $building->getBuildingService('house-ventilation', HoomdossierSession::getInputSource(true));
+
+        return view('cooperation.tool.ventilation.index', compact('building', 'buildingVentilation'));
+       //return view('cooperation.tool.ventilation-information.index');
     }
 
     /**

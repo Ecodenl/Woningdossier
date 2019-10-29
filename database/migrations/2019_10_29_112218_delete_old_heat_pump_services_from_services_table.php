@@ -13,19 +13,19 @@ class DeleteOldHeatPumpServicesFromServicesTable extends Migration
      */
     public function up()
     {
-//        $serviceIdsToDelete = \DB::table('services')
-//            ->whereIn('short', ['hybrid-heat-pump', 'full-heat-pump'])
-//            ->select('id')
-//            ->get()->pluck('id')
-//            ->toArray();
-//
-//        // delete the service values
-//        DB::table('service_values')->whereIn(
-//            'service_id', $serviceIdsToDelete
-//        )->delete();
-//
-//        // and delete the services itself
-//        DB::table('services')->whereIn('short', ['hybrid-heat-pump', 'full-heat-pump'])->delete();
+        $serviceIdsToDelete = \DB::table('services')
+            ->whereIn('short', ['hybrid-heat-pump', 'full-heat-pump'])
+            ->select('id')
+            ->get()->pluck('id')
+            ->toArray();
+
+        // delete the service values
+        DB::table('service_values')->whereIn(
+            'service_id', $serviceIdsToDelete
+        )->delete();
+
+        // and delete the services itself
+        DB::table('services')->whereIn('short', ['hybrid-heat-pump', 'full-heat-pump'])->delete();
     }
 
     /**

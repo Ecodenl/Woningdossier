@@ -13,67 +13,54 @@ class ServiceValuesTableSeeder extends Seeder
     {
         $services = [
             [
-                'names' => [
-                    'nl' => 'Hybride warmtepomp',
-                ],
-                'short' => 'hybrid-heat-pump',
-                'service_type' => 'Heating',
-                'order' => 0,
-                'info' => [
-                    'nl' => 'Infotext hier',
-                ],
-                'service_values' => [
-                    [
-                        'values' => [
-                            'nl' => 'Geen',
-                        ],
-                        'order' => 1,
-                        'calculate_value' => 1,
+                [
+                    'names' => [
+                        'nl' => 'Warmtepomp',
                     ],
-                    [
-                        'values' => [
-                            'nl' => 'Hybride warmtepomp met buitenlucht als warmtebron',
-                        ],
-                        'order' => 2,
-                        'calculate_value' => 2,
+                    'short' => 'heat-pump',
+                    'service_type' => 'Heating',
+                    'order' => 0,
+                    'info' => [
+                        'nl' => 'Hier kunt u aangeven of u in de huidige situatie in plaats van een cv-ketel een warmtepomp als enige warmteopwekker in huis hebt. U hebt de keuze uit een warmtepomp met buitenlucht of bodemenergie als warmtebron.',
                     ],
-                ],
-            ],
-            [
-                'names' => [
-                    'nl' => 'Volledige warmtepomp',
-                ],
-                'short' => 'full-heat-pump',
-                'service_type' => 'Heating',
-                'order' => 0,
-                'info' => [
-                    'nl' => 'Infotext hier',
-                ],
-                'service_values' => [
-                    [
-                        'values' => [
-                            'nl' => 'Geen',
+                    'service_values' => [
+                        [
+                            'values' => [
+                                'nl' => 'Geen',
+                            ],
+                            'order' => 1,
+                            'calculate_value' => 1,
                         ],
-                        'order' => 1,
-                        'calculate_value' => 1,
-                    ],
-                    [
-                        'values' => [
-                            'nl' => 'Volledige warmtepomp met buitenlucht als warmtebron',
+                        [
+                            'values' => [
+                                'nl' => 'Volledige warmtepomp buitenlucht',
+                            ],
+                            'order' => 2,
+                            'calculate_value' => 2,
                         ],
-                        'order' => 2,
-                        'calculate_value' => 2,
-                    ],
-                    [
-                        'values' => [
-                            'nl' => 'Volledige warmtepomp met bodemenergie als warmtebron',
+                        [
+                            'values' => [
+                                'nl' => 'Volledige warmtepomp bodem',
+                            ],
+                            'order' => 3,
+                            'calculate_value' => 3,
                         ],
-                        'order' => 3,
-                        'calculate_value' => 3,
+                        [
+                            'values' => [
+                                'nl' => 'Hybride warmtepomp',
+                            ],
+                            'order' => 4,
+                            'calculate_value' => 4,
+                        ],
+                        [
+                            'values' => [
+                                'nl' => 'Collectieve warmtepomp',
+                            ],
+                            'order' => 5,
+                            'calculate_value' => 5,
+                        ],
                     ],
                 ],
-            ],
-            [
                 'names' => [
                     'nl' => 'Zonneboiler',
                 ],

@@ -84,11 +84,14 @@ class MigrateOldHeatPumpServiceValuesToNewServiceValuesForHeatPumpOnServiceTable
             }
         }
 
-        // and delete all the old hybrid and full heat pump building services.
-        \DB::table('building_services')
-            ->where('service_id', $fullHeatPumpService->id)
-            ->orWhere('service_id', $hybridHeatPump->id)
-            ->delete();
+        if($fullHeatPumpService instanceof stdClass && $hybridHeatPump instanceof stdClass) {
+
+            // and delete all the old hybrid and full heat pump building services.
+            \DB::table('building_services')
+                ->where('service_id', $fullHeatPumpService->id)
+                ->orWhere('service_id', $hybridHeatPump->id)
+               ->delete();
+        }
     }
 
     private function line($msg)

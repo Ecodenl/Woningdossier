@@ -9,13 +9,9 @@ return [
         'title' => 'Uitlegtekst over de huidige staat van de woning en hoe deze pagina in te vullen. Uitlegtekst over de huidige staat van de woning en hoe deze pagina in te vullen Uitlegtekst over de huidige staat van de woning en hoe deze pagina in te vullen.',
     ],
     'service' => [
-        'hybrid-heat-pump' => [
-            'title' => '',
-            'help' => ''
-        ],
-        'full-heat-pump' => [
-            'title' => '',
-            'help' => ''
+        'heat-pump' => [
+            'title' => 'Warmtepomp',
+            'help' => 'Hier kunt u aangeven of u in de huidige situatie in plaats van een cv-ketel een warmtepomp als enige warmteopwekker in huis hebt. U hebt de keuze uit een warmtepomp met buitenlucht of bodemenergie als warmtebron.'
         ],
 
         'sun-boiler' => [

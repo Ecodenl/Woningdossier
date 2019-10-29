@@ -53,8 +53,8 @@ class ToolHelper
         $livingRoomsWindows = Element::where('short', 'living-rooms-windows')->first();
         $sleepingRoomsWindows = Element::where('short', 'sleeping-rooms-windows')->first();
         // General data - Services (that are not queried later on step basis)
-        $heatpumpHybrid = Service::where('short', 'hybrid-heat-pump')->first();
-        $heatpumpFull = Service::where('short', 'full-heat-pump')->first();
+
+        $heatPump = Service::where('short', 'heat-pump')->first();
         $ventilation = Service::where('short', 'house-ventilation')->first();
 
         // Wall insulation
@@ -178,25 +178,14 @@ class ToolHelper
                 ],
 
                 // services
-                'service.'.$heatpumpHybrid->id                  => [
-                    'label'   => $heatpumpHybrid->name,
+                'service.'.$heatPump->id                  => [
+                    'label'   => $heatPump->name,
                     'type'    => 'select',
-                    'options' => static::createOptions($heatpumpHybrid->values()->orderBy('order')->get(), 'value'),
+                    'options' => static::createOptions($heatPump->values()->orderBy('order')->get(), 'value'),
                 ],
-                'user_interest.service.'.$heatpumpHybrid->id    => [
+                'user_interest.service.'.$heatPump->id    => [
                     //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                    'label'   => $heatpumpHybrid->name.': '.Translation::translate('general.interested-in-improvement.title'),
-                    'type'    => 'select',
-                    'options' => $interestOptions,
-                ],
-                'service.'.$heatpumpFull->id                    => [
-                    'label'   => $heatpumpFull->name,
-                    'type'    => 'select',
-                    'options' => static::createOptions($heatpumpFull->values()->orderBy('order')->get(), 'value'),
-                ],
-                'user_interest.service.'.$heatpumpFull->id      => [
-                    //'label' => Translation::translate('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                    'label'   => $heatpumpFull->name.': '.Translation::translate('general.interested-in-improvement.title'),
+                    'label'   => $heatPump->name.': '.Translation::translate('general.interested-in-improvement.title'),
                     'type'    => 'select',
                     'options' => $interestOptions,
                 ],
@@ -732,8 +721,7 @@ class ToolHelper
         $livingRoomsWindows = Element::where('short', 'living-rooms-windows')->first();
         $sleepingRoomsWindows = Element::where('short', 'sleeping-rooms-windows')->first();
         // General data - Services (that are not queried later on step basis)
-        $heatpumpHybrid = Service::where('short', 'hybrid-heat-pump')->first();
-        $heatpumpFull = Service::where('short', 'full-heat-pump')->first();
+        $heatPump = Service::where('short', 'heat-pump')->first();
         $ventilation = Service::where('short', 'house-ventilation')->first();
 
         // Wall insulation
@@ -876,15 +864,10 @@ class ToolHelper
                 ],
 
                 // services
-                'service.'.$heatpumpHybrid->id                  => [
-                    'label'   => $heatpumpHybrid->name,
+                'service.'.$heatPump->id                  => [
+                    'label'   => $heatPump->name,
                     'type'    => 'select',
-                    'options' => static::createOptions($heatpumpHybrid->values()->orderBy('order')->get(), 'value'),
-                ],
-                'service.'.$heatpumpFull->id                    => [
-                    'label'   => $heatpumpFull->name,
-                    'type'    => 'select',
-                    'options' => static::createOptions($heatpumpFull->values()->orderBy('order')->get(), 'value'),
+                    'options' => static::createOptions($heatPump->values()->orderBy('order')->get(), 'value'),
                 ],
                 'service.'.$heater->id                     => [
                     'label'   => $heater->name,

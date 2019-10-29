@@ -32,6 +32,9 @@
                         <select id="service_{{ $service->id }}" class="form-control" name="service[{{ $service->id }}]">
                             {{--5 is the "vraaggestuurd" value, we need this for a checkbox--}}
                             @foreach($service->values->where('calculate_value', '!=', 5) as $serviceValue)
+                                <?php
+                                    dd(\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingservices()->where('service_id', $service->id), 'service_value_id'));
+                                ?>
                                 <option @if(old('service.' . $service->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingservices()->where('service_id', $service->id), 'service_value_id')) == $serviceValue->id) selected="selected" @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
                             @endforeach
                         </select>
@@ -39,8 +42,8 @@
                 @endcomponent
             </div>
             <div class="col-sm-8">
-{{--                @foreach($service->values->where('calculate_value', '!=', 5) as $serviceValue)--}}
-{{--                    <input type="checkbox" name="service[{{$service->id}}][{{$service->}}]">--}}
+                {{--@foreach($service->values->where('calculate_value', '!=', 5) as $serviceValue)--}}
+                    {{--<input type="checkbox" name="service[{{$service->id}}][{{$service->}}]">--}}
                 {{--@endif--}}
             </div>
         </div>

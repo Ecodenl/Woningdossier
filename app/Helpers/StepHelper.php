@@ -193,7 +193,11 @@ class StepHelper
         $stepComments = StepComment::forMe($user)->with('step', 'inputSource')->get();
 
         foreach ($stepComments as $stepComment) {
-            $commentsByStep[$stepComment->step->short][$stepComment->inputSource->name] = $stepComment->comment;
+            if (is_null($stepComment->short)) {
+                $commentsByStep[$stepComment->step->short][$stepComment->inputSource->name] = $stepComment->comment;
+            } else {
+                $commentsByStep[$stepComment->step->short][$stepComment->inputSource->name][$stepComment->short] = $stepComment->comment;
+            }
         }
 
         return $commentsByStep;

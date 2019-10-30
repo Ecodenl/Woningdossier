@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Cooperation\Tool\GeneralData;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\StepHelper;
 use App\Models\BuildingHeatingApplication;
 use App\Models\BuildingService;
 use App\Models\Cooperation;
@@ -40,9 +42,10 @@ class CurrentStateController extends Controller
 
         $buildingHeatingApplications = BuildingHeatingApplication::orderBy('order')->get();
 
+        $commentsByStep = StepHelper::getAllCommentsByStep($buildingOwner);
         return view('cooperation.tool.general-data.current-state.index', compact(
             'building', 'buildingOwner', 'elements', 'services', 'userInterestsForMe', 'services',
-            'buildingHeatingApplications', 'myBuildingFeatures'
+            'buildingHeatingApplications', 'myBuildingFeatures', 'commentsByStep'
         ));
     }
 }

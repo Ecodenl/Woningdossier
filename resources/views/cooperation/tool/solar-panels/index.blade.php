@@ -15,8 +15,7 @@
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'amount_electricity'])
                             <span class="input-group-addon">kWh / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                            <input type="number" min="0" class="form-control"
-                                   name="user_energy_habits[amount_electricity]"
+                            <input type="number" min="0" class="form-control" name="user_energy_habits[amount_electricity]"
                                    value="{{ old('user_energy_habits.amount_electricity', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'amount_electricity', 0)) }}"/>
                             {{--<input type="number" min="0" class="form-control" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', $amountElectricity) }}" />--}}
                         @endcomponent

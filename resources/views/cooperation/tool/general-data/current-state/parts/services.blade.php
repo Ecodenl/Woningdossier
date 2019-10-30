@@ -143,49 +143,72 @@
     <script>
         $(document).ready(function () {
             var houseVentilationService = $('select#house-ventilation-service');
-            houseVentilationService.trigger('change');
-
+            console.log(houseVentilationService);
             var totalSunPanelInput = $("input#total-sun-panels");
             var optionalTotalSunPanelQuestions = $('#optional-total-sun-panels-questions');
+
+            setTimeout(() => {
+                totalSunPanelInput.trigger('keyup');
+                houseVentilationService.trigger('change');
+            }, 100);
+
 
             totalSunPanelInput.keyup(function () {
                 handleSunPanelFields(totalSunPanelInput, optionalTotalSunPanelQuestions)
             });
 
-            houseVentilationService .change(function () {
-                handleVentilationFields($(this));
-           });
-        });
+            houseVentilationService.change(function () {
+                var selectedCalculateValue = $(this).find('option:selected').data('calculate-value');
+                var demandDriven = $('#demand-driven');
+                var heatRecovery = $('#heat-recovery');
 
-        function handleSunPanelFields(totalSunPanelInput, optionalTotalSunPanelQuestions) {
-            var totalSunPanels = parseInt(totalSunPanelInput.val());
-            if (totalSunPanels > 0) {
-                optionalTotalSunPanelQuestions.show();
-            } else {
-                optionalTotalSunPanelQuestions.hide();
-                if (optionalTotalSunPanelQuestions.find('input').val().trim() !== "") {
-                    console.log("Adjusting sun panel year");
-                    optionalTotalSunPanelQuestions.find('input').val("");
+                demandDriven.hide();
+                demandDriven.removeProp('selected');
+                heatRecovery.hide();
+                heatRecovery.removeProp('selected');
+
+                if (selectedCalculateValue === 2) {
+                    console.log('well wtf');
+                    demandDriven.show();
+                } else if (selectedCalculateValue === 3 || selectedCalculateValue === 4) {
+                    demandDriven.show();
+                    heatRecovery.show();
+                }
+                // handleVentilationFields($(this));
+           });
+
+            function handleSunPanelFields(totalSunPanelInput, optionalTotalSunPanelQuestions) {
+                var totalSunPanels = parseInt(totalSunPanelInput.val());
+                if (totalSunPanels > 0) {
+                    optionalTotalSunPanelQuestions.show();
+                } else {
+                    optionalTotalSunPanelQuestions.hide();
+                    if (optionalTotalSunPanelQuestions.find('input').val().trim() !== "") {
+                        console.log("Adjusting sun panel year");
+                        optionalTotalSunPanelQuestions.find('input').val("");
+                    }
                 }
             }
-        }
 
-        function handleVentilationFields(ventilationField) {
-            var selectedCalculateValue = ventilationField.find('option:selected').data('calculate-value');
-            var demandDriven = $('#demand-driven');
-            var heatRecovery = $('#heat-recovery');
+            function handleVentilationFields(ventilationField) {
+                console.log('ok')
+                var selectedCalculateValue = ventilationField.find('option:selected').data('calculate-value');
+                var demandDriven = $('#demand-driven');
+                var heatRecovery = $('#heat-recovery');
 
-            demandDriven.hide();
-            demandDriven.removeProp('selected');
-            heatRecovery.hide();
-            heatRecovery.removeProp('selected');
+                demandDriven.hide();
+                demandDriven.removeProp('selected');
+                heatRecovery.hide();
+                heatRecovery.removeProp('selected');
 
-            if (selectedCalculateValue === 2) {
-                demandDriven.show();
-            } else if (selectedCalculateValue === 3 || selectedCalculateValue === 4) {
-                demandDriven.show();
-                heatRecovery.show();
+                if (selectedCalculateValue === 2) {
+                    console.log('well wtf');
+                    demandDriven.show();
+                } else if (selectedCalculateValue === 3 || selectedCalculateValue === 4) {
+                    demandDriven.show();
+                    heatRecovery.show();
+                }
             }
-        }
+        });
     </script>
 @endpush

@@ -17,7 +17,8 @@
 
             @include('cooperation.tool.includes.comment', [
                 'columnName' => 'step_comments[comment]',
-                'translation' => 'general-data/current-state.comment'
+                'short' => 'element',
+                'translation' => 'general-data/current-state.comment.element'
             ])
         </div>
 
@@ -27,7 +28,8 @@
 
             @include('cooperation.tool.includes.comment', [
                 'columnName' => 'step_comments[comment]',
-                'translation' => 'general-data/current-state.comment'
+                'short' => 'service',
+                'translation' => 'general-data/current-state.comment.service'
             ])
         </div>
     </form>

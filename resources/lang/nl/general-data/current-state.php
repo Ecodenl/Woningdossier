@@ -2,8 +2,14 @@
 
 return [
     'comment' => [
-        'title' => 'Toelichting gebouwkenmerken',
-        'help' =>  'Toelichting gebouwkenmerken',
+        'element' => [
+            'title' => 'Toelichting huidige staat isolatie',
+            'help' =>  'Toelichting huidige staat isolatie',
+        ],
+        'service' => [
+            'title' => 'Toelichting huidige staat installaties',
+            'help' => 'Toelichting huidige staat installaties',
+        ],
     ],
     'step-intro' => [
         'title' => 'Uitlegtekst over de huidige staat van de woning en hoe deze pagina in te vullen. Uitlegtekst over de huidige staat van de woning en hoe deze pagina in te vullen Uitlegtekst over de huidige staat van de woning en hoe deze pagina in te vullen.',

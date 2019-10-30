@@ -34,7 +34,7 @@ class AddDataToBuildingHeatingApplicationsTable extends Migration
                 'names' => [
                     'nl' => 'Met lage temperatuur radiatoren',
                 ],
-                'short' => '',
+                'short' => 'low-temperature-heater',
                 'calculate_value' => 3,
                 'order' => 2,
             ],
@@ -60,8 +60,9 @@ class AddDataToBuildingHeatingApplicationsTable extends Migration
 
             \DB::table('building_heating_applications')->insert([
                 'name' => $uuid,
-                'degree' => $buildingHeatingApplication['degree'],
+                'short' => $buildingHeatingApplication['short'],
                 'calculate_value' => $buildingHeatingApplication['calculate_value'],
+                'order' => $buildingHeatingApplication['order'],
             ]);
         }
     }

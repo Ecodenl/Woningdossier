@@ -32,7 +32,7 @@ class BuildingHeatingApplicationsTableSeeder extends Seeder
                 'names' => [
                     'nl' => 'Met lage temperatuur radiatoren',
                 ],
-                'short' => '',
+                'short' => 'low-temperature-heater',
                 'calculate_value' => 3,
                 'order' => 2,
             ],
@@ -57,9 +57,9 @@ class BuildingHeatingApplicationsTableSeeder extends Seeder
             }
 
             \DB::table('building_heating_applications')->insert([
-                'name' => $uuid,
-                'degree' => $buildingHeatingApplication['degree'],
+                'short' => $buildingHeatingApplication['short'],
                 'calculate_value' => $buildingHeatingApplication['calculate_value'],
+                'order' => $buildingHeatingApplication['order'],
             ]);
         }
     }

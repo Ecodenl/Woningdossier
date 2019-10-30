@@ -31,11 +31,15 @@ return [
 
         'house-ventilation' => [
             'title' => 'Hoe wordt het huis geventileerd',
-            'help' => '<p><strong>Natuurlijke ventilatie:</strong> De lucht in de woning wordt zonder behulp van ventilatoren ververst, bijvoorbeeld door ramen open te doen en/of ventilatieroosters. Een badkamer ventilator en de keukenafzuiging hoort daar niet bij.</p>
-<p><strong>Mechanisch:</strong> De lucht wordt door een ventilator continu afgezogen, de lucht komt via roosters of open ramen naar binnen. De ventilatiebox zit vaak op zolder.</p>
-<p><strong>Gebalanceerd:</strong> De lucht wordt mechanisch afgevoerd en mechanisch ingeblazen. Dit systeem is vaak in nieuwbouw woningen aanwezig.</p>
-<p><strong>Decentraal mechanisch:</strong> De lucht wordt per kamer met een apart apparaat afgezogen en ingeblazen. De ventilatie-unit kan bijvoorbeeld geïntegreerd zijn in een radiator.</p>
-<p><strong>Vraaggestuurd:</strong> Bij vraaggestuurde ventilatie gaat het altijd om een mechanisch systeem dat door luchtsensoren in de ruimtes gestuurd wordt. Bijvoorbeeld op basis van co2 of vochtgehalte.</p>'
+            'help' => '<p><strong>Natuurlijke ventilatie:</strong> De lucht in de woning wordt zonder behulp van ventilatoren ververst, bijvoorbeeld door ramen open te doen en/of ventilatieroosters. Een badkamer ventilator en de keukenafzuiging hoort daar niet bij.</p><p><strong>Mechanisch:</strong> De lucht wordt door een ventilator continu afgezogen, de lucht komt via roosters of open ramen naar binnen. De ventilatiebox zit vaak op zolder.</p><p><strong>Gebalanceerd:</strong> De lucht wordt mechanisch afgevoerd en mechanisch ingeblazen. Dit systeem is vaak in nieuwbouw woningen aanwezig.</p><p><strong>Decentraal mechanisch:</strong> De lucht wordt per kamer met een apart apparaat afgezogen en ingeblazen. De ventilatie-unit kan bijvoorbeeld geïntegreerd zijn in een radiator.</p><p><strong>Vraaggestuurd:</strong> Bij vraaggestuurde ventilatie gaat het altijd om een mechanisch systeem dat door luchtsensoren in de ruimtes gestuurd wordt. Bijvoorbeeld op basis van co2 of vochtgehalte.</p>',
+            'demand-driven' => [
+                'title' => 'Vraaggestuurde regeling',
+                'help' => 'helptext voor vraaggestuurde regeling',
+            ],
+            'heat-recovery' => [
+                'title' => 'Met warmte terugwinning',
+                'help' => 'helptext Met warmte terugwinning',
+            ],
         ],
 
         '' => [

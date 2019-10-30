@@ -11,7 +11,7 @@
         @endif
         <?php $glazingCount++ ?>
     @endif
-        <div class="col-sm-4 ">
+        <div class="col-sm-12 col-md-4 ">
             @if($glazingCount == 1 || !in_array($element->short, $glazingElements))
                 <img class="img-responsive mt-15 pr-10 d-inline pull-left" src="{{asset('images/element-icons/'.\App\Helpers\StepHelper::ELEMENT_TO_SHORT[$element->short].'.png')}}">
             @endif

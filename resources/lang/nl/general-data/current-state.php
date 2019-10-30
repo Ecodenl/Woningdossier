@@ -8,6 +8,10 @@ return [
     'step-intro' => [
         'title' => 'Uitlegtekst over de huidige staat van de woning en hoe deze pagina in te vullen. Uitlegtekst over de huidige staat van de woning en hoe deze pagina in te vullen Uitlegtekst over de huidige staat van de woning en hoe deze pagina in te vullen.',
     ],
+    'building-heating-applications' => [
+        'title' => 'Hoe word de woning nu verwarmd',
+        'help' => ''
+    ],
     'service' => [
         'heat-pump' => [
             'title' => 'Warmtepomp',
@@ -40,11 +44,6 @@ return [
                 'title' => 'Met warmte terugwinning',
                 'help' => 'helptext Met warmte terugwinning',
             ],
-        ],
-
-        'building-heating-applications' => [
-            'title' => 'Hoe word de woning nu verwarmd',
-            'help' => ''
         ],
 
     ],

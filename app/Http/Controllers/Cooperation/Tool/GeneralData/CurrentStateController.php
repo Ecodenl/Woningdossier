@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool\GeneralData;
 
 use App\Helpers\HoomdossierSession;
+use App\Models\BuildingHeatingApplication;
 use App\Models\BuildingService;
 use App\Models\Cooperation;
 use App\Models\Element;
@@ -23,6 +24,7 @@ class CurrentStateController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $userInterestsForMe = UserInterest::forMe()->get();
+        $myBuildingFeatures = $building->buildingFeatures()->forMe()->get();
 
         $elements = Element::whereIn('short', [
             'sleeping-rooms-windows', 'living-rooms-windows', 'crack-sealing',
@@ -36,8 +38,11 @@ class CurrentStateController extends Controller
                 $query->orderBy('order');
             }])->get();
 
+        $buildingHeatingApplications = BuildingHeatingApplication::orderBy('order')->get();
+
         return view('cooperation.tool.general-data.current-state.index', compact(
-            'building', 'buildingOwner', 'elements', 'services', 'userInterestsForMe', 'services'
+            'building', 'buildingOwner', 'elements', 'services', 'userInterestsForMe', 'services',
+            'buildingHeatingApplications', 'myBuildingFeatures'
         ));
     }
 }

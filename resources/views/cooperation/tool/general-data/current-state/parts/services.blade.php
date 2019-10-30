@@ -32,11 +32,11 @@
         @if($boilerCount == 2)
             <div class="col-md-4">
                 @component('cooperation.tool.components.step-question', ['id' => 'building_features-building_heating_application_id', 'translation' => 'general-data/current-state.building-heating-applications'])
-                    @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $service->values, 'userInputValues' => $building->buildingservices()->forMe()->where('service_id', $service->id)->get(), 'userInputColumn' => 'service_value_id'])
+                    @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $buildingHeatingApplications, 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'service_value_id'])
                         <select id="building_features-building_heating_application_id" class="form-control" name="building_features[building_heating_application_id]">
                             {{--5 is the "vraaggestuurd" value, we need this for a checkbox--}}
-                            @foreach($service->values as $serviceValue)
-                                <option @if(old('service.' . $service->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingservices()->where('service_id', $service->id), 'service_value_id')) == $serviceValue->id) selected="selected" @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
+                            @foreach($buildingHeatingApplications as $buildingHeatingApplication)
+                                <option @if(old('building_features.building_heating_application_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'building_heating_application_id')) == $buildingHeatingApplication->id) selected="selected" @endif value="{{ $buildingHeatingApplication->id }}">{{ $buildingHeatingApplication->name }}</option>
                             @endforeach
                         </select>
                     @endcomponent

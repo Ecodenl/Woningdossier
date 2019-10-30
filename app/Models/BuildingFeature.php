@@ -90,6 +90,7 @@ class BuildingFeature extends Model
     use ToolSettingTrait;
 
     protected $fillable = [
+        'building_heating_application_id',
         'element_values',
         'plastered_wall_surface',
         'building_id',

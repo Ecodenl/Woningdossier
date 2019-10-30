@@ -42,8 +42,8 @@ return [
             ],
         ],
 
-        '' => [
-            'title' => '',
+        'building-heating-applications' => [
+            'title' => 'Hoe word de woning nu verwarmd',
             'help' => ''
         ],
 

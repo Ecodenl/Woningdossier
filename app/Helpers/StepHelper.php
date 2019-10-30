@@ -34,6 +34,8 @@ class StepHelper
     const SERVICE_TO_SHORT = [
         'hr-boiler' => 'high-efficiency-boiler',
         'boiler' => 'high-efficiency-boiler',
+        'total-sun-panels' => 'solar-panels',
+        'sun-boiler' => 'heater',
         'house-ventilation' => 'ventilation'
     ];
 

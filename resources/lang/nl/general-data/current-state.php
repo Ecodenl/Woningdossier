@@ -19,8 +19,8 @@ return [
         ],
 
         'sun-boiler' => [
-            'title' => '',
-            'help' => ''
+            'title' => 'Zonneboiler',
+            'help' => 'Hier kunt u aangeven of u in de huidige situatie een zonneboiler hebt en waarvoor u de warmte gebruikt.'
         ],
 
         'hr-boiler' => [
@@ -31,6 +31,14 @@ return [
         'boiler' => [
             'title' => 'Type ketel',
             'help' => 'Hier kunt u aangeven welk type ketel u heeft. Als u het niet weet kies dan HR107 ketel.'
+        ],
+        'total-sun-panels' => [
+            'title' => 'Hoeveel zonnepanelen zijn er aanwezig',
+            'help' => 'Voer hier het aantal zonnepanelen in dat in de huidige situatie geïnstalleerd is. Als u geen panelen hebt vul dan 0 in of laat het veld leeg.',
+            'year' => [
+                'title' => 'Indien aanwezig, wanneer geplaatst?',
+                'help' => 'Voer hier het aantal zonnepanelen in dat in de huidige situatie geïnstalleerd is. Als u geen panelen hebt vul dan 0 in of laat het veld leeg.',
+            ],
         ],
 
         'house-ventilation' => [

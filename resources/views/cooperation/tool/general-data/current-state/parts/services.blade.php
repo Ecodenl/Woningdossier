@@ -24,6 +24,12 @@
 
 
     @if($service->short == 'house-ventilation')
+        @foreach($service->values->where('calculate_value', '!=', 5) as $serviceValue)
+            <?php
+            dd(\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingservices()->where('service_id', $service->id), 'service_value_id'));
+            ?>
+        @endforeach
+
         <div class="row">
             <div class="col-sm-4 ">
                 <img class="img-responsive mt-15 pr-10 d-inline pull-left" src="{{asset('images/service-icons/'.$iconName.'.png')}}">

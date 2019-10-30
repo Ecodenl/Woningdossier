@@ -109,6 +109,15 @@
             <div id="optional-total-sun-panels-questions">
 
                 <div class="col-md-4">
+                    @component('cooperation.tool.components.step-question', ['id' => 'service.'.$service->id.'.extra.year', 'translation' => 'general-data/current-state.installed-power', 'required' => false])
+                        @component('cooperation.tool.components.input-group', ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(), 'userInputColumn' => 'extra.year'])
+                            <span class="input-group-addon">@lang('general.unit.wp.title')</span>
+                            <input type="text" class="form-control" name="service[{{ $service->id }}][extra][year]" value="{{ old('service.'.$service->id . '.extra.year', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $service->id), 'extra.year')) }}">
+                        @endcomponent
+                    @endcomponent
+                </div>
+
+                <div class="col-md-4">
                     @component('cooperation.tool.components.step-question', ['id' => 'service.'.$service->id.'.extra.year', 'translation' => 'general-data/current-state.service.'.$service->short.'.year', 'required' => false])
                         @component('cooperation.tool.components.input-group', ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(), 'userInputColumn' => 'extra.year'])
                             <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
@@ -158,23 +167,7 @@
             });
 
             houseVentilationService.change(function () {
-                var selectedCalculateValue = $(this).find('option:selected').data('calculate-value');
-                var demandDriven = $('#demand-driven');
-                var heatRecovery = $('#heat-recovery');
-
-                demandDriven.hide();
-                demandDriven.removeProp('selected');
-                heatRecovery.hide();
-                heatRecovery.removeProp('selected');
-
-                if (selectedCalculateValue === 2) {
-                    console.log('well wtf');
-                    demandDriven.show();
-                } else if (selectedCalculateValue === 3 || selectedCalculateValue === 4) {
-                    demandDriven.show();
-                    heatRecovery.show();
-                }
-                // handleVentilationFields($(this));
+                handleVentilationFields($(this));
            });
 
             function handleSunPanelFields(totalSunPanelInput, optionalTotalSunPanelQuestions) {
@@ -191,18 +184,16 @@
             }
 
             function handleVentilationFields(ventilationField) {
-                console.log('ok')
                 var selectedCalculateValue = ventilationField.find('option:selected').data('calculate-value');
                 var demandDriven = $('#demand-driven');
                 var heatRecovery = $('#heat-recovery');
 
                 demandDriven.hide();
-                demandDriven.removeProp('selected');
+                demandDriven.find('input').prop('checked', false);
                 heatRecovery.hide();
-                heatRecovery.removeProp('selected');
+                heatRecovery.find('input').prop('checked', false);
 
                 if (selectedCalculateValue === 2) {
-                    console.log('well wtf');
                     demandDriven.show();
                 } else if (selectedCalculateValue === 3 || selectedCalculateValue === 4) {
                     demandDriven.show();

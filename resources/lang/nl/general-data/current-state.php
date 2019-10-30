@@ -14,6 +14,11 @@ return [
     'step-intro' => [
         'title' => 'Uitlegtekst over de huidige staat van de woning en hoe deze pagina in te vullen. Uitlegtekst over de huidige staat van de woning en hoe deze pagina in te vullen Uitlegtekst over de huidige staat van de woning en hoe deze pagina in te vullen.',
     ],
+    'installed-power' => [
+        'title' => 'Geinstalleerd vermogen (totaal)',
+        'help' => 'Geinstalleerd vermogen (totaal)'
+    ],
+
     'building-heating-applications' => [
         'title' => 'Hoe word de woning nu verwarmd',
         'help' => ''

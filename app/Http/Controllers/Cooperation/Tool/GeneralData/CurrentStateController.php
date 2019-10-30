@@ -14,10 +14,7 @@ use App\Models\InputSource;
 use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\UserInterest;
-use function Couchbase\defaultDecoder;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
 
 class CurrentStateController extends Controller
 {

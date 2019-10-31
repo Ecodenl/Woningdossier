@@ -258,6 +258,7 @@
                 handleExampleBuildingSelect($(this).val(), $('input#build_year').val())
             });
 
+            // function to add the example buildings to the select.
             function handleExampleBuildingSelect(buildingType, buildYear) {
                 $.ajax({
                     url: getQualifiedExampleBuildingsRoute,

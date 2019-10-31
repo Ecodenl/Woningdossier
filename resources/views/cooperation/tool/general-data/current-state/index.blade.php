@@ -34,6 +34,3 @@
         </div>
     </form>
 @endsection
-
-@push('js')
-@endpush

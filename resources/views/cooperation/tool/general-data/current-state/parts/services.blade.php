@@ -79,7 +79,10 @@
                 <div id="demand-driven" class="col-sm-offset-1 col-md-offset-0 col-xs-12 col-sm-4 col-md-3">
                     <div class="form-group add-space">
                         <label class="checkbox-inline">
-                            <input type="checkbox" name="service[{{$service->id}}][demand_driven]">
+                            <?php
+                                $ventilationBuildingService = $building->buildingservices()->where('service_id', $service->id)->first();
+                            ?>
+                            <input @if($ventilationBuildingService->extra['demand_driven'] == true) checked="checked" @endif type="checkbox" name="service[{{$service->id}}][demand_driven]">
                             @lang('general-data/current-state.service.'.$service->short.'.demand-driven.title')
                         </label>
                     </div>
@@ -109,10 +112,10 @@
             <div id="optional-total-sun-panels-questions">
 
                 <div class="col-md-4">
-                    @component('cooperation.tool.components.step-question', ['id' => 'service.'.$service->id.'.extra.year', 'translation' => 'general-data/current-state.installed-power', 'required' => false])
-                        @component('cooperation.tool.components.input-group', ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(), 'userInputColumn' => 'extra.year'])
+                    @component('cooperation.tool.components.step-question', ['id' => 'building-pv-panels-total-installed-power', 'translation' => 'general-data/current-state.installed-power', 'required' => false])
+                        @component('cooperation.tool.components.input-group', ['inputType' => 'input', 'userInputValues' => $building->pvPanels()->forMe()->get(), 'userInputColumn' => 'total_installed_power'])
                             <span class="input-group-addon">@lang('general.unit.wp.title')</span>
-                            <input type="text" class="form-control" name="service[{{ $service->id }}][extra][year]" value="{{ old('service.'.$service->id . '.extra.year', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $service->id), 'extra.year')) }}">
+                            <input type="text" class="form-control" name="building_pv_panels[total_installed_power]" value="{{ old('building_pv_panels.total_installed_power', \App\Helpers\Hoomdossier::getMostCredibleValue($building->pvPanels(), 'total_installed_power')) }}">
                         @endcomponent
                     @endcomponent
                 </div>
@@ -188,16 +191,18 @@
                 var demandDriven = $('#demand-driven');
                 var heatRecovery = $('#heat-recovery');
 
-                demandDriven.hide();
-                demandDriven.find('input').prop('checked', false);
-                heatRecovery.hide();
-                heatRecovery.find('input').prop('checked', false);
-
                 if (selectedCalculateValue === 2) {
                     demandDriven.show();
+                    heatRecovery.hide();
+                    heatRecovery.find('input').prop('checked', false);
                 } else if (selectedCalculateValue === 3 || selectedCalculateValue === 4) {
                     demandDriven.show();
                     heatRecovery.show();
+                } else {
+                    demandDriven.hide();
+                    demandDriven.find('input').prop('checked', false);
+                    heatRecovery.hide();
+                    heatRecovery.find('input').prop('checked', false);
                 }
             }
         });

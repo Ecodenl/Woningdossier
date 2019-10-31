@@ -180,7 +180,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         Route::post('', 'UsageController@store')->name('store');
                     });
                     Route::group(['prefix' => 'interesse', 'as' => 'interest.'], function () {
-                        Route::get('', 'BuildingCharacteristicsController@index')->name('index');
+                        Route::get('', 'InterestController@index')->name('index');
                     });
                 });
 

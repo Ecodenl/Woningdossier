@@ -34,20 +34,8 @@ return [
             'help' => 'Hier kunt u aangeven of de ruimtes op de eerste verdieping wel of niet verwarmd zijn. Als u maar één bouwlaag heeft geef dan hier de situatie voor die bouwlaag op.'
         ],
         'heating-second-floor' => [
-            'title' => '',
-            'help' => ''
-        ],
-        '' => [
-            'title' => '',
-            'help' => ''
-        ],
-        '' => [
-            'title' => '',
-            'help' => ''
-        ],
-        '' => [
-            'title' => '',
-            'help' => ''
+            'title' => 'Welke situatie is van toepassing op de tweede verdieping? ',
+            'help' => 'Hier kunt u aangeven of de ruimtes op de tweede verdieping wel of niet verwarmd zijn. Als u geen tweede verdieping heeft kies dan “Niet van toepassing”.'
         ],
     ],
 
@@ -63,5 +51,10 @@ return [
             'title' => 'Wat is het elektragebruik van het afgelopen jaar?',
             'help' => 'U kunt dit vinden in de jaarafrekening van uw energieleverancier, opgave over een heel jaar.'
         ],
+    ],
+
+    'comment' => [
+        'title' => 'Toelichting gebruik van de woning',
+        'help' => 'Geef toelichting gebruik van de woning'
     ],
 ];

@@ -222,6 +222,12 @@
                 </div>
             </div>
         </div>
+
+
+        @include('cooperation.tool.includes.comment', [
+            'columnName' => 'step_comments[comment]',
+            'translation' => 'general-data/usage.comment'
+        ])
     </form>
 @endsection
 

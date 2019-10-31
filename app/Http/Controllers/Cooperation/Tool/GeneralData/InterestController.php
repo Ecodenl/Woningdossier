@@ -21,6 +21,7 @@ class InterestController extends Controller
             ->select('motivations.*')
             ->where('user_motivations.user_id', $buildingOwner->id)
             ->orderBy('user_motivations.order')->get();
+
         $userMotivations = $buildingOwner->motivations()->orderBy('order')->get();
 //        $elements = Element::whereIn('short', [
 //            'sleeping-rooms-windows', 'living-rooms-windows',

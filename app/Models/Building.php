@@ -104,8 +104,7 @@ class Building extends Model
      */
     public function hasCompleted(Step $step)
     {
-        return $this->find(HoomdossierSession::getBuilding())
-                ->completedSteps()
+        return $this->completedSteps()
                 ->where('step_id', $step->id)->count() > 0;
     }
 

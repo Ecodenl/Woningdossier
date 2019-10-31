@@ -22,7 +22,7 @@
                 <ul class="nav nav-tabs">
                     @if($currentStep->hasSubSteps())
                         @foreach($cooperation->getSubStepsForStep($currentStep) as $subStep)
-                            <li @if($subStep->short == $currentSubStep->short)class="active"@endif>
+                            <li  class="@if($subStep->short == $currentSubStep->short) active @endif @if($building->hasCompleted($subStep)) completed @endif">
                                 <a href="{{route("cooperation.tool.{$currentStep->short}.{$subStep->short}.index")}}" >{{$subStep->name}}</a>
                             </li>
                         @endforeach

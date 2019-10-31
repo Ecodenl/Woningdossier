@@ -243,12 +243,49 @@
     <script>
         $(document).ready(function () {
 
+            var getQualifiedExampleBuildingsRoute = '{{route('cooperation.tool.general-data.building-characteristics.qualified-example-buildings')}}';
+            var exampleBuilding = $('#example_building_id');
+            var defaultOptionForExampleBuilding = exampleBuilding.find('option').first();
+
+            console.log(defaultOptionForExampleBuilding);
             $(window).keydown(function (event) {
                 if (event.keyCode === 13) {
                     event.preventDefault();
                     return false;
                 }
             });
+
+            $('input#build_year').change(function () {
+                handleExampleBuildingSelect($('select#building_type_id').val(), $(this).val())
+            });
+
+            $('select#building_type_id').change(function () {
+                handleExampleBuildingSelect($(this).val(), $('input#build_year').val())
+            });
+
+            function handleExampleBuildingSelect(buildingType, buildYear) {
+                $.ajax({
+                    url: getQualifiedExampleBuildingsRoute,
+                    data: {
+                        building_type: buildingType,
+                        build_year: buildYear
+                    },
+                    success: function (response) {
+                        exampleBuilding.find('option').remove();
+
+
+                        $(response).each(function (index, exampleBuildingData) {
+                            // console.log(exampleBuildingData.translation)
+                            exampleBuilding.append(
+                                '<option value="'+exampleBuildingData.id+'">'+exampleBuildingData.translation+'</option>'
+                            )
+                        });
+                        if (response.length === 0) {
+                            exampleBuilding.append(defaultOptionForExampleBuilding);
+                        }
+                    }
+                })
+            }
 
             var previous_bt = "{{ $prevBt }}";
             var previous_by = "{{ $prevBy }}";

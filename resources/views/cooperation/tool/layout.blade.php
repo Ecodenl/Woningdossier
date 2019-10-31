@@ -19,7 +19,7 @@
                    We check if the current step is the building detail
                 --}}
                 <h2>{{$currentStep->name}}</h2>
-                <ul class="nav nav-tabs">
+                <ul class="nav nav-tabs mt-20">
                     @if($currentStep->hasSubSteps())
                         @foreach($cooperation->getSubStepsForStep($currentStep) as $subStep)
                             <li  class="@if($subStep->short == $currentSubStep->short) active @endif @if($building->hasCompleted($subStep)) completed @endif">

@@ -50,6 +50,25 @@ class BuildingCharacteristicsController extends Controller
         ));
     }
 
+    public function qualifiedExampleBuildings(Request $request)
+    {
+        $buildingType = BuildingType::findOrFail($request->get('building_type'));
+        $exampleBuildings = collect([]);
+        if ($buildingType instanceof BuildingType) {
+            // get the example buildings with translations so we can return it as a response
+            $exampleBuildings = ExampleBuilding::forMyCooperation()
+                ->where('building_type_id', '=', $buildingType->id)
+                ->leftJoin('translations', 'example_buildings.name', '=', 'translations.key')
+                ->where('translations.language', app()->getLocale())
+                ->select('example_buildings.order', 'example_buildings.id', 'translations.translation')
+                ->orderBy('order')
+                ->get()
+                ->toArray();
+        }
+
+        return response()->json($exampleBuildings);
+    }
+
     public function store(Request $request)
     {
         $building = HoomdossierSession::getBuilding(true);

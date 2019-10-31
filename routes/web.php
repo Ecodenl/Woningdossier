@@ -167,6 +167,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     Route::group(['prefix' => 'gebouw-kenmerken', 'as' => 'building-characteristics.'], function () {
                         Route::get('', 'BuildingCharacteristicsController@index')->name('index');
+                        Route::get('get-qualified-example-buildings', 'BuildingCharacteristicsController@qualifiedExampleBuildings')->name('qualified-example-buildings');
                         Route::post('', 'BuildingCharacteristicsController@store')->name('store');
                     });
 

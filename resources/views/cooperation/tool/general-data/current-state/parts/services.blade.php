@@ -61,6 +61,9 @@
             </div>
         </div>
     @elseif($service->short == 'house-ventilation')
+        <?php
+            $ventilationBuildingService = $building->buildingservices()->where('service_id', $service->id)->first();
+        ?>
         <div class="row" id="house-ventilation">
             <div class="col-xs-12 col-sm-12 col-md-4">
                 <img class="img-responsive mt-15 pr-10 d-inline pull-left" src="{{asset('images/service-icons/'.$iconName.'.png')}}">
@@ -79,10 +82,8 @@
                 <div id="demand-driven" class="col-sm-offset-1 col-md-offset-0 col-xs-12 col-sm-4 col-md-3">
                     <div class="form-group add-space">
                         <label class="checkbox-inline">
-                            <?php
-                                $ventilationBuildingService = $building->buildingservices()->where('service_id', $service->id)->first();
-                            ?>
-                            <input @if($ventilationBuildingService->extra['demand_driven'] == true) checked="checked" @endif type="checkbox" name="service[{{$service->id}}][demand_driven]">
+
+                            <input @if(isset($ventilationBuildingService->extra['demand_driven']) && $ventilationBuildingService->extra['demand_driven'] == true) checked="checked" @endif type="checkbox" name="service[{{$service->id}}][demand_driven]">
                             @lang('general-data/current-state.service.'.$service->short.'.demand-driven.title')
                         </label>
                     </div>
@@ -90,7 +91,7 @@
                 <div id="heat-recovery" class="col-xs-12 col-sm-4 col-md-3">
                     <div class="form-group add-space">
                         <label class="checkbox-inline">
-                            <input type="checkbox" name="service[{{$service->id}}][heat_recovery]">
+                            <input @if(isset($ventilationBuildingService->extra['heat_recovery']) && $ventilationBuildingService->extra['heat_recovery'] == true) checked="checked" @endif type="checkbox" name="service[{{$service->id}}][heat_recovery]">
                             @lang('general-data/current-state.service.'.$service->short.'.heat-recovery.title')
                         </label>
                     </div>

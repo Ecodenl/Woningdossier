@@ -247,16 +247,11 @@
             var exampleBuilding = $('#example_building_id');
             var defaultOptionForExampleBuilding = exampleBuilding.find('option').first();
 
-            console.log(defaultOptionForExampleBuilding);
             $(window).keydown(function (event) {
                 if (event.keyCode === 13) {
                     event.preventDefault();
                     return false;
                 }
-            });
-
-            $('input#build_year').change(function () {
-                handleExampleBuildingSelect($('select#building_type_id').val(), $(this).val())
             });
 
             $('select#building_type_id').change(function () {
@@ -272,14 +267,11 @@
                     },
                     success: function (response) {
                         exampleBuilding.find('option').remove();
-
-
+                        // when there are example buildings append them to the select box
                         $(response).each(function (index, exampleBuildingData) {
-                            // console.log(exampleBuildingData.translation)
-                            exampleBuilding.append(
-                                '<option value="'+exampleBuildingData.id+'">'+exampleBuildingData.translation+'</option>'
-                            )
+                            exampleBuilding.append('<option value="'+exampleBuildingData.id+'">'+exampleBuildingData.translation+'</option>')
                         });
+                        // and when there is no example building add the empty one
                         if (response.length === 0) {
                             exampleBuilding.append(defaultOptionForExampleBuilding);
                         }

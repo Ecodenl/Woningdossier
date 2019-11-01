@@ -7,8 +7,6 @@
 @section('step_content')
 
 
-{{--    @if(!\App\Helpers\HoomdossierSession::isUserObserving())--}}
-
     <div class="row">
         <div class="col-md-12">
             <p>{!! \App\Helpers\Translation::translate('my-plan.description.title') !!}</p>
@@ -16,22 +14,14 @@
                 <button type="button" class="btn btn-default" data-toggle="modal"
                         data-target="#{{$inputSource->name}}">{{ \App\Helpers\Translation::translate('my-plan.trigger-modal-for-other-input-source.title', ['input_source_name' => strtolower($inputSource->name)]) }}</button>
             @endforeach
-
-
-                </div>
-
-
-
-                </div>
+        </div>
+    </div>
 
             {{-- Create the modals with personal plan info for the other input source --}}
 
-                        @foreach($personalPlanForVariousInputSources as $inputSourceName => $measuresByYear)
-
-                                    @include('cooperation.tool.my-plan.parts.modal-for-other-input-source')
-        @endforeach
-    {{--@endif
-                --}}
+    @foreach($personalPlanForVariousInputSources as $inputSourceName => $measuresByYear)
+        @include('cooperation.tool.my-plan.parts.modal-for-other-input-source')
+    @endforeach
 
     {{-- Our plan, which the users can edit --}}
     @include('cooperation.tool.my-plan.parts.my-plan-form')
@@ -76,7 +66,7 @@
 
     <br>
     {{--    @if($file instanceof \App\Models\FileStorage && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))--}}
-    @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
+    @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
     <div class="row" id="download-section" style="display: none;">
         <div class="col-md-12">
             <div class="panel panel-primary">
@@ -94,7 +84,7 @@
     @endif
 
     <br>
-    @if($buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
+    @if($buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
@@ -292,7 +282,7 @@
 
 
                         // only when its not done yet, otherwise on every change it will scroll to the download section
-                        if (!pageHasAlreadyBeenScrolledToDownloadSection) {
+                        if (!pageHasAlreadyBeenScrolledToDownloadSection && window.location.hash.length > 0) {
                         // we will have to do this after the change, otherwise it will be scrolled to the download section. And then the personal plan appends and poof its gone.
                             $('html, body').animate({
                                 scrollTop: $(window.location.hash).offset().top

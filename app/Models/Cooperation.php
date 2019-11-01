@@ -98,13 +98,15 @@ class Cooperation extends Model
      */
     public function getActiveOrderedSteps()
     {
-        return $this->steps()
+//        return $this->steps()
             // for now, should be removed when the step is deleted
-            ->where('steps.short', '!=', 'building-detail')
+//            ->where('steps.short', '!=', 'building-detail')
 //            ->where('steps.parent_id', '=', null)
-            ->orderBy('cooperation_steps.order')
-            ->where('cooperation_steps.is_active', '1')
-            ->get();
+//            ->orderBy('cooperation_steps.order')
+//            ->where('cooperation_steps.is_active', '1')
+//            ->get();
+        return \App\Helpers\Cache\Cooperation::getActiveOrderedSteps($this);
+        //return $this->steps()->orderBy('cooperation_steps.order')->where('cooperation_steps.is_active', '1')->get();
     }
 
     public function getRouteKeyName()

@@ -104,7 +104,7 @@ class Account extends Authenticatable
      */
     public function user()
     {
-        return $this->users()->first();
+        return \App\Helpers\Cache\Account::user($this);
     }
 
     /**

@@ -41,11 +41,11 @@
         <div class="row mt-25">
             <div class="col-sm-6">
                 <?php
-                        $renovationPlanAnswerOptions = [
-                            1 => __('general-data/interest.motivation.renovation-plans.options.yes-within-2-year'),
-                            2 =>  __('general-data/interest.motivation.renovation-plans.options.yes-within-5-year'),
-                            0 =>  __('general-data/interest.motivation.renovation-plans.options.none')
-                        ]
+                    $renovationPlanAnswerOptions = [
+                        1 => __('general-data/interest.motivation.renovation-plans.options.yes-within-2-year'),
+                        2 =>  __('general-data/interest.motivation.renovation-plans.options.yes-within-5-year'),
+                        0 =>  __('general-data/interest.motivation.renovation-plans.options.none')
+                    ]
                 ?>
                 @component('cooperation.tool.components.step-question', ['id' => 'renovation-plans', 'translation' => 'general-data/interest.motivation.renovation-plans'])
                     @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $renovationPlanAnswerOptions, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'element_value_id'])
@@ -60,14 +60,11 @@
             <div class="col-sm-6">
                 @component('cooperation.tool.components.step-question', ['id' => 'renovation-plans', 'translation' => 'general-data/interest.motivation.building-complaints'])
                     @component('cooperation.tool.components.input-group', ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'element_value_id'])
-                        <input type="text" name="user_energy_habits[building_complaints]" class="form-control">
+                        <input type="text" name="user_energy_habits[building_complaints]" class="form-control" value="{{\App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'building_complaints')}}">
                     @endcomponent
                 @endcomponent
             </div>
         </div>
-        <br>
-        <br>
-        <br>
         @include('cooperation.tool.includes.comment', [
             'columnName' => 'step_comments[comment]',
             'translation' => 'general-data/interest.comment'

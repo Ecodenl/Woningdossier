@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
             $compareFieldName = $parameters[0];
 
             return __('validation.custom')[$attribute][$rule] ?? __('validation.custom.needs_to_be_lower_or_same_as', [
-                'attribute' => __('validation.attributes.'.$compareFieldName)
+                'attribute' => __('validation.attributes')[$compareFieldName]
             ]);
         });
 

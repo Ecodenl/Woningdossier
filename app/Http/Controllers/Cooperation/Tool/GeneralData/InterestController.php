@@ -18,16 +18,15 @@ class InterestController extends Controller
         $buildingOwner = $building->user;
 
 //        if ($buildingOwner->motivations()->count() > 0) {
-            $motivations = Motivation::leftJoin('user_motivations', 'motivations.id', '=', 'user_motivations.motivation_id')
-                ->select('motivations.*')
-                ->where('user_motivations.user_id', $buildingOwner->id)
-                ->orderBy('user_motivations.order')->get();
+        $motivations = Motivation::leftJoin('user_motivations', 'motivations.id', '=', 'user_motivations.motivation_id')
+            ->select('motivations.*')
+            ->where('user_motivations.user_id', $buildingOwner->id)
+            ->orderBy('user_motivations.order')->get();
 //        } else {
 //            $motivations = Motivation::orderBy('order')->get();
 //        }
 
         $userMotivations = $buildingOwner->motivations()->orderBy('order')->get();
-//        dd($userMotivations);
         $userEnergyHabitsForMe = $buildingOwner->energyHabit()->forMe()->get();
 //        $elements = Element::whereIn('short', [
 //            'sleeping-rooms-windows', 'living-rooms-windows',

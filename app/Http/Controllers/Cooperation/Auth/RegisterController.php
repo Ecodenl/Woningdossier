@@ -70,7 +70,6 @@ class RegisterController extends Controller
      */
     public function register(RegisterFormRequest $request, Cooperation $cooperation)
     {
-        dd($request->all());
         // try to obtain the existing account
         $account = Account::where('email', $request->get('email'))->first();
 

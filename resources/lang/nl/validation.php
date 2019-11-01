@@ -51,7 +51,7 @@ return [
     'ipv6'                 => 'De :attribute moet een geldig IPv6 adres zijn.',
     'json'                 => 'De :attribute moet een geldige JSON string zijn.',
     'max'                  => [
-        'numeric' => ' :attribute mag niet groter dan :max zijn.',
+        'numeric' => ':attribute mag niet groter dan :max zijn.',
         'file'    => 'De :attribute mag niet groter dan :max kilobytes zijn.',
         'string'  => 'De :attribute mag niet meer dan :max karakters bevatten.',
         'array'   => 'De :attribute mag niet meer dan :max items bevatten.',
@@ -154,6 +154,8 @@ return [
         'thermostat_high' => 'temperatuur van de thermostaat op hoge stand',
         'thermostat_low' => 'temperatuur van de thermostaat op lage stand',
         'window_surface' => 'totale raamopperlake van de woning',
+        'amount_electricity' => __('general-data.data-about-usage.electricity-consumption-past-year.title'),
+        'amount_gas' => __('general-data.data-about-usage.gas-usage-past-year.title'),
         'build_year' => 'bouwjaar',
         '6.extra.year' => 'jaartal',
         '7.extra.year' => 'jaartal',

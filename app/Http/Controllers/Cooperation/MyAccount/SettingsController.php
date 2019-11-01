@@ -89,7 +89,7 @@ class SettingsController extends Controller
         // remove the paintwork from a building
         $building->currentPaintworkStatus()->delete();
         // remove all progress made in the tool
-        $building->progress()->delete();
+        $building->completedSteps()->delete();
 
         // remove the action plan advices from the user
         $user->actionPlanAdvices()->delete();

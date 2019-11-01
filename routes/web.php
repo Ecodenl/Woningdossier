@@ -80,6 +80,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
             }
 
+            Route::view('test', 'test');
             Route::get('home', 'HomeController@index')->name('home')->middleware('deny-if-filling-for-other-building');
 
             Route::resource('privacy', 'PrivacyController')->only('index');
@@ -156,15 +157,41 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::get('/', 'ToolController@index')->name('index');
 
                 Route::post('general-data/apply-example-building', 'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
-                Route::resource('building-detail', 'BuildingDetailController', ['only' => ['index', 'store']]);
+//                Route::resource('building-detail', 'BuildingDetailController', ['only' => ['index', 'store']]);
 
                 Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
                     Route::post('', 'QuestionnaireController@store')->name('store');
                 });
 
-                Route::group(['middleware' => 'filled-step:building-detail'], function () {
-                    Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
+                Route::group(['as' => 'general-data.', 'prefix' => 'general-data'], function () {
+
+                    Route::get('', 'GeneralDataController@index')->name('index');
+
+                    Route::group(['namespace' => 'GeneralData'], function () {
+                        Route::group(['prefix' => 'gebouw-kenmerken', 'as' => 'building-characteristics.'], function () {
+                            Route::get('', 'BuildingCharacteristicsController@index')->name('index');
+                            Route::get('get-qualified-example-buildings', 'BuildingCharacteristicsController@qualifiedExampleBuildings')->name('qualified-example-buildings');
+                            Route::post('', 'BuildingCharacteristicsController@store')->name('store');
+                        });
+
+                        Route::group(['prefix' => 'huidige-staat', 'as' => 'current-state.'], function () {
+                            Route::get('', 'CurrentStateController@index')->name('index');
+                            Route::post('', 'CurrentStateController@store')->name('store');
+                        });
+
+                        Route::group(['prefix' => 'gebruik', 'as' => 'usage.'], function () {
+                            Route::get('', 'UsageController@index')->name('index');
+                            Route::post('', 'UsageController@store')->name('store');
+                        });
+                        Route::group(['prefix' => 'interesse', 'as' => 'interest.'], function () {
+                            Route::get('', 'InterestController@index')->name('index');
+                        });
+                    });
                 });
+
+//                Route::group(['middleware' => 'filled-step:building-detail'], function () {
+//                    Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
+//                });
                 Route::group(['middleware' => 'filled-step:general-data'], function () {
                     // Ventilation information: info for now
                     Route::resource('ventilation-information', 'VentilationController',

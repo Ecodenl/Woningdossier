@@ -17,6 +17,7 @@ use App\Models\BuildingService;
 use App\Models\BuildingType;
 use App\Models\CentralHeatingAge;
 use App\Models\ComfortLevelTapWater;
+use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\EnergyLabel;
@@ -59,8 +60,11 @@ class GeneralDataController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Cooperation $cooperation)
     {
+        return redirect(route('cooperation.tool.general-data.building-characteristics.index'));
+//        dd($step, $subStep);
+
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
@@ -82,6 +86,7 @@ class GeneralDataController extends Controller
             'sleeping-rooms-windows', 'living-rooms-windows',
             'wall-insulation', 'floor-insulation', 'roof-insulation',
             ])->orderBy('order')->get();
+
         $services = Service::orderBy('order')->get();
 
         $insulations = PresentWindow::all();

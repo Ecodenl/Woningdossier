@@ -1,16 +1,27 @@
 <?php
+
     $helpId = time();
-    // get the step slug
-    $slug = str_replace('/tool/', '', request()->getRequestUri());
-
     $currentInputSource = \App\Helpers\HoomdossierSession::getInputSource(true);
-    // if not, we have to place a extra field so he can add a comment
 
-    $currentInputSourceHasNoPlacedComment = !isset($commentsByStep[$slug][$currentInputSource->name]);
+    // obtain the comments for the current step, when its a substep, the comment will be stored in the substep
+    // else get it from the main step
+    $commentsForCurrentStep = $commentsByStep[$currentSubStep->short ?? $currentStep->short] ?? [];
+
+    if (isset($short)) {
+        $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$short][$currentInputSource->name]);
+    } else {
+        $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name]);
+    }
+
     $columnName = $columnName ?? 'comment';
 ?>
-@isset($commentsByStep[$slug])
-    @foreach($commentsByStep[$slug] as $inputSourceName => $comment)
+@if(!empty($commentsForCurrentStep))
+@foreach($commentsForCurrentStep as $inputSourceName => $comment)
+
+        {{--a nice uitzondering op de regel for only one case--}}
+        @if(is_array($comment))
+            <?php $comment = $comment[$short]; ?>
+        @endif
         {{-- The column can be a category, this will be the case when the comment is stored under a catergory --}}
         @if(!empty($comment))
         <div class="row">
@@ -36,8 +47,7 @@
         </div>
         @endif
     @endforeach
-@endisset
-
+@endif
 @if($currentInputSourceHasNoPlacedComment)
 <div class="row">
     <div class="col-sm-12">

@@ -30,6 +30,7 @@ class InputSource extends Model
     const RESIDENT_SHORT = 'resident';
     const COACH_SHORT = 'coach';
     const COOPERATION_SHORT = 'cooperation';
+    const EXAMPLE_BUILDING = 'example-building';
 
     public static function findByShort($short)
     {

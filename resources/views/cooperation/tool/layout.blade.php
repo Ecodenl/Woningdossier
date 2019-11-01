@@ -1,11 +1,15 @@
 @extends('cooperation.layouts.app')
 
 @section('content')
+
     <div class="container">
+
         <div class="row">
-            <div class="col-md-12 text-center">
-                @include('cooperation.tool.includes.top-alerts')
-                @include('cooperation.tool.progress')
+            <div class="col-md-12">
+                <div class="text-center">
+                    @include('cooperation.tool.includes.top-alerts')
+                    @include('cooperation.tool.parts.progress')
+                </div>
             </div>
         </div>
 
@@ -14,35 +18,28 @@
                 {{--
                    We check if the current step is the building detail
                 --}}
-                @if($currentStep instanceof \App\Models\Step && in_array($currentStep->slug, ['building-detail',  'general-data']))
-                    <ul class="nav nav-tabs">
-                        <li @if($currentStep->slug == "building-detail")class="active"@endif>
-                            <a href="{{route('cooperation.tool.building-detail.index')}}" >@lang('woningdossier.cooperation.step.building-detail')</a>
-                        </li>
+                @if($currentSubStep instanceof \App\Models\Step)
+                    <h2>{{$currentStep->name}}</h2>
+                @endif
+                <ul class="nav nav-tabs mt-20">
+                    @if($currentStep->hasSubSteps())
+                        @foreach($cooperation->getSubStepsForStep($currentStep) as $subStep)
+                            <li  class="@if($subStep->short == $currentSubStep->short) active @endif @if($building->hasCompleted($subStep)) completed @endif">
+                                <a href="{{route("cooperation.tool.{$currentStep->short}.{$subStep->short}.index")}}" >{{$subStep->name}}</a>
+                            </li>
+                        @endforeach
+                    @endif
 
-                        <li @if($currentStep->slug == "general-data")class="active @endif">
-                            <a href="{{route('cooperation.tool.general-data.index')}}">@lang('woningdossier.cooperation.step.general-data')</a>
-                        </li>
-
-                        @if(isset($currentStep) && $currentStep->hasQuestionnaires())
-                            @foreach($currentStep->questionnaires as $questionnaire)
-                                @if($questionnaire->isActive())
-                                    <li><a href="#questionnaire-{{$questionnaire->id}}" data-toggle="tab">{{$questionnaire->name}}</a></li>
-                                @endif
-                            @endforeach
-                        @endif
-                    </ul>
-                @elseif(isset($currentStep) && $currentStep->hasQuestionnaires())
-                    <ul class="nav nav-tabs">
-                        <li class="active">
-                            <a href="#main-tab" data-toggle="tab">{{$currentStep->name}}</a></li>
+                    @if(isset($currentStep) && $currentStep->hasQuestionnaires())
                         @foreach($currentStep->questionnaires as $questionnaire)
                             @if($questionnaire->isActive())
-                                <li><a href="#questionnaire-{{$questionnaire->id}}" data-toggle="tab">{{$questionnaire->name}}</a></li>
+                                <li>
+                                    <a href="#questionnaire-{{$questionnaire->id}}" data-toggle="tab">{{$questionnaire->name}}</a>
+                                </li>
                             @endif
                         @endforeach
-                    </ul>
-                @endif
+                    @endif
+                </ul>
 
                 <div class="tab-content">
                     @include('cooperation.layouts.custom-questionnaire')
@@ -50,11 +47,11 @@
                     <div class="panel tab-pane active tab-pane panel-default" id="main-tab">
                         <div class="panel-heading">
                             <h3>
-                                @yield('step_title', '')
+                                {{$currentSubStep->name ?? $currentStep->name}}
                             </h3>
 
                             @if(!in_array(Route::currentRouteName(), ['cooperation.tool.index', 'cooperation.tool.my-plan.index']) && !\App\helpers\HoomdossierSession::isUserObserving())
-                                <button id="submit-main-form" class="pull-right btn btn-primary">
+                                <button class="pull-right btn btn-primary submit-main-form">
                                     @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index', 'cooperation.tool.heat-pump.index']))
                                         @lang('default.buttons.next-page')
                                     @else
@@ -64,9 +61,7 @@
                             @elseif(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']) && $buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
                                 <form action="{{route('cooperation.file-storage.store', ['fileType' => $pdfReportFileType->short])}}" method="post">
                                     {{csrf_field()}}
-                                    <button style="margin-top: -35px"
-                                            type="submit"
-                                            class="pull-right btn btn-primary pdf-report">
+                                    <button style="margin-top: -35px" type="submit" class="pull-right btn btn-primary pdf-report">
                                         {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
                                     </button>
                                 </form>
@@ -77,12 +72,24 @@
                         <div class="panel-body">
                             @yield('step_content', '')
                         </div>
+
+                        <div class="panel-footer bg-white">
+                            @if(!\App\helpers\HoomdossierSession::isUserObserving())
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button class="pull-right btn btn-primary submit-main-form">
+                                            @lang('default.buttons.next')
+                                        </button>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
+
 @endsection
 
 @push('js')
@@ -115,9 +122,9 @@
             })
         });
 
-        $('#submit-main-form').click(function () {
+        $('.submit-main-form').click(function () {
             // submit the main form / tool tab
-            $('.panel#main-tab form button[type=submit]').click();
+            $('.panel#main-tab form').submit();
         });
 
         $('#copy-coach-input').on('submit', function (event) {

@@ -68,6 +68,16 @@ class User extends Model implements AuthorizableContract
     protected $guard_name = 'web';
 
     /**
+     * Return all the interests of a user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function interests()
+    {
+        return $this->hasManyThrough(Interest::class, UserInterest::class, 'user_id', 'id', 'id', 'interest_id');
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -209,7 +219,7 @@ class User extends Model implements AuthorizableContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function interests()
+    public function interestsv2()
     {
         return $this->hasMany(UserInterest::class);
     }

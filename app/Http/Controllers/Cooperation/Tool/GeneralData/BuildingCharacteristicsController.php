@@ -26,6 +26,9 @@ class BuildingCharacteristicsController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
+        \DB::enableQueryLog();
+        dd($buildingOwner->interests, \DB::getQueryLog());
+
 
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();

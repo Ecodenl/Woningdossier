@@ -3,13 +3,44 @@
 namespace App\Services;
 
 use App\Helpers\Str;
+use App\Models\Cooperation;
 use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\QuestionOption;
+use App\Models\Step;
 use App\Models\Translation;
+use Ramsey\Uuid\Uuid;
 
 class QuestionnaireService {
 
+
+    public static function createQuestionnaire(Cooperation $cooperation, Step $step, array $questionnaireNameTranslations)
+    {
+        $questionnaireNameKey = Uuid::uuid4();
+
+        $maxOrderForQuestionnairesInSelectedSteps = $step->questionnaires()->max('order');
+
+        $questionnaire = Questionnaire::create([
+            'name' => $questionnaireNameKey,
+            'step_id' => $step->id,
+            'order' => ++$maxOrderForQuestionnairesInSelectedSteps,
+            'cooperation_id' => $cooperation->id,
+            'is_active' => false,
+        ]);
+
+        if (self::isNotEmptyTranslation($questionnaireNameTranslations)) {
+            foreach ($questionnaireNameTranslations as $locale => $questionnaireNameTranslation) {
+                if (empty($questionnaireNameTranslation)) {
+                    $questionnaireNameTranslation = current(array_filter($questionnaireNameTranslations));
+                }
+                Translation::create([
+                    'key' =>  $questionnaireNameKey,
+                    'language' => $locale,
+                    'translation' => $questionnaireNameTranslation,
+                ]);
+            }
+        }
+    }
     /**
      * Determine whether a question has options based on the type
      *
@@ -57,7 +88,6 @@ class QuestionnaireService {
      */
     public static function createQuestion(Questionnaire $questionnaire, array $questionData, string $questionType, array $validation, $order)
     {
-        dd($questionnaire, $questionData, $questionType, $validation, $order);
         $required = array_key_exists('required', $questionData);
         $uuid = Str::uuid();
 

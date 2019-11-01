@@ -2,7 +2,9 @@
 
 namespace Tests\Unit\app\Services;
 
+use App\Models\Cooperation;
 use App\Models\Questionnaire;
+use App\Models\Step;
 use App\Models\User;
 use App\Services\QuestionnaireService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -13,6 +15,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class QuestionnaireServiceTest extends TestCase
 {
     use RefreshDatabase;
+    public function setUp()
+    {
+        parent::setUp();
+        $this->refreshDatabase();
+        $this->seed();
+    }
 
     public static function hasQuestionOptionsProvider()
     {
@@ -89,9 +97,20 @@ class QuestionnaireServiceTest extends TestCase
 //        ];
     }
 
+
+    public function testCreateQuestionnaire()
+    {
+        $cooperation = Cooperation::find(1);
+        $step = Step::find(1);
+        QuestionnaireService::createQuestionnaire(        $cooperation,
+            $step,
+            ['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling',]);
+
+        $this->assertEquals(1, Questionnaire::count());
+    }
+
     public function testCreateQuestion()
     {
-        $this->seed();
         $this->assertEquals(1, User::all()->count());
 //        $this->refreshDatabase();
 //        $questionnaire, $questionData, $questionType, $validation, $order

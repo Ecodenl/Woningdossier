@@ -92,41 +92,19 @@ class QuestionnaireController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(QuestionnaireRequest $request)
+    public function store(Cooperation $cooperation, QuestionnaireRequest $request)
     {
         $this->authorize('store', Questionnaire::class);
-
-        $questionnaireNameKey = Uuid::uuid4();
 
         $questionnaireNameTranslations = $request->input('questionnaire.name');
         $stepId = $request->input('questionnaire.step_id');
 
         $step = Step::find($stepId);
 
-        $maxOrderForQuestionnairesInSelectedSteps = $step->questionnaires()->max('order');
+        QuestionnaireService::createQuestionnaire($cooperation, $step, $questionnaireNameTranslations);
 
-        $questionnaire = Questionnaire::create([
-            'name' => $questionnaireNameKey,
-            'step_id' => $stepId,
-            'order' => ++$maxOrderForQuestionnairesInSelectedSteps,
-            'cooperation_id' => HoomdossierSession::getCooperation(),
-            'is_active' => false,
-        ]);
 
-        if ($this->isNotEmptyTranslation($questionnaireNameTranslations)) {
-            foreach ($questionnaireNameTranslations as $locale => $questionnaireNameTranslation) {
-                if (empty($questionnaireNameTranslation)) {
-                    $questionnaireNameTranslation = current(array_filter($questionnaireNameTranslations));
-                }
-                Translation::create([
-                    'key' =>  $questionnaireNameKey,
-                    'language' => $locale,
-                    'translation' => $questionnaireNameTranslation,
-                ]);
-            }
-        }
-
-        return redirect()->route('cooperation.admin.cooperation.questionnaires.edit', ['id' => $questionnaire->id]);
+        return redirect()->route('cooperation.admin.cooperation.questionnaires.index');
     }
 
     /**

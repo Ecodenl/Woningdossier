@@ -65,7 +65,7 @@ class GeneralDataController extends Controller
         return redirect(route('cooperation.tool.general-data.building-characteristics.index'));
 //        dd($step, $subStep);
 
-        $building = HoomdossierSession::getBuilding(true);
+        $building = HoomdossierSession::getBuilding(true);p
         $buildingOwner = $building->user;
 
         $buildingTypes = BuildingType::all();

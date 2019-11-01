@@ -1,5 +1,4 @@
 <?php
-    // note needs improvement bigtime
 
     $helpId = time();
     $currentInputSource = \App\Helpers\HoomdossierSession::getInputSource(true);

@@ -254,7 +254,7 @@
                 }
             });
 
-            $('select#building_type_id').change(function () {
+          $('select#building_type_id').change(function () {
                 handleExampleBuildingSelect($(this).val(), $('input#build_year').val())
             });
 

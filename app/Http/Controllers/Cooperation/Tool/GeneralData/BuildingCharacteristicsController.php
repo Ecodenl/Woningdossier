@@ -71,6 +71,8 @@ class BuildingCharacteristicsController extends Controller
 
     public function store(Request $request)
     {
+        return redirect(back());
+
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
 

@@ -18,7 +18,9 @@
                 {{--
                    We check if the current step is the building detail
                 --}}
-                <h2>{{$currentStep->name}}</h2>
+                @if($currentSubStep instanceof \App\Models\Step)
+                    <h2>{{$currentStep->name}}</h2>
+                @endif
                 <ul class="nav nav-tabs mt-20">
                     @if($currentStep->hasSubSteps())
                         @foreach($cooperation->getSubStepsForStep($currentStep) as $subStep)

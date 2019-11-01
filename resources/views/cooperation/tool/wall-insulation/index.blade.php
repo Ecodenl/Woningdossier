@@ -337,7 +337,6 @@
 
 
             @include('cooperation.tool.includes.comment', [
-                'columnName' => 'additional_info',
                 'translation' => 'wall-insulation.comment'
             ])
 

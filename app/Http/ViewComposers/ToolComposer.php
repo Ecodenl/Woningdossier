@@ -35,6 +35,7 @@ class ToolComposer
 
         // since we dont really need to load the vars in this view since its just a alert
         // the alert is also loaded on pages where a user is not authenticated so some vars would fail.
+        // which meens we hef to refaktor.
         $excludedViews = ['cooperation.tool.components.alert'];
 
         if ( ! in_array($view->getName(), $excludedViews)) {

@@ -168,6 +168,9 @@ return [
         'building_roof_types.flat.roof_surface' => __('roof-insulation.current-situation.flat-roof-surface.title'),
         'building_roof_types.flat.insulation_roof_surface' => __('roof-insulation.current-situation.insulation-flat-roof-surface.title'),
 
+        'building_roof_types.pitched.extra.zinc_replaced_date' =>  __('roof-insulation.current-situation.zinc-replaced.title'),
+
+
         'building_roof_types.flat.extra.zinc_replaced_date' =>  __('roof-insulation.current-situation.zinc-replaced.title'),
         'building_roof_types.flat.extra.bitumen_replaced_date' =>  __('roof-insulation.current-situation.bitumen-insulated.title'),
 

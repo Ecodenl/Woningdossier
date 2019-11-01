@@ -38,12 +38,32 @@
                 </select>
             </div>
         </div>
-        <div class="row">
-{{--            @component('cooperation.tool.components.step-question', ['id' => 'element.'.$element->id, 'translation' => 'general-data/current-state.element.'.$element->short])--}}
-{{--                @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $element->values, 'userInputValues' => $building->buildingElements()->forMe()->where('element_id', $element->id)->get(), 'userInputColumn' => 'element_value_id'])--}}
-                    {{--<input type="text" name="" class="form-control">--}}
-                {{--@endcomponent--}}
-            {{--@endcomponent--}}
+        <div class="row mt-25">
+            <div class="col-sm-6">
+                <?php
+                        $renovationPlanAnswerOptions = [
+                            1 => __('general-data/interest.motivation.renovation-plans.options.yes-within-2-year'),
+                            2 =>  __('general-data/interest.motivation.renovation-plans.options.yes-within-5-year'),
+                            0 =>  __('general-data/interest.motivation.renovation-plans.options.none')
+                        ]
+                ?>
+                @component('cooperation.tool.components.step-question', ['id' => 'renovation-plans', 'translation' => 'general-data/interest.motivation.renovation-plans'])
+                    @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $renovationPlanAnswerOptions, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'element_value_id'])
+                        <select name="user_energy_habits[renovation_plans]" class="form-control" id="">
+                            @foreach($renovationPlanAnswerOptions as $value => $renovationPlanAnswerOption)
+                                <option value="{{$value}}">{{$renovationPlanAnswerOption}}</option>
+                            @endforeach
+                        </select>
+                    @endcomponent
+                @endcomponent
+            </div>
+            <div class="col-sm-6">
+                @component('cooperation.tool.components.step-question', ['id' => 'renovation-plans', 'translation' => 'general-data/interest.motivation.building-complaints'])
+                    @component('cooperation.tool.components.input-group', ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'element_value_id'])
+                        <input type="text" name="user_energy_habits[building_complaints]" class="form-control">
+                    @endcomponent
+                @endcomponent
+            </div>
         </div>
         <br>
         <br>

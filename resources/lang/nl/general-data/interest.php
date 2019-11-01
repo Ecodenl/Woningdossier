@@ -14,10 +14,15 @@ return [
 
         'renovation-plans' => [
             'title' => 'Heeft u verbouwingsplannen?',
-            'help' => 'Vul in of er verbouwingsplannen zijn'
+            'help' => 'Vul in of er verbouwingsplannen zijn',
+            'options' => [
+                'none' => 'Geen',
+                'yes-within-2-year' => 'Ja, binnen nu en twee jaar',
+                'yes-within-5-year' => 'Ja, binnen nu en vijf jaar',
+            ],
         ],
 
-        'complaints-within-building' => [
+        'building-complaints' => [
             'title' => 'Zijn er klachten en/of problemen met uw woning',
             'help' => 'Zijn er klachten en/of problemen met uw woning',
         ],

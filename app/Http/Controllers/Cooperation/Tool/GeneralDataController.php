@@ -62,9 +62,9 @@ class GeneralDataController extends Controller
      */
     public function index(Cooperation $cooperation)
     {
+        return redirect(route('cooperation.tool.general-data.building-characteristics.index'));
 //        dd($step, $subStep);
 
-//        return view('cooperation.tool.general-data.building-characteristics.index');
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 

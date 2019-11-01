@@ -23,6 +23,7 @@ class InterestController extends Controller
             ->orderBy('user_motivations.order')->get();
 
         $userMotivations = $buildingOwner->motivations()->orderBy('order')->get();
+        $userEnergyHabitsForMe = $buildingOwner->energyHabit()->forMe()->get();
 //        $elements = Element::whereIn('short', [
 //            'sleeping-rooms-windows', 'living-rooms-windows',
 //            'wall-insulation', 'floor-insulation', 'roof-insulation',
@@ -41,7 +42,7 @@ class InterestController extends Controller
         $interests = Interest::orderBy('order')->get();
 
         return view('cooperation.tool.general-data.interest.index', compact(
-            'interests', 'services', 'elements', 'motivations', 'userMotivations'
+            'interests', 'services', 'elements', 'motivations', 'userMotivations', 'userEnergyHabitsForMe'
         ));
     }
 

@@ -68,6 +68,5 @@ class Kernel extends HttpKernel
         'current-role' => \App\Http\Middleware\CurrentRoleMiddleware::class,
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'deny-if-filling-for-other-building' => \App\Http\Middleware\RedirectIfIsFillingForOtherBuilding::class,
-        'deny-if-is-observing-other-building' => \App\Http\Middleware\RedirectIfIsObservingOtherBuilding::class,
     ];
 }

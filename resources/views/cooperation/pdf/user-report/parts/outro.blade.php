@@ -1,3 +1,6 @@
+<br>
+<br>
+<br>
 {{-- My guess is that this will be changed alot in the translation edit, try to keep this as htmlable as possible --}}
 <h2>@lang('pdf/user-report.outro.way-to-energy-neutral.title')</h2>
 <br>

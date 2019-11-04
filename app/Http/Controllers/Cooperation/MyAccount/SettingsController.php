@@ -94,7 +94,7 @@ class SettingsController extends Controller
         // remove the action plan advices from the user
         $user->actionPlanAdvices()->delete();
         // remove the user interests
-        $user->interests()->delete();
+        $user->userInterests()->delete();
         // remove the energy habits from a user
         $user->energyHabit()->delete();
         // remove the motivations from a user

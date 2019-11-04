@@ -99,7 +99,7 @@ class InsulatedGlazingController extends Controller
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
                 }
                 // get interests for the measure
-                $measureInterestId = Hoomdossier::getMostCredibleValue($buildingOwner->interests()
+                $measureInterestId = Hoomdossier::getMostCredibleValue($buildingOwner->userInterests()
                     ->where('interested_in_type', 'measure_application')
                     ->where('interested_in_id', $measureApplication->id), 'interest_id');
 

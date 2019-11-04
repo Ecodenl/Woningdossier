@@ -20,7 +20,7 @@ class UserService
         // remove the action plan advices from the user
         $user->actionPlanAdvices()->withoutGlobalScope(GetValueScope::class)->delete();
         // remove the user interests
-        $user->interests()->withoutGlobalScope(GetValueScope::class)->delete();
+        $user->userInterests()->withoutGlobalScope(GetValueScope::class)->delete();
         // remove the energy habits from a user
         $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->delete();
         // remove the motivations from a user

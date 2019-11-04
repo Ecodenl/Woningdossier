@@ -630,7 +630,7 @@ class DumpService
         // key = measure_application_id
         // val = interest_id
         $userInterestsForInsulatedGlazing = $user
-            ->interests()
+            ->userInterests()
             ->forInputSource($inputSource)
             ->where('interested_in_type', 'measure_application')
             ->select('interested_in_id', 'interest_id')
@@ -731,7 +731,7 @@ class DumpService
 
         // get the user interests for the solar panels keyed by type
         $userInterestsForSolarPanels = $user
-            ->interests()
+            ->userInterests()
             ->forInputSource($inputSource)
             ->where('interested_in_type', 'service')
             ->where('interested_in_id', $solarPanelService->id)
@@ -743,7 +743,7 @@ class DumpService
 
         // handle the heater stuff
         $userInterestsForHeater = $user
-            ->interests()
+            ->userInterests()
             ->forInputSource($inputSource)
             ->where('interested_in_type', 'service')
             ->where('interested_in_id', $heaterService->id)

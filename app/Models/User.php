@@ -68,13 +68,45 @@ class User extends Model implements AuthorizableContract
     protected $guard_name = 'web';
 
     /**
-     * Return all the interests of a user
+     * Return all the interest levels of a user
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
     public function interests()
     {
         return $this->hasManyThrough(Interest::class, UserInterest::class, 'user_id', 'id', 'id', 'interest_id');
+    }
+
+    /**
+     * Return all step interests
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function stepInterests()
+    {
+        return $this->morphedByMany(Step::class, 'interested_in', 'user_interests')
+            ->withPivot('interest_id', 'input_source_id');
+    }
+
+    /**
+     * Return all the measure application interests
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function measureApplicationInterest()
+    {
+        return $this->morphedByMany(MeasureApplication::class, 'interested_in', 'user_interests')
+            ->withPivot('interest_id', 'input_source_id');
+    }
+
+    /**
+     * Return the intermediary table of the interests
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userInterests()
+    {
+        return $this->hasMany(UserInterest::class);
     }
 
     /**
@@ -246,13 +278,13 @@ class User extends Model implements AuthorizableContract
     {
         if ($inputSource instanceof InputSource) {
             return $this
-                ->interests()
+                ->userInterests()
                 ->forInputSource($inputSource)
                 ->where('interested_in_type', $type)
                 ->where('interested_in_id', $interestedInId)->first();
         }
 
-        return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
+        return $this->userInterests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
     }
 
     public function complete(Step $step)

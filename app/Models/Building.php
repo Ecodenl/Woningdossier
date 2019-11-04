@@ -214,9 +214,20 @@ class Building extends Model
         return $this->hasMany(BuildingElement::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function exampleBuilding()
     {
         return $this->belongsTo(ExampleBuilding::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function buildingVentilations()
+    {
+        return $this->hasMany(BuildingVentilation::class);
     }
 
     /**

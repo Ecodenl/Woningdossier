@@ -29,10 +29,10 @@ class StepsTableSeeder extends Seeder
                 'order' => 1,
             ],
             [
-                'slug' => 'ventilation-information',
+                'slug' => 'ventilation',
                 'names' => [
-                    'en' => 'Ventilation information',
-                    'nl' => 'Ventilatie informatie',
+                    'en' => 'Ventilation',
+                    'nl' => 'Ventilatie',
                 ],
                 'order' => 2,
             ],

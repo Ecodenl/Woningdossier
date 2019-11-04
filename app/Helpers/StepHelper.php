@@ -76,8 +76,7 @@ class StepHelper
         ],
         'heat-pump' => [
             'service' => [
-                1,
-                2,
+                8
             ],
         ],
         'solar-panels' => [

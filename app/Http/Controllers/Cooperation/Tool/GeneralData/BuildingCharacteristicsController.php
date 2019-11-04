@@ -15,10 +15,12 @@ use App\Models\RoofType;
 use App\Models\Step;
 use App\Models\StepComment;
 use App\Models\User;
+use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Services\ExampleBuildingService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Spatie\TranslationLoader\TranslationLoaders\Db;
 
 class BuildingCharacteristicsController extends Controller
 {
@@ -27,8 +29,6 @@ class BuildingCharacteristicsController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         \DB::enableQueryLog();
-        dd($buildingOwner->stepInterests, \DB::getQueryLog());
-
 
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();
@@ -53,7 +53,8 @@ class BuildingCharacteristicsController extends Controller
         ));
     }
 
-    public function qualifiedExampleBuildings(Request $request)
+    public
+    function qualifiedExampleBuildings(Request $request)
     {
         $buildingType = BuildingType::findOrFail($request->get('building_type'));
         $exampleBuildings = collect([]);
@@ -72,7 +73,8 @@ class BuildingCharacteristicsController extends Controller
         return response()->json($exampleBuildings);
     }
 
-    public function store(Request $request)
+    public
+    function store(Request $request)
     {
         return redirect(back());
 
@@ -80,7 +82,7 @@ class BuildingCharacteristicsController extends Controller
         $inputSource = HoomdossierSession::getInputSource(true);
 
         $exampleBuildingId = $request->get('example_building_id', null);
-        if (! is_null($exampleBuildingId)) {
+        if (!is_null($exampleBuildingId)) {
             $exampleBuilding = ExampleBuilding::forMyCooperation()->where('id', $exampleBuildingId)->first();
             if ($exampleBuilding instanceof ExampleBuilding) {
                 $building->exampleBuilding()->associate($exampleBuilding);
@@ -118,14 +120,15 @@ class BuildingCharacteristicsController extends Controller
      * @param int $buildYear
      * @param int $buildingTypeId
      */
-    private function handleExampleBuildingData(Building $building, BuildingFeature $currentFeatures, int $buildYear, int $buildingTypeId)
+    private
+    function handleExampleBuildingData(Building $building, BuildingFeature $currentFeatures, int $buildYear, int $buildingTypeId)
     {
         $buildingType = BuildingType::find($buildingTypeId);
         $exampleBuilding = $this->getGenericExampleBuildingByBuildingType($buildingType);
 
         // if there are no features yet, then we can apply the example building
         // else, we need to compare the old buildingtype and buildyear against that from the request, if those differ then we apply the example building again.
-        if (! $currentFeatures instanceof BuildingFeature) {
+        if (!$currentFeatures instanceof BuildingFeature) {
             if ($exampleBuilding instanceof ExampleBuilding) {
                 ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
 
@@ -156,7 +159,8 @@ class BuildingCharacteristicsController extends Controller
      *
      * @return ExampleBuilding|\Illuminate\Database\Eloquent\Builder
      */
-    private function getGenericExampleBuildingByBuildingType(BuildingType $buildingType)
+    private
+    function getGenericExampleBuildingByBuildingType(BuildingType $buildingType)
     {
         $exampleBuilding = ExampleBuilding::generic()->where('building_type_id', $buildingType->id)->first();
 

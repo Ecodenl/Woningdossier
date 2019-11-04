@@ -17,26 +17,35 @@ class MigrateInterestedInTypesToModelNamesOnUserInterestsTable extends Migration
      */
     public function up()
     {
-        $userInterests = DB::table('user_interests')
-            ->where('interested_in_type', '!=', 'measure_application')
-            ->get();
+
+        $userInterests = DB::table('user_interests')->get();
 
         foreach ($userInterests as $userInterest) {
             $this->line('-------------------------------------------------');
             $this->line('migrating data for user_id: '.$userInterest->user_id);
             $this->line('migrating data for input_source_id: '.$userInterest->input_source_id);
             $this->line('old interested_in_type: '.$userInterest->interested_in_type);
-            $newInterestedInId = $this->getInterestedInIdForCurrentInterest($userInterest);
-            $this->line('new interested_in_id: '.$newInterestedInId);
+            $newInterestedInType = $this->determineInterestedInType($userInterest);
 
+
+            $updateData = ['interested_in_type' => $newInterestedInType];
+
+            if ($userInterest->interested_in_type != 'measure_application') {
+                $newInterestedInId = $this->getInterestedInIdForCurrentInterest($userInterest);
+                $this->line('new interested_in_id: '.$newInterestedInId);
+
+                $updateData['interested_in_id'] = $newInterestedInId;
+            }
             DB::table('user_interests')
                 ->where('id', $userInterest->id)
-                ->update([
-                    'interested_in_type' => \App\Models\Step::class,
-                    'interested_in_id' => $newInterestedInId
-                ]);
+                ->update($updateData);
         }
-dd('ok');
+    }
+
+
+    private function determineInterestedInType($userInterest)
+    {
+        return in_array($userInterest->interested_in_type, ['element', 'service']) ? \App\Models\Step::class : \App\Models\MeasureApplication::class;
     }
 
     private function getInterestedInIdForCurrentInterest($userInterest)
@@ -50,16 +59,11 @@ dd('ok');
                 5 => 'roof-insulation'
             ],
             'service' => [
-                // even though the services itself does not exist anymore
-                // the user interests are still stored
-                1 => 'heat-pump',
-                2 => 'heat-pump',
-                // new service id for the heat pump
-                8 => 'heat-pump',
-                4 => 'high-efficiency-boiler',
-                7 => 'solar-panels',
                 3 => 'heater',
+                4 => 'high-efficiency-boiler',
                 6 => 'ventilation-information',
+                7 => 'solar-panels',
+                8 => 'heat-pump',
             ],
         ];
 

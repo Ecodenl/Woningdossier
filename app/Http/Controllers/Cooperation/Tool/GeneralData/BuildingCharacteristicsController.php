@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Cooperation\Tool\GeneralData;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingType;
@@ -12,15 +11,11 @@ use App\Models\Cooperation;
 use App\Models\EnergyLabel;
 use App\Models\ExampleBuilding;
 use App\Models\RoofType;
-use App\Models\Step;
 use App\Models\StepComment;
-use App\Models\User;
-use App\Models\UserInterest;
-use App\Scopes\GetValueScope;
 use App\Services\ExampleBuildingService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Spatie\TranslationLoader\TranslationLoaders\Db;
+use Illuminate\Support\Facades\DB;
 
 class BuildingCharacteristicsController extends Controller
 {
@@ -28,7 +23,6 @@ class BuildingCharacteristicsController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
-        \DB::enableQueryLog();
 
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();

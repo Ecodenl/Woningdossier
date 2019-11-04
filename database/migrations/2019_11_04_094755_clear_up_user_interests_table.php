@@ -31,6 +31,7 @@ class ClearUpUserInterestsTable extends Migration
 
 
         foreach ($userInterestsWithDuplicates as $userInterestsWithDuplicate) {
+            $this->line('-------------------------------------------------');
             $this->line('duplicate user interest for user_id :'.$userInterestsWithDuplicate->user_id);
 
             // get the duplicate records

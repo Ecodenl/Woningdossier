@@ -47,8 +47,7 @@ class BuildingCharacteristicsController extends Controller
         ));
     }
 
-    public
-    function qualifiedExampleBuildings(Request $request)
+    public function qualifiedExampleBuildings(Request $request)
     {
         $buildingType = BuildingType::findOrFail($request->get('building_type'));
         $exampleBuildings = collect([]);
@@ -67,8 +66,7 @@ class BuildingCharacteristicsController extends Controller
         return response()->json($exampleBuildings);
     }
 
-    public
-    function store(Request $request)
+    public function store(Request $request)
     {
         return redirect(back());
 
@@ -114,8 +112,7 @@ class BuildingCharacteristicsController extends Controller
      * @param int $buildYear
      * @param int $buildingTypeId
      */
-    private
-    function handleExampleBuildingData(Building $building, BuildingFeature $currentFeatures, int $buildYear, int $buildingTypeId)
+    private function handleExampleBuildingData(Building $building, BuildingFeature $currentFeatures, int $buildYear, int $buildingTypeId)
     {
         $buildingType = BuildingType::find($buildingTypeId);
         $exampleBuilding = $this->getGenericExampleBuildingByBuildingType($buildingType);
@@ -153,8 +150,7 @@ class BuildingCharacteristicsController extends Controller
      *
      * @return ExampleBuilding|\Illuminate\Database\Eloquent\Builder
      */
-    private
-    function getGenericExampleBuildingByBuildingType(BuildingType $buildingType)
+    private function getGenericExampleBuildingByBuildingType(BuildingType $buildingType)
     {
         $exampleBuilding = ExampleBuilding::generic()->where('building_type_id', $buildingType->id)->first();
 

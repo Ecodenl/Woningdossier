@@ -335,11 +335,10 @@
 
             </div>
 
-
             @include('cooperation.tool.includes.comment', [
-                'translation' => 'wall-insulation.comment'
-            ])
-
+                 'columnName' => 'step_comments[comment]',
+                 'translation' => 'wall-insulation.comment'
+             ])
 
             <div class="row">
                 <div class="col-md-12">

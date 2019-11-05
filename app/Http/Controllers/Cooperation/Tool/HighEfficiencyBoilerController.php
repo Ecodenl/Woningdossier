@@ -18,6 +18,8 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
+use App\Services\StepCommentService;
+use App\Services\UserInterestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -80,20 +82,24 @@ class HighEfficiencyBoilerController extends Controller
     public function store(HighEfficiencyBoilerFormRequest $request)
     {
         $building = HoomdossierSession::getBuilding(true);
+        $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
         $buildingId = $building->id;
-        $inputSourceId = HoomdossierSession::getInputSource();
+        $inputSourceId = $inputSource->id;
 
         // Save the building service
         $buildingServices = $request->input('building_services', '');
         $buildingServiceId = key($buildingServices);
 
-        $interests = $request->input('interest', '');
-        UserInterest::saveUserInterests($user, $interests);
+
+        $userInterests = $request->input('user_interests');
+        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+
+        $stepComments = $request->input('step_comments');
+        StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         $serviceValue = isset($buildingServices[$buildingServiceId]['service_value_id']) ? $buildingServices[$buildingServiceId]['service_value_id'] : '';
         $extra = isset($buildingServices[$buildingServiceId]['extra']) ? $buildingServices[$buildingServiceId]['extra'] : '';
-        $comment = $request->input('comment', '');
 
         BuildingService::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
@@ -103,7 +109,7 @@ class HighEfficiencyBoilerController extends Controller
             ],
             [
                 'service_value_id' => $serviceValue,
-                'extra' => ['date' => $extra, 'comment' => $comment],
+                'extra' => ['date' => $extra],
             ]
         );
 

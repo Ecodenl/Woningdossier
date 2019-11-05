@@ -100,7 +100,6 @@ class BuildingFeature extends Model
         'wall_surface',
         'insulation_wall_surface',
         'damage_paintwork',
-        'additional_info',
         'building_layers',
         'surface',
         'floor_surface',

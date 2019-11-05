@@ -17,6 +17,8 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
+use App\Services\StepCommentService;
+use App\Services\UserInterestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -77,15 +79,19 @@ class SolarPanelsController extends Controller
     public function store(SolarPanelFormRequest $request)
     {
         $building = HoomdossierSession::getBuilding(true);
-        $inputSourceId = HoomdossierSession::getInputSource();
         $user = $building->user;
         $buildingId = $building->id;
+        $inputSource = HoomdossierSession::getInputSource(true);
+        $inputSourceId = $inputSource->id;
 
         $habit = $request->input('user_energy_habits', '');
         $habitAmountElectricity = isset($habit['amount_electricity']) ? $habit['amount_electricity'] : '0';
 
-        $interests = $request->input('interest', '');
-        UserInterest::saveUserInterests($user, $interests);
+        $userInterests = $request->input('user_interests');
+        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+
+        $stepComments = $request->input('step_comments');
+        StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->update(['amount_electricity' => $habitAmountElectricity]);
 
@@ -94,8 +100,6 @@ class SolarPanelsController extends Controller
         $number = isset($pvPanels['number']) ? $pvPanels['number'] : '';
         $angle = isset($pvPanels['angle']) ? $pvPanels['angle'] : '';
         $orientation = isset($pvPanels['pv_panel_orientation_id']) ? $pvPanels['pv_panel_orientation_id'] : '';
-        $comment = $request->get('comment', '');
-        $comment = is_null($comment) ? '' : $comment;
 
         BuildingPvPanel::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
@@ -106,7 +110,6 @@ class SolarPanelsController extends Controller
                 'peak_power' => $peakPower,
                 'number' => $number,
                 'pv_panel_orientation_id' => $orientation,
-                'comment' => $comment,
                 'angle' => $angle,
             ]
         );

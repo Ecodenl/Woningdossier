@@ -7,7 +7,9 @@
           action="{{ route('cooperation.tool.roof-insulation.store', ['cooperation' => $cooperation]) }}">
 
         {{csrf_field()}}
-        @include('cooperation.tool.includes.interested', ['type' => 'element'])
+        @include('cooperation.tool.includes.interested', [
+            'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+        ])
         <div class="row">
             <div id="current-situation" class="col-md-12">
 

@@ -13,7 +13,7 @@
         $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name]);
     }
 
-    $columnName = $columnName ?? 'comment';
+    $columnName = $columnName ?? 'step_comments[comment]';
 ?>
 @if(!empty($commentsForCurrentStep))
 @foreach($commentsForCurrentStep as $inputSourceName => $comment)

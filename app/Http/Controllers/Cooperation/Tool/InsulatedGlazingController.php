@@ -27,6 +27,8 @@ use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
 use App\Services\ModelService;
+use App\Services\StepCommentService;
+use App\Services\UserInterestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -201,9 +203,17 @@ class InsulatedGlazingController extends Controller
     public function store(InsulatedGlazingFormRequest $request)
     {
         $building = HoomdossierSession::getBuilding(true);
+        $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
         $buildingId = $building->id;
-        $inputSourceId = HoomdossierSession::getInputSource();
+        $inputSourceId = $inputSource->id;
+
+        $userInterests = $request->input('user_interests');
+        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+
+        $stepComments = $request->input('step_comments');
+        StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
+
 
         $buildingInsulatedGlazings = $request->input('building_insulated_glazings', '');
 
@@ -230,7 +240,6 @@ class InsulatedGlazingController extends Controller
                     'building_heating_id' => $buildingHeatingId,
                     'm2' => $m2,
                     'windows' => $windows,
-                    'extra' => ['comment' => $request->input('comment', '')],
                 ]
             );
             // We'll create the user interests for the measures or update it

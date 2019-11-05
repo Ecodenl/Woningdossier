@@ -7,7 +7,9 @@
     <form class="form-horizontal" method="POST"
           action="{{ route('cooperation.tool.high-efficiency-boiler.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
-        @include('cooperation.tool.includes.interested', ['type' => 'service'])
+        @include('cooperation.tool.includes.interested', [
+          'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+        ])
         <div id="start-information">
             <div class="row">
                 <div class="col-sm-6">
@@ -131,7 +133,6 @@
 
 
         @include('cooperation.tool.includes.comment', [
-             'columnName' => 'comment',
              'translation' => 'high-efficiency-boiler.comment'
          ])
 

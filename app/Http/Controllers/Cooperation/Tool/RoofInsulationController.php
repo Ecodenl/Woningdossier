@@ -25,6 +25,8 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Services\ModelService;
+use App\Services\StepCommentService;
+use App\Services\UserInterestService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -95,7 +97,6 @@ class RoofInsulationController extends Controller
                 }
             }
         }
-//        dd($roofTypes, $building->buildingFeatures()->forMe()->get());
 
         return view('cooperation.tool.roof-insulation.index', compact(
             'building', 'features', 'roofTypes', 'typeIds', 'buildingFeaturesForMe',
@@ -141,23 +142,17 @@ class RoofInsulationController extends Controller
                 $measureApplication = MeasureApplication::find($measureApplicationId);
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = null;
-                    $advicedYear = '';
 
-                    $interests = $request->input('interest', '');
-                    foreach ($interests as $type => $interestTypes) {
-                        foreach ($interestTypes as $typeId => $interestId) {
-                            $interest = Interest::find($interestId);
+                    $interest = Interest::find($request->input('user_interests.interest_id'));
 
-                            if (1 == $interest->calculate_value) {
-                                // on short term: this year
-                                $advicedYear = Carbon::now()->year;
-                            } elseif (2 == $interest->calculate_value) {
-                                // on term: this year + 5
-                                $advicedYear = Carbon::now()->year + 5;
-                            } else {
-                                $advicedYear = $results[$roofCat]['replace']['year'];
-                            }
-                        }
+                    if (1 == $interest->calculate_value) {
+                        // on short term: this year
+                        $advicedYear = Carbon::now()->year;
+                    } elseif (2 == $interest->calculate_value) {
+                        // on term: this year + 5
+                        $advicedYear = Carbon::now()->year + 5;
+                    } else {
+                        $advicedYear = $results[$roofCat]['replace']['year'];
                     }
                     // The measure type determines which array keys to take
                     // as the replace array will always be present due to
@@ -286,10 +281,14 @@ class RoofInsulationController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $buildingId = $building->id;
-        $inputSourceId = HoomdossierSession::getInputSource();
+        $inputSource = HoomdossierSession::getInputSource(true);
+        $inputSourceId = $inputSource->id;
 
-        $interests = $request->input('interest', '');
-        UserInterest::saveUserInterests($user, $interests);
+        $userInterests = $request->input('user_interests');
+        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+
+        $stepComments = $request->input('step_comments');
+        StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         // the selected roof types for the current situation
         // get the selected roof type ids
@@ -297,7 +296,6 @@ class RoofInsulationController extends Controller
 
         $roofTypes = $request->input('building_roof_types', []);
 
-        $comment = $request->get('comment');
 
         $createData = [];
         foreach ($roofTypeIds as $roofTypeId) {
@@ -349,7 +347,6 @@ class RoofInsulationController extends Controller
                         'bitumen_replaced_date' => $extraBitumenReplacedDate,
                         'zinc_replaced_date' => $extraZincReplacedDate,
                         'tiles_condition' => $extraTilesCondition,
-                        'comment' => $comment,
                     ],
                 ]);
             }

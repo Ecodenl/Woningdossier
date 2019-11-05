@@ -3,10 +3,12 @@
 @section('step_title', \App\Helpers\Translation::translate('solar-panels.title.title'))
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
-          action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
+    <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
-        @include('cooperation.tool.includes.interested', ['type' => 'service'])
+
+        @include('cooperation.tool.includes.interested', [
+            'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+        ])
         <div id="solar-panels">
             <div class="row">
                 <div class="col-sm-6">

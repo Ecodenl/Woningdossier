@@ -10,6 +10,10 @@ class StepComment extends Model
 {
     use GetValueTrait, GetMyValuesTrait;
 
+    protected $fillable = [
+        'comment', 'input_source_id', 'building_id', 'short', 'step_id'
+    ];
+
     /**
      * Return the step of a comment
      *

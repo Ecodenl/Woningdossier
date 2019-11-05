@@ -40,9 +40,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserInterest extends Model
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
-    use ToolSettingTrait;
+    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
 
     protected $fillable = [
         'user_id', 'interested_in_type', 'interested_in_id', 'interest_id', 'input_source_id',

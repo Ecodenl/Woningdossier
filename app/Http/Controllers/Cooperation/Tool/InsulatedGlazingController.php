@@ -101,9 +101,10 @@ class InsulatedGlazingController extends Controller
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
                 }
                 // get interests for the measure
-                $measureInterestId = Hoomdossier::getMostCredibleValue($buildingOwner->userInterests()
-                    ->where('interested_in_type', 'measure_application')
-                    ->where('interested_in_id', $measureApplication->id), 'interest_id');
+                $measureInterestId = Hoomdossier::getMostCredibleValue(
+                    $buildingOwner->userInterestsForSpecificType(
+                        HoomdossierSession::getInputSource(true), MeasureApplication::class, $measureApplication->id
+                    ), 'interest_id');
 
                 if (! empty($measureInterestId)) {
                     // We only have to check on the interest ID, so we don't put
@@ -114,18 +115,6 @@ class InsulatedGlazingController extends Controller
                 $measureApplications[] = $measureApplication;
             }
         }
-
-//        $inputValues = $woodElements;
-//
-//        $x = $building;
-//        $z = $building->buildingElements()->forMe();
-//
-//        foreach ($inputValues->values()->orderBy('order')->get() as $i => $inputValue) {
-//            // returned 1 instance 2 null
-//            dump($z->where('element_id', $inputValues->id)->where('element_value_id', $inputValue->id)->first());
-//            // returned 3 instances 0 null
-//            dump($x->buildingElements()->forMe()->where('element_id', $inputValues->id)->where('element_value_id', $inputValue->id)->first());
-//        }
 
         $myBuildingElements = BuildingElement::forMe()->get();
         $userInterestsForMe = UserInterest::forMe()->where('interested_in_type', 'measure_application')->get();

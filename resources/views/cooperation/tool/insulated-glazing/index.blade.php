@@ -64,9 +64,6 @@
                                                     @endif
                                                 @elseif(array_key_exists($measureApplication->id, $userInterests) && $interest->id == $userInterests[$measureApplication->id])
                                                     selected="selected"
-                                                {{--This elseif seems useless, todo: check--}}
-                                                @elseif($buildingOwner->getInterestedType('measure_application', $measureApplication->id, \App\Helpers\HoomdossierSession::getInputSource(true)) != null && $buildingOwner->getInterestedType('measure_application', $measureApplication->id)->interest_id == $interest->id)
-                                                    selected="selected"
                                                 @elseif(!array_key_exists($measureApplication->id, $userInterests) && $interest->calculate_value == 4)
                                                     selected="selected"
                                                 @endif

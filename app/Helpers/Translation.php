@@ -51,6 +51,6 @@ class Translation
      */
     public static function hasTranslation(string $translationString, array $replaceArray = [])
     {
-        return ! empty(static::translate($translationString, $replaceArray));
+        return $translationString !== static::translate($translationString, $replaceArray);
     }
 }

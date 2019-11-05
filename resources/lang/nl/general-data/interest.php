@@ -5,6 +5,44 @@ return [
         'title' => 'Toelichting op interesse en motivatie',
         'help' => 'Geef toelichting op interesse en motivatie'
     ],
+    'steps' => [
+        'ventilation-information' => [
+            'title' => 'Ventilatie',
+            'help' => ''
+        ],
+        'wall-insulation' => [
+            'title' => 'Gevelisolatie',
+            'help' => ''
+        ],
+        'insulated-glazing' => [
+            'title' => 'Isolerende beglazing',
+            'help' => ''
+        ],
+        'floor-insulation' => [
+            'title' => 'Vloerisolatie',
+            'help' => ''
+        ],
+        'roof-insulation' => [
+            'title' => 'Dakisolatie',
+            'help' => ''
+        ],
+        'high-efficiency-boiler' => [
+            'title' => 'HR CV-Ketel',
+            'help' => ''
+        ],
+        'heat-pump' => [
+            'title' => 'Warmtepomp',
+            'help' => ''
+        ],
+        'solar-panels' => [
+            'title' => 'Zonnepanelen',
+            'help' => ''
+        ],
+        'heater' => [
+            'title' => 'Zonneboiler',
+            'help' => ''
+        ],
+    ],
 
     'motivation' => [
         'title' => [

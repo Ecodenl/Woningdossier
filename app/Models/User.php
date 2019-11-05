@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\NotificationSetting;
 use App\Traits\HasCooperationTrait;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Collection;
@@ -67,6 +68,25 @@ class User extends Model implements AuthorizableContract
 
     protected $guard_name = 'web';
 
+
+    /**
+     * Return the intermediary table of the interests
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userInterests()
+    {
+        return $this->hasMany(UserInterest::class);
+    }
+
+    public function userInterestsForSpecificType($interestedInType, $interestedInId)
+    {
+        return $this->userInterests()
+            ->where('interested_in_type', $interestedInType)
+            ->where('interested_in_id', $interestedInId);
+    }
+
+
     /**
      * Return all the interest levels of a user
      *
@@ -77,6 +97,11 @@ class User extends Model implements AuthorizableContract
         return $this->hasManyThrough(Interest::class, UserInterest::class, 'user_id', 'id', 'id', 'interest_id');
     }
 
+//    public function interest(Builder $query, $interestedInType, )
+//    {
+//        return $this->userInterests;
+//    }
+
     /**
      * Return all step interests
      *
@@ -85,6 +110,7 @@ class User extends Model implements AuthorizableContract
     public function stepInterests()
     {
         return $this->morphedByMany(Step::class, 'interested_in', 'user_interests')
+            ->where('user_interests.input_source_id', HoomdossierSession::getInputSourceValue())
             ->withPivot('interest_id', 'input_source_id');
     }
 
@@ -96,17 +122,8 @@ class User extends Model implements AuthorizableContract
     public function measureApplicationInterest()
     {
         return $this->morphedByMany(MeasureApplication::class, 'interested_in', 'user_interests')
+            ->where('user_interests.input_source_id', HoomdossierSession::getInputSourceValue())
             ->withPivot('interest_id', 'input_source_id');
-    }
-
-    /**
-     * Return the intermediary table of the interests
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function userInterests()
-    {
-        return $this->hasMany(UserInterest::class);
     }
 
     /**

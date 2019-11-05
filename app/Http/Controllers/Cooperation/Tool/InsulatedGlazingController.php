@@ -102,15 +102,10 @@ class InsulatedGlazingController extends Controller
                 }
                 // get interests for the measure
                 $measureInterestId = Hoomdossier::getMostCredibleValue(
-                    $buildingOwner->userInterestsForSpecificType(
-                        HoomdossierSession::getInputSource(true), MeasureApplication::class, $measureApplication->id
-                    ), 'interest_id');
+                    $buildingOwner->userInterestsForSpecificType(MeasureApplication::class, $measureApplication->id), 'interest_id'
+                );
 
-                if (! empty($measureInterestId)) {
-                    // We only have to check on the interest ID, so we don't put
-                    // full objects in the array
-                    $userInterests[$measureApplication->id] = $measureInterestId;
-                }
+                $userInterests[$measureApplication->id] = $measureInterestId;
 
                 $measureApplications[] = $measureApplication;
             }

@@ -117,7 +117,7 @@ class UserActionPlanAdvice extends Model
         }
 
         if ('insulated-glazing' == $this->step->slug) {
-            $userInterest = $this->user->userInterestsForSpecificType($inputSource, get_class($this->measureApplication), $this->measureApplication->id)->first();
+            $userInterest = $this->user->userInterestsForSpecificType(get_class($this->measureApplication), $this->measureApplication->id)->first();
             if (! $userInterest instanceof UserInterest) {
                 return null;
             }
@@ -140,7 +140,7 @@ class UserActionPlanAdvice extends Model
             return null;
         }
 
-        $userInterest = $this->user->userInterestsForSpecificType($inputSource, get_class($element), $element->id)->first();
+        $userInterest = $this->user->userInterestsForSpecificType(get_class($element), $element->id)->first();
         if (! $userInterest instanceof UserInterest) {
             return null;
         }

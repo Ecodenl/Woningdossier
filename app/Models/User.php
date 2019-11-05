@@ -79,10 +79,15 @@ class User extends Model implements AuthorizableContract
         return $this->hasMany(UserInterest::class);
     }
 
-    public function userInterestsForSpecificType(InputSource $inputSource, $interestedInType, $interestedInId)
+    public function userInterestsForSpecificType($interestedInType, $interestedInId, InputSource $inputSource = null)
     {
+        if ($inputSource instanceof InputSource) {
+            return $this->userInterests()
+                ->where('interested_in_type', $interestedInType)
+                ->where('interested_in_id', $interestedInId)
+                ->forInputSource($inputSource);
+        }
         return $this->userInterests()
-            ->forInputSource($inputSource)
             ->where('interested_in_type', $interestedInType)
             ->where('interested_in_id', $interestedInId);
     }
@@ -99,7 +104,7 @@ class User extends Model implements AuthorizableContract
     {
         $noInterestIds = Interest::whereIn('calculate_value', [4, 5])->select('id')->get()->pluck('id')->toArray();
 
-        $userSelectedInterestedId = $this->user->userInterestsForSpecificType($inputSource, $interestedInType, $interestedInId)->first()->interest_id;
+        $userSelectedInterestedId = $this->user->userInterestsForSpecificType($interestedInType, $interestedInId)->first()->interest_id;
 
         return !in_array($userSelectedInterestedId, $noInterestIds);
     }

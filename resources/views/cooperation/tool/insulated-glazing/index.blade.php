@@ -49,22 +49,19 @@
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_id', $measureApplication->id),  'userInputColumn' => 'interest_id'])
-                                <select id="{{ $measureApplication->id }}" class="user-interest form-control"
-                                        name="user_interests[{{ $measureApplication->id }}]">
+                                <select id="{{ $measureApplication->id }}" class="user-interest form-control" name="user_interests[{{ $measureApplication->id }}]">
                                     <?php
                                         /** @var \Illuminate\Support\Collection $interests */
                                         $oldInterestDataIsAvailable = $interests->contains('id', old('user_interests.' . $measureApplication->id));
+                                        $userSelectedInterest = $userInterests[$measureApplication->id] ?? null
                                     ?>
                                     @foreach($interests as $interest)
                                         {{-- calculate_value 4 is the default --}}
                                         <option data-calculate-value="{{$interest->calculate_value}}"
-                                                @if($oldInterestDataIsAvailable)
-                                                    @if($interest->id == old('user_interests.' . $measureApplication->id))
-                                                        selected="selected"
-                                                    @endif
-                                                @elseif(array_key_exists($measureApplication->id, $userInterests) && $interest->id == $userInterests[$measureApplication->id])
+                                                @if($interest->id == old('user_interests.'.$measureApplication->id, $userSelectedInterest))
                                                     selected="selected"
-                                                @elseif(!array_key_exists($measureApplication->id, $userInterests) && $interest->calculate_value == 4)
+                                                {{--when no answer is given select the default interest--}}
+                                                @elseif(is_null($userSelectedInterest) && $interest->calculate_value == 4)
                                                     selected="selected"
                                                 @endif
                                                 value="{{ $interest->id }}">{{ $interest->name }}

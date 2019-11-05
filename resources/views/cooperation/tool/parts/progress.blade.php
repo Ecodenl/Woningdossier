@@ -16,7 +16,7 @@
         <?php
             $userDoesNotHaveInterestInStep = false;
             if ($step->short != 'general-data') {
-                $userDoesNotHaveInterestInStep = !\App\Helpers\StepHelper::hasInterestInStep($buildingOwner, $inputSource, get_class($step), $step->id);
+                $userDoesNotHaveInterestInStep = !\App\Helpers\StepHelper::hasInterestInStep($buildingOwner, get_class($step), $step->id);
             }
             $routeIsCurrentRoute = Route::is('cooperation.tool.' . $step->slug . '.index');
         ?>

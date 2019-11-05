@@ -22,7 +22,7 @@
                     <tr class="h-20">
                         <td class="w-380">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.title.title')}}</td>
                         {{--<td>{{$user->getInterestedType('measure_application', $buildingInsulatedGlazing->measureApplication->id, $inputSource)->interest->name ?? $noInterest->name}}</td>--}}
-                        <td>{{$user->userInterestsForSpecificType($inputSource, get_class($buildingInsulatedGlazing->measureApplication), $buildingInsulatedGlazing->measureApplication->id)->first()->interest->name ?? $noInterest->name}}</td>
+                        <td>{{$user->userInterestsForSpecificType(get_class($buildingInsulatedGlazing->measureApplication), $buildingInsulatedGlazing->measureApplication->id, $inputSource)->first()->interest->name ?? $noInterest->name}}</td>
                     </tr>
                     <tr class="h-20">
                         <td class="w-380">{{\App\Helpers\Translation::translate('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.rooms-heated.title')}}</td>

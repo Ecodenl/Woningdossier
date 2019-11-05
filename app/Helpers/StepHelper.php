@@ -71,11 +71,15 @@ class StepHelper
      * @param $interestedInId
      * @return bool
      */
-    public static function hasInterestInStep(User $user, InputSource $inputSource, $interestedInType, $interestedInId): bool
+    public static function hasInterestInStep(User $user, $interestedInType, $interestedInId, $inputSource = null): bool
     {
         $noInterestIds = Interest::whereIn('calculate_value', [4, 5])->select('id')->get()->pluck('id')->toArray();
 
-        $userSelectedInterestedId = $user->userInterestsForSpecificType($inputSource, $interestedInType, $interestedInId)->first()->interest_id;
+        if ($inputSource instanceof InputSource) {
+            $userSelectedInterestedId = $user->userInterestsForSpecificType($interestedInType, $interestedInId, $inputSource)->first()->interest_id;
+        } else {
+            $userSelectedInterestedId = $user->userInterestsForSpecificType($interestedInType, $interestedInId)->first()->interest_id;
+        }
 
         return !in_array($userSelectedInterestedId, $noInterestIds);
     }
@@ -143,7 +147,7 @@ class StepHelper
         // check if a user is interested
         // and if so return the route name
         foreach ($nonCompletedSteps as $nonCompletedStep) {
-            if (self::hasInterestInStep($building, $inputSource, $nonCompletedStep)) {
+            if (self::hasInterestInStep($user, Step::class, $nonCompletedStep->id)) {
                 $routeName = 'cooperation.tool.'.$nonCompletedStep->slug.'.index';
 
                 return ['url' => route($routeName), 'tab_id' => ''];

@@ -279,8 +279,8 @@ class StepHelper
             ->where('cooperation_steps.is_active', '1')
             ->whereNotExists(function (Builder $query) use ($building, $inputSource) {
                 $query->select('*')
-                    ->from('user_progresses')
-                    ->whereRaw('steps.id = user_progresses.step_id')
+                    ->from('completed_steps')
+                    ->whereRaw('steps.id = completed_steps.step_id')
                     ->where('building_id', $building->id)
                     ->where('input_source_id', $inputSource->id);
             })->get();

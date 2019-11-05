@@ -10,7 +10,7 @@
         {{ csrf_field() }}
         <?php /** @var \Illuminate\Support\Collection $steps */ ?>
         @foreach($steps->forget(0) as $step)
-            <div class="col-sm-12 col-md-4 ">
+            <div class="col-sm-12 col-md-6 ">
                 <img class="img-responsive mt-15 pr-10 d-inline pull-left" src="{{asset('images/icons/'.$step->short.'.png')}}">
                 @component('cooperation.tool.components.step-question', ['id' => 'user_interest', 'translation' => 'general-data/interest.steps.'.$step->short])
                     @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $buildingOwner->userInterestsForSpecificType(get_class($step), $step->id)->forMe()->get(), 'userInputColumn' => 'interest_id'])

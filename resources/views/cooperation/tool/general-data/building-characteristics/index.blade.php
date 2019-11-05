@@ -46,11 +46,9 @@
         <div class="row">
 
             <div id="building-characteristics" class="col-md-12">
-                @include('cooperation.tool.includes.interested', ['translationKey' => 'general-data/building-characteristics.building-type.title'])
 
-                {{--@if(count($exampleBuildings) > 0)--}}
                     <div class="row">
-                        <div id="example-building" class="col-sm-12">
+                        <div id="example-building" class="col-sm-12 @if($exampleBuildings->count() == 0) d-none @endif ">
 
                             @component('cooperation.tool.components.step-question', ['id' => 'example_building_id', 'translation' => 'general-data/building-characteristics.example-building',])
 
@@ -77,7 +75,6 @@
                             @endcomponent
                         </div>
                     </div>
-                {{--@endif--}}
 
                 <div class="row">
                     <div class="col-md-6">
@@ -254,7 +251,8 @@
                 }
             });
 
-          $('select#building_type_id').change(function () {
+
+            $('select#building_type_id').change(function () {
                 handleExampleBuildingSelect($(this).val(), $('input#build_year').val())
             });
 
@@ -268,13 +266,16 @@
                     },
                     success: function (response) {
                         exampleBuilding.find('option').remove();
-                        // when there are example buildings append them to the select box
-                        $(response).each(function (index, exampleBuildingData) {
-                            exampleBuilding.append('<option value="'+exampleBuildingData.id+'">'+exampleBuildingData.translation+'</option>')
-                        });
                         // and when there is no example building add the empty one
                         if (response.length === 0) {
+                            $(exampleBuilding).parents().find('#example-building').hide();
                             exampleBuilding.append(defaultOptionForExampleBuilding);
+                        } else {
+                            $(exampleBuilding).parents().find('#example-building').show();
+                            // when there are example buildings append them to the select box
+                            $(response).each(function (index, exampleBuildingData) {
+                                exampleBuilding.append('<option value="'+exampleBuildingData.id+'">'+exampleBuildingData.translation+'</option>')
+                            });
                         }
                     }
                 })

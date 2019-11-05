@@ -79,14 +79,30 @@ class User extends Model implements AuthorizableContract
         return $this->hasMany(UserInterest::class);
     }
 
-    public function userInterestsForSpecificType($interestedInType, $interestedInId)
+    public function userInterestsForSpecificType(InputSource $inputSource, $interestedInType, $interestedInId)
     {
         return $this->userInterests()
+            ->forInputSource($inputSource)
             ->where('interested_in_type', $interestedInType)
             ->where('interested_in_id', $interestedInId);
     }
 
+    /**
+     * Method to check whether a user is interested in a step
+     *
+     * @param InputSource $inputSource
+     * @param $interestedInType
+     * @param $interestedInId
+     * @return bool
+     */
+    public function isInterestedInStep(InputSource $inputSource, $interestedInType, $interestedInId)
+    {
+        $noInterestIds = Interest::whereIn('calculate_value', [4, 5])->select('id')->get()->pluck('id')->toArray();
 
+        $userSelectedInterestedId = $this->user->userInterestsForSpecificType($inputSource, $interestedInType, $interestedInId)->first()->interest_id;
+
+        return !in_array($userSelectedInterestedId, $noInterestIds);
+    }
     /**
      * Return all the interest levels of a user
      *
@@ -96,11 +112,6 @@ class User extends Model implements AuthorizableContract
     {
         return $this->hasManyThrough(Interest::class, UserInterest::class, 'user_id', 'id', 'id', 'interest_id');
     }
-
-//    public function interest(Builder $query, $interestedInType, )
-//    {
-//        return $this->userInterests;
-//    }
 
     /**
      * Return all step interests

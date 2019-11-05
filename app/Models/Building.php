@@ -139,7 +139,7 @@ class Building extends Model
      *
      * @return bool
      */
-    public function isInterestedInStep(InputSource $inputSource, $type, $interestedInIds = [])
+    public function  isInterestedInStep(InputSource $inputSource, $type, $interestedInIds = [])
     {
         // the interest ids that people select when they do not have any interest
         $noInterestIds = [4, 5];
@@ -165,19 +165,7 @@ class Building extends Model
         return true;
     }
 
-    /**
-     * Check if a user is not interested in a step.
-     *
-     * @param InputSource $inputSource
-     * @param string      $type
-     * @param array       $interestedInIds
-     *
-     * @return bool
-     */
-    public function isNotInterestedInStep(InputSource $inputSource, $type, $interestedInIds = [])
-    {
-        return ! $this->isInterestedInStep($inputSource, $type, $interestedInIds);
-    }
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

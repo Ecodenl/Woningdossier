@@ -14,7 +14,10 @@
     --}}
     @foreach($steps as $step)
         <?php
-            $userDoesNotHaveInterestInStep = !\App\Helpers\StepHelper::hasInterestInStep($building, $inputSource, $step);
+            $userDoesNotHaveInterestInStep = false;
+            if ($step->short != 'general-data') {
+                $userDoesNotHaveInterestInStep = !\App\Helpers\StepHelper::hasInterestInStep($buildingOwner, $inputSource, get_class($step), $step->id);
+            }
             $routeIsCurrentRoute = Route::is('cooperation.tool.' . $step->slug . '.index');
         ?>
         {{-- There is no interest for the general-data so we skip that --}}

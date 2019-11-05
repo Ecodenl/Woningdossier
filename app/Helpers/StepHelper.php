@@ -9,6 +9,7 @@ use App\Models\BuildingHeater;
 use App\Models\BuildingPvPanel;
 use App\Models\Element;
 use App\Models\InputSource;
+use App\Models\Interest;
 use App\Models\Questionnaire;
 use App\Models\Service;
 use App\Models\Step;
@@ -39,147 +40,6 @@ class StepHelper
         'house-ventilation' => 'ventilation'
     ];
 
-    const STEP_INTERESTS = [
-        'ventilation-information' => [
-            'service' => [
-                6,
-            ],
-        ],
-        // step name
-        'wall-insulation' => [
-            // type
-            'element' => [
-                // interested in id (Element id, service id etc)
-                3,
-            ],
-        ],
-        'insulated-glazing' => [
-            'element' => [
-                1,
-                2,
-            ],
-        ],
-        'floor-insulation' => [
-            'element' => [
-                4,
-            ],
-        ],
-        'roof-insulation' => [
-            'element' => [
-                5,
-            ],
-        ],
-        'high-efficiency-boiler' => [
-            'service' => [
-                4,
-            ],
-        ],
-        'heat-pump' => [
-            'service' => [
-                8
-            ],
-        ],
-        'solar-panels' => [
-            'service' => [
-                7,
-            ],
-        ],
-        'heater' => [
-            'service' => [
-                3,
-            ],
-        ],
-    ];
-
-    /**
-     * Method to return a array of all comments, categorized under step and input source and more cats if needed.
-     *
-     * @param User $user
-     * @param bool $withEmptyComments
-     *
-     * @note not used anymore, code can be used to remove the old stuff.
-     * @return array
-     */
-    public static function getAllCommentsByStepOld(User $user, $withEmptyComments = false): array
-    {
-        $building = $user->building;
-
-        if (!$building instanceof Building) {
-            return [];
-        }
-
-        $allInputForMe = collect();
-        $commentsByStep = [];
-
-
-        /* General-data */
-        $userEnergyHabitForMe = UserEnergyHabit::forMe($user)->with('inputSource')->get();
-        $allInputForMe->put('general-data', $userEnergyHabitForMe);
-
-        /* wall insulation */
-        $buildingFeaturesForMe = BuildingFeature::forMe($user)->with('inputSource')->get();
-        $allInputForMe->put('wall-insulation', $buildingFeaturesForMe);
-
-        /* floor insualtion */
-        $crawlspace = Element::where('short', 'crawlspace')->first();
-        $buildingElementsForMe = BuildingElement::forMe($user)->with('inputSource')->get();
-        $allInputForMe->put('floor-insulation', $buildingElementsForMe->where('element_id', $crawlspace->id));
-
-        /* beglazing */
-        $insulatedGlazingsForMe = $building->currentInsulatedGlazing()->forMe($user)->with('inputSource')->get();
-        $allInputForMe->put('insulated-glazing', $insulatedGlazingsForMe);
-
-        /* roof */
-        $currentRoofTypesForMe = $building->roofTypes()->with('roofType')->forMe($user)->with('inputSource')->get();
-        $allInputForMe->put('roof-insulation', $currentRoofTypesForMe);
-
-        /* hr boiler ketel */
-        $boiler = Service::where('short', 'boiler')->first();
-        $installedBoilerForMe = $building->buildingServices()->forMe($user)->where('service_id', $boiler->id)->with('inputSource')->get();
-        $allInputForMe->put('high-efficiency-boiler', $installedBoilerForMe);
-
-        /* sun panel*/
-        $buildingPvPanelForMe = BuildingPvPanel::forMe($user)->with('inputSource')->get();
-        $allInputForMe->put('solar-panels', $buildingPvPanelForMe);
-
-        /* heater */
-        $buildingHeaterForMe = BuildingHeater::forMe($user)->with('inputSource')->get();
-        $allInputForMe->put('heater', $buildingHeaterForMe);
-
-        /* my plan */
-//        $allInputForMe->put('my-plan', UserActionPlanAdviceComments::forMe($user)->get());
-
-        // the attributes that can contain any sort of comments.
-        $possibleAttributes = ['comment', 'additional_info', 'living_situation_extra'];
-
-//        dd($allInputForMe);
-        foreach ($allInputForMe as $step => $inputForMeByInputSource) {
-            foreach ($inputForMeByInputSource as $inputForMe) {
-                // check if we need the extra column to extract the comment from.
-                if (is_array($inputForMe->extra) && array_key_exists('comment', $inputForMe->extra)) {
-                    // get the comment fields, and filter out the empty ones.
-                    $inputToFilter = $inputForMe->extra;
-                } else {
-                    $inputToFilter = $inputForMe->getAttributes();
-                }
-
-                $inputWithComments = \Illuminate\Support\Arr::only($inputToFilter, $possibleAttributes);
-
-                $comments = array_values($withEmptyComments ? $inputWithComments : array_filter(
-                    $inputWithComments
-                ));
-
-                // if the comments are not empty, add it to the array with its input source
-                // only add the comment, not the key / column name.
-                if (! empty($comments)) {
-                    $commentsByStep[$step][$inputForMe->inputSource->name] = $comments[0];
-                }
-            }
-        }
-
-        return $commentsByStep;
-    }
-
     public static function getAllCommentsByStep(User $user, $withEmptyComments = false): array
     {
         $building = $user->building;
@@ -203,25 +63,21 @@ class StepHelper
     }
 
     /**
-     * Check is a user is interested in a step.
+     * Method to check whether a user has interest in a step
      *
-     * @param Building    $building
+     * @param User $user
      * @param InputSource $inputSource
-     * @param Step        $step
-     *
+     * @param $interestedInType
+     * @param $interestedInId
      * @return bool
      */
-    public static function hasInterestInStep(Building $building, InputSource $inputSource, Step $step): bool
+    public static function hasInterestInStep(User $user, InputSource $inputSource, $interestedInType, $interestedInId): bool
     {
-        if (array_key_exists($step->slug, self::STEP_INTERESTS)) {
-            foreach (self::STEP_INTERESTS[$step->slug] as $type => $interestedIn) {
-                if ($building->isInterestedInStep($inputSource, $type, $interestedIn)) {
-                    return true;
-                }
-            }
-        }
+        $noInterestIds = Interest::whereIn('calculate_value', [4, 5])->select('id')->get()->pluck('id')->toArray();
 
-        return false;
+        $userSelectedInterestedId = $user->userInterestsForSpecificType($inputSource, $interestedInType, $interestedInId)->first()->interest_id;
+
+        return !in_array($userSelectedInterestedId, $noInterestIds);
     }
 
     /**

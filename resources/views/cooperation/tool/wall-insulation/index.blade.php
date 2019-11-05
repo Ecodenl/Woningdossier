@@ -9,7 +9,7 @@
 
         <div id="intro">
             @include('cooperation.tool.includes.interested', [
-                'type' => 'element', 'buildingElements' => $buildingElements, 'buildingElement' => 'wall-insulation'
+                'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
             ])
             <div class="row">
                 <div class="col-sm-12">

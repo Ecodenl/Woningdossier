@@ -14,10 +14,12 @@
         9 => 'hrpp-glass-frames',
     ];
     ?>
-    <form class="form-horizontal" method="POST"
-          action="{{ route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation]) }}">
+    <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
-        @include('cooperation.tool.includes.interested', ['type' => 'element'])
+        @include('cooperation.tool.includes.interested', [
+            'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+        ])
+
         <div id="main-glass-questions">
             @foreach($measureApplications as $i => $measureApplication)
                 @if($i > 0 && array_key_exists($measureApplication->id, $titles))

@@ -13,13 +13,7 @@
             <div class="col-sm-12 col-md-6 ">
                 <img class="img-responsive mt-15 pr-10 d-inline pull-left" src="{{asset('images/icons/'.$step->short.'.png')}}">
                 @component('cooperation.tool.components.step-question', ['id' => 'user_interest', 'translation' => 'general-data/interest.steps.'.$step->short])
-                    @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $buildingOwner->userInterestsForSpecificType(get_class($step), $step->id)->forMe()->get(), 'userInputColumn' => 'interest_id'])
-                        <select id="user_interest" class="form-control" name="user_interest[{{$step->id}}]">
-                            @foreach($interests as $interest)
-                                <option @if(old('user_interests.'.$step->id.'.'.$interest->id, \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->userInterestsForSpecificType(get_class($step), $step->id), 'interest_id')) == $interest->id) selected="selected" @endif value="{{ $interest->id }}">{{ $interest->name}}</option>
-                            @endforeach
-                        </select>
-                    @endcomponent
+                    @include('cooperation.tool.parts.user-interest-select', ['interestedInType' => get_class($step), 'interestedInId' => $step->id])
                 @endcomponent
             </div>
         @endforeach

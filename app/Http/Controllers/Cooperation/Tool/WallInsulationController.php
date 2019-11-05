@@ -21,6 +21,7 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
+use function Couchbase\defaultDecoder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -85,6 +86,7 @@ class WallInsulationController extends Controller
         $inputSourceId = HoomdossierSession::getInputSource();
 
         $interests = $request->input('interest', []);
+        dd($interests);
         UserInterest::saveUserInterests($user, $interests);
 
         // Get all the values from the form

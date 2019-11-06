@@ -16,7 +16,6 @@
             @include('cooperation.tool.general-data.current-state.parts.elements')
 
             @include('cooperation.tool.includes.comment', [
-                'columnName' => 'step_comments[comment]',
                 'short' => 'element',
                 'translation' => 'general-data/current-state.comment.element'
             ])
@@ -27,7 +26,6 @@
             @include('cooperation.tool.general-data.current-state.parts.services')
 
             @include('cooperation.tool.includes.comment', [
-                'columnName' => 'step_comments[comment]',
                 'short' => 'service',
                 'translation' => 'general-data/current-state.comment.service'
             ])

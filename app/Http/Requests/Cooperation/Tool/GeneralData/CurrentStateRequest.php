@@ -4,7 +4,6 @@ namespace App\Http\Requests\Cooperation\Tool\GeneralData;
 
 use App\Models\Service;
 use Carbon\Carbon;
-use function Couchbase\defaultDecoder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -48,16 +47,18 @@ class CurrentStateRequest extends FormRequest
 
                 // when the service has values, they should exist. When a service has values its most likely to be a dropdown, otherwise its just an input.
                 if ($service->values->isNotEmpty()) {
-                    $serviceRules[$inputName] = 'required|exists:service_values,id';
+                    $serviceRules[$inputName.'.service_value_id'] = 'required|exists:service_values,id';
                 }
 
                 switch ($service->short) {
                     case 'house-ventilation':
-                        $serviceRules[$inputName.'.extra.year'] = 'nullable|numeric|between:1960,' . $max;
+//                        $serviceRules[$inputName.'.extra.year'] = 'nullable|numeric|between:1960,' . $max;
+                        $serviceRules[$inputName.'.extra.demand_driven'] = 'sometimes|accepted';
+                        $serviceRules[$inputName.'.extra.heat_recovery'] = 'sometimes|accepted';
                         break;
                     case 'total-sun-panels':
                         // the total sun panel input
-                        $serviceRules[$inputName.'extra.value'] = 'nullable|numeric|min:0|max:50';
+                        $serviceRules[$inputName.'.extra.value'] = 'nullable|numeric|min:0|max:50';
                         // the year for the sun panels
                         $serviceRules[$inputName.'.extra.year'] = 'nullable|numeric|between:1980,' . $max;
                         break;
@@ -66,6 +67,7 @@ class CurrentStateRequest extends FormRequest
         }
 
         $validator->addRules($serviceRules);
+
     }
 
 }

@@ -7,13 +7,13 @@
     // else get it from the main step
     $commentsForCurrentStep = $commentsByStep[$currentSubStep->short ?? $currentStep->short] ?? [];
 
+    $columnName = $columnName ?? 'step_comments[comment]';
     if (isset($short)) {
+        $columnName = 'step_comments[comment]['.$short.']';
         $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$short][$currentInputSource->name]);
     } else {
         $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name]);
     }
-
-    $columnName = $columnName ?? 'step_comments[comment]';
 ?>
 @if(!empty($commentsForCurrentStep))
 @foreach($commentsForCurrentStep as $inputSourceName => $comment)

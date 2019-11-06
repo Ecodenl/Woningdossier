@@ -6,7 +6,7 @@ use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
-use App\Http\Requests\Cooperation\Tool\GeneralData\CurrentStateRequest;
+use App\Http\Requests\Cooperation\Tool\GeneralData\CurrentStateFormRequest;
 use App\Models\BuildingHeatingApplication;
 use App\Models\BuildingService;
 use App\Models\Cooperation;
@@ -52,7 +52,7 @@ class CurrentStateController extends Controller
         ));
     }
 
-    public function store(CurrentStateRequest $request)
+    public function store(CurrentStateFormRequest $request)
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);

@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
-class CurrentStateRequest extends FormRequest
+class CurrentStateFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

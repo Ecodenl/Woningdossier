@@ -17,6 +17,20 @@ return [
         'title' => [
             'title' => 'Energiegebruik',
         ],
+        'gas-usage' => [
+            'title' => 'Wat is het gasgebruik van afgelopen jaar? (in m3 gas per jaar)',
+            'help' => 'U kunt dit vinden in de jaarafrekening van uw energieleverancier, opgave over een heel jaar.'
+        ],
+        'electricity-amount' => [
+            'title' => 'Wat is het elektragebruik van het afgelopen jaar?',
+            'help' => 'U kunt dit vinden in de jaarafrekening van uw energieleverancier, opgave over een heel jaar.'
+        ],
+    ],
+
+    'heating-habits' => [
+        'title' => [
+            'title' => 'Stookgedrag'
+        ],
         'thermostat-high' => [
             'title' => 'Op welke temperatuur staat de thermostaat op de hoge stand? ',
             'help' => 'Voer hier de meest gebruikte waarde in. Als u verschillende temperaturen gebruikt kunt u ook een gemiddelde waarde invoeren. Deze informatie is nodig om een betere inschatting over de mogelijke besparing van isolatiemaatregelen te kunnen maken.'
@@ -36,20 +50,6 @@ return [
         'heating-second-floor' => [
             'title' => 'Welke situatie is van toepassing op de tweede verdieping? ',
             'help' => 'Hier kunt u aangeven of de ruimtes op de tweede verdieping wel of niet verwarmd zijn. Als u geen tweede verdieping heeft kies dan “Niet van toepassing”.'
-        ],
-    ],
-
-    'heating-habits' => [
-        'title' => [
-            'title' => 'Stookgedrag'
-        ],
-        'gas-usage' => [
-            'title' => 'Wat is het gasgebruik van afgelopen jaar? (in m3 gas per jaar)',
-            'help' => 'U kunt dit vinden in de jaarafrekening van uw energieleverancier, opgave over een heel jaar.'
-        ],
-        'electricity-amount' => [
-            'title' => 'Wat is het elektragebruik van het afgelopen jaar?',
-            'help' => 'U kunt dit vinden in de jaarafrekening van uw energieleverancier, opgave over een heel jaar.'
         ],
     ],
 

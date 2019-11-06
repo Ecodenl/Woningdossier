@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Cooperation\Tool\GeneralData;
 
+use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
+use App\Http\Requests\Cooperation\Tool\GeneralData\UsageFormRequest;
 use App\Models\BuildingHeating;
 use App\Models\ComfortLevelTapWater;
 use App\Http\Controllers\Controller;
+use App\Models\Step;
 
 class UsageController extends Controller
 {
@@ -24,5 +28,25 @@ class UsageController extends Controller
             'building', 'buildingOwner', 'userEnergyHabitsForMe', 'commentsByStep', 'comfortLevelsTapWater',
             'buildingHeatings'
         ));
+    }
+
+    public function store(UsageFormRequest $request)
+    {
+        $building = HoomdossierSession::getBuilding(true);
+        $inputSource = HoomdossierSession::getInputSource(true);
+        $step = Step::findByShort('current-state');
+
+
+        StepHelper::complete($step, $building, $inputSource);
+        StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
+
+        $nextStep = StepHelper::getNextStep($building, $inputSource, $step);
+        $url = $nextStep['url'];
+
+        if (! empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 }

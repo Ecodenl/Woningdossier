@@ -78,12 +78,13 @@
         {{--energy usage thermostat high / low and hours--}}
         <div class="row mt-10">
             <div class="col-sm-12">
-                <h4>@lang('general-data/usage.energy-usage.title.title')</h4>
+                <h4>@lang('general-data/usage.heating-habits.title.title')</h4>
+
 
                 {{-- degree high low --}}
                 <div class="row mt-20">
                     <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.thermostat_high', 'translation' => 'general-data/usage.energy-usage.thermostat-high', 'required' => false])
+                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.thermostat_high', 'translation' => 'general-data/usage.heating-habits.thermostat-high', 'required' => false])
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'thermostat_high', 'needsFormat' => true])
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.degrees.title')}}</span>
@@ -97,7 +98,7 @@
                     </div>
 
                     <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.thermostat_low', 'translation' => 'general-data/usage.energy-usage.thermostat-low', 'required' => false])
+                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.thermostat_low', 'translation' => 'general-data/usage.heating-habits.thermostat-low', 'required' => false])
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'thermostat_low', 'needsFormat' => true])
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.degrees.title')}}</span>
@@ -111,7 +112,7 @@
                 {{--hours termostat high--}}
                 <div class="row mt-20">
                     <div class="col-sm-12">
-                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.hours_high', 'translation' => 'general-data/usage.energy-usage.hours-high', 'required' => false])
+                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.hours_high', 'translation' => 'general-data/usage.heating-habits.hours-high', 'required' => false])
 
                             <?php
                                 $hours = range(1, 24);
@@ -139,7 +140,7 @@
                 {{--situation first and second floor--}}
                 <div class="row mt-20">
                     <div class="col-sm-6">
-                    @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.heating_first_floor', 'translation' => 'general-data/usage.energy-usage.heating-first-floor', 'required' => false])
+                    @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.heating_first_floor', 'translation' => 'general-data/usage.heating-habits.heating-first-floor', 'required' => false])
                         <?php
 
                         $bhDefault = $buildingHeatings->where('is_default', '=', true)->first();
@@ -165,7 +166,7 @@
                 </div>
 
                     <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.heating_second_floor', 'translation' => 'general-data/usage.energy-usage.heating-second-floor', 'required' => false])
+                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.heating_second_floor', 'translation' => 'general-data/usage.heating-habits.heating-second-floor', 'required' => false])
                             <?php
 
                             $bhDefault = $buildingHeatings->where('is_default', '=', true)->first();
@@ -197,11 +198,11 @@
         {{-- heating habits, gas and electricity --}}
         <div class="row mt-10">
             <div class="col-sm-12">
-                <h4>@lang('general-data/usage.heating-habits.title.title')</h4>
+                <h4>@lang('general-data/usage.energy-usage.title.title')</h4>
 
                 <div class="row mt-20">
                     <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.amount_electricity', 'translation' => 'general-data/usage.heating-habits.electricity-amount', 'required' => true])
+                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.amount_electricity', 'translation' => 'general-data/usage.energy-usage.electricity-amount', 'required' => true])
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'amount_electricity'])
                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kwh')</span>
@@ -211,7 +212,7 @@
 
                     </div>
                     <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.amount_gas', 'translation' => 'general-data/usage.heating-habits.gas-usage', 'required' => true])
+                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.amount_gas', 'translation' => 'general-data/usage.energy-usage.gas-usage', 'required' => true])
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'amount_gas'])
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.cubic-meters.title')}}</span>

@@ -40,10 +40,10 @@
 
                     <div class="input-group input-source-group">
                         <label class="radio-inline">
-                            <input type="radio" name="cook_gas" required="required" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 1) checked @endif value="1">{{\App\Helpers\Translation::translate('general.options.yes.title')}}
+                            <input type="radio" name="user_energy_habits[cook_gas]" required="required" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 1) checked @endif value="1">{{\App\Helpers\Translation::translate('general.options.yes.title')}}
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="cook_gas" required="required" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 2) checked @endif value="2">{{\App\Helpers\Translation::translate('general.options.no.title')}}
+                            <input type="radio" name="user_energy_habits[cook_gas]" required="required" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 2) checked @endif value="2">{{\App\Helpers\Translation::translate('general.options.no.title')}}
                         </label>
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>

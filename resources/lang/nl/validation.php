@@ -152,10 +152,10 @@ return [
         'building_features.resident_count' => __('general-data/usage.resident'),
         'building_features.surface' => __('general-data/building-characteristics.surface.title'),
         'building_features.build_year' => __('general-data/building-characteristics.build-year.title'),
-        'user_energy_habits.thermostat_high' => 'temperatuur van de thermostaat op hoge stand',
-        'user_energy_habits.thermostat_low' => 'temperatuur van de thermostaat op lage stand',
-        'user_energy_habits.amount_electricity' => __('general-data.data-about-usage.electricity-consumption-past-year.title'),
-        'user_energy_habits.amount_gas' => __('general-data.data-about-usage.gas-usage-past-year.title'),
+        'user_energy_habits.thermostat_high' => __('general-data/usage.heating-habits.thermostat-high.title'),
+        'user_energy_habits.thermostat_low' => __('general-data/usage.heating-habits.thermostat-low.title'),
+        'user_energy_habits.amount_electricity' => __('general-data/usage.energy-usage.electricity-amount.title'),
+        'user_energy_habits.amount_gas' => __('general-data/usage.energy-usage.gas-usage.title'),
 
 
         'service.6.extra.year' => 'jaartal',

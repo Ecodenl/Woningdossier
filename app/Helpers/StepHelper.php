@@ -18,6 +18,7 @@ use App\Models\User;
 use App\Models\UserActionPlanAdviceComments;
 use App\Models\UserEnergyHabit;
 use App\Models\CompletedStep;
+use App\Models\UserInterest;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Log;
@@ -75,10 +76,15 @@ class StepHelper
     {
         $noInterestIds = Interest::whereIn('calculate_value', [4, 5])->select('id')->get()->pluck('id')->toArray();
 
+        $userSelectedInterestedId = null;
         if ($inputSource instanceof InputSource) {
-            $userSelectedInterestedId = $user->userInterestsForSpecificType($interestedInType, $interestedInId, $inputSource)->first()->interest_id;
+            $userSelectedUserInterest = $user->userInterestsForSpecificType($interestedInType, $interestedInId, $inputSource)->first();
         } else {
-            $userSelectedInterestedId = $user->userInterestsForSpecificType($interestedInType, $interestedInId)->first()->interest_id;
+            $userSelectedUserInterest = $user->userInterestsForSpecificType($interestedInType, $interestedInId)->first();
+        }
+
+        if ($userSelectedUserInterest instanceof UserInterest) {
+            $userSelectedInterestedId = $userSelectedUserInterest->interest_id;
         }
 
         return !in_array($userSelectedInterestedId, $noInterestIds);

@@ -58,47 +58,32 @@ class CurrentStateController extends Controller
         $inputSource = HoomdossierSession::getInputSource(true);
         $step = Step::findByShort('current-state');
 
-
+        // save the building elements
         $elements = $request->get('element', []);
-        foreach ($elements as $elementId => $elementValueId) {
+        foreach ($elements as $elementId => $elementData) {
             $element = Element::find($elementId);
             if ($element instanceof Element) {
-                $building->buildingElements()->updateOrCreate(['element_id' => $element->id], [
-                    'element_value_id' => $elementValueId,
-                ]);
+                $building->buildingElements()->updateOrCreate(['element_id' => $element->id], $elementData);
             }
         }
 
-        // save the services
+        // save the building services
         $services = $request->get('service', []);
-        foreach ($services as $serviceId => $serviceValueId) {
+        foreach ($services as $serviceId => $serviceData) {
             // get the service based on the service id from the form
             $service = Service::find($serviceId);
 
             if ($service instanceof Service) {
+                $buildingServiceUpdateData = $serviceData;
 
-                $buildingServiceUpdateData = [];
-                // check if the current service is a sun panel
-                // if so, we will need to put the value / valueId inside the extra field.
-                if ('total-sun-panels' == $service->short) {
-                    // will return the value and the year answer
-                    $buildingServiceUpdateData['extra'] = $request->input('service.'.$service->id.'.extra');
-                }
-                // if its a ventilation, is has a dropdown so it has a serviceValue
-                elseif ('house-ventilation' == $service->short) {
-                    dd($request->input('service.'.$service->id.'.extra'));
-                    $buildingServiceUpdateData['extra'] = $request->input('service.'.$service->id.'.extra');
-                } else {
+                $buildingServiceUpdateData['extra'] = $request->input('service.'.$service->id.'.extra');
 
-                    $buildingServiceUpdateData = ['service_value_id' => $serviceValueId];
-                }
-
-//                $building->buildingServices()->updateOrCreate(['service_id' => $service->id], ['service_value_id' => $serviceValueId]);
-
-
+                $building->buildingServices()->updateOrCreate(['service_id' => $service->id], $buildingServiceUpdateData);
             }
         }
 
+        // save buildign features, pv panels and the comments
+        $building->pvPanels()->updateOrCreate([], $request->input('building_pv_panels'));
         $building->buildingFeatures()->updateOrCreate([], $request->input('building_features'));
         foreach ($request->input('step_comments.comment') as $short => $comment) {
             StepCommentService::save($building, $inputSource, $step, $comment, $short);

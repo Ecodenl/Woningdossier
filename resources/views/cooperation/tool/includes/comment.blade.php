@@ -10,7 +10,7 @@
     $columnName = $columnName ?? 'step_comments[comment]';
     if (isset($short)) {
         $columnName = 'step_comments[comment]['.$short.']';
-        $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$short][$currentInputSource->name]);
+        $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name][$short]);
     } else {
         $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name]);
     }

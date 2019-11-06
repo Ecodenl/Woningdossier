@@ -28,7 +28,7 @@ class CurrentStateRequest extends FormRequest
     public function rules()
     {
         return [
-            'element.*' => 'required|exists:element_values,id',
+            'element.*.*' => 'required|exists:element_values,id',
             'building_features.building_heating_application_id' => ['required', Rule::exists('building_heating_applications', 'id')],
             'building_pv_panels.total_installed_power' => [Rule::requiredIf($this->input('service.7.extra.value') > 0)]
         ];
@@ -40,7 +40,7 @@ class CurrentStateRequest extends FormRequest
         $serviceRules = [];
         $max = Carbon::now()->year;
 
-        foreach ($this->get('service') as $serviceId => $serviceValueId) {
+        foreach ($this->input('service') as $serviceId => $serviceData) {
             $inputName = 'service.'.$serviceId;
             $service = Service::find($serviceId)->load('values');
             if ($service instanceof Service) {
@@ -52,7 +52,6 @@ class CurrentStateRequest extends FormRequest
 
                 switch ($service->short) {
                     case 'house-ventilation':
-//                        $serviceRules[$inputName.'.extra.year'] = 'nullable|numeric|between:1960,' . $max;
                         $serviceRules[$inputName.'.extra.demand_driven'] = 'sometimes|accepted';
                         $serviceRules[$inputName.'.extra.heat_recovery'] = 'sometimes|accepted';
                         break;

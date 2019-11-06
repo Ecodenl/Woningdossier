@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Cooperation\Tool\GeneralData;
 
+use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\StepHelper;
+use App\Http\Requests\Cooperation\Tool\GeneralData\BuildingCharacteristicsFormRequest;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingType;
@@ -14,9 +17,9 @@ use App\Models\RoofType;
 use App\Models\Step;
 use App\Models\StepComment;
 use App\Services\ExampleBuildingService;
+use App\Services\StepCommentService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
 
 class BuildingCharacteristicsController extends Controller
 {
@@ -67,14 +70,16 @@ class BuildingCharacteristicsController extends Controller
         return response()->json($exampleBuildings);
     }
 
-    public function store(Request $request)
+    public function store(BuildingCharacteristicsFormRequest $request)
     {
-        return redirect(back());
-
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
+        $step = Step::findByShort('building-characteristics');
 
+        $buildYear = $request->input('building_features.build_year');
+        $buildingTypeId = $request->input('building_features.building_type_id');
         $exampleBuildingId = $request->get('example_building_id', null);
+
         if (!is_null($exampleBuildingId)) {
             $exampleBuilding = ExampleBuilding::forMyCooperation()->where('id', $exampleBuildingId)->first();
             if ($exampleBuilding instanceof ExampleBuilding) {
@@ -83,26 +88,26 @@ class BuildingCharacteristicsController extends Controller
             }
         }
 
-        $buildYear = $request->input('building_features.build_year');
-        $buildingTypeId = $request->input('building_features.building_type_id');
 
         // this has to be done before the new building features are saved
-        $currentFeatures = $building->buildingFeatures()->forInputSource($inputSource)->first();
+        $currentFeatures = $building->buildingFeatures()->first();
 
-        BuildingFeature::forMe()->updateOrCreate([
-            'building_id' => $building->id,
-            'input_source_id' => $inputSource->id,
-        ], $request->input('building_features'));
-
-        StepComment::forMe()->updateOrCreate([
-            'building_id' => $building->id,
-            'input_source_id' => $inputSource->id,
-        ], $request->input('step_comments'));
-
-
+        // save the data
+        $building->buildingFeatures()->updateOrCreate([], $request->input('building_features'));
+        StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
         $this->handleExampleBuildingData($building, $currentFeatures, $buildYear, $buildingTypeId);
 
-        return redirect(back());
+        StepHelper::complete($step, $building, $inputSource);
+        StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
+
+        $nextStep = StepHelper::getNextStep($building, $inputSource, $step);
+        $url = $nextStep['url'];
+
+        if (! empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 
     /**

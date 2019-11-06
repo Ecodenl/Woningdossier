@@ -147,8 +147,12 @@ class StepHelper
         // check if a user is interested
         // and if so return the route name
         foreach ($nonCompletedSteps as $nonCompletedStep) {
-            if (self::hasInterestInStep($user, Step::class, $nonCompletedStep->id)) {
-                $routeName = 'cooperation.tool.'.$nonCompletedStep->slug.'.index';
+            // for now its not possible to give an interest to a substep. So if its a supstep and not completed just return it
+            if ($nonCompletedStep->isSubStep() || self::hasInterestInStep($user, Step::class, $nonCompletedStep->id)) {
+
+                $routeName = $nonCompletedStep->isSubStep()
+                    ? 'cooperation.tool.'.$nonCompletedStep->parentStep->short.'.'.$nonCompletedStep->short.'.index'
+                    : 'cooperation.tool.'.$nonCompletedStep->short.'.index';
 
                 return ['url' => route($routeName), 'tab_id' => ''];
             }

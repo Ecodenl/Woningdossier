@@ -85,14 +85,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BuildingFeature extends Model
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
-    use ToolSettingTrait;
+    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
 
     protected $fillable = [
         'building_heating_application_id',
         'element_values',
         'plastered_wall_surface',
+        'building_type_id',
         'building_id',
         'wall_joints',
         'cavity_wall',

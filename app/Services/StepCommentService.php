@@ -28,10 +28,11 @@ class StepCommentService {
 
         is_null($short) ?: $dataToUpdate['short'] = $short;
 
+        // we could use the relationships and stuff but then the method isnt testable
         StepComment::withOutGlobalScopes()->updateOrCreate(
             $dataToUpdate,
             [
-                'comment' => $comment
+                'comment' => $comment ?? '',
             ]
         );
     }

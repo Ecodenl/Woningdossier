@@ -57,6 +57,16 @@ class Step extends Model
     }
 
     /**
+     * Return the parent of the step
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function parentStep()
+    {
+        return $this->belongsTo(Step::class, 'parent_id', 'id');
+    }
+
+    /**
      * Check whether a step has substeps
      *
      * @return bool

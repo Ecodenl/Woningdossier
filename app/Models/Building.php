@@ -93,13 +93,15 @@ class Building extends Model
         return ['example_building_id'];
     }
 
+    public function stepComments()
+    {
+        return $this->hasMany(StepComment::class);
+    }
+
     /**
      * Check if a step is completed for a building with matching input source id.
      *
-     * @NeedsReview
-     *
      * @param Step $step
-     *
      * @return bool
      */
     public function hasCompleted(Step $step)

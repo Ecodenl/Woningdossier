@@ -185,6 +185,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         });
                         Route::group(['prefix' => 'interesse', 'as' => 'interest.'], function () {
                             Route::get('', 'InterestController@index')->name('index');
+                            Route::post('', 'InterestController@store')->name('store');
                         });
                     });
                 });

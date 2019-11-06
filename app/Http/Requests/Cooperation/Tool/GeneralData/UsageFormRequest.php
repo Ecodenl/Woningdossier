@@ -8,6 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class UsageFormRequest extends FormRequest
 {
     use DecimalReplacementTrait;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -16,6 +17,13 @@ class UsageFormRequest extends FormRequest
     public function authorize()
     {
         return \Auth::check();
+    }
+
+    public function getValidatorInstance()
+    {
+        $this->decimals(['user_energy_habits.thermostat_high', 'user_energy_habits.thermostat_low']);
+
+        return parent::getValidatorInstance();
     }
 
     /**
@@ -36,7 +44,7 @@ class UsageFormRequest extends FormRequest
             // because the request variable is used for the between.
             // In a later Laravel version, the gte and lte validators can probably be used.
             'user_energy_habits.thermostat_high' => 'nullable|numeric|min:10|max:30|bail',
-            'user_energy_habits.thermostat_low' => 'nullable|numeric|min:10|max:30|bail|between:10,' . max(10, $this->get('thermostat_high')),
+            'user_energy_habits.thermostat_low' => 'nullable|numeric|min:10|max:30|bail|between:10,' . max(10, $this->input('user_energy_habits.thermostat_high')),
             'user_energy_habits.hours_high' => 'required|numeric|between:1,24',
             'user_energy_habits.heating_first_floor' => 'required|exists:building_heatings,id',
             'user_energy_habits.heating_second_floor' => 'required|exists:building_heatings,id',

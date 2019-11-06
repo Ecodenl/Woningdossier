@@ -20,6 +20,13 @@ class BuildingCharacteristicsFormRequest extends FormRequest
         return \Auth::check();
     }
 
+    public function getValidatorInstance()
+    {
+        $this->decimals(['surface']);
+
+        return parent::getValidatorInstance();
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

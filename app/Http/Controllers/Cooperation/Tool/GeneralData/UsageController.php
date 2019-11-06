@@ -11,6 +11,7 @@ use App\Models\BuildingHeating;
 use App\Models\ComfortLevelTapWater;
 use App\Http\Controllers\Controller;
 use App\Models\Step;
+use App\Services\StepCommentService;
 
 class UsageController extends Controller
 {
@@ -35,11 +36,10 @@ class UsageController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
-        $step = Step::findByShort('current-state');
+        $step = Step::findByShort('usage');
 
-        \DB::enableQueryLog();
         $buildingOwner->energyHabit()->updateOrCreate([], $request->input('user_energy_habits'));
-        dd(\DB::getQueryLog());
+        StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
 
         StepHelper::complete($step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());

@@ -6,7 +6,7 @@
 
 @section('step_content')
 
-    <form class="form-horizontal" method="POST" id="main-form" action="{{ route('cooperation.tool.general-data.usage.store') }}" autocomplete="off">
+    <form class="form-horizontal" method="POST" id="main-form" action="{{ route('cooperation.tool.general-data.interest.store') }}" autocomplete="off">
         {{ csrf_field() }}
         <div class="row">
             <?php /** @var \Illuminate\Support\Collection $steps */ ?>
@@ -19,7 +19,15 @@
                         </div>
                         <div class="col-md-6">
                             @component('cooperation.tool.components.step-question', ['id' => 'user_interest'])
-                                @include('cooperation.tool.parts.user-interest-select', ['interestedInType' => get_class($step), 'interestedInId' => $step->id])
+                                @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $buildingOwner->userInterestsForSpecificType(get_class($step), $step->id)->forMe()->get(), 'userInputColumn' => 'interest_id'])
+                                    <select id="user_interest" class="form-control" name="user_interests[{{$step->id}}][interest_id]">
+                                        @foreach($interests as $interest)
+                                            <option @if(old('user_interests.interest_id.*', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->userInterestsForSpecificType(get_class($step), $step->id), 'interest_id')) == $interest->id) selected="selected" @endif value="{{ $interest->id }}">{{ $interest->name}}</option>
+                                        @endforeach
+                                    </select>
+                                @endcomponent
+                                <input type="hidden" name="user_interests[{{$step->id}}][interested_in_type]" value="{{get_class($step)}}">
+                                <input type="hidden" name="user_interests[{{$step->id}}][interested_in_id]" value="{{$step->id}}">
                             @endcomponent
                         </div>
                     </div>

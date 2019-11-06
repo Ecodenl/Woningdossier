@@ -85,7 +85,8 @@ class UserEnergyHabit extends Model
         'amount_electricity',
         'amount_gas',
         'amount_water',
-        'living_situation_extra',
+        'renovation_plans',
+        'building_complaints'
     ];
 
     /**

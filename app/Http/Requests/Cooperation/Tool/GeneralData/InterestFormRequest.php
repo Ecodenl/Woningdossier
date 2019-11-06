@@ -31,7 +31,7 @@ class InterestFormRequest extends FormRequest
             'user_interests.*.interest_in_id' => [Rule::exists('steps', 'id')],
             'user_energy_habits.renovation_plans' => ['required', Rule::in([1, 2, 0])],
             'user_energy_habits.building_complaints' => 'max:100000',
-            'motivations.*' => [Rule::exists('motivations', 'id')]
+            'user_motivations.id.*' => [Rule::exists('motivations', 'id')]
         ];
     }
 }

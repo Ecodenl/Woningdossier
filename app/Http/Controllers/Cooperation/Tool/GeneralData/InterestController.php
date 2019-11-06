@@ -16,6 +16,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Step;
 use App\Models\UserInterest;
 use App\Services\StepCommentService;
+use App\Services\UserInterestService;
 
 class InterestController extends Controller
 {
@@ -44,9 +45,22 @@ class InterestController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
-        $step = Step::findByShort('usage');
+        $step = Step::findByShort('interest');
 
+        $userInterests = $request->input('user_interests');
+
+        foreach ($userInterests as $userInterest) {
+            UserInterestService::save($buildingOwner, $inputSource, $userInterest['interested_in_type'], $userInterest['interested_in_id'], $userInterest['interest_id']);
+        }
+
+        $buildingOwner->motivations()->delete();
+        foreach ($request->input('user_motivations.id') as $order => $moviationId)
+        $buildingOwner->motivations()->create([
+            'motivation_id' => $moviationId,
+            'order' => $order
+        ]);
         $buildingOwner->energyHabit()->updateOrCreate([], $request->input('user_energy_habits'));
+
         StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
 
         StepHelper::complete($step, $building, $inputSource);

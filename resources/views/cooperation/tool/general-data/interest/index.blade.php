@@ -18,7 +18,7 @@
                             <h4>@lang('general-data/interest.steps.'.$step->short.'.title')</h4>
                         </div>
                         <div class="col-md-6">
-                            @component('cooperation.tool.components.step-question', ['id' => 'user_interest'])
+                            @component('cooperation.tool.components.step-question', ['id' => 'user_interest', 'name' => 'user_interests.'.$step->id.'.interest_id'])
                                 @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $buildingOwner->userInterestsForSpecificType(get_class($step), $step->id)->forMe()->get(), 'userInputColumn' => 'interest_id'])
                                     <select id="user_interest" class="form-control" name="user_interests[{{$step->id}}][interest_id]">
                                         @foreach($interests as $interest)
@@ -45,7 +45,7 @@
                 $motivationsToSelect = empty(is_array($oldMotivations) ? $oldMotivations : []) ? $userMotivations->pluck('motivation_id')->toArray() : $motivationsToSelect;
             ?>
             <div class="col-sm-12">
-                <select id="motivation" class="form-control" name="motivations[]" multiple="multiple">
+                <select id="motivation" class="form-control" name="user_motivations[id][]" multiple="multiple">
                     @foreach($motivations as $motivation)
                         <option @if(in_array($motivation->id, $motivationsToSelect)) selected @endif value="{{$motivation->id}}">{{$motivation->name}}</option>
                     @endforeach

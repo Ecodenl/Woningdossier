@@ -29,36 +29,6 @@ class GeneralDataFormRequest extends FormRequest
         return parent::getValidatorInstance();
     }
 
-    public function withValidator(Validator $validator)
-    {
-        $serviceRules = [];
-        $max = Carbon::now()->year;
-
-        foreach ($this->get('service') as $serviceId => $serviceValueId) {
-            $service = Service::find($serviceId)->load('values');
-            if ($service instanceof Service) {
-
-                // when the service has values, they should exist. When a service has values its most likely to be a dropdown, otherwise its just an input.
-                if ($service->values->isNotEmpty()) {
-                    $serviceRules['service.' . $serviceId] = 'required|exists:service_values,id';
-                }
-
-                switch ($service->short) {
-                    case 'house-ventilation':
-                        $serviceRules[$serviceId . '.extra.year'] = 'nullable|numeric|between:1960,' . $max;
-                        break;
-                    case 'total-sun-panels':
-                        // the total sun panel input
-                        $serviceRules['service.' . $serviceId] = 'nullable|numeric|min:0|max:50';
-                        // the year for the sun panels
-                        $serviceRules[$serviceId . '.extra.year'] = 'nullable|numeric|between:1980,' . $max;
-                        break;
-                }
-            }
-        }
-
-        $validator->addRules($serviceRules);
-    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -73,8 +43,7 @@ class GeneralDataFormRequest extends FormRequest
             // validate all the interested rules
             'user_interest.*.*' => 'required|exists:interests,id',
 
-            // Validate the elements
-            'element.*' => 'required|exists:element_values,id',
+
 
             // start
 

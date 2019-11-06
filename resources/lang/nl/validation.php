@@ -157,9 +157,10 @@ return [
         'amount_electricity' => __('general-data.data-about-usage.electricity-consumption-past-year.title'),
         'amount_gas' => __('general-data.data-about-usage.gas-usage-past-year.title'),
         'build_year' => 'bouwjaar',
-        '6.extra.year' => 'jaartal',
-        '7.extra.year' => 'jaartal',
+        'service.6.extra.year' => 'jaartal',
+        'service.7.extra.year' => 'jaartal',
         'service.7' => 'aantal zonnepanelen',
+        'building_pv_panels.total_installed_power' => __('general-data/current-state.installed-power.title'),
 
         // roof insulation
         'building_roof_types.pitched.roof_surface' => __('roof-insulation.current-situation.pitched-roof-surface.title'),

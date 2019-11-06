@@ -105,7 +105,7 @@
                 @component('cooperation.tool.components.step-question', ['id' => 'service.'.$service->id, 'translation' => 'general-data/current-state.service.'.$service->short])
                     @component('cooperation.tool.components.input-group', ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(), 'userInputColumn' => 'extra.value'])
                         <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.pieces')</span>
-                        <input type="text" id="{{ $service->short }}" class="form-control" value="{{ old('service.' . $service->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $service->id), 'extra.value')) }}" name="service[{{ $service->id }}][extra][value]">
+                        <input type="text" id="{{ $service->short }}" class="form-control" name="service[{{ $service->id }}][extra][value]" value="{{ old('service.' . $service->id.'.extra.value', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $service->id), 'extra.value')) }}">
                         {{--<input type="text" id="{{ $service->short }}" class="form-control" value="@if(old('service.' . $service->id )){{old('service.' . $service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="service[{{ $service->id }}]">--}}
                     @endcomponent
                 @endcomponent
@@ -113,7 +113,7 @@
             <div id="optional-total-sun-panels-questions">
 
                 <div class="col-md-4">
-                    @component('cooperation.tool.components.step-question', ['id' => 'building-pv-panels-total-installed-power', 'translation' => 'general-data/current-state.installed-power', 'required' => false])
+                    @component('cooperation.tool.components.step-question', ['id' => 'building-pv-panels-total-installed-power', 'name' => 'building_pv_panels.total_installed_power', 'translation' => 'general-data/current-state.installed-power', 'required' => false])
                         @component('cooperation.tool.components.input-group', ['inputType' => 'input', 'userInputValues' => $building->pvPanels()->forMe()->get(), 'userInputColumn' => 'total_installed_power'])
                             <span class="input-group-addon">@lang('general.unit.wp.title')</span>
                             <input type="text" class="form-control" name="building_pv_panels[total_installed_power]" value="{{ old('building_pv_panels.total_installed_power', \App\Helpers\Hoomdossier::getMostCredibleValue($building->pvPanels(), 'total_installed_power')) }}">

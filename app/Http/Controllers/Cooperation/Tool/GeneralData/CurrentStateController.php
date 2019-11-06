@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Tool\GeneralData;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
+use App\Http\Requests\Cooperation\Tool\GeneralData\CurrentStateRequest;
 use App\Models\BuildingHeatingApplication;
 use App\Models\BuildingService;
 use App\Models\Cooperation;
@@ -18,7 +19,7 @@ use App\Http\Controllers\Controller;
 
 class CurrentStateController extends Controller
 {
-    public function index(Cooperation $cooperation)
+    public function index()
     {
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
@@ -44,5 +45,10 @@ class CurrentStateController extends Controller
             'building', 'buildingOwner', 'elements', 'services', 'userInterestsForMe', 'services',
             'buildingHeatingApplications', 'myBuildingFeatures', 'commentsByStep'
         ));
+    }
+
+    public function store(CurrentStateRequest $request)
+    {
+
     }
 }

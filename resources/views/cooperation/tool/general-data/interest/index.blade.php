@@ -8,17 +8,26 @@
 
     <form class="form-horizontal" method="POST" id="main-form" action="{{ route('cooperation.tool.general-data.usage.store') }}" autocomplete="off">
         {{ csrf_field() }}
-        <?php /** @var \Illuminate\Support\Collection $steps */ ?>
-        @foreach($steps->forget(0) as $step)
-            <div class="col-sm-12 col-md-6 ">
-                <img class="img-responsive mt-15 pr-10 d-inline pull-left" src="{{asset('images/icons/'.$step->short.'.png')}}">
-                @component('cooperation.tool.components.step-question', ['id' => 'user_interest', 'translation' => 'general-data/interest.steps.'.$step->short])
-                    @include('cooperation.tool.parts.user-interest-select', ['interestedInType' => get_class($step), 'interestedInId' => $step->id])
-                @endcomponent
-            </div>
-        @endforeach
-
         <div class="row">
+            <?php /** @var \Illuminate\Support\Collection $steps */ ?>
+            @foreach($steps->forget(0) as $step)
+                <div class="col-sm-12 col-md-6 mt-20">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img class="img-responsive pr-10 d-inline pull-left" src="{{asset('images/icons/'.$step->short.'.png')}}">
+                            <h4>@lang('general-data/interest.steps.'.$step->short.'.title')</h4>
+                        </div>
+                        <div class="col-md-6">
+                            @component('cooperation.tool.components.step-question', ['id' => 'user_interest'])
+                                @include('cooperation.tool.parts.user-interest-select', ['interestedInType' => get_class($step), 'interestedInId' => $step->id])
+                            @endcomponent
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <div class="row mt-20">
             <div class="col-sm-12">
                 <h4>@lang('general-data/interest.motivation.title.title')</h4>
                 <p>@lang('general-data/interest.motivation.title.help')</p>
@@ -63,7 +72,6 @@
             </div>
         </div>
         @include('cooperation.tool.includes.comment', [
-            'columnName' => 'step_comments[comment]',
             'translation' => 'general-data/interest.comment'
         ])
 

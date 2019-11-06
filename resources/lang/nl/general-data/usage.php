@@ -5,12 +5,23 @@ return [
         'title' => [
             'title' => 'Warm tapwater en koken'
         ],
-
         'cook-gas' => [
             'title' => 'Word er op gas gekookt?',
         ],
+        'water-comfort' => [
+            'title' => 'Wat is het comfortniveau voor het gebruik van warm tapwater? ',
+            'help' => '
+                                <p>Het gaat om het gebruik van warm water voor keuken, douche en bad.</p>
+<p><strong>Standaard</strong> = kort douchen met waterbesparende douchekop;</p>
+<p><strong>Comfort</strong> = 5 - 10 minuten douchen en/of geen waterbesparende douchekop; af en toe badgebruik;</p>
+<p><strong>Comfort plus</strong> = meer dan 10 minuten douchen en of regendouche / speciale luxe douche; Regelmatig badgebruik is altijd categorie comfort plus</p>
 
-
+            '
+        ],
+        'resident-count' => [
+            'title' => 'Wat is het aantal bewoners?',
+            'help' => 'Hoeveel personen wonen er in de woning. Logees die alleen gedurende een aantal weken of maanden in huis wonen tellen niet mee.'
+        ],
     ],
 
     'energy-usage' => [

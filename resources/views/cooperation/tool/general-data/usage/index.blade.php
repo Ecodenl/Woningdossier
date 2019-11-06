@@ -12,7 +12,7 @@
             </div>
 
             <div class="col-lg-4 col-md-12">
-                @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.resident_count', 'translation' => 'general-data.data-about-usage.total-citizens', 'required' => true])
+                @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.resident_count', 'translation' => 'general-data/usage.water-gas.resident-count', 'required' => true])
                     @component('cooperation.tool.components.input-group',
                     ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'resident_count'])
                         <input type="text" id="resident_count" class="form-control" value="{{ old('user_energy_habits.resident_count', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'resident_count')) }}" name="user_energy_habits[resident_count]" required="required">
@@ -21,7 +21,7 @@
             </div>
 
             <div class="col-lg-5 col-md-12">
-                @component('cooperation.tool.components.step-question', ['id' => 'water_comfort', 'translation' => 'general-data.data-about-usage.comfortniveau-warm-tapwater', 'required' => false])
+                @component('cooperation.tool.components.step-question', ['id' => 'water_comfort', 'translation' => 'general-data/usage.water-gas.water-comfort', 'required' => false])
                     @component('cooperation.tool.components.input-group',
                     ['inputType' => 'select', 'inputValues' => $comfortLevelsTapWater, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'water_comfort_id'])
                         <select id="water_comfort" class="form-control" name="user_energy_habits[water_comfort_id]">
@@ -36,7 +36,7 @@
             </div>
 
             <div class="col-lg-3 col-md-12">
-                @component('cooperation.tool.components.step-question', ['id' => 'cook_gas', 'translation' => 'general-data.data-about-usage.cooked-on-gas', 'required' => true])
+                @component('cooperation.tool.components.step-question', ['id' => 'cook_gas', 'translation' => 'general-data/usage.water-gas.cook-gas', 'required' => true])
 
                     <div class="input-group input-source-group">
                         <label class="radio-inline">

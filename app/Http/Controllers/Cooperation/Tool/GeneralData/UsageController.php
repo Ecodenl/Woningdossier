@@ -33,9 +33,13 @@ class UsageController extends Controller
     public function store(UsageFormRequest $request)
     {
         $building = HoomdossierSession::getBuilding(true);
+        $buildingOwner = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
         $step = Step::findByShort('current-state');
 
+        \DB::enableQueryLog();
+        $buildingOwner->energyHabit()->updateOrCreate([], $request->input('user_energy_habits'));
+        dd(\DB::getQueryLog());
 
         StepHelper::complete($step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());

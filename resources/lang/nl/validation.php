@@ -148,19 +148,23 @@ return [
         'account.password_confirmation' => 'wachtwoord bevestigen',
 
         // general data
-        'building_layers' => __('general-data.building-type.how-much-building-layers.title'),
-        'resident_count' => 'bewoners aantal',
-        'surface' => __('general-data.building-type.what-user-surface.title'),
-        'thermostat_high' => 'temperatuur van de thermostaat op hoge stand',
-        'thermostat_low' => 'temperatuur van de thermostaat op lage stand',
-        'window_surface' => 'totale raamopperlake van de woning',
-        'amount_electricity' => __('general-data.data-about-usage.electricity-consumption-past-year.title'),
-        'amount_gas' => __('general-data.data-about-usage.gas-usage-past-year.title'),
-        'build_year' => 'bouwjaar',
+        'building_features.building_layers' => __('general-data.building-type.how-much-building-layers.title'),
+        'building_features.resident_count' => __('general-data/usage.resident'),
+        'building_features.surface' => __('general-data/building-characteristics.surface.title'),
+        'building_features.build_year' => __('general-data/building-characteristics.build-year.title'),
+        'user_energy_habits.thermostat_high' => 'temperatuur van de thermostaat op hoge stand',
+        'user_energy_habits.thermostat_low' => 'temperatuur van de thermostaat op lage stand',
+        'user_energy_habits.amount_electricity' => __('general-data.data-about-usage.electricity-consumption-past-year.title'),
+        'user_energy_habits.amount_gas' => __('general-data.data-about-usage.gas-usage-past-year.title'),
+
+
         'service.6.extra.year' => 'jaartal',
         'service.7.extra.year' => 'jaartal',
-        'service.7' => 'aantal zonnepanelen',
+        'service.7.service_value_id' => 'aantal zonnepanelen',
+
         'building_pv_panels.total_installed_power' => __('general-data/current-state.installed-power.title'),
+
+        'window_surface' => 'totale raamopperlake van de woning',
 
         // roof insulation
         'building_roof_types.pitched.roof_surface' => __('roof-insulation.current-situation.pitched-roof-surface.title'),

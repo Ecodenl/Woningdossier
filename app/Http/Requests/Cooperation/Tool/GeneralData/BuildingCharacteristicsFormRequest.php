@@ -5,6 +5,7 @@ namespace App\Http\Requests\Cooperation\Tool\GeneralData;
 use App\Http\Requests\DecimalReplacementTrait;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class BuildingCharacteristicsFormRequest extends FormRequest
@@ -22,7 +23,7 @@ class BuildingCharacteristicsFormRequest extends FormRequest
 
     public function getValidatorInstance()
     {
-        $this->decimals(['surface']);
+        $this->decimals(['building_features.surface']);
 
         return parent::getValidatorInstance();
     }

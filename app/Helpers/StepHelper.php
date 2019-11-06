@@ -139,8 +139,10 @@ class StepHelper
         // the step does not have custom questionnaires or the user does not have uncompleted questionnaires left for that step.
         // so we will redirect them to a next step.
         // retrieve the non completed steps for a user.
+        // we leave out the general data step itself since thats not a "real" step anymore
         $nonCompletedSteps = $user->cooperation
             ->steps()
+            ->where('steps.short', '!=', 'general-data')
             ->orderBy('cooperation_steps.order')
             ->where('cooperation_steps.is_active', '1')
             ->whereNotExists(function (Builder $query) use ($building, $inputSource) {
@@ -150,6 +152,7 @@ class StepHelper
                     ->where('building_id', $building->id)
                     ->where('input_source_id', $inputSource->id);
             })->get();
+
         // check if a user is interested
         // and if so return the route name
         foreach ($nonCompletedSteps as $nonCompletedStep) {

@@ -10,7 +10,7 @@ use App\Helpers\RoofInsulation;
 use App\Helpers\RoofInsulationCalculator;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\RoofInsulationFormRequest;
+use App\Http\Requests\Cooperation\Tool\RoofInsulationFormRequest;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingHeating;
@@ -273,8 +273,8 @@ class RoofInsulationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * param  \Illuminate\Http\Request  $request
-     * return \Illuminate\Http\Response
+     * @param RoofInsulationFormRequest $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function store(RoofInsulationFormRequest $request)
     {

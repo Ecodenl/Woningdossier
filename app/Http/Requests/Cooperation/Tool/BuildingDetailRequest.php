@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Cooperation\Tool;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class HighEfficiencyBoilerFormRequest extends FormRequest
+class BuildingDetailRequest extends FormRequest
 {
-    use ValidatorTrait;
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -16,7 +14,7 @@ class HighEfficiencyBoilerFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::check();
+        return \Auth::check();
     }
 
     /**
@@ -26,10 +24,11 @@ class HighEfficiencyBoilerFormRequest extends FormRequest
      */
     public function rules()
     {
+        $max = Carbon::now()->year;
+
         return [
-            'habit.*' => 'required|numeric',
-            'building_services.*.service_value_id' => 'exists:service_values,id',
-            'building_services.*.extra' => 'required|numeric|digits:4',
+            'building_type_id' => 'required|exists:building_types,id',
+            'build_year' => 'required|numeric|between:1000,'.$max,
         ];
     }
 }

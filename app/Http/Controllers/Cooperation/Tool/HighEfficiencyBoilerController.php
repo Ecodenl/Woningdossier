@@ -8,8 +8,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\HighEfficiencyBoilerFormRequest;
-use App\Models\Building;
+use App\Http\Requests\Cooperation\Tool\HighEfficiencyBoilerFormRequest;
 use App\Models\BuildingService;
 use App\Models\MeasureApplication;
 use App\Models\Service;
@@ -75,9 +74,8 @@ class HighEfficiencyBoilerController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
+     * @param HighEfficiencyBoilerFormRequest $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function store(HighEfficiencyBoilerFormRequest $request)
     {

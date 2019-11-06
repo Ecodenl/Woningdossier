@@ -7,7 +7,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\BuildingDetailRequest;
+use App\Http\Requests\Cooperation\Tool\BuildingDetailRequest;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingType;

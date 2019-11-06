@@ -113,6 +113,11 @@ class Hoomdossier
             'extra.date',
         ];
 
+        // the columns that may return zero values from a resident
+        $valuesThatMayReturnZeroValues = [
+            'insulation_wall_surface', 'insulation_surface', 'insulation_roof_surface'
+        ];
+
         // Always check my own input source first. If that is properly filled
         // return that.
         $myInputSource = HoomdossierSession::getInputSource(true);
@@ -120,7 +125,7 @@ class Hoomdossier
         if ($results->has($myInputSource->short)) {
             $value = $results->get($myInputSource->short);
 
-            if (false !== stristr($column, 'surface') && $value <= 0) {
+            if ((false !== stristr($column, 'surface') && $value <= 0) && !in_array($column, $valuesThatMayReturnZeroValues)) {
                 // skip this one
                 $value = null;
             }
@@ -128,6 +133,7 @@ class Hoomdossier
                 // skip this one
                 $value = null;
             }
+
             if (! is_null($value) && '' !== $value) {
                 return $value;
             }

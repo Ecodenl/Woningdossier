@@ -27,8 +27,10 @@ class CurrentStateFormRequest extends FormRequest
      */
     public function rules()
     {
+
         return [
-            'element.*.*' => 'required|exists:element_values,id',
+            'elements.*.element_id' => ['required', Rule::exists('elements', 'id')],
+            'elements.*.element_value_id' => ['required', Rule::exists('element_values', 'id')],
             'building_features.building_heating_application_id' => ['required', Rule::exists('building_heating_applications', 'id')],
             'building_pv_panels.total_installed_power' => [Rule::requiredIf($this->input('service.7.extra.value') > 0)]
         ];

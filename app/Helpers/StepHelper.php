@@ -186,6 +186,8 @@ class StepHelper
                 // when its a substep we need to build it again for the sub step
                 if ($nonCompletedStep->isSubStep()) {
                     $url = static::buildStepUrl($parentStep, $nonCompletedStep);
+                } else {
+                    $url = static::buildStepUrl($nonCompletedStep);
                 }
 
                 return ['url' => $url, 'tab_id' => ''];
@@ -219,16 +221,39 @@ class StepHelper
      * @param Building    $building
      * @param InputSource $inputSource
      *
-     * @return Model|CompletedStep
      */
     public static function complete(Step $step, Building $building, InputSource $inputSource)
     {
-        return CompletedStep::firstOrCreate([
+        CompletedStep::firstOrCreate([
             'step_id' => $step->id,
             //'input_source_id' => HoomdossierSession::getInputSource(),
             'input_source_id' => $inputSource->id,
             //'building_id' => HoomdossierSession::getBuilding(),
             'building_id' => $building->id,
         ]);
+
+        // check if all sub steps are completed, if so complete the parent step
+        if ($step->isSubStep()) {
+            $parentStep = $step->parentStep;
+            $uncompletedSubStepsForParentStep = $parentStep->subSteps()->whereNotExists(function (Builder $query) use ($building, $inputSource) {
+                $query->select('*')
+                    ->from('completed_steps')
+                    ->whereRaw('steps.id = completed_steps.step_id')
+                    ->where('building_id', $building->id)
+                    ->where('input_source_id', $inputSource->id);
+            })->get();
+
+            // when all sub steps are completed complete the parent step
+            if ($uncompletedSubStepsForParentStep->isEmpty()) {
+                CompletedStep::firstOrCreate([
+                    'step_id' => $parentStep->id,
+                    //'input_source_id' => HoomdossierSession::getInputSource(),
+                    'input_source_id' => $inputSource->id,
+                    //'building_id' => HoomdossierSession::getBuilding(),
+                    'building_id' => $building->id,
+                ]);
+            }
+        }
+
     }
 }

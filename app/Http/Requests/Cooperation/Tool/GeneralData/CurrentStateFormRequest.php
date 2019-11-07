@@ -27,9 +27,8 @@ class CurrentStateFormRequest extends FormRequest
      */
     public function rules()
     {
-
         $max = Carbon::now()->year;
-//        dd($this->input('services.total-sun-panels'));
+
         return [
             'elements.*.element_id' => ['required', Rule::exists('elements', 'id')],
             'elements.*.element_value_id' => ['required', Rule::exists('element_values', 'id')],
@@ -47,36 +46,5 @@ class CurrentStateFormRequest extends FormRequest
             'building_features.building_heating_application_id' => ['required', Rule::exists('building_heating_applications', 'id')],
             'building_pv_panels.total_installed_power' => [Rule::requiredIf($this->input('service.7.extra.value') > 0)]
         ];
-
     }
-
-    public function withValidator(Validator $validator)
-    {
-        $serviceRules = [];
-
-
-        foreach ($this->input('services.*') as $serviceShort => $serviceData) {
-            $serviceId = $serviceData['service_id'];
-            $inputName = 'service.'.$serviceId;
-            $service = Service::find($serviceId)->load('values');
-            if ($service instanceof Service) {
-
-                // when the service has values, they should exist. When a service has values its most likely to be a dropdown, otherwise its just an input.
-//                if ($service->values->isNotEmpty()) {
-//                    $serviceRules[$inputName.'.service_value_id'] = 'required|exists:service_values,id';
-//                }
-
-                switch ($service->short) {
-                    case 'house-ventilation':
-                        $serviceRules[$inputName.'.extra.demand_driven'] =
-                        $serviceRules[$inputName.'.extra.heat_recovery'] = 'sometimes|accepted';
-                        break;
-                }
-            }
-        }
-
-//        $validator->addRules($serviceRules);
-
-    }
-
 }

@@ -9,8 +9,13 @@
     <form class="form-horizontal" method="POST" id="main-form" action="{{ route('cooperation.tool.general-data.interest.store') }}" autocomplete="off">
         {{ csrf_field() }}
         <div class="row">
-            <?php /** @var \Illuminate\Support\Collection $steps */ ?>
-            @foreach($steps->forget(0) as $step)
+            <?php
+                /** @var \Illuminate\Support\Collection $steps */
+                $steps = $steps->keyBy('short')->forget('general-data');
+                $ventilationInformation = $steps->pull('ventilation-information');
+                $steps->push($ventilationInformation);
+            ?>
+            @foreach($steps as $step)
                 <div class="col-sm-12 col-md-6 mt-20">
                     <div class="row">
                         <div class="col-md-6">

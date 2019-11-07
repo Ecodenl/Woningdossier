@@ -33,6 +33,7 @@
 
                     @if(isset($currentStep) && $currentStep->hasQuestionnaires())
                         @foreach($currentStep->questionnaires as $questionnaire)
+
                             @if($questionnaire->isActive())
                                 <li>
                                     <a href="#questionnaire-{{$questionnaire->id}}" data-toggle="tab">{{$questionnaire->name}}</a>

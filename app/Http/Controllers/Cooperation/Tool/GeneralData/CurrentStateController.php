@@ -138,7 +138,6 @@ class CurrentStateController extends Controller
         }
 
 
-
         // save buildign features, pv panels and the comments
         $building->pvPanels()->updateOrCreate([], $request->input('building_pv_panels'));
         $building->buildingFeatures()->updateOrCreate([], $request->input('building_features'));

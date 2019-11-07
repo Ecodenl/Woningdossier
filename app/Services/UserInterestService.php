@@ -18,8 +18,9 @@ class UserInterestService {
      */
     public static function save(User $user, InputSource $inputSource, $interestedInType, int $interestedInId, int $interestId)
     {
-        UserInterest::forMe($user)->updateOrCreate(
+        UserInterest::withoutGlobalScopes()->updateOrCreate(
             [
+                'user_id' => $user->id,
                 'input_source_id' => $inputSource->id,
                 'interested_in_type' => $interestedInType,
                 'interested_in_id' => $interestedInId,

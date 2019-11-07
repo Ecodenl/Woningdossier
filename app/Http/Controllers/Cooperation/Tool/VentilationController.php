@@ -106,6 +106,16 @@ class VentilationController extends Controller
             ];
         }
         if ($ventilationType === 'mechanic') {
+
+            $measures = [
+                'ventilation-balanced-wtw',
+                'ventilation-decentral-wtw',
+            ];
+
+            $advices = MeasureApplication::where('step_id', '=', $this->step->id)->whereIn('short', $measures)->get();
+
+
+
             $improvement = 'Oude ventilatoren gebruiken soms nog wisselstroom en verbruiken voor dezelfde prestatie veel meer elektriciteit en maken meer geluid dan moderne gelijkstroom ventilatoren. De besparing op de gebruikte stroom kan oplopen tot ca. 80 %. Een installateur kan direct beoordelen of u nog een wisselstroom ventilator heeft.';
             $advices = collect([]);
             $remark = 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.';

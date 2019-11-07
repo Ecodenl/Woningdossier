@@ -54,6 +54,7 @@ class CurrentStateController extends Controller
 
     public function store(CurrentStateFormRequest $request)
     {
+        dd($request->all());
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $step = Step::findByShort('current-state');

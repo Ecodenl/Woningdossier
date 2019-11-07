@@ -159,12 +159,12 @@ return [
 
 
         'service.6.extra.year' => 'jaartal',
-        'service.7.extra.year' => 'jaartal',
-        'service.7.service_value_id' => 'aantal zonnepanelen',
 
+        'services.total-sun-panels.extra.year' => __('general-data/current-state.service.total-sun-panels.year.title'),
+        'services.total-sun-panels.extra.value' => __('general-data/current-state.service.total-sun-panels.title'),
         'building_pv_panels.total_installed_power' => __('general-data/current-state.installed-power.title'),
 
-        'window_surface' => 'totale raamopperlake van de woning',
+        'building_features.window_surface' => 'totale raamopperlake van de woning',
 
         // roof insulation
         'building_roof_types.pitched.roof_surface' => __('roof-insulation.current-situation.pitched-roof-surface.title'),

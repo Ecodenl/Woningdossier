@@ -28,6 +28,7 @@ class CurrentStateFormRequest extends FormRequest
     public function rules()
     {
 
+        dd($this->all());
         return [
             'elements.*.element_id' => ['required', Rule::exists('elements', 'id')],
             'elements.*.element_value_id' => ['required', Rule::exists('element_values', 'id')],

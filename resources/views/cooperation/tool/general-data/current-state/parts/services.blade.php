@@ -2,7 +2,7 @@
     $boilerCount = 0;
 ?>
 @foreach($services as $i => $service)
-
+    <input type="hidden" name="services[{{$service->short}}][service_id]" value="{{$service->id}}">
     <?php
         $iconName = array_key_exists($service->short, \App\Helpers\StepHelper::SERVICE_TO_SHORT) ? \App\Helpers\StepHelper::SERVICE_TO_SHORT[$service->short] : $service->short;
     ?>
@@ -19,10 +19,10 @@
                 @endif
                 @component('cooperation.tool.components.step-question', ['id' => 'service.'.$service->id.'.service_value_id', 'translation' => 'general-data/current-state.service.'.$service->short])
                     @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $service->values, 'userInputValues' => $building->buildingservices()->forMe()->where('service_id', $service->id)->get(), 'userInputColumn' => 'service_value_id'])
-                        <select id="service_{{ $service->id }}" class="form-control" name="service[{{ $service->id }}][service_value_id]">
+                        <select id="service_{{ $service->id }}" class="form-control" name="services[{{ $service->short }}][service_value_id]">
                             {{--5 is the "vraaggestuurd" value, we need this for a checkbox--}}
                             @foreach($service->values as $serviceValue)
-                                <option @if(old('service.' . $service->id.'.service_value_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingservices()->where('service_id', $service->id), 'service_value_id')) == $serviceValue->id) selected="selected" @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
+                                <option @if(old('services.' . $service->short.'.service_value_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingservices()->where('service_id', $service->id), 'service_value_id')) == $serviceValue->id) selected="selected" @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
                             @endforeach
                         </select>
                     @endcomponent
@@ -50,10 +50,10 @@
                 <img class="img-responsive mt-15 pr-10 d-inline pull-left" src="{{asset('images/service-icons/'.$iconName.'.png')}}">
                 @component('cooperation.tool.components.step-question', ['id' => 'service.'.$service->id.'.service_value_id', 'translation' => 'general-data/current-state.service.'.$service->short])
                     @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $service->values, 'userInputValues' => $building->buildingservices()->forMe()->where('service_id', $service->id)->get(), 'userInputColumn' => 'service_value_id'])
-                        <select id="service_{{ $service->id }}" class="form-control" name="service[{{ $service->id }}][service_value_id]">
+                        <select id="service_{{ $service->id }}" class="form-control" name="services[{{ $service->short }}][service_value_id]">
                             {{--5 is the "vraaggestuurd" value, we need this for a checkbox--}}
                             @foreach($service->values as $serviceValue)
-                                <option @if(old('service.' . $service->id.'.service_value_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingservices()->where('service_id', $service->id), 'service_value_id')) == $serviceValue->id) selected="selected" @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
+                                <option @if(old('services.' . $service->short.'.service_value_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingservices()->where('service_id', $service->id), 'service_value_id')) == $serviceValue->id) selected="selected" @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
                             @endforeach
                         </select>
                     @endcomponent
@@ -69,10 +69,10 @@
                 <img class="img-responsive mt-15 pr-10 d-inline pull-left" src="{{asset('images/service-icons/'.$iconName.'.png')}}">
                 @component('cooperation.tool.components.step-question', ['id' => 'house-ventilation-service', 'name' => 'service.'.$service->id.'.service_value_id', 'translation' => 'general-data/current-state.service.'.$service->short])
                     @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $service->values, 'userInputValues' => $building->buildingservices()->forMe()->where('service_id', $service->id)->get(), 'userInputColumn' => 'service_value_id'])
-                        <select id="house-ventilation-service" class="form-control" name="service[{{ $service->id }}][service_value_id]">
+                        <select id="house-ventilation-service" class="form-control" name="services[{{ $service->short }}][service_value_id]">
                             {{--5 is the "vraaggestuurd" value, we need this for a checkbox--}}
                             @foreach($service->values as $serviceValue)
-                                <option data-calculate-value="{{$serviceValue->calculate_value}}" @if(old('service.' . $service->id.'.service_value_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingservices()->where('service_id', $service->id), 'service_value_id')) == $serviceValue->id) selected="selected" @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
+                                <option data-calculate-value="{{$serviceValue->calculate_value}}" @if(old('services.' . $service->id.'.service_value_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingservices()->where('service_id', $service->id), 'service_value_id')) == $serviceValue->id) selected="selected" @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
                             @endforeach
                         </select>
                     @endcomponent
@@ -83,7 +83,7 @@
                     <div class="form-group add-space">
                         <label class="checkbox-inline">
                             <?php $isDemandDriven =  \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingservices()->where('service_id', $service->id), 'extra.demand_driven') ?>
-                            <input value="true" @if(old('service.'.$service->id.'.extra.demand_driven', $isDemandDriven)) checked="checked" @endif type="checkbox" name="service[{{$service->id}}][extra][demand_driven]">
+                            <input value="true" @if(old('services.'.$service->id.'.extra.demand_driven', $isDemandDriven)) checked="checked" @endif type="checkbox" name="services[{{$service->short}}][extra][demand_driven]">
                             @lang('general-data/current-state.service.'.$service->short.'.demand-driven.title')
                         </label>
                     </div>
@@ -92,7 +92,7 @@
                     <div class="form-group add-space">
                         <label class="checkbox-inline">
                             <?php $hasHeatRecovery =  \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingservices()->where('service_id', $service->id), 'extra.heat_recovery') ?>
-                            <input value="true" @if(old('service.'.$service->id.'.extra.heat_recover', $hasHeatRecovery)) checked="checked" @endif type="checkbox" name="service[{{$service->id}}][extra][heat_recovery]">
+                            <input value="true" @if(old('services.'.$service->id.'.extra.heat_recover', $hasHeatRecovery)) checked="checked" @endif type="checkbox" name="services[{{$service->short}}][extra][heat_recovery]">
                             @lang('general-data/current-state.service.'.$service->short.'.heat-recovery.title')
                         </label>
                     </div>
@@ -106,8 +106,8 @@
                 @component('cooperation.tool.components.step-question', ['id' => 'service.'.$service->id.'.extra.value', 'translation' => 'general-data/current-state.service.'.$service->short])
                     @component('cooperation.tool.components.input-group', ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(), 'userInputColumn' => 'extra.value'])
                         <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.pieces')</span>
-                        <input type="text" id="{{ $service->short }}" class="form-control" name="service[{{ $service->id }}][extra][value]" value="{{ old('service.' . $service->id.'.extra.value', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $service->id), 'extra.value')) }}">
-                        {{--<input type="text" id="{{ $service->short }}" class="form-control" value="@if(old('service.' . $service->id )){{old('service.' . $service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="service[{{ $service->id }}]">--}}
+                        <input type="text" id="{{ $service->short }}" class="form-control" name="services[{{ $service->short }}][extra][value]" value="{{ old('services.' . $service->id.'.extra.value', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $service->id), 'extra.value')) }}">
+                        {{--<input type="text" id="{{ $service->short }}" class="form-control" value="@if(old('services.' . $service->id )){{old('services.' . $service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="services[{{ $service->short }}]">--}}
                     @endcomponent
                 @endcomponent
             </div>
@@ -126,7 +126,7 @@
                     @component('cooperation.tool.components.step-question', ['id' => 'service.'.$service->id.'.extra.year', 'translation' => 'general-data/current-state.service.'.$service->short.'.year', 'required' => false])
                         @component('cooperation.tool.components.input-group', ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(), 'userInputColumn' => 'extra.year'])
                             <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                            <input type="text" class="form-control" name="service[{{ $service->id }}][extra][year]" value="{{ old('service.'.$service->id . '.extra.year', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $service->id), 'extra.year')) }}">
+                            <input type="text" class="form-control" name="services[{{ $service->short }}][extra][year]" value="{{ old('services.'.$service->id . '.extra.year', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $service->id), 'extra.year')) }}">
                         @endcomponent
                     @endcomponent
                 </div>
@@ -139,10 +139,10 @@
                 <img class="img-responsive mt-15 pr-10 d-inline pull-left" src="{{asset('images/service-icons/'.$iconName.'.png')}}">
                 @component('cooperation.tool.components.step-question', ['id' => 'service.'.$service->id.'.service_value_id', 'translation' => 'general-data/current-state.service.'.$service->short])
                     @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $service->values, 'userInputValues' => $building->buildingservices()->forMe()->where('service_id', $service->id)->get(), 'userInputColumn' => 'service_value_id'])
-                        <select id="service_{{ $service->id }}" class="form-control" name="service[{{ $service->id }}][service_value_id]">
+                        <select id="service_{{ $service->id }}" class="form-control" name="services[{{ $service->short }}][service_value_id]">
                             {{--5 is the "vraaggestuurd" value, we need this for a checkbox--}}
                             @foreach($service->values as $serviceValue)
-                                <option @if(old('service.' . $service->id.'.service_value_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingservices()->where('service_id', $service->id), 'service_value_id')) == $serviceValue->id) selected="selected" @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
+                                <option @if(old('services.' . $service->short.'.service_value_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingservices()->where('service_id', $service->id), 'service_value_id')) == $serviceValue->id) selected="selected" @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
                             @endforeach
                         </select>
                     @endcomponent

@@ -22,7 +22,7 @@
                 <div class="col-sm-12 col-md-6 mt-20">
                     <div class="row">
                         <div class="col-md-6">
-                            <img class="img-responsive pr-10 d-inline pull-left" src="{{asset('images/icons/'.$step->short.'.png')}}">
+                            <img class="img-responsive pr-10 d-inline pull-left" src="{{asset('imagxes/icons/'.$step->short.'.png')}}">
                             <h4>@lang('general-data/interest.steps.'.$step->short.'.title')</h4>
                         </div>
                         <div class="col-md-6">

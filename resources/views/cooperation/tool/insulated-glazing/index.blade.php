@@ -151,33 +151,6 @@
             @endforeach
         </div>
         <hr>
-        <div id="remaining-questions">
-            <div class="row">
-                <div class="col-sm-12">
-                    @include('cooperation.tool.includes.section-title', [
-                        'translation' => 'insulated-glazing.cracking-seal',
-                        'id' => 'cracking-seal-title'
-                    ])
-                    @component('cooperation.tool.components.step-question',
-                    ['id' => 'building_elements.'.$crackSealing->id.'.crack-sealing', 'translation' => 'insulated-glazing.moving-parts-quality', 'required' => false])
-
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => $crackSealing->values()->orderBy('order')->get(), 'userInputValues' => $building->getBuildingElementsForMe('crack-sealing'), 'userInputColumn' => 'element_value_id'])
-                            <select class="form-control" name="building_elements[{{$crackSealing->id}}][crack-sealing]">
-                                @foreach($crackSealing->values()->orderBy('order')->get() as $sealingValue)
-                                    <option @if(old('building_elements.crack-sealing', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $crackSealing->id), 'element_value_id')) == $sealingValue->id) selected="selected"
-                                            @endif value="{{ $sealingValue->id }}">{{ $sealingValue->value }}</option>
-                                    {{--<option @if($sealingValue->id == old('building_elements.crack-sealing') || ($building->getBuildingElement('crack-sealing') instanceof \App\Models\BuildingElement && $building->getBuildingElement('crack-sealing')->element_value_id == $sealingValue->id)) selected @endif value="{{ $sealingValue->id }}">{{ $sealingValue->value }}</option>--}}
-                                @endforeach
-                            </select>
-                        @endcomponent
-
-
-                    @endcomponent
-
-                </div>
-            </div>
-        </div>
 
         <div id="paint-work">
             <div class="row">

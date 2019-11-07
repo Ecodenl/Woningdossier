@@ -11,6 +11,7 @@ class BuildingVentilation extends Model
     use GetMyValuesTrait, GetValueTrait;
 
     protected $casts = [
+        'how'              => 'array',
         'living_situation' => 'array',
         'usage'            => 'array',
     ];

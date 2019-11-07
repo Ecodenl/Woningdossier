@@ -22,7 +22,7 @@ class CreateBuildingVentilationsTable extends Migration
             $table->integer('building_id')->unsigned();
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('cascade');
 
-            $table->string('how')->nullable();
+            $table->json('how')->nullable();
             $table->json('living_situation')->nullable();
             $table->json('usage')->nullable();
 

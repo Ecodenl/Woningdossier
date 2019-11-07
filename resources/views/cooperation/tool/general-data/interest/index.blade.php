@@ -45,19 +45,26 @@
 
         <div class="row mt-20">
             <div class="col-sm-12">
-                <h4>@lang('general-data/interest.motivation.title.title')</h4>
-                <p>@lang('general-data/interest.motivation.title.help')</p>
+                <h4>
+                    <i data-target="#motivation-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+                    @lang('general-data/interest.motivation.title.title')
+                </h4>
             </div>
+            @component('cooperation.tool.components.help-modal')
+                @lang('general-data/interest.motivation.title.help')
+            @endcomponent
             <?php
                 $oldMotivations = old('motivations');
                 $motivationsToSelect = empty(is_array($oldMotivations) ? $oldMotivations : []) ? $userMotivations->pluck('motivation_id')->toArray() : $motivationsToSelect;
             ?>
             <div class="col-sm-12">
-                <select id="motivation" class="form-control" name="user_motivations[id][]" multiple="multiple">
-                    @foreach($motivations as $motivation)
-                        <option @if(in_array($motivation->id, $motivationsToSelect)) selected @endif value="{{$motivation->id}}">{{$motivation->name}}</option>
-                    @endforeach
-                </select>
+                @component('cooperation.tool.components.step-question', ['id' => 'user_motivations.id.*'])
+                    <select id="motivation" class="form-control" name="user_motivations[id][]" multiple="multiple">
+                        @foreach($motivations as $motivation)
+                            <option @if(in_array($motivation->id, $motivationsToSelect)) selected @endif value="{{$motivation->id}}">{{$motivation->name}}</option>
+                        @endforeach
+                    </select>
+                @endcomponent
             </div>
         </div>
         <div class="row mt-25">

@@ -11,6 +11,9 @@
         <div class="row">
             <?php
                 /** @var \Illuminate\Support\Collection $steps */
+
+                // we wont show the general data cause we cant give our interest for that
+                // pull the ventilation information and push it back so its the last item in the collection
                 $steps = $steps->keyBy('short')->forget('general-data');
                 $ventilationInformation = $steps->pull('ventilation-information');
                 $steps->push($ventilationInformation);

@@ -190,6 +190,33 @@
             </div>
         @endif
 
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Verbeteropties</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <p id="improvement"></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <p id="remark"></p>
+            </div>
+        </div>
+
+
+
+        @include('cooperation.tool.includes.comment', [
+           'translation' => 'ventilation.comment'
+        ])
+
     </form>
 
 @endsection
@@ -259,11 +286,12 @@
                     url: '{{ route('cooperation.tool.ventilation.calculate', [ 'cooperation' => $cooperation ]) }}',
                     data: form,
                     success: function (data) {
-                        if (!data.hasOwnProperty('flat') && !data.hasOwnProperty('pitched')) {
-                            $(".if-roof").hide();
-                        } else {
+                        if (data.hasOwnProperty('improvement')){
+                            $("p#improvement").html(data.improvement);
+                        }
 
-                            $(".if-roof").show();
+                        if (data.hasOwnProperty('remark')){
+                            $("p#remark").html(data.remark);
                         }
 
                         // default

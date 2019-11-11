@@ -144,11 +144,37 @@ class ExampleBuildingController extends Controller
         $buildingTypes = BuildingType::all();
         $cooperations = Cooperation::all();
 
-        $contentStructure = $this->filterOutUserInterestQuestions(ToolHelper::getStructure());
+        $contentStructure = $this->onlyApplicableInputs(ToolHelper::getStructure());
+        dd($contentStructure);
         return view('cooperation.admin.example-buildings.edit',
             compact('exampleBuilding', 'buildingTypes', 'cooperations', 'contentStructure'
             )
         );
+    }
+
+    /**
+     * We only want the applicable inputs for the example building
+     *
+     * NO element or service questions on the parent step general data
+     * NO user interest questions throughout the steps
+     *
+     * @param $contentStructure
+     */
+    private function onlyApplicableInputs($contentStructure)
+    {
+        // filter out the user interest from the measure pages
+        foreach ($contentStructure as $stepShort => $structureWithinStep) {
+            $contentStructure[$stepShort] = array_filter($structureWithinStep, function ($key) {
+                return stristr($key, 'user_interest') === false;
+            }, ARRAY_FILTER_USE_KEY);
+        }
+
+
+        $contentStructure['general-data']['interest'] = array_filter($contentStructure['general-data']['interest'], function ($key) {
+            return stristr($key, 'user_interest') === false;
+        }, ARRAY_FILTER_USE_KEY);
+
+        dd($contentStructure);
     }
 
     protected function filterOutUserInterestQuestions($contentStructure)

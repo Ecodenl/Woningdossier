@@ -315,6 +315,7 @@ class ToolHelper
                         'unit' => __('general.unit.cubic-meters.title'),
                     ],
                 ],
+                // interests come later on
             ],
 
             'wall-insulation' => [
@@ -642,6 +643,20 @@ class ToolHelper
                 'options' => $interestOptions,
             ];
         }
+        $structure['general-data']['interest']['user_energy_habits.renovation_plans'] = [
+            'label' => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.title'),
+            'type' => 'select',
+            'options' => [
+                1 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.yes-within-2-year'),
+                2 =>  __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.yes-within-5-year'),
+                0 =>  __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.none')
+            ]
+        ];
+        $structure['general-data']['interest']['user_energy_habits.building_complaints'] = [
+            'label' => __('cooperation/tool/general-data/interest.index.motivation.building-complaints.title'),
+            'type' => 'text',
+        ];
+
 
         // Insulated glazing
         $igShorts = [

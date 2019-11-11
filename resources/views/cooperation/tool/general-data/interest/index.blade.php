@@ -16,7 +16,9 @@
                 // pull the ventilation information and push it back so its the last item in the collection
                 $steps = $steps->keyBy('short')->forget('general-data');
                 $ventilationInformation = $steps->pull('ventilation-information');
-                $steps->push($ventilationInformation);
+                if (!is_null($ventilationInformation)) {
+                    $steps->push($ventilationInformation);
+                }
             ?>
             @foreach($steps as $step)
                 <div class="col-sm-12 col-md-6 mt-20">

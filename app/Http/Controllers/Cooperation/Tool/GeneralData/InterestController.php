@@ -27,7 +27,6 @@ class InterestController extends Controller
 
         $motivations = Motivation::orderBy('order')->get();
 
-
         $userMotivations = $buildingOwner->motivations()->orderBy('order')->get();
         $userEnergyHabitsForMe = $buildingOwner->energyHabit()->forMe()->get();
 

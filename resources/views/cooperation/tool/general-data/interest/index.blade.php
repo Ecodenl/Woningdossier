@@ -36,8 +36,6 @@
                                         @endforeach
                                     </select>
                                 @endcomponent
-                                <input type="hidden" name="user_interests[{{$step->id}}][interested_in_type]" value="{{get_class($step)}}">
-                                <input type="hidden" name="user_interests[{{$step->id}}][interested_in_id]" value="{{$step->id}}">
                             @endcomponent
                         </div>
                     </div>

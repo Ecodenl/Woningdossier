@@ -145,9 +145,9 @@ class ExampleBuildingController extends Controller
         $cooperations = Cooperation::all();
 
         $contentStructure = $this->onlyApplicableInputs(ToolHelper::getStructure());
-        dd($contentStructure);
         return view('cooperation.admin.example-buildings.edit',
-            compact('exampleBuilding', 'buildingTypes', 'cooperations', 'contentStructure'
+            compact(
+                'exampleBuilding', 'buildingTypes', 'cooperations', 'contentStructure'
             )
         );
     }
@@ -159,6 +159,8 @@ class ExampleBuildingController extends Controller
      * NO user interest questions throughout the steps
      *
      * @param $contentStructure
+     *
+     * @return array
      */
     private function onlyApplicableInputs($contentStructure)
     {
@@ -169,12 +171,12 @@ class ExampleBuildingController extends Controller
             }, ARRAY_FILTER_USE_KEY);
         }
 
-
+        // filter out interest stuff from the interest page
         $contentStructure['general-data']['interest'] = array_filter($contentStructure['general-data']['interest'], function ($key) {
             return stristr($key, 'user_interest') === false;
         }, ARRAY_FILTER_USE_KEY);
 
-        dd($contentStructure);
+        return $contentStructure;
     }
 
     protected function filterOutUserInterestQuestions($contentStructure)

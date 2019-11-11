@@ -145,8 +145,6 @@ class ExampleBuildingController extends Controller
         $cooperations = Cooperation::all();
 
         $contentStructure = $this->filterOutUserInterestQuestions(ToolHelper::getStructure());
-
-
         return view('cooperation.admin.example-buildings.edit',
             compact('exampleBuilding', 'buildingTypes', 'cooperations', 'contentStructure'
             )

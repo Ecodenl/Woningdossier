@@ -1,10 +1,12 @@
 <?php
-// full html array
-$fname = 'content['.$fkey.'][content]['.$step.']['.$formFieldName.']';
-// laravel dotted notation
-$fvalKey = str_replace(['[', ']'], ['.', ''], $fname);
-// fallback value for old functions
-$fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->getValue($step.'.'.$formFieldName) : '';
+    // full html array
+    $fname = isset($subStep) ? 'content['.$fkey.'][content]['.$step.']['.$subStep->short.']['.$formFieldName.']' : 'content['.$fkey.'][content]['.$step.']]['.$formFieldName.']';
+    // laravel dotted notation
+    $fvalKey = str_replace(['[', ']'], ['.', ''], $fname);
+
+    // fallback value for old functions
+    $getValueKey = isset($subStep) ?$step.'.'.$subStep->short.'.'.$formFieldName : $step.'.'.$formFieldName;
+    $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->getValue($getValueKey) : '';
 ?>
 
 <tr>

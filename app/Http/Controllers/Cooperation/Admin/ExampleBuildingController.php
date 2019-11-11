@@ -145,6 +145,8 @@ class ExampleBuildingController extends Controller
         $cooperations = Cooperation::all();
 
         $contentStructure = $this->onlyApplicableInputs(ToolHelper::getStructure());
+
+//        dd($exampleBuilding->contents[0]->content);
         return view('cooperation.admin.example-buildings.edit',
             compact(
                 'exampleBuilding', 'buildingTypes', 'cooperations', 'contentStructure'

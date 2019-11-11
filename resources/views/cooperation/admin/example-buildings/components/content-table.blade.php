@@ -51,7 +51,9 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
                     </tr>
                     @foreach($stepDataOrRowData as $formFieldName => $rowData)
                         @if($formFieldName != 'calculations' )
-                            @include('cooperation.admin.example-buildings.parts.row-data')
+                            @include('cooperation.admin.example-buildings.parts.row-data', [
+                                'subStep' => $possibleSubStep
+                            ])
                         @endif
                     @endforeach
                 @else

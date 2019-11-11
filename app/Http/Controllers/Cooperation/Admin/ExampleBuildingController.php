@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
+use App\Helpers\ToolHelper;
 use App\Helpers\Translation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\ExampleBuildingRequest;
@@ -60,7 +61,7 @@ class ExampleBuildingController extends Controller
         $buildingTypes = BuildingType::all();
         $cooperations = Cooperation::all();
 
-        $contentStructure = $this->getContentStructure();
+        $contentStructure = $this->filterOutUserInterestQuestions(ToolHelper::getContentStructure());
 
         return view('cooperation.admin.example-buildings.create',
             compact(
@@ -143,8 +144,7 @@ class ExampleBuildingController extends Controller
         $buildingTypes = BuildingType::all();
         $cooperations = Cooperation::all();
 
-        $contentStructure = $this->filterOutUserInterestQuestions(ExampleBuildingService::getContentStructure());
-
+        $contentStructure = $this->filterOutUserInterestQuestions(ToolHelper::getStructure());
 
 
         return view('cooperation.admin.example-buildings.edit',
@@ -155,6 +155,7 @@ class ExampleBuildingController extends Controller
 
     protected function filterOutUserInterestQuestions($contentStructure)
     {
+        unset($contentStructure['general-data']['interest']);
         // filter out the user interest from the content structure
         foreach ($contentStructure as $stepShort => $structureWithinStep) {
             $contentStructure[$stepShort] = array_filter($structureWithinStep, function ($key) {

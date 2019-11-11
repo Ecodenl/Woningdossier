@@ -23,7 +23,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <img class="img-responsive pr-10 d-inline pull-left" src="{{asset('images/icons/'.$step->short.'.png')}}">
-                            <h4>@lang('general-data/interest.steps.'.$step->short.'.title')</h4>
+                            <h4>@lang('cooperation/tool/general-data/interest.index.steps.'.$step->short.'.title')</h4>
                         </div>
                         <div class="col-md-6">
                             @component('cooperation.tool.components.step-question', ['id' => 'user_interest', 'name' => 'user_interests.'.$step->id.'.interest_id'])
@@ -47,11 +47,11 @@
             <div class="col-sm-12">
                 <h4>
                     <i data-target="#motivation-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-                    @lang('general-data/interest.motivation.title.title')
+                    @lang('cooperation/tool/general-data/interest.index.motivation.title.title')
                 </h4>
             </div>
             @component('cooperation.tool.components.help-modal')
-                @lang('general-data/interest.motivation.title.help')
+                @lang('cooperation/tool/general-data/interest.index.motivation.title.help')
             @endcomponent
             <?php
                 $oldMotivations = old('motivations');
@@ -71,12 +71,12 @@
             <div class="col-sm-6">
                 <?php
                     $renovationPlanAnswerOptions = [
-                        1 => __('general-data/interest.motivation.renovation-plans.options.yes-within-2-year'),
-                        2 =>  __('general-data/interest.motivation.renovation-plans.options.yes-within-5-year'),
-                        0 =>  __('general-data/interest.motivation.renovation-plans.options.none')
+                        1 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.yes-within-2-year'),
+                        2 =>  __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.yes-within-5-year'),
+                        0 =>  __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.none')
                     ]
                 ?>
-                @component('cooperation.tool.components.step-question', ['id' => 'renovation-plans', 'translation' => 'general-data/interest.motivation.renovation-plans'])
+                @component('cooperation.tool.components.step-question', ['id' => 'renovation-plans', 'translation' => 'cooperation/tool/general-data/interest.index.motivation.renovation-plans'])
                     @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $renovationPlanAnswerOptions, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'element_value_id'])
                         <select name="user_energy_habits[renovation_plans]" class="form-control" id="">
                             @foreach($renovationPlanAnswerOptions as $value => $renovationPlanAnswerOption)
@@ -87,7 +87,7 @@
                 @endcomponent
             </div>
             <div class="col-sm-6">
-                @component('cooperation.tool.components.step-question', ['id' => 'renovation-plans', 'translation' => 'general-data/interest.motivation.building-complaints'])
+                @component('cooperation.tool.components.step-question', ['id' => 'renovation-plans', 'translation' => 'cooperation/tool/general-data/interest.index.motivation.building-complaints'])
                     @component('cooperation.tool.components.input-group', ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'element_value_id'])
                         <input type="text" name="user_energy_habits[building_complaints]" class="form-control" value="{{\App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'building_complaints')}}">
                     @endcomponent
@@ -95,7 +95,7 @@
             </div>
         </div>
         @include('cooperation.tool.includes.comment', [
-            'translation' => 'general-data/interest.comment'
+            'translation' => 'cooperation/tool/general-data/interest.index.comment'
         ])
 
     </form>

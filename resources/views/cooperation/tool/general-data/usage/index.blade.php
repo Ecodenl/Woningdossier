@@ -8,11 +8,11 @@
         {{--tapwater and cook inputs--}}
         <div class="row">
             <div class="col-sm-12">
-                <h4>@lang('general-data/usage.water-gas.title.title')</h4>
+                <h4>@lang('cooperation/tool/general-data/usage.index.water-gas.title.title')</h4>
             </div>
 
             <div class="col-lg-4 col-md-12">
-                @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.resident_count', 'translation' => 'general-data/usage.water-gas.resident-count', 'required' => true])
+                @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.resident_count', 'translation' => 'cooperation/tool/general-data/usage.index.water-gas.resident-count', 'required' => true])
                     @component('cooperation.tool.components.input-group',
                     ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'resident_count'])
                         <input type="text" id="resident_count" class="form-control" value="{{ old('user_energy_habits.resident_count', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'resident_count')) }}" name="user_energy_habits[resident_count]" required="required">
@@ -21,7 +21,7 @@
             </div>
 
             <div class="col-lg-5 col-md-12">
-                @component('cooperation.tool.components.step-question', ['id' => 'water_comfort', 'translation' => 'general-data/usage.water-gas.water-comfort', 'required' => false])
+                @component('cooperation.tool.components.step-question', ['id' => 'water_comfort', 'translation' => 'cooperation/tool/general-data/usage.index.water-gas.water-comfort', 'required' => false])
                     @component('cooperation.tool.components.input-group',
                     ['inputType' => 'select', 'inputValues' => $comfortLevelsTapWater, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'water_comfort_id'])
                         <select id="water_comfort" class="form-control" name="user_energy_habits[water_comfort_id]">
@@ -36,7 +36,7 @@
             </div>
 
             <div class="col-lg-3 col-md-12">
-                @component('cooperation.tool.components.step-question', ['id' => 'cook_gas', 'translation' => 'general-data/usage.water-gas.cook-gas', 'required' => true])
+                @component('cooperation.tool.components.step-question', ['id' => 'cook_gas', 'translation' => 'cooperation/tool/general-data/usage.index.water-gas.cook-gas', 'required' => true])
 
                     <div class="input-group input-source-group">
                         <label class="radio-inline">
@@ -78,13 +78,13 @@
         {{--energy usage thermostat high / low and hours--}}
         <div class="row mt-10">
             <div class="col-sm-12">
-                <h4>@lang('general-data/usage.heating-habits.title.title')</h4>
+                <h4>@lang('cooperation/tool/general-data/usage.index.heating-habits.title.title')</h4>
 
 
                 {{-- degree high low --}}
                 <div class="row mt-20">
                     <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.thermostat_high', 'translation' => 'general-data/usage.heating-habits.thermostat-high', 'required' => false])
+                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.thermostat_high', 'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-high', 'required' => false])
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'thermostat_high', 'needsFormat' => true])
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.degrees.title')}}</span>
@@ -98,7 +98,7 @@
                     </div>
 
                     <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.thermostat_low', 'translation' => 'general-data/usage.heating-habits.thermostat-low', 'required' => false])
+                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.thermostat_low', 'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-low', 'required' => false])
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'thermostat_low', 'needsFormat' => true])
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.degrees.title')}}</span>
@@ -112,7 +112,7 @@
                 {{--hours termostat high--}}
                 <div class="row mt-20">
                     <div class="col-sm-12">
-                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.hours_high', 'translation' => 'general-data/usage.heating-habits.hours-high', 'required' => false])
+                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.hours_high', 'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.hours-high', 'required' => false])
 
                             <?php
                                 $hours = range(1, 24);
@@ -140,7 +140,7 @@
                 {{--situation first and second floor--}}
                 <div class="row mt-20">
                     <div class="col-sm-6">
-                    @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.heating_first_floor', 'translation' => 'general-data/usage.heating-habits.heating-first-floor', 'required' => false])
+                    @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.heating_first_floor', 'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.heating-first-floor', 'required' => false])
                         <?php
 
                         $bhDefault = $buildingHeatings->where('is_default', '=', true)->first();
@@ -166,7 +166,7 @@
                 </div>
 
                     <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.heating_second_floor', 'translation' => 'general-data/usage.heating-habits.heating-second-floor', 'required' => false])
+                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.heating_second_floor', 'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.heating-second-floor', 'required' => false])
                             <?php
 
                             $bhDefault = $buildingHeatings->where('is_default', '=', true)->first();
@@ -198,11 +198,11 @@
         {{-- heating habits, gas and electricity --}}
         <div class="row mt-10">
             <div class="col-sm-12">
-                <h4>@lang('general-data/usage.energy-usage.title.title')</h4>
+                <h4>@lang('cooperation/tool/general-data/usage.index.energy-usage.title.title')</h4>
 
                 <div class="row mt-20">
                     <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.amount_electricity', 'translation' => 'general-data/usage.energy-usage.electricity-amount', 'required' => true])
+                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.amount_electricity', 'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.amount-electricity', 'required' => true])
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'amount_electricity'])
                                 <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kwh')</span>
@@ -212,7 +212,7 @@
 
                     </div>
                     <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.amount_gas', 'translation' => 'general-data/usage.energy-usage.gas-usage', 'required' => true])
+                        @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.amount_gas', 'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.gas-usage', 'required' => true])
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'amount_gas'])
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.cubic-meters.title')}}</span>
@@ -227,7 +227,7 @@
 
         @include('cooperation.tool.includes.comment', [
             'columnName' => 'step_comments[comment]',
-            'translation' => 'general-data/usage.comment'
+            'translation' => 'cooperation/tool/general-data/usage.index.comment'
         ])
     </form>
 @endsection

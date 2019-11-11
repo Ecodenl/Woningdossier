@@ -1,6 +1,6 @@
 <?php
     // full html array
-    $fname = isset($subStep) ? 'content['.$fkey.'][content]['.$step.']['.$subStep->short.']['.$formFieldName.']' : 'content['.$fkey.'][content]['.$step.']]['.$formFieldName.']';
+    $fname = isset($subStep) ? 'content['.$fkey.'][content]['.$step.']['.$subStep->short.']['.$formFieldName.']' : 'content['.$fkey.'][content]['.$step.']['.$formFieldName.']';
     // laravel dotted notation
     $fvalKey = str_replace(['[', ']'], ['.', ''], $fname);
 

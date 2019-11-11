@@ -593,7 +593,7 @@ class ToolHelper
                 'user_energy_habits.water_comfort_id' => [
                     'label' => __('heater.comfort-level-warm-tap-water.title'),
                     'type' => 'select',
-                    'options' => $comfortLevelsTapWater,
+                    'options' => self::createOptions($comfortLevelsTapWater),
                 ],
                 'building_heaters.pv_panel_orientation_id' => [
                     'label' => __('heater.pv-panel-orientation-id.title'),

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Cooperation\Admin;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\Old;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -15,15 +16,16 @@ class ExampleBuildingRequest extends FormRequest
      */
     public function authorize()
     {
-        return \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['super-admin', 'coordinator', 'cooperation-admin']);
+        return Hoomdossier::user()->hasRoleAndIsCurrentRole(['super-admin', 'coordinator', 'cooperation-admin']);
     }
 
     public function prepareForValidation()
     {
         // get the contents
+        dd($this->all());
         $contents = $this->input('content', []);
         $undotedContents = [];
-
+dd($contents);
         foreach ($contents as $cid => $data) {
             // undot the array and set it.
             if (array_key_exists('content', $data)) {
@@ -65,6 +67,7 @@ class ExampleBuildingRequest extends FormRequest
     {
         $array = [];
 
+        dd($content);
         foreach ($content as $key => $values) {
             foreach ($values as $dottedKey => $value) {
                 array_set($array, $key.'.'.$dottedKey, $value);

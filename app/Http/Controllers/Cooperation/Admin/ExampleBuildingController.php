@@ -146,7 +146,6 @@ class ExampleBuildingController extends Controller
 
         $contentStructure = $this->onlyApplicableInputs(ToolHelper::getStructure());
 
-//        dd($exampleBuilding->contents[0]->content);
         return view('cooperation.admin.example-buildings.edit',
             compact(
                 'exampleBuilding', 'buildingTypes', 'cooperations', 'contentStructure'
@@ -157,7 +156,7 @@ class ExampleBuildingController extends Controller
     /**
      * We only want the applicable inputs for the example building
      *
-     * NO element or service questions on the parent step general data
+     * NO element or service questions will be shown when already displayed in the general data page
      * NO user interest questions throughout the steps
      *
      * @param $contentStructure
@@ -181,18 +180,7 @@ class ExampleBuildingController extends Controller
         return $contentStructure;
     }
 
-    protected function filterOutUserInterestQuestions($contentStructure)
-    {
-        unset($contentStructure['general-data']['interest']);
-        // filter out the user interest from the content structure
-        foreach ($contentStructure as $stepShort => $structureWithinStep) {
-            $contentStructure[$stepShort] = array_filter($structureWithinStep, function ($key) {
-                return stristr($key, 'user_interest') === false;
-            }, ARRAY_FILTER_USE_KEY);
-        }
 
-        return $contentStructure;
-    }
 
 
     protected function createOptions(Collection $collection, $value = 'name', $id = 'id', $nullPlaceholder = true)
@@ -241,6 +229,7 @@ class ExampleBuildingController extends Controller
 
         $contents = $request->input('content', []);
 
+        dd($contents);
         foreach ($contents as $cid => $data) {
             $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
 

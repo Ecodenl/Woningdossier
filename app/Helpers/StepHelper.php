@@ -19,7 +19,7 @@ use App\Models\UserActionPlanAdviceComments;
 use App\Models\UserEnergyHabit;
 use App\Models\CompletedStep;
 use App\Models\UserInterest;
-use function Couchbase\defaultDecoder;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Log;

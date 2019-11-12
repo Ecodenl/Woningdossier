@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use function Couchbase\defaultDecoder;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 

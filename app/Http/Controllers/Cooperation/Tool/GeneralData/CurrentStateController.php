@@ -22,7 +22,7 @@ use App\Models\UserInterest;
 use App\Http\Controllers\Controller;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
-use function Couchbase\defaultDecoder;
+
 use Illuminate\Support\Arr;
 
 class CurrentStateController extends Controller

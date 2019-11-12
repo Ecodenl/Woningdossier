@@ -24,7 +24,7 @@ use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
-use function Couchbase\defaultDecoder;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

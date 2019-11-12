@@ -58,11 +58,11 @@ class StepsTableSeeder extends Seeder
                 'order' => 3,
             ],
             [
-                'slug' => 'ventilation-information',
-                'short' => 'ventilation-information',
+                'slug' => 'ventilation',
+                'short' => 'ventilation',
                 'names' => [
-                    'en' => 'Ventilation information',
-                    'nl' => 'Ventilatie informatie',
+                    'en' => 'Ventilation',
+                    'nl' => 'Ventilatie',
                 ],
                 'order' => 2,
             ],

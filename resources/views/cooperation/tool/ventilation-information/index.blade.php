@@ -2,7 +2,6 @@
 
 @section('step_title', \App\Helpers\Translation::translate('ventilation-information.title.title'))
 
-
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.ventilation-information.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}

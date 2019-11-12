@@ -194,11 +194,13 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 //                    Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
 //                });
                 Route::group(['middleware' => 'filled-step:general-data'], function () {
-                    // Ventilation information: info for now
-                    Route::resource('ventilation-information', 'VentilationController',
-                        ['only' => ['index', 'store']]);
+
                     // Heat pump: info for now
                     Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
+
+                    Route::resource('ventilation', 'VentilationController', ['only' => ['index', 'store',]]);
+                    Route::post('ventilation/calculate',
+                        'VentilationController@calculate')->name('ventilation.calculate');
 
                     // Wall Insulation
                     Route::resource('wall-insulation', 'WallInsulationController', ['only' => ['index', 'store']]);

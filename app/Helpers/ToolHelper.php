@@ -120,35 +120,35 @@ class ToolHelper
             'general-data' => [
                 'building-characteristics' => [
                     'building_features.building_type_id' => [
-                        'label' => __('cooperation/tool/general-data/building-characteristics.building-type.title'),
+                        'label' => __('cooperation/tool/general-data/building-characteristics.index.building-type.title'),
                         'type' => 'select',
                         'options' => static::createOptions($buildingTypes),
                     ],
                     'building_features.build_year' => [
-                        'label' => __('cooperation/tool/general-data/building-characteristics.build-year.title'),
+                        'label' => __('cooperation/tool/general-data/building-characteristics.index.build-year.title'),
                         'type' => 'text',
                     ],
                     'building_features.surface' => [
-                        'label' => __('cooperation/tool/general-data/building-characteristics.surface.title'),
+                        'label' => __('cooperation/tool/general-data/building-characteristics.index.surface.title'),
                         'type' => 'text',
                         'unit' => __('general.unit.square-meters.title'),
                     ],
                     'building_features.building_layers' => [
-                        'label' => __('cooperation/tool/general-data/building-characteristics.building-layers.title'),
+                        'label' => __('cooperation/tool/general-data/building-characteristics.index.building-layers.title'),
                         'type' => 'text',
                     ],
                     'building_features.roof_type_id' => [
-                        'label' => __('cooperation/tool/general-data/building-characteristics.roof-type.title'),
+                        'label' => __('cooperation/tool/general-data/building-characteristics.index.roof-type.title'),
                         'type' => 'select',
                         'options' => static::createOptions($roofTypes),
                     ],
                     'building_features.energy_label_id' => [
-                        'label' => __('cooperation/tool/general-data/building-characteristics.energy-label.title'),
+                        'label' => __('cooperation/tool/general-data/building-characteristics.index.energy-label.title'),
                         'type' => 'select',
                         'options' => static::createOptions($energyLabels),
                     ],
                     'building_features.monument' => [
-                        'label' => __('cooperation/tool/general-data/building-characteristics.monument.title'),
+                        'label' => __('cooperation/tool/general-data/building-characteristics.index.monument.title'),
                         'type' => 'select',
                         'options' => [
                             1 => __('woningdossier.cooperation.radiobutton.yes'),

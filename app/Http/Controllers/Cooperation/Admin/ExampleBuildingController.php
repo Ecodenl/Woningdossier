@@ -3,19 +3,14 @@
 namespace App\Http\Controllers\Cooperation\Admin;
 
 use App\Helpers\HoomdossierSession;
-use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
-use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
-use App\Helpers\KeyFigures\RoofInsulation\Temperature;
 use App\Helpers\ToolHelper;
-use App\Helpers\Translation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\ExampleBuildingRequest;
-use App\Models\BuildingHeating;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
-use App\Models\Element;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
+use App\Models\Service;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -139,18 +134,6 @@ class ExampleBuildingController extends Controller
 
         $contentStructure = $this->onlyApplicableInputs(ToolHelper::getStructure());
 
-
-//        $eb = ExampleBuilding::find(32);
-//        dd(
-//            $eb->contents[0]->content
-//        );
-
-//        general-data.building-characteristics.building_features.surface
-//        dd(
-//            $exampleBuilding->contents[0]->content['general-data']['building-characteristics']['building_features.surface'];
-//            array_dot($exampleBuilding->contents[0]->content)['general-data.building-characteristics.building_features.surface']
-//        );
-
         return view('cooperation.admin.example-buildings.edit',
             compact(
                 'exampleBuilding', 'buildingTypes', 'cooperations', 'contentStructure'
@@ -170,6 +153,7 @@ class ExampleBuildingController extends Controller
      */
     private function onlyApplicableInputs($contentStructure)
     {
+        $ventilation = Service::where('short', 'house-ventilation')->first();
         $filterOutUserInterests = function ($key) {
             return stristr($key, 'user_interests') === false;
         };
@@ -179,7 +163,10 @@ class ExampleBuildingController extends Controller
         }
         unset(
             $contentStructure['general-data']['building-characteristics']['building_features.building_type_id'],
-            $contentStructure['general-data']['building-characteristics']['building_features.build_year']
+            $contentStructure['general-data']['building-characteristics']['building_features.build_year'],
+            // not requested feature with dropdowns.
+            $contentStructure['general-data']['current-state']['service.'.$ventilation->id.'.extra.heat_recovery'],
+            $contentStructure['general-data']['current-state']['service.'.$ventilation->id.'.extra.demand_driven']
         );
 
         // filter out interest stuff from the interest page

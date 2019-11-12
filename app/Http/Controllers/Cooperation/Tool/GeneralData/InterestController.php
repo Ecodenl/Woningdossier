@@ -7,18 +7,13 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Requests\Cooperation\Tool\GeneralData\InterestFormRequest;
-use App\Models\Cooperation;
-use App\Models\Element;
 use App\Models\Interest;
 use App\Models\Motivation;
 use App\Models\Service;
 use App\Http\Controllers\Controller;
 use App\Models\Step;
-use App\Models\UserInterest;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
-use function Couchbase\defaultDecoder;
-use Illuminate\Support\Arr;
 
 class InterestController extends Controller
 {

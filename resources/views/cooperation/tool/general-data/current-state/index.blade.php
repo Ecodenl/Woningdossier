@@ -4,7 +4,7 @@
 
     <div class="row">
         <div class="col-sm-10">
-            <p>@lang('general-data/current-state.step-intro.title')</p>
+            <p>@lang('cooperation/tool/general-data/current-state.index.step-intro.title')</p>
         </div>
     </div>
 
@@ -17,7 +17,7 @@
 
             @include('cooperation.tool.includes.comment', [
                 'short' => 'element',
-                'translation' => 'general-data/current-state.comment.element'
+                'translation' => 'cooperation/tool/general-data/current-state.index.comment.element'
             ])
         </div>
 
@@ -27,7 +27,7 @@
 
             @include('cooperation.tool.includes.comment', [
                 'short' => 'service',
-                'translation' => 'general-data/current-state.comment.service'
+                'translation' => 'cooperation/tool/general-data/current-state.index.comment.service'
             ])
         </div>
     </form>

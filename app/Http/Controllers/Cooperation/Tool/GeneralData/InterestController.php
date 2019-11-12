@@ -46,8 +46,8 @@ class InterestController extends Controller
 
         $userInterests = $request->input('user_interests');
 
-        foreach ($userInterests as $userInterest) {
-            UserInterestService::save($buildingOwner, $inputSource, $userInterest['interested_in_type'], $userInterest['interested_in_id'], $userInterest['interest_id']);
+        foreach ($userInterests as $interestInId => $userInterest) {
+            UserInterestService::save($buildingOwner, $inputSource, Step::class, $interestInId , $userInterest['interest_id']);
         }
 
         $buildingOwner->motivations()->delete();

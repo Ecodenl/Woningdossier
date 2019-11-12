@@ -148,12 +148,13 @@ class StepHelper
             // if it does and the user did not finish those we redirect to that tab
             // create the base query to obtain the non completed questionnaires for the current step.
             $nonCompletedSteps = $parentStep->questionnaires()
+                ->active()
                 ->whereNotExists(function (Builder $query) use ($user) {
                     $query->select('*')
                         ->from('completed_questionnaires')
                         ->whereRaw('questionnaires.id = completed_questionnaires.questionnaire_id')
                         ->where('user_id', $user->id);
-                })->active()->orderBy('order')->get();
+                })->orderBy('order')->get();
         }
 
         // there are no uncompleted sub steps or uncompleted questionnaires left for this step.
@@ -193,7 +194,9 @@ class StepHelper
                 return ['url' => $url, 'tab_id' => ''];
             }
 
-            return ['url' => $url, 'tab_id' => 'questionnaire-'.$nonCompletedStep->id];
+            if ($nonCompletedStep instanceof Questionnaire) {
+                return ['url' => $url, 'tab_id' => 'questionnaire-'.$nonCompletedStep->id];
+            }
         }
 
         // if the user has no steps left where they do not have any interest in, redirect them to their plan

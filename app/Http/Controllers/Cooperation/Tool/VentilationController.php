@@ -13,7 +13,9 @@ use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\Step;
+use App\Models\UserActionPlanAdvice;
 use App\Services\UserInterestService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class VentilationController extends Controller
@@ -75,6 +77,7 @@ class VentilationController extends Controller
         // Save ventilation data
         $building->buildingVentilations()->updateOrCreate(['input_source_id' => $inputSource->id, ], $request->input('building_ventilations'));
 
+        $this->saveAdvices($request);
         //StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
         StepHelper::complete($step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
@@ -95,5 +98,38 @@ class VentilationController extends Controller
         $result = Ventilation::calculate($building, HoomdossierSession::getInputSource(true), $userEnergyHabit, $request->toArray());
 
         return response()->json($result);
+    }
+
+    protected function saveAdvices(Request $request)
+    {
+        $buildingOwner = HoomdossierSession::getBuilding(true)->user;
+        /** @var JsonResponse $results */
+        $results = $this->calculate($request);
+        $results = $results->getData(true);
+
+        // Remove old results
+        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
+
+        foreach($results['advices'] as $advice){
+            $measureApplication = MeasureApplication::find($advice['id']);
+            if ($measureApplication instanceof MeasureApplication){
+                if ($measureApplication->short == 'crack-sealing') {
+                    $actionPlanAdvice        = new UserActionPlanAdvice($results['result']['crack_sealing'] ?? []);
+                    $actionPlanAdvice->costs = $results['result']['crack_sealing']['cost_indication'] ?? null; // only outlier
+                }
+                else {
+                    $actionPlanAdvice        = new UserActionPlanAdvice();
+                }
+
+                if (in_array($measureApplication->id, $request->input('user_interests', []))){
+                    $actionPlanAdvice->planned = true;
+                }
+
+                $actionPlanAdvice->user()->associate($buildingOwner);
+                $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                $actionPlanAdvice->step()->associate($this->step);
+                $actionPlanAdvice->save();
+            }
+        }
     }
 }

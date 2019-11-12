@@ -218,7 +218,7 @@ class ExampleBuildingController extends Controller
         /** @var ExampleBuilding $exampleBuilding */
         $exampleBuilding = ExampleBuilding::findOrFail($id);
 
-        $buildingType = BuildingType::findOrFail($request->input('building_type_id'));
+        $buildingType = BuildingType::findOrFail($request->get('building_type_id'));
         $cooperation = Cooperation::find($request->get('cooperation_id'));
 
         $translations = $request->input('name', []);
@@ -237,7 +237,6 @@ class ExampleBuildingController extends Controller
 
         $contents = $request->input('content', []);
 
-        dd($contents);
         foreach ($contents as $cid => $data) {
             $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
 
@@ -258,7 +257,6 @@ class ExampleBuildingController extends Controller
         }
         $exampleBuilding->save();
 
-        dd($exampleBuilding->contents[0]->content);
         return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $id])->with('success', 'Example building updated');
     }
 

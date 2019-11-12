@@ -194,9 +194,8 @@ class ExampleBuildingService
                                     }
 
                                     if (is_array($extra)) {
-                                        // we have to do this because the structure is wrong, see ToolHelper line 465
                                         if ($boilerService->id == $serviceId) {
-                                            $extra = ['date' => $extra['year']];
+                                            $extra = ['date' => $extra['date']];
                                         }
                                         $buildingService->extra = $extra;
                                     }

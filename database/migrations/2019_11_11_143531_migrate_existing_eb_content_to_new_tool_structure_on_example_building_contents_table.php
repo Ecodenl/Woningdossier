@@ -13,22 +13,26 @@ class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable e
      *
      * This migration will handle the new content structure of the tool.
      *
+     * moving the element questions that belong to on the current state page to that step
+     * moving all the data into substeps, when no substep exist add it to a empty substep
+     * renaming hr-boiler.service.boilerid.extra.year to hr-boiler.service.boilerid.extra.date
+     *
      * elements and services
      *
      * @return void
      */
     public function up()
     {
+
         $exampleBuildingContents = \DB::table('example_building_contents')->get();
 
-        $elementsThatBelongOnCurrentStatePage = DB::table('elements')->whereIn('short', [
+        $boiler = \DB::table('services')->where('short', 'boiler')->first();
+        $elementsThatBelongOnCurrentStatePage = \DB::table('elements')->whereIn('short', [
             'sleeping-rooms-windows', 'living-rooms-windows', 'crack-sealing',
             'wall-insulation', 'floor-insulation', 'roof-insulation'
         ])->get()->pluck('id')->toArray();
 
         foreach ($exampleBuildingContents as $exampleBuildingContent) {
-            $this->line('-------------------------------------------------');
-            $this->line('migrating example building content for id: '.$exampleBuildingContent->id);
             $content = json_decode($exampleBuildingContent->content, true);
 
             $generalDataElementData = [];
@@ -36,14 +40,12 @@ class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable e
 
             // handle the elements and services.
             foreach ($content as $stepSlug => $stepData) {
-                $this->line('migrating it for step slug: '.$stepSlug);
                 if ($stepSlug == "general-data") {
                     $generalDataElementData = $content['general-data']['element'] ?? [];
                     $generalDataServiceData = $content['general-data']['service'] ?? [];
                 } else {
                     // as long as the keys dont overlap its all goood
                     if (array_key_exists('element', $stepData)) {
-                        $this->line('handling the element data');
                         $idsToCheck = [];
                         // since the element contains non numeric values we cant array flip, so we have to do this
                         foreach ($stepData['element'] as $elementId => $elementValue) {
@@ -61,14 +63,29 @@ class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable e
                         unset($content[$stepSlug]['element']);
                     }
                     if (array_key_exists('service', $stepData)) {
-                        $this->line('handling the service data');
-                        $generalDataServiceData = $generalDataServiceData + $stepData['service'];
-                        unset($content[$stepSlug]['service']);
+                        if ($stepSlug == 'high-efficiency-boiler') {
+
+                            // can be a deeper array or the year itself.
+                            $boilerExtra = $stepData['service'][$boiler->id]['extra'];
+
+                            if (is_array($boilerExtra)) {
+                                $content[$stepSlug]['service'][$boiler->id]['extra']['date'] = $stepData['service'][$boiler->id]['extra']['year'];
+                                unset($content[$stepSlug]['service'][$boiler->id]['extra']['year']);
+                            } else {
+                                // we first have to unset the key, otherwise we cant assign new deeper values
+                                unset($content[$stepSlug]['service'][$boiler->id]['extra']);
+                                $content[$stepSlug]['service'][$boiler->id]['extra']['date'] = $boilerExtra;
+                            }
+
+                        } else if ($stepSlug == 'heater') {
+                            $generalDataServiceData = $generalDataServiceData + $stepData['service'];
+                            unset($content[$stepSlug]['service']);
+                        }
+
                     }
 
                     // remove it, wont be possible to store anyways.
                     if (array_key_exists('user_interests', $stepData)) {
-                        $this->line('removing the user interests');
                         unset($content[$stepSlug]['user_interests']);
                     }
 
@@ -96,6 +113,7 @@ class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable e
                     'content' => json_encode($content)
                 ]);
         }
+
     }
 
     /**

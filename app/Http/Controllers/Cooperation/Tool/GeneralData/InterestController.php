@@ -17,6 +17,7 @@ use App\Models\Step;
 use App\Models\UserInterest;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
+use function Couchbase\defaultDecoder;
 use Illuminate\Support\Arr;
 
 class InterestController extends Controller
@@ -40,6 +41,7 @@ class InterestController extends Controller
             'buildingOwner'
         ));
     }
+
     public function store(InterestFormRequest $request)
     {
         $building = HoomdossierSession::getBuilding(true);
@@ -55,10 +57,10 @@ class InterestController extends Controller
 
         $buildingOwner->motivations()->delete();
         foreach ($request->input('user_motivations.id') as $order => $moviationId)
-        $buildingOwner->motivations()->create([
-            'motivation_id' => $moviationId,
-            'order' => $order
-        ]);
+            $buildingOwner->motivations()->create([
+                'motivation_id' => $moviationId,
+                'order' => $order
+            ]);
         $buildingOwner->energyHabit()->updateOrCreate([], $request->input('user_energy_habits'));
 
         StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
@@ -69,8 +71,8 @@ class InterestController extends Controller
         $nextStep = StepHelper::getNextStep($building, $inputSource, $step);
         $url = $nextStep['url'];
 
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#' . $nextStep['tab_id'];
         }
 
         return redirect($url);

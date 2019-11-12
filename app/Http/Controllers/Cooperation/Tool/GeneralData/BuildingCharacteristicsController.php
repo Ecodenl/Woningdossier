@@ -27,13 +27,10 @@ class BuildingCharacteristicsController extends Controller
     {
 
         $eb = ExampleBuilding::find(32);
-        dd(
-            $eb->contents[0]->content['general-data']['building-characteristics']['building_features.surface']
-        );
 
         ExampleBuildingService::apply($eb, 1965, HoomdossierSession::getBuilding(true));
 
-        dd('what de panker');
+        dd('what de');
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 

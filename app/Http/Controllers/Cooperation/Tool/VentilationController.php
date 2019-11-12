@@ -2,13 +2,21 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
+use App\Helpers\Calculation\BankInterestCalculator;
+use App\Helpers\Calculator;
+use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Kengetallen;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
+use App\Models\BuildingElement;
 use App\Models\BuildingService;
+use App\Models\Element;
+use App\Models\ElementValue;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\Step;
+use App\Models\UserEnergyHabit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
@@ -54,6 +62,8 @@ class VentilationController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request->all());
+
         $building = HoomdossierSession::getBuilding(true);
         // Save progress
         StepHelper::complete($this->step, $building,
@@ -132,7 +142,7 @@ class VentilationController extends Controller
             // because: either there is no crack sealing or it's all okay
             $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
 
-            if (in_array('none', $request->get('how', [])) || $currentCrackSealingCalculateValue < 2){
+            if (in_array('none', $request->input('building_ventilations.how', [])) || $currentCrackSealingCalculateValue < 2){
                 unset($measures['crack-sealing']);
             }
 
@@ -161,7 +171,7 @@ class VentilationController extends Controller
             // because: either there is no crack sealing or it's all okay
             $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
 
-            if (in_array('none', $request->get('how', [])) || $currentCrackSealingCalculateValue < 2){
+            if (in_array('none', $request->input('building_ventilations.how', [])) || $currentCrackSealingCalculateValue < 2){
                 unset($measures['crack-sealing']);
             }
 
@@ -190,7 +200,7 @@ class VentilationController extends Controller
             // because: either there is no crack sealing or it's all okay
             $currentCrackSealingCalculateValue = $currentCrackSealing->elementValue->calculate_value ?? 10;
 
-            if (in_array('none', $request->get('how', [])) || $currentCrackSealingCalculateValue < 2){
+            if (in_array('none', $request->input('building_ventilations.how', [])) || $currentCrackSealingCalculateValue < 2){
                 unset($measures['crack-sealing']);
             }
 
@@ -204,10 +214,49 @@ class VentilationController extends Controller
             $advice->name = $advice->measure_name;
         });
 
+
+
+
+        if (array_key_exists('crack-sealing', $measures)){
+            // Crack sealing gives a percentage of savings. This is dependent on the application (place or replace)
+            // and the gas usage (for heating)
+
+            $result['crack_sealing'] = [
+                'cost_indication' => 0,
+                'savings_gas' => 0,
+            ];
+
+            // (we know that calculate_value is > 1, but for historic logic reasons..
+            if ($currentCrackSealing instanceof BuildingElement && $currentCrackSealingCalculateValue > 1) {
+                $gas = 0;
+                $energyHabit = $building->user->energyHabit;
+                if ($energyHabit instanceof UserEnergyHabit) {
+                    $boiler = $building->getServiceValue('boiler', HoomdossierSession::getInputSource(true));
+                    $usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler, $energyHabit);
+                    $gas = $usages['heating']['bruto'];
+                }
+
+                if (2 == $currentCrackSealingCalculateValue) {
+                    $result['crack_sealing']['savings_gas'] = (Kengetallen::PERCENTAGE_GAS_SAVINGS_REPLACE_CRACK_SEALING / 100) * $gas;
+                } else {
+                    $result['crack_sealing']['savings_gas'] = (Kengetallen::PERCENTAGE_GAS_SAVINGS_PLACE_CRACK_SEALING / 100) * $gas;
+                }
+
+                /** @var MeasureApplication $measureApplication */
+                $measureApplication = MeasureApplication::where('short', 'crack-sealing')->first();
+
+                $result['crack_sealing']['cost_indication'] = Calculator::calculateMeasureApplicationCosts($measureApplication, 1, null, false);
+                $result['crack_sealing']['savings_co2'] = Calculator::calculateCo2Savings($result['crack_sealing']['savings_gas']);
+                $result['crack_sealing']['savings_money'] = Calculator::calculateMoneySavings($result['crack_sealing']['savings_gas']);
+                $result['crack_sealing']['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['crack_sealing']['cost_indication'], $result['crack_sealing']['savings_money']), 1);
+            }
+        }
+
+
         if (count($advices) > 0){
             $improvement .= '  Om de ventilatie verder te verbeteren kunt u de volgende opties overwegen:';
         }
 
-        return compact('improvement', 'advices', 'remark');
+        return compact('improvement', 'advices', 'remark', 'result');
     }
 }

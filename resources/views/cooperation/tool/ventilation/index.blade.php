@@ -36,7 +36,7 @@
                     ];
                     ?>
 
-                    @component('cooperation.tool.components.step-question', ['id' => 'how', 'translation' => 'ventilation.how', 'required' => true])
+                    @component('cooperation.tool.components.step-question', ['id' => 'how', 'translation' => 'cooperation/tool/ventilation.index.how', 'required' => true])
                         @component('cooperation.tool.components.input-group',
                     ['inputType' => 'checkbox', 'inputValues' => $howValues, 'userInputValues' => null ,'userInputColumn' => 'how'])
 
@@ -91,7 +91,7 @@
                     ];
                     ?>
 
-                    @component('cooperation.tool.components.step-question', ['id' => 'living_situation', 'translation' => 'ventilation.living_situation', 'required' => true])
+                    @component('cooperation.tool.components.step-question', ['id' => 'living_situation', 'translation' => 'cooperation/tool/ventilation.index.living-situation', 'required' => true])
                         @component('cooperation.tool.components.input-group',
                     ['inputType' => 'checkbox', 'inputValues' => $livingSituationValues, 'userInputValues' => null ,'userInputColumn' => 'living_situation'])
                             @foreach($livingSituationValues as $lsKey => $lsValue)
@@ -148,7 +148,7 @@
                     ];
                     ?>
 
-                    @component('cooperation.tool.components.step-question', ['id' => 'usage', 'translation' => 'ventilation.usage', 'required' => true])
+                    @component('cooperation.tool.components.step-question', ['id' => 'usage', 'translation' => 'cooperation/tool/ventilation.index.usage', 'required' => true])
                         @component('cooperation.tool.components.input-group',
                     ['inputType' => 'checkbox', 'inputValues' => $usageValues, 'userInputValues' => null ,'userInputColumn' => 'usage'])
                             @foreach($usageValues as $uKey => $uValue)
@@ -200,10 +200,8 @@
                 <p id="improvement"></p>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
+        <div class="row advices">
 
-            </div>
         </div>
         <div class="row">
             <div class="col-sm-12">
@@ -211,11 +209,49 @@
             </div>
         </div>
 
-
-
         @include('cooperation.tool.includes.comment', [
-           'translation' => 'ventilation.comment'
+           'translation' => 'cooperation/tool/ventilation.index.comment'
         ])
+
+        <div id="indication-for-costs">
+            <hr>
+            @include('cooperation.tool.includes.section-title', [
+                    'translation' => 'wall-insulation.indication-for-costs.title',
+                    'id' => 'indication-for-costs'
+                ])
+
+            <div id="costs" class="row">
+                <div class="col-sm-4">
+                    @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
+                </div>
+                <div class="col-sm-4">
+                    @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
+                </div>
+                <div class="col-sm-4">
+                    @include('cooperation.layouts.indication-for-costs.savings-in-euro')
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    @include('cooperation.layouts.indication-for-costs.indicative-costs')
+                </div>
+                <div class="col-sm-4">
+                    @include('cooperation.layouts.indication-for-costs.comparable-rent')
+                </div>
+            </div>
+        </div>
+
+        @if(!\App\helpers\HoomdossierSession::isUserObserving())
+            <div class="form-group add-space">
+                <div class="">
+                    <a class="btn btn-success pull-left"
+                       href="{{ route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) }}">@lang('default.buttons.prev')</a>
+                    <button type="submit" class="btn btn-primary pull-right">
+                        @lang('default.buttons.next')
+                    </button>
+                </div>
+            </div>
+        @endif
 
     </form>
 
@@ -290,89 +326,46 @@
                             $("p#improvement").html(data.improvement);
                         }
 
+                        if (data.hasOwnProperty('advices')){
+                            var advices = $(".advices");
+                            advices.html('<div class="col-sm-6"><strong>Verbetering</strong></div><div class="col-sm-3"><strong>Interesse</strong></div><div class="col-sm-3"><strong>Kosten en baten</strong></div>');
+                            $.each(data.advices, function(i, element){
+                                advices.append('<div class="col-sm-6">' + element.name + '</div><div class="col-sm-3"><input type="checkbox" name="building_ventilations[interest][]" value="' + element.id + '"></div><div class="col-sm-3">Nader te bepalen</div>');
+                            });
+                        }
+
                         if (data.hasOwnProperty('remark')){
                             $("p#remark").html(data.remark);
                         }
 
-                        // default
-                        //$(".cover-zinc").hide();
-                        $(".flat-roof .cover-bitumen").hide();
-                        $(".pitched-roof .cover-bitumen").hide();
-
-                        if (data.hasOwnProperty('flat')) {
-                            $(".flat-roof").show();
-                            $(".flat-roof .cover-bitumen").show();
 
 
-                            //if (data.flat.hasOwnProperty('type') && data.flat.type === 'zinc'){
-                            //    $(".cover-zinc").show();
-                            //}
-                            if (data.flat.hasOwnProperty('savings_gas')) {
-                                $("input#flat_savings_gas").val(hoomdossierRound(data.flat.savings_gas));
+                        if (data.hasOwnProperty('result') && data.result.hasOwnProperty('crack_sealing')) {
+
+                            if (data.result.crack_sealing.hasOwnProperty('savings_gas')) {
+                                $("input#savings_gas").val(hoomdossierRound(data.result.crack_sealing.savings_gas));
                             }
-                            if (data.flat.hasOwnProperty('savings_co2')) {
-                                $("input#flat_savings_co2").val(hoomdossierRound(data.flat.savings_co2));
+                            if (data.result.crack_sealing.hasOwnProperty('savings_co2')) {
+                                $("input#savings_co2").val(hoomdossierRound(data.result.crack_sealing.savings_co2));
                             }
-                            if (data.flat.hasOwnProperty('savings_money')) {
-                                $("input#flat_savings_money").val(hoomdossierRound(data.flat.savings_money));
+                            if (data.result.crack_sealing.hasOwnProperty('savings_money')) {
+                                $("input#savings_money").val(hoomdossierRound(data.result.crack_sealing.savings_money));
                             }
-                            if (data.flat.hasOwnProperty('cost_indication')) {
-                                $("input#flat_cost_indication").val(hoomdossierRound(data.flat.cost_indication));
+                            if (data.result.crack_sealing.hasOwnProperty('cost_indication')) {
+                                $("input#cost_indication").val(hoomdossierRound(data.result.crack_sealing.cost_indication));
                             }
-                            if (data.flat.hasOwnProperty('interest_comparable')) {
-                                $("input#flat_interest_comparable").val(hoomdossierNumberFormat(data.flat.interest_comparable, '{{ app()->getLocale() }}', 1));
+                            if (data.result.crack_sealing.hasOwnProperty('interest_comparable')) {
+                                $("input#interest_comparable").val(hoomdossierNumberFormat(data.result.crack_sealing.interest_comparable, '{{ app()->getLocale() }}', 1));
                             }
-                            if (data.flat.hasOwnProperty('replace')) {
+
+                            /*if (data.result.hasOwnProperty('replace')) {
                                 if (data.flat.replace.hasOwnProperty('year')) {
                                     $("input#flat_replace_year").val(data.flat.replace.year);
                                 }
                                 if (data.flat.replace.hasOwnProperty('costs')) {
                                     $("input#flat_replace_cost").val(hoomdossierRound(data.flat.replace.costs));
                                 }
-                            }
-                        } else {
-                            $(".flat-roof").hide();
-                        }
-
-                        $(".cover-tiles").hide();
-                        if (data.hasOwnProperty('pitched')) {
-
-                            $(".pitched-roof").show();
-                            if (data.pitched.hasOwnProperty('type')) {
-
-                                if (data.pitched.type === 'tiles') {
-                                    $(".cover-tiles").show();
-                                    $(".pitched-roof .cover-bitumen").hide();
-                                }
-                                if (data.pitched.type === 'bitumen') {
-                                    $(".pitched-roof .cover-bitumen").show();
-                                }
-                            }
-                            if (data.pitched.hasOwnProperty('savings_gas')) {
-                                $("input#pitched_savings_gas").val(hoomdossierRound(data.pitched.savings_gas));
-                            }
-                            if (data.pitched.hasOwnProperty('savings_co2')) {
-                                $("input#pitched_savings_co2").val(hoomdossierRound(data.pitched.savings_co2));
-                            }
-                            if (data.pitched.hasOwnProperty('savings_money')) {
-                                $("input#pitched_savings_money").val(hoomdossierRound(data.pitched.savings_money));
-                            }
-                            if (data.pitched.hasOwnProperty('cost_indication')) {
-                                $("input#pitched_cost_indication").val(hoomdossierRound(data.pitched.cost_indication));
-                            }
-                            if (data.pitched.hasOwnProperty('interest_comparable')) {
-                                $("input#pitched_interest_comparable").val(hoomdossierNumberFormat(data.pitched.interest_comparable, '{{ app()->getLocale() }}', 1));
-                            }
-                            if (data.pitched.hasOwnProperty('replace')) {
-                                if (data.pitched.replace.hasOwnProperty('year')) {
-                                    $("input#pitched_replace_year").val(data.pitched.replace.year);
-                                }
-                                if (data.pitched.replace.hasOwnProperty('costs')) {
-                                    $("input#pitched_replace_cost").val(hoomdossierRound(data.pitched.replace.costs));
-                                }
-                            }
-                        } else {
-                            $(".pitched-roof").hide();
+                            }*/
                         }
 
                         @if(App::environment('local'))

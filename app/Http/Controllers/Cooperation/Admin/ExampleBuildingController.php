@@ -139,9 +139,15 @@ class ExampleBuildingController extends Controller
 
         $contentStructure = $this->onlyApplicableInputs(ToolHelper::getStructure());
 
+
+//        $eb = ExampleBuilding::find(32);
+//        dd(
+//            $eb->contents[0]->content
+//        );
+
 //        general-data.building-characteristics.building_features.surface
 //        dd(
-//            $exampleBuilding->contents[0]->content['general-data']['building-characteristics']['building_features.surface']
+//            $exampleBuilding->contents[0]->content['general-data']['building-characteristics']['building_features.surface'];
 //            array_dot($exampleBuilding->contents[0]->content)['general-data.building-characteristics.building_features.surface']
 //        );
 
@@ -257,12 +263,13 @@ class ExampleBuildingController extends Controller
     protected function array_undot($content)
     {
         $array = [];
-        foreach ($content as $key => $values) {
-            foreach ($values as $dottedKey => $value) {
-                array_set($array, $key . '.' . $dottedKey, $value);
+        foreach ($content as $step => $values) {
+            foreach ($values as $subStep => $subStepValues) {
+                foreach ($subStepValues as $tableColumn => $value) {
+                    array_set($array, $step.'.'.$subStep.'.'.$tableColumn, $value);
+                }
             }
         }
-
         return $array;
     }
 

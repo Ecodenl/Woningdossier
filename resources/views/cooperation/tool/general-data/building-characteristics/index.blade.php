@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-md-6">
 
-                @component('cooperation.tool.components.step-question', ['id' => 'building_type_id', 'translation' => 'general-data/building-characteristics.building-type'])
+                @component('cooperation.tool.components.step-question', ['id' => 'building_type_id', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.building-type'])
                     @component('cooperation.tool.components.input-group', [
                         'inputType' => 'select',
                         'inputValues' => $buildingTypes,
@@ -30,7 +30,7 @@
 
             <div class="col-md-6">
 
-                @component('cooperation.tool.components.step-question', ['id' => 'build_year', 'translation' => 'general-data/building-characteristics.build-year', 'required' => true])
+                @component('cooperation.tool.components.step-question', ['id' => 'build_year', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.build-year', 'required' => true])
 
                     @component('cooperation.tool.components.input-group',
                     ['inputType' => 'input', 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'build_year'])
@@ -50,7 +50,7 @@
                     <div class="row">
                         <div id="example-building" class="col-sm-12 @if($exampleBuildings->count() == 0) d-none @endif ">
 
-                            @component('cooperation.tool.components.step-question', ['id' => 'example_building_id', 'translation' => 'general-data/building-characteristics.example-building',])
+                            @component('cooperation.tool.components.step-question', ['id' => 'example_building_id', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.example-building',])
 
                                 <select id="example_building_id" class="form-control" name="buildings[example_building_id]" data-ays-ignore="true"> {{-- data-ays-ignore="true" makes sure this field is not picked up by Are You Sure --}}
                                     @foreach($exampleBuildings as $exampleBuilding)
@@ -69,7 +69,7 @@
                                             // we select this empty value as default.
                                             $currentNotInExampleBuildings = !$exampleBuildings->contains('id', '=', $building->example_building_id);
                                             ?>
-                                            @if(empty(old('buildings.example_building_id', $building->example_building_id)) || $currentNotInExampleBuildings) selected="selected"@endif >{{ \App\Helpers\Translation::translate('general-data/building-characteristics.example-building.no-match.title') }}</option>
+                                            @if(empty(old('buildings.example_building_id', $building->example_building_id)) || $currentNotInExampleBuildings) selected="selected"@endif >{{ \App\Helpers\Translation::translate('cooperation/tool/general-data/building-characteristics.index.example-building.no-match.title') }}</option>
                                 </select>
 
                             @endcomponent
@@ -79,7 +79,7 @@
                 <div class="row">
                     <div class="col-md-6">
 
-                        @component('cooperation.tool.components.step-question', ['id' => 'surface', 'translation' => 'general-data/building-characteristics.surface', 'required' => true])
+                        @component('cooperation.tool.components.step-question', ['id' => 'surface', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface', 'required' => true])
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'surface', 'needsFormat' => true])
@@ -94,7 +94,7 @@
                     </div>
                     <div class="col-md-6">
 
-                        @component('cooperation.tool.components.step-question', ['id' => 'building_layers', 'translation' => 'general-data/building-characteristics.building-layers', 'required' => true])
+                        @component('cooperation.tool.components.step-question', ['id' => 'building_layers', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.building-layers', 'required' => true])
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'building_layers', 'needsFormat' => true, 'decimals' => 0])
@@ -110,7 +110,7 @@
                 <div class="row">
                     <div class="col-md-6">
 
-                        @component('cooperation.tool.components.step-question', ['id' => 'roof_type_id', 'translation' => 'general-data/building-characteristics.roof-type',])
+                        @component('cooperation.tool.components.step-question', ['id' => 'roof_type_id', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.roof-type',])
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $myBuildingFeatures, 'userInputModel' => 'roofType', 'userInputColumn' => 'roof_type_id'])
@@ -128,7 +128,7 @@
                         @endcomponent
                     </div>
                     <div class="col-md-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'energy_label_id', 'translation' => 'general-data/building-characteristics.energy-label', 'required' => false])
+                        @component('cooperation.tool.components.step-question', ['id' => 'energy_label_id', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.energy-label', 'required' => false])
                             <?php
 
                             // order:
@@ -172,7 +172,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="input-group input-source-group">
-                            @component('cooperation.tool.components.step-question', ['id' => 'monument', 'translation' => 'general-data/building-characteristics.monument', 'required' => false])
+                            @component('cooperation.tool.components.step-question', ['id' => 'monument', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.monument', 'required' => false])
                                 <?php
                                 $checked = old('building_features.monument', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'monument'));
                                 ?>
@@ -230,7 +230,7 @@
         </div>
 
         @include('cooperation.tool.includes.comment', [
-            'translation' => 'general-data/building-characteristics.comment'
+            'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment'
         ])
     </form>
 @endsection

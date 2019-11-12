@@ -25,6 +25,15 @@ class BuildingCharacteristicsController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
+
+        $eb = ExampleBuilding::find(32);
+        dd(
+            $eb->contents[0]->content['general-data']['building-characteristics']['building_features.surface']
+        );
+
+        ExampleBuildingService::apply($eb, 1965, HoomdossierSession::getBuilding(true));
+
+        dd('what de panker');
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 

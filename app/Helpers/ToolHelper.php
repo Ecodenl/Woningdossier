@@ -686,7 +686,7 @@ class ToolHelper
         // CSV files. And the order should be the same, but not "the same".
         // Makes sense.. no?
         // (hint: no it doesn't..)
-        $insulatedGlazingStuffSoFar = $structure['insulated-glazing'];
+        $insulatedGlazingStuffSoFar = $structure['insulated-glazing']['-'];
         $structure['insulated-glazing'] = [];
 
         foreach ($igShorts as $igShort) {
@@ -723,7 +723,7 @@ class ToolHelper
             }
         }
         foreach ($insulatedGlazingStuffSoFar as $igK => $igV) {
-            $structure['insulated-glazing'][$igK] = $igV;
+            $structure['insulated-glazing']['-'][$igK] = $igV;
         }
 
         // set the calculations on the end because of the order

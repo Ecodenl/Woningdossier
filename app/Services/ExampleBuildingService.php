@@ -39,6 +39,7 @@ use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
+use function Couchbase\defaultDecoder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -73,285 +74,213 @@ class ExampleBuildingService
 
         $features = [];
 
-        foreach ($exampleData as $stepSlug => $stepData) {
+        foreach ($exampleData as $stepSlug => $dataForStep) {
             self::log('=====');
             self::log('Processing '.$stepSlug);
             self::log('=====');
 
-            foreach ($stepData as $columnOrTable => $values) {
-                self::log('-----> '.$stepSlug.' - '.$columnOrTable);
+            foreach ($dataForStep as $subStep => $subStepData) {
+                foreach ($subStepData as $columnOrTable => $values) {
+                    self::log('-----> ' . $stepSlug . ' - ' . $columnOrTable);
 
-                if (is_null($values)) {
-                    self::log('Skipping '.$columnOrTable.' (empty)');
-                    continue;
-                }
-                if ('user_interest' == $columnOrTable || 'user_interests' == $columnOrTable) {
-                    foreach ($values as $inType => $interests) {
-                        // for some reason the measure applications are not categorized, the $inType = the measure application id and the $interests = interest id
-                        // this is not dry, but cant be because structure
-                        if (is_int($inType)) {
-                            $typeId = $inType;
-                            $interestId = $interests;
-                            $inType = 'measure_application';
-
-                            $interest = Interest::find($interestId);
-                            if (! $interest instanceof Interest) {
-                                self::log("Skipping: No valid interest for ('{$inType}') with ID ".$interestId);
-                                continue;
-                            }
-                            $type = null;
-
-                            switch ($inType) {
-                                case 'measure_application':
-                                    $type = MeasureApplication::find($typeId);
-                                    break;
-                            }
-
-                            if (! $type instanceof Model) {
-                                self::log('Skipping: No valid type found for interest ('.$inType.') with ID '.$typeId);
-                                continue;
-                            }
-                            // we have:
-                            //  - $interest (FK relation)
-                            //  - $type (only int will be needed)
-                            $userInterest = new UserInterest(['interested_in_type' => $inType, 'interested_in_id' => $type->id]);
-                            $userInterest->user()->associate($userBuilding->user);
-                            $userInterest->inputSource()->associate($inputSource);
-                            $userInterest->interest()->associate($interest);
-                            $userInterest->save();
-                            self::log('Added user interest for '.$inType.' with ID '.$type->id.' -> '.$interest->name);
-                        } elseif (in_array($inType, ['element', 'service'])) {
-                            foreach ($interests as $typeId => $interestId) {
-                                $typeId = (int) $typeId;
-                                $interestId = (int) $interestId;
-
-                                $interest = Interest::find($interestId);
-                                if (! $interest instanceof Interest) {
-                                    self::log("Skipping: No valid interest for ('{$inType}') with ID ".$interestId);
-                                    continue;
-                                }
-
-                                $type = null;
-                                switch ($inType) {
-                                    case 'element':
-                                        $type = Element::find($typeId);
-                                        break;
-                                    case 'service':
-                                        $type = Service::find($typeId);
-                                        break;
-                                }
-
-                                if (! $type instanceof Model) {
-                                    self::log('Skipping: No valid type found for interest ('.$inType.') with ID '.$typeId);
-                                    continue;
-                                }
-
-                                // we have:
-                                //  - $interest (FK relation)
-                                //  - $type (only int will be needed)
-                                $userInterest = new UserInterest(['interested_in_type' => $inType, 'interested_in_id' => $type->id]);
-                                $userInterest->user()->associate($userBuilding->user);
-                                $userInterest->inputSource()->associate($inputSource);
-                                $userInterest->interest()->associate($interest);
-                                $userInterest->save();
-                                self::log('Added user interest for '.$inType.' with ID '.$type->id.' -> '.$interest->name);
-                            }
-                        }
+                    if (is_null($values)) {
+                        self::log('Skipping ' . $columnOrTable . ' (empty)');
+                        continue;
                     }
-                }
-                if ('user_energy_habits' == $columnOrTable) {
-                    $habits = UserEnergyHabit::create($values);
-                    $habits->inputSource()->associate($inputSource);
-                    $habits->user()->associate($userBuilding->user);
-                    $habits->save();
-                }
-                if ('element' == $columnOrTable) {
-                    // process elements
-                    if (is_array($values)) {
-                        foreach ($values as $elementId => $elementValueData) {
-                            $extra = null;
-                            $elementValues = [];
-                            if (is_array($elementValueData)) {
-                                if (! array_key_exists('element_value_id', $elementValueData)) {
-                                    // perhaps a nested array (e.g. wood elements)
-                                    foreach ($elementValueData as $elementValueDataItem) {
-                                        if (is_array($elementValueDataItem) && array_key_exists('element_value_id', $elementValueDataItem)) {
-                                            $d = ['element_value_id' => (int) $elementValueDataItem['element_value_id']];
-                                            if (array_key_exists('extra', $elementValueDataItem)) {
-                                                $d['extra'] = $elementValueDataItem['extra'];
+                    if ('user_energy_habits' == $columnOrTable) {
+                        $habits = UserEnergyHabit::create($values);
+                        $habits->inputSource()->associate($inputSource);
+                        $habits->user()->associate($userBuilding->user);
+                        $habits->save();
+                    }
+                    if ('element' == $columnOrTable) {
+                        // process elements
+                        if (is_array($values)) {
+                            foreach ($values as $elementId => $elementValueData) {
+                                $extra = null;
+                                $elementValues = [];
+                                if (is_array($elementValueData)) {
+                                    if (!array_key_exists('element_value_id', $elementValueData)) {
+                                        // perhaps a nested array (e.g. wood elements)
+                                        foreach ($elementValueData as $elementValueDataItem) {
+                                            if (is_array($elementValueDataItem) && array_key_exists('element_value_id', $elementValueDataItem)) {
+                                                $d = ['element_value_id' => (int)$elementValueDataItem['element_value_id']];
+                                                if (array_key_exists('extra', $elementValueDataItem)) {
+                                                    $d['extra'] = $elementValueDataItem['extra'];
+                                                }
+                                                $elementValues[] = $d;
+                                            } else {
+                                                $elementValues[] = ['element_value_id' => (int)$elementValueDataItem];
+                                            }
+                                        }
+                                    } else {
+                                        if (array_key_exists('element_value_id', $elementValueData)) {
+                                            $d = ['element_value_id' => (int)$elementValueData['element_value_id']];
+                                            if (array_key_exists('extra', $elementValueData)) {
+                                                $d['extra'] = $elementValueData['extra'];
                                             }
                                             $elementValues[] = $d;
                                         } else {
-                                            $elementValues[] = ['element_value_id' => (int) $elementValueDataItem];
+                                            $elementValues[] = ['element_value_id' => (int)$elementValueData];
                                         }
                                     }
                                 } else {
-                                    if (array_key_exists('element_value_id', $elementValueData)) {
-                                        $d = ['element_value_id' => (int) $elementValueData['element_value_id']];
-                                        if (array_key_exists('extra', $elementValueData)) {
-                                            $d['extra'] = $elementValueData['extra'];
+                                    $elementValues[] = ['element_value_id' => (int)$elementValueData];
+                                }
+
+                                $element = Element::find($elementId);
+                                if ($element instanceof Element) {
+                                    foreach ($elementValues as $elementValue) {
+                                        $extra = array_key_exists('extra', $elementValue) ? $elementValue['extra'] : null;
+                                        $buildingElement = new BuildingElement(['extra' => $extra]);
+                                        $buildingElement->inputSource()->associate($inputSource);
+                                        $buildingElement->element()->associate($element);
+                                        $buildingElement->building()->associate($userBuilding);
+
+                                        if (isset($elementValue['element_value_id'])) {
+                                            $elementValue = $element->values()->where('id',
+                                                $elementValue['element_value_id'])->first();
+
+                                            if ($elementValue instanceof ElementValue) {
+                                                $buildingElement->elementValue()->associate($elementValue);
+                                            }
                                         }
-                                        $elementValues[] = $d;
+
+                                        $buildingElement->save();
+                                        self::log('Saving building element ' . json_encode($buildingElement->toArray()));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if ('service' == $columnOrTable) {
+                        // process elements
+                        if (is_array($values)) {
+                            foreach ($values as $serviceId => $serviceValueData) {
+                                $extra = null;
+                                // note: in the case of solar panels the service_value_id can be null!!
+                                if (is_array($serviceValueData)) {
+                                    if (!array_key_exists('service_value_id', $serviceValueData)) {
+                                        self::log('Service ID ' . $serviceId . ': no service_value_id -> service_value_id set to NULL');
+                                        $serviceValueId = null;
                                     } else {
-                                        $elementValues[] = ['element_value_id' => (int) $elementValueData];
+                                        $serviceValueId = (int)$serviceValueData['service_value_id'];
                                     }
+                                    if (array_key_exists('extra', $serviceValueData)) {
+                                        $extra = $serviceValueData['extra'];
+                                    }
+                                } else {
+                                    $serviceValueId = (int)$serviceValueData;
                                 }
-                            } else {
-                                $elementValues[] = ['element_value_id' => (int) $elementValueData];
-                            }
+                                $service = Service::find($serviceId);
+                                if ($service instanceof Service) {
+                                    // try to obtain a existing service
+                                    $existingBuildingService = BuildingService::withoutGlobalScope(GetValueScope::class)
+                                        ->forMe()
+                                        ->where('input_source_id', $inputSource->id)
+                                        ->where('service_id', $serviceId)->first();
 
-                            $element = Element::find($elementId);
-                            if ($element instanceof Element) {
-                                foreach ($elementValues as $elementValue) {
-                                    $extra = array_key_exists('extra', $elementValue) ? $elementValue['extra'] : null;
-                                    $buildingElement = new BuildingElement(['extra' => $extra]);
-                                    $buildingElement->inputSource()->associate($inputSource);
-                                    $buildingElement->element()->associate($element);
-                                    $buildingElement->building()->associate($userBuilding);
+                                    // see if it already exists, if so we need to add data to that service
 
-                                    if (isset($elementValue['element_value_id'])) {
-                                        $elementValue = $element->values()->where('id',
-                                            $elementValue['element_value_id'])->first();
+                                    // this is for example the case with the hr boiler, data is added on general-data and on the hr page itself
+                                    // but this can only be saved under one row, so we have to update it
+                                    if ($existingBuildingService instanceof BuildingService) {
+                                        $buildingService = $existingBuildingService;
+                                    } else {
+                                        $buildingService = new BuildingService();
+                                        $buildingService->inputSource()->associate($inputSource);
+                                        $buildingService->service()->associate($service);
+                                        $buildingService->building()->associate($userBuilding);
+                                    }
 
-                                        if ($elementValue instanceof ElementValue) {
-                                            $buildingElement->elementValue()->associate($elementValue);
+                                    if (is_array($extra)) {
+                                        // we have to do this because the structure is wrong, see ToolHelper line 465
+                                        if ($boilerService->id == $serviceId) {
+                                            $extra = ['date' => $extra['year']];
                                         }
+                                        $buildingService->extra = $extra;
                                     }
 
-                                    $buildingElement->save();
-                                    self::log('Saving building element '.json_encode($buildingElement->toArray()));
+                                    if (!is_null($serviceValueId)) {
+                                        $serviceValue = $service->values()->where('id', $serviceValueId)->first();
+                                        $buildingService->serviceValue()->associate($serviceValue);
+                                    }
+
+                                    $buildingService->save();
+
+                                    self::log('Saving building service ' . json_encode($buildingService->toArray()));
                                 }
                             }
                         }
                     }
-                }
-                if ('service' == $columnOrTable) {
-                    // process elements
-                    if (is_array($values)) {
-                        foreach ($values as $serviceId => $serviceValueData) {
-                            $extra = null;
-                            // note: in the case of solar panels the service_value_id can be null!!
-                            if (is_array($serviceValueData)) {
-                                if (! array_key_exists('service_value_id', $serviceValueData)) {
-                                    self::log('Service ID '.$serviceId.': no service_value_id -> service_value_id set to NULL');
-                                    $serviceValueId = null;
-                                } else {
-                                    $serviceValueId = (int) $serviceValueData['service_value_id'];
-                                }
-                                if (array_key_exists('extra', $serviceValueData)) {
-                                    $extra = $serviceValueData['extra'];
-                                }
+                    if ('building_features' == $columnOrTable) {
+                        $features = array_replace_recursive($features, $values);
+                    }
+                    if ('building_paintwork_statuses' == $columnOrTable) {
+                        $statusId = array_get($values, 'paintwork_status_id');
+                        $woodRotStatusId = array_get($values, 'wood_rot_status_id');
+
+                        if (empty($statusId) || empty($woodRotStatusId)) {
+                            self::log('Skipping paintwork status as the paint or wood rot (or both) status is empty');
+                            continue;
+                        }
+
+                        $buildingPaintworkStatus = new BuildingPaintworkStatus($values);
+
+                        $buildingPaintworkStatus->inputSource()->associate($inputSource);
+                        $buildingPaintworkStatus->building()->associate($userBuilding);
+                        $buildingPaintworkStatus->save();
+
+                        //continue;
+                    }
+                    if ('building_insulated_glazings' == $columnOrTable) {
+                        foreach ($values as $measureApplicationId => $glazingData) {
+                            $glazingData['measure_application_id'] = $measureApplicationId;
+
+                            //todo: so the insulated_glazing_id is non existent in the table, this is a typo and should be fixed in the tool structure
+                            $glazingData['insulating_glazing_id'] = $glazingData['insulated_glazing_id'];
+
+                            $buildingInsulatedGlazing = new BuildingInsulatedGlazing($glazingData);
+
+                            $buildingInsulatedGlazing->inputSource()->associate($inputSource);
+                            $buildingInsulatedGlazing->building()->associate($userBuilding);
+                            $buildingInsulatedGlazing->save();
+
+                            self::log('Saving building insulated glazing ' . json_encode($buildingInsulatedGlazing->toArray()));
+                        }
+                    }
+                    if ('building_roof_types' == $columnOrTable) {
+                        foreach ($values as $roofTypeId => $buildingRoofTypeData) {
+                            $buildingRoofTypeData['roof_type_id'] = $roofTypeId;
+
+                            if (isset($buildingRoofTypeData['roof_surface']) && (int)$buildingRoofTypeData['roof_surface'] > 0) {
+                                $buildingRoofType = new BuildingRoofType($buildingRoofTypeData);
+                                $buildingRoofType->inputSource()->associate($inputSource);
+                                $buildingRoofType->building()->associate($userBuilding);
+                                $buildingRoofType->save();
+
+                                self::log('Saving building rooftype ' . json_encode($buildingRoofType->toArray()));
                             } else {
-                                $serviceValueId = (int) $serviceValueData;
-                            }
-                            $service = Service::find($serviceId);
-                            if ($service instanceof Service) {
-                                // try to obtain a existing service
-                                $existingBuildingService = BuildingService::withoutGlobalScope(GetValueScope::class)
-                                    ->forMe()
-                                    ->where('input_source_id', $inputSource->id)
-                                    ->where('service_id', $serviceId)->first();
-
-                                // see if it already exists, if so we need to add data to that service
-
-                                // this is for example the case with the hr boiler, data is added on general-data and on the hr page itself
-                                // but this can only be saved under one row, so we have to update it
-                                if ($existingBuildingService instanceof BuildingService) {
-                                    $buildingService = $existingBuildingService;
-                                } else {
-                                    $buildingService = new BuildingService();
-                                    $buildingService->inputSource()->associate($inputSource);
-                                    $buildingService->service()->associate($service);
-                                    $buildingService->building()->associate($userBuilding);
-                                }
-
-                                if (is_array($extra)) {
-                                    // we have to do this because the structure is wrong, see ToolHelper line 465
-                                    if ($boilerService->id == $serviceId) {
-                                        $extra = ['date' => $extra['year']];
-                                    }
-                                    $buildingService->extra = $extra;
-                                }
-
-                                if (! is_null($serviceValueId)) {
-                                    $serviceValue = $service->values()->where('id', $serviceValueId)->first();
-                                    $buildingService->serviceValue()->associate($serviceValue);
-                                }
-
-                                $buildingService->save();
-
-                                self::log('Saving building service '.json_encode($buildingService->toArray()));
+                                self::log('Not saving building rooftype because surface is 0');
                             }
                         }
                     }
-                }
-                if ('building_features' == $columnOrTable) {
-                    $features = array_replace_recursive($features, $values);
-                }
-                if ('building_paintwork_statuses' == $columnOrTable) {
-                    $statusId = array_get($values, 'paintwork_status_id');
-                    $woodRotStatusId = array_get($values, 'wood_rot_status_id');
+                    if ('building_pv_panels' == $columnOrTable) {
+                        $buildingPvPanels = new BuildingPvPanel($values);
+                        $buildingPvPanels->inputSource()->associate($inputSource);
+                        $buildingPvPanels->building()->associate($userBuilding);
+                        $buildingPvPanels->save();
 
-                    if (empty($statusId) || empty($woodRotStatusId)) {
-                        self::log('Skipping paintwork status as the paint or wood rot (or both) status is empty');
-                        continue;
+                        self::log('Saving building pv_panels ' . json_encode($buildingPvPanels->toArray()));
                     }
+                    if ('building_heaters' == $columnOrTable) {
+                        $buildingHeater = new BuildingHeater($values);
+                        $buildingHeater->inputSource()->associate($inputSource);
+                        $buildingHeater->building()->associate($userBuilding);
+                        $buildingHeater->save();
 
-                    $buildingPaintworkStatus = new BuildingPaintworkStatus($values);
-
-                    $buildingPaintworkStatus->inputSource()->associate($inputSource);
-                    $buildingPaintworkStatus->building()->associate($userBuilding);
-                    $buildingPaintworkStatus->save();
-
-                    //continue;
-                }
-                if ('building_insulated_glazings' == $columnOrTable) {
-                    foreach ($values as $measureApplicationId => $glazingData) {
-                        $glazingData['measure_application_id'] = $measureApplicationId;
-
-                        //todo: so the insulated_glazing_id is non existent in the table, this is a typo and should be fixed in the tool structure
-                        $glazingData['insulating_glazing_id'] = $glazingData['insulated_glazing_id'];
-
-                        $buildingInsulatedGlazing = new BuildingInsulatedGlazing($glazingData);
-
-                        $buildingInsulatedGlazing->inputSource()->associate($inputSource);
-                        $buildingInsulatedGlazing->building()->associate($userBuilding);
-                        $buildingInsulatedGlazing->save();
-
-                        self::log('Saving building insulated glazing '.json_encode($buildingInsulatedGlazing->toArray()));
+                        self::log('Saving building heater ' . json_encode($buildingHeater->toArray()));
                     }
-                }
-                if ('building_roof_types' == $columnOrTable) {
-                    foreach ($values as $roofTypeId => $buildingRoofTypeData) {
-                        $buildingRoofTypeData['roof_type_id'] = $roofTypeId;
-
-                        if (isset($buildingRoofTypeData['roof_surface']) && (int) $buildingRoofTypeData['roof_surface'] > 0) {
-                            $buildingRoofType = new BuildingRoofType($buildingRoofTypeData);
-                            $buildingRoofType->inputSource()->associate($inputSource);
-                            $buildingRoofType->building()->associate($userBuilding);
-                            $buildingRoofType->save();
-
-                            self::log('Saving building rooftype '.json_encode($buildingRoofType->toArray()));
-                        } else {
-                            self::log('Not saving building rooftype because surface is 0');
-                        }
-                    }
-                }
-                if ('building_pv_panels' == $columnOrTable) {
-                    $buildingPvPanels = new BuildingPvPanel($values);
-                    $buildingPvPanels->inputSource()->associate($inputSource);
-                    $buildingPvPanels->building()->associate($userBuilding);
-                    $buildingPvPanels->save();
-
-                    self::log('Saving building pv_panels '.json_encode($buildingPvPanels->toArray()));
-                }
-                if ('building_heaters' == $columnOrTable) {
-                    $buildingHeater = new BuildingHeater($values);
-                    $buildingHeater->inputSource()->associate($inputSource);
-                    $buildingHeater->building()->associate($userBuilding);
-                    $buildingHeater->save();
-
-                    self::log('Saving building heater '.json_encode($buildingHeater->toArray()));
                 }
             }
         }

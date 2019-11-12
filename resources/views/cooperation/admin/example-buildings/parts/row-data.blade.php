@@ -5,13 +5,10 @@
     $fvalKey = str_replace(['[', ']'], ['.', ''], $fname);
 
     // fallback value for old functions
-//    $getValueKey = $subStep->short.'.'.$step.'.'.$formFieldName ?? $step.'.'.$formFieldName;
 
     $getValueKey = $step.'.'.$subStep.'.'.$formFieldName;
 
     $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->getValue($getValueKey) : '';
-    if (!isset($rowData['label'])) {
-    }
 ?>
 
 <tr>

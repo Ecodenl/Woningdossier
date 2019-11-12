@@ -28,6 +28,7 @@ use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\WoodRotStatus;
 use App\Services\ExampleBuildingService;
+use function Couchbase\defaultDecoder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Arr;
@@ -151,6 +152,13 @@ class ExampleBuildingController extends Controller
         $cooperations = Cooperation::all();
 
         $contentStructure = $this->onlyApplicableInputs(ToolHelper::getStructure());
+
+//        general-data.building-characteristics.building_features.surface
+//        dd(
+//            $exampleBuilding->contents[0]->content['general-data']['building-characteristics']['building_features.surface']
+//            array_dot($exampleBuilding->contents[0]->content)['general-data.building-characteristics.building_features.surface']
+//        );
+
         return view('cooperation.admin.example-buildings.edit',
             compact(
                 'exampleBuilding', 'buildingTypes', 'cooperations', 'contentStructure'

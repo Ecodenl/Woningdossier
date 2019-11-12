@@ -22,7 +22,8 @@
                     <h2>{{$currentStep->name}}</h2>
                 @endif
                 <ul class="nav nav-tabs mt-20">
-                    @if($currentStep->hasSubSteps())
+
+                    @if(isset($currentStep) && $currentStep->hasSubSteps())
                         @foreach($cooperation->getSubStepsForStep($currentStep) as $subStep)
                             <li  class="@if($subStep->short == $currentSubStep->short) active @endif @if($building->hasCompleted($subStep)) completed @endif">
                                 <a href="{{route("cooperation.tool.{$currentStep->short}.{$subStep->short}.index")}}" >{{$subStep->name}}</a>
@@ -32,6 +33,7 @@
 
                     @if(isset($currentStep) && $currentStep->hasQuestionnaires())
                         @foreach($currentStep->questionnaires as $questionnaire)
+
                             @if($questionnaire->isActive())
                                 <li>
                                     <a href="#questionnaire-{{$questionnaire->id}}" data-toggle="tab">{{$questionnaire->name}}</a>
@@ -47,7 +49,7 @@
                     <div class="panel tab-pane active tab-pane panel-default" id="main-tab">
                         <div class="panel-heading">
                             <h3>
-                                {{$currentSubStep->name ?? $currentStep->name}}
+                                @yield('step_title', $currentSubStep->name ?? $currentStep->name ?? '')
                             </h3>
 
                             @if(!in_array(Route::currentRouteName(), ['cooperation.tool.index', 'cooperation.tool.my-plan.index']) && !\App\helpers\HoomdossierSession::isUserObserving())

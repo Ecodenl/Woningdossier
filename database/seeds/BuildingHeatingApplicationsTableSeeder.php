@@ -57,6 +57,7 @@ class BuildingHeatingApplicationsTableSeeder extends Seeder
             }
 
             \DB::table('building_heating_applications')->insert([
+                'name' => $uuid,
                 'short' => $buildingHeatingApplication['short'],
                 'calculate_value' => $buildingHeatingApplication['calculate_value'],
                 'order' => $buildingHeatingApplication['order'],

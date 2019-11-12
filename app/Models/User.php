@@ -6,6 +6,7 @@ use App\Helpers\HoomdossierSession;
 use App\NotificationSetting;
 use App\Traits\HasCooperationTrait;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Collection;
@@ -66,6 +67,80 @@ class User extends Model implements AuthorizableContract
     use Authorizable;
 
     protected $guard_name = 'web';
+
+
+    /**
+     * Return the intermediary table of the interests
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userInterests()
+    {
+        return $this->hasMany(UserInterest::class);
+    }
+
+    public function userInterestsForSpecificType($interestedInType, $interestedInId, InputSource $inputSource = null)
+    {
+        if ($inputSource instanceof InputSource) {
+            return $this->userInterests()
+                ->where('interested_in_type', $interestedInType)
+                ->where('interested_in_id', $interestedInId)
+                ->forInputSource($inputSource);
+        }
+        return $this->userInterests()
+            ->where('interested_in_type', $interestedInType)
+            ->where('interested_in_id', $interestedInId);
+    }
+
+    /**
+     * Method to check whether a user is interested in a step
+     *
+     * @param InputSource $inputSource
+     * @param $interestedInType
+     * @param $interestedInId
+     * @return bool
+     */
+    public function isInterestedInStep(InputSource $inputSource, $interestedInType, $interestedInId)
+    {
+        $noInterestIds = Interest::whereIn('calculate_value', [4, 5])->select('id')->get()->pluck('id')->toArray();
+
+        $userSelectedInterestedId = $this->user->userInterestsForSpecificType($interestedInType, $interestedInId)->first()->interest_id;
+
+        return !in_array($userSelectedInterestedId, $noInterestIds);
+    }
+    /**
+     * Return all the interest levels of a user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function interests()
+    {
+        return $this->hasManyThrough(Interest::class, UserInterest::class, 'user_id', 'id', 'id', 'interest_id');
+    }
+
+    /**
+     * Return all step interests
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function stepInterests()
+    {
+        return $this->morphedByMany(Step::class, 'interested_in', 'user_interests')
+            ->where('user_interests.input_source_id', HoomdossierSession::getInputSourceValue())
+            ->withPivot('interest_id', 'input_source_id');
+    }
+
+    /**
+     * Return all the measure application interests
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function measureApplicationInterest()
+    {
+        return $this->morphedByMany(MeasureApplication::class, 'interested_in', 'user_interests')
+            ->where('user_interests.input_source_id', HoomdossierSession::getInputSourceValue())
+            ->withPivot('interest_id', 'input_source_id');
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -209,7 +284,7 @@ class User extends Model implements AuthorizableContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function interests()
+    public function interestsv2()
     {
         return $this->hasMany(UserInterest::class);
     }
@@ -236,13 +311,13 @@ class User extends Model implements AuthorizableContract
     {
         if ($inputSource instanceof InputSource) {
             return $this
-                ->interests()
+                ->userInterests()
                 ->forInputSource($inputSource)
                 ->where('interested_in_type', $type)
                 ->where('interested_in_id', $interestedInId)->first();
         }
 
-        return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
+        return $this->userInterests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
     }
 
     public function complete(Step $step)

@@ -9,7 +9,7 @@
 
         <div id="intro">
             @include('cooperation.tool.includes.interested', [
-                'type' => 'element', 'buildingElements' => $buildingElements, 'buildingElement' => 'wall-insulation'
+                'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
             ])
             <div class="row">
                 <div class="col-sm-12">
@@ -335,11 +335,10 @@
 
             </div>
 
-
             @include('cooperation.tool.includes.comment', [
-                'translation' => 'wall-insulation.comment'
-            ])
-
+                 'columnName' => 'step_comments[comment]',
+                 'translation' => 'wall-insulation.comment'
+             ])
 
             <div class="row">
                 <div class="col-md-12">

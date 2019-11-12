@@ -264,7 +264,7 @@
                                         <select id="user_interest_element_{{ $element->id }}" class="form-control"
                                                 name="user_interest[element][{{ $element->id }}]">
                                             @foreach($interests as $interest)
-                                                <option @if($interest->id == old('user_interest.element.'. $element->id, \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->interests()->where('interested_in_type', 'element')->where('interested_in_id', $element->id), 'interest_id'))) selected="selected"
+                                                <option @if($interest->id == old('user_interest.element.'. $element->id, \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->userInterests()->where('interested_in_type', 'element')->where('interested_in_id', $element->id), 'interest_id'))) selected="selected"
                                                         @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
                                             @endforeach
                                         </select>
@@ -370,7 +370,7 @@
                                                     class="form-control"
                                                     name="user_interest[service][{{ $service->id }}]">
                                                 @foreach($interests as $interest)
-                                                    <option @if($interest->id == old('user_interest.service.'. $service->id, \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->interests()->where('interested_in_type', 'service')->where('interested_in_id', $service->id), 'interest_id'))) selected="selected"
+                                                    <option @if($interest->id == old('user_interest.service.'. $service->id, \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->userInterests()->where('interested_in_type', 'service')->where('interested_in_id', $service->id), 'interest_id'))) selected="selected"
                                                             @endif value="{{ $interest->id }}">{{ $interest->name }}</option>
                                                 @endforeach
                                             </select>

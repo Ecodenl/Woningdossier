@@ -2,44 +2,30 @@
 
 namespace App\Http\Controllers\Cooperation\Tool\GeneralData;
 
+use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Models\Element;
+use App\Helpers\StepHelper;
+use App\Http\Requests\Cooperation\Tool\GeneralData\InterestFormRequest;
 use App\Models\Interest;
 use App\Models\Motivation;
 use App\Models\Service;
 use App\Http\Controllers\Controller;
-use App\Models\UserInterest;
+use App\Models\Step;
+use App\Services\StepCommentService;
+use App\Services\UserInterestService;
 
 class InterestController extends Controller
 {
     public function index()
     {
         $building = HoomdossierSession::getBuilding(true);
-        $buildingOwner = $building->user;
+        $buildingOwner = $building->user->load('stepInterests');
 
-//        if ($buildingOwner->motivations()->count() > 0) {
-        $motivations = Motivation::leftJoin('user_motivations', 'motivations.id', '=', 'user_motivations.motivation_id')
-            ->select('motivations.*')
-            ->where('user_motivations.user_id', $buildingOwner->id)
-            ->orderBy('user_motivations.order')->get();
-//        } else {
-//            $motivations = Motivation::orderBy('order')->get();
-//        }
+        $motivations = Motivation::orderBy('order')->get();
 
         $userMotivations = $buildingOwner->motivations()->orderBy('order')->get();
         $userEnergyHabitsForMe = $buildingOwner->energyHabit()->forMe()->get();
-//        $elements = Element::whereIn('short', [
-//            'sleeping-rooms-windows', 'living-rooms-windows',
-//            'wall-insulation', 'floor-insulation', 'roof-insulation',
-//        ])->orderBy('order')->get();
-
-//        $elementInterests = $buildingOwner
-//            ->interests()
-//            ->where('interested_in_type', 'element')
-//            ->whereIn('interested_in_id', $elements->pluck('id')->toArray())
-//            ->get();
-//        dd($elementInterests);
-
 
         $services = Service::orderBy('order')->get();
 
@@ -51,8 +37,39 @@ class InterestController extends Controller
         ));
     }
 
-    public function store()
+    public function store(InterestFormRequest $request)
     {
+        $building = HoomdossierSession::getBuilding(true);
+        $buildingOwner = $building->user;
+        $inputSource = HoomdossierSession::getInputSource(true);
+        $step = Step::findByShort('interest');
 
+        $userInterests = $request->input('user_interests');
+
+        foreach ($userInterests as $interestInId => $userInterest) {
+            UserInterestService::save($buildingOwner, $inputSource, Step::class, $interestInId , $userInterest['interest_id']);
+        }
+
+        $buildingOwner->motivations()->delete();
+        foreach ($request->input('user_motivations.id') as $order => $moviationId)
+            $buildingOwner->motivations()->create([
+                'motivation_id' => $moviationId,
+                'order' => $order
+            ]);
+        $buildingOwner->energyHabit()->updateOrCreate([], $request->input('user_energy_habits'));
+
+        StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
+
+        StepHelper::complete($step, $building, $inputSource);
+        StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
+
+        $nextStep = StepHelper::getNextStep($building, $inputSource, $step);
+        $url = $nextStep['url'];
+
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#' . $nextStep['tab_id'];
+        }
+
+        return redirect($url);
     }
 }

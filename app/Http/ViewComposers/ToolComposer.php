@@ -68,7 +68,10 @@ class ToolComposer
                 $toolUrl = explode('/', request()->getRequestUri());
                 $currentSubStep = isset($toolUrl[3]) ? Step::where('slug', $toolUrl[3])->first() : null;
 
-                $this->currentStep = Step::where('slug', $toolUrl[2])->first();
+                $this->currentStep = Step::where('slug', $toolUrl[2])
+                    ->with(['questionnaires' => function ($query) {
+                        $query->orderBy('order');
+                    }])->first();
                 $this->currentSubStep = $currentSubStep;
             }
 

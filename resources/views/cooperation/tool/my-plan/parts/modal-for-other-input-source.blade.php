@@ -17,8 +17,8 @@
     <h1>@lang('my-plan.modal-for-other-input-source.title', ['input_source_name' => strtolower($inputSourceName)])</h1>
     <p>@lang('my-plan.modal-for-other-input-source.text', ['input_source_name' => strtolower($inputSourceName)])</p>
     <hr>
-    @foreach($commentsForInputSource  as $stepSlug => $commentForInputSource)
-        <h4>{{\App\Models\Step::where('slug', $stepSlug)->first()->name}}</h4>
+    @foreach($commentsForInputSource  as $stepShort => $commentForInputSource)
+        <h4>{{\App\Models\Step::findByShort($stepShort)->name}}</h4>
             @foreach($commentForInputSource as $comment)
                 <p>{{$comment}}</p>
             @endforeach

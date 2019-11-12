@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Http\ViewComposers\AdminComposer;
 use App\Http\ViewComposers\CooperationComposer;
-use App\Http\ViewComposers\MyAccountComposer;
 use App\Http\ViewComposers\ToolComposer;
 use App\Models\Account;
 use App\Models\Building;
@@ -25,8 +24,8 @@ use App\Observers\TranslationObserver;
 use App\Observers\UserActionPlanAdviceObserver;
 use App\Observers\UserObserver;
 use Illuminate\Auth\SessionGuard;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rule;
 
 class WoningdossierServiceProvider extends ServiceProvider
 {
@@ -54,6 +53,13 @@ class WoningdossierServiceProvider extends ServiceProvider
 
         SessionGuard::macro('account', function () {
             return auth()->user();
+        });
+
+        // new laravel versions have a requiredIf method in which we can pass a condition closure etc.
+        // https://github.com/laravel/framework/blob/5.8/src/Illuminate/Validation/Rules/RequiredIf.php
+        // for now just easy true false.
+        Rule::macro('requiredIf', function ($shouldPass) {
+            return $shouldPass ? 'required' : '';
         });
     }
 

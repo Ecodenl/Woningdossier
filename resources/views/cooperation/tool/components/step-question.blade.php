@@ -25,12 +25,12 @@
 <div class="form-group add-space{{ $errors->has($name) ? ' has-error' : '' }}" style="{{$labelStyling}}">
     <label for="{{ $id }}" class="control-label {{$labelClass}}" style="display: inline; ">
         <?php // show help icon? ?>
-        @if(\App\Helpers\Translation::hasTranslation($translation . '.help'))
+        @if(isset($translation) && \App\Helpers\Translation::hasTranslation($translation . '.help'))
             <i data-target="#{{ $id }}-info"
                class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                aria-expanded="false"></i>
         @endif
-        {{\App\Helpers\Translation::translate($translation . '.title', $translationReplace)}}
+        {{isset($translation) ? \App\Helpers\Translation::translate($translation . '.title', $translationReplace) : ''}}
         @if($required)
             <span>*</span>
         @endif
@@ -39,10 +39,10 @@
     {{ $slot }}
 
     <?php // show include modal for help icon? ?>
-    @if(\App\Helpers\Translation::hasTranslation($translation . '.help'))
-    @component('cooperation.tool.components.help-modal', ['id' => $id . "-info"])
-        {!!  \App\Helpers\Translation::translate($translation . '.help') !!}
-    @endcomponent
+    @if(isset($translation) && \App\Helpers\Translation::hasTranslation($translation . '.help'))
+        @component('cooperation.tool.components.help-modal', ['id' => $id . "-info"])
+            {!!  \App\Helpers\Translation::translate($translation . '.help') !!}
+        @endcomponent
     @endif
 
 	<?php // show error? ?>

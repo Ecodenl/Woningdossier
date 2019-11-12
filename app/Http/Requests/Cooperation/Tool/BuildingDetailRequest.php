@@ -24,11 +24,7 @@ class BuildingDetailRequest extends FormRequest
      */
     public function rules()
     {
-        $max = Carbon::now()->year;
 
-        return [
-            'building_type_id' => 'required|exists:building_types,id',
-            'build_year' => 'required|numeric|between:1000,'.$max,
-        ];
+
     }
 }

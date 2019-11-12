@@ -27,6 +27,8 @@ use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
 use App\Services\ModelService;
+use App\Services\StepCommentService;
+use App\Services\UserInterestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -99,31 +101,15 @@ class InsulatedGlazingController extends Controller
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
                 }
                 // get interests for the measure
-                $measureInterestId = Hoomdossier::getMostCredibleValue($buildingOwner->interests()
-                    ->where('interested_in_type', 'measure_application')
-                    ->where('interested_in_id', $measureApplication->id), 'interest_id');
+                $measureInterestId = Hoomdossier::getMostCredibleValue(
+                    $buildingOwner->userInterestsForSpecificType(MeasureApplication::class, $measureApplication->id), 'interest_id'
+                );
 
-                if (! empty($measureInterestId)) {
-                    // We only have to check on the interest ID, so we don't put
-                    // full objects in the array
-                    $userInterests[$measureApplication->id] = $measureInterestId;
-                }
+                $userInterests[$measureApplication->id] = $measureInterestId;
 
                 $measureApplications[] = $measureApplication;
             }
         }
-
-//        $inputValues = $woodElements;
-//
-//        $x = $building;
-//        $z = $building->buildingElements()->forMe();
-//
-//        foreach ($inputValues->values()->orderBy('order')->get() as $i => $inputValue) {
-//            // returned 1 instance 2 null
-//            dump($z->where('element_id', $inputValues->id)->where('element_value_id', $inputValue->id)->first());
-//            // returned 3 instances 0 null
-//            dump($x->buildingElements()->forMe()->where('element_id', $inputValues->id)->where('element_value_id', $inputValue->id)->first());
-//        }
 
         $myBuildingElements = BuildingElement::forMe()->get();
         $userInterestsForMe = UserInterest::forMe()->where('interested_in_type', 'measure_application')->get();
@@ -201,9 +187,17 @@ class InsulatedGlazingController extends Controller
     public function store(InsulatedGlazingFormRequest $request)
     {
         $building = HoomdossierSession::getBuilding(true);
+        $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
         $buildingId = $building->id;
-        $inputSourceId = HoomdossierSession::getInputSource();
+        $inputSourceId = $inputSource->id;
+
+        $userInterests = $request->input('user_interests');
+        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+
+        $stepComments = $request->input('step_comments');
+        StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
+
 
         $buildingInsulatedGlazings = $request->input('building_insulated_glazings', '');
 
@@ -231,7 +225,6 @@ class InsulatedGlazingController extends Controller
                     'building_heating_id' => $buildingHeatingId,
                     'm2' => $m2,
                     'windows' => $windows,
-                    'extra' => ['comment' => $request->input('comment', '')],
                 ]
             );
             // We'll create the user interests for the measures or update it

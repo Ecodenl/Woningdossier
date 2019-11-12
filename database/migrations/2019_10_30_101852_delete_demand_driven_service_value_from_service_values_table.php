@@ -16,10 +16,12 @@ class DeleteDemandDrivenServiceValueFromServiceValuesTable extends Migration
         $ventilationServiceValue = DB::table('services')
             ->where('short', 'house-ventilation')->first();
 
-        DB::table('service_values')
-            ->where('service_id', $ventilationServiceValue->id)
-            ->where('calculate_value', 5)
-            ->delete();
+        if ($ventilationServiceValue instanceof stdClass) {
+            DB::table('service_values')
+                ->where('service_id', $ventilationServiceValue->id)
+                ->where('calculate_value', 5)
+               ->delete();
+        }
     }
 
     /**

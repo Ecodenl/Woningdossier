@@ -19,6 +19,8 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
+use App\Services\StepCommentService;
+use App\Services\UserInterestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -101,7 +103,14 @@ class FloorInsulationController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $buildingId = $building->id;
-        $inputSourceId = HoomdossierSession::getInputSource();
+        $inputSource = HoomdossierSession::getInputSource(true);
+        $inputSourceId = $inputSource->id;
+
+        $userInterests = $request->input('user_interests');
+        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+
+        $stepComments = $request->input('step_comments');
+        StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         // Get the value's from the input's
         $elements = $request->input('element', '');
@@ -119,16 +128,12 @@ class FloorInsulationController extends Controller
             );
         }
 
-        $interests = $request->input('interest', '');
-        UserInterest::saveUserInterests($user, $interests);
-
         $buildingElements = $request->input('building_elements', '');
         $buildingElementId = array_keys($buildingElements)[1];
 
         $crawlspaceHasAccess = isset($buildingElements[$buildingElementId]['extra']) ? $buildingElements[$buildingElementId]['extra'] : '';
         $hasCrawlspace = isset($buildingElements['crawlspace']) ? $buildingElements['crawlspace'] : '';
         $heightCrawlspace = isset($buildingElements[$buildingElementId]['element_value_id']) ? $buildingElements[$buildingElementId]['element_value_id'] : '';
-        $comment = $request->input('comment', '');
 
         BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
@@ -141,7 +146,6 @@ class FloorInsulationController extends Controller
                 'extra' => [
                     'has_crawlspace' => $hasCrawlspace,
                     'access' => $crawlspaceHasAccess,
-                    'comment' => $comment,
                 ],
             ]
         );

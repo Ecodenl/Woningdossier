@@ -185,6 +185,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         });
                         Route::group(['prefix' => 'interesse', 'as' => 'interest.'], function () {
                             Route::get('', 'InterestController@index')->name('index');
+                            Route::post('', 'InterestController@store')->name('store');
                         });
                     });
                 });
@@ -254,8 +255,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                 Route::group(['middleware' => ['current-role:cooperation-admin|super-admin']], function () {
                     Route::resource('example-buildings', 'ExampleBuildingController');
-                    Route::get('example-buildings/{id}/copy',
-                        'ExampleBuildingController@copy')->name('example-buildings.copy');
+                    Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
                 });
 
                 /* Section that a coach, coordinator and cooperation-admin can access */

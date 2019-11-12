@@ -1,7 +1,7 @@
 <ul class="progress-list list-inline">
-<?php
-    $building = \App\Helpers\HoomdossierSession::getBuilding(true);
-
+    <?php
+        $building = \App\Helpers\HoomdossierSession::getBuilding(true);
+        $currentStepIsSubStep = $currentSubStep instanceof \App\Models\Step;
         // we get the building-detail and general-data
         $generalDataStep = $steps->where('slug', 'general-data')->first();
 
@@ -14,8 +14,12 @@
     --}}
     @foreach($steps as $step)
         <?php
-            $userDoesNotHaveInterestInStep = !\App\Helpers\StepHelper::hasInterestInStep($building, $inputSource, $step);
-            $routeIsCurrentRoute = Route::is('cooperation.tool.' . $step->slug . '.index');
+            $userDoesNotHaveInterestInStep = false;
+            if ($step->short != 'general-data') {
+                $userDoesNotHaveInterestInStep = !\App\Helpers\StepHelper::hasInterestInStep($buildingOwner, get_class($step), $step->id);
+            }
+            $currentRouteName = $currentStepIsSubStep ? 'cooperation.tool.'.$step->short.'.'.$currentSubStep->short.'.index' : 'cooperation.tool.'.$step->short.'.index';
+            $routeIsCurrentRoute = $currentRouteName == Route::getCurrentRoute()->getName();
         ?>
         {{-- There is no interest for the general-data so we skip that --}}
         <li class="list-inline-item @if($routeIsCurrentRoute) active @elseif($building->hasCompleted($step)) done @endif @if($step->short != 'general-data' && !$routeIsCurrentRoute && $userDoesNotHaveInterestInStep) not-available @endif">
@@ -24,6 +28,7 @@
             </a>
         </li>
     @endforeach
+
     <li class="list-inline-item">
         <a href="{{ route('cooperation.tool.my-plan.index', ['cooperation' => $cooperation]) }}">
             <img src="{{ asset('images/icons/my-plan.png') }}" class="img-circle" />

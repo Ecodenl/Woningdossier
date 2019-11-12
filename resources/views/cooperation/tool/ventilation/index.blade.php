@@ -47,7 +47,7 @@
                                            name="building_ventilations[how][]"
                                            value="{{ $howKey }}"
                                            @if(empty(old()) &&
-                                            in_array($howKey, old('building_ventilations.how',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations()->where('how', $howKey), 'how', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->buildingVentilations())) ])))
+                                            in_array($howKey, old('building_ventilations.how', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'how'))))
                                            checked="checked"
                                             @endif
                                     >
@@ -102,7 +102,7 @@
                                            name="building_ventilations[living_situation][]"
                                            value="{{ $lsKey }}"
                                            @if(empty(old()) &&
-                                            in_array($lsKey, old('building_ventilations.living_situation',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations()->where('living_situation',$lsKey), 'living_situation', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->buildingVentilations())) ])))
+                                            in_array($lsKey, old('building_ventilations.living_situation',\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'living_situation'))))
                                            checked="checked"
                                             @endif
                                     >
@@ -159,7 +159,7 @@
                                            name="building_ventilations[usage][]"
                                            value="{{ $uKey }}"
                                            @if(empty(old()) &&
-                                            in_array($uKey, old('building_ventilations.usage',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations()->where('usage',$uKey), 'usage', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->buildingVentilations())) ])))
+                                            in_array($uKey, old('building_ventilations.usage', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'usage'))))
                                            checked="checked"
                                             @endif
                                     >

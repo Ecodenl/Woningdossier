@@ -263,11 +263,16 @@
 
             $("input[type=checkbox]").change(function(){
 
-                // only do this when building_ventilations[how][] 'none' is clicked to be enabled!
-                // unset all other values for building_ventilations[how][]
-                // using .indexOf instead of .includes because of Internet Exploder compatibility
-                if (this.value === 'none' && this.checked && this.name.indexOf('[how]') !== -1){
-                    $(this).parent().parent().parent().parent().find("input[type=checkbox]").not(this).prop('checked', false);
+                if(this.name.indexOf('[how]') !== -1) {
+                    // only do this when building_ventilations[how][] 'none' is clicked to be enabled!
+                    // unset all other values for building_ventilations[how][]
+                    // using .indexOf instead of .includes because of Internet Exploder compatibility
+                    if (this.value === 'none' && this.checked) {
+                        $(this).parent().parent().parent().parent().find("input[type=checkbox]").not(this).prop('checked', false);
+                    }
+                    else {
+                        $("input[type=checkbox][value=none]").prop('checked', false);
+                    }
                 }
 
                 checkAlerts();

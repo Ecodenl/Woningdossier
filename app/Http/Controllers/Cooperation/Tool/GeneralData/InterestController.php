@@ -17,6 +17,7 @@ use App\Models\Step;
 use App\Models\UserInterest;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
+use Illuminate\Support\Arr;
 
 class InterestController extends Controller
 {

@@ -28,6 +28,9 @@ use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\WoodRotStatus;
 use App\Services\ExampleBuildingService;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 class ExampleBuildingController extends Controller
@@ -40,7 +43,7 @@ class ExampleBuildingController extends Controller
     public function index()
     {
         $exampleBuildingsQuery = ExampleBuilding::orderBy('cooperation_id', 'asc')
-                                                ->orderBy('order', 'asc');
+            ->orderBy('order', 'asc');
 
         if (false === stristr(HoomdossierSession::currentRole(), 'super')) {
             $exampleBuildingsQuery->forMyCooperation();
@@ -89,7 +92,7 @@ class ExampleBuildingController extends Controller
         $exampleBuilding->createTranslations('name', $translations);
 
         $exampleBuilding->buildingType()->associate($buildingType);
-        if (! is_null($cooperation)) {
+        if (!is_null($cooperation)) {
             $exampleBuilding->cooperation()->associate($cooperation);
         }
         $exampleBuilding->is_default = $request->get('is_default', false);
@@ -100,7 +103,7 @@ class ExampleBuildingController extends Controller
 
         foreach ($contents as $cid => $data) {
             $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
-            if (! is_numeric($cid) && 'new' == $cid) {
+            if (!is_numeric($cid) && 'new' == $cid) {
                 if (1 == $request->get('new', 0)) {
                     // addition
                     $content = new ExampleBuildingContent($data);
@@ -140,12 +143,14 @@ class ExampleBuildingController extends Controller
     public function edit(Cooperation $cooperation, $id)
     {
         /** @var ExampleBuilding $exampleBuilding */
-        $exampleBuilding = ExampleBuilding::findOrFail($id);
+        $exampleBuilding = ExampleBuilding::with([
+            'contents' => function (Relation $query) {
+                $query->orderBy('build_year');
+            }])->findOrFail($id);
         $buildingTypes = BuildingType::all();
         $cooperations = Cooperation::all();
 
         $contentStructure = $this->onlyApplicableInputs(ToolHelper::getStructure());
-
         return view('cooperation.admin.example-buildings.edit',
             compact(
                 'exampleBuilding', 'buildingTypes', 'cooperations', 'contentStructure'
@@ -165,12 +170,17 @@ class ExampleBuildingController extends Controller
      */
     private function onlyApplicableInputs($contentStructure)
     {
-        // filter out the user interest from the measure pages
-        foreach ($contentStructure as $stepShort => $structureWithinStep) {
-            $contentStructure[$stepShort] = array_filter($structureWithinStep, function ($key) {
-                return stristr($key, 'user_interest') === false;
-            }, ARRAY_FILTER_USE_KEY);
+        $filterOutUserInterests = function ($key) {
+            return stristr($key, 'user_interests') === false;
+        };
+
+        foreach (Arr::except($contentStructure, 'general-data') as $stepShort => $structureWithinStep) {
+            $contentStructure[$stepShort]['-'] = array_filter($structureWithinStep['-'], $filterOutUserInterests, ARRAY_FILTER_USE_KEY);
         }
+        unset(
+            $contentStructure['general-data']['building-characteristics']['building_features.building_type_id'],
+            $contentStructure['general-data']['building-characteristics']['building_features.build_year']
+        );
 
         // filter out interest stuff from the interest page
         $contentStructure['general-data']['interest'] = array_filter($contentStructure['general-data']['interest'], function ($key) {
@@ -179,8 +189,6 @@ class ExampleBuildingController extends Controller
 
         return $contentStructure;
     }
-
-
 
 
     protected function createOptions(Collection $collection, $value = 'name', $id = 'id', $nullPlaceholder = true)
@@ -200,7 +208,7 @@ class ExampleBuildingController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int                      $id
+     * @param int $id
      * @param  $cooperation
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
@@ -210,18 +218,18 @@ class ExampleBuildingController extends Controller
         /** @var ExampleBuilding $exampleBuilding */
         $exampleBuilding = ExampleBuilding::findOrFail($id);
 
-        $buildingType = BuildingType::findOrFail($request->get('building_type_id'));
+        $buildingType = BuildingType::findOrFail($request->input('building_type_id'));
         $cooperation = Cooperation::find($request->get('cooperation_id'));
 
         $translations = $request->input('name', []);
         foreach (config('hoomdossier.supported_locales') as $locale) {
-            if (isset($translations[$locale]) && ! empty($translations[$locale])) {
+            if (isset($translations[$locale]) && !empty($translations[$locale])) {
                 $exampleBuilding->updateTranslation('name', $translations[$locale], $locale);
             }
         }
 
         $exampleBuilding->buildingType()->associate($buildingType);
-        if (! is_null($cooperation)) {
+        if (!is_null($cooperation)) {
             $exampleBuilding->cooperation()->associate($cooperation);
         }
         $exampleBuilding->is_default = $request->get('is_default', false);
@@ -234,7 +242,7 @@ class ExampleBuildingController extends Controller
             $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
 
             $content = null;
-            if (! is_numeric($cid) && 'new' == $cid) {
+            if (!is_numeric($cid) && 'new' == $cid) {
                 if (1 == $request->get('new', 0)) {
                     // addition
                     $content = new ExampleBuildingContent($data);
@@ -250,6 +258,7 @@ class ExampleBuildingController extends Controller
         }
         $exampleBuilding->save();
 
+        dd($exampleBuilding->contents[0]->content);
         return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $id])->with('success', 'Example building updated');
     }
 
@@ -258,7 +267,7 @@ class ExampleBuildingController extends Controller
         $array = [];
         foreach ($content as $key => $values) {
             foreach ($values as $dottedKey => $value) {
-                array_set($array, $key.'.'.$dottedKey, $value);
+                array_set($array, $key . '.' . $dottedKey, $value);
             }
         }
 
@@ -290,7 +299,7 @@ class ExampleBuildingController extends Controller
      * Copies over a specific example building configuration (content / structure).
      *
      * @param Cooperation $cooperation
-     * @param int         $id
+     * @param int $id
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -302,7 +311,7 @@ class ExampleBuildingController extends Controller
         $translations = $exampleBuilding->getTranslations('name');
         $names = [];
         foreach ($translations as $translation) {
-            $names[$translation->language] = $translation->translation.' (copy)';
+            $names[$translation->language] = $translation->translation . ' (copy)';
         }
 
         $newEB = new ExampleBuilding($exampleBuilding->toArray());
@@ -314,8 +323,8 @@ class ExampleBuildingController extends Controller
         foreach ($exampleBuildingContents as $exampleBuildingContent) {
             $newEBC = new ExampleBuildingContent($exampleBuildingContent->toArray());
             $newEBC->exampleBuilding()
-                   ->associate($newEB)
-                   ->save();
+                ->associate($newEB)
+                ->save();
         }
 
         return redirect()->route('cooperation.admin.example-buildings.index')->with('success', 'Example building copied');

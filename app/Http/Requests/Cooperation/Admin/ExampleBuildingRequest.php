@@ -22,10 +22,9 @@ class ExampleBuildingRequest extends FormRequest
     public function prepareForValidation()
     {
         // get the contents
-        dd($this->all());
         $contents = $this->input('content', []);
         $undotedContents = [];
-dd($contents);
+
         foreach ($contents as $cid => $data) {
             // undot the array and set it.
             if (array_key_exists('content', $data)) {
@@ -67,7 +66,6 @@ dd($contents);
     {
         $array = [];
 
-        dd($content);
         foreach ($content as $key => $values) {
             foreach ($values as $dottedKey => $value) {
                 array_set($array, $key.'.'.$dottedKey, $value);

@@ -283,7 +283,7 @@ class ToolHelper
                     ],
 
                     'user_energy_habits.thermostat_low' => [
-                        'label' => __('cooperation/tool/general-data/usage.index.heating-habits.thermostat-high.title'),
+                        'label' => __('cooperation/tool/general-data/usage.index.heating-habits.thermostat-low.title'),
                         'type' => 'text',
                         'unit' => __('general.unit.degrees.title'),
                     ],
@@ -295,7 +295,7 @@ class ToolHelper
                     'user_energy_habits.heating_first_floor' => [
                         'label' => __('cooperation/tool/general-data/usage.index.heating-habits.heating-first-floor.title'),
                         'type' => 'select',
-                        'options' => static ::createOptions($buildingHeatings),
+                        'options' => static::createOptions($buildingHeatings),
                     ],
 
                     'user_energy_habits.heating_second_floor' => [
@@ -319,313 +319,327 @@ class ToolHelper
             ],
 
             'wall-insulation' => [
-                'user_interests.element.' . $wallInsulation->id => [
-                    //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                    'label' => $wallInsulation->name . ': ' . __('general.interested-in-improvement.title'),
-                    'type' => 'select',
-                    'options' => $interestOptions,
-                ],
-                'building_features.cavity_wall' => [
-                    'label' => __('wall-insulation.intro.has-cavity-wall.title'),
-                    'type' => 'select',
-                    'options' => [
-                        0 => __('woningdossier.cooperation.radiobutton.unknown'),
-                        1 => __('woningdossier.cooperation.radiobutton.yes'),
-                        2 => __('woningdossier.cooperation.radiobutton.no'),
+                '-' => [
+                    'user_interests.element.' . $wallInsulation->id => [
+                        //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
+                        'label' => $wallInsulation->name . ': ' . __('general.interested-in-improvement.title'),
+                        'type' => 'select',
+                        'options' => $interestOptions,
                     ],
-                ],
-                'building_features.facade_plastered_painted' => [
-                    'label' => __('wall-insulation.intro.is-facade-plastered-painted.title'),
-                    'type' => 'select',
-                    'options' => [
-                        1 => __('woningdossier.cooperation.radiobutton.yes'),
-                        2 => __('woningdossier.cooperation.radiobutton.no'),
-                        3 => __('woningdossier.cooperation.radiobutton.mostly'),
+                    'building_features.cavity_wall' => [
+                        'label' => __('wall-insulation.intro.has-cavity-wall.title'),
+                        'type' => 'select',
+                        'options' => [
+                            0 => __('woningdossier.cooperation.radiobutton.unknown'),
+                            1 => __('woningdossier.cooperation.radiobutton.yes'),
+                            2 => __('woningdossier.cooperation.radiobutton.no'),
+                        ],
                     ],
-                ],
-                'building_features.facade_plastered_surface_id' => [
-                    'label' => __('wall-insulation.intro.surface-paintwork.title'),
-                    'type' => 'select',
-                    'options' => static::createOptions($facadePlasteredSurfaces),
-                ],
-                'building_features.facade_damaged_paintwork_id' => [
-                    'label' => __('wall-insulation.intro.damage-paintwork.title'),
-                    'type' => 'select',
-                    'options' => static::createOptions($facadeDamages),
-                    'relationship' => 'damagedPaintwork',
-                ],
-                'building_features.wall_joints' => [
-                    'label' => __('wall-insulation.optional.flushing.title'),
-                    'type' => 'select',
-                    'options' => static::createOptions($surfaces),
-                ],
-                'building_features.contaminated_wall_joints' => [
-                    'label' => __('wall-insulation.optional.is-facade-dirty.title'),
-                    'type' => 'select',
-                    'options' => static::createOptions($surfaces),
-                ],
-                'building_features.wall_surface' => [
-                    'label' => __('wall-insulation.optional.facade-surface.title'),
-                    'type' => 'text',
-                    'unit' => __('general.unit.square-meters.title'),
-                ],
-                'building_features.insulation_wall_surface' => [
-                    'label' => __('wall-insulation.optional.insulated-surface.title'),
-                    'type' => 'text',
-                    'unit' => __('general.unit.square-meters.title'),
-                ],
-
-                'calculations' => [
-                    'savings_gas' => __('wall-insulation.costs.gas.title'),
-                    'savings_co2' => __('wall-insulation.costs.co2.title'),
-                    'savings_money' => __('general.costs.savings-in-euro.title'),
-                    'cost_indication' => __('general.costs.indicative-costs.title'),
-                    'interest_comparable' => __('general.costs.comparable-rent.title'),
-
-                    'repair_joint' => [
-                        'costs' => __('wall-insulation.taking-into-account.repair-joint.title'),
-                        'year' => __('wall-insulation.taking-into-account.repair-joint.year.title'),
+                    'building_features.facade_plastered_painted' => [
+                        'label' => __('wall-insulation.intro.is-facade-plastered-painted.title'),
+                        'type' => 'select',
+                        'options' => [
+                            1 => __('woningdossier.cooperation.radiobutton.yes'),
+                            2 => __('woningdossier.cooperation.radiobutton.no'),
+                            3 => __('woningdossier.cooperation.radiobutton.mostly'),
+                        ],
                     ],
-                    'clean_brickwork' => [
-                        'costs' => __('wall-insulation.taking-into-account.clean-brickwork.title'),
-                        'year' => __('wall-insulation.taking-into-account.clean-brickwork.year.title'),
+                    'building_features.facade_plastered_surface_id' => [
+                        'label' => __('wall-insulation.intro.surface-paintwork.title'),
+                        'type' => 'select',
+                        'options' => static::createOptions($facadePlasteredSurfaces),
+                    ],
+                    'building_features.facade_damaged_paintwork_id' => [
+                        'label' => __('wall-insulation.intro.damage-paintwork.title'),
+                        'type' => 'select',
+                        'options' => static::createOptions($facadeDamages),
+                        'relationship' => 'damagedPaintwork',
+                    ],
+                    'building_features.wall_joints' => [
+                        'label' => __('wall-insulation.optional.flushing.title'),
+                        'type' => 'select',
+                        'options' => static::createOptions($surfaces),
+                    ],
+                    'building_features.contaminated_wall_joints' => [
+                        'label' => __('wall-insulation.optional.is-facade-dirty.title'),
+                        'type' => 'select',
+                        'options' => static::createOptions($surfaces),
+                    ],
+                    'building_features.wall_surface' => [
+                        'label' => __('wall-insulation.optional.facade-surface.title'),
+                        'type' => 'text',
+                        'unit' => __('general.unit.square-meters.title'),
+                    ],
+                    'building_features.insulation_wall_surface' => [
+                        'label' => __('wall-insulation.optional.insulated-surface.title'),
+                        'type' => 'text',
+                        'unit' => __('general.unit.square-meters.title'),
                     ],
 
-                    'impregnate_wall' => [
-                        'costs' => __('wall-insulation.taking-into-account.impregnate-wall.title'),
-                        'year' => __('wall-insulation.taking-into-account.impregnate-wall.year.title'),
-                    ],
+                    'calculations' => [
+                        'savings_gas' => __('wall-insulation.costs.gas.title'),
+                        'savings_co2' => __('wall-insulation.costs.co2.title'),
+                        'savings_money' => __('general.costs.savings-in-euro.title'),
+                        'cost_indication' => __('general.costs.indicative-costs.title'),
+                        'interest_comparable' => __('general.costs.comparable-rent.title'),
 
-                    'paint_wall' => [
-                        'costs' => __('wall-insulation.taking-into-account.wall-painting.title'),
-                        'year' => __('wall-insulation.taking-into-account.wall-painting.year.title'),
+                        'repair_joint' => [
+                            'costs' => __('wall-insulation.taking-into-account.repair-joint.title'),
+                            'year' => __('wall-insulation.taking-into-account.repair-joint.year.title'),
+                        ],
+                        'clean_brickwork' => [
+                            'costs' => __('wall-insulation.taking-into-account.clean-brickwork.title'),
+                            'year' => __('wall-insulation.taking-into-account.clean-brickwork.year.title'),
+                        ],
+
+                        'impregnate_wall' => [
+                            'costs' => __('wall-insulation.taking-into-account.impregnate-wall.title'),
+                            'year' => __('wall-insulation.taking-into-account.impregnate-wall.year.title'),
+                        ],
+
+                        'paint_wall' => [
+                            'costs' => __('wall-insulation.taking-into-account.wall-painting.title'),
+                            'year' => __('wall-insulation.taking-into-account.wall-painting.year.title'),
+                        ],
                     ],
-                ],
+                ]
             ],
 
             'insulated-glazing' => [
-                'element.' . $crackSealing->id => [
-                    'label' => __('insulated-glazing.moving-parts-quality.title'),
-                    'type' => 'select',
-                    'options' => static::createOptions($crackSealing->values()->orderBy('order')->get(), 'value'),
-                ],
-                'building_features.window_surface' => [
-                    'label' => __('insulated-glazing.windows-surface.title'),
-                    'type' => 'text',
-                    'unit' => __('general.unit.square-meters.title'),
-                ],
-                'element.' . $frames->id => [
-                    'label' => __('insulated-glazing.paint-work.which-frames.title'),
-                    'type' => 'select',
-                    'options' => static::createOptions($frames->values()->orderBy('order')->get(), 'value'),
-                ],
-                'element.' . $woodElements->id => [
-                    'label' => __('insulated-glazing.paint-work.other-wood-elements.title'),
-                    'type' => 'multiselect',
-                    'options' => static::createOptions($woodElements->values()->orderBy('order')->get(), 'value'),
-                ],
-                'building_paintwork_statuses.last_painted_year' => [
-                    'label' => __('insulated-glazing.paint-work.last-paintjob.title'),
-                    'type' => 'text',
-                    'unit' => __('general.unit.year.title'),
-                ],
-                'building_paintwork_statuses.paintwork_status_id' => [
-                    'label' => __('insulated-glazing.paint-work.paint-damage-visible.title'),
-                    'type' => 'select',
-                    'options' => static::createOptions($paintworkStatuses),
-                    'relationship' => 'paintworkStatus',
-                ],
-                'building_paintwork_statuses.wood_rot_status_id' => [
-                    'label' => __('insulated-glazing.paint-work.wood-rot-visible.title'),
-                    'type' => 'select',
-                    'options' => static::createOptions($woodRotStatuses),
-                ],
+                '-' => [
+                    'element.' . $crackSealing->id => [
+                        'label' => __('insulated-glazing.moving-parts-quality.title'),
+                        'type' => 'select',
+                        'options' => static::createOptions($crackSealing->values()->orderBy('order')->get(), 'value'),
+                    ],
+                    'building_features.window_surface' => [
+                        'label' => __('insulated-glazing.windows-surface.title'),
+                        'type' => 'text',
+                        'unit' => __('general.unit.square-meters.title'),
+                    ],
+                    'element.' . $frames->id => [
+                        'label' => __('insulated-glazing.paint-work.which-frames.title'),
+                        'type' => 'select',
+                        'options' => static::createOptions($frames->values()->orderBy('order')->get(), 'value'),
+                    ],
+                    'element.' . $woodElements->id => [
+                        'label' => __('insulated-glazing.paint-work.other-wood-elements.title'),
+                        'type' => 'multiselect',
+                        'options' => static::createOptions($woodElements->values()->orderBy('order')->get(), 'value'),
+                    ],
+                    'building_paintwork_statuses.last_painted_year' => [
+                        'label' => __('insulated-glazing.paint-work.last-paintjob.title'),
+                        'type' => 'text',
+                        'unit' => __('general.unit.year.title'),
+                    ],
+                    'building_paintwork_statuses.paintwork_status_id' => [
+                        'label' => __('insulated-glazing.paint-work.paint-damage-visible.title'),
+                        'type' => 'select',
+                        'options' => static::createOptions($paintworkStatuses),
+                        'relationship' => 'paintworkStatus',
+                    ],
+                    'building_paintwork_statuses.wood_rot_status_id' => [
+                        'label' => __('insulated-glazing.paint-work.wood-rot-visible.title'),
+                        'type' => 'select',
+                        'options' => static::createOptions($woodRotStatuses),
+                    ],
+                ]
             ],
 
             'floor-insulation' => [
-                'user_interests.element.' . $floorInsulation->id => [
-                    //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                    'label' => $floorInsulation->name . ': ' . __('general.interested-in-improvement.title'),
-                    'type' => 'select',
-                    'options' => $interestOptions,
-                ],
-                'element.' . $crawlspace->id . '.extra.has_crawlspace' => [
-                    'label' => __('floor-insulation.has-crawlspace.title'),
-                    'type' => 'select',
-                    'options' => __('woningdossier.cooperation.option'),
-                ],
-                'element.' . $crawlspace->id . '.extra.access' => [
-                    'label' => __('floor-insulation.crawlspace-access.title'),
-                    'type' => 'select',
-                    'options' => __('woningdossier.cooperation.option'),
-                ],
-                'element.' . $crawlspace->id . '.element_value_id' => [
-                    'label' => __('floor-insulation.crawlspace-height.title'),
-                    'type' => 'select',
-                    'options' => static::createOptions($crawlspace->values()->orderBy('order')->get(), 'value'),
-                ],
-                'building_features.floor_surface' => [
-                    'label' => __('floor-insulation.surface.title'),
-                    'type' => 'text',
-                    'unit' => __('general.unit.square-meters.title'),
-                ],
-                'building_features.insulation_surface' => [
-                    'label' => __('floor-insulation.insulation-surface.title'),
-                    'type' => 'text',
-                    'unit' => __('general.unit.square-meters.title'),
-                ],
+                '-' => [
+                    'user_interests.element.' . $floorInsulation->id => [
+                        //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
+                        'label' => $floorInsulation->name . ': ' . __('general.interested-in-improvement.title'),
+                        'type' => 'select',
+                        'options' => $interestOptions,
+                    ],
+                    'element.' . $crawlspace->id . '.extra.has_crawlspace' => [
+                        'label' => __('floor-insulation.has-crawlspace.title'),
+                        'type' => 'select',
+                        'options' => __('woningdossier.cooperation.option'),
+                    ],
+                    'element.' . $crawlspace->id . '.extra.access' => [
+                        'label' => __('floor-insulation.crawlspace-access.title'),
+                        'type' => 'select',
+                        'options' => __('woningdossier.cooperation.option'),
+                    ],
+                    'element.' . $crawlspace->id . '.element_value_id' => [
+                        'label' => __('floor-insulation.crawlspace-height.title'),
+                        'type' => 'select',
+                        'options' => static::createOptions($crawlspace->values()->orderBy('order')->get(), 'value'),
+                    ],
+                    'building_features.floor_surface' => [
+                        'label' => __('floor-insulation.surface.title'),
+                        'type' => 'text',
+                        'unit' => __('general.unit.square-meters.title'),
+                    ],
+                    'building_features.insulation_surface' => [
+                        'label' => __('floor-insulation.insulation-surface.title'),
+                        'type' => 'text',
+                        'unit' => __('general.unit.square-meters.title'),
+                    ],
 
-                'calculations' => [
-                    'savings_gas' => __('floor-insulation.costs.gas.title'),
-                    'savings_co2' => __('floor-insulation.costs.co2.title'),
-                    'savings_money' => __('general.costs.savings-in-euro.title'),
-                    'cost_indication' => __('general.costs.indicative-costs.title'),
-                    'interest_comparable' => __('general.costs.comparable-rent.title'),
-                ],
+                    'calculations' => [
+                        'savings_gas' => __('floor-insulation.costs.gas.title'),
+                        'savings_co2' => __('floor-insulation.costs.co2.title'),
+                        'savings_money' => __('general.costs.savings-in-euro.title'),
+                        'cost_indication' => __('general.costs.indicative-costs.title'),
+                        'interest_comparable' => __('general.costs.comparable-rent.title'),
+                    ],
+                ]
             ],
 
             'roof-insulation' => [
-                'user_interests.element.' . $roofInsulation->id => [
-                    //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                    'label' => $roofInsulation->name . ': ' . __('general.interested-in-improvement.title'),
-                    'type' => 'select',
-                    'options' => $interestOptions,
-                ],
-                'building_features.roof_type_id' => [
-                    'label' => __('roof-insulation.current-situation.main-roof.title'),
-                    'type' => 'select',
-                    'options' => static::createOptions($roofTypes),
-                    'relationship' => 'roofType',
-                ],
+                '-' => [
+                    'user_interests.element.' . $roofInsulation->id => [
+                        //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
+                        'label' => $roofInsulation->name . ': ' . __('general.interested-in-improvement.title'),
+                        'type' => 'select',
+                        'options' => $interestOptions,
+                    ],
+                    'building_features.roof_type_id' => [
+                        'label' => __('roof-insulation.current-situation.main-roof.title'),
+                        'type' => 'select',
+                        'options' => static::createOptions($roofTypes),
+                        'relationship' => 'roofType',
+                    ],
+                ]
                 // rest will be added later on
             ],
 
             'high-efficiency-boiler' => [
-                'user_interests.service.' . $hrBoiler->id => [
-                    //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                    'label' => $hrBoiler->name . ': ' . __('general.interested-in-improvement.title'),
-                    'type' => 'select',
-                    'options' => $interestOptions,
-                ],
-                'user_energy_habits.resident_count' => [
-                    'label' => __('general-data.data-about-usage.total-citizens.title'),
-                    'type' => 'text',
-                ],
-                'user_energy_habits.amount_gas' => [
-                    'label' => __('general-data.data-about-usage.gas-usage-past-year.title'),
-                    'type' => 'text',
-                    'unit' => __('general.unit.cubic-meters.title'),
-                ],
-                'service.' . $boiler->id . '.service_value_id' => [
-                    'label' => __('high-efficiency-boiler.boiler-type.title'),
-                    'type' => 'select',
+                '-' => [
+                    'user_interests.service.' . $hrBoiler->id => [
+                        //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
+                        'label' => $hrBoiler->name . ': ' . __('general.interested-in-improvement.title'),
+                        'type' => 'select',
+                        'options' => $interestOptions,
+                    ],
+                    'user_energy_habits.resident_count' => [
+                        'label' => __('general-data.data-about-usage.total-citizens.title'),
+                        'type' => 'text',
+                    ],
+                    'user_energy_habits.amount_gas' => [
+                        'label' => __('general-data.data-about-usage.gas-usage-past-year.title'),
+                        'type' => 'text',
+                        'unit' => __('general.unit.cubic-meters.title'),
+                    ],
+                    'service.' . $boiler->id . '.service_value_id' => [
+                        'label' => __('high-efficiency-boiler.boiler-type.title'),
+                        'type' => 'select',
 //                    'options' => $boilerTypes
-                    'options' => static::createOptions($boilerTypes, 'value'),
-                ],
-                'service.' . $boiler->id . '.extra.date' => [
-                    'label' => __('boiler.boiler-placed-date.title'),
-                    'type' => 'text',
-                    'unit' => __('general.unit.year.title'),
-                ],
-                'calculations' => [
-                    'savings_gas' => __('high-efficiency-boiler.costs.gas.title'),
-                    'savings_co2' => __('high-efficiency-boiler.costs.co2.title'),
-                    'savings_money' => __('general.costs.savings-in-euro.title'),
-                    'cost_indication' => __('general.costs.indicative-costs.title'),
-                    'interest_comparable' => __('general.costs.comparable-rent.title'),
+                        'options' => static::createOptions($boilerTypes, 'value'),
+                    ],
+                    'service.' . $boiler->id . '.extra.date' => [
+                        'label' => __('boiler.boiler-placed-date.title'),
+                        'type' => 'text',
+                        'unit' => __('general.unit.year.title'),
+                    ],
+                    'calculations' => [
+                        'savings_gas' => __('high-efficiency-boiler.costs.gas.title'),
+                        'savings_co2' => __('high-efficiency-boiler.costs.co2.title'),
+                        'savings_money' => __('general.costs.savings-in-euro.title'),
+                        'cost_indication' => __('general.costs.indicative-costs.title'),
+                        'interest_comparable' => __('general.costs.comparable-rent.title'),
 
-                    'replace_year' => __('high-efficiency-boiler.indication-for-costs.indicative-replacement.title'),
-                ],
+                        'replace_year' => __('high-efficiency-boiler.indication-for-costs.indicative-replacement.title'),
+                    ],
+                ]
             ],
 
             'solar-panels' => [
-                'user_interests.service.' . $solarPanels->id => [
-                    //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                    'label' => $solarPanels->name . ': ' . __('general.interested-in-improvement.title'),
-                    'type' => 'select',
-                    'options' => $interestOptions,
-                ],
-                'user_energy_habits.amount_electricity' => [
-                    'label' => __('solar-panels.electra-usage.title'),
-                    'type' => 'text',
-                    'unit' => __('general.unit.cubic-meters.title'),
-                ],
-                'building_pv_panels.peak_power' => [
-                    'label' => __('solar-panels.peak-power.title'),
-                    'type' => 'select',
-                    'options' => $solarPanelsOptionsPeakPower,
-                ],
-                'building_pv_panels.number' => [
-                    'label' => __('solar-panels.number.title'),
-                    'type' => 'text',
-                    'unit' => __('general.unit.pieces.title'),
-                ],
-                'building_pv_panels.pv_panel_orientation_id' => [
-                    'label' => __('solar-panels.pv-panel-orientation-id.title'),
-                    'type' => 'select',
-                    'options' => static::createOptions(PvPanelOrientation::orderBy('order')->get()),
-                    'relationship' => 'orientation',
-                ],
-                'building_pv_panels.angle' => [
-                    'label' => __('solar-panels.angle.title'),
-                    'type' => 'select',
-                    'options' => $solarPanelsOptionsAngle,
-                ],
+                '-' => [
+                    'user_interests.service.' . $solarPanels->id => [
+                        //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
+                        'label' => $solarPanels->name . ': ' . __('general.interested-in-improvement.title'),
+                        'type' => 'select',
+                        'options' => $interestOptions,
+                    ],
+                    'user_energy_habits.amount_electricity' => [
+                        'label' => __('solar-panels.electra-usage.title'),
+                        'type' => 'text',
+                        'unit' => __('general.unit.cubic-meters.title'),
+                    ],
+                    'building_pv_panels.peak_power' => [
+                        'label' => __('solar-panels.peak-power.title'),
+                        'type' => 'select',
+                        'options' => $solarPanelsOptionsPeakPower,
+                    ],
+                    'building_pv_panels.number' => [
+                        'label' => __('solar-panels.number.title'),
+                        'type' => 'text',
+                        'unit' => __('general.unit.pieces.title'),
+                    ],
+                    'building_pv_panels.pv_panel_orientation_id' => [
+                        'label' => __('solar-panels.pv-panel-orientation-id.title'),
+                        'type' => 'select',
+                        'options' => static::createOptions(PvPanelOrientation::orderBy('order')->get()),
+                        'relationship' => 'orientation',
+                    ],
+                    'building_pv_panels.angle' => [
+                        'label' => __('solar-panels.angle.title'),
+                        'type' => 'select',
+                        'options' => $solarPanelsOptionsAngle,
+                    ],
 
-                'calculations' => [
-                    'yield_electricity' => __('solar-panels.indication-for-costs.yield-electricity.title'),
-                    'raise_own_consumption' => __('solar-panels.indication-for-costs.raise-own-consumption.title'),
+                    'calculations' => [
+                        'yield_electricity' => __('solar-panels.indication-for-costs.yield-electricity.title'),
+                        'raise_own_consumption' => __('solar-panels.indication-for-costs.raise-own-consumption.title'),
 
-                    'savings_co2' => __('solar-panels.costs.co2.title'),
-                    'savings_money' => __('general.costs.savings-in-euro.title'),
-                    'cost_indication' => __('general.costs.indicative-costs.title'),
-                    'interest_comparable' => __('general.costs.comparable-rent.title'),
-                ],
+                        'savings_co2' => __('solar-panels.costs.co2.title'),
+                        'savings_money' => __('general.costs.savings-in-euro.title'),
+                        'cost_indication' => __('general.costs.indicative-costs.title'),
+                        'interest_comparable' => __('general.costs.comparable-rent.title'),
+                    ],
+                ]
             ],
 
             'heater' => [
-                'user_interests.service.' . $heater->id => [
-                    //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                    'label' => $heater->name . ': ' . __('general.interested-in-improvement.title'),
-                    'type' => 'select',
-                    'options' => $interestOptions,
-                ],
-                'user_energy_habits.water_comfort_id' => [
-                    'label' => __('heater.comfort-level-warm-tap-water.title'),
-                    'type' => 'select',
-                    'options' => self::createOptions($comfortLevelsTapWater),
-                ],
-                'building_heaters.pv_panel_orientation_id' => [
-                    'label' => __('heater.pv-panel-orientation-id.title'),
-                    'type' => 'select',
-                    'options' => static::createOptions(PvPanelOrientation::orderBy('order')->get()),
-                    'relationship' => 'orientation',
-                ],
-                'building_heaters.angle' => [
-                    'label' => __('heater.angle.title'),
-                    'type' => 'select',
-                    'options' => $heaterOptionsAngle,
-                ],
-
-                'calculations' => [
-                    'consumption' => [
-                        'water' => __('heater.consumption-water.title'),
-                        'gas' => __('heater.consumption-gas.title'),
+                '-' => [
+                    'user_interests.service.' . $heater->id => [
+                        //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
+                        'label' => $heater->name . ': ' . __('general.interested-in-improvement.title'),
+                        'type' => 'select',
+                        'options' => $interestOptions,
+                    ],
+                    'user_energy_habits.water_comfort_id' => [
+                        'label' => __('heater.comfort-level-warm-tap-water.title'),
+                        'type' => 'select',
+                        'options' => self::createOptions($comfortLevelsTapWater),
+                    ],
+                    'building_heaters.pv_panel_orientation_id' => [
+                        'label' => __('heater.pv-panel-orientation-id.title'),
+                        'type' => 'select',
+                        'options' => static::createOptions(PvPanelOrientation::orderBy('order')->get()),
+                        'relationship' => 'orientation',
+                    ],
+                    'building_heaters.angle' => [
+                        'label' => __('heater.angle.title'),
+                        'type' => 'select',
+                        'options' => $heaterOptionsAngle,
                     ],
 
-                    'specs' => [
-                        'size_boiler' => __('heater.size-boiler.title'),
-                        'size_collector' => __('heater.size-collector.title'),
+                    'calculations' => [
+                        'consumption' => [
+                            'water' => __('heater.consumption-water.title'),
+                            'gas' => __('heater.consumption-gas.title'),
+                        ],
+
+                        'specs' => [
+                            'size_boiler' => __('heater.size-boiler.title'),
+                            'size_collector' => __('heater.size-collector.title'),
+                        ],
+                        'production_heat' => __('heater.indication-for-costs.production-heat'),
+                        'percentage_consumption' => __('heater.indication-for-costs.percentage-consumption.title'),
+                        'savings_gas' => __('heater.costs.gas.title'),
+                        'savings_co2' => __('heater.costs.co2.title'),
+                        'savings_money' => __('general.costs.savings-in-euro.title'),
+                        'cost_indication' => __('general.costs.indicative-costs.title'),
+                        'interest_comparable' => __('general.costs.comparable-rent.title'),
                     ],
-                    'production_heat' => __('heater.indication-for-costs.production-heat'),
-                    'percentage_consumption' => __('heater.indication-for-costs.percentage-consumption.title'),
-                    'savings_gas' => __('heater.costs.gas.title'),
-                    'savings_co2' => __('heater.costs.co2.title'),
-                    'savings_money' => __('general.costs.savings-in-euro.title'),
-                    'cost_indication' => __('general.costs.indicative-costs.title'),
-                    'interest_comparable' => __('general.costs.comparable-rent.title'),
                 ],
-            ],
+            ]
         ];
 
         $steps = Step::withoutSubSteps()->get();
@@ -648,8 +662,8 @@ class ToolHelper
             'type' => 'select',
             'options' => [
                 1 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.yes-within-2-year'),
-                2 =>  __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.yes-within-5-year'),
-                0 =>  __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.none')
+                2 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.yes-within-5-year'),
+                0 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.none')
             ]
         ];
         $structure['general-data']['interest']['user_energy_habits.building_complaints'] = [
@@ -678,31 +692,31 @@ class ToolHelper
         foreach ($igShorts as $igShort) {
             $measureApplication = MeasureApplication::where('short', $igShort)->first();
             if ($measureApplication instanceof MeasureApplication) {
-                $structure['insulated-glazing']['user_interests.' . $measureApplication->id] = [
+                $structure['insulated-glazing']['-']['user_interests.' . $measureApplication->id] = [
                     //'label' => 'Interest in '.$measureApplication->measure_name,
                     'label' => __('general.change-interested.title',
                         ['item' => $measureApplication->measure_name]),
                     'type' => 'select',
                     'options' => $interestOptions,
                 ];
-                $structure['insulated-glazing']['building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id'] = [
+                $structure['insulated-glazing']['-']['building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id'] = [
                     'label' => $measureApplication->measure_name . ': ' . __('insulated-glazing.' . $measureApplication->short . '.current-glass.title'),
                     'type' => 'select',
                     'options' => static::createOptions($insulatedGlazings),
                     'relationship' => 'insulatedGlazing',
                 ];
-                $structure['insulated-glazing']['building_insulated_glazings.' . $measureApplication->id . '.building_heating_id'] = [
+                $structure['insulated-glazing']['-']['building_insulated_glazings.' . $measureApplication->id . '.building_heating_id'] = [
                     'label' => $measureApplication->measure_name . ': ' . __('insulated-glazing.' . $measureApplication->short . '.rooms-heated.title'),
                     'type' => 'select',
                     'options' => static::createOptions($heatings),
                     'relationship' => 'buildingHeating',
                 ];
-                $structure['insulated-glazing']['building_insulated_glazings.' . $measureApplication->id . '.m2'] = [
+                $structure['insulated-glazing']['-']['building_insulated_glazings.' . $measureApplication->id . '.m2'] = [
                     'label' => $measureApplication->measure_name . ': ' . __('insulated-glazing.' . $measureApplication->short . '.m2.title'),
                     'type' => 'text',
                     'unit' => __('general.unit.square-meters.title'),
                 ];
-                $structure['insulated-glazing']['building_insulated_glazings.' . $measureApplication->id . '.windows'] = [
+                $structure['insulated-glazing']['-']['building_insulated_glazings.' . $measureApplication->id . '.windows'] = [
                     'label' => $measureApplication->measure_name . ': ' . __('insulated-glazing.' . $measureApplication->short . '.window-replace.title'),
                     'type' => 'text',
                 ];
@@ -713,7 +727,7 @@ class ToolHelper
         }
 
         // set the calculations on the end because of the order
-        $structure['insulated-glazing']['calculations'] = [
+        $structure['insulated-glazing']['-']['calculations'] = [
             'savings_gas' => __('insulated-glazing.costs.gas.title'),
             'savings_co2' => __('insulated-glazing.costs.co2.title'),
             'savings_money' => __('general.costs.savings-in-euro.title'),
@@ -741,49 +755,49 @@ class ToolHelper
         // $roofTypes1 should become $roofTypes->where('short', '!=', 'none');
 
         foreach ($roofTypes1 as $roofType) {
-            $structure['roof-insulation']['building_roof_types.' . $roofType->id . '.element_value_id'] = [
+            $structure['roof-insulation']['-']['building_roof_types.' . $roofType->id . '.element_value_id'] = [
                 'label' => __('roof-insulation.current-situation.is-' . $roofType->short . '-roof-insulated.title'),
                 'type' => 'select',
                 'options' => static::createOptions($roofInsulation->values, 'value'),
                 'relationship' => 'elementValue',
             ];
-            $structure['roof-insulation']['building_roof_types.' . $roofType->id . '.roof_surface'] = [
+            $structure['roof-insulation']['-']['building_roof_types.' . $roofType->id . '.roof_surface'] = [
                 'label' => __('roof-insulation.current-situation.' . $roofType->short . '-roof-surface.title'),
                 'type' => 'text',
                 'unit' => __('general.unit.square-meters.title'),
             ];
-            $structure['roof-insulation']['building_roof_types.' . $roofType->id . '.insulation_roof_surface'] = [
+            $structure['roof-insulation']['-']['building_roof_types.' . $roofType->id . '.insulation_roof_surface'] = [
                 'label' => __('roof-insulation.current-situation.insulation-' . $roofType->short . '-roof-surface.title'),
                 'type' => 'text',
                 'unit' => __('general.unit.square-meters.title'),
             ];
-            $structure['roof-insulation']['building_roof_types.' . $roofType->id . '.extra.zinc_replaced_date'] = [
+            $structure['roof-insulation']['-']['building_roof_types.' . $roofType->id . '.extra.zinc_replaced_date'] = [
                 'label' => __('roof-insulation.current-situation.zinc-replaced.title'),
                 'type' => 'text',
                 'unit' => __('general.unit.year.title'),
             ];
             if ('flat' == $roofType->short) {
-                $structure['roof-insulation']['building_roof_types.' . $roofType->id . '.extra.bitumen_replaced_date'] = [
+                $structure['roof-insulation']['-']['building_roof_types.' . $roofType->id . '.extra.bitumen_replaced_date'] = [
                     'label' => __('roof-insulation.current-situation.bitumen-insulated.title'),
                     'type' => 'text',
                     'unit' => __('general.unit.year.title'),
                 ];
             }
             if ('pitched' == $roofType->short) {
-                $structure['roof-insulation']['building_roof_types.' . $roofType->id . '.extra.tiles_condition'] = [
+                $structure['roof-insulation']['-']['building_roof_types.' . $roofType->id . '.extra.tiles_condition'] = [
                     'label' => __('roof-insulation.current-situation.in-which-condition-tiles.title'),
                     'type' => 'select',
                     'options' => static::createOptions($roofTileStatuses),
                 ];
             }
-            $structure['roof-insulation']['building_roof_types.' . $roofType->id . '.extra.measure_application_id'] = [
+            $structure['roof-insulation']['-']['building_roof_types.' . $roofType->id . '.extra.measure_application_id'] = [
                 'label' => __('roof-insulation.' . $roofType->short . '-roof.insulate-roof.title'),
                 'type' => 'select',
                 'options' => static::createOptions(collect($roofInsulationMeasureApplications[$roofType->short]),
                     'measure_name'),
                 'relationship' => 'measureApplication',
             ];
-            $structure['roof-insulation']['building_roof_types.' . $roofType->id . '.building_heating_id'] = [
+            $structure['roof-insulation']['-']['building_roof_types.' . $roofType->id . '.building_heating_id'] = [
                 'label' => __('roof-insulation.' . $roofType->short . '-roof.situation.title'),
                 'type' => 'select',
                 'options' => static::createOptions($heatings),
@@ -791,7 +805,7 @@ class ToolHelper
             ];
 
             if ($roofType->short == $roofTypes1->last()->short) {
-                $structure['roof-insulation']['calculations'] = [
+                $structure['roof-insulation']['-']['calculations'] = [
                     'flat' => [
                         'savings_gas' => __('roof-insulation.flat.costs.gas.title'),
                         'savings_co2' => __('roof-insulation.flat.costs.co2.title'),

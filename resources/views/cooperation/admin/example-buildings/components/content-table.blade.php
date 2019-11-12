@@ -33,37 +33,27 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
     </tr>
     </thead>
     <tbody>
-        @foreach($contentStructure as $step => $formFields)
-
+        @foreach($contentStructure as $step => $dataForSubSteps)
             <tr>
                 <td colspan="2">
                     <h3>{{ \App\Helpers\Translation::translate('woningdossier.cooperation.tool.' . $step . '.title') }}</h3>
                 </td>
             </tr>
 
-            @foreach($formFields as $stepShortOrFormFieldName => $stepDataOrRowData)
-                <?php $possibleSubStep = \App\Models\Step::findByShort($stepShortOrFormFieldName); ?>
-                @if ($possibleSubStep instanceof \App\Models\Step)
-                    <tr>
-                        <td colspan="2">
-                            <h4>{{ $possibleSubStep->name }}</h4>
-                        </td>
-                    </tr>
-                    @foreach($stepDataOrRowData as $formFieldName => $rowData)
-                        @if($formFieldName != 'calculations' )
-                            @include('cooperation.admin.example-buildings.parts.row-data', [
-                                'subStep' => $possibleSubStep
-                            ])
-                        @endif
-                    @endforeach
-                @else
-                    @if($stepShortOrFormFieldName != 'calculations' )
-                        @include('cooperation.admin.example-buildings.parts.row-data', [
-                            'rowData' => $stepDataOrRowData,
-                            'formFieldName' => $stepShortOrFormFieldName
-                        ])
-                    @endif
+            @foreach($dataForSubSteps as $subStep => $subStepData)
+                <?php $possibleSubStep = \App\Models\Step::findByShort($subStep); ?>
+                @if($possibleSubStep instanceof \App\Models\Step)
+                <tr>
+                    <td colspan="2">
+                        <h4>{{$possibleSubStep->name}}</h4>
+                    </td>
+                </tr>
                 @endif
+                @foreach($subStepData as $formFieldName => $rowData)
+                    @if($formFieldName != 'calculations' )
+                        @include('cooperation.admin.example-buildings.parts.row-data')
+                    @endif
+                @endforeach
             @endforeach
         @endforeach
     </tbody>

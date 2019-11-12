@@ -1,12 +1,17 @@
 <?php
     // full html array
-    $fname = isset($subStep) ? 'content['.$fkey.'][content]['.$step.']['.$subStep->short.']['.$formFieldName.']' : 'content['.$fkey.'][content]['.$step.']['.$formFieldName.']';
+    $fname = 'content['.$fkey.'][content]['.$step.']['.$subStep.']['.$formFieldName.']';
     // laravel dotted notation
     $fvalKey = str_replace(['[', ']'], ['.', ''], $fname);
 
     // fallback value for old functions
-    $getValueKey = isset($subStep) ?$step.'.'.$subStep->short.'.'.$formFieldName : $step.'.'.$formFieldName;
+//    $getValueKey = $subStep->short.'.'.$step.'.'.$formFieldName ?? $step.'.'.$formFieldName;
+
+    $getValueKey = $step.'.'.$subStep.'.'.$formFieldName;
+
     $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->getValue($getValueKey) : '';
+    if (!isset($rowData['label'])) {
+    }
 ?>
 
 <tr>

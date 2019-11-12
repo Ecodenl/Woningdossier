@@ -6,6 +6,8 @@ use Illuminate\Database\Migrations\Migration;
 
 class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable extends Migration
 {
+    use \App\Traits\DebugableMigrationTrait;
+
     /**
      * Run the migrations.
      *
@@ -25,6 +27,8 @@ class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable e
         ])->get()->pluck('id')->toArray();
 
         foreach ($exampleBuildingContents as $exampleBuildingContent) {
+            $this->line('-------------------------------------------------');
+            $this->line('migrating example building content for id: '.$exampleBuildingContent->id);
             $content = json_decode($exampleBuildingContent->content, true);
 
             $generalDataElementData = [];
@@ -32,13 +36,14 @@ class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable e
 
             // handle the elements and services.
             foreach ($content as $stepSlug => $stepData) {
+                $this->line('migrating it for step slug: '.$stepSlug);
                 if ($stepSlug == "general-data") {
                     $generalDataElementData = $content['general-data']['element'] ?? [];
                     $generalDataServiceData = $content['general-data']['service'] ?? [];
                 } else {
                     // as long as the keys dont overlap its all goood
                     if (array_key_exists('element', $stepData)) {
-
+                        $this->line('handling the element data');
                         $idsToCheck = [];
                         // since the element contains non numeric values we cant array flip, so we have to do this
                         foreach ($stepData['element'] as $elementId => $elementValue) {
@@ -56,15 +61,19 @@ class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable e
                         unset($content[$stepSlug]['element']);
                     }
                     if (array_key_exists('service', $stepData)) {
-
+                        $this->line('handling the service data');
                         $generalDataServiceData = $generalDataServiceData + $stepData['service'];
                         unset($content[$stepSlug]['service']);
                     }
 
                     // remove it, wont be possible to store anyways.
                     if (array_key_exists('user_interests', $stepData)) {
+                        $this->line('removing the user interests');
                         unset($content[$stepSlug]['user_interests']);
                     }
+
+                    // now we will move the data into an empty sub step, just for consistency.
+                    $content[$stepSlug]['-'] = array_splice($content[$stepSlug], 0);
                 }
             }
 

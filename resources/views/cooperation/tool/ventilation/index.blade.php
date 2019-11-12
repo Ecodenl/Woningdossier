@@ -335,15 +335,13 @@
                             var advices = $(".advices");
                             advices.html('<div class="col-sm-6"><strong>Verbetering</strong></div><div class="col-sm-3"><strong>Interesse</strong></div><div class="col-sm-3"><strong>Kosten en baten</strong></div>');
                             $.each(data.advices, function(i, element){
-                                advices.append('<div class="col-sm-6">' + element.name + '</div><div class="col-sm-3"><input type="checkbox" name="building_ventilations[interest][]" value="' + element.id + '"></div><div class="col-sm-3">Nader te bepalen</div>');
+                                advices.append('<div class="col-sm-6">' + element.name + '</div><div class="col-sm-3"><input type="checkbox" name="user_interests[]" value="' + element.id + '"></div><div class="col-sm-3">Nader te bepalen</div>');
                             });
                         }
 
                         if (data.hasOwnProperty('remark')){
                             $("p#remark").html(data.remark);
                         }
-
-
 
                         if (data.hasOwnProperty('result') && data.result.hasOwnProperty('crack_sealing')) {
 
@@ -362,15 +360,6 @@
                             if (data.result.crack_sealing.hasOwnProperty('interest_comparable')) {
                                 $("input#interest_comparable").val(hoomdossierNumberFormat(data.result.crack_sealing.interest_comparable, '{{ app()->getLocale() }}', 1));
                             }
-
-                            /*if (data.result.hasOwnProperty('replace')) {
-                                if (data.flat.replace.hasOwnProperty('year')) {
-                                    $("input#flat_replace_year").val(data.flat.replace.year);
-                                }
-                                if (data.flat.replace.hasOwnProperty('costs')) {
-                                    $("input#flat_replace_cost").val(hoomdossierRound(data.flat.replace.costs));
-                                }
-                            }*/
                         }
 
                         @if(App::environment('local'))

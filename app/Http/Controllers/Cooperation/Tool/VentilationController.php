@@ -3,24 +3,18 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\Ventilation;
-use App\Calculations\WallInsulation;
-use App\Helpers\Calculation\BankInterestCalculator;
-use App\Helpers\Calculator;
-use App\Helpers\HighEfficiencyBoilerCalculator;
+use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\Kengetallen;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
-use App\Models\BuildingElement;
 use App\Models\BuildingService;
-use App\Models\Element;
-use App\Models\ElementValue;
+use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\Step;
-use App\Models\UserEnergyHabit;
+use App\Services\UserInterestService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 
 class VentilationController extends Controller
 {
@@ -64,22 +58,31 @@ class VentilationController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
-
         $building = HoomdossierSession::getBuilding(true);
-        // Save progress
-        StepHelper::complete($this->step, $building,
-            HoomdossierSession::getInputSource(true));
-        $cooperation = HoomdossierSession::getCooperation(true);
+        $buildingOwner = $building->user;
+        $inputSource = HoomdossierSession::getInputSource(true);
+        //$step = Step::findByShort('ventilation');
+        // replace me with above
+        $step = Step::where('slug', '=', 'ventilation')->first();
 
-        $nextStep = StepHelper::getNextStep($building,
-            HoomdossierSession::getInputSource(true), $this->step);
-        $url      = $nextStep['url'];
+        $interestsInMeasureApplications = $request->input('user_interests', []);
+        $yesOnShortNotice = Interest::orderBy('calculate_value')->first();
 
-        if ( ! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
+        foreach ($interestsInMeasureApplications as $measureApplicationId) {
+            //UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationId , $yesOnShortNotice->id);
         }
 
+        // Save ventilation data
+        $building->buildingVentilations()->updateOrCreate(['input_source_id' => $inputSource->id, ], $request->input('building_ventilations'));
+
+        //StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
+        StepHelper::complete($step, $building, $inputSource);
+        StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
+        $nextStep = StepHelper::getNextStep($building, $inputSource, $step);
+        $url = $nextStep['url'];
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#' . $nextStep['tab_id'];
+        }
         return redirect($url);
     }
 

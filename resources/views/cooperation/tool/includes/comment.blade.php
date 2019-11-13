@@ -11,6 +11,8 @@
     if (isset($short)) {
         $columnName = 'step_comments[comment]['.$short.']';
         $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name][$short]);
+
+        $currentInputSourceHasACommentButIsEmpty = $currentInputSourceHasNoPlacedComment == false && empty($commentsForCurrentStep[$currentInputSource->name][$short]);
     } else {
         $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name]);
     }
@@ -22,7 +24,11 @@
         @if(is_array($comment))
             <?php $comment = $comment[$short]; ?>
         @endif
-        {{-- The column can be a category, this will be the case when the comment is stored under a catergory --}}
+
+        {{--
+            Its possible a comment is stored, but is empty.
+            We dont want to show that to the user
+         --}}
         @if(!empty($comment))
         <div class="row">
             <div class="col-sm-12">
@@ -30,7 +36,7 @@
 
                     <label for="" class=" control-label">
                         <i data-toggle="modal" data-target="#{{$helpId}}" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-                        {{\App\Helpers\Translation::translate($translation.'.title')}} @if($currentInputSource->name != $inputSourceName)({{$inputSourceName}}) @endif
+                        @lang($translation.'.title') @if($currentInputSource->name != $inputSourceName)({{$inputSourceName}}) @endif
                     </label>
 
                     @if($inputSourceName === $currentInputSource->name)
@@ -40,7 +46,7 @@
                     @endif
 
                     @component('cooperation.tool.components.help-modal')
-                        {{\App\Helpers\Translation::translate($translation.'.help')}}
+                        @lang($translation.'.help')
                     @endcomponent
                 </div>
             </div>
@@ -48,20 +54,20 @@
         @endif
     @endforeach
 @endif
-@if($currentInputSourceHasNoPlacedComment)
+@if($currentInputSourceHasNoPlacedComment || (isset($currentInputSourceHasACommentButIsEmpty) && $currentInputSourceHasACommentButIsEmpty))
 <div class="row">
     <div class="col-sm-12">
         <div class="form-group add-space">
 
             <label for="" class=" control-label">
                 <i data-toggle="modal" data-target="#{{$helpId}}" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-                {{\App\Helpers\Translation::translate($translation.'.title')}}
+                @lang($translation.'.title')
             </label>
 
             <textarea name="{{$columnName}}" class="form-control">{{old($columnName)}}</textarea>
 
             @component('cooperation.tool.components.help-modal')
-                {{\App\Helpers\Translation::translate($translation.'.help')}}
+                @lang($translation.'.help')
             @endcomponent
         </div>
     </div>

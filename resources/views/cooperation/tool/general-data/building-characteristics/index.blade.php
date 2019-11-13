@@ -94,7 +94,7 @@
                     </div>
                     <div class="col-md-6">
 
-                        @component('cooperation.tool.components.step-question', ['id' => 'building_layers', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.building-layers', 'required' => true])
+                        @component('cooperation.tool.components.step-question', ['id' => 'building_features.building_layers', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.building-layers', 'required' => true])
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'building_layers', 'needsFormat' => true, 'decimals' => 0])
@@ -110,7 +110,7 @@
                 <div class="row">
                     <div class="col-md-6">
 
-                        @component('cooperation.tool.components.step-question', ['id' => 'roof_type_id', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.roof-type',])
+                        @component('cooperation.tool.components.step-question', ['id' => 'building_features.roof_type_id', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.roof-type',])
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $myBuildingFeatures, 'userInputModel' => 'roofType', 'userInputColumn' => 'roof_type_id'])
@@ -128,7 +128,7 @@
                         @endcomponent
                     </div>
                     <div class="col-md-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'energy_label_id', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.energy-label', 'required' => false])
+                        @component('cooperation.tool.components.step-question', ['id' => 'building_features.energy_label_id', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.energy-label', 'required' => false])
                             <?php
 
                             // order:
@@ -172,7 +172,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="input-group input-source-group">
-                            @component('cooperation.tool.components.step-question', ['id' => 'monument', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.monument', 'required' => false])
+                            @component('cooperation.tool.components.step-question', ['id' => 'building_features.monument', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.monument', 'required' => false])
                                 <?php
                                 $checked = old('building_features.monument', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'monument'));
                                 ?>

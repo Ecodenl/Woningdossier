@@ -132,7 +132,7 @@ class ExampleBuildingController extends Controller
         $buildingTypes = BuildingType::all();
         $cooperations = Cooperation::all();
 
-        $contentStructure = $this->onlyApplicableInputs(ToolHelper::getStructure());
+        $contentStructure = $this->onlyApplicableInputs(ToolHelper::getContentStructure());
 
         return view('cooperation.admin.example-buildings.edit',
             compact(

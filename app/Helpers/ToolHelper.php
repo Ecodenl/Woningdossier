@@ -42,7 +42,7 @@ class ToolHelper
         return $options;
     }
 
-    public static function getStructure()
+    public static function getContentStructure()
     {
         // General data - Elements (that are not queried later on step basis)
         $livingRoomsWindows = Element::where('short', 'living-rooms-windows')->first();

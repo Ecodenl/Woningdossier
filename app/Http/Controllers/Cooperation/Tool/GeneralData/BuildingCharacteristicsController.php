@@ -114,11 +114,11 @@ class BuildingCharacteristicsController extends Controller
      * Method to handle the example building
      *
      * @param Building $building
-     * @param BuildingFeature $currentFeatures
+     * @param BuildingFeature|null $currentFeatures
      * @param int $buildYear
      * @param int $buildingTypeId
      */
-    private function handleExampleBuildingData(Building $building, BuildingFeature $currentFeatures, int $buildYear, int $buildingTypeId)
+    private function handleExampleBuildingData(Building $building, $currentFeatures, int $buildYear, int $buildingTypeId)
     {
         $buildingType = BuildingType::find($buildingTypeId);
         $exampleBuilding = $this->getGenericExampleBuildingByBuildingType($buildingType);

@@ -43,6 +43,11 @@
     padding-right: unquote("#{$i}px")
   }
 }
+@for $i from 0 through 100 {
+  .pl-#{$i} {
+    padding-left: unquote("#{$i}px")
+  }
+}
 
 .d-line {
   display: inline;

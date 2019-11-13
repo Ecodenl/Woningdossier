@@ -67,6 +67,10 @@ class MigrateInterestedInTypesToModelNamesOnUserInterestsTable extends Migration
             ],
         ];
 
+        if ($userInterest->interested_in_type == 'service' & in_array($userInterest->interested_in_id, [1,2])){
+            $userInterest->interested_in_id = 8;
+        }
+
         $stepShort = $elementAndServiceIdToStepShort[$userInterest->interested_in_type][$userInterest->interested_in_id];
         $this->line('step for the interested_in_id: '.$stepShort. ' based on (old) interested_in_id: '.$userInterest->interested_in_id);
 

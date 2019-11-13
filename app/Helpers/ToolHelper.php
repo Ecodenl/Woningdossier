@@ -645,7 +645,12 @@ class ToolHelper
         $steps = Step::withoutSubSteps()->get();
 
         $steps = $steps->keyBy('short')->forget('general-data');
+        // todo: remove the information pull and if.
         $ventilationInformation = $steps->pull('ventilation-information');
+        // because the ventilation branch
+        if (is_null($ventilationInformation)) {
+            $ventilationInformation = $steps->pull('ventilation');
+        }
         $steps->push($ventilationInformation);
 
 

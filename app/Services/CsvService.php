@@ -563,19 +563,20 @@ class CsvService
                     if ('calculations' == $tableWithColumnOrAndId) {
                         // If you want to go ahead and translate in a different namespace, do it here
                         // we will dot the array, map it so we can add the step name to it
-                        $deeperContents = array_map(function ($content) use ($step) {
-                            return $step->name . ': ' . $content;
-                        }, \Illuminate\Support\Arr::dot($contents, $stepSlug . '.calculation.'));
+                        $deeperContents = array_map(function ($content) use ($step, $subStep) {
+                            return $step->name . ','.$subStep.': ' . $content;
+                        }, \Illuminate\Support\Arr::dot($contents, $stepSlug.'.'.$subStep.'.'.'.calculation.'));
 
                         $headers = array_merge($headers, $deeperContents);
                     } else {
-                        $headers[$stepSlug . '.' . $tableWithColumnOrAndId] = $step->name . ': ' . str_replace([
+                        $headers[$stepSlug.'.'.$subStep. '.' . $tableWithColumnOrAndId] = $step->name . ': ' . str_replace([
                                 '&euro;', '€',
                             ], ['euro', 'euro'], $contents['label']);
                     }
                 }
             }
         }
+
 
         foreach ($leaveOutTheseDuplicates as $leaveOut) {
             unset($headers[$leaveOut]);
@@ -590,6 +591,8 @@ class CsvService
          */
         foreach ($users as $user) {
             $rows[$user->building->id] = DumpService::totalDump($user, $inputSource, $anonymized, false)['user-data'];
+            // todo: fix the dif!
+            dd(array_diff_key($rows[0], $rows[1]));
         }
 
         return $rows;

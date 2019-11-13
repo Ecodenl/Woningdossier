@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\HoomdossierSession;
 use App\Http\Controllers\Controller;
 use App\Models\FileStorage;
 use App\Models\FileTypeCategory;
 use App\Models\InputSource;
+use App\Services\CsvService;
 use App\Services\DumpService;
 
 class ReportController extends Controller
@@ -14,9 +16,10 @@ class ReportController extends Controller
     public function index()
     {
 
-        $r = DumpService::totalDump(Hoomdossier::user(), InputSource::findByShort('resident'), false);
+//        $r = DumpService::totalDump(Hoomdossier::user(), InputSource::findByShort('resident'), false);
 
-        dd($r['user-data'], $r['translations-for-columns']);
+        $x = CsvService::totalReport(HoomdossierSession::getCooperation(true), InputSource::findByShort('resident'), false);
+        dd($x);
 
 
         $reportFileTypeCategory = FileTypeCategory::short('report')

@@ -149,20 +149,20 @@ return [
 
         // general data
         'building_features.building_layers' => __('general-data.building-type.how-much-building-layers.title'),
-        'building_features.resident_count' => __('general-data/usage.resident'),
-        'building_features.surface' => __('general-data/building-characteristics.surface.title'),
-        'building_features.build_year' => __('general-data/building-characteristics.build-year.title'),
-        'user_energy_habits.thermostat_high' => __('general-data/usage.heating-habits.thermostat-high.title'),
-        'user_energy_habits.thermostat_low' => __('general-data/usage.heating-habits.thermostat-low.title'),
-        'user_energy_habits.amount_electricity' => __('general-data/usage.energy-usage.electricity-amount.title'),
-        'user_energy_habits.amount_gas' => __('general-data/usage.energy-usage.gas-usage.title'),
+        'building_features.surface' => __('cooperation/tool/cooperation/tool/general-data/building-characteristics.index.surface.title'),
+        'building_features.build_year' => __('cooperation/tool/general-data/building-characteristics.index.build-year.title'),
+        'user_energy_habits.resident_count' => __('cooperation/tool/general-data/usage.index.water-gas.resident-count.title'),
+        'user_energy_habits.thermostat_high' => __('cooperation/tool/general-data/usage.index.heating-habits.thermostat-high.title'),
+        'user_energy_habits.thermostat_low' => __('cooperation/tool/general-data/usage.index.heating-habits.thermostat-low.title'),
+        'user_energy_habits.amount_electricity' => __('cooperation/tool/general-data/usage.index.energy-usage.amount-electricity.title'),
+        'user_energy_habits.amount_gas' => __('cooperation/tool/general-data/usage.index.energy-usage.gas-usage.title'),
 
 
         'service.6.extra.year' => 'jaartal',
 
-        'services.total-sun-panels.extra.year' => __('general-data/current-state.service.total-sun-panels.year.title'),
-        'services.total-sun-panels.extra.value' => __('general-data/current-state.service.total-sun-panels.title'),
-        'building_pv_panels.total_installed_power' => __('general-data/current-state.installed-power.title'),
+        'services.total-sun-panels.extra.year' => __('cooperation/tool/general-data/current-state.index.service.total-sun-panels.year.title'),
+        'services.total-sun-panels.extra.value' => __('cooperation/tool/general-data/current-state.index.service.total-sun-panels.title'),
+        'building_pv_panels.total_installed_power' => __('cooperation/tool/general-data/current-state.index.installed-power.title'),
 
         'building_features.window_surface' => 'totale raamopperlake van de woning',
 

@@ -74,8 +74,14 @@ class VentilationController extends Controller
             UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationId , $yesOnShortNotice->id);
         }
 
+        $houseVentilationData = $request->input('building_ventilations');
+
         // Save ventilation data
-        $building->buildingVentilations()->updateOrCreate(['input_source_id' => $inputSource->id, ], $request->input('building_ventilations'));
+        $building->buildingVentilations()->updateOrCreate([], [
+            'how' => $houseVentilationData['how'] ?? [],
+            'usage' => $houseVentilationData['usage'] ?? [],
+            'living_situation' => $houseVentilationData['living_situation'] ?? [],
+        ]);
 
         $this->saveAdvices($request);
         StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));

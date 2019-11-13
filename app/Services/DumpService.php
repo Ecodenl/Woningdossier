@@ -97,6 +97,8 @@ class DumpService
         }
 
         $leaveOutTheseDuplicates = [
+            'general-data.building-characteristics.building_features.building_type_id',
+            'general-data.building-characteristics.building_features.build_year',
             // hoofddak
             'roof-insulation.building_features.roof_type_id',
             // bewoners, gasverbruik en type ketel
@@ -119,11 +121,11 @@ class DumpService
                 foreach ($subStepStructure as $tableWithColumnOrAndId => $contents) {
                     if ('calculations' == $tableWithColumnOrAndId) {
                         // If you want to go ahead and translate in a different namespace, do it here
-                        $deeperContents = \Illuminate\Support\Arr::dot($contents, $stepSlug . '.calculation.');
+                        $deeperContents = \Illuminate\Support\Arr::dot($contents, $stepSlug.'.'.$subStep. '.calculation.');
 
                         $headers = array_merge($headers, $deeperContents);
                     } else {
-                        $headers[$stepSlug . '.' . $tableWithColumnOrAndId] = str_replace([
+                        $headers[$stepSlug.'.'.$subStep . '.' . $tableWithColumnOrAndId] = str_replace([
                             '&euro;', '€',
                         ], ['euro', 'euro'], $contents['label']);
                     }
@@ -212,17 +214,19 @@ class DumpService
         // loop through the headers
         foreach ($headers as $tableWithColumnOrAndIdKey => $translatedInputName) {
             if (is_string($tableWithColumnOrAndIdKey)) {
+
                 // explode it so we can do stuff with it.
                 $tableWithColumnOrAndId = explode('.', $tableWithColumnOrAndIdKey);
 
                 // collect some basic info
                 // which will apply to (most) cases.
                 $step = $tableWithColumnOrAndId[0];
-                $table = $tableWithColumnOrAndId[1];
-                $columnOrId = $tableWithColumnOrAndId[2];
+                $subStep = $tableWithColumnOrAndId[1];
+                $table = $tableWithColumnOrAndId[2];
+                $columnOrId = $tableWithColumnOrAndId[3];
 
-                $maybe1 = isset($tableWithColumnOrAndId[3]) ? $tableWithColumnOrAndId[3] : '';
-                $maybe2 = isset($tableWithColumnOrAndId[4]) ? $tableWithColumnOrAndId[4] : '';
+                $maybe1 = isset($tableWithColumnOrAndId[4]) ? $tableWithColumnOrAndId[4] : '';
+                $maybe2 = isset($tableWithColumnOrAndId[5]) ? $tableWithColumnOrAndId[5] : '';
                 //dump("Step: " . $step . " | table: " . $table . " | column or ID: " . $columnOrId . " | column: " . $maybe1 . " | costs or year: " . $maybe2);
 
                 // determine what column we need to query on to get the results for the user.
@@ -242,14 +246,14 @@ class DumpService
 
                     switch ($step) {
                         case 'roof-insulation':
-                            $roofCategory = $tableWithColumnOrAndId[2];
-                            $column = $tableWithColumnOrAndId[3];
-                            $costsOrYear = $tableWithColumnOrAndId[4] ?? null;
+                            $roofCategory = $tableWithColumnOrAndId[3];
+                            $column = $tableWithColumnOrAndId[4];
+                            $costsOrYear = $tableWithColumnOrAndId[5] ?? null;
 
-                            $calculationResult = is_null($costsOrYear) ? $calculateData['roof-insulation'][$roofCategory][$column] ?? '' : $calculateData['roof-insulation'][$roofCategory][$column][$costsOrYear] ?? '';
+                            $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$subStep][$roofCategory][$column] ?? '' : $calculateData[$step][$subStep][$roofCategory][$column][$costsOrYear] ?? '';
                             break;
                         default:
-                            $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$column] : $calculateData[$step][$column][$costsOrYear] ?? '';
+                            $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$subStep][$column] : $calculateData[$step][$subStep][$column][$costsOrYear] ?? '';
                             break;
                     }
 
@@ -268,10 +272,6 @@ class DumpService
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->roofType instanceof RoofType ? $buildingFeature->roofType->name : '';
                                 break;
 
-                            case 'building_type_id':
-                            case 'build_year':
-                                //$row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->buildingType->name ?? '';
-                                break;
                             case 'energy_label_id':
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->energyLabel instanceof EnergyLabel ? $buildingFeature->energyLabel->name : '';
                                 break;
@@ -348,9 +348,6 @@ class DumpService
                                             $status = RoofTileStatus::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
                                             $row[$buildingId][$tableWithColumnOrAndIdKey] = ($status instanceof RoofTileStatus) ? $status->name : '';
                                         }
-                                        if ('measure_application_id' == $extraKey) {
-//                                            dd($extraKey, $buildingRoofType, $buildingRoofType->extra[$extraKey], $buildingRoofType->extra[$extraKey] == null && $extraKey == 'measure_application_id');
-                                        }
                                         // The measure application id, in this case. can be 0, this means the option: "niet" has been chosen the option is not saved as a measure application
                                         if ('measure_application_id' == $extraKey) {
                                             $measureApplication = MeasureApplication::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
@@ -374,10 +371,10 @@ class DumpService
                 if (in_array($table, ['user_interest', 'user_interests'])) {
                     if ('insulated-glazing' == $step) {
                         $interestInType = 'measure_application';
-                        $interestInId = $tableWithColumnOrAndId[2];
+                        $interestInId = $tableWithColumnOrAndId[3];
                     } else {
                         $interestInType = $columnOrId;
-                        $interestInId = $tableWithColumnOrAndId[3];
+                        $interestInId = $tableWithColumnOrAndId[4];
                     }
 
                     $userInterest = UserInterest::where($whereUserOrBuildingId)
@@ -441,7 +438,7 @@ class DumpService
                 // handle the building_insulated_glazing table and its columns.
                 if ('building_insulated_glazings' == $table) {
                     $measureApplicationId = $columnOrId;
-                    $column = $tableWithColumnOrAndId[3];
+                    $column = $tableWithColumnOrAndId[4];
 
                     /** @var BuildingInsulatedGlazing $buildingInsulatedGlazing */
                     $buildingInsulatedGlazing = BuildingInsulatedGlazing::where($whereUserOrBuildingId)

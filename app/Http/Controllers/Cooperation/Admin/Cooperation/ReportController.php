@@ -13,6 +13,12 @@ class ReportController extends Controller
 {
     public function index()
     {
+
+        $r = DumpService::totalDump(Hoomdossier::user(), InputSource::findByShort('resident'), false);
+
+        dd($r['user-data'], $r['translations-for-columns']);
+
+
         $reportFileTypeCategory = FileTypeCategory::short('report')
             ->with(['fileTypes' => function ($query) {
                 $query->where('short', '!=', 'pdf-report')

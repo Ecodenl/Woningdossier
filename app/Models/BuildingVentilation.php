@@ -16,6 +16,10 @@ class BuildingVentilation extends Model
         'usage'            => 'array',
     ];
 
+    protected $fillable = [
+        'building_id', 'input_source_id', 'how', 'living_situation', 'usage',
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

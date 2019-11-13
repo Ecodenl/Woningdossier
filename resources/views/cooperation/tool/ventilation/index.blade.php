@@ -20,7 +20,10 @@
             </div>
         </div>
 
-        <?php /** @var \App\Models\ServiceValue $howValues */ ?>
+        <?php
+            $myBuildingVentilations = $building->buildingVentilations()->forMe()->get();
+        /** @var \App\Models\ServiceValue $howValues */
+        ?>
 
         @if(in_array($buildingVentilation->calculate_value, [1,2,]))
         <!-- how : natural & mechanic -->
@@ -34,11 +37,19 @@
                         'windows'       => '(Klep)ramen',
                         'none'          => 'Geen ventilatievoorzieningen',
                     ];
+                    /** @var \Illuminate\Support\Collection $ventilations */
+                    $ventilations = collect([]);
+                    foreach($howValues as $uvalue => $uname){
+                        $ventilation = new \App\Models\BuildingVentilation();
+                        $ventilation->value = $uname;
+                        $ventilation->how = $uvalue;
+                        $ventilations->push($ventilation);
+                    }
                     ?>
 
                     @component('cooperation.tool.components.step-question', ['id' => 'how', 'translation' => 'cooperation/tool/ventilation.index.how', 'required' => true])
                         @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'checkbox', 'inputValues' => $howValues, 'userInputValues' => null ,'userInputColumn' => 'how'])
+                    ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'how'])
 
                             @foreach($howValues as $howKey => $howValue)
                                     <div class="row" style="margin-left:5px;"><div class="col-sm-12">
@@ -47,7 +58,7 @@
                                            name="building_ventilations[how][]"
                                            value="{{ $howKey }}"
                                            @if(empty(old()) &&
-                                            in_array($howKey, old('building_ventilations.how',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations()->where('how', $howKey), 'how', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->buildingVentilations())) ])))
+                                            in_array($howKey, old('building_ventilations.how', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'how'))))
                                            checked="checked"
                                             @endif
                                     >
@@ -89,11 +100,19 @@
                         'combustion-device' => 'Ik heb een open verbrandingstoestel',
                         'moisture'          => 'Ik heb last van schimmel op de muren',
                     ];
+                    /** @var \Illuminate\Support\Collection $ventilations */
+                    $ventilations = collect([]);
+                    foreach($livingSituationValues as $uvalue => $uname){
+                        $ventilation = new \App\Models\BuildingVentilation();
+                        $ventilation->value = $uname;
+                        $ventilation->living_situation = $uvalue;
+                        $ventilations->push($ventilation);
+                    }
                     ?>
 
                     @component('cooperation.tool.components.step-question', ['id' => 'living_situation', 'translation' => 'cooperation/tool/ventilation.index.living-situation', 'required' => true])
                         @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'checkbox', 'inputValues' => $livingSituationValues, 'userInputValues' => null ,'userInputColumn' => 'living_situation'])
+                    ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'living_situation'])
                             @foreach($livingSituationValues as $lsKey => $lsValue)
 
                                     <div class="row" style="margin-left:5px;"><div class="col-sm-12">
@@ -102,7 +121,7 @@
                                            name="building_ventilations[living_situation][]"
                                            value="{{ $lsKey }}"
                                            @if(empty(old()) &&
-                                            in_array($lsKey, old('building_ventilations.living_situation',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations()->where('living_situation',$lsKey), 'living_situation', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->buildingVentilations())) ])))
+                                            in_array($lsKey, old('building_ventilations.living_situation',\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'living_situation'))))
                                            checked="checked"
                                             @endif
                                     >
@@ -146,11 +165,19 @@
                         'filter-replacement' => 'Het filter wordt niet of onregelmatig vervangen',
                         'closed'             => 'Ik heb de roosters / klepramen voor aanvoer van buitenlucht vaak dicht staan',
                     ];
+                    /** @var \Illuminate\Support\Collection $ventilations */
+                    $ventilations = collect([]);
+                    foreach($usageValues as $uvalue => $uname){
+                        $ventilation = new \App\Models\BuildingVentilation();
+                        $ventilation->value = $uname;
+                        $ventilation->usage = $uvalue;
+                        $ventilations->push($ventilation);
+                    }
                     ?>
 
                     @component('cooperation.tool.components.step-question', ['id' => 'usage', 'translation' => 'cooperation/tool/ventilation.index.usage', 'required' => true])
                         @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'checkbox', 'inputValues' => $usageValues, 'userInputValues' => null ,'userInputColumn' => 'usage'])
+                    ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'usage'])
                             @foreach($usageValues as $uKey => $uValue)
 
                                 <div class="row" style="margin-left:5px;"><div class="col-sm-12">
@@ -159,8 +186,8 @@
                                            name="building_ventilations[usage][]"
                                            value="{{ $uKey }}"
                                            @if(empty(old()) &&
-                                            in_array($uKey, old('building_ventilations.usage',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations()->where('usage',$uKey), 'usage', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->buildingVentilations())) ])))
-                                           checked="checked"
+                                            in_array($uKey, old('building_ventilations.usage', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'usage'))))
+                                            checked="checked"
                                             @endif
                                     >
                                     {{ $uValue }}
@@ -263,11 +290,16 @@
 
             $("input[type=checkbox]").change(function(){
 
-                // only do this when building_ventilations[how][] 'none' is clicked to be enabled!
-                // unset all other values for building_ventilations[how][]
-                // using .indexOf instead of .includes because of Internet Exploder compatibility
-                if (this.value === 'none' && this.checked && this.name.indexOf('[how]') !== -1){
-                    $(this).parent().parent().parent().parent().find("input[type=checkbox]").not(this).prop('checked', false);
+                if(this.name.indexOf('[how]') !== -1) {
+                    // only do this when building_ventilations[how][] 'none' is clicked to be enabled!
+                    // unset all other values for building_ventilations[how][]
+                    // using .indexOf instead of .includes because of Internet Exploder compatibility
+                    if (this.value === 'none' && this.checked) {
+                        $(this).parent().parent().parent().parent().find("input[type=checkbox]").not(this).prop('checked', false);
+                    }
+                    else {
+                        $("input[type=checkbox][value=none]").prop('checked', false);
+                    }
                 }
 
                 checkAlerts();
@@ -330,15 +362,13 @@
                             var advices = $(".advices");
                             advices.html('<div class="col-sm-6"><strong>Verbetering</strong></div><div class="col-sm-3"><strong>Interesse</strong></div><div class="col-sm-3"><strong>Kosten en baten</strong></div>');
                             $.each(data.advices, function(i, element){
-                                advices.append('<div class="col-sm-6">' + element.name + '</div><div class="col-sm-3"><input type="checkbox" name="building_ventilations[interest][]" value="' + element.id + '"></div><div class="col-sm-3">Nader te bepalen</div>');
+                                advices.append('<div class="col-sm-6">' + element.name + '</div><div class="col-sm-3"><input type="checkbox" name="user_interests[]" value="' + element.id + '"></div><div class="col-sm-3">Nader te bepalen</div>');
                             });
                         }
 
                         if (data.hasOwnProperty('remark')){
                             $("p#remark").html(data.remark);
                         }
-
-
 
                         if (data.hasOwnProperty('result') && data.result.hasOwnProperty('crack_sealing')) {
 
@@ -357,15 +387,6 @@
                             if (data.result.crack_sealing.hasOwnProperty('interest_comparable')) {
                                 $("input#interest_comparable").val(hoomdossierNumberFormat(data.result.crack_sealing.interest_comparable, '{{ app()->getLocale() }}', 1));
                             }
-
-                            /*if (data.result.hasOwnProperty('replace')) {
-                                if (data.flat.replace.hasOwnProperty('year')) {
-                                    $("input#flat_replace_year").val(data.flat.replace.year);
-                                }
-                                if (data.flat.replace.hasOwnProperty('costs')) {
-                                    $("input#flat_replace_cost").val(hoomdossierRound(data.flat.replace.costs));
-                                }
-                            }*/
                         }
 
                         @if(App::environment('local'))

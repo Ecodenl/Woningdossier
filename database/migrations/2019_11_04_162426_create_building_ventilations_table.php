@@ -36,7 +36,7 @@ class CreateBuildingVentilationsTable extends Migration
             DB::table('steps')->where('id', '=',
                 $step->id)->update(['slug' => 'ventilation']);
             // and remove the progresses as we need users to fill this step
-            DB::table('user_progresses')->where('step_id', '=',
+            DB::table('completed_steps')->where('step_id', '=',
                 $step->id)->delete();
         }
     }

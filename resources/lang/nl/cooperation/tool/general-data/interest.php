@@ -7,7 +7,7 @@ return [
             'help' => 'Geef toelichting op interesse en motivatie'
         ],
         'steps' => [
-            'ventilation-information' => [
+            'ventilation' => [
                 'title' => 'Ventilatie',
                 'help' => ''
             ],

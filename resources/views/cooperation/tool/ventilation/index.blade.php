@@ -20,7 +20,10 @@
             </div>
         </div>
 
-        <?php /** @var \App\Models\ServiceValue $howValues */ ?>
+        <?php
+            $myBuildingVentilations = $building->buildingVentilations()->forMe()->get();
+        /** @var \App\Models\ServiceValue $howValues */
+        ?>
 
         @if(in_array($buildingVentilation->calculate_value, [1,2,]))
         <!-- how : natural & mechanic -->
@@ -34,11 +37,19 @@
                         'windows'       => '(Klep)ramen',
                         'none'          => 'Geen ventilatievoorzieningen',
                     ];
+                    /** @var \Illuminate\Support\Collection $ventilations */
+                    $ventilations = collect([]);
+                    foreach($howValues as $uvalue => $uname){
+                        $ventilation = new \App\Models\BuildingVentilation();
+                        $ventilation->value = $uname;
+                        $ventilation->how = $uvalue;
+                        $ventilations->push($ventilation);
+                    }
                     ?>
 
                     @component('cooperation.tool.components.step-question', ['id' => 'how', 'translation' => 'cooperation/tool/ventilation.index.how', 'required' => true])
                         @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'checkbox', 'inputValues' => $howValues, 'userInputValues' => null ,'userInputColumn' => 'how'])
+                    ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'how'])
 
                             @foreach($howValues as $howKey => $howValue)
                                     <div class="row" style="margin-left:5px;"><div class="col-sm-12">
@@ -89,11 +100,19 @@
                         'combustion-device' => 'Ik heb een open verbrandingstoestel',
                         'moisture'          => 'Ik heb last van schimmel op de muren',
                     ];
+                    /** @var \Illuminate\Support\Collection $ventilations */
+                    $ventilations = collect([]);
+                    foreach($livingSituationValues as $uvalue => $uname){
+                        $ventilation = new \App\Models\BuildingVentilation();
+                        $ventilation->value = $uname;
+                        $ventilation->living_situation = $uvalue;
+                        $ventilations->push($ventilation);
+                    }
                     ?>
 
                     @component('cooperation.tool.components.step-question', ['id' => 'living_situation', 'translation' => 'cooperation/tool/ventilation.index.living-situation', 'required' => true])
                         @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'checkbox', 'inputValues' => $livingSituationValues, 'userInputValues' => null ,'userInputColumn' => 'living_situation'])
+                    ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'living_situation'])
                             @foreach($livingSituationValues as $lsKey => $lsValue)
 
                                     <div class="row" style="margin-left:5px;"><div class="col-sm-12">
@@ -146,11 +165,19 @@
                         'filter-replacement' => 'Het filter wordt niet of onregelmatig vervangen',
                         'closed'             => 'Ik heb de roosters / klepramen voor aanvoer van buitenlucht vaak dicht staan',
                     ];
+                    /** @var \Illuminate\Support\Collection $ventilations */
+                    $ventilations = collect([]);
+                    foreach($usageValues as $uvalue => $uname){
+                        $ventilation = new \App\Models\BuildingVentilation();
+                        $ventilation->value = $uname;
+                        $ventilation->usage = $uvalue;
+                        $ventilations->push($ventilation);
+                    }
                     ?>
 
                     @component('cooperation.tool.components.step-question', ['id' => 'usage', 'translation' => 'cooperation/tool/ventilation.index.usage', 'required' => true])
                         @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'checkbox', 'inputValues' => $usageValues, 'userInputValues' => null ,'userInputColumn' => 'usage'])
+                    ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'usage'])
                             @foreach($usageValues as $uKey => $uValue)
 
                                 <div class="row" style="margin-left:5px;"><div class="col-sm-12">
@@ -160,7 +187,7 @@
                                            value="{{ $uKey }}"
                                            @if(empty(old()) &&
                                             in_array($uKey, old('building_ventilations.usage', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'usage'))))
-                                           checked="checked"
+                                            checked="checked"
                                             @endif
                                     >
                                     {{ $uValue }}

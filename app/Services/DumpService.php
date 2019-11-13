@@ -60,7 +60,7 @@ class DumpService
     {
         $cooperation = $user->cooperation;
         // get the content structure of the whole tool.
-        $structure = ToolHelper::getToolStructure();
+        $structure = ToolHelper::getContentStructure();
         $rows = [];
 
         if ($anonymized) {

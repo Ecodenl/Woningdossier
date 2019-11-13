@@ -200,8 +200,8 @@ class CsvService
 
             /** @var Collection $conversationRequestsForBuilding */
             $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope())
-                                                             ->conversationRequestByBuildingId($building->id)
-                                                             ->where('to_cooperation_id', $cooperation->id)->get();
+                ->conversationRequestByBuildingId($building->id)
+                ->where('to_cooperation_id', $cooperation->id)->get();
 
             $createdAt = optional($user->created_at)->format('Y-m-d');
             //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
@@ -293,15 +293,15 @@ class CsvService
      * CSV Report that returns the questionnaire results.
      *
      * @param Cooperation $cooperation
-     * @param bool        $anonymize
+     * @param bool $anonymize
      *
      * @return array
      */
     public static function questionnaireResults(Cooperation $cooperation, bool $anonymize): array
     {
         $questionnaires = Questionnaire::withoutGlobalScope(new CooperationScope())
-                                       ->where('cooperation_id', $cooperation->id)
-                                       ->get();
+            ->where('cooperation_id', $cooperation->id)
+            ->get();
         $rows = [];
 
         $residentInputSource = InputSource::findByShort('resident');
@@ -345,8 +345,8 @@ class CsvService
             if ($building instanceof Building && $user->hasRole('resident', $cooperation->id)) {
                 /** @var Collection $conversationRequestsForBuilding */
                 $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope())
-                                                                 ->conversationRequestByBuildingId($building->id)
-                                                                 ->where('to_cooperation_id', $cooperation->id)->get();
+                    ->conversationRequestByBuildingId($building->id)
+                    ->where('to_cooperation_id', $cooperation->id)->get();
 
                 $createdAt = optional($user->created_at)->format('Y-m-d');
                 //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
@@ -399,20 +399,20 @@ class CsvService
                 foreach ($questionnaires as $questionnaire) {
                     $questionAnswersForCurrentQuestionnaire =
                         \DB::table('questionnaires')
-                           ->where('questionnaires.id', $questionnaire->id)
-                           ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
-                           ->leftJoin('translations', function ($leftJoin) {
-                               $leftJoin->on('questions.name', '=', 'translations.key')
-                                        ->where('language', '=', app()->getLocale());
-                           })
-                           ->leftJoin('questions_answers',
-                               function ($leftJoin) use ($building) {
-                                   $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
-                                            ->where('questions_answers.building_id', '=', $building->id);
-                               })
-                           ->select('questions_answers.answer', 'questions.id as question_id',
-                               'translations.translation as question_name')
-                           ->get();
+                            ->where('questionnaires.id', $questionnaire->id)
+                            ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
+                            ->leftJoin('translations', function ($leftJoin) {
+                                $leftJoin->on('questions.name', '=', 'translations.key')
+                                    ->where('language', '=', app()->getLocale());
+                            })
+                            ->leftJoin('questions_answers',
+                                function ($leftJoin) use ($building) {
+                                    $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
+                                        ->where('questions_answers.building_id', '=', $building->id);
+                                })
+                            ->select('questions_answers.answer', 'questions.id as question_id',
+                                'translations.translation as question_name')
+                            ->get();
 
                     // loop through the answers for ONE questionnaire
                     foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {
@@ -431,7 +431,7 @@ class CsvService
                                 foreach ($explodedAnswers as $explodedAnswer) {
                                     // check if the current question has options
                                     // the question can contain a int but can be a answer to a question like "How old are you"
-                                    if ($currentQuestion->hasQuestionOptions() && ! empty($explodedAnswer)) {
+                                    if ($currentQuestion->hasQuestionOptions() && !empty($explodedAnswer)) {
                                         $questionOption = QuestionOption::find($explodedAnswer);
                                         array_push($questionOptionAnswer, $questionOption->name);
                                     }
@@ -439,7 +439,7 @@ class CsvService
 
                                 // the questionOptionAnswer can be empty if the the if statements did not pass
                                 // so we check that before assigning it.
-                                if (! empty($questionOptionAnswer)) {
+                                if (!empty($questionOptionAnswer)) {
                                     // implode it
                                     $answer = implode($questionOptionAnswer, '|');
                                 }
@@ -494,7 +494,7 @@ class CsvService
      *
      * @param Cooperation $cooperation
      * @param InputSource $inputSource
-     * @param bool        $anonymized
+     * @param bool $anonymized
      *
      * @return array
      */
@@ -537,7 +537,7 @@ class CsvService
         }
 
         // get the content structure of the whole tool.
-        $structure = ToolHelper::getToolStructure();
+        $structure = ToolHelper::getContentStructure();
 
         $leaveOutTheseDuplicates = [
             // hoofddak
@@ -557,20 +557,20 @@ class CsvService
         // unfortunately we cant array dot the structure since we only need the labels
         foreach ($structure as $stepSlug => $stepStructure) {
             // building-detail contains data that is already present in the columns above
-            if (! in_array($stepSlug, ['building-detail'])) {
-                $step = Step::whereSlug($stepSlug)->first();
-                foreach ($stepStructure as $tableWithColumnOrAndId => $contents) {
+            $step = Step::whereSlug($stepSlug)->first();
+            foreach ($stepStructure as $subStep => $subStepStructure) {
+                foreach ($subStepStructure as $tableWithColumnOrAndId => $contents) {
                     if ('calculations' == $tableWithColumnOrAndId) {
                         // If you want to go ahead and translate in a different namespace, do it here
                         // we will dot the array, map it so we can add the step name to it
                         $deeperContents = array_map(function ($content) use ($step) {
-                            return $step->name.': '.$content;
-                        }, \Illuminate\Support\Arr::dot($contents, $stepSlug.'.calculation.'));
+                            return $step->name . ': ' . $content;
+                        }, \Illuminate\Support\Arr::dot($contents, $stepSlug . '.calculation.'));
 
                         $headers = array_merge($headers, $deeperContents);
                     } else {
-                        $headers[$stepSlug.'.'.$tableWithColumnOrAndId] = $step->name.': '.str_replace([
-                            '&euro;', '€',
+                        $headers[$stepSlug . '.' . $tableWithColumnOrAndId] = $step->name . ': ' . str_replace([
+                                '&euro;', '€',
                             ], ['euro', 'euro'], $contents['label']);
                     }
                 }
@@ -604,7 +604,7 @@ class CsvService
             return $value;
         }
 
-        if (! is_numeric($value)) {
+        if (!is_numeric($value)) {
             return $value;
         }
 
@@ -626,9 +626,9 @@ class CsvService
      * Format the output of the given column and value.
      *
      * @param string $column
-     * @param mixed  $value
-     * @param int    $decimals
-     * @param bool   $shouldRound
+     * @param mixed $value
+     * @param int $decimals
+     * @param bool $shouldRound
      *
      * @return float|int|string
      */
@@ -666,7 +666,7 @@ class CsvService
      */
     protected static function isYear($column, $extraValue = '')
     {
-        if (! is_null($column)) {
+        if (!is_null($column)) {
             if (false !== stristr($column, 'year')) {
                 return true;
             }

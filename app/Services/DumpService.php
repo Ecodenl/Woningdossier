@@ -49,10 +49,10 @@ class DumpService
      * Method to generate a total dump from a user for a specific input source.
      * This dump collects all possible data for a given user for the tool and returns it in an array.
      *
-     * @param User        $user
+     * @param User $user
      * @param InputSource $inputSource
-     * @param bool        $anonymized
-     * @param bool        $withTranslationsForColumns
+     * @param bool $anonymized
+     * @param bool $withTranslationsForColumns
      *
      * @return array
      */
@@ -115,15 +115,15 @@ class DumpService
         // unfortunately we cant array dot the structure since we only need the labels
         foreach ($structure as $stepSlug => $stepStructure) {
             // building-detail contains data that is already present in the columns above
-            if (! in_array($stepSlug, ['building-detail'])) {
-                foreach ($stepStructure as $tableWithColumnOrAndId => $contents) {
+            foreach ($stepStructure as $subStep => $subStepStructure) {
+                foreach ($subStepStructure as $tableWithColumnOrAndId => $contents) {
                     if ('calculations' == $tableWithColumnOrAndId) {
                         // If you want to go ahead and translate in a different namespace, do it here
-                        $deeperContents = \Illuminate\Support\Arr::dot($contents, $stepSlug.'.calculation.');
+                        $deeperContents = \Illuminate\Support\Arr::dot($contents, $stepSlug . '.calculation.');
 
                         $headers = array_merge($headers, $deeperContents);
                     } else {
-                        $headers[$stepSlug.'.'.$tableWithColumnOrAndId] = str_replace([
+                        $headers[$stepSlug . '.' . $tableWithColumnOrAndId] = str_replace([
                             '&euro;', '€',
                         ], ['euro', 'euro'], $contents['label']);
                     }
@@ -203,8 +203,8 @@ class DumpService
         $calculateData = static::getCalculateData($user, $inputSource);
 
         // one correction because of bad headers
-        if (isset($calculateData['heater']['production_heat']) && ! is_array($calculateData['heater']['production_heat'])) {
-            if (! isset($calculateData['heater']['production_heat']['title'])) {
+        if (isset($calculateData['heater']['production_heat']) && !is_array($calculateData['heater']['production_heat'])) {
+            if (!isset($calculateData['heater']['production_heat']['title'])) {
                 $calculateData['heater']['production_heat'] = ['title' => $calculateData['heater']['production_heat']];
             }
         }
@@ -344,8 +344,8 @@ class DumpService
                                     if (in_array($extraKey, ['tiles_condition', 'measure_application_id'])) {
                                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->extra[$extraKey] ?? '';
 
-                                        if (! empty($buildingRoofType->extra[$extraKey]) && 'tiles_condition' == $extraKey) {
-                                            $status = RoofTileStatus::find((int) $row[$buildingId][$tableWithColumnOrAndIdKey]);
+                                        if (!empty($buildingRoofType->extra[$extraKey]) && 'tiles_condition' == $extraKey) {
+                                            $status = RoofTileStatus::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
                                             $row[$buildingId][$tableWithColumnOrAndIdKey] = ($status instanceof RoofTileStatus) ? $status->name : '';
                                         }
                                         if ('measure_application_id' == $extraKey) {
@@ -353,7 +353,7 @@ class DumpService
                                         }
                                         // The measure application id, in this case. can be 0, this means the option: "niet" has been chosen the option is not saved as a measure application
                                         if ('measure_application_id' == $extraKey) {
-                                            $measureApplication = MeasureApplication::find((int) $row[$buildingId][$tableWithColumnOrAndIdKey]);
+                                            $measureApplication = MeasureApplication::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
                                             $row[$buildingId][$tableWithColumnOrAndIdKey] = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : __('roof-insulation.measure-application.no.title');
                                         }
                                     } else {
@@ -586,7 +586,7 @@ class DumpService
      * Return the calculate data for each step, for a user, with its given inputsource.
      *
      *
-     * @param User        $user
+     * @param User $user
      * @param InputSource $inputSource
      *
      * @return array
@@ -828,7 +828,7 @@ class DumpService
             return $value;
         }
 
-        if (! is_numeric($value)) {
+        if (!is_numeric($value)) {
             return $value;
         }
 
@@ -850,9 +850,9 @@ class DumpService
      * Format the output of the given column and value.
      *
      * @param string $column
-     * @param mixed  $value
-     * @param int    $decimals
-     * @param bool   $shouldRound
+     * @param mixed $value
+     * @param int $decimals
+     * @param bool $shouldRound
      *
      * @return float|int|string
      */
@@ -892,7 +892,7 @@ class DumpService
      */
     protected static function isYear($column, $extraValue = '')
     {
-        if (! is_null($column)) {
+        if (!is_null($column)) {
             if (false !== stristr($column, 'year')) {
                 return true;
             }

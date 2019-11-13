@@ -161,12 +161,17 @@ class ExampleBuildingController extends Controller
         foreach (Arr::except($contentStructure, 'general-data') as $stepShort => $structureWithinStep) {
             $contentStructure[$stepShort]['-'] = array_filter($structureWithinStep['-'], $filterOutUserInterests, ARRAY_FILTER_USE_KEY);
         }
+
         unset(
             $contentStructure['general-data']['building-characteristics']['building_features.building_type_id'],
             $contentStructure['general-data']['building-characteristics']['building_features.build_year'],
             // not requested feature with dropdowns.
             $contentStructure['general-data']['current-state']['service.'.$ventilation->id.'.extra.heat_recovery'],
-            $contentStructure['general-data']['current-state']['service.'.$ventilation->id.'.extra.demand_driven']
+            $contentStructure['general-data']['current-state']['service.'.$ventilation->id.'.extra.demand_driven'],
+
+            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.amount_gas'],
+            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.amount_electricity'],
+            $contentStructure['high-efficiency-boiler']['-']['user_energy_habits.resident_count']
         );
 
         // filter out interest stuff from the interest page

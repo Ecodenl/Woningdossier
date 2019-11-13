@@ -8,7 +8,7 @@
             <div class="col-md-12">
                 <div class="text-center">
                     @include('cooperation.tool.includes.top-alerts')
-                    {{--@include('cooperation.tool.parts.progress')--}}
+                    @include('cooperation.tool.parts.progress')
                 </div>
             </div>
         </div>

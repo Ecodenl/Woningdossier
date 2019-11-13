@@ -114,6 +114,14 @@
                     ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'living_situation'])
                             @foreach($livingSituationValues as $lsKey => $lsValue)
 
+                                    <?php
+                                    Log::debug(
+
+                                        is_array(old('building_ventilations.living_situation',\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'living_situation',[])))
+                                            ? 'de living_situation van building ventilations is wel een array'
+                                            : 'de living_situation van building ventilations is geen array'
+                                    )
+                                    ?>
                                     <div class="row" style="margin-left:5px;"><div class="col-sm-12">
                                             <label class="checkbox" style="font-weight: normal;">
                                     <input type="checkbox"

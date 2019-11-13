@@ -1,4 +1,4 @@
-]@extends('cooperation.tool.layout')
+@extends('cooperation.tool.layout')
 
 @section('step_content')
 

@@ -14,6 +14,7 @@
     } else {
         $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name]);
     }
+
 ?>
 @if(!empty($commentsForCurrentStep))
 @foreach($commentsForCurrentStep as $inputSourceName => $comment)
@@ -23,7 +24,7 @@
             <?php $comment = $comment[$short]; ?>
         @endif
         {{-- The column can be a category, this will be the case when the comment is stored under a catergory --}}
-        @if(!empty($comment))
+        {{--@if(!empty($comment))--}}
         <div class="row">
             <div class="col-sm-12">
                 <div class="form-group add-space">
@@ -45,25 +46,6 @@
                 </div>
             </div>
         </div>
-        @endif
+        {{--@endif--}}
     @endforeach
-@endif
-@if($currentInputSourceHasNoPlacedComment)
-<div class="row">
-    <div class="col-sm-12">
-        <div class="form-group add-space">
-
-            <label for="" class=" control-label">
-                <i data-toggle="modal" data-target="#{{$helpId}}" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-                {{\App\Helpers\Translation::translate($translation.'.title')}}
-            </label>
-
-            <textarea name="{{$columnName}}" class="form-control">{{old($columnName)}}</textarea>
-
-            @component('cooperation.tool.components.help-modal')
-                {{\App\Helpers\Translation::translate($translation.'.help')}}
-            @endcomponent
-        </div>
-    </div>
-</div>
 @endif

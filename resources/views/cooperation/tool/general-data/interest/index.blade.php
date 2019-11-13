@@ -94,13 +94,10 @@
                 @endcomponent
             </div>
         </div>
-        <div class="pl-65">
 
-            @include('cooperation.tool.includes.comment', [
-                'translation' => 'cooperation/tool/general-data/interest.index.comment'
-            ])
-        </div>
-
+        @include('cooperation.tool.includes.comment', [
+            'translation' => 'cooperation/tool/general-data/interest.index.comment'
+        ])
     </form>
 @endsection
 

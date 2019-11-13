@@ -15,6 +15,7 @@ use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Services\UserInterestService;
+use App\Services\StepCommentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -63,22 +64,21 @@ class VentilationController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
-        //$step = Step::findByShort('ventilation');
-        // replace me with above
-        $step = Step::where('slug', '=', 'ventilation')->first();
+        /** @var Step $step */
+        $step = Step::findByShort('ventilation');
 
         $interestsInMeasureApplications = $request->input('user_interests', []);
         $yesOnShortNotice = Interest::orderBy('calculate_value')->first();
 
         foreach ($interestsInMeasureApplications as $measureApplicationId) {
-            //UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationId , $yesOnShortNotice->id);
+            UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationId , $yesOnShortNotice->id);
         }
 
         // Save ventilation data
         $building->buildingVentilations()->updateOrCreate(['input_source_id' => $inputSource->id, ], $request->input('building_ventilations'));
 
         $this->saveAdvices($request);
-        //StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
+        StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
         StepHelper::complete($step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
         $nextStep = StepHelper::getNextStep($building, $inputSource, $step);

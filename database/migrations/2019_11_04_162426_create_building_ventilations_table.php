@@ -34,7 +34,7 @@ class CreateBuildingVentilationsTable extends Migration
             'ventilation-information')->first();
         if ($step instanceof \stdClass) {
             DB::table('steps')->where('id', '=',
-                $step->id)->update(['slug' => 'ventilation']);
+                $step->id)->update(['slug' => 'ventilation', 'short' => 'ventilation']);
             // and remove the progresses as we need users to fill this step
             DB::table('completed_steps')->where('step_id', '=',
                 $step->id)->delete();

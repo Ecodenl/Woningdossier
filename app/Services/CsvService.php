@@ -540,6 +540,8 @@ class CsvService
         $structure = ToolHelper::getContentStructure();
 
         $leaveOutTheseDuplicates = [
+            'general-data.building-characteristics.building_features.building_type_id',
+            'general-data.building-characteristics.building_features.build_year',
             // hoofddak
             'roof-insulation.building_features.roof_type_id',
             // bewoners, gasverbruik en type ketel
@@ -565,7 +567,7 @@ class CsvService
                         // we will dot the array, map it so we can add the step name to it
                         $deeperContents = array_map(function ($content) use ($step, $subStep) {
                             return $step->name . ','.$subStep.': ' . $content;
-                        }, \Illuminate\Support\Arr::dot($contents, $stepSlug.'.'.$subStep.'.'.'.calculation.'));
+                        }, \Illuminate\Support\Arr::dot($contents, $stepSlug.'.'.$subStep.'.calculation.'));
 
                         $headers = array_merge($headers, $deeperContents);
                     } else {
@@ -591,8 +593,8 @@ class CsvService
          */
         foreach ($users as $user) {
             $rows[$user->building->id] = DumpService::totalDump($user, $inputSource, $anonymized, false)['user-data'];
-            // todo: fix the dif!
-            dd(array_diff_key($rows[0], $rows[1]));
+
+//            dd($rows);
         }
 
         return $rows;

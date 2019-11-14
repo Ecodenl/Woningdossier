@@ -616,8 +616,6 @@ class DumpService
         $crawlspaceElement = Element::where('short', 'crawlspace')->first();
 
         $boilerService = Service::where('short', 'boiler')->first();
-        $solarPanelService = Service::where('short', 'total-sun-panels')->first();
-        $heaterService = Service::where('short', 'sun-boiler')->first();
 
         // handle stuff for the wall insulation
         $wallInsulationBuildingElement = $buildingElements->where('element_id', $wallInsulationElement->id)->first();
@@ -634,6 +632,14 @@ class DumpService
             ->get()
             ->pluck('interest_id', 'interested_in_id')
             ->toArray();
+
+        $userInterestsForInsulatedGlazing = $user
+            ->userInterests()
+            ->forInputSource($inputSource)
+            ->where('interested_in_type', MeasureApplication::class)
+            ->get();
+        dd($userInterestsForInsulatedGlazing);
+
 
         /** @var Collection $buildingInsulatedGlazings */
         $buildingInsulatedGlazings = $building
@@ -724,39 +730,24 @@ class DumpService
             ],
         ];
 
-        // handle the solar panel stuff.
 
-        // get the user interests for the solar panels keyed by type
-        $userInterestsForSolarPanels = $user
-            ->userInterests()
-            ->forInputSource($inputSource)
-            ->where('interested_in_type', Step::class)
-            ->where('interested_in_id', Step::findByShort('solar-panels')->id)
-            ->select('interested_in_id', 'interest_id', 'interested_in_type')
-            ->get()
-            ->keyBy('interested_in_type')->map(function ($item) {
-                return [$item['interested_in_id'] => $item['interest_id']];
-            })->toArray();
+        // get the interest for the solar panels and create the array to send
+        $userInterestsForSolarPanels = $user->userInterestsForSpecificType(Step::class, Step::findByShort('solar-panels')->id, $inputSource)->first();
 
-        dd(
-            $userInterestsForSolarPanels,
-            $user->userInterestsForSpecificType(Step::class, Step::findByShort('solar-panels')->id, $inputSource)
-            ->get()->keyBy('interested_in_type')->map(function ($item) {
-                    return [$item['interested_in_id'] => $item['interest_id']];
-                })->toArray()
-        );
+        $userInterestsForSolarPanels = [
+            'user_interests' => [
+                'interest_id' => $userInterestsForSolarPanels->interest_id
+            ],
+        ];
 
         // handle the heater stuff
-        $userInterestsForHeater = $user
-            ->userInterests()
-            ->forInputSource($inputSource)
-            ->where('interested_in_type', 'service')
-            ->where('interested_in_id', $heaterService->id)
-            ->select('interested_in_id', 'interest_id', 'interested_in_type')
-            ->get()
-            ->keyBy('interested_in_type')->map(function ($item) {
-                return [$item['interested_in_id'] => $item['interest_id']];
-            })->toArray();
+        $userInterestsForHeater = $user->userInterestsForSpecificType(Step::class, Step::findByShort('heater')->id, $inputSource)->first();
+
+        $userInterestsForHeater = [
+            'user_interests' => [
+                'interest_id' => $userInterestsForHeater->interest_id
+            ],
+        ];
 
         $wallInsulationSavings = WallInsulation::calculate($building, $inputSource, $userEnergyHabit, [
             'cavity_wall' => $buildingFeature->cavity_wall ?? null,

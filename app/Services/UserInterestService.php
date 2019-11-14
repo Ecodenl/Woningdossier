@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\InputSource;
 use App\Models\User;
 use App\Models\UserInterest;
+use Illuminate\Support\Facades\Log;
 
 class UserInterestService {
 
@@ -18,6 +19,7 @@ class UserInterestService {
      */
     public static function save(User $user, InputSource $inputSource, $interestedInType, int $interestedInId, int $interestId)
     {
+        Log::debug($interestedInId . $interestedInType.$interestId);
         UserInterest::withoutGlobalScopes()->updateOrCreate(
             [
                 'user_id' => $user->id,

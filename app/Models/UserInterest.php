@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -49,6 +50,11 @@ class UserInterest extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function scopeInterestedInType(Builder $query, $type)
+    {
+        return $query->where('interested_in_type', $type);
     }
 
     /**

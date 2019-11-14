@@ -121,6 +121,8 @@ class RegisterController extends Controller
      */
     private function createNewUser($account, array $data): User
     {
+
+        \Illuminate\Support\Facades\Log::debug('account id for registration: '.$account->id);
         // Create the user for an account
         $user = User::create(
             [

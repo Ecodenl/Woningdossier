@@ -25,7 +25,7 @@ class UserObserver
         }
     }
 
-    public function saved(User $user)
+    public function updated(User $user)
     {
         \App\Helpers\Cache\Account::wipe($user->account->id);
     }

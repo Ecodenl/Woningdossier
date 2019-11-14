@@ -40,9 +40,7 @@ use App\Models\Service;
 use App\Models\Step;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
-use App\Models\UserInterest;
 use App\Scopes\CooperationScope;
-use function Couchbase\defaultDecoder;
 use Illuminate\Support\Collection;
 
 class DumpService

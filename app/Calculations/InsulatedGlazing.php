@@ -43,6 +43,7 @@ class InsulatedGlazing
         ];
 
         $userInterests = $calculateData['user_interests'] ?? [];
+
         $buildingInsulatedGlazings = $calculateData['building_insulated_glazings'] ?? [];
 
         foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazingsData) {
@@ -51,13 +52,10 @@ class InsulatedGlazing
             $buildingHeating = BuildingHeating::find($buildingHeatingId);
             $insulatedGlazingId = array_key_exists('insulated_glazing_id', $buildingInsulatedGlazingsData) ? $buildingInsulatedGlazingsData['insulated_glazing_id'] : 0;
             $insulatedGlazing = InsulatingGlazing::find($insulatedGlazingId);
-            $interestId = array_key_exists($measureApplicationId, $userInterests) ? $userInterests[$measureApplicationId] : 0;
+            $interestId = $userInterests[$measureApplicationId]['interest_id'] ?? null;
             $interest = Interest::find($interestId);
 
-            if ($measureApplication instanceof MeasureApplication &&
-                $buildingHeating instanceof BuildingHeating &&
-                $interest instanceof Interest &&
-                array_key_exists($measureApplicationId, $userInterests) && $userInterests[$measureApplicationId] <= 3) {
+            if ($measureApplication instanceof MeasureApplication && $buildingHeating instanceof BuildingHeating && $interest instanceof Interest && $interest->calculate_value <= 3) {
                 $gasSavings = InsulatedGlazingCalculator::calculateRawGasSavings(
                     NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']),
                     $measureApplication,

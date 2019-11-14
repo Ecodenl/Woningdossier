@@ -21,8 +21,6 @@ use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\CooperationScope;
-use App\Scopes\GetValueScope;
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
 class CsvService
@@ -540,6 +538,8 @@ class CsvService
         $structure = ToolHelper::getContentStructure();
 
         $leaveOutTheseDuplicates = [
+            'general-data.building-characteristics.building_features.building_type_id',
+            'general-data.building-characteristics.building_features.build_year',
             // hoofddak
             'roof-insulation.building_features.roof_type_id',
             // bewoners, gasverbruik en type ketel
@@ -563,24 +563,28 @@ class CsvService
                     if ('calculations' == $tableWithColumnOrAndId) {
                         // If you want to go ahead and translate in a different namespace, do it here
                         // we will dot the array, map it so we can add the step name to it
-                        $deeperContents = array_map(function ($content) use ($step) {
-                            return $step->name . ': ' . $content;
-                        }, \Illuminate\Support\Arr::dot($contents, $stepSlug . '.calculation.'));
+                        $deeperContents = array_map(function ($content) use ($step, $subStep) {
+                            return $step->name . ','.$subStep.': ' . $content;
+                        }, \Illuminate\Support\Arr::dot($contents, $stepSlug.'.'.$subStep.'.calculation.'));
 
                         $headers = array_merge($headers, $deeperContents);
                     } else {
-                        $headers[$stepSlug . '.' . $tableWithColumnOrAndId] = $step->name . ': ' . str_replace([
+                        $subStepName = optional(Step::findByShort($subStep))->name;
+                        $headers[$stepSlug.'.'.$subStep. '.' . $tableWithColumnOrAndId] = $step->name . ', '.$subStepName.': ' . str_replace([
                                 '&euro;', '€',
                             ], ['euro', 'euro'], $contents['label']);
                     }
                 }
             }
+
         }
+
 
         foreach ($leaveOutTheseDuplicates as $leaveOut) {
             unset($headers[$leaveOut]);
         }
 
+        dd($headers);
         $rows[] = $headers;
 
         /**
@@ -590,6 +594,7 @@ class CsvService
          */
         foreach ($users as $user) {
             $rows[$user->building->id] = DumpService::totalDump($user, $inputSource, $anonymized, false)['user-data'];
+            dd($rows);
         }
 
         return $rows;

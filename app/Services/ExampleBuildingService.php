@@ -23,25 +23,10 @@ use App\Models\ElementValue;
 use App\Models\EnergyLabel;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
-use App\Models\FacadeDamagedPaintwork;
-use App\Models\FacadePlasteredSurface;
-use App\Models\FacadeSurface;
 use App\Models\InputSource;
-use App\Models\InsulatingGlazing;
-use App\Models\Interest;
-use App\Models\MeasureApplication;
-use App\Models\PaintworkStatus;
-use App\Models\PvPanelOrientation;
-use App\Models\RoofTileStatus;
-use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\UserEnergyHabit;
-use App\Models\UserInterest;
-use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
-use function Couchbase\defaultDecoder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 
 class ExampleBuildingService
 {

@@ -193,7 +193,9 @@ class InsulatedGlazingController extends Controller
         $inputSourceId = $inputSource->id;
 
         $userInterests = $request->input('user_interests');
-        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+        foreach ($userInterests as $interestInId => $userInterest) {
+            UserInterestService::save($user, $inputSource, $userInterest['interested_in_type'], $interestInId, $userInterest['interest_id']);
+        }
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
@@ -210,9 +212,6 @@ class InsulatedGlazingController extends Controller
             $m2 = isset($buildingInsulatedGlazing['m2']) ? $buildingInsulatedGlazing['m2'] : 0;
             $windows = isset($buildingInsulatedGlazing['windows']) ? $buildingInsulatedGlazing['windows'] : 0;
 
-            // The interest for a measure
-            $userInterestId = $request->input('user_interests.'.$measureApplicationId.'');
-
             // Update or Create the buildingInsulatedGlazing
             BuildingInsulatedGlazing::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
                 [
@@ -227,37 +226,7 @@ class InsulatedGlazingController extends Controller
                     'windows' => $windows,
                 ]
             );
-            // We'll create the user interests for the measures or update it
-            UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-                [
-                    'user_id' => $user->id,
-                    'input_source_id'    => $inputSourceId,
-                    'interested_in_type' => 'measure_application',
-                    'interested_in_id' => $measureApplicationId,
-                ],
-                [
-                    'interest_id' => $userInterestId,
-                ]
-            );
-            // collect all the selected interests
-            $interests->push(Interest::find($userInterestId));
         }
-
-        // get the highest interest level (which is the lowst calculate value.)
-        $highestInterestLevel = $interests->unique('id')->min('calculate_value');
-        // update the livingroomwindow interest level based of the highest interest level for the measure.
-        $livingRoomWindowsElement = Element::where('short', 'living-rooms-windows')->first();
-        UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'user_id'            => $user->id,
-                'interested_in_type' => 'element',
-                'input_source_id'    => $inputSourceId,
-                'interested_in_id'   => $livingRoomWindowsElement->id,
-            ],
-            [
-                'interest_id'        => $highestInterestLevel,
-            ]
-        );
 
         // saving the main building elements
         $elements = $request->input('building_elements', []);

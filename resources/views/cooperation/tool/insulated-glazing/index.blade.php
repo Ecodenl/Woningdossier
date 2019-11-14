@@ -16,9 +16,6 @@
     ?>
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
-        @include('cooperation.tool.includes.interested', [
-            'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
-        ])
 
         <div id="main-glass-questions">
             @foreach($measureApplications as $i => $measureApplication)
@@ -44,12 +41,11 @@
 
                         @endif
 
-                        @component('cooperation.tool.components.step-question', 
-                        ['id' => 'user_interests.'.$measureApplication->id, 'translation' => 'insulated-glazing.'.$measureApplication->short.'.title', 'required' => false])
+                        @component('cooperation.tool.components.step-question', ['id' => 'user_interests.'.$measureApplication->id, 'translation' => 'insulated-glazing.'.$measureApplication->short.'.title', 'required' => false])
 
-                            @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_id', $measureApplication->id),  'userInputColumn' => 'interest_id'])
-                                <select id="{{ $measureApplication->id }}" class="user-interest form-control" name="user_interests[{{ $measureApplication->id }}]">
+                            @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_id', $measureApplication->id),  'userInputColumn' => 'interest_id'])
+                                <input type="hidden" name="user_interests[{{ $measureApplication->id }}][interested_in_type]" value="{{get_class($measureApplication)}}">
+                                <select id="{{ $measureApplication->id }}" class="user-interest form-control" name="user_interests[{{ $measureApplication->id }}][interest_id]">
                                     <?php
                                         /** @var \Illuminate\Support\Collection $interests */
                                         $oldInterestDataIsAvailable = $interests->contains('id', old('user_interests.' . $measureApplication->id));

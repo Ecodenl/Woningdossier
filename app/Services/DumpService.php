@@ -10,6 +10,7 @@ use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
 use App\Calculations\WallInsulation;
 use App\Helpers\FileFormats\CsvHelper;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Helpers\ToolHelper;
 use App\Helpers\Translation;
@@ -39,7 +40,6 @@ use App\Models\Service;
 use App\Models\Step;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
-use App\Models\UserInterest;
 use App\Scopes\CooperationScope;
 use Illuminate\Support\Collection;
 
@@ -97,6 +97,8 @@ class DumpService
         }
 
         $leaveOutTheseDuplicates = [
+            'general-data.building-characteristics.building_features.building_type_id',
+            'general-data.building-characteristics.building_features.build_year',
             // hoofddak
             'roof-insulation.building_features.roof_type_id',
             // bewoners, gasverbruik en type ketel
@@ -119,11 +121,11 @@ class DumpService
                 foreach ($subStepStructure as $tableWithColumnOrAndId => $contents) {
                     if ('calculations' == $tableWithColumnOrAndId) {
                         // If you want to go ahead and translate in a different namespace, do it here
-                        $deeperContents = \Illuminate\Support\Arr::dot($contents, $stepSlug . '.calculation.');
+                        $deeperContents = \Illuminate\Support\Arr::dot($contents, $stepSlug . '.' . $subStep . '.calculation.');
 
                         $headers = array_merge($headers, $deeperContents);
                     } else {
-                        $headers[$stepSlug . '.' . $tableWithColumnOrAndId] = str_replace([
+                        $headers[$stepSlug . '.' . $subStep . '.' . $tableWithColumnOrAndId] = str_replace([
                             '&euro;', '€',
                         ], ['euro', 'euro'], $contents['label']);
                     }
@@ -203,26 +205,28 @@ class DumpService
         $calculateData = static::getCalculateData($user, $inputSource);
 
         // one correction because of bad headers
-        if (isset($calculateData['heater']['production_heat']) && !is_array($calculateData['heater']['production_heat'])) {
-            if (!isset($calculateData['heater']['production_heat']['title'])) {
-                $calculateData['heater']['production_heat'] = ['title' => $calculateData['heater']['production_heat']];
+        if (isset($calculateData['heater']['-']['production_heat']) && !is_array($calculateData['heater']['-']['production_heat'])) {
+            if (!isset($calculateData['heater']['-']['production_heat']['title'])) {
+                $calculateData['heater']['-']['production_heat'] = ['title' => $calculateData['heater']['-']['production_heat']];
             }
         }
 
         // loop through the headers
         foreach ($headers as $tableWithColumnOrAndIdKey => $translatedInputName) {
             if (is_string($tableWithColumnOrAndIdKey)) {
+
                 // explode it so we can do stuff with it.
                 $tableWithColumnOrAndId = explode('.', $tableWithColumnOrAndIdKey);
 
                 // collect some basic info
                 // which will apply to (most) cases.
                 $step = $tableWithColumnOrAndId[0];
-                $table = $tableWithColumnOrAndId[1];
-                $columnOrId = $tableWithColumnOrAndId[2];
+                $subStep = $tableWithColumnOrAndId[1];
+                $table = $tableWithColumnOrAndId[2];
+                $columnOrId = $tableWithColumnOrAndId[3];
 
-                $maybe1 = isset($tableWithColumnOrAndId[3]) ? $tableWithColumnOrAndId[3] : '';
-                $maybe2 = isset($tableWithColumnOrAndId[4]) ? $tableWithColumnOrAndId[4] : '';
+                $maybe1 = isset($tableWithColumnOrAndId[4]) ? $tableWithColumnOrAndId[4] : '';
+                $maybe2 = isset($tableWithColumnOrAndId[5]) ? $tableWithColumnOrAndId[5] : '';
                 //dump("Step: " . $step . " | table: " . $table . " | column or ID: " . $columnOrId . " | column: " . $maybe1 . " | costs or year: " . $maybe2);
 
                 // determine what column we need to query on to get the results for the user.
@@ -238,23 +242,24 @@ class DumpService
                 if ('calculation' == $table) {
                     // works in most cases, otherwise they will be renamed etc.
                     $column = $columnOrId;
-                    $costsOrYear = $tableWithColumnOrAndId[3] ?? null;
+                    $costsOrYear = $tableWithColumnOrAndId[4] ?? null;
 
                     switch ($step) {
                         case 'roof-insulation':
-                            $roofCategory = $tableWithColumnOrAndId[2];
-                            $column = $tableWithColumnOrAndId[3];
-                            $costsOrYear = $tableWithColumnOrAndId[4] ?? null;
+                            $roofCategory = $tableWithColumnOrAndId[3];
+                            $column = $tableWithColumnOrAndId[4];
+                            $costsOrYear = $tableWithColumnOrAndId[5] ?? null;
 
-                            $calculationResult = is_null($costsOrYear) ? $calculateData['roof-insulation'][$roofCategory][$column] ?? '' : $calculateData['roof-insulation'][$roofCategory][$column][$costsOrYear] ?? '';
+                            $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$subStep][$roofCategory][$column] ?? '' : $calculateData[$step][$subStep][$roofCategory][$column][$costsOrYear] ?? '';
                             break;
                         default:
-                            $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$column] : $calculateData[$step][$column][$costsOrYear] ?? '';
+                            $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$subStep][$column] : $calculateData[$step][$subStep][$column][$costsOrYear] ?? '';
                             break;
                     }
 
                     $calculationResult = self::formatFieldOutput($column, $calculationResult, $maybe1, $maybe2);
 
+//                    dd($calculationResult, $tableWithColumnOrAndIdKey, $column, $calculateData[$step][$subStep][$column]);
                     //dump("calculationResult: " . $calculationResult . " for step " . $step);
 
                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $calculationResult ?? '';
@@ -268,10 +273,6 @@ class DumpService
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->roofType instanceof RoofType ? $buildingFeature->roofType->name : '';
                                 break;
 
-                            case 'building_type_id':
-                            case 'build_year':
-                                //$row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->buildingType->name ?? '';
-                                break;
                             case 'energy_label_id':
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->energyLabel instanceof EnergyLabel ? $buildingFeature->energyLabel->name : '';
                                 break;
@@ -348,9 +349,6 @@ class DumpService
                                             $status = RoofTileStatus::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
                                             $row[$buildingId][$tableWithColumnOrAndIdKey] = ($status instanceof RoofTileStatus) ? $status->name : '';
                                         }
-                                        if ('measure_application_id' == $extraKey) {
-//                                            dd($extraKey, $buildingRoofType, $buildingRoofType->extra[$extraKey], $buildingRoofType->extra[$extraKey] == null && $extraKey == 'measure_application_id');
-                                        }
                                         // The measure application id, in this case. can be 0, this means the option: "niet" has been chosen the option is not saved as a measure application
                                         if ('measure_application_id' == $extraKey) {
                                             $measureApplication = MeasureApplication::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
@@ -371,20 +369,11 @@ class DumpService
                 }
 
                 // handle the user_interest table and its columns.
-                if (in_array($table, ['user_interest', 'user_interests'])) {
-                    if ('insulated-glazing' == $step) {
-                        $interestInType = 'measure_application';
-                        $interestInId = $tableWithColumnOrAndId[2];
-                    } else {
-                        $interestInType = $columnOrId;
-                        $interestInId = $tableWithColumnOrAndId[3];
-                    }
+                if ($table == 'user_interests') {
+                    $interestInType = $tableWithColumnOrAndId[3];
+                    $interestInId = $tableWithColumnOrAndId[4];
 
-                    $userInterest = UserInterest::where($whereUserOrBuildingId)
-                        ->where('interested_in_id', $interestInId)
-                        ->where('interested_in_type', $interestInType)
-                        ->forInputSource($inputSource)
-                        ->first();
+                    $userInterest = $user->userInterestsForSpecificType($interestInType, $interestInId, $inputSource)->first();
 
                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $userInterest->interest->name ?? '';
                 }
@@ -441,7 +430,7 @@ class DumpService
                 // handle the building_insulated_glazing table and its columns.
                 if ('building_insulated_glazings' == $table) {
                     $measureApplicationId = $columnOrId;
-                    $column = $tableWithColumnOrAndId[3];
+                    $column = $tableWithColumnOrAndId[4];
 
                     /** @var BuildingInsulatedGlazing $buildingInsulatedGlazing */
                     $buildingInsulatedGlazing = BuildingInsulatedGlazing::where($whereUserOrBuildingId)
@@ -619,24 +608,17 @@ class DumpService
         $crawlspaceElement = Element::where('short', 'crawlspace')->first();
 
         $boilerService = Service::where('short', 'boiler')->first();
-        $solarPanelService = Service::where('short', 'total-sun-panels')->first();
-        $heaterService = Service::where('short', 'sun-boiler')->first();
 
         // handle stuff for the wall insulation
         $wallInsulationBuildingElement = $buildingElements->where('element_id', $wallInsulationElement->id)->first();
 
-        // handle the stuff for the insulated glazing
-        // the user interest on the insulated glazing
-        // key = measure_application_id
-        // val = interest_id
         $userInterestsForInsulatedGlazing = $user
             ->userInterests()
+            ->select('interest_id', 'interested_in_id')
             ->forInputSource($inputSource)
-            ->where('interested_in_type', 'measure_application')
-            ->select('interested_in_id', 'interest_id')
-            ->get()
-            ->pluck('interest_id', 'interested_in_id')
-            ->toArray();
+            ->where('interested_in_type', MeasureApplication::class)
+            ->get()->keyBy('interested_in_id')->toArray();
+
 
         /** @var Collection $buildingInsulatedGlazings */
         $buildingInsulatedGlazings = $building
@@ -727,31 +709,13 @@ class DumpService
             ],
         ];
 
-        // handle the solar panel stuff.
 
-        // get the user interests for the solar panels keyed by type
-        $userInterestsForSolarPanels = $user
-            ->userInterests()
-            ->forInputSource($inputSource)
-            ->where('interested_in_type', 'service')
-            ->where('interested_in_id', $solarPanelService->id)
-            ->select('interested_in_id', 'interest_id', 'interested_in_type')
-            ->get()
-            ->keyBy('interested_in_type')->map(function ($item) {
-                return [$item['interested_in_id'] => $item['interest_id']];
-            })->toArray();
+        // get the interest for the solar panels and create the array to send
+        $userInterestsForSolarPanels = $user->userInterestsForSpecificType(Step::class, Step::findByShort('solar-panels')->id, $inputSource)->first();
 
         // handle the heater stuff
-        $userInterestsForHeater = $user
-            ->userInterests()
-            ->forInputSource($inputSource)
-            ->where('interested_in_type', 'service')
-            ->where('interested_in_id', $heaterService->id)
-            ->select('interested_in_id', 'interest_id', 'interested_in_type')
-            ->get()
-            ->keyBy('interested_in_type')->map(function ($item) {
-                return [$item['interested_in_id'] => $item['interest_id']];
-            })->toArray();
+        $userInterestsForHeater = $user->userInterestsForSpecificType(Step::class, Step::findByShort('heater')->id, $inputSource)->first();
+
 
         $wallInsulationSavings = WallInsulation::calculate($building, $inputSource, $userEnergyHabit, [
             'cavity_wall' => $buildingFeature->cavity_wall ?? null,
@@ -763,6 +727,7 @@ class DumpService
             'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id ?? null,
             'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
         ]);
+//        dd($wallInsulationSavings);
 
         $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit, [
             'user_interests' => $userInterestsForInsulatedGlazing,
@@ -794,7 +759,10 @@ class DumpService
             'user_energy_habits' => [
                 'amount_electricity' => $userEnergyHabit->amount_electricity ?? null,
             ],
-            'interest' => $userInterestsForSolarPanels,
+            'user_interests' => [
+                'interested_in_id' =>  optional($userInterestsForSolarPanels)->interested_in_id,
+                'interest_id' => optional($userInterestsForSolarPanels)->interest_id
+            ]
         ]);
 
         $heaterSavings = Heater::calculate($building, $userEnergyHabit, [
@@ -804,17 +772,34 @@ class DumpService
             'user_energy_habits' => [
                 'water_comfort_id' => $userEnergyHabit->water_comfort_id ?? null,
             ],
-            'interest' => $userInterestsForHeater,
+            'user_interests' => [
+                'interested_in_id' =>  optional($userInterestsForHeater)->interested_in_id,
+                'interest_id' => optional($userInterestsForHeater)->interest_id
+            ]
         ]);
 
         return [
-            'wall-insulation' => $wallInsulationSavings,
-            'insulated-glazing' => $insulatedGlazingSavings,
-            'floor-insulation' => $floorInsulationSavings,
-            'roof-insulation' => $roofInsulationSavings,
-            'high-efficiency-boiler' => $highEfficiencyBoilerSavings,
-            'solar-panels' => $solarPanelSavings,
-            'heater' => $heaterSavings,
+            'wall-insulation' => [
+                '-' => $wallInsulationSavings,
+            ],
+            'insulated-glazing' => [
+                '-' => $insulatedGlazingSavings,
+            ],
+            'floor-insulation' => [
+                '-' => $floorInsulationSavings,
+            ],
+            'roof-insulation' => [
+                '-' => $roofInsulationSavings,
+            ],
+            'high-efficiency-boiler' => [
+                '-' => $highEfficiencyBoilerSavings,
+            ],
+            'solar-panels' => [
+                '-' => $solarPanelSavings,
+            ],
+            'heater' => [
+                '-' => $heaterSavings,
+            ],
         ];
     }
 

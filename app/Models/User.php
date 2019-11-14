@@ -79,6 +79,14 @@ class User extends Model implements AuthorizableContract
         return $this->hasMany(UserInterest::class);
     }
 
+    /**
+     * Scope like method because of relationships
+     *
+     * @param $interestedInType
+     * @param $interestedInId
+     * @param InputSource|null $inputSource
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function userInterestsForSpecificType($interestedInType, $interestedInId, InputSource $inputSource = null)
     {
         if ($inputSource instanceof InputSource) {

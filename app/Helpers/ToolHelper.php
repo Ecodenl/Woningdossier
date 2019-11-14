@@ -21,6 +21,7 @@ use App\Models\PvPanelOrientation;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
+use App\Models\Ventilation;
 use App\Models\WoodRotStatus;
 use Illuminate\Support\Collection;
 
@@ -111,11 +112,35 @@ class ToolHelper
         $heater = Service::where('short', 'sun-boiler')->first();
         $heaterOptionsAngle = ['' => '-'] + HeaterKeyFigures::getAngles();
 
+
+
         // Common
         $interests = Interest::orderBy('order')->get();
         $interestOptions = static::createOptions($interests);
 
         $structure = [
+            // todo: uitwerken!
+            // dit word met de merge waarschijnlijk compleet overschreven dus volgorde maakt voor nu niet uit
+            // word handmatige copy naar de goeie plek in accept.
+            'ventilation' => [
+                '-' => [
+                    // ex:
+                    'table.column'=> [
+                        'label' => __('cooperation/tool/ventilation.index.how.title'),
+                        'type' => 'multiselect',
+                        'options' => static::createOptions($woodElements->values()->orderBy('order')->get(), 'value'),
+                    ],
+                    'table.column'=> [
+                        'label' => __('cooperation/tool/ventilation.index.how.title'),
+                        'type' => 'multiselect',
+                        'options' => [
+                            1 => __('woningdossier.cooperation.radiobutton.yes'),
+                            2 => __('woningdossier.cooperation.radiobutton.no'),
+                            0 => __('woningdossier.cooperation.radiobutton.unknown'),
+                        ],
+                    ],
+                ],
+            ],
             'general-data' => [
                 'building_features.surface'                     => [
                     'label' => Translation::translate('general-data.building-type.what-user-surface.title'),

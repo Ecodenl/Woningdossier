@@ -584,7 +584,6 @@ class CsvService
             unset($headers[$leaveOut]);
         }
 
-        dd($headers);
         $rows[] = $headers;
 
         /**
@@ -594,7 +593,6 @@ class CsvService
          */
         foreach ($users as $user) {
             $rows[$user->building->id] = DumpService::totalDump($user, $inputSource, $anonymized, false)['user-data'];
-            dd($rows);
         }
 
         return $rows;

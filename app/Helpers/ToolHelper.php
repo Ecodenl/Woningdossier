@@ -44,6 +44,7 @@ class ToolHelper
 
     public static function getContentStructure()
     {
+        $steps = Step::all();
         // General data - Elements (that are not queried later on step basis)
         $livingRoomsWindows = Element::where('short', 'living-rooms-windows')->first();
         $sleepingRoomsWindows = Element::where('short', 'sleeping-rooms-windows')->first();
@@ -115,6 +116,9 @@ class ToolHelper
         // Common
         $interests = Interest::orderBy('order')->get();
         $interestOptions = static::createOptions($interests);
+
+        $stepUserInterestKey = 'user_interests.'.Step::class.'.';
+        $measureApplicationInterestKey = 'user_interests.'.MeasureApplication::class.'.';
 
         $structure = [
             'general-data' => [
@@ -320,7 +324,7 @@ class ToolHelper
 
             'wall-insulation' => [
                 '-' => [
-                    'user_interests.element.' . $wallInsulation->id => [
+                    $stepUserInterestKey.$wallInsulation->id.'interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $wallInsulation->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -448,7 +452,7 @@ class ToolHelper
 
             'floor-insulation' => [
                 '-' => [
-                    'user_interests.element.' . $floorInsulation->id => [
+                    $stepUserInterestKey.Step::findByShort('floor-insulation')->id.'.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $floorInsulation->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -492,7 +496,7 @@ class ToolHelper
 
             'roof-insulation' => [
                 '-' => [
-                    'user_interests.element.' . $roofInsulation->id => [
+                    $stepUserInterestKey.Step::findByShort('roof-insulation')->id.'.interest_id'=> [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $roofInsulation->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -510,7 +514,7 @@ class ToolHelper
 
             'high-efficiency-boiler' => [
                 '-' => [
-                    'user_interests.service.' . $hrBoiler->id => [
+                    $stepUserInterestKey.Step::findByShort('high-efficiency-boiler')->id.'.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $hrBoiler->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -550,7 +554,7 @@ class ToolHelper
 
             'solar-panels' => [
                 '-' => [
-                    'user_interests.service.' . $solarPanels->id => [
+                    $stepUserInterestKey.Step::findByShort('solar-panels')->id.'.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $solarPanels->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -597,7 +601,7 @@ class ToolHelper
 
             'heater' => [
                 '-' => [
-                    'user_interests.service.' . $heater->id => [
+                    $stepUserInterestKey.Step::findByShort('heater')->id.'.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $heater->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -656,7 +660,7 @@ class ToolHelper
 
         foreach ($steps as $step) {
 //            <select id="user_interest" class="form-control" name="user_interests[{{$step->id}}][interest_id]">
-            $structure['general-data']['interest']['user_interests.' . $step->id . '.interest_id'] = [
+            $structure['general-data']['interest'][$stepUserInterestKey.$step->id.'.interest_id'] = [
                 'label' => $step->name,
                 'type' => 'select',
                 'options' => $interestOptions,
@@ -697,7 +701,7 @@ class ToolHelper
         foreach ($igShorts as $igShort) {
             $measureApplication = MeasureApplication::where('short', $igShort)->first();
             if ($measureApplication instanceof MeasureApplication) {
-                $structure['insulated-glazing']['-']['user_interests.' . $measureApplication->id] = [
+                $structure['insulated-glazing']['-'][$measureApplicationInterestKey.$measureApplication->id.'.interest_id'] = [
                     //'label' => 'Interest in '.$measureApplication->measure_name,
                     'label' => __('general.change-interested.title',
                         ['item' => $measureApplication->measure_name]),

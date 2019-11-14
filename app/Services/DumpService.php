@@ -371,20 +371,11 @@ class DumpService
                 }
 
                 // handle the user_interest table and its columns.
-                if (in_array($table, ['user_interest', 'user_interests'])) {
-                    if ('insulated-glazing' == $step) {
-                        $interestInType = 'measure_application';
-                        $interestInId = $tableWithColumnOrAndId[3];
-                    } else {
-                        $interestInType = $columnOrId;
-                        $interestInId = $tableWithColumnOrAndId[4];
-                    }
+                if ($table == 'user_interests') {
+                    $interestInType = $tableWithColumnOrAndId[3];
+                    $interestInId = $tableWithColumnOrAndId[4];
 
-                    $userInterest = UserInterest::where($whereUserOrBuildingId)
-                        ->where('interested_in_id', $interestInId)
-                        ->where('interested_in_type', $interestInType)
-                        ->forInputSource($inputSource)
-                        ->first();
+                    $userInterest = $user->userInterestsForSpecificType($interestInType, $interestInId, $inputSource)->first();
 
                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $userInterest->interest->name ?? '';
                 }
@@ -771,8 +762,8 @@ class DumpService
                 'amount_electricity' => $userEnergyHabit->amount_electricity ?? null,
             ],
             'user_interests' => [
-                'interested_in_id' =>  $userInterestsForSolarPanels->interested_in_id,
-                'interest_id' => $userInterestsForSolarPanels->interest_id
+                'interested_in_id' =>  optional($userInterestsForSolarPanels)->interested_in_id,
+                'interest_id' => optional($userInterestsForSolarPanels)->interest_id
             ]
         ]);
 
@@ -784,8 +775,8 @@ class DumpService
                 'water_comfort_id' => $userEnergyHabit->water_comfort_id ?? null,
             ],
             'user_interests' => [
-                'interested_in_id' =>  $userInterestsForHeater->interested_in_id,
-                'interest_id' => $userInterestsForHeater->interest_id
+                'interested_in_id' =>  optional($userInterestsForHeater)->interested_in_id,
+                'interest_id' => optional($userInterestsForHeater)->interest_id
             ]
         ]);
 

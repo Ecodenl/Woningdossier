@@ -45,8 +45,6 @@ class FloorInsulationController extends Controller
      */
     public function index()
     {
-        $x = CsvService::totalReport(HoomdossierSession::getCooperation(true), HoomdossierSession::getInputSource(true), false);
-        dd($x);
         $typeIds = [4];
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);

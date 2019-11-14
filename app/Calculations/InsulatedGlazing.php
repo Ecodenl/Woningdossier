@@ -52,7 +52,7 @@ class InsulatedGlazing
             $buildingHeating = BuildingHeating::find($buildingHeatingId);
             $insulatedGlazingId = array_key_exists('insulated_glazing_id', $buildingInsulatedGlazingsData) ? $buildingInsulatedGlazingsData['insulated_glazing_id'] : 0;
             $insulatedGlazing = InsulatingGlazing::find($insulatedGlazingId);
-            $interestId = $userInterests[$measureApplicationId]['interest_id'];
+            $interestId = $userInterests[$measureApplicationId]['interest_id'] ?? null;
             $interest = Interest::find($interestId);
 
             if ($measureApplication instanceof MeasureApplication && $buildingHeating instanceof BuildingHeating && $interest instanceof Interest && $interest->calculate_value <= 3) {

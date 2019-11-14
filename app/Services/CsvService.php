@@ -23,6 +23,7 @@ use App\Models\UserActionPlanAdvice;
 use App\Scopes\CooperationScope;
 use App\Scopes\GetValueScope;
 use Carbon\Carbon;
+use function Couchbase\defaultDecoder;
 use Illuminate\Support\Collection;
 
 class CsvService
@@ -571,12 +572,14 @@ class CsvService
 
                         $headers = array_merge($headers, $deeperContents);
                     } else {
-                        $headers[$stepSlug.'.'.$subStep. '.' . $tableWithColumnOrAndId] = $step->name . ': ' . str_replace([
+                        $subStepName = optional(Step::findByShort($subStep))->name;
+                        $headers[$stepSlug.'.'.$subStep. '.' . $tableWithColumnOrAndId] = $step->name . ', '.$subStepName.': ' . str_replace([
                                 '&euro;', '€',
                             ], ['euro', 'euro'], $contents['label']);
                     }
                 }
             }
+
         }
 
 
@@ -584,6 +587,7 @@ class CsvService
             unset($headers[$leaveOut]);
         }
 
+        dd($headers);
         $rows[] = $headers;
 
         /**
@@ -592,9 +596,7 @@ class CsvService
          * @var User
          */
         foreach ($users as $user) {
-            dd(DumpService::totalDump($user, $inputSource, $anonymized, false));
             $rows[$user->building->id] = DumpService::totalDump($user, $inputSource, $anonymized, false)['user-data'];
-
             dd($rows);
         }
 

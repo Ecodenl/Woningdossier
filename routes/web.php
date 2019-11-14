@@ -156,7 +156,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
                 Route::get('/', 'ToolController@index')->name('index');
 
-                Route::post('general-data/apply-example-building', 'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
 //                Route::resource('building-detail', 'BuildingDetailController', ['only' => ['index', 'store']]);
 
                 Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
@@ -170,6 +169,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::group(['namespace' => 'GeneralData'], function () {
                         Route::group(['prefix' => 'gebouw-kenmerken', 'as' => 'building-characteristics.'], function () {
                             Route::get('', 'BuildingCharacteristicsController@index')->name('index');
+                            Route::post('apply-example-building', 'BuildingCharacteristicsController@applyExampleBuilding')->name('apply-example-building');
                             Route::get('get-qualified-example-buildings', 'BuildingCharacteristicsController@qualifiedExampleBuildings')->name('qualified-example-buildings');
                             Route::post('', 'BuildingCharacteristicsController@store')->name('store');
                         });

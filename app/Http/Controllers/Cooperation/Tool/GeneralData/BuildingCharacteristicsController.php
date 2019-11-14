@@ -148,6 +148,41 @@ class BuildingCharacteristicsController extends Controller
         }
     }
 
+    public function applyExampleBuilding(Request $request)
+    {
+        $exampleBuildingId = $request->input('buildings.example_building_id', null);
+
+        $building = HoomdossierSession::getBuilding(true);
+        $buildYear = $building->getBuildYear();
+
+        // There is one strange option: "Er is geen passende voorbeeldwoning"
+        if (is_null($exampleBuildingId) && ! is_null($buildYear)) {
+            // No fitting? Try to set the generic.
+            $btype = $building->getBuildingType(HoomdossierSession::getInputSource(true));
+            if ($btype instanceof BuildingType) {
+                $generic = ExampleBuilding::generic()->where('building_type_id', $btype->id)->first();
+                if ($generic instanceof ExampleBuilding) {
+                    $exampleBuildingId = $generic->id;
+                }
+            }
+            $building->example_building_id = null;
+            $building->save();
+        }
+
+        if (! is_null($exampleBuildingId) && ! is_null($buildYear)) {
+            $exampleBuilding = ExampleBuilding::forAnyOrMyCooperation()->where('id', $exampleBuildingId)->first();
+            if ($exampleBuilding instanceof ExampleBuilding) {
+                $building->exampleBuilding()->associate($exampleBuilding);
+                $building->save();
+                ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
+
+                return response()->json();
+            }
+        }
+        // Something went wrong!
+        return response()->json([], 500);
+    }
+
 
     /**
      * Get a example building based on the building type.

@@ -63,13 +63,6 @@
                                                 @endif
                                                 value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
                                     @endforeach
-                                    <option value=""
-                                            <?php
-                                            // if the example building is not in the $exampleBuildings collection,
-                                            // we select this empty value as default.
-                                            $currentNotInExampleBuildings = !$exampleBuildings->contains('id', '=', $building->example_building_id);
-                                            ?>
-                                            @if(empty(old('buildings.example_building_id', $building->example_building_id)) || $currentNotInExampleBuildings) selected="selected"@endif >{{ \App\Helpers\Translation::translate('cooperation/tool/general-data/building-characteristics.index.example-building.no-match.title') }}</option>
                                 </select>
 
                             @endcomponent
@@ -243,13 +236,19 @@
             var exampleBuilding = $('#example_building_id');
             var defaultOptionForExampleBuilding = exampleBuilding.find('option').first();
 
+            var previous_bt = "{{ $prevBt }}";
+            var previous_by = "{{ $prevBy }}";
+
+            var previous_eb = parseInt(exampleBuilding.val());
+            previous_eb = isNaN(previous_eb) ? "" : previous_eb;
+
+
             $(window).keydown(function (event) {
                 if (event.keyCode === 13) {
                     event.preventDefault();
                     return false;
                 }
             });
-
 
             $('select#building_type_id').change(function () {
                 handleExampleBuildingSelect($(this).val(), $('input#build_year').val())
@@ -265,6 +264,7 @@
                     },
                     success: function (response) {
                         exampleBuilding.find('option').remove();
+                        console.log(response)
                         // and when there is no example building add the empty one
                         if (response.length === 0) {
                             $(exampleBuilding).parents().find('#example-building').hide();
@@ -280,8 +280,47 @@
                 })
             }
 
-            var previous_bt = "{{ $prevBt }}";
-            var previous_by = "{{ $prevBy }}";
+
+            exampleBuilding.change(function () {
+                var current_eb = parseInt(this.value);
+                // if "no specific": set to null
+                current_eb = isNaN(current_eb) ? "" : current_eb;
+                // Do something with the previous value after the change
+                if (current_eb !== previous_eb) {
+
+                    if (confirm('{{ __('cooperation/tool/general-data/building-characteristics.index.example-building.apply-are-you-sure.title') }}')) {
+                        @if(App::environment('local'))
+                        console.log("Let's save it. EB id: " + current_eb);
+                        @endif
+
+                        // Firefox fix, who else thinks that stuff has changed
+                        $(this).closest('form').trigger('reinitialize.areYouSure');
+                        // End Firefox fix
+
+                        $.ajax({
+                            type: "POST",
+                            url: '{{ route('cooperation.tool.general-data.building-characteristics.apply-example-building', compact('cooperation')) }}',
+                            data: {example_building_id: current_eb},
+                            success: function (data) {
+                                location.reload();
+                            }
+                        });
+
+
+                        // Make sure the previous value is updated
+                        previous_eb = current_eb;
+                    } else {
+                        if (exampleBuilding.find('option[value="'+previous_eb+'"]').val() === undefined) {
+                            @if(App::environment('local'))
+                            console.log("Prev: " + previous_eb + " does not exist. Setting to empty");
+                            @endif
+                            $(this).val("");
+                        } else {
+                            $(this).val(previous_eb);
+                        }
+                    }
+                }
+            });
 
             $("form.form-horizontal").on('submit', function () {
                 // Store the current value on focus and on change

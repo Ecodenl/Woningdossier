@@ -35,6 +35,9 @@ return [
             'help' => 'Op te zoeken via de website van uw gemeente (voor gemeentelijke monumenten) of op https://cultureelerfgoed.nl/monumentenregister (voor rijksmonumenten) Met dit veld wordt niet gerekend, voor uitvoerende partijen is het echter belangrijke informatie, die op deze manier altijd paraat is.'
         ],
         'example-building' => [
+            'apply-are-you-sure' => [
+                'title' => 'Weet u zeker dat u deze voorbeeldwoning wilt toepassen'
+            ],
             'title' => 'Er zijn voor uw situatie specifieke voorbeeldwoningen aanwezig: Kies hier de best passende woning.',
             'no-match' => [
                 'title' => 'Er is geen passende voorbeeldwoning',

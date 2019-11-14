@@ -15,11 +15,11 @@
         $currentInputSourceHasACommentButIsEmpty = $currentInputSourceHasNoPlacedComment == false && empty($commentsForCurrentStep[$currentInputSource->name][$short]);
     } else {
         $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name]);
+        $currentInputSourceHasACommentButIsEmpty = $currentInputSourceHasNoPlacedComment == false && empty($commentsForCurrentStep[$currentInputSource->name]);
     }
 ?>
 @if(!empty($commentsForCurrentStep))
 @foreach($commentsForCurrentStep as $inputSourceName => $comment)
-
         {{--a nice uitzondering op de regel for only one case--}}
         @if(is_array($comment))
             <?php $comment = $comment[$short]; ?>

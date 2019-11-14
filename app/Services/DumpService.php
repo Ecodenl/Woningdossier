@@ -730,13 +730,21 @@ class DumpService
         $userInterestsForSolarPanels = $user
             ->userInterests()
             ->forInputSource($inputSource)
-            ->where('interested_in_type', 'service')
-            ->where('interested_in_id', $solarPanelService->id)
+            ->where('interested_in_type', Step::class)
+            ->where('interested_in_id', Step::findByShort('solar-panels')->id)
             ->select('interested_in_id', 'interest_id', 'interested_in_type')
             ->get()
             ->keyBy('interested_in_type')->map(function ($item) {
                 return [$item['interested_in_id'] => $item['interest_id']];
             })->toArray();
+
+        dd(
+            $userInterestsForSolarPanels,
+            $user->userInterestsForSpecificType(Step::class, Step::findByShort('solar-panels')->id, $inputSource)
+            ->get()->keyBy('interested_in_type')->map(function ($item) {
+                    return [$item['interested_in_id'] => $item['interest_id']];
+                })->toArray()
+        );
 
         // handle the heater stuff
         $userInterestsForHeater = $user

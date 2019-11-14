@@ -43,6 +43,7 @@ class InsulatedGlazing
         ];
 
         $userInterests = $calculateData['user_interests'] ?? [];
+
         $buildingInsulatedGlazings = $calculateData['building_insulated_glazings'] ?? [];
 
         foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazingsData) {

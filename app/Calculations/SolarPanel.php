@@ -46,7 +46,7 @@ class SolarPanel
         $orientationId = $buildingPvPanels['pv_panel_orientation_id'] ?? 0;
         $angle = $buildingPvPanels['angle'] ?? 0;
 
-        $userInterests = $calculateData['user_interests'] ?? '';
+        $userInterests = $calculateData['user_interests'] ?? [];
         $orientation = PvPanelOrientation::find($orientationId);
 
         $locationFactor = KeyFigures::getLocationFactor($building->postal_code);

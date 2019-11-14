@@ -19,6 +19,7 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
+use App\Services\CsvService;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
 use Illuminate\Http\JsonResponse;
@@ -44,6 +45,8 @@ class FloorInsulationController extends Controller
      */
     public function index()
     {
+        $x = CsvService::totalReport(HoomdossierSession::getCooperation(true), HoomdossierSession::getInputSource(true), false);
+        dd($x);
         $typeIds = [4];
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);

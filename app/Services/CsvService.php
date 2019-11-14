@@ -592,6 +592,7 @@ class CsvService
          * @var User
          */
         foreach ($users as $user) {
+            dd(DumpService::totalDump($user, $inputSource, $anonymized, false));
             $rows[$user->building->id] = DumpService::totalDump($user, $inputSource, $anonymized, false)['user-data'];
 
             dd($rows);

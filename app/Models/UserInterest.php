@@ -52,11 +52,6 @@ class UserInterest extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function scopeInterestedInType(Builder $query, $type)
-    {
-        return $query->where('interested_in_type', $type);
-    }
-
     /**
      * Return the user interest.
      *

@@ -16,11 +16,6 @@ class ReportController extends Controller
     public function index()
     {
 
-//        $r = DumpService::totalDump(Hoomdossier::user(), InputSource::findByShort('resident'), false);
-
-        $x = CsvService::totalReport(HoomdossierSession::getCooperation(true), InputSource::findByShort('resident'), false);
-        dd($x);
-
 
         $reportFileTypeCategory = FileTypeCategory::short('report')
             ->with(['fileTypes' => function ($query) {

@@ -228,23 +228,6 @@ class InsulatedGlazingController extends Controller
             );
         }
 
-        dd($user->userInterests()->interestedInType(MeasureApplication::class)->interest()->get());
-        // get the highest interest level (which is the lowst calculate value.)
-        $highestInterestLevel = $interests->unique('id')->min('calculate_value');
-        // update the livingroomwindow interest level based of the highest interest level for the measure.
-        $livingRoomWindowsElement = Element::where('short', 'living-rooms-windows')->first();
-        UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'user_id'            => $user->id,
-                'interested_in_type' => 'element',
-                'input_source_id'    => $inputSourceId,
-                'interested_in_id'   => $livingRoomWindowsElement->id,
-            ],
-            [
-                'interest_id'        => $highestInterestLevel,
-            ]
-        );
-
         // saving the main building elements
         $elements = $request->input('building_elements', []);
         foreach ($elements as $elementId => $elementValueId) {

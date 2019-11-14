@@ -10,6 +10,7 @@ use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
 use App\Calculations\WallInsulation;
 use App\Helpers\FileFormats\CsvHelper;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Helpers\ToolHelper;
 use App\Helpers\Translation;
@@ -41,6 +42,7 @@ use App\Models\User;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Scopes\CooperationScope;
+use function Couchbase\defaultDecoder;
 use Illuminate\Support\Collection;
 
 class DumpService
@@ -121,11 +123,11 @@ class DumpService
                 foreach ($subStepStructure as $tableWithColumnOrAndId => $contents) {
                     if ('calculations' == $tableWithColumnOrAndId) {
                         // If you want to go ahead and translate in a different namespace, do it here
-                        $deeperContents = \Illuminate\Support\Arr::dot($contents, $stepSlug.'.'.$subStep. '.calculation.');
+                        $deeperContents = \Illuminate\Support\Arr::dot($contents, $stepSlug . '.' . $subStep . '.calculation.');
 
                         $headers = array_merge($headers, $deeperContents);
                     } else {
-                        $headers[$stepSlug.'.'.$subStep . '.' . $tableWithColumnOrAndId] = str_replace([
+                        $headers[$stepSlug . '.' . $subStep . '.' . $tableWithColumnOrAndId] = str_replace([
                             '&euro;', '€',
                         ], ['euro', 'euro'], $contents['label']);
                     }
@@ -205,9 +207,9 @@ class DumpService
         $calculateData = static::getCalculateData($user, $inputSource);
 
         // one correction because of bad headers
-        if (isset($calculateData['heater']['production_heat']) && !is_array($calculateData['heater']['production_heat'])) {
-            if (!isset($calculateData['heater']['production_heat']['title'])) {
-                $calculateData['heater']['production_heat'] = ['title' => $calculateData['heater']['production_heat']];
+        if (isset($calculateData['heater']['-']['production_heat']) && !is_array($calculateData['heater']['-']['production_heat'])) {
+            if (!isset($calculateData['heater']['-']['production_heat']['title'])) {
+                $calculateData['heater']['-']['production_heat'] = ['title' => $calculateData['heater']['-']['production_heat']];
             }
         }
 
@@ -242,7 +244,7 @@ class DumpService
                 if ('calculation' == $table) {
                     // works in most cases, otherwise they will be renamed etc.
                     $column = $columnOrId;
-                    $costsOrYear = $tableWithColumnOrAndId[3] ?? null;
+                    $costsOrYear = $tableWithColumnOrAndId[4] ?? null;
 
                     switch ($step) {
                         case 'roof-insulation':
@@ -259,6 +261,7 @@ class DumpService
 
                     $calculationResult = self::formatFieldOutput($column, $calculationResult, $maybe1, $maybe2);
 
+//                    dd($calculationResult, $tableWithColumnOrAndIdKey, $column, $calculateData[$step][$subStep][$column]);
                     //dump("calculationResult: " . $calculationResult . " for step " . $step);
 
                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $calculationResult ?? '';
@@ -620,25 +623,12 @@ class DumpService
         // handle stuff for the wall insulation
         $wallInsulationBuildingElement = $buildingElements->where('element_id', $wallInsulationElement->id)->first();
 
-        // handle the stuff for the insulated glazing
-        // the user interest on the insulated glazing
-        // key = measure_application_id
-        // val = interest_id
         $userInterestsForInsulatedGlazing = $user
             ->userInterests()
-            ->forInputSource($inputSource)
-            ->where('interested_in_type', 'measure_application')
-            ->select('interested_in_id', 'interest_id')
-            ->get()
-            ->pluck('interest_id', 'interested_in_id')
-            ->toArray();
-
-        $userInterestsForInsulatedGlazing = $user
-            ->userInterests()
+            ->select('interest_id', 'interested_in_id')
             ->forInputSource($inputSource)
             ->where('interested_in_type', MeasureApplication::class)
-            ->get();
-        dd($userInterestsForInsulatedGlazing);
+            ->get()->keyBy('interested_in_id')->toArray();
 
 
         /** @var Collection $buildingInsulatedGlazings */
@@ -734,20 +724,9 @@ class DumpService
         // get the interest for the solar panels and create the array to send
         $userInterestsForSolarPanels = $user->userInterestsForSpecificType(Step::class, Step::findByShort('solar-panels')->id, $inputSource)->first();
 
-        $userInterestsForSolarPanels = [
-            'user_interests' => [
-                'interest_id' => $userInterestsForSolarPanels->interest_id
-            ],
-        ];
-
         // handle the heater stuff
         $userInterestsForHeater = $user->userInterestsForSpecificType(Step::class, Step::findByShort('heater')->id, $inputSource)->first();
 
-        $userInterestsForHeater = [
-            'user_interests' => [
-                'interest_id' => $userInterestsForHeater->interest_id
-            ],
-        ];
 
         $wallInsulationSavings = WallInsulation::calculate($building, $inputSource, $userEnergyHabit, [
             'cavity_wall' => $buildingFeature->cavity_wall ?? null,
@@ -759,6 +738,7 @@ class DumpService
             'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id ?? null,
             'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
         ]);
+//        dd($wallInsulationSavings);
 
         $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit, [
             'user_interests' => $userInterestsForInsulatedGlazing,
@@ -790,7 +770,10 @@ class DumpService
             'user_energy_habits' => [
                 'amount_electricity' => $userEnergyHabit->amount_electricity ?? null,
             ],
-            'interest' => $userInterestsForSolarPanels,
+            'user_interests' => [
+                'interested_in_id' =>  $userInterestsForSolarPanels->interested_in_id,
+                'interest_id' => $userInterestsForSolarPanels->interest_id
+            ]
         ]);
 
         $heaterSavings = Heater::calculate($building, $userEnergyHabit, [
@@ -800,17 +783,34 @@ class DumpService
             'user_energy_habits' => [
                 'water_comfort_id' => $userEnergyHabit->water_comfort_id ?? null,
             ],
-            'interest' => $userInterestsForHeater,
+            'user_interests' => [
+                'interested_in_id' =>  $userInterestsForHeater->interested_in_id,
+                'interest_id' => $userInterestsForHeater->interest_id
+            ]
         ]);
 
         return [
-            'wall-insulation' => $wallInsulationSavings,
-            'insulated-glazing' => $insulatedGlazingSavings,
-            'floor-insulation' => $floorInsulationSavings,
-            'roof-insulation' => $roofInsulationSavings,
-            'high-efficiency-boiler' => $highEfficiencyBoilerSavings,
-            'solar-panels' => $solarPanelSavings,
-            'heater' => $heaterSavings,
+            'wall-insulation' => [
+                '-' => $wallInsulationSavings,
+            ],
+            'insulated-glazing' => [
+                '-' => $insulatedGlazingSavings,
+            ],
+            'floor-insulation' => [
+                '-' => $floorInsulationSavings,
+            ],
+            'roof-insulation' => [
+                '-' => $roofInsulationSavings,
+            ],
+            'high-efficiency-boiler' => [
+                '-' => $highEfficiencyBoilerSavings,
+            ],
+            'solar-panels' => [
+                '-' => $solarPanelSavings,
+            ],
+            'heater' => [
+                '-' => $heaterSavings,
+            ],
         ];
     }
 

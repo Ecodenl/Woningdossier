@@ -233,38 +233,45 @@
         $(document).ready(function () {
 
             var getQualifiedExampleBuildingsRoute = '{{route('cooperation.tool.general-data.building-characteristics.qualified-example-buildings')}}';
+            var storeBuildingTypeId = '{{ route('cooperation.tool.general-data.building-characteristics.store-building-type') }}';
             var exampleBuilding = $('#example_building_id');
+            var buildingType = $('#building_type_id');
+            var buildYear = $('#build_year');
             var defaultOptionForExampleBuilding = exampleBuilding.find('option').first();
 
             var previous_bt = "{{ $prevBt }}";
             var previous_by = "{{ $prevBy }}";
 
             var previous_eb = parseInt(exampleBuilding.val());
-            previous_eb = isNaN(previous_eb) ? "" : previous_eb;
 
 
-            $(window).keydown(function (event) {
-                if (event.keyCode === 13) {
-                    event.preventDefault();
-                    return false;
-                }
-            });
+            var previousExampleBuilding = exampleBuilding.val();
+            previousExampleBuilding = isNaN(previousExampleBuilding) ? "" : previousExampleBuilding;
 
-            $('select#building_type_id').change(function () {
-                handleExampleBuildingSelect($(this).val(), $('input#build_year').val())
+
+            buildingType.change(function () {
+                $.ajax({
+                    type: "POST",
+                    url: storeBuildingTypeId,
+                    data: {
+                        building_type_id: buildingType.val(),
+                    },
+                    success: function (data) {
+                        handleExampleBuildingSelect(buildingType.val(), buildYear.val())
+                    }
+                });
             });
 
             // function to add the example buildings to the select.
-            function handleExampleBuildingSelect(buildingType, buildYear) {
+            function handleExampleBuildingSelect(buildingTypeId, buildYear) {
                 $.ajax({
                     url: getQualifiedExampleBuildingsRoute,
                     data: {
-                        building_type: buildingType,
+                        building_type_id: buildingTypeId,
                         build_year: buildYear
                     },
                     success: function (response) {
                         exampleBuilding.find('option').remove();
-                        console.log(response)
                         // and when there is no example building add the empty one
                         if (response.length === 0) {
                             $(exampleBuilding).parents().find('#example-building').hide();
@@ -282,15 +289,17 @@
 
 
             exampleBuilding.change(function () {
-                var current_eb = parseInt(this.value);
+                var currentExampleBuilding = parseInt(this.value);
                 // if "no specific": set to null
-                current_eb = isNaN(current_eb) ? "" : current_eb;
-                // Do something with the previous value after the change
-                if (current_eb !== previous_eb) {
+                currentExampleBuilding = isNaN(currentExampleBuilding) ? "" : currentExampleBuilding;
+
+                // do something with the previous value after the change
+                // when the user changed the eb, apply it after the confirm
+                if (currentExampleBuilding !== previousExampleBuilding) {
 
                     if (confirm('{{ __('cooperation/tool/general-data/building-characteristics.index.example-building.apply-are-you-sure.title') }}')) {
                         @if(App::environment('local'))
-                        console.log("Let's save it. EB id: " + current_eb);
+                        console.log("Let's save it. EB id: " + currentExampleBuilding);
                         @endif
 
                         // Firefox fix, who else thinks that stuff has changed
@@ -300,7 +309,10 @@
                         $.ajax({
                             type: "POST",
                             url: '{{ route('cooperation.tool.general-data.building-characteristics.apply-example-building', compact('cooperation')) }}',
-                            data: {example_building_id: current_eb},
+                            data: {
+                                example_building_id: currentExampleBuilding,
+                                build_year: buildYear.val(),
+                            },
                             success: function (data) {
                                 location.reload();
                             }
@@ -308,7 +320,7 @@
 
 
                         // Make sure the previous value is updated
-                        previous_eb = current_eb;
+                        previousExampleBuilding = currentExampleBuilding;
                     } else {
                         if (exampleBuilding.find('option[value="'+previous_eb+'"]').val() === undefined) {
                             @if(App::environment('local'))
@@ -316,7 +328,7 @@
                             @endif
                             $(this).val("");
                         } else {
-                            $(this).val(previous_eb);
+                            $(this).val(previousExampleBuilding);
                         }
                     }
                 }

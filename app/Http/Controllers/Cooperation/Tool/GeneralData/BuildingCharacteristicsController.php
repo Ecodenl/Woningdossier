@@ -13,6 +13,7 @@ use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\EnergyLabel;
 use App\Models\ExampleBuilding;
+use App\Models\Questionnaire;
 use App\Models\RoofType;
 use App\Models\Step;
 use App\Models\StepComment;
@@ -51,28 +52,9 @@ class BuildingCharacteristicsController extends Controller
         ));
     }
 
-    public function qualifiedExampleBuildings(Request $request)
-    {
-        $buildingType = BuildingType::findOrFail($request->get('building_type'));
-        $exampleBuildings = collect([]);
-        if ($buildingType instanceof BuildingType) {
-            // get the example buildings with translations so we can return it as a response
-            $exampleBuildings = ExampleBuilding::forMyCooperation()
-                ->where('building_type_id', '=', $buildingType->id)
-                ->leftJoin('translations', 'example_buildings.name', '=', 'translations.key')
-                ->where('translations.language', app()->getLocale())
-                ->select('example_buildings.order', 'example_buildings.id', 'translations.translation')
-                ->orderBy('order')
-                ->get()
-                ->toArray();
-        }
-
-        return response()->json($exampleBuildings);
-    }
-
     public function store(BuildingCharacteristicsFormRequest $request)
     {
-        $building = HoomdossierSession::getBuilding(true);
+        $building = HoomdossierSession::getBuilding(true)->load('buildingFeatures');
         $inputSource = HoomdossierSession::getInputSource(true);
         $step = Step::findByShort('building-characteristics');
 
@@ -88,15 +70,13 @@ class BuildingCharacteristicsController extends Controller
             }
         }
 
-
         // this has to be done before the new building features are saved
-        $currentFeatures = $building->buildingFeatures()->first();
+        $currentFeatures = $building->buildingFeatures;
 
         // save the data
         $building->buildingFeatures()->updateOrCreate([], $request->input('building_features'));
         StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
         $this->handleExampleBuildingData($building, $currentFeatures, $buildYear, $buildingTypeId);
-
         StepHelper::complete($step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
 
@@ -107,6 +87,7 @@ class BuildingCharacteristicsController extends Controller
             $url .= '#'.$nextStep['tab_id'];
         }
 
+        dd('bier!', $building->exampleBuilding->name);
         return redirect($url);
     }
 
@@ -148,26 +129,54 @@ class BuildingCharacteristicsController extends Controller
         }
     }
 
+    /**
+     * Store the bulding type id, when a user changes his building type id
+     * after that selects a example building, the page will be reloaded.
+     * but the type wasnt stored. now it is
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function storeBuildingType(Request $request)
+    {
+        $buildingTypeId = $request->get('building_type_id');
+        $building = HoomdossierSession::getBuilding(true);
+        $building->buildingFeatures()->updateOrCreate([], ['building_type_id' => $buildingTypeId]);
+
+        return response()->json();
+    }
+
+    /**
+     * Retrieve the example buildings for a building type id
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function qualifiedExampleBuildings(Request $request)
+    {
+        $buildingType = BuildingType::findOrFail($request->get('building_type_id'));
+        $exampleBuildings = collect([]);
+        if ($buildingType instanceof BuildingType) {
+            // get the example buildings with translations so we can return it as a response
+            $exampleBuildings = ExampleBuilding::forMyCooperation()
+                ->where('building_type_id', '=', $buildingType->id)
+                ->leftJoin('translations', 'example_buildings.name', '=', 'translations.key')
+                ->where('translations.language', app()->getLocale())
+                ->select('example_buildings.order', 'example_buildings.id', 'translations.translation')
+                ->orderBy('order')
+                ->get()
+                ->toArray();
+        }
+
+        return response()->json($exampleBuildings);
+    }
+
+
     public function applyExampleBuilding(Request $request)
     {
-        $exampleBuildingId = $request->input('buildings.example_building_id', null);
-
         $building = HoomdossierSession::getBuilding(true);
-        $buildYear = $building->getBuildYear();
-
-        // There is one strange option: "Er is geen passende voorbeeldwoning"
-        if (is_null($exampleBuildingId) && ! is_null($buildYear)) {
-            // No fitting? Try to set the generic.
-            $btype = $building->getBuildingType(HoomdossierSession::getInputSource(true));
-            if ($btype instanceof BuildingType) {
-                $generic = ExampleBuilding::generic()->where('building_type_id', $btype->id)->first();
-                if ($generic instanceof ExampleBuilding) {
-                    $exampleBuildingId = $generic->id;
-                }
-            }
-            $building->example_building_id = null;
-            $building->save();
-        }
+        $exampleBuildingId = $request->get('example_building_id');
+        $buildYear = $request->get('build_year');
 
         if (! is_null($exampleBuildingId) && ! is_null($buildYear)) {
             $exampleBuilding = ExampleBuilding::forAnyOrMyCooperation()->where('id', $exampleBuildingId)->first();

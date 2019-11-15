@@ -78,10 +78,16 @@
                         <div class="panel-footer bg-white">
                             @if(!\App\helpers\HoomdossierSession::isUserObserving())
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-sm-6">
+
+                                        <a class="btn btn-success pull-left" href="{{ route('cooperation.tool.index', [ 'cooperation' => $cooperation ]) }}">@lang('default.buttons.prev')</a>
+                                    </div>
+                                    <div class="col-sm-6">
+
                                         <button class="pull-right btn btn-primary submit-main-form">
                                             @lang('default.buttons.next')
                                         </button>
+                                    </div>
                                     </div>
                                 </div>
                             @endif

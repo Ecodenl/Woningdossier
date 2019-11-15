@@ -5,7 +5,7 @@
 
     // obtain the comments for the current step, when its a substep, the comment will be stored in the substep
     // else get it from the main step
-    $commentsForCurrentStep = $commentsByStep[$currentSubStep->short ?? $currentStep->short] ?? [];
+    $commentsForCurrentStep = $commentsByStep[$currentStep->short][$currentSubStep->short ?? '-'];
 
     $columnName = $columnName ?? 'step_comments[comment]';
     if (isset($short)) {

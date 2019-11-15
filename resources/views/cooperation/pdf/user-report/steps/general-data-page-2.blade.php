@@ -1,4 +1,4 @@
-@include('cooperation.pdf.user-report.parts.measure-page.comments', ['stepSlug' => 'general-data'])
+@include('cooperation.pdf.user-report.parts.measure-page.comments', ['stepShort' => 'general-data', 'subStepShort' => 'usage'])
 
 <div class="question-answer-section">
     <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.resume-energy-saving-measures.title')}}</p>

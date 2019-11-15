@@ -20,6 +20,7 @@
     General data is not structured like $reportData
     So have to create our own order.
 --}}
+
 @component('cooperation.pdf.components.new-page')
     <div class="container">
         @include('cooperation.pdf.user-report.steps.general-data-page-1')
@@ -39,9 +40,11 @@
 @endcomponent
 
 
-@foreach ($reportData as $stepSlug => $dataForStep)
-    @if ((is_string($stepSlug) && array_key_exists($stepSlug, $stepSlugs)) && \App\Models\UserActionPlanAdvice::hasInterestInMeasure($building, $inputSource, $steps->where('slug', $stepSlug)->first()))
-        @include('cooperation.pdf.user-report.parts.measure-page')
+@foreach ($reportData as $stepShort => $dataForStep)
+    @if ((is_string($stepShort) && array_key_exists($stepShort, $stepShorts)) && \App\Models\UserActionPlanAdvice::hasInterestInMeasure($building, $inputSource, $steps->where('slug', $stepShort)->first()))
+        @foreach ($dataForStep as $subStepShort => $dataForSubStep)
+            @include('cooperation.pdf.user-report.parts.measure-page')
+        @endforeach
     @endif
 @endforeach
 

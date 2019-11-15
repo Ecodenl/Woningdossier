@@ -66,9 +66,9 @@
 
         <table class="full-width">
             <tbody>
-            @foreach($reportData['general-data']['user_energy_habits'] as $column => $value)
+            @foreach($reportData['general-data']['usage']['user_energy_habits'] as $column => $value)
                 <?php
-                    $translationForAnswer = $reportTranslations['general-data.user_energy_habits.'.$column];
+                    $translationForAnswer = $reportTranslations['general-data.usage.user_energy_habits.'.$column];
                 ?>
 
                 <tr style="border-bottom: 0px;">
@@ -95,7 +95,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach(\Illuminate\Support\Arr::only($reportData['general-data'], ['element', 'service']) as $table => $data)
+                @foreach(\Illuminate\Support\Arr::only($reportData['general-data']['current-state'], ['element', 'service']) as $table => $data)
                     @foreach($data as $elementOrServiceId => $value)
                         <?php
                             // get the boiler, this is the service we want to ignore
@@ -103,7 +103,7 @@
                         ?>
                         @if (is_array($value) && $elementOrServiceId != $boilerService->id)
                             <?php
-                                $translationForAnswer = $reportTranslations['general-data.'.$table.'.'.$elementOrServiceId.'.service_value_id'] ?? $reportTranslations['general-data.'.$table.'.'.$elementOrServiceId.'.extra.value']
+                                $translationForAnswer = $reportTranslations['general-data.current-state.'.$table.'.'.$elementOrServiceId.'.service_value_id'] ?? $reportTranslations['general-data.current-state.'.$table.'.'.$elementOrServiceId.'.extra.value']
                             ?>
                             <tr class="border-bottom">
                                 <td class="w-380">{{$translationForAnswer}}</td>
@@ -111,7 +111,7 @@
                             </tr>
                         @elseif(!is_array($value))
                             <?php
-                            $translationForAnswer = $reportTranslations['general-data.'.$table.'.'.$elementOrServiceId];
+                            $translationForAnswer = $reportTranslations['general-data.current-state.'.$table.'.'.$elementOrServiceId];
                             ?>
                             <tr class="border-bottom">
                                 <td class="w-380">{{$translationForAnswer}}</td>

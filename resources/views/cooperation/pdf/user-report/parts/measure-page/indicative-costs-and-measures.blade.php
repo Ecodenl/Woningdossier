@@ -6,7 +6,7 @@
         @foreach($calculationsForStep as $calculationType => $calculationResult)
             @if(!empty($calculationResult) && !is_array($calculationResult))
                 <?php
-                    $translationForAnswer = $reportTranslations[$stepSlug . '.calculation.' . $calculationType];
+                    $translationForAnswer = $reportTranslations[$stepShort . '.' . $subStepShort. '.calculation.' . $calculationType];
                 ?>
                 <tr class="h-20">
                     <td class="w-380">{{$translationForAnswer}}</td>

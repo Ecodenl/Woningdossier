@@ -5,13 +5,13 @@
 
         <div class="question-answer-section">
             <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.filled-in-data')}}</p>
-            @foreach ($dataForStep['building_roof_types'] as $buildingRoofTypeId => $buildingRoofTypeValues)
+            @foreach ($dataForSubStep['building_roof_types'] as $buildingRoofTypeId => $buildingRoofTypeValues)
                 <p class="sub-lead">{{\App\Models\RoofType::find($buildingRoofTypeId)->name}}</p>
                 <table class="full-width">
                     <tbody>
                     @foreach(\Illuminate\Support\Arr::dot($buildingRoofTypeValues) as $translationKey => $value)
                         <?php
-                        $translationForAnswer = $reportTranslations[$stepSlug.'.building_roof_types.'.$buildingRoofTypeId.'.'.$translationKey];
+                        $translationForAnswer = $reportTranslations[$stepShort.'.'.$subStepShort.'.building_roof_types.'.$buildingRoofTypeId.'.'.$translationKey];
                         ?>
                         @if(!\App\Helpers\Hoomdossier::columnContains($translationKey, 'user_interest'))
                             <tr class="h-20">
@@ -35,7 +35,7 @@
                     @if(!empty($result) && !is_array($result))
 
                         <?php
-                            $translationForAnswer = $reportTranslations[$stepSlug . '.calculation.'.$roofTypeShort.'.' . $calculationType];
+                            $translationForAnswer = $reportTranslations[$stepShort . '.' . $subStepShort. '.calculation.'.$roofTypeShort.'.' . $calculationType];
                         ?>
                         <table class="full-width">
                             <tbody>

@@ -9,7 +9,7 @@
             <?php
             // we dont need it, we will use the $buildingInsulatedGlazings
             // we also MUST unset them otherwise they will be picked up later on and we will get duplicates
-            unset($dataForStep['user_interests'], $dataForStep['building_insulated_glazings'])
+            unset($dataForSubStep['user_interests'], $dataForSubStep['building_insulated_glazings'])
             ?>
             @foreach($buildingInsulatedGlazings as $buildingInsulatedGlazing)
 
@@ -51,9 +51,9 @@
             <p class="lead">{{\App\Helpers\Translation::translate('insulated-glazing.paint-work.title.title')}}</p>
             <table class="full-width">
                 <tbody>
-                @foreach (\Illuminate\Support\Arr::dot($dataForStep) as $translationKey => $value)
+                @foreach (\Illuminate\Support\Arr::dot($dataForSubStep) as $translationKey => $value)
                     <?php
-                    $translationForAnswer = $reportTranslations[$stepSlug . '.' . $translationKey];
+                    $translationForAnswer = $reportTranslations[$stepShort . '.' . $subStepShort . '.' . $translationKey];
                     ?>
                     <tr class="h-20">
                         <td class="w-380">{{$translationForAnswer}}</td>

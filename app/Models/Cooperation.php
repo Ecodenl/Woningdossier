@@ -103,7 +103,7 @@ class Cooperation extends Model
     /**
      * get the active steps with its substeps ordered on the order column.
      *
-     * @return mixed
+     * @return Collection|mixed
      */
     public function getActiveOrderedSteps()
     {

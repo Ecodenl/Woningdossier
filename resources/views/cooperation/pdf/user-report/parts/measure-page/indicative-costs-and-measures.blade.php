@@ -1,5 +1,5 @@
 <div class="question-answer-section">
-    <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.indicative-costs-and-benefits-for-measure')}}</p>
+    <p class="lead">{{__('pdf/user-report.measure-pages.indicative-costs-and-benefits-for-measure')}}</p>
 
     <table class="full-width">
             <tbody>

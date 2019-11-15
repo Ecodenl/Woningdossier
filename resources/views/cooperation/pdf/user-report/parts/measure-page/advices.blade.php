@@ -2,13 +2,13 @@
     {{--<div class="question-answer-section">--}}
         {{--<div class="measures">--}}
             {{--<p class="lead w-380">--}}
-                {{--{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.energy-saving.title')}}--}}
+                {{--{{__('pdf/user-report.measure-pages.measures.energy-saving.title')}}--}}
             {{--</p>--}}
             {{--<p class="lead w-150">--}}
-                {{--{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.energy-saving.costs')}}--}}
+                {{--{{__('pdf/user-report.measure-pages.measures.energy-saving.costs')}}--}}
             {{--</p>--}}
             {{--<p class="lead w-150">--}}
-                {{--{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.energy-saving.year')}}--}}
+                {{--{{__('pdf/user-report.measure-pages.measures.energy-saving.year')}}--}}
             {{--</p>--}}
         {{--</div>--}}
         {{--@foreach($advices['energy_saving'][$stepShort] as $userActionPlanAdvice)--}}
@@ -26,13 +26,13 @@
     <div class="question-answer-section">
         <div class="measures">
             <p class="lead w-380">
-                {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.maintenance.title')}}
+                {{__('pdf/user-report.measure-pages.measures.maintenance.title')}}
             </p>
             <p class="lead w-150">
-                {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.maintenance.costs')}}
+                {{__('pdf/user-report.measure-pages.measures.maintenance.costs')}}
             </p>
             <p class="lead w-150">
-                {{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.measures.maintenance.year')}}
+                {{__('pdf/user-report.measure-pages.measures.maintenance.year')}}
             </p>
         </div>
         @foreach($advices['maintenance'][$stepShort] as $userActionPlanAdvice)

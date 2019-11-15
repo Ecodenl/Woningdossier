@@ -4,7 +4,7 @@
         @include('cooperation.pdf.user-report.parts.measure-page.step-intro')
 
         <div class="question-answer-section">
-            <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.filled-in-data')}}</p>
+            <p class="lead">{{__('pdf/user-report.measure-pages.filled-in-data')}}</p>
             @foreach ($dataForSubStep['building_roof_types'] as $buildingRoofTypeId => $buildingRoofTypeValues)
                 <p class="sub-lead">{{\App\Models\RoofType::find($buildingRoofTypeId)->name}}</p>
                 <table class="full-width">
@@ -30,7 +30,7 @@
         {{-- Indicative costs and measures  --}}
         <div class="question-answer-section">
             @foreach($calculationsForStep as $roofTypeShort => $calculationResultsForRoofType)
-                <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.roof-insulation.indicative-costs-and-benefits-for-measure.'.$roofTypeShort)}}</p>
+                <p class="lead">{{__('pdf/user-report.roof-insulation.indicative-costs-and-benefits-for-measure.'.$roofTypeShort)}}</p>
                 @foreach($calculationResultsForRoofType as $calculationType => $result)
                     @if(!empty($result) && !is_array($result))
 

@@ -1,24 +1,24 @@
 <div id="general-data">
 
     <div class="question-answer-section">
-        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.title')}}</p>
+        <p class="lead">{{__('pdf/user-report.general-data.address-info.title')}}</p>
         <div class="question-answer">
-            <p class="w-380">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.name')}}</p>
+            <p class="w-380">{{__('pdf/user-report.general-data.address-info.name')}}</p>
             <p>{{$user->getFullName()}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-380">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.address')}}</p>
+            <p class="w-380">{{__('pdf/user-report.general-data.address-info.address')}}</p>
             <p>{{$building->street}} {{$building->number}} {{$building->extension}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-380">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.zip-code-city')}}</p>
+            <p class="w-380">{{__('pdf/user-report.general-data.address-info.zip-code-city')}}</p>
             <p>{{$building->postal_code}} {{$building->city}}</p>
         </div>
     </div>
 
     {{-- Not in order in the reportData, easier and more readable to do it like this. --}}
     <div class="question-answer-section">
-        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.building-info.title')}}</p>
+        <p class="lead">{{__('pdf/user-report.general-data.building-info.title')}}</p>
 
         <div class="question-answer">
             <p class="w-380">@lang('pdf/user-report.general-data.building-info.building-type')</p>
@@ -62,7 +62,7 @@
     </div>
 
     <div class="question-answer-section">
-        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.usage-info.title')}}</p>
+        <p class="lead">{{__('pdf/user-report.general-data.usage-info.title')}}</p>
 
         <table class="full-width">
             <tbody>
@@ -86,12 +86,12 @@
 
     {{-- Current state of the building, elements and services with its interest level. --}}
     <div class="question-answer-section">
-        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.current-state.title')}}</p>
+        <p class="lead">{{__('pdf/user-report.general-data.current-state.title')}}</p>
         <table class="full-width">
             <thead>
                 <tr>
-                    <th>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.current-state.table.measure')}}</th>
-                    <th>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.current-state.table.present-current-situation')}}</th>
+                    <th>{{__('pdf/user-report.general-data.current-state.table.measure')}}</th>
+                    <th>{{__('pdf/user-report.general-data.current-state.table.present-current-situation')}}</th>
                 </tr>
             </thead>
             <tbody>

@@ -1,6 +1,6 @@
 <div class="question-answer-section">
-    <h2>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.attachment.title')}}</h2>
-    <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.attachment.lead')}}</p>
+    <h2>{{__('pdf/user-report.general-data.attachment.title')}}</h2>
+    <p class="lead">{{__('pdf/user-report.general-data.attachment.lead')}}</p>
     <ol>
         @foreach($steps as $step)
             @if(\App\Models\UserActionPlanAdvice::hasInterestInMeasure($building, $inputSource, $step))

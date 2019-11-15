@@ -71,8 +71,6 @@ class BuildingCharacteristicsController extends Controller
         return redirect($url);
     }
 
-
-
     /**
      * Retrieve the example buildings for a building type id
      *

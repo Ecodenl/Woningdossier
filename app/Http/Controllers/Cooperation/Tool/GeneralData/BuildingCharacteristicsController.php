@@ -41,6 +41,7 @@ class BuildingCharacteristicsController extends Controller
                 ->get();
         }
 
+//        dd($building->exampleBuilding->name);
         $myBuildingFeatures = $building->buildingFeatures()->forMe()->get();
 
         $prevBt = Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'building_type_id') ?? '';
@@ -76,7 +77,6 @@ class BuildingCharacteristicsController extends Controller
         // save the data
         $building->buildingFeatures()->updateOrCreate([], $request->input('building_features'));
         StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
-        $this->handleExampleBuildingData($building, $currentFeatures, $buildYear, $buildingTypeId);
         StepHelper::complete($step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
 
@@ -91,43 +91,6 @@ class BuildingCharacteristicsController extends Controller
         return redirect($url);
     }
 
-    /**
-     * Method to handle the example building
-     *
-     * @param Building $building
-     * @param BuildingFeature|null $currentFeatures
-     * @param int $buildYear
-     * @param int $buildingTypeId
-     */
-    private function handleExampleBuildingData(Building $building, $currentFeatures, int $buildYear, int $buildingTypeId)
-    {
-        $buildingType = BuildingType::find($buildingTypeId);
-        $exampleBuilding = $this->getGenericExampleBuildingByBuildingType($buildingType);
-
-        // if there are no features yet, then we can apply the example building
-        // else, we need to compare the old buildingtype and buildyear against that from the request, if those differ then we apply the example building again.
-        if (!$currentFeatures instanceof BuildingFeature) {
-            if ($exampleBuilding instanceof ExampleBuilding) {
-                ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
-
-                // we need to associate the example building with it after it has been applied since we will do a check in the ToolSettingTrait on the example_building_id
-                $building->exampleBuilding()->associate($exampleBuilding);
-                $building->save();
-            }
-        } else {
-            $currentBuildYear = $currentFeatures->build_year;
-            $currentBuildingTypeId = $currentFeatures->building_type_id;
-
-            // compare the old ones vs the request
-            if (($currentBuildYear != $buildYear || $currentBuildingTypeId != $buildingTypeId) && $exampleBuilding instanceof ExampleBuilding) {
-                ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
-
-                // we need to associate the example building with it after it has been applied since we will do a check in the ToolSettingTrait on the example_building_id
-                $building->exampleBuilding()->associate($exampleBuilding);
-                $building->save();
-            }
-        }
-    }
 
     /**
      * Store the bulding type id, when a user changes his building type id
@@ -193,17 +156,4 @@ class BuildingCharacteristicsController extends Controller
     }
 
 
-    /**
-     * Get a example building based on the building type.
-     *
-     * @param BuildingType $buildingType
-     *
-     * @return ExampleBuilding|\Illuminate\Database\Eloquent\Builder
-     */
-    private function getGenericExampleBuildingByBuildingType(BuildingType $buildingType)
-    {
-        $exampleBuilding = ExampleBuilding::generic()->where('building_type_id', $buildingType->id)->first();
-
-        return $exampleBuilding;
-    }
 }

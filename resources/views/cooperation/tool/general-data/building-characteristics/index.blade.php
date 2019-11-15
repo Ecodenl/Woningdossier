@@ -239,7 +239,6 @@
     <script>
         $(document).ready(function () {
 
-
             var getQualifiedExampleBuildingsRoute = '{{route('cooperation.tool.general-data.building-characteristics.qualified-example-buildings')}}';
             var storeBuildingTypeId = '{{ route('cooperation.tool.general-data.building-characteristics.store-building-type') }}';
             var storeExampleBuildingRoute = '{{route('cooperation.tool.example-building.store')}}';
@@ -248,11 +247,10 @@
             var buildYear = $('#build_year');
             var defaultOptionForExampleBuilding = exampleBuilding.find('option').last();
 
-            var previousExampleBuilding = exampleBuilding.val();
-            previousExampleBuilding = isNaN(previousExampleBuilding) ? "" : previousExampleBuilding;
-
             var previousBuildingType = buildingType.val();
             var previousBuildYear = buildYear.val();
+            var previousExampleBuilding = exampleBuilding.val();
+            previousExampleBuilding = isNaN(previousExampleBuilding) ? "" : previousExampleBuilding;
 
 
             $('#build_year, #building_type_id').change(function () {

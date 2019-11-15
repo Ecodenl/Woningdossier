@@ -163,6 +163,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
 
                 Route::resource('example-building', 'ExampleBuildingController')->only('store');
+                Route::resource('building-type', 'BuildingTypeController')->only('store');
 
                 Route::group(['as' => 'general-data.', 'prefix' => 'general-data'], function () {
 
@@ -171,7 +172,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::group(['namespace' => 'GeneralData'], function () {
                         Route::group(['prefix' => 'gebouw-kenmerken', 'as' => 'building-characteristics.'], function () {
                             Route::get('', 'BuildingCharacteristicsController@index')->name('index');
-                            Route::post('store-building-type', 'BuildingCharacteristicsController@storeBuildingType')->name('store-building-type');
                             Route::get('get-qualified-example-buildings', 'BuildingCharacteristicsController@qualifiedExampleBuildings')->name('qualified-example-buildings');
                             Route::post('', 'BuildingCharacteristicsController@store')->name('store');
                         });

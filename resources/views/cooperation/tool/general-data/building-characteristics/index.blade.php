@@ -240,7 +240,7 @@
         $(document).ready(function () {
 
             var getQualifiedExampleBuildingsRoute = '{{route('cooperation.tool.general-data.building-characteristics.qualified-example-buildings')}}';
-            var storeBuildingTypeId = '{{ route('cooperation.tool.general-data.building-characteristics.store-building-type') }}';
+            var storeBuildingTypeId = '{{ route('cooperation.tool.building-type.store') }}';
             var storeExampleBuildingRoute = '{{route('cooperation.tool.example-building.store')}}';
             var exampleBuilding = $('#example_building_id');
             var buildingType = $('#building_type_id');

@@ -51,22 +51,9 @@ class BuildingCharacteristicsController extends Controller
 
     public function store(BuildingCharacteristicsFormRequest $request)
     {
-        $building = HoomdossierSession::getBuilding(true)->load('buildingFeatures');
+        $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $step = Step::findByShort('building-characteristics');
-
-        $exampleBuildingId = $request->get('example_building_id', null);
-
-        if (!is_null($exampleBuildingId)) {
-            $exampleBuilding = ExampleBuilding::forMyCooperation()->where('id', $exampleBuildingId)->first();
-            if ($exampleBuilding instanceof ExampleBuilding) {
-                $building->exampleBuilding()->associate($exampleBuilding);
-                $building->save();
-            }
-        }
-
-        // this has to be done before the new building features are saved
-        $currentFeatures = $building->buildingFeatures;
 
         // save the data
         $building->buildingFeatures()->updateOrCreate([], $request->input('building_features'));
@@ -81,27 +68,10 @@ class BuildingCharacteristicsController extends Controller
             $url .= '#'.$nextStep['tab_id'];
         }
 
-        dd('bier!', $building->exampleBuilding->name);
         return redirect($url);
     }
 
 
-    /**
-     * Store the bulding type id, when a user changes his building type id
-     * after that selects a example building, the page will be reloaded.
-     * but the type wasnt stored. now it is
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function storeBuildingType(Request $request)
-    {
-        $buildingTypeId = $request->get('building_type_id');
-        $building = HoomdossierSession::getBuilding(true);
-        $building->buildingFeatures()->updateOrCreate([], ['building_type_id' => $buildingTypeId]);
-
-        return response()->json();
-    }
 
     /**
      * Retrieve the example buildings for a building type id
@@ -127,27 +97,5 @@ class BuildingCharacteristicsController extends Controller
 
         return response()->json($exampleBuildings);
     }
-
-
-    public function applyExampleBuilding(Request $request)
-    {
-        $building = HoomdossierSession::getBuilding(true);
-        $exampleBuildingId = $request->get('example_building_id');
-        $buildYear = $request->get('build_year');
-
-        if (! is_null($exampleBuildingId) && ! is_null($buildYear)) {
-            $exampleBuilding = ExampleBuilding::forAnyOrMyCooperation()->where('id', $exampleBuildingId)->first();
-            if ($exampleBuilding instanceof ExampleBuilding) {
-                $building->exampleBuilding()->associate($exampleBuilding);
-                $building->save();
-                ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
-
-                return response()->json();
-            }
-        }
-        // Something went wrong!
-        return response()->json([], 500);
-    }
-
 
 }

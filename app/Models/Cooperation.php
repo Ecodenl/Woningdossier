@@ -50,6 +50,16 @@ class Cooperation extends Model
     }
 
     /**
+     * Return the example buildings for the cooperation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function exampleBuildings()
+    {
+        return $this->hasMany(ExampleBuilding::class);
+    }
+
+    /**
      * Get all the steps from the cooperation.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

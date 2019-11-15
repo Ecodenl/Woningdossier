@@ -8,11 +8,17 @@ return [
         ],
         'building-type' => [
             'title' => 'Wat is het woningtype?',
-            'help' => 'Het woningtype wordt gebruikt als basis voor een aantal berekeningen en wordt daarom hier apart gevraagd. Een omschrijving van de verschillende woningtypen is te vinden op de website van RVO: <a href="https://energiebesparingsverkenner.rvo.nl/Help/Uitleg#woningomschrijvingen">https://energiebesparingsverkenner.rvo.nl/Help/Uitleg#woningomschrijvingen</a>'
+            'help' => 'Het woningtype wordt gebruikt als basis voor een aantal berekeningen en wordt daarom hier apart gevraagd. Een omschrijving van de verschillende woningtypen is te vinden op de website van RVO: <a href="https://energiebesparingsverkenner.rvo.nl/Help/Uitleg#woningomschrijvingen">https://energiebesparingsverkenner.rvo.nl/Help/Uitleg#woningomschrijvingen</a>',
+            'are-you-sure' => [
+                'title' => 'Let op: Op basis van woningtype en bouwjaar wordt een voorbeeldwoning geselecteerd. Het veranderen van het woningtype heeft invloed op een aantal gegevens in het Hoomdossier.',
+            ],
         ],
         'build-year' => [
             'title' => 'Wat is het bouwjaar?',
-            'help' => 'Het bouwjaar wordt automatisch opgezocht in het Kadaster. Als het bouwjaar onjuist wordt weergegeven kunt u deze handmatig aanpassen.'
+            'help' => 'Het bouwjaar wordt automatisch opgezocht in het Kadaster. Als het bouwjaar onjuist wordt weergegeven kunt u deze handmatig aanpassen.',
+            'are-you-sure' => [
+                'title' => 'Let op: Op basis van woningtype en bouwjaar wordt een voorbeeldwoning geselecteerd. Het veranderen van het woningtype heeft invloed op een aantal gegevens in het Hoomdossier.',
+            ],
         ],
         'surface' => [
             'title' => 'Wat is de gebruiksoppervlakte van de woning?',

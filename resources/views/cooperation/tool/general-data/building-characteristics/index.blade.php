@@ -63,6 +63,13 @@
                                                 @endif
                                                 value="{{ $exampleBuilding->id }}">{{ $exampleBuilding->name }}</option>
                                     @endforeach
+                                    <option value=""
+                                            <?php
+                                            // if the example building is not in the $exampleBuildings collection,
+                                            // we select this empty value as default.
+                                            $currentNotInExampleBuildings = !$exampleBuildings->contains('id', '=', $building->example_building_id);
+                                            ?>
+                                            @if(empty(old('buildings.example_building_id', $building->example_building_id)) || $currentNotInExampleBuildings) selected="selected"@endif >@lang('cooperation/tool/general-data/building-characteristics.index.example-building.no-match.title') </option>
                                 </select>
 
                             @endcomponent
@@ -233,43 +240,84 @@
         $(document).ready(function () {
 
             var getQualifiedExampleBuildingsRoute = '{{route('cooperation.tool.general-data.building-characteristics.qualified-example-buildings')}}';
+            var storeBuildingTypeId = '{{ route('cooperation.tool.building-type.store') }}';
+            var storeExampleBuildingRoute = '{{route('cooperation.tool.example-building.store')}}';
             var exampleBuilding = $('#example_building_id');
-            var defaultOptionForExampleBuilding = exampleBuilding.find('option').first();
+            var buildingType = $('#building_type_id');
+            var buildYear = $('#build_year');
+            var defaultOptionForExampleBuilding = exampleBuilding.find('option').last();
 
-            var previous_bt = "{{ $prevBt }}";
-            var previous_by = "{{ $prevBy }}";
+            var previousBuildingType = buildingType.val();
+            var previousBuildYear = buildYear.val();
+            var previousExampleBuilding = exampleBuilding.val();
+            previousExampleBuilding = isNaN(previousExampleBuilding) ? "" : previousExampleBuilding;
 
-            var previous_eb = parseInt(exampleBuilding.val());
-            previous_eb = isNaN(previous_eb) ? "" : previous_eb;
 
+            $('#build_year, #building_type_id').change(function () {
+                
+                if (confirm('{{__('cooperation/tool/general-data/building-characteristics.index.building-type.are-you-sure.title')}}')) {
+                    $.ajax({
+                        type: "POST",
+                        url: storeBuildingTypeId,
+                        data: {
+                            building_type_id: buildingType.val(),
+                            build_year: buildYear.val(),
+                        },
+                        success: function (data) {
+                            handleExampleBuildingSelect(buildingType.val(), buildYear.val());
+                            storeExampleBuilding(buildingType.val(), buildYear.val());
 
-            $(window).keydown(function (event) {
-                if (event.keyCode === 13) {
-                    event.preventDefault();
-                    return false;
+                            // update the previous values
+                            previousBuildingType = buildingType.val();
+                            previousBuildYear = buildYear.val();
+                        }
+                    });
+                } else {
+                    // user canceled the operation so we set back the option
+                    buildingType.val(previousBuildingType);
+                    buildYear.val(previousBuildYear);
+                    reInitCurrentForm();
+
                 }
             });
-
-            $('select#building_type_id').change(function () {
-                handleExampleBuildingSelect($(this).val(), $('input#build_year').val())
-            });
+            
+            function storeExampleBuilding(buildingTypeId, buildYear, exampleBuildingId = null)
+            {
+                exampleBuildingId = isNaN(exampleBuildingId) ? "" : exampleBuildingId;
+                $.ajax({
+                    type: "POST",
+                    url: storeExampleBuildingRoute,
+                    data: {
+                        example_building_id: exampleBuildingId,
+                        building_type_id: buildingTypeId,
+                        build_year: buildYear,
+                    },
+                    success: function (data) {
+                        // to give the used a notice something changed.
+                        if (exampleBuildingId !== null) {
+                            location.reload();
+                        }
+                    }
+                });
+            }
 
             // function to add the example buildings to the select.
-            function handleExampleBuildingSelect(buildingType, buildYear) {
+            function handleExampleBuildingSelect(buildingTypeId, buildYear) {
                 $.ajax({
                     url: getQualifiedExampleBuildingsRoute,
                     data: {
-                        building_type: buildingType,
+                        building_type_id: buildingTypeId,
                         build_year: buildYear
                     },
                     success: function (response) {
                         exampleBuilding.find('option').remove();
-                        console.log(response)
                         // and when there is no example building add the empty one
                         if (response.length === 0) {
                             $(exampleBuilding).parents().find('#example-building').hide();
                             exampleBuilding.append(defaultOptionForExampleBuilding);
                         } else {
+                            exampleBuilding.append(defaultOptionForExampleBuilding);
+
                             $(exampleBuilding).parents().find('#example-building').show();
                             // when there are example buildings append them to the select box
                             $(response).each(function (index, exampleBuildingData) {
@@ -282,66 +330,37 @@
 
 
             exampleBuilding.change(function () {
-                var current_eb = parseInt(this.value);
-                // if "no specific": set to null
-                current_eb = isNaN(current_eb) ? "" : current_eb;
-                // Do something with the previous value after the change
-                if (current_eb !== previous_eb) {
+                var currentExampleBuildingId = parseInt(this.value);
+
+                // do something with the previous value after the change
+                // when the user changed the eb, apply it after the confirm
+                if (currentExampleBuildingId !== previousExampleBuilding) {
 
                     if (confirm('{{ __('cooperation/tool/general-data/building-characteristics.index.example-building.apply-are-you-sure.title') }}')) {
                         @if(App::environment('local'))
-                        console.log("Let's save it. EB id: " + current_eb);
+                        console.log("Let's save it. EB id: " + currentExampleBuildingId);
                         @endif
 
-                        // Firefox fix, who else thinks that stuff has changed
-                        $(this).closest('form').trigger('reinitialize.areYouSure');
-                        // End Firefox fix
+                        reInitCurrentForm();
 
-                        $.ajax({
-                            type: "POST",
-                            url: '{{ route('cooperation.tool.general-data.building-characteristics.apply-example-building', compact('cooperation')) }}',
-                            data: {example_building_id: current_eb},
-                            success: function (data) {
-                                location.reload();
-                            }
-                        });
-
+                        storeExampleBuilding(buildingType.val(), buildYear.val(), currentExampleBuildingId);
 
                         // Make sure the previous value is updated
-                        previous_eb = current_eb;
+                        previousExampleBuilding = currentExampleBuildingId;
                     } else {
-                        if (exampleBuilding.find('option[value="'+previous_eb+'"]').val() === undefined) {
-                            @if(App::environment('local'))
-                            console.log("Prev: " + previous_eb + " does not exist. Setting to empty");
-                            @endif
-                            $(this).val("");
-                        } else {
-                            $(this).val(previous_eb);
-                        }
+                        exampleBuilding.val(previousExampleBuilding);
                     }
                 }
             });
 
-            $("form.form-horizontal").on('submit', function () {
-                // Store the current value on focus and on change
-                var bt_now = $("select#building_type_id").val();
-                var by_now = $("input#build_year").val();
+            // comes in handy when a user action is canceled.
+            // technically the form changed, but for the used nothing changed so reinit
+            function reInitCurrentForm()
+            {
+                $(this).closest('form').trigger('reinitialize.areYouSure');
+            }
 
-                if (bt_now !== previous_bt || by_now !== previous_by){
-                    if (previous_bt === "" && previous_by === "" || confirm('{{ \App\Helpers\Translation::translate('building-detail.warning.title') }}')) {
-                        @if(App::environment('local'))
-                        console.log("Building Type was changed, but it was empty or a wanted change. Proceed.");
-                        @endif
-                    }
-                    else {
-                        // the dirty class by areYouSure is removed on submit.
-                        // set it back to prevent confusion for the user
-                        $(this).addClass('dirty');
-                        // don't submit
-                        return false;
-                    }
-                }
-            });
+
         });
     </script>
 @endpush

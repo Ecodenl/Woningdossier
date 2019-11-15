@@ -35,7 +35,7 @@
                         @foreach($currentStep->questionnaires as $questionnaire)
 
                             @if($questionnaire->isActive())
-                                <li>
+                                <li class="@if($buildingOwner->hasCompletedQuestionnaire($questionnaire)) completed @endif">
                                     <a href="#questionnaire-{{$questionnaire->id}}" data-toggle="tab">{{$questionnaire->name}}</a>
                                 </li>
                             @endif

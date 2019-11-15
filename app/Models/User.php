@@ -503,6 +503,11 @@ class User extends Model implements AuthorizableContract
         return $this->belongsToMany(Questionnaire::class, 'completed_questionnaires');
     }
 
+    public function hasCompletedQuestionnaire(Questionnaire $questionnaire)
+    {
+        return $this->completedQuestionnaires()->where('questionnaire_id', $questionnaire->id)->first() instanceof Questionnaire;
+    }
+
     /**
      * Complete a questionnaire for a user.
      *

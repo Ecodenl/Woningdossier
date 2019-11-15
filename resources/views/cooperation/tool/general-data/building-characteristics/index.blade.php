@@ -252,6 +252,7 @@
             previousExampleBuilding = isNaN(previousExampleBuilding) ? "" : previousExampleBuilding;
 
             var previousBuildingType = buildingType.val();
+            var previousBuildYear = buildYear.val();
 
 
             $('#build_year, #building_type_id').change(function () {
@@ -267,11 +268,16 @@
                         success: function (data) {
                             handleExampleBuildingSelect(buildingType.val(), buildYear.val());
                             storeExampleBuilding(buildingType.val(), buildYear.val());
+
+                            // update the previous values
+                            previousBuildingType = buildingType.val();
+                            previousBuildYear = buildYear.val();
                         }
                     });
                 } else {
                     // user canceled the operation so we set back the option
                     buildingType.val(previousBuildingType);
+                    buildYear.val(previousBuildYear);
                     reInitCurrentForm();
 
                 }

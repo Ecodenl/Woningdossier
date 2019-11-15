@@ -27,8 +27,6 @@ class ExampleBuildingController extends Controller
             $exampleBuilding = ExampleBuilding::find($exampleBuildingId);
         }
 
-
-
         if ($exampleBuilding instanceof ExampleBuilding) {
             ExampleBuildingService::apply($exampleBuilding, $buildYear, $building);
 

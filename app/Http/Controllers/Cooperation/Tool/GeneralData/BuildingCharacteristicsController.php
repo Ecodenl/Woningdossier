@@ -34,18 +34,14 @@ class BuildingCharacteristicsController extends Controller
         $energyLabels = EnergyLabel::where('country_code', 'nl')->get();
 
         $buildingType = $building->getBuildingType(HoomdossierSession::getInputSource(true));
-        $exampleBuildings = collect([]);
+
+        $exampleBuildings = collect();
+
         if ($buildingType instanceof BuildingType) {
-            $exampleBuildings = ExampleBuilding::forMyCooperation()
-                ->where('building_type_id', '=', $buildingType->id)
-                ->get();
+            $exampleBuildings = $cooperation->exampleBuildings()->where('building_type_id', '=', $buildingType->id)->get();
         }
 
-//        dd($building->exampleBuilding->name);
         $myBuildingFeatures = $building->buildingFeatures()->forMe()->get();
-
-        $prevBt = Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'building_type_id') ?? '';
-        $prevBy = Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'build_year') ?? '';
 
         return view('cooperation.tool.general-data.building-characteristics.index', compact(
             'building', 'buildingOwner', 'buildingTypes', 'energyLabels', 'roofTypes', 'exampleBuildings', 'myBuildingFeatures',
@@ -59,8 +55,6 @@ class BuildingCharacteristicsController extends Controller
         $inputSource = HoomdossierSession::getInputSource(true);
         $step = Step::findByShort('building-characteristics');
 
-        $buildYear = $request->input('building_features.build_year');
-        $buildingTypeId = $request->input('building_features.building_type_id');
         $exampleBuildingId = $request->get('example_building_id', null);
 
         if (!is_null($exampleBuildingId)) {

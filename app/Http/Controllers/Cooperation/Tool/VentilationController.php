@@ -70,10 +70,15 @@ class VentilationController extends Controller
         //$step = Step::where('slug', '=', 'ventilation')->first();
 
         $interestsInMeasureApplications = $request->input('user_interests', []);
+        $noInterestInMeasureApplications = $step->measureApplications()->whereNotIn('id', $interestsInMeasureApplications)->get();
         $yesOnShortNotice = Interest::orderBy('calculate_value')->first();
+        $no = Interest::orderBy('calculate_value', 'desc')->first();
 
         foreach ($interestsInMeasureApplications as $measureApplicationId) {
             UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationId , $yesOnShortNotice->id);
+        }
+        foreach($noInterestInMeasureApplications as $measureApplicationWithNoInterest){
+            UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationWithNoInterest->id, $no->id);
         }
 
         $houseVentilationData = $request->input('building_ventilations');

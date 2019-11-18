@@ -132,10 +132,7 @@ class VentilationController extends Controller
                     $actionPlanAdvice        = new UserActionPlanAdvice();
                 }
 
-                if (in_array($measureApplication->id, $request->input('user_interests', []))){
-                    $actionPlanAdvice->planned = true;
-                }
-
+                $actionPlanAdvice->planned = true;
                 $actionPlanAdvice->user()->associate($buildingOwner);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($this->step);

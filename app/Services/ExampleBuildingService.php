@@ -24,15 +24,17 @@ use App\Models\EnergyLabel;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
+use App\Models\Log;
 use App\Models\Service;
 use App\Models\UserEnergyHabit;
 use App\Scopes\GetValueScope;
 
 class ExampleBuildingService
 {
-    public static function apply(ExampleBuilding $exampleBuilding, $buildYear, Building $userBuilding)
+    public static function apply(ExampleBuilding $exampleBuilding, $buildYear, Building $building)
     {
         $inputSource = InputSource::findByShort('example-building');
+        $buildingOwner = $building->user;
 
         // Clear the current example building data
         self::log('Lookup '.$exampleBuilding->name.' for '.$buildYear);
@@ -47,7 +49,7 @@ class ExampleBuildingService
         $boilerService = Service::where('short', 'boiler')->first();
 
         // used for throwing the event at the end
-        $oldExampleBuilding = $userBuilding->exampleBuilding;
+        $oldExampleBuilding = $building->exampleBuilding;
 
         // traverse the contents:
         $exampleData = $contents->content;
@@ -55,7 +57,7 @@ class ExampleBuildingService
 //        dd($exampleData);
         self::log('Applying Example Building '.$exampleBuilding->name.' ('.$exampleBuilding->id.', '.$contents->build_year.')');
 
-        self::clearExampleBuilding($userBuilding);
+        self::clearExampleBuilding($building);
 
         $features = [];
 
@@ -73,10 +75,7 @@ class ExampleBuildingService
                         continue;
                     }
                     if ('user_energy_habits' == $columnOrTable) {
-                        $habits = UserEnergyHabit::create($values);
-                        $habits->inputSource()->associate($inputSource);
-                        $habits->user()->associate($userBuilding->user);
-                        $habits->save();
+                        $buildingOwner->energyHabit()->updateOrCreate([], $values);
                     }
                     if ('element' == $columnOrTable) {
                         // process elements
@@ -120,7 +119,7 @@ class ExampleBuildingService
                                         $buildingElement = new BuildingElement(['extra' => $extra]);
                                         $buildingElement->inputSource()->associate($inputSource);
                                         $buildingElement->element()->associate($element);
-                                        $buildingElement->building()->associate($userBuilding);
+                                        $buildingElement->building()->associate($building);
 
                                         if (isset($elementValue['element_value_id'])) {
                                             $elementValue = $element->values()->where('id',
@@ -132,7 +131,7 @@ class ExampleBuildingService
                                         }
 
                                         $buildingElement->save();
-                                        self::log('Saving building element ' . json_encode($buildingElement->toArray()));
+                                        self::log('Update or creating building element ' . json_encode($buildingElement->toArray()));
                                     }
                                 }
                             }
@@ -175,7 +174,7 @@ class ExampleBuildingService
                                         $buildingService = new BuildingService();
                                         $buildingService->inputSource()->associate($inputSource);
                                         $buildingService->service()->associate($service);
-                                        $buildingService->building()->associate($userBuilding);
+                                        $buildingService->building()->associate($building);
                                     }
 
                                     if (is_array($extra)) {
@@ -192,7 +191,7 @@ class ExampleBuildingService
 
                                     $buildingService->save();
 
-                                    self::log('Saving building service ' . json_encode($buildingService->toArray()));
+                                    self::log('Update or creating building service ' . json_encode($buildingService->toArray()));
                                 }
                             }
                         }
@@ -209,12 +208,7 @@ class ExampleBuildingService
                             continue;
                         }
 
-                        $buildingPaintworkStatus = new BuildingPaintworkStatus($values);
-
-                        $buildingPaintworkStatus->inputSource()->associate($inputSource);
-                        $buildingPaintworkStatus->building()->associate($userBuilding);
-                        $buildingPaintworkStatus->save();
-
+                        $building->currentPaintworkStatus()->updateOrCreate([], $values);
                         //continue;
                     }
                     if ('building_insulated_glazings' == $columnOrTable) {
@@ -224,13 +218,9 @@ class ExampleBuildingService
                             //todo: so the insulated_glazing_id is non existent in the table, this is a typo and should be fixed in the tool structure
                             $glazingData['insulating_glazing_id'] = $glazingData['insulated_glazing_id'];
 
-                            $buildingInsulatedGlazing = new BuildingInsulatedGlazing($glazingData);
+                            $building->currentInsulatedGlazing()->updateOrCreate([], $glazingData);
 
-                            $buildingInsulatedGlazing->inputSource()->associate($inputSource);
-                            $buildingInsulatedGlazing->building()->associate($userBuilding);
-                            $buildingInsulatedGlazing->save();
-
-                            self::log('Saving building insulated glazing ' . json_encode($buildingInsulatedGlazing->toArray()));
+                            self::log('Update or creating building insulated glazing ' . json_encode($building->currentInsulatedGlazing->toArray()));
                         }
                     }
                     if ('building_roof_types' == $columnOrTable) {
@@ -238,32 +228,22 @@ class ExampleBuildingService
                             $buildingRoofTypeData['roof_type_id'] = $roofTypeId;
 
                             if (isset($buildingRoofTypeData['roof_surface']) && (int)$buildingRoofTypeData['roof_surface'] > 0) {
-                                $buildingRoofType = new BuildingRoofType($buildingRoofTypeData);
-                                $buildingRoofType->inputSource()->associate($inputSource);
-                                $buildingRoofType->building()->associate($userBuilding);
-                                $buildingRoofType->save();
 
-                                self::log('Saving building rooftype ' . json_encode($buildingRoofType->toArray()));
+                                $building->roofTypes()->updateOrCreate([], $buildingRoofTypeData);
+
+                                self::log('Update or creating building rooftype ' . json_encode($building->roofTypes->toArray()));
                             } else {
                                 self::log('Not saving building rooftype because surface is 0');
                             }
                         }
                     }
                     if ('building_pv_panels' == $columnOrTable) {
-                        $buildingPvPanels = new BuildingPvPanel($values);
-                        $buildingPvPanels->inputSource()->associate($inputSource);
-                        $buildingPvPanels->building()->associate($userBuilding);
-                        $buildingPvPanels->save();
-
-                        self::log('Saving building pv_panels ' . json_encode($buildingPvPanels->toArray()));
+                        $building->pvPanels()->updateOrCreate([], $values);
+                        self::log('Update or creating building pv_panels ' . json_encode($building->pvPanels->toArray()));
                     }
                     if ('building_heaters' == $columnOrTable) {
-                        $buildingHeater = new BuildingHeater($values);
-                        $buildingHeater->inputSource()->associate($inputSource);
-                        $buildingHeater->building()->associate($userBuilding);
-                        $buildingHeater->save();
-
-                        self::log('Saving building heater ' . json_encode($buildingHeater->toArray()));
+                        $building->heater()->updateOrCreate([], $values);
+                        self::log('Update or creating building heater ' . json_encode($building->heater->toArray()));
                     }
                 }
             }
@@ -273,11 +253,11 @@ class ExampleBuildingService
         $buildingFeatures = new BuildingFeature($features);
         $buildingFeatures->buildingType()->associate($exampleBuilding->buildingType);
         $buildingFeatures->inputSource()->associate($inputSource);
-        $buildingFeatures->building()->associate($userBuilding);
+        $buildingFeatures->building()->associate($building);
         $buildingFeatures->save();
-        self::log('Saving building features '.json_encode($buildingFeatures->toArray()));
+        self::log('Update or creating building features '.json_encode($buildingFeatures->toArray()));
 
-        ExampleBuildingChanged::dispatch($userBuilding, $oldExampleBuilding, $exampleBuilding);
+        ExampleBuildingChanged::dispatch($building, $oldExampleBuilding, $exampleBuilding);
     }
 
     public static function clearExampleBuilding(Building $building)

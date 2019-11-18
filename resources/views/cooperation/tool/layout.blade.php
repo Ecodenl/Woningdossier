@@ -76,7 +76,7 @@
                         </div>
 
                         <div class="panel-footer bg-white">
-                            @if(!\App\helpers\HoomdossierSession::isUserObserving())
+                            @if(!\App\helpers\HoomdossierSession::isUserObserving() && !Request::routeIs('cooperation.tool.my-plan.index'))
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <?php

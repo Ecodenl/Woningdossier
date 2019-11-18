@@ -102,12 +102,11 @@ class PdfReport implements ShouldQueue
         $reportData = \App\Helpers\Arr::arrayUndot($reportForUser['user-data']);
 
         // steps that are considered to be measures.
-        $stepSlugs = \DB::table('steps')
-            ->where('slug', '!=', 'building-detail')
-            ->where('slug', '!=', 'general-data')
-            ->select('slug', 'id')
+        $stepShorts = \DB::table('steps')
+            ->where('short', '!=', 'general-data')
+            ->select('short', 'id')
             ->get()
-            ->pluck('slug', 'id')
+            ->pluck('short', 'id')
             ->flip()
             ->toArray();
 
@@ -118,7 +117,7 @@ class PdfReport implements ShouldQueue
 
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'userCooperation', 'stepSlugs', 'commentsByStep', 'inputSource',
+            'user', 'building', 'userCooperation', 'stepShorts', 'commentsByStep', 'inputSource',
             'reportTranslations', 'reportData', 'userActionPlanAdvices', 'buildingFeatures', 'advices',
             'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'reportForUser', 'noInterest'
         ));

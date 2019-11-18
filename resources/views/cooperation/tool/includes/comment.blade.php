@@ -5,7 +5,7 @@
     $currentInputSourceHasNoPlacedComment = false;
     $currentInputSourceHasACommentButIsEmpty = true;
     $commentsForCurrentStep = [];
-    $columnName = $columnName ?? 'step_comments[comment]';
+    $columnName = isset($short) ? "step_comments[comment][{$short}]" : "step_comments[comment]";
 
     // obtain the comments for the current step, when its a substep, the comment will be stored in the substep
     // else get it from the main step
@@ -15,7 +15,7 @@
 
         $commentsForCurrentStep = $commentsByStep[$currentStep->short][$currentSubStep->short ?? '-'];
         if (isset($short)) {
-            $columnName = 'step_comments[comment]['.$short.']';
+
             $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name][$short]);
 
             $currentInputSourceHasACommentButIsEmpty = $currentInputSourceHasNoPlacedComment == false && empty($commentsForCurrentStep[$currentInputSource->name][$short]);

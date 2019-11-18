@@ -20,7 +20,6 @@ class VerifyCsrfToken extends Middleware
         'tool/solar-panels/calculate',
         'tool/heater/calculate',
         'tool/my-plan/store',
-        // todo!! remove
-        '/login'
+        'tool/example-building'
     ];
 }

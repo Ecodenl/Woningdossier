@@ -336,7 +336,6 @@
             </div>
 
             @include('cooperation.tool.includes.comment', [
-                 'columnName' => 'step_comments[comment]',
                  'translation' => 'wall-insulation.comment'
              ])
 

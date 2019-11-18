@@ -36,7 +36,7 @@
             </div>
 
             <div class="col-lg-3 col-md-12">
-                @component('cooperation.tool.components.step-question', ['id' => 'cook_gas', 'translation' => 'cooperation/tool/general-data/usage.index.water-gas.cook-gas', 'required' => true])
+                @component('cooperation.tool.components.step-question', ['id' => 'cook_gas', 'name' => 'user_energy_habits.cook_gas', 'translation' => 'cooperation/tool/general-data/usage.index.water-gas.cook-gas', 'required' => true])
 
                     <div class="input-group input-source-group">
                         <label class="radio-inline">
@@ -59,7 +59,7 @@
                                         <?php
                                         // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
                                         $value = $userInputValue->cook_gas;
-                                        if (1 === $value) {
+                                        if (in_array($value, [1, 0])) {
                                             $trans = __('woningdossier.cooperation.radiobutton.yes');
                                         } elseif (2 === $value) {
                                             $trans = __('woningdossier.cooperation.radiobutton.no');

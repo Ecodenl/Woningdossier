@@ -283,6 +283,9 @@
             
             function storeExampleBuilding(buildingTypeId, buildYear, exampleBuildingId = null)
             {
+                @if(App::environment('local'))
+                    console.log('Example building is getting stored');
+                @endif
                 exampleBuildingId = isNaN(exampleBuildingId) ? "" : exampleBuildingId;
                 $.ajax({
                     type: "POST",

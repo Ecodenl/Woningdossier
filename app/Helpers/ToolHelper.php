@@ -44,7 +44,6 @@ class ToolHelper
 
     public static function getContentStructure()
     {
-        $steps = Step::all();
         // General data - Elements (that are not queried later on step basis)
         $livingRoomsWindows = Element::where('short', 'living-rooms-windows')->first();
         $sleepingRoomsWindows = Element::where('short', 'sleeping-rooms-windows')->first();
@@ -321,6 +320,26 @@ class ToolHelper
                 ],
                 // interests come later on
             ],
+            /*
+            'ventilation' => [
+                '-' => [
+                    // ex:
+                    'table.column'=> [
+                        'label' => __('cooperation/tool/ventilation.index.how.title'),
+                        'type' => 'multiselect',
+                        'options' => static::createOptions($woodElements->values()->orderBy('order')->get(), 'value'),
+                    ],
+                    'table.column'=> [
+                        'label' => __('cooperation/tool/ventilation.index.how.title'),
+                        'type' => 'multiselect',
+                        'options' => [
+                            1 => __('woningdossier.cooperation.radiobutton.yes'),
+                            2 => __('woningdossier.cooperation.radiobutton.no'),
+                            0 => __('woningdossier.cooperation.radiobutton.unknown'),
+                        ],
+                    ],
+                ],
+            ],*/
 
             'wall-insulation' => [
                 '-' => [

@@ -66,6 +66,8 @@ class VentilationController extends Controller
         $inputSource = HoomdossierSession::getInputSource(true);
         /** @var Step $step */
         $step = Step::findByShort('ventilation');
+        // replace me with above
+        //$step = Step::where('slug', '=', 'ventilation')->first();
 
         $interestsInMeasureApplications = $request->input('user_interests', []);
         $yesOnShortNotice = Interest::orderBy('calculate_value')->first();

@@ -1,21 +1,28 @@
 <?php
-
     $helpId = time();
     $currentInputSource = \App\Helpers\HoomdossierSession::getInputSource(true);
+    // set some default to prevent isset spaghetti stuff.
+    $currentInputSourceHasNoPlacedComment = false;
+    $currentInputSourceHasACommentButIsEmpty = true;
+    $commentsForCurrentStep = [];
+    $columnName = $columnName ?? 'step_comments[comment]';
 
     // obtain the comments for the current step, when its a substep, the comment will be stored in the substep
     // else get it from the main step
-    $commentsForCurrentStep = $commentsByStep[$currentStep->short][$currentSubStep->short ?? '-'];
+    $subStepShort = $currentSubStep->short ?? '-';
+    // make sure the steps / keys exist before proceeding
+    if (array_key_exists($currentStep->short, $commentsByStep) && array_key_exists($subStepShort, $commentsByStep[$currentStep->short])) {
 
-    $columnName = $columnName ?? 'step_comments[comment]';
-    if (isset($short)) {
-        $columnName = 'step_comments[comment]['.$short.']';
-        $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name][$short]);
+        $commentsForCurrentStep = $commentsByStep[$currentStep->short][$currentSubStep->short ?? '-'];
+        if (isset($short)) {
+            $columnName = 'step_comments[comment]['.$short.']';
+            $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name][$short]);
 
-        $currentInputSourceHasACommentButIsEmpty = $currentInputSourceHasNoPlacedComment == false && empty($commentsForCurrentStep[$currentInputSource->name][$short]);
-    } else {
-        $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name]);
-        $currentInputSourceHasACommentButIsEmpty = $currentInputSourceHasNoPlacedComment == false && empty($commentsForCurrentStep[$currentInputSource->name]);
+            $currentInputSourceHasACommentButIsEmpty = $currentInputSourceHasNoPlacedComment == false && empty($commentsForCurrentStep[$currentInputSource->name][$short]);
+        } else {
+            $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name]);
+            $currentInputSourceHasACommentButIsEmpty = $currentInputSourceHasNoPlacedComment == false && empty($commentsForCurrentStep[$currentInputSource->name]);
+        }
     }
 ?>
 @if(!empty($commentsForCurrentStep))
@@ -54,7 +61,7 @@
         @endif
     @endforeach
 @endif
-@if($currentInputSourceHasNoPlacedComment || (isset($currentInputSourceHasACommentButIsEmpty) && $currentInputSourceHasACommentButIsEmpty))
+@if($currentInputSourceHasACommentButIsEmpty && $currentInputSourceHasACommentButIsEmpty)
 <div class="row">
     <div class="col-sm-12">
         <div class="form-group add-space">

@@ -1,24 +1,24 @@
 <div id="general-data">
 
     <div class="question-answer-section">
-        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.title')}}</p>
+        <p class="lead">{{__('pdf/user-report.general-data.address-info.title')}}</p>
         <div class="question-answer">
-            <p class="w-380">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.name')}}</p>
+            <p class="w-380">{{__('pdf/user-report.general-data.address-info.name')}}</p>
             <p>{{$user->getFullName()}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-380">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.address')}}</p>
+            <p class="w-380">{{__('pdf/user-report.general-data.address-info.address')}}</p>
             <p>{{$building->street}} {{$building->number}} {{$building->extension}}</p>
         </div>
         <div class="question-answer">
-            <p class="w-380">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.zip-code-city')}}</p>
+            <p class="w-380">{{__('pdf/user-report.general-data.address-info.zip-code-city')}}</p>
             <p>{{$building->postal_code}} {{$building->city}}</p>
         </div>
     </div>
 
     {{-- Not in order in the reportData, easier and more readable to do it like this. --}}
     <div class="question-answer-section">
-        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.building-info.title')}}</p>
+        <p class="lead">{{__('pdf/user-report.general-data.building-info.title')}}</p>
 
         <div class="question-answer">
             <p class="w-380">@lang('pdf/user-report.general-data.building-info.building-type')</p>
@@ -62,13 +62,13 @@
     </div>
 
     <div class="question-answer-section">
-        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.usage-info.title')}}</p>
+        <p class="lead">{{__('pdf/user-report.general-data.usage-info.title')}}</p>
 
         <table class="full-width">
             <tbody>
-            @foreach($reportData['general-data']['user_energy_habits'] as $column => $value)
+            @foreach($reportData['general-data']['usage']['user_energy_habits'] as $column => $value)
                 <?php
-                    $translationForAnswer = $reportTranslations['general-data.user_energy_habits.'.$column];
+                    $translationForAnswer = $reportTranslations['general-data.usage.user_energy_habits.'.$column];
                 ?>
 
                 <tr style="border-bottom: 0px;">
@@ -86,16 +86,16 @@
 
     {{-- Current state of the building, elements and services with its interest level. --}}
     <div class="question-answer-section">
-        <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.current-state.title')}}</p>
+        <p class="lead">{{__('pdf/user-report.general-data.current-state.title')}}</p>
         <table class="full-width">
             <thead>
                 <tr>
-                    <th>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.current-state.table.measure')}}</th>
-                    <th>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.current-state.table.present-current-situation')}}</th>
+                    <th>{{__('pdf/user-report.general-data.current-state.table.measure')}}</th>
+                    <th>{{__('pdf/user-report.general-data.current-state.table.present-current-situation')}}</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach(\Illuminate\Support\Arr::only($reportData['general-data'], ['element', 'service']) as $table => $data)
+                @foreach(\Illuminate\Support\Arr::only($reportData['general-data']['current-state'], ['element', 'service']) as $table => $data)
                     @foreach($data as $elementOrServiceId => $value)
                         <?php
                             // get the boiler, this is the service we want to ignore
@@ -103,7 +103,7 @@
                         ?>
                         @if (is_array($value) && $elementOrServiceId != $boilerService->id)
                             <?php
-                                $translationForAnswer = $reportTranslations['general-data.'.$table.'.'.$elementOrServiceId.'.service_value_id'] ?? $reportTranslations['general-data.'.$table.'.'.$elementOrServiceId.'.extra.value']
+                                $translationForAnswer = $reportTranslations['general-data.current-state.'.$table.'.'.$elementOrServiceId.'.service_value_id'] ?? $reportTranslations['general-data.current-state.'.$table.'.'.$elementOrServiceId.'.extra.value']
                             ?>
                             <tr class="border-bottom">
                                 <td class="w-380">{{$translationForAnswer}}</td>
@@ -111,7 +111,7 @@
                             </tr>
                         @elseif(!is_array($value))
                             <?php
-                            $translationForAnswer = $reportTranslations['general-data.'.$table.'.'.$elementOrServiceId];
+                            $translationForAnswer = $reportTranslations['general-data.current-state.'.$table.'.'.$elementOrServiceId];
                             ?>
                             <tr class="border-bottom">
                                 <td class="w-380">{{$translationForAnswer}}</td>

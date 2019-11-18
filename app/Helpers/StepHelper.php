@@ -54,10 +54,18 @@ class StepHelper
         $stepComments = StepComment::forMe($user)->with('step', 'inputSource')->get();
 
         foreach ($stepComments as $stepComment) {
-            if (is_null($stepComment->short)) {
-                $commentsByStep[$stepComment->step->short][$stepComment->inputSource->name] = $stepComment->comment;
+
+
+            if ($stepComment->step->isSubStep()) {
+                if (is_null($stepComment->short)) {
+                    $commentsByStep[$stepComment->step->parentStep->short][$stepComment->step->short][$stepComment->inputSource->name] = $stepComment->comment;
+                } else {
+                    $commentsByStep[$stepComment->step->parentStep->short][$stepComment->step->short][$stepComment->inputSource->name][$stepComment->short] = $stepComment->comment;
+                }
             } else {
-                $commentsByStep[$stepComment->step->short][$stepComment->inputSource->name][$stepComment->short] = $stepComment->comment;
+                if (is_null($stepComment->short)) {
+                    $commentsByStep[$stepComment->step->short]['-'][$stepComment->inputSource->name] = $stepComment->comment;
+                }
             }
         }
 
@@ -112,9 +120,9 @@ class StepHelper
     /**
      * Get the next step for a user where the user shows interest in or the next questionnaire for a user.
      *
-     * @param Building      $building
-     * @param InputSource   $inputSource
-     * @param Step          $current
+     * @param Building $building
+     * @param InputSource $inputSource
+     * @param Step $current
      * @param Questionnaire $currentQuestionnaire
      *
      * @return array
@@ -195,7 +203,7 @@ class StepHelper
             }
 
             if ($nonCompletedStep instanceof Questionnaire) {
-                return ['url' => $url, 'tab_id' => 'questionnaire-'.$nonCompletedStep->id];
+                return ['url' => $url, 'tab_id' => 'questionnaire-' . $nonCompletedStep->id];
             }
         }
 
@@ -213,15 +221,15 @@ class StepHelper
     public static function buildStepUrl(Step $parentStep, $subStep = null): string
     {
         return route(
-            $subStep instanceof Step ? 'cooperation.tool.'.$parentStep->short.'.'.$subStep->short.'.index' : 'cooperation.tool.'.$parentStep->short.'.index'
+            $subStep instanceof Step ? 'cooperation.tool.' . $parentStep->short . '.' . $subStep->short . '.index' : 'cooperation.tool.' . $parentStep->short . '.index'
         );
     }
 
     /**
      * Complete a step for a building.
      *
-     * @param Step        $step
-     * @param Building    $building
+     * @param Step $step
+     * @param Building $building
      * @param InputSource $inputSource
      *
      */

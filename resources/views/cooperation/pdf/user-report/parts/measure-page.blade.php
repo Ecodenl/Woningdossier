@@ -5,11 +5,11 @@
     // spoiler: it became bloated.
 
     // calculations
-    $calculationsForStep = $dataForStep['calculation'] ?? [];
-    unset($dataForStep['calculation']);
+    $calculationsForStep = $dataForSubStep['calculation'] ?? [];
+    unset($dataForSubStep['calculation']);
 ?>
 
-@switch($stepSlug)
+@switch($stepShort)
     @case('insulated-glazing')
         @include('cooperation.pdf.user-report.steps.insulated-glazing')
     @break
@@ -17,6 +17,7 @@
     @case('roof-insulation')
         @include('cooperation.pdf.user-report.steps.roof-insulation')
     @break
+
 
     @default
         @component('cooperation.pdf.components.new-page')

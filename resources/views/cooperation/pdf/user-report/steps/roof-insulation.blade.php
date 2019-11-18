@@ -4,14 +4,14 @@
         @include('cooperation.pdf.user-report.parts.measure-page.step-intro')
 
         <div class="question-answer-section">
-            <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.filled-in-data')}}</p>
-            @foreach ($dataForStep['building_roof_types'] as $buildingRoofTypeId => $buildingRoofTypeValues)
+            <p class="lead">{{__('pdf/user-report.measure-pages.filled-in-data')}}</p>
+            @foreach ($dataForSubStep['building_roof_types'] as $buildingRoofTypeId => $buildingRoofTypeValues)
                 <p class="sub-lead">{{\App\Models\RoofType::find($buildingRoofTypeId)->name}}</p>
                 <table class="full-width">
                     <tbody>
                     @foreach(\Illuminate\Support\Arr::dot($buildingRoofTypeValues) as $translationKey => $value)
                         <?php
-                        $translationForAnswer = $reportTranslations[$stepSlug.'.building_roof_types.'.$buildingRoofTypeId.'.'.$translationKey];
+                        $translationForAnswer = $reportTranslations[$stepShort.'.'.$subStepShort.'.building_roof_types.'.$buildingRoofTypeId.'.'.$translationKey];
                         ?>
                         @if(!\App\Helpers\Hoomdossier::columnContains($translationKey, 'user_interest'))
                             <tr class="h-20">
@@ -30,12 +30,12 @@
         {{-- Indicative costs and measures  --}}
         <div class="question-answer-section">
             @foreach($calculationsForStep as $roofTypeShort => $calculationResultsForRoofType)
-                <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.roof-insulation.indicative-costs-and-benefits-for-measure.'.$roofTypeShort)}}</p>
+                <p class="lead">{{__('pdf/user-report.roof-insulation.indicative-costs-and-benefits-for-measure.'.$roofTypeShort)}}</p>
                 @foreach($calculationResultsForRoofType as $calculationType => $result)
                     @if(!empty($result) && !is_array($result))
 
                         <?php
-                            $translationForAnswer = $reportTranslations[$stepSlug . '.calculation.'.$roofTypeShort.'.' . $calculationType];
+                            $translationForAnswer = $reportTranslations[$stepShort . '.' . $subStepShort. '.calculation.'.$roofTypeShort.'.' . $calculationType];
                         ?>
                         <table class="full-width">
                             <tbody>

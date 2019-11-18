@@ -1,15 +1,15 @@
-@include('cooperation.pdf.user-report.parts.measure-page.comments', ['stepSlug' => 'general-data'])
+@include('cooperation.pdf.user-report.parts.measure-page.comments', ['stepShort' => 'general-data', 'subStepShort' => 'usage'])
 
 <div class="question-answer-section">
-    <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.resume-energy-saving-measures.title')}}</p>
+    <p class="lead">{{__('pdf/user-report.general-data.resume-energy-saving-measures.title')}}</p>
     <table class="full-width">
         <thead>
         <tr>
-            <th>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.resume-energy-saving-measures.table.planned-year')}}</th>
-            <th>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.resume-energy-saving-measures.table.interested')}}</th>
-            <th>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.resume-energy-saving-measures.table.measure')}}</th>
-            <th>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.resume-energy-saving-measures.table.costs')}}</th>
-            <th>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.resume-energy-saving-measures.table.savings')}}</th>
+            <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.planned-year')}}</th>
+            <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.interested')}}</th>
+            <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.measure')}}</th>
+            <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.costs')}}</th>
+            <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.savings')}}</th>
         </tr>
         </thead>
         <tbody>
@@ -32,14 +32,14 @@
         @endforeach
         </tbody>
     </table>
-    <p>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.resume-energy-saving-measures.text')}}</p>
+    <p>{{__('pdf/user-report.general-data.resume-energy-saving-measures.text')}}</p>
 </div>
 
 
 
 
 <div class="question-answer-section">
-    <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.comment-action-plan')}}</p>
+    <p class="lead">{{__('pdf/user-report.general-data.comment-action-plan')}}</p>
     @foreach($userActionPlanAdviceComments as $userActionPlanAdviceComment)
         <table class="full-width">
             <tr>
@@ -67,12 +67,12 @@
 @endif
 
 <div class="question-answer-section" >
-    <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.calculations-are-indicative.title')}}</p>
-    <p>{{\App\Helpers\Translation::translate('pdf/user-report.general-data.calculations-are-indicative.text')}}</p>
+    <p class="lead">{{__('pdf/user-report.general-data.calculations-are-indicative.title')}}</p>
+    <p>{{__('pdf/user-report.general-data.calculations-are-indicative.text')}}</p>
 </div>
 
 <div class="question-answer-section">
-    <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.next-steps.title')}}</p>
+    <p class="lead">{{__('pdf/user-report.general-data.next-steps.title')}}</p>
     <p>
         {!! \App\Helpers\Translation::translate('pdf/user-report.general-data.next-steps.text-1', ['cooperation_name' => $userCooperation->name]) !!}
         @if(!empty($userCooperation->cooperation_email))

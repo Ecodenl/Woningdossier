@@ -60,12 +60,11 @@ class UserReportController extends Controller
         $reportData = \App\Helpers\Arr::arrayUndot($reportForUser['user-data']);
 
         // steps that are considered to be measures.
-        $stepSlugs = \DB::table('steps')
-            ->where('slug', '!=', 'building-detail')
-            ->where('slug', '!=', 'general-data')
-            ->select('slug', 'id')
+        $stepShorts = \DB::table('steps')
+            ->where('short', '!=', 'general-data')
+            ->select('short', 'id')
             ->get()
-            ->pluck('slug', 'id')
+            ->pluck('short', 'id')
             ->flip()
             ->toArray();
 
@@ -76,7 +75,7 @@ class UserReportController extends Controller
 
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'userCooperation', 'stepSlugs', 'inputSource',
+            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
             'buildingFeatures', 'advices', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings'
         ));

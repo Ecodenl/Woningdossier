@@ -76,12 +76,30 @@
                         </div>
 
                         <div class="panel-footer bg-white">
-                            @if(!\App\helpers\HoomdossierSession::isUserObserving())
+                            @if(!\App\helpers\HoomdossierSession::isUserObserving() && !Request::routeIs('cooperation.tool.my-plan.index'))
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-sm-6">
+                                        <?php
+                                            // some way of determining the previous step
+                                            if ($currentSubStep instanceof \App\Models\Step) {
+                                                $subStepsForCurrentStep = $currentStep->subSteps;
+                                                $previousStep = $subStepsForCurrentStep->where('order', '<', $currentSubStep->order)->last();
+                                            } else {
+                                                $previousStep = $steps->where('order', '<', $currentSubStep->order ?? $currentStep->order)->last();
+                                            }
+                                            $previousUrl = $currentSubStep instanceof \App\Models\Step && $previousStep instanceof \App\Models\Step
+                                                ? route("cooperation.tool.{$currentStep->short}.{$previousStep->short}.index")
+                                                : route("cooperation.tool.{$currentStep->short}.index")
+                                        ?>
+                                        @if($previousStep instanceof \App\Models\Step)
+                                            <a class="btn btn-success pull-left" href="{{ url('tool/'.$previousStep->slug)}}">@lang('default.buttons.prev')</a>
+                                        @endif
+                                    </div>
+                                    <div class="col-sm-6">
                                         <button class="pull-right btn btn-primary submit-main-form">
                                             @lang('default.buttons.next')
                                         </button>
+                                    </div>
                                     </div>
                                 </div>
                             @endif

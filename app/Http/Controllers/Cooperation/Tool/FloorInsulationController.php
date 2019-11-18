@@ -12,6 +12,7 @@ use App\Http\Requests\Cooperation\Tool\FloorInsulationFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
+use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\MeasureApplication;
@@ -43,8 +44,9 @@ class FloorInsulationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Cooperation $cooperation)
     {
+
         $typeIds = [4];
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);

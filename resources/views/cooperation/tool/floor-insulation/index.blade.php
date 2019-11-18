@@ -4,7 +4,8 @@
 
 
 @section('step_content')
-    <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.floor-insulation.store', ['cooperation' => $cooperation]) }}">
+    <form class="form-horizontal" method="POST"
+          action="{{ route('cooperation.tool.floor-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 
         @include('cooperation.tool.includes.interested', [
@@ -207,40 +208,26 @@
         </div>
 
 
+        @include('cooperation.tool.includes.comment', [
+             'translation' => 'floor-insulation.comment'
+        ])
 
-            @include('cooperation.tool.includes.comment', [
-                 'translation' => 'floor-insulation.comment'
-            ])
 
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">@lang('default.buttons.download')</div>
+                    <div class="panel-body">
+                        <ol>
+                            <li><a download=""
+                                   href="{{asset('storage/hoomdossier-assets/Maatregelblad_Vloerisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Vloerisolatie.pdf')))))}}</a>
+                            </li>
+                            <li><a download=""
+                                   href="{{asset('storage/hoomdossier-assets/Maatregelblad_Bodemisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Bodemisolatie.pdf')))))}}</a>
+                            </li>
 
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">@lang('default.buttons.download')</div>
-                        <div class="panel-body">
-                            <ol>
-                                <li><a download=""
-                                       href="{{asset('storage/hoomdossier-assets/Maatregelblad_Vloerisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Vloerisolatie.pdf')))))}}</a>
-                                </li>
-                                <li><a download=""
-                                       href="{{asset('storage/hoomdossier-assets/Maatregelblad_Bodemisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Bodemisolatie.pdf')))))}}</a>
-                                </li>
-
-                            </ol>
-                        </div>
+                        </ol>
                     </div>
-                    <hr>
-                    @if(!\App\helpers\HoomdossierSession::isUserObserving())
-                    <div class="form-group add-space">
-                        <div class="">
-                            <a class="btn btn-success pull-left"
-                               href="{{route('cooperation.tool.insulated-glazing.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
-                            <button type="submit" class="btn btn-primary pull-right">
-                                @lang('default.buttons.next')
-                            </button>
-                        </div>
-                    </div>
-                    @endif
                 </div>
             </div>
         </div>

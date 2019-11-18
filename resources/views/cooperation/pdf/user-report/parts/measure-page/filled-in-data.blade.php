@@ -1,10 +1,10 @@
 <div class="question-answer-section">
-    <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.measure-pages.filled-in-data')}}</p>
+    <p class="lead">{{__('pdf/user-report.measure-pages.filled-in-data')}}</p>
     <table class="full-width">
         <tbody>
-        @foreach (\Illuminate\Support\Arr::dot($dataForStep) as $translationKey => $value)
+        @foreach (\Illuminate\Support\Arr::dot($dataForSubStep) as $translationKey => $value)
             <?php
-            $translationForAnswer = $reportTranslations[$stepSlug . '.' . $translationKey];
+            $translationForAnswer = $reportTranslations[$stepShort . '.' . $subStepShort . '.' . $translationKey];
             ?>
             @if(!\App\Helpers\Hoomdossier::columnContains($translationKey, 'user_interest'))
                 <tr class="h-20">

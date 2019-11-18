@@ -355,7 +355,11 @@
                             var advices = $(".advices");
                             advices.html('<div class="col-sm-9"><strong>Verbetering</strong></div><div class="col-sm-3"><strong>Interesse</strong></div>');
                             $.each(data.advices, function(i, element){
-                                advices.append('<div class="col-sm-9">' + element.name + '</div><div class="col-sm-3"><input type="checkbox" name="user_interests[]" value="' + element.id + '"></div>');
+                                var checked = '';
+                                if (element.hasOwnProperty('interest') && element.interest === true) {
+                                    checked = ' checked="checked"';
+                                }
+                                advices.append('<div class="col-sm-9">' + element.name + '</div><div class="col-sm-3"><input type="checkbox" name="user_interests[]" value="' + element.id + '"' + checked +'></div>');
                             });
                         }
 

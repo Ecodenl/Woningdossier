@@ -123,7 +123,7 @@ class CurrentStateController extends Controller
                         $userInterests['solar-panels'] = empty($serviceData['extra']['value']) ? $yesOnShortTermInterestId : $noInterestNotPossibleId;
                         break;
                     case 'house-ventilation':
-                        $userInterests['ventilation-information'] = $yesOnShortTermInterestId;
+                        $userInterests['ventilation'] = $yesOnShortTermInterestId;
                         break;
                     case 'sun-boiler':
                         $userInterests['heater'] = $serviceValueCalculateValue == 1 ? $maybeMoreInfoInterestId : $noInterestNotPossibleId;

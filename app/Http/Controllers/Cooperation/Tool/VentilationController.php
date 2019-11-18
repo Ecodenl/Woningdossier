@@ -65,15 +65,15 @@ class VentilationController extends Controller
         $buildingOwner = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
         /** @var Step $step */
-        //$step = Step::findByShort('ventilation');
+        $step = Step::findByShort('ventilation');
         // replace me with above
-        $step = Step::where('slug', '=', 'ventilation')->first();
+        //$step = Step::where('slug', '=', 'ventilation')->first();
 
         $interestsInMeasureApplications = $request->input('user_interests', []);
         $yesOnShortNotice = Interest::orderBy('calculate_value')->first();
 
         foreach ($interestsInMeasureApplications as $measureApplicationId) {
-            //UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationId , $yesOnShortNotice->id);
+            UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationId , $yesOnShortNotice->id);
         }
 
         $houseVentilationData = $request->input('building_ventilations');
@@ -86,7 +86,7 @@ class VentilationController extends Controller
         ]);
 
         $this->saveAdvices($request);
-        //StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
+        StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
         StepHelper::complete($step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
         $nextStep = StepHelper::getNextStep($building, $inputSource, $step);

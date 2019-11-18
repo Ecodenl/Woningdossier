@@ -273,6 +273,19 @@
             </div>
         </div>
 
+        <div id="costs-other" class="row">
+            @include('cooperation.tool.includes.section-title', [
+                    'translation' => 'cooperation/tool/ventilation.index.indication-for-costs-other',
+                    'id' => 'indication-for-costs'
+                ])
+
+            <div class="row">
+                <div class="col-sm-12">
+                    {!! \App\Helpers\Translation::translate('cooperation/tool/ventilation.index.indication-for-costs-other.text') !!}
+                </div>
+            </div>
+        </div>
+
     </form>
 
 @endsection
@@ -363,9 +376,9 @@
                             });
                         }
 
-                        if (data.hasOwnProperty('remark')){
-                            $("p#remark").html(data.remark);
-                        }
+                        //if (data.hasOwnProperty('remark')){
+                        //    $("p#remark").html(data.remark);
+                        //}
 
                         if (data.hasOwnProperty('result') && data.result.hasOwnProperty('crack_sealing')) {
 

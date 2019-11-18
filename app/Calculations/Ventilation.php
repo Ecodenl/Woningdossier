@@ -205,6 +205,15 @@ class Ventilation
             }
         }
 
+        // Add interest (or not)
+        // This is needed for the javascript
+        $buildingOwner = $building->user;
+
+        foreach($advices as $advice){
+            if ($buildingOwner->hasInterestIn($advice)){
+                $advice->interest = true;
+            }
+        }
 
         if (count($advices) > 0) {
             $improvement .= '  Om de ventilatie verder te verbeteren kunt u de volgende opties overwegen:';

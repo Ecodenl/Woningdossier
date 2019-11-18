@@ -118,7 +118,10 @@ class VentilationController extends Controller
         // Remove old results
         UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
-        foreach($results['advices'] as $advice){
+        $interestsInMeasureApplications = $request->input('user_interests', []);
+        $relevantAdvices = collect($results['advices'])->whereIn('id', $interestsInMeasureApplications);
+
+        foreach($relevantAdvices as $advice){
             $measureApplication = MeasureApplication::find($advice['id']);
             if ($measureApplication instanceof MeasureApplication){
                 if ($measureApplication->short == 'crack-sealing') {

@@ -248,7 +248,7 @@
         <div id="indication-for-costs">
             <hr>
             @include('cooperation.tool.includes.section-title', [
-                    'translation' => 'cooperation/tool/ventilation.index.indication-for-costs.title',
+                    'translation' => 'cooperation/tool/ventilation.index.indication-for-costs',
                     'id' => 'indication-for-costs'
                 ])
 

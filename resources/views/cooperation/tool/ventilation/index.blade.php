@@ -273,7 +273,7 @@
             </div>
         </div>
 
-        <div id="costs-other" class="row">
+        <div id="costs-other">
             @include('cooperation.tool.includes.section-title', [
                     'translation' => 'cooperation/tool/ventilation.index.indication-for-costs-other',
                     'id' => 'indication-for-costs'

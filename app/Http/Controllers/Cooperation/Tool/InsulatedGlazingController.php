@@ -52,11 +52,6 @@ class InsulatedGlazingController extends Controller
      */
     public function index()
     {
-        // we do not want the user to set his interests for this step
-//        $typeIds = [1, 2];
-
-//        StepHelper::getNextStep();
-
         /**
          * @var Building
          */

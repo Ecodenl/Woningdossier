@@ -5,6 +5,8 @@ namespace App\Http\Requests\Cooperation\Tool\GeneralData;
 use App\Models\Service;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Fluent;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
@@ -41,10 +43,15 @@ class CurrentStateFormRequest extends FormRequest
             'services.total-sun-panels.extra.year' => 'nullable|numeric|between:1980,' . $max,
             'services.house-ventilation.extra.demand_driven' => 'sometimes|accepted',
             'services.house-ventilation.extra.heat_recovery' => 'sometimes|accepted',
-
-
             'building_features.building_heating_application_id' => ['required', Rule::exists('building_heating_applications', 'id')],
-            'building_pv_panels.total_installed_power' => [Rule::requiredIf($this->input('service.7.extra.value') > 0), 'numeric']
         ];
+    }
+
+    public function withValidator(Validator $validator)
+    {
+        $validator->sometimes('building_pv_panels.total_installed_power', 'numeric|required|max:18000|min:0', function (Fluent $input) {
+            $input = Arr::dot($input->getAttributes());
+            return $input['services.total-sun-panels.extra.value'] > 0;
+        });
     }
 }

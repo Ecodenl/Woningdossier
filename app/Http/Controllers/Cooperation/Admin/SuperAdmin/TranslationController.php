@@ -52,6 +52,11 @@ class TranslationController extends Controller
     public function edit(Cooperation $cooperation, $group)
     {
 
+        // it is what it is, for the time being this will do. should be refactored
+        $step = Step::findByShort($group);
+        if ($step instanceof Step && $step->isSubStep()) {
+            $group = "cooperation/tool/general-data/{$group}";
+        }
         $translations = LanguageLine::with([
             'subQuestions' => function ($query) {
                 return $query->with('helpText');

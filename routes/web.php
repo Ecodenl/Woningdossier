@@ -156,8 +156,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
                 Route::get('/', 'ToolController@index')->name('index');
 
-//                Route::resource('building-detail', 'BuildingDetailController', ['only' => ['index', 'store']]);
-
                 Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
                     Route::post('', 'QuestionnaireController@store')->name('store');
                 });
@@ -180,9 +178,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     });
                 });
 
-//                Route::group(['middleware' => 'filled-step:building-detail'], function () {
-//                    Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
-//                });
                 Route::group(['middleware' => 'filled-step:general-data'], function () {
                     // Ventilation information: info for now
                     Route::resource('ventilation-information', 'VentilationController',

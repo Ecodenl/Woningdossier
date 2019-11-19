@@ -122,7 +122,7 @@
                                 array_unshift($inputValues, __('woningdossier.cooperation.radiobutton.not-important'));
                             ?>
                             @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $inputValues, 'userInputValues' => $userEnergyHabitsForMe, 'userInputModel' => 'UserEnergyHabit', 'userInputColumn' => 'hours_high'])
-                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.hours')</span>
+                                <span class="input-group-addon">@lang('general.unit.hours.title')</span>
                                 <select id="hours_high" class="form-control" name="user_energy_habits[hours_high]">
                                     @foreach($hours as $hour)
                                         <option @if($hour === $selectedHours) selected
@@ -205,7 +205,7 @@
                         @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.amount_electricity', 'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.amount-electricity', 'required' => true])
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'amount_electricity'])
-                                <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kwh')</span>
+                                <span class="input-group-addon">@lang('general.unit.kwh.title')</span>
                                 <input id="user_energy_habits[amount_electricity]" type="text" value="{{ old('user_energy_habits.amount_electricity', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'amount_electricity')) }}" class="form-control" name="user_energy_habits[amount_electricity]" required="required">
                             @endcomponent
                         @endcomponent

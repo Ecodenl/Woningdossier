@@ -170,25 +170,13 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::get('', 'GeneralDataController@index')->name('index');
 
                     Route::group(['namespace' => 'GeneralData'], function () {
-                        Route::group(['prefix' => 'gebouw-kenmerken', 'as' => 'building-characteristics.'], function () {
-                            Route::get('', 'BuildingCharacteristicsController@index')->name('index');
-                            Route::get('get-qualified-example-buildings', 'BuildingCharacteristicsController@qualifiedExampleBuildings')->name('qualified-example-buildings');
-                            Route::post('', 'BuildingCharacteristicsController@store')->name('store');
-                        });
+                        Route::resource('gebouw-kenmerken', 'BuildingCharacteristicsController')->only(['index', 'store'])->names('building-characteristics');
+                        Route::get('get-qualified-example-buildings', 'BuildingCharacteristicsController@qualifiedExampleBuildings')->name('building-characteristics.qualified-example-buildings');
 
-                        Route::group(['prefix' => 'huidige-staat', 'as' => 'current-state.'], function () {
-                            Route::get('', 'CurrentStateController@index')->name('index');
-                            Route::post('', 'CurrentStateController@store')->name('store');
-                        });
+                        Route::resource('huidige-staat', 'CurrentStateController')->names('current-state')->only(['index', 'store']);
+                        Route::resource('gebruik', 'UsageController')->only(['index', 'store'])->names('usage');
+                        Route::resource('interesse', 'InterestController')->only(['index', 'store'])->names('interest');
 
-                        Route::group(['prefix' => 'gebruik', 'as' => 'usage.'], function () {
-                            Route::get('', 'UsageController@index')->name('index');
-                            Route::post('', 'UsageController@store')->name('store');
-                        });
-                        Route::group(['prefix' => 'interesse', 'as' => 'interest.'], function () {
-                            Route::get('', 'InterestController@index')->name('index');
-                            Route::post('', 'InterestController@store')->name('store');
-                        });
                     });
                 });
 

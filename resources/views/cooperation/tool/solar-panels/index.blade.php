@@ -60,7 +60,7 @@
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'number'])
-                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.pieces')</span>
+                            <span class="input-group-addon">@lang('general.unit.pieces.title')</span>
                             <input type="text" class="form-control" name="building_pv_panels[number]"
                                    value="{{ old('building_pv_panels.number', \App\Helpers\Hoomdossier::getMostCredibleValue($building->pvPanels(), 'number', 0)) }}"/>
                             {{--<input type="text" class="form-control" name="building_pv_panels[number]" value="{{ old('building_pv_panels.number', $buildingPvPanels instanceof \App\Models\BuildingPvPanel ? $buildingPvPanels->number : 0) }}" />--}}

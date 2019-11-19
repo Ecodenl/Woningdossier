@@ -341,7 +341,7 @@
                                     @else
                                         @component('cooperation.tool.components.input-group',
                                         ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(),'userInputColumn' => 'extra.value'])
-                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.pieces')</span>
+                                            <span class="input-group-addon">@lang('general.unit.pieces.title')</span>
                                             <input type="text" id="{{ $service->short }}" class="form-control"
                                                    value="{{ old('service.' . $service->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $service->id), 'extra.value')) }}"
                                                    name="service[{{ $service->id }}]">
@@ -544,7 +544,7 @@
                                 array_unshift($inputValues, __('woningdossier.cooperation.radiobutton.not-important'));
                                 ?>
                                 @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $inputValues, 'userInputValues' => $userEnergyHabitsForMe, 'userInputModel' => 'UserEnergyHabit', 'userInputColumn' => 'hours_high'])
-                                    <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.hours')</span>
+                                    <span class="input-group-addon">@lang('general.unit.hours.title')</span>
                                     <select id="hours_high" class="form-control" name="hours_high">
                                         @foreach($hours as $hour)
                                             <option @if($hour === $selectedHours) selected
@@ -636,7 +636,7 @@
 
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'amount_electricity'])
-                                    <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.kwh')</span>
+                                    <span class="input-group-addon">@lang('general.unit.kwh.title')</span>
                                     <input id="amount_electricity" type="text"
                                            value="{{ old('amount_electricity', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'amount_electricity')) }}"
                                            class="form-control" name="amount_electricity" required>

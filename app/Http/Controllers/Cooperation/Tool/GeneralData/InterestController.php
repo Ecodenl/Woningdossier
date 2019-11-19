@@ -48,15 +48,19 @@ class InterestController extends Controller
         $userInterests = $request->input('user_interests');
 
         foreach ($userInterests as $interestInId => $userInterest) {
-            UserInterestService::save($buildingOwner, $inputSource, Step::class, $interestInId , $userInterest['interest_id']);
+            UserInterestService::save($buildingOwner, $inputSource, Step::class, $interestInId, $userInterest['interest_id']);
         }
 
         $buildingOwner->motivations()->delete();
-        foreach ($request->input('user_motivations.id') as $order => $moviationId)
-            $buildingOwner->motivations()->create([
-                'motivation_id' => $moviationId,
-                'order' => $order
-            ]);
+
+        $userMotivations = $request->input('user_motivations.id');
+        if (!empty($userMotivations)) {
+            foreach ($request->input('user_motivations.id') as $order => $moviationId)
+                $buildingOwner->motivations()->create([
+                    'motivation_id' => $moviationId,
+                    'order' => $order
+                ]);
+        }
         $buildingOwner->energyHabit()->updateOrCreate([], $request->input('user_energy_habits'));
 
         StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));

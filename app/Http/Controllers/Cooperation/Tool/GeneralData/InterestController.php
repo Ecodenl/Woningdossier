@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Tool\GeneralData;
 use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Http\Requests\Cooperation\Tool\GeneralData\InterestFormRequest;
 use App\Models\Interest;

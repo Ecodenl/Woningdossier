@@ -105,7 +105,7 @@
                 <img class="img-responsive mt-15 pr-10 d-inline pull-left" src="{{asset('images/service-icons/'.$iconName.'.png')}}">
                 @component('cooperation.tool.components.step-question', ['id' => 'services.'.$service->short.'.extra.value', 'translation' => 'cooperation/tool/general-data/current-state.index.service.'.$service->short])
                     @component('cooperation.tool.components.input-group', ['inputType' => 'input', 'userInputValues' => $building->buildingServices()->forMe()->where('service_id', $service->id)->get(), 'userInputColumn' => 'extra.value'])
-                        <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.pieces')</span>
+                        <span class="input-group-addon">@lang('general.unit.pieces.title')</span>
                         <input type="text" id="{{ $service->short }}" class="form-control" name="services[{{ $service->short }}][extra][value]" value="{{ old('services.' . $service->short.'.extra.value', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $service->id), 'extra.value')) }}">
                         {{--<input type="text" id="{{ $service->short }}" class="form-control" value="@if(old('services.' . $service->id )){{old('services.' . $service->id)}} @elseif(isset($building->buildingServices()->where('service_id', $service->id)->first()->extra['value'])){{$building->buildingServices()->where('service_id', $service->id)->first()->extra['value']}} @endif" name="services[{{ $service->short }}]">--}}
                     @endcomponent

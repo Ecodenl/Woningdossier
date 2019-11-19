@@ -2,8 +2,6 @@
 
 return [
     'index' => [
-
-
         'comment' => [
             'element' => [
                 'title' => 'Toelichting huidige staat isolatie',

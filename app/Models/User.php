@@ -288,16 +288,6 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
-     * Returns the interests off a user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function interestsv2()
-    {
-        return $this->hasMany(UserInterest::class);
-    }
-
-    /**
      * Returns the first and last name, concatenated.
      *
      * @return string
@@ -306,6 +296,7 @@ class User extends Model implements AuthorizableContract
     {
         return "{$this->first_name} {$this->last_name}";
     }
+
 
     /**
      * Returns if a user has interest in a specific model (mostly Step or
@@ -325,38 +316,6 @@ class User extends Model implements AuthorizableContract
             }
         }
         return false;
-    }
-
-    /**
-     * Returns a specific interested row for a specific type.
-     *
-     * @param $type
-     * @param $interestedInId
-     *
-     * @return UserInterest
-     */
-    public function getInterestedType($type, $interestedInId, InputSource $inputSource = null)
-    {
-        if ($inputSource instanceof InputSource) {
-            return $this
-                ->userInterests()
-                ->forInputSource($inputSource)
-                ->where('interested_in_type', $type)
-                ->where('interested_in_id', $interestedInId)->first();
-        }
-
-        return $this->userInterests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
-    }
-
-    public function complete(Step $step)
-    {
-        \Log::debug(__METHOD__.' is still being used, this should not be');
-
-        return CompletedStep::firstOrCreate([
-            'step_id' => $step->id,
-            'input_source_id' => HoomdossierSession::getInputSource(),
-            'building_id' => HoomdossierSession::getBuilding(),
-        ]);
     }
 
     /**
@@ -586,8 +545,10 @@ class User extends Model implements AuthorizableContract
         return $this->account->email;
     }
 
+
     public function logout()
     {
+        // used in the handler.php
         HoomdossierSession::destroy();
         \Auth::logout();
         request()->session()->invalidate();

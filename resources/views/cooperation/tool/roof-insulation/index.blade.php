@@ -128,7 +128,7 @@
 
                                         @component('cooperation.tool.components.input-group',
                                         ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'roof_surface'])
-                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
+                                            <span class="input-group-addon">@lang('general.unit.square-meters.title')</span>
                                             <input type="text" class="form-control"
                                                    name="building_roof_types[{{ $roofCat }}][roof_surface]"
                                                    value="{{ old('building_roof_types.' . $roofCat . '.roof_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_surface')) }}">
@@ -144,7 +144,7 @@
 
                                         @component('cooperation.tool.components.input-group',
                                     ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'insulation_roof_surface'])
-                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
+                                            <span class="input-group-addon">@lang('general.unit.square-meters.title')</span>
                                             <input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]" value="{{ old('building_roof_types.' . $roofCat . '.insulation_roof_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'insulation_roof_surface')) }}">
                                             {{--<input type="text"  class="form-control" name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface'] : old('building_roof_types.' . $roofCat . '.insulation_roof_surface')}}">--}}
                                         @endcomponent
@@ -158,7 +158,7 @@
 
                                         @component('cooperation.tool.components.input-group',
                                     ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'extra.zinc_replaced_date'])
-                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
+                                            <span class="input-group-addon">@lang('general.unit.year.title')</span>
                                             <input type="text" class="form-control"
                                                    name="building_roof_types[{{ $roofCat }}][extra][zinc_replaced_date]"
                                                    value="{{ old('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'extra.zinc_replaced_date')) }}">
@@ -173,7 +173,7 @@
 
                                         @component('cooperation.tool.components.input-group',
                                         ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'extra.bitumen_replaced_date'])
-                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
+                                            <span class="input-group-addon">@lang('general.unit.year.title')</span>
                                             <input type="text" class="form-control"
                                                    name="building_roof_types[{{ $roofCat }}][extra][bitumen_replaced_date]"
                                                    value="{{ old('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'extra.bitumen_replaced_date')) }}">

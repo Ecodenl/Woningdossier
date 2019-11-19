@@ -156,8 +156,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
                 Route::get('/', 'ToolController@index')->name('index');
 
-//                Route::resource('building-detail', 'BuildingDetailController', ['only' => ['index', 'store']]);
-
                 Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
                     Route::post('', 'QuestionnaireController@store')->name('store');
                 });
@@ -170,31 +168,16 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::get('', 'GeneralDataController@index')->name('index');
 
                     Route::group(['namespace' => 'GeneralData'], function () {
-                        Route::group(['prefix' => 'gebouw-kenmerken', 'as' => 'building-characteristics.'], function () {
-                            Route::get('', 'BuildingCharacteristicsController@index')->name('index');
-                            Route::get('get-qualified-example-buildings', 'BuildingCharacteristicsController@qualifiedExampleBuildings')->name('qualified-example-buildings');
-                            Route::post('', 'BuildingCharacteristicsController@store')->name('store');
-                        });
+                        Route::resource('gebouw-kenmerken', 'BuildingCharacteristicsController')->only(['index', 'store'])->names('building-characteristics');
+                        Route::get('get-qualified-example-buildings', 'BuildingCharacteristicsController@qualifiedExampleBuildings')->name('building-characteristics.qualified-example-buildings');
 
-                        Route::group(['prefix' => 'huidige-staat', 'as' => 'current-state.'], function () {
-                            Route::get('', 'CurrentStateController@index')->name('index');
-                            Route::post('', 'CurrentStateController@store')->name('store');
-                        });
+                        Route::resource('huidige-staat', 'CurrentStateController')->names('current-state')->only(['index', 'store']);
+                        Route::resource('gebruik', 'UsageController')->only(['index', 'store'])->names('usage');
+                        Route::resource('interesse', 'InterestController')->only(['index', 'store'])->names('interest');
 
-                        Route::group(['prefix' => 'gebruik', 'as' => 'usage.'], function () {
-                            Route::get('', 'UsageController@index')->name('index');
-                            Route::post('', 'UsageController@store')->name('store');
-                        });
-                        Route::group(['prefix' => 'interesse', 'as' => 'interest.'], function () {
-                            Route::get('', 'InterestController@index')->name('index');
-                            Route::post('', 'InterestController@store')->name('store');
-                        });
                     });
                 });
 
-//                Route::group(['middleware' => 'filled-step:building-detail'], function () {
-//                    Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
-//                });
                 Route::group(['middleware' => 'filled-step:general-data'], function () {
 
                     // Heat pump: info for now
@@ -332,9 +315,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     });
 
                     /* section for the cooperation-admin */
-                    Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.',
-                        'namespace' => 'CooperationAdmin', 'middleware' => ['current-role:cooperation-admin|super-admin']
-                    ], function () {
+                    Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['current-role:cooperation-admin|super-admin']], function () {
 
                         Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
                             Route::get('', 'StepController@index')->name('index');
@@ -356,27 +337,25 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     });
 
                     Route::resource('key-figures', 'KeyFiguresController')->only('index');
-                    Route::resource('translations',
-                        'TranslationController')->except(['show'])->parameters(['id' => 'step-slug']);
+                    Route::resource('translations', 'TranslationController')->except(['show'])->parameters(['id' => 'group']);
 
                     /* Section for the cooperations */
                     Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.', 'namespace' => 'Cooperation'], function () {
-                            Route::get('', 'CooperationController@index')->name('index');
-                            Route::get('edit/{cooperationToEdit}', 'CooperationController@edit')->name('edit');
-                            Route::get('create', 'CooperationController@create')->name('create');
-                            Route::post('', 'CooperationController@store')->name('store');
-                            Route::post('edit', 'CooperationController@update')->name('update');
+                        Route::get('', 'CooperationController@index')->name('index');
+                        Route::get('edit/{cooperationToEdit}', 'CooperationController@edit')->name('edit');
+                        Route::get('create', 'CooperationController@create')->name('create');
+                        Route::post('', 'CooperationController@store')->name('store');
+                        Route::post('edit', 'CooperationController@update')->name('update');
 
-                            /* Actions that will be done per cooperation */
-                            Route::group(['prefix' => '{cooperationToManage}/', 'as' => 'cooperation-to-manage.'],
-                                function () {
-                                    Route::resource('home', 'HomeController')->only('index');
+                        /* Actions that will be done per cooperation */
+                        Route::group(['prefix' => '{cooperationToManage}/', 'as' => 'cooperation-to-manage.'], function () {
+                                Route::resource('home', 'HomeController')->only('index');
 
-                                    Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
-                                    Route::resource('coordinator', 'CoordinatorController')->only(['index']);
-                                    Route::resource('users', 'UserController')->only(['index', 'show']);
-                                });
-                        });
+                                Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
+                                Route::resource('coordinator', 'CoordinatorController')->only(['index']);
+                                Route::resource('users', 'UserController')->only(['index', 'show']);
+                            });
+                    });
                 });
 
                 /* Section for the coach */
@@ -405,7 +384,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
 Route::get('/', function () {
 
-    if(stristr(\Request::url(), '://www.')){
+    if (stristr(\Request::url(), '://www.')) {
         // The user has prefixed the subdomain with a www subdomain.
         // Remove the www part and redirect to that.
         return redirect(str_replace('://www.', '://', Request::url()));

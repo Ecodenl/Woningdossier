@@ -56,12 +56,17 @@ class InsulatedGlazing
             $interest = Interest::find($interestId);
 
             if ($measureApplication instanceof MeasureApplication && $buildingHeating instanceof BuildingHeating && $interest instanceof Interest && $interest->calculate_value <= 3) {
-                $gasSavings = InsulatedGlazingCalculator::calculateRawGasSavings(
-                    NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']),
-                    $measureApplication,
-                    $buildingHeating,
-                    $insulatedGlazing
-                );
+
+                $m2 = NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']);
+                $gasSavings = 0;
+                if(is_numeric($m2)) {
+                    $gasSavings = InsulatedGlazingCalculator::calculateRawGasSavings(
+                        $m2,
+                        $measureApplication,
+                        $buildingHeating,
+                        $insulatedGlazing
+                    );
+                }
 
                 $result['measure'][$measureApplication->id] = [
                     'costs' => InsulatedGlazingCalculator::calculateCosts($measureApplication, $interest, (int) $buildingInsulatedGlazingsData['m2'], (int) $buildingInsulatedGlazingsData['windows']),

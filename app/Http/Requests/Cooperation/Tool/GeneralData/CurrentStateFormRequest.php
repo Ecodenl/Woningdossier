@@ -44,7 +44,7 @@ class CurrentStateFormRequest extends FormRequest
 
 
             'building_features.building_heating_application_id' => ['required', Rule::exists('building_heating_applications', 'id')],
-            'building_pv_panels.total_installed_power' => [Rule::requiredIf($this->input('service.7.extra.value') > 0)]
+            'building_pv_panels.total_installed_power' => [Rule::requiredIf($this->input('service.7.extra.value') > 0), 'numeric']
         ];
     }
 }

@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="container">
-
+I
         <div class="row">
             <div class="col-md-12">
                 <div class="text-center">
@@ -16,7 +16,7 @@
         <div class="row">
             <div class="col-md-12">
                 {{--
-                   We check if the current step is the building detail
+                   We check if the current step is the building detailI
                 --}}
                 @if($currentSubStep instanceof \App\Models\Step)
                     <h2>{{$currentStep->name}}</h2>

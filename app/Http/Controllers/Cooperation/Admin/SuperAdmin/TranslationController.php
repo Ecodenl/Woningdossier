@@ -77,7 +77,7 @@ class TranslationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Cooperation $cooperation, $stepSlug)
+    public function update(Request $request, Cooperation $cooperation, $group)
     {
         $languageLinesData = $request->get('language_lines', []);
 
@@ -95,10 +95,10 @@ class TranslationController extends Controller
             }
         }
 
-        return redirect(route('cooperation.admin.super-admin.translations.edit', ['step-slug' => $stepSlug]))
+        return redirect()
+            ->route('cooperation.admin.super-admin.translations.index')
             ->with('success', __('woningdossier.cooperation.admin.super-admin.translations.update.success'));
     }
-
     /**
      * Remove the specified resource from storage.
      *

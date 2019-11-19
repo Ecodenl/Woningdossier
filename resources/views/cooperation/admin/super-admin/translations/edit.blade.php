@@ -17,7 +17,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <form action="{{route('cooperation.admin.super-admin.translations.update', ['group' => $group])}}" method="post" autocomplete="off">
+                    <form action="{{route('cooperation.admin.super-admin.translations.update', ['group' => str_replace('/', '_', $group)])}}" method="post" autocomplete="off">
                         <div class="form-group">
                             <a href="{{route('cooperation.admin.super-admin.translations.index')}}"
                                class="btn btn-default"><i

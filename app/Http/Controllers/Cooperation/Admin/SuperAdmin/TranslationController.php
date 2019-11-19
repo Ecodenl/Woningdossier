@@ -18,7 +18,7 @@ class TranslationController extends Controller
      */
     public function index()
     {
-        $steps = Step::all();
+        $steps = Step::where('short', '!=', 'general-data')->get();
 
         return view('cooperation.admin.super-admin.translations.index', compact('steps'));
     }
@@ -45,34 +45,30 @@ class TranslationController extends Controller
 
     /**
      * @param Cooperation $cooperation
-     * @param string      $stepSlug|   So we can get the translations / questions from language_line table for the step
+     * @param string $group |   So we can get the translations / questions from language_line table for the step
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(Cooperation $cooperation, $stepSlug)
+    public function edit(Cooperation $cooperation, $group)
     {
-        $step = Step::where('slug', $stepSlug)->first();
-        if ($step instanceof Step) {
-            $questions = LanguageLine::where('step_id', $step->id)
-                ->mainQuestions()
-                ->get();
 
-        // if it isn't a instance, then its a general translation group
-        } elseif (in_array($stepSlug, ['general', 'my-plan', 'home'])) {
-            $questions = LanguageLine::where('group', $stepSlug)
-                ->mainQuestions()
-                ->get();
-        }
+        $translations = LanguageLine::with([
+            'subQuestions' => function ($query) {
+                return $query->with('helpText');
+            }, 'helpText'])
+            ->forGroup($group)
+            ->mainQuestions()
+            ->get();
 
-        return view('cooperation.admin.super-admin.translations.edit', compact('questions', 'stepSlug'));
+        return view('cooperation.admin.super-admin.translations.edit', compact('translations', 'group'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param Cooperation              $cooperation
-     * @param string                   $stepId
+     * @param Cooperation $cooperation
+     * @param string $stepId
      *
      * @return \Illuminate\Http\Response
      */

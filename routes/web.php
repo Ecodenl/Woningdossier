@@ -354,8 +354,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     });
 
                     Route::resource('key-figures', 'KeyFiguresController')->only('index');
-                    Route::resource('translations',
-                        'TranslationController')->except(['show'])->parameters(['id' => 'step-slug']);
+                    Route::resource('translations', 'TranslationController')->except(['show'])->parameters(['id' => 'group']);
 
                     /* Section for the cooperations */
                     Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.', 'namespace' => 'Cooperation'], function () {

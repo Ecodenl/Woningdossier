@@ -149,7 +149,7 @@ return [
 
         // general data
         'building_features.building_layers' => __('general-data.building-type.how-much-building-layers.title'),
-        'building_features.surface' => __('cooperation/tool/cooperation/tool/general-data/building-characteristics.index.surface.title'),
+        'building_features.surface' => __('cooperation/tool/general-data/building-characteristics.index.surface.title'),
         'building_features.build_year' => __('cooperation/tool/general-data/building-characteristics.index.build-year.title'),
         'user_energy_habits.resident_count' => __('cooperation/tool/general-data/usage.index.water-gas.resident-count.title'),
         'user_energy_habits.thermostat_high' => __('cooperation/tool/general-data/usage.index.heating-habits.thermostat-high.title'),

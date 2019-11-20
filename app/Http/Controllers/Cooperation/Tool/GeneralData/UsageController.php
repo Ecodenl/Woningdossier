@@ -10,7 +10,9 @@ use App\Http\Requests\Cooperation\Tool\GeneralData\UsageFormRequest;
 use App\Models\BuildingHeating;
 use App\Models\ComfortLevelTapWater;
 use App\Http\Controllers\Controller;
+use App\Models\InputSource;
 use App\Models\Step;
+use App\Models\UserEnergyHabit;
 use App\Services\StepCommentService;
 
 class UsageController extends Controller
@@ -19,6 +21,7 @@ class UsageController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
+
         $comfortLevelsTapWater = ComfortLevelTapWater::all();
         $userEnergyHabitsForMe = $buildingOwner->energyHabit()->forMe()->get();
         $buildingHeatings = BuildingHeating::all();
@@ -47,8 +50,8 @@ class UsageController extends Controller
         $nextStep = StepHelper::getNextStep($building, $inputSource, $step);
         $url = $nextStep['url'];
 
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#' . $nextStep['tab_id'];
         }
 
         return redirect($url);

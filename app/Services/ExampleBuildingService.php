@@ -25,6 +25,7 @@ use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
 use App\Models\Log;
+use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\UserEnergyHabit;
 use App\Scopes\GetValueScope;
@@ -39,6 +40,7 @@ class ExampleBuildingService
         // Clear the current example building data
         self::log('Lookup '.$exampleBuilding->name.' for '.$buildYear);
         $contents = $exampleBuilding->getContentForYear($buildYear);
+//        dd($exampleBuilding->name, $contents, $buildYear);
         if (! $contents instanceof ExampleBuildingContent) {
             // There's nothing to apply
             self::log('No data to apply');
@@ -75,7 +77,7 @@ class ExampleBuildingService
                         continue;
                     }
                     if ('user_energy_habits' == $columnOrTable) {
-                        $buildingOwner->energyHabit()->updateOrCreate([], $values);
+                        $buildingOwner->energyHabit()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $values);
                     }
                     if ('element' == $columnOrTable) {
                         // process elements
@@ -208,7 +210,7 @@ class ExampleBuildingService
                             continue;
                         }
 
-                        $building->currentPaintworkStatus()->updateOrCreate([], $values);
+                        $building->currentPaintworkStatus()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $values);
                         //continue;
                     }
                     if ('building_insulated_glazings' == $columnOrTable) {
@@ -218,7 +220,7 @@ class ExampleBuildingService
                             //todo: so the insulated_glazing_id is non existent in the table, this is a typo and should be fixed in the tool structure
                             $glazingData['insulating_glazing_id'] = $glazingData['insulated_glazing_id'];
 
-                            $building->currentInsulatedGlazing()->updateOrCreate([], $glazingData);
+                            $building->currentInsulatedGlazing()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $glazingData);
 
                             self::log('Update or creating building insulated glazing ' . json_encode($building->currentInsulatedGlazing->toArray()));
                         }
@@ -229,7 +231,7 @@ class ExampleBuildingService
 
                             if (isset($buildingRoofTypeData['roof_surface']) && (int)$buildingRoofTypeData['roof_surface'] > 0) {
 
-                                $building->roofTypes()->updateOrCreate([], $buildingRoofTypeData);
+                                $building->roofTypes()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $buildingRoofTypeData);
 
                                 self::log('Update or creating building rooftype ' . json_encode($building->roofTypes->toArray()));
                             } else {
@@ -238,11 +240,11 @@ class ExampleBuildingService
                         }
                     }
                     if ('building_pv_panels' == $columnOrTable) {
-                        $building->pvPanels()->updateOrCreate([], $values);
+                        $building->pvPanels()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $values);
                         self::log('Update or creating building pv_panels ' . json_encode($building->pvPanels->toArray()));
                     }
                     if ('building_heaters' == $columnOrTable) {
-                        $building->heater()->updateOrCreate([], $values);
+                        $building->heater()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $values);
                         self::log('Update or creating building heater ' . json_encode($building->heater->toArray()));
                     }
                 }

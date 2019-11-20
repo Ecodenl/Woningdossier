@@ -15,7 +15,7 @@
                         'userInputModel' => 'buildingType',
                         'userInputColumn' => 'building_type_id'
                     ])
-                        <select id="building_type_id" class="form-control" name="building_features[building_type_id]">
+                        <select id="building_type_id" class="form-control" name="building_features[building_type_id]" data-ays-ignore="true">
                             @foreach($buildingTypes as $buildingType)
                                 <option @if($buildingType->id == old('building_features.building_type_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'building_type_id')))
                                         selected="selected"
@@ -36,7 +36,8 @@
                     ['inputType' => 'input', 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'build_year'])
                         <input id="build_year" type="text" class="form-control" name="building_features[build_year]"
                                value="{{ old('building_features.build_year', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'build_year')) }}"
-                               required autofocus>
+                               required autofocus
+                               data-ays-ignore="true">
                     @endcomponent
 
                 @endcomponent
@@ -52,7 +53,7 @@
 
                             @component('cooperation.tool.components.step-question', ['id' => 'example_building_id', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.example-building',])
 
-                                <select id="example_building_id" class="form-control" name="buildings[example_building_id]" data-ays-ignore="true"> {{-- data-ays-ignore="true" makes sure this field is not picked up by Are You Sure --}}
+                                <select id="example_building_id" data-ays-ignore="true" class="form-control" name="buildings[example_building_id]"> {{-- data-ays-ignore="true" makes sure this field is not picked up by Are You Sure --}}
                                     @foreach($exampleBuildings as $exampleBuilding)
                                         <option @if(is_null(old('buildings.example_building_id')) && is_null($building->example_building_id) && !$building->hasCompleted($step) && $exampleBuilding->is_default)
                                                 selected="selected"
@@ -254,7 +255,6 @@
 
 
             $('#build_year, #building_type_id').change(function () {
-                
                 if (confirm('{{__('cooperation/tool/general-data/building-characteristics.index.building-type.are-you-sure.title')}}')) {
                     $.ajax({
                         type: "POST",
@@ -287,6 +287,7 @@
                     console.log('Example building is getting stored');
                 @endif
                 exampleBuildingId = isNaN(exampleBuildingId) ? "" : exampleBuildingId;
+                console.log(`The example building id thats saved: ${exampleBuildingId}`);
                 $.ajax({
                     type: "POST",
                     url: storeExampleBuildingRoute,
@@ -296,10 +297,7 @@
                         build_year: buildYear,
                     },
                     success: function (data) {
-                        // to give the used a notice something changed.
-                        if (exampleBuildingId !== null) {
-                            location.reload();
-                        }
+                        location.reload();
                     }
                 });
             }
@@ -335,13 +333,14 @@
             exampleBuilding.change(function () {
                 var currentExampleBuildingId = parseInt(this.value);
 
+                console.log(`on change eb id: ${currentExampleBuildingId}`);
                 // do something with the previous value after the change
                 // when the user changed the eb, apply it after the confirm
                 if (currentExampleBuildingId !== previousExampleBuilding) {
 
                     if (confirm('{{ __('cooperation/tool/general-data/building-characteristics.index.example-building.apply-are-you-sure.title') }}')) {
                         @if(App::environment('local'))
-                        console.log("Let's save it. EB id: " + currentExampleBuildingId);
+                        // console.log("Let's save it. EB id: " + currentExampleBuildingId);
                         @endif
 
                         reInitCurrentForm();

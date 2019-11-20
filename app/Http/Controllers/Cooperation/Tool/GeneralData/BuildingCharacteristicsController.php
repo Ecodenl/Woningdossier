@@ -29,8 +29,6 @@ class BuildingCharacteristicsController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
-        dd($buildingOwner->completedQuestionnaires);
-
         $buildingTypes = BuildingType::all();
         $roofTypes = RoofType::all();
         $energyLabels = EnergyLabel::where('country_code', 'nl')->get();

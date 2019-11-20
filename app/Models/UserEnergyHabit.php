@@ -67,9 +67,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserEnergyHabit extends Model
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
-    use ToolSettingTrait;
+    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
 
     protected $fillable = [
         'user_id',

@@ -73,6 +73,10 @@ class Ventilation
             $advices = MeasureApplication::where('step_id', '=',
                 $step->id)->whereIn('short', array_keys($measures))->get();
 
+            $advices->each(function ($advice) {
+                $advice->name = $advice->measure_name;
+            });
+
             return [
                 'improvement' => 'Natuurlijke ventilatie is  niet zo goed voor het comfort en zorgt voor een hoog energiegebruik. Daarom worden de huizen steeds luchtdichter gemaakt en van goede isolatie voorzien. Om een gezond binnenklimaat te bereiken is hierbij een andere vorm van ventilatie nodig. De volgende opties kunt u overwegen:',
                 'advices'     => $advices,

@@ -1,11 +1,13 @@
 <?php
     //filter out the coach comments so we can check if there are any.
     $commentsForInputSource = [];
-    foreach ($commentsByStep as $stepSlug => $commentsByInputSource) {
-        // filter the coach comments and leave out empty stuff
-        $commentsForInputSource[$stepSlug] = array_filter($commentsByInputSource, function ($inputSource) use ($inputSourceName) {
-            return $inputSource === $inputSourceName;
-        }, ARRAY_FILTER_USE_KEY);
+    foreach ($commentsByStep as $stepSlug => $commentsBySubStep) {
+        foreach ($commentsBySubStep as $subStep => $commentsByInputSource) {
+            // filter the coach comments and leave out empty stuff
+            $commentsForInputSource[$stepSlug][$subStep] = array_filter($commentsByInputSource, function ($inputSource) use ($inputSourceName) {
+                return $inputSource === $inputSourceName;
+            }, ARRAY_FILTER_USE_KEY);
+        }
     }
     $commentsForInputSource = array_filter($commentsForInputSource);
 ?>
@@ -17,12 +19,15 @@
     <h1>@lang('my-plan.modal-for-other-input-source.title', ['input_source_name' => strtolower($inputSourceName)])</h1>
     <p>@lang('my-plan.modal-for-other-input-source.text', ['input_source_name' => strtolower($inputSourceName)])</p>
     <hr>
-    @foreach($commentsForInputSource  as $stepShort => $commentForInputSource)
-        <h4>{{\App\Models\Step::findByShort($stepShort)->name}}</h4>
-            @foreach($commentForInputSource as $comment)
+    @foreach ($commentsByStep as $stepSlug => $commentsBySubStep)
+        @foreach ($commentsBySubStep as $subStep => $commentsByInputSource)
+        <?php $commentsByInputSource = \Illuminate\Support\Arr::dot($commentsByInputSource) ?>
+        <h4>{{\App\Models\Step::findByShort($subStep)->name}}</h4>
+            @foreach($commentsByInputSource as $comment)
                 <p>{{$comment}}</p>
             @endforeach
         <hr>
+        @endforeach
     @endforeach
 
 

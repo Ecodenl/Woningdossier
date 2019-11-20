@@ -24,7 +24,7 @@ class UsageController extends Controller
         $buildingHeatings = BuildingHeating::all();
 
 
-        $commentsByStep = StepHelper::getAllCommentsByStep($buildingOwner);
+        $commentsByStep = StepHelper::getAllCommentsByStep($building);
         return view('cooperation.tool.general-data.usage.index', compact(
             'building', 'buildingOwner', 'userEnergyHabitsForMe', 'commentsByStep', 'comfortLevelsTapWater',
             'buildingHeatings'

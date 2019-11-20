@@ -111,7 +111,7 @@ class PdfReport implements ShouldQueue
             ->toArray();
 
         // retrieve all the comments by for each input source on a step
-        $commentsByStep = StepHelper::getAllCommentsByStep($user);
+        $commentsByStep = StepHelper::getAllCommentsByStep($building);
 
         $noInterest = Interest::where('calculate_value', 4)->first();
 

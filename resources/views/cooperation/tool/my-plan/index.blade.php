@@ -43,7 +43,7 @@
                             <i data-target="#my-plan-own-comment-info"
                                class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                                aria-expanded="false"></i>
-                            {{\App\Helpers\Translation::translate('general.specific-situation.title')}}
+                            @lang('general.specific-situation.title')
                             ({{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSource())->name}})
                         </label>
 

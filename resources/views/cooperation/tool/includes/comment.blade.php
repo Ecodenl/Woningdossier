@@ -18,12 +18,13 @@
 
             $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name][$short]);
 
-            $currentInputSourceHasACommentButIsEmpty = $currentInputSourceHasNoPlacedComment == false && empty($commentsForCurrentStep[$currentInputSource->name][$short]);
+            $currentInputSourceHasACommentButIsEmpty = empty($commentsForCurrentStep[$currentInputSource->name][$short]);
         } else {
             $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name]);
-            $currentInputSourceHasACommentButIsEmpty = $currentInputSourceHasNoPlacedComment == false && empty($commentsForCurrentStep[$currentInputSource->name]);
+            $currentInputSourceHasACommentButIsEmpty = empty($commentsForCurrentStep[$currentInputSource->name]);
         }
     }
+
 ?>
 @if(!empty($commentsForCurrentStep))
 @foreach($commentsForCurrentStep as $inputSourceName => $comment)
@@ -61,7 +62,7 @@
         @endif
     @endforeach
 @endif
-@if($currentInputSourceHasACommentButIsEmpty && $currentInputSourceHasACommentButIsEmpty)
+@if($currentInputSourceHasACommentButIsEmpty || $currentInputSourceHasNoPlacedComment)
 <div class="row">
     <div class="col-sm-12">
         <div class="form-group add-space">

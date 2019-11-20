@@ -94,6 +94,11 @@ class Step extends Model
         return $query->where('parent_id', $step->id);
     }
 
+    public function scopeOnlySubSteps(Builder $query)
+    {
+        return $query->whereNotNull('parent_id');
+    }
+
     /**
      * Method to leave out the sub steps
      *

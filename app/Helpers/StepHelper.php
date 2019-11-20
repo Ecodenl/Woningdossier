@@ -31,16 +31,15 @@ class StepHelper
         'house-ventilation' => 'ventilation'
     ];
 
-    public static function getAllCommentsByStep(User $user, $withEmptyComments = false): array
+    public static function getAllCommentsByStep(Building $building, $withEmptyComments = false): array
     {
-        $building = $user->building;
         $commentsByStep = [];
 
         if (!$building instanceof Building) {
             return [];
         }
 
-        $stepComments = StepComment::forMe($user)->with('step', 'inputSource')->get();
+        $stepComments = StepComment::forMe($building->user)->with('step', 'inputSource')->get();
 
         foreach ($stepComments as $stepComment) {
 

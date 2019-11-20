@@ -4,9 +4,16 @@ namespace App\Observers;
 
 use App\Models\Account;
 
-class AccountObserver {
+class AccountObserver
+{
 
-    public function updated(Account $account){
+    public function saved(Account $account)
+    {
+        \App\Helpers\Cache\Account::wipe($account->id);
+    }
+
+    public function deleted(Account $account)
+    {
         \App\Helpers\Cache\Account::wipe($account->id);
     }
 }

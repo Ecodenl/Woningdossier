@@ -84,7 +84,9 @@ class VentilationController extends Controller
         $houseVentilationData = $request->input('building_ventilations');
 
         // Save ventilation data
-        $building->buildingVentilations()->updateOrCreate([], [
+        $building->buildingVentilations()->updateOrCreate([
+            'input_source_id' => $inputSource->id,
+        ], [
             'how' => $houseVentilationData['how'] ?? [],
             'usage' => $houseVentilationData['usage'] ?? [],
             'living_situation' => $houseVentilationData['living_situation'] ?? [],

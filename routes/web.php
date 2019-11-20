@@ -199,8 +199,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     // Floor Insulation
                     Route::resource('floor-insulation', 'FloorInsulationController', ['only' => ['index', 'store']]);
-                    Route::post('floor-insulation/calculate',
-                        'FloorInsulationController@calculate')->name('floor-insulation.calculate');
+                    Route::post('floor-insulation/calculate', 'FloorInsulationController@calculate')->name('floor-insulation.calculate');
 
                     // Roof Insulation
                     Route::resource('roof-insulation', 'RoofInsulationController');

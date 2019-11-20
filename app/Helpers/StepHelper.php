@@ -3,26 +3,15 @@
 namespace App\Helpers;
 
 use App\Models\Building;
-use App\Models\BuildingElement;
-use App\Models\BuildingFeature;
-use App\Models\BuildingHeater;
-use App\Models\BuildingPvPanel;
-use App\Models\Element;
 use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\Questionnaire;
-use App\Models\Service;
 use App\Models\Step;
 use App\Models\StepComment;
 use App\Models\User;
-use App\Models\UserActionPlanAdviceComments;
-use App\Models\UserEnergyHabit;
 use App\Models\CompletedStep;
 use App\Models\UserInterest;
-
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Facades\Log;
 
 class StepHelper
 {
@@ -157,9 +146,10 @@ class StepHelper
             // create the base query to obtain the non completed questionnaires for the current step.
             $nonCompletedSteps = $parentStep->questionnaires()
                 ->active()
-                ->whereNotExists(function (Builder $query) use ($user) {
+                ->whereNotExists(function (Builder $query) use ($user, $inputSource) {
                     $query->select('*')
                         ->from('completed_questionnaires')
+                        ->where('completed_questionnaires.input_source_id', $inputSource->id)
                         ->whereRaw('questionnaires.id = completed_questionnaires.questionnaire_id')
                         ->where('user_id', $user->id);
                 })->orderBy('order')->get();
@@ -237,9 +227,7 @@ class StepHelper
     {
         CompletedStep::firstOrCreate([
             'step_id' => $step->id,
-            //'input_source_id' => HoomdossierSession::getInputSource(),
             'input_source_id' => $inputSource->id,
-            //'building_id' => HoomdossierSession::getBuilding(),
             'building_id' => $building->id,
         ]);
 
@@ -258,9 +246,7 @@ class StepHelper
             if ($uncompletedSubStepsForParentStep->isEmpty()) {
                 CompletedStep::firstOrCreate([
                     'step_id' => $parentStep->id,
-                    //'input_source_id' => HoomdossierSession::getInputSource(),
                     'input_source_id' => $inputSource->id,
-                    //'building_id' => HoomdossierSession::getBuilding(),
                     'building_id' => $building->id,
                 ]);
             }

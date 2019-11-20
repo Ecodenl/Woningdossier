@@ -703,7 +703,7 @@ class DumpService
         $buildingBoilerService = $buildingServices->where('service_id', $boilerService->id)->first();
 
         $buildingBoilerArray = [
-            $boilerService->id => [
+            $boilerService->short => [
                 'service_value_id' => $buildingBoilerService->service_value_id ?? null,
                 'extra' => $buildingBoilerService->extra['date'] ?? null,
             ],
@@ -749,7 +749,7 @@ class DumpService
 
         $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($userEnergyHabit, [
             'building_services' => $buildingBoilerArray,
-            'habit' => [
+            'user_energy_habits' => [
                 'amount_gas' => $userEnergyHabit->amount_gas ?? null,
             ],
         ]);

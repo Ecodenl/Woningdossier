@@ -15,33 +15,33 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * App\Models\User.
  *
- * @property int                                                                                 $id
- * @property int|null                                                                            $account_id
- * @property int|null                                                                            $cooperation_id
- * @property string                                                                              $first_name
- * @property string                                                                              $last_name
- * @property string                                                                              $phone_number
- * @property \Illuminate\Support\Carbon|null                                                     $created_at
- * @property \Illuminate\Support\Carbon|null                                                     $updated_at
- * @property \App\Models\Account|null                                                            $account
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[]         $actionPlanAdvices
- * @property \App\Models\Building                                                                $building
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[]                $buildingNotes
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[]           $buildingPermissions
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Building[]                     $buildings
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[]                $completedQuestionnaires
- * @property \App\Models\Cooperation|null                                                        $cooperation
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[]                  $cooperations
- * @property \App\Models\UserEnergyHabit                                                         $energyHabit
- * @property mixed                                                                               $email
- * @property mixed                                                                               $is_admin
- * @property mixed                                                                               $old_email_token
- * @property mixed                                                                               $oldemail
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[]                 $interests
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[]               $motivations
- * @property \Illuminate\Database\Eloquent\Collection|\App\NotificationSetting[]                 $notificationSettings
- * @property \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[]     $permissions
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Role[]                         $roles
+ * @property int $id
+ * @property int|null $account_id
+ * @property int|null $cooperation_id
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $phone_number
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \App\Models\Account|null $account
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
+ * @property \App\Models\Building $building
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
+ * @property \App\Models\Cooperation|null $cooperation
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
+ * @property \App\Models\UserEnergyHabit $energyHabit
+ * @property mixed $email
+ * @property mixed $is_admin
+ * @property mixed $old_email_token
+ * @property mixed $oldemail
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $interests
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
+ * @property \Illuminate\Database\Eloquent\Collection|\App\NotificationSetting[] $notificationSettings
+ * @property \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdviceComments[] $userActionPlanAdviceComments
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User forMyCooperation($cooperationId)
@@ -116,6 +116,7 @@ class User extends Model implements AuthorizableContract
 
         return !in_array($userSelectedInterestedId, $noInterestIds);
     }
+
     /**
      * Return all the interest levels of a user
      *
@@ -190,7 +191,7 @@ class User extends Model implements AuthorizableContract
      */
     public function getAccountProperty($property)
     {
-        \Log::debug('Account property '.$property.' is accessed via User!');
+        \Log::debug('Account property ' . $property . ' is accessed via User!');
         if ($this->account instanceof Account) {
             return $this->account->$property;
         }
@@ -234,9 +235,9 @@ class User extends Model implements AuthorizableContract
         $doesUserRetrievesNotifications =
 
             $this->notificationSettings()
-                 ->where('type_id', $notificationType->id)
-                 ->where('interval_id', '!=', $notInterestedInterval->id)
-                 ->exists();
+                ->where('type_id', $notificationType->id)
+                ->where('interval_id', '!=', $notInterestedInterval->id)
+                ->exists();
 
         return $doesUserRetrievesNotifications;
     }
@@ -376,7 +377,7 @@ class User extends Model implements AuthorizableContract
      */
     public function isNotRemovedFromBuildingCoachStatus($buildingId): bool
     {
-        return ! $this->isRemovedFromBuildingCoachStatus($buildingId);
+        return !$this->isRemovedFromBuildingCoachStatus($buildingId);
     }
 
     /**
@@ -408,7 +409,7 @@ class User extends Model implements AuthorizableContract
      */
     public function hasNotRole($roles): bool
     {
-        return ! $this->hasRole($roles);
+        return !$this->hasRole($roles);
     }
 
     /**
@@ -474,12 +475,22 @@ class User extends Model implements AuthorizableContract
      */
     public function hasNotMultipleRoles(): bool
     {
-        return ! $this->hasMultipleRoles();
+        return !$this->hasMultipleRoles();
     }
 
-    public function completedQuestionnaires()
+    /**
+     * Retrieve the completed questionnaires from the user
+     *
+     * @param InputSource $inputSource
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function completedQuestionnaires(InputSource $inputSource = null)
     {
-        return $this->belongsToMany(Questionnaire::class, 'completed_questionnaires');
+        // global scopes wont work on the intermediary table
+        $inputSource = is_null($inputSource) ? HoomdossierSession::getInputSource(true) : $inputSource;
+
+        return $this->belongsToMany(Questionnaire::class, 'completed_questionnaires')
+            ->wherePivot('input_source_id', $inputSource->id);
     }
 
     public function hasCompletedQuestionnaire(Questionnaire $questionnaire)
@@ -490,11 +501,20 @@ class User extends Model implements AuthorizableContract
     /**
      * Complete a questionnaire for a user.
      *
+     * @param InputSource $inputSource
      * @param Questionnaire $questionnaire
      */
-    public function completeQuestionnaire(Questionnaire $questionnaire)
+    public function completeQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource = null)
     {
-        $this->completedQuestionnaires()->syncWithoutDetaching(/* @scrutinizer ignore-type, uses parseIds method. */ $questionnaire);
+        $inputSource = is_null($inputSource) ? HoomdossierSession::getInputSource(true) : $inputSource;
+
+        $this->completedQuestionnaires()->syncWithoutDetaching(/* @scrutinizer ignore-type, uses parseIds method. */
+            [
+                $questionnaire->id => [
+                    'input_source_id' => $inputSource->id
+                ]
+            ]
+        );
     }
 
     /**

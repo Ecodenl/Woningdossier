@@ -117,13 +117,20 @@
                     1 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.yes-within-2-year'),
                     2 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.yes-within-5-year'),
                     0 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.none')
-                ]
+                ];
+                // default value for this should be 0, but null will be returned anyway so we have to do some uitzondering op de regel stuff
+                $mostCredibleValueForRenovationPlan = \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'renovation_plans');
+                $selectedRenovationPlanValue = is_null($mostCredibleValueForRenovationPlan) ? 0 : $mostCredibleValueForRenovationPlan;
                 ?>
                 @component('cooperation.tool.components.step-question', ['id' => 'renovation-plans', 'translation' => 'cooperation/tool/general-data/interest.index.motivation.renovation-plans'])
-                    @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $renovationPlanAnswerOptions, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'element_value_id'])
+                    @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $renovationPlanAnswerOptions, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'renovation_plans'])
                         <select name="user_energy_habits[renovation_plans]" class="form-control" id="">
                             @foreach($renovationPlanAnswerOptions as $value => $renovationPlanAnswerOption)
-                                <option value="{{$value}}">{{$renovationPlanAnswerOption}}</option>
+                                <option
+                                        @if($selectedRenovationPlanValue  === $value)
+                                            selected="selected"
+                                        @endif
+                                        value="{{$value}}">{{$renovationPlanAnswerOption}}</option>
                             @endforeach
                         </select>
                     @endcomponent
@@ -131,7 +138,7 @@
             </div>
             <div class="col-sm-6">
                 @component('cooperation.tool.components.step-question', ['id' => 'renovation-plans', 'translation' => 'cooperation/tool/general-data/interest.index.motivation.building-complaints'])
-                    @component('cooperation.tool.components.input-group', ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'element_value_id'])
+                    @component('cooperation.tool.components.input-group', ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'building_complaints'])
                         <input type="text" name="user_energy_habits[building_complaints]" class="form-control"
                                value="{{\App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'building_complaints')}}">
                     @endcomponent

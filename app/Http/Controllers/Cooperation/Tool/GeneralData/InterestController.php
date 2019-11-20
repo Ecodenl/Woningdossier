@@ -21,6 +21,8 @@ class InterestController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
+        $building = HoomdossierSession::getBuilding(true);
+        $buildingOwner = $building->user->load('stepInterests');
         $steps = $cooperation->getActiveOrderedSteps();
 
         // we wont show the general data cause we cant give our interest for that
@@ -55,10 +57,6 @@ class InterestController extends Controller
             return true;
         }, ARRAY_FILTER_USE_KEY);
 
-
-
-        $building = HoomdossierSession::getBuilding(true);
-        $buildingOwner = $building->user->load('stepInterests');
 
         $motivations = Motivation::orderBy('order')->get();
 

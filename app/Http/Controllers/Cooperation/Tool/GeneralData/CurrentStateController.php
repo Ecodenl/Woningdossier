@@ -131,12 +131,12 @@ class CurrentStateController extends Controller
                 }
             }
 
+
             // now save the interests
             foreach ($userInterests as $stepShort => $interestId) {
                 UserInterestService::save($buildingOwner, $inputSource, Step::class, Step::findByShort($stepShort)->id, $interestId);
             }
         }
-
 
         // save buildign features, pv panels and the comments
         $building->pvPanels()->updateOrCreate([], $request->input('building_pv_panels'));
@@ -151,8 +151,8 @@ class CurrentStateController extends Controller
         $nextStep = StepHelper::getNextStep($building, $inputSource, $step);
         $url = $nextStep['url'];
 
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#' . $nextStep['tab_id'];
         }
 
         return redirect($url);

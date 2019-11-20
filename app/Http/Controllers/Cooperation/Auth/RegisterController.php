@@ -74,11 +74,11 @@ class RegisterController extends Controller
         $account = Account::where('email', $request->get('email'))->first();
 
         // if its not found we will create a new one.
-        if (! $account instanceof Account) {
+        if (!$account instanceof Account) {
             $account = $this->createNewAccount($request->only('email', 'password'));
         }
 
-        $user = $this->createNewUser($request->except('email', 'password'));
+        $user = $this->createNewUser($account, $request->except('email', 'password'));
 
         // associate it with the user
         $user->account()->associate(
@@ -106,8 +106,8 @@ class RegisterController extends Controller
     private function createNewAccount(array $data): Account
     {
         return Account::create([
-            'email'         => $data['email'],
-            'password'      => \Hash::make($data['password']),
+            'email' => $data['email'],
+            'password' => \Hash::make($data['password']),
             'confirm_token' => RegistrationHelper::generateConfirmToken(),
         ]);
     }
@@ -115,18 +115,21 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
+     * @param $account
      * @param array $data
-     *
      * @return User
      */
-    private function createNewUser(array $data): User
+    private function createNewUser($account, array $data): User
     {
+
+        \Illuminate\Support\Facades\Log::debug('account id for registration: '.$account->id);
         // Create the user for an account
         $user = User::create(
             [
-                'first_name'    => $data['first_name'],
-                'last_name'     => $data['last_name'],
-                'phone_number'  => is_null($data['phone_number']) ? '' : $data['phone_number'],
+                'account_id' => $account->id,
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'phone_number' => is_null($data['phone_number']) ? '' : $data['phone_number'],
             ]
         );
 
@@ -173,7 +176,7 @@ class RegisterController extends Controller
      * Check if a email already exists in the user table, and if it exist check if the user is registering on the wrong cooperation.
      *
      * @param Cooperation $cooperation
-     * @param Request     $request
+     * @param Request $request
      *
      * @return \Illuminate\Http\JsonResponse
      */

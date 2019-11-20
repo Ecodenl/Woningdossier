@@ -241,10 +241,6 @@
             </div>
         </div>
 
-        @include('cooperation.tool.includes.comment', [
-           'translation' => 'cooperation/tool/ventilation.index.comment'
-        ])
-
         <div id="indication-for-costs">
             <hr>
             @include('cooperation.tool.includes.section-title', [
@@ -285,6 +281,10 @@
                 </div>
             </div>
         </div>
+
+        @include('cooperation.tool.includes.comment', [
+           'translation' => 'cooperation/tool/ventilation.index.comment'
+        ])
 
     </form>
 

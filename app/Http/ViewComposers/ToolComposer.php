@@ -56,10 +56,6 @@ class ToolComposer
                 $this->currentUser = Hoomdossier::user();
             }
 
-            if (is_null($this->commentsByStep)) {
-                $this->commentsByStep = StepHelper::getAllCommentsByStep($this->currentUser);
-            }
-
 //            if (is_null($this->unreadMessageCount)) {
 //                $this->unreadMessageCount = PrivateMessageView::getTotalUnreadMessagesForCurrentRole();
 //            }
@@ -94,6 +90,10 @@ class ToolComposer
             if ($this->currentBuilding instanceof Building) {
                 if (is_null($this->buildingOwner)){
                     $this->buildingOwner = $this->currentBuilding->user;
+                }
+
+                if (is_null($this->commentsByStep)) {
+                    $this->commentsByStep = StepHelper::getAllCommentsByStep($this->currentBuilding);
                 }
                 $view->with('building', $this->currentBuilding);
                 $view->with('buildingOwner', $this->buildingOwner);

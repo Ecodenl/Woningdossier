@@ -49,7 +49,7 @@ class CurrentStateController extends Controller
 
         $buildingHeatingApplications = BuildingHeatingApplication::orderBy('order')->get();
 
-        $commentsByStep = StepHelper::getAllCommentsByStep($buildingOwner);
+        $commentsByStep = StepHelper::getAllCommentsByStep($building);
         return view('cooperation.tool.general-data.current-state.index', compact(
             'building', 'buildingOwner', 'elements', 'services', 'userInterestsForMe', 'services',
             'buildingHeatingApplications', 'myBuildingFeatures', 'commentsByStep'

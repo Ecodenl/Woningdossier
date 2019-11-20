@@ -76,7 +76,7 @@
                 @else
 
                     {{-- for residents only show 'Start' and 'Basisadvies' --}}
-                    @if(\App\Helpers\Hoomdossier::user()->hasRole('resident'))
+                    @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('resident'))
                         @if (!\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
                         <li>
                             <a href="{{url('/home')}}">@lang('woningdossier.cooperation.navbar.start')</a>

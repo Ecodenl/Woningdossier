@@ -22,7 +22,7 @@
     @foreach ($commentsByStep as $stepSlug => $commentsBySubStep)
         @foreach ($commentsBySubStep as $subStep => $commentsByInputSource)
         <?php $commentsByInputSource = \Illuminate\Support\Arr::dot($commentsByInputSource) ?>
-        <h4>{{\App\Models\Step::findByShort($subStep)->name}}</h4>
+        <h4>{{\App\Models\Step::findByShort($subStep === '-' ? $stepSlug : $subStep)->name}}</h4>
             @foreach($commentsByInputSource as $comment)
                 <p>{{$comment}}</p>
             @endforeach

@@ -456,9 +456,19 @@ class User extends Model implements AuthorizableContract
         return ! $this->hasMultipleRoles();
     }
 
-    public function completedQuestionnaires()
+    /**
+     * Retrieve the completed questionnaires from the user
+     *
+     * @param InputSource $inputSource
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function completedQuestionnaires(InputSource $inputSource = null)
     {
-        return $this->belongsToMany(Questionnaire::class, 'completed_questionnaires');
+        // global scopes wont work on the intermediary table
+        $inputSourceId = $inputSource->id ?? HoomdossierSession::getInputSource(true)->id;
+
+        return $this->belongsToMany(Questionnaire::class, 'completed_questionnaires')
+            ->wherePivot('input_source_id', $inputSourceId);
     }
 
     public function hasCompletedQuestionnaire(Questionnaire $questionnaire)

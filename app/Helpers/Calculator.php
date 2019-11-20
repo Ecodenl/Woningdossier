@@ -9,6 +9,7 @@ use App\Models\BuildingTypeElementMaxSaving;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\InputSource;
+use App\Models\Log;
 use App\Models\MeasureApplication;
 use App\Models\PriceIndexing;
 use App\Models\UserEnergyHabit;
@@ -226,6 +227,12 @@ class Calculator
         self::debug(__METHOD__.' Max saving for building_type '.$buildingType->id.' + element '.$element->id.' ('.$element->short.') = '.$saving.'%');
         $result = $usage * ($saving / 100);
         self::debug(__METHOD__.' '.$result.' = '.$usage.' * '.($saving / 100));
+
+        // when someone fills in a way to low non realistic gas usage it will be below 0
+        // if so we display 0.
+        if ($result < 0) {
+            $result = 0;
+        }
 
         return $result;
     }

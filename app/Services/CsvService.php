@@ -368,24 +368,6 @@ class CsvService
     }
 
     /**
-     * Get the year from the action plan advice.
-     *
-     * @param UserActionPlanAdvice $actionPlanAdvice
-     *
-     * @return int
-     */
-    public static function getYear(UserActionPlanAdvice $actionPlanAdvice): int
-    {
-        // try to obtain the years from the action plan
-        $plannedYear = $actionPlanAdvice->planned_year ?? $actionPlanAdvice->year;
-
-        // set the year and if null get the advice year
-        $year = $plannedYear ?? UserActionPlanAdviceService::getAdviceYear($actionPlanAdvice);
-
-        return $year;
-    }
-
-    /**
      * Get the total report for all users by the cooperation.
      *
      * @param Cooperation $cooperation

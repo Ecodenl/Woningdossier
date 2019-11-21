@@ -103,22 +103,6 @@ class UserActionPlanAdvice extends Model
     }
 
     /**
-     * Method to return a year for the personal plan.
-     *
-     * @return array|int|string|null
-     */
-    public function getYear(InputSource $inputSource)
-    {
-        $year = isset($this->planned_year) ? $this->planned_year : $this->year;
-
-        if (is_null($year)) {
-            $year = UserActionPlanAdviceService::getAdviceYear($this) ?? __('woningdossier.cooperation.tool.my-plan.no-year');
-        }
-
-        return $year;
-    }
-
-    /**
      * Check whether someone is interested in the measure.
      *
      * @param Building $building

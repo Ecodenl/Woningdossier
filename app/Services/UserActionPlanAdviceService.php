@@ -56,10 +56,17 @@ class UserActionPlanAdviceService
         return $adviceYear;
     }
 
+    /**
+     * Method to return a year or string with no year.
+     *
+     * @param UserActionPlanAdvice $userActionPlanAdvice
+     * @return array|int|null|string
+     */
     public static function getYear(UserActionPlanAdvice $userActionPlanAdvice)
     {
-        $year = isset($userActionPlanAdvice->planned_year) ? $userActionPlanAdvice->planned_year : $userActionPlanAdvice->year;
+        $year = $userActionPlanAdvice->planned_year ?? $userActionPlanAdvice->year;
 
+        // when the year is empty try to get one last resort.
         if (is_null($year)) {
             $year = UserActionPlanAdviceService::getAdviceYear($userActionPlanAdvice) ?? __('woningdossier.cooperation.tool.my-plan.no-year');
         }
@@ -103,7 +110,7 @@ class UserActionPlanAdviceService
         foreach ($advices as $measureType => $stepAdvices) {
             foreach ($stepAdvices as $stepSlug => $advicesForStep) {
                 foreach ($advicesForStep as $advice) {
-                    $year = $advice->getYear($inputSource);
+                    $year = UserActionPlanAdviceService::getYear($advice);
 
                     // if its a string, the $year contains 'geen jaartal'
                     if (is_string($year)) {

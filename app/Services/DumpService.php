@@ -279,6 +279,9 @@ class DumpService
                             case 'facade_damaged_paintwork_id':
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->name : '';
                                 break;
+                            case 'building_heating_application_id':
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = optional($buildingFeature->buildingHeatingApplication)->name;
+                                break;
                             case 'facade_plastered_painted':
                                 $possibleAnswers = [
                                     1 => \App\Helpers\Translation::translate('general.options.yes.title'),

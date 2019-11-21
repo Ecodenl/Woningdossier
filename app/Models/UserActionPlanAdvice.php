@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Services\UserActionPlanAdviceService;
+use App\Services\UserInterestService;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
@@ -11,24 +13,24 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\UserActionPlanAdvice.
  *
- * @property int                             $id
- * @property int                             $user_id
- * @property int|null                        $input_source_id
- * @property int                             $measure_application_id
- * @property float|null                      $costs
- * @property float|null                      $savings_gas
- * @property float|null                      $savings_electricity
- * @property float|null                      $savings_money
- * @property int|null                        $year
- * @property bool                            $planned
- * @property int|null                        $planned_year
- * @property int                             $step_id
+ * @property int $id
+ * @property int $user_id
+ * @property int|null $input_source_id
+ * @property int $measure_application_id
+ * @property float|null $costs
+ * @property float|null $savings_gas
+ * @property float|null $savings_electricity
+ * @property float|null $savings_money
+ * @property int|null $year
+ * @property bool $planned
+ * @property int|null $planned_year
+ * @property int $step_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\InputSource|null    $inputSource
- * @property \App\Models\MeasureApplication  $measureApplication
- * @property \App\Models\Step                $step
- * @property \App\Models\User                $user
+ * @property \App\Models\InputSource|null $inputSource
+ * @property \App\Models\MeasureApplication $measureApplication
+ * @property \App\Models\Step $step
+ * @property \App\Models\User $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice forMe(\App\Models\User $user = null)
@@ -78,7 +80,7 @@ class UserActionPlanAdvice extends Model
      * Scope a query to only include results for the particular step.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param Step                                  $step
+     * @param Step $step
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -104,54 +106,7 @@ class UserActionPlanAdvice extends Model
 
     public function getAdviceYear(InputSource $inputSource = null)
     {
-        // todo Find a neater solution for this as this was one of many additions in hindsight
-        // Step slug => element short
-        $slugElements = [
-            'wall-insulation' => 'wall-insulation',
-            //'insulated-glazing' => 'living-rooms-windows', // this is nonsense.. there's no location specification in this step, while there is on general-data
-            'floor-insulation' => 'floor-insulation',
-            //'roof-insulation' => 'roof-insulation',
-        ];
-        if (! $this->step instanceof Step) {
-            return null;
-        }
 
-        if ('insulated-glazing' == $this->step->slug) {
-            $userInterest = $this->user->userInterestsForSpecificType(get_class($this->measureApplication), $this->measureApplication->id)->first();
-            if (! $userInterest instanceof UserInterest) {
-                return null;
-            }
-            if (1 == $userInterest->interest->calculate_value) {
-                return Carbon::now()->year;
-            }
-            if (2 == $userInterest->interest->calculate_value) {
-                return Carbon::now()->year + 5;
-            }
-
-            return null;
-        }
-
-        if (! array_key_exists($this->step->slug, $slugElements)) {
-            return null;
-        }
-        $elementShort = $slugElements[$this->step->slug];
-        $element = Element::where('short', $elementShort)->first();
-        if (! $element instanceof Element) {
-            return null;
-        }
-
-        $userInterest = $this->user->userInterestsForSpecificType(get_class($element), $element->id)->first();
-        if (! $userInterest instanceof UserInterest) {
-            return null;
-        }
-        if (1 == $userInterest->interest->calculate_value) {
-            return Carbon::now()->year;
-        }
-        if (2 == $userInterest->interest->calculate_value) {
-            return Carbon::now()->year + 5;
-        }
-
-        return null;
     }
 
     /**
@@ -164,7 +119,7 @@ class UserActionPlanAdvice extends Model
         $year = isset($this->planned_year) ? $this->planned_year : $this->year;
 
         if (is_null($year)) {
-            $year = $this->getAdviceYear($inputSource) ?? __('woningdossier.cooperation.tool.my-plan.no-year');
+            $year = UserActionPlanAdviceService::getAdviceYear($this) ?? __('woningdossier.cooperation.tool.my-plan.no-year');
         }
 
         return $year;
@@ -173,18 +128,18 @@ class UserActionPlanAdvice extends Model
     /**
      * Check whether someone is interested in the measure.
      *
-     * @param Building    $building
+     * @param Building $building
      * @param InputSource $inputSource
-     * @param Step        $step
+     * @param Step $step
      *
      * @return bool
      */
     public static function hasInterestInMeasure(Building $building, InputSource $inputSource, Step $step): bool
     {
         return self::forInputSource($inputSource)
-            ->where('user_id', $building->user_id)
-            ->where('step_id', $step->id)
-            ->where('planned', true)
-            ->first() instanceof UserActionPlanAdvice;
+                ->where('user_id', $building->user_id)
+                ->where('step_id', $step->id)
+                ->where('planned', true)
+                ->first() instanceof UserActionPlanAdvice;
     }
 }

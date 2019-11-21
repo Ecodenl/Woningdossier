@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Models\UserActionPlanAdvice;
+use App\Services\UserActionPlanAdviceService;
 
 class UserActionPlanAdviceObserver
 {
@@ -20,5 +21,9 @@ class UserActionPlanAdviceObserver
 
         $userActionPlanAdvice->input_source_id = HoomdossierSession::getInputSource();
         $userActionPlanAdvice->planned = $planned;
+
+        if (is_null($userActionPlanAdvice->year)) {
+            $userActionPlanAdvice->year = UserActionPlanAdviceService::getAdviceYear($userActionPlanAdvice);
+        }
     }
 }

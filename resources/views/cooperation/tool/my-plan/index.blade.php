@@ -219,7 +219,7 @@
                                 $.each(stepMeasures, function (i, stepData) {
 
                                     if (stepData.interested) {
-                                        $("#advice-" + stepData.advice_id + "-planned").attr('checked', true)
+                                        $("#advice-" + stepData.advice_id + "-planned").attr('checked', true);
                                     }
 
                                     totalCosts += parseFloat(stepData.costs);
@@ -316,6 +316,7 @@
             });
 
             $(".interested-checker").click(function () {
+
                 // get the planned year input
                 var plannedYearInput = $(this).parent().parent().find('input[name*=planned_year]');
                 var advicedYear;

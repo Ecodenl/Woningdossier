@@ -83,7 +83,7 @@
                         </li>
                         @endif
                         <li>
-                            <a href="{{route('cooperation.tool.general-data.building-characteristics.index')}}">
+                            <a href="{{route('cooperation.tool.general-data.index')}}">
                                 @lang('woningdossier.cooperation.tool.title')
                             </a>
                         </li>

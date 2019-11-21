@@ -55,6 +55,18 @@ class UserActionPlanAdviceService
 
         return $adviceYear;
     }
+
+    public static function getYear(UserActionPlanAdvice $userActionPlanAdvice)
+    {
+        $year = isset($userActionPlanAdvice->planned_year) ? $userActionPlanAdvice->planned_year : $userActionPlanAdvice->year;
+
+        if (is_null($year)) {
+            $year = UserActionPlanAdviceService::getAdviceYear($userActionPlanAdvice) ?? __('woningdossier.cooperation.tool.my-plan.no-year');
+        }
+
+        return $year;
+    }
+
     /**
      * Method to return input sources that have an action plan advice, on a building.
      *

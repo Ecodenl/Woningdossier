@@ -9,11 +9,52 @@ use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use Carbon\Carbon;
 
 class UserActionPlanAdviceService
 {
+
+    /**
+     * Method to retrieve the advice year based on the step or when available measure interest level.
+     *
+     * @param UserActionPlanAdvice $userActionPlanAdvice
+     * @return int|null
+     */
+    public static function getAdviceYear(UserActionPlanAdvice $userActionPlanAdvice)
+    {
+        $adviceYear = null;
+        $step = $userActionPlanAdvice->step;
+        $buildingOwner = $userActionPlanAdvice->user;
+        $measureApplication = $userActionPlanAdvice->measureApplication;
+
+        // set the default user interest on the step.
+        $userInterest = $buildingOwner->userInterestsForSpecificType(get_class($step), $step->id)->with('interest')->first();
+
+        // try to obtain a specific interest on the measure application
+        $userInterestOnMeasureApplication = $buildingOwner
+            ->userInterestsForSpecificType(get_class($measureApplication), $measureApplication->id)
+            ->with('interest')
+            ->first();
+
+        // when thats available use that.
+        if ($userInterestOnMeasureApplication instanceof UserInterest) {
+            $userInterest = $userInterestOnMeasureApplication;
+        }
+
+        if (!$userInterest instanceof UserInterest) {
+            return $adviceYear;
+        }
+        if (1 == $userInterest->interest->calculate_value) {
+            $adviceYear = Carbon::now()->year;
+        }
+        if (2 == $userInterest->interest->calculate_value) {
+            $adviceYear = Carbon::now()->year + 5;
+        }
+
+        return $adviceYear;
+    }
     /**
      * Method to return input sources that have an action plan advice, on a building.
      *
@@ -112,7 +153,7 @@ class UserActionPlanAdviceService
                 $measureApplication = $advice->measureApplication;
 
                 if (is_null($advice->year)) {
-                    $advice->year = $advice->getAdviceYear($inputSource);
+                    $advice->year = self::getAdviceYear($advice);
                 }
                 // if advices are not desirable and the measureApplication is not an advice it will be added to the result
                 if (! $withAdvices && ! $measureApplication->isAdvice()) {

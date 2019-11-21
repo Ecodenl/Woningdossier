@@ -13,6 +13,7 @@ use App\Models\BuildingService;
 use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\Step;
+use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
@@ -64,9 +65,9 @@ class HighEfficiencyBoilerController extends Controller
             'steps', 'buildingOwner'));
     }
 
-    public function calculate(Request $request)
+    public function calculate(Request $request, User $buildingOwner)
     {
-        $result = HighEfficiencyBoiler::calculate(Hoomdossier::user()->energyHabit, $request->all());
+        $result = HighEfficiencyBoiler::calculate($buildingOwner->energyHabit, $request->all());
 
         return response()->json($result);
     }
@@ -82,58 +83,33 @@ class HighEfficiencyBoilerController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
-        $buildingId = $building->id;
-        $inputSourceId = $inputSource->id;
 
         // Save the building service
-        $buildingServices = $request->input('building_services', '');
-        $buildingServiceId = key($buildingServices);
-
-
         $userInterests = $request->input('user_interests');
         UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        $serviceValue = isset($buildingServices[$buildingServiceId]['service_value_id']) ? $buildingServices[$buildingServiceId]['service_value_id'] : '';
-        $extra = isset($buildingServices[$buildingServiceId]['extra']) ? $buildingServices[$buildingServiceId]['extra'] : '';
+        $serviceValueId = $request->input('building_services.boiler.service_value_id');
+        $date = $request->input('building_services.boiler.extra');
 
-        BuildingService::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'building_id' => $buildingId,
-                'service_id' => $buildingServiceId,
-                'input_source_id' => $inputSourceId,
-            ],
-            [
-                'service_value_id' => $serviceValue,
-                'extra' => ['date' => $extra],
-            ]
+
+        $service = Service::findByShort('boiler');
+
+        $building->buildingServices()->updateOrCreate(
+            ['input_source_id' => $inputSource->id, 'service_id' => $service->id],
+            ['service_value_id' => $serviceValueId, 'extra' => ['date' => $date]]
         );
 
-        // save the habits
-        $habits = $request->input('habit', '');
-        $gasUsage = isset($habits['gas_usage']) ? $habits['gas_usage'] : '';
-        $residentCount = isset($habits['resident_count']) ? $habits['resident_count'] : '';
-
-        UserEnergyHabit::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'user_id' => $user->id,
-                'input_source_id' => $inputSourceId,
-            ],
-            [
-                'resident_count' => $residentCount,
-                'amount_gas' => $gasUsage,
-            ]
-        );
+        $user->energyHabit()->updateOrCreate(['input_source_id' => $inputSource->id], $request->input('user_energy_habits'));
 
         // Save progress
         $this->saveAdvices($request);
-        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
+        StepHelper::complete($this->step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
-        $cooperation = HoomdossierSession::getCooperation(true);
 
-        $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
+        $nextStep = StepHelper::getNextStep($building, $inputSource, $this->step);
         $url = $nextStep['url'];
 
         if (! empty($nextStep['tab_id'])) {
@@ -149,11 +125,11 @@ class HighEfficiencyBoilerController extends Controller
         $user = $building->user;
 
         /** @var JsonResponse $results */
-        $results = $this->calculate($request);
+        $results = $this->calculate($request, $user);
         $results = $results->getData(true);
 
         // Remove old results
-        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
+        $user->actionPlanAdvices()->forStep($this->step)->delete();
 
         if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'high-efficiency-boiler-replace')->first();

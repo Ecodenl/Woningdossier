@@ -165,9 +165,8 @@ class InsulatedGlazingController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
-        $energyHabit = Hoomdossier::user()->energyHabit;
 
-        $result = InsulatedGlazing::calculate($building, $inputSource, $energyHabit, $request->all());
+        $result = InsulatedGlazing::calculate($building, $inputSource, $building->user->energyHabit, $request->all());
 
         return response()->json($result);
     }

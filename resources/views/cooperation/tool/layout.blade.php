@@ -22,8 +22,14 @@
                 @endif
                 <ul class="nav nav-tabs mt-20">
 
-                    @if(isset($currentStep) && $currentStep->hasSubSteps())
-                        @foreach($cooperation->getSubStepsForStep($currentStep) as $subStep)
+                    @if(isset($currentStep))
+                        <?php $subStepsForStep = $cooperation->getSubStepsForStep($currentStep); ?>
+                        @if($subStepsForStep->isEmpty())
+                            <li  class="active @if($building->hasCompleted($currentStep)) completed @endif">
+                                <a href="{{route("cooperation.tool.{$currentStep->short}.index")}}" >{{$currentStep->name}}</a>
+                            </li>
+                        @endif
+                        @foreach($subStepsForStep as $subStep)
                             <li  class="@if($subStep->short == $currentSubStep->short) active @endif @if($building->hasCompleted($subStep)) completed @endif">
                                 <a href="{{route("cooperation.tool.{$currentStep->short}.{$subStep->short}.index")}}" >{{$subStep->name}}</a>
                             </li>

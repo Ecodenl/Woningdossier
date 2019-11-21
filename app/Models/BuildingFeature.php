@@ -129,6 +129,11 @@ class BuildingFeature extends Model
         return $this->belongsTo(FacadePlasteredSurface::class, 'facade_plastered_surface_id', 'id');
     }
 
+    public function buildingHeatingApplication()
+    {
+        return $this->belongsTo(BuildingHeatingApplication::class);
+    }
+
     /**
      * Column is named wall_joints.
      *

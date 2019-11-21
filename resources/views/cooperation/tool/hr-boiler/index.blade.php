@@ -176,6 +176,7 @@
                         }
 
                         if (data.hasOwnProperty('savings_gas')) {
+                            console.log(data.savings_gas);
                             $("input#savings_gas").val(hoomdossierRound(data.savings_gas));
                         }
                         if (data.hasOwnProperty('savings_co2')) {

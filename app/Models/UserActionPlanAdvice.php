@@ -57,9 +57,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserActionPlanAdvice extends Model
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
-    use ToolSettingTrait;
+    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
 
     public $fillable = [
         'user_id', 'measure_application_id', // old

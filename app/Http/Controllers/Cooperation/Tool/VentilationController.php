@@ -14,6 +14,7 @@ use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserInterest;
 use App\Services\UserInterestService;
 use App\Services\StepCommentService;
 use Illuminate\Http\JsonResponse;
@@ -71,11 +72,18 @@ class VentilationController extends Controller
 
         $interestsInMeasureApplications = $request->input('user_interests', []);
         $noInterestInMeasureApplications = $step->measureApplications()->whereNotIn('id', $interestsInMeasureApplications)->get();
-        $yesOnShortNotice = Interest::orderBy('calculate_value')->first();
+
+        // default interest for measure application when checked: interest in the step itself
+        $defaultInterest = Interest::orderBy('calculate_value')->first();
+        $stepUserInterest = $building->user->userInterestsForSpecificType(get_class($step), $step->id, $inputSource)->first();
+        if ($stepUserInterest instanceof UserInterest){
+            $defaultInterest = $stepUserInterest->interest;
+        }
+
         $no = Interest::orderBy('calculate_value', 'desc')->first();
 
         foreach ($interestsInMeasureApplications as $measureApplicationId) {
-            UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationId , $yesOnShortNotice->id);
+            UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationId , $defaultInterest->id);
         }
         foreach($noInterestInMeasureApplications as $measureApplicationWithNoInterest){
             UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationWithNoInterest->id, $no->id);

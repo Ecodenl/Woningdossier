@@ -19,7 +19,7 @@
     <h1>@lang('my-plan.modal-for-other-input-source.title', ['input_source_name' => strtolower($inputSourceName)])</h1>
     <p>@lang('my-plan.modal-for-other-input-source.text', ['input_source_name' => strtolower($inputSourceName)])</p>
     <hr>
-    @foreach ($commentsByStep as $stepSlug => $commentsBySubStep)
+    @foreach ($commentsForInputSource as $stepSlug => $commentsBySubStep)
         @foreach ($commentsBySubStep as $subStep => $commentsByInputSource)
         <?php $commentsByInputSource = \Illuminate\Support\Arr::dot($commentsByInputSource) ?>
         <h4>{{\App\Models\Step::findByShort($subStep === '-' ? $stepSlug : $subStep)->name}}</h4>

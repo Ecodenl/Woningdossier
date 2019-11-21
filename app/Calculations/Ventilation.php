@@ -70,18 +70,8 @@ class Ventilation
             // "different" type which returns early
             unset($measures['crack-sealing']);
 
-            $advices = MeasureApplication::where('step_id', '=',
-                $step->id)->whereIn('short', array_keys($measures))->get();
-
-            $advices->each(function ($advice) {
-                $advice->name = $advice->measure_name;
-            });
-
-            return [
-                'improvement' => 'Natuurlijke ventilatie is  niet zo goed voor het comfort en zorgt voor een hoog energiegebruik. Daarom worden de huizen steeds luchtdichter gemaakt en van goede isolatie voorzien. Om een gezond binnenklimaat te bereiken is hierbij een andere vorm van ventilatie nodig. De volgende opties kunt u overwegen:',
-                'advices'     => $advices,
-                'remark'      => 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.',
-            ];
+            $improvement = 'Natuurlijke ventilatie is  niet zo goed voor het comfort en zorgt voor een hoog energiegebruik. Daarom worden de huizen steeds luchtdichter gemaakt en van goede isolatie voorzien. Om een gezond binnenklimaat te bereiken is hierbij een andere vorm van ventilatie nodig. De volgende opties kunt u overwegen:';
+            $remark = 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.';
         }
         if ($ventilationType === 'mechanic') {
 
@@ -219,7 +209,7 @@ class Ventilation
             }
         }
 
-        if (count($advices) > 0) {
+        if (count($advices) > 0 && $ventilationType !== 'natural') {
             $improvement .= '  Om de ventilatie verder te verbeteren kunt u de volgende opties overwegen:';
         }
 

@@ -17,8 +17,7 @@
         </div>
     </div>
 
-            {{-- Create the modals with personal plan info for the other input source --}}
-
+    {{-- Create the modals with personal plan info for the other input source --}}
     @foreach($personalPlanForVariousInputSources as $inputSourceName => $measuresByYear)
         @include('cooperation.tool.my-plan.parts.modal-for-other-input-source')
     @endforeach
@@ -60,9 +59,8 @@
                 </form>
             @endif
         </div>
+
     </div>
-
-
 
     <br>
     {{--    @if($file instanceof \App\Models\FileStorage && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))--}}

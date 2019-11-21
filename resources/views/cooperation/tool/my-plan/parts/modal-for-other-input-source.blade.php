@@ -1,4 +1,5 @@
-<?php
+@component('cooperation.tool.components.modal', ['id' => $inputSourceName, 'class' => 'modal-lg'])
+    <?php
     //filter out the coach comments so we can check if there are any.
     $commentsForInputSource = [];
     foreach ($commentsByStep as $stepSlug => $commentsBySubStep) {
@@ -10,9 +11,7 @@
         }
     }
     $commentsForInputSource = array_filter($commentsForInputSource);
-?>
-
-@component('cooperation.tool.components.modal', ['id' => $inputSourceName, 'class' => 'modal-lg'])
+    ?>
     @slot('title')
         {{$inputSourceName}}
     @endslot

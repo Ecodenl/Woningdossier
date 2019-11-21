@@ -19,10 +19,6 @@ class MyPlanController extends Controller
 {
     public function index()
     {
-        dd(
-            UserActionPlanAdviceService::getYear(UserActionPlanAdvice::find(9052)),
-            UserActionPlanAdvice::find(9052)
-        );
         $inputSource = HoomdossierSession::getInputSource(true);
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;

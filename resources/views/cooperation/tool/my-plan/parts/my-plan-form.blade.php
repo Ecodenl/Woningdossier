@@ -39,7 +39,7 @@
                                 <td>
                                     {{ $advice->measureApplication->measure_name }}
                                     @if(empty($advice->costs) && empty($advice->savings_gas) && empty($advice->savings_electricity) && empty($advice->savings_money))
-                                        <a href="#warning-modal" role="button" class="measure-expert" data-toggle="modal"><i class="glyphicon glyphicon-warning-sign" role="button" data-toggle="modal" title="" style="color: #ffc107"></i></a>
+                                        <a href="#warning-modal" role="button" class="measure-expert" data-toggle="modal"><i class="glyphicon glyphicon-warning-sign" role="button" data-toggle="modal" title="Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen." style="color: #ffc107"></i></a>
                                     @else
                                         <a href="#warning-modal" role="button" class="measure-warning" data-toggle="modal" style="display:none;"><i class="glyphicon glyphicon-warning-sign" role="button" data-toggle="modal" title="" style="color: #ffc107"></i></a>
                                     @endif

@@ -49,7 +49,7 @@
                                     {{ $advice->year }}
                                 </td>
                                 <td>
-                                    <input @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled" @endif type="text" maxlength="4" size="4" class="form-control planned-year" name="advice[{{ $advice->id }}][{{ $stepSlug }}][planned_year]" value="{{ $advice->planned_year }}" />
+                                    <input value="{{ is_null($advice->planned_year) && $advice->planned ? $advice->year : $advice->planned_year }}"  @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled" @endif type="text" maxlength="4" size="4" class="form-control planned-year" name="advice[{{ $advice->id }}][{{ $stepSlug }}][planned_year]" />
                                 </td>
                             </tr>
                             <tr class="collapse" id="more-info-{{$advice->id}}" >

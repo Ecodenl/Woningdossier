@@ -222,7 +222,9 @@ class ExampleBuildingService
 
                             $building->currentInsulatedGlazing()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $glazingData);
 
-                            self::log('Update or creating building insulated glazing ' . json_encode($building->currentInsulatedGlazing->toArray()));
+                            self::log('Update or creating building insulated glazing ' . json_encode(
+                                    $building->currentInsulatedGlazing()->forInputSource($inputSource)->first()->toArray()
+                            ));
                         }
                     }
                     if ('building_roof_types' == $columnOrTable) {
@@ -233,7 +235,7 @@ class ExampleBuildingService
 
                                 $building->roofTypes()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $buildingRoofTypeData);
 
-                                self::log('Update or creating building rooftype ' . json_encode($building->roofTypes->toArray()));
+                                self::log('Update or creating building rooftype ' . json_encode($building->roofTypes()->forInputSource($inputSource)->first()->toArray()));
                             } else {
                                 self::log('Not saving building rooftype because surface is 0');
                             }
@@ -241,11 +243,11 @@ class ExampleBuildingService
                     }
                     if ('building_pv_panels' == $columnOrTable) {
                         $building->pvPanels()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $values);
-                        self::log('Update or creating building pv_panels ' . json_encode($building->pvPanels->toArray()));
+                        self::log('Update or creating building pv_panels ' . json_encode($building->pvPanels()->forInputSource($inputSource)->first()->toArray()));
                     }
                     if ('building_heaters' == $columnOrTable) {
                         $building->heater()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $values);
-                        self::log('Update or creating building heater ' . json_encode($building->heater->toArray()));
+                        self::log('Update or creating building heater ' . json_encode($building->heater()->forInputSource($inputSource)->first()->toArray()));
                     }
                 }
             }

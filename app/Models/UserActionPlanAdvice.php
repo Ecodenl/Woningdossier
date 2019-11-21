@@ -102,11 +102,6 @@ class UserActionPlanAdvice extends Model
         return $this->belongsTo(Step::class);
     }
 
-    public function getAdviceYear(InputSource $inputSource = null)
-    {
-
-    }
-
     /**
      * Method to return a year for the personal plan.
      *

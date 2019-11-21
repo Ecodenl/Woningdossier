@@ -17,6 +17,7 @@ use App\Models\FileType;
 use App\Models\InputSource;
 use App\Models\User;
 use App\Services\FileStorageService;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileStorageController extends Controller
@@ -210,11 +211,13 @@ class FileStorageController extends Controller
 
     private function getRedirectUrl(InputSource $inputSource)
     {
+        $url = route('cooperation.tool.my-plan.index').'#download-section';
         if (InputSource::COOPERATION_SHORT == $inputSource->short) {
-            return route('cooperation.admin.cooperation.reports.index');
+            $url = route('cooperation.admin.cooperation.reports.index');
         }
 
-        return route('cooperation.tool.my-plan.index').'#download-section';
+        Log::debug($url);
+        return $url;
     }
 
     /**

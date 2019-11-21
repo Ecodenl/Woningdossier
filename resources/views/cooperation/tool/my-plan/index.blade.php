@@ -127,14 +127,13 @@
 
         function pollForFileProcessing() {
             $.get(checkIfFileIsBeingProcessedRoute, function (response) {
-
                 if (response.is_file_being_processed === true) {
                     $('#download-section').show();
                     if (pdfReportButton.find('span').length === 0) {
                         disableGenerateReportButton();
                     }
                 } else {
-                    if (response.file_download_link.length > 0) {
+                    if (response.file_download_link !== null && response.file_download_link.length > 0) {
                         addReportDownloadLink(response);
                     }
                     $('#download-section').show();

@@ -295,13 +295,20 @@ class DumpService
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->plasteredSurface instanceof FacadePlasteredSurface ? $buildingFeature->plasteredSurface->name : '';
                                 break;
                             case 'monument':
-                            case 'cavity_wall':
                                 $possibleAnswers = [
                                     1 => \App\Helpers\Translation::translate('general.options.yes.title'),
                                     2 => \App\Helpers\Translation::translate('general.options.no.title'),
                                     0 => \App\Helpers\Translation::translate('general.options.unknown.title'),
                                 ];
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $possibleAnswers[$buildingFeature->monument] ?? '';
+                                break;
+                            case 'cavity_wall':
+                                $possibleAnswers = [
+                                    1 => \App\Helpers\Translation::translate('general.options.yes.title'),
+                                    2 => \App\Helpers\Translation::translate('general.options.no.title'),
+                                    0 => \App\Helpers\Translation::translate('general.options.unknown.title'),
+                                ];
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $possibleAnswers[$buildingFeature->cavity_wall] ?? '';
                                 break;
                             case 'wall_joints':
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->wallJoints instanceof FacadeSurface ? $buildingFeature->wallJoints->name : '';

@@ -128,9 +128,10 @@ class UserActionPlanAdviceService
                         $sortedAdvices[$year][$step->name] = [];
                     }
 
-                    $sortedAdvices[$year][$step->name][] = [
+                    $sortedAdvices[$year][$step->name][$advice->measureApplication->short] = [
                         'interested'          => $advice->planned,
                         'advice_id' => $advice->id,
+                        'warning' => $advice->warning,
                         'measure' => $advice->measureApplication->measure_name,
                         'measure_short'       => $advice->measureApplication->short,                    // In the table the costs are indexed based on the advice year
                         // Now re-index costs based on user planned year in the personal plan
@@ -176,18 +177,66 @@ class UserActionPlanAdviceService
                 }
                 // if advices are not desirable and the measureApplication is not an advice it will be added to the result
                 if (! $withAdvices && ! $measureApplication->isAdvice()) {
-                    $result[$measureApplication->measure_type][$advice->step->slug][] = $advice;
+                    $result[$measureApplication->measure_type][$advice->step->slug][$measureApplication->short] = $advice;
                 }
 
                 // if advices are desirable we always add it.
                 if ($withAdvices) {
-                    $result[$measureApplication->measure_type][$advice->step->slug][] = $advice;
+                    $result[$measureApplication->measure_type][$advice->step->slug][$measureApplication->short] = $advice;
+                }
+            }
+        }
+        $x = self::checkCoupledMeasuresAndMaintenance($result);
+        ksort($result);
+
+        return $result;
+    }
+
+    /**
+     * Method to add warning to a categorized action plan
+     *
+     * @param array $categorizedActionPlan
+     * @return array
+     */
+    public static function checkCoupledMeasuresAndMaintenance(array $categorizedActionPlan)
+    {
+        $maintenanceForRoofInsulation = $categorizedActionPlan['maintenance']['roof-insulation'];
+        $energySavingForRoofInsulation = $categorizedActionPlan['energy_saving']['roof-insulation'];
+
+        // flat roof
+        if ($energySavingForRoofInsulation['roof-insulation-flat-replace-current']['planned']) {
+            if (!$maintenanceForRoofInsulation['replace-roof-insulation']['planned']) {
+                // set warning
+                $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
+                $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
+            }
+            else {
+                // both were planned, so check whether the planned year is the same
+                if ($energySavingForRoofInsulation['roof-insulation-flat-replace-current']['year'] !== $maintenanceForRoofInsulation['replace-roof-insulation']['year']) {
+                    // set warning
+                    $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = __('my-plan.warnings.roof-insulation.planned-year.title');
+                    $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] =  __('my-plan.warnings.roof-insulation.planned-year.title');
+                }
+            }
+        }
+        
+        // pitched roof
+        if ($energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['planned']) {
+            if (!$maintenanceForRoofInsulation['replace-tiles']['planned']) {
+                // set warning
+                $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
+                $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
+            }
+            else {
+                // both were planned, so check whether the planned year is the same
+                if ($energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['year'] !== $maintenanceForRoofInsulation['replace-tiles']['year']) {
+                    // set warning
+                    $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] =  __('my-plan.warnings.roof-insulation.planned-year.title');
+                    $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] =  __('my-plan.warnings.roof-insulation.planned-year.title');
                 }
             }
         }
 
-        ksort($result);
-
-        return $result;
+        return $categorizedActionPlan;
     }
 }

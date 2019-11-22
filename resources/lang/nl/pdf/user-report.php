@@ -117,6 +117,7 @@ return [
 
         'limit-energy-usage' => [
             'title' => '1. Energiegebruik verder beperken',
+            
             'text' => 'De weg naar een energieneutrale woning bestaat uit twee stappen. In de eerste stap gaat u onderzoeken hoe u uw energiegebruik zoveel mogelijk kunt beperken. Want wat u niet gebruikt, hoeft u ook niet op te wekken. Als u de adviezen in dit Energiebespaaradvies heeft opgevolgd, realiseert u al een aanzienlijke besparing. Maar wellicht zijn er daarnaast nog aanvullende maatregelen die u kunt nemen om uw verbruik nog verder omlaag te krijgen:',
             'points' => '<p class="sub-lead">Extra bouwkundige maatregelen</p>
                         <p>Naast de isolerende maatregelen uit het Energiebespaaradvies kunt u eventueel aanvullende woningisolatie aanbrengen of bestaande isolatie verbeteren. Als u zoekt naar meer bouwkundige maatregelen om uw huis energiezuiniger te maken, wees dan ook alert op vocht. Vochtproblemen zijn niet alleen ongezond en oncomfortabel, maar leiden ook tot een hoger energiegebruik.<p>

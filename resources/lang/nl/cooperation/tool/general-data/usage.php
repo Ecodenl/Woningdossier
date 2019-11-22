@@ -7,7 +7,7 @@ return [
                 'title' => 'Warm tapwater en koken'
             ],
             'cook-gas' => [
-                'title' => 'Word er op gas gekookt?',
+                'title' => 'Wordt er op gas gekookt?',
             ],
             'water-comfort' => [
                 'title' => 'Wat is het comfortniveau voor het gebruik van warm tapwater? ',

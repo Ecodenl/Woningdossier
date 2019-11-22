@@ -9,13 +9,13 @@
                     @foreach($comment as $short => $comment)
                         <tr class="h-20">
                             <td class="w-100">{{$inputSourceName}} ({{$short}})</td>
-                            <td>{{$comment}}</td>
+                            <td>{!!  nl2br($comment)!!}</td>
                         </tr>
                     @endforeach
                 @else
                 <tr class="h-20">
                     <td class="w-100">{{$inputSourceName}}</td>
-                    <td>{{$comment}}</td>
+                    <td>{!!  nl2br($comment)!!}</td>
                 </tr>
                 @endif
             </tbody>

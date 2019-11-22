@@ -18,6 +18,7 @@ class MyPlanController extends Controller
 {
     public function index()
     {
+        HoomdossierSession::setIsObserving(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;

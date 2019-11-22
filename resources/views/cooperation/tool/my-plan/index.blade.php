@@ -33,10 +33,8 @@
             <?php
             $myActionPlanComment = $actionPlanComments->pull(\App\Helpers\HoomdossierSession::getInputSource());
             ?>
-            @if(!\App\Helpers\HoomdossierSession::isUserObserving())
                 <form action="{{route('cooperation.tool.my-plan.store-comment')}}" method="post">
                     {{csrf_field()}}
-                    @endif
                     @component('cooperation.tool.components.step-question', ['id' => 'comment', 'translation' => 'general.specific-situation'])
                         ({{\App\Helpers\HoomdossierSession::getInputSource(true)->name}})
 
@@ -44,22 +42,19 @@
                                   @endif name="comment"
                                   class="form-control">{{old('comment', $myActionPlanComment instanceof \App\Models\UserActionPlanAdviceComments ? $myActionPlanComment->comment : '')}}</textarea>
 
-                    @if(!\App\Helpers\HoomdossierSession::isUserObserving())
-                        <button type="submit"
-                                class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.add-comment')</button>
-                    @endif
+                            <button type="submit"
+                                    class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.add-comment')</button>
                     @endcomponent
                 </form>
 
-            <div class="col-sm-12">
                 @foreach($actionPlanComments as $actionPlanComment)
-                    <div class="form-group">
-                        <label for="">@lang('general.specific-situation.title')</label>
-                        ({{\App\Helpers\HoomdossierSession::getInputSource(true)->name}})
-                        <textarea disabled="disabled" class="disabled form-control">{{$actionPlanComment->comment}}</textarea>
+                    <div class="col-sm-12">
+                        @component('cooperation.tool.components.step-question', ['id' => null, 'translation' => 'general.specific-situation'])
+                            ({{\App\Helpers\HoomdossierSession::getInputSource(true)->name}})
+                            <textarea disabled="disabled" class="disabled form-control">{{$actionPlanComment->comment}}</textarea>
+                        @endcomponent
                     </div>
                 @endforeach
-            </div>
         </div>
     </div>
 

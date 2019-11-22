@@ -4,7 +4,7 @@
 
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
+    <form  method="POST"
           action="{{ route('cooperation.tool.heater.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         @include('cooperation.tool.includes.interested', [
@@ -134,7 +134,6 @@
                 <div class="row">
 
                     <div class="col-sm-6">
-                        <div class="form-group add-space">
                             @component('cooperation.tool.components.step-question', ['id' => 'production-heat', 'translation' => 'heater.indication-for-costs.production-heat', 'required' => false])
                                 <div class="input-group">
                                     <span class="input-group-addon">kWh / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
@@ -142,7 +141,6 @@
                                            value="0">
                                 </div>
                             @endcomponent
-                        </div>
                     </div>
                     <div class="col-sm-6">
                         @component('cooperation.tool.components.step-question', ['id' => 'percentage-consumption', 'translation' => 'heater.indication-for-costs.percentage-consumption', 'required' => false])

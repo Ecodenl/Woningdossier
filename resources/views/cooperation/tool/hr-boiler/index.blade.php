@@ -4,7 +4,7 @@
 
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
+    <form  method="POST"
           action="{{ route('cooperation.tool.high-efficiency-boiler.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         @include('cooperation.tool.includes.interested', [
@@ -113,14 +113,12 @@
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <div class="form-group add-space">
                         @component('cooperation.tool.components.step-question', ['id' => 'indicative-replacement', 'translation' => 'high-efficiency-boiler.indication-for-costs.indicative-replacement', 'required' => false])
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                 <input type="text" id="replace_year" class="form-control disabled" disabled="">
                             </div>
                         @endcomponent
-                    </div>
                 </div>
                 <div class="col-sm-4">
                     @include('cooperation.layouts.indication-for-costs.indicative-costs')

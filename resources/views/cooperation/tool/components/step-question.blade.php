@@ -22,7 +22,8 @@
 
 ?>
 
-<div class="form-group add-space{{ $errors->has($name) ? ' has-error' : '' }}" style="{{$labelStyling}}">
+{{-- this had the add-space class --}}
+<div class="form-group {{ $errors->has($name) ? ' has-error' : '' }}" style="{{$labelStyling}}">
     <label for="{{ $id }}" class="control-label {{$labelClass}}" style="display: inline; ">
         <?php // show help icon? ?>
         @if(isset($translation) && \App\Helpers\Translation::hasTranslation($translation . '.help'))

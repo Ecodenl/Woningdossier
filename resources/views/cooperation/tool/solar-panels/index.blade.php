@@ -3,7 +3,7 @@
 @section('step_title', \App\Helpers\Translation::translate('solar-panels.title.title'))
 
 @section('step_content')
-    <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
+    <form  method="POST" action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 
         @include('cooperation.tool.includes.interested', [
@@ -139,7 +139,6 @@
                     </div>
 
                     <div class="col-sm-4">
-                        <div class="form-group add-space">
                             @component('cooperation.tool.components.step-question', ['id' => 'raise-own-consumption', 'translation' => 'solar-panels.indication-for-costs.raise-own-consumption', 'required' => false])
                                 <div class="input-group">
                                     <span class="input-group-addon">%</span>
@@ -147,7 +146,6 @@
                                            disabled="" value="0">
                                 </div>
                             @endcomponent
-                        </div>
                     </div>
                     <div class="col-sm-4">
                         @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])

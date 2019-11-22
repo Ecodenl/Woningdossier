@@ -4,7 +4,7 @@
 
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
+    <form  method="POST"
           action="{{ route('cooperation.tool.floor-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 

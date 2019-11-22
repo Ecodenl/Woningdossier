@@ -2,7 +2,7 @@
 
 @section('step_content')
 
-    <form class="form-horizontal" method="POST" id="main-form" action="{{ route('cooperation.tool.general-data.building-characteristics.store') }}" autocomplete="off">
+    <form  method="POST" id="main-form" action="{{ route('cooperation.tool.general-data.building-characteristics.store') }}" autocomplete="off">
         {{ csrf_field() }}
         <div class="row">
             <div class="col-md-6">

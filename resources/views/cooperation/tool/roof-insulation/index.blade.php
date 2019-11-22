@@ -3,7 +3,7 @@
 @section('step_title', \App\Helpers\Translation::translate('roof-insulation.title.title'))
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
+    <form  method="POST"
           action="{{ route('cooperation.tool.roof-insulation.store', ['cooperation' => $cooperation]) }}">
 
         {{csrf_field()}}
@@ -15,7 +15,7 @@
 
                 <div class="row">
                     <div class="col-sm-12">
-                        <div class="form-group add-space {{ $errors->has('building_roof_types.id') ? ' has-error' : '' }}">
+                        <div class="form-group {{ $errors->has('building_roof_types.id') ? ' has-error' : '' }}">
                             <label for="building_roof_types" class="control-label">
                                 <i data-toggle="modal" data-target="#roof-type-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"

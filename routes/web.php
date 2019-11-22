@@ -223,7 +223,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
 
                 Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');
-                Route::post('my-plan/comment', 'MyPlanController@storeComment')->name('my-plan.store-comment');
+                Route::post('my-plan/comment', 'MyPlanController@storeComment')
+                    ->middleware('deny-if-observing-building')
+                    ->name('my-plan.store-comment');
                 Route::post('my-plan/store', 'MyPlanController@store')->name('my-plan.store');
 //                Route::get('my-plan/export', 'MyPlanController@export')->name('my-plan.export');
             });
@@ -251,8 +253,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     Route::group(['prefix' => 'tool', 'as' => 'tool.'], function () {
                         Route::get('fill-for-user/{id}', 'ToolController@fillForUser')->name('fill-for-user');
-                        Route::get('observe-tool-for-user/{id}',
-                            'ToolController@observeToolForUser')->name('observe-tool-for-user');
+                        Route::get('observe-tool-for-user/{id}', 'ToolController@observeToolForUser')
+                            ->name('observe-tool-for-user');
                     });
 
                     Route::post('message', 'MessagesController@sendMessage')->name('send-message');

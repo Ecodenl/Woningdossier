@@ -3,7 +3,7 @@
 @section('step_title', \App\Helpers\Translation::translate('wall-insulation.title.title'))
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
+    <form  method="POST"
           action="{{ route('cooperation.tool.wall-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 

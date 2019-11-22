@@ -6,7 +6,7 @@
 
 @section('step_content')
 
-    <form class="form-horizontal" method="POST" id="main-form"
+    <form  method="POST" id="main-form"
           action="{{ route('cooperation.tool.general-data.interest.store') }}" autocomplete="off">
         {{ csrf_field() }}
         <div class="row">

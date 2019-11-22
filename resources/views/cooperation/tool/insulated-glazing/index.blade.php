@@ -14,7 +14,7 @@
         9 => 'hrpp-glass-frames',
     ];
     ?>
-    <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation]) }}">
+    <form  method="POST" action="{{ route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 
         <div id="main-glass-questions">
@@ -343,13 +343,11 @@
             <div class="row">
                 <div class="col-sm-6">
                     @component('cooperation.tool.components.step-question', ['id' => 'paintwork', 'translation' => 'insulated-glazing.taking-into-account.paintwork',])
-                        <div class="form-group add-space">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                                 <input type="text" id="paintwork_costs" class="form-control disabled" disabled=""
                                        value="0">
                             </div>
-                        </div>
                     @endcomponent
                 </div>
                 <div class="col-sm-6">

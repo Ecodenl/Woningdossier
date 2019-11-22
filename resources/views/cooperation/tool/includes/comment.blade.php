@@ -40,23 +40,16 @@
         @if(!empty($comment))
         <div class="row">
             <div class="col-sm-12">
-                <div class="form-group add-space">
-
-                    <label for="" class=" control-label">
-                        <i data-toggle="modal" data-target="#{{$helpId}}" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-                        @lang($translation.'.title') @if($currentInputSource->name != $inputSourceName)({{$inputSourceName}}) @endif
-                    </label>
+                @component('cooperation.tool.components.step-question', ['id' => null, 'translation' => $translation])
+                    @if($currentInputSource->name != $inputSourceName)({{$inputSourceName}}) @endif
 
                     @if($inputSourceName === $currentInputSource->name)
                         <textarea name="{{$columnName}}" class="form-control">{{old($columnName, $comment)}}</textarea>
                     @else
                         <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
                     @endif
+                @endcomponent
 
-                    @component('cooperation.tool.components.help-modal')
-                        @lang($translation.'.help')
-                    @endcomponent
-                </div>
             </div>
         </div>
         @endif
@@ -65,19 +58,9 @@
 @if($currentInputSourceHasACommentButIsEmpty || $currentInputSourceHasNoPlacedComment)
 <div class="row">
     <div class="col-sm-12">
-        <div class="form-group add-space">
-
-            <label for="" class=" control-label">
-                <i data-toggle="modal" data-target="#{{$helpId}}" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-                @lang($translation.'.title')
-            </label>
-
+        @component('cooperation.tool.components.step-question', ['id' => 'step_comments.comment', 'translation' => $translation])
             <textarea name="{{$columnName}}" class="form-control">{{old($columnName)}}</textarea>
-
-            @component('cooperation.tool.components.help-modal')
-                @lang($translation.'.help')
-            @endcomponent
-        </div>
+        @endcomponent
     </div>
 </div>
 @endif

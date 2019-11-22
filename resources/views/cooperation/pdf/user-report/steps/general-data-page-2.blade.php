@@ -25,9 +25,11 @@
                         <td align="right">{{\App\Helpers\NumberFormatter::format($advice['costs'])}}</td>
                         <td align="right">{{\App\Helpers\NumberFormatter::format($advice['savings_money'])}}</td>
                     </tr>
+                    @if(array_key_exists('warning', $advice))
                     <tr>
-                        <td colspan="5">{{$advice['warning'] ?? ''}}</td>
+                        <td colspan="5">{{$advice['warning']}}</td>
                     </tr>
+                    @endif
                 @endforeach
             @endforeach
         @endforeach

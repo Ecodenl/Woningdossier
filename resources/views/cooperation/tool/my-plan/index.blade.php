@@ -31,47 +31,48 @@
     <div class="row">
         <div class="col-sm-12">
             <?php
-            $myActionPlanComment = $actionPlanComments->where('input_source_id', \App\Helpers\HoomdossierSession::getInputSource())->first();
+            $myActionPlanComment = $actionPlanComments->pull(\App\Helpers\HoomdossierSession::getInputSource());
             ?>
             @if(!\App\Helpers\HoomdossierSession::isUserObserving())
                 <form action="{{route('cooperation.tool.my-plan.store-comment')}}" method="post">
                     {{csrf_field()}}
                     @endif
-                    <div class="form-group">
-                        <label for="" class=" control-label">
-                            <i data-target="#my-plan-own-comment-info"
-                               class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
-                               aria-expanded="false"></i>
-                            @lang('general.specific-situation.title')
-                            ({{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSource())->name}})
-                        </label>
+                    @component('cooperation.tool.components.step-question', ['id' => 'comment', 'translation' => 'general.specific-situation'])
+                        ({{\App\Helpers\HoomdossierSession::getInputSource(true)->name}})
 
-                        <textarea @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled" @endif name="comment"
+                        <textarea @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled"
+                                  @endif name="comment"
                                   class="form-control">{{old('comment', $myActionPlanComment instanceof \App\Models\UserActionPlanAdviceComments ? $myActionPlanComment->comment : '')}}</textarea>
 
-                        @component('cooperation.tool.components.help-modal', ['id' => 'my-plan-own-comment-info'])
-                            {{\App\Helpers\Translation::translate('general.specific-situation.title')}}
-                        @endcomponent
-                    </div>
                     @if(!\App\Helpers\HoomdossierSession::isUserObserving())
                         <button type="submit"
                                 class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.add-comment')</button>
+                    @endif
+                    @endcomponent
                 </form>
-            @endif
-        </div>
 
+            <div class="col-sm-12">
+                @foreach($actionPlanComments as $actionPlanComment)
+                    <div class="form-group">
+                        <label for="">@lang('general.specific-situation.title')</label>
+                        ({{\App\Helpers\HoomdossierSession::getInputSource(true)->name}})
+                        <textarea disabled="disabled" class="disabled form-control">{{$actionPlanComment->comment}}</textarea>
+                    </div>
+                @endforeach
+            </div>
+        </div>
     </div>
 
     <br>
     {{--    @if($file instanceof \App\Models\FileStorage && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))--}}
     @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
-    <div class="row" id="download-section" style="display: none;">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">@lang('default.buttons.download')</div>
-                <div class="panel-body">
-                    <ol>
-                        <li class="download-link">
+        <div class="row" id="download-section" style="display: none;">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">@lang('default.buttons.download')</div>
+                    <div class="panel-body">
+                        <ol>
+                            <li class="download-link">
                             </li>
                         </ol>
                     </div>
@@ -180,7 +181,8 @@
 
             const MEASURE = '{{\App\Models\PrivateMessage::REQUEST_TYPE_MEASURE}}';
             // build the base route, we can replace te params later on.
-            var conversationRequestRoute = '{{route('cooperation.conversation-requests.index', ['action' => 'action', 'measureApplicationShort' => 'measure_application_short'])}}';$(window).keydown(function (event) {
+            var conversationRequestRoute = '{{route('cooperation.conversation-requests.index', ['action' => 'action', 'measureApplicationShort' => 'measure_application_short'])}}';
+            $(window).keydown(function (event) {
                 if (event.keyCode == 13) {
                     event.preventDefault();
                     return false;
@@ -235,7 +237,7 @@
                                         "</a>" +
                                         "</td>" +
                                         "<td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td><td>" +
-                                        "<a href='"+conversationRequestRoute.replace('action', MEASURE).replace('measure_application_short', stepData.measure_short)+"' class='take-action btn btn-default' type='button'>@lang('my-plan.columns.take-action.title')</a></td></tr>";
+                                        "<a href='" + conversationRequestRoute.replace('action', MEASURE).replace('measure_application_short', stepData.measure_short) + "' class='take-action btn btn-default' type='button'>@lang('my-plan.columns.take-action.title')</a></td></tr>";
                                     table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "' > <td colspan='1'></td><td colspan=''> <strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-gas.title') }}:</strong> <br><strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-electricity.title') }}:</strong> </td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup> <br>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh </td><td colspan='1'></td></tr>";
                                 });
 
@@ -280,7 +282,7 @@
 
                         // only when its not done yet, otherwise on every change it will scroll to the download section
                         if (!pageHasAlreadyBeenScrolledToDownloadSection && window.location.hash.length > 0) {
-                        // we will have to do this after the change, otherwise it will be scrolled to the download section. And then the personal plan appends and poof its gone.
+                            // we will have to do this after the change, otherwise it will be scrolled to the download section. And then the personal plan appends and poof its gone.
                             $('html, body').animate({
                                 scrollTop: $(window.location.hash).offset().top
                             }, 'slow');

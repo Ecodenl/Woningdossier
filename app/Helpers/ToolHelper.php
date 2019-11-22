@@ -411,11 +411,6 @@ class ToolHelper
 
             'insulated-glazing' => [
                 '-' => [
-                    'element.' . $crackSealing->id => [
-                        'label' => __('insulated-glazing.moving-parts-quality.title'),
-                        'type' => 'select',
-                        'options' => static::createOptions($crackSealing->values()->orderBy('order')->get(), 'value'),
-                    ],
                     'building_features.window_surface' => [
                         'label' => __('insulated-glazing.windows-surface.title'),
                         'type' => 'text',

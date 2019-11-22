@@ -47,7 +47,7 @@
         </div>
         <div class="row">
             <div class="col-sm-12">
-                <button style="margin-left: 10px;" type="submit" class="btn pl-10 btn-primary">@lang('woningdossier.cooperation.tool.my-plan.add-comment')</button>
+                <button type="submit" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.add-comment')</button>
             </div>
         </div>
     </form>
@@ -56,7 +56,7 @@
         <div class="row">
             <div class="col-sm-12">
                 @component('cooperation.tool.components.step-question', ['id' => null, 'translation' => 'general.specific-situation'])
-                    ({{\App\Helpers\HoomdossierSession::getInputSource(true)->name}})
+                    ({{$actionPlanComment->inputSource->name}})
                     <textarea disabled="disabled"
                               class="disabled form-control">{{$actionPlanComment->comment}}</textarea>
                 @endcomponent

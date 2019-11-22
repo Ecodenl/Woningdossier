@@ -128,8 +128,10 @@
         var checkIfFileIsBeingProcessedRoute = '{{route('cooperation.file-storage.check-if-file-is-being-processed', ['fileType' => $pdfReportFileType])}}';
 
         function pollForFileProcessing() {
+            console.log('oke wat dan ');
             $.get(checkIfFileIsBeingProcessedRoute, function (response) {
-                if (response.is_file_being_processed === true) {
+                console.log(response);
+                if (response.is_file_being_processed || response.file_download_link === null) {
                     $('#download-section').show();
                     if (pdfReportButton.find('span').length === 0) {
                         disableGenerateReportButton();
@@ -145,8 +147,8 @@
                 }
 
 
-                // only poll when the file is being processed.
-                if (response.is_file_being_processed) {
+                // only poll when the file is being processed or when the download link is not present
+                if (response.is_file_being_processed || response.file_download_link === null) {
                     setTimeout(pollForFileProcessing, 5000);
                 }
             });

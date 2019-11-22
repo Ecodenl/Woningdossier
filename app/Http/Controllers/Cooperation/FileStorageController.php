@@ -65,6 +65,7 @@ class FileStorageController extends Controller
     public function checkIfFileIsBeingProcessed(Cooperation $cooperation, FileType $fileType)
     {
         $user = Hoomdossier::user();
+        $inputSource = HoomdossierSession::getInputSource(true);
 
         if ($user->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']) && 'pdf-report' != $fileType->short) {
             $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForCooperation($fileType, $cooperation);
@@ -75,8 +76,8 @@ class FileStorageController extends Controller
             ]);
         } else {
             $buildingOwner = HoomdossierSession::getBuilding(true);
-            $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForUser($fileType, $buildingOwner->user, HoomdossierSession::getInputSource(true));
-            $file = $fileType->files()->forMe($buildingOwner->user)->forInputSource(HoomdossierSession::getInputSource(true))->first();
+            $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForUser($fileType, $buildingOwner->user, $inputSource);
+            $file = $fileType->files()->forMe($buildingOwner->user)->forInputSource($inputSource)->first();
             $downloadLinkForFileType = $file instanceof FileStorage ? route('cooperation.file-storage.download', [
                 'fileType' => $fileType->short,
                 'fileStorageFilename' => $file->filename,

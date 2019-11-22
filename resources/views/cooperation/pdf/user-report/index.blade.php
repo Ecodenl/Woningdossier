@@ -21,27 +21,27 @@
     So have to create our own order.
 --}}
 
-@component('cooperation.pdf.components.new-page')
-    <div class="container">
-        @include('cooperation.pdf.user-report.steps.general-data-page-1')
-    </div>
-@endcomponent
+{{--@component('cooperation.pdf.components.new-page')--}}
+    {{--<div class="container">--}}
+        {{--@include('cooperation.pdf.user-report.steps.general-data-page-1')--}}
+    {{--</div>--}}
+{{--@endcomponent--}}
 
-@component('cooperation.pdf.components.new-page')
-    <div class="container">
-        @include('cooperation.pdf.user-report.steps.general-data-page-2')
-    </div>
-@endcomponent
+{{--@component('cooperation.pdf.components.new-page')--}}
+    {{--<div class="container">--}}
+        {{--@include('cooperation.pdf.user-report.steps.general-data-page-2')--}}
+    {{--</div>--}}
+{{--@endcomponent--}}
 
-@component('cooperation.pdf.components.new-page')
-    <div class="container">
-        @include('cooperation.pdf.user-report.steps.general-data-page-3')
-    </div>
-@endcomponent
+{{--@component('cooperation.pdf.components.new-page')--}}
+    {{--<div class="container">--}}
+        {{--@include('cooperation.pdf.user-report.steps.general-data-page-3')--}}
+    {{--</div>--}}
+{{--@endcomponent--}}
 
 
 @foreach ($reportData as $stepShort => $dataForStep)
-    @if ((is_string($stepShort) && array_key_exists($stepShort, $stepShorts)) && \App\Models\UserActionPlanAdvice::hasInterestInMeasure($building, $inputSource, $steps->where('slug', $stepShort)->first()))
+    @if (is_string($stepShort) && ($stepShort == 'general-data' || (array_key_exists($stepShort, $stepShorts) && \App\Models\UserActionPlanAdvice::hasInterestInMeasure($building, $inputSource, $steps->where('slug', $stepShort)->first()))))
         @foreach ($dataForStep as $subStepShort => $dataForSubStep)
             @include('cooperation.pdf.user-report.parts.measure-page')
         @endforeach

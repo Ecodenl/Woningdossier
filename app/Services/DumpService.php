@@ -522,14 +522,21 @@ class DumpService
                                 ];
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $radiobuttonsYesNo[$userEnergyHabit->cook_gas] ?? '';
                                 break;
+                            case 'renovation_plans':
+                                $renovationPlanAnswerOptions = [
+                                    1 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.yes-within-2-year'),
+                                    2 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.yes-within-5-year'),
+                                    0 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.none')
+                                ];
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $renovationPlanAnswerOptions[$userEnergyHabit->renovation_plans] ?? null;
                             case 'water_comfort_id':
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $userEnergyHabit->comfortLevelTapWater->name ?? '';
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = optional($userEnergyHabit->comfortLevelTapWater)->name;
                                 break;
                             case 'heating_first_floor':
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $userEnergyHabit->heatingFirstFloor->name ?? '';
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = optional($userEnergyHabit->heatingFirstFloor)->name;
                                 break;
                             case 'heating_second_floor':
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $userEnergyHabit->heatingSecondFloor->name ?? '';
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = optional($userEnergyHabit->heatingSecondFloor)->name ?? '';
                                 break;
                             default:
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $userEnergyHabit->$column ?? '';

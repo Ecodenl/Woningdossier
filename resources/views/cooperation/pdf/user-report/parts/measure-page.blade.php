@@ -27,9 +27,12 @@
 
             @include('cooperation.pdf.user-report.parts.measure-page.filled-in-data')
 
-            @include('cooperation.pdf.user-report.parts.measure-page.insulation-advice')
+            {{--since no calculations are done here--}}
+            @if($stepShort != 'general-data')
+                @include('cooperation.pdf.user-report.parts.measure-page.insulation-advice')
 
-            @include('cooperation.pdf.user-report.parts.measure-page.indicative-costs-and-measures')
+                @include('cooperation.pdf.user-report.parts.measure-page.indicative-costs-and-measures')
+            @endif
 
             @include('cooperation.pdf.user-report.parts.measure-page.advices')
 

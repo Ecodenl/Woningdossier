@@ -1,4 +1,4 @@
-<form class="form-horizontal" action="{{ route('cooperation.tool.my-plan.store', ['cooperation' => $cooperation]) }}" method="post">
+<form  action="{{ route('cooperation.tool.my-plan.store', ['cooperation' => $cooperation]) }}" method="post">
     {{ csrf_field() }}
     @foreach($advices as $measureType => $stepAdvices)
         <div class="row">

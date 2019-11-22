@@ -18,7 +18,6 @@ class MyPlanController extends Controller
 {
     public function index()
     {
-        HoomdossierSession::setIsObserving(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
@@ -66,7 +65,6 @@ class MyPlanController extends Controller
      */
     public function storeComment(MyPlanRequest $request)
     {
-        $comment = $request->get('comment');
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
@@ -76,9 +74,7 @@ class MyPlanController extends Controller
                 'input_source_id' => HoomdossierSession::getInputSource(),
                 'user_id' => $buildingOwner->id,
             ],
-            [
-                'comment' => $comment,
-            ]
+            $request->only('comment')
         );
 
         return redirect()->route('cooperation.tool.my-plan.index');

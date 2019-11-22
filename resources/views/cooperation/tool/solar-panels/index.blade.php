@@ -3,7 +3,7 @@
 @section('step_title', \App\Helpers\Translation::translate('solar-panels.title.title'))
 
 @section('step_content')
-    <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
+    <form  method="POST" action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 
         @include('cooperation.tool.includes.interested', [

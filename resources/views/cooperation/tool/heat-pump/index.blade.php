@@ -6,7 +6,7 @@
 
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
+    <form  method="POST"
           action="{{ route('cooperation.tool.heat-pump.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div id="start-information">

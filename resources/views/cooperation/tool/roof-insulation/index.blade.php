@@ -3,7 +3,7 @@
 @section('step_title', \App\Helpers\Translation::translate('roof-insulation.title.title'))
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
+    <form  method="POST"
           action="{{ route('cooperation.tool.roof-insulation.store', ['cooperation' => $cooperation]) }}">
 
         {{csrf_field()}}

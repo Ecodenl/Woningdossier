@@ -14,7 +14,7 @@
         9 => 'hrpp-glass-frames',
     ];
     ?>
-    <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation]) }}">
+    <form  method="POST" action="{{ route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 
         <div id="main-glass-questions">

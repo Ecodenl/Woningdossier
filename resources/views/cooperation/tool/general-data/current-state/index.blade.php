@@ -8,7 +8,7 @@
         </div>
     </div>
 
-    <form class="form-horizontal" method="POST" id="main-form" action="{{ route('cooperation.tool.general-data.current-state.store') }}" autocomplete="off">
+    <form  method="POST" id="main-form" action="{{ route('cooperation.tool.general-data.current-state.store') }}" autocomplete="off">
         {{ csrf_field() }}
 
         <div class="elements">

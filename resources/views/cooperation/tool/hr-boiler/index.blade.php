@@ -4,7 +4,7 @@
 
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
+    <form  method="POST"
           action="{{ route('cooperation.tool.high-efficiency-boiler.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         @include('cooperation.tool.includes.interested', [

@@ -28,35 +28,41 @@
     {{-- The personal plan, will be generated with js --}}
     @include('cooperation.tool.my-plan.parts.personal-plan')
 
-    <div class="row">
-        <div class="col-sm-12">
-            <?php
-            $myActionPlanComment = $actionPlanComments->pull(\App\Helpers\HoomdossierSession::getInputSource());
-            ?>
-                <form action="{{route('cooperation.tool.my-plan.store-comment')}}" method="post">
-                    {{csrf_field()}}
-                    @component('cooperation.tool.components.step-question', ['id' => 'comment', 'translation' => 'general.specific-situation'])
-                        ({{\App\Helpers\HoomdossierSession::getInputSource(true)->name}})
+    <form action="{{route('cooperation.tool.my-plan.store-comment')}}" method="post">
+        <div class="row">
+            <div class="col-sm-12">
+                <?php
+                $myActionPlanComment = $actionPlanComments->pull(\App\Helpers\HoomdossierSession::getInputSource());
+                ?>
 
-                        <textarea @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled"
-                                  @endif name="comment"
-                                  class="form-control">{{old('comment', $myActionPlanComment instanceof \App\Models\UserActionPlanAdviceComments ? $myActionPlanComment->comment : '')}}</textarea>
+                {{csrf_field()}}
+                @component('cooperation.tool.components.step-question', ['id' => 'comment', 'translation' => 'general.specific-situation'])
+                    ({{\App\Helpers\HoomdossierSession::getInputSource(true)->name}})
+                    <textarea @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled"
+                              @endif name="comment"
+                              class="form-control">{{old('comment', $myActionPlanComment instanceof \App\Models\UserActionPlanAdviceComments ? $myActionPlanComment->comment : '')}}</textarea>
+                @endcomponent
 
-                            <button type="submit"
-                                    class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.add-comment')</button>
-                    @endcomponent
-                </form>
-
-                @foreach($actionPlanComments as $actionPlanComment)
-                    <div class="col-sm-12">
-                        @component('cooperation.tool.components.step-question', ['id' => null, 'translation' => 'general.specific-situation'])
-                            ({{\App\Helpers\HoomdossierSession::getInputSource(true)->name}})
-                            <textarea disabled="disabled" class="disabled form-control">{{$actionPlanComment->comment}}</textarea>
-                        @endcomponent
-                    </div>
-                @endforeach
+            </div>
         </div>
-    </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <button style="margin-left: 10px;" type="submit" class="btn pl-10 btn-primary">@lang('woningdossier.cooperation.tool.my-plan.add-comment')</button>
+            </div>
+        </div>
+    </form>
+
+    @foreach($actionPlanComments as $actionPlanComment)
+        <div class="row">
+            <div class="col-sm-12">
+                @component('cooperation.tool.components.step-question', ['id' => null, 'translation' => 'general.specific-situation'])
+                    ({{\App\Helpers\HoomdossierSession::getInputSource(true)->name}})
+                    <textarea disabled="disabled"
+                              class="disabled form-control">{{$actionPlanComment->comment}}</textarea>
+                @endcomponent
+            </div>
+        </div>
+    @endforeach
 
     <br>
     {{--    @if($file instanceof \App\Models\FileStorage && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))--}}

@@ -2,7 +2,7 @@
 
 @section('step_content')
 
-    <form class="form-horizontal" method="POST" id="main-form" action="{{ route('cooperation.tool.general-data.usage.store') }}" autocomplete="off">
+    <form  method="POST" id="main-form" action="{{ route('cooperation.tool.general-data.usage.store') }}" autocomplete="off">
         {{ csrf_field() }}
 
         {{--tapwater and cook inputs--}}

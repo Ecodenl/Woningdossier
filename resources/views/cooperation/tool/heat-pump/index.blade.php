@@ -433,7 +433,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <hr>
-                                <div class="form-group add-space">
+                                <div class="form-group">
                                     <div class="">
                                         <a class="btn btn-success pull-left"
                                            href="{{route('cooperation.tool.high-efficiency-boiler.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>

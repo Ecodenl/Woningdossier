@@ -187,8 +187,10 @@ class UserActionPlanAdviceService
                 }
             }
         }
-        $x = self::checkCoupledMeasuresAndMaintenance($result);
+
         ksort($result);
+
+        $result = self::checkCoupledMeasuresAndMaintenance($result);
 
         return $result;
     }
@@ -212,7 +214,7 @@ class UserActionPlanAdviceService
                 $energySavingForRoofInsulation = $energySaving['roof-insulation'];
 
                 // flat roof
-                if (array_key_exists('roof-insulation-flat-replace-current', $energySavingForRoofInsulation['roof-insulation']) && $energySavingForRoofInsulation['roof-insulation-flat-replace-current']['planned']) {
+                if (isset($energySavingForRoofInsulation['roof-insulation-flat-replace-current']) && $energySavingForRoofInsulation['roof-insulation-flat-replace-current']['planned']) {
                     if (!$maintenanceForRoofInsulation['replace-roof-insulation']['planned']) {
                         // set warning
                         $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
@@ -226,7 +228,7 @@ class UserActionPlanAdviceService
                 }
 
                 // pitched roof
-                if (array_key_exists('roof-insulation-pitched-replace-tiles', $energySavingForRoofInsulation['roof-insulation']) && $energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['planned']) {
+                if (isset($energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']) && $energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['planned']) {
                     if (!$maintenanceForRoofInsulation['replace-tiles']['planned']) {
                         // set warning
                         $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');

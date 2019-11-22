@@ -15,7 +15,7 @@
 
                 <div class="row">
                     <div class="col-sm-12">
-                        <div class="form-group add-space {{ $errors->has('building_roof_types.id') ? ' has-error' : '' }}">
+                        <div class="form-group {{ $errors->has('building_roof_types.id') ? ' has-error' : '' }}">
                             <label for="building_roof_types" class="control-label">
                                 <i data-toggle="modal" data-target="#roof-type-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"

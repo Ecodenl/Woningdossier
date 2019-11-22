@@ -80,7 +80,7 @@
             </div>
             <div class="mt-25">
                 <div id="demand-driven" class="col-sm-offset-1 col-md-offset-0 col-xs-12 col-sm-4 col-md-3">
-                    <div class="form-group add-space">
+                    <div class="form-group ">
                         <label class="checkbox-inline">
                             <?php $isDemandDriven =  \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingservices()->where('service_id', $service->id), 'extra.demand_driven') ?>
                             <input value="true" @if(old('services.'.$service->id.'.extra.demand_driven', $isDemandDriven)) checked="checked" @endif type="checkbox" name="services[{{$service->short}}][extra][demand_driven]">
@@ -89,7 +89,7 @@
                     </div>
                 </div>
                 <div id="heat-recovery" class="col-xs-12 col-sm-4 col-md-3">
-                    <div class="form-group add-space">
+                    <div class="form-group ">
                         <label class="checkbox-inline">
                             <?php $hasHeatRecovery =  \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingservices()->where('service_id', $service->id), 'extra.heat_recovery') ?>
                             <input value="true" @if(old('services.'.$service->id.'.extra.heat_recover', $hasHeatRecovery)) checked="checked" @endif type="checkbox" name="services[{{$service->short}}][extra][heat_recovery]">

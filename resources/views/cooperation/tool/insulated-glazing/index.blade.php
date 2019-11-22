@@ -343,13 +343,11 @@
             <div class="row">
                 <div class="col-sm-6">
                     @component('cooperation.tool.components.step-question', ['id' => 'paintwork', 'translation' => 'insulated-glazing.taking-into-account.paintwork',])
-                        <div class="form-group add-space">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
                                 <input type="text" id="paintwork_costs" class="form-control disabled" disabled=""
                                        value="0">
                             </div>
-                        </div>
                     @endcomponent
                 </div>
                 <div class="col-sm-6">

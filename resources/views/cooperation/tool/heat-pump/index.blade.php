@@ -17,7 +17,7 @@
                             {!! \App\Helpers\Translation::translate('heat-pump.description.title') !!}
                         </div>
                     </div>
-                    <div class="form-group add-space">
+                    <div class="form-group">
                         <div class="panel panel-primary">
                             <div class="panel-heading">@lang('woningdossier.cooperation.tool.heat-pump-information.downloads.title')</div>
                             <div class="panel-body">

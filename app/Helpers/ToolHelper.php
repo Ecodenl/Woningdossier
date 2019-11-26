@@ -192,20 +192,16 @@ class ToolHelper
                         'type' => 'select',
                         'options' => static::createOptions($roofInsulation->values()->orderBy('order')->get(), 'value'),
                     ],
-
-
-                    'service.' . $boiler->id . '.service_value_id' => [
-                        'label' => __('boiler.boiler-type.title'),
-                        'type' => 'select',
-                        'options' => static::createOptions($boiler->values()->orderBy('order')->get(), 'value'),
-                    ],
-
                     'service.' . $hrBoiler->id => [
                         'label' => $hrBoiler->name,
                         'type' => 'select',
                         'options' => static::createOptions($hrBoiler->values()->orderBy('order')->get(), 'value'),
                     ],
-
+                    'service.' . $boiler->id . '.service_value_id' => [
+                        'label' => __('boiler.boiler-type.title'),
+                        'type' => 'select',
+                        'options' => static::createOptions($boiler->values()->orderBy('order')->get(), 'value'),
+                    ],
                     'building_features.building_heating_application_id' => [
                         'label' => __('cooperation/tool/general-data/current-state.index.building-heating-applications.title'),
                         'type' => 'select',

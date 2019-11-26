@@ -82,8 +82,6 @@ class UserReportController extends Controller
 
         $noInterest = Interest::where('calculate_value', 4)->first();
 
-
-
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'measuresToCheckForCorrespondingPlannedYear',

@@ -41,7 +41,7 @@
 
 
 @foreach ($reportData as $stepShort => $dataForStep)
-    @if (is_string($stepShort) && ($stepShort == 'general-data' || (array_key_exists($stepShort, $stepShorts) && \App\Models\UserActionPlanAdvice::hasInterestInMeasure($building, $inputSource, $steps->where('slug', $stepShort)->first()))))
+    @if ($stepShort == 'general-data' || (array_key_exists($stepShort, $stepShorts) && \App\Models\UserActionPlanAdvice::hasInterestInMeasure($building, $inputSource, $steps->where('slug', $stepShort)->first())))
         @foreach ($dataForStep as $subStepShort => $dataForSubStep)
             @include('cooperation.pdf.user-report.parts.measure-page')
         @endforeach

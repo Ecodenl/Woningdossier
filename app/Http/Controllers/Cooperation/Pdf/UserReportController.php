@@ -56,8 +56,17 @@ class UserReportController extends Controller
         // the translations for the columns / tables in the user data
         $reportTranslations = $reportForUser['translations-for-columns'];
 
-        // undot it so we can handle the data in view later on
-        $reportData = \App\Helpers\Arr::arrayUndot($reportForUser['user-data']);
+        $reportData = [];
+        foreach ($reportForUser['user-data'] as $key => $value) {
+            // so we now its a step.
+            if (is_string($key)) {
+                $keys = explode('.', $key);
+
+                $tableData = array_splice($keys, 2);
+
+                $reportData[$keys[0]][$keys[1]][implode('.', $tableData)] = $value;
+            }
+        }
 
         // steps that are considered to be measures.
         $stepShorts = \DB::table('steps')
@@ -74,15 +83,6 @@ class UserReportController extends Controller
         $noInterest = Interest::where('calculate_value', 4)->first();
 
 
-        foreach ($userActionPlanAdvices as $year => $advices) {
-
-            foreach ($advices as $adviceData) {
-
-                foreach ($adviceData as $advice) {
-//                    dd($advice);
-                }
-            }
-        }
 
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(

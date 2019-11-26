@@ -192,6 +192,7 @@ class ToolHelper
                         'type' => 'select',
                         'options' => static::createOptions($roofInsulation->values()->orderBy('order')->get(), 'value'),
                     ],
+
                     'service.' . $hrBoiler->id => [
                         'label' => $hrBoiler->name,
                         'type' => 'select',

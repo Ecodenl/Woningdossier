@@ -46,7 +46,7 @@
         <table class="full-width">
             <tr>
                 <td class="w-100">{{$userActionPlanAdviceComment->inputSource->name}}</td>
-                <td>{{$userActionPlanAdviceComment->comment}}</td>
+                <td>{!! strip_tags(nl2br($userActionPlanAdviceComment->comment), '<br>') !!}</td>
             </tr>
         </table>
     @endforeach

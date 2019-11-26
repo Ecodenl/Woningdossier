@@ -15,6 +15,9 @@
     @break
 
     @case('roof-insulation')
+        <?php
+            $dataForSubStep = \App\Helpers\Arr::arrayUndot($dataForSubStep)
+        ?>
         @include('cooperation.pdf.user-report.steps.roof-insulation')
     @break
 

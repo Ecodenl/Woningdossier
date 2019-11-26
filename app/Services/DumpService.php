@@ -486,6 +486,7 @@ class DumpService
                     } else {
                         $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
                     }
+
                 }
 
                 // handle the building_heaters table and its column

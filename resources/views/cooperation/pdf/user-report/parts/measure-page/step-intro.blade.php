@@ -1,6 +1,3 @@
-<?php
-    $shortToUseAsMainSubject = $subStepShort == '-' ? $stepShort : $subStepShort
-?>
 <div class="step-intro">
     {{--            <img src="{{public_path('images/icons/'.$stepShort.'.png')}}" alt="">--}}
     <img src="{{asset('images/icons/'.$stepShort.'.png')}}" alt="">

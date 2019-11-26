@@ -1,3 +1,19 @@
+<div class="question-answer-section">
+    <p class="lead">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.title')}}</p>
+    <div class="question-answer">
+        <p class="w-380">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.name')}}</p>
+        <p>{{$user->getFullName()}}</p>
+    </div>
+    <div class="question-answer">
+        <p class="w-380">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.address')}}</p>
+        <p>{{$building->street}} {{$building->number}} {{$building->extension}}</p>
+    </div>
+    <div class="question-answer">
+        <p class="w-380">{{\App\Helpers\Translation::translate('pdf/user-report.general-data.address-info.zip-code-city')}}</p>
+        <p>{{$building->postal_code}} {{$building->city}}</p>
+    </div>
+</div>
+
 @foreach ($reportData['general-data'] as $subStepShort => $dataForSubStep)
     <?php
     ?>

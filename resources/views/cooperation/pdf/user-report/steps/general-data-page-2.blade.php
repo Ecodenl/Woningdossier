@@ -11,6 +11,9 @@
         </tr>
         </thead>
         <tbody>
+        <?php
+            $shownWarnings = [];
+        ?>
         @foreach($userActionPlanAdvices as $year => $advices)
             @foreach($advices as $adviceData)
                 @foreach($adviceData as $advice)
@@ -25,16 +28,21 @@
                         <td align="right">{{\App\Helpers\NumberFormatter::format($advice['costs'])}}</td>
                         <td align="right">{{\App\Helpers\NumberFormatter::format($advice['savings_money'])}}</td>
                     </tr>
-                    @if(array_key_exists('warning', $advice))
-                    <tr>
-                        <td colspan="5">{{$advice['warning']}}</td>
-                    </tr>
+                    @if(array_key_exists('warning', $advice) && !array_key_exists($advice['warning'], $shownWarnings))
+                        {{--so we can check on key, if it already exists we dont show it--}}
+                        <?php $shownWarnings[$advice['warning']] = null ?>
                     @endif
                 @endforeach
             @endforeach
         @endforeach
         </tbody>
     </table>
+
+    @foreach($shownWarnings as $warning => $nothing)
+        <p class="sub-lead">{{$warning}}</p>
+        <br>
+    @endforeach
+
 
     <p>{{__('pdf/user-report.general-data.resume-energy-saving-measures.text')}}</p>
 </div>

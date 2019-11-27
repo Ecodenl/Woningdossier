@@ -111,36 +111,40 @@ class UserActionPlanAdviceService
         foreach ($advices as $measureType => $stepAdvices) {
             foreach ($stepAdvices as $stepSlug => $advicesForStep) {
                 foreach ($advicesForStep as $advice) {
-                    $year = UserActionPlanAdviceService::getYear($advice);
+                    if ($advice->planned) {
 
-                    // if its a string, the $year contains 'geen jaartal'
-                    if (is_string($year)) {
-                        $costYear = Carbon::now()->year;
-                    } else {
-                        $costYear = $year;
-                    }
-                    if (!array_key_exists($year, $sortedAdvices)) {
-                        $sortedAdvices[$year] = [];
-                    }
-                    // get step from advice
-                    $step = $advice->step;
 
-                    if (!array_key_exists($step->name, $sortedAdvices[$year])) {
-                        $sortedAdvices[$year][$step->name] = [];
-                    }
+                        $year = UserActionPlanAdviceService::getYear($advice);
 
-                    $sortedAdvices[$year][$step->name][$advice->measureApplication->short] = [
-                        'interested' => $advice->planned,
-                        'advice_id' => $advice->id,
-                        'warning' => $advice->warning,
-                        'measure' => $advice->measureApplication->measure_name,
-                        'measure_short' => $advice->measureApplication->short,                    // In the table the costs are indexed based on the advice year
-                        // Now re-index costs based on user planned year in the personal plan
-                        'costs' => NumberFormatter::round(Calculator::indexCosts($advice->costs, $costYear)),
-                        'savings_gas' => is_null($advice->savings_gas) ? 0 : NumberFormatter::round($advice->savings_gas),
-                        'savings_electricity' => is_null($advice->savings_electricity) ? 0 : NumberFormatter::round($advice->savings_electricity),
-                        'savings_money' => is_null($advice->savings_money) ? 0 : NumberFormatter::round(Calculator::indexCosts($advice->savings_money, $costYear)),
-                    ];
+                        // if its a string, the $year contains 'geen jaartal'
+                        if (is_string($year)) {
+                            $costYear = Carbon::now()->year;
+                        } else {
+                            $costYear = $year;
+                        }
+                        if (!array_key_exists($year, $sortedAdvices)) {
+                            $sortedAdvices[$year] = [];
+                        }
+                        // get step from advice
+                        $step = $advice->step;
+
+                        if (!array_key_exists($step->name, $sortedAdvices[$year])) {
+                            $sortedAdvices[$year][$step->name] = [];
+                        }
+
+                        $sortedAdvices[$year][$step->name][$advice->measureApplication->short] = [
+                            'interested' => $advice->planned,
+                            'advice_id' => $advice->id,
+                            'warning' => $advice->warning,
+                            'measure' => $advice->measureApplication->measure_name,
+                            'measure_short' => $advice->measureApplication->short,                    // In the table the costs are indexed based on the advice year
+                            // Now re-index costs based on user planned year in the personal plan
+                            'costs' => NumberFormatter::round(Calculator::indexCosts($advice->costs, $costYear)),
+                            'savings_gas' => is_null($advice->savings_gas) ? 0 : NumberFormatter::round($advice->savings_gas),
+                            'savings_electricity' => is_null($advice->savings_electricity) ? 0 : NumberFormatter::round($advice->savings_electricity),
+                            'savings_money' => is_null($advice->savings_money) ? 0 : NumberFormatter::round(Calculator::indexCosts($advice->savings_money, $costYear)),
+                        ];
+                    }
                 }
             }
         }

@@ -44,7 +44,6 @@ class ToolHelper
 
     public static function getContentStructure()
     {
-        $steps = Step::all();
         // General data - Elements (that are not queried later on step basis)
         $livingRoomsWindows = Element::where('short', 'living-rooms-windows')->first();
         $sleepingRoomsWindows = Element::where('short', 'sleeping-rooms-windows')->first();
@@ -251,16 +250,18 @@ class ToolHelper
                     ],
                     'service.' . $ventilation->id . '.extra.demand_driven' => [
                         'label' => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.demand-driven.title'),
-                        'type' => 'multiselect',
+                        'type' => 'select',
                         'options' => [
-                            true => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.demand-driven.title'),
-                        ]
+                            false => '-',
+                            true => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.demand-driven.title')
+                        ],
                     ],
                     'service.' . $ventilation->id . '.extra.heat_recovery' => [
                         'label' => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.heat-recovery.title'),
-                        'type' => 'multiselect',
+                        'type' => 'select',
                         'options' => [
-                            true => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.heat-recovery.title'),
+                            false => '-',
+                            true =>  __('cooperation/tool/general-data/current-state.index.service.house-ventilation.heat-recovery.title')
                         ]
                     ],
                 ],

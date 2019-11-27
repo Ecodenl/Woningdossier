@@ -277,7 +277,12 @@ class DumpService
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->energyLabel instanceof EnergyLabel ? $buildingFeature->energyLabel->name : '';
                                 break;
                             case 'facade_damaged_paintwork_id':
-                                if($buildingFeature->facade_plastered_painted != 2) {
+                                $condition = $buildingFeature->facade_plastered_painted != 2;
+                                if($withConditionalLogic) {
+                                    if ($condition) {
+                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->name : '';
+                                    }
+                                } else {
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->name : '';
                                 }
                                 break;
@@ -293,7 +298,12 @@ class DumpService
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $possibleAnswers[$buildingFeature->facade_plastered_painted] ?? '';
                                 break;
                             case 'facade_plastered_surface_id':
-                                if($buildingFeature->facade_plastered_painted != 2) {
+                                $condition = $buildingFeature->facade_plastered_painted != 2;
+                                if($withConditionalLogic) {
+                                    if ($condition) {
+                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->plasteredSurface instanceof FacadePlasteredSurface ? $buildingFeature->plasteredSurface->name : '';
+                                    }
+                                } else {
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->plasteredSurface instanceof FacadePlasteredSurface ? $buildingFeature->plasteredSurface->name : '';
                                 }
                                 break;

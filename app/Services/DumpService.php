@@ -400,6 +400,7 @@ class DumpService
                                 ->forInputSource($inputSource)
                                 ->first();
 
+
                             if ($buildingElement instanceof BuildingElement) {
                                 // check if we need to get data from the extra column
                                 if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
@@ -419,6 +420,7 @@ class DumpService
                                 ->where('service_id', $elementOrServiceId)
                                 ->forInputSource($inputSource)
                                 ->first();
+
                             if ($buildingService instanceof BuildingService) {
                                 // check if we need to get data from the extra column
                                 if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
@@ -426,7 +428,14 @@ class DumpService
                                     $extraIsArray = is_array($buildingService->extra);
 
                                     // if is array, try to get the answer from the extra column, does the key not exist set a default value.
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $extraIsArray ? $buildingService->extra[$extraKey] ?? '' : '';
+                                    $answer = $extraIsArray ? optional($buildingService->extra)[$extraKey] : null;
+
+                                    // when the answer is a bool / true its checked, so instead of showing true we show ja.
+                                    if ($answer == 'true') {
+                                        $answer = 'Ja';
+                                    }
+
+                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer;
                                 } else {
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingService->serviceValue->value ?? '';
                                 }

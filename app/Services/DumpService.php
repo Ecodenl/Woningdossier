@@ -53,10 +53,11 @@ class DumpService
      * @param InputSource $inputSource
      * @param bool $anonymized
      * @param bool $withTranslationsForColumns
+     * @param bool $withConditionalLogic | when true, it will return the data as happens in the dump. So if a input gets hidden it wont be put in the dump
      *
      * @return array
      */
-    public static function totalDump(User $user, InputSource $inputSource, bool $anonymized, bool $withTranslationsForColumns = true): array
+    public static function totalDump(User $user, InputSource $inputSource, bool $anonymized, bool $withTranslationsForColumns = true, bool $withConditionalLogic = false): array
     {
         $cooperation = $user->cooperation;
         // get the content structure of the whole tool.
@@ -272,12 +273,13 @@ class DumpService
                             case 'roof_type_id':
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->roofType instanceof RoofType ? $buildingFeature->roofType->name : '';
                                 break;
-
                             case 'energy_label_id':
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->energyLabel instanceof EnergyLabel ? $buildingFeature->energyLabel->name : '';
                                 break;
                             case 'facade_damaged_paintwork_id':
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->name : '';
+                                if($buildingFeature->facade_plastered_painted != 2) {
+                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->name : '';
+                                }
                                 break;
                             case 'building_heating_application_id':
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = optional($buildingFeature->buildingHeatingApplication)->name;
@@ -288,11 +290,12 @@ class DumpService
                                     2 => \App\Helpers\Translation::translate('general.options.no.title'),
                                     3 => \App\Helpers\Translation::translate('general.options.unknown.title'),
                                 ];
-
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $possibleAnswers[$buildingFeature->facade_plastered_painted] ?? '';
                                 break;
                             case 'facade_plastered_surface_id':
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->plasteredSurface instanceof FacadePlasteredSurface ? $buildingFeature->plasteredSurface->name : '';
+                                if($buildingFeature->facade_plastered_painted != 2) {
+                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->plasteredSurface instanceof FacadePlasteredSurface ? $buildingFeature->plasteredSurface->name : '';
+                                }
                                 break;
                             case 'monument':
                                 $possibleAnswers = [

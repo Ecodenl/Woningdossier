@@ -92,13 +92,11 @@
         <div class="row">
             <div class="col-sm-12">
 
-                @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'radio',
-                    'inputValues' => [
+                @component('cooperation.tool.components.input-group', ['inputType' => 'radio', 'inputValues' => [
                     1 => \App\Helpers\Translation::translate('general.options.yes.title'),
                     2 => \App\Helpers\Translation::translate('general.options.no.title'),
                     3 => \App\Helpers\Translation::translate('general.options.unknown.title'),
-                    ],
+                ],
                     'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_painted'])
 
                     @component('cooperation.tool.components.step-question', ['id' => 'facade_plastered_painted', 'translation' => 'wall-insulation.intro.is-facade-plastered-painted', 'required' => true])

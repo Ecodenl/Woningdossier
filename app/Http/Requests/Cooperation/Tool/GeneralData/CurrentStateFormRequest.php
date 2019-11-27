@@ -49,7 +49,7 @@ class CurrentStateFormRequest extends FormRequest
 
     public function withValidator(Validator $validator)
     {
-        $validator->sometimes('building_pv_panels.total_installed_power', 'numeric|required|max:18000|min:0', function (Fluent $input) {
+        $validator->sometimes('building_pv_panels.total_installed_power', 'nullable|numeric|max:18000|min:0', function (Fluent $input) {
             $input = Arr::dot($input->getAttributes());
             return $input['services.total-sun-panels.extra.value'] > 0;
         });

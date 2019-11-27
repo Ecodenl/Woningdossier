@@ -40,7 +40,7 @@
         @if(!empty($comment))
         <div class="row">
             <div class="col-sm-12">
-                @component('cooperation.tool.components.step-question', ['id' => null, 'translation' => $translation])
+                @component('cooperation.tool.components.step-question', ['id' => $columnName, 'translation' => $translation])
                     @if($currentInputSource->name != $inputSourceName)({{$inputSourceName}}) @endif
 
                     @if($inputSourceName === $currentInputSource->name)
@@ -58,7 +58,7 @@
 @if($currentInputSourceHasACommentButIsEmpty || $currentInputSourceHasNoPlacedComment)
 <div class="row">
     <div class="col-sm-12">
-        @component('cooperation.tool.components.step-question', ['id' => 'step_comments.comment', 'translation' => $translation])
+        @component('cooperation.tool.components.step-question', ['id' => $columnName, 'translation' => $translation])
             <textarea name="{{$columnName}}" class="form-control">{{old($columnName)}}</textarea>
         @endcomponent
     </div>

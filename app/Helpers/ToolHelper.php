@@ -175,6 +175,11 @@ class ToolHelper
                         'type' => 'select',
                         'options' => self::createOptions($sleepingRoomsWindows->values()->orderBy('order')->get(), 'value'),
                     ],
+                    'element.'.$crackSealing->id                      => [
+                        'label'   => $crackSealing->name,
+                        'type'    => 'select',
+                        'options' => static::createOptions($crackSealing->values()->orderBy('order')->get(), 'value'),
+                    ],
                     'element.' . $wallInsulation->id => [
 //                    'label'   => __('wall-insulation.intro.filled-insulation.title'),
                         'label' => $wallInsulation->name,

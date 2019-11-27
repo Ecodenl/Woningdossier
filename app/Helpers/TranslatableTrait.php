@@ -59,10 +59,13 @@ trait TranslatableTrait
         if (is_null($lang)) {
             $lang = app()->getLocale();
         }
-        $translation = Translation::where('key', $attribute)
+
+        $translation = \App\Helpers\Cache\Translation::getTranslationInLanguage($attribute, $lang);
+
+        /*$translation = Translation::where('key', $attribute)
             ->where('language', $lang)
             ->first();
-
+        */
         if (! $translation instanceof Translation) {
             return $this->$attribute;
         }
@@ -74,7 +77,8 @@ trait TranslatableTrait
     {
         $attribute = parent::getAttribute($key);
         if ($this->isValidUuid($attribute)) {
-            return Translation::where('key', $attribute)->get();
+            //return Translation::where('key', $attribute)->get();
+            return \App\Helpers\Cache\Translation::getTranslations($attribute);
         }
 
         return $attribute;
@@ -90,7 +94,8 @@ trait TranslatableTrait
     {
         $attribute = parent::getAttribute($key);
         if ($this->isValidUuid($attribute)) {
-            return Translation::where('key', $attribute)->where('language', $locale)->first();
+            //return Translation::where('key', $attribute)->where('language', $locale)->first();
+            return \App\Helpers\Cache\Translation::getTranslationInLanguage($attribute, $locale);
         }
 
         return $attribute;
@@ -170,6 +175,7 @@ trait TranslatableTrait
     public function getAllTranslations(string $attribute = 'name'): Collection
     {
         // we use parent::getAttribute or it would return the translated text
-        return Translation::where('key', parent::getAttribute($attribute))->get();
+        return \App\Helpers\Cache\Translation::getTranslations(parent::getAttribute($attribute));
+        //return Translation::where('key', parent::getAttribute($attribute))->get();
     }
 }

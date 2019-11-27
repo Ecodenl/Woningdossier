@@ -47,7 +47,7 @@ class FileStoragePolicy
     {
         switch ($fileType->short) {
             case 'pdf-report':
-                if ($user->hasRoleAndIsCurrentRole(['coach', 'resident'])) {
+                if ($user->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin'])) {
                     return true;
                 }
                 break;

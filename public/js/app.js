@@ -71,7 +71,8 @@ __webpack_require__(1);
 __webpack_require__(8);
 __webpack_require__(9);
 __webpack_require__(10);
-module.exports = __webpack_require__(11);
+__webpack_require__(11);
+module.exports = __webpack_require__(12);
 
 
 /***/ }),
@@ -189,7 +190,10 @@ $(".has-address-data #number, #house_number_extension").focusout(function () {
         },
         success: function success(data) {
 
-            removeErrorFields();
+            removeError(city);
+            removeError(postalCode);
+            removeError(street);
+            removeError(number);
 
             street.removeClass("loading");
             city.removeClass("loading");
@@ -213,7 +217,11 @@ $(".has-address-data #number, #house_number_extension").focusout(function () {
             city.val(address.city);
         },
         error: function error(request, status, _error) {
-            removeErrorFields();
+
+            removeError(city);
+            removeError(postalCode);
+            removeError(street);
+            removeError(number);
 
             var helpBlock = '<span class="help-block"></span>';
             var errorMessage = $.parseJSON(request.responseText);
@@ -227,12 +235,18 @@ $(".has-address-data #number, #house_number_extension").focusout(function () {
         },
         dataType: 'json'
     });
-});
 
-function removeErrorFields() {
-    $('.help-block').remove();
-    $('.has-error').removeClass('has-error');
-}
+    function addError(input, message) {
+        var helpBlock = '<span class="help-block"></span>';
+        input.parent().parent().addClass('has-error');
+        input.parent().append($(helpBlock).append('<strong>' + message + '</strong>'));
+    }
+
+    function removeError(input) {
+        input.parents('.has-error').removeClass('has-error');
+        input.next('.help-block').remove();
+    }
+});
 
 /***/ }),
 /* 2 */
@@ -30228,6 +30242,12 @@ if (typeof jQuery === 'undefined') {
 
 /***/ }),
 /* 11 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

@@ -293,9 +293,9 @@
 
             // if the email does not contain a good domain return a message
             if (!goodDomains.test(emailElement.val())) {
+                removeError(emailElement);
                 addError(emailElement, emailWarning)
             } else {
-                console.log('is gewoon goed', emailElement);
                 removeError(emailElement);
             }
         }

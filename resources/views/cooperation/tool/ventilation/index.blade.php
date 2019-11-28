@@ -286,6 +286,28 @@
            'translation' => 'cooperation/tool/ventilation.index.comment'
         ])
 
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">@lang('default.buttons.download')</div>
+                    <div class="panel-body">
+                        <ol>
+                            @foreach(['Maatregelblad_Ventilatiebox.pdf', 'Maatregelblad_Kierdichting_II.pdf'] as $fileName)
+                                <?php
+                                $link = "storage/hoomdossier-assets/{$fileName}"
+                                ?>
+                                <li>
+                                    <a href="{{asset($link)}}" download="">
+                                        {{ucfirst(strtolower($fileName))}}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </form>
 
 @endsection

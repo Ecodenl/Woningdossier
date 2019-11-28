@@ -32,7 +32,11 @@
             @foreach($calculationsForStep as $roofTypeShort => $calculationResultsForRoofType)
                 <p class="lead">{{__('pdf/user-report.roof-insulation.indicative-costs-and-benefits-for-measure.'.$roofTypeShort)}}</p>
                 @foreach($calculationResultsForRoofType as $calculationType => $result)
-                    @if(!empty($result) && !is_array($result))
+                    <?php
+                        $calculationTypesThatCantBeShown = ['type'];
+                        $calculationTypeNeedToBeShown = !in_array($calculationType, $calculationTypesThatCantBeShown);
+                    ?>
+                    @if(!empty($result) && !is_array($result) && $calculationTypeNeedToBeShown)
 
                         <?php
                             $translationForAnswer = $reportTranslations[$stepShort . '.' . $subStepShort. '.calculation.'.$roofTypeShort.'.' . $calculationType];

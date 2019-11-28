@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Pdf;
 
+use App\Helpers\Arr;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
@@ -56,7 +57,9 @@ class UserReportController extends Controller
         // the translations for the columns / tables in the user data
         $reportTranslations = $reportForUser['translations-for-columns'];
 
+        $calculations = $reportForUser['calculations'];
         $reportData = [];
+
         foreach ($reportForUser['user-data'] as $key => $value) {
             // so we now its a step.
             if (is_string($key)) {
@@ -64,9 +67,13 @@ class UserReportController extends Controller
 
                 $tableData = array_splice($keys, 2);
 
-                $reportData[$keys[0]][$keys[1]][implode('.', $tableData)] = $value;
+                // we dont want the calculations in the report data, we need them separate
+                if (!in_array('calculation', $tableData)) {
+                    $reportData[$keys[0]][$keys[1]][implode('.', $tableData)] = $value;
+                }
             }
         }
+
 
         // steps that are considered to be measures.
         $stepShorts = \DB::table('steps')
@@ -86,7 +93,7 @@ class UserReportController extends Controller
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'measuresToCheckForCorrespondingPlannedYear',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
-            'buildingFeatures', 'advices', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings'
+            'buildingFeatures', 'advices', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
         ));
 
         return $pdf->stream();

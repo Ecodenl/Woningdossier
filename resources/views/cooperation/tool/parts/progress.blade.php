@@ -40,8 +40,7 @@
             @if(!$routeIsCurrentRoute)
                 @if($building->hasCompleted($step))
                     <span class="glyphicon glyphicon-ok"></span>
-                @endif
-                @if($step->short != 'general-data' && !$routeIsCurrentRoute && $userDoesNotHaveInterestInStep)
+                @elseif($step->short != 'general-data' && !$routeIsCurrentRoute && $userDoesNotHaveInterestInStep)
                     <span class="glyphicon glyphicon-ban-circle"></span>
                 @endif
             @endif

@@ -46,7 +46,7 @@
                             <tbody>
                             <tr class="h-20">
                                 <td class="w-380">{{$translationForAnswer}}</td>
-                                <td>{{$calculationTypeIsYear ? $calculationResult : \App\Helpers\NumberFormatter::format($calculationResult, 0, true)}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</td>
+                                <td>{{$calculationTypeIsYear ? $result : \App\Helpers\NumberFormatter::format($result, 0, true)}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</td>
                             </tr>
                             </tbody>
                         </table>

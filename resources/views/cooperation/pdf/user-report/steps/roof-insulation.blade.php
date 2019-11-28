@@ -11,7 +11,7 @@
                     <tbody>
                     @foreach(\Illuminate\Support\Arr::dot($buildingRoofTypeValues) as $translationKey => $value)
                         <?php
-                        $translationForAnswer = $reportTranslations[$stepShort.'.'.$subStepShort.'.building_roof_types.'.$buildingRoofTypeId.'.'.$translationKey];
+                        $translationForAnswer = $reportTranslations[$stepShort . '.' . $subStepShort . '.building_roof_types.' . $buildingRoofTypeId . '.' . $translationKey];
                         ?>
                         @if(!\App\Helpers\Hoomdossier::columnContains($translationKey, 'user_interest'))
                             <tr class="h-20">
@@ -33,19 +33,20 @@
                 <p class="lead">{{__('pdf/user-report.roof-insulation.indicative-costs-and-benefits-for-measure.'.$roofTypeShort)}}</p>
                 @foreach($calculationResultsForRoofType as $calculationType => $result)
                     <?php
-                        $calculationTypesThatCantBeShown = ['type'];
-                        $calculationTypeNeedToBeShown = !in_array($calculationType, $calculationTypesThatCantBeShown);
+                    $calculationTypesThatCantBeShown = ['type'];
+                    $calculationTypeNeedToBeShown = !in_array($calculationType, $calculationTypesThatCantBeShown);
+                    $calculationTypeIsYear = \App\Helpers\Hoomdossier::columnContains($calculationType, 'year');
                     ?>
                     @if(!empty($result) && !is_array($result) && $calculationTypeNeedToBeShown)
 
                         <?php
-                            $translationForAnswer = $reportTranslations[$stepShort . '.' . $subStepShort. '.calculation.'.$roofTypeShort.'.' . $calculationType];
+                        $translationForAnswer = $reportTranslations[$stepShort . '.' . $subStepShort . '.calculation.' . $roofTypeShort . '.' . $calculationType];
                         ?>
                         <table class="full-width">
                             <tbody>
                             <tr class="h-20">
                                 <td class="w-380">{{$translationForAnswer}}</td>
-                                <td>{{!\App\Helpers\Hoomdossier::columnContains($calculationType, 'year') ? \App\Helpers\NumberFormatter::format($result, 0, true) : $result}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</td>
+                                <td>{{$calculationTypeIsYear ? $calculationResult : \App\Helpers\NumberFormatter::format($calculationResult, 0, true)}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</td>
                             </tr>
                             </tbody>
                         </table>

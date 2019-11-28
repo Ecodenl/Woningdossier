@@ -5,8 +5,7 @@
     // spoiler: it became bloated.
 
     // calculations
-    $calculationsForStep = $dataForSubStep['calculation'] ?? [];
-    unset($dataForSubStep['calculation']);
+    $calculationsForStep =  $calculations[$stepShort][$subStepShort] ?? [];
 ?>
 
 @switch($stepShort)

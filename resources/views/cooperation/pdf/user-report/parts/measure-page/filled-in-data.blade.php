@@ -4,14 +4,16 @@
         <tbody>
         @foreach ($dataForSubStep as $translationKey => $value)
             <?php
-            $translationForAnswer = $reportTranslations[$stepShort . '.' . $subStepShort . '.' . $translationKey];
+                $translationForAnswer = $reportTranslations[$stepShort . '.' . $subStepShort . '.' . $translationKey];
 
-            $tableIsNotUserInterest = !\App\Helpers\Hoomdossier::columnContains($translationKey, 'user_interests');
+                $tableIsNotUserInterest = !\App\Helpers\Hoomdossier::columnContains($translationKey, 'user_interests');
+                $isNotCalculation = !\App\Helpers\Hoomdossier::columnContains($translationKey, 'calculation');
 
-            $doesAnswerContainUnit = stripos($value, 'm2') !== false;
+
+                $doesAnswerContainUnit = stripos($value, 'm2') !== false;
             ?>
             {{--we only want the interest on the interest page--}}
-            @if($tableIsNotUserInterest || $subStepShort == 'interest')
+            @if($isNotCalculation && ($tableIsNotUserInterest || $subStepShort == 'interest'))
                 <tr class="h-20">
                     <td class="w-380">{{$translationForAnswer}}</td>
                     <td>{{$value}} {{$doesAnswerContainUnit ?'': \App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</td>

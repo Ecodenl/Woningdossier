@@ -174,6 +174,11 @@ class ToolHelper
                         'type' => 'select',
                         'options' => self::createOptions($sleepingRoomsWindows->values()->orderBy('order')->get(), 'value'),
                     ],
+                    'element.'.$crackSealing->id                      => [
+                        'label'   => $crackSealing->name,
+                        'type'    => 'select',
+                        'options' => static::createOptions($crackSealing->values()->orderBy('order')->get(), 'value'),
+                    ],
                     'element.' . $wallInsulation->id => [
 //                    'label'   => __('wall-insulation.intro.filled-insulation.title'),
                         'label' => $wallInsulation->name,
@@ -245,16 +250,18 @@ class ToolHelper
                     ],
                     'service.' . $ventilation->id . '.extra.demand_driven' => [
                         'label' => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.demand-driven.title'),
-                        'type' => 'multiselect',
+                        'type' => 'select',
                         'options' => [
-                            true => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.demand-driven.title'),
-                        ]
+                            false => '-',
+                            true => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.demand-driven.title')
+                        ],
                     ],
                     'service.' . $ventilation->id . '.extra.heat_recovery' => [
                         'label' => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.heat-recovery.title'),
-                        'type' => 'multiselect',
+                        'type' => 'select',
                         'options' => [
-                            true => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.heat-recovery.title'),
+                            false => '-',
+                            true =>  __('cooperation/tool/general-data/current-state.index.service.house-ventilation.heat-recovery.title')
                         ]
                     ],
                 ],

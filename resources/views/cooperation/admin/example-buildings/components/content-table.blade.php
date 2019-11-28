@@ -36,7 +36,7 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
         @foreach($contentStructure as $step => $dataForSubSteps)
             <tr>
                 <td colspan="2">
-                    <h3>{{ \App\Helpers\Translation::translate('woningdossier.cooperation.tool.' . $step . '.title') }}</h3>
+                    <h3>@lang('woningdossier.cooperation.tool.' . $step . '.title')</h3>
                 </td>
             </tr>
 

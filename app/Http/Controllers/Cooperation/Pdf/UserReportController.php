@@ -51,7 +51,7 @@ class UserReportController extends Controller
         $advices = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
         // full report for a user
-        $reportForUser = DumpService::totalDump($user, $inputSource, false);
+        $reportForUser = DumpService::totalDump($user, $inputSource, false, true, true);
 
         // the translations for the columns / tables in the user data
         $reportTranslations = $reportForUser['translations-for-columns'];

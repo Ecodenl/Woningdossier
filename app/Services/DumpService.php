@@ -53,10 +53,11 @@ class DumpService
      * @param InputSource $inputSource
      * @param bool $anonymized
      * @param bool $withTranslationsForColumns
+     * @param bool $withConditionalLogic | when true, it will return the data as happens in the dump. So if a input gets hidden it wont be put in the dump
      *
      * @return array
      */
-    public static function totalDump(User $user, InputSource $inputSource, bool $anonymized, bool $withTranslationsForColumns = true): array
+    public static function totalDump(User $user, InputSource $inputSource, bool $anonymized, bool $withTranslationsForColumns = true, bool $withConditionalLogic = false): array
     {
         $cooperation = $user->cooperation;
         // get the content structure of the whole tool.
@@ -272,12 +273,18 @@ class DumpService
                             case 'roof_type_id':
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->roofType instanceof RoofType ? $buildingFeature->roofType->name : '';
                                 break;
-
                             case 'energy_label_id':
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->energyLabel instanceof EnergyLabel ? $buildingFeature->energyLabel->name : '';
                                 break;
                             case 'facade_damaged_paintwork_id':
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->name : '';
+                                $condition = $buildingFeature->facade_plastered_painted != 2;
+                                if($withConditionalLogic) {
+                                    if ($condition) {
+                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->name : '';
+                                    }
+                                } else {
+                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->name : '';
+                                }
                                 break;
                             case 'building_heating_application_id':
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = optional($buildingFeature->buildingHeatingApplication)->name;
@@ -288,11 +295,17 @@ class DumpService
                                     2 => \App\Helpers\Translation::translate('general.options.no.title'),
                                     3 => \App\Helpers\Translation::translate('general.options.unknown.title'),
                                 ];
-
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $possibleAnswers[$buildingFeature->facade_plastered_painted] ?? '';
                                 break;
                             case 'facade_plastered_surface_id':
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->plasteredSurface instanceof FacadePlasteredSurface ? $buildingFeature->plasteredSurface->name : '';
+                                $condition = $buildingFeature->facade_plastered_painted != 2;
+                                if($withConditionalLogic) {
+                                    if ($condition) {
+                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->plasteredSurface instanceof FacadePlasteredSurface ? $buildingFeature->plasteredSurface->name : '';
+                                    }
+                                } else {
+                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->plasteredSurface instanceof FacadePlasteredSurface ? $buildingFeature->plasteredSurface->name : '';
+                                }
                                 break;
                             case 'monument':
                                 $possibleAnswers = [
@@ -400,6 +413,7 @@ class DumpService
                                 ->forInputSource($inputSource)
                                 ->first();
 
+
                             if ($buildingElement instanceof BuildingElement) {
                                 // check if we need to get data from the extra column
                                 if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
@@ -419,6 +433,7 @@ class DumpService
                                 ->where('service_id', $elementOrServiceId)
                                 ->forInputSource($inputSource)
                                 ->first();
+
                             if ($buildingService instanceof BuildingService) {
                                 // check if we need to get data from the extra column
                                 if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
@@ -426,7 +441,14 @@ class DumpService
                                     $extraIsArray = is_array($buildingService->extra);
 
                                     // if is array, try to get the answer from the extra column, does the key not exist set a default value.
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $extraIsArray ? $buildingService->extra[$extraKey] ?? '' : '';
+                                    $answer = $extraIsArray ? optional($buildingService->extra)[$extraKey] : null;
+
+                                    // when the answer is a bool / true its checked, so instead of showing true we show ja.
+                                    if ($answer == 'true') {
+                                        $answer = 'Ja';
+                                    }
+
+                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer;
                                 } else {
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingService->serviceValue->value ?? '';
                                 }

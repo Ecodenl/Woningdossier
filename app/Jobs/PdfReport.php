@@ -90,7 +90,7 @@ class PdfReport implements ShouldQueue
         $userActionPlanAdvices = UserActionPlanAdviceService::getPersonalPlan($user, $inputSource);
 
         // we dont wat the actual advices, we have to show them in a different way
-        $advices = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
+        $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
         // full report for a user
         $reportForUser = DumpService::totalDump($user, $inputSource, false);
@@ -132,7 +132,7 @@ class PdfReport implements ShouldQueue
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'userCooperation', 'stepShorts', 'commentsByStep', 'inputSource',
-            'reportTranslations', 'reportData', 'userActionPlanAdvices', 'buildingFeatures', 'advices', 'calculations',
+            'reportTranslations', 'reportData', 'userActionPlanAdvices', 'buildingFeatures', 'measures', 'calculations',
             'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'reportForUser', 'noInterest'
         ));
 

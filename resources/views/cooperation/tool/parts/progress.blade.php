@@ -1,11 +1,11 @@
 <ul class="progress-list list-inline">
     <?php
-    $building = \App\Helpers\HoomdossierSession::getBuilding(true);
-    $currentStepIsSubStep = $currentSubStep instanceof \App\Models\Step;
-    // we get the building-detail and general-data
-    $generalDataStep = $steps->where('slug', 'general-data')->first();
+        $building = \App\Helpers\HoomdossierSession::getBuilding(true);
+        $currentStepIsSubStep = $currentSubStep instanceof \App\Models\Step;
+        // we get the building-detail and general-data
+        $generalDataStep = $steps->where('slug', 'general-data')->first();
 
-    $inputSource = \App\Helpers\HoomdossierSession::getInputSource(true);
+        $inputSource = \App\Helpers\HoomdossierSession::getInputSource(true);
     ?>
 
     {{--

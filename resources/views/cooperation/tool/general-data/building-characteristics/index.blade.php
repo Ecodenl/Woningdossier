@@ -30,7 +30,7 @@
 
             <div class="col-md-6">
 
-                @component('cooperation.tool.components.step-question', ['id' => 'build_year', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.build-year', 'required' => true])
+                @component('cooperation.tool.components.step-question', ['id' => 'build_year', 'name' => 'building_features.build_year', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.build-year', 'required' => true])
 
                     @component('cooperation.tool.components.input-group',
                     ['inputType' => 'input', 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'build_year'])

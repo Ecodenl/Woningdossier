@@ -50,7 +50,7 @@
 
     <li class="list-inline-item">
         <a href="{{ route('cooperation.tool.my-plan.index', ['cooperation' => $cooperation]) }}">
-            <img src="{{ asset('images/icons/my-plan.png') }}" class="img-circle"/>
+            <img class="no-border" src="{{ asset('images/icons/my-plan.png') }}"/>
         </a>
     </li>
 </ul>

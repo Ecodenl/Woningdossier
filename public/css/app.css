@@ -15781,13 +15781,17 @@ ul.progress-list li.done .glyphicon {
 }
 
 ul.progress-list li.not-available .glyphicon {
-  color: #cbb956;
+  color: #e64a4a;
 }
 
 ul.progress-list li a img {
   width: 50px;
   height: 50px;
   border: 1px solid #939596;
+}
+
+ul.progress-list li a img.no-border {
+  border: none;
 }
 
 ul.progress-list li a:hover img,

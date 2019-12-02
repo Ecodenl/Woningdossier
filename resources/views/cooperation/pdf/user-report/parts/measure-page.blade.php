@@ -10,14 +10,15 @@
 
 @switch($stepShort)
     @case('insulated-glazing')
-        @include('cooperation.pdf.user-report.steps.insulated-glazing')
+        @include('cooperation.pdf.user-report.steps.insulated-glazing', [
+            'dataForSubStep' => \App\Helpers\Arr::arrayUndot($dataForSubStep)
+        ])
     @break
 
     @case('roof-insulation')
-        <?php
-            $dataForSubStep = \App\Helpers\Arr::arrayUndot($dataForSubStep)
-        ?>
-        @include('cooperation.pdf.user-report.steps.roof-insulation')
+        @include('cooperation.pdf.user-report.steps.roof-insulation', [
+            'dataForSubStep' => \App\Helpers\Arr::arrayUndot($dataForSubStep)
+        ])
     @break
 
 

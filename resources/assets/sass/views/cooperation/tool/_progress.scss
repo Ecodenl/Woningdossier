@@ -17,7 +17,7 @@ ul.progress-list {
     }
     &.not-available {
       .glyphicon {
-        color: $brand-warning;
+        color: $brand-danger;
       }
     }
 
@@ -25,8 +25,13 @@ ul.progress-list {
       img {
         width: $imageSize;
         height: $imageSize;
-        border: $borderWidth solid transparent;
+        border: 1px solid #939596;
+        //border: $borderWidth solid transparent;
+        &.no-border {
+          border: none;
+        }
       }
+
 
       &:hover, &:active, &:focus {
         img {

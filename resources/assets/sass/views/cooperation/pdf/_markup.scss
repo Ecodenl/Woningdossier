@@ -80,8 +80,18 @@ table {
   font-size: $font-size-small;
   margin-bottom: 5px;
   thead {
+
     background-color: $color-main;
     color: $color-white;
+    &.no-background {
+      background-color: white;
+      color: $color-main;
+    }
+    &.lead {
+      font-weight: bold;
+      color: $color-main;
+      font-size: 16px;
+    }
   }
   tbody {
     background-color: $color-white;

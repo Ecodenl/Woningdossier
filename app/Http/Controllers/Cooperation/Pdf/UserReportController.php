@@ -49,7 +49,7 @@ class UserReportController extends Controller
         $userActionPlanAdvices = UserActionPlanAdviceService::getPersonalPlan($user, $inputSource);
 
         // we don't want the advices, we need to show them in a different way.
-        $advices = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
+        $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
         // full report for a user
         $reportForUser = DumpService::totalDump($user, $inputSource, false, true, true);
@@ -93,7 +93,7 @@ class UserReportController extends Controller
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'measuresToCheckForCorrespondingPlannedYear',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
-            'buildingFeatures', 'advices', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
+            'buildingFeatures', 'measures', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
         ));
 
         return $pdf->stream();

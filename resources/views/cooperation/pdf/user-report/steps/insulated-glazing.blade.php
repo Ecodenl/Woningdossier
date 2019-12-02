@@ -7,9 +7,9 @@
             <p class="lead">{{__('pdf/user-report.measure-pages.filled-in-data')}}</p>
 
             <?php
-            // we dont need it, we will use the $buildingInsulatedGlazings
-            // we also MUST unset them otherwise they will be picked up later on and we will get duplicates
-            unset($dataForSubStep['user_interests'], $dataForSubStep['building_insulated_glazings'])
+                // we dont need it, we will use the $buildingInsulatedGlazings
+                // we also MUST unset them otherwise they will be picked up later on and we will get duplicates
+                unset($dataForSubStep['user_interests'], $dataForSubStep['building_insulated_glazings']);
             ?>
             @foreach($buildingInsulatedGlazings as $buildingInsulatedGlazing)
 
@@ -47,22 +47,10 @@
 
         <br>
 
-        <div class="question-answer-section">
-            <p class="lead">{{__('insulated-glazing.paint-work.title.title')}}</p>
-            <table class="full-width">
-                <tbody>
-                @foreach (\Illuminate\Support\Arr::dot($dataForSubStep) as $translationKey => $value)
-                    <?php
-                    $translationForAnswer = $reportTranslations[$stepShort . '.' . $subStepShort . '.' . $translationKey];
-                    ?>
-                    <tr class="h-20">
-                        <td class="w-380">{{$translationForAnswer}}</td>
-                        <td>{{$value}} {{\App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-        </div>
+        @include('cooperation.pdf.user-report.parts.measure-page.filled-in-data', [
+            'dataForSubStep' => \Illuminate\Support\Arr::dot($dataForSubStep),
+            'title' => __('insulated-glazing.paint-work.title.title')
+        ])
 
         @include('cooperation.pdf.user-report.parts.measure-page.insulation-advice')
 

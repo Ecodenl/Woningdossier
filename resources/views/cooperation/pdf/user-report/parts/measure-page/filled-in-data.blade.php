@@ -1,5 +1,5 @@
 <div class="question-answer-section">
-    <p class="lead">{{__('pdf/user-report.measure-pages.filled-in-data')}}</p>
+    <p class="lead">{{$title ?? __('pdf/user-report.measure-pages.filled-in-data')}}</p>
     <table class="full-width">
         <tbody>
         @foreach ($dataForSubStep as $translationKey => $value)

@@ -3,10 +3,10 @@
 
     <table class="full-width">
         <tbody>
-        @if($stepShort == 'solar-panels')
+        @if(in_array($stepShort, ['heater', 'solar-panels']))
             <?php
                 $calculationsForStep = array_except($calculationsForStep, [
-                    'year', 'advice', 'total_power', 'performance'
+                    'year', 'advice', 'total_power',
                 ]);
             ?>
         @endif

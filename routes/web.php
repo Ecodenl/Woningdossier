@@ -330,22 +330,23 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     /* Section for the cooperations */
                     Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.', 'namespace' => 'Cooperation'], function () {
-                            Route::get('', 'CooperationController@index')->name('index');
-                            Route::get('edit/{cooperationToEdit}', 'CooperationController@edit')->name('edit');
-                            Route::get('create', 'CooperationController@create')->name('create');
-                            Route::post('', 'CooperationController@store')->name('store');
-                            Route::post('edit', 'CooperationController@update')->name('update');
+                        Route::get('', 'CooperationController@index')->name('index');
+                        Route::delete('destroy/{cooperationToDestroy}', 'CooperationController@destroy')->name('destroy');
+                        Route::get('edit/{cooperationToEdit}', 'CooperationController@edit')->name('edit');
+                        Route::get('create', 'CooperationController@create')->name('create');
+                        Route::post('', 'CooperationController@store')->name('store');
+                        Route::post('edit', 'CooperationController@update')->name('update');
 
-                            /* Actions that will be done per cooperation */
-                            Route::group(['prefix' => '{cooperationToManage}/', 'as' => 'cooperation-to-manage.'],
-                                function () {
-                                    Route::resource('home', 'HomeController')->only('index');
+                        /* Actions that will be done per cooperation */
+                        Route::group(['prefix' => '{cooperationToManage}/', 'as' => 'cooperation-to-manage.'],
+                            function () {
+                                Route::resource('home', 'HomeController')->only('index');
 
-                                    Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
-                                    Route::resource('coordinator', 'CoordinatorController')->only(['index']);
-                                    Route::resource('users', 'UserController')->only(['index', 'show']);
-                                });
-                        });
+                                Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
+                                Route::resource('coordinator', 'CoordinatorController')->only(['index']);
+                                Route::resource('users', 'UserController')->only(['index', 'show']);
+                            });
+                    });
                 });
 
                 /* Section for the coach */
@@ -374,7 +375,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
 Route::get('/', function () {
 
-    if(stristr(\Request::url(), '://www.')){
+    if (stristr(\Request::url(), '://www.')) {
         // The user has prefixed the subdomain with a www subdomain.
         // Remove the www part and redirect to that.
         return redirect(str_replace('://www.', '://', Request::url()));

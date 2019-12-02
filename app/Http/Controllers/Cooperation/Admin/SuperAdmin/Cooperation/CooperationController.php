@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Cooperation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\SuperAdmin\CooperationRequest;
 use App\Models\Cooperation;
+use App\Services\UserService;
 
 class CooperationController extends Controller
 {
@@ -53,5 +54,28 @@ class CooperationController extends Controller
 
         return redirect()->route('cooperation.admin.super-admin.cooperations.index')
             ->with('success', __('woningdossier.cooperation.admin.super-admin.cooperations.update.success'));
+    }
+
+    public function destroy(Cooperation $cooperation, Cooperation $cooperationToDestroy)
+    {
+        $cooperationToDestroy->steps()->detach();
+
+        $exampleBuildings = $cooperationToDestroy->exampleBuildings;
+
+        foreach ($exampleBuildings as $exampleBuilding) {
+            $exampleBuilding->contents()->delete();
+        }
+
+        $cooperationToDestroy->exampleBuildings()->delete();
+
+        $users = $cooperationToDestroy->users()->withoutGlobalScopes()->get();
+        foreach ($users as $user) {
+            UserService::deleteUser($user, true);
+        }
+
+        $cooperationToDestroy->delete();
+
+        return redirect()->route('cooperation.admin.super-admin.cooperations.index')
+            ->with('success', __('woningdossier.cooperation.admin.super-admin.cooperations.destroy.success'));
     }
 }

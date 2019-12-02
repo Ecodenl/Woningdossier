@@ -3,40 +3,42 @@
 namespace App\Services;
 
 use App\Models\Account;
+use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\User;
 use App\Scopes\GetValueScope;
 
 class UserService
 {
-    public static function deleteUser(User $user)
+    public static function deleteUser(User $user, $shouldForceDeleteBuilding = false)
     {
         $accountId = $user->account_id;
-
         $building = $user->building;
 
-        $building->delete();
+        if ($building instanceof Building) {
+            if ($shouldForceDeleteBuilding) {
+                BuildingService::deleteBuilding($building);
+            } else {
+                $building->delete();
+            }
+        }
 
         // remove the action plan advices from the user
-        $user->actionPlanAdvices()->withoutGlobalScope(GetValueScope::class)->delete();
+        $user->actionPlanAdvices()->withoutGlobalScopes()->delete();
         // remove the user interests
-        $user->interests()->withoutGlobalScope(GetValueScope::class)->delete();
+        $user->interests()->withoutGlobalScopes()->delete();
         // remove the energy habits from a user
-        $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->delete();
+        $user->energyHabit()->withoutGlobalScopes()->delete();
         // remove the motivations from a user
-        $user->motivations()->delete();
+        $user->motivations()->withoutGlobalScopes()->delete();
         // remove the notification settings
-        $user->notificationSettings()->delete();
+        $user->notificationSettings()->withoutGlobalScopes()->delete();
         // remove the progress from a user
-        $building->progress()->delete();
         // first detach the roles from the user
         $user->roles()->detach($user->roles);
-        // delete the private messages from the cooperation
-        $building->privateMessages()->delete();
+
 
         // remove the user itself.
-        $user->delete();
-
         // if the account has no users anymore then we delete the account itself too.
         if (0 == User::withoutGlobalScopes()->where('account_id', $accountId)->count()) {
             // bye !

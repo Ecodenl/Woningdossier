@@ -5,8 +5,9 @@
         <tbody>
         @if(in_array($stepShort, ['heater', 'solar-panels']))
             <?php
+                // remove some results that are irrelevant to this section
                 $calculationsForStep = array_except($calculationsForStep, [
-                    'year', 'advice', 'total_power',
+                    'year', 'total_power',
                 ]);
             ?>
         @endif
@@ -22,7 +23,7 @@
                 ?>
                 <tr class="h-20">
                     <td class="w-380">{{$translationForAnswer}}</td>
-                    <td>{{$calculationResult}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</td>
+                    <td>{{$formattedCalculationResult}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</td>
                 </tr>
             @endif
         @endforeach

@@ -25,7 +25,8 @@ ul.progress-list {
       img {
         width: $imageSize;
         height: $imageSize;
-        border: $borderWidth solid transparent;
+        border: 1px solid #939596;
+        //border: $borderWidth solid transparent;
       }
 
       &:hover, &:active, &:focus {

@@ -519,11 +519,11 @@ class ToolHelper
                         'options' => $interestOptions,
                     ],
                     'user_energy_habits.resident_count' => [
-                        'label' => __('general-data.data-about-usage.total-citizens.title'),
+                        'label' => __('cooperation/tool/high-efficiency-boiler.index.resident-count.title'),
                         'type' => 'text',
                     ],
                     'user_energy_habits.amount_gas' => [
-                        'label' => __('general-data.data-about-usage.gas-usage-past-year.title'),
+                        'label' => __('cooperation/tool/high-efficiency-boiler.index.gas-usage.title'),
                         'type' => 'text',
                         'unit' => __('general.unit.cubic-meters.title'),
                     ],

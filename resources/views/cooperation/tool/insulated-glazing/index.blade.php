@@ -160,13 +160,13 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    @component('cooperation.tool.components.step-question', ['id' => 'window_surface', 'translation' => 'insulated-glazing.windows-surface', 'required' => false])
+                    @component('cooperation.tool.components.step-question', ['id' => 'building_features.window_surface', 'translation' => 'insulated-glazing.windows-surface', 'required' => false])
 
                         @component('cooperation.tool.components.input-group',
-                       ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'window_surface'])
+                       ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'building_features.window_surface'])
                             <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                            <input type="text" name="window_surface"
-                                   value="{{ old('window_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'window_surface')) }}"
+                            <input type="text" name="building_features[window_surface]"
+                                   value="{{ old('building_features.window_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'window_surface')) }}"
                                    class="form-control">
                         @endcomponent
                     @endcomponent

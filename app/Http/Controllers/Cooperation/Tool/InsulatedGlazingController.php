@@ -284,16 +284,12 @@ class InsulatedGlazingController extends Controller
             ]
         );
 
-        // Save the window surface to the building feature
-        $windowSurface = $request->get('window_surface', '');
         BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,
             ],
-            [
-                'window_surface' => $windowSurface,
-            ]
+            $request->input('building_features')
         );
 
         $this->saveAdvices($request);

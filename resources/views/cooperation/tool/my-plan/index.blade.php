@@ -208,6 +208,7 @@
                     success: function (data) {
 
                         $("ul#years").html("");
+                        removeWarnings();
                         $.each(data, function (year, steps) {
                             var slugYear = year;
                             var header = "<h1>" + year + "</h1>";
@@ -224,6 +225,10 @@
 
                                     if (stepData.interested) {
                                         $("#advice-" + stepData.advice_id + "-planned").attr('checked', true);
+                                    }
+
+                                    if(stepData.warning !== null) {
+                                        setWarning(stepData.measure_short, stepData.warning)
                                     }
 
                                     totalCosts += parseFloat(stepData.costs);
@@ -280,7 +285,7 @@
                             window.location.href = '{{route('cooperation.conversation-requests.index', ['cooperation' => $cooperation])}}'
                         });
 
-                        checkCoupledMeasuresAndMaintenance();
+                        // checkCoupledMeasuresAndMaintenance();
 
 
                         // only when its not done yet, otherwise on every change it will scroll to the download section

@@ -65,6 +65,7 @@ class UserActionPlanAdviceService
      */
     public static function getYear(UserActionPlanAdvice $userActionPlanAdvice)
     {
+        // always try to get the planned year, as this is what de user gave as input
         $year = $userActionPlanAdvice->planned_year ?? $userActionPlanAdvice->year;
 
         // when the year is empty try to get one last resort.
@@ -113,8 +114,7 @@ class UserActionPlanAdviceService
                 foreach ($advicesForStep as $advice) {
                     if ($advice->planned) {
 
-
-                        $year = UserActionPlanAdviceService::getYear($advice);
+                        $year = self::getYear($advice);
 
                         // if its a string, the $year contains 'geen jaartal'
                         if (is_string($year)) {
@@ -219,12 +219,17 @@ class UserActionPlanAdviceService
 
                 // flat roof
                 if (isset($energySavingForRoofInsulation['roof-insulation-flat-replace-current']) && $energySavingForRoofInsulation['roof-insulation-flat-replace-current']['planned']) {
+
+                    $energySavingRoofInsulationFlatReplaceCurrentYear = $energySavingForRoofInsulation['roof-insulation-flat-replace-current']['planned_year'];
+                    $maintenanceReplaceRoofInsulationYear = $maintenanceForRoofInsulation['replace-roof-insulation']['planned_year'];
+
+
                     if (!$maintenanceForRoofInsulation['replace-roof-insulation']['planned']) {
                         // set warning
                         $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
                         $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
                         // both were planned, so check whether the planned year is the same
-                    } else if ($energySavingForRoofInsulation['roof-insulation-flat-replace-current']['year'] !== $maintenanceForRoofInsulation['replace-roof-insulation']['year']) {
+                    } else if ($energySavingRoofInsulationFlatReplaceCurrentYear !== $maintenanceReplaceRoofInsulationYear) {
                         // set warning
                         $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = __('my-plan.warnings.roof-insulation.planned-year.title');
                         $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] = __('my-plan.warnings.roof-insulation.planned-year.title');
@@ -233,12 +238,14 @@ class UserActionPlanAdviceService
 
                 // pitched roof
                 if (isset($energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']) && $energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['planned']) {
+                    $energySavingRoofInsulationPitchedReplaceTilesYear = $energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['planned_year'];
+                    $maintenanceReplaceTilesYear = $maintenanceForRoofInsulation['replace-tiles']['planned_year'];
                     if (!$maintenanceForRoofInsulation['replace-tiles']['planned']) {
                         // set warning
                         $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
                         $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
                         // both were planned, so check whether the planned year is the same
-                    } else if ($energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['year'] !== $maintenanceForRoofInsulation['replace-tiles']['year']) {
+                    } else if ($energySavingRoofInsulationPitchedReplaceTilesYear !== $maintenanceReplaceTilesYear) {
                         // set warning
                         $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.planned-year.title');
                         $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.planned-year.title');

@@ -80,7 +80,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
             }
 
-            Route::view('test', 'test');
             Route::get('home', 'HomeController@index')->name('home')->middleware('deny-if-filling-for-other-building');
 
             Route::resource('privacy', 'PrivacyController')->only('index');
@@ -355,7 +354,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                                 Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
                                 Route::resource('coordinator', 'CoordinatorController')->only(['index']);
                                 Route::resource('users', 'UserController')->only(['index', 'show']);
-                            });
+                            Route::post('users/{id}/confirm', 'UserController@confirm')->name('users.confirm');});
                     });
                 });
 

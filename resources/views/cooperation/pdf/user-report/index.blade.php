@@ -23,7 +23,9 @@
 
 @component('cooperation.pdf.components.new-page')
     <div class="container">
-        @include('cooperation.pdf.user-report.steps.general-data-page-1')
+        @include('cooperation.pdf.user-report.steps.general-data-page-1', [
+            'stepShort' => 'general-data'
+        ])
     </div>
 @endcomponent
 

@@ -14,7 +14,7 @@
     </div>
 </div>
 
-@foreach ($reportData['general-data'] as $subStepShort => $dataForSubStep)
+@foreach ($reportData[$stepShort] as $subStepShort => $dataForSubStep)
     <?php
     ?>
     <div class="question-answer-section">
@@ -42,4 +42,6 @@
             </tbody>
         </table>
     </div>
+
+    @include('cooperation.pdf.user-report.parts.measure-page.comments')
 @endforeach

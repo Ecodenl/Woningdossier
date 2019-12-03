@@ -1,5 +1,6 @@
 @extends('cooperation.admin.layouts.app')
 
+
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.coordinator.side-nav.add-user')</div>
@@ -171,7 +172,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row">
 
                             <div class="col-sm-12">
@@ -192,7 +193,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group" {{ $errors->has('coach_id') ? ' has-error' : '' }}>
@@ -223,6 +224,7 @@
         </div>
     </div>
 @endsection
+
 
 @push('js')
     <script>

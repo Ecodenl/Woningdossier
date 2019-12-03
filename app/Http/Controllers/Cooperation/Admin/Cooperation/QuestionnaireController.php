@@ -24,10 +24,16 @@ class QuestionnaireController extends Controller
         return view('cooperation.admin.cooperation.questionnaires.index', compact('questionnaires'));
     }
 
-    public function edit(Cooperation $cooperation, $questionnaireId)
+    public function destroy(Cooperation $cooperation, Questionnaire $questionnaire)
     {
-        $questionnaire = Questionnaire::find($questionnaireId);
+        $questionnaire->delete();
 
+        return response(200);
+
+    }
+
+    public function edit(Cooperation $cooperation, Questionnaire $questionnaire)
+    {
         $this->authorize('edit', $questionnaire);
 
         $steps = Step::orderBy('order')->get();
@@ -275,15 +281,12 @@ class QuestionnaireController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(QuestionnaireRequest $request)
+    public function update(QuestionnaireRequest $request, Cooperation $cooperation, Questionnaire $questionnaire)
     {
         // get the data for the questionnaire
         $questionnaireNameTranslations = $request->input('questionnaire.name');
         $stepId = $request->input('questionnaire.step_id');
-        $questionnaireId = $request->input('questionnaire.id');
-
-        // find the current questionnaire
-        $questionnaire = Questionnaire::find($questionnaireId);
+        $questionnaireId = $questionnaire->id;
 
         $this->authorize('update', $questionnaire);
         // update the step

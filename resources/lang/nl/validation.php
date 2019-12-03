@@ -158,6 +158,7 @@ return [
         'user_energy_habits.amount_gas' => __('cooperation/tool/general-data/usage.index.energy-usage.gas-usage.title'),
 
 
+        'building_services.boiler.extra' => __('high-efficiency-boiler.boiler-placed-date.title'),
         'service.6.extra.year' => 'jaartal',
 
         'services.total-sun-panels.extra.year' => __('cooperation/tool/general-data/current-state.index.service.total-sun-panels.year.title'),

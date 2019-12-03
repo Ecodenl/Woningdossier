@@ -80,7 +80,7 @@
                 <div class="row">
                     <div class="col-md-6">
 
-                        @component('cooperation.tool.components.step-question', ['id' => 'surface', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface', 'required' => true])
+                        @component('cooperation.tool.components.step-question', ['id' => 'surface', 'name' => 'building_features.surface', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface', 'required' => true])
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'surface', 'needsFormat' => true])

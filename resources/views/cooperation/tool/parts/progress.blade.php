@@ -2,24 +2,20 @@
     <?php
         $building = \App\Helpers\HoomdossierSession::getBuilding(true);
         $currentStepIsSubStep = $currentSubStep instanceof \App\Models\Step;
-        // we get the building-detail and general-data
+
         $generalDataStep = $steps->where('slug', 'general-data')->first();
 
         $inputSource = \App\Helpers\HoomdossierSession::getInputSource(true);
     ?>
 
-    {{--
-        We treat / show building-detail and general-data as 1 step. We "merge" them to 1 and use tabs
-        to make it look like it is 1 step.
-    --}}
     @foreach($steps as $step)
         <?php
-        $userDoesNotHaveInterestInStep = false;
-        if ($step->short != 'general-data') {
-            $userDoesNotHaveInterestInStep = !\App\Helpers\StepHelper::hasInterestInStep($buildingOwner, get_class($step), $step->id);
-        }
-        $currentRouteName = $currentStepIsSubStep ? 'cooperation.tool.' . $step->short . '.' . $currentSubStep->short . '.index' : 'cooperation.tool.' . $step->short . '.index';
-        $routeIsCurrentRoute = $currentRouteName == Route::getCurrentRoute()->getName();
+            $userDoesNotHaveInterestInStep = false;
+            if ($step->short != 'general-data') {
+                $userDoesNotHaveInterestInStep = !\App\Helpers\StepHelper::hasInterestInStep($buildingOwner, get_class($step), $step->id);
+            }
+            $currentRouteName = $currentStepIsSubStep ? 'cooperation.tool.' . $step->short . '.' . $currentSubStep->short . '.index' : 'cooperation.tool.' . $step->short . '.index';
+            $routeIsCurrentRoute = $currentRouteName == Route::getCurrentRoute()->getName();
         ?>
         {{-- There is no interest for the general-data so we skip that --}}
         <li class="list-inline-item

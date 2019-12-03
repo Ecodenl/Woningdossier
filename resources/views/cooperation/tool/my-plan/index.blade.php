@@ -339,44 +339,6 @@
                 }
             });
 
-            function checkCoupledMeasuresAndMaintenance() {
-                // remove all previous warnings and recheck
-                removeWarnings();
-
-                // flat roof
-                if (getPlanned(ROOF_INSULATION_FLAT_REPLACE_CURRENT)) {
-                    if (!getPlanned(REPLACE_ROOF_INSULATION)) {
-                        // set warning
-                        setWarning(ROOF_INSULATION_FLAT_REPLACE_CURRENT, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.check-order.title') }}');
-                        setWarning(REPLACE_ROOF_INSULATION, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.check-order.title') }}');
-                    }
-                    else {
-                        // both were planned
-                        if (getPlannedYear(ROOF_INSULATION_FLAT_REPLACE_CURRENT) !== getPlannedYear(REPLACE_ROOF_INSULATION)) {
-                            // set warning
-                            setWarning(ROOF_INSULATION_FLAT_REPLACE_CURRENT, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.planned-year.title') }}');
-                            setWarning(REPLACE_ROOF_INSULATION, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.planned-year.title') }}');
-                        }
-                    }
-                }
-
-                // pitched roof
-                if (getPlanned(ROOF_INSULATION_PITCHED_REPLACE_TILES)) {
-                    if (!getPlanned(REPLACE_TILES)) {
-                        // set warning
-                        setWarning(ROOF_INSULATION_PITCHED_REPLACE_TILES, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.check-order.title') }}');
-                        setWarning(REPLACE_TILES, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.check-order.title') }}');
-                    }
-                    else {
-                        // both were planned
-                        if (getPlannedYear(ROOF_INSULATION_PITCHED_REPLACE_TILES) !== getPlannedYear(REPLACE_TILES)) {
-                            // set warning
-                            setWarning(ROOF_INSULATION_PITCHED_REPLACE_TILES, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.planned-year.title') }}');
-                            setWarning(REPLACE_TILES, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.planned-year.title') }}');
-                        }
-                    }
-                }
-            }
 
             // Return if the measure is planned (checked) or not.
             function getPlanned(maShort) {

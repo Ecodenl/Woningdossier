@@ -27,9 +27,11 @@
                                     <td>
                                         <a href="{{route('cooperation.admin.super-admin.cooperations.edit', ['cooperation' => $currentCooperation, 'cooperationToEdit' => $cooperation])}}" class="btn btn-default">@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.edit')</a>
                                         <a href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index', ['cooperation' => $currentCooperation, 'cooperationToManage' => $cooperation])}}" class="btn btn-default">@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.show')</a>
-                                        <a data-toggle="modal" data-target="{{"#destroy-cooperation-{$cooperation->id}" }}" class="btn btn-danger">
-                                            @lang('woningdossier.cooperation.admin.super-admin.cooperations.index.destroy')
-                                        </a>
+                                        @if($cooperation->slug != 'hoom')
+                                            <a data-toggle="modal" data-target="{{"#destroy-cooperation-{$cooperation->id}" }}" class="btn btn-danger">
+                                                @lang('woningdossier.cooperation.admin.super-admin.cooperations.index.destroy')
+                                            </a>
+                                        @endif
                                     </td>
                                 </tr>
                                 @component('cooperation.tool.components.modal', ['id' => "destroy-cooperation-{$cooperation->id}", 'title' => "Verwijder {$cooperation->name}"])

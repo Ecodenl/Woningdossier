@@ -86,7 +86,7 @@ class RoofInsulationFormRequest extends FormRequest
         $max = Carbon::now()->year;
 
         // retrieve the selected roof type ids
-        $roofTypeIds = $this->input('building_roof_types.id');
+        $roofTypeIds = $this->input('building_roof_types.id', []);
 
         $brt = 'building_roof_types';
         // loop through them, and validate it

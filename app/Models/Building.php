@@ -253,10 +253,18 @@ class Building extends Model
      *
      * @return BuildingElement|null
      */
-    public function getBuildingElement($short, InputSource $inputSource)
+    public function getBuildingElement($short, InputSource $inputSource = null)
     {
+        if ($inputSource instanceof InputSource) {
+
         return $this->buildingElements()
             ->forInputSource($inputSource)
+            ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
+            ->where('e.short', $short)->first(['building_elements.*']);
+        }
+
+
+        return $this->buildingElements()
             ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
             ->where('e.short', $short)->first(['building_elements.*']);
     }

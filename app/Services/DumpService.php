@@ -10,6 +10,8 @@ use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
 use App\Calculations\Ventilation;
 use App\Calculations\WallInsulation;
+use App\Helpers\Calculation\BankInterestCalculator;
+use App\Helpers\Calculator;
 use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
@@ -247,13 +249,16 @@ class DumpService
                     $column = $columnOrId;
                     switch ($columnOrId) {
                         default:
-                            $optionsForQuestion = ToolHelper::getContentStructure($tableWithColumnOrAndIdKey)['options'];
-                            $givenAnswers = array_flip($buildingVentilation->$column);
+                            $answer = null;
+                            if ($buildingVentilation instanceof BuildingVentilation) {
+                                $optionsForQuestion = ToolHelper::getContentStructure($tableWithColumnOrAndIdKey)['options'];
+                                $givenAnswers = array_flip($buildingVentilation->$column);
 
-                            $answers = array_intersect_key(
-                                $optionsForQuestion, $givenAnswers
-                            );
-                            $row[$buildingId][$tableWithColumnOrAndIdKey] = implode($answers, ', ');
+                                $answer = implode(array_intersect_key(
+                                    $optionsForQuestion, $givenAnswers
+                                ), ', ');
+                            }
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer;
                             break;
                     }
                 }
@@ -274,6 +279,8 @@ class DumpService
                             $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$subStep][$roofCategory][$column] ?? '' : $calculateData[$step][$subStep][$roofCategory][$column][$costsOrYear] ?? '';
                             break;
                         default:
+                            Log::debug("user: {$user->id} building id: {$building->id}");
+                            Log::debug($step.'--'.$subStep);
                             $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$subStep][$column] : $calculateData[$step][$subStep][$column][$costsOrYear] ?? '';
                             break;
                     }
@@ -298,7 +305,7 @@ class DumpService
                                 break;
                             case 'facade_damaged_paintwork_id':
                                 $condition = $buildingFeature->facade_plastered_painted != 2;
-                                if($withConditionalLogic) {
+                                if ($withConditionalLogic) {
                                     if ($condition) {
                                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->name : '';
                                     }
@@ -319,7 +326,7 @@ class DumpService
                                 break;
                             case 'facade_plastered_surface_id':
                                 $condition = $buildingFeature->facade_plastered_painted != 2;
-                                if($withConditionalLogic) {
+                                if ($withConditionalLogic) {
                                     if ($condition) {
                                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->plasteredSurface instanceof FacadePlasteredSurface ? $buildingFeature->plasteredSurface->name : '';
                                     }
@@ -821,7 +828,7 @@ class DumpService
                 'amount_electricity' => $userEnergyHabit->amount_electricity ?? null,
             ],
             'user_interests' => [
-                'interested_in_id' =>  optional($userInterestsForSolarPanels)->interested_in_id,
+                'interested_in_id' => optional($userInterestsForSolarPanels)->interested_in_id,
                 'interest_id' => optional($userInterestsForSolarPanels)->interest_id
             ]
         ]);
@@ -834,23 +841,23 @@ class DumpService
                 'water_comfort_id' => $userEnergyHabit->water_comfort_id ?? null,
             ],
             'user_interests' => [
-                'interested_in_id' =>  optional($userInterestsForHeater)->interested_in_id,
+                'interested_in_id' => optional($userInterestsForHeater)->interested_in_id,
                 'interest_id' => optional($userInterestsForHeater)->interest_id
             ]
         ]);
 
         $ventilationSavings = Ventilation::calculate($building, $inputSource, $userEnergyHabit, [
             'building_ventilations' => [
-                'how' => $buildingVentilation->how,
-                'living_situation' => $buildingVentilation->living_situation,
-                'usage' => $buildingVentilation->usage,
+                'how' => optional($buildingVentilation)->how,
+                'living_situation' => optional($buildingVentilation)->living_situation,
+                'usage' => optional($buildingVentilation)->usage,
             ],
         ]);
 
         return [
             'ventilation' => [
                 // for now, in the future this may change and multiple results can be returned
-                '-' => $ventilationSavings['result']['crack_sealing'] ?? [],
+                '-' => $ventilationSavings['result']['crack_sealing'],
             ],
             'wall-insulation' => [
                 '-' => $wallInsulationSavings,

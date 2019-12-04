@@ -39,7 +39,7 @@ class BuildingDataCopyService
                 'where_column' => 'measure_application_id',
             ],
             'building_paintwork_statuses',
-            'user_progresses' => [
+            'completed_steps' => [
                 'where_column' => 'step_id',
             ],
             'questions_answers' => [
@@ -260,6 +260,12 @@ class BuildingDataCopyService
                 $inputSourceToUpdateExtra = json_decode($inputSourceToUpdate['extra'], true);
 
                 $inputSourceToCopyNotNullExtraValues = static::filterExtraColumn($inputSourceToCopyExtra);
+
+
+                // set some default stuff
+                if (is_null($inputSourceToUpdateExtra)) {
+                    $inputSourceToUpdateExtra = [];
+                }
 
                 // create the extra column json.
                 // merge those toes

@@ -24,22 +24,6 @@
                 </div>
             </div>
         </div>
-
-        @if(!\App\helpers\HoomdossierSession::isUserObserving())
-        <div class="row">
-            <div class="col-md-12">
-                <hr>
-                <div class="form-group add-space">
-                    <div class="">
-                        <a class="btn btn-success pull-left" href="{{route('cooperation.tool.wall-insulation.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
-                        <button type="submit" class="btn btn-primary pull-right">
-                            @lang('default.buttons.next-page')
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
     </form>
 @endsection
 

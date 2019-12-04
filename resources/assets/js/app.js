@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -50,7 +49,7 @@ $(document).ready(function () {
         //var inputSourceGroup = $(this).closest(".input-group.input-source-group");
         var inputType = inputSourceGroup.find('input').attr('type');
 
-        if (inputType === undefined){
+        if (inputType === undefined) {
             // try to find a select, if its not a select, its prob a textarea.
             inputType = inputSourceGroup.find('select').length === 1 ? 'select' : 'textarea';
         }
@@ -63,11 +62,11 @@ $(document).ready(function () {
                     break;
                 case "radio":
                     inputSourceGroup.find('input[type=radio]:checked').removeProp('checked');
-                    inputSourceGroup.find('input[type=radio][value='+dataInputValue+']').prop('checked', true);
+                    inputSourceGroup.find('input[type=radio][value=' + dataInputValue + ']').prop('checked', true);
                     break;
                 case "checkbox":
                     inputSourceGroup.find('input[type=checkbox]:checked').removeProp('checked');
-                    inputSourceGroup.find('input[type=checkbox][value='+dataInputValue+']').prop('checked', true);
+                    inputSourceGroup.find('input[type=checkbox][value=' + dataInputValue + ']').prop('checked', true);
                     break;
                 case "select":
                     inputSourceGroup.find('select').val(dataInputValue);
@@ -93,67 +92,78 @@ $(document).ready(function () {
 
 });
 
-$(".has-address-data #number, #house_number_extension").focusout(function(){
-        var postalCode = $(".has-address-data #postal_code");
-        var number = $(".has-address-data #number");
-        var houseNumberExtension = $(".has-address-data #house_number_extension");
-        var street = $(".has-address-data #street");
-        var city = $(".has-address-data #city");
-        var addressId = $(".has-address-data #addressid");
+$(".has-address-data #number, #house_number_extension").focusout(function () {
+    var postalCode = $(".has-address-data #postal_code");
+    var number = $(".has-address-data #number");
+    var houseNumberExtension = $(".has-address-data #house_number_extension");
+    var street = $(".has-address-data #street");
+    var city = $(".has-address-data #city");
+    var addressId = $(".has-address-data #addressid");
 
-        $.ajax({
-            method: 'get',
-            url: getAddressDataUrl,
-            data: { postal_code: postalCode.val(), number: number.val(), house_number_extension: houseNumberExtension.val() },
-            beforeSend: function(){
-                street.addClass("loading");
-                city.addClass("loading");
-            },
-            success: function(data){
+    $.ajax({
+        method: 'get',
+        url: getAddressDataUrl,
+        data: {postal_code: postalCode.val(), number: number.val(), house_number_extension: houseNumberExtension.val()},
+        beforeSend: function () {
+            street.addClass("loading");
+            city.addClass("loading");
+        },
+        success: function (data) {
 
-                removeErrorFields();
+            removeError(city);
+            removeError(postalCode);
+            removeError(street);
+            removeError(number);
 
-                street.removeClass("loading");
-                city.removeClass("loading");
+            street.removeClass("loading");
+            city.removeClass("loading");
 
-                var address = data;
-                var possibleWrongPostalCode = $('#possible-wrong-postal-code');
+            var address = data;
+            var possibleWrongPostalCode = $('#possible-wrong-postal-code');
 
-                // if there is no postal code returned, then the given postal code is *probably* wrong.
-                if (address.postal_code === "") {
-                    possibleWrongPostalCode.show();
-                } else {
-                    possibleWrongPostalCode.hide();
-                }
+            // if there is no postal code returned, then the given postal code is *probably* wrong.
+            if (address.postal_code === "") {
+                possibleWrongPostalCode.show();
+            } else {
+                possibleWrongPostalCode.hide();
+            }
 
-                street.val(address.street);
-                if (address.street !== "") {
-                    number.val(address.number);
-                    houseNumberExtension.val(address.house_number_extension);
-                }
-                addressId.val(address.id);
-                city.val(address.city);
-            },
-            error: function (request, status, error) {
-                removeErrorFields();
+            street.val(address.street);
+            if (address.street !== "") {
+                number.val(address.number);
+                houseNumberExtension.val(address.house_number_extension);
+            }
+            addressId.val(address.id);
+            city.val(address.city);
+        },
+        error: function (request, status, error) {
 
-                var helpBlock = '<span class="help-block"></span>';
-                var errorMessage = $.parseJSON(request.responseText);
 
-                $.each(errorMessage.errors, function(fieldName, message) {
-                    // on name because some input name fields will be scrambeled to prevent the browser from pefilling it.
-                    var inputWithError = $('input[id='+fieldName+']');
-                    inputWithError.parent().parent().addClass('has-error');
-                    inputWithError.parent().append($(helpBlock).append('<strong>'+message+'</strong>'));
-                });
-            },
-            dataType: 'json'
-        });
-    }
-);
+            removeError(city);
+            removeError(postalCode);
+            removeError(street);
+            removeError(number);
 
-function removeErrorFields()
-{
-    $('.help-block').remove();
-    $('.has-error').removeClass('has-error');
+            var helpBlock = '<span class="help-block"></span>';
+            var errorMessage = $.parseJSON(request.responseText);
+
+            $.each(errorMessage.errors, function (fieldName, message) {
+                // on name because some input name fields will be scrambeled to prevent the browser from pefilling it.
+                var inputWithError = $('input[id=' + fieldName + ']');
+                inputWithError.parent().parent().addClass('has-error');
+                inputWithError.parent().append($(helpBlock).append('<strong>' + message + '</strong>'));
+            });
+        },
+        dataType: 'json'
+    });
+});
+function addError(input, message) {
+    var helpBlock = '<span class="help-block"></span>';
+    input.parent().parent().addClass('has-error');
+    input.parent().append($(helpBlock).append('<strong>' + message + '</strong>'));
+}
+
+function removeError(input) {
+    input.parents('.has-error').removeClass('has-error');
+    input.next('.help-block').remove()
 }

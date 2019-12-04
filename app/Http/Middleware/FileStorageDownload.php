@@ -38,11 +38,11 @@ class FileStorageDownload
         }
 
         if ($fileStorage instanceof FileStorage) {
-            $userIsResidentOrCoach = Hoomdossier::user()->hasRoleAndIsCurrentRole(['resident', 'coach']);
+            $rolesWhichCanGeneratePdfReport = Hoomdossier::user()->hasRoleAndIsCurrentRole(['resident', 'coach', 'coordinator', 'cooperation-admin']);
             $fileIsGeneratedByCurrentBuilding = $fileStorage->building_id == HoomdossierSession::getBuilding();
             $fileInputSourceIsCurrentInputSource = $fileStorage->input_source_id == HoomdossierSession::getInputSource();
 
-            if ($userIsResidentOrCoach && $fileIsGeneratedByCurrentBuilding && $fileInputSourceIsCurrentInputSource) {
+            if ($rolesWhichCanGeneratePdfReport && $fileIsGeneratedByCurrentBuilding && $fileInputSourceIsCurrentInputSource) {
                 return $next($request);
             }
         }

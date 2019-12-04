@@ -7,8 +7,6 @@
 @section('step_content')
 
 
-{{--    @if(!\App\Helpers\HoomdossierSession::isUserObserving())--}}
-
     <div class="row">
         <div class="col-md-12">
             <p>{!! \App\Helpers\Translation::translate('my-plan.description.title') !!}</p>
@@ -16,22 +14,13 @@
                 <button type="button" class="btn btn-default" data-toggle="modal"
                         data-target="#{{$inputSource->name}}">{{ \App\Helpers\Translation::translate('my-plan.trigger-modal-for-other-input-source.title', ['input_source_name' => strtolower($inputSource->name)]) }}</button>
             @endforeach
+        </div>
+    </div>
 
-
-                </div>
-
-
-
-                </div>
-
-            {{-- Create the modals with personal plan info for the other input source --}}
-
-                        @foreach($personalPlanForVariousInputSources as $inputSourceName => $measuresByYear)
-
-                                    @include('cooperation.tool.my-plan.parts.modal-for-other-input-source')
-        @endforeach
-    {{--@endif
-                --}}
+    {{-- Create the modals with personal plan info for the other input source --}}
+    @foreach($personalPlanForVariousInputSources as $inputSourceName => $measuresByYear)
+        @include('cooperation.tool.my-plan.parts.modal-for-other-input-source')
+    @endforeach
 
     {{-- Our plan, which the users can edit --}}
     @include('cooperation.tool.my-plan.parts.my-plan-form')
@@ -39,51 +28,52 @@
     {{-- The personal plan, will be generated with js --}}
     @include('cooperation.tool.my-plan.parts.personal-plan')
 
-    <div class="row">
-        <div class="col-sm-12">
-            <?php
-            $myActionPlanComment = $actionPlanComments->where('input_source_id', \App\Helpers\HoomdossierSession::getInputSource())->first();
-            ?>
-            @if(!\App\Helpers\HoomdossierSession::isUserObserving())
-                <form action="{{route('cooperation.tool.my-plan.store-comment')}}" method="post">
-                    {{csrf_field()}}
-                    @endif
-                    <div class="form-group">
-                        <label for="" class=" control-label">
-                            <i data-target="#my-plan-own-comment-info"
-                               class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
-                               aria-expanded="false"></i>
-                            {{\App\Helpers\Translation::translate('general.specific-situation.title')}}
-                            ({{\App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSource())->name}})
-                        </label>
+    <form action="{{route('cooperation.tool.my-plan.store-comment')}}" method="post">
+        <div class="row">
+            <div class="col-sm-12">
+                <?php
+                $myActionPlanComment = $actionPlanComments->pull(\App\Helpers\HoomdossierSession::getInputSource());
+                ?>
 
-                        <textarea @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled" @endif name="comment"
-                                  class="form-control">{{old('comment', $myActionPlanComment instanceof \App\Models\UserActionPlanAdviceComments ? $myActionPlanComment->comment : '')}}</textarea>
+                {{csrf_field()}}
+                @component('cooperation.tool.components.step-question', ['id' => 'comment', 'translation' => 'general.specific-situation'])
+                    ({{\App\Helpers\HoomdossierSession::getInputSource(true)->name}})
+                    <textarea @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled"
+                              @endif name="comment"
+                              class="form-control">{{old('comment', $myActionPlanComment instanceof \App\Models\UserActionPlanAdviceComments ? $myActionPlanComment->comment : '')}}</textarea>
+                @endcomponent
 
-                        @component('cooperation.tool.components.help-modal', ['id' => 'my-plan-own-comment-info'])
-                            {{\App\Helpers\Translation::translate('general.specific-situation.title')}}
-                        @endcomponent
-                    </div>
-                    @if(!\App\Helpers\HoomdossierSession::isUserObserving())
-                        <button type="submit"
-                                class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.add-comment')</button>
-                </form>
-            @endif
+            </div>
         </div>
-    </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <button type="submit" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.add-comment')</button>
+            </div>
+        </div>
+    </form>
 
-
+    @foreach($actionPlanComments as $actionPlanComment)
+        <div class="row">
+            <div class="col-sm-12">
+                @component('cooperation.tool.components.step-question', ['id' => null, 'translation' => 'general.specific-situation'])
+                    ({{$actionPlanComment->inputSource->name}})
+                    <textarea disabled="disabled"
+                              class="disabled form-control">{{$actionPlanComment->comment}}</textarea>
+                @endcomponent
+            </div>
+        </div>
+    @endforeach
 
     <br>
     {{--    @if($file instanceof \App\Models\FileStorage && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))--}}
-    @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
-    <div class="row" id="download-section" style="display: none;">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">@lang('default.buttons.download')</div>
-                <div class="panel-body">
-                    <ol>
-                        <li class="download-link">
+    @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
+        <div class="row" id="download-section" style="display: none;">
+            <div class="col-md-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">@lang('default.buttons.download')</div>
+                    <div class="panel-body">
+                        <ol>
+                            <li class="download-link">
                             </li>
                         </ol>
                     </div>
@@ -94,7 +84,7 @@
     @endif
 
     <br>
-    @if($buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident']))
+    @if($buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
@@ -138,15 +128,16 @@
         var checkIfFileIsBeingProcessedRoute = '{{route('cooperation.file-storage.check-if-file-is-being-processed', ['fileType' => $pdfReportFileType])}}';
 
         function pollForFileProcessing() {
+            console.log('oke wat dan ');
             $.get(checkIfFileIsBeingProcessedRoute, function (response) {
-
-                if (response.is_file_being_processed === true) {
+                console.log(response);
+                if (response.is_file_being_processed || response.file_download_link === null) {
                     $('#download-section').show();
                     if (pdfReportButton.find('span').length === 0) {
                         disableGenerateReportButton();
                     }
                 } else {
-                    if (response.file_download_link.length > 0) {
+                    if (response.file_download_link !== null && response.file_download_link.length > 0) {
                         addReportDownloadLink(response);
                     }
                     $('#download-section').show();
@@ -156,8 +147,8 @@
                 }
 
 
-                // only poll when the file is being processed.
-                if (response.is_file_being_processed) {
+                // only poll when the file is being processed or when the download link is not present
+                if (response.is_file_being_processed || response.file_download_link === null) {
                     setTimeout(pollForFileProcessing, 5000);
                 }
             });
@@ -182,6 +173,11 @@
             $('li.download-link').append(downloadLink);
         }
 
+        $(document).on("keydown", ":input:not(textarea)", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+            }
+        });
 
         $(document).ready(function () {
             var pageHasAlreadyBeenScrolledToDownloadSection = false;
@@ -193,12 +189,7 @@
 
             const MEASURE = '{{\App\Models\PrivateMessage::REQUEST_TYPE_MEASURE}}';
             // build the base route, we can replace te params later on.
-            var conversationRequestRoute = '{{route('cooperation.conversation-requests.index', ['action' => 'action', 'measureApplicationShort' => 'measure_application_short'])}}';$(window).keydown(function (event) {
-                if (event.keyCode == 13) {
-                    event.preventDefault();
-                    return false;
-                }
-            });
+            var conversationRequestRoute = '{{route('cooperation.conversation-requests.index', ['action' => 'action', 'measureApplicationShort' => 'measure_application_short'])}}';
 
             if (window.location.hash !== "") {
                 pollForFileProcessing();
@@ -216,6 +207,7 @@
                     success: function (data) {
 
                         $("ul#years").html("");
+                        removeWarnings();
                         $.each(data, function (year, steps) {
                             var slugYear = year;
                             var header = "<h1>" + year + "</h1>";
@@ -231,7 +223,11 @@
                                 $.each(stepMeasures, function (i, stepData) {
 
                                     if (stepData.interested) {
-                                        $("#advice-" + stepData.advice_id + "-planned").attr('checked', true)
+                                        $("#advice-" + stepData.advice_id + "-planned").attr('checked', true);
+                                    }
+
+                                    if(stepData.warning !== null) {
+                                        setWarning(stepData.measure_short, stepData.warning)
                                     }
 
                                     totalCosts += parseFloat(stepData.costs);
@@ -248,7 +244,7 @@
                                         "</a>" +
                                         "</td>" +
                                         "<td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td><td>" +
-                                        "<a href='"+conversationRequestRoute.replace('action', MEASURE).replace('measure_application_short', stepData.measure_short)+"' class='take-action btn btn-default' type='button'>@lang('my-plan.columns.take-action.title')</a></td></tr>";
+                                        "<a href='" + conversationRequestRoute.replace('action', MEASURE).replace('measure_application_short', stepData.measure_short) + "' class='take-action btn btn-default' type='button'>@lang('my-plan.columns.take-action.title')</a></td></tr>";
                                     table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "' > <td colspan='1'></td><td colspan=''> <strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-gas.title') }}:</strong> <br><strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-electricity.title') }}:</strong> </td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup> <br>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh </td><td colspan='1'></td></tr>";
                                 });
 
@@ -288,12 +284,12 @@
                             window.location.href = '{{route('cooperation.conversation-requests.index', ['cooperation' => $cooperation])}}'
                         });
 
-                        checkCoupledMeasuresAndMaintenance();
+                        // checkCoupledMeasuresAndMaintenance();
 
 
                         // only when its not done yet, otherwise on every change it will scroll to the download section
-                        if (!pageHasAlreadyBeenScrolledToDownloadSection) {
-                        // we will have to do this after the change, otherwise it will be scrolled to the download section. And then the personal plan appends and poof its gone.
+                        if (!pageHasAlreadyBeenScrolledToDownloadSection && window.location.hash.length > 0) {
+                            // we will have to do this after the change, otherwise it will be scrolled to the download section. And then the personal plan appends and poof its gone.
                             $('html, body').animate({
                                 scrollTop: $(window.location.hash).offset().top
                             }, 'slow');
@@ -328,6 +324,7 @@
             });
 
             $(".interested-checker").click(function () {
+
                 // get the planned year input
                 var plannedYearInput = $(this).parent().parent().find('input[name*=planned_year]');
                 var advicedYear;
@@ -341,44 +338,6 @@
                 }
             });
 
-            function checkCoupledMeasuresAndMaintenance() {
-                // remove all previous warnings and recheck
-                removeWarnings();
-
-                // flat roof
-                if (getPlanned(ROOF_INSULATION_FLAT_REPLACE_CURRENT)) {
-                    if (!getPlanned(REPLACE_ROOF_INSULATION)) {
-                        // set warning
-                        setWarning(ROOF_INSULATION_FLAT_REPLACE_CURRENT, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.check-order.title') }}');
-                        setWarning(REPLACE_ROOF_INSULATION, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.check-order.title') }}');
-                    }
-                    else {
-                        // both were planned
-                        if (getPlannedYear(ROOF_INSULATION_FLAT_REPLACE_CURRENT) !== getPlannedYear(REPLACE_ROOF_INSULATION)) {
-                            // set warning
-                            setWarning(ROOF_INSULATION_FLAT_REPLACE_CURRENT, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.planned-year.title') }}');
-                            setWarning(REPLACE_ROOF_INSULATION, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.planned-year.title') }}');
-                        }
-                    }
-                }
-
-                // pitched roof
-                if (getPlanned(ROOF_INSULATION_PITCHED_REPLACE_TILES)) {
-                    if (!getPlanned(REPLACE_TILES)) {
-                        // set warning
-                        setWarning(ROOF_INSULATION_PITCHED_REPLACE_TILES, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.check-order.title') }}');
-                        setWarning(REPLACE_TILES, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.check-order.title') }}');
-                    }
-                    else {
-                        // both were planned
-                        if (getPlannedYear(ROOF_INSULATION_PITCHED_REPLACE_TILES) !== getPlannedYear(REPLACE_TILES)) {
-                            // set warning
-                            setWarning(ROOF_INSULATION_PITCHED_REPLACE_TILES, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.planned-year.title') }}');
-                            setWarning(REPLACE_TILES, '{{ \App\Helpers\Translation::translate('my-plan.warnings.roof-insulation.planned-year.title') }}');
-                        }
-                    }
-                }
-            }
 
             // Return if the measure is planned (checked) or not.
             function getPlanned(maShort) {

@@ -37,6 +37,11 @@ class HighEfficiencyBoilerCalculator
         self::debug('Gas usage ( '.$usageNew.' ) with best boiler: '.json_encode($usage));
         self::debug('Results in saving of '.$result.' = '.$amountGas.' - '.$usageNew);
 
+        // we dont want to return negative values
+        if ($result < 0) {
+            $result = 0;
+        }
+
         return $result;
     }
 

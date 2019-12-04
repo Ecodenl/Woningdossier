@@ -4,6 +4,7 @@ namespace App\Http\Requests\Cooperation\Admin\Cooperation;
 
 use App\Rules\AlphaSpace;
 use App\Rules\HouseNumber;
+use App\Rules\PhoneNumber;
 use App\Rules\PostalCode;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -32,6 +33,7 @@ class UserRequest extends FormRequest
             'last_name' => ['required', new AlphaSpace()],
             'password' => 'nullable|min:6',
             'email' => 'required|email',
+            'phone_number' => ['nullable', new PhoneNumber('nl')],
             'roles' => 'required|exists:roles,id',
             'coach_id' => ['nullable', Rule::exists('users', 'id')],
 

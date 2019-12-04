@@ -57,8 +57,6 @@ class UserController extends Controller
 
     public function store(Cooperation $cooperation, UserRequest $request)
     {
-        $firstName = $request->get('first_name', '');
-        $lastName = $request->get('last_name', '');
         $email = $request->get('email', '');
 
         $postalCode = trim(strip_tags($request->get('postal_code', '')));
@@ -72,10 +70,7 @@ class UserController extends Controller
 
         // create the user
         $user = User::create(
-            [
-                'first_name' => $firstName,
-                'last_name' => $lastName,
-            ]
+            $request->only('first_name', 'last_name', 'phone_number')
         );
 
         // check if account exists. If so: attach.

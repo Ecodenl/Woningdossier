@@ -73,7 +73,7 @@ class User extends Model implements AuthorizableContract
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'phone_number',
+        'first_name', 'last_name', 'phone_number', 'account_id',
     ];
 
     // ------ User -> Account table / model migration stuff -------

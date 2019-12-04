@@ -39,7 +39,7 @@
     </table>
 
     @foreach($shownWarnings as $warning => $nothing)
-        <p class="sub-lead">{{$warning}}</p>
+        <p style="color: darkgray">{{$warning}}</p>
         <br>
     @endforeach
 

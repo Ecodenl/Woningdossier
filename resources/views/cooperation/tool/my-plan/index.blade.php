@@ -128,7 +128,6 @@
         var checkIfFileIsBeingProcessedRoute = '{{route('cooperation.file-storage.check-if-file-is-being-processed', ['fileType' => $pdfReportFileType])}}';
 
         function pollForFileProcessing() {
-            console.log('oke wat dan ');
             $.get(checkIfFileIsBeingProcessedRoute, function (response) {
                 console.log(response);
                 if (response.is_file_being_processed || response.file_download_link === null) {

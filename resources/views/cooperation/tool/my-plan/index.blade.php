@@ -171,24 +171,25 @@
         function addReportDownloadLink(response) {
             var downloadLink = $('<a>').prop('href', response.file_download_link).append(response.file_type_name + ' (' + response.file_created_at + ')');
             $('li.download-link').append(downloadLink);
-        }    $(document).ready(function () {var pageHasAlreadyBeenScrolledToDownloadSection = false;
-            const ROOF_INSULATION_FLAT_REPLACE_CURRENT = "roof-insulation-flat-replace-current";
-            const REPLACE_ROOF_INSULATION = "replace-roof-insulation";
-
-            const ROOF_INSULATION_PITCHED_REPLACE_TILES = "roof-insulation-pitched-replace-tiles";
-            const REPLACE_TILES = "replace-tiles";
-            const MEASURE = '{{\App\Models\PrivateMessage::REQUEST_TYPE_MEASURE}}';
-            // build the base route, we can replace te params later on.
-            var conversationRequestRoute = '{{route('cooperation.conversation-requests.index', ['action' => 'action', 'measureApplicationShort' => 'measure_application_short'])}}';
-            $(window).keydown(function (event) {
-
-        });
+        }
 
         $(document).on("keydown", ":input:not(textarea)", function(event) {
             if (event.key === "Enter") {
                 event.preventDefault();
             }
         });
+
+        $(document).ready(function () {
+            var pageHasAlreadyBeenScrolledToDownloadSection = false;
+            const ROOF_INSULATION_FLAT_REPLACE_CURRENT = "roof-insulation-flat-replace-current";
+            const REPLACE_ROOF_INSULATION = "replace-roof-insulation";
+
+            const ROOF_INSULATION_PITCHED_REPLACE_TILES = "roof-insulation-pitched-replace-tiles";
+            const REPLACE_TILES = "replace-tiles";
+
+            const MEASURE = '{{\App\Models\PrivateMessage::REQUEST_TYPE_MEASURE}}';
+            // build the base route, we can replace te params later on.
+            var conversationRequestRoute = '{{route('cooperation.conversation-requests.index', ['action' => 'action', 'measureApplicationShort' => 'measure_application_short'])}}';
 
             if (window.location.hash !== "") {
                 pollForFileProcessing();
@@ -286,7 +287,7 @@
                         // checkCoupledMeasuresAndMaintenance();
 
 
-                // only when its not done yet, otherwise on every change it will scroll to the download section
+                        // only when its not done yet, otherwise on every change it will scroll to the download section
                         if (!pageHasAlreadyBeenScrolledToDownloadSection && window.location.hash.length > 0) {
                             // we will have to do this after the change, otherwise it will be scrolled to the download section. And then the personal plan appends and poof its gone.
                             $('html, body').animate({

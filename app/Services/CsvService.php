@@ -168,12 +168,11 @@ class CsvService
 
             // get the user measures / advices
             foreach ($userActionPlanAdvices as $actionPlanAdvice) {
-                $plannedYear = null == $actionPlanAdvice->planned_year ? $actionPlanAdvice->year : $actionPlanAdvice->planned_year;
+
+
                 $measureName = $actionPlanAdvice->measureApplication->measure_name;
 
-                if (is_null($plannedYear)) {
-                    $plannedYear = $actionPlanAdvice->getAdviceYear($residentInputSource);
-                }
+                $plannedYear = UserActionPlanAdviceService::getYear($actionPlanAdvice);
 
                 // fill the measure with the planned year
                 $row[$key][$measureName] = $plannedYear;

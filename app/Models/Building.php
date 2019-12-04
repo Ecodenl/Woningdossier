@@ -8,6 +8,7 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Input;
 
 /**
  * App\Models\Building.
@@ -244,8 +245,17 @@ class Building extends Model
      *
      * @return BuildingElement|null
      */
-    public function getBuildingElement($short)
+    public function getBuildingElement($short, InputSource $inputSource = null)
     {
+        if ($inputSource instanceof InputSource) {
+
+        return $this->buildingElements()
+            ->forInputSource($inputSource)
+            ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
+            ->where('e.short', $short)->first(['building_elements.*']);
+        }
+
+
         return $this->buildingElements()
             ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
             ->where('e.short', $short)->first(['building_elements.*']);

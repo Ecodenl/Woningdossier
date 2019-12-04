@@ -178,7 +178,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
 
                 Route::group(['middleware' => 'filled-step:general-data'], function () {
-
+                    // Ventilation information: info for now
+                    Route::resource('ventilation', 'VentilationController',
+                        ['only' => ['index', 'store']]);
                     // Heat pump: info for now
                     Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
 

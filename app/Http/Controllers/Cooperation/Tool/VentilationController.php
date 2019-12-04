@@ -118,7 +118,7 @@ class VentilationController extends Controller
         $user = $building->user;
         $userEnergyHabit = $user->energyHabit;
 
-        $result = Ventilation::calculate($building, HoomdossierSession::getInputSource(true), $userEnergyHabit, $request->toArray());
+        $result = Ventilation::calculate($building, HoomdossierSession::getInputSource(true), $userEnergyHabit, $request->all());
 
         return response()->json($result);
     }

@@ -320,6 +320,27 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
+     * Returns a specific interested row for a specific type.
+     *
+     * @param $type
+     * @param $interestedInId
+     *
+     * @return UserInterest
+     */
+    public function getInterestedType($type, $interestedInId, InputSource $inputSource = null)
+    {
+        if ($inputSource instanceof InputSource) {
+            return $this
+                ->interests()
+                ->forInputSource($inputSource)
+                ->where('interested_in_type', $type)
+                ->where('interested_in_id', $interestedInId)->first();
+        }
+
+        return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
+    }
+
+    /**
      * Get the human readable role name based on the role name.
      *
      * @param $roleName

@@ -8,7 +8,10 @@ use App\Calculations\HighEfficiencyBoiler;
 use App\Calculations\InsulatedGlazing;
 use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
+use App\Calculations\Ventilation;
 use App\Calculations\WallInsulation;
+use App\Helpers\Calculation\BankInterestCalculator;
+use App\Helpers\Calculator;
 use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
@@ -25,6 +28,7 @@ use App\Models\BuildingPaintworkStatus;
 use App\Models\BuildingPvPanel;
 use App\Models\BuildingRoofType;
 use App\Models\BuildingService;
+use App\Models\BuildingVentilation;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\EnergyLabel;
@@ -42,6 +46,7 @@ use App\Models\User;
 use App\Models\UserEnergyHabit;
 use App\Scopes\CooperationScope;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class DumpService
 {
@@ -60,8 +65,9 @@ class DumpService
     public static function totalDump(User $user, InputSource $inputSource, bool $anonymized, bool $withTranslationsForColumns = true, bool $withConditionalLogic = false): array
     {
         $cooperation = $user->cooperation;
-        // get the content structure of the whole tool.
         $structure = ToolHelper::getContentStructure();
+        // get the content structure of the whole tool.
+//        dd($structure['ventilation']['-']);
         $rows = [];
 
         if ($anonymized) {
@@ -183,6 +189,7 @@ class DumpService
             ->forInputSource($inputSource)
             ->first();
 
+        $buildingVentilation = $building->buildingVentilations()->forInputSource($inputSource)->first();
         $buildingType = $buildingFeature->buildingType->name ?? '';
         $buildYear = $buildingFeature->build_year ?? '';
         $exampleBuilding = optional($building->exampleBuilding)->isSpecific() ? $building->exampleBuilding->name : '';
@@ -238,6 +245,24 @@ class DumpService
                     $whereUserOrBuildingId = [['user_id', '=', $user->id]];
                 }
 
+                if ($table == 'building_ventilations') {
+                    $column = $columnOrId;
+                    switch ($columnOrId) {
+                        default:
+                            $answer = null;
+                            if ($buildingVentilation instanceof BuildingVentilation) {
+                                $optionsForQuestion = ToolHelper::getContentStructure($tableWithColumnOrAndIdKey)['options'];
+                                $givenAnswers = array_flip($buildingVentilation->$column);
+
+                                $answer = implode(array_intersect_key(
+                                    $optionsForQuestion, $givenAnswers
+                                ), ', ');
+                            }
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer;
+                            break;
+                    }
+                }
+
                 // handle the calculation table.
                 // No its not a table, but we treat it as in the structure array.
                 if ('calculation' == $table) {
@@ -278,7 +303,7 @@ class DumpService
                                 break;
                             case 'facade_damaged_paintwork_id':
                                 $condition = $buildingFeature->facade_plastered_painted != 2;
-                                if($withConditionalLogic) {
+                                if ($withConditionalLogic) {
                                     if ($condition) {
                                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->name : '';
                                     }
@@ -299,7 +324,7 @@ class DumpService
                                 break;
                             case 'facade_plastered_surface_id':
                                 $condition = $buildingFeature->facade_plastered_painted != 2;
-                                if($withConditionalLogic) {
+                                if ($withConditionalLogic) {
                                     if ($condition) {
                                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->plasteredSurface instanceof FacadePlasteredSurface ? $buildingFeature->plasteredSurface->name : '';
                                     }
@@ -632,13 +657,14 @@ class DumpService
         $buildingRoofTypes = $building->roofTypes()->forInputSource($inputSource)->get();
         $buildingServices = $building->buildingServices()->forInputSource($inputSource)->get();
         $buildingPvPanels = $building->pvPanels()->forInputSource($inputSource)->first();
+        /** @var BuildingVentilation $buildingVentilation */
+        $buildingVentilation = $building->buildingVentilations()->forInputSource($inputSource)->first();
+
 
         $buildingHeater = $building->heater()->forInputSource($inputSource)->first();
 
-//        dd($user);
         $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
 //
-//        dd($userEnergyHabit, $user->energyHabit()->get());
 //
         $wallInsulationElement = Element::where('short', 'wall-insulation')->first();
         $woodElements = Element::where('short', 'wood-elements')->first();
@@ -800,7 +826,7 @@ class DumpService
                 'amount_electricity' => $userEnergyHabit->amount_electricity ?? null,
             ],
             'user_interests' => [
-                'interested_in_id' =>  optional($userInterestsForSolarPanels)->interested_in_id,
+                'interested_in_id' => optional($userInterestsForSolarPanels)->interested_in_id,
                 'interest_id' => optional($userInterestsForSolarPanels)->interest_id
             ]
         ]);
@@ -813,12 +839,24 @@ class DumpService
                 'water_comfort_id' => $userEnergyHabit->water_comfort_id ?? null,
             ],
             'user_interests' => [
-                'interested_in_id' =>  optional($userInterestsForHeater)->interested_in_id,
+                'interested_in_id' => optional($userInterestsForHeater)->interested_in_id,
                 'interest_id' => optional($userInterestsForHeater)->interest_id
             ]
         ]);
 
+        $ventilationSavings = Ventilation::calculate($building, $inputSource, $userEnergyHabit, [
+            'building_ventilations' => [
+                'how' => optional($buildingVentilation)->how,
+                'living_situation' => optional($buildingVentilation)->living_situation,
+                'usage' => optional($buildingVentilation)->usage,
+            ],
+        ]);
+
         return [
+            'ventilation' => [
+                // for now, in the future this may change and multiple results can be returned
+                '-' => $ventilationSavings['result']['crack_sealing'],
+            ],
             'wall-insulation' => [
                 '-' => $wallInsulationSavings,
             ],

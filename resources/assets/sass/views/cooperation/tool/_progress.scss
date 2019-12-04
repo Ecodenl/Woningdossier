@@ -24,11 +24,15 @@ ul.progress-list {
     }
 
     a {
+      // trans border so we dont have a jumpy layout
+      border: 5px solid transparent;
+      border-radius: 100%;
+      display: inline-block;
+
       img {
         width: $imageSize;
         height: $imageSize;
         border: 1px solid #939596;
-        //border: $borderWidth solid transparent;
         &.no-border {
           border: none;
         }
@@ -37,17 +41,16 @@ ul.progress-list {
 
       &:hover, &:active, &:focus {
         text-decoration: none;
-        img {
-          border: $borderWidth solid $brand-secundairy !important;
+        border: $borderWidth solid $brand-secundairy;
+        &.no-border {
+          border: none;
         }
       }
     }
 
     &.active {
       a {
-        img {
-          border: $borderWidth solid $brand-tertiary;
-        }
+        border: $borderWidth solid $brand-tertiary;
       }
     }
   }

@@ -15770,9 +15770,13 @@ body .d-none {
   border-top: 1px solid transparent !important;
 }
 
+ul.progress-list li {
+  width: 70px;
+}
+
 ul.progress-list li .glyphicon {
   top: 25px;
-  left: -25px;
+  margin-left: -25px;
   font-size: 25px;
 }
 

@@ -4,9 +4,11 @@ ul.progress-list {
   $imageSize: 50px;
 
   li {
+    width: 70px;
     .glyphicon {
       top: 25px;
-      left: -25px;
+      //left: -25px;
+      margin-left: -25px;
       font-size: 25px;
     }
 
@@ -34,6 +36,7 @@ ul.progress-list {
 
 
       &:hover, &:active, &:focus {
+        text-decoration: none;
         img {
           border: $borderWidth solid $brand-secundairy !important;
         }

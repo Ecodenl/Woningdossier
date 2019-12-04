@@ -15770,9 +15770,13 @@ body .d-none {
   border-top: 1px solid transparent !important;
 }
 
+ul.progress-list li {
+  width: 70px;
+}
+
 ul.progress-list li .glyphicon {
   top: 25px;
-  left: -25px;
+  margin-left: -25px;
   font-size: 25px;
 }
 
@@ -15784,6 +15788,14 @@ ul.progress-list li.not-available .glyphicon {
   color: #e64a4a;
 }
 
+ul.progress-list li a {
+  -webkit-box-sizing: border-box;
+  /* Safari/Chrome, other WebKit */
+  /* Firefox, other Gecko */
+  box-sizing: border-box;
+  /* Opera/IE 8+ */
+}
+
 ul.progress-list li a img {
   width: 50px;
   height: 50px;
@@ -15792,6 +15804,12 @@ ul.progress-list li a img {
 
 ul.progress-list li a img.no-border {
   border: none;
+}
+
+ul.progress-list li a:hover,
+ul.progress-list li a:active,
+ul.progress-list li a:focus {
+  text-decoration: none;
 }
 
 ul.progress-list li a:hover img,

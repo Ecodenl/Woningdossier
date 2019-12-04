@@ -34,12 +34,11 @@ class Ventilation
         $step = Step::where('slug', '=', 'ventilation')->first();
 
         /** @var BuildingService $buildingVentilationService */
-        $buildingVentilationService = $building->getBuildingService('house-ventilation',
-            $inputSource);
+        $buildingVentilationService = $building->getBuildingService('house-ventilation', $inputSource);
         /** @var ServiceValue $buildingVentilation */
         $buildingVentilation = $buildingVentilationService->serviceValue;
 
-        $currentCrackSealing = $building->getBuildingElement('crack-sealing');
+        $currentCrackSealing = $building->getBuildingElement('crack-sealing', $inputSource);
 
         $currentlyDemandDriven = $buildingVentilationService->extra['demand_driven'] ?? false;
         $currentlyHeatRecovery = $buildingVentilationService->extra['heat_recovery'] ?? false;

@@ -364,6 +364,13 @@ class ToolHelper
                             'closed' => 'Ik heb de roosters / klepramen voor aanvoer van buitenlucht vaak dicht staan',
                         ],
                     ],
+                    'calculations' => [
+                        'savings_gas' => __('ventilation.costs.gas.title'),
+                        'savings_co2' => __('ventilation.costs.co2.title'),
+                        'savings_money' => __('general.costs.savings-in-euro.title'),
+                        'cost_indication' => __('general.costs.indicative-costs.title'),
+                        'interest_comparable' => __('general.costs.comparable-rent.title'),
+                    ],
                 ],
             ],
 

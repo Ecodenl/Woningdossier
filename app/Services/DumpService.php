@@ -8,6 +8,7 @@ use App\Calculations\HighEfficiencyBoiler;
 use App\Calculations\InsulatedGlazing;
 use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
+use App\Calculations\Ventilation;
 use App\Calculations\WallInsulation;
 use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\HoomdossierSession;
@@ -25,6 +26,7 @@ use App\Models\BuildingPaintworkStatus;
 use App\Models\BuildingPvPanel;
 use App\Models\BuildingRoofType;
 use App\Models\BuildingService;
+use App\Models\BuildingVentilation;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\EnergyLabel;
@@ -42,6 +44,7 @@ use App\Models\User;
 use App\Models\UserEnergyHabit;
 use App\Scopes\CooperationScope;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class DumpService
 {
@@ -649,13 +652,14 @@ class DumpService
         $buildingRoofTypes = $building->roofTypes()->forInputSource($inputSource)->get();
         $buildingServices = $building->buildingServices()->forInputSource($inputSource)->get();
         $buildingPvPanels = $building->pvPanels()->forInputSource($inputSource)->first();
+        /** @var BuildingVentilation $buildingVentilation */
+        $buildingVentilation = $building->buildingVentilations()->forInputSource($inputSource)->first();
+
 
         $buildingHeater = $building->heater()->forInputSource($inputSource)->first();
 
-//        dd($user);
         $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
 //
-//        dd($userEnergyHabit, $user->energyHabit()->get());
 //
         $wallInsulationElement = Element::where('short', 'wall-insulation')->first();
         $woodElements = Element::where('short', 'wood-elements')->first();
@@ -835,7 +839,19 @@ class DumpService
             ]
         ]);
 
+        $ventilationSavings = Ventilation::calculate($building, $inputSource, $userEnergyHabit, [
+            'building_ventilations' => [
+                'how' => $buildingVentilation->how,
+                'living_situation' => $buildingVentilation->living_situation,
+                'usage' => $buildingVentilation->usage,
+            ],
+        ]);
+
         return [
+            'ventilation' => [
+                // for now, in the future this may change and multiple results can be returned
+                '-' => $ventilationSavings['result']['crack_sealing'] ?? [],
+            ],
             'wall-insulation' => [
                 '-' => $wallInsulationSavings,
             ],

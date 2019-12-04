@@ -2121,6 +2121,17 @@ table thead {
   color: #ffffff;
 }
 
+table thead.no-background {
+  background-color: white;
+  color: #29A082;
+}
+
+table thead.lead {
+  font-weight: bold;
+  color: #29A082;
+  font-size: 16px;
+}
+
 table tbody {
   background-color: #ffffff;
 }

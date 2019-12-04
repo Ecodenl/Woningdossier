@@ -9,7 +9,6 @@ if (!isset($step)) {
     $step = 'general';
 }
 ?>
-<div class="form-group add-space">
     @component('cooperation.tool.components.step-question', ['id' => $infoAlertId, 'translation' => $step.'.costs.gas'])
         <div class="input-group">
             <span class="input-group-addon">m<sup>3</sup> / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
@@ -17,4 +16,3 @@ if (!isset($step)) {
                    value="0">
         </div>
     @endcomponent
-</div>

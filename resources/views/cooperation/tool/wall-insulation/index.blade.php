@@ -3,13 +3,13 @@
 @section('step_title', \App\Helpers\Translation::translate('wall-insulation.title.title'))
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
+    <form  method="POST"
           action="{{ route('cooperation.tool.wall-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 
         <div id="intro">
             @include('cooperation.tool.includes.interested', [
-                'type' => 'element', 'buildingElements' => $buildingElements, 'buildingElement' => 'wall-insulation'
+                'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
             ])
             <div class="row">
                 <div class="col-sm-12">
@@ -92,13 +92,11 @@
         <div class="row">
             <div class="col-sm-12">
 
-                @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'radio',
-                    'inputValues' => [
+                @component('cooperation.tool.components.input-group', ['inputType' => 'radio', 'inputValues' => [
                     1 => \App\Helpers\Translation::translate('general.options.yes.title'),
                     2 => \App\Helpers\Translation::translate('general.options.no.title'),
                     3 => \App\Helpers\Translation::translate('general.options.unknown.title'),
-                    ],
+                ],
                     'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_painted'])
 
                     @component('cooperation.tool.components.step-question', ['id' => 'facade_plastered_painted', 'translation' => 'wall-insulation.intro.is-facade-plastered-painted', 'required' => true])
@@ -335,12 +333,9 @@
 
             </div>
 
-
             @include('cooperation.tool.includes.comment', [
-                'columnName' => 'additional_info',
-                'translation' => 'wall-insulation.comment'
-            ])
-
+                 'translation' => 'wall-insulation.comment'
+             ])
 
             <div class="row">
                 <div class="col-md-12">
@@ -357,18 +352,6 @@
                             </ol>
                         </div>
                     </div>
-                    <hr>
-                    @if(!\App\helpers\HoomdossierSession::isUserObserving())
-                <div class="form-group add-space">
-                    <div class="">
-                        <a class="btn btn-success pull-left"
-                           href="{{ route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) }}">@lang('default.buttons.prev')</a>
-                        <button type="submit" class="btn btn-primary pull-right">
-                            @lang('default.buttons.next')
-                        </button>
-                    </div>
-                </div>
-                @endif
                 </div>
             </div>
         </div>

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Events\ParticipantAddedEvent;
+use App\Events\Registered;
+use App\Events\UserAssociatedWithOtherCooperation;
 use App\Helpers\Hoomdossier;
 use App\Helpers\PicoHelper;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Cooperation\Admin\Cooperation\UserRequest;
+use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;
 use App\Mail\UserAssociatedWithCooperation;
 use App\Mail\UserCreatedEmail;
 use App\Models\Account;
@@ -55,107 +57,47 @@ class UserController extends Controller
         return view('cooperation.admin.cooperation.users.create', compact('roles', 'coaches'));
     }
 
-    public function store(Cooperation $cooperation, UserRequest $request)
+    public function store(UserFormRequest $request, Cooperation $cooperation)
     {
-        $email = $request->get('email', '');
-
-        $postalCode = trim(strip_tags($request->get('postal_code', '')));
-        $houseNumber = trim(strip_tags($request->get('number', '')));
-        $extension = trim(strip_tags($request->get('house_number_extension', '')));
-
-        $street = strip_tags($request->get('street', ''));
-        $city = trim(strip_tags($request->get('city')));
-        $addressId = $request->get('addressid', null);
-        $coachId = $request->get('coach_id', '');
-
-        // create the user
-        $user = User::create(
-            $request->only('first_name', 'last_name', 'phone_number')
-        );
-
-        // check if account exists. If so: attach.
-        $account = Account::where('email', '=', $email)->first();
-        $existed = true;
-        if (! $account instanceof Account) {
-            $existed = false;
-            $account = Account::create([
-                    'email' => $email,
-                    'password' => \Hash::make(Str::randomPassword()),
-            ]);
-        }
-
-        $user->account()->associate($account)->save();
-
-        // now get the pico address data.
-        $picoAddressData = PicoHelper::getAddressData(
-            $postalCode, $houseNumber
-        );
-
-        $features = new BuildingFeature([
-            'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
-            'build_year' => empty($picoAddressData['build_year']) ? null : $picoAddressData['build_year'],
-        ]);
-
-        // make a new building
-        $building = new Building(
-            [
-                'street' => $street,
-                'number' => $houseNumber,
-                'extension' => $extension,
-                'postal_code' => $postalCode,
-                'city' => $city,
-                'bag_addressid' => $picoAddressData['id'] ?? $addressId ?? '',
-            ]
-        );
-
-        // save the building feature and the building itself and accociate the new user with it
-        $building->user()->associate($user)->save();
-        $features->building()->associate($building)->save();
-        $user->cooperation()->associate($cooperation)->save();
 
         // give the user his role
         $roleIds = $request->get('roles', '');
+
         $roles = [];
         foreach ($roleIds as $roleId) {
             $role = Role::find($roleId);
-            if (Hoomdossier::user()->can('assign-role-to-user', [$role, $user])) {
+            if (Hoomdossier::user()->can('assign-role', $role)) {
                 \Log::debug('User can assign role '.$role->name);
                 array_push($roles, $role->name);
             }
         }
 
-        // assign the roles to the user
-        $user->assignRole($roles);
+        $requestData = $request->all();
+        // add a random password to the data
+        $requestData['password'] = \Hash::make(Str::randomPassword());
+        $user = UserService::register($cooperation, $roles, $requestData);
+        $account = $user->account;
+        $building = $user->building;
 
-        $building->setStatus('active');
+
 
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.
         if ($request->has('coach_id')) {
-            // so create a message, with the access allowed
-            PrivateMessage::create(
-                [
-                    // we get the selected option from the language file, we can do this cause the submitted value = key from localization
-                    'is_public' => true,
-                    'message' => '',
-                    'from_user_id' => $user->id,
-                    'from_user' => $user->getFullName(),
-                    'to_cooperation_id' => $cooperation->id,
-                    'building_id' => $building->id,
-                    'request_type' => 'user-created-by-cooperation',
-                    'allow_access' => true,
-                ]
-            );
 
-            $coach = User::find($coachId);
+            // find the coach to give permissions
+            $coach = User::find($request->get('coach_id'));
+
             // now give the selected coach access with permission to the new created building
             BuildingPermissionService::givePermission($coach, $building);
             BuildingCoachStatusService::giveAccess($coach, $building);
 
-            // and fire the added event twice, for the user itself and for the coach.
-            event(new ParticipantAddedEvent($user, $building));
-            event(new ParticipantAddedEvent($coach, $building));
+            // dispatch an event so the user is notified
+            ParticipantAddedEvent::dispatch($coach, $building);
         }
-        if (! $existed) {
+
+        // if the account is recently created we have to send a confirmation mail
+        // else we send a notification to the user he is associated with a new cooperation
+        if ($account->wasRecentlyCreated) {
             // and send the account confirmation mail.
             $this->sendAccountConfirmationMail($cooperation, $account);
         } else {

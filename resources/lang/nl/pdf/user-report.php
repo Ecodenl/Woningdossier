@@ -2,6 +2,10 @@
 
 return [
     'step-description' => [
+        'usage' => 'Gebruik van de woning pdf tekst',
+        'building-characteristics' => 'Gebouwkenmerken van de woning tekst',
+        'interest' => 'Interesse tekst',
+        'current-state' => 'Huidige staat van de woning tekst',
         'wall-insulation' => 'Huizen met geïsoleerde gevels hebben lagere energielasten en een hoger comfortniveau doordat de muren minder koude afstralen. Bovendien vermindert het risico op condens en schimmelvorming op de muren.',
         'insulated-glazing' => 'Goed isolerende beglazing, HR++ of Triple, geeft een hoger comfort. U voelt minder koude van het raam afstralen en koudeval die door trekt als tocht over de vloer neemt af. Vervangt u enkel glas, dan komt er geen condens meer op de ruiten in de winter.',
         'floor-insulation' => 'Het isoleren van de begane grond vloer is vaak eenvoudig te realiseren en kan voor u veel comfort opleveren. De temperatuur in de woonkamer is na isolatie van de vloer gelijkmatiger verdeeld en er komt vanuit de kruipruimte nauwelijks nog vocht uw huis binnen. En u bespaart energie door het isoleren van de vloer.',
@@ -15,6 +19,10 @@ return [
             'title' => 'Stappenplan voor het <br> verduurzamen van uw woning',
             'text' => 'U hebt het Hoomdossier voor uw woning ingevuld. Hieronder ziet u een samenvatting van de ingevoerde gegevens, de resultaten van de berekeningen en de stappen die u kunt ondernemen om uw woning duurzamer te maken.'
         ],
+    ],
+
+    'comments' => [
+        ''
     ],
 
     'general-data' => [
@@ -102,7 +110,14 @@ return [
                 'year' => 'Uitvoering'
             ],
         ],
-        'comments' => 'Toelichting op de maatregel'
+        'comments' => [
+            'title' => 'Toelichting op de maatregel',
+            'short-translations' => [
+                'service' => 'Instalaties',
+                'element' => 'Isolatie'
+            ],
+        ],
+
     ],
 
     'outro' => [
@@ -113,9 +128,11 @@ return [
 
         'limit-energy-usage' => [
             'title' => '1. Energiegebruik verder beperken',
-            'text' => 'De weg naar een energieneutrale woning bestaat uit twee stappen. In de eerste stap gaat u onderzoeken hoe u uw energiegebruik zoveel mogelijk kunt beperken. Want wat u niet gebruikt, hoeft u ook niet op te wekken. Als u de adviezen in dit Energiebespaaradvies heeft opgevolgd, realiseert u al een aanzienlijke besparing. Maar wellicht zijn er daarnaast nog aanvullende maatregelen die u kunt nemen om uw verbruik nog verder omlaag te krijgen:',
-            'points' => '<p class="sub-lead">Extra bouwkundige maatregelen</p>
-                        <p>Naast de isolerende maatregelen uit het Energiebespaaradvies kunt u eventueel aanvullende woningisolatie aanbrengen of bestaande isolatie verbeteren. Als u zoekt naar meer bouwkundige maatregelen om uw huis energiezuiniger te maken, wees dan ook alert op vocht. Vochtproblemen zijn niet alleen ongezond en oncomfortabel, maar leiden ook tot een hoger energiegebruik.<p>
+
+            'text' => 'De weg naar een energieneutrale woning bestaat uit twee stappen. In de eerste stap gaat u onderzoeken hoe u uw energiegebruik zoveel mogelijk kunt beperken. Want wat u niet gebruikt, hoeft u ook niet op te wekken. ',
+            'points' => '
+                        <p class="sub-lead">Zo goed mogelijk isoleren</p>
+                        <p>Voor een energieneutrale woning moet de hele gebouwschil zo goed mogelijk geïsoleerd zijn. Dat betekend woningisolatie aanbrengen waar nog geen isolatie aanwezig is of bestaande isolatie verbeteren als het kan. Als u zoekt naar meer bouwkundige maatregelen om uw huis energiezuiniger te maken, wees dan ook alert op vocht. Vochtproblemen zijn niet alleen ongezond en oncomfortabel, maar leiden ook tot een hoger energiegebruik.<p>
                         <br> 
                         <p class="sub-lead">Kies zuinige installaties</p>
                         <p>De nieuwste installaties voor verwarming, ventilatie en warm water zijn zeer efficiënt: ze gebruiken weinig energie en leveren een heel hoog rendement. Het is daarom absoluut de moeite waard om te onderzoeken wat uw huidige installaties gebruiken en hoeveel u zou kunnen besparen wanneer u nieuwe apparatuur aanschaft.</p>

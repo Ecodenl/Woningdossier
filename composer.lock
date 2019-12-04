@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "560e10d9c07f53a050330d8180046b5d",
+    "content-hash": "08d8acbebf0bfe1467f8e6bcdf3acdb2",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -4990,6 +4990,65 @@
                 "environment"
             ],
             "time": "2019-01-29T11:11:52+00:00"
+        },
+        {
+            "name": "wedesignit/laravel-translations-import",
+            "version": "v0.1.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/WeDesignIt/laravel-translations-import.git",
+                "reference": "582281697df58edcea95eb8727c18cfd830ff726"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/WeDesignIt/laravel-translations-import/zipball/582281697df58edcea95eb8727c18cfd830ff726",
+                "reference": "582281697df58edcea95eb8727c18cfd830ff726",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^3.8",
+                "phpunit/phpunit": "^7.5"
+            },
+            "suggest": {
+                "spatie/laravel-translation-loader": "Retrieve translations seemless from the database or language file"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "WeDesignIt\\LaravelTranslationsImport\\TranslationsImportServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "WeDesignIt\\LaravelTranslationsImport\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bodhi Looij",
+                    "email": "bodhilooij1998@gmail.com"
+                },
+                {
+                    "name": "Patrick van Kouteren",
+                    "email": "info@wedesignit.nl"
+                }
+            ],
+            "description": "Import translations from your Laravel translation files to your database.",
+            "keywords": [
+                "import",
+                "laravel",
+                "translations"
+            ],
+            "time": "2019-11-18T15:48:41+00:00"
         },
         {
             "name": "zendframework/zend-diactoros",

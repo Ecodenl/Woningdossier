@@ -173,6 +173,11 @@
             $('li.download-link').append(downloadLink);
         }
 
+        $(document).on("keydown", ":input:not(textarea)", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+            }
+        });
 
         $(document).ready(function () {
             var pageHasAlreadyBeenScrolledToDownloadSection = false;
@@ -185,12 +190,6 @@
             const MEASURE = '{{\App\Models\PrivateMessage::REQUEST_TYPE_MEASURE}}';
             // build the base route, we can replace te params later on.
             var conversationRequestRoute = '{{route('cooperation.conversation-requests.index', ['action' => 'action', 'measureApplicationShort' => 'measure_application_short'])}}';
-            $(window).keydown(function (event) {
-                if (event.keyCode == 13) {
-                    event.preventDefault();
-                    return false;
-                }
-            });
 
             if (window.location.hash !== "") {
                 pollForFileProcessing();

@@ -348,12 +348,12 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                         /* Actions that will be done per cooperation */
                         Route::group(['prefix' => '{cooperationToManage}/', 'as' => 'cooperation-to-manage.'], function () {
-                                Route::resource('home', 'HomeController')->only('index');
+                            Route::resource('home', 'HomeController')->only('index');
 
-                                Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
-                                Route::resource('coordinator', 'CoordinatorController')->only(['index']);
-                                Route::resource('users', 'UserController')->only(['index', 'show']);
-                            });
+                            Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
+                            Route::resource('coordinator', 'CoordinatorController')->only(['index']);
+                            Route::resource('users', 'UserController')->only(['index', 'show']);
+                            Route::post('users/{id}/confirm', 'UserController@confirm')->name('users.confirm');});
                     });
                 });
 

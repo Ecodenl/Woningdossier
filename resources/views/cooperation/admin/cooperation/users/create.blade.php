@@ -262,7 +262,7 @@
                     method: "GET",
                     data: {email: $(this).val()},
                 }).done(function (data) {
-                    var emailIsAlreadyRegistered =  $('#email-is-already-registered');
+                    var emailIsAlreadyRegistered = $('#email-is-already-registered');
 
                     // email exists
                     if (data.email_exists) {
@@ -288,7 +288,7 @@
                             $('.save-button').show();
                         }
 
-                    } else  {
+                    } else {
                         emailIsAlreadyRegistered.hide();
                         $('.user-info').show();
                         $('#resident-info').show();

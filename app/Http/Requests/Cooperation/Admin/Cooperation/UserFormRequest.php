@@ -5,6 +5,7 @@ namespace App\Http\Requests\Cooperation\Admin\Cooperation;
 use App\Rules\AlphaSpace;
 use App\Rules\HouseNumber;
 use App\Rules\HouseNumberExtension;
+use App\Rules\PhoneNumber;
 use App\Rules\PostalCode;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -35,6 +36,7 @@ class UserFormRequest extends FormRequest
             'postal_code' => ['required', new PostalCode('nl')],
             'number' => ['required', new HouseNumber('nl')],
             'house_number_extension' => [new HouseNumberExtension('nl')],
+            'phone_number' => ['nullable', new PhoneNumber('nl')],
             'street' => 'required|string',
             'city' => 'required|string',
             'roles' => 'required|exists:roles,id',

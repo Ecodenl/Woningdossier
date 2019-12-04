@@ -43,5 +43,7 @@
         </table>
     </div>
 
-    @include('cooperation.pdf.user-report.parts.measure-page.comments')
+    @include('cooperation.pdf.user-report.parts.measure-page.comments', [
+        'title' => __('pdf/user-report.general-data.comment')
+    ])
 @endforeach

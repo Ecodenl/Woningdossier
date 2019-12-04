@@ -252,8 +252,21 @@ class UserActionPlanAdviceService
                     }
                 }
             }
-        }
 
+
+            if (isset($energySaving['ventilation'])) {
+                $energySavingForVentilation = $energySaving['ventilation'];
+
+                foreach ($energySavingForVentilation as $measureShort => $advice) {
+                    if(empty($advice->costs) && empty($advice->savings_gas) && empty($advice->savings_electricity) && empty($advice->savings_money)) {
+                        // this will have to change in the near future for the pdf.
+                        $trans = 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.';
+                        $categorizedActionPlan['energy_saving']['ventilation'][$measureShort]['warning'] = $trans;
+                    }
+                }
+            }
+
+        }
 
         return $categorizedActionPlan;
     }

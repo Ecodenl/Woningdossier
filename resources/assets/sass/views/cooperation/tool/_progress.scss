@@ -36,6 +36,7 @@ ul.progress-list {
 
 
       &:hover, &:active, &:focus {
+        text-decoration: none;
         img {
           border: $borderWidth solid $brand-secundairy !important;
         }

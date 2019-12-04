@@ -55,7 +55,7 @@
     @endforeach
 
     <li class="list-inline-item">
-        <a href="{{ route('cooperation.tool.my-plan.index', ['cooperation' => $cooperation]) }}">
+        <a class="no-border" href="{{ route('cooperation.tool.my-plan.index', ['cooperation' => $cooperation]) }}">
             <img class="no-border" src="{{ asset('images/icons/my-plan.png') }}"/>
         </a>
     </li>

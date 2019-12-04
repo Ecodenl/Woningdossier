@@ -60,8 +60,9 @@ class DumpService
     public static function totalDump(User $user, InputSource $inputSource, bool $anonymized, bool $withTranslationsForColumns = true, bool $withConditionalLogic = false): array
     {
         $cooperation = $user->cooperation;
-        // get the content structure of the whole tool.
         $structure = ToolHelper::getContentStructure();
+        // get the content structure of the whole tool.
+//        dd($structure['ventilation']['-']);
         $rows = [];
 
         if ($anonymized) {
@@ -183,6 +184,7 @@ class DumpService
             ->forInputSource($inputSource)
             ->first();
 
+        $buildingVentilation = $building->buildingVentilations()->forInputSource($inputSource)->first();
         $buildingType = $buildingFeature->buildingType->name ?? '';
         $buildYear = $buildingFeature->build_year ?? '';
         $exampleBuilding = optional($building->exampleBuilding)->isSpecific() ? $building->exampleBuilding->name : '';
@@ -236,6 +238,21 @@ class DumpService
                     $whereUserOrBuildingId = [['building_id', '=', $buildingId]];
                 } else {
                     $whereUserOrBuildingId = [['user_id', '=', $user->id]];
+                }
+
+                if ($table == 'building_ventilations') {
+                    $column = $columnOrId;
+                    switch ($columnOrId) {
+                        default:
+                            $optionsForQuestion = ToolHelper::getContentStructure($tableWithColumnOrAndIdKey)['options'];
+                            $givenAnswers = array_flip($buildingVentilation->$column);
+
+                            $answers = array_intersect_key(
+                                $optionsForQuestion, $givenAnswers
+                            );
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = implode($answers, ', ');
+                            break;
+                    }
                 }
 
                 // handle the calculation table.

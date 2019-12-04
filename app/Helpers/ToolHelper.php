@@ -43,7 +43,11 @@ class ToolHelper
         return $options;
     }
 
-    public static function getContentStructure()
+    /**
+     * @param $contentKey
+     * @return array
+     */
+    public static function getContentStructure($contentKey = null)
     {
         // General data - Elements (that are not queried later on step basis)
         $livingRoomsWindows = Element::where('short', 'living-rooms-windows')->first();
@@ -117,8 +121,8 @@ class ToolHelper
         $interests = Interest::orderBy('order')->get();
         $interestOptions = static::createOptions($interests);
 
-        $stepUserInterestKey = 'user_interests.'.Step::class.'.';
-        $measureApplicationInterestKey = 'user_interests.'.MeasureApplication::class.'.';
+        $stepUserInterestKey = 'user_interests.' . Step::class . '.';
+        $measureApplicationInterestKey = 'user_interests.' . MeasureApplication::class . '.';
 
         $structure = [
             'general-data' => [
@@ -175,9 +179,9 @@ class ToolHelper
                         'type' => 'select',
                         'options' => self::createOptions($sleepingRoomsWindows->values()->orderBy('order')->get(), 'value'),
                     ],
-                    'element.'.$crackSealing->id                      => [
-                        'label'   => $crackSealing->name,
-                        'type'    => 'select',
+                    'element.' . $crackSealing->id => [
+                        'label' => $crackSealing->name,
+                        'type' => 'select',
                         'options' => static::createOptions($crackSealing->values()->orderBy('order')->get(), 'value'),
                     ],
                     'element.' . $wallInsulation->id => [
@@ -262,7 +266,7 @@ class ToolHelper
                         'type' => 'select',
                         'options' => [
                             false => '-',
-                            true =>  __('cooperation/tool/general-data/current-state.index.service.house-ventilation.heat-recovery.title')
+                            true => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.heat-recovery.title')
                         ]
                     ],
                 ],
@@ -328,19 +332,36 @@ class ToolHelper
 
             'ventilation' => [
                 '-' => [
-                    // ex:
-                    'table.column'=> [
-                        'label' => __('cooperation/tool/ventilation.index.how.title'),
-                        'type' => 'multiselect',
-                        'options' => static::createOptions($woodElements->values()->orderBy('order')->get(), 'value'),
-                    ],
-                    'table.column'=> [
+                    'building_ventilations.how' => [
                         'label' => __('cooperation/tool/ventilation.index.how.title'),
                         'type' => 'multiselect',
                         'options' => [
-                            1 => __('woningdossier.cooperation.radiobutton.yes'),
-                            2 => __('woningdossier.cooperation.radiobutton.no'),
-                            0 => __('woningdossier.cooperation.radiobutton.unknown'),
+                            'windows-doors' => 'Ventilatieroosters in ramen / deuren',
+                            'other' => 'Ventilatieroosters overig',
+                            'windows' => '(Klep)ramen',
+                            'none' => 'Geen ventilatievoorzieningen',
+                        ],
+                    ],
+
+                    'building_ventilations.living_situation' => [
+                        'label' => __('cooperation/tool/ventilation.index.living-situation.title'),
+                        'type' => 'multiselect',
+                        'options' => [
+                            'dry-laundry' => 'Ik droog de was in huis',
+                            'fireplace' => 'Ik stook een open haard of houtkachel',
+                            'combustion-device' => 'Ik heb een open verbrandingstoestel',
+                            'moisture' => 'Ik heb last van schimmel op de muren',
+                        ],
+                    ],
+
+                    'building_ventilations.usage' => [
+                        'label' => __('cooperation/tool/ventilation.index.usage.title'),
+                        'type' => 'multiselect',
+                        'options' => [
+                            'sometimes-off' => 'Ik zet de ventilatie unit wel eens helemaal uit',
+                            'no-maintenance' => 'Ik doe geen onderhoud op de ventilatie unit',
+                            'filter-replacement' => 'Het filter wordt niet of onregelmatig vervangen',
+                            'closed' => 'Ik heb de roosters / klepramen voor aanvoer van buitenlucht vaak dicht staan',
                         ],
                     ],
                 ],
@@ -348,7 +369,7 @@ class ToolHelper
 
             'wall-insulation' => [
                 '-' => [
-                    $stepUserInterestKey.$wallInsulation->id.'interest_id' => [
+                    $stepUserInterestKey . $wallInsulation->id . 'interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $wallInsulation->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -471,7 +492,7 @@ class ToolHelper
 
             'floor-insulation' => [
                 '-' => [
-                    $stepUserInterestKey.Step::findByShort('floor-insulation')->id.'.interest_id' => [
+                    $stepUserInterestKey . Step::findByShort('floor-insulation')->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $floorInsulation->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -515,7 +536,7 @@ class ToolHelper
 
             'roof-insulation' => [
                 '-' => [
-                    $stepUserInterestKey.Step::findByShort('roof-insulation')->id.'.interest_id'=> [
+                    $stepUserInterestKey . Step::findByShort('roof-insulation')->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $roofInsulation->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -533,7 +554,7 @@ class ToolHelper
 
             'high-efficiency-boiler' => [
                 '-' => [
-                    $stepUserInterestKey.Step::findByShort('high-efficiency-boiler')->id.'.interest_id' => [
+                    $stepUserInterestKey . Step::findByShort('high-efficiency-boiler')->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $hrBoiler->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -573,7 +594,7 @@ class ToolHelper
 
             'solar-panels' => [
                 '-' => [
-                    $stepUserInterestKey.Step::findByShort('solar-panels')->id.'.interest_id' => [
+                    $stepUserInterestKey . Step::findByShort('solar-panels')->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $solarPanels->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -620,7 +641,7 @@ class ToolHelper
 
             'heater' => [
                 '-' => [
-                    $stepUserInterestKey.Step::findByShort('heater')->id.'.interest_id' => [
+                    $stepUserInterestKey . Step::findByShort('heater')->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $heater->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -679,7 +700,7 @@ class ToolHelper
 
         foreach ($steps as $step) {
 //            <select id="user_interest" class="form-control" name="user_interests[{{$step->id}}][interest_id]">
-            $structure['general-data']['interest'][$stepUserInterestKey.$step->id.'.interest_id'] = [
+            $structure['general-data']['interest'][$stepUserInterestKey . $step->id . '.interest_id'] = [
                 'label' => $step->name,
                 'type' => 'select',
                 'options' => $interestOptions,
@@ -720,7 +741,7 @@ class ToolHelper
         foreach ($igShorts as $igShort) {
             $measureApplication = MeasureApplication::where('short', $igShort)->first();
             if ($measureApplication instanceof MeasureApplication) {
-                $structure['insulated-glazing']['-'][$measureApplicationInterestKey.$measureApplication->id.'.interest_id'] = [
+                $structure['insulated-glazing']['-'][$measureApplicationInterestKey . $measureApplication->id . '.interest_id'] = [
                     //'label' => 'Interest in '.$measureApplication->measure_name,
                     'label' => __('general.change-interested.title',
                         ['item' => $measureApplication->measure_name]),
@@ -860,6 +881,36 @@ class ToolHelper
                     ],
                 ];
             }
+        }
+
+        // and here we will add the interest options for the ventilation information
+        $measureApplicationsForVentilation = MeasureApplication::whereIn('short', [
+            'ventilation-balanced-wtw',
+            'ventilation-decentral-wtw',
+            'ventilation-demand-driven',
+            'crack-sealing',
+        ])->get();
+
+        foreach ($measureApplicationsForVentilation as $measureApplication) {
+            $structure['ventilation']['-'][$measureApplicationInterestKey . $measureApplication->id . '.interest_id'] = [
+                //'label' => 'Interest in '.$measureApplication->measure_name,
+//                'label' => __('general.change-interested.title', ['item' => $measureApplication->measure_name]),
+                'label' => $measureApplication->measure_name,
+                'type' => 'select',
+                'options' => $interestOptions,
+            ];
+        }
+
+
+        // when a content key is set, we will try to retrieve the specific content from the structure.
+        if (!is_null($contentKey)) {
+
+            $contentKeyData = explode('.', $contentKey, 3);
+            $step = $contentKeyData[0];
+            $subStep = $contentKeyData[1];
+            $contentKey = $contentKeyData[2];
+
+            return $structure[$step][$subStep][$contentKey];
         }
 
         return $structure;

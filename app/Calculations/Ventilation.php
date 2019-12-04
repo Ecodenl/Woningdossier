@@ -22,19 +22,15 @@ class Ventilation
     /**
      * Calculate the wall insulation costs and savings etc.
      *
-     * @param  Building  $building
-     * @param  InputSource  $inputSource
-     * @param  UserEnergyHabit|null  $energyHabit
-     * @param  array  $calculateData
+     * @param Building $building
+     * @param InputSource $inputSource
+     * @param UserEnergyHabit|null $energyHabit
+     * @param array $calculateData
      *
      * @return array;
      */
-    public static function calculate(
-        Building $building,
-        InputSource $inputSource,
-        $energyHabit,
-        array $calculateData
-    ): array {
+    public static function calculate(Building $building, InputSource $inputSource, $energyHabit, array $calculateData): array
+    {
         $step = Step::where('slug', '=', 'ventilation')->first();
 
         /** @var BuildingService $buildingVentilationService */
@@ -92,7 +88,7 @@ class Ventilation
             }
 
             $improvement = 'Oude ventilatoren gebruiken soms nog wisselstroom en verbruiken voor dezelfde prestatie veel meer elektriciteit en maken meer geluid dan moderne gelijkstroom ventilatoren. De besparing op de gebruikte stroom kan oplopen tot ca. 80 %. Een installateur kan direct beoordelen of u nog een wisselstroom ventilator heeft.';
-            $remark      = 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.';
+            $remark = 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.';
         }
         if ($ventilationType === 'balanced') {
 
@@ -121,7 +117,7 @@ class Ventilation
             }
 
             $improvement = 'Uw woning is voorzien van een energiezuinig en duurzaam ventilatiesysteem. Zorg voor goed onderhoud en goed gebruik zo dat de luchtkwaliteit in de woning optimaal blijft.';
-            $remark      = 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.';
+            $remark = 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.';
         }
         if ($ventilationType === 'decentral') {
 
@@ -150,7 +146,7 @@ class Ventilation
             }
 
             $improvement = 'Uw woning is voorzien van een energiezuinig en duurzaam ventilatiesysteem. Zorg voor goed onderhoud en goed gebruik zo dat de luchtkwaliteit in de woning optimaal blijft.';
-            $remark      = 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.';
+            $remark = 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.';
         }
 
         $advices = MeasureApplication::where('step_id', '=',
@@ -166,7 +162,7 @@ class Ventilation
 
             $result['crack_sealing'] = [
                 'cost_indication' => 0,
-                'savings_gas'     => 0,
+                'savings_gas' => 0,
             ];
 
             // (we know that calculate_value is > 1, but for historic logic reasons..
@@ -177,7 +173,7 @@ class Ventilation
                         $inputSource);
                     $usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler,
                         $energyHabit);
-                    $gas    = $usages['heating']['bruto'];
+                    $gas = $usages['heating']['bruto'];
                 }
 
                 if (2 == $currentCrackSealingCalculateValue) {
@@ -203,8 +199,8 @@ class Ventilation
         // This is needed for the javascript
         $buildingOwner = $building->user;
 
-        foreach($advices as $advice){
-            if ($buildingOwner->hasInterestIn($advice)){
+        foreach ($advices as $advice) {
+            if ($buildingOwner->hasInterestIn($advice)) {
                 $advice->interest = true;
             }
         }

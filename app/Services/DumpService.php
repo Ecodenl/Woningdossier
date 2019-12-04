@@ -279,8 +279,6 @@ class DumpService
                             $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$subStep][$roofCategory][$column] ?? '' : $calculateData[$step][$subStep][$roofCategory][$column][$costsOrYear] ?? '';
                             break;
                         default:
-                            Log::debug("user: {$user->id} building id: {$building->id}");
-                            Log::debug($step.'--'.$subStep);
                             $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$subStep][$column] : $calculateData[$step][$subStep][$column][$costsOrYear] ?? '';
                             break;
                     }

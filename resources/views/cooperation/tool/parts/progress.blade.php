@@ -18,7 +18,7 @@
         $routeIsCurrentRoute = $currentRouteName == Route::getCurrentRoute()->getName();
         $isStepCompleted = $building->hasCompleted($step);
 
-        if ($isStepCompleted) {
+        if ($isStepCompleted && !$userDoesNotHaveInterestInStep) {
             $titleForIcon = __('default.progress.completed', ['step' => $step->name]);
         } elseif ($userDoesNotHaveInterestInStep) {
             $titleForIcon = __('default.progress.disabled', ['step' => $step->name]);
@@ -44,7 +44,7 @@
                      alt="{{ $step->name }}" class="img-circle"/>
             </a>
             @if(!$routeIsCurrentRoute)
-                @if($isStepCompleted)
+                @if($isStepCompleted && !$userDoesNotHaveInterestInStep)
                     <span class="glyphicon glyphicon-ok"></span>
                 @elseif($step->short != 'general-data' && !$routeIsCurrentRoute && $userDoesNotHaveInterestInStep)
                     <span class="glyphicon glyphicon-ban-circle"></span>

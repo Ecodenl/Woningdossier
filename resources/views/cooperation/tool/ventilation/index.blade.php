@@ -380,7 +380,7 @@
 
             function formChange(element) {
                 var form = element.closest("form").serialize();
-
+                var indicationForCosts = $('#indication-for-costs');
                 $.ajax({
                     type: "POST",
                     url: '{{ route('cooperation.tool.ventilation.calculate', [ 'cooperation' => $cooperation ]) }}',
@@ -400,17 +400,18 @@
                                 }
                                 advices.append('<div class="col-sm-9">' + element.name + '</div><div class="col-sm-3"><input type="checkbox" name="user_interests[]" value="' + element.id + '"' + checked +'></div>');
                             });
-                            $('#indication-for-costs').show();
+                            indicationForCosts.show();
                         } else {
-                            $('#indication-for-costs').hide();
+                            indicationForCosts.hide();
                         }
 
                         //if (data.hasOwnProperty('remark')){
                         //    $("p#remark").html(data.remark);
                         //}
 
-                        if (data.hasOwnProperty('result') && data.result.hasOwnProperty('crack_sealing')) {
-
+                        // when the costs indication is empty, we can safley asume there are no cost indications.
+                        if (data.hasOwnProperty('result') && data.result.hasOwnProperty('crack_sealing') && data.result.crack_sealing.cost_indication !== null) {
+                            indicationForCosts.show();
                             if (data.result.crack_sealing.hasOwnProperty('savings_gas')) {
                                 $("input#savings_gas").val(hoomdossierRound(data.result.crack_sealing.savings_gas));
                             }
@@ -426,6 +427,8 @@
                             if (data.result.crack_sealing.hasOwnProperty('interest_comparable')) {
                                 $("input#interest_comparable").val(hoomdossierNumberFormat(data.result.crack_sealing.interest_comparable, '{{ app()->getLocale() }}', 1));
                             }
+                        } else {
+                            indicationForCosts.hide();
                         }
 
                         @if(App::environment('local'))

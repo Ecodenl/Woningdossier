@@ -20,9 +20,12 @@ class RemoveGeneralDataAsCompletedStepFromCompletedStepsTable extends Migration
             ->where('short', 'general-data')
             ->first();
 
-        DB::table('completed_steps')
-            ->where('step_id', $generalDataStep->id)
-            ->delete();
+        if ($generalDataStep instanceof stdClass) {
+
+            DB::table('completed_steps')
+                ->where('step_id', $generalDataStep->id)
+                ->delete();
+        }
 
     }
 

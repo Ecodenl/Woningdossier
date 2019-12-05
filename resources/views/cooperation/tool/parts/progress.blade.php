@@ -18,7 +18,7 @@
         $routeIsCurrentRoute = $currentRouteName == Route::getCurrentRoute()->getName();
         $isStepCompleted = $building->hasCompleted($step);
 
-        if ($isStepCompleted) {
+        if ($isStepCompleted && !$userDoesNotHaveInterestInStep) {
             $titleForIcon = __('default.progress.completed', ['step' => $step->name]);
         } elseif ($userDoesNotHaveInterestInStep) {
             $titleForIcon = __('default.progress.disabled', ['step' => $step->name]);

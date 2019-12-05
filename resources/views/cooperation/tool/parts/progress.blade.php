@@ -44,7 +44,7 @@
                      alt="{{ $step->name }}" class="img-circle"/>
             </a>
             @if(!$routeIsCurrentRoute)
-                @if($isStepCompleted)
+                @if($isStepCompleted && !$userDoesNotHaveInterestInStep)
                     <span class="glyphicon glyphicon-ok"></span>
                 @elseif($step->short != 'general-data' && !$routeIsCurrentRoute && $userDoesNotHaveInterestInStep)
                     <span class="glyphicon glyphicon-ban-circle"></span>

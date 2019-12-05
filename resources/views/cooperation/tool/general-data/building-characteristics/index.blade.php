@@ -191,7 +191,7 @@
 
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    <span class="caret"></span>
+                                    <span class="glyphicon glyphicon-user"></span>
                                 </button>
                                 <ul class="dropdown-menu">
                                     <?php

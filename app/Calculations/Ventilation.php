@@ -191,10 +191,14 @@ class Ventilation
                     }
 
                     if (2 == $currentCrackSealingCalculateValue) {
-                        $result['crack_sealing']['savings_gas'] = (Kengetallen::PERCENTAGE_GAS_SAVINGS_REPLACE_CRACK_SEALING / 100) * $gas;
+                        $gasSaving = (Kengetallen::PERCENTAGE_GAS_SAVINGS_REPLACE_CRACK_SEALING / 100) * $gas;
                     } else {
-                        $result['crack_sealing']['savings_gas'] = (Kengetallen::PERCENTAGE_GAS_SAVINGS_PLACE_CRACK_SEALING / 100) * $gas;
+                        $gasSaving = (Kengetallen::PERCENTAGE_GAS_SAVINGS_PLACE_CRACK_SEALING / 100) * $gas;
+
                     }
+
+                    // we dont want negative results
+                    $result['crack_sealing']['savings_gas'] = $gasSaving < 0 ? 0 : $gasSaving;
 
                     /** @var MeasureApplication $measureApplication */
                     $measureApplication = MeasureApplication::where('short',

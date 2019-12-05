@@ -71,6 +71,9 @@ class VentilationController extends Controller
         $interestsInMeasureApplications = $request->input('user_interests', []);
         $noInterestInMeasureApplications = $step->measureApplications()->whereNotIn('id', $interestsInMeasureApplications)->get();
 
+        // this will be the interest when the checkbox is not checked
+        $noInterest = Interest::where('calculate_value', 4)->first();
+
         // default interest for measure application when checked: interest in the step itself
         $defaultInterest = Interest::orderBy('calculate_value')->first();
         $stepUserInterest = $building->user->userInterestsForSpecificType(get_class($step), $step->id, $inputSource)->first();
@@ -78,13 +81,12 @@ class VentilationController extends Controller
             $defaultInterest = $stepUserInterest->interest;
         }
 
-        $no = Interest::orderBy('calculate_value', 'desc')->first();
 
         foreach ($interestsInMeasureApplications as $measureApplicationId) {
             UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationId , $defaultInterest->id);
         }
         foreach($noInterestInMeasureApplications as $measureApplicationWithNoInterest){
-            UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationWithNoInterest->id, $no->id);
+            UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationWithNoInterest->id, $noInterest->id);
         }
 
         $houseVentilationData = $request->input('building_ventilations');

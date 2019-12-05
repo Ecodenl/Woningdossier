@@ -127,7 +127,11 @@
                                     <input type="checkbox"
                                            name="building_ventilations[living_situation][]"
                                            value="{{ $lsKey }}"
-                                           @if(in_array($lsKey, old('building_ventilations.living_situation',\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'living_situation',[]))))
+                                           <?php
+                                            // default wont work, null will be returned anyways.
+                                            $mostCredibleLivingSituation = \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'living_situation') ?? [];
+                                           ?>
+                                           @if(in_array($lsKey, old('building_ventilations.living_situation', $mostCredibleLivingSituation)))
                                            checked="checked"
                                             @endif
                                     >

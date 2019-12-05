@@ -90,6 +90,9 @@ class SettingsController extends Controller
         $building->currentPaintworkStatus()->delete();
         // remove all progress made in the tool
         $building->completedSteps()->delete();
+        // remove the step comments
+        $building->stepComments()->delete();
+
 
         // remove the action plan advices from the user
         $user->actionPlanAdvices()->delete();

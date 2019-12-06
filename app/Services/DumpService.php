@@ -590,6 +590,7 @@ class DumpService
                                     0 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.none')
                                 ];
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $renovationPlanAnswerOptions[$userEnergyHabit->renovation_plans] ?? null;
+                                break;
                             case 'water_comfort_id':
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = optional($userEnergyHabit->comfortLevelTapWater)->name;
                                 break;

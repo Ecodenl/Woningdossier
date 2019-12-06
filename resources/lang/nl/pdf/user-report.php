@@ -37,17 +37,6 @@ return [
             'address' => 'Adres',
             'zip-code-city' => 'Postcode en plaatsnaam'
         ],
-        'building-info' => [
-            'title' => 'Algemene woninggegevens',
-            'building-type' => 'Woning type',
-            'build-year' => 'Bouwjaar',
-            'surface' => 'Gebruiksoppervlakte',
-            'building-layers' => 'Aantal bouwlagen',
-            'roof-type' => 'Type dak',
-            'current-energy-label' => 'Huidig energielabel',
-            'monument' => 'Monumentale status',
-            'example-building' => 'Gekozen voorbeeldwoning'
-        ],
         'usage-info' => [
             'title' => 'Gegevens over het gebruik van de woning',
         ],
@@ -61,7 +50,7 @@ return [
 
         'motivation' => 'Wat is de motivatie om aan de slag te gaan',
 
-        'comment-usage-building' => 'Toelichting over het gebruik van de woning',
+        'comment' => 'Toelichting',
 
         'resume-energy-saving-measures' => [
             'title' => 'Samenvatting van mogelijke energiebesparende maatregelen en onderhoudsmaatregelen',

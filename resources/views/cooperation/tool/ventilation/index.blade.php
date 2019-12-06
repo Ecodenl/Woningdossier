@@ -3,8 +3,7 @@
 @section('step_title', "Ventilatie: " . $buildingVentilation->value)
 
 @section('step_content')
-    <form method="POST"
-          action="{{ route('cooperation.tool.ventilation.store', ['cooperation' => $cooperation]) }}">
+    <form method="POST" action="{{ route('cooperation.tool.ventilation.store', ['cooperation' => $cooperation]) }}" autocomplete="off">
         {{ csrf_field() }}
 
         <div class="row">
@@ -31,20 +30,13 @@
                 <div class="col-sm-12">
 
                     <?php
-                    $howValues = [
-                        'windows-doors' => 'Ventilatieroosters in ramen / deuren',
-                        'other'         => 'Ventilatieroosters overig',
-                        'windows'       => '(Klep)ramen',
-                        'none'          => 'Geen ventilatievoorzieningen',
-                    ];
-                    /** @var \Illuminate\Support\Collection $ventilations */
-                    $ventilations = collect([]);
-                    foreach($howValues as $uvalue => $uname){
-                        $ventilation = new \App\Models\BuildingVentilation();
-                        $ventilation->value = $uname;
-                        $ventilation->how = $uvalue;
-                        $ventilations->push($ventilation);
-                    }
+                        $ventilations = collect();
+                        foreach($howValues as $uvalue => $uname){
+                            $ventilation = new \App\Models\BuildingVentilation();
+                            $ventilation->value = $uname;
+                            $ventilation->how = $uvalue;
+                            $ventilations->push($ventilation);
+                        }
                     ?>
 
                     @component('cooperation.tool.components.step-question', ['id' => 'how', 'translation' => 'cooperation/tool/ventilation.index.how', 'required' => true])
@@ -93,12 +85,6 @@
                 <div class="col-sm-12">
 
                     <?php
-                    $livingSituationValues = [
-                        'dry-laundry'       => 'Ik droog de was in huis',
-                        'fireplace'         => 'Ik stook een open haard of houtkachel',
-                        'combustion-device' => 'Ik heb een open verbrandingstoestel',
-                        'moisture'          => 'Ik heb last van schimmel op de muren',
-                    ];
                     /** @var \Illuminate\Support\Collection $ventilations */
                     $ventilations = collect([]);
                     foreach($livingSituationValues as $uvalue => $uname){
@@ -109,7 +95,7 @@
                     }
                     ?>
 
-                    @component('cooperation.tool.components.step-question', ['id' => 'living_situation', 'translation' => 'cooperation/tool/ventilation.index.living-situation', 'required' => true])
+                    @component('cooperation.tool.components.step-question', ['id' => 'living_situation', 'translation' => 'cooperation/tool/ventilation.index.living-situation'])
                         @component('cooperation.tool.components.input-group',
                     ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'living_situation'])
                             @foreach($livingSituationValues as $lsKey => $lsValue)
@@ -169,12 +155,6 @@
                 <div class="col-sm-12">
 
                     <?php
-                    $usageValues = [
-                        'sometimes-off'      => 'Ik zet de ventilatie unit wel eens helemaal uit',
-                        'no-maintenance'     => 'Ik doe geen onderhoud op de ventilatie unit',
-                        'filter-replacement' => 'Het filter wordt niet of onregelmatig vervangen',
-                        'closed'             => 'Ik heb de roosters / klepramen voor aanvoer van buitenlucht vaak dicht staan',
-                    ];
                     /** @var \Illuminate\Support\Collection $ventilations */
                     $ventilations = collect([]);
                     foreach($usageValues as $uvalue => $uname){
@@ -185,7 +165,7 @@
                     }
                     ?>
 
-                    @component('cooperation.tool.components.step-question', ['id' => 'usage', 'translation' => 'cooperation/tool/ventilation.index.usage', 'required' => true])
+                    @component('cooperation.tool.components.step-question', ['id' => 'usage', 'translation' => 'cooperation/tool/ventilation.index.usage'])
                         @component('cooperation.tool.components.input-group',
                     ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'usage'])
                             @foreach($usageValues as $uKey => $uValue)

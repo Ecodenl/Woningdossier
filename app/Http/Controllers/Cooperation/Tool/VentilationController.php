@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\Ventilation;
 use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Cooperation\Tool\VentilationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Cooperation\Tool\VentilationFormRequest;
 use App\Models\BuildingService;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
@@ -47,26 +49,28 @@ class VentilationController extends Controller
         /** @var ServiceValue $buildingVentilation */
         $buildingVentilation = $buildingVentilationService->serviceValue;
 
-        return view('cooperation.tool.ventilation.index',
-            compact('building', 'buildingVentilation'));
+        $howValues = VentilationHelper::getHowValues();
+        $livingSituationValues = VentilationHelper::getLivingSituationValues();
+        $usageValues = VentilationHelper::getUsageValues();
+
+        return view('cooperation.tool.ventilation.index', compact(
+            'building', 'buildingVentilation', 'howValues', 'livingSituationValues', 'usageValues'
+        ));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Method to store the data from the ventilation form.
      *
-     * @param  \Illuminate\Http\Request  $request
-     *
-     * @return \Illuminate\Http\Response
+     * @param VentilationFormRequest $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(Request $request)
+    public function store(VentilationFormRequest $request)
     {
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
-        /** @var Step $step */
+
         $step = Step::findByShort('ventilation');
-        // replace me with above
-        //$step = Step::where('slug', '=', 'ventilation')->first();
 
         $interestsInMeasureApplications = $request->input('user_interests', []);
         $noInterestInMeasureApplications = $step->measureApplications()->whereNotIn('id', $interestsInMeasureApplications)->get();

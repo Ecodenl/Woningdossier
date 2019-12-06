@@ -26,6 +26,10 @@ return [
         ''
     ],
 
+    'ventilation' => [
+        'points-of-improvement' => 'Verbeteropties'
+    ],
+
     'general-data' => [
         'address-info' => [
             'title' => 'Adres gegevens',

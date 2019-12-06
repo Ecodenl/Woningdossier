@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Helpers\Cooperation\Tool\VentilationHelper;
 use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
@@ -335,34 +336,19 @@ class ToolHelper
                     'building_ventilations.how' => [
                         'label' => __('cooperation/tool/ventilation.index.how.title'),
                         'type' => 'multiselect',
-                        'options' => [
-                            'windows-doors' => 'Ventilatieroosters in ramen / deuren',
-                            'other' => 'Ventilatieroosters overig',
-                            'windows' => '(Klep)ramen',
-                            'none' => 'Geen ventilatievoorzieningen',
-                        ],
+                        'options' => VentilationHelper::getHowValues(),
                     ],
 
                     'building_ventilations.living_situation' => [
                         'label' => __('cooperation/tool/ventilation.index.living-situation.title'),
                         'type' => 'multiselect',
-                        'options' => [
-                            'dry-laundry' => 'Ik droog de was in huis',
-                            'fireplace' => 'Ik stook een open haard of houtkachel',
-                            'combustion-device' => 'Ik heb een open verbrandingstoestel',
-                            'moisture' => 'Ik heb last van schimmel op de muren',
-                        ],
+                        'options' => VentilationHelper::getLivingSituationValues(),
                     ],
 
                     'building_ventilations.usage' => [
                         'label' => __('cooperation/tool/ventilation.index.usage.title'),
                         'type' => 'multiselect',
-                        'options' => [
-                            'sometimes-off' => 'Ik zet de ventilatie unit wel eens helemaal uit',
-                            'no-maintenance' => 'Ik doe geen onderhoud op de ventilatie unit',
-                            'filter-replacement' => 'Het filter wordt niet of onregelmatig vervangen',
-                            'closed' => 'Ik heb de roosters / klepramen voor aanvoer van buitenlucht vaak dicht staan',
-                        ],
+                        'options' => VentilationHelper::getUsageValues(),
                     ],
                     'calculations' => [
                         'savings_gas' => __('ventilation.costs.gas.title'),

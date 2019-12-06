@@ -1,6 +1,6 @@
 @isset($commentsByStep[$stepShort][$subStepShort])
 <div class="question-answer-section">
-    <p class="lead">@lang('pdf/user-report.measure-pages.comments.title')</p>
+    <p class="lead">{{$title ?? __('pdf/user-report.measure-pages.comments.title')}}</p>
     @foreach($commentsByStep[$stepShort][$subStepShort] as $inputSourceName => $comment)
         {{-- The column can be a category, this will be the case when the comment is stored under a catergory --}}
         <table class="full-width">

@@ -47,7 +47,8 @@
                         $optionsForAnswer = array_flip(
                             \App\Helpers\ToolHelper::getContentStructure("ventilation.-.{$translationKey}")['options']
                         );
-                        $ventilationValue = $optionsForAnswer[$ventilationAnswer];
+
+                        $ventilationValue = $optionsForAnswer[$ventilationAnswer] ?? null;
 
                         // with the value we can get the warning.
                         ?>

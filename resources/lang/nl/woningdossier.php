@@ -604,7 +604,7 @@ return [
                     ],
 
                     'store'   => [
-                        'private-message-allowed-access' => 'Toegang tot uw account is ingeschakeld door de coöperatie.',
+                        'private-message-allowed-access' => 'U heeft de coöperatie toegang gegeven tot uw Hoomdossier.',
                         'success' => 'Gebruiker is toevoegd!',
                     ],
                     'destroy' => [

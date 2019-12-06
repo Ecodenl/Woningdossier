@@ -48,13 +48,13 @@
                                 <select id="{{ $measureApplication->id }}" class="user-interest form-control" name="user_interests[{{ $measureApplication->id }}][interest_id]">
                                     <?php
                                         /** @var \Illuminate\Support\Collection $interests */
-                                        $oldInterestDataIsAvailable = $interests->contains('id', old('user_interests.' . $measureApplication->id));
+                                        $oldInterestDataIsAvailable = $interests->contains('id', old("user_interests.{$measureApplication->id}.interest_id"));
                                         $userSelectedInterest = $userInterests[$measureApplication->id] ?? null
                                     ?>
                                     @foreach($interests as $interest)
                                         {{-- calculate_value 4 is the default --}}
                                         <option data-calculate-value="{{$interest->calculate_value}}"
-                                                @if($interest->id == old('user_interests.'.$measureApplication->id, $userSelectedInterest))
+                                                @if($interest->id == old("user_interests.{$measureApplication->id}.interest_id", $userSelectedInterest))
                                                     selected="selected"
                                                 {{--when no answer is given select the default interest--}}
                                                 @elseif(is_null($userSelectedInterest) && $interest->calculate_value == 4)

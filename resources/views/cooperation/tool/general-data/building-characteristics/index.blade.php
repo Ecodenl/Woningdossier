@@ -191,7 +191,7 @@
 
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    <span class="glyphicon glyphicon-user"></span>
+                                    <img  src="{{asset('images/input-source-icon.png')}}" alt="" style="height: 22px; display: block;">
                                 </button>
                                 <ul class="dropdown-menu">
                                     <?php

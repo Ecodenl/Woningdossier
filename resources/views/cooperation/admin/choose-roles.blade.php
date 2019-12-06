@@ -27,7 +27,7 @@
                                         <div class="choose-roles-panel panel panel-default">
                                             <div class="panel-body">
                                                 <h2 class="text-center">
-                                                    <span class="glyphicon glyphicon-user"></span>
+                                                    <img  src="{{asset('images/input-source-icon.png')}}" alt="" style="height: 22px; display: block;">
                                                 </h2>
                                                 <h3 class="text-center">
                                                     {{ ucfirst($user->getHumanReadableRoleName($role->name)) }}

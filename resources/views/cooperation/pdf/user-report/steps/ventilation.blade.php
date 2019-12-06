@@ -41,15 +41,18 @@
                     @foreach($ventilationAnswers as $ventilationAnswer)
                         <?php
                         // here we will have to do some ugly stuff, we will get the selected option key from the given answer
+
+                        // these are the options for an question, the $ventilatioAnswer holds the translation op that option
+                        // so we flip the array so we can get the option key by the translation of it.
                         $optionsForAnswer = array_flip(
                             \App\Helpers\ToolHelper::getContentStructure("ventilation.-.{$translationKey}")['options']
                         );
+                        $ventilationValue = $optionsForAnswer[$ventilationAnswer];
 
-                        $ventilationValue = empty($ventilationAnswer) ? null : $optionsForAnswer[$ventilationAnswer];
-
+                        // with the value we can get the warning.
                         ?>
                         @if(array_key_exists($ventilationValue, $warnings))
-                            <p class="text-warning">{{$warnings[$ventilationValue]}}</p>
+                            <p style="color: darkgray">{{$warnings[$ventilationValue]}}</p>
                         @endif
                     @endforeach
                     <br>

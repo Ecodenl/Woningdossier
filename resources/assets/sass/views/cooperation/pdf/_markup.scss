@@ -27,16 +27,19 @@ body {
     display: block;
     margin: 8px 0 0 0;
   }
+
   img {
     width: 50px;
     height: 50px;
     display: block;
     float: left;
   }
+
   p {
     padding-top: 25px;
     font-weight: bold;
   }
+
   margin-bottom: 25px;
 }
 
@@ -52,22 +55,43 @@ p {
   color: $color-black;
   font-size: $font-size-small;
   line-height: 1.5em;
+
   &.sub-lead {
     font-weight: bold;
     color: $color-main;
   }
+
   &.lead {
     font-weight: bold;
     color: $color-main;
     font-size: 16px;
   }
 }
+
 .question-answer-section {
   margin-top: 15px;
   margin-bottom: 15px;
+
   p.lead {
     margin-bottom: 1px;
   }
+
+  ul {
+
+    list-style: none;
+    padding-left: 2em;
+
+    li {
+      font-size: $font-size-small;
+
+      &:before {
+        content: "-";
+        text-indent: -2em;
+        display: inline-block;
+      }
+    }
+  }
+
   .question-answer {
     p {
       display: inline-block;
@@ -79,28 +103,35 @@ table {
   border-collapse: collapse;
   font-size: $font-size-small;
   margin-bottom: 5px;
+
   thead {
 
     background-color: $color-main;
     color: $color-white;
+
     &.no-background {
       background-color: white;
       color: $color-main;
     }
+
     &.lead {
       font-weight: bold;
       color: $color-main;
       font-size: 16px;
     }
   }
+
   tbody {
     background-color: $color-white;
+
     tr {
       vertical-align: top;
+
       &.border-bottom {
         &:first-child {
           border-bottom: 1px solid $color-main;
         }
+
         td {
           border-top: 1px solid $color-main;
         }

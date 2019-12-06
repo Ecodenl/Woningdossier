@@ -82,7 +82,7 @@ class Ventilation
                 unset($measures['crack-sealing']);
 
                 $improvement = 'Natuurlijke ventilatie is  niet zo goed voor het comfort en zorgt voor een hoog energiegebruik. Daarom worden de huizen steeds luchtdichter gemaakt en van goede isolatie voorzien. Om een gezond binnenklimaat te bereiken is hierbij een andere vorm van ventilatie nodig. De volgende opties kunt u overwegen:';
-                $remark = 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.';
+                $remark = __('my-plan.warnings.ventilation');
             }
             if ($ventilationType === 'mechanic') {
 
@@ -103,7 +103,7 @@ class Ventilation
                 }
 
                 $improvement = 'Oude ventilatoren gebruiken soms nog wisselstroom en verbruiken voor dezelfde prestatie veel meer elektriciteit en maken meer geluid dan moderne gelijkstroom ventilatoren. De besparing op de gebruikte stroom kan oplopen tot ca. 80 %. Een installateur kan direct beoordelen of u nog een wisselstroom ventilator heeft.';
-                $remark = 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.';
+                $remark = __('my-plan.warnings.ventilation');
             }
             if ($ventilationType === 'balanced') {
 
@@ -132,7 +132,7 @@ class Ventilation
                 }
 
                 $improvement = 'Uw woning is voorzien van een energiezuinig en duurzaam ventilatiesysteem. Zorg voor goed onderhoud en goed gebruik zo dat de luchtkwaliteit in de woning optimaal blijft.';
-                $remark = 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.';
+                $remark = __('my-plan.warnings.ventilation');
             }
             if ($ventilationType === 'decentral') {
 
@@ -161,7 +161,7 @@ class Ventilation
                 }
 
                 $improvement = 'Uw woning is voorzien van een energiezuinig en duurzaam ventilatiesysteem. Zorg voor goed onderhoud en goed gebruik zo dat de luchtkwaliteit in de woning optimaal blijft.';
-                $remark = 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.';
+                $remark = __('my-plan.warnings.ventilation');
             }
 
             $advices = MeasureApplication::where('step_id', '=',

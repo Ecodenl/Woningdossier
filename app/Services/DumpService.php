@@ -12,6 +12,7 @@ use App\Calculations\Ventilation;
 use App\Calculations\WallInsulation;
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
+use App\Helpers\Cooperation\Tool\VentilationHelper;
 use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
@@ -64,6 +65,7 @@ class DumpService
      */
     public static function totalDump(User $user, InputSource $inputSource, bool $anonymized, bool $withTranslationsForColumns = true, bool $withConditionalLogic = false): array
     {
+
         $cooperation = $user->cooperation;
         $structure = ToolHelper::getContentStructure();
         // get the content structure of the whole tool.
@@ -252,11 +254,15 @@ class DumpService
                             $answer = null;
                             if ($buildingVentilation instanceof BuildingVentilation) {
                                 $optionsForQuestion = ToolHelper::getContentStructure($tableWithColumnOrAndIdKey)['options'];
-                                $givenAnswers = array_flip($buildingVentilation->$column);
 
-                                $answer = implode(array_intersect_key(
-                                    $optionsForQuestion, $givenAnswers
-                                ), ', ');
+
+                                if (is_array($buildingVentilation->$column)) {
+                                    $givenAnswers = array_flip($buildingVentilation->$column);
+
+                                    $answer = implode(array_intersect_key(
+                                        $optionsForQuestion, $givenAnswers
+                                    ), ', ');
+                                }
                             }
                             $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer;
                             break;

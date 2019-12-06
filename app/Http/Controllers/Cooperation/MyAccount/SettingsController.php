@@ -103,6 +103,9 @@ class SettingsController extends Controller
         $user->energyHabit()->delete();
         // remove the motivations from a user
         $user->motivations()->delete();
+        // detach the progress of the completed questionnaires
+        // belongstomany, so dont delete!
+        $user->completedQuestionnaires()->detach();
 
         DossierResetPerformed::dispatch($building);
 

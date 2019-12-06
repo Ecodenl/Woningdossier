@@ -464,6 +464,7 @@ class User extends Model implements AuthorizableContract
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function completedQuestionnaires(InputSource $inputSource = null)
+
     {
         // global scopes wont work on the intermediary table
         $inputSource = is_null($inputSource) ? HoomdossierSession::getInputSource(true) : $inputSource;

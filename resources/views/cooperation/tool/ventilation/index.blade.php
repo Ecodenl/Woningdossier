@@ -3,8 +3,7 @@
 @section('step_title', "Ventilatie: " . $buildingVentilation->value)
 
 @section('step_content')
-    <form method="POST"
-          action="{{ route('cooperation.tool.ventilation.store', ['cooperation' => $cooperation]) }}">
+    <form method="POST" action="{{ route('cooperation.tool.ventilation.store', ['cooperation' => $cooperation]) }}" autocomplete="off">
         {{ csrf_field() }}
 
         <div class="row">

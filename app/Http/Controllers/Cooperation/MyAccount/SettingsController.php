@@ -92,7 +92,8 @@ class SettingsController extends Controller
         $building->completedSteps()->delete();
         // remove the step comments
         $building->stepComments()->delete();
-
+        // remove the answers on the custom questionnaires
+        $building->questionAnswers()->delete();
 
         // remove the action plan advices from the user
         $user->actionPlanAdvices()->delete();

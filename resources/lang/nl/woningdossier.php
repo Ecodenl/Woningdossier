@@ -604,6 +604,7 @@ return [
                     ],
 
                     'store'   => [
+                        'private-message-allowed-access' => 'Toegang tot uw account is ingeschakeld door de coöperatie.',
                         'success' => 'Gebruiker is toevoegd!',
                     ],
                     'destroy' => [

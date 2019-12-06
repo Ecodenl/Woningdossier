@@ -80,6 +80,23 @@ class UserController extends Controller
         $building = $user->building;
 
 
+        // we always have to set the access to true when a user is created through the admin environment
+        PrivateMessage::create(
+            [
+                // we get the selected option from the language file, we can do this cause the submitted value = key from localization
+                'is_public' => true,
+                'message' => __('woningdossier.cooperation.admin.cooperation.users.store.private-message-allowed-access'),
+                'from_user_id' => $user->id,
+                'from_user' => $user->getFullName(),
+                'to_cooperation_id' => $cooperation->id,
+                'building_id' => $building->id,
+                'request_type' => 'user-created-by-cooperation',
+                'allow_access' => true,
+            ]
+        );
+
+
+
 
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.
         if ($request->has('coach_id')) {

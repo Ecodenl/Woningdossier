@@ -80,6 +80,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
             }
 
+            Route::view('test', 'test');
             Route::get('home', 'HomeController@index')->name('home')->middleware('deny-if-filling-for-other-building');
 
             Route::resource('privacy', 'PrivacyController')->only('index');
@@ -155,19 +156,31 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
                 Route::get('/', 'ToolController@index')->name('index');
 
-                Route::post('general-data/apply-example-building', 'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
-                Route::resource('building-detail', 'BuildingDetailController', ['only' => ['index', 'store']]);
-
                 Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
                     Route::post('', 'QuestionnaireController@store')->name('store');
                 });
 
-                Route::group(['middleware' => 'filled-step:building-detail'], function () {
-                    Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
+                Route::resource('example-building', 'ExampleBuildingController')->only('store');
+                Route::resource('building-type', 'BuildingTypeController')->only('store');
+
+                Route::group(['as' => 'general-data.', 'prefix' => 'general-data'], function () {
+
+                    Route::get('', 'GeneralDataController@index')->name('index');
+
+                    Route::group(['namespace' => 'GeneralData'], function () {
+                        Route::resource('gebouw-kenmerken', 'BuildingCharacteristicsController')->only(['index', 'store'])->names('building-characteristics');
+                        Route::get('get-qualified-example-buildings', 'BuildingCharacteristicsController@qualifiedExampleBuildings')->name('building-characteristics.qualified-example-buildings');
+
+                        Route::resource('huidige-staat', 'CurrentStateController')->names('current-state')->only(['index', 'store']);
+                        Route::resource('gebruik', 'UsageController')->only(['index', 'store'])->names('usage');
+                        Route::resource('interesse', 'InterestController')->only(['index', 'store'])->names('interest');
+
+                    });
                 });
+
                 Route::group(['middleware' => 'filled-step:general-data'], function () {
                     // Ventilation information: info for now
-                    Route::resource('ventilation-information', 'VentilationController',
+                    Route::resource('ventilation', 'VentilationController',
                         ['only' => ['index', 'store']]);
                     // Heat pump: info for now
                     Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
@@ -184,8 +197,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     // Floor Insulation
                     Route::resource('floor-insulation', 'FloorInsulationController', ['only' => ['index', 'store']]);
-                    Route::post('floor-insulation/calculate',
-                        'FloorInsulationController@calculate')->name('floor-insulation.calculate');
+                    Route::post('floor-insulation/calculate', 'FloorInsulationController@calculate')->name('floor-insulation.calculate');
 
                     // Roof Insulation
                     Route::resource('roof-insulation', 'RoofInsulationController');
@@ -209,7 +221,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
 
                 Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');
-                Route::post('my-plan/comment', 'MyPlanController@storeComment')->name('my-plan.store-comment');
+                Route::post('my-plan/comment', 'MyPlanController@storeComment')
+                    ->middleware('deny-if-observing-building')
+                    ->name('my-plan.store-comment');
                 Route::post('my-plan/store', 'MyPlanController@store')->name('my-plan.store');
 //                Route::get('my-plan/export', 'MyPlanController@export')->name('my-plan.export');
             });
@@ -227,8 +241,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                 Route::group(['middleware' => ['current-role:cooperation-admin|super-admin']], function () {
                     Route::resource('example-buildings', 'ExampleBuildingController');
-                    Route::get('example-buildings/{id}/copy',
-                        'ExampleBuildingController@copy')->name('example-buildings.copy');
+                    Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
                 });
 
                 /* Section that a coach, coordinator and cooperation-admin can access */
@@ -238,8 +251,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     Route::group(['prefix' => 'tool', 'as' => 'tool.'], function () {
                         Route::get('fill-for-user/{id}', 'ToolController@fillForUser')->name('fill-for-user');
-                        Route::get('observe-tool-for-user/{id}',
-                            'ToolController@observeToolForUser')->name('observe-tool-for-user');
+                        Route::get('observe-tool-for-user/{id}', 'ToolController@observeToolForUser')
+                            ->name('observe-tool-for-user');
                     });
 
                     Route::post('message', 'MessagesController@sendMessage')->name('send-message');
@@ -301,9 +314,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     });
 
                     /* section for the cooperation-admin */
-                    Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.',
-                        'namespace' => 'CooperationAdmin', 'middleware' => ['current-role:cooperation-admin|super-admin']
-                    ], function () {
+                    Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['current-role:cooperation-admin|super-admin']], function () {
 
                         Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
                             Route::get('', 'StepController@index')->name('index');
@@ -325,27 +336,25 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     });
 
                     Route::resource('key-figures', 'KeyFiguresController')->only('index');
-                    Route::resource('translations',
-                        'TranslationController')->except(['show'])->parameters(['id' => 'step-slug']);
+                    Route::resource('translations', 'TranslationController')->except(['show'])->parameters(['id' => 'group']);
 
                     /* Section for the cooperations */
                     Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.', 'namespace' => 'Cooperation'], function () {
-                            Route::get('', 'CooperationController@index')->name('index');
-                            Route::get('edit/{cooperationToEdit}', 'CooperationController@edit')->name('edit');
-                            Route::get('create', 'CooperationController@create')->name('create');
-                            Route::post('', 'CooperationController@store')->name('store');
-                            Route::post('edit', 'CooperationController@update')->name('update');
+                        Route::get('', 'CooperationController@index')->name('index');
+                        Route::get('edit/{cooperationToEdit}', 'CooperationController@edit')->name('edit');
+                        Route::get('create', 'CooperationController@create')->name('create');
+                        Route::post('', 'CooperationController@store')->name('store');
+                        Route::post('edit', 'CooperationController@update')->name('update');
 
-                            /* Actions that will be done per cooperation */
-                            Route::group(['prefix' => '{cooperationToManage}/', 'as' => 'cooperation-to-manage.'],
-                                function () {
-                                    Route::resource('home', 'HomeController')->only('index');
+                        /* Actions that will be done per cooperation */
+                        Route::group(['prefix' => '{cooperationToManage}/', 'as' => 'cooperation-to-manage.'], function () {
+                            Route::resource('home', 'HomeController')->only('index');
 
-                                    Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
-                                    Route::resource('coordinator', 'CoordinatorController')->only(['index']);
-                                    Route::resource('users', 'UserController')->only(['index', 'show']);
-                                });
-                        });
+                            Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
+                            Route::resource('coordinator', 'CoordinatorController')->only(['index']);
+                            Route::resource('users', 'UserController')->only(['index', 'show']);
+                            Route::post('users/{id}/confirm', 'UserController@confirm')->name('users.confirm');});
+                    });
                 });
 
                 /* Section for the coach */
@@ -374,7 +383,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
 Route::get('/', function () {
 
-    if(stristr(\Request::url(), '://www.')){
+    if (stristr(\Request::url(), '://www.')) {
         // The user has prefixed the subdomain with a www subdomain.
         // Remove the www part and redirect to that.
         return redirect(str_replace('://www.', '://', Request::url()));

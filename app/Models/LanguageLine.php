@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+
 /**
  * App\Models\LanguageLine.
  *
@@ -49,6 +51,10 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
         });
     }
 
+    public function scopeForGroup(Builder $query, $group)
+    {
+        return $query->where('group', $group);
+    }
     /**
      * Scope a query to only return the main questions.
      *

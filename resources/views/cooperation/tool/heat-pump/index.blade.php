@@ -6,7 +6,7 @@
 
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
+    <form  method="POST"
           action="{{ route('cooperation.tool.heat-pump.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         <div id="start-information">
@@ -17,7 +17,7 @@
                             {!! \App\Helpers\Translation::translate('heat-pump.description.title') !!}
                         </div>
                     </div>
-                    <div class="form-group add-space">
+                    <div class="form-group">
                         <div class="panel panel-primary">
                             <div class="panel-heading">@lang('woningdossier.cooperation.tool.heat-pump-information.downloads.title')</div>
                             <div class="panel-body">
@@ -433,7 +433,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <hr>
-                                <div class="form-group add-space">
+                                <div class="form-group">
                                     <div class="">
                                         <a class="btn btn-success pull-left"
                                            href="{{route('cooperation.tool.high-efficiency-boiler.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>

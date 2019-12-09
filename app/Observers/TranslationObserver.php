@@ -10,14 +10,14 @@ class TranslationObserver
     public function created(Translation $translation)
     {
         // cache it
-        \App\Helpers\Cache\Translation::getTranslation($translation);
+        \App\Helpers\Cache\Translation::getTranslations($translation);
     }
 
     public function updated(Translation $translation)
     {
         // recache
         \App\Helpers\Cache\Translation::wipe($translation);
-        \App\Helpers\Cache\Translation::getTranslation($translation);
+        \App\Helpers\Cache\Translation::getTranslations($translation);
     }
 
     public function deleted(Translation $translation)

@@ -34,13 +34,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[]       $buildingPermissions
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[]          $buildingServices
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingStatus[]           $buildingStatuses
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[]             $completedSteps
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[]             $completedSteps
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
  * @property \App\Models\BuildingPaintworkStatus                                             $currentPaintworkStatus
  * @property \App\Models\ExampleBuilding|null                                                $exampleBuilding
  * @property \App\Models\BuildingHeater                                                      $heater
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[]           $privateMessages
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[]             $progress
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[]             $progress
  * @property \App\Models\BuildingPvPanel                                                     $pvPanels
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[]          $questionAnswers
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[]         $roofTypes
@@ -93,19 +93,20 @@ class Building extends Model
         return ['example_building_id'];
     }
 
+    public function stepComments()
+    {
+        return $this->hasMany(StepComment::class);
+    }
+
     /**
      * Check if a step is completed for a building with matching input source id.
      *
-     * @NeedsReview
-     *
      * @param Step $step
-     *
      * @return bool
      */
     public function hasCompleted(Step $step)
     {
-        return $this->find(HoomdossierSession::getBuilding())
-                ->completedSteps()
+        return $this->completedSteps()
                 ->where('step_id', $step->id)->count() > 0;
     }
 
@@ -128,56 +129,7 @@ class Building extends Model
      */
     public function completedSteps()
     {
-        return $this->hasMany(UserProgress::class);
-    }
-
-    /**
-     * Check if a user is interested in a step.
-     *
-     * @param InputSource $inputSource
-     * @param $type
-     * @param array $interestedInIds
-     *
-     * @return bool
-     */
-    public function isInterestedInStep(InputSource $inputSource, $type, $interestedInIds = [])
-    {
-        // the interest ids that people select when they do not have any interest
-        $noInterestIds = [4, 5];
-
-        $interestedIds = [];
-
-        if (! is_array($interestedInIds)) {
-            $interestedInIds = [$interestedInIds];
-        }
-
-        // go through the elementid and get the user interest id to put them into the array
-        foreach ($interestedInIds as $key => $interestedInId) {
-            if ($this->user->getInterestedType($type, $interestedInId, $inputSource) instanceof UserInterest) {
-                array_push($interestedIds, $this->user->getInterestedType($type, $interestedInId, $inputSource)->interest_id);
-            }
-        }
-
-        // check if the user wants to do something with their glazing
-        if ($interestedIds == array_intersect($interestedIds, $noInterestIds) && $this->user->getInterestedType($type, $interestedInId, $inputSource) instanceof UserInterest) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Check if a user is not interested in a step.
-     *
-     * @param InputSource $inputSource
-     * @param string      $type
-     * @param array       $interestedInIds
-     *
-     * @return bool
-     */
-    public function isNotInterestedInStep(InputSource $inputSource, $type, $interestedInIds = [])
-    {
-        return ! $this->isInterestedInStep($inputSource, $type, $interestedInIds);
+        return $this->hasMany(CompletedStep::class);
     }
 
     /**
@@ -217,14 +169,6 @@ class Building extends Model
     public function exampleBuilding()
     {
         return $this->belongsTo(ExampleBuilding::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function progress()
-    {
-        return $this->hasMany(UserProgress::class);
     }
 
     /**

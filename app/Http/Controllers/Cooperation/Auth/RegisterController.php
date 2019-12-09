@@ -15,6 +15,7 @@ use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 
@@ -65,25 +66,13 @@ class RegisterController extends Controller
      * Handle a registration request for the application.
      *
      * @param RegisterFormRequest $request
-     *
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @param Cooperation $cooperation
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function register(RegisterFormRequest $request, Cooperation $cooperation)
     {
-        // try to obtain the existing account
-        $account = Account::where('email', $request->get('email'))->first();
-
-        // if its not found we will create a new one.
-        if (! $account instanceof Account) {
-            $account = $this->createNewAccount($request->only('email', 'password'));
-        }
-
-        $user = $this->createNewUser($request->except('email', 'password'));
-
-        // associate it with the user
-        $user->account()->associate(
-            $account
-        )->save();
+        $user = UserService::register($cooperation, ['resident'], $request->all());
+        $account = $user->account;
 
         if ($account->wasRecentlyCreated) {
             $successMessage = __('auth.register.form.message.success');
@@ -96,84 +85,13 @@ class RegisterController extends Controller
         return redirect($this->redirectPath())->with('success', $successMessage);
     }
 
-    /**
-     * Create a new account.
-     *
-     * @param array $data
-     *
-     * @return Account
-     */
-    private function createNewAccount(array $data): Account
-    {
-        return Account::create([
-            'email'         => $data['email'],
-            'password'      => \Hash::make($data['password']),
-            'confirm_token' => RegistrationHelper::generateConfirmToken(),
-        ]);
-    }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param array $data
-     *
-     * @return User
-     */
-    private function createNewUser(array $data): User
-    {
-        // Create the user for an account
-        $user = User::create(
-            [
-                'first_name'    => $data['first_name'],
-                'last_name'     => $data['last_name'],
-                'phone_number'  => is_null($data['phone_number']) ? '' : $data['phone_number'],
-            ]
-        );
-
-        // now get the picoaddress data.
-        $picoAddressData = PicoHelper::getAddressData(
-            $data['postal_code'], $data['number']
-        );
-
-        $data['bag_addressid'] = $picoAddressData['id'] ?? $data['addressid'] ?? '';
-        $data['extension'] = $data['house_number_extension'] ?? null;
-
-        $features = new BuildingFeature([
-            'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
-            'build_year' => empty($picoAddressData['build_year']) ? null : $picoAddressData['build_year'],
-        ]);
-
-        // create the building for the user
-        $building = Building::create($data);
-
-        $cooperation = HoomdossierSession::getCooperation(true);
-        $residentRole = Role::findByName('resident');
-
-        // associate multiple models with each other
-        $building->user()->associate(
-            $user
-        )->save();
-
-        $features->building()->associate(
-            $building
-        )->save();
-
-        $user->cooperation()->associate(
-            $cooperation
-        )->save();
-
-        $user->assignRole($residentRole);
-        // turn on when merged
-        $building->setStatus('active');
-
-        return $user;
-    }
 
     /**
      * Check if a email already exists in the user table, and if it exist check if the user is registering on the wrong cooperation.
      *
      * @param Cooperation $cooperation
-     * @param Request     $request
+     * @param Request $request
      *
      * @return \Illuminate\Http\JsonResponse
      */

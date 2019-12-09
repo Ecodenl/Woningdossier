@@ -1,36 +1,33 @@
 <?php
-$changedToolSettings = $toolSettings->where('has_changed', true);
-$totalChangedToolSettings = $changedToolSettings->count();
-$toolSettingsLoopCount = 1;
-
-if (! isset($building)) {
-    $building = \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding());
-}
+    $changedToolSettings = $toolSettings->where('has_changed', true);
+    $totalChangedToolSettings = $changedToolSettings->count();
+    $toolSettingsLoopCount = 1;
+    $isFillingToolForOtherBuilding = $user->isFillingToolForOtherBuilding()
 ?>
 
 <div class="row">
-    @if (\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding() && \App\Helpers\HoomdossierSession::isUserObserving())
+    @if ($isFillingToolForOtherBuilding && \App\Helpers\HoomdossierSession::isUserObserving())
         <div class="col-sm-6">
             @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
                 @lang('woningdossier.cooperation.tool.observing-tool', [
-                    'first_name' => \App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name,
-                    'last_name' => \App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->last_name,
-                    'input_source_name' => \App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name
+                    'first_name' => $buildingOwner->first_name,
+                    'last_name' => $buildingOwner->last_name,
+                    'input_source_name' => \App\Helpers\HoomdossierSession::getInputSourceValue(true)->name
                 ])
             @endcomponent
         </div>
-    @elseif(\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
+    @elseif($isFillingToolForOtherBuilding)
         <div class="col-sm-6">
             @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false])
                 @lang('woningdossier.cooperation.tool.filling-for', [
-                    'first_name' => \App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->first_name,
-                    'last_name' => \App\Models\User::find(\App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->user_id)->last_name,
-                    'input_source_name' => \App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSourceValue())->name
+                    'first_name' => $buildingOwner->first_name,
+                    'last_name' => $buildingOwner->last_name,
+                    'input_source_name' => \App\Helpers\HoomdossierSession::getInputSourceValue(true)->name
                 ])
             @endcomponent
         </div>
     @endif
-    <div class="@if(\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())col-sm-6 @else col-sm-12 @endif">
+    <div class="@if($isFillingToolForOtherBuilding )col-sm-6 @else col-sm-12 @endif">
         @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false, 'classes' => 'building-notification'])
             @lang('woningdossier.cooperation.tool.current-building-address', [
                 'street' => $building->street,
@@ -64,7 +61,7 @@ if (! isset($building)) {
                         <a onclick="$('#copy-input-{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}').submit()" class="btn btn-block btn-sm btn-primary pull-right">
                             @lang('my-account.import-center.index.copy-data', ['input_source_name' => \App\Models\InputSource::findByShort(\App\Helpers\HoomdossierSession::getCompareInputSourceShort())->name])
                         </a>
-                        <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => \App\Models\InputSource::find(\App\Helpers\HoomdossierSession::getInputSource())->short])}}" class="btn btn-block btn-sm btn-primary pull-right">
+                        <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => \App\Helpers\HoomdossierSession::getInputSource(true)->short])}}" class="btn btn-block btn-sm btn-primary pull-right">
                             Stop vergelijking
                         </a>
                     </div>

@@ -2,7 +2,7 @@
 <ul class="nav nav-tabs" role="tablist">
     {{-- tabs --}}
     @if(isset($exampleBuilding) && $exampleBuilding instanceof \App\Models\ExampleBuilding)
-        @foreach($exampleBuilding->contents()->orderBy('build_year', 'asc')->get() as $content)
+        @foreach($exampleBuilding->contents as $content)
             <li role="presentation">
                 <a href="#{{ $content->id }}" aria-controls="{{ $content->id }}" role="tab" data-toggle="tab">{{ $content->build_year }}</a>
             </li>
@@ -15,7 +15,7 @@
 <div class="tab-content">
     {{-- tab contents --}}
     @if(isset($exampleBuilding) && $exampleBuilding instanceof \App\Models\ExampleBuilding)
-        @foreach($exampleBuilding->contents()->orderBy('build_year', 'asc')->get() as $content)
+        @foreach($exampleBuilding->contents as $content)
             <div role="tabpanel" class="tab-pane" id="{{ $content->id }}">
                 @include('cooperation.admin.example-buildings.components.content-table', ['content' => $content])
             </div>

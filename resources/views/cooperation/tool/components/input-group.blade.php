@@ -1,14 +1,17 @@
 <div class="input-group input-source-group">
     {{ $slot }}
     <div class="input-group-btn">
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            {{--<span class="glyphicon glyphicon-user"></span>--}}
+            <span class="caret"></span>
+        </button>
         <ul class="dropdown-menu">
             <?php
                 // we need to check if there is a answer from one input source
                 if($userInputValues instanceof \Illuminate\Support\Collection) {
-                    $hasAnswer = $userInputValues->contains($userInputColumn, '!==', '');
+                    $hasAnswer = $userInputValues->contains($userInputColumn, '!=', '');
                 } else {
-                    $hasAnswer = collect($userInputValues)->contains($userInputColumn, '!==', '');
+                    $hasAnswer = collect($userInputValues)->contains($userInputColumn, '!=', '');
                 }
             ?>
             @if(!$hasAnswer)

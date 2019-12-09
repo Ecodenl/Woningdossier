@@ -40,7 +40,7 @@
 <script>
     $(document).ready(function () {
         @if(Auth::check())
-        pollForMessageCount();
+        // pollForMessageCount();
         @endif
     });
 </script>

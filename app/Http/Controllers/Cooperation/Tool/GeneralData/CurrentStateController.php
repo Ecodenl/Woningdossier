@@ -147,8 +147,8 @@ class CurrentStateController extends Controller
         }
 
         // save buildign features, pv panels and the comments
-        $building->pvPanels()->updateOrCreate([], $request->input('building_pv_panels'));
-        $building->buildingFeatures()->updateOrCreate([], $request->input('building_features'));
+        $building->pvPanels()->updateOrCreate(['input_source_id' => $inputSource->id], $request->input('building_pv_panels'));
+        $building->buildingFeatures()->updateOrCreate(['input_source_id' => $inputSource->id], $request->input('building_features'));
         foreach ($request->input('step_comments.comment') as $short => $comment) {
             StepCommentService::save($building, $inputSource, $step, $comment, $short);
         }

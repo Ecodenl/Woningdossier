@@ -52,7 +52,6 @@ return [
             'text' => 'Is er iets veranderd of past de volgorde van maatregelen niet bij uw persoonlijke planning? In het Hoomdossier kunt u alle gegevens aanpassen en bijhouden. In de bijlage vindt u alle details per maatregel.',
             'table' => [
                 'planned-year' => 'Jaar gepland',
-                'interested' => 'Interesse',
                 'measure' => 'Maatregel',
                 'costs' => 'Kosten (€)',
                 'savings' => 'Besparing (€/jaar)'

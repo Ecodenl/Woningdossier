@@ -4,7 +4,6 @@
         <thead>
         <tr>
             <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.planned-year')}}</th>
-            <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.interested')}}</th>
             <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.measure')}}</th>
             <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.costs')}}</th>
             <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.savings')}}</th>
@@ -18,12 +17,7 @@
             @foreach($advices as $adviceData)
                 @foreach($adviceData as $advice)
                     <tr class="border-bottom">
-                        <?php
-                        // if its a string, the $year contains 'geen jaartal'
-                        is_string($year) ? $year = \Carbon\Carbon::now()->year : $year;
-                        ?>
                         <td align="center">{{$year}}</td>
-                        <td align="center">{{$advice['interested'] ? 'Ja' : 'Nee'}}</td>
                         <td>{{$advice['measure']}}</td>
                         <td align="right">{{\App\Helpers\NumberFormatter::format($advice['costs'])}}</td>
                         <td align="right">{{\App\Helpers\NumberFormatter::format($advice['savings_money'])}}</td>

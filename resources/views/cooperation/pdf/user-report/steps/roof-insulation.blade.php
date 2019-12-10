@@ -27,33 +27,36 @@
 
         @include('cooperation.pdf.user-report.parts.measure-page.insulation-advice')
 
-        {{-- Indicative costs and measures  --}}
-        <div class="question-answer-section">
-            @foreach($calculationsForStep as $roofTypeShort => $calculationResultsForRoofType)
-                <p class="lead">{{__('pdf/user-report.roof-insulation.indicative-costs-and-benefits-for-measure.'.$roofTypeShort)}}</p>
-                @foreach($calculationResultsForRoofType as $calculationType => $result)
-                    <?php
-                    $calculationTypesThatCantBeShown = ['type'];
-                    $calculationTypeNeedToBeShown = !in_array($calculationType, $calculationTypesThatCantBeShown);
-                    $calculationTypeIsYear = \App\Helpers\Hoomdossier::columnContains($calculationType, 'year');
-                    ?>
-                    @if(!empty($result) && !is_array($result) && $calculationTypeNeedToBeShown)
+        @if(!\App\Helpers\Arr::isWholeArrayEmpty($calculationsForStep))
+            {{-- Indicative costs and measures  --}}
+            <div class="question-answer-section">
+                @foreach($calculationsForStep as $roofTypeShort => $calculationResultsForRoofType)
+                    <p class="lead">{{__('pdf/user-report.roof-insulation.indicative-costs-and-benefits-for-measure.'.$roofTypeShort)}}</p>
+                    <table class="full-width">
+                        <tbody>
+                        @foreach($calculationResultsForRoofType as $calculationType => $result)
+                            <?php
+                            $calculationTypesThatCantBeShown = ['type'];
+                            $calculationTypeNeedToBeShown = !in_array($calculationType, $calculationTypesThatCantBeShown);
+                            $calculationTypeIsYear = \App\Helpers\Hoomdossier::columnContains($calculationType, 'year');
+                            ?>
+                            @if(!empty($result) && !is_array($result) && $calculationTypeNeedToBeShown)
 
-                        <?php
-                        $translationForAnswer = $reportTranslations[$stepShort . '.' . $subStepShort . '.calculation.' . $roofTypeShort . '.' . $calculationType];
-                        ?>
-                        <table class="full-width">
-                            <tbody>
-                            <tr class="h-20">
-                                <td class="w-380">{{$translationForAnswer}}</td>
-                                <td>{{$calculationTypeIsYear ? $result : \App\Helpers\NumberFormatter::format($result, 0, true)}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    @endif
+                                <?php
+                                $translationForAnswer = $reportTranslations[$stepShort . '.' . $subStepShort . '.calculation.' . $roofTypeShort . '.' . $calculationType];
+                                ?>
+
+                                <tr class="h-20">
+                                    <td class="w-380">{{$translationForAnswer}}</td>
+                                    <td>{{$calculationTypeIsYear ? $result : \App\Helpers\NumberFormatter::format($result, 0, true)}} {{\App\Helpers\Hoomdossier::getUnitForColumn($calculationType)}}</td>
+                                </tr>
+                            @endif
+                        @endforeach
+                        </tbody>
+                    </table>
                 @endforeach
-            @endforeach
-        </div>
+            </div>
+        @endif
     </div>
 
 @endcomponent

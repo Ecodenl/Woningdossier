@@ -7,10 +7,12 @@
             <tbody>
                 @if(is_array($comment))
                     @foreach($comment as $short => $comment)
-                        <tr class="h-20">
-                            <td class="w-100">{{$inputSourceName}} (@lang("pdf/user-report.measure-pages.comments.short-translations.{$short}"))</td>
-                            <td>{!!  nl2br($comment, '<br>')!!}</td>
-                        </tr>
+                        @if(!empty($comment))
+                            <tr class="h-20">
+                                <td class="w-100">{{$inputSourceName}} (@lang("pdf/user-report.measure-pages.comments.short-translations.{$short}"))</td>
+                                <td>{!!  nl2br($comment, '<br>')!!}</td>
+                            </tr>
+                        @endif
                     @endforeach
                 @else
                 <tr class="h-20">

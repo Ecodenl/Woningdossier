@@ -208,7 +208,7 @@ class UserActionPlanAdviceService
     public static function checkCoupledMeasuresAndMaintenance(array $categorizedActionPlan)
     {
 
-        if ((isset($categorizedActionPlan['maintenance']) && $categorizedActionPlan['energy_saving'])) {
+        if ((isset($categorizedActionPlan['maintenance']) && isset($categorizedActionPlan['energy_saving']))) {
 
             $maintenance = $categorizedActionPlan['maintenance'];
             $energySaving = $categorizedActionPlan['energy_saving'];

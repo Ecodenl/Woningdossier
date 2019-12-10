@@ -21,10 +21,16 @@ class BuildingTypeController extends Controller
         $buildingTypeId = $request->get('building_type_id');
         $buildYear = $request->get('build_year');
         $building = HoomdossierSession::getBuilding(true);
-        $building->buildingFeatures()->updateOrCreate([], [
-            'building_type_id' => $buildingTypeId,
-            'build_year' => $buildYear,
-        ]);
+        $inputSource = HoomdossierSession::getInputSource(true);
+        $building->buildingFeatures()->updateOrCreate(
+            [
+                'input_source_id' => $inputSource->id
+            ],
+            [
+                'building_type_id' => $buildingTypeId,
+                'build_year' => $buildYear,
+            ]
+        );
 
         return response()->json();
     }

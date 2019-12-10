@@ -10,6 +10,7 @@ use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
+use App\Models\Role;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
@@ -39,14 +40,19 @@ class ExampleBuildingController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response|\Illuminate\View\View
+     * @param Cooperation $cooperation
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create()
+    public function create(Cooperation $cooperation)
     {
         $buildingTypes = BuildingType::all();
-        $cooperations = Cooperation::all();
 
-        $contentStructure = $this->filterOutUserInterestQuestions(ToolHelper::getContentStructure());
+        $cooperations = collect()->push($cooperation);
+        if (HoomdossierSession::getRole(true)->short === 'super-admin') {
+            $cooperations = Cooperation::all();
+        }
+
+        $contentStructure = $this->onlyApplicableInputs(ToolHelper::getContentStructure());
 
         return view('cooperation.admin.example-buildings.create',
             compact(

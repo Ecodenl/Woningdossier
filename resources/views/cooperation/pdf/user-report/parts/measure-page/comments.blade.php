@@ -1,4 +1,4 @@
-@if(isset($commentsByStep[$stepShort][$subStepShort]) && !\App\Helpers\Arr::isWholeArrayEmpty($commentsByStep[$stepShort][$subStepShort]))
+@if(isset($commentsByStep[$stepShort][$subStepShort]) && !\App\Helpers\Arr::isWholeArrayEmpty($commentsByStep[$stepShort][$subStepShort], 'bier'))
 <div class="question-answer-section">
     <p class="lead">{{$title ?? __('pdf/user-report.measure-pages.comments.title')}}</p>
     @foreach($commentsByStep[$stepShort][$subStepShort] as $inputSourceName => $comment)
@@ -7,10 +7,12 @@
             <tbody>
                 @if(is_array($comment))
                     @foreach($comment as $short => $comment)
-                        <tr class="h-20">
-                            <td class="w-100">{{$inputSourceName}} (@lang("pdf/user-report.measure-pages.comments.short-translations.{$short}"))</td>
-                            <td>{!!  nl2br($comment, '<br>')!!}</td>
-                        </tr>
+                        @if(!empty($comment))
+                            <tr class="h-20">
+                                <td class="w-100">{{$inputSourceName}} (@lang("pdf/user-report.measure-pages.comments.short-translations.{$short}"))</td>
+                                <td>{!!  nl2br($comment, '<br>')!!}</td>
+                            </tr>
+                        @endif
                     @endforeach
                 @else
                 <tr class="h-20">

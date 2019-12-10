@@ -13,39 +13,39 @@ use Illuminate\Support\Facades\Input;
 /**
  * App\Models\Building.
  *
- * @property int                                                                             $id
- * @property int|null                                                                        $user_id
- * @property string                                                                          $street
- * @property string                                                                          $number
- * @property string                                                                          $extension
- * @property string                                                                          $city
- * @property string                                                                          $postal_code
- * @property string                                                                          $country_code
- * @property int|null                                                                        $owner
- * @property int                                                                             $primary
- * @property string                                                                          $bag_addressid
- * @property int|null                                                                        $example_building_id
- * @property \Illuminate\Support\Carbon|null                                                 $created_at
- * @property \Illuminate\Support\Carbon|null                                                 $updated_at
- * @property \Illuminate\Support\Carbon|null                                                 $deleted_at
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingCoachStatus[]      $buildingCoachStatuses
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[]          $buildingElements
- * @property \App\Models\BuildingFeature                                                     $buildingFeatures
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[]            $buildingNotes
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[]       $buildingPermissions
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[]          $buildingServices
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingStatus[]           $buildingStatuses
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[]             $completedSteps
+ * @property int $id
+ * @property int|null $user_id
+ * @property string $street
+ * @property string $number
+ * @property string $extension
+ * @property string $city
+ * @property string $postal_code
+ * @property string $country_code
+ * @property int|null $owner
+ * @property int $primary
+ * @property string $bag_addressid
+ * @property int|null $example_building_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingCoachStatus[] $buildingCoachStatuses
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[] $buildingElements
+ * @property \App\Models\BuildingFeature $buildingFeatures
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingStatus[] $buildingStatuses
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[] $completedSteps
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
- * @property \App\Models\BuildingPaintworkStatus                                             $currentPaintworkStatus
- * @property \App\Models\ExampleBuilding|null                                                $exampleBuilding
- * @property \App\Models\BuildingHeater                                                      $heater
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[]           $privateMessages
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[]             $progress
- * @property \App\Models\BuildingPvPanel                                                     $pvPanels
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[]          $questionAnswers
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[]         $roofTypes
- * @property \App\Models\User|null                                                           $user
+ * @property \App\Models\BuildingPaintworkStatus $currentPaintworkStatus
+ * @property \App\Models\ExampleBuilding|null $exampleBuilding
+ * @property \App\Models\BuildingHeater $heater
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[] $privateMessages
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[] $progress
+ * @property \App\Models\BuildingPvPanel $pvPanels
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[] $questionAnswers
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[] $roofTypes
+ * @property \App\Models\User|null $user
  *
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building newModelQuery()
@@ -120,7 +120,7 @@ class Building extends Model
      */
     public function hasNotCompleted(Step $step)
     {
-        return ! $this->hasCompleted($step);
+        return !$this->hasCompleted($step);
     }
 
     /**
@@ -203,28 +203,28 @@ class Building extends Model
     {
         // determine fitting example building based on year + house type
         $features = $this->buildingFeatures;
-        if (! $features instanceof BuildingFeature) {
+        if (!$features instanceof BuildingFeature) {
             return null;
         }
-        if (! $features->buildingType instanceof BuildingType) {
+        if (!$features->buildingType instanceof BuildingType) {
             return null;
         }
         $example = ExampleBuilding::whereNull('cooperation_id')
-                       ->where('buiding_type_id', $features->buildingType->id)
-                        ->first();
+            ->where('buiding_type_id', $features->buildingType->id)
+            ->first();
 
         return $example;
     }
 
     public function getExampleValueForStep(Step $step, $formKey)
     {
-        return $this->getExampleValue($step->slug.'.'.$formKey);
+        return $this->getExampleValue($step->slug . '.' . $formKey);
     }
 
     public function getExampleValue($key)
     {
         $example = $this->getExampleBuilding();
-        if (! $example instanceof ExampleBuilding) {
+        if (!$example instanceof ExampleBuilding) {
             return null;
         }
 
@@ -233,7 +233,7 @@ class Building extends Model
 
     public function getBuildYear()
     {
-        if (! $this->buildingFeatures instanceof BuildingFeature) {
+        if (!$this->buildingFeatures instanceof BuildingFeature) {
             return null;
         }
 
@@ -249,10 +249,10 @@ class Building extends Model
     {
         if ($inputSource instanceof InputSource) {
 
-        return $this->buildingElements()
-            ->forInputSource($inputSource)
-            ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
-            ->where('e.short', $short)->first(['building_elements.*']);
+            return $this->buildingElements()
+                ->forInputSource($inputSource)
+                ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
+                ->where('e.short', $short)->first(['building_elements.*']);
         }
 
 

@@ -56,7 +56,7 @@
 @component('cooperation.pdf.components.new-page')
     <div class="container">
 
-        @foreach (\Illuminate\Support\Arr::only($reportData[$stepShort], ['usage', 'interests']) as $subStepShort => $dataForSubStep)
+        @foreach (\Illuminate\Support\Arr::only($reportData[$stepShort], ['usage', 'interest']) as $subStepShort => $dataForSubStep)
             <div class="question-answer-section">
                 <p class="lead">
                     {{\App\Models\Step::findByShort($subStepShort)->name}}

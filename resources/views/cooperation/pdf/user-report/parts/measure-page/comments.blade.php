@@ -1,4 +1,4 @@
-@isset($commentsByStep[$stepShort][$subStepShort])
+@if(isset($commentsByStep[$stepShort][$subStepShort]) && !\App\Helpers\Arr::isWholeArrayEmpty($commentsByStep[$stepShort][$subStepShort], 'bier'))
 <div class="question-answer-section">
     <p class="lead">{{$title ?? __('pdf/user-report.measure-pages.comments.title')}}</p>
     @foreach($commentsByStep[$stepShort][$subStepShort] as $inputSourceName => $comment)
@@ -22,4 +22,4 @@
         </table>
     @endforeach
 </div>
-@endisset
+@endif

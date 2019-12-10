@@ -4,9 +4,11 @@ ul.progress-list {
   $imageSize: 50px;
 
   li {
+    width: 75px;
     .glyphicon {
       top: 25px;
-      left: -25px;
+      //left: -25px;
+      margin-left: -25px;
       font-size: 25px;
     }
 
@@ -22,11 +24,15 @@ ul.progress-list {
     }
 
     a {
+      // trans border so we dont have a jumpy layout
+      border: 5px solid transparent;
+      border-radius: 100%;
+      display: inline-block;
+
       img {
         width: $imageSize;
         height: $imageSize;
         border: 1px solid #939596;
-        //border: $borderWidth solid transparent;
         &.no-border {
           border: none;
         }
@@ -34,17 +40,17 @@ ul.progress-list {
 
 
       &:hover, &:active, &:focus {
-        img {
-          border: $borderWidth solid $brand-secundairy !important;
+        text-decoration: none;
+        border: $borderWidth solid $brand-secundairy;
+        &.no-border {
+          border: none;
         }
       }
     }
 
     &.active {
       a {
-        img {
-          border: $borderWidth solid $brand-tertiary;
-        }
+        border: $borderWidth solid $brand-tertiary;
       }
     }
   }

@@ -69,8 +69,13 @@ class CurrentStateController extends Controller
         $elements = $request->get('elements', []);
         foreach ($elements as $elementShort => $elementData) {
             $building->buildingElements()->updateOrCreate(
-                ['element_id' => $elementData['element_id']],
-                ['element_value_id' => $elementData['element_value_id']]
+                [
+                    'element_id' => $elementData['element_id'],
+                    'input_source_id' => $inputSource->id,
+                ],
+                [
+                    'element_value_id' => $elementData['element_value_id']
+                ]
             );
         }
 
@@ -78,7 +83,10 @@ class CurrentStateController extends Controller
         $services = $request->get('services', []);
         foreach ($services as $serviceData) {
             $building->buildingServices()->updateOrCreate(
-                ['service_id' => $serviceData['service_id']],
+                [
+                    'service_id' => $serviceData['service_id'],
+                    'input_source_id' => $inputSource->id,
+                ],
                 Arr::except($serviceData, 'service_id')
             );
         }
@@ -139,8 +147,8 @@ class CurrentStateController extends Controller
         }
 
         // save buildign features, pv panels and the comments
-        $building->pvPanels()->updateOrCreate([], $request->input('building_pv_panels'));
-        $building->buildingFeatures()->updateOrCreate([], $request->input('building_features'));
+        $building->pvPanels()->updateOrCreate(['input_source_id' => $inputSource->id], $request->input('building_pv_panels'));
+        $building->buildingFeatures()->updateOrCreate(['input_source_id' => $inputSource->id], $request->input('building_features'));
         foreach ($request->input('step_comments.comment') as $short => $comment) {
             StepCommentService::save($building, $inputSource, $step, $comment, $short);
         }

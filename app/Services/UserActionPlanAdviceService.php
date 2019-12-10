@@ -213,7 +213,7 @@ class UserActionPlanAdviceService
 
 
         // we will have to compare the year / interest levels of the energy saving and maintenance with each other
-        if (isset($maintenance['roof-insulation']) && $energySaving['roof-insulation']) {
+        if (isset($maintenance['roof-insulation']) && isset($energySaving['roof-insulation'])) {
                 $maintenanceForRoofInsulation = $maintenance['roof-insulation'];
                 $energySavingForRoofInsulation = $energySaving['roof-insulation'];
 

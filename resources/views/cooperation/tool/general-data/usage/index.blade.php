@@ -46,7 +46,9 @@
                             <input type="radio" name="user_energy_habits[cook_gas]" required="required" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'cook_gas')) == 2) checked @endif value="2">{{\App\Helpers\Translation::translate('general.options.no.title')}}
                         </label>
                         <div class="input-group-btn">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <img  src="{{asset('images/input-source-icon.png')}}" alt="" style="height: 22px; display: block;">
+                            </button>
                             <ul class="dropdown-menu">
                                 <?php
                                     // we need to check if there is a answer from one input source

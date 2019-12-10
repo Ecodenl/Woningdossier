@@ -68,6 +68,7 @@ class BuildingCharacteristicsController extends Controller
             $url .= '#'.$nextStep['tab_id'];
         }
 
+
         return redirect($url);
     }
 

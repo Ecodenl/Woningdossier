@@ -112,11 +112,13 @@ class UserController extends Controller
             ParticipantAddedEvent::dispatch($coach, $building);
         }
 
+
         // if the account is recently created we have to send a confirmation mail
         // else we send a notification to the user he is associated with a new cooperation
         if ($account->wasRecentlyCreated) {
             // and send the account confirmation mail.
             $this->sendAccountConfirmationMail($cooperation, $account);
+            $account->confirm();
         } else {
             $this->sendAccountAssociatedMail($cooperation, $account);
         }

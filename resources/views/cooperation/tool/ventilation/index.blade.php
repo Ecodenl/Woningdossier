@@ -39,7 +39,7 @@
                         }
                     ?>
 
-                    @component('cooperation.tool.components.step-question', ['id' => 'how', 'translation' => 'cooperation/tool/ventilation.index.how', 'required' => true])
+                    @component('cooperation.tool.components.step-question', ['id' => 'how', 'name' => 'building_ventilations.how', 'translation' => 'cooperation/tool/ventilation.index.how', 'required' => true])
                         @component('cooperation.tool.components.input-group',
                     ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'how'])
 

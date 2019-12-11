@@ -53,13 +53,13 @@
                                     <?php
                                         /** @var \Illuminate\Support\Collection $interests */
                                         $userSelectedInterest = $userInterests[$measureApplication->id] ?? null;
-                                        $userInput = old('user_interests.'.$measureApplication->id.'.interest_id', $userSelectedInterest)
+                                        $userInput = old("user_interests.{$measureApplication->id}.interest_id", $userSelectedInterest)
                                     ?>
                                     @foreach($interests as $interest)
                                         {{-- calculate_value 4 is the default --}}
                                         <option data-calculate-value="{{$interest->calculate_value}}"
                                                 @if(!empty($userInput))
-                                                    @if($interest->id == old('user_interests.'.$measureApplication->id.'.interest_id', $userSelectedInterest))
+                                                    @if($interest->id == $userInput)
                                                         selected="selected"
                                                     @endif
                                                 {{--when no answer is given select the default interest--}}

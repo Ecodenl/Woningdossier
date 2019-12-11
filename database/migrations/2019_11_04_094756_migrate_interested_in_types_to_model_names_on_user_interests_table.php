@@ -25,6 +25,7 @@ class MigrateInterestedInTypesToModelNamesOnUserInterestsTable extends Migration
             $this->line('migrating data for user_id: '.$userInterest->user_id);
             $this->line('migrating data for input_source_id: '.$userInterest->input_source_id);
             $this->line('old interested_in_type: '.$userInterest->interested_in_type);
+            $this->line('old interested_in_id: '.$userInterest->interested_in_id);
             $newInterestedInType = $this->determineInterestedInType($userInterest);
 
 

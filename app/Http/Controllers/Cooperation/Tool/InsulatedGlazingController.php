@@ -78,7 +78,7 @@ class InsulatedGlazingController extends Controller
         $buildingInsulatedGlazings = [];
         $buildingInsulatedGlazingsForMe = [];
 
-        $buildingFeaturesForMe = $building->buildingFeatures->forMe()->get();
+        $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
         $userInterests = [];
 
         foreach ($measureApplicationShorts as $measureApplicationShort) {

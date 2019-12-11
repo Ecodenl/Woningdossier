@@ -221,7 +221,8 @@
                         @endforeach
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                <span class="caret"></span></button>
+                                <img  src="{{asset('images/input-source-icon.png')}}" alt="" style="height: 22px; display: block;">
+                            </button>
                             <ul class="dropdown-menu">
                                 <?php
                                     // check if there is a answer available from a input source.

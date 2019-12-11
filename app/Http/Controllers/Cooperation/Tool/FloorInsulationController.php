@@ -42,7 +42,8 @@ class FloorInsulationController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Cooperation $cooperation
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Cooperation $cooperation)
     {
@@ -54,7 +55,7 @@ class FloorInsulationController extends Controller
         $buildingInsulation = $building->getBuildingElement('floor-insulation');
         $buildingInsulationForMe = $building->getBuildingElementsForMe('floor-insulation');
 
-        $floorInsulation = $buildingInsulation instanceof BuildingElement ? $buildingInsulation->element : null;
+        $floorInsulation = optional($buildingInsulation)->element;
 
         $crawlspace = Element::where('short', 'crawlspace')->first();
         $buildingCrawlspace = $building->getBuildingElement($crawlspace->short);

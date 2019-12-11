@@ -23,7 +23,7 @@ class BuildingDataCopyService
                 'where_column' => 'interested_in_type',
                 'additional_where_column' => 'interested_in_id',
             ],
-            'building_features',
+
             'building_elements' => [
                 'where_column' => 'element_id',
                 'additional_where_column' => 'element_value_id',
@@ -86,6 +86,7 @@ class BuildingDataCopyService
             if (is_array($tableOrWhereColumns) && array_key_exists('where_column', $tableOrWhereColumns)) {
                 $whereColumn = $tableOrWhereColumns['where_column'];
 
+
                 // loop through the answers from the desired input source
                 foreach ($fromValues as $fromValue) {
                     if ($fromValue instanceof \stdClass && isset($fromValue->$whereColumn)) {
@@ -135,6 +136,7 @@ class BuildingDataCopyService
                             // cast the results to a array
                             $toValue = (array) $toValue;
                             $fromValue = (array) $fromValue;
+
 
                             // YAY! data has been copied so update or create the target input source his records.
                             if ($toValueQuery->first() instanceof \stdClass) {

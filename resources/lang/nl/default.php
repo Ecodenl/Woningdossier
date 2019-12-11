@@ -21,6 +21,8 @@ return [
     'no' => 'Nee',
 
     'progress' => [
+        'not-completed' => ':step - deze stap is nog niet afgerond',
+        'completed' => ':step - U heeft deze stap afgerond',
         'disabled' => 'U heeft geen interesse in deze maatregel',
     ],
 

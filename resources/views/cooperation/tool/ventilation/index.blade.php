@@ -300,9 +300,13 @@
     <script>
         $(document).ready(function () {
 
-            $("input[type=checkbox]").change(function(){
+            $("input[type=checkbox]").change(function(event) {
+                // when trigger('') is used, there wont be a orginalEvent,
+                var eventIsTriggeredByUser = typeof event.originalEvent !== "undefined";
 
-                if(this.name.indexOf('[how]') !== -1) {
+                // we only want to do this when the event is triggerd by a user and not jquery itself.
+                // if this gets triggered onload the none value will always be unchecked.
+                if(this.name.indexOf('[how]') !== -1 && eventIsTriggeredByUser) {
                     // only do this when building_ventilations[how][] 'none' is clicked to be enabled!
                     // unset all other values for building_ventilations[how][]
                     // using .indexOf instead of .includes because of Internet Exploder compatibility

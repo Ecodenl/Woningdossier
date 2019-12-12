@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 use App\Http\Controllers\Controller;
 use App\Models\FileStorage;
 use App\Models\FileTypeCategory;
+use App\Models\InputSource;
+use App\Models\Step;
+use App\Models\User;
+use Spatie\TranslationLoader\TranslationLoaders\Db;
 
 class ReportController extends Controller
 {

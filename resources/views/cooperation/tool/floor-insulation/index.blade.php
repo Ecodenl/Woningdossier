@@ -198,9 +198,9 @@
                 </div>
             </div>
 
-            <div class="row" id="no-crawlspace-error">
+            <div class="row d-none" id="no-crawlspace-error">
                 <div class="col-md-12">
-                    <div class="alert alert-danger show" role="alert">
+                    <div class="alert alert-danger" role="alert">
                         <p>{{ \App\Helpers\Translation::translate('floor-insulation.has-crawlspace.no-crawlspace.title') }}</p>
                     </div>
                 </div>
@@ -310,10 +310,12 @@
                 $("#hideable").show();
                 $("#answers").show();
                 $("#has-no-crawlspace").show();
+                console.log('reset');
             }
 
             function crawlspaceOptions() {
                 if ($("#has_crawlspace").val() === "no") {
+                    console.log('weird');
                     $(".crawlspace-accessible").hide();
                     $("#no-crawlspace-error").show();
                 } else {

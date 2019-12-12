@@ -10,7 +10,6 @@ class ReportController extends Controller
 {
     public function index()
     {
-
         $reportFileTypeCategory = FileTypeCategory::short('report')
             ->with(['fileTypes' => function ($query) {
                 $query->where('short', '!=', 'pdf-report')

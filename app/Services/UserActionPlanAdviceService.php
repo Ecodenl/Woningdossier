@@ -266,10 +266,6 @@ class UserActionPlanAdviceService
             }
         }
 
-
-
-
-
         return $categorizedActionPlan;
     }
 }

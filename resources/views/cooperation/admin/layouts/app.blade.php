@@ -92,7 +92,7 @@
 
 <script>
     $(document).ready(function () {
-        // pollForMessageCount();
+        pollForMessageCount();
 
         $('.collapse').on('shown.bs.collapse', function () {
             $(this).parent().find(".glyphicon-chevron-down").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");

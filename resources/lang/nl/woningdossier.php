@@ -29,14 +29,14 @@ return [
     'cooperation'             => [
         'create-building' => [
             'current-login-info' => [
-                'header' => 'Voer uw huidige login gegevens in.',
+                'header' => 'Voer uw e-mail in ter controlle.',
             ],
             'building'           => [
                 'header' => 'Vul uw adres in.',
                 'store'  => 'Adres aanmaken',
             ],
             'store'              => [
-                'success' => 'Uw adres is toegevoegd aan het Hoomdossier, u kunt nu gebruik maken van de tool.',
+                'success' => 'Uw adres is toegevoegd aan het Hoomdossier, u kunt nu inloggen.',
             ],
         ],
 
@@ -273,7 +273,7 @@ return [
             ],
             'users'             => [
                 'show' => [
-                    'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city, :email',
+                    'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city, :email, :phone-number',
 
                     'observe-building' => [
                         'label'  => 'Woning bekijken',
@@ -604,6 +604,7 @@ return [
                     ],
 
                     'store'   => [
+                        'private-message-allowed-access' => 'U heeft de coöperatie toegang gegeven tot uw Hoomdossier.',
                         'success' => 'Gebruiker is toevoegd!',
                     ],
                     'destroy' => [

@@ -12,39 +12,39 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * App\Models\Building.
  *
- * @property int                                                                             $id
- * @property int|null                                                                        $user_id
- * @property string                                                                          $street
- * @property string                                                                          $number
- * @property string                                                                          $extension
- * @property string                                                                          $city
- * @property string                                                                          $postal_code
- * @property string                                                                          $country_code
- * @property int|null                                                                        $owner
- * @property int                                                                             $primary
- * @property string                                                                          $bag_addressid
- * @property int|null                                                                        $example_building_id
- * @property \Illuminate\Support\Carbon|null                                                 $created_at
- * @property \Illuminate\Support\Carbon|null                                                 $updated_at
- * @property \Illuminate\Support\Carbon|null                                                 $deleted_at
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingCoachStatus[]      $buildingCoachStatuses
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[]          $buildingElements
- * @property \App\Models\BuildingFeature                                                     $buildingFeatures
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[]            $buildingNotes
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[]       $buildingPermissions
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[]          $buildingServices
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingStatus[]           $buildingStatuses
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[]             $completedSteps
+ * @property int $id
+ * @property int|null $user_id
+ * @property string $street
+ * @property string $number
+ * @property string $extension
+ * @property string $city
+ * @property string $postal_code
+ * @property string $country_code
+ * @property int|null $owner
+ * @property int $primary
+ * @property string $bag_addressid
+ * @property int|null $example_building_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingCoachStatus[] $buildingCoachStatuses
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[] $buildingElements
+ * @property \App\Models\BuildingFeature $buildingFeatures
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingStatus[] $buildingStatuses
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[] $completedSteps
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
- * @property \App\Models\BuildingPaintworkStatus                                             $currentPaintworkStatus
- * @property \App\Models\ExampleBuilding|null                                                $exampleBuilding
- * @property \App\Models\BuildingHeater                                                      $heater
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[]           $privateMessages
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserProgress[]             $progress
- * @property \App\Models\BuildingPvPanel                                                     $pvPanels
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[]          $questionAnswers
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[]         $roofTypes
- * @property \App\Models\User|null                                                           $user
+ * @property \App\Models\BuildingPaintworkStatus $currentPaintworkStatus
+ * @property \App\Models\ExampleBuilding|null $exampleBuilding
+ * @property \App\Models\BuildingHeater $heater
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[] $privateMessages
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[] $progress
+ * @property \App\Models\BuildingPvPanel $pvPanels
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[] $questionAnswers
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[] $roofTypes
+ * @property \App\Models\User|null $user
  *
  * @method static bool|null forceDelete()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building newModelQuery()
@@ -93,19 +93,20 @@ class Building extends Model
         return ['example_building_id'];
     }
 
+    public function stepComments()
+    {
+        return $this->hasMany(StepComment::class);
+    }
+
     /**
      * Check if a step is completed for a building with matching input source id.
      *
-     * @NeedsReview
-     *
      * @param Step $step
-     *
      * @return bool
      */
     public function hasCompleted(Step $step)
     {
-        return $this->find(HoomdossierSession::getBuilding())
-                ->completedSteps()
+        return $this->completedSteps()
                 ->where('step_id', $step->id)->count() > 0;
     }
 
@@ -118,7 +119,7 @@ class Building extends Model
      */
     public function hasNotCompleted(Step $step)
     {
-        return ! $this->hasCompleted($step);
+        return !$this->hasCompleted($step);
     }
 
     /**
@@ -128,56 +129,7 @@ class Building extends Model
      */
     public function completedSteps()
     {
-        return $this->hasMany(UserProgress::class);
-    }
-
-    /**
-     * Check if a user is interested in a step.
-     *
-     * @param InputSource $inputSource
-     * @param $type
-     * @param array $interestedInIds
-     *
-     * @return bool
-     */
-    public function isInterestedInStep(InputSource $inputSource, $type, $interestedInIds = [])
-    {
-        // the interest ids that people select when they do not have any interest
-        $noInterestIds = [4, 5];
-
-        $interestedIds = [];
-
-        if (! is_array($interestedInIds)) {
-            $interestedInIds = [$interestedInIds];
-        }
-
-        // go through the elementid and get the user interest id to put them into the array
-        foreach ($interestedInIds as $key => $interestedInId) {
-            if ($this->user->getInterestedType($type, $interestedInId, $inputSource) instanceof UserInterest) {
-                array_push($interestedIds, $this->user->getInterestedType($type, $interestedInId, $inputSource)->interest_id);
-            }
-        }
-
-        // check if the user wants to do something with their glazing
-        if ($interestedIds == array_intersect($interestedIds, $noInterestIds) && $this->user->getInterestedType($type, $interestedInId, $inputSource) instanceof UserInterest) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Check if a user is not interested in a step.
-     *
-     * @param InputSource $inputSource
-     * @param string      $type
-     * @param array       $interestedInIds
-     *
-     * @return bool
-     */
-    public function isNotInterestedInStep(InputSource $inputSource, $type, $interestedInIds = [])
-    {
-        return ! $this->isInterestedInStep($inputSource, $type, $interestedInIds);
+        return $this->hasMany(CompletedStep::class);
     }
 
     /**
@@ -220,14 +172,6 @@ class Building extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function progress()
-    {
-        return $this->hasMany(UserProgress::class);
-    }
-
-    /**
      * @return ExampleBuilding|null
      */
     public function getExampleBuilding()
@@ -247,28 +191,28 @@ class Building extends Model
     {
         // determine fitting example building based on year + house type
         $features = $this->buildingFeatures;
-        if (! $features instanceof BuildingFeature) {
+        if (!$features instanceof BuildingFeature) {
             return null;
         }
-        if (! $features->buildingType instanceof BuildingType) {
+        if (!$features->buildingType instanceof BuildingType) {
             return null;
         }
         $example = ExampleBuilding::whereNull('cooperation_id')
-                       ->where('buiding_type_id', $features->buildingType->id)
-                        ->first();
+            ->where('buiding_type_id', $features->buildingType->id)
+            ->first();
 
         return $example;
     }
 
     public function getExampleValueForStep(Step $step, $formKey)
     {
-        return $this->getExampleValue($step->slug.'.'.$formKey);
+        return $this->getExampleValue($step->slug . '.' . $formKey);
     }
 
     public function getExampleValue($key)
     {
         $example = $this->getExampleBuilding();
-        if (! $example instanceof ExampleBuilding) {
+        if (!$example instanceof ExampleBuilding) {
             return null;
         }
 
@@ -277,7 +221,7 @@ class Building extends Model
 
     public function getBuildYear()
     {
-        if (! $this->buildingFeatures instanceof BuildingFeature) {
+        if (!$this->buildingFeatures instanceof BuildingFeature) {
             return null;
         }
 
@@ -289,8 +233,14 @@ class Building extends Model
      *
      * @return BuildingElement|null
      */
-    public function getBuildingElement($short)
+    public function getBuildingElement($short, InputSource $inputSource = null)
     {
+        if ($inputSource instanceof InputSource) {
+            return $this->buildingElements()
+                ->forInputSource($inputSource)
+                ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
+                ->where('e.short', $short)->first(['building_elements.*']);
+        }
         return $this->buildingElements()
             ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
             ->where('e.short', $short)->first(['building_elements.*']);

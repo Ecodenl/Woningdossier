@@ -39,7 +39,7 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class ExampleBuilding extends Model
+class  ExampleBuilding extends Model
 {
     use TranslatableTrait;
 

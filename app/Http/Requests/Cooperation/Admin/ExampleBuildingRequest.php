@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Cooperation\Admin;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\Old;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -15,7 +16,7 @@ class ExampleBuildingRequest extends FormRequest
      */
     public function authorize()
     {
-        return \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['super-admin', 'coordinator', 'cooperation-admin']);
+        return Hoomdossier::user()->hasRoleAndIsCurrentRole(['super-admin', 'coordinator', 'cooperation-admin']);
     }
 
     public function prepareForValidation()

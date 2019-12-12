@@ -68,6 +68,15 @@ class Account extends Authenticatable
     ];
 
     /**
+     * Confirm a account
+     */
+    public function confirm()
+    {
+        $this->confirm_token = null;
+        $this->save();
+    }
+
+    /**
      * Send the password reset notification.
      *
      * @param string $token
@@ -104,7 +113,7 @@ class Account extends Authenticatable
      */
     public function user()
     {
-        return $this->users()->first();
+        return \App\Helpers\Cache\Account::user($this);
     }
 
     /**

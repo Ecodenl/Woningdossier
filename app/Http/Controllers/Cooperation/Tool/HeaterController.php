@@ -8,8 +8,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\HeaterFormRequest;
-use App\Models\Building;
+use App\Http\Requests\Cooperation\Tool\HeaterFormRequest;
 use App\Models\BuildingHeater;
 use App\Models\ComfortLevelTapWater;
 use App\Models\MeasureApplication;
@@ -19,6 +18,8 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
+use App\Services\StepCommentService;
+use App\Services\UserInterestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -87,17 +88,20 @@ class HeaterController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $buildingId = $building->id;
-        $inputSourceId = HoomdossierSession::getInputSource();
+        $inputSource = HoomdossierSession::getInputSource(true);
+        $inputSourceId = $inputSource->id;
 
-        $interests = $request->input('interest', '');
-        UserInterest::saveUserInterests($user, $interests);
+
+        $userInterests = $request->input('user_interests');
+        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+
+        $stepComments = $request->input('step_comments');
+        StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         // Store the building heater part
         $buildingHeaters = $request->input('building_heaters', '');
         $pvPanelOrientation = isset($buildingHeaters['pv_panel_orientation_id']) ? $buildingHeaters['pv_panel_orientation_id'] : '';
         $angle = isset($buildingHeaters['angle']) ? $buildingHeaters['angle'] : '';
-        $comment = $request->get('comment', '');
-        $comment = is_null($comment) ? '' : $comment;
 
         BuildingHeater::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
@@ -107,7 +111,6 @@ class HeaterController extends Controller
             [
                 'pv_panel_orientation_id' => $pvPanelOrientation,
                 'angle' => $angle,
-                'comment' => $comment,
             ]
         );
 

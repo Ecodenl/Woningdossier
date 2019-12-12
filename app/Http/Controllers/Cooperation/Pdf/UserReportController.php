@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Pdf;
 
+use App\Helpers\Arr;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
@@ -48,37 +49,51 @@ class UserReportController extends Controller
         $userActionPlanAdvices = UserActionPlanAdviceService::getPersonalPlan($user, $inputSource);
 
         // we don't want the advices, we need to show them in a different way.
-        $advices = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
+        $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
         // full report for a user
-        $reportForUser = DumpService::totalDump($user, $inputSource, false);
+        $reportForUser = DumpService::totalDump($user, $inputSource, false, true, true);
 
         // the translations for the columns / tables in the user data
         $reportTranslations = $reportForUser['translations-for-columns'];
 
-        // undot it so we can handle the data in view later on
-        $reportData = \App\Helpers\Arr::arrayUndot($reportForUser['user-data']);
+        $calculations = $reportForUser['calculations'];
+        $reportData = [];
+
+        foreach ($reportForUser['user-data'] as $key => $value) {
+            // so we now its a step.
+            if (is_string($key)) {
+                $keys = explode('.', $key);
+
+                $tableData = array_splice($keys, 2);
+
+                // we dont want the calculations in the report data, we need them separate
+                if (!in_array('calculation', $tableData)) {
+                    $reportData[$keys[0]][$keys[1]][implode('.', $tableData)] = $value;
+                }
+            }
+        }
+
 
         // steps that are considered to be measures.
-        $stepSlugs = \DB::table('steps')
-            ->where('slug', '!=', 'building-detail')
-            ->where('slug', '!=', 'general-data')
-            ->select('slug', 'id')
+        $stepShorts = \DB::table('steps')
+//            ->where('short', '!=', 'general-data')
+            ->select('short', 'id')
             ->get()
-            ->pluck('slug', 'id')
+            ->pluck('short', 'id')
             ->flip()
             ->toArray();
 
         // retrieve all the comments by for each input source on a step
-        $commentsByStep = StepHelper::getAllCommentsByStep($user);
+        $commentsByStep = StepHelper::getAllCommentsByStep($building);
 
         $noInterest = Interest::where('calculate_value', 4)->first();
 
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'userCooperation', 'stepSlugs', 'inputSource',
+            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'measuresToCheckForCorrespondingPlannedYear',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
-            'buildingFeatures', 'advices', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings'
+            'buildingFeatures', 'measures', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
         ));
 
         return $pdf->stream();

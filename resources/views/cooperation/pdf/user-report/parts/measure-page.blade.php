@@ -5,18 +5,22 @@
     // spoiler: it became bloated.
 
     // calculations
-    $calculationsForStep = $dataForStep['calculation'] ?? [];
-    unset($dataForStep['calculation']);
+    $calculationsForStep =  $calculations[$stepShort][$subStepShort] ?? [];
 ?>
 
-@switch($stepSlug)
+@switch($stepShort)
     @case('insulated-glazing')
-        @include('cooperation.pdf.user-report.steps.insulated-glazing')
+        @include('cooperation.pdf.user-report.steps.insulated-glazing', [
+            'dataForSubStep' => \App\Helpers\Arr::arrayUndot($dataForSubStep)
+        ])
     @break
 
     @case('roof-insulation')
-        @include('cooperation.pdf.user-report.steps.roof-insulation')
+        @include('cooperation.pdf.user-report.steps.roof-insulation', [
+            'dataForSubStep' => \App\Helpers\Arr::arrayUndot($dataForSubStep)
+        ])
     @break
+
 
     @default
         @component('cooperation.pdf.components.new-page')
@@ -26,9 +30,12 @@
 
             @include('cooperation.pdf.user-report.parts.measure-page.filled-in-data')
 
-            @include('cooperation.pdf.user-report.parts.measure-page.insulation-advice')
+            {{--since no calculations are done here--}}
+            @if($stepShort != 'general-data')
+                @include('cooperation.pdf.user-report.parts.measure-page.insulation-advice')
 
-            @include('cooperation.pdf.user-report.parts.measure-page.indicative-costs-and-measures')
+                @include('cooperation.pdf.user-report.parts.measure-page.indicative-costs-and-measures')
+            @endif
 
             @include('cooperation.pdf.user-report.parts.measure-page.advices')
 

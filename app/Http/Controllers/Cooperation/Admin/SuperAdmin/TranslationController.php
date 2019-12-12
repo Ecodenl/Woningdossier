@@ -95,6 +95,8 @@ class TranslationController extends Controller
             }
         }
 
+        \Artisan::call('queue:restart');
+
         return redirect()
             ->route('cooperation.admin.super-admin.translations.index')
             ->with('success', __('woningdossier.cooperation.admin.super-admin.translations.update.success'));

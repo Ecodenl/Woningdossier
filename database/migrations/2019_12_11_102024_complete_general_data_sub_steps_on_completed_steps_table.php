@@ -7,6 +7,7 @@ use Illuminate\Database\Migrations\Migration;
 class CompleteGeneralDataSubStepsOnCompletedStepsTable extends Migration
 {
     use \App\Traits\DebugableMigrationTrait;
+
     /**
      * Run the migrations.
      *
@@ -18,26 +19,30 @@ class CompleteGeneralDataSubStepsOnCompletedStepsTable extends Migration
         $counter = 0;
 
         $generalData = DB::table('steps')->where('short', 'general-data')->first();
-        $generalDataSubSteps = DB::table('steps')->where('parent_id', $generalData->id)->get();
+
+        if ($generalData instanceof stdClass) {
 
 
-        $completedGeneralDataSteps = DB::table('completed_steps')
-            ->where('step_id', $generalData->id)
-            ->get();
+            $generalDataSubSteps = DB::table('steps')->where('parent_id', $generalData->id)->get();
 
-        foreach ($completedGeneralDataSteps as $completedGeneralDataStep) {
+            $completedGeneralDataSteps = DB::table('completed_steps')
+                ->where('step_id', $generalData->id)
+                ->get();
 
-            foreach ($generalDataSubSteps as $subStep) {
-                $counter++;
+            foreach ($completedGeneralDataSteps as $completedGeneralDataStep) {
 
-                DB::table('completed_steps')->insert([
-                    'step_id' => $subStep->id,
-                    'building_id' => $completedGeneralDataStep->building_id,
-                    'input_source_id' => $completedGeneralDataStep->input_source_id,
-                ]);
+                foreach ($generalDataSubSteps as $subStep) {
+                    $counter++;
+
+                    DB::table('completed_steps')->insert([
+                        'step_id' => $subStep->id,
+                        'building_id' => $completedGeneralDataStep->building_id,
+                        'input_source_id' => $completedGeneralDataStep->input_source_id,
+                    ]);
+                }
             }
+            $this->line("A total of {$counter} completed steps have been added");
         }
-        $this->line("A total of {$counter} completed steps have been added");
     }
 
     /**

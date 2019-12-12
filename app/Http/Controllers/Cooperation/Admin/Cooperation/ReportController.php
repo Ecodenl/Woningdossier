@@ -24,10 +24,6 @@ class ReportController extends Controller
                     }]);
             }])->first();
 
-        dd(
-            DumpService::totalDump(User::find(387), InputSource::findByShort('resident'), false)
-        );
-
         // Is there any file being processed for my cooperation
         $anyFilesBeingProcessed = FileStorage::leaveOutPersonalFiles()->withExpired()->beingProcessed()->count();
 

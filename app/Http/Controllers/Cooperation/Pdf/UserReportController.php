@@ -38,11 +38,6 @@ class UserReportController extends Controller
             ->with('measureApplication', 'insulatedGlazing', 'buildingHeating')
             ->get();
 
-        // the comments that have been made on the action plan
-        $userActionPlanAdviceComments = UserActionPlanAdviceComments::withoutGlobalScope(GetValueScope::class)
-            ->where('user_id', $user->id)
-            ->with('inputSource')
-            ->get();
 
         $steps = $userCooperation->getActiveOrderedSteps();
 
@@ -86,6 +81,14 @@ class UserReportController extends Controller
 
         // retrieve all the comments by for each input source on a step
         $commentsByStep = StepHelper::getAllCommentsByStep($building);
+
+
+        // the comments that have been made on the action plan
+        $userActionPlanAdviceComments = UserActionPlanAdviceComments::forMe($user)
+            ->with('inputSource')
+            ->get()
+            ->pluck('comment', 'inputSource.name')
+            ->toArray();
 
         $noInterest = Interest::where('calculate_value', 4)->first();
 

@@ -43,9 +43,12 @@
                 </table>
             </div>
 
-            @include('cooperation.pdf.user-report.parts.measure-page.comments', [
-                'title' => __('pdf/user-report.general-data.comment')
-            ])
+            @if(isset($commentsByStep[$stepShort][$subStepShort]) && !\App\Helpers\Arr::isWholeArrayEmpty($commentsByStep[$stepShort][$subStepShort]))
+                @include('cooperation.pdf.user-report.parts.measure-page.comments', [
+                    'title' => __('pdf/user-report.general-data.comment'),
+                    'comments' => $commentsByStep[$stepShort][$subStepShort],
+                ])
+            @endif
         @endforeach
 
     </div>
@@ -83,9 +86,12 @@
                 </table>
             </div>
 
-            @include('cooperation.pdf.user-report.parts.measure-page.comments', [
-                'title' => __('pdf/user-report.general-data.comment')
-            ])
+            @if(isset($commentsByStep[$stepShort][$subStepShort]) && !\App\Helpers\Arr::isWholeArrayEmpty($commentsByStep[$stepShort][$subStepShort]))
+                @include('cooperation.pdf.user-report.parts.measure-page.comments', [
+                    'title' => __('pdf/user-report.general-data.comment'),
+                    'comments' => $commentsByStep[$stepShort][$subStepShort],
+                ])
+            @endif
         @endforeach
 
     </div>

@@ -164,8 +164,8 @@ class Ventilation
                 $remark = __('my-plan.warnings.ventilation');
             }
 
-            $advices = MeasureApplication::where('step_id', '=',
-                $step->id)->whereIn('short', array_keys($measures))->get();
+            $advices = MeasureApplication::where('step_id', '=', $step->id)
+                ->whereIn('short', array_keys($measures))->get();
 
             $advices->each(function ($advice) {
                 $advice->name = $advice->measure_name;
@@ -183,10 +183,8 @@ class Ventilation
                 if ($currentCrackSealing instanceof BuildingElement && $currentCrackSealingCalculateValue > 1) {
                     $gas = 0;
                     if ($energyHabit instanceof UserEnergyHabit) {
-                        $boiler = $building->getServiceValue('boiler',
-                            $inputSource);
-                        $usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler,
-                            $energyHabit);
+                        $boiler = $building->getServiceValue('boiler', $inputSource);
+                        $usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler, $energyHabit);
                         $gas = $usages['heating']['bruto'];
                     }
 
@@ -218,7 +216,7 @@ class Ventilation
             $buildingOwner = $building->user;
 
             foreach ($advices as $advice) {
-                if ($buildingOwner->hasInterestIn($advice)) {
+                if ($buildingOwner->hasInterestIn($advice, $inputSource)) {
                     $advice->interest = true;
                 }
             }

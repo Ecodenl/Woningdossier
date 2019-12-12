@@ -31,7 +31,7 @@ class VentilationController extends Controller
 
     public function __construct(Request $request)
     {
-        $slug       = str_replace('/tool/', '', $request->getRequestUri());
+        $slug = str_replace('/tool/', '', $request->getRequestUri());
         $this->step = Step::where('slug', $slug)->first();
     }
 
@@ -81,28 +81,32 @@ class VentilationController extends Controller
         // default interest for measure application when checked: interest in the step itself
         $defaultInterest = Interest::orderBy('calculate_value')->first();
         $stepUserInterest = $building->user->userInterestsForSpecificType(get_class($step), $step->id, $inputSource)->first();
-        if ($stepUserInterest instanceof UserInterest){
+        if ($stepUserInterest instanceof UserInterest) {
             $defaultInterest = $stepUserInterest->interest;
         }
 
 
         foreach ($interestsInMeasureApplications as $measureApplicationId) {
-            UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationId , $defaultInterest->id);
+            UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationId, $defaultInterest->id);
         }
-        foreach($noInterestInMeasureApplications as $measureApplicationWithNoInterest){
+        foreach ($noInterestInMeasureApplications as $measureApplicationWithNoInterest) {
             UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationWithNoInterest->id, $noInterest->id);
         }
 
         $houseVentilationData = $request->input('building_ventilations');
 
         // Save ventilation data
-        $building->buildingVentilations()->updateOrCreate([
-            'input_source_id' => $inputSource->id,
-        ], [
-            'how' => $houseVentilationData['how'] ?? [],
-            'usage' => $houseVentilationData['usage'] ?? [],
-            'living_situation' => $houseVentilationData['living_situation'] ?? [],
-        ]);
+        $building->buildingVentilations()
+            ->updateOrCreate(
+                [
+                    'input_source_id' => $inputSource->id,
+                ],
+                [
+                    'how' => $houseVentilationData['how'] ?? [],
+                    'usage' => $houseVentilationData['usage'] ?? [],
+                    'living_situation' => $houseVentilationData['living_situation'] ?? [],
+                ]
+            );
 
         $this->saveAdvices($request);
         StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
@@ -140,15 +144,14 @@ class VentilationController extends Controller
         $interestsInMeasureApplications = $request->input('user_interests', []);
         $relevantAdvices = collect($results['advices'])->whereIn('id', $interestsInMeasureApplications);
 
-        foreach($relevantAdvices as $advice){
+        foreach ($relevantAdvices as $advice) {
             $measureApplication = MeasureApplication::find($advice['id']);
-            if ($measureApplication instanceof MeasureApplication){
+            if ($measureApplication instanceof MeasureApplication) {
                 if ($measureApplication->short == 'crack-sealing') {
-                    $actionPlanAdvice        = new UserActionPlanAdvice($results['result']['crack_sealing'] ?? []);
+                    $actionPlanAdvice = new UserActionPlanAdvice($results['result']['crack_sealing'] ?? []);
                     $actionPlanAdvice->costs = $results['result']['crack_sealing']['cost_indication'] ?? null; // only outlier
-                }
-                else {
-                    $actionPlanAdvice        = new UserActionPlanAdvice();
+                } else {
+                    $actionPlanAdvice = new UserActionPlanAdvice();
                 }
 
                 $actionPlanAdvice->planned = true;

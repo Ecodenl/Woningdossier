@@ -80,10 +80,11 @@ class PdfReport implements ShouldQueue
             ->get();
 
         // the comments that have been made on the action plan
-        $userActionPlanAdviceComments = UserActionPlanAdviceComments::withoutGlobalScope(GetValueScope::class)
-            ->where('user_id', $user->id)
+        $userActionPlanAdviceComments = UserActionPlanAdviceComments::forMe($user)
             ->with('inputSource')
-            ->get();
+            ->get()
+            ->pluck('comment', 'inputSource.name')
+            ->toArray();
 
         $steps = $userCooperation->getActiveOrderedSteps();
 

@@ -62,7 +62,7 @@ class QuestionnaireController extends Controller
             }
         }
 
-        Hoomdossier::user()->completeQuestionnaire($questionnaire);
+        $building->user->completeQuestionnaire($questionnaire);
 
         $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $questionnaire->step, $questionnaire);
         $url = $nextStep['url'];

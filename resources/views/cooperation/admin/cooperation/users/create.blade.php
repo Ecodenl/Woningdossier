@@ -178,9 +178,9 @@
                             <div class="col-sm-12">
 
                                 <div class="form-group{{ $errors->has('phone_number') ? ' has-error' : '' }}">
-                                    <label for="phone_number"
-                                           class="">@lang('woningdossier.cooperation.admin.cooperation.users.create.form.phone-number')
-                                        <span class="">*</span></label>
+                                    <label for="phone_number" class="">
+                                        @lang('woningdossier.cooperation.admin.cooperation.users.create.form.phone-number')
+                                    </label>
 
                                     <input id="phone_number" type="text" class="form-control" name="phone_number"
                                            value="{{ old('phone_number') }}">

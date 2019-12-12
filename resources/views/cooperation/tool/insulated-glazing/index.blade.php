@@ -14,7 +14,8 @@
         9 => 'hrpp-glass-frames',
     ];
     ?>
-    <form  method="POST" action="{{ route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation]) }}">
+    <form method="POST"
+          action="{{ route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 
         <div id="main-glass-questions">
@@ -44,21 +45,26 @@
                         @component('cooperation.tool.components.step-question', ['id' => 'user_interests.'.$measureApplication->id, 'translation' => 'insulated-glazing.'.$measureApplication->short.'.title', 'required' => false])
 
                             @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_id', $measureApplication->id),  'userInputColumn' => 'interest_id'])
-                                <input type="hidden" name="user_interests[{{ $measureApplication->id }}][interested_in_type]" value="{{get_class($measureApplication)}}">
-                                <select id="{{ $measureApplication->id }}" class="user-interest form-control" name="user_interests[{{ $measureApplication->id }}][interest_id]">
+                                <input type="hidden"
+                                       name="user_interests[{{ $measureApplication->id }}][interested_in_type]"
+                                       value="{{get_class($measureApplication)}}">
+                                <select id="{{ $measureApplication->id }}" class="user-interest form-control"
+                                        name="user_interests[{{ $measureApplication->id }}][interest_id]">
                                     <?php
                                         /** @var \Illuminate\Support\Collection $interests */
-                                        $oldInterestDataIsAvailable = $interests->contains('id', old("user_interests.{$measureApplication->id}.interest_id"));
-                                        $userSelectedInterest = $userInterests[$measureApplication->id] ?? null
+                                        $userSelectedInterest = $userInterests[$measureApplication->id] ?? null;
+                                        $userInput = old("user_interests.{$measureApplication->id}.interest_id", $userSelectedInterest)
                                     ?>
                                     @foreach($interests as $interest)
                                         {{-- calculate_value 4 is the default --}}
                                         <option data-calculate-value="{{$interest->calculate_value}}"
-                                                @if($interest->id == old("user_interests.{$measureApplication->id}.interest_id", $userSelectedInterest))
-                                                    selected="selected"
+                                                @if(!empty($userInput))
+                                                    @if($interest->id == $userInput)
+                                                        selected="selected"
+                                                    @endif
                                                 {{--when no answer is given select the default interest--}}
                                                 @elseif(is_null($userSelectedInterest) && $interest->calculate_value == 4)
-                                                    selected="selected"
+                                                   selected="selected"
                                                 @endif
                                                 value="{{ $interest->id }}">{{ $interest->name }}
                                         </option>
@@ -110,8 +116,11 @@
 
                         </div>
                         <div class="col-sm-3">
-                            @component('cooperation.tool.components.step-question',
-                             ['id' => 'building_insulated_glazings.' . $measureApplication->id . '.m2', 'translation' => 'insulated-glazing.'.$measureApplication->short.'.m2', 'required' => false])
+                            @component('cooperation.tool.components.step-question', [
+                                'id' => 'building_insulated_glazings.' . $measureApplication->id . '.m2',
+                                'name' => 'building_insulated_glazings.' . $measureApplication->id . '.m2',
+                                'translation' => 'insulated-glazing.'.$measureApplication->short.'.m2', 'required' => false
+                            ])
                                 <span> *</span>
 
                                 @component('cooperation.tool.components.input-group',
@@ -128,8 +137,12 @@
                         </div>
 
                         <div class="col-sm-3">
-                            @component('cooperation.tool.components.step-question',
-                            ['id' => 'building_insulated_glazings.' . $measureApplication->id . '.windows', 'translation' => 'insulated-glazing.'.$measureApplication->short.'.window-replace', 'required' => false])
+                            @component('cooperation.tool.components.step-question', [
+                                'id' => 'building_insulated_glazings.' . $measureApplication->id . '.windows',
+                                'translation' => 'insulated-glazing.'.$measureApplication->short.'.window-replace',
+                                'name' => 'building_insulated_glazings.' . $measureApplication->id . '.windows',
+                                'required' => false
+                            ])
                                 <span> *</span>
 
                                 @component('cooperation.tool.components.input-group',
@@ -221,32 +234,36 @@
                         @endforeach
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                <span class="caret"></span></button>
+                                <img src="{{asset('images/input-source-icon.png')}}" alt=""
+                                     style="height: 22px; display: block;">
+                            </button>
                             <ul class="dropdown-menu">
                                 <?php
-                                    // check if there is a answer available from a input source.
-                                    $hasAnswerWoodElements = $building->buildingElements()
-                                                                      ->withoutGlobalScope(\App\Scopes\GetValueScope::class)
-                                                                      ->where('element_id', $woodElements->id)
-                                                                      ->get()
-                                                                      ->contains('element_value_id', '!=', '');
+                                // check if there is a answer available from a input source.
+                                $hasAnswerWoodElements = $building->buildingElements()
+                                    ->withoutGlobalScope(\App\Scopes\GetValueScope::class)
+                                    ->where('element_id', $woodElements->id)
+                                    ->get()
+                                    ->contains('element_value_id', '!=', '');
                                 ?>
                                 @if(!$hasAnswerWoodElements)
                                     @include('cooperation.tool.includes.no-answer-available')
                                 @else
-                                @foreach ($woodElements->values()->orderBy('order')->get() as $woodElement)
-                                    <?php
-                                    $myWoodElements = $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id);
+                                    @foreach ($woodElements->values()->orderBy('order')->get() as $woodElement)
+                                        <?php
+                                        $myWoodElements = $myBuildingElements->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id);
 
-                                    ?>
-                                    @foreach($myWoodElements as $myWoodElement)
-                                        @if (!is_null($myWoodElement) && $myWoodElement->element_value_id == $woodElement->id)
-                                            <li class="change-input-value" data-input-value="{{$woodElement->id}}" data-input-source-short="{{$myWoodElement->inputSource()->first()->short}}">
-                                                <a href="#">{{$myWoodElement->getInputSourceName()}}: {{$woodElement->value}}</a>
-                                            </li>
-                                        @endif
+                                        ?>
+                                        @foreach($myWoodElements as $myWoodElement)
+                                            @if (!is_null($myWoodElement) && $myWoodElement->element_value_id == $woodElement->id)
+                                                <li class="change-input-value" data-input-value="{{$woodElement->id}}"
+                                                    data-input-source-short="{{$myWoodElement->inputSource()->first()->short}}">
+                                                    <a href="#">{{$myWoodElement->getInputSourceName()}}
+                                                        : {{$woodElement->value}}</a>
+                                                </li>
+                                            @endif
+                                        @endforeach
                                     @endforeach
-                                @endforeach
                                 @endif
                             </ul>
                         </div>
@@ -343,11 +360,11 @@
             <div class="row">
                 <div class="col-sm-6">
                     @component('cooperation.tool.components.step-question', ['id' => 'paintwork', 'translation' => 'insulated-glazing.taking-into-account.paintwork',])
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
-                                <input type="text" id="paintwork_costs" class="form-control disabled" disabled=""
-                                       value="0">
-                            </div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                            <input type="text" id="paintwork_costs" class="form-control disabled" disabled=""
+                                   value="0">
+                        </div>
                     @endcomponent
                 </div>
                 <div class="col-sm-6">

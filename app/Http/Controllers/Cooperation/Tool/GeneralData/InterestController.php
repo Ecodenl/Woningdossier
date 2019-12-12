@@ -98,7 +98,7 @@ class InterestController extends Controller
                     'order' => $order
                 ]);
         }
-        $buildingOwner->energyHabit()->updateOrCreate([], $request->input('user_energy_habits'));
+        $buildingOwner->energyHabit()->updateOrCreate(['input_source_id' => $inputSource->id], $request->input('user_energy_habits'));
 
         StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
 

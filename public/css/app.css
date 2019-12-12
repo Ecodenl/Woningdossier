@@ -15770,9 +15770,13 @@ body .d-none {
   border-top: 1px solid transparent !important;
 }
 
+ul.progress-list li {
+  width: 75px;
+}
+
 ul.progress-list li .glyphicon {
   top: 25px;
-  left: -25px;
+  margin-left: -25px;
   font-size: 25px;
 }
 
@@ -15782,6 +15786,12 @@ ul.progress-list li.done .glyphicon {
 
 ul.progress-list li.not-available .glyphicon {
   color: #e64a4a;
+}
+
+ul.progress-list li a {
+  border: 5px solid transparent;
+  border-radius: 100%;
+  display: inline-block;
 }
 
 ul.progress-list li a img {
@@ -15794,13 +15804,20 @@ ul.progress-list li a img.no-border {
   border: none;
 }
 
-ul.progress-list li a:hover img,
-ul.progress-list li a:active img,
-ul.progress-list li a:focus img {
-  border: 5px solid #27ae60 !important;
+ul.progress-list li a:hover,
+ul.progress-list li a:active,
+ul.progress-list li a:focus {
+  text-decoration: none;
+  border: 5px solid #27ae60;
 }
 
-ul.progress-list li.active a img {
+ul.progress-list li a:hover.no-border,
+ul.progress-list li a:active.no-border,
+ul.progress-list li a:focus.no-border {
+  border: none;
+}
+
+ul.progress-list li.active a {
   border: 5px solid #2980b9;
 }
 

@@ -94,12 +94,13 @@ class StepHelper
      * @param Building $building
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
-    public static function getUnfinishedSubStepsForStep(Step $step, Building $building)
+    public static function getUnfinishedSubStepsForStep(Step $step, Building $building, InputSource $inputSource)
     {
         return $step->subSteps()
-            ->whereNotExists(function (Builder $query) use ($building) {
+            ->whereNotExists(function (Builder $query) use ($building, $inputSource) {
                 $query->select('*')
                     ->from('completed_steps')
+                    ->where('completed_steps.input_source_id', $inputSource->id)
                     ->whereRaw('steps.id = completed_steps.step_id')
                     ->where('building_id', $building->id);
             })->get();
@@ -135,7 +136,7 @@ class StepHelper
         $nonCompletedSteps = collect();
         // when there is a substep try to redirect them to the next sub step
         if ($subStep instanceof Step) {
-            $nonCompletedSteps = static::getUnfinishedSubStepsForStep($parentStep, $building);
+            $nonCompletedSteps = static::getUnfinishedSubStepsForStep($parentStep, $building, $inputSource);
         }
 
         // there are no uncompleted sub steps for the parent, try to redirect them to a questionnaire that may exists on the parent step.

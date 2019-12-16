@@ -8,6 +8,7 @@ use App\Models\FileTypeCategory;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\User;
+use App\Services\DumpService;
 use Spatie\TranslationLoader\TranslationLoaders\Db;
 
 class ReportController extends Controller

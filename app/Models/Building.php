@@ -8,6 +8,7 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Input;
 
 /**
  * App\Models\Building.
@@ -166,9 +167,28 @@ class Building extends Model
         return $this->hasMany(BuildingElement::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function exampleBuilding()
     {
         return $this->belongsTo(ExampleBuilding::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function buildingVentilations()
+    {
+        return $this->hasMany(BuildingVentilation::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function progress()
+    {
+        return $this->hasMany(UserProgress::class);
     }
 
     /**
@@ -236,11 +256,14 @@ class Building extends Model
     public function getBuildingElement($short, InputSource $inputSource = null)
     {
         if ($inputSource instanceof InputSource) {
-            return $this->buildingElements()
-                ->forInputSource($inputSource)
-                ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
-                ->where('e.short', $short)->first(['building_elements.*']);
+
+        return $this->buildingElements()
+            ->forInputSource($inputSource)
+            ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
+            ->where('e.short', $short)->first(['building_elements.*']);
         }
+
+
         return $this->buildingElements()
             ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
             ->where('e.short', $short)->first(['building_elements.*']);

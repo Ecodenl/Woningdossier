@@ -80,7 +80,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
             }
 
-            Route::view('test', 'test');
             Route::get('home', 'HomeController@index')->name('home')->middleware('deny-if-filling-for-other-building');
 
             Route::resource('privacy', 'PrivacyController')->only('index');
@@ -184,6 +183,10 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         ['only' => ['index', 'store']]);
                     // Heat pump: info for now
                     Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
+
+                    Route::resource('ventilation', 'VentilationController', ['only' => ['index', 'store',]]);
+                    Route::post('ventilation/calculate',
+                        'VentilationController@calculate')->name('ventilation.calculate');
 
                     // Wall Insulation
                     Route::resource('wall-insulation', 'WallInsulationController', ['only' => ['index', 'store']]);

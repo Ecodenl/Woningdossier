@@ -128,7 +128,6 @@
         var checkIfFileIsBeingProcessedRoute = '{{route('cooperation.file-storage.check-if-file-is-being-processed', ['fileType' => $pdfReportFileType])}}';
 
         function pollForFileProcessing() {
-            console.log('oke wat dan ');
             $.get(checkIfFileIsBeingProcessedRoute, function (response) {
                 console.log(response);
                 if (response.is_file_being_processed || response.file_download_link === null) {
@@ -181,11 +180,6 @@
 
         $(document).ready(function () {
             var pageHasAlreadyBeenScrolledToDownloadSection = false;
-            const ROOF_INSULATION_FLAT_REPLACE_CURRENT = "roof-insulation-flat-replace-current";
-            const REPLACE_ROOF_INSULATION = "replace-roof-insulation";
-
-            const ROOF_INSULATION_PITCHED_REPLACE_TILES = "roof-insulation-pitched-replace-tiles";
-            const REPLACE_TILES = "replace-tiles";
 
             const MEASURE = '{{\App\Models\PrivateMessage::REQUEST_TYPE_MEASURE}}';
             // build the base route, we can replace te params later on.

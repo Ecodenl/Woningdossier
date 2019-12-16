@@ -39,7 +39,7 @@
             @if(isset($building->buildingFeatures->build_year))
                 <div class="row">
                     <div class="col-sm-12">
-                        <label for="house_has_insulation" class=" control-label">
+                        <label for="house_has_insulation" class="control-label">
                             {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year.title', ['year' => $building->buildingFeatures->build_year]) }}
                             @if($building->buildingFeatures->build_year >= 1985)
                                 {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year-post-1985.title')}}

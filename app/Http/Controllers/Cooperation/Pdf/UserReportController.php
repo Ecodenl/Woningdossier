@@ -69,10 +69,14 @@ class UserReportController extends Controller
             }
         }
 
+        // intersect the data, we dont need the data we wont show anyway
+        $activeOrderedStepShorts = $steps->pluck('short')->flip()->toArray();
+        $reportData = array_intersect_key($reportData, $activeOrderedStepShorts);
+
+
 
         // steps that are considered to be measures.
         $stepShorts = \DB::table('steps')
-//            ->where('short', '!=', 'general-data')
             ->select('short', 'id')
             ->get()
             ->pluck('short', 'id')

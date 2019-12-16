@@ -208,12 +208,12 @@ class UserActionPlanAdviceService
     public static function checkCoupledMeasuresAndMaintenance(array $categorizedActionPlan)
     {
 
-        if ((isset($categorizedActionPlan['maintenance']) && isset($categorizedActionPlan['energy_saving']))) {
+        $energySaving = $categorizedActionPlan['energy_saving'] ?? [];
+        $maintenance = $categorizedActionPlan['maintenance'] ?? [];
 
-            $maintenance = $categorizedActionPlan['maintenance'];
-            $energySaving = $categorizedActionPlan['energy_saving'];
 
-            if (isset($maintenance['roof-insulation']) && $energySaving['roof-insulation']) {
+        // we will have to compare the year / interest levels of the energy saving and maintenance with each other
+        if (isset($maintenance['roof-insulation']) && isset($energySaving['roof-insulation'])) {
                 $maintenanceForRoofInsulation = $maintenance['roof-insulation'];
                 $energySavingForRoofInsulation = $energySaving['roof-insulation'];
 
@@ -252,8 +252,19 @@ class UserActionPlanAdviceService
                     }
                 }
             }
-        }
 
+
+        //
+        if (isset($energySaving['ventilation'])) {
+            $energySavingForVentilation = $energySaving['ventilation'];
+
+            foreach ($energySavingForVentilation as $measureShort => $advice) {
+                if(empty($advice->costs) && empty($advice->savings_gas) && empty($advice->savings_electricity) && empty($advice->savings_money)) {
+                    // this will have to change in the near future for the pdf.
+                    $categorizedActionPlan['energy_saving']['ventilation'][$measureShort]['warning'] = __('my-plan.warnings.ventilation');
+                }
+            }
+        }
 
         return $categorizedActionPlan;
     }

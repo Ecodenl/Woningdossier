@@ -305,9 +305,13 @@ class Building extends Model
      */
     public function getServiceValue($short, InputSource $inputSource)
     {
+        $serviceValue = null;
         /** @var BuildingService $buildingService */
         $buildingService = $this->getBuildingService($short, $inputSource);
-        $serviceValue = $buildingService->serviceValue;
+
+        if ($buildingService instanceof BuildingService) {
+            $serviceValue = $buildingService->serviceValue;
+        }
 
         return $serviceValue;
     }

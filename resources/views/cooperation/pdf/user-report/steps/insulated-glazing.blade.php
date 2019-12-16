@@ -58,6 +58,11 @@
 
         @include('cooperation.pdf.user-report.parts.measure-page.advices')
 
-        @include('cooperation.pdf.user-report.parts.measure-page.comments')
+
+        @if(isset($commentsByStep[$stepShort][$subStepShort]) && !\App\Helpers\Arr::isWholeArrayEmpty($commentsByStep[$stepShort][$subStepShort]))
+            @include('cooperation.pdf.user-report.parts.measure-page.comments', [
+                'comments' => $commentsByStep[$stepShort][$subStepShort],
+            ])
+        @endif
     </div>
 @endcomponent

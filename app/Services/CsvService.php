@@ -379,29 +379,7 @@ class CsvService
      */
     public static function totalReport(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
     {
-
-        /*
-        select users.* from completed_steps
-        left join buildings on completed_steps.building_id = buildings.id
-        left join users on buildings.user_id = users.id
-        where users.cooperation_id = 1
-        and completed_steps.step_id =1
-        */
-
-        $generalDataStep = Step::findByShort('general-data');
-        // query to only get the users who have completed the step general data.
-        // this way we are 99% sure we have enough data.
-        $users = User::hydrate(
-            \DB::table('completed_steps')
-            ->leftJoin('buildings', 'completed_steps.building_id', 'buildings.id')
-            ->leftJoin('users', 'buildings.user_id', 'users.id')
-            ->where('completed_steps.input_source_id', $inputSource->id)
-            ->where('step_id', $generalDataStep->id)
-            ->where('users.cooperation_id', $cooperation->id)
-            ->whereNull('buildings.deleted_at')
-            ->select('users.*')
-            ->get()->toArray()
-        );
+        $users = $cooperation->users()->whereHas('buildings')->get();
 
         $rows = [];
 

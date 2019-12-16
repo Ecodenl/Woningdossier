@@ -48,27 +48,20 @@
 </div>
 
 
-<div class="question-answer-section">
-    <p class="lead">{{__('pdf/user-report.general-data.comment-action-plan')}}</p>
-    @foreach($userActionPlanAdviceComments as $userActionPlanAdviceComment)
-        <table class="full-width">
-            <tr>
-                <td class="w-100">{{$userActionPlanAdviceComment->inputSource->name}}</td>
-                <td>{!! strip_tags(nl2br($userActionPlanAdviceComment->comment), '<br>') !!}</td>
-            </tr>
-        </table>
-    @endforeach
-</div>
+@if(!\App\Helpers\Arr::isWholeArrayEmpty($userActionPlanAdviceComments))
+    @include('cooperation.pdf.user-report.parts.measure-page.comments', [
+        'comments' => $userActionPlanAdviceComments,
+        'title' => __('pdf/user-report.general-data.comment-action-plan')
+    ])
+@endif
 
 <?php
 // if the total comment count exceeds a specific amount, we will create a new page otherwise it will overflow the footer..
-$comments = $userActionPlanAdviceComments->pluck('comment')->toArray();
-
 // map the array to count the total comments, and then sum it.
 $totalCommentCount = array_sum(
     array_map(function ($comment) {
         return strlen($comment);
-    }, $comments)
+    }, $userActionPlanAdviceComments)
 );
 ?>
 

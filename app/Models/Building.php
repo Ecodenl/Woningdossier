@@ -184,14 +184,6 @@ class Building extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function progress()
-    {
-        return $this->hasMany(UserProgress::class);
-    }
-
-    /**
      * @return ExampleBuilding|null
      */
     public function getExampleBuilding()
@@ -257,10 +249,10 @@ class Building extends Model
     {
         if ($inputSource instanceof InputSource) {
 
-        return $this->buildingElements()
-            ->forInputSource($inputSource)
-            ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
-            ->where('e.short', $short)->first(['building_elements.*']);
+            return $this->buildingElements()
+                ->forInputSource($inputSource)
+                ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
+                ->where('e.short', $short)->first(['building_elements.*']);
         }
 
 

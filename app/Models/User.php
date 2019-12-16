@@ -298,6 +298,7 @@ class User extends Model implements AuthorizableContract
         return "{$this->first_name} {$this->last_name}";
     }
 
+
     /**
      * Returns if a user has interest in a specific model (mostly Step or
      * MeasureApplication).

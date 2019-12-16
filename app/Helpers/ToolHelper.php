@@ -330,7 +330,6 @@ class ToolHelper
                 ],
                 // interests come later on
             ],
-
             'ventilation' => [
                 '-' => [
                     'building_ventilations.how' => [

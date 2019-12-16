@@ -42,7 +42,7 @@ class Heater
 
         $comfortLevelId = $calculateData['user_energy_habits']['water_comfort_id'] ?? 0;
         $comfortLevel = ComfortLevelTapWater::find($comfortLevelId);
-        $interests = $calculateData['interest'] ?? '';
+        $userInterests = $calculateData['user_interests'] ?? [];
 
         if ($energyHabit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
             $consumption = KeyFigures::getCurrentConsumption($energyHabit, $comfortLevel);
@@ -92,20 +92,14 @@ class Heater
 
                 $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
-                if (! empty($interests)) {
-                    foreach ($interests as $type => $interestTypes) {
-                        foreach ($interestTypes as $typeId => $interestId) {
-                            $interest = Interest::find($interestId);
-                        }
-                    }
+                $interest = Interest::find($userInterests['interest_id']);
 
-                    if (isset($interest) && $interest instanceof Interest) {
-                        $currentYear = Carbon::now()->year;
-                        if (1 == $interest->calculate_value) {
-                            $result['year'] = $currentYear;
-                        } elseif (2 == $interest->calculate_value) {
-                            $result['year'] = $currentYear + 5;
-                        }
+                if (isset($interest) && $interest instanceof Interest) {
+                    $currentYear = Carbon::now()->year;
+                    if (1 == $interest->calculate_value) {
+                        $result['year'] = $currentYear;
+                    } elseif (2 == $interest->calculate_value) {
+                        $result['year'] = $currentYear + 5;
                     }
                 }
 

@@ -1,4 +1,4 @@
-<form class="form-horizontal" action="{{ route('cooperation.tool.my-plan.store', ['cooperation' => $cooperation]) }}" method="post">
+<form  action="{{ route('cooperation.tool.my-plan.store', ['cooperation' => $cooperation]) }}" method="post">
     {{ csrf_field() }}
     @foreach($advices as $measureType => $stepAdvices)
         <div class="row">
@@ -37,7 +37,8 @@
                                     <input @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled" @endif class="interested-checker" name="advice[{{ $advice->id }}][{{$stepSlug}}][interested]" value="1" type="checkbox" id="advice-{{$advice->id}}-planned" @if($advice->planned) checked @endif />
                                 </td>
                                 <td>
-                                    {{ $advice->measureApplication->measure_name }} <a href="#warning-modal" role="button" class="measure-warning" data-toggle="modal" style="display:none;"><i class="glyphicon glyphicon-warning-sign" role="button" data-toggle="modal" title="" style="color: #ffc107"></i></a>
+                                    {{ $advice->measureApplication->measure_name }}
+                                    <a href="#warning-modal" role="button" class="measure-warning" data-toggle="modal" style="display:none;"><i class="glyphicon glyphicon-warning-sign" role="button" data-toggle="modal" title="" style="color: #ffc107"></i></a>
                                 </td>
                                 <td>
                                     &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs, 0, true) }}
@@ -49,7 +50,7 @@
                                     {{ $advice->year }}
                                 </td>
                                 <td>
-                                    <input @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled" @endif type="text" maxlength="4" size="4" class="form-control planned-year" name="advice[{{ $advice->id }}][{{ $stepSlug }}][planned_year]" value="{{ $advice->planned_year }}" />
+                                    <input value="{{ is_null($advice->planned_year) && $advice->planned ? $advice->year : $advice->planned_year }}"  @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled" @endif type="text" maxlength="4" size="4" class="form-control planned-year" name="advice[{{ $advice->id }}][{{ $stepSlug }}][planned_year]" />
                                 </td>
                             </tr>
                             <tr class="collapse" id="more-info-{{$advice->id}}" >

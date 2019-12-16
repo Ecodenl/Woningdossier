@@ -43,6 +43,7 @@ class InsulatedGlazing
         ];
 
         $userInterests = $calculateData['user_interests'] ?? [];
+
         $buildingInsulatedGlazings = $calculateData['building_insulated_glazings'] ?? [];
 
         foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazingsData) {
@@ -51,19 +52,21 @@ class InsulatedGlazing
             $buildingHeating = BuildingHeating::find($buildingHeatingId);
             $insulatedGlazingId = array_key_exists('insulated_glazing_id', $buildingInsulatedGlazingsData) ? $buildingInsulatedGlazingsData['insulated_glazing_id'] : 0;
             $insulatedGlazing = InsulatingGlazing::find($insulatedGlazingId);
-            $interestId = array_key_exists($measureApplicationId, $userInterests) ? $userInterests[$measureApplicationId] : 0;
+            $interestId = $userInterests[$measureApplicationId]['interest_id'] ?? null;
             $interest = Interest::find($interestId);
 
-            if ($measureApplication instanceof MeasureApplication &&
-                $buildingHeating instanceof BuildingHeating &&
-                $interest instanceof Interest &&
-                array_key_exists($measureApplicationId, $userInterests) && $userInterests[$measureApplicationId] <= 3) {
-                $gasSavings = InsulatedGlazingCalculator::calculateRawGasSavings(
-                    NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']),
-                    $measureApplication,
-                    $buildingHeating,
-                    $insulatedGlazing
-                );
+            if ($measureApplication instanceof MeasureApplication && $buildingHeating instanceof BuildingHeating && $interest instanceof Interest && $interest->calculate_value <= 3) {
+
+                $m2 = NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']);
+                $gasSavings = 0;
+                if(is_numeric($m2)) {
+                    $gasSavings = InsulatedGlazingCalculator::calculateRawGasSavings(
+                        $m2,
+                        $measureApplication,
+                        $buildingHeating,
+                        $insulatedGlazing
+                    );
+                }
 
                 $result['measure'][$measureApplication->id] = [
                     'costs' => InsulatedGlazingCalculator::calculateCosts($measureApplication, $interest, (int) $buildingInsulatedGlazingsData['m2'], (int) $buildingInsulatedGlazingsData['windows']),
@@ -186,43 +189,6 @@ class InsulatedGlazing
             }
 
             $result['paintwork'] = compact('costs', 'year');
-        }
-
-        // Crack sealing gives a percentage of savings. This is dependent on the application (place or replace)
-        // and the gas usage (for heating)
-
-        $result['crack-sealing'] = [
-            'costs' => 0,
-            'savings_gas' => 0,
-        ];
-
-        //$crackSealingId = $request->get('building_elements.crack-sealing', 0);
-        //$crackSealingElement = ElementValue::find($crackSealingId);
-        $crackSealing = Element::where('short', 'crack-sealing')->first();
-        $crackSealingId = 0;
-        if (array_key_exists($crackSealing->id, $buildingElements) && array_key_exists('crack-sealing', $buildingElements[$crackSealing->id])) {
-            $crackSealingId = (int) $buildingElements[$crackSealing->id]['crack-sealing'];
-        }
-        $crackSealingElement = ElementValue::find($crackSealingId);
-        if ($crackSealingElement instanceof ElementValue && 'crack-sealing' == $crackSealingElement->element->short && $crackSealingElement->calculate_value > 1) {
-            $gas = 0;
-            if ($energyHabit instanceof UserEnergyHabit) {
-                $boiler = $building->getServiceValue('boiler', $inputSource);
-                $usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler, $energyHabit);
-                $gas = $usages['heating']['bruto'];
-            }
-
-            if (2 == $crackSealingElement->calculate_value) {
-                $result['crack-sealing']['savings_gas'] = (Kengetallen::PERCENTAGE_GAS_SAVINGS_REPLACE_CRACK_SEALING / 100) * $gas;
-            } else {
-                $result['crack-sealing']['savings_gas'] = (Kengetallen::PERCENTAGE_GAS_SAVINGS_PLACE_CRACK_SEALING / 100) * $gas;
-            }
-
-            $measureApplication = MeasureApplication::where('short', 'crack-sealing')->first();
-
-            $result['crack-sealing']['costs'] = Calculator::calculateMeasureApplicationCosts($measureApplication, 1, null, false);
-            $result['crack-sealing']['savings_co2'] = Calculator::calculateCo2Savings($result['crack-sealing']['savings_gas']);
-            $result['crack-sealing']['savings_money'] = Calculator::calculateMoneySavings($result['crack-sealing']['savings_gas']);
         }
 
         return $result;

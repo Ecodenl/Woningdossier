@@ -22,7 +22,7 @@ class MyPlanController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $advices = UserActionPlanAdviceService::getCategorizedActionPlan($buildingOwner, $inputSource);
-        $actionPlanComments = UserActionPlanAdviceComments::forMe()->get();
+        $actionPlanComments = UserActionPlanAdviceComments::forMe()->with('inputSource')->get()->keyBy('input_source_id');
         $anyFilesBeingProcessed = FileStorage::forMe()->withExpired()->beingProcessed()->count();
 
         // so we can determine whether we will show the actionplan button
@@ -52,7 +52,7 @@ class MyPlanController extends Controller
 
         return view('cooperation.tool.my-plan.index', compact(
             'actionPlanComments', 'pdfReportFileType', 'file', 'inputSourcesForPersonalPlanModal', 'advices',
-            'anyFilesBeingProcessed', 'reportFileTypeCategory', 'buildingHasCompletedGeneralData', 'personalPlanForVariousInputSources'
+            'reportFileTypeCategory', 'buildingHasCompletedGeneralData', 'personalPlanForVariousInputSources'
         ));
     }
 
@@ -65,7 +65,6 @@ class MyPlanController extends Controller
      */
     public function storeComment(MyPlanRequest $request)
     {
-        $comment = $request->get('comment');
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
@@ -75,9 +74,7 @@ class MyPlanController extends Controller
                 'input_source_id' => HoomdossierSession::getInputSource(),
                 'user_id' => $buildingOwner->id,
             ],
-            [
-                'comment' => $comment,
-            ]
+            $request->only('comment')
         );
 
         return redirect()->route('cooperation.tool.my-plan.index');

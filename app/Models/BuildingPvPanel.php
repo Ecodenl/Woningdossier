@@ -53,6 +53,7 @@ class BuildingPvPanel extends Model
         'input_source_id',
         'peak_power',
         'number',
+        'total_installed_power',
         'pv_panel_orientation_id',
         'angle',
         'comment',

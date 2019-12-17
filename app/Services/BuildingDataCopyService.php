@@ -249,8 +249,9 @@ class BuildingDataCopyService
         $updateArray = [];
 
         // if the desired input source has a extra key and its not empty, then we start to compare and merge the extra column.
-        if (array_key_exists('extra', $inputSourceToCopy) && ! empty($inputSourceToCopy['extra'])) {
+        if (array_key_exists('extra', $inputSourceToCopy) && !empty($inputSourceToCopy['extra']) && is_array($inputSourceToCopy['extra'])) {
             if (empty($inputSourceToUpdate['extra'])) {
+
                 $inputSourceToCopyExtra = json_decode($inputSourceToCopy['extra'], true);
 
                 // filter the values which are not considered to be empty.

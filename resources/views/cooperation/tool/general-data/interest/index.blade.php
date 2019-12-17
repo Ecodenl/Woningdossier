@@ -95,7 +95,7 @@
                 </h4>
             </div>
             <?php
-            $oldMotivations = old('motivations');
+            $oldMotivations = old('user_motivations.id.*');
             $motivationsToSelect = empty(is_array($oldMotivations) ? $oldMotivations : []) ? $userMotivations->pluck('motivation_id')->toArray() : $motivationsToSelect;
             ?>
             <div class="col-sm-12">

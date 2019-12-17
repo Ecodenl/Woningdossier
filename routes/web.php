@@ -185,7 +185,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     Route::group(['prefix' => 'ventilation', 'as' => 'ventilation.', 'middleware' => 'step-disabled:ventilation'], function () {
                         Route::resource('', 'VentilationController', ['only' => ['index', 'store',]]);
-                        Route::post('calculate', 'VentilationController@calculate')->name('ventilation.calculate');
+                        Route::post('calculate', 'VentilationController@calculate')->name('calculate');
                     });
 
                     // Wall Insulation

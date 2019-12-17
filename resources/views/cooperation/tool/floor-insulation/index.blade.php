@@ -209,7 +209,7 @@
 
 
         @include('cooperation.tool.includes.comment', [
-             'translation' => 'floor-insulation.comment'
+             'translation' => 'general.specific-situation'
         ])
 
 

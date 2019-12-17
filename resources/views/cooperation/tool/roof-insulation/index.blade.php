@@ -328,7 +328,7 @@
 
 
         @include('cooperation.tool.includes.comment', [
-           'translation' => 'roof-insulation.comment'
+           'translation' => 'general.specific-situation'
         ])
 
         <div class="row">

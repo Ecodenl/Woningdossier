@@ -157,7 +157,18 @@
 
     <script>
         $(document).ready(function () {
-            $('#motivation').select2();
+            var motivation = $('#motivation');
+
+            motivation.select2();
+
+            motivation.on("select2:select", function (evt) {
+                var element = evt.params.data.element;
+                var $element = $(element);
+
+                $element.detach();
+                $(this).append($element);
+                $(this).trigger("change");
+            });
         });
     </script>
 @endpush

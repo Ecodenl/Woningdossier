@@ -8,6 +8,7 @@ return [
             ],
             'cook-gas' => [
                 'title' => 'Wordt er op gas gekookt?',
+                'help' => 'Wordt er op gas gekookt?',
             ],
             'water-comfort' => [
                 'title' => 'Wat is het comfortniveau voor het gebruik van warm tapwater? ',

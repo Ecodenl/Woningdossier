@@ -267,7 +267,7 @@
         </div>
 
         @include('cooperation.tool.includes.comment', [
-           'translation' => 'cooperation/tool/ventilation.index.comment'
+           'translation' => 'general.specific-situation'
         ])
 
         <div class="row">

@@ -58,9 +58,10 @@ class InterestController extends Controller
         }, ARRAY_FILTER_USE_KEY);
 
 
-        $motivations = Motivation::orderBy('order')->get();
+        $motivations = Motivation::getInOrderOfUserMotivation($buildingOwner);
 
         $userMotivations = $buildingOwner->motivations()->orderBy('order')->get();
+
         $userEnergyHabitsForMe = $buildingOwner->energyHabit()->forMe()->get();
 
         $services = Service::orderBy('order')->get();

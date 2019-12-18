@@ -105,7 +105,7 @@ class Building extends Model
      * @param Step $step
      * @return bool
      */
-    public function hasCompleted(Step $step)
+    public function hasCompleted(Step $step, InputSource $inputSource)
     {
         return $this->completedSteps()
                 ->where('step_id', $step->id)->count() > 0;

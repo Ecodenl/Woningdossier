@@ -471,9 +471,10 @@ class CsvService
         /**
          * Get the data for every user.
          *
-         * @var User
+         * @var User $user
          */
         foreach ($users as $user) {
+            if ($user->building->hasCompleted($inputSource))
             $rows[$user->building->id] = DumpService::totalDump($user, $inputSource, $anonymized, false)['user-data'];
         }
 

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\TranslatableTrait;
+use App\Traits\HasShortTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -35,7 +36,7 @@ class Step extends Model
 {
     protected $fillable = ['slug', 'name', 'order'];
 
-    use TranslatableTrait;
+    use TranslatableTrait, HasShortTrait;
 
     public static function findByShort($short)
     {

@@ -21,7 +21,7 @@
     $translationReplace = $translationReplace ?? [];
 
     // we show the help icon when there is a text available and its not empty
-    $hasHelpTranslation = \App\Helpers\Translation::hasTranslation($translation . '.help');
+    $hasHelpTranslation = isset($translation) ? \App\Helpers\Translation::hasTranslation($translation . '.help') : false;
     $shouldShowHelpIcon =  $hasHelpTranslation && !empty(__($translation . '.help'));
 ?>
 

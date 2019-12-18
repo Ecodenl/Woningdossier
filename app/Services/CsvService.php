@@ -380,6 +380,7 @@ class CsvService
     public static function totalReport(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
     {
         $users = $cooperation->users()->whereHas('buildings')->get();
+        $inputSourceForDump = $inputSource;
 
         $rows = [];
 
@@ -473,9 +474,20 @@ class CsvService
          *
          * @var User $user
          */
+        $generalDataStep = Step::findByShort('general-data');
+        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+
         foreach ($users as $user) {
-            if ($user->building->hasCompleted($inputSource))
-            $rows[$user->building->id] = DumpService::totalDump($user, $inputSource, $anonymized, false)['user-data'];
+
+            // well in every case there is a uitzondering op de regel
+            // normally we would pick the given input source
+            // but when coach input is available we use the coach input source for that particular user
+            // coach input is available when he has completed the general data step
+            if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
+                $inputSourceForDump = $coachInputSource;
+            }
+
+            $rows[$user->building->id] = DumpService::totalDump($user, $inputSourceForDump, $anonymized, false)['user-data'];
         }
 
         return $rows;

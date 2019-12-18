@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasShortTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -27,15 +28,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class InputSource extends Model
 {
+    use HasShortTrait;
+
     const RESIDENT_SHORT = 'resident';
     const COACH_SHORT = 'coach';
     const COOPERATION_SHORT = 'cooperation';
     const EXAMPLE_BUILDING = 'example-building';
-
-    public static function findByShort($short)
-    {
-        return self::where('short', $short)->first();
-    }
 
     /**
      * Check if the input source is a resident.

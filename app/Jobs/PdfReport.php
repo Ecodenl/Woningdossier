@@ -93,8 +93,10 @@ class PdfReport implements ShouldQueue
         // we dont wat the actual advices, we have to show them in a different way
         $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
+        $structure = DumpService::getStructureForTotalDumpService(false, false);
+
         // full report for a user
-        $reportForUser = DumpService::totalDump($userCooperation, $user, $inputSource, false, true, true);
+        $reportForUser = DumpService::totalDump($structure, $userCooperation, $user, $inputSource, false, true, true);
 
         // the translations for the columns / tables in the user data
         $reportTranslations = $reportForUser['translations-for-columns'];

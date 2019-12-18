@@ -5,11 +5,11 @@ return [
     'index' => [
         'how'              => [
             'title' => 'Hoe komt de verse lucht nu binnen?',
-            'help'  => 'Dit is de helptekst',
+            'help'  => '',
         ],
         'living-situation' => [
             'title' => 'Onderstaand kunt u aanvinken wat in uw woning verder van toepassing is. Meerdere opties zijn mogelijk.',
-            'help'  => 'Dit is de helptekst',
+            'help'  => '',
         ],
         'usage'            => [
             'title' => 'Hoe gebruikt u de ventilatie unit? Meerdere opties zijn mogelijk.',

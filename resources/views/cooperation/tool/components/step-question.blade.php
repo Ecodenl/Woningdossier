@@ -20,13 +20,16 @@
 
     $translationReplace = $translationReplace ?? [];
 
+    // we show the help icon when there is a text available and its not empty
+    $hasHelpTranslation = isset($translation) ? \App\Helpers\Translation::hasTranslation($translation . '.help') : false;
+    $shouldShowHelpIcon =  $hasHelpTranslation && !empty(__($translation . '.help'));
 ?>
 
 {{-- this had the add-space class --}}
 <div class="form-group {{ $errors->has($name) ? ' has-error' : '' }}" style="{{$labelStyling}}">
     <label for="{{ $id }}" class="control-label {{$labelClass}}" style="display: inline; ">
         <?php // show help icon? ?>
-        @if(isset($translation) && \App\Helpers\Translation::hasTranslation($translation . '.help'))
+        @if(isset($translation) && $shouldShowHelpIcon)
             <i data-target="#{{ $id }}-info"
                class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
                aria-expanded="false"></i>
@@ -40,7 +43,7 @@
     {{ $slot }}
 
     <?php // show include modal for help icon? ?>
-    @if(isset($translation) && \App\Helpers\Translation::hasTranslation($translation . '.help'))
+    @if(isset($translation) && $shouldShowHelpIcon)
         @component('cooperation.tool.components.help-modal', ['id' => $id . "-info"])
             {!!  \App\Helpers\Translation::translate($translation . '.help') !!}
         @endcomponent

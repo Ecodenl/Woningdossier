@@ -298,6 +298,48 @@ class User extends Model implements AuthorizableContract
         return "{$this->first_name} {$this->last_name}";
     }
 
+
+    /**
+     * Returns if a user has interest in a specific model (mostly Step or
+     * MeasureApplication).
+     *
+     * @param  Model  $model
+     * @param  InputSource|null  $inputSource
+     *
+     * @return bool
+     */
+    public function hasInterestIn(Model $model, InputSource $inputSource = null)
+    {
+        $userInterests = $this->userInterestsForSpecificType(get_class($model), $model->id, $inputSource)->with('interest')->get();
+        foreach($userInterests as $userInterest){
+            if ($userInterest->interest->calculate_value <= 2){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns a specific interested row for a specific type.
+     *
+     * @param $type
+     * @param $interestedInId
+     *
+     * @return UserInterest
+     */
+    public function getInterestedType($type, $interestedInId, InputSource $inputSource = null)
+    {
+        if ($inputSource instanceof InputSource) {
+            return $this
+                ->interests()
+                ->forInputSource($inputSource)
+                ->where('interested_in_type', $type)
+                ->where('interested_in_id', $interestedInId)->first();
+        }
+
+        return $this->interests()->where('interested_in_type', $type)->where('interested_in_id', $interestedInId)->first();
+    }
+
     /**
      * Get the human readable role name based on the role name.
      *
@@ -464,6 +506,7 @@ class User extends Model implements AuthorizableContract
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function completedQuestionnaires(InputSource $inputSource = null)
+
     {
         // global scopes wont work on the intermediary table
         $inputSource = is_null($inputSource) ? HoomdossierSession::getInputSource(true) : $inputSource;

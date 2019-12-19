@@ -131,7 +131,7 @@
 
 
         @include('cooperation.tool.includes.comment', [
-             'translation' => 'high-efficiency-boiler.comment'
+             'translation' => 'general.specific-situation'
          ])
 
         <div class="row">

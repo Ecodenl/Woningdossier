@@ -78,7 +78,7 @@ class InsulatedGlazingController extends Controller
         $buildingInsulatedGlazings = [];
         $buildingInsulatedGlazingsForMe = [];
 
-        $buildingFeaturesForMe = $building->buildingFeatures->forMe()->get();
+        $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
         $userInterests = [];
 
         foreach ($measureApplicationShorts as $measureApplicationShort) {
@@ -187,9 +187,17 @@ class InsulatedGlazingController extends Controller
         $inputSourceId = $inputSource->id;
 
         $userInterests = $request->input('user_interests');
+        $interests = collect();
         foreach ($userInterests as $interestInId => $userInterest) {
+            // so we can determine the highest interest level later on.
+            $interests->push(Interest::find($userInterest['interest_id']));
             UserInterestService::save($user, $inputSource, $userInterest['interested_in_type'], $interestInId, $userInterest['interest_id']);
         }
+
+        // get the highest interest level (which is the lowst calculate value.)
+        $highestInterestLevelInterestId = $interests->unique('id')->min('calculate_value');
+        // we have to update the step interest based on the interest for the measure application.
+        UserInterestService::save($user, $inputSource, Step::class, Step::findByShort('insulated-glazing')->id, $highestInterestLevelInterestId);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);

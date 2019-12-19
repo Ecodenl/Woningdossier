@@ -19,7 +19,11 @@ class UserInterestService {
      */
     public static function save(User $user, InputSource $inputSource, $interestedInType, int $interestedInId, int $interestId)
     {
-        Log::debug($interestedInId . $interestedInType.$interestId);
+        Log::debug("Saving the user interest on the");
+        Log::debug("interest_in_id {$interestedInId}");
+        Log::debug("interest_in_type {$interestedInType}");
+        Log::debug("interest_id {$interestId}");
+
         UserInterest::withoutGlobalScopes()->updateOrCreate(
             [
                 'user_id' => $user->id,

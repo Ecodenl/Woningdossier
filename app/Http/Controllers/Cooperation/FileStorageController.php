@@ -55,12 +55,12 @@ class FileStorageController extends Controller
     }
 
     /**
-     * Check whether a file type is being processed for the user / input source.
+     * * Check whether a file type is being processed for the user / input source.
      *
      * @param Cooperation $cooperation
-     * @param FileType    $fileType
+     * @param FileType $fileType
      *
-     * @return bool
+     * @return \Illuminate\Http\JsonResponse
      */
     public function checkIfFileIsBeingProcessed(Cooperation $cooperation, FileType $fileType)
     {

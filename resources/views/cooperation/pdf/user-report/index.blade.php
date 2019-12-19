@@ -21,13 +21,10 @@
     So have to create our own order.
 --}}
 
-@component('cooperation.pdf.components.new-page')
-    <div class="container">
-        @include('cooperation.pdf.user-report.steps.general-data-page-1', [
-            'stepShort' => 'general-data'
-        ])
-    </div>
-@endcomponent
+
+@include('cooperation.pdf.user-report.steps.general-data-page-1', [
+    'stepShort' => 'general-data'
+])
 
 @component('cooperation.pdf.components.new-page')
     <div class="container">

@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Log;
 
 class UserService
 {
-    public static function deleteUser(User $user, $shouldForceDeleteBuilding = false)
     /**
      * Method to register a user.
      *
@@ -104,7 +103,14 @@ class UserService
         return $user;
     }
 
-    public static function deleteUser(User $user)
+    /**
+     * Method to delete a user and its user info
+     *
+     * @param User $user
+     * @param bool $shouldForceDeleteBuilding
+     * @throws \Exception
+     */
+    public static function deleteUser(User $user, $shouldForceDeleteBuilding = false)
     {
         $accountId = $user->account_id;
         $building = $user->building;

@@ -46,7 +46,7 @@ class SolarPanel
         $orientationId = $buildingPvPanels['pv_panel_orientation_id'] ?? 0;
         $angle = $buildingPvPanels['angle'] ?? 0;
 
-        $interests = $calculateData['interest'] ?? '';
+        $userInterests = $calculateData['user_interests'] ?? [];
         $orientation = PvPanelOrientation::find($orientationId);
 
         $locationFactor = KeyFigures::getLocationFactor($building->postal_code);
@@ -76,11 +76,7 @@ class SolarPanel
             $result['cost_indication'] = $wp * KeyFigures::COST_WP;
             $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
-            foreach ($interests as $type => $interestTypes) {
-                foreach ($interestTypes as $typeId => $interestId) {
-                    $interest = Interest::find($interestId);
-                }
-            }
+            $interest = Interest::find($userInterests['interest_id']);
 
             if (isset($interest) && $interest instanceof Interest) {
                 $currentYear = Carbon::now()->year;

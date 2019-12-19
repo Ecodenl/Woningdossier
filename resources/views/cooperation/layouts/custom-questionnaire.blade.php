@@ -16,7 +16,7 @@
                 </div>
 
                 <div class="panel-body">
-                    <form class="form-horizontal" action="{{route('cooperation.tool.questionnaire.store')}}"  id="questionnaire-form-{{$questionnaire->id}}" method="post">
+                    <form action="{{route('cooperation.tool.questionnaire.store')}}"  id="questionnaire-form-{{$questionnaire->id}}" method="post">
                         {{csrf_field()}}
                         <input type="hidden" name="tab_id" value="#questionnaire-{{$questionnaire->id}}">
                         <input type="hidden" name="questionnaire_id" value="{{$questionnaire->id}}">

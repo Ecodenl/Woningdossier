@@ -12,42 +12,60 @@ use Carbon\Carbon;
 
 class HighEfficiencyBoilerCalculator
 {
-    public static function calculateGasSavings(ServiceValue $currentBoiler, UserEnergyHabit $habit, $amountGas = null)
+    /**
+     *
+     *
+     * @param ServiceValue|null $currentBoiler
+     * @param UserEnergyHabit|null $habit
+     * @param null $amountGas
+     * @return float|int|mixed|null
+     */
+    public static function calculateGasSavings($currentBoiler, $habit, $amountGas = null)
     {
-        $current = self::calculateGasUsage($currentBoiler, $habit, $amountGas);
-        $amountGas = is_null($amountGas) ? $habit->amount_gas : $amountGas;
+        $result = 0;
 
-        // now for the new
-        $bestBoiler = ServiceValue::where('service_id', $currentBoiler->service_id)->orderBy('order', 'desc')->first();
-        $bestBoilerEfficiency = $bestBoiler->keyFigureBoilerEfficiency;
+        if ($currentBoiler && $habit instanceof UserEnergyHabit) {
 
-        $usage = [
-            'heating' => 0,
-            'tap_water' => 0,
-            'cooking' => 0,
-        ];
-        $usage['heating'] = $current['heating']['netto'] / ($bestBoilerEfficiency['heating'] / 100);
-        $usage['tap_water'] = $current['tap_water']['netto'] / ($bestBoilerEfficiency['wtw'] / 100);
-        $usage['cooking'] = $current['cooking'];
+            $current = self::calculateGasUsage($currentBoiler, $habit, $amountGas);
+            $amountGas = is_null($amountGas) ? $habit->amount_gas : $amountGas;
 
-        $usageNew = $usage['heating'] + $usage['tap_water'] + $usage['cooking'];
-        // yes, array_sum is a method, but this is easier to compare to the theory
-        $result = $amountGas - $usageNew;
+            // now for the new
+            $bestBoiler = ServiceValue::where('service_id', $currentBoiler->service_id)->orderBy('order', 'desc')->first();
+            $bestBoilerEfficiency = $bestBoiler->keyFigureBoilerEfficiency;
 
-        self::debug('Gas usage ( '.$usageNew.' ) with best boiler: '.json_encode($usage));
-        self::debug('Results in saving of '.$result.' = '.$amountGas.' - '.$usageNew);
+            $usage = [
+                'heating' => 0,
+                'tap_water' => 0,
+                'cooking' => 0,
+            ];
+            $usage['heating'] = $current['heating']['netto'] / ($bestBoilerEfficiency['heating'] / 100);
+            $usage['tap_water'] = $current['tap_water']['netto'] / ($bestBoilerEfficiency['wtw'] / 100);
+            $usage['cooking'] = $current['cooking'];
+
+            $usageNew = $usage['heating'] + $usage['tap_water'] + $usage['cooking'];
+            // yes, array_sum is a method, but this is easier to compare to the theory
+            $result = $amountGas - $usageNew;
+
+            self::debug('Gas usage ( ' . $usageNew . ' ) with best boiler: ' . json_encode($usage));
+            self::debug('Results in saving of ' . $result . ' = ' . $amountGas . ' - ' . $usageNew);
+
+        }
+        // we dont want to return negative values
+        if ($result < 0) {
+            $result = 0;
+        }
 
         return $result;
     }
 
     /**
-     * @param ServiceValue         $boiler
+     * @param ServiceValue|null $boiler
      * @param UserEnergyHabit|null $habit
-     * @param int                  $amountGas
+     * @param int $amountGas
      *
      * @return array
      */
-    public static function calculateGasUsage(ServiceValue $boiler, $habit, $amountGas = 0)
+    public static function calculateGasUsage($boiler, $habit, $amountGas = 0)
     {
         $amountGas = $habit->amount_gas ?? $amountGas;
 
@@ -63,9 +81,12 @@ class HighEfficiencyBoilerCalculator
             'cooking' => 0,
         ];
 
+        if (!$boiler instanceof ServiceValue) {
+            return $result;
+        }
         $boilerEfficiency = $boiler->keyFigureBoilerEfficiency;
 
-        self::debug(__METHOD__.' boiler efficiencies of boiler: '.$boilerEfficiency->heating.'% (heating) and '.$boilerEfficiency->wtw.'% (tap water)');
+        self::debug(__METHOD__ . ' boiler efficiencies of boiler: ' . $boilerEfficiency->heating . '% (heating) and ' . $boilerEfficiency->wtw . '% (tap water)');
 
         if ($habit instanceof UserEnergyHabit) {
             if (1 == $habit->cook_gas) {
@@ -90,7 +111,7 @@ class HighEfficiencyBoilerCalculator
         $result['heating']['bruto'] = $amountGas - $result['tap_water']['bruto'] - $result['cooking'];
         $result['heating']['netto'] = $result['heating']['bruto'] * ($boilerEfficiency->heating / 100);
 
-        self::debug(__METHOD__.' Gas usage: '.json_encode($result));
+        self::debug(__METHOD__ . ' Gas usage: ' . json_encode($result));
 
         return $result;
     }
@@ -100,7 +121,7 @@ class HighEfficiencyBoilerCalculator
         self::debug(__METHOD__);
 
         if ($last + $measureApplication->maintenance_interval <= Carbon::now()->year) {
-            self::debug('Last replace is longer than '.$measureApplication->maintenance_interval.' years ago.');
+            self::debug('Last replace is longer than ' . $measureApplication->maintenance_interval . ' years ago.');
             $year = Carbon::now()->year;
         } else {
             $year = $last + $measureApplication->maintenance_interval;

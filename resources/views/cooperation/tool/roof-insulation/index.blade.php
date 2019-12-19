@@ -3,17 +3,19 @@
 @section('step_title', \App\Helpers\Translation::translate('roof-insulation.title.title'))
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
+    <form  method="POST"
           action="{{ route('cooperation.tool.roof-insulation.store', ['cooperation' => $cooperation]) }}">
 
         {{csrf_field()}}
-        @include('cooperation.tool.includes.interested', ['type' => 'element'])
+        @include('cooperation.tool.includes.interested', [
+            'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+        ])
         <div class="row">
             <div id="current-situation" class="col-md-12">
 
                 <div class="row">
                     <div class="col-sm-12">
-                        <div class="form-group add-space {{ $errors->has('building_roof_types.id') ? ' has-error' : '' }}">
+                        <div class="form-group {{ $errors->has('building_roof_types.id') ? ' has-error' : '' }}">
                             <label for="building_roof_types" class="control-label">
                                 <i data-toggle="modal" data-target="#roof-type-info"
                                    class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
@@ -25,11 +27,21 @@
                             ['inputType' => 'checkbox', 'inputValues' => $roofTypes, 'userInputValues' => $currentRoofTypesForMe, 'userInputColumn' => 'roof_type_id'])
 
                                 @foreach($roofTypes as $roofType)
+{{--                                    {{--}}
+                                    {{--dd(--}}
+                                        {{--old('building_roof_types'),--}}
+                                        {{--old('building_roof_types.id',[--}}
+                                            {{--\App\Helpers\Hoomdossier::getMostCredibleValue(--}}
+                                                {{--$building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->roofTypes()))--}}
+                                            {{--]--}}
+                                        {{--)--}}
+                                    {{--)--}}
+                                    {{--}}--}}
                                     <label class="checkbox-inline">
                                         <input data-calculate-value="{{$roofType->calculate_value}}"
                                                type="checkbox" name="building_roof_types[id][]"
                                                value="{{ $roofType->id }}"
-                                               @if(empty(old()) && in_array($roofType->id, old('building_roof_types.id',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->roofTypes())) ])))
+                                               @if(in_array($roofType->id, old('building_roof_types.id',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->roofTypes())) ])))
                                                checked="checked"
                                                 @endif
                                                 {{--@if((is_array(old('building_roof_types')) && in_array($roofType->id, old('building_roof_types'))) ||
@@ -116,7 +128,7 @@
 
                                         @component('cooperation.tool.components.input-group',
                                         ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'roof_surface'])
-                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
+                                            <span class="input-group-addon">@lang('general.unit.square-meters.title')</span>
                                             <input type="text" class="form-control"
                                                    name="building_roof_types[{{ $roofCat }}][roof_surface]"
                                                    value="{{ old('building_roof_types.' . $roofCat . '.roof_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_surface')) }}">
@@ -128,14 +140,12 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6">
 
-                                    @component('cooperation.tool.components.step-question', ['id' => 'building_roof_types.' . $roofCat . '.insulation_roof_surface', 'translation' => 'roof-insulation.current-situation.insulation-'.$roofCat.'-roof-surface', 'required' => true])
+                                    @component('cooperation.tool.components.step-question', ['id' => 'building_roof_types.' . $roofCat . '.insulation_roof_surface', 'translation' => 'roof-insulation.current-situation.insulation-'.$roofCat.'-roof-surface', 'required' => false])
 
                                         @component('cooperation.tool.components.input-group',
                                     ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'insulation_roof_surface'])
-                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.square-meters')</span>
-                                            <input type="text" class="form-control"
-                                                   name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]"
-                                                   value="{{ old('building_roof_types.' . $roofCat . '.insulation_roof_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'insulation_roof_surface')) }}">
+                                            <span class="input-group-addon">@lang('general.unit.square-meters.title')</span>
+                                            <input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]" value="{{ old('building_roof_types.' . $roofCat . '.insulation_roof_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'insulation_roof_surface')) }}">
                                             {{--<input type="text"  class="form-control" name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface'] : old('building_roof_types.' . $roofCat . '.insulation_roof_surface')}}">--}}
                                         @endcomponent
                                     @endcomponent
@@ -148,7 +158,7 @@
 
                                         @component('cooperation.tool.components.input-group',
                                     ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'extra.zinc_replaced_date'])
-                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
+                                            <span class="input-group-addon">@lang('general.unit.year.title')</span>
                                             <input type="text" class="form-control"
                                                    name="building_roof_types[{{ $roofCat }}][extra][zinc_replaced_date]"
                                                    value="{{ old('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'extra.zinc_replaced_date')) }}">
@@ -163,7 +173,7 @@
 
                                         @component('cooperation.tool.components.input-group',
                                         ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'extra.bitumen_replaced_date'])
-                                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.year')</span>
+                                            <span class="input-group-addon">@lang('general.unit.year.title')</span>
                                             <input type="text" class="form-control"
                                                    name="building_roof_types[{{ $roofCat }}][extra][bitumen_replaced_date]"
                                                    value="{{ old('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'extra.bitumen_replaced_date')) }}">
@@ -318,7 +328,7 @@
 
 
         @include('cooperation.tool.includes.comment', [
-           'translation' => 'roof-insulation.comment'
+           'translation' => 'general.specific-situation'
         ])
 
         <div class="row">
@@ -333,18 +343,6 @@
                         </ol>
                     </div>
                 </div>
-                <hr>
-                @if(!\App\helpers\HoomdossierSession::isUserObserving())
-                <div class="form-group add-space">
-                    <div class="">
-                        <a class="btn btn-success pull-left"
-                           href="{{route('cooperation.tool.floor-insulation.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
-                        <button type="submit" class=" btn btn-primary pull-right">
-                            @lang('default.buttons.next')
-                        </button>
-                    </div>
-                </div>
-                    @endif
             </div>
         </div>
     </form>

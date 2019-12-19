@@ -89,16 +89,23 @@ class SettingsController extends Controller
         // remove the paintwork from a building
         $building->currentPaintworkStatus()->delete();
         // remove all progress made in the tool
-        $building->progress()->delete();
+        $building->completedSteps()->delete();
+        // remove the step comments
+        $building->stepComments()->delete();
+        // remove the answers on the custom questionnaires
+        $building->questionAnswers()->delete();
 
         // remove the action plan advices from the user
         $user->actionPlanAdvices()->delete();
         // remove the user interests
-        $user->interests()->delete();
+        $user->userInterests()->delete();
         // remove the energy habits from a user
         $user->energyHabit()->delete();
         // remove the motivations from a user
         $user->motivations()->delete();
+        // detach the progress of the completed questionnaires
+        // belongstomany, so dont delete!
+        $user->completedQuestionnaires()->detach();
 
         DossierResetPerformed::dispatch($building);
 

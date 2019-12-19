@@ -10,6 +10,9 @@ return [
             'help'  => '',
             'title' => 'jaar',
         ],
+        'wp' => [
+            'title' => 'Wp'
+        ],
         'liter'         => [
             'help'  => '',
             'title' => 'liter',

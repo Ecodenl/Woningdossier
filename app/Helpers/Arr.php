@@ -31,7 +31,10 @@ class Arr
     public static function isWholeArrayEmpty(array $array): bool
     {
         foreach ($array as $key => $value) {
-            if (! Str::isConsideredEmptyAnswer($value)) {
+            if (is_array($value)) {
+                return self::isWholeArrayEmpty($value);
+            }
+            if (!Str::isConsideredEmptyAnswer($value)) {
                 return false;
             }
         }

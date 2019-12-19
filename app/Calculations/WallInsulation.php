@@ -130,6 +130,7 @@ class WallInsulation
             $result['paint_wall'] = compact('costs', 'year');
         }
 
+
         return $result;
     }
 }

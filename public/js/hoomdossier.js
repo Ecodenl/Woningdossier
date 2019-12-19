@@ -36,16 +36,23 @@ function pollForMessageCount() {
 };
 
 function hoomdossierRound(value, bucket) {
-    if (typeof bucket === "undefined") {
-        bucket = 5;
-    }
 
-    return Math.round(value / bucket) * bucket;
+    if (value !== null) {
+        if (typeof bucket === "undefined") {
+            bucket = 5;
+        }
+
+        return Math.round(value / bucket) * bucket;
+    }
+    return 0;
 };
 
 function hoomdossierNumberFormat(value, locale, decimals){
-    if (typeof value === "string"){
-        value = parseFloat(value);
+    if (value !== null) {
+        if (typeof value === "string") {
+            value = parseFloat(value);
+        }
+        return value.toLocaleString(locale, {minimumFractionDigits: decimals});
     }
-    return value.toLocaleString(locale, { minimumFractionDigits: decimals });
+    return 0;
 };

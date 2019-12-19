@@ -25,6 +25,17 @@
                         </select>
                     </div>
                 </div>
+                <div class="col-sm-6">
+                    @if(!empty($user->account->confirm_token))
+                        <div class="form-group">
+                            <form action="{{ route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.confirm', ['cooperationToManage' => $cooperationToManage, 'id' => $user->account->id]) }}" method="post">
+                                {{ csrf_field() }}
+                                <label for="confirm-account">Dit account is nog niet bevestigd</label>
+                                <input type="submit" name="confirm" value="Nu bevestigen" class="form-control btn btn-info">
+                            </form>
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
     </div>

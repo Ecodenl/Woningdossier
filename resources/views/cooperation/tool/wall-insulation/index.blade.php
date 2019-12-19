@@ -3,13 +3,13 @@
 @section('step_title', \App\Helpers\Translation::translate('wall-insulation.title.title'))
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
+    <form method="POST"
           action="{{ route('cooperation.tool.wall-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 
         <div id="intro">
             @include('cooperation.tool.includes.interested', [
-                'type' => 'element', 'buildingElements' => $buildingElements, 'buildingElement' => 'wall-insulation'
+                'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
             ])
             <div class="row">
                 <div class="col-sm-12">
@@ -39,7 +39,7 @@
             @if(isset($building->buildingFeatures->build_year))
                 <div class="row">
                     <div class="col-sm-12">
-                        <label for="house_has_insulation" class=" control-label">
+                        <label for="house_has_insulation" class="control-label">
                             {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year.title', ['year' => $building->buildingFeatures->build_year]) }}
                             @if($building->buildingFeatures->build_year >= 1985)
                                 {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year-post-1985.title')}}
@@ -92,13 +92,11 @@
         <div class="row">
             <div class="col-sm-12">
 
-                @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'radio',
-                    'inputValues' => [
+                @component('cooperation.tool.components.input-group', ['inputType' => 'radio', 'inputValues' => [
                     1 => \App\Helpers\Translation::translate('general.options.yes.title'),
                     2 => \App\Helpers\Translation::translate('general.options.no.title'),
                     3 => \App\Helpers\Translation::translate('general.options.unknown.title'),
-                    ],
+                ],
                     'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_painted'])
 
                     @component('cooperation.tool.components.step-question', ['id' => 'facade_plastered_painted', 'translation' => 'wall-insulation.intro.is-facade-plastered-painted', 'required' => true])
@@ -165,32 +163,32 @@
         </div>
         <div class="row">
             <div class="hideable" id="surfaces">
-                    <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'wall_surface', 'translation' => 'wall-insulation.optional.facade-surface', 'required' => false])
+                <div class="col-sm-6">
+                    @component('cooperation.tool.components.step-question', ['id' => 'wall_surface', 'translation' => 'wall-insulation.optional.facade-surface', 'required' => false])
 
-                            @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_surface', 'needsFormat' => true])
-                                <input id="wall_surface" type="text" name="wall_surface"
-                                       value="{{ \App\Helpers\NumberFormatter::format(old('wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'wall_surface')),1) }}"
-                                       class="form-control">
-                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                            @endcomponent
-
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_surface', 'needsFormat' => true])
+                            <input id="wall_surface" type="text" name="wall_surface"
+                                   value="{{ \App\Helpers\NumberFormatter::format(old('wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'wall_surface')),1) }}"
+                                   class="form-control">
+                            <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
                         @endcomponent
-                    </div>
-                    <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'insulation_wall_surface', 'translation' => 'wall-insulation.optional.insulated-surface', 'required' => false])
 
-                            @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'insulation_wall_surface', 'needsFormat' => true])
-                                <input id="insulation_wall_surface" type="text" name="insulation_wall_surface"
-                                       value="{{ \App\Helpers\NumberFormatter::format(old('insulation_wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'insulation_wall_surface')),1) }}"
-                                       class="form-control">
-                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                            @endcomponent
+                    @endcomponent
+                </div>
+                <div class="col-sm-6">
+                    @component('cooperation.tool.components.step-question', ['id' => 'insulation_wall_surface', 'translation' => 'wall-insulation.optional.insulated-surface', 'required' => false])
 
+                        @component('cooperation.tool.components.input-group',
+                    ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'insulation_wall_surface', 'needsFormat' => true])
+                            <input id="insulation_wall_surface" type="text" name="insulation_wall_surface"
+                                   value="{{ \App\Helpers\NumberFormatter::format(old('insulation_wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'insulation_wall_surface')),1) }}"
+                                   class="form-control">
+                            <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
                         @endcomponent
-                    </div>
+
+                    @endcomponent
+                </div>
             </div>
 
             <div class="hideable">
@@ -335,12 +333,9 @@
 
             </div>
 
-
             @include('cooperation.tool.includes.comment', [
-                'columnName' => 'additional_info',
-                'translation' => 'wall-insulation.comment'
+                 'translation' => 'general.specific-situation'
             ])
-
 
             <div class="row">
                 <div class="col-md-12">
@@ -357,18 +352,6 @@
                             </ol>
                         </div>
                     </div>
-                    <hr>
-                    @if(!\App\helpers\HoomdossierSession::isUserObserving())
-                <div class="form-group add-space">
-                    <div class="">
-                        <a class="btn btn-success pull-left"
-                           href="{{ route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) }}">@lang('default.buttons.prev')</a>
-                        <button type="submit" class="btn btn-primary pull-right">
-                            @lang('default.buttons.next')
-                        </button>
-                    </div>
-                </div>
-                @endif
                 </div>
             </div>
         </div>

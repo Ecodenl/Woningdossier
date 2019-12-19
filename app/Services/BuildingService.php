@@ -8,7 +8,7 @@ class BuildingService {
 
     public static function deleteBuilding(Building $building)
     {
-        $building->progress()->withoutGlobalScopes()->delete();
+        $building->completedSteps()->withoutGlobalScopes()->delete();
         // delete the private messages from the cooperation
         $building->privateMessages()->withoutGlobalScopes()->delete();
         // table will be removed anyways.

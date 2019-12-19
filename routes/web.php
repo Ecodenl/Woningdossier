@@ -303,14 +303,11 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     });
 
 
+
+                    Route::resource('questionnaires', 'QuestionnaireController')
+                        ->middleware('current-role:cooperation-admin');
                     // not in the cooperation-admin group, probably need to be used for hte coordinator aswell.
                     Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire', 'middleware' => ['current-role:cooperation-admin']], function () {
-                        Route::get('', 'QuestionnaireController@index')->name('index');
-                        Route::post('', 'QuestionnaireController@update')->name('update');
-                        Route::get('create', 'QuestionnaireController@create')->name('create');
-                        Route::get('edit/{id}', 'QuestionnaireController@edit')->name('edit');
-                        Route::post('create-questionnaire', 'QuestionnaireController@store')->name('store');
-
                         Route::delete('delete-question/{questionId}', 'QuestionnaireController@deleteQuestion')->name('delete');
                         Route::delete('delete-option/{questionId}/{optionId}', 'QuestionnaireController@deleteQuestionOption')->name('delete-question-option');
                         Route::post('set-active', 'QuestionnaireController@setActive')->name('set-active');
@@ -371,9 +368,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
 
                 /* Section for the coach */
-                Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach',
-                    'middleware' => ['current-role:coach']
-                ], function () {
+                Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['current-role:coach']], function () {
 
                     Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
                         Route::get('', 'BuildingController@index')->name('index');

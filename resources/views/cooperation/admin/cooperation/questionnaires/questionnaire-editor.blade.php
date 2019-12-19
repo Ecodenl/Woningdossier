@@ -5,8 +5,9 @@
 @section('content')
     <section class="section">
         <div class="container">
-            <form action="{{ route('cooperation.admin.cooperation.questionnaires.update') }}" method="post">
+            <form action="{{ route('cooperation.admin.cooperation.questionnaires.update', ['questionnaireId' => $questionnaire->id]) }}" method="post">
                 <input type="hidden" name="questionnaire[id]" value="{{$questionnaire->id}}">
+                {{method_field('PUT')}}
                 {{csrf_field()}}
                 <div class="row">
                     <div class="col-sm-6">

@@ -7,6 +7,9 @@ return [
     'trigger-modal-for-other-input-source' => [
         'title' => 'Gegevens van :input_source_name'
     ],
+    'warnings' => [
+        'ventilation' => 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.'
+    ],
     'modal-for-other-input-source' => [
         'title' => 'Persoonlijke plan van de :input_source_name',
         'text' => 'Uitleg over het plan van de :input_source_name'

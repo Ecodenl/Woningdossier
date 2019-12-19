@@ -36,9 +36,9 @@ class PdfReport implements ShouldQueue
     /**
      * PdfReport constructor.
      *
-     * @param User        $user
+     * @param User $user
      * @param InputSource $inputSource
-     * @param FileType    $fileType
+     * @param FileType $fileType
      * @param FileStorage $fileStorage
      */
     public function __construct(User $user, InputSource $inputSource, FileType $fileType, FileStorage $fileStorage)
@@ -57,7 +57,7 @@ class PdfReport implements ShouldQueue
     public function handle()
     {
         if (\App::runningInConsole()) {
-            \Log::debug(__CLASS__.' Is running in the console with a maximum execution time of: '.ini_get('max_execution_time'));
+            \Log::debug(__CLASS__ . ' Is running in the console with a maximum execution time of: ' . ini_get('max_execution_time'));
         }
 
         $user = $this->user;
@@ -80,46 +80,64 @@ class PdfReport implements ShouldQueue
             ->get();
 
         // the comments that have been made on the action plan
-        $userActionPlanAdviceComments = UserActionPlanAdviceComments::withoutGlobalScope(GetValueScope::class)
-            ->where('user_id', $user->id)
+        $userActionPlanAdviceComments = UserActionPlanAdviceComments::forMe($user)
             ->with('inputSource')
-            ->get();
+            ->get()
+            ->pluck('comment', 'inputSource.name')
+            ->toArray();
 
         $steps = $userCooperation->getActiveOrderedSteps();
 
         $userActionPlanAdvices = UserActionPlanAdviceService::getPersonalPlan($user, $inputSource);
 
         // we dont wat the actual advices, we have to show them in a different way
-        $advices = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
+        $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
         // full report for a user
-        $reportForUser = DumpService::totalDump($user, $inputSource, false);
+        $reportForUser = DumpService::totalDump($user, $inputSource, false, true, true);
 
         // the translations for the columns / tables in the user data
         $reportTranslations = $reportForUser['translations-for-columns'];
 
-        // undot it so we can handle the data in view later on
-        $reportData = \App\Helpers\Arr::arrayUndot($reportForUser['user-data']);
+        $calculations = $reportForUser['calculations'];
+        $reportData = [];
+
+        foreach ($reportForUser['user-data'] as $key => $value) {
+            // so we now its a step.
+            if (is_string($key)) {
+                $keys = explode('.', $key);
+
+                $tableData = array_splice($keys, 2);
+
+                // we dont want the calculations in the report data, we need them separate
+                if (!in_array('calculation', $tableData)) {
+                    $reportData[$keys[0]][$keys[1]][implode('.', $tableData)] = $value;
+                }
+            }
+        }
+
+        // intersect the data, we dont need the data we wont show anyway
+        $activeOrderedStepShorts = $steps->pluck('short')->flip()->toArray();
+        $reportData = array_intersect_key($reportData, $activeOrderedStepShorts);
 
         // steps that are considered to be measures.
-        $stepSlugs = \DB::table('steps')
-            ->where('slug', '!=', 'building-detail')
-            ->where('slug', '!=', 'general-data')
-            ->select('slug', 'id')
+        $stepShorts = \DB::table('steps')
+            ->where('short', '!=', 'general-data')
+            ->select('short', 'id')
             ->get()
-            ->pluck('slug', 'id')
+            ->pluck('short', 'id')
             ->flip()
             ->toArray();
 
         // retrieve all the comments by for each input source on a step
-        $commentsByStep = StepHelper::getAllCommentsByStep($user);
+        $commentsByStep = StepHelper::getAllCommentsByStep($building);
 
         $noInterest = Interest::where('calculate_value', 4)->first();
 
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'userCooperation', 'stepSlugs', 'commentsByStep', 'inputSource',
-            'reportTranslations', 'reportData', 'userActionPlanAdvices', 'buildingFeatures', 'advices',
+            'user', 'building', 'userCooperation', 'stepShorts', 'commentsByStep', 'inputSource',
+            'reportTranslations', 'reportData', 'userActionPlanAdvices', 'buildingFeatures', 'measures', 'calculations',
             'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'reportForUser', 'noInterest'
         ));
 

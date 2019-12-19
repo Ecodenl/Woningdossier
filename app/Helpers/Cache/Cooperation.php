@@ -62,8 +62,24 @@ class Cooperation extends BaseCache
             self::getCacheKey(static::CACHE_KEY_GET_ACTIVE_ORDERED_STEPS, $cooperation->id),
             config('hoomdossier.cache.times.default'),
             function () use ($cooperation) {
-                return $cooperation->steps()->orderBy('cooperation_steps.order')->where('cooperation_steps.is_active', '1')->get();
+                return $cooperation
+                    ->steps()
+                    ->where('steps.parent_id', '=', null)
+                    ->orderBy('cooperation_steps.order')
+                    ->where('cooperation_steps.is_active', '1')
+                    ->get();
             }
         );
+    }
+
+    /**
+     * Method to forget the cooperation cache with specific key.
+     *
+     * @param $cacheKey
+     * @param $cooperationId
+     */
+    public static function wipe($cacheKey, $cooperationId)
+    {
+        \Cache::forget(self::getCacheKey($cacheKey, $cooperationId));
     }
 }

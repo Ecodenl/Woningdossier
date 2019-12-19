@@ -14,7 +14,7 @@
                                         <div class="clearfix"></div>
                                     </div>
                                     <div class="col-sm-12 text-center">
-                                        <a class="start-button" href="{{route('cooperation.tool.building-detail.index', ['cooperation' => $cooperation])}}">
+                                        <a class="start-button" href="{{route('cooperation.tool.general-data.index', ['cooperation' => $cooperation])}}">
                                             <img src="{{asset('images/start-icon.png')}}" class="h-150">
                                         </a>
                                     </div>

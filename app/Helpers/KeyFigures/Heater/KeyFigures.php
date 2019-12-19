@@ -62,11 +62,13 @@ class KeyFigures implements KeyFiguresInterface
                                            ->where('comfort_level_tap_water_id', $comfortLevel->id)
                                            ->first();
 
-        \Log::debug(__METHOD__.' consumption: for '.
+        if ($consumption instanceof KeyFigureConsumptionTapWater) {
+            \Log::debug(__METHOD__.' consumption: for '.
                     $habit->resident_count.' residents on comfort level '.
                     $comfortLevel->name.' is '.
                     $consumption->water_consumption.' (water) and '.
                     $consumption->energy_consumption.' (gas)');
+        }
 
         return $consumption;
     }

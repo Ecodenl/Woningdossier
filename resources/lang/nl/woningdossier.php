@@ -282,7 +282,7 @@ return [
             ],
             'users'             => [
                 'show' => [
-                    'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city, :email',
+                    'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city, :email, :phone-number',
 
                     'observe-building' => [
                         'label'  => 'Woning bekijken',
@@ -613,6 +613,7 @@ return [
                     ],
 
                     'store'   => [
+                        'private-message-allowed-access' => 'U heeft de coöperatie toegang gegeven tot uw Hoomdossier.',
                         'success' => 'Gebruiker is toevoegd!',
                     ],
                     'destroy' => [

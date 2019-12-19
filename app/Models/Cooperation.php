@@ -32,10 +32,9 @@ use Illuminate\Support\Collection;
  */
 class Cooperation extends Model
 {
-    public $fillable
-        = [
-            'name', 'website_url', 'slug', 'cooperation_email',
-        ];
+    public $fillable = [
+        'name', 'website_url', 'slug', 'cooperation_email',
+    ];
 
     /**
      * The users associated with this cooperation.
@@ -56,6 +55,16 @@ class Cooperation extends Model
     }
 
     /**
+     * Return the example buildings for the cooperation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function exampleBuildings()
+    {
+        return $this->hasMany(ExampleBuilding::class);
+    }
+
+    /**
      * Get all the steps from the cooperation.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -63,6 +72,17 @@ class Cooperation extends Model
     public function steps()
     {
         return $this->belongsToMany(Step::class, 'cooperation_steps')->withPivot('order', 'is_active');
+    }
+
+    /**
+     * Get the sub steps for a given step.
+     *
+     * @param Step $step
+     * @return mixed
+     */
+    public function getSubStepsForStep(Step $step)
+    {
+        return $this->steps()->subStepsForStep($step)->activeOrderedSteps()->get();
     }
 
     /**
@@ -86,14 +106,13 @@ class Cooperation extends Model
     }
 
     /**
-     * get the active steps ordered on the order column.
+     * get the active steps with its substeps ordered on the order column.
      *
-     * @return mixed
+     * @return Collection|mixed
      */
-    public function getActiveOrderedSteps(): Collection
+    public function getActiveOrderedSteps()
     {
         return \App\Helpers\Cache\Cooperation::getActiveOrderedSteps($this);
-        //return $this->steps()->orderBy('cooperation_steps.order')->where('cooperation_steps.is_active', '1')->get();
     }
 
     public function getRouteKeyName()

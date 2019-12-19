@@ -8,19 +8,23 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\WallInsulationRequest;
+use App\Http\Requests\Cooperation\Tool\WallInsulationRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
+use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
+use App\Services\StepCommentService;
+use App\Services\UserInterestService;
+
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -80,12 +84,16 @@ class WallInsulationController extends Controller
     public function store(WallInsulationRequest $request)
     {
         $building = HoomdossierSession::getBuilding(true);
+        $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
         $buildingId = $building->id;
-        $inputSourceId = HoomdossierSession::getInputSource();
+        $inputSourceId = $inputSource->id;
 
-        $interests = $request->input('interest', []);
-        UserInterest::saveUserInterests($user, $interests);
+        $userInterests = $request->input('user_interests');
+        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+
+        $stepComments = $request->input('step_comments');
+        StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         // Get all the values from the form
         $wallInsulationQualities = $request->get('element', '');
@@ -95,7 +103,6 @@ class WallInsulationController extends Controller
         $wallJointsContaminated = $request->get('contaminated_wall_joints', '');
         $wallSurface = $request->get('wall_surface', 0);
         $insulationWallSurface = $request->get('insulation_wall_surface', 0);
-        $additionalInfo = $request->get('additional_info', '');
         $cavityWall = $request->get('cavity_wall', '');
         $facadePlasteredOrPainted = $request->get('facade_plastered_painted', '');
 
@@ -104,7 +111,7 @@ class WallInsulationController extends Controller
         $elementValueId = reset($wallInsulationQualities);
 
         // Save the wall insulation
-        $buildingElement = BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+        BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,
@@ -115,7 +122,7 @@ class WallInsulationController extends Controller
             ]
         );
 
-        $buildingFeature = BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,
@@ -128,7 +135,6 @@ class WallInsulationController extends Controller
                 'wall_surface' => $wallSurface,
                 'insulation_wall_surface' => $insulationWallSurface,
                 'facade_damaged_paintwork_id' => $damagedPaintwork,
-                'additional_info' => $additionalInfo,
                 'facade_plastered_painted' => $facadePlasteredOrPainted,
             ]
         );

@@ -155,61 +155,86 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
                 Route::get('/', 'ToolController@index')->name('index');
 
-                Route::post('general-data/apply-example-building', 'GeneralDataController@applyExampleBuilding')->name('apply-example-building');
-                Route::resource('building-detail', 'BuildingDetailController', ['only' => ['index', 'store']]);
-
                 Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
                     Route::post('', 'QuestionnaireController@store')->name('store');
                 });
 
-                Route::group(['middleware' => 'filled-step:building-detail'], function () {
-                    Route::resource('general-data', 'GeneralDataController', ['only' => ['index', 'store']]);
+                Route::resource('example-building', 'ExampleBuildingController')->only('store');
+                Route::resource('building-type', 'BuildingTypeController')->only('store');
+
+                Route::group(['as' => 'general-data.', 'prefix' => 'general-data'], function () {
+
+                    Route::get('', 'GeneralDataController@index')->name('index');
+
+                    Route::group(['namespace' => 'GeneralData'], function () {
+                        Route::resource('gebouw-kenmerken', 'BuildingCharacteristicsController')->only(['index', 'store'])->names('building-characteristics');
+                        Route::get('get-qualified-example-buildings', 'BuildingCharacteristicsController@qualifiedExampleBuildings')->name('building-characteristics.qualified-example-buildings');
+
+                        Route::resource('huidige-staat', 'CurrentStateController')->names('current-state')->only(['index', 'store']);
+                        Route::resource('gebruik', 'UsageController')->only(['index', 'store'])->names('usage');
+                        Route::resource('interesse', 'InterestController')->only(['index', 'store'])->names('interest');
+
+                    });
                 });
+
                 Route::group(['middleware' => 'filled-step:general-data'], function () {
-                    // Ventilation information: info for now
-                    Route::resource('ventilation-information', 'VentilationController',
-                        ['only' => ['index', 'store']]);
+
                     // Heat pump: info for now
-                    Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
+                    Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']])
+                        ->middleware('step-disabled:heat-pump');
+
+                    Route::group(['prefix' => 'ventilation', 'as' => 'ventilation.', 'middleware' => 'step-disabled:ventilation'], function () {
+                        Route::resource('', 'VentilationController', ['only' => ['index', 'store',]]);
+                        Route::post('calculate', 'VentilationController@calculate')->name('calculate');
+                    });
 
                     // Wall Insulation
-                    Route::resource('wall-insulation', 'WallInsulationController', ['only' => ['index', 'store']]);
-                    Route::post('wall-insulation/calculate',
-                        'WallInsulationController@calculate')->name('wall-insulation.calculate');
+                    Route::group(['prefix' => 'wall-insulation', 'as' => 'wall-insulation.', 'middleware' => 'step-disabled:wall-insulation'], function () {
+                        Route::resource('', 'WallInsulationController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'WallInsulationController@calculate')->name('calculate');
+                    });
 
                     // Insulated glazing
-                    Route::resource('insulated-glazing', 'InsulatedGlazingController', ['only' => ['index', 'store']]);
-                    Route::post('insulated-glazing/calculate',
-                        'InsulatedGlazingController@calculate')->name('insulated-glazing.calculate');
+                    Route::group(['prefix' => 'insulated-glazing', 'as' => 'insulated-glazing.', 'middleware' => 'step-disabled:insulated-glazing'], function () {
+                        Route::resource('', 'InsulatedGlazingController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'InsulatedGlazingController@calculate')->name('calculate');
+                    });
 
                     // Floor Insulation
-                    Route::resource('floor-insulation', 'FloorInsulationController', ['only' => ['index', 'store']]);
-                    Route::post('floor-insulation/calculate',
-                        'FloorInsulationController@calculate')->name('floor-insulation.calculate');
+                    Route::group(['prefix' => 'floor-insulation', 'as' => 'floor-insulation.', 'middleware' => 'step-disabled:insulated-glazing'], function () {
+                        Route::resource('', 'FloorInsulationController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'FloorInsulationController@calculate')->name('calculate');
+                    });
 
                     // Roof Insulation
-                    Route::resource('roof-insulation', 'RoofInsulationController');
-                    Route::post('roof-insulation/calculate',
-                        'RoofInsulationController@calculate')->name('roof-insulation.calculate');
+                    Route::group(['prefix' => 'roof-insulation', 'as' => 'roof-insulation.', 'middleware' => 'step-disabled:roof-insulation'], function () {
+                        Route::resource('', 'RoofInsulationController');
+                        Route::post('calculate', 'RoofInsulationController@calculate')->name('calculate');
+                    });
 
                     // HR boiler
-                    Route::resource('high-efficiency-boiler', 'HighEfficiencyBoilerController',
-                        ['only' => ['index', 'store']]);
-                    Route::post('high-efficiency-boiler/calculate',
-                        'HighEfficiencyBoilerController@calculate')->name('high-efficiency-boiler.calculate');
+                    Route::group(['prefix' => 'high-efficiency-boiler', 'as' => 'high-efficiency-boiler.', 'middleware' => 'step-disabled:high-efficiency-boiler'], function () {
+                        Route::resource('', 'HighEfficiencyBoilerController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'HighEfficiencyBoilerController@calculate')->name('calculate');
+                    });
 
                     // Solar panels
-                    Route::resource('solar-panels', 'SolarPanelsController', ['only' => ['index', 'store']]);
-                    Route::post('solar-panels/calculate',
-                        'SolarPanelsController@calculate')->name('solar-panels.calculate');
+                    Route::group(['prefix' => 'solar-panels', 'as' => 'solar-panels.', 'middleware' => 'step-disabled:solar-panels'], function () {
+                        Route::resource('', 'SolarPanelsController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'SolarPanelsController@calculate')->name('calculate');
+                    });
 
                     // Heater (solar boiler)
-                    Route::resource('heater', 'HeaterController', ['only' => ['index', 'store']]);
-                    Route::post('heater/calculate', 'HeaterController@calculate')->name('heater.calculate');
+                    Route::group(['prefix' => 'heater', 'as' => 'heater.', 'middleware' => 'step-disabled:heater'], function () {
+                        Route::resource('', 'HeaterController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'HeaterController@calculate')->name('calculate');
+                    });
                 });
 
                 Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');
-                Route::post('my-plan/comment', 'MyPlanController@storeComment')->name('my-plan.store-comment');
+                Route::post('my-plan/comment', 'MyPlanController@storeComment')
+                    ->middleware('deny-if-observing-building')
+                    ->name('my-plan.store-comment');
                 Route::post('my-plan/store', 'MyPlanController@store')->name('my-plan.store');
 //                Route::get('my-plan/export', 'MyPlanController@export')->name('my-plan.export');
             });
@@ -227,8 +252,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                 Route::group(['middleware' => ['current-role:cooperation-admin|super-admin']], function () {
                     Route::resource('example-buildings', 'ExampleBuildingController');
-                    Route::get('example-buildings/{id}/copy',
-                        'ExampleBuildingController@copy')->name('example-buildings.copy');
+                    Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
                 });
 
                 /* Section that a coach, coordinator and cooperation-admin can access */
@@ -238,8 +262,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     Route::group(['prefix' => 'tool', 'as' => 'tool.'], function () {
                         Route::get('fill-for-user/{id}', 'ToolController@fillForUser')->name('fill-for-user');
-                        Route::get('observe-tool-for-user/{id}',
-                            'ToolController@observeToolForUser')->name('observe-tool-for-user');
+                        Route::get('observe-tool-for-user/{id}', 'ToolController@observeToolForUser')
+                            ->name('observe-tool-for-user');
                     });
 
                     Route::post('message', 'MessagesController@sendMessage')->name('send-message');
@@ -301,9 +325,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     });
 
                     /* section for the cooperation-admin */
-                    Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.',
-                        'namespace' => 'CooperationAdmin', 'middleware' => ['current-role:cooperation-admin|super-admin']
-                    ], function () {
+                    Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['current-role:cooperation-admin|super-admin']], function () {
 
                         Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
                             Route::get('', 'StepController@index')->name('index');
@@ -325,8 +347,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     });
 
                     Route::resource('key-figures', 'KeyFiguresController')->only('index');
-                    Route::resource('translations',
-                        'TranslationController')->except(['show'])->parameters(['id' => 'step-slug']);
+                    Route::resource('translations', 'TranslationController')->except(['show'])->parameters(['id' => 'group']);
 
                     /* Section for the cooperations */
                     Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.', 'namespace' => 'Cooperation'], function () {
@@ -345,7 +366,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                                 Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
                                 Route::resource('coordinator', 'CoordinatorController')->only(['index']);
                                 Route::resource('users', 'UserController')->only(['index', 'show']);
-                            });
+                            Route::post('users/{id}/confirm', 'UserController@confirm')->name('users.confirm');});
                     });
                 });
 

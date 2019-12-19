@@ -3,10 +3,12 @@
 @section('step_title', \App\Helpers\Translation::translate('solar-panels.title.title'))
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
-          action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
+    <form  method="POST" action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
-        @include('cooperation.tool.includes.interested', ['type' => 'service'])
+
+        @include('cooperation.tool.includes.interested', [
+            'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+        ])
         <div id="solar-panels">
             <div class="row">
                 <div class="col-sm-6">
@@ -15,8 +17,7 @@
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'amount_electricity'])
                             <span class="input-group-addon">kWh / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
-                            <input type="number" min="0" class="form-control"
-                                   name="user_energy_habits[amount_electricity]"
+                            <input type="number" min="0" class="form-control" name="user_energy_habits[amount_electricity]"
                                    value="{{ old('user_energy_habits.amount_electricity', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'amount_electricity', 0)) }}"/>
                             {{--<input type="number" min="0" class="form-control" name="user_energy_habits[amount_electricity]" value="{{ old('user_energy_habits.amount_electricity', $amountElectricity) }}" />--}}
                         @endcomponent
@@ -59,7 +60,7 @@
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $buildingPvPanelsForMe, 'userInputColumn' => 'number'])
-                            <span class="input-group-addon">@lang('woningdossier.cooperation.tool.unit.pieces')</span>
+                            <span class="input-group-addon">@lang('general.unit.pieces.title')</span>
                             <input type="text" class="form-control" name="building_pv_panels[number]"
                                    value="{{ old('building_pv_panels.number', \App\Helpers\Hoomdossier::getMostCredibleValue($building->pvPanels(), 'number', 0)) }}"/>
                             {{--<input type="text" class="form-control" name="building_pv_panels[number]" value="{{ old('building_pv_panels.number', $buildingPvPanels instanceof \App\Models\BuildingPvPanel ? $buildingPvPanels->number : 0) }}" />--}}
@@ -138,7 +139,6 @@
                     </div>
 
                     <div class="col-sm-4">
-                        <div class="form-group add-space">
                             @component('cooperation.tool.components.step-question', ['id' => 'raise-own-consumption', 'translation' => 'solar-panels.indication-for-costs.raise-own-consumption', 'required' => false])
                                 <div class="input-group">
                                     <span class="input-group-addon">%</span>
@@ -146,7 +146,6 @@
                                            disabled="" value="0">
                                 </div>
                             @endcomponent
-                        </div>
                     </div>
                     <div class="col-sm-4">
                         @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
@@ -176,7 +175,7 @@
 
 
         @include('cooperation.tool.includes.comment', [
-             'translation' => 'solar-panels.comment'
+             'translation' => 'general.specific-situation'
          ])
 
 
@@ -192,18 +191,6 @@
                         </ol>
                     </div>
                 </div>
-                <hr>
-                @if(!\App\helpers\HoomdossierSession::isUserObserving())
-                <div class="form-group add-space">
-                    <div class="">
-                        <a class="btn btn-success pull-left"
-                           href="{{route('cooperation.tool.high-efficiency-boiler.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
-                        <button type="submit" class="btn btn-primary pull-right">
-                            @lang('default.buttons.next')
-                        </button>
-                    </div>
-                </div>
-                @endif
             </div>
         </div>
     </form>

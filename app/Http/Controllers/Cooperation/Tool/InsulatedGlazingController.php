@@ -8,7 +8,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\InsulatedGlazingFormRequest;
+use App\Http\Requests\Cooperation\Tool\InsulatedGlazingFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
@@ -27,6 +27,8 @@ use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
 use App\Services\ModelService;
+use App\Services\StepCommentService;
+use App\Services\UserInterestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -50,11 +52,6 @@ class InsulatedGlazingController extends Controller
      */
     public function index()
     {
-        // we do not want the user to set his interests for this step
-//        $typeIds = [1, 2];
-
-//        StepHelper::getNextStep();
-
         /**
          * @var Building
          */
@@ -81,7 +78,7 @@ class InsulatedGlazingController extends Controller
         $buildingInsulatedGlazings = [];
         $buildingInsulatedGlazingsForMe = [];
 
-        $buildingFeaturesForMe = $building->buildingFeatures->forMe()->get();
+        $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
         $userInterests = [];
 
         foreach ($measureApplicationShorts as $measureApplicationShort) {
@@ -99,31 +96,15 @@ class InsulatedGlazingController extends Controller
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
                 }
                 // get interests for the measure
-                $measureInterestId = Hoomdossier::getMostCredibleValue($buildingOwner->interests()
-                    ->where('interested_in_type', 'measure_application')
-                    ->where('interested_in_id', $measureApplication->id), 'interest_id');
+                $measureInterestId = Hoomdossier::getMostCredibleValue(
+                    $buildingOwner->userInterestsForSpecificType(MeasureApplication::class, $measureApplication->id), 'interest_id'
+                );
 
-                if (! empty($measureInterestId)) {
-                    // We only have to check on the interest ID, so we don't put
-                    // full objects in the array
-                    $userInterests[$measureApplication->id] = $measureInterestId;
-                }
+                $userInterests[$measureApplication->id] = $measureInterestId;
 
                 $measureApplications[] = $measureApplication;
             }
         }
-
-//        $inputValues = $woodElements;
-//
-//        $x = $building;
-//        $z = $building->buildingElements()->forMe();
-//
-//        foreach ($inputValues->values()->orderBy('order')->get() as $i => $inputValue) {
-//            // returned 1 instance 2 null
-//            dump($z->where('element_id', $inputValues->id)->where('element_value_id', $inputValue->id)->first());
-//            // returned 3 instances 0 null
-//            dump($x->buildingElements()->forMe()->where('element_id', $inputValues->id)->where('element_value_id', $inputValue->id)->first());
-//        }
 
         $myBuildingElements = BuildingElement::forMe()->get();
         $userInterestsForMe = UserInterest::forMe()->where('interested_in_type', 'measure_application')->get();
@@ -184,9 +165,8 @@ class InsulatedGlazingController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
-        $energyHabit = Hoomdossier::user()->energyHabit;
 
-        $result = InsulatedGlazing::calculate($building, $inputSource, $energyHabit, $request->all());
+        $result = InsulatedGlazing::calculate($building, $inputSource, $building->user->energyHabit, $request->all());
 
         return response()->json($result);
     }
@@ -201,22 +181,38 @@ class InsulatedGlazingController extends Controller
     public function store(InsulatedGlazingFormRequest $request)
     {
         $building = HoomdossierSession::getBuilding(true);
+        $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
         $buildingId = $building->id;
-        $inputSourceId = HoomdossierSession::getInputSource();
+        $inputSourceId = $inputSource->id;
+
+        $userInterests = $request->input('user_interests');
+        $interests = collect();
+        foreach ($userInterests as $interestInId => $userInterest) {
+            // so we can determine the highest interest level later on.
+            $interests->push(Interest::find($userInterest['interest_id']));
+            UserInterestService::save($user, $inputSource, $userInterest['interested_in_type'], $interestInId, $userInterest['interest_id']);
+        }
+
+        // get the highest interest level (which is the lowst calculate value.)
+        $highestInterestLevelInterestId = $interests->unique('id')->min('calculate_value');
+        // we have to update the step interest based on the interest for the measure application.
+        UserInterestService::save($user, $inputSource, Step::class, Step::findByShort('insulated-glazing')->id, $highestInterestLevelInterestId);
+
+        $stepComments = $request->input('step_comments');
+        StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
+
 
         $buildingInsulatedGlazings = $request->input('building_insulated_glazings', '');
 
         // Saving the insulate glazings
         $interests = collect();
         foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazing) {
+
             $insulatedGlazingId = $buildingInsulatedGlazing['insulated_glazing_id'];
             $buildingHeatingId = $buildingInsulatedGlazing['building_heating_id'];
             $m2 = isset($buildingInsulatedGlazing['m2']) ? $buildingInsulatedGlazing['m2'] : 0;
             $windows = isset($buildingInsulatedGlazing['windows']) ? $buildingInsulatedGlazing['windows'] : 0;
-
-            // The interest for a measure
-            $userInterestId = $request->input('user_interests.'.$measureApplicationId.'');
 
             // Update or Create the buildingInsulatedGlazing
             BuildingInsulatedGlazing::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
@@ -230,40 +226,9 @@ class InsulatedGlazingController extends Controller
                     'building_heating_id' => $buildingHeatingId,
                     'm2' => $m2,
                     'windows' => $windows,
-                    'extra' => ['comment' => $request->input('comment', '')],
                 ]
             );
-            // We'll create the user interests for the measures or update it
-            UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-                [
-                    'user_id' => $user->id,
-                    'input_source_id'    => $inputSourceId,
-                    'interested_in_type' => 'measure_application',
-                    'interested_in_id' => $measureApplicationId,
-                ],
-                [
-                    'interest_id' => $userInterestId,
-                ]
-            );
-            // collect all the selected interests
-            $interests->push(Interest::find($userInterestId));
         }
-
-        // get the highest interest level (which is the lowst calculate value.)
-        $highestInterestLevel = $interests->unique('id')->min('calculate_value');
-        // update the livingroomwindow interest level based of the highest interest level for the measure.
-        $livingRoomWindowsElement = Element::where('short', 'living-rooms-windows')->first();
-        UserInterest::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'user_id'            => $user->id,
-                'interested_in_type' => 'element',
-                'input_source_id'    => $inputSourceId,
-                'interested_in_id'   => $livingRoomWindowsElement->id,
-            ],
-            [
-                'interest_id'        => $highestInterestLevel,
-            ]
-        );
 
         // saving the main building elements
         $elements = $request->input('building_elements', []);
@@ -307,7 +272,7 @@ class InsulatedGlazingController extends Controller
         // Save the paintwork statuses
         $paintWorkStatuses = $request->get('building_paintwork_statuses', '');
 
-        $lastPaintedYear = 2000;
+        $lastPaintedYear = null;
         if (array_key_exists('last_painted_year', $paintWorkStatuses)) {
             $year = (int) $paintWorkStatuses['last_painted_year'];
             if ($year > 1950) {
@@ -327,16 +292,12 @@ class InsulatedGlazingController extends Controller
             ]
         );
 
-        // Save the window surface to the building feature
-        $windowSurface = $request->get('window_surface', '');
         BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $buildingId,
                 'input_source_id' => $inputSourceId,
             ],
-            [
-                'window_surface' => $windowSurface,
-            ]
+            $request->input('building_features')
         );
 
         $this->saveAdvices($request);

@@ -4,34 +4,36 @@
 
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
+    <form  method="POST"
           action="{{ route('cooperation.tool.high-efficiency-boiler.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
-        @include('cooperation.tool.includes.interested', ['type' => 'service'])
+        @include('cooperation.tool.includes.interested', [
+          'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+        ])
         <div id="start-information">
             <div class="row">
                 <div class="col-sm-6">
-                    @component('cooperation.tool.components.step-question', ['id' => 'habit.gas_usage', 'translation' => 'high-efficiency-boiler.current-gas-usage', 'required' => false])
+                    @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.amount_gas', 'translation' => 'high-efficiency-boiler.current-gas-usage', 'required' => false])
 
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'amount_gas'])
                             <span class="input-group-addon">m<sup>3</sup></span>
-                            <input type="text" id="gas_usage" name="habit[gas_usage]" class="form-control"
-                                   value="{{ old('habit.gas_usage', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'amount_gas', 0)) }}">
-                            {{--<input type="text" id="gas_usage" name="habit[gas_usage]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->amount_gas : 0 }}">--}}
+                            <input type="text" id="amount_gas" name="user_energy_habits[amount_gas]" class="form-control"
+                                   value="{{ old('user_energy_habits.amount_gas', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'amount_gas', 0)) }}">
+                            {{--<input type="text" id="amount_gas" name="user_energy_habits[amount_gas]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->amount_gas : 0 }}">--}}
                         @endcomponent
 
                     @endcomponent
 
                 </div>
                 <div class="col-sm-6">
-                    @component('cooperation.tool.components.step-question', ['id' => 'habit.resident_count', 'translation' => 'high-efficiency-boiler.resident-count', 'required' => false])
+                    @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.resident_count', 'translation' => 'high-efficiency-boiler.resident-count', 'required' => false])
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $energyHabitsForMe, 'userInputColumn' => 'resident_count'])
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input type="text" id="resident_count" name="habit[resident_count]" class="form-control"
-                                   value="{{ old('habit.resident_count', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'resident_count', 0)) }}">
-                            {{--<input type="text" id="resident_count" name="habit[resident_count]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->resident_count : 0 }}">--}}
+                            <input type="text" id="resident_count" name="user_energy_habits[resident_count]" class="form-control"
+                                   value="{{ old('user_energy_habits.resident_count', \App\Helpers\Hoomdossier::getMostCredibleValue($buildingOwner->energyHabit(), 'resident_count', 0)) }}">
+                            {{--<input type="text" id="resident_count" name="user_energy_habits[resident_count]" class="form-control" value="{{ $habit instanceof \App\Models\UserEnergyHabit ? $habit->resident_count : 0 }}">--}}
                         @endcomponent
 
                     @endcomponent
@@ -42,16 +44,16 @@
             <div class="row">
                 <div id="boiler-options">
                     <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'building_services.' . $boiler->id . '.service_value_id', 'translation' => 'high-efficiency-boiler.boiler-type', 'required' => false])
+                        @component('cooperation.tool.components.step-question', ['id' => 'building_services.' . $boiler->short . '.service_value_id', 'translation' => 'high-efficiency-boiler.boiler-type', 'required' => false])
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => $boilerTypes, 'userInputValues' => $installedBoilerForMe, 'userInputColumn' => 'service_value_id'])
                                 <select id="high_efficiency_boiler_id" class="form-control"
-                                        name="building_services[{{ $boiler->id  }}][service_value_id]">
+                                        name="building_services[{{ $boiler->short  }}][service_value_id]">
                                     @foreach($boilerTypes as $boilerType)
-                                        <option @if(old('building_services.' . $boiler->id . '.service_value_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $boiler->id), 'service_value_id')) == $boilerType->id) selected="selected"
+                                        <option @if(old('building_services.' . $boiler->short . '.service_value_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $boiler->id), 'service_value_id')) == $boilerType->id) selected="selected"
                                                 @endif value="{{ $boilerType->id }}">{{ $boilerType->value }}</option>
-                                        {{--<option @if(old('building_services.' . $boiler->id . '.service_value_id') == $boilerType->id || ($installedBoiler instanceof \App\Models\BuildingService && $installedBoiler->service_value_id == $boilerType->id)) selected @endif value="{{ $boilerType->id }}">{{ $boilerType->value }}</option>--}}
+                                        {{--<option @if(old('building_services.' . $boiler->short . '.service_value_id') == $boilerType->id || ($installedBoiler instanceof \App\Models\BuildingService && $installedBoiler->service_value_id == $boilerType->id)) selected @endif value="{{ $boilerType->id }}">{{ $boilerType->value }}</option>--}}
                                     @endforeach
                                 </select>
                             @endcomponent
@@ -63,7 +65,7 @@
 
                 </div>
                 <div class="col-sm-6">
-                    @component('cooperation.tool.components.step-question', ['id' => 'building_services.' . $boiler->id . '.extra', 'translation' => 'high-efficiency-boiler.boiler-placed-date', 'required' => true])
+                    @component('cooperation.tool.components.step-question', ['id' => 'building_services.' . $boiler->short . '.extra', 'translation' => 'high-efficiency-boiler.boiler-placed-date', 'required' => true])
 
                         <?php
                             /** @var \Illuminate\Support\Collection $installedBoilerForMe */
@@ -73,9 +75,9 @@
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $installedBoilerForMe, 'userInputColumn' => 'extra.date'])
                             <input type="text" required class="form-control"
-                                   value="{{ old('building_services.' . $boiler->id . '.extra', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $boiler->id), 'extra.date')) }}"
-                                   name="building_services[{{ $boiler->id }}][extra]">
-                            {{--<input type="text" required class="form-control" value="{{ old('building_services.' . $boiler->id . '.extra', $default) }}" name="building_services[{{ $boiler->id }}][extra]">--}}
+                                   value="{{ old('building_services.' . $boiler->short . '.extra', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $boiler->id), 'extra.date')) }}"
+                                   name="building_services[{{ $boiler->short }}][extra]">
+                            {{--<input type="text" required class="form-control" value="{{ old('building_services.' . $boiler->short . '.extra', $default) }}" name="building_services[{{ $boiler->short }}][extra]">--}}
                         @endcomponent
 
                     @endcomponent
@@ -111,14 +113,12 @@
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <div class="form-group add-space">
                         @component('cooperation.tool.components.step-question', ['id' => 'indicative-replacement', 'translation' => 'high-efficiency-boiler.indication-for-costs.indicative-replacement', 'required' => false])
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                                 <input type="text" id="replace_year" class="form-control disabled" disabled="">
                             </div>
                         @endcomponent
-                    </div>
                 </div>
                 <div class="col-sm-4">
                     @include('cooperation.layouts.indication-for-costs.indicative-costs')
@@ -131,8 +131,7 @@
 
 
         @include('cooperation.tool.includes.comment', [
-             'columnName' => 'comment',
-             'translation' => 'high-efficiency-boiler.comment'
+             'translation' => 'general.specific-situation'
          ])
 
         <div class="row">
@@ -147,18 +146,6 @@
                         </ol>
                     </div>
                 </div>
-                <hr>
-                @if(!\App\helpers\HoomdossierSession::isUserObserving())
-                <div class="form-group add-space">
-                    <div class="">
-                        <a class="btn btn-success pull-left"
-                           href="{{ route('cooperation.tool.roof-insulation.index', ['cooperation' => $cooperation]) }}">@lang('default.buttons.prev')</a>
-                        <button type="submit" class="btn btn-primary pull-right">
-                            @lang('default.buttons.next')
-                        </button>
-                    </div>
-                </div>
-                    @endif
             </div>
         </div>
     </form>
@@ -187,6 +174,7 @@
                         }
 
                         if (data.hasOwnProperty('savings_gas')) {
+                            console.log(data.savings_gas);
                             $("input#savings_gas").val(hoomdossierRound(data.savings_gas));
                         }
                         if (data.hasOwnProperty('savings_co2')) {

@@ -2106,6 +2106,21 @@ p.lead {
   margin-bottom: 1px;
 }
 
+.question-answer-section ul {
+  list-style: none;
+  padding-left: 2em;
+}
+
+.question-answer-section ul li {
+  font-size: 13.33px;
+}
+
+.question-answer-section ul li:before {
+  content: "-";
+  text-indent: -2em;
+  display: inline-block;
+}
+
 .question-answer-section .question-answer p {
   display: inline-block;
 }
@@ -2119,6 +2134,17 @@ table {
 table thead {
   background-color: #29A082;
   color: #ffffff;
+}
+
+table thead.no-background {
+  background-color: white;
+  color: #29A082;
+}
+
+table thead.lead {
+  font-weight: bold;
+  color: #29A082;
+  font-size: 16px;
 }
 
 table tbody {

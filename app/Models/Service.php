@@ -46,4 +46,9 @@ class Service extends Model
     {
         return $this->hasMany(ServiceValue::class);
     }
+
+    public static function findByShort($short)
+    {
+        return self::where('short', $short)->first();
+    }
 }

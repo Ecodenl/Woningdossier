@@ -49,11 +49,6 @@ class Cooperation extends Model
         return $this->hasOne(CooperationStyle::class);
     }
 
-    public function exampleBuildings()
-    {
-        return $this->hasMany(ExampleBuilding::class);
-    }
-
     /**
      * Return the example buildings for the cooperation
      *

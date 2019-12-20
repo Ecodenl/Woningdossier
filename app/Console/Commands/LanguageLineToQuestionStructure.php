@@ -52,7 +52,7 @@ class LanguageLineToQuestionStructure extends Command
             foreach ($translations as $translation) {
                 // determine if its a title
                 $translationKeys = explode('.', $translation->key);
-                if (in_array('title', $translationKeys)) {
+                if (in_array('title', $translationKeys) && !in_array('help', $translationKeys)) {
                     $this->line("The translation with id: {$translation->id} is a title");
                     // now we have to find the corresponding helptext
                     // pop of the title key

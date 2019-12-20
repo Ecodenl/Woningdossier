@@ -3,7 +3,8 @@
 @section('step_title', "Ventilatie: " . $buildingVentilation->value)
 
 @section('step_content')
-    <form method="POST" action="{{ route('cooperation.tool.ventilation.store', ['cooperation' => $cooperation]) }}" autocomplete="off">
+    <form method="POST" action="{{ route('cooperation.tool.ventilation.store', ['cooperation' => $cooperation]) }}"
+          autocomplete="off">
         {{ csrf_field() }}
 
         <div class="row">
@@ -20,7 +21,7 @@
         </div>
 
         <?php
-            $myBuildingVentilations = $building->buildingVentilations()->forMe()->get();
+        $myBuildingVentilations = $building->buildingVentilations()->forMe()->get();
         /** @var \App\Models\ServiceValue $howValues */
         ?>
 
@@ -30,13 +31,13 @@
                 <div class="col-sm-12">
 
                     <?php
-                        $ventilations = collect();
-                        foreach($howValues as $uvalue => $uname){
-                            $ventilation = new \App\Models\BuildingVentilation();
-                            $ventilation->value = $uname;
-                            $ventilation->how = $uvalue;
-                            $ventilations->push($ventilation);
-                        }
+                    $ventilations = collect();
+                    foreach ($howValues as $uvalue => $uname) {
+                        $ventilation = new \App\Models\BuildingVentilation();
+                        $ventilation->value = $uname;
+                        $ventilation->how = $uvalue;
+                        $ventilations->push($ventilation);
+                    }
                     ?>
 
                     @component('cooperation.tool.components.step-question', ['id' => 'how', 'name' => 'building_ventilations.how', 'translation' => 'cooperation/tool/ventilation.index.how', 'required' => true])
@@ -44,17 +45,19 @@
                     ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'how'])
 
                             @foreach($howValues as $howKey => $howValue)
-                                    <div class="row" style="margin-left:5px;"><div class="col-sm-12">
-                                            <label class="checkbox" style="font-weight: normal;">
-                                    <input type="checkbox"
-                                           name="building_ventilations[how][]"
-                                           value="{{ $howKey }}"
-                                           @if(in_array($howKey, old('building_ventilations.how', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'how', []))))
-                                           checked="checked"
-                                            @endif
-                                    >
-                                    {{ $howValue }}
-                                            </label></div></div>
+                                <div class="row" style="margin-left:5px;">
+                                    <div class="col-sm-12">
+                                        <label class="checkbox" style="font-weight: normal;">
+                                            <input type="checkbox"
+                                                   name="building_ventilations[how][]"
+                                                   value="{{ $howKey }}"
+                                                   @if(in_array($howKey, old('building_ventilations.how', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'how', []))))
+                                                   checked="checked"
+                                                    @endif
+                                            >
+                                            {{ $howValue }}
+                                        </label></div>
+                                </div>
                             @endforeach
 
                         @endcomponent
@@ -68,7 +71,8 @@
                     <div class="col-sm-12 col-md-8 col-md-offset-2">
                         <div class="alert alert-warning" role="alert">
                             <p>
-                                <strong>Er is op dit moment mogelijkerwijs onvoldoende ventilatie, het kan zinvol zijn om dit door een specialist te laten beoordelen.</strong>
+                                <strong>Er is op dit moment mogelijkerwijs onvoldoende ventilatie, het kan zinvol zijn
+                                    om dit door een specialist te laten beoordelen.</strong>
                             </p>
                         </div>
                     </div>
@@ -87,7 +91,7 @@
                     <?php
                     /** @var \Illuminate\Support\Collection $ventilations */
                     $ventilations = collect([]);
-                    foreach($livingSituationValues as $uvalue => $uname){
+                    foreach ($livingSituationValues as $uvalue => $uname) {
                         $ventilation = new \App\Models\BuildingVentilation();
                         $ventilation->value = $uname;
                         $ventilation->living_situation = $uvalue;
@@ -100,30 +104,32 @@
                     ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'living_situation'])
                             @foreach($livingSituationValues as $lsKey => $lsValue)
 
-                                    <?php
-                                    Log::debug(
+                                <?php
+                                Log::debug(
 
-                                        is_array(old('building_ventilations.living_situation',\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'living_situation',[])))
-                                            ? 'de living_situation van building ventilations is wel een array'
-                                            : 'de living_situation van building ventilations is geen array'
-                                    )
-                                    ?>
-                                    <div class="row" style="margin-left:5px;"><div class="col-sm-12">
-                                            <label class="checkbox" style="font-weight: normal;">
-                                    <input type="checkbox"
-                                           name="building_ventilations[living_situation][]"
-                                           value="{{ $lsKey }}"
-                                           <?php
-                                            // default wont work, null will be returned anyways.
-                                            $mostCredibleLivingSituation = \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'living_situation') ?? [];
-                                           ?>
-                                           @if(in_array($lsKey, old('building_ventilations.living_situation', $mostCredibleLivingSituation)))
-                                           checked="checked"
-                                            @endif
-                                    >
-                                    {{ $lsValue }}
-                                </label>
-                                        </div></div>
+                                    is_array(old('building_ventilations.living_situation', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'living_situation', [])))
+                                        ? 'de living_situation van building ventilations is wel een array'
+                                        : 'de living_situation van building ventilations is geen array'
+                                )
+                                ?>
+                                <div class="row" style="margin-left:5px;">
+                                    <div class="col-sm-12">
+                                        <label class="checkbox" style="font-weight: normal;">
+                                            <input type="checkbox"
+                                                   name="building_ventilations[living_situation][]"
+                                                   value="{{ $lsKey }}"
+                                                   <?php
+                                                   // default wont work, null will be returned anyways.
+                                                   $mostCredibleLivingSituation = \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'living_situation') ?? [];
+                                                   ?>
+                                                   @if(in_array($lsKey, old('building_ventilations.living_situation', $mostCredibleLivingSituation)))
+                                                   checked="checked"
+                                                    @endif
+                                            >
+                                            {{ $lsValue }}
+                                        </label>
+                                    </div>
+                                </div>
 
                             @endforeach
                         @endcomponent
@@ -137,10 +143,22 @@
                     <div class="col-sm-12 col-md-8 col-md-offset-2">
                         <div class="alert alert-warning" role="alert">
                             <ul>
-                                <li class="dry-laundry" style="display: none;">Ventileer extra als de was te drogen hangt, door de schakelaar op de hoogste stand te zetten of een raam open te doen. Hang de was zoveel mogelijk buiten te drogen.</li>
-                                <li class="fireplace" style="display: none;">Zorg voor extra ventilatie tijdens het stoken van open haard of houtkachel, zowel voor de aanvoer van zuurstof als de afvoer van schadelijke stoffen. Zet bijvoorbeeld een (klep)raam open.</li>
-                                <li class="combustion-device" style="display: none;">Zorg bij een open verbrandingstoestel in ieder geval dat er altijd voldoende luchttoevoer is. Anders kan onvolledige verbranding optreden waarbij het gevaarlijke koolmonoxide kan ontstaan.</li>
-                                <li class="moisture" style="display: none;">Wanneer u last heeft van schimmel of vocht in huis dan wordt geadviseerd om dit door een specialist te laten beoordelen.</li>
+                                <li class="dry-laundry" style="display: none;">Ventileer extra als de was te drogen
+                                    hangt, door de schakelaar op de hoogste stand te zetten of een raam open te doen.
+                                    Hang de was zoveel mogelijk buiten te drogen.
+                                </li>
+                                <li class="fireplace" style="display: none;">Zorg voor extra ventilatie tijdens het
+                                    stoken van open haard of houtkachel, zowel voor de aanvoer van zuurstof als de
+                                    afvoer van schadelijke stoffen. Zet bijvoorbeeld een (klep)raam open.
+                                </li>
+                                <li class="combustion-device" style="display: none;">Zorg bij een open
+                                    verbrandingstoestel in ieder geval dat er altijd voldoende luchttoevoer is. Anders
+                                    kan onvolledige verbranding optreden waarbij het gevaarlijke koolmonoxide kan
+                                    ontstaan.
+                                </li>
+                                <li class="moisture" style="display: none;">Wanneer u last heeft van schimmel of vocht
+                                    in huis dan wordt geadviseerd om dit door een specialist te laten beoordelen.
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -157,7 +175,7 @@
                     <?php
                     /** @var \Illuminate\Support\Collection $ventilations */
                     $ventilations = collect([]);
-                    foreach($usageValues as $uvalue => $uname){
+                    foreach ($usageValues as $uvalue => $uname) {
                         $ventilation = new \App\Models\BuildingVentilation();
                         $ventilation->value = $uname;
                         $ventilation->usage = $uvalue;
@@ -170,18 +188,20 @@
                     ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'usage'])
                             @foreach($usageValues as $uKey => $uValue)
 
-                                <div class="row" style="margin-left:5px;"><div class="col-sm-12">
-                                <label class="checkbox" style="font-weight: normal;">
-                                    <input type="checkbox"
-                                           name="building_ventilations[usage][]"
-                                           value="{{ $uKey }}"
-                                           @if(in_array($uKey, old('building_ventilations.usage', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'usage',[]))))
-                                            checked="checked"
-                                            @endif
-                                    >
-                                    {{ $uValue }}
-                                </label>
-                                    </div></div>
+                                <div class="row" style="margin-left:5px;">
+                                    <div class="col-sm-12">
+                                        <label class="checkbox" style="font-weight: normal;">
+                                            <input type="checkbox"
+                                                   name="building_ventilations[usage][]"
+                                                   value="{{ $uKey }}"
+                                                   @if(in_array($uKey, old('building_ventilations.usage', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'usage',[]))))
+                                                   checked="checked"
+                                                    @endif
+                                            >
+                                            {{ $uValue }}
+                                        </label>
+                                    </div>
+                                </div>
 
                             @endforeach
                         @endcomponent
@@ -195,10 +215,23 @@
                     <div class="col-sm-12 col-md-8 col-md-offset-2">
                         <div class="alert alert-warning" role="alert">
                             <ul>
-                                <li class="sometimes-off" style="display: none;">Laat de ventilatie unit altijd aan staan, anders wordt er helemaal niet geventileerd en hoopt vocht en vieze lucht zich op. Trek alleen bij onderhoud of in geval van een ramp (als de overheid adviseert ramen en deuren te sluiten) de stekker van de ventilatie-unit uit het stopcontact.</li>
-                                <li class="no-maintenance" style="display: none;">Laat iedere 2 jaar een onderhoudsmonteur langskomen, regelmatig onderhoud van de ventilatie-unit is belangrijk. Kijk in de gebruiksaanwijzing hoe vaak onderhoud aan de unit nodig is.</li>
-                                <li class="filter-replacement" style="display: none;">Voor een goede luchtkwaliteit is het belangrijk om regelmatig de filter te vervangen. Kijk in de gebruiksaanwijzing hoe vaak de filters vervangen moeten worden.</li>
-                                <li class="closed" style="display: none;">Zorg dat de roosters in de woonkamer en slaapkamers altijd open staan. Schone lucht in huis is noodzakelijk voor je gezondheid.</li>
+                                <li class="sometimes-off" style="display: none;">Laat de ventilatie unit altijd aan
+                                    staan, anders wordt er helemaal niet geventileerd en hoopt vocht en vieze lucht zich
+                                    op. Trek alleen bij onderhoud of in geval van een ramp (als de overheid adviseert
+                                    ramen en deuren te sluiten) de stekker van de ventilatie-unit uit het stopcontact.
+                                </li>
+                                <li class="no-maintenance" style="display: none;">Laat iedere 2 jaar een
+                                    onderhoudsmonteur langskomen, regelmatig onderhoud van de ventilatie-unit is
+                                    belangrijk. Kijk in de gebruiksaanwijzing hoe vaak onderhoud aan de unit nodig is.
+                                </li>
+                                <li class="filter-replacement" style="display: none;">Voor een goede luchtkwaliteit is
+                                    het belangrijk om regelmatig de filter te vervangen. Kijk in de gebruiksaanwijzing
+                                    hoe vaak de filters vervangen moeten worden.
+                                </li>
+                                <li class="closed" style="display: none;">Zorg dat de roosters in de woonkamer en
+                                    slaapkamers altijd open staan. Schone lucht in huis is noodzakelijk voor je
+                                    gezondheid.
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -255,9 +288,9 @@
 
         <div id="costs-other">
             @include('cooperation.tool.includes.section-title', [
-                    'translation' => 'cooperation/tool/ventilation.index.indication-for-costs-other',
-                    'id' => 'indication-for-costs'
-                ])
+                'translation' => 'cooperation/tool/ventilation.index.indication-for-costs-other',
+                'id' => 'indication-for-costs'
+            ])
 
             <div class="row">
                 <div class="col-sm-12">
@@ -300,20 +333,19 @@
     <script>
         $(document).ready(function () {
 
-            $("input[type=checkbox]").change(function(event) {
+            $("input[type=checkbox]").change(function (event) {
                 // when trigger('') is used, there wont be a orginalEvent,
                 var eventIsTriggeredByUser = typeof event.originalEvent !== "undefined";
 
                 // we only want to do this when the event is triggerd by a user and not jquery itself.
                 // if this gets triggered onload the none value will always be unchecked.
-                if(this.name.indexOf('[how]') !== -1 && eventIsTriggeredByUser) {
+                if (this.name.indexOf('[how]') !== -1 && eventIsTriggeredByUser) {
                     // only do this when building_ventilations[how][] 'none' is clicked to be enabled!
                     // unset all other values for building_ventilations[how][]
                     // using .indexOf instead of .includes because of Internet Exploder compatibility
                     if (this.value === 'none' && this.checked) {
                         $(this).parent().parent().parent().parent().find("input[type=checkbox]").not(this).prop('checked', false);
-                    }
-                    else {
+                    } else {
                         $("input[type=checkbox][value=none]").prop('checked', false);
                     }
                 }
@@ -323,13 +355,13 @@
                 formChange($(this));
             });
 
-            function checkAlerts(element){
+            function checkAlerts(element) {
 
                 // how
                 // hide by default
                 $('#how-none-alert').hide();
 
-                $('input[name^="building_ventilations[how]"]').filter(':visible').map(function() {
+                $('input[name^="building_ventilations[how]"]').filter(':visible').map(function () {
                     if (this.value === 'none' && this.checked && this.name.indexOf('[how]') !== -1) {
                         // Show the alert
                         $('#how-none-alert').show();
@@ -338,7 +370,7 @@
 
                 // living_situation
                 $('#living_situation-alert').hide();
-                $('input[name^="building_ventilations[living_situation]"]').filter(':visible').map(function() {
+                $('input[name^="building_ventilations[living_situation]"]').filter(':visible').map(function () {
                     var selector = $("#living_situation-alert ul li." + this.value);
                     selector.hide();
                     if (this.checked) {
@@ -351,7 +383,7 @@
                 // usage
                 // living_situation
                 $('#usage-alert').hide();
-                $('input[name^="building_ventilations[usage]"]').filter(':visible').map(function() {
+                $('input[name^="building_ventilations[usage]"]').filter(':visible').map(function () {
                     var selector = $("#usage-alert ul li." + this.value);
                     selector.hide();
                     if (this.checked) {
@@ -370,19 +402,19 @@
                     url: '{{ route('cooperation.tool.ventilation.calculate', [ 'cooperation' => $cooperation ]) }}',
                     data: form,
                     success: function (data) {
-                        if (data.hasOwnProperty('improvement')){
+                        if (data.hasOwnProperty('improvement')) {
                             $("p#improvement").html(data.improvement);
                         }
 
-                        if (data.hasOwnProperty('advices') && data.advices.length !== 0){
+                        if (data.hasOwnProperty('advices') && data.advices.length !== 0) {
                             var advices = $(".advices");
                             advices.html('<div class="col-sm-9"><strong>Verbetering</strong></div><div class="col-sm-3"><strong>Interesse</strong></div>');
-                            $.each(data.advices, function(i, element){
+                            $.each(data.advices, function (i, element) {
                                 var checked = '';
                                 if (element.hasOwnProperty('interest') && element.interest === true) {
                                     checked = ' checked="checked"';
                                 }
-                                advices.append('<div class="col-sm-9">' + element.name + '</div><div class="col-sm-3"><input type="checkbox" name="user_interests[]" value="' + element.id + '"' + checked +'></div>');
+                                advices.append('<div class="col-sm-9">' + element.name + '</div><div class="col-sm-3"><input type="checkbox" name="user_interests[]" value="' + element.id + '"' + checked + '></div>');
                             });
                             indicationForCosts.show();
                         } else {

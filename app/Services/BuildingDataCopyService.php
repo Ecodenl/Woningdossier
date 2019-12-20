@@ -23,7 +23,7 @@ class BuildingDataCopyService
                 'where_column' => 'interested_in_type',
                 'additional_where_column' => 'interested_in_id',
             ],
-            'building_features',
+
             'building_elements' => [
                 'where_column' => 'element_id',
                 'additional_where_column' => 'element_value_id',
@@ -86,6 +86,7 @@ class BuildingDataCopyService
             if (is_array($tableOrWhereColumns) && array_key_exists('where_column', $tableOrWhereColumns)) {
                 $whereColumn = $tableOrWhereColumns['where_column'];
 
+
                 // loop through the answers from the desired input source
                 foreach ($fromValues as $fromValue) {
                     if ($fromValue instanceof \stdClass && isset($fromValue->$whereColumn)) {
@@ -135,6 +136,7 @@ class BuildingDataCopyService
                             // cast the results to a array
                             $toValue = (array) $toValue;
                             $fromValue = (array) $fromValue;
+
 
                             // YAY! data has been copied so update or create the target input source his records.
                             if ($toValueQuery->first() instanceof \stdClass) {
@@ -247,8 +249,9 @@ class BuildingDataCopyService
         $updateArray = [];
 
         // if the desired input source has a extra key and its not empty, then we start to compare and merge the extra column.
-        if (array_key_exists('extra', $inputSourceToCopy) && ! empty($inputSourceToCopy['extra'])) {
+        if (array_key_exists('extra', $inputSourceToCopy) && !empty($inputSourceToCopy['extra']) && is_array($inputSourceToCopy['extra'])) {
             if (empty($inputSourceToUpdate['extra'])) {
+
                 $inputSourceToCopyExtra = json_decode($inputSourceToCopy['extra'], true);
 
                 // filter the values which are not considered to be empty.

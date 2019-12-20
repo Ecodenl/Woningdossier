@@ -80,10 +80,11 @@ class PdfReport implements ShouldQueue
             ->get();
 
         // the comments that have been made on the action plan
-        $userActionPlanAdviceComments = UserActionPlanAdviceComments::withoutGlobalScope(GetValueScope::class)
-            ->where('user_id', $user->id)
+        $userActionPlanAdviceComments = UserActionPlanAdviceComments::forMe($user)
             ->with('inputSource')
-            ->get();
+            ->get()
+            ->pluck('comment', 'inputSource.name')
+            ->toArray();
 
         $steps = $userCooperation->getActiveOrderedSteps();
 
@@ -93,7 +94,7 @@ class PdfReport implements ShouldQueue
         $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
         // full report for a user
-        $reportForUser = DumpService::totalDump($user, $inputSource, false);
+        $reportForUser = DumpService::totalDump($user, $inputSource, false, true, true);
 
         // the translations for the columns / tables in the user data
         $reportTranslations = $reportForUser['translations-for-columns'];
@@ -114,6 +115,10 @@ class PdfReport implements ShouldQueue
                 }
             }
         }
+
+        // intersect the data, we dont need the data we wont show anyway
+        $activeOrderedStepShorts = $steps->pluck('short')->flip()->toArray();
+        $reportData = array_intersect_key($reportData, $activeOrderedStepShorts);
 
         // steps that are considered to be measures.
         $stepShorts = \DB::table('steps')

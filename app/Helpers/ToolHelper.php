@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Helpers\Cooperation\Tool\VentilationHelper;
 use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Helpers\KeyFigures\RoofInsulation\Temperature;
@@ -22,6 +23,7 @@ use App\Models\PvPanelOrientation;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
+use App\Models\Ventilation;
 use App\Models\Step;
 use App\Models\WoodRotStatus;
 use Illuminate\Support\Collection;
@@ -42,7 +44,11 @@ class ToolHelper
         return $options;
     }
 
-    public static function getContentStructure()
+    /**
+     * @param $contentKey
+     * @return array
+     */
+    public static function getContentStructure($contentKey = null)
     {
         // General data - Elements (that are not queried later on step basis)
         $livingRoomsWindows = Element::where('short', 'living-rooms-windows')->first();
@@ -116,8 +122,8 @@ class ToolHelper
         $interests = Interest::orderBy('order')->get();
         $interestOptions = static::createOptions($interests);
 
-        $stepUserInterestKey = 'user_interests.'.Step::class.'.';
-        $measureApplicationInterestKey = 'user_interests.'.MeasureApplication::class.'.';
+        $stepUserInterestKey = 'user_interests.' . Step::class . '.';
+        $measureApplicationInterestKey = 'user_interests.' . MeasureApplication::class . '.';
 
         $structure = [
             'general-data' => [
@@ -174,9 +180,9 @@ class ToolHelper
                         'type' => 'select',
                         'options' => self::createOptions($sleepingRoomsWindows->values()->orderBy('order')->get(), 'value'),
                     ],
-                    'element.'.$crackSealing->id                      => [
-                        'label'   => $crackSealing->name,
-                        'type'    => 'select',
+                    'element.' . $crackSealing->id => [
+                        'label' => $crackSealing->name,
+                        'type' => 'select',
                         'options' => static::createOptions($crackSealing->values()->orderBy('order')->get(), 'value'),
                     ],
                     'element.' . $wallInsulation->id => [
@@ -261,7 +267,7 @@ class ToolHelper
                         'type' => 'select',
                         'options' => [
                             false => '-',
-                            true =>  __('cooperation/tool/general-data/current-state.index.service.house-ventilation.heat-recovery.title')
+                            true => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.heat-recovery.title')
                         ]
                     ],
                 ],
@@ -324,10 +330,38 @@ class ToolHelper
                 ],
                 // interests come later on
             ],
+            'ventilation' => [
+                '-' => [
+                    'building_ventilations.how' => [
+                        'label' => __('cooperation/tool/ventilation.index.how.title'),
+                        'type' => 'multiselect',
+                        'options' => VentilationHelper::getHowValues(),
+                    ],
+
+                    'building_ventilations.living_situation' => [
+                        'label' => __('cooperation/tool/ventilation.index.living-situation.title'),
+                        'type' => 'multiselect',
+                        'options' => VentilationHelper::getLivingSituationValues(),
+                    ],
+
+                    'building_ventilations.usage' => [
+                        'label' => __('cooperation/tool/ventilation.index.usage.title'),
+                        'type' => 'multiselect',
+                        'options' => VentilationHelper::getUsageValues(),
+                    ],
+                    'calculations' => [
+                        'savings_gas' => __('ventilation.costs.gas.title'),
+                        'savings_co2' => __('ventilation.costs.co2.title'),
+                        'savings_money' => __('general.costs.savings-in-euro.title'),
+                        'cost_indication' => __('general.costs.indicative-costs.title'),
+                        'interest_comparable' => __('general.costs.comparable-rent.title'),
+                    ],
+                ],
+            ],
 
             'wall-insulation' => [
                 '-' => [
-                    $stepUserInterestKey.$wallInsulation->id.'interest_id' => [
+                    $stepUserInterestKey . $wallInsulation->id . 'interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $wallInsulation->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -450,7 +484,7 @@ class ToolHelper
 
             'floor-insulation' => [
                 '-' => [
-                    $stepUserInterestKey.Step::findByShort('floor-insulation')->id.'.interest_id' => [
+                    $stepUserInterestKey . Step::findByShort('floor-insulation')->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $floorInsulation->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -494,7 +528,7 @@ class ToolHelper
 
             'roof-insulation' => [
                 '-' => [
-                    $stepUserInterestKey.Step::findByShort('roof-insulation')->id.'.interest_id'=> [
+                    $stepUserInterestKey . Step::findByShort('roof-insulation')->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $roofInsulation->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -512,7 +546,7 @@ class ToolHelper
 
             'high-efficiency-boiler' => [
                 '-' => [
-                    $stepUserInterestKey.Step::findByShort('high-efficiency-boiler')->id.'.interest_id' => [
+                    $stepUserInterestKey . Step::findByShort('high-efficiency-boiler')->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $hrBoiler->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -552,7 +586,7 @@ class ToolHelper
 
             'solar-panels' => [
                 '-' => [
-                    $stepUserInterestKey.Step::findByShort('solar-panels')->id.'.interest_id' => [
+                    $stepUserInterestKey . Step::findByShort('solar-panels')->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $solarPanels->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -599,7 +633,7 @@ class ToolHelper
 
             'heater' => [
                 '-' => [
-                    $stepUserInterestKey.Step::findByShort('heater')->id.'.interest_id' => [
+                    $stepUserInterestKey . Step::findByShort('heater')->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $heater->name . ': ' . __('general.interested-in-improvement.title'),
                         'type' => 'select',
@@ -658,7 +692,7 @@ class ToolHelper
 
         foreach ($steps as $step) {
 //            <select id="user_interest" class="form-control" name="user_interests[{{$step->id}}][interest_id]">
-            $structure['general-data']['interest'][$stepUserInterestKey.$step->id.'.interest_id'] = [
+            $structure['general-data']['interest'][$stepUserInterestKey . $step->id . '.interest_id'] = [
                 'label' => $step->name,
                 'type' => 'select',
                 'options' => $interestOptions,
@@ -699,7 +733,7 @@ class ToolHelper
         foreach ($igShorts as $igShort) {
             $measureApplication = MeasureApplication::where('short', $igShort)->first();
             if ($measureApplication instanceof MeasureApplication) {
-                $structure['insulated-glazing']['-'][$measureApplicationInterestKey.$measureApplication->id.'.interest_id'] = [
+                $structure['insulated-glazing']['-'][$measureApplicationInterestKey . $measureApplication->id . '.interest_id'] = [
                     //'label' => 'Interest in '.$measureApplication->measure_name,
                     'label' => __('general.change-interested.title',
                         ['item' => $measureApplication->measure_name]),
@@ -839,6 +873,36 @@ class ToolHelper
                     ],
                 ];
             }
+        }
+
+        // and here we will add the interest options for the ventilation information
+        $measureApplicationsForVentilation = MeasureApplication::whereIn('short', [
+            'ventilation-balanced-wtw',
+            'ventilation-decentral-wtw',
+            'ventilation-demand-driven',
+            'crack-sealing',
+        ])->get();
+
+        foreach ($measureApplicationsForVentilation as $measureApplication) {
+            $structure['ventilation']['-'][$measureApplicationInterestKey . $measureApplication->id . '.interest_id'] = [
+                //'label' => 'Interest in '.$measureApplication->measure_name,
+//                'label' => __('general.change-interested.title', ['item' => $measureApplication->measure_name]),
+                'label' => $measureApplication->measure_name,
+                'type' => 'select',
+                'options' => $interestOptions,
+            ];
+        }
+
+
+        // when a content key is set, we will try to retrieve the specific content from the structure.
+        if (!is_null($contentKey)) {
+
+            $contentKeyData = explode('.', $contentKey, 3);
+            $step = $contentKeyData[0];
+            $subStep = $contentKeyData[1];
+            $contentKey = $contentKeyData[2];
+
+            return $structure[$step][$subStep][$contentKey];
         }
 
         return $structure;

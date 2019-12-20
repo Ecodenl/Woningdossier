@@ -9,7 +9,7 @@
             @lang('woningdossier.cooperation.admin.users.show.header', [
                 'name' => $user->getFullName(),
                 'street-and-number' => $building->street.' '.$building->number.' '.$building->extension,
-                'zipcode-and-city' => !$building->postal_code.' '.$building->city,
+                'zipcode-and-city' => $building->postal_code.' '.$building->city,
                 'email' => $user->account->email,
                 'phone-number' => $user->phone_number
             ])

@@ -22,7 +22,7 @@ return [
 
         'building-heating-applications' => [
             'title' => 'Hoe word de woning nu verwarmd',
-            'help' => ''
+            'help' => 'Hoe word de woning nu verwarmd',
         ],
         'service' => [
             'heat-pump' => [

@@ -25,7 +25,12 @@ class BankInterestCalculator
             self::$numbers['comparable'] = 0;
         } else {
             self::$numbers['increment'] = round((self::$numbers['result'] / self::$numbers['investment']) * 100);
-            self::$numbers['comparable'] = round(max(0, (pow(self::$numbers['result'] / self::$numbers['investment'], 1 / $period) - 1)) * 100, 1);
+            $gain = self::$numbers['result'] / self::$numbers['investment'];
+            if ($gain < 0){
+                // pow on $gain < 0 would result in NAN.
+                $gain = 0;
+            }
+            self::$numbers['comparable'] = round(max(0, (pow($gain, 1 / $period) - 1)) * 100, 1);
         }
 
         return self::$numbers['comparable'];

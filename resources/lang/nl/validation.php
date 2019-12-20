@@ -167,6 +167,9 @@ return [
 
         'building_features.window_surface' => 'totale raamopperlake van de woning',
 
+        // ventilation
+        'building_ventilations.how' => __('cooperation/tool/ventilation.index.how.title'),
+
         // roof insulation
         'building_roof_types.pitched.roof_surface' => __('roof-insulation.current-situation.pitched-roof-surface.title'),
         'building_roof_types.pitched.insulation_roof_surface' => __('roof-insulation.current-situation.insulation-pitched-roof-surface.title'),

@@ -56,7 +56,7 @@ class BuildingCharacteristicsController extends Controller
         $step = Step::findByShort('building-characteristics');
 
         // save the data
-        $building->buildingFeatures()->updateOrCreate([], $request->input('building_features'));
+        $building->buildingFeatures()->updateOrCreate(['input_source_id' => $inputSource->id], $request->input('building_features'));
         StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
         StepHelper::complete($step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
@@ -67,6 +67,7 @@ class BuildingCharacteristicsController extends Controller
         if (! empty($nextStep['tab_id'])) {
             $url .= '#'.$nextStep['tab_id'];
         }
+
 
         return redirect($url);
     }

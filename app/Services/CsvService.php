@@ -9,6 +9,7 @@ use App\Helpers\ToolHelper;
 use App\Helpers\Translation;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
+use App\Models\CompletedStep;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
@@ -22,6 +23,7 @@ use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\CooperationScope;
 use Illuminate\Support\Collection;
+use Spatie\TranslationLoader\TranslationLoaders\Db;
 
 class CsvService
 {
@@ -168,12 +170,11 @@ class CsvService
 
             // get the user measures / advices
             foreach ($userActionPlanAdvices as $actionPlanAdvice) {
-                $plannedYear = null == $actionPlanAdvice->planned_year ? $actionPlanAdvice->year : $actionPlanAdvice->planned_year;
+
+
                 $measureName = $actionPlanAdvice->measureApplication->measure_name;
 
-                if (is_null($plannedYear)) {
-                    $plannedYear = $actionPlanAdvice->getAdviceYear($residentInputSource);
-                }
+                $plannedYear = UserActionPlanAdviceService::getYear($actionPlanAdvice);
 
                 // fill the measure with the planned year
                 $row[$key][$measureName] = $plannedYear;
@@ -379,6 +380,7 @@ class CsvService
     public static function totalReport(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
     {
         $users = $cooperation->users()->whereHas('buildings')->get();
+
         $rows = [];
 
         if ($anonymized) {

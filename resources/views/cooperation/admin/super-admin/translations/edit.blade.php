@@ -36,12 +36,16 @@
                                     <div class="panel-body">
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <?php $treatTitleAsHelpText = ['home', 'heat-pump'] ?>
+                                                <?php
+
+                                                    $groupsToTreatAllTextsAsHelpText = ['home', 'heat-pump'];
+                                                    $keysToTreatAsHelpText = ['index.indication-for-costs-other.text']
+                                                ?>
 
                                                 @foreach($translation->text as $locale => $text)
                                                     <div class="form-group">
                                                         <label for="">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.question', ['locale' => $locale])</label>
-                                                        @if(in_array($translation->group, $treatTitleAsHelpText))
+                                                        @if(in_array($translation->key, $keysToTreatAsHelpText) || in_array($translation->group, $groupsToTreatAllTextsAsHelpText))
                                                             <textarea class="form-control question-input" name="language_lines[{{$locale}}][question][{{$translation->id}}]">{{$text}}</textarea>
                                                         @else
                                                             <input class="form-control question-input" name="language_lines[{{$locale}}][question][{{$translation->id}}]" value="{{$text}}">

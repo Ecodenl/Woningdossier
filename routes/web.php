@@ -80,7 +80,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
             }
 
-            Route::view('test', 'test');
             Route::get('home', 'HomeController@index')->name('home')->middleware('deny-if-filling-for-other-building');
 
             Route::resource('privacy', 'PrivacyController')->only('index');
@@ -179,45 +178,57 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
 
                 Route::group(['middleware' => 'filled-step:general-data'], function () {
-                    // Ventilation information: info for now
-                    Route::resource('ventilation', 'VentilationController',
-                        ['only' => ['index', 'store']]);
+
                     // Heat pump: info for now
-                    Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
+                    Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']])
+                        ->middleware('step-disabled:heat-pump');
+
+                    Route::group(['prefix' => 'ventilation', 'as' => 'ventilation.', 'middleware' => 'step-disabled:ventilation'], function () {
+                        Route::resource('', 'VentilationController', ['only' => ['index', 'store',]]);
+                        Route::post('calculate', 'VentilationController@calculate')->name('calculate');
+                    });
 
                     // Wall Insulation
-                    Route::resource('wall-insulation', 'WallInsulationController', ['only' => ['index', 'store']]);
-                    Route::post('wall-insulation/calculate',
-                        'WallInsulationController@calculate')->name('wall-insulation.calculate');
+                    Route::group(['prefix' => 'wall-insulation', 'as' => 'wall-insulation.', 'middleware' => 'step-disabled:wall-insulation'], function () {
+                        Route::resource('', 'WallInsulationController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'WallInsulationController@calculate')->name('calculate');
+                    });
 
                     // Insulated glazing
-                    Route::resource('insulated-glazing', 'InsulatedGlazingController', ['only' => ['index', 'store']]);
-                    Route::post('insulated-glazing/calculate',
-                        'InsulatedGlazingController@calculate')->name('insulated-glazing.calculate');
+                    Route::group(['prefix' => 'insulated-glazing', 'as' => 'insulated-glazing.', 'middleware' => 'step-disabled:insulated-glazing'], function () {
+                        Route::resource('', 'InsulatedGlazingController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'InsulatedGlazingController@calculate')->name('calculate');
+                    });
 
                     // Floor Insulation
-                    Route::resource('floor-insulation', 'FloorInsulationController', ['only' => ['index', 'store']]);
-                    Route::post('floor-insulation/calculate', 'FloorInsulationController@calculate')->name('floor-insulation.calculate');
+                    Route::group(['prefix' => 'floor-insulation', 'as' => 'floor-insulation.', 'middleware' => 'step-disabled:insulated-glazing'], function () {
+                        Route::resource('', 'FloorInsulationController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'FloorInsulationController@calculate')->name('calculate');
+                    });
 
                     // Roof Insulation
-                    Route::resource('roof-insulation', 'RoofInsulationController');
-                    Route::post('roof-insulation/calculate',
-                        'RoofInsulationController@calculate')->name('roof-insulation.calculate');
+                    Route::group(['prefix' => 'roof-insulation', 'as' => 'roof-insulation.', 'middleware' => 'step-disabled:roof-insulation'], function () {
+                        Route::resource('', 'RoofInsulationController');
+                        Route::post('calculate', 'RoofInsulationController@calculate')->name('calculate');
+                    });
 
                     // HR boiler
-                    Route::resource('high-efficiency-boiler', 'HighEfficiencyBoilerController',
-                        ['only' => ['index', 'store']]);
-                    Route::post('high-efficiency-boiler/calculate',
-                        'HighEfficiencyBoilerController@calculate')->name('high-efficiency-boiler.calculate');
+                    Route::group(['prefix' => 'high-efficiency-boiler', 'as' => 'high-efficiency-boiler.', 'middleware' => 'step-disabled:high-efficiency-boiler'], function () {
+                        Route::resource('', 'HighEfficiencyBoilerController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'HighEfficiencyBoilerController@calculate')->name('calculate');
+                    });
 
                     // Solar panels
-                    Route::resource('solar-panels', 'SolarPanelsController', ['only' => ['index', 'store']]);
-                    Route::post('solar-panels/calculate',
-                        'SolarPanelsController@calculate')->name('solar-panels.calculate');
+                    Route::group(['prefix' => 'solar-panels', 'as' => 'solar-panels.', 'middleware' => 'step-disabled:solar-panels'], function () {
+                        Route::resource('', 'SolarPanelsController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'SolarPanelsController@calculate')->name('calculate');
+                    });
 
                     // Heater (solar boiler)
-                    Route::resource('heater', 'HeaterController', ['only' => ['index', 'store']]);
-                    Route::post('heater/calculate', 'HeaterController@calculate')->name('heater.calculate');
+                    Route::group(['prefix' => 'heater', 'as' => 'heater.', 'middleware' => 'step-disabled:heater'], function () {
+                        Route::resource('', 'HeaterController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'HeaterController@calculate')->name('calculate');
+                    });
                 });
 
                 Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');
@@ -353,7 +364,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                             Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
                             Route::resource('coordinator', 'CoordinatorController')->only(['index']);
                             Route::resource('users', 'UserController')->only(['index', 'show']);
-                            Route::post('users/{id}/confirm', 'UserController@confirm')->name('users.confirm');});
+                            Route::post('users/{id}/confirm', 'UserController@confirm')->name('users.confirm');
+                        });
                     });
                 });
 

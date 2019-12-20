@@ -6,6 +6,7 @@ return [
         'building-characteristics' => 'Gebouwkenmerken van de woning tekst',
         'interest' => 'Interesse tekst',
         'current-state' => 'Huidige staat van de woning tekst',
+        'ventilation' => 'Voor uw gezondheid is een goede ventilatie met voldoende schone lucht noodzakelijk. Bij oudere slecht geïsoleerde huizen gaat luchtverversing vaak vanzelf via naden en kieren. Maar naarmate huizen beter geïsoleerd worden gebeurt dat steeds minder en is andere ventilatie nodig. Ventilatie zorgt voor minder vuile lucht in huis; helemaal te voorkomen is vervuiling niet. Ventilatie kost wat energie, maar het is geen verspilling: het is hard nodig voor uw gezondheid.',
         'wall-insulation' => 'Huizen met geïsoleerde gevels hebben lagere energielasten en een hoger comfortniveau doordat de muren minder koude afstralen. Bovendien vermindert het risico op condens en schimmelvorming op de muren.',
         'insulated-glazing' => 'Goed isolerende beglazing, HR++ of Triple, geeft een hoger comfort. U voelt minder koude van het raam afstralen en koudeval die door trekt als tocht over de vloer neemt af. Vervangt u enkel glas, dan komt er geen condens meer op de ruiten in de winter.',
         'floor-insulation' => 'Het isoleren van de begane grond vloer is vaak eenvoudig te realiseren en kan voor u veel comfort opleveren. De temperatuur in de woonkamer is na isolatie van de vloer gelijkmatiger verdeeld en er komt vanuit de kruipruimte nauwelijks nog vocht uw huis binnen. En u bespaart energie door het isoleren van de vloer.',
@@ -23,6 +24,10 @@ return [
 
     'comments' => [
         ''
+    ],
+
+    'ventilation' => [
+        'points-of-improvement' => 'Verbeteropties'
     ],
 
     'general-data' => [

@@ -175,7 +175,7 @@
 
 
         @include('cooperation.tool.includes.comment', [
-             'translation' => 'solar-panels.comment'
+             'translation' => 'general.specific-situation'
          ])
 
 

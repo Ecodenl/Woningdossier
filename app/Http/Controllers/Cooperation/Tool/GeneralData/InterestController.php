@@ -58,9 +58,10 @@ class InterestController extends Controller
         }, ARRAY_FILTER_USE_KEY);
 
 
-        $motivations = Motivation::orderBy('order')->get();
+        $motivations = Motivation::getInOrderOfUserMotivation($buildingOwner);
 
         $userMotivations = $buildingOwner->motivations()->orderBy('order')->get();
+
         $userEnergyHabitsForMe = $buildingOwner->energyHabit()->forMe()->get();
 
         $services = Service::orderBy('order')->get();
@@ -98,7 +99,7 @@ class InterestController extends Controller
                     'order' => $order
                 ]);
         }
-        $buildingOwner->energyHabit()->updateOrCreate([], $request->input('user_energy_habits'));
+        $buildingOwner->energyHabit()->updateOrCreate(['input_source_id' => $inputSource->id], $request->input('user_energy_habits'));
 
         StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
 

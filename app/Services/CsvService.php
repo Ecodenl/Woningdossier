@@ -43,6 +43,7 @@ class CsvService
 
         if ($anonymize) {
             $csvHeaders = [
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
 
@@ -54,6 +55,7 @@ class CsvService
             ];
         } else {
             $csvHeaders = [
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
 
@@ -380,9 +382,7 @@ class CsvService
      */
     public static function totalReport(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
     {
-        $users = $cooperation->users()->whereHas('buildings')->get();
-
-        $inputSourceForDump = $inputSource;
+        $users = $cooperation->users()->whereHas('buildings')->get()->take(10);
 
         $rows = [];
 
@@ -399,6 +399,8 @@ class CsvService
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
         foreach ($users as $user) {
+            // for each user reset the input source back to the base input source.
+            $inputSourceForDump = $inputSource;
 
             // well in every case there is a uitzondering op de regel
             // normally we would pick the given input source

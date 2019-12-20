@@ -64,31 +64,10 @@ class BuildingController extends Controller
         // get all the building notes
         $buildingNotes = $building->buildingNotes()->orderByDesc('updated_at')->get();
 
-        if (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
-            $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user(), $cooperation);
-
-            $previous = $connectedBuildingsForUser->where('building_id', '<', $buildingId)->max('building_id');
-            $next = $connectedBuildingsForUser->where('building_id', '>', $buildingId)->min('building_id');
-        } else {
-            // get previous user id
-            $previous = $cooperation
-                ->users()
-                ->join('buildings', 'users.id', '=', 'buildings.user_id')
-                ->where('buildings.id', '<', $buildingId)
-                ->max('buildings.id');
-
-            // get next user id
-            $next = $cooperation
-            ->users()
-            ->join('buildings', 'users.id', '=', 'buildings.user_id')
-            ->where('buildings.id', '>', $buildingId)
-            ->min('buildings.id');
-        }
-
         return view('cooperation.admin.buildings.show', compact(
                 'user', 'building', 'roles', 'coaches',
                 'coachesWithActiveBuildingCoachStatus', 'mostRecentStatus', 'privateMessages',
-                'publicMessages', 'buildingNotes', 'previous', 'next', 'statuses', 'logs'
+                'publicMessages', 'buildingNotes', 'statuses', 'logs'
             )
         );
     }

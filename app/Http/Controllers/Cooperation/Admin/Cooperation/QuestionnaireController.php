@@ -37,7 +37,7 @@ class QuestionnaireController extends Controller
 
     public function create()
     {
-        $steps = Step::orderBy('order')->get();
+        $steps = Step::withoutSubSteps()->orderBy('order')->get();
 
         return view('cooperation.admin.cooperation.questionnaires.create', compact('steps'));
     }

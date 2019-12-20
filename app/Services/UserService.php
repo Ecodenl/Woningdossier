@@ -120,6 +120,8 @@ class UserService
                 BuildingService::deleteBuilding($building);
             } else {
                 $building->delete();
+                // remove the progress from a user
+                $building->completedSteps()->delete();
             }
         }
 
@@ -133,8 +135,6 @@ class UserService
         $user->motivations()->withoutGlobalScopes()->delete();
         // remove the notification settings
         $user->notificationSettings()->withoutGlobalScopes()->delete();
-        // remove the progress from a user
-        $building->completedSteps()->delete();
         // first detach the roles from the user
         $user->roles()->detach($user->roles);
 

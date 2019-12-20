@@ -11,6 +11,9 @@ class BuildingService {
         $building->completedSteps()->withoutGlobalScopes()->delete();
         // delete the private messages from the cooperation
         $building->privateMessages()->withoutGlobalScopes()->delete();
+
+        $building->stepComments()->withoutGlobalScopes()->delete();
+        
         // table will be removed anyways.
         \DB::table('building_appliances')->whereBuildingId($building->id)->delete();
 

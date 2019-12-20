@@ -27,29 +27,8 @@
                                     <td>
                                         <a href="{{route('cooperation.admin.super-admin.cooperations.edit', ['cooperation' => $currentCooperation, 'cooperationToEdit' => $cooperation])}}" class="btn btn-default">@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.edit')</a>
                                         <a href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index', ['cooperation' => $currentCooperation, 'cooperationToManage' => $cooperation])}}" class="btn btn-default">@lang('woningdossier.cooperation.admin.super-admin.cooperations.index.show')</a>
-                                        @if($cooperation->slug != 'hoom')
-                                            <a data-toggle="modal" data-target="{{"#destroy-cooperation-{$cooperation->id}" }}" class="btn btn-danger">
-                                                @lang('woningdossier.cooperation.admin.super-admin.cooperations.index.destroy')
-                                            </a>
-                                        @endif
                                     </td>
                                 </tr>
-                                @component('cooperation.tool.components.modal', ['id' => "destroy-cooperation-{$cooperation->id}", 'title' => "Verwijder {$cooperation->name}"])
-                                    <form action="{{route('cooperation.admin.super-admin.cooperations.destroy', ['cooperationToDestroy' => $cooperation])}}" method="POST">
-                                        {{csrf_field()}}
-                                        {{method_field('delete')}}
-                                        <p class="text-danger">
-                                            @lang('woningdossier.cooperation.admin.super-admin.cooperations.index.modal.text', ['cooperation' => $cooperation->name])
-                                        </p>
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">
-                                            @lang('woningdossier.cooperation.admin.super-admin.cooperations.index.modal.cancel')
-                                        </button>
-
-                                        <button type="submit" class="btn btn-danger pull-right">
-                                            @lang('woningdossier.cooperation.admin.super-admin.cooperations.index.modal.destroy')
-                                        </button>
-                                    </form>
-                                @endcomponent
                             @endforeach
                         </tbody>
                     </table>

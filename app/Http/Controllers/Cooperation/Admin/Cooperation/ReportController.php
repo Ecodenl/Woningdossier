@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileTypeCategory;
+use App\Models\InputSource;
+use App\Services\CsvService;
 
 class ReportController extends Controller
 {
@@ -20,6 +23,8 @@ class ReportController extends Controller
 
         // Is there any file being processed for my cooperation
         $anyFilesBeingProcessed = FileStorage::leaveOutPersonalFiles()->withExpired()->beingProcessed()->count();
+
+        dd(CsvService::totalReport(Cooperation::find(1), InputSource::findByShort(InputSource::RESIDENT_SHORT), false));
 
         return view('cooperation.admin.cooperation.reports.index', compact('reportFileTypeCategory', 'anyFilesBeingProcessed'));
     }

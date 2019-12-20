@@ -382,7 +382,7 @@ class CsvService
      */
     public static function totalReport(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
     {
-        $users = $cooperation->users()->whereHas('buildings')->get()->take(10);
+        $users = $cooperation->users()->whereHas('buildings')->get();
 
         $rows = [];
 

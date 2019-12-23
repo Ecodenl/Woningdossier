@@ -235,9 +235,10 @@ class CsvService
         }
 
         // get the users from the current cooperation that have the resident role
-        $usersFromCooperation = $cooperation->getUsersWithRole(Role::findByName('resident'))->take(80);
+        $usersFromCooperation = $cooperation->getUsersWithRole(Role::findByName('resident'));
 
-        /** @var User $user */
+
+        /** @ $var User $user */
         foreach ($usersFromCooperation as $user) {
             $building = $user->building;
             if ($building instanceof Building) {
@@ -247,7 +248,6 @@ class CsvService
                     ->where('to_cooperation_id', $cooperation->id)->get();
 
                 $createdAt = optional($user->created_at)->format('Y-m-d');
-                //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
                 $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
                 $allowAccess = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
                 $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
@@ -293,6 +293,8 @@ class CsvService
                     ];
                 }
 
+                // note the order, this is important.
+                // otherwise the data will be retrieved in a different order each time and that will result in mixed data in the rows
                 $questionAnswersForCurrentQuestionnaire =
                     \DB::table('questionnaires')
                         ->where('questionnaires.id', $questionnaire->id)
@@ -309,6 +311,7 @@ class CsvService
                                     ->where('questions_answers.building_id', '=', $building->id);
                             })
                         ->select('questions_answers.answer', 'questions.id as question_id', 'translations.translation as question_name')
+                        ->orderBy('question_id')
                         ->get();
 
 
@@ -338,14 +341,13 @@ class CsvService
                         }
                     }
 
-                    $rows[$building->id][$questionAnswerForCurrentQuestionnaire->question_id] = $answer;
-                    $headers[$questionAnswerForCurrentQuestionnaire->question_id] = $questionAnswerForCurrentQuestionnaire->question_name;
-                    ksort($rows[$building->id]);
+                    $key = "{$questionnaire->id}{$questionAnswerForCurrentQuestionnaire->question_id}";
+                    $rows[$building->id][$questionAnswerForCurrentQuestionnaire->question_name] = $answer;
+                    $headers[$questionAnswerForCurrentQuestionnaire->question_name] = $questionAnswerForCurrentQuestionnaire->question_name;
 
                 }
             }
         }
-        ksort($headers);
 
         array_unshift($rows, $headers);
 

@@ -53,6 +53,5 @@ Vagrant.configure(2) do |config|
     #end
 
     config.vm.provision :shell, path: "ansible/windows.sh", args: ["woondossier.vm"]
-
     config.vm.synced_folder "./", "/vagrant", type: "nfs", mount_options: ["actimeo=1"]
 end

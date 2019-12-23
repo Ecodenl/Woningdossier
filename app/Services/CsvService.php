@@ -191,7 +191,7 @@ class CsvService
 
 
     /**
-     * CSV Report that returns the questionnaire results.
+     * Method to dump the results of a given questionnaire
      *
      * @param Cooperation $cooperation
      * @param bool $anonymize
@@ -341,7 +341,6 @@ class CsvService
                         }
                     }
 
-                    $key = "{$questionnaire->id}{$questionAnswerForCurrentQuestionnaire->question_id}";
                     $rows[$building->id][$questionAnswerForCurrentQuestionnaire->question_name] = $answer;
                     $headers[$questionAnswerForCurrentQuestionnaire->question_name] = $questionAnswerForCurrentQuestionnaire->question_name;
 

@@ -142,13 +142,13 @@ class CsvService
             if ($anonymize) {
                 // set the personal userinfo
                 $row[$key] = [
-                    $createdAt, $buildingStatus, $postalCode, $city,
+                    $residentInputSource->name, $createdAt, $buildingStatus, $postalCode, $city,
                     $buildingType, $buildYear, $exampleBuilding,
                 ];
             } else {
                 // set the personal userinfo
                 $row[$key] = [
-                    $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
+                    $residentInputSource->name, $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
                     $firstName, $lastName, $email, $phoneNumber,
                     $street, $number, $postalCode, $city,
                     $buildingType, $buildYear, $exampleBuilding,

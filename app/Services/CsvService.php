@@ -91,13 +91,22 @@ class CsvService
         // new array for the userdata
         $rows = [];
 
-        // since we only want the reports from the resident
-        $residentInputSource = InputSource::findByShort('resident');
+        $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
-        /**
-         * @var User
-         */
+        $generalDataStep = Step::findByShort('general-data');
         foreach ($users as $key => $user) {
+            // for each user reset the input source back to the base input source.
+            $inputSourceForDump = $inputSource;
+
+            // well in every case there is a uitzondering op de regel
+            // normally we would pick the given input source
+            // but when coach input is available we use the coach input source for that particular user
+            // coach input is available when he has completed the general data step
+            if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
+                $inputSourceForDump = $coachInputSource;
+            }
+
             /** @var Building $building */
             $building = $user->building;
 
@@ -132,7 +141,7 @@ class CsvService
             // get the building features from the resident
             $buildingFeatures = $building
                 ->buildingFeatures()
-                ->forInputSource($residentInputSource)
+                ->forInputSource($inputSourceForDump)
                 ->first();
 
             $buildingType = $buildingFeatures->buildingType->name ?? '';
@@ -142,13 +151,13 @@ class CsvService
             if ($anonymize) {
                 // set the personal userinfo
                 $row[$key] = [
-                    $residentInputSource->name, $createdAt, $buildingStatus, $postalCode, $city,
+                    $inputSourceForDump->name, $createdAt, $buildingStatus, $postalCode, $city,
                     $buildingType, $buildYear, $exampleBuilding,
                 ];
             } else {
                 // set the personal userinfo
                 $row[$key] = [
-                    $residentInputSource->name, $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
+                    $inputSourceForDump->name, $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
                     $firstName, $lastName, $email, $phoneNumber,
                     $street, $number, $postalCode, $city,
                     $buildingType, $buildYear, $exampleBuilding,
@@ -163,7 +172,7 @@ class CsvService
             // get the action plan advices for the user, but only for the resident his input source
             $userActionPlanAdvices = $user
                 ->actionPlanAdvices()
-                ->forInputSource($residentInputSource)
+                ->forInputSource($inputSourceForDump)
                 ->leftJoin('measure_applications', 'user_action_plan_advices.measure_application_id', '=', 'measure_applications.id')
                 ->leftJoin('steps', 'measure_applications.step_id', '=', 'steps.id')
                 ->orderBy('steps.order')

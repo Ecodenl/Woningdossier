@@ -106,6 +106,7 @@ class TranslationController extends Controller
             ->route('cooperation.admin.super-admin.translations.index')
             ->with('success', __('woningdossier.cooperation.admin.super-admin.translations.update.success'));
     }
+
     /**
      * Remove the specified resource from storage.
      *

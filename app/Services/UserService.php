@@ -103,34 +103,43 @@ class UserService
         return $user;
     }
 
-    public static function deleteUser(User $user)
+    /**
+     * Method to delete a user and its user info
+     *
+     * @param User $user
+     * @param bool $shouldForceDeleteBuilding
+     * @throws \Exception
+     */
+    public static function deleteUser(User $user, $shouldForceDeleteBuilding = false)
     {
         $accountId = $user->account_id;
-
         $building = $user->building;
 
-        $building->delete();
+        if ($building instanceof Building) {
+            if ($shouldForceDeleteBuilding) {
+                BuildingService::deleteBuilding($building);
+            } else {
+                $building->delete();
+                // remove the progress from a user
+                $building->completedSteps()->delete();
+            }
+        }
 
         // remove the action plan advices from the user
-        $user->actionPlanAdvices()->withoutGlobalScope(GetValueScope::class)->delete();
+        $user->actionPlanAdvices()->withoutGlobalScopes()->delete();
         // remove the user interests
-        $user->userInterests()->withoutGlobalScope(GetValueScope::class)->delete();
+        $user->userInterests()->withoutGlobalScopes()->delete();
         // remove the energy habits from a user
-        $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->delete();
+        $user->energyHabit()->withoutGlobalScopes()->delete();
         // remove the motivations from a user
-        $user->motivations()->delete();
+        $user->motivations()->withoutGlobalScopes()->delete();
         // remove the notification settings
-        $user->notificationSettings()->delete();
-        // remove the progress from a user
-        $building->completedSteps()->delete();
+        $user->notificationSettings()->withoutGlobalScopes()->delete();
         // first detach the roles from the user
         $user->roles()->detach($user->roles);
-        // delete the private messages from the cooperation
-        $building->privateMessages()->delete();
+
 
         // remove the user itself.
-        $user->delete();
-
         // if the account has no users anymore then we delete the account itself too.
         if (0 == User::withoutGlobalScopes()->where('account_id', $accountId)->count()) {
             // bye !

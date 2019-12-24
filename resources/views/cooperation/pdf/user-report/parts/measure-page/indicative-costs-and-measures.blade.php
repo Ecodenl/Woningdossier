@@ -16,7 +16,7 @@
             @foreach($calculationsForStep as $calculationType => $calculationResult)
                 @if(!empty($calculationResult) && !is_array($calculationResult))
                     {{--the advice will be shown in a different form--}}
-                    @continue(\App\Helpers\Hoomdossier::columnContains($calculationType, 'advice'))
+                    @continue(\App\Helpers\Hoomdossier::columnContains($calculationType, 'advice') || \App\Helpers\Hoomdossier::columnContains($calculationType, 'crawlspace_access'))
 
                     <?php
                     $calculationTypeIsYear = \App\Helpers\Hoomdossier::columnContains($calculationType, 'year');

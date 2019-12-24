@@ -152,9 +152,15 @@ return [
                                 'actions' => 'Acties',
                             ],
                         ],
+                        'modal' => [
+                            'text' => 'U staat op het punt om de coöperatie :cooperation te verwijderen, hiermee word alles verwijderd wat aan de coöperatie hangt (gebruikers, vragenlijsten, berichten etc.).',
+                            'cancel' => 'Annuleren',
+                            'destroy' => 'Ja, ik wil deze coöperatie verwijderen'
+                        ],
                         'edit' => 'Bewerken',
                         'show' => 'Details van deze coöperatie',
                         'create' => 'Aanmaken',
+                        'destroy' => 'Verwijder coöperatie'
                     ],
                     'create' => [
                         'header' => 'Cooperatie toevoegen',
@@ -175,6 +181,9 @@ return [
                             'website_url' => 'Website URL',
                             'update' => 'Bijwerken',
                         ],
+                    ],
+                    'destroy' => [
+                        'success' => 'De coöperatie is succesvol verwijderd'
                     ],
                     'store' => [
                         'success' => 'Cooperatie is toegevoegd aan het Hoomdossier',

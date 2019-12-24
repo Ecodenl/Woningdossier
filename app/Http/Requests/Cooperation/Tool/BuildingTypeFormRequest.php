@@ -5,7 +5,7 @@ namespace App\Http\Requests\Cooperation\Tool;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
-class BuildingDetailRequest extends FormRequest
+class BuildingTypeFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,9 @@ class BuildingDetailRequest extends FormRequest
      */
     public function rules()
     {
-
-
+        $max = Carbon::now()->year;
+        return [
+            'build_year' => "numeric|between:1000,{$max}",
+        ];
     }
 }

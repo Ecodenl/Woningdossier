@@ -86,13 +86,10 @@
 
         <div class="row mt-20">
             <div class="col-sm-12">
-                <h4>
-                    <i data-target="#motivation-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
-                    @lang('cooperation/tool/general-data/interest.index.motivation.title.title')
-                    @component('cooperation.tool.components.help-modal', ['id' => 'motivation-info'])
-                        @lang('cooperation/tool/general-data/interest.index.motivation.title.help')
-                    @endcomponent
-                </h4>
+                @include('cooperation.tool.includes.section-title', [
+                     'translation' => 'cooperation/tool/general-data/interest.index.motivation.title',
+                     'id' => 'motivation-info'
+                 ])
             </div>
             <?php
             $oldMotivations = old('user_motivations.id.*');

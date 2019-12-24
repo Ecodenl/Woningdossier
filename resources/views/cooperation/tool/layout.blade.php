@@ -122,6 +122,23 @@
 
 @push('js')
     <script>
+
+        function removeErrors()
+        {
+            $('.has-error').removeClass('has-error')
+            $('.help-block').remove()
+        }
+        function addError(input, message) {
+            var helpBlock = '<span class="help-block"></span>';
+            input.parents('.form-group').addClass('has-error');
+            input.parents('.form-group').append($(helpBlock).append('<strong>' + message + '</strong>'));
+        }
+
+        function removeError(input) {
+            input.parents('.has-error').removeClass('has-error');
+            input.parents('.form-group').next('.help-block').remove()
+        }
+
         $('input').keypress(function (event) {
             // get the current keycode
             var keycode = (event.keyCode ? event.keyCode : event.which);

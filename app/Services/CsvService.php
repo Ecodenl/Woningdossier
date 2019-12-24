@@ -2,14 +2,11 @@
 
 namespace App\Services;
 
-use App\Helpers\Arr;
 use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\NumberFormatter;
-use App\Helpers\ToolHelper;
 use App\Helpers\Translation;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
-use App\Models\CompletedStep;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
@@ -20,12 +17,8 @@ use App\Models\QuestionOption;
 use App\Models\Role;
 use App\Models\Step;
 use App\Models\User;
-use App\Models\UserActionPlanAdvice;
 use App\Scopes\CooperationScope;
-use Barryvdh\Debugbar\Twig\Extension\Dump;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use Spatie\TranslationLoader\TranslationLoaders\Db;
 
 class CsvService
 {

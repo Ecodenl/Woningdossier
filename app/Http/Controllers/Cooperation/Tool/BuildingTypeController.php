@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\HoomdossierSession;
+use App\Http\Requests\Cooperation\Tool\BuildingTypeFormRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -13,10 +14,10 @@ class BuildingTypeController extends Controller
      * after that selects a example building, the page will be reloaded.
      * but the type wasnt stored. now it is
      *
-     * @param Request $request
+     * @param BuildingTypeFormRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(BuildingTypeFormRequest $request)
     {
         $buildingTypeId = $request->get('building_type_id');
         $buildYear = $request->get('build_year');

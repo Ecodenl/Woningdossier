@@ -42,12 +42,12 @@
             {{--a little magic--}}
             <?php $cooperationToManage = request()->route()->parameters()['cooperationToManage']; ?>
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <a href="{{route('cooperation.admin.super-admin.index')}}" class="btn btn-default btn-block">
                         @lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.back-to-normal-environment')
                     </a>
                 </div>
-                <div class="col-md-9">
+                <div class="col-md-10">
                     <div class="alert alert-warning">
                         <strong>Letop!</strong> @lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.alert-on-top', ['cooperation' => $cooperationToManage->name])
                     </div>

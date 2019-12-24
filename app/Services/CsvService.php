@@ -20,10 +20,9 @@ use App\Models\QuestionOption;
 use App\Models\Role;
 use App\Models\Step;
 use App\Models\User;
-use App\Models\UserActionPlanAdvice;
 use App\Scopes\CooperationScope;
-use Barryvdh\Debugbar\Twig\Extension\Dump;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Spatie\TranslationLoader\TranslationLoaders\Db;
 
 class CsvService
@@ -200,21 +199,19 @@ class CsvService
         return $rows;
     }
 
+
     /**
-     * CSV Report that returns the questionnaire results.
+     * Method to dump the results of a given questionnaire
      *
      * @param Cooperation $cooperation
      * @param bool $anonymize
      *
      * @return array
      */
-    public static function questionnaireResults(Cooperation $cooperation, bool $anonymize): array
+    public static function dumpForQuestionnaire(Questionnaire $questionnaire, bool $anonymize): array
     {
-        $questionnaires = Questionnaire::withoutGlobalScope(new CooperationScope())
-            ->where('cooperation_id', $cooperation->id)
-            ->get();
+        $cooperation = $questionnaire->cooperation;
         $rows = [];
-
         $residentInputSource = InputSource::findByShort('resident');
 
         if ($anonymize) {
@@ -250,24 +247,24 @@ class CsvService
         // get the users from the current cooperation that have the resident role
         $usersFromCooperation = $cooperation->getUsersWithRole(Role::findByName('resident'));
 
-        /** @var User $user */
+
+        /** @ $var User $user */
         foreach ($usersFromCooperation as $user) {
             $building = $user->building;
-            if ($building instanceof Building && $user->hasRole('resident', $cooperation->id)) {
+            if ($building instanceof Building) {
                 /** @var Collection $conversationRequestsForBuilding */
                 $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope())
                     ->conversationRequestByBuildingId($building->id)
                     ->where('to_cooperation_id', $cooperation->id)->get();
 
                 $createdAt = optional($user->created_at)->format('Y-m-d');
-                //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
                 $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
                 $allowAccess = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
                 $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
                 $connectedCoachNames = [];
                 // get the names from the coaches and add them to a array
                 foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
-                    array_push($connectedCoachNames, User::find($coachId)->getFullName());
+                    array_push($connectedCoachNames, User::forMyCooperation($cooperation->id)->find($coachId)->getFullName());
                 }
                 // implode it.
                 $connectedCoachNames = implode($connectedCoachNames, ', ');
@@ -292,92 +289,79 @@ class CsvService
                 $buildYear = $buildingFeatures->build_year ?? '';
 
                 // set the personal user info only if the user has question answers.
-                if ($building->questionAnswers()->forInputSource($residentInputSource)->count() > 0) {
-                    if ($anonymize) {
-                        $rows[$building->id] = [
-                            $createdAt, $buildingStatus, $allowAccess, $postalCode, $city,
-                            $buildingType, $buildYear,
-                        ];
-                    } else {
-                        $rows[$building->id] = [
-                            $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
-                            $firstName, $lastName, $email, $phoneNumber,
-                            $street, $number, $postalCode, $city,
-                            $buildingType, $buildYear,
-                        ];
-                    }
+                if ($anonymize) {
+                    $rows[$building->id] = [
+                        $createdAt, $buildingStatus, $allowAccess, $postalCode, $city,
+                        $buildingType, $buildYear,
+                    ];
+                } else {
+                    $rows[$building->id] = [
+                        $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
+                        $firstName, $lastName, $email, $phoneNumber,
+                        $street, $number, $postalCode, $city,
+                        $buildingType, $buildYear,
+                    ];
                 }
-                foreach ($questionnaires as $questionnaire) {
-                    $questionAnswersForCurrentQuestionnaire =
-                        \DB::table('questionnaires')
-                            ->where('questionnaires.id', $questionnaire->id)
-                            ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
-                            ->leftJoin('translations', function ($leftJoin) {
-                                $leftJoin->on('questions.name', '=', 'translations.key')
-                                    ->where('language', '=', app()->getLocale());
+
+                // note the order, this is important.
+                // otherwise the data will be retrieved in a different order each time and that will result in mixed data in the rows
+                $questionAnswersForCurrentQuestionnaire =
+                    \DB::table('questionnaires')
+                        ->where('questionnaires.id', $questionnaire->id)
+                        ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
+                        ->whereNull('questions.deleted_at')
+                        ->leftJoin('translations', function ($leftJoin) {
+                            $leftJoin->on('questions.name', '=', 'translations.key')
+                                ->where('language', '=', app()->getLocale());
+                        })
+                        ->leftJoin('questions_answers',
+                            function ($leftJoin) use ($building, $residentInputSource) {
+                                $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
+                                    ->where('questions_answers.input_source_id', $residentInputSource->id)
+                                    ->where('questions_answers.building_id', '=', $building->id);
                             })
-                            ->leftJoin('questions_answers',
-                                function ($leftJoin) use ($building) {
-                                    $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
-                                        ->where('questions_answers.building_id', '=', $building->id);
-                                })
-                            ->select('questions_answers.answer', 'questions.id as question_id',
-                                'translations.translation as question_name')
-                            ->get();
+                        ->select('questions_answers.answer', 'questions.id as question_id', 'translations.translation as question_name')
+                        ->orderBy('question_id')
+                        ->get();
 
-                    // loop through the answers for ONE questionnaire
-                    foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {
-                        $answer = $questionAnswerForCurrentQuestionnaire->answer;
-                        $currentQuestion = Question::withTrashed()->find($questionAnswerForCurrentQuestionnaire->question_id);
 
-                        // check if the question
-                        if ($currentQuestion instanceof Question) {
-                            // if the question has options, we have to get the translations from that table otherwise there would be ids in the csv
-                            if ($currentQuestion->hasQuestionOptions()) {
-                                $questionOptionAnswer = [];
 
-                                // explode on array since some questions are multi select
-                                $explodedAnswers = explode('|', $answer);
+                foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {
+                    $answer = $questionAnswerForCurrentQuestionnaire->answer;
+                    $currentQuestion = Question::withTrashed()->find($questionAnswerForCurrentQuestionnaire->question_id);
 
-                                foreach ($explodedAnswers as $explodedAnswer) {
-                                    // check if the current question has options
-                                    // the question can contain a int but can be a answer to a question like "How old are you"
-                                    if ($currentQuestion->hasQuestionOptions() && !empty($explodedAnswer)) {
-                                        $questionOption = QuestionOption::find($explodedAnswer);
-                                        array_push($questionOptionAnswer, $questionOption->name);
+                    if ($currentQuestion instanceof Question) {
+
+                        // when the question has options, the answer is imploded.
+                        if ($currentQuestion->hasQuestionOptions()) {
+                            if (!empty($answer)) {
+                                // this will contain the question option ids
+                                $answers = array_filter(explode('|', $answer));
+
+                                $questionAnswers = collect();
+                                foreach ($answers as $questionOptionId) {
+                                    $questionOption = QuestionOption::find($questionOptionId);
+                                    // it is possible a answer options gets removed, but a user still has it saved as an answer.
+                                    if ($questionOption instanceof QuestionOption) {
+                                        $questionAnswers->push($questionOption->name);
                                     }
                                 }
-
-                                // the questionOptionAnswer can be empty if the the if statements did not pass
-                                // so we check that before assigning it.
-                                if (!empty($questionOptionAnswer)) {
-                                    // implode it
-                                    $answer = implode($questionOptionAnswer, '|');
-                                }
+                                $answer = $questionAnswers->implode(' | ');
                             }
-                            // set the question name in the headers
-                            // yes this overwrites it all the time, but thats the point.
-                            $headers[$questionAnswerForCurrentQuestionnaire->question_name] = $questionAnswerForCurrentQuestionnaire->question_name;
-
-                            // set the question answer
-                            $rows[$building->id][] = $answer;
                         }
                     }
-                }
-            }
-        }
 
-        // unset the whole empty arrays
-        // so we only set rows with answers.
-        foreach ($rows as $buildingId => $row) {
-            if (Arr::isWholeArrayEmpty($row)) {
-                unset($rows[$buildingId]);
+                    $rows[$building->id][$questionAnswerForCurrentQuestionnaire->question_name] = $answer;
+                    $headers[$questionAnswerForCurrentQuestionnaire->question_name] = $questionAnswerForCurrentQuestionnaire->question_name;
+
+                }
             }
         }
 
         array_unshift($rows, $headers);
 
         return $rows;
+
     }
 
     /**

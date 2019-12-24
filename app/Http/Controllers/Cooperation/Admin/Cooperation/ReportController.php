@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileTypeCategory;
 
 class ReportController extends Controller
 {
-    public function index()
+    public function index(Cooperation $cooperation)
     {
         $reportFileTypeCategory = FileTypeCategory::short('report')
             ->with(['fileTypes' => function ($query) {

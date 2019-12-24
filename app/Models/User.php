@@ -62,9 +62,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Model implements AuthorizableContract
 {
-    use HasRoles;
-    use HasCooperationTrait;
-    use Authorizable;
+    use HasRoles, HasCooperationTrait, Authorizable;
 
     protected $guard_name = 'web';
 

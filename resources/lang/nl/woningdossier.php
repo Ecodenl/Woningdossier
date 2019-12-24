@@ -548,6 +548,7 @@ return [
                         'success' => 'Het rapport wordt gemaakt',
                     ],
                     'csv-columns' => [
+                        'input-source' => 'Rol',
                         'created-at' => 'Datum account',
                         'status' => 'Status',
                         'allow-access' => 'Toestemming aanwezig',

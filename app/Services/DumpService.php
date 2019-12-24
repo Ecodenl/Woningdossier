@@ -30,6 +30,7 @@ use App\Models\BuildingPvPanel;
 use App\Models\BuildingRoofType;
 use App\Models\BuildingService;
 use App\Models\BuildingVentilation;
+use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\EnergyLabel;
@@ -46,34 +47,17 @@ use App\Models\Step;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
 use App\Scopes\CooperationScope;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class DumpService
 {
-    /**
-     * Method to generate a total dump from a user for a specific input source.
-     * This dump collects all possible data for a given user for the tool and returns it in an array.
-     *
-     * @param User $user
-     * @param InputSource $inputSource
-     * @param bool $anonymized
-     * @param bool $withTranslationsForColumns
-     * @param bool $withConditionalLogic | when true, it will return the data as happens in the dump. So if a input gets hidden it wont be put in the dump
-     *
-     * @return array
-     */
-    public static function totalDump(User $user, InputSource $inputSource, bool $anonymized, bool $withTranslationsForColumns = true, bool $withConditionalLogic = false): array
+    public static function getStructureForTotalDumpService(bool $anonymized, $prefixValuesWithStep = true)
     {
-
-        $cooperation = $user->cooperation;
-        $structure = ToolHelper::getContentStructure();
-        // get the content structure of the whole tool.
-//        dd($structure['ventilation']['-']);
-        $rows = [];
 
         if ($anonymized) {
             $headers = [
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
 
@@ -85,6 +69,7 @@ class DumpService
             ];
         } else {
             $headers = [
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
 
@@ -105,6 +90,9 @@ class DumpService
             ];
         }
 
+        // get the content structure of the whole tool.
+        $structure = ToolHelper::getContentStructure();
+
         $leaveOutTheseDuplicates = [
             'general-data.building-characteristics.building_features.building_type_id',
             'general-data.building-characteristics.building_features.build_year',
@@ -113,8 +101,7 @@ class DumpService
             // bewoners, gasverbruik en type ketel
             'high-efficiency-boiler.user_energy_habits.resident_count',
             'high-efficiency-boiler.user_energy_habits.amount_gas',
-            // had to be added according to the pdf feedback, so now it will be displayed in the general data and on the high efficiency boiler page.
-//            'high-efficiency-boiler.service.5.service_value_id',
+            'high-efficiency-boiler.service.5.service_value_id',
             // elektriciteitsverbruik
             'solar-panels.user_energy_habits.amount_electricity',
             // comfort niveau
@@ -124,27 +111,67 @@ class DumpService
 
         // build the header structure, we will set those in the csv and use it later on to get the answers from the users.
         // unfortunately we cant array dot the structure since we only need the labels
-        foreach ($structure as $stepSlug => $stepStructure) {
+        foreach ($structure as $stepShort => $stepStructure) {
             // building-detail contains data that is already present in the columns above
+            $step = Step::findByShort($stepShort);
             foreach ($stepStructure as $subStep => $subStepStructure) {
                 foreach ($subStepStructure as $tableWithColumnOrAndId => $contents) {
                     if ('calculations' == $tableWithColumnOrAndId) {
-                        // If you want to go ahead and translate in a different namespace, do it here
-                        $deeperContents = \Illuminate\Support\Arr::dot($contents, $stepSlug . '.' . $subStep . '.calculation.');
+
+                        if ($prefixValuesWithStep) {
+                            // If you want to go ahead and translate in a different namespace, do it here
+                            // we will dot the array, map it so we can add the step name to it
+                            $deeperContents = array_map(function ($content) use ($step, $subStep) {
+                                return $step->name . ','.$subStep.': ' . $content;
+                            }, Arr::dot($contents, $stepShort.'.'.$subStep.'.calculation.'));
+                        } else {
+                            $deeperContents = Arr::dot($contents, $stepShort.'.'.$subStep.'.calculation.');
+                        }
 
                         $headers = array_merge($headers, $deeperContents);
                     } else {
-                        $headers[$stepSlug . '.' . $subStep . '.' . $tableWithColumnOrAndId] = str_replace([
-                            '&euro;', '€',
-                        ], ['euro', 'euro'], $contents['label']);
+                        $labelWithEuroNormalization = str_replace(['&euro;', '€',], ['euro', 'euro'], $contents['label']);
+
+                        if ($prefixValuesWithStep) {
+
+                            $subStepName = optional(Step::findByShort($subStep))->name;
+                            $headers[$stepShort.'.'.$subStep. '.' . $tableWithColumnOrAndId] = "{$step->name}, {$subStepName}: {$labelWithEuroNormalization}";
+
+                        } else {
+                            $headers[$stepShort.'.'.$subStep. '.' . $tableWithColumnOrAndId] = $labelWithEuroNormalization;
+                        }
                     }
                 }
             }
+
         }
+
 
         foreach ($leaveOutTheseDuplicates as $leaveOut) {
             unset($headers[$leaveOut]);
         }
+
+        return $headers;
+    }
+
+    /**
+     * Method to generate a total dump from a user for a specific input source.
+     * This dump collects all possible data for a given user for the tool and returns it in an array.
+     *
+     * @param array $structureForTotalDump | we need the headers to get table and row data, provide from the self::getStructureForTotalDumpService.
+     * @param Cooperation $cooperation,
+     * @param User $user
+     * @param InputSource $inputSource
+     * @param bool $anonymized
+     * @param bool $withTranslationsForColumns
+     * @param bool $withConditionalLogic | when true, it will return the data as happens in the dump. So if a input gets hidden it wont be put in the dump
+     *
+     * @return array
+     */
+    public static function totalDump(array $structureForTotalDump, Cooperation $cooperation, User $user, InputSource $inputSource, bool $anonymized, bool $withTranslationsForColumns = true, bool $withConditionalLogic = false): array
+    {
+        $headers = $structureForTotalDump;
+        $rows = [];
 
         if ($withTranslationsForColumns) {
             $rows['translations-for-columns'] = $headers;
@@ -200,11 +227,13 @@ class DumpService
         if ($anonymized) {
             // set the personal userinfo
             $row[$building->id] = [
+                $inputSource->name,
                 $createdAt, $buildingStatus, $postalCode, $city,
                 $buildingType, $buildYear, $exampleBuilding,
             ];
         } else {
             $row[$building->id] = [
+                $inputSource->name,
                 $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
                 $firstName, $lastName, $email, $phoneNumber,
                 $street, $number, $postalCode, $city,
@@ -673,14 +702,14 @@ class DumpService
         $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
 //
 //
-        $wallInsulationElement = Element::where('short', 'wall-insulation')->first();
-        $woodElements = Element::where('short', 'wood-elements')->first();
-        $frames = Element::where('short', 'frames')->first();
-        $crackSealing = Element::where('short', 'crack-sealing')->first();
-        $floorInsulationElement = Element::where('short', 'floor-insulation')->first();
-        $crawlspaceElement = Element::where('short', 'crawlspace')->first();
+        $wallInsulationElement = Element::findByShort( 'wall-insulation');
+        $woodElements = Element::findByShort( 'wood-elements');
+        $frames = Element::findByShort( 'frames');
+        $crackSealing = Element::findByShort( 'crack-sealing');
+        $floorInsulationElement = Element::findByShort( 'floor-insulation');
+        $crawlspaceElement = Element::findByShort( 'crawlspace');
 
-        $boilerService = Service::where('short', 'boiler')->first();
+        $boilerService = Service::findByShort( 'boiler');
 
         // handle stuff for the wall insulation
         $wallInsulationBuildingElement = $buildingElements->where('element_id', $wallInsulationElement->id)->first();

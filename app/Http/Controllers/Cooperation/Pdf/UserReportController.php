@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Pdf;
 use App\Helpers\Arr;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
+use App\Helpers\ToolHelper;
 use App\Http\Controllers\Controller;
 use App\Models\BuildingInsulatedGlazing;
 use App\Models\Cooperation;
@@ -47,7 +48,7 @@ class UserReportController extends Controller
         $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
         // full report for a user
-        $reportForUser = DumpService::totalDump($user, $inputSource, false, true, true);
+        $reportForUser = DumpService::totalDump(DumpService::getStructureForTotalDumpService(false, false), $userCooperation, $user, $inputSource, false, true, true);
 
         // the translations for the columns / tables in the user data
         $reportTranslations = $reportForUser['translations-for-columns'];
@@ -72,7 +73,6 @@ class UserReportController extends Controller
         // intersect the data, we dont need the data we wont show anyway
         $activeOrderedStepShorts = $steps->pluck('short')->flip()->toArray();
         $reportData = array_intersect_key($reportData, $activeOrderedStepShorts);
-
 
 
         // steps that are considered to be measures.

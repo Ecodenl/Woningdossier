@@ -22,6 +22,7 @@ use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\CooperationScope;
+use Barryvdh\Debugbar\Twig\Extension\Dump;
 use Illuminate\Support\Collection;
 use Spatie\TranslationLoader\TranslationLoaders\Db;
 
@@ -42,6 +43,7 @@ class CsvService
 
         if ($anonymize) {
             $csvHeaders = [
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
 
@@ -53,6 +55,7 @@ class CsvService
             ];
         } else {
             $csvHeaders = [
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
 
@@ -88,13 +91,22 @@ class CsvService
         // new array for the userdata
         $rows = [];
 
-        // since we only want the reports from the resident
-        $residentInputSource = InputSource::findByShort('resident');
+        $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
-        /**
-         * @var User
-         */
+        $generalDataStep = Step::findByShort('general-data');
         foreach ($users as $key => $user) {
+            // for each user reset the input source back to the base input source.
+            $inputSourceForDump = $inputSource;
+
+            // well in every case there is a uitzondering op de regel
+            // normally we would pick the given input source
+            // but when coach input is available we use the coach input source for that particular user
+            // coach input is available when he has completed the general data step
+            if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
+                $inputSourceForDump = $coachInputSource;
+            }
+
             /** @var Building $building */
             $building = $user->building;
 
@@ -129,7 +141,7 @@ class CsvService
             // get the building features from the resident
             $buildingFeatures = $building
                 ->buildingFeatures()
-                ->forInputSource($residentInputSource)
+                ->forInputSource($inputSourceForDump)
                 ->first();
 
             $buildingType = $buildingFeatures->buildingType->name ?? '';
@@ -139,13 +151,13 @@ class CsvService
             if ($anonymize) {
                 // set the personal userinfo
                 $row[$key] = [
-                    $createdAt, $buildingStatus, $postalCode, $city,
+                    $inputSourceForDump->name, $createdAt, $buildingStatus, $postalCode, $city,
                     $buildingType, $buildYear, $exampleBuilding,
                 ];
             } else {
                 // set the personal userinfo
                 $row[$key] = [
-                    $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
+                    $inputSourceForDump->name, $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
                     $firstName, $lastName, $email, $phoneNumber,
                     $street, $number, $postalCode, $city,
                     $buildingType, $buildYear, $exampleBuilding,
@@ -160,7 +172,7 @@ class CsvService
             // get the action plan advices for the user, but only for the resident his input source
             $userActionPlanAdvices = $user
                 ->actionPlanAdvices()
-                ->forInputSource($residentInputSource)
+                ->forInputSource($inputSourceForDump)
                 ->leftJoin('measure_applications', 'user_action_plan_advices.measure_application_id', '=', 'measure_applications.id')
                 ->leftJoin('steps', 'measure_applications.step_id', '=', 'steps.id')
                 ->orderBy('steps.order')
@@ -383,98 +395,31 @@ class CsvService
 
         $rows = [];
 
-        if ($anonymized) {
-            $headers = [
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
-
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.example-building'),
-            ];
-        } else {
-            $headers = [
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
-
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.associated-coaches'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.first-name'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
-
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.example-building'),
-            ];
-        }
-
-        // get the content structure of the whole tool.
-        $structure = ToolHelper::getContentStructure();
-
-        $leaveOutTheseDuplicates = [
-            'general-data.building-characteristics.building_features.building_type_id',
-            'general-data.building-characteristics.building_features.build_year',
-            // hoofddak
-            'roof-insulation.building_features.roof_type_id',
-            // bewoners, gasverbruik en type ketel
-            'high-efficiency-boiler.user_energy_habits.resident_count',
-            'high-efficiency-boiler.user_energy_habits.amount_gas',
-            'high-efficiency-boiler.service.5.service_value_id',
-            // elektriciteitsverbruik
-            'solar-panels.user_energy_habits.amount_electricity',
-            // comfort niveau
-            'heater.user_energy_habits.water_comfort_id',
-            'heater.calculation.production_heat.help',
-        ];
-
-        // build the header structure, we will set those in the csv and use it later on to get the answers from the users.
-        // unfortunately we cant array dot the structure since we only need the labels
-        foreach ($structure as $stepSlug => $stepStructure) {
-            // building-detail contains data that is already present in the columns above
-            $step = Step::whereSlug($stepSlug)->first();
-            foreach ($stepStructure as $subStep => $subStepStructure) {
-                foreach ($subStepStructure as $tableWithColumnOrAndId => $contents) {
-                    if ('calculations' == $tableWithColumnOrAndId) {
-                        // If you want to go ahead and translate in a different namespace, do it here
-                        // we will dot the array, map it so we can add the step name to it
-                        $deeperContents = array_map(function ($content) use ($step, $subStep) {
-                            return $step->name . ','.$subStep.': ' . $content;
-                        }, \Illuminate\Support\Arr::dot($contents, $stepSlug.'.'.$subStep.'.calculation.'));
-
-                        $headers = array_merge($headers, $deeperContents);
-                    } else {
-                        $subStepName = optional(Step::findByShort($subStep))->name;
-                        $headers[$stepSlug.'.'.$subStep. '.' . $tableWithColumnOrAndId] = $step->name . ', '.$subStepName.': ' . str_replace([
-                                '&euro;', '€',
-                            ], ['euro', 'euro'], $contents['label']);
-                    }
-                }
-            }
-
-        }
-
-
-        foreach ($leaveOutTheseDuplicates as $leaveOut) {
-            unset($headers[$leaveOut]);
-        }
+        $headers = DumpService::getStructureForTotalDumpService($anonymized);
 
         $rows[] = $headers;
 
         /**
          * Get the data for every user.
          *
-         * @var User
+         * @var User $user
          */
+        $generalDataStep = Step::findByShort('general-data');
+        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+
         foreach ($users as $user) {
-            $rows[$user->building->id] = DumpService::totalDump($user, $inputSource, $anonymized, false)['user-data'];
+            // for each user reset the input source back to the base input source.
+            $inputSourceForDump = $inputSource;
+
+            // well in every case there is a uitzondering op de regel
+            // normally we would pick the given input source
+            // but when coach input is available we use the coach input source for that particular user
+            // coach input is available when he has completed the general data step
+            if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
+                $inputSourceForDump = $coachInputSource;
+            }
+
+            $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSourceForDump, $anonymized, false)['user-data'];
         }
 
         return $rows;

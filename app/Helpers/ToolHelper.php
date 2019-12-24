@@ -44,6 +44,7 @@ class ToolHelper
         return $options;
     }
 
+
     /**
      * @param $contentKey
      * @return array
@@ -51,15 +52,15 @@ class ToolHelper
     public static function getContentStructure($contentKey = null)
     {
         // General data - Elements (that are not queried later on step basis)
-        $livingRoomsWindows = Element::where('short', 'living-rooms-windows')->first();
-        $sleepingRoomsWindows = Element::where('short', 'sleeping-rooms-windows')->first();
+        $livingRoomsWindows = Element::findByShort('living-rooms-windows');
+        $sleepingRoomsWindows = Element::findByShort('sleeping-rooms-windows');
         // General data - Services (that are not queried later on step basis)
-        $heatPump = Service::where('short', 'heat-pump')->first();
-        $ventilation = Service::where('short', 'house-ventilation')->first();
+        $heatPump = Service::findByShort('heat-pump');
+        $ventilation = Service::findByShort('house-ventilation');
         $buildingHeatingApplications = BuildingHeatingApplication::orderBy('order')->get();
 
         // Wall insulation
-        $wallInsulation = Element::where('short', 'wall-insulation')->first();
+        $wallInsulation = Element::findByShort('wall-insulation');
         $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
         $surfaces = FacadeSurface::orderBy('order')->get();
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
@@ -68,19 +69,19 @@ class ToolHelper
         // Insulated glazing
         $insulatedGlazings = InsulatingGlazing::all();
         $heatings = BuildingHeating::where('calculate_value', '<', 5)->get(); // we don't want n.v.t.
-        $crackSealing = Element::where('short', 'crack-sealing')->first();
-        $frames = Element::where('short', 'frames')->first();
-        $woodElements = Element::where('short', 'wood-elements')->first();
+        $crackSealing = Element::findByShort('crack-sealing');
+        $frames = Element::findByShort('frames');
+        $woodElements = Element::findByShort('wood-elements');
         $paintworkStatuses = PaintworkStatus::orderBy('order')->get();
         $woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
         // Floor insulation
         /** @var Element $floorInsulation */
-        $floorInsulation = Element::where('short', 'floor-insulation')->first();
-        $crawlspace = Element::where('short', 'crawlspace')->first();
+        $floorInsulation = Element::findByShort( 'floor-insulation');
+        $crawlspace = Element::findByShort('crawlspace');
 
         // Roof insulation
-        $roofInsulation = Element::where('short', 'roof-insulation')->first();
+        $roofInsulation = Element::findByShort('roof-insulation');
         $roofTypes = RoofType::all();
         $roofTileStatuses = RoofTileStatus::orderBy('order')->get();
         // Same as RoofInsulationController->getMeasureApplicationsAdviceMap()
@@ -101,15 +102,15 @@ class ToolHelper
 
         // High efficiency boiler
         // NOTE: building element hr-boiler tells us if it's there
-        $hrBoiler = Service::where('short', 'hr-boiler')->first();
-        $boiler = Service::where('short', 'boiler')->first();
+        $hrBoiler = Service::findByShort( 'hr-boiler');
+        $boiler = Service::findByShort('boiler');
 
         // Solar panels
-        $solarPanels = Service::where('short', 'total-sun-panels')->first();
+        $solarPanels = Service::findByShort('total-sun-panels');
         $solarPanelsOptionsPeakPower = ['' => '-'] + SolarPanelsKeyFigures::getPeakPowers();
         $solarPanelsOptionsAngle = ['' => '-'] + SolarPanelsKeyFigures::getAngles();
 
-        $heater = Service::where('short', 'sun-boiler')->first();
+        $heater = Service::findByShort( 'sun-boiler');
         $heaterOptionsAngle = ['' => '-'] + HeaterKeyFigures::getAngles();
 
         $comfortLevelsTapWater = ComfortLevelTapWater::all();

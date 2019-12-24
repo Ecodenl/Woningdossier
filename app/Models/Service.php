@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\TranslatableTrait;
+use App\Traits\HasShortTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -35,7 +36,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Service extends Model
 {
-    use TranslatableTrait;
+    use TranslatableTrait, HasShortTrait;
 
     public function serviceType()
     {
@@ -45,10 +46,5 @@ class Service extends Model
     public function values()
     {
         return $this->hasMany(ServiceValue::class);
-    }
-
-    public static function findByShort($short)
-    {
-        return self::where('short', $short)->first();
     }
 }

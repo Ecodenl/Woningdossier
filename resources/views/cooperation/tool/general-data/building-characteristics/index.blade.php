@@ -238,6 +238,7 @@
 
 @push('js')
     <script>
+
         $(document).ready(function () {
 
             var getQualifiedExampleBuildingsRoute = '{{route('cooperation.tool.general-data.building-characteristics.qualified-example-buildings')}}';
@@ -253,7 +254,6 @@
             var previousExampleBuilding = exampleBuilding.val();
             previousExampleBuilding = isNaN(previousExampleBuilding) ? "" : previousExampleBuilding;
 
-
             $('#build_year, #building_type_id').change(function () {
                 if (confirm('{{__('cooperation/tool/general-data/building-characteristics.index.building-type.are-you-sure.title')}}')) {
                     $.ajax({
@@ -264,14 +264,25 @@
                             build_year: buildYear.val(),
                         },
                         success: function (data) {
+                            removeErrors();
                             handleExampleBuildingSelect(buildingType.val(), buildYear.val());
                             storeExampleBuilding(buildingType.val(), buildYear.val());
 
                             // update the previous values
                             previousBuildingType = buildingType.val();
                             previousBuildYear = buildYear.val();
-                        }
+                        },
+                        error: function (request, status, error) {
+                            removeErrors();
+                            var errorMessage = $.parseJSON(request.responseText);
+                            $.each(errorMessage.errors, function (fieldName, message) {
+                                var input = $('input[id=' + fieldName + ']');
+                                addError(input, message)
+                            });
+                        },
+                        dataType: 'json'
                     });
+
                 } else {
                     // user canceled the operation so we set back the option
                     buildingType.val(previousBuildingType);

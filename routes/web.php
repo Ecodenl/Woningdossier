@@ -303,14 +303,11 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     });
 
 
+
+                    Route::resource('questionnaires', 'QuestionnaireController')
+                        ->middleware('current-role:cooperation-admin');
                     // not in the cooperation-admin group, probably need to be used for hte coordinator aswell.
                     Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire', 'middleware' => ['current-role:cooperation-admin']], function () {
-                        Route::get('', 'QuestionnaireController@index')->name('index');
-                        Route::post('', 'QuestionnaireController@update')->name('update');
-                        Route::get('create', 'QuestionnaireController@create')->name('create');
-                        Route::get('edit/{id}', 'QuestionnaireController@edit')->name('edit');
-                        Route::post('create-questionnaire', 'QuestionnaireController@store')->name('store');
-
                         Route::delete('delete-question/{questionId}', 'QuestionnaireController@deleteQuestion')->name('delete');
                         Route::delete('delete-option/{questionId}/{optionId}', 'QuestionnaireController@deleteQuestionOption')->name('delete-question-option');
                         Route::post('set-active', 'QuestionnaireController@setActive')->name('set-active');
@@ -352,27 +349,26 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     /* Section for the cooperations */
                     Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.', 'namespace' => 'Cooperation'], function () {
                         Route::get('', 'CooperationController@index')->name('index');
+                        Route::delete('destroy/{cooperationToDestroy}', 'CooperationController@destroy')->name('destroy');
                         Route::get('edit/{cooperationToEdit}', 'CooperationController@edit')->name('edit');
                         Route::get('create', 'CooperationController@create')->name('create');
                         Route::post('', 'CooperationController@store')->name('store');
                         Route::post('edit', 'CooperationController@update')->name('update');
 
                         /* Actions that will be done per cooperation */
-                        Route::group(['prefix' => '{cooperationToManage}/', 'as' => 'cooperation-to-manage.'], function () {
-                            Route::resource('home', 'HomeController')->only('index');
+                        Route::group(['prefix' => '{cooperationToManage}/', 'as' => 'cooperation-to-manage.'],
+                            function () {
+                                Route::resource('home', 'HomeController')->only('index');
 
-                            Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
-                            Route::resource('coordinator', 'CoordinatorController')->only(['index']);
-                            Route::resource('users', 'UserController')->only(['index', 'show']);
-                            Route::post('users/{id}/confirm', 'UserController@confirm')->name('users.confirm');
-                        });
+                                Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
+                                Route::resource('coordinator', 'CoordinatorController')->only(['index']);
+                                Route::resource('users', 'UserController')->only(['index', 'show']);
+                            Route::post('users/{id}/confirm', 'UserController@confirm')->name('users.confirm');});
                     });
                 });
 
                 /* Section for the coach */
-                Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach',
-                    'middleware' => ['current-role:coach']
-                ], function () {
+                Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['current-role:coach']], function () {
 
                     Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
                         Route::get('', 'BuildingController@index')->name('index');

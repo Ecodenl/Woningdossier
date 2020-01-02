@@ -45,15 +45,6 @@
             \App\Models\Step::findByShort($stepShort),
             $inputSource
         );
-//        $hasCoachCompletedStep = $building->hasCompleted(
-//            \App\Models\Step::findByShort($stepShort),
-//            \App\Models\InputSource::findByShort(\App\Models\InputSource::COACH_SHORT)
-//        );
-
-        // when a coach or resident has completed the step we have to show it.
-        // because a user may not be interested or didnt finished the step,
-        // but the coach did so there may be a comment to show and that may convince the resident to do it anyway.
-//        $shouldDisplayStep = $hasCoachCompletedStep || $hasResidentCompletedStep;
     ?>
     @if (array_key_exists($stepShort, $stepShorts) && $hasResidentCompletedStep)
         @foreach ($dataForStep as $subStepShort => $dataForSubStep)

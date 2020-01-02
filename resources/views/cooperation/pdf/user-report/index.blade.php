@@ -43,7 +43,7 @@
     <?php
         $hasResidentCompletedStep = $building->hasCompleted(
             \App\Models\Step::findByShort($stepShort),
-            \App\Models\InputSource::findByShort(\App\Models\InputSource::RESIDENT_SHORT)
+            $inputSource
         );
 //        $hasCoachCompletedStep = $building->hasCompleted(
 //            \App\Models\Step::findByShort($stepShort),

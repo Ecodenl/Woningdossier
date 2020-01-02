@@ -77,6 +77,7 @@ class UserReportController extends Controller
 
         // steps that are considered to be measures.
         $stepShorts = \DB::table('steps')
+            ->where('short', '!=', 'general-data')
             ->select('short', 'id')
             ->get()
             ->pluck('short', 'id')

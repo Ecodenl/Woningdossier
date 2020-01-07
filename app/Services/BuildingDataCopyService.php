@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\InputSource;
+use Illuminate\Support\Facades\Log;
 
 class BuildingDataCopyService
 {
@@ -52,6 +53,7 @@ class BuildingDataCopyService
 
             'user_action_plan_advices' => [
                 'where_column' => 'measure_application_id',
+                'additional_where_column' => 'step_id'
             ],
             'user_energy_habits',
         ];
@@ -63,6 +65,7 @@ class BuildingDataCopyService
             } else {
                 $table = $tableOrInt;
             }
+            Log::debug("Copy: table {$table}");
             // building to copy data from
             $user = $building->user()->first();
 
@@ -116,8 +119,6 @@ class BuildingDataCopyService
                             // cast the results to a array
                             $toValue = (array) $toValue;
                             $fromValue = (array) $fromValue;
-
-//                                dump($fromValue, $toValue);
 
                             // if it exists, we need to update it. Else we need to insert a new row.
                             if (! empty($toValue)) {

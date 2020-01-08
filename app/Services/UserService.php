@@ -138,6 +138,8 @@ class UserService
         // first detach the roles from the user
         $user->roles()->detach($user->roles);
 
+        // remove the user itself.
+        $user->delete();
 
         // remove the user itself.
         // if the account has no users anymore then we delete the account itself too.

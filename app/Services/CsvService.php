@@ -325,7 +325,7 @@ class CsvService
                         ->where('questionnaires.id', $questionnaire->id)
                         ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
                         // this may cause weird results, but meh
-                        // ->whereNull('questions.deleted_at')
+                         ->whereNull('questions.deleted_at')
                         ->leftJoin('translations', function ($leftJoin) {
                             $leftJoin->on('questions.name', '=', 'translations.key')
                                 ->where('language', '=', app()->getLocale());

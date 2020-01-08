@@ -43,7 +43,7 @@
             <?php $cooperationToManage = request()->route()->parameters()['cooperationToManage']; ?>
             <div class="row">
                 <div class="col-md-2">
-                    <a href="{{route('cooperation.admin.super-admin.index')}}" class="btn btn-default btn-block">
+                    <a href="{{route('cooperation.admin.super-admin.index')}}" class="btn btn-default btn-block" style="white-space: normal">
                         @lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.back-to-normal-environment')
                     </a>
                 </div>

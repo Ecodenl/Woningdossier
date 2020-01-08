@@ -67,7 +67,7 @@ return [
     'access' => [
         'index' => [
             'form' => [
-                'allow_access' => 'Ik geef toesteming aan :cooperation om de gegevens uit mijn Hoomdossier in te zien en in overleg met mij deze gegevens aan te passen.',
+                'allow_access' => 'Ik geef toestemming aan :cooperation om de gegevens uit mijn Hoomdossier in te zien en in overleg met mij deze gegevens aan te passen.',
             ],
             'header' => 'Gebruikers met toegang tot mijn woning',
             'text-allow-access'   => 'De gegevens worden uitsluitend door de coöperatie gebruikt om u in uw bewonersreis te ondersteunen. Uw persoonlijke gegevens worden niet doorgegeven aan derden. Meer informatie over de verwerking van uw data en wat we ermee doen kunt u vinden in ons privacy statement.',
@@ -146,7 +146,7 @@ return [
             'text' => 'Hier kunt u uw gebruikers gegevens aanpassen, deze zijn per coöperatie aanpasbaar. Wat u dus hier aanpast heeft geen invloed op de andere coöperaties waar u bij bent aangesloten.',
             'header-building' => 'Adres',
             'form' => [
-                'submit' => 'Update gevens',
+                'submit' => 'Update gegevens',
                 'building' => [
                     'street' => 'Straat',
                     'number' => 'Huisnummer',

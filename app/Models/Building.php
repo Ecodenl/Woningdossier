@@ -74,8 +74,7 @@ use Illuminate\Support\Facades\Input;
  */
 class Building extends Model
 {
-    use SoftDeletes;
-    use ToolSettingTrait;
+    use SoftDeletes, ToolSettingTrait;
 
     protected $dates = [
         'deleted_at',

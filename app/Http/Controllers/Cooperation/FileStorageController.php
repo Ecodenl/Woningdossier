@@ -154,9 +154,11 @@ class FileStorageController extends Controller
         }
 
         $fileStorage->save();
-
+        // flash messages will be stored here
+        $with = [];
         switch ($fileType->short) {
             case 'pdf-report':
+                $with = ['success' => __('woningdossier.cooperation.admin.cooperation.reports.generate.success')];
                 PdfReport::dispatch($user, $inputSource, $fileType, $fileStorage);
                 break;
             case 'total-report':
@@ -179,7 +181,7 @@ class FileStorageController extends Controller
                 break;
         }
 
-        return redirect($this->getRedirectUrl($inputSource))->with('success', __('woningdossier.cooperation.admin.cooperation.reports.generate.success'));
+        return redirect($this->getRedirectUrl($inputSource))->with($with);
     }
 
     /**

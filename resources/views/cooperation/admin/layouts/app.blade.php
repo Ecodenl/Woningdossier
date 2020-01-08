@@ -36,6 +36,9 @@
 
     @include('cooperation.admin.layouts.navbar')
     @include('cooperation.layouts.messages')
+    <div class="container">
+        @yield('top-container')
+    </div>
 
     <div class="container-fluid">
         @if(stristr(Route::currentRouteName(), 'cooperation-to-manage'))

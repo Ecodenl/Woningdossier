@@ -53,7 +53,8 @@ class BuildingDataCopyService
 
             'user_action_plan_advices' => [
                 'where_column' => 'measure_application_id',
-                'additional_where_column' => 'step_id'
+                // could be added but doesnt need to be
+                // 'additional_where_column' => 'step_id'
             ],
             'user_energy_habits',
         ];

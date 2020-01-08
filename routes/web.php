@@ -99,9 +99,10 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
             Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
                 Route::group(['as' => 'participants.', 'prefix' => 'participants'], function () {
+
                     Route::post('revoke-access', 'ParticipantController@revokeAccess')->name('revoke-access');
-                    Route::post('add-with-building-access',
-                        'ParticipantController@addWithBuildingAccess')->name('add-with-building-access');
+
+                    Route::post('add-with-building-access', 'ParticipantController@addWithBuildingAccess')->name('add-with-building-access');
 
                     Route::post('set-read', 'ParticipantController@setRead')->name('set-read');
                 });
@@ -134,9 +135,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::get('', 'MessagesController@index')->name('index');
                     Route::get('edit', 'MessagesController@edit')->name('edit');
                     Route::post('edit', 'MessagesController@store')->name('store');
-                    Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
                 });
 
+                // the checkbox to deny the whole access for everyone.
                 Route::post('access/allow-access', 'AccessController@allowAccess')->name('access.allow-access');
 
             });

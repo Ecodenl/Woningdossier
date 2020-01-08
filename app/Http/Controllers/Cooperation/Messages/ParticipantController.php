@@ -42,7 +42,8 @@ class ParticipantController extends Controller
             // revoke the access for the coach to talk with the resident
             BuildingPermissionService::revokePermission($revokedParticipant, $building);
             BuildingCoachStatusService::revokeAccess($revokedParticipant, $building);
-            event(new ParticipantRevokedEvent($revokedParticipant, $building));
+
+            ParticipantRevokedEvent::dispatch($revokedParticipant, $building);
         }
 
         return redirect()->back();

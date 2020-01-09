@@ -129,7 +129,6 @@
 
         function pollForFileProcessing() {
             $.get(checkIfFileIsBeingProcessedRoute, function (response) {
-                console.log(response);
                 if (response.is_file_being_processed || response.file_download_link === null) {
                     $('#download-section').show();
                     if (pdfReportButton.find('span').length === 0) {

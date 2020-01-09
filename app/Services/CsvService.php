@@ -237,7 +237,6 @@ class CsvService
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.example-building'),
             ];
         }
     }
@@ -256,7 +255,11 @@ class CsvService
         $cooperation = $questionnaire->cooperation;
         $rows = [];
         $residentRole = Role::findByName('resident');
-        $residentInputSource = $residentRole->inputSource;
+
+        $inputSource = $residentRole->inputSource;
+
+        $generalDataStep = Step::findByShort('general-data');
+        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
         $headers = self::getBaseHeaders($anonymize);
 
@@ -268,6 +271,15 @@ class CsvService
         foreach ($usersFromCooperation as $user) {
             $building = $user->building;
             if ($building instanceof Building) {
+
+                // well in every case there is a uitzondering op de regel
+                // normally we would pick the given input source
+                // but when coach input is available we use the coach input source for that particular user
+                // coach input is available when he has completed the general data step
+                if ($building->hasCompleted($generalDataStep, $coachInputSource)) {
+                    $inputSource = $coachInputSource;
+                }
+
                 /** @var Collection $conversationRequestsForBuilding */
 
                 $createdAt = optional($user->created_at)->format('Y-m-d');
@@ -296,7 +308,7 @@ class CsvService
                 // get the building features from the resident
                 $buildingFeatures = $building
                     ->buildingFeatures()
-                    ->forInputSource($residentInputSource)
+                    ->forInputSource($inputSource)
                     ->first();
 
                 $buildingType = $buildingFeatures->buildingType->name ?? '';
@@ -304,13 +316,13 @@ class CsvService
 
                 // set the personal user info only if the user has question answers.
                 if ($anonymize) {
-                    $pInfo[$building->id] = [
-                        $residentInputSource->name, $createdAt, $buildingStatus, $allowAccess, $postalCode, $city,
+                    $rows[$building->id] = [
+                        $inputSource->name, $createdAt, $buildingStatus, $allowAccess, $postalCode, $city,
                         $buildingType, $buildYear,
                     ];
                 } else {
-                    $pInfo[$building->id] = [
-                        $residentInputSource->name, $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
+                    $rows[$building->id] = [
+                        $inputSource->name, $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
                         $firstName, $lastName, $email, $phoneNumber,
                         $street, $number, $postalCode, $city,
                         $buildingType, $buildYear,
@@ -331,9 +343,9 @@ class CsvService
                                 ->where('language', '=', app()->getLocale());
                         })
                         ->leftJoin('questions_answers',
-                            function ($leftJoin) use ($building, $residentInputSource) {
+                            function ($leftJoin) use ($building, $inputSource) {
                                 $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
-                                    ->where('questions_answers.input_source_id', $residentInputSource->id)
+                                    ->where('questions_answers.input_source_id', $inputSource->id)
                                     ->where('questions_answers.building_id', '=', $building->id);
                             })
                         ->select('questions_answers.answer', 'questions.id as question_id', 'translations.translation as question_name', 'questions.deleted_at')
@@ -367,19 +379,11 @@ class CsvService
                         }
                     }
 
-                    $arrayKeyForQuestion = "{$questionAnswerForCurrentQuestionnaire->question_name}-{$questionAnswerForCurrentQuestionnaire->question_id}";
-
-                    $questionAnswerForBuilding[$building->id][$arrayKeyForQuestion] = $answer;
-                    $headers[$arrayKeyForQuestion] = $questionAnswerForCurrentQuestionnaire->question_name;
+                    $questionName = "{$questionAnswerForCurrentQuestionnaire->question_name}";
+                    $rows[$building->id][$questionName] = $answer;
+                    $headers[$questionName] = $questionAnswerForCurrentQuestionnaire->question_name;
 
                 }
-                //todo: when there are no answers we wont put it in the array
-                //todo: change the considered empty stuff back
-                if (!Arr::isWholeArrayEmpty($questionAnswerForBuilding)) {
-                    $rows[$building->id] = array_merge($pInfo[$building->id], $questionAnswerForBuilding[$building->id]);
-                }
-
-
             }
         }
 

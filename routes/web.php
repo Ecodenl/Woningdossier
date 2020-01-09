@@ -17,15 +17,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
 
         Route::get('/', function () {
-
-            if (app()->environment('local')) {
-
-//                set_time_limit(0);
-//                dd($rows = App\Services\CsvService::dumpForQuestionnaire(
-//                    \App\Models\Questionnaire::withoutGlobalScopes()->find(12),
-//                    true
-//                ));
-            }
             return view('cooperation.welcome');
         })->name('welcome');
 

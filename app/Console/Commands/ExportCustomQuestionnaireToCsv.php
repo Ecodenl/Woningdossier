@@ -43,19 +43,32 @@ class ExportCustomQuestionnaireToCsv extends Command
      */
     public function handle()
     {
+
         $questionnaire = Questionnaire::find(
             $this->argument('questionnaireId')
         );
 
-        $rows = CsvService::dumpForQuestionnaire($questionnaire, $this->argument('anonymize'));
+        if ($questionnaire instanceof Questionnaire) {
+            $debugTxt = "with address info";
+            $isAnonymized = 'met-adresgegevens';
+            if ($this->argument('anonymize') == true) {
+                $debugTxt = "without address info";
+                $isAnonymized = 'zonder-adresgegevens';
+            }
+            $this->alert("Starting export {$questionnaire->name} {$debugTxt}");
 
-        $date = Carbon::now()->format('y-m-d');
+            $rows = CsvService::dumpForQuestionnaire($questionnaire, $this->argument('anonymize'));
 
-        $questionnaireName = Str::slug($questionnaire->name);
+            $date = Carbon::now()->format('y-m-d');
 
-        $isAnonymized = $this->argument('anonymize') ? 'zonder-adresgegevens' : 'met-adresgegevens';
-        $filename = "{$date}-{$questionnaireName}-{$isAnonymized}.csv";
+            $questionnaireName = Str::slug($questionnaire->name);
 
-        Excel::store(new CsvExport($rows), $filename, 'exports', \Maatwebsite\Excel\Excel::CSV);
+            $filename = "{$date}-{$questionnaireName}-{$isAnonymized}.csv";
+
+            $this->info('Export completed! stored under storage/app/exports');
+            Excel::store(new CsvExport($rows), $filename, 'exports', \Maatwebsite\Excel\Excel::CSV);
+        } else {
+            $this->alert("No questionnaire with ID: {$this->argument('questionnaireId')} found");
+        }
     }
 }

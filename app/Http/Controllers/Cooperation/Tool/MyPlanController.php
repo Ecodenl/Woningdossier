@@ -23,7 +23,6 @@ class MyPlanController extends Controller
         $buildingOwner = $building->user;
         $advices = UserActionPlanAdviceService::getCategorizedActionPlan($buildingOwner, $inputSource);
         $actionPlanComments = UserActionPlanAdviceComments::forMe()->with('inputSource')->get()->keyBy('input_source_id');
-        $anyFilesBeingProcessed = FileStorage::forMe()->withExpired()->beingProcessed()->count();
 
         // so we can determine whether we will show the actionplan button
         $buildingHasCompletedGeneralData = $building->hasCompleted(Step::where('slug', 'general-data')->first());

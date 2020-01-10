@@ -97,9 +97,11 @@
                                             $previousStep = $steps->where('order', '<', $currentSubStep->order ?? $currentStep->order)->last();
                                         }
 
-                                        $previousUrl = $currentSubStep instanceof \App\Models\Step && $previousStep instanceof \App\Models\Step
-                                            ? route("cooperation.tool.{$currentStep->short}.{$previousStep->short}.index")
-                                            : route("cooperation.tool.{$previousStep->short}.index")
+                                        if ($currentSubStep instanceof \App\Models\Step && $previousStep instanceof \App\Models\Step) {
+                                            $previousUrl = route("cooperation.tool.{$currentStep->short}.{$previousStep->short}.index");
+                                        } elseif ($previousStep instanceof \App\Models\Step) {
+                                            $previousUrl = route("cooperation.tool.{$previousStep->short}.index");
+                                        }
                                         ?>
                                         @if($previousStep instanceof \App\Models\Step)
                                             <a class="btn btn-success pull-left"

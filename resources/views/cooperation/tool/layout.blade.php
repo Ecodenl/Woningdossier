@@ -104,11 +104,20 @@
                                                href="{{ url('tool/'.$previousStep->slug)}}">@lang('default.buttons.prev')</a>
                                         @endif
                                     </div>
+{{--                                    @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')--}}
+{{--                                        @lang('default.buttons.next-page')--}}
+{{--                                        <div class="col-sm-6">--}}
+{{--                                            <a href="" class="pull-right btn btn-primary submit-main-form">--}}
+{{--                                                @lang('default.buttons.next-page')--}}
+{{--                                            </a>--}}
+{{--                                        </div>--}}
+{{--                                    @else--}}
                                     <div class="col-sm-6">
                                         <button class="pull-right btn btn-primary submit-main-form">
                                             @lang('default.buttons.next')
                                         </button>
                                     </div>
+{{--                                    @endif--}}
                                 </div>
                         </div>
                         @endif

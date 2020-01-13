@@ -51,7 +51,7 @@ class HighEfficiencyBoilerCalculator
 
         }
         // we dont want to return negative values
-        if ($result < 0) {
+        if (Number::isNegative($result)) {
             $result = 0;
         }
 

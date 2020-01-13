@@ -235,7 +235,7 @@ class Calculator
         }
         // when someone fills in a way to low non realistic gas usage it will be below 0
         // if so we display 0.
-        if ($result < 0) {
+        if (Number::isNegative($result)) {
             $result = 0;
         }
 

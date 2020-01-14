@@ -193,7 +193,7 @@ return [
             'header-password' => 'Wachtwoord aanpassen',
             'text' => 'Hier kunt u uw account gegevens aanpassen, deze hebben effect op het gehele Hoomdossier. Als u hier uw e-mail of / en wachtwoord aanpast, dan geld dit voor elke coöperatie waar u bij bent aangesloten.',
             'form' => [
-                'submit' => 'Update gevens',
+                'submit' => 'Update gegevens',
 
                 'account' => [
                     'e-mail'                => 'E-mailadres',

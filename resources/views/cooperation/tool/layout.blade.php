@@ -89,19 +89,23 @@
                                     <div class="col-sm-6">
                                         <?php
                                         // some way of determining the previous step
+
                                         if ($currentSubStep instanceof \App\Models\Step) {
                                             $subStepsForCurrentStep = $currentStep->subSteps;
                                             $previousStep = $subStepsForCurrentStep->where('order', '<', $currentSubStep->order)->last();
                                         } else {
                                             $previousStep = $steps->where('order', '<', $currentSubStep->order ?? $currentStep->order)->last();
                                         }
-                                        $previousUrl = $currentSubStep instanceof \App\Models\Step && $previousStep instanceof \App\Models\Step
-                                            ? route("cooperation.tool.{$currentStep->short}.{$previousStep->short}.index")
-                                            : route("cooperation.tool.{$currentStep->short}.index")
+
+                                        if ($currentSubStep instanceof \App\Models\Step && $previousStep instanceof \App\Models\Step) {
+                                            $previousUrl = route("cooperation.tool.{$currentStep->short}.{$previousStep->short}.index");
+                                        } elseif ($previousStep instanceof \App\Models\Step) {
+                                            $previousUrl = route("cooperation.tool.{$previousStep->short}.index");
+                                        }
                                         ?>
                                         @if($previousStep instanceof \App\Models\Step)
                                             <a class="btn btn-success pull-left"
-                                               href="{{ url('tool/'.$previousStep->slug)}}">@lang('default.buttons.prev')</a>
+                                               href="{{$previousUrl}}">@lang('default.buttons.prev')</a>
                                         @endif
                                     </div>
                                     <div class="col-sm-6">

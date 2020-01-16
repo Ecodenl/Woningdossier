@@ -36,6 +36,9 @@
 
     @include('cooperation.admin.layouts.navbar')
     @include('cooperation.layouts.messages')
+    <div class="container">
+        @yield('top-container')
+    </div>
 
     <div class="container-fluid">
         @if(stristr(Route::currentRouteName(), 'cooperation-to-manage'))
@@ -43,7 +46,7 @@
             <?php $cooperationToManage = request()->route()->parameters()['cooperationToManage']; ?>
             <div class="row">
                 <div class="col-md-2">
-                    <a href="{{route('cooperation.admin.super-admin.index')}}" class="btn btn-default btn-block">
+                    <a href="{{route('cooperation.admin.super-admin.index')}}" class="btn btn-default btn-block" style="white-space: normal">
                         @lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.back-to-normal-environment')
                     </a>
                 </div>

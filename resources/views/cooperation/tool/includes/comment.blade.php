@@ -7,6 +7,9 @@ $currentInputSourceHasACommentButIsEmpty = true;
 $commentsForCurrentStep = [];
 $columnName = isset($short) ? "step_comments[comment][{$short}]" : "step_comments[comment]";
 
+// replace the brackets to dots
+$oldValueKey = str_replace(']', '', str_replace('[', '.', $columnName));
+
 // obtain the comments for the current step, when its a substep, the comment will be stored in the substep
 // else get it from the main step
 $subStepShort = $currentSubStep->short ?? '-';
@@ -41,11 +44,11 @@ if (array_key_exists($currentStep->short, $commentsByStep) && array_key_exists($
             <div class="row">
                 <div class="col-sm-12">
                     {{-- A translation replace is given, if :item exists in the translation it will be replaced otherwise nothing will hapen --}}
-                    @component('cooperation.tool.components.step-question', ['id' => $columnName, 'translation' => $translation, 'translationReplace' => ['item' => $currentStep->name]])
+                    @component('cooperation.tool.components.step-question', ['id' => $oldValueKey, 'translation' => $translation, 'translationReplace' => ['item' => $currentStep->name]])
                         @if($currentInputSource->name != $inputSourceName)({{$inputSourceName}}) @endif
 
                         @if($inputSourceName === $currentInputSource->name)
-                            <textarea name="{{$columnName}}" class="form-control">{{old($columnName, $comment)}}</textarea>
+                            <textarea name="{{$columnName}}" class="form-control">{{old($oldValueKey, $comment)}}</textarea>
                         @else
                             <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
                         @endif
@@ -59,8 +62,8 @@ if (array_key_exists($currentStep->short, $commentsByStep) && array_key_exists($
 @if($currentInputSourceHasACommentButIsEmpty || $currentInputSourceHasNoPlacedComment)
     <div class="row">
         <div class="col-sm-12">
-            @component('cooperation.tool.components.step-question', ['id' => $columnName, 'translation' => $translation, 'translationReplace' => ['item' => $currentStep->name]])
-                <textarea name="{{$columnName}}" class="form-control">{{old($columnName)}}</textarea>
+            @component('cooperation.tool.components.step-question', ['id' => $oldValueKey, 'translation' => $translation, 'translationReplace' => ['item' => $currentStep->name]])
+                <textarea name="{{$columnName}}" class="form-control">{{old($oldValueKey)}}</textarea>
             @endcomponent
         </div>
     </div>

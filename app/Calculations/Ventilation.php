@@ -6,6 +6,7 @@ use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\Kengetallen;
+use App\Helpers\Number;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingService;
@@ -196,7 +197,7 @@ class Ventilation
                     }
 
                     // we dont want negative results
-                    $result['crack_sealing']['savings_gas'] = $gasSaving < 0 ? 0 : $gasSaving;
+                    $result['crack_sealing']['savings_gas'] = Number::isNegative($gasSaving) ? 0 : $gasSaving;
 
                     /** @var MeasureApplication $measureApplication */
                     $measureApplication = MeasureApplication::where('short',

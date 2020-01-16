@@ -6,6 +6,14 @@
     @endif
 @endpush
 
+@if($anyFilesBeingProcessed)
+    @section('top-container')
+        @component('cooperation.tool.components.alert')
+            @lang('woningdossier.cooperation.admin.cooperation.reports.generate.success')
+        @endcomponent
+    @endsection
+@endif
+
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">@lang('woningdossier.cooperation.admin.cooperation.reports.index.title')</div>

@@ -313,7 +313,7 @@ class ToolHelper
                     ],
 
                     'user_energy_habits.heating_second_floor' => [
-                        'label' => __('cooperation/tool/general-data/usage.index.heating-habits.heating-first-floor.title'),
+                        'label' => __('cooperation/tool/general-data/usage.index.heating-habits.heating-second-floor.title'),
                         'type' => 'select',
                         'options' => self::createOptions($buildingHeatings),
                     ],

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\InputSource;
+use Illuminate\Support\Facades\Log;
 
 class BuildingDataCopyService
 {
@@ -17,11 +18,25 @@ class BuildingDataCopyService
      */
     public static function copy(Building $building, InputSource $from, InputSource $to)
     {
-        // the tables that have a the where_column is used to query on the resident his answers.
-        $tables = [
+        // take note: the where_column and additional_where values need to be placed in a logical order:
+
+        /*
+         * This will work
+            'user_interests' => [
+                'where_column' => 'interested_in_id',
+                'additional_where_column' => 'interested_in_type',
+            ],
+        * While this wont wont, this will cause the same row to be updated every time and not create new rows.
             'user_interests' => [
                 'where_column' => 'interested_in_type',
                 'additional_where_column' => 'interested_in_id',
+            ],
+        */
+        // the tables that have a the where_column is used to query on the resident his answers.
+        $tables = [
+            'user_interests' => [
+                'where_column' => 'interested_in_id',
+                'additional_where_column' => 'interested_in_type',
             ],
 
             'building_elements' => [
@@ -52,6 +67,8 @@ class BuildingDataCopyService
 
             'user_action_plan_advices' => [
                 'where_column' => 'measure_application_id',
+                // could be added but doesnt need to be
+                 'additional_where_column' => 'step_id'
             ],
             'user_energy_habits',
         ];
@@ -63,6 +80,7 @@ class BuildingDataCopyService
             } else {
                 $table = $tableOrInt;
             }
+            Log::debug("Copy: table {$table}");
             // building to copy data from
             $user = $building->user()->first();
 
@@ -89,7 +107,9 @@ class BuildingDataCopyService
 
                 // loop through the answers from the desired input source
                 foreach ($fromValues as $fromValue) {
+
                     if ($fromValue instanceof \stdClass && isset($fromValue->$whereColumn)) {
+
                         // now build the query to get the resident his answers
                         $toValueQuery = \DB::table($table)
                             ->where('input_source_id', $to->id)
@@ -117,8 +137,6 @@ class BuildingDataCopyService
                             $toValue = (array) $toValue;
                             $fromValue = (array) $fromValue;
 
-//                                dump($fromValue, $toValue);
-
                             // if it exists, we need to update it. Else we need to insert a new row.
                             if (! empty($toValue)) {
                                 $toValueQuery->update(static::createUpdateArray($toValue, $fromValue));
@@ -138,6 +156,7 @@ class BuildingDataCopyService
                             $fromValue = (array) $fromValue;
 
 
+
                             // YAY! data has been copied so update or create the target input source his records.
                             if ($toValueQuery->first() instanceof \stdClass) {
                                 // check if its empty ornot.
@@ -145,6 +164,7 @@ class BuildingDataCopyService
                                     $toValueQuery->update($updateData);
                                 }
                             } else {
+
                                 $fromValue = static::createUpdateArray((array) $toValue, (array) $fromValue);
                                 // change the input source id to the 'to' id
                                 $fromValue['input_source_id'] = $to->id;

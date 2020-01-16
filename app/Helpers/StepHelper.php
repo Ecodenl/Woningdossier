@@ -31,7 +31,15 @@ class StepHelper
         'house-ventilation' => 'ventilation'
     ];
 
-    public static function getAllCommentsByStep(Building $building, $withEmptyComments = false): array
+    /**
+     * Get alle the comments categorized under step and input source
+     *
+     * @param Building $building
+     * @param bool $withEmptyComments
+     * @param null $specificInputSource
+     * @return array
+     */
+    public static function getAllCommentsByStep(Building $building, $withEmptyComments = false, $specificInputSource = null): array
     {
         $commentsByStep = [];
 
@@ -41,8 +49,12 @@ class StepHelper
 
         $stepComments = StepComment::forMe($building->user)->with('step', 'inputSource')->get();
 
-        foreach ($stepComments as $stepComment) {
+        // when set, we will only return the comments for the given input source
+        if ($specificInputSource instanceof InputSource) {
+            $stepComments = $stepComments->where('input_source_id', $specificInputSource->id);
+        }
 
+        foreach ($stepComments as $stepComment) {
 
             if ($stepComment->step->isSubStep()) {
                 if (is_null($stepComment->short)) {

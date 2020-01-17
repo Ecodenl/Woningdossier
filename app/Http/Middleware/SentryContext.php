@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Account;
-use App\Models\Log;
 use App\Models\User;
 use Closure;
 use Sentry\State\Scope;

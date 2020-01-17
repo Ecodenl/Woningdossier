@@ -7,8 +7,7 @@ use Ramsey\Uuid\Uuid;
 class Str
 {
     const CHARACTERS = 'abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789';
-//    const CONSIDERED_EMPTY_ANSWERS = ['', '', null, 'null', '0.00', '0.0', '0', 0];
-    const CONSIDERED_EMPTY_ANSWERS = ['', '', null];
+    const CONSIDERED_EMPTY_ANSWERS = ['', '', null, 'null', '0.00', '0.0', '0', 0];
 
     /**
      * Uuid generation wrapping. Laravel < 5.6 uses Ramsey\Uuid. From 5.6 it is

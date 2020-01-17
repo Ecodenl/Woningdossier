@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Account;
+use App\Models\Log;
+use App\Models\User;
 use Closure;
 use Sentry\State\Scope;
 
@@ -37,14 +39,18 @@ class SentryContext
                 'is_observing' => HoomdossierSession::isUserObserving() ? 'yes' : 'no',
                 'is_comparing' => HoomdossierSession::isUserComparingInputSources() ? 'yes' : 'no',
                 'input_source' => $inputSource->short,
-                'operating_on_own_building' => $building->user->id == $user->id ? 'yes' : 'no',
+                'operating_on_own_building' => optional($building->user)->id == $user->id ? 'yes' : 'no',
                 'operating_as' => $inputSourceValue->short,
             ];
 
             $tags = [
                 'building:id' => $building->id,
-                'building:owner' => $building->user->id,
+                'building:owner' => optional($building->user)->id,
             ];
+
+            if (!$building->user instanceof User){
+                \Log::error("SentryContext : building -> user is no instance of App\Models\User !! a: " . $account->id . ", u: " . $user->id . ", b: " . $building->id);
+            }
 
             \Sentry\configureScope(function (Scope $scope) use ($u, $tags) {
                 $scope->setUser($u);

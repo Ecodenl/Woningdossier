@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Helpers\Arr;
 use App\Helpers\FileFormats\CsvHelper;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Helpers\Translation;
 use App\Models\Building;
@@ -19,6 +21,7 @@ use App\Models\Step;
 use App\Models\User;
 use App\Scopes\CooperationScope;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class CsvService
 {
@@ -196,6 +199,50 @@ class CsvService
 
 
     /**
+     * Return the base headers for a csv.
+     *
+     * @param $anonymize
+     * @return array
+     */
+    public static function getBaseHeaders($anonymize): array
+    {
+        if ($anonymize) {
+            return [
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
+
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
+            ];
+        } else {
+            return [
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
+
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.associated-coaches'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.first-name'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
+
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
+            ];
+        }
+    }
+
+
+    /**
      * Method to dump the results of a given questionnaire
      *
      * @param Cooperation $cooperation
@@ -207,54 +254,38 @@ class CsvService
     {
         $cooperation = $questionnaire->cooperation;
         $rows = [];
-        $residentInputSource = InputSource::findByShort('resident');
+        $residentRole = Role::findByName('resident');
 
-        if ($anonymize) {
-            $headers = [
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
+        $inputSource = $residentRole->inputSource;
 
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
-            ];
-        } else {
-            $headers = [
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.associated-coaches'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.first-name'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.last-name'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.email'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.phonenumber'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.street'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.house-number'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.zip-code'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.city'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.building-type'),
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.build-year'),
-            ];
-        }
+        $generalDataStep = Step::findByShort('general-data');
+        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+
+        $headers = self::getBaseHeaders($anonymize);
 
         // get the users from the current cooperation that have the resident role
-        $usersFromCooperation = $cooperation->getUsersWithRole(Role::findByName('resident'));
+        $usersFromCooperation = $cooperation->getUsersWithRole($residentRole);
 
 
         /** @ $var User $user */
         foreach ($usersFromCooperation as $user) {
             $building = $user->building;
             if ($building instanceof Building) {
+
+                // well in every case there is a uitzondering op de regel
+                // normally we would pick the given input source
+                // but when coach input is available we use the coach input source for that particular user
+                // coach input is available when he has completed the general data step
+                if ($building->hasCompleted($generalDataStep, $coachInputSource)) {
+                    $inputSource = $coachInputSource;
+                }
+
                 /** @var Collection $conversationRequestsForBuilding */
-                $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope())
-                    ->conversationRequestByBuildingId($building->id)
-                    ->where('to_cooperation_id', $cooperation->id)->get();
 
                 $createdAt = optional($user->created_at)->format('Y-m-d');
                 $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
-                $allowAccess = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
+                $allowAccess = PrivateMessage::allowedAccess($building);
+
                 $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
                 $connectedCoachNames = [];
                 // get the names from the coaches and add them to a array
@@ -277,7 +308,7 @@ class CsvService
                 // get the building features from the resident
                 $buildingFeatures = $building
                     ->buildingFeatures()
-                    ->forInputSource($residentInputSource)
+                    ->forInputSource($inputSource)
                     ->first();
 
                 $buildingType = $buildingFeatures->buildingType->name ?? '';
@@ -286,39 +317,40 @@ class CsvService
                 // set the personal user info only if the user has question answers.
                 if ($anonymize) {
                     $rows[$building->id] = [
-                        $createdAt, $buildingStatus, $allowAccess, $postalCode, $city,
+                        $inputSource->name, $createdAt, $buildingStatus, $allowAccess, $postalCode, $city,
                         $buildingType, $buildYear,
                     ];
                 } else {
                     $rows[$building->id] = [
-                        $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
+                        $inputSource->name, $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
                         $firstName, $lastName, $email, $phoneNumber,
                         $street, $number, $postalCode, $city,
                         $buildingType, $buildYear,
                     ];
                 }
 
+                $questionAnswerForBuilding = [];
                 // note the order, this is important.
                 // otherwise the data will be retrieved in a different order each time and that will result in mixed data in the rows
                 $questionAnswersForCurrentQuestionnaire =
                     \DB::table('questionnaires')
                         ->where('questionnaires.id', $questionnaire->id)
                         ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
-                        ->whereNull('questions.deleted_at')
+                        // this may cause weird results, but meh
+                         ->whereNull('questions.deleted_at')
                         ->leftJoin('translations', function ($leftJoin) {
                             $leftJoin->on('questions.name', '=', 'translations.key')
                                 ->where('language', '=', app()->getLocale());
                         })
                         ->leftJoin('questions_answers',
-                            function ($leftJoin) use ($building, $residentInputSource) {
+                            function ($leftJoin) use ($building, $inputSource) {
                                 $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
-                                    ->where('questions_answers.input_source_id', $residentInputSource->id)
+                                    ->where('questions_answers.input_source_id', $inputSource->id)
                                     ->where('questions_answers.building_id', '=', $building->id);
                             })
-                        ->select('questions_answers.answer', 'questions.id as question_id', 'translations.translation as question_name')
+                        ->select('questions_answers.answer', 'questions.id as question_id', 'translations.translation as question_name', 'questions.deleted_at')
                         ->orderBy('question_id')
                         ->get();
-
 
 
                 foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {
@@ -331,6 +363,7 @@ class CsvService
                         if ($currentQuestion->hasQuestionOptions()) {
                             if (!empty($answer)) {
                                 // this will contain the question option ids
+                                // and filter out the empty answers.
                                 $answers = array_filter(explode('|', $answer));
 
                                 $questionAnswers = collect();
@@ -346,8 +379,9 @@ class CsvService
                         }
                     }
 
-                    $rows[$building->id][$questionAnswerForCurrentQuestionnaire->question_name] = $answer;
-                    $headers[$questionAnswerForCurrentQuestionnaire->question_name] = $questionAnswerForCurrentQuestionnaire->question_name;
+                    $questionName = "{$questionAnswerForCurrentQuestionnaire->question_name}";
+                    $rows[$building->id][$questionName] = $answer;
+                    $headers[$questionName] = $questionAnswerForCurrentQuestionnaire->question_name;
 
                 }
             }

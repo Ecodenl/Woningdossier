@@ -45,6 +45,6 @@ class ResetPasswordRequest extends Mailable
         return $this
             ->to($this->account->email, sprintf('%s %s', $this->user->first_name, $this->user->last_name))
             ->subject(__('mail.reset_password.subject'))
-            ->view('cooperation.mail.user.password-reset-request');
+            ->markdown('cooperation.mail.user.password-reset-request');
     }
 }

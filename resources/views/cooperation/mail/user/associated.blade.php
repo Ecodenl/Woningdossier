@@ -1,4 +1,4 @@
-@lang('mail.account-associated-with-cooperation.salutation', [
+@lang('cooperation/mail/account-associated-with-cooperation.salutation', [
     'first_name' => $associatedUser->first_name,
     'last_name' => $associatedUser->last_name
 ])
@@ -16,6 +16,6 @@ $cooperation_names = $cooperations->pluck('name')->implode(', ');
 
 $hoomdossier_reset_link = route('cooperation.auth.password.request.index', ['cooperation' => $userCooperation]);
 ?>
-@lang('mail.account-associated-with-cooperation.text', compact('hoomdossier_link', 'cooperation_name', 'cooperation_link', 'cooperation_names', 'hoomdossier_reset_link'))
+@lang('cooperation/mail/account-associated-with-cooperation.text', compact('hoomdossier_link', 'cooperation_name', 'cooperation_link', 'cooperation_names', 'hoomdossier_reset_link'))
 <br><br>
-@lang('mail.account-associated-with-cooperation.kind_regards', ['app_name' => config('app.name')])
+@lang('cooperation/mail/account-associated-with-cooperation.kind_regards', ['app_name' => config('app.name')])

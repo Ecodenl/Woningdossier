@@ -1,4 +1,4 @@
-@lang('mail.changed-email.salutation', [
+@lang('cooperation/mail/changed-email.salutation', [
     'first_name' => $user->first_name,
     'last_name' => $user->last_name
 ])
@@ -13,10 +13,10 @@ $changedEmailHref = '<a target="_blank" href="'.$changedEmailRoute.'">'.$changed
 $cooperationWebsiteHref = '<a target="_blank" href="'.$user->cooperation->website_url.'">'.$user->cooperation->name.'</a>'
 
 ?>
-@lang('mail.changed-email.text', [
+@lang('cooperation/mail/changed-email.text', [
     'home_url' => config('app.url'),
     'recover_old_email_url' => $changedEmailHref,
     'cooperation_link' => $cooperationWebsiteHref
 ])
 <br><br>
-@lang('mail.changed-email.kind_regards', ['app_name' => config('app.name')])
+@lang('cooperation/mail/changed-email.kind_regards', ['app_name' => config('app.name')])

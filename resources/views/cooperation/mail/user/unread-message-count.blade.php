@@ -1,4 +1,4 @@
-@lang('mail.unread-message-count.salutation', [
+@lang('cooperation/mail/unread-message-count.salutation', [
     'first_name' => $user->first_name,
     'last_name' => $user->last_name
 ])
@@ -11,14 +11,14 @@
     $cooperationWebsiteHref = '<a target="_blank" href="'.$userCooperation->website_url.'">'.$userCooperation->name.'</a>'
 ?>
 
-@lang('mail.unread-message-count.text', [
+@lang('cooperation/mail/unread-message-count.text', [
     'unread_message_count' => $unreadMessageCount,
     'hoomdossier_link' => $cooperationHoomdossierHref
 ])
 
 <br><br>
-@lang('mail.if-you-have-any-questions', [
+@lang('cooperation/mail/unread-message-count.if-you-have-any-questions', [
     'cooperation_link' => $cooperationWebsiteHref
 ])
 <br><br>
-@lang('mail.unread-message-count.kind_regards', ['app_name' => config('app.name')])
+@lang('cooperation/mail/unread-message-count.kind_regards', ['app_name' => config('app.name')])

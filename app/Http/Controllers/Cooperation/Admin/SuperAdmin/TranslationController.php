@@ -29,6 +29,7 @@ class TranslationController extends Controller
             'cooperation/mail/reset-password' => '(mail) | Reset wachtwoord',
             'cooperation/mail/unread-message-count' => '(mail) | Ongelezen berichten'
         ];
+
         return view('cooperation.admin.super-admin.translations.index', compact('steps', 'mailLangFiles'));
     }
 

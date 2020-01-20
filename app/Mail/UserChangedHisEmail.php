@@ -43,6 +43,6 @@ class UserChangedHisEmail extends Mailable
     {
         return $this
             ->subject(__('mail.changed-email.subject'))
-            ->view('cooperation.mail.user.changed-email');
+            ->markdown('cooperation.mail.user.changed-email');
     }
 }

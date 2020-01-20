@@ -41,7 +41,7 @@ class UserCreatedEmail extends Mailable implements ShouldQueue
     {
         return $this
             ->subject(__('mail.account-created-by-cooperation.subject'))
-            ->view('cooperation.mail.user.created')
+            ->markdown('cooperation.mail.user.created')
             ->with('userCooperation', $this->cooperation)
             ->with('createdUser', $this->createdUser)
             ->with('token', $this->token);

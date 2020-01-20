@@ -40,7 +40,7 @@ class UserAssociatedWithCooperation extends Mailable implements ShouldQueue
     {
         return $this
             ->subject(__('mail.account-associated-with-cooperation.subject', ['cooperation_name' => $this->cooperation->name]))
-            ->view('cooperation.mail.user.associated')
+            ->markdown('cooperation.mail.user.associated')
             ->with('userCooperation', $this->cooperation)
             ->with('associatedUser', $this->associatedUser)
             ->with('cooperations', $this->associatedUser->account->cooperations());

@@ -38,7 +38,7 @@ class UnreadMessagesEmail extends Mailable
      */
     public function build()
     {
-        return $this->view('cooperation.mail.user.unread-message-count')
+        return $this->markdown('cooperation.mail.user.unread-message-count')
                     ->subject(trans_choice('mail.unread-message-count.subject', $this->unreadMessageCount, [
                         'unread_message_count' => $this->unreadMessageCount,
                     ]));

@@ -557,6 +557,8 @@
                 if (confirm(areYouSure)) {
                     $(this).closest('form').submit();
                 } else {
+                    // so the opened modal will close.
+                    $('.modal').modal('hide');
                     event.preventDefault();
                     return false;
                 }

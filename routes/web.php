@@ -72,16 +72,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::get('messages/count', 'MessagesController@getTotalUnreadMessageCount')->name('message.get-total-unread-message-count');
 
             if (app()->environment() == 'local') {
-
-                Route::get('/mail', function () {
-                    $u = \App\Models\User::find(1);
-                    $c = \App\Models\Cooperation::find(1);
-//                   return new App\Mail\UserCreatedEmail($c, $u, 'oke@mail');
-                    return new App\Mail\UserAssociatedWithCooperation($c, $u);
-                    return new App\Mail\UserChangedHisEmail($u, $u->account, 'bier@mail', 'new@e.com');
-                    return new App\Mail\UnreadMessagesEmail($u, $c, '32');
-                    return new App\Mail\ResetPasswordRequest($c, $u->account, '32');
-                });
                 // debug purpose only
                 Route::group(['as' => 'pdf.', 'namespace' => 'Pdf', 'prefix' => 'pdf'], function () {
                     Route::group(['as' => 'user-report.', 'prefix' => 'user-report'], function () {

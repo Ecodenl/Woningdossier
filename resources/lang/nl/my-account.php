@@ -167,6 +167,12 @@ return [
         'reset-file' => [
             'header'       => 'Dossier resetten',
             'description'  => '<b>Let op:</b> dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen!',
+            'modal' => [
+                'title' => 'Dossier resetten',
+                'text' => 'Dit verwijdert alle gegevens die zijn ingevuld bij verschillende stappen, u kunt er ook voor kiezen om de gegevens van uw coach te verwijderen.',
+                'reset-resident' => 'Reset alleen mijn gegevens',
+                'reset-both' => 'Reset mijn gegevens <b>en</b> deze van de coach.'
+            ],
             'label'        => 'Reset mijn dossier',
             'submit'       => 'Reset',
             'are-you-sure' => 'Let op: dit verwijdert alle gegevens die zijn ingevuld bij de verschillende stappen. Weet u zeker dat u wilt doorgaan?',

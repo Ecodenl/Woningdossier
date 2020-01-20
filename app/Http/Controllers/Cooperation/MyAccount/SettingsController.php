@@ -10,8 +10,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MyAccountSettingsFormRequest;
 use App\Models\Account;
 use App\Models\Building;
+use App\Models\InputSource;
 use App\Models\User;
 use App\Services\UserService;
+use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
@@ -63,51 +65,17 @@ class SettingsController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function resetFile()
+    public function resetFile(Request $request)
     {
         $user = Hoomdossier::user();
 
-        // only remove the example building id from the building
-        $building = $user->building;
-        $building->example_building_id = null;
-        $building->save();
+        $inputSourceIds = $request->input('input_sources.id');
 
-        // delete the services from a building
-        $building->buildingServices()->delete();
-        // delete the elements from a building
-        $building->buildingElements()->delete();
-        // remove the features from a building
-        $building->buildingFeatures()->delete();
-        // remove the roof types from a building
-        $building->roofTypes()->delete();
-        // remove the heater from a building
-        $building->heater()->delete();
-        // remove the solar panels from a building
-        $building->pvPanels()->delete();
-        // remove the insulated glazings from a building
-        $building->currentInsulatedGlazing()->delete();
-        // remove the paintwork from a building
-        $building->currentPaintworkStatus()->delete();
-        // remove all progress made in the tool
-        $building->completedSteps()->delete();
-        // remove the step comments
-        $building->stepComments()->delete();
-        // remove the answers on the custom questionnaires
-        $building->questionAnswers()->delete();
+        foreach ($inputSourceIds as $inputSourceId) {
+            UserService::resetUser($user, InputSource::find($inputSourceId));
+        }
 
-        // remove the action plan advices from the user
-        $user->actionPlanAdvices()->delete();
-        // remove the user interests
-        $user->userInterests()->delete();
-        // remove the energy habits from a user
-        $user->energyHabit()->delete();
-        // remove the motivations from a user
-        $user->motivations()->delete();
-        // detach the progress of the completed questionnaires
-        // belongstomany, so dont delete!
-        $user->completedQuestionnaires()->detach();
-
-        DossierResetPerformed::dispatch($building);
+        DossierResetPerformed::dispatch($user->building);
 
         return redirect()->back()->with('success', __('my-account.settings.reset-file.success'));
     }

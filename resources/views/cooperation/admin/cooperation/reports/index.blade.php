@@ -37,6 +37,44 @@
                         </tr>
                         </thead>
                         <tbody>
+                        @foreach($questionnaires as $questionnaire)
+                            <tr>
+                                <td>{{$fileType->name}}</td>
+
+                                <td>
+                                    <form action="{{route('cooperation.file-storage.store', ['fileType' => $fileType->short])}}" method="post">
+                                        {{csrf_field()}}
+                                        <button
+                                                @if($fileType->isBeingProcessed()) disabled="disabled" type="button" data-toggle="tooltip"
+                                                title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
+                                                @else
+                                                type="submit"
+                                                @endif
+                                                class="btn btn-{{$fileType->isBeingProcessed()  ? 'warning' : 'primary'}}"
+                                        >
+                                            {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
+                                            @if($fileType->isBeingProcessed() )
+                                                <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
+                                            @endif
+                                        </button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <?php $file = $fileType->files()->mostRecent()->first();?>
+                                        @if($file instanceof \App\Models\FileStorage)
+                                            <li>
+                                                <a @if(!$fileType->isBeingProcessed() )
+                                                   href="{{route('cooperation.file-storage.download', [
+                                                        'fileType' => $fileType->short,
+                                                        'fileStorageFilename' => $file->filename
+                                                    ])}}" @endif>{{$fileType->name}} ({{$file->created_at->format('Y-m-d H:i')}})</a>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                </td>
+                            </tr>
+                        @endforeach
                             @foreach($reportFileTypeCategory->fileTypes as $fileType)
                                 <tr>
                                     <td>{{$fileType->name}}</td>

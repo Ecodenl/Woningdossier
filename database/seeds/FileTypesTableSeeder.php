@@ -49,19 +49,21 @@ class FileTypesTableSeeder extends Seeder
                 ],
                 'content_type' => 'application/pdf',
                 'short' => 'pdf-report'
-            ]
-            /*[
-                'names' => [
-                    'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, met alle adresgegevens'
-                ],
-                'short' => 'custom-questionnaires-report'
             ],
-            [
-                'names' => [
-                    'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, zonder adresgegevens'
-                ],
-                'short' => 'custom-questionnaires-report-anonymized'
-            ],*/
+//            [
+//                'names' => [
+//                    'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, met alle adresgegevens'
+//                ],
+//                'content_type' => 'text/csv',
+//                'short' => 'custom-questionnaire-report'
+//            ],
+//            [
+//                'names' => [
+//                    'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, zonder adresgegevens'
+//                ],
+//                'content_type' => 'text/csv',
+//                'short' => 'custom-questionnaire-report-anonymized'
+//            ],
 
         ];
 

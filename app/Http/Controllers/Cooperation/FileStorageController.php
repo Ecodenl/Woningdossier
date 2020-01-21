@@ -30,11 +30,15 @@ class FileStorageController extends Controller
      *
      * @param Cooperation $cooperation
      * @param FileStorage $fileStorage
+     *
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function download(Cooperation $cooperation, FileStorage $fileStorage)
     {
+
+        // because of the global scope on the file storage its impossible to retrieve a file from a other cooperation
+        // but we will still do some additional checks
         $this->authorize('download', $fileStorage);
 
         return FileStorageService::download($fileStorage);

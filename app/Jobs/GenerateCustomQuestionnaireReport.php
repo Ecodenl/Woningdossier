@@ -30,6 +30,7 @@ class GenerateCustomQuestionnaireReport implements ShouldQueue
     protected $anonymizeData;
     protected $fileType;
     protected $fileStorage;
+    protected $filename;
 
     /**
      * @param Questionnaire $questionnaire
@@ -37,9 +38,10 @@ class GenerateCustomQuestionnaireReport implements ShouldQueue
      * @param FileType    $fileType
      * @param bool        $anonymizeData
      */
-    public function __construct(Questionnaire $questionnaire, FileType $fileType, FileStorage $fileStorage, bool $anonymizeData = false)
+    public function __construct(Questionnaire $questionnaire, $filename, FileType $fileType, FileStorage $fileStorage, bool $anonymizeData = false)
     {
         $this->fileType = $fileType;
+        $this->filename = $filename;
         $this->fileStorage = $fileStorage;
         $this->questionnaire = $questionnaire;
         $this->anonymizeData = $anonymizeData;
@@ -52,18 +54,9 @@ class GenerateCustomQuestionnaireReport implements ShouldQueue
      */
     public function handle()
     {
-        if (\App::runningInConsole()) {
-            \Log::debug(__CLASS__.' Is running in the console with a maximum execution time of: '.ini_get('max_execution_time'));
-        }
         $rows = CsvService::dumpForQuestionnaire($this->questionnaire, $this->anonymizeData);
 
-        $date = Carbon::now()->format('y-m-d');
-
-        $questionnaireName = Str::slug($this->questionnaire->name);
-
-        $filename = "{$date}-{$questionnaireName}-{$this->anonymizeData}.csv";
-
-        Excel::store(new CsvExport($rows), $filename, 'exports', \Maatwebsite\Excel\Excel::CSV);
+        Excel::store(new CsvExport($rows), $this->filename, 'downloads', \Maatwebsite\Excel\Excel::CSV);
 
         $this->fileStorage->isProcessed();
     }

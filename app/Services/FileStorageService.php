@@ -9,6 +9,27 @@ use App\Models\User;
 
 class FileStorageService
 {
+
+    /**
+     * Method to download a given file.
+     *
+     * @param $fileStorage
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public static function download($fileStorage)
+    {
+        // when exist return the download
+        if (\Storage::disk('downloads')->exists($fileStorage->filename)) {
+            return \Storage::disk('downloads')->download($fileStorage->filename, $fileStorage->filename, [
+                'Content-type'  => $fileStorage->fileType->content_type,
+                'Pragma'        => 'no-cache',
+                'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+                'Expires'       => '0',
+            ]);
+        }
+
+        return redirect()->back()->with('warning', 'Er is iets fout gegaan');
+    }
     /**
      * Check whether a file type is being processed for a given cooperation.
      *

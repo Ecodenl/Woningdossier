@@ -88,12 +88,12 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::post('{fileType}', 'FileStorageController@store')
                     ->name('store');
                 Route::get('is-being-processed/{fileType}', 'FileStorageController@checkIfFileIsBeingProcessed')->name('check-if-file-is-being-processed');
-                Route::get('download/{fileType}/{fileStorageFilename}', 'FileStorageController@download')
-                    ->middleware('file-storage-download')
+
+                Route::get('download/{fileStorage}', 'FileStorageController@download')
                     ->name('download');
             });
 
-            //Route::get('measures', 'MeasureController@index')->name('measures.index');
+
             Route::get('input-source/{input_source_value_id}', 'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
 
             Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {

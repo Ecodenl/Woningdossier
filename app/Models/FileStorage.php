@@ -52,8 +52,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class FileStorage extends Model
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
+    use GetValueTrait, GetMyValuesTrait;
 
     public static function boot()
     {
@@ -64,7 +63,7 @@ class FileStorage extends Model
     }
 
     protected $fillable = [
-        'cooperation_id', 'filename', 'user_id', 'input_source_id', 'file_type_id', 'content_type', 'is_being_processed', 'available_until',
+        'cooperation_id', 'questionnaire_id', 'filename', 'user_id', 'input_source_id', 'file_type_id', 'content_type', 'is_being_processed', 'available_until',
     ];
 
     /**
@@ -120,8 +119,12 @@ class FileStorage extends Model
      *
      * @return Builder
      */
-    public function scopeMostRecent(Builder $query)
+    public function scopeMostRecent(Builder $query, $questionnaire = null)
     {
+        if ($questionnaire instanceof Questionnaire) {
+//        dd($query->where('questionnaire_id', 3)->first(), $questionnaire->id);
+            return $query->orderByDesc('created_at')->where('questionnaire_id', $questionnaire->id);
+        }
         return $query->orderByDesc('created_at');
     }
 

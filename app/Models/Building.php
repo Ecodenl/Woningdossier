@@ -88,6 +88,21 @@ class Building extends Model
         'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension', 'is_active',
     ];
 
+    /**
+     * Method to check whether a building is the owner of a file
+     *
+     * @param InputSource $inputSource
+     * @param FileStorage $fileStorage
+     * @return bool
+     */
+    public function isOwnerOfFileStorage(InputSource $inputSource, FileStorage $fileStorage): bool
+    {
+        $fileIsGeneratedByBuilding = $fileStorage->building_id == $this->id;
+        $fileInputSourceIsCurrentInputSource = $fileStorage->input_source_id == $inputSource->id;
+
+        return $fileIsGeneratedByBuilding && $fileInputSourceIsCurrentInputSource;
+    }
+
     public static function toolSettingColumnsToCheck()
     {
         return ['example_building_id'];

@@ -38,6 +38,62 @@
                         </thead>
                         <tbody>
                             @foreach($reportFileTypeCategory->fileTypes as $fileType)
+                                @if(in_array($fileType->short, ['custom-questionnaire-report-anonymized', 'custom-questionnaire-report']))
+                                    @foreach($questionnaires as $questionnaire)
+                                        <?php
+                                            $file = $fileType->files()->mostRecent($questionnaire)->first();
+
+
+                                            $questionnaireForFileType = $fileType
+                                                ->files()
+                                                ->withExpired()
+                                                ->where('questionnaire_id', $questionnaire->id)
+                                                ->first();
+
+                                            $questionnaireForFileTypeExists = $questionnaireForFileType instanceof \App\Models\FileStorage;
+                                            $questionnaireBeingProcessed = $questionnaireForFileTypeExists && $questionnaireForFileType->isBeingProcessed();
+
+                                            $anonymizedText = stristr($fileType->short, 'anonymized') ? 'zonder adresgegevens' : 'met adresgegevens';
+                                            $fileName = "Vragenlijst | {$questionnaire->name}, {$anonymizedText}";
+                                        ?>
+                                        <tr>
+                                            <td>{{$fileName}} </td>
+
+                                            <td>
+                                                <form action="{{route('cooperation.file-storage.store', ['fileType' => $fileType->short])}}" method="post">
+                                                    <input type="hidden" name="file_storages[questionnaire_id]" value="{{$questionnaire->id}}">
+                                                    {{csrf_field()}}
+                                                    <button
+                                                            @if($questionnaireBeingProcessed) disabled="disabled" type="button" data-toggle="tooltip"
+                                                            title="{{\App\Helpers\Translation::translate('woningdossier.cooperation.admin.cooperation.reports.index.table.report-in-queue')}}"
+                                                            @else
+                                                            type="submit"
+                                                            @endif
+                                                            class="btn btn-{{$questionnaireBeingProcessed ? 'warning' : 'primary'}}"
+                                                    >
+                                                        {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
+                                                        @if($questionnaireBeingProcessed)
+                                                            <span class="glyphicon glyphicon-repeat fast-right-spinner"></span>
+                                                        @endif
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <ul>
+                                                    @if($questionnaireForFileType instanceof \App\Models\FileStorage && !$questionnaireBeingProcessed)
+                                                        <li>
+                                                            <a @if(!$questionnaireBeingProcessed)
+                                                               href="{{route('cooperation.file-storage.download', compact('questionnaireForFileType'))}}" @endif>
+                                                                {{$fileName}} ({{$questionnaireForFileType->created_at->format('Y-m-d H:i')}})
+                                                            </a>
+                                                        </li>
+                                                    @endif
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+
+                                @else
                                 <tr>
                                     <td>{{$fileType->name}}</td>
 
@@ -65,15 +121,15 @@
                                             @if($file instanceof \App\Models\FileStorage)
                                                 <li>
                                                     <a @if(!$fileType->isBeingProcessed() )
-                                                       href="{{route('cooperation.file-storage.download', [
-                                                        'fileType' => $fileType->short,
-                                                        'fileStorageFilename' => $file->filename
-                                                    ])}}" @endif>{{$fileType->name}} ({{$file->created_at->format('Y-m-d H:i')}})</a>
+                                                       href="{{route('cooperation.file-storage.download', compact('file'))}}" @endif>
+                                                        {{$fileType->name}} ({{$file->created_at->format('Y-m-d H:i')}})
+                                                    </a>
                                                 </li>
                                             @endif
                                         </ul>
                                     </td>
                                 </tr>
+                                @endif
                             @endforeach
                         </tbody>
                     </table>

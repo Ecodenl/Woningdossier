@@ -52,8 +52,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class FileStorage extends Model
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
+    use GetValueTrait, GetMyValuesTrait;
 
     public static function boot()
     {

@@ -84,11 +84,11 @@ class FileStorageController extends Controller
 
         $questionnaire = Questionnaire::find($request->input('file_storages.questionnaire_id'));
 
-        \Log::debug('Generate '.$fileType->short.' file..');
+        \Log::debug('Generate ' . $fileType->short . ' file..');
         \Log::debug('Context:');
         $account = Hoomdossier::account();
         $inputSourceValue = HoomdossierSession::getInputSourceValue();
-        if (! is_null($inputSourceValue)) {
+        if (!is_null($inputSourceValue)) {
             $inputSourceValue = \App\Helpers\Cache\InputSource::find($inputSourceValue);
         }
 
@@ -185,41 +185,51 @@ class FileStorageController extends Controller
     /**
      * Handle the existing files, overwrite if needed.
      *
-     * @param Building    $building
+     * @param Building $building
      * @param InputSource $inputSource
-     * @param FileType    $fileType
+     * @param FileType $fileType
      *
      * @throws \Exception
      */
     private function handleExistingFiles(Building $building, InputSource $inputSource, FileType $fileType, Questionnaire $questionnaire = null)
     {
-        // and delete the other available files
+        // For the users: delete the other existing file storages and files for the given file type.
         if (InputSource::COOPERATION_SHORT != $inputSource->short) {
-            $fileStorage = $fileType->files()->forMe($building->user)->forInputSource($inputSource)->first();
-
-            if ($fileStorage instanceof FileStorage) {
-                $fileStorage->delete();
-                \Storage::disk('downloads')->delete($fileStorage->filename);
-            }
+            // with expired, otherwise the expired files will never be deleted.
+            $fileStorages = $fileType
+                ->files()
+                ->withExpired()
+                ->forMe($building->user)
+                ->forInputSource($inputSource)
+                ->get();
         } else {
-            $fileStorages = $fileType->files()->withExpired()->get();
+            // For the cooperation: delete the other existing file storages and files for given file type
+            $fileStorages = $fileType
+                ->files()
+                // just to be sure, the building id should never be filled when a csv report is generated for the cooperation
+                // but better safe than deleting the whole cooperation->users file storages.
+                ->whereNull('building_id')
+                ->withExpired()->get();
+
             if ($questionnaire instanceof Questionnaire) {
-                $fileStorages = $fileType->files()
+                $fileStorages = $fileType
+                    ->files()
+                    ->whereNull('building_id')
                     ->where('questionnaire_id', $questionnaire->id)
                     ->withExpired()
                     ->get();
             }
-
-            foreach ($fileStorages as $fileStorage) {
-                $fileStorage->delete();
-                \Storage::disk('downloads')->delete($fileStorage->filename);
-            }
         }
+
+        foreach ($fileStorages as $fileStorage) {
+            FileStorageService::delete($fileStorage);
+        }
+
     }
 
     private function getRedirectUrl(InputSource $inputSource)
     {
-        $url = route('cooperation.tool.my-plan.index').'#download-section';
+        $url = route('cooperation.tool.my-plan.index') . '#download-section';
         if (InputSource::COOPERATION_SHORT == $inputSource->short) {
             $url = route('cooperation.admin.cooperation.reports.index');
         }
@@ -231,8 +241,8 @@ class FileStorageController extends Controller
     /**
      * Get the file name for the filetype.
      *
-     * @param FileType    $fileType
-     * @param User        $user
+     * @param FileType $fileType
+     * @param User $user
      * @param InputSource $inputSource
      *
      * @return mixed|string
@@ -242,19 +252,19 @@ class FileStorageController extends Controller
         if ('pdf-report' == $fileType->short) {
 //            2013es14-Bewonster-A-g-Bewoner.pdf;
 
-            $fileName = trim($user->building->postal_code).$user->building->number.'-'.\Illuminate\Support\Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
+            $fileName = trim($user->building->postal_code) . $user->building->number . '-' . \Illuminate\Support\Str::slug($user->getFullName()) . '-' . $inputSource->name . '.pdf';
 
 //            $fileName = time().'-'.\Illuminate\Support\Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
         } else {
             // create a short hash to prepend on the filename.
             $substrBycrypted = substr(\Hash::make(Str::uuid()), 7, 5);
             $substrUuid = substr(Str::uuid(), 0, 8);
-            $hash = $substrUuid.$substrBycrypted;
+            $hash = $substrUuid . $substrBycrypted;
 
             // we will create the file storage here, if we would do it in the job itself it would bring confusion to the user.
             // Because if there are multiple jobs in the queue, only the job thats being processed would show up as "generating"
             // remove the / to prevent unwanted directories
-            $fileName = str_replace('/', '', $hash.\Illuminate\Support\Str::slug($fileType->name).'.csv');
+            $fileName = str_replace('/', '', $hash . \Illuminate\Support\Str::slug($fileType->name) . '.csv');
         }
 
         return $fileName;

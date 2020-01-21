@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
+use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
 use App\Models\User;
@@ -10,6 +12,17 @@ use App\Models\User;
 class FileStorageService
 {
 
+    /**
+     * method to delete a file storage, and the file on the disk
+     *
+     * @param FileStorage $fileStorage
+     * @throws \Exception
+     */
+    public static function delete(FileStorage $fileStorage)
+    {
+        $fileStorage->delete();
+        \Storage::disk('downloads')->delete($fileStorage->filename);
+    }
     /**
      * Method to download a given file.
      *

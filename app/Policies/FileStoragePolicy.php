@@ -20,11 +20,9 @@ class FileStoragePolicy
             return true;
         }
 
-        $rolesWhichCanGeneratePdfReport = $user->hasRoleAndIsCurrentRole(['resident', 'coach', 'coordinator', 'cooperation-admin']);
-        $fileIsGeneratedByCurrentBuilding = $fileStorage->building_id == HoomdossierSession::getBuilding();
-        $fileInputSourceIsCurrentInputSource = $fileStorage->input_source_id == HoomdossierSession::getInputSource();
+        $inputSource = HoomdossierSession::getInputSource(true);
 
-        if ($rolesWhichCanGeneratePdfReport && $fileIsGeneratedByCurrentBuilding && $fileInputSourceIsCurrentInputSource) {
+        if ($user->building->isOwnerOfFileStorage($inputSource, $fileStorage)) {
             return true;
         }
 

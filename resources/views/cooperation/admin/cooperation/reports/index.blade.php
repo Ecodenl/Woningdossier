@@ -46,7 +46,7 @@
 
                                             $questionnaireForFileType = $fileType
                                                 ->files()
-                                                ->withoutGlobalScope(\App\Scopes\AvailableScope::class)
+                                                ->withExpired()
                                                 ->where('questionnaire_id', $questionnaire->id)
                                                 ->first();
 

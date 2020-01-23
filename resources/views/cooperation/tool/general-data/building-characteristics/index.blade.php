@@ -55,9 +55,9 @@
 
                                 <select id="example_building_id" data-ays-ignore="true" class="form-control" name="buildings[example_building_id]"> {{-- data-ays-ignore="true" makes sure this field is not picked up by Are You Sure --}}
                                     @foreach($exampleBuildings as $exampleBuilding)
-                                        <option @if(is_null(old('buildings.example_building_id')) && is_null($building->example_building_id) && !$building->hasCompleted($step) && $exampleBuilding->is_default)
+                                        <option @if(is_null(old('buildings.example_building_id')) && is_null($building->example_building_id) && $exampleBuilding->is_default)
                                                 selected="selected"
-                                                @elseif($exampleBuilding->id == old('example_building_id'))
+                                                @elseif($exampleBuilding->id == old('buildings.example_building_id'))
                                                 selected="selected"
                                                 @elseif ($building->example_building_id == $exampleBuilding->id)
                                                 selected="selected"

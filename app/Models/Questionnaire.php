@@ -83,6 +83,11 @@ class Questionnaire extends Model
         return false;
     }
 
+    public function isNotActive()
+    {
+        return !$this->isActive();
+    }
+
     /**
      * Return all the questions from the questionnaire.
      *

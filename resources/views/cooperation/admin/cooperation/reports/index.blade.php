@@ -55,6 +55,10 @@
 
                                             $anonymizedText = stristr($fileType->short, 'anonymized') ? 'zonder adresgegevens' : 'met adresgegevens';
                                             $fileName = "Vragenlijst | {$questionnaire->name}, {$anonymizedText}";
+
+                                            if ($questionnaire->isNotActive()) {
+                                                $fileName.=" (INACTIEF)";
+                                            }
                                         ?>
                                         <tr>
                                             <td>{{$fileName}} </td>

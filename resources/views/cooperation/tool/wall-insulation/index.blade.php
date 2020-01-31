@@ -9,7 +9,7 @@
 
         <div id="intro">
             @include('cooperation.tool.includes.interested', [
-                'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+                'translation' => 'wall-insulation.index.interested-in-improvement', 'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
             ])
             <div class="row">
                 <div class="col-sm-12">
@@ -269,15 +269,21 @@
                             @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
                         </div>
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.savings-in-euro')
+                            @include('cooperation.layouts.indication-for-costs.savings-in-euro', [
+                                'translation' => 'wall-insulation.index.savings-in-euro'
+                             ])
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.indicative-costs')
+                            @include('cooperation.layouts.indication-for-costs.indicative-costs', [
+                                'translation' => 'wall-insulation.index.indicative-costs'
+                             ])
                         </div>
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.comparable-rent')
+                            @include('cooperation.layouts.indication-for-costs.comparable-rent', [
+                                'translation' => 'wall-insulation.index.comparable-rent'
+                             ])
                         </div>
                     </div>
                 </div>
@@ -334,7 +340,7 @@
             </div>
 
             @include('cooperation.tool.includes.comment', [
-                 'translation' => 'general.specific-situation'
+                 'translation' => 'wall-insulation.index.specific-situation'
             ])
 
             <div class="row">

@@ -340,15 +340,21 @@
                     @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
                 </div>
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.savings-in-euro')
+                    @include('cooperation.layouts.indication-for-costs.savings-in-euro', [
+                        'translation' => 'insulated-glazing.index.savings-in-euro'
+                    ])
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.indicative-costs')
+                    @include('cooperation.layouts.indication-for-costs.indicative-costs', [
+                        'translation' => 'insulated-glazing.index.indicative-costs'
+                    ])
                 </div>
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.comparable-rent')
+                    @include('cooperation.layouts.indication-for-costs.comparable-rent', [
+                        'translation' => 'insulated-glazing.index.comparable-rent'
+                    ])
                 </div>
             </div>
         </div>
@@ -380,7 +386,7 @@
         </div>
 
         @include('cooperation.tool.includes.comment', [
-            'translation' => 'general.specific-situation'
+            'translation' => 'insulated-glazing.index.specific-situation'
         ])
 
         <div class="row">

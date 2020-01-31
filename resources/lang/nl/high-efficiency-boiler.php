@@ -4,7 +4,7 @@ return [
     'index' => [
         'interested-in-improvement' => [
             'title' => 'Uw interesse in deze maatregel',
-            'help' => 'Hier ziet u wat u bij “Algemene gegevens” over uw interesse voor Vloerisolatie hebt aangegeven. Mocht u dit willen veranderen, dan kunt u dat in dit veld doen. Let wel: Aanpassingen die u hier doet zullen ook op de pagina “Algemene gegevens” mee veranderen.'
+            'help' => 'Hier ziet u wat u bij “Algemene gegevens” over uw interesse voor HR CV-ketel hebt aangegeven. Mocht u dit willen veranderen, dan kunt u dat in dit veld doen. Let wel: Aanpassingen die u hier doet zullen ook op de pagina “Algemene gegevens” mee veranderen.'
         ],
         'savings-in-euro' => [
             'title' => 'Besparing in €',
@@ -22,14 +22,5 @@ return [
             'title' => 'Toelichting op specifieke situatie',
             'help' => 'Hier kunt u opmerkingen over uw specifieke situatie vastleggen, bijvoorbeeld voor een gesprek met een energiecoach of een uitvoerend bedrijf.'
         ],
-    ],
-
-	'crawlspace' => [
-		'unknown-error' => [
-			'title' => 'Onbekend! Er is aanvullend onderzoek nodig. Om de vloer te kunnen isoleren moet eerst een kruipluik gemaakt worden.',
-		],
-	],
-    'comment' => [
-        'title' => 'Toelichting op vloerisolatie'
     ],
 ];

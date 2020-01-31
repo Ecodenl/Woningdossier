@@ -46,7 +46,6 @@
 
                                             $questionnaireForFileType = $fileType
                                                 ->files()
-                                                ->withExpired()
                                                 ->where('questionnaire_id', $questionnaire->id)
                                                 ->first();
 

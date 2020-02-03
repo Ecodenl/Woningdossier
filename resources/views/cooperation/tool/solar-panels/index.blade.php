@@ -7,7 +7,7 @@
         {{ csrf_field() }}
 
         @include('cooperation.tool.includes.interested', [
-            'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+            'translation' => 'solar-panels.index.interested-in-improvement', 'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
         ])
         <div id="solar-panels">
             <div class="row">
@@ -154,13 +154,19 @@
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.savings-in-euro')
+                    @include('cooperation.layouts.indication-for-costs.savings-in-euro',[
+                                'translation' => 'solar-panels.index.savings-in-euro'
+                            ])
                 </div>
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.indicative-costs')
+                    @include('cooperation.layouts.indication-for-costs.indicative-costs',[
+                                'translation' => 'solar-panels.index.indicative-costs'
+                            ])
                 </div>
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.comparable-rent')
+                    @include('cooperation.layouts.indication-for-costs.comparable-rent',[
+                                'translation' => 'solar-panels.index.comparable-rent'
+                            ])
                 </div>
             </div>
         </div>
@@ -175,7 +181,7 @@
 
 
         @include('cooperation.tool.includes.comment', [
-             'translation' => 'general.specific-situation'
+             'translation' => 'solar-panels.index.specific-situation'
          ])
 
 

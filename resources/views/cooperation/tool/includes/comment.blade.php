@@ -10,6 +10,7 @@ $columnName = isset($short) ? "step_comments[comment][{$short}]" : "step_comment
 // replace the brackets to dots
 $oldValueKey = str_replace(']', '', str_replace('[', '.', $columnName));
 
+
 // obtain the comments for the current step, when its a substep, the comment will be stored in the substep
 // else get it from the main step
 $subStepShort = $currentSubStep->short ?? '-';

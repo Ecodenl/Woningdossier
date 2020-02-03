@@ -36,7 +36,7 @@
                 ?>
 
                 {{csrf_field()}}
-                @component('cooperation.tool.components.step-question', ['id' => 'comment', 'translation' => 'general.specific-situation'])
+                @component('cooperation.tool.components.step-question', ['id' => 'comment', 'translation' => 'my-plan.specific-situation'])
                     ({{\App\Helpers\HoomdossierSession::getInputSource(true)->name}})
                     <textarea @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled"
                               @endif name="comment"
@@ -55,7 +55,7 @@
     @foreach($actionPlanComments as $actionPlanComment)
         <div class="row">
             <div class="col-sm-12">
-                @component('cooperation.tool.components.step-question', ['id' => null, 'translation' => 'general.specific-situation'])
+                @component('cooperation.tool.components.step-question', ['id' => null, 'translation' => 'my-plan.specific-situation'])
                     ({{$actionPlanComment->inputSource->name}})
                     <textarea disabled="disabled"
                               class="disabled form-control">{{$actionPlanComment->comment}}</textarea>

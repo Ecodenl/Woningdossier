@@ -24,6 +24,8 @@ class RemoveOldTranslationsFromLanguageLinesTable extends Migration
             ->orWhere('key', 'costs.indicative-costs.help')
             ->orWhere('key', 'costs.savings-in-euro.title')
             ->orWhere('key', 'costs.savings-in-euro.help')
+            ->orWhere('key', 'costs.comparable-rent.title')
+            ->orWhere('key', 'costs.comparable-rent.help')
             ->delete();
     }
 

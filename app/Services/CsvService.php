@@ -349,7 +349,7 @@ class CsvService
                                     ->where('questions_answers.building_id', '=', $building->id);
                             })
                         ->select('questions_answers.answer', 'questions.id as question_id', 'translations.translation as question_name', 'questions.deleted_at')
-                        ->orderBy('question_id')
+                        ->orderBy('questions.order')
                         ->get();
 
 

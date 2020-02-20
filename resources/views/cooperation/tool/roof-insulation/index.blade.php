@@ -281,11 +281,11 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4 {{$roofCat}}-hideable">
-                            @include('cooperation.layouts.indication-for-costs.gas', ['id' => $roofCat, 'step' => $currentStep->slug.'.'.$roofCat])
+                            @include('cooperation.layouts.indication-for-costs.gas', ['id' => $roofCat, 'translation' => "{$currentStep->slug}.{$roofCat}.costs.gas"])
                         </div>
 
                         <div class="col-md-4 {{$roofCat}}-hideable">
-                            @include('cooperation.layouts.indication-for-costs.co2', ['id' => $roofCat, 'step' => $currentStep->slug.'.'.$roofCat])
+                            @include('cooperation.layouts.indication-for-costs.co2', ['id' => $roofCat, 'translation' => "{$currentStep->slug}.{$roofCat}.costs.co2"])
                         </div>
                         <div class="col-md-4 {{$roofCat}}-hideable">
                             @include('cooperation.layouts.indication-for-costs.savings-in-euro', ['id' => $roofCat, 'translation' => 'roof-insulation.index.savings-in-euro'])

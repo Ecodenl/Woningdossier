@@ -157,10 +157,10 @@
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
+                    @include('cooperation.layouts.indication-for-costs.gas', ['translation' => 'heater.index.costs.gas'])
                 </div>
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
+                    @include('cooperation.layouts.indication-for-costs.co2', ['translation' => 'heater.index.costs.gas'])
                 </div>
                 <div class="col-sm-4">
                     @include('cooperation.layouts.indication-for-costs.savings-in-euro',[

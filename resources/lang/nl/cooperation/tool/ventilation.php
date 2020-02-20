@@ -3,7 +3,16 @@
 return [
 
     'index' => [
-
+        'costs' => [
+            'gas' => [
+                'title' => 'Gasbesparing',
+                'help' => '<p>De besparing wordt berekend op basis van de door u ingevoerde woningkenmerken (hoeveelheden, isolatiewaarde, gebruikersgedrag).</p>',
+            ],
+            'co2' => [
+                'title' => 'CO2 Besparing',
+                'help' => '<p>Gerekend wordt met 1,88 kg/m3 gas (bron: Milieucentraal)</p>',
+            ]
+        ],
         'savings-in-euro' => [
             'title' => 'Besparing in €',
             'help' => 'Indicatieve besparing in € per jaar. De gebruikte energietarieven voor gas en elektra worden jaarlijks aan de marktomstandigheden aangepast.'

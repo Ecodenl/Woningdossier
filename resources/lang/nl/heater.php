@@ -2,6 +2,16 @@
 
 return [
     'index' => [
+        'costs' => [
+            'gas' => [
+                'title' => 'Gasbesparing',
+                'help' => '<p>De besparing wordt berekend op basis van de door u ingevoerde woningkenmerken (hoeveelheden, isolatiewaarde, gebruikersgedrag).</p>',
+            ],
+            'co2' => [
+                'title' => 'CO2 Besparing',
+                'help' => '<p>Gerekend wordt met 1,88 kg/m3 gas (bron: Milieucentraal)</p>',
+            ]
+        ],
         'interested-in-improvement' => [
             'title' => 'Uw interesse in deze maatregel',
             'help' => 'Hier ziet u wat u bij “Algemene gegevens” over uw interesse voor Zonneboiler hebt aangegeven. Mocht u dit willen veranderen, dan kunt u dat in dit veld doen. Let wel: Aanpassingen die u hier doet zullen ook op de pagina “Algemene gegevens” mee veranderen.'

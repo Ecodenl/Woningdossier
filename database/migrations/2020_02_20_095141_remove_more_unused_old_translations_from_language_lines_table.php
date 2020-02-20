@@ -22,6 +22,26 @@ class RemoveMoreUnusedOldTranslationsFromLanguageLinesTable extends Migration
             ->orWhere('key', 'costs.co2.title')
             ->orWhere('key', 'costs.co2.help')
             ->delete();
+
+        DB::table('language_lines')
+            ->where('group', 'insulated-glazing')
+            ->where('key', 'indication-for-costs.co2-savings.title')
+            ->orWhere('key', 'indication-for-costs.co2-savings.help')
+            ->delete();
+
+        DB::table('language_lines')
+            ->where('group', 'roof-insulation')
+            ->where('key', 'flat.costs.co2.title')
+            ->orWhere('key', 'flat.costs.co2.help')
+            ->orWhere('key', 'flat.costs.gas.title')
+            ->orWhere('key', 'flat.costs.gas.help')
+
+            ->orWhere('key', 'pitched.costs.co2.title')
+            ->orWhere('key', 'pitched.costs.co2.help')
+            ->orWhere('key', 'pitched.costs.gas.title')
+            ->orWhere('key', 'pitched.costs.gas.help')
+            ->delete();
+
     }
 
     /**

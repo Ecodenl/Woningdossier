@@ -288,13 +288,13 @@
                             @include('cooperation.layouts.indication-for-costs.co2', ['id' => $roofCat, 'step' => $currentStep->slug.'.'.$roofCat])
                         </div>
                         <div class="col-md-4 {{$roofCat}}-hideable">
-                            @include('cooperation.layouts.indication-for-costs.savings-in-euro', ['id' => $roofCat, 'translation' => 'floor-insulation.index.savings-in-euro'])
+                            @include('cooperation.layouts.indication-for-costs.savings-in-euro', ['id' => $roofCat, 'translation' => 'roof-insulation.index.savings-in-euro'])
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-4 {{$roofCat}}-hideable">
-                            @include('cooperation.layouts.indication-for-costs.indicative-costs', ['id' => $roofCat, 'translation' => 'floor-insulation.index.indicative-costs'])
+                            @include('cooperation.layouts.indication-for-costs.indicative-costs', ['id' => $roofCat, 'translation' => 'roof-insulation.index.indicative-costs'])
                         </div>
                         <div class="col-md-4">
                             @component('cooperation.tool.components.step-question', ['id' => 'indicative-costs-id', 'translation' => 'roof-insulation.'.$roofCat.'.indicative-costs-replacement', 'required' => false])
@@ -319,7 +319,7 @@
                             @endcomponent
                         </div>
                         <div class="col-md-4 {{$roofCat}}-hideable">
-                            @include('cooperation.layouts.indication-for-costs.comparable-rent', ['id' => $roofCat,  'translation' => 'roof-insulation.index.indicative-costs'])
+                            @include('cooperation.layouts.indication-for-costs.comparable-rent', ['id' => $roofCat,  'translation' => 'roof-insulation.index.comparable-rent'])
                         </div>
                     </div>
                 </div>

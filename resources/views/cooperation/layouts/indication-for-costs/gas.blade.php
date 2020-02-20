@@ -9,7 +9,7 @@ if (!isset($step)) {
     $step = 'general';
 }
 ?>
-    @component('cooperation.tool.components.step-question', ['id' => $infoAlertId, 'translation' => $step.'.costs.gas'])
+    @component('cooperation.tool.components.step-question', ['id' => $infoAlertId, 'translation' => $translation])
         <div class="input-group">
             <span class="input-group-addon">m<sup>3</sup> / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
             <input type="text" id="{{isset($id) ? $id.'_' : ''}}savings_gas" class="form-control disabled" disabled=""

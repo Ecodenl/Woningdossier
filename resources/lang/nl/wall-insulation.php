@@ -5,8 +5,17 @@ return [
     'facade-wall-insulation' => 'Binnengevelisolatie',
     'wall-insulation-research' => 'Er is nader onderzoek nodig hoe de gevel het beste geïsoleerd kan worden',
 
-
     'index' => [
+        'costs' => [
+            'gas' => [
+                'title' => 'Gasbesparing',
+                'help' => '<p>De besparing wordt berekend op basis van de door u ingevoerde woningkenmerken:</p><p><strong>- vierkante meters te isoleren geveloppervlakte</strong><br><strong>- type gevelisolatie</strong><br><strong>- gemiddelde stooktemperatuur in de woning (zoals bij gebruikersgedrag ingevoerd)*</strong><br><strong>- uw daadwerkelijk energiegebruik**.</strong></p><p>&nbsp;</p><p><span style="font-size: 10pt;">*De berekeningen zijn gekoppeld aan de binnentemperatuur. Bij een realistische invoer van de huidige verwarmingssituatie zal de besparing afgestemd zijn op het daadwerkelijke verbruik.</span></p><p><span style="font-size: 10pt;">**Per maatregel is er per woningtype een maximaal mogelijke besparingspercentage opgegeven. Bij gevelisolatie is bijvoorbeeld voor een tussenwoning maximaal 20 % besparing op het daadwerkelijke gasverbruik voor verwarming mogelijk. Hierdoor wordt voorkomen dat de optelsom van alle besparingen boven uw huidige gasverbruik uitkomt.</span></p><p>&nbsp;</p>',
+            ],
+            'co2' => [
+                'title' => 'CO2 Besparing',
+                'help' => '<p>Gerekend wordt met 1,88 kg/m3 gas (bron: Milieucentraal)</p>',
+            ]
+        ],
         'interested-in-improvement' => [
             'title' => 'Uw interesse in deze maatregel',
             'help' => 'Hier ziet u wat u bij “Algemene gegevens” over uw interesse voor gevelisolatie hebt aangegeven. Mocht u dit willen veranderen, dan kunt u dat in dit veld doen. Let wel: Aanpassingen die u hier doet zullen ook op de pagina “Algemene gegevens” mee veranderen.'

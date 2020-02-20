@@ -334,10 +334,10 @@
 
             <div id="costs" class="row">
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
+                    @include('cooperation.layouts.indication-for-costs.gas', ['translation' => 'insulated-glazing.index.costs.gas'])
                 </div>
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
+                    @include('cooperation.layouts.indication-for-costs.co2', ['translation' => 'insulated-glazing.index.costs.co2'])
                 </div>
                 <div class="col-sm-4">
                     @include('cooperation.layouts.indication-for-costs.savings-in-euro', [

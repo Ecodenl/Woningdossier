@@ -21,7 +21,7 @@
 
 @lang('cooperation/mail/account-created-by-cooperation.button-does-not-work')
 <br>
-{!! $confirm_url !!}
+<a href="{!! $confirm_url !!}">{!! $confirm_url !!}</a>
 <br>
 <br>
 @lang('cooperation/mail/account-created-by-cooperation.any-questions', compact('cooperation_href'))

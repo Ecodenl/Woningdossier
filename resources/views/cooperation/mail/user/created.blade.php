@@ -13,6 +13,8 @@
 ?>
 
 @lang('cooperation/mail/account-created-by-cooperation.text', compact('hoomdossier_href'))
+<br>
+<br>
 @lang('cooperation/mail/account-created-by-cooperation.confirm')
 
 @component('mail::button', ['url' => $confirm_url])

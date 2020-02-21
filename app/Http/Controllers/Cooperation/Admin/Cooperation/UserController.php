@@ -120,7 +120,7 @@ class UserController extends Controller
             $this->sendAccountConfirmationMail($cooperation, $account);
             $account->confirm();
         } else {
-            UserAssociatedWithOtherCooperation::dispatch($cooperation, $account);
+            UserAssociatedWithOtherCooperation::dispatch($cooperation, $user);
         }
 
         return redirect()

@@ -219,7 +219,7 @@ class UserActionPlanAdviceService
         // when the app is running in the console we change the group to the pdf translations
         $translationGroup = 'my-plan.warnings';
         if (app()->runningInConsole()) {
-            return $translationGroup = 'pdf/user-report.warnings';
+            $translationGroup = 'pdf/user-report.warnings';
         }
 
         return __("{$translationGroup}.{$translationKey}");

@@ -85,6 +85,11 @@ class RoomTemperatureCalculator
 
     public function __construct(UserEnergyHabit $habits)
     {
+        try {
+            $habits->heatingFirstFloor->calculate_value;
+        } catch (\Exception $e) {
+            dd($habits);
+        }
         // new logic:
         // if the heating_(first/second)_floor is Not applicable (calculate_value 4):
         // set ALL m2 for that FLOOR to 0

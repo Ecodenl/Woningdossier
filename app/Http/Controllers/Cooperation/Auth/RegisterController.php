@@ -79,7 +79,7 @@ class RegisterController extends Controller
             \Event::dispatch(new Registered($cooperation, $user));
         } else {
             $successMessage = __('auth.register.form.message.account-connected');
-            \Event::dispatch(new UserAssociatedWithOtherCooperation($cooperation, $user));
+            UserAssociatedWithOtherCooperation::dispatch($cooperation, $user);
         }
 
         return redirect($this->redirectPath())->with('success', $successMessage);

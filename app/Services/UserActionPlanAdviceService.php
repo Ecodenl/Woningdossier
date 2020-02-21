@@ -206,6 +206,25 @@ class UserActionPlanAdviceService
         return $result;
     }
 
+
+    /**
+     * Get the right warning text
+     *
+     * @param $translationKey
+     * @return array|string|null
+     */
+    public static function getWarning($translationKey)
+    {
+        // for the pdf we want a different warning translations then for the my-plan page
+        // when the app is running in the console we change the group to the pdf translations
+        $translationGroup = 'my-plan.warnings';
+        if (app()->runningInConsole()) {
+            return $translationGroup = 'pdf/user-report.warnings';
+        }
+
+        return __("{$translationGroup}.{$translationKey}");
+    }
+
     /**
      * Method to add warning to a categorized action plan
      *
@@ -218,6 +237,17 @@ class UserActionPlanAdviceService
         $energySaving = $categorizedActionPlan['energy_saving'] ?? [];
         $maintenance = $categorizedActionPlan['maintenance'] ?? [];
 
+
+        if (isset($maintenance['wall-insulation']) && isset($energySaving['wall-insulation'])) {
+            $maintenanceForWallInsulation = $maintenance['wall-insulation'];
+            $energySavingForWallInsulation = $energySaving['wall-insulation'];
+
+            // it isn't possible to add spouwmuurisolatie on a painted / plastered wall.
+            if (isset($maintenanceForWallInsulation['paint-wall']) && isset($energySavingForWallInsulation['cavity-wall-insulation'])) {
+                $categorizedActionPlan['energy_saving']['wall-insulation']['cavity-wall-insulation']['warning'] = static::getWarning('wall-insulation.cavity-wall-with-paint');
+                $categorizedActionPlan['maintenance']['wall-insulation']['paint-wall']['warning'] = static::getWarning('wall-insulation.cavity-wall-with-paint');
+            }
+        }
 
         // we will have to compare the year / interest levels of the energy saving and maintenance with each other
         if (isset($maintenance['roof-insulation']) && isset($energySaving['roof-insulation'])) {
@@ -233,13 +263,13 @@ class UserActionPlanAdviceService
 
                     if (!$maintenanceForRoofInsulation['replace-roof-insulation']['planned']) {
                         // set warning
-                        $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
-                        $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
+                        $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = static::getWarning('roof-insulation.check-order');
+                        $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] = static::getWarning('roof-insulation.check-order');
                         // both were planned, so check whether the planned year is the same
                     } else if ($energySavingRoofInsulationFlatReplaceCurrentYear !== $maintenanceReplaceRoofInsulationYear) {
                         // set warning
-                        $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = __('my-plan.warnings.roof-insulation.planned-year.title');
-                        $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] = __('my-plan.warnings.roof-insulation.planned-year.title');
+                        $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = static::getWarning('roof-insulation.planned-year');
+                        $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] = static::getWarning('roof-insulation.planned-year');
                     }
                 }
 
@@ -249,13 +279,13 @@ class UserActionPlanAdviceService
                     $maintenanceReplaceTilesYear = $maintenanceForRoofInsulation['replace-tiles']['planned_year'];
                     if (!$maintenanceForRoofInsulation['replace-tiles']['planned']) {
                         // set warning
-                        $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
-                        $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
+                        $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = static::getWarning('roof-insulation.check-order');
+                        $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = static::getWarning('roof-insulation.check-order');
                         // both were planned, so check whether the planned year is the same
                     } else if ($energySavingRoofInsulationPitchedReplaceTilesYear !== $maintenanceReplaceTilesYear) {
                         // set warning
-                        $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.planned-year.title');
-                        $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.planned-year.title');
+                        $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = static::getWarning('roof-insulation.planned-year');
+                        $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = static::getWarning('roof-insulation.planned-year');
                     }
                 }
             }
@@ -268,7 +298,7 @@ class UserActionPlanAdviceService
             foreach ($energySavingForVentilation as $measureShort => $advice) {
                 if(empty($advice->costs) && empty($advice->savings_gas) && empty($advice->savings_electricity) && empty($advice->savings_money)) {
                     // this will have to change in the near future for the pdf.
-                    $categorizedActionPlan['energy_saving']['ventilation'][$measureShort]['warning'] = __('my-plan.warnings.ventilation');
+                    $categorizedActionPlan['energy_saving']['ventilation'][$measureShort]['warning'] = static::getWarning('ventilation');
                 }
             }
         }

@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Helpers\Calculator;
 use App\Helpers\Number;
 use App\Helpers\NumberFormatter;
+use App\Helpers\StepHelper;
+use App\Models\Element;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Step;
@@ -126,6 +128,7 @@ class UserActionPlanAdviceService
                         if (!array_key_exists($year, $sortedAdvices)) {
                             $sortedAdvices[$year] = [];
                         }
+
                         // get step from advice
                         $step = $advice->step;
 
@@ -133,10 +136,29 @@ class UserActionPlanAdviceService
                             $sortedAdvices[$year][$step->name] = [];
                         }
 
-
                         $savingsGas = is_null($advice->savings_gas) ? 0 : NumberFormatter::round($advice->savings_gas);
                         $savingsElectricity = is_null($advice->savings_electricity) ? 0 : NumberFormatter::round($advice->savings_electricity);
+
                         $savingsMoney = is_null($advice->savings_money) ? 0 : NumberFormatter::round(Calculator::indexCosts($advice->savings_money, $costYear));
+                        $savingsMoney = Number::isNegative($savingsMoney) ? 0 : $savingsMoney;
+
+                        // while there is no relation between a action plan advice and a element/service
+                        // there is between a relation between a action plan advice and a measure application
+                        if ($step->short == 'insulated-glazing') {
+                            $advice->measureApplication;
+                            // get the stuff from measure application
+                        } else if($step->short == 'roof-insulation') {
+                            // user -> building -> builingRoofType -> extra and search for desired measure application
+                        }
+                        else {
+                            $elementShort = array_search($step->short, StepHelper::ELEMENT_TO_SHORT);
+
+                            // wall, floor,
+                            if ($user->building->getBuildingElement($elementShort)->elementValue->calculate_value >= 3) {
+                                $savingsMoney = 'ntb.';
+                            }
+                        }
+
 
                         $sortedAdvices[$year][$step->name][$advice->measureApplication->short] = [
                             'interested' => $advice->planned,
@@ -148,7 +170,7 @@ class UserActionPlanAdviceService
                             'costs' => NumberFormatter::round(Calculator::indexCosts($advice->costs, $costYear)),
                             'savings_gas' => Number::isNegative($savingsGas) ? 0 : $savingsGas,
                             'savings_electricity' => Number::isNegative($savingsElectricity) ? 0 : $savingsElectricity,
-                            'savings_money' => Number::isNegative($savingsMoney) ? 0 : $savingsMoney,
+                            'savings_money' => $savingsMoney
                         ];
                     }
                 }
@@ -221,44 +243,44 @@ class UserActionPlanAdviceService
 
         // we will have to compare the year / interest levels of the energy saving and maintenance with each other
         if (isset($maintenance['roof-insulation']) && isset($energySaving['roof-insulation'])) {
-                $maintenanceForRoofInsulation = $maintenance['roof-insulation'];
-                $energySavingForRoofInsulation = $energySaving['roof-insulation'];
+            $maintenanceForRoofInsulation = $maintenance['roof-insulation'];
+            $energySavingForRoofInsulation = $energySaving['roof-insulation'];
 
-                // flat roof
-                if (isset($energySavingForRoofInsulation['roof-insulation-flat-replace-current']) && $energySavingForRoofInsulation['roof-insulation-flat-replace-current']['planned']) {
+            // flat roof
+            if (isset($energySavingForRoofInsulation['roof-insulation-flat-replace-current']) && $energySavingForRoofInsulation['roof-insulation-flat-replace-current']['planned']) {
 
-                    $energySavingRoofInsulationFlatReplaceCurrentYear = $energySavingForRoofInsulation['roof-insulation-flat-replace-current']['planned_year'];
-                    $maintenanceReplaceRoofInsulationYear = $maintenanceForRoofInsulation['replace-roof-insulation']['planned_year'];
+                $energySavingRoofInsulationFlatReplaceCurrentYear = $energySavingForRoofInsulation['roof-insulation-flat-replace-current']['planned_year'];
+                $maintenanceReplaceRoofInsulationYear = $maintenanceForRoofInsulation['replace-roof-insulation']['planned_year'];
 
 
-                    if (!$maintenanceForRoofInsulation['replace-roof-insulation']['planned']) {
-                        // set warning
-                        $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
-                        $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
-                        // both were planned, so check whether the planned year is the same
-                    } else if ($energySavingRoofInsulationFlatReplaceCurrentYear !== $maintenanceReplaceRoofInsulationYear) {
-                        // set warning
-                        $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = __('my-plan.warnings.roof-insulation.planned-year.title');
-                        $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] = __('my-plan.warnings.roof-insulation.planned-year.title');
-                    }
-                }
-
-                // pitched roof
-                if (isset($energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']) && $energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['planned']) {
-                    $energySavingRoofInsulationPitchedReplaceTilesYear = $energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['planned_year'];
-                    $maintenanceReplaceTilesYear = $maintenanceForRoofInsulation['replace-tiles']['planned_year'];
-                    if (!$maintenanceForRoofInsulation['replace-tiles']['planned']) {
-                        // set warning
-                        $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
-                        $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
-                        // both were planned, so check whether the planned year is the same
-                    } else if ($energySavingRoofInsulationPitchedReplaceTilesYear !== $maintenanceReplaceTilesYear) {
-                        // set warning
-                        $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.planned-year.title');
-                        $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.planned-year.title');
-                    }
+                if (!$maintenanceForRoofInsulation['replace-roof-insulation']['planned']) {
+                    // set warning
+                    $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
+                    $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
+                    // both were planned, so check whether the planned year is the same
+                } else if ($energySavingRoofInsulationFlatReplaceCurrentYear !== $maintenanceReplaceRoofInsulationYear) {
+                    // set warning
+                    $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = __('my-plan.warnings.roof-insulation.planned-year.title');
+                    $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] = __('my-plan.warnings.roof-insulation.planned-year.title');
                 }
             }
+
+            // pitched roof
+            if (isset($energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']) && $energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['planned']) {
+                $energySavingRoofInsulationPitchedReplaceTilesYear = $energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['planned_year'];
+                $maintenanceReplaceTilesYear = $maintenanceForRoofInsulation['replace-tiles']['planned_year'];
+                if (!$maintenanceForRoofInsulation['replace-tiles']['planned']) {
+                    // set warning
+                    $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
+                    $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.check-order.title');
+                    // both were planned, so check whether the planned year is the same
+                } else if ($energySavingRoofInsulationPitchedReplaceTilesYear !== $maintenanceReplaceTilesYear) {
+                    // set warning
+                    $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.planned-year.title');
+                    $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = __('my-plan.warnings.roof-insulation.planned-year.title');
+                }
+            }
+        }
 
 
         //
@@ -266,7 +288,7 @@ class UserActionPlanAdviceService
             $energySavingForVentilation = $energySaving['ventilation'];
 
             foreach ($energySavingForVentilation as $measureShort => $advice) {
-                if(empty($advice->costs) && empty($advice->savings_gas) && empty($advice->savings_electricity) && empty($advice->savings_money)) {
+                if (empty($advice->costs) && empty($advice->savings_gas) && empty($advice->savings_electricity) && empty($advice->savings_money)) {
                     // this will have to change in the near future for the pdf.
                     $categorizedActionPlan['energy_saving']['ventilation'][$measureShort]['warning'] = __('my-plan.warnings.ventilation');
                 }

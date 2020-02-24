@@ -6,7 +6,6 @@ use App\Helpers\Calculator;
 use App\Helpers\Number;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
-use App\Models\Element;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\RoofType;
@@ -16,7 +15,6 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use Carbon\Carbon;
-use function Couchbase\defaultDecoder;
 
 class UserActionPlanAdviceService
 {
@@ -63,6 +61,8 @@ class UserActionPlanAdviceService
 
     /**
      * Method to return a year or string with no year.
+     * @note this is NOT the same as getAdviceYear.
+     * This will returned the planned_year as first option.
      *
      * @param UserActionPlanAdvice $userActionPlanAdvice
      * @return array|int|null|string
@@ -118,6 +118,7 @@ class UserActionPlanAdviceService
                 foreach ($advicesForStep as $advice) {
                     if ($advice->planned) {
 
+                        $savingsMoney = $advice->savings_money;
                         $year = self::getYear($advice);
 
                         // if its a string, the $year contains 'geen jaartal'
@@ -130,6 +131,12 @@ class UserActionPlanAdviceService
                             $sortedAdvices[$year] = [];
                         }
 
+
+                        if ($savingsMoney !== 'ntb.') {
+                            $savingsMoney = is_null($advice->savings_money) ? 0 : NumberFormatter::round(Calculator::indexCosts($advice->savings_money, $costYear));
+                            $savingsMoney = Number::isNegative($savingsMoney) ? 0 : $savingsMoney;
+                        }
+
                         // get step from advice
                         $step = $advice->step;
 
@@ -139,14 +146,6 @@ class UserActionPlanAdviceService
 
                         $savingsGas = is_null($advice->savings_gas) ? 0 : NumberFormatter::round($advice->savings_gas);
                         $savingsElectricity = is_null($advice->savings_electricity) ? 0 : NumberFormatter::round($advice->savings_electricity);
-
-                        $savingsMoney = is_null($advice->savings_money) ? 0 : NumberFormatter::round(Calculator::indexCosts($advice->savings_money, $costYear));
-                        $savingsMoney = Number::isNegative($savingsMoney) ? 0 : $savingsMoney;
-
-                        // check if we have to set the $savingsMoney to ntb.
-                        if ($advice->measureApplication->measure_type == 'energy_saving') {
-                            $savingsMoney = self::checkSavingsMoney($advice, $savingsMoney);
-                        }
 
                         $sortedAdvices[$year][$step->name][$advice->measureApplication->short] = [
                             'interested' => $advice->planned,
@@ -158,7 +157,7 @@ class UserActionPlanAdviceService
                             'costs' => NumberFormatter::round(Calculator::indexCosts($advice->costs, $costYear)),
                             'savings_gas' => Number::isNegative($savingsGas) ? 0 : $savingsGas,
                             'savings_electricity' => Number::isNegative($savingsElectricity) ? 0 : $savingsElectricity,
-                            'savings_money' => $savingsMoney
+                            'savings_money' => $savingsMoney,
                         ];
                     }
                 }
@@ -244,6 +243,12 @@ class UserActionPlanAdviceService
                 if (is_null($advice->year)) {
                     $advice->year = self::getAdviceYear($advice);
                 }
+
+                // check if we have to set the $savingsMoney to ntb.
+                if ($advice->measureApplication->measure_type == 'energy_saving') {
+                    $advice->savings_money = self::checkSavingsMoney($advice, $advice->savings_money);
+                }
+
                 // if advices are not desirable and the measureApplication is not an advice it will be added to the result
                 if (!$withAdvices && !$measureApplication->isAdvice()) {
                     $result[$measureApplication->measure_type][$advice->step->slug][$measureApplication->short] = $advice;

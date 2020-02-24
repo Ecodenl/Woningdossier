@@ -144,38 +144,8 @@ class UserActionPlanAdviceService
                         $savingsMoney = Number::isNegative($savingsMoney) ? 0 : $savingsMoney;
 
                         // check if we have to set the $savingsMoney to ntb.
-                        // We do this when the selected insulation is "Matige isolatie (tot 8 cm isolatie)" or higher
-                        // also known als calculate_value >= 3
-
                         if ($advice->measureApplication->measure_type == 'energy_saving') {
-                            if ($step->short == 'roof-insulation') {
-
-                                // the energy saving measure application shorts.
-                                $flatRoofMeasureApplications = ['roof-insulation-flat-replace-current', 'roof-insulation-flat-current'];
-                                $pitchedRoofMeasureApplications = ['roof-insulation-pitched-replace-tiles', 'roof-insulation-pitched-inside'];
-
-                                // check the current advice its measure application, this way we can determine which roofType we have to check
-                                if (in_array($advice->measureApplication->short, $pitchedRoofMeasureApplications)) {
-                                    $roofType = RoofType::findByShort('pitched');
-                                }
-                                if (in_array($advice->measureApplication->short, $flatRoofMeasureApplications)) {
-                                    $roofType = RoofType::findByShort('flat');
-                                }
-
-                                // get the right matching roof type.
-                                $buildingRoofType = $user->building->roofTypes()->where('roof_type_id', $roofType->id)->first();
-
-                                if ($buildingRoofType->elementValue->calculate_value >= 3) {
-                                    $savingsMoney = 'ntb.';
-                                }
-                            } else if (in_array($step->short, ['floor-insulation', 'wall-insulation'])) {
-
-                                $elementShort = array_search($step->short, StepHelper::ELEMENT_TO_SHORT);
-
-                                if ($user->building->getBuildingElement($elementShort)->elementValue->calculate_value >= 3) {
-                                    $savingsMoney = 'ntb.';
-                                }
-                            }
+                            $savingsMoney = self::checkSavingsMoney($advice, $savingsMoney);
                         }
 
                         $sortedAdvices[$year][$step->name][$advice->measureApplication->short] = [
@@ -198,6 +168,51 @@ class UserActionPlanAdviceService
         ksort($sortedAdvices);
 
         return $sortedAdvices;
+    }
+
+    /**
+     * Check if can return the savings money or have to return "ntb."
+     * We do this when the selected insulation is "Matige isolatie (tot 8 cm isolatie)" or higher also known als calculate_value >= 3
+     *
+     * @param UserActionPlanAdvice $advice
+     * @param $savingsMoney
+     * @return string|int
+     */
+    public static function checkSavingsMoney(UserActionPlanAdvice $advice, $savingsMoney)
+    {
+        $user = $advice->user;
+        $step = $advice->step;
+
+        if ($step->short == 'roof-insulation') {
+
+            // the energy saving measure application shorts.
+            $flatRoofMeasureApplications = ['roof-insulation-flat-replace-current', 'roof-insulation-flat-current'];
+            $pitchedRoofMeasureApplications = ['roof-insulation-pitched-replace-tiles', 'roof-insulation-pitched-inside'];
+
+            // check the current advice its measure application, this way we can determine which roofType we have to check
+            if (in_array($advice->measureApplication->short, $pitchedRoofMeasureApplications)) {
+                $roofType = RoofType::findByShort('pitched');
+            }
+            if (in_array($advice->measureApplication->short, $flatRoofMeasureApplications)) {
+                $roofType = RoofType::findByShort('flat');
+            }
+
+            // get the right matching roof type.
+            $buildingRoofType = $user->building->roofTypes()->where('roof_type_id', $roofType->id)->first();
+
+            if ($buildingRoofType->elementValue->calculate_value >= 3) {
+                $savingsMoney = 'ntb.';
+            }
+        } else if (in_array($step->short, ['floor-insulation', 'wall-insulation'])) {
+
+            $elementShort = array_search($step->short, StepHelper::ELEMENT_TO_SHORT);
+
+            if ($user->building->getBuildingElement($elementShort)->elementValue->calculate_value >= 3) {
+                $savingsMoney = 'ntb.';
+            }
+        }
+
+        return $savingsMoney;
     }
 
     /**

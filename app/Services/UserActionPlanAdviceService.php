@@ -9,6 +9,7 @@ use App\Helpers\StepHelper;
 use App\Models\Element;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\RoofType;
 use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
@@ -142,23 +143,40 @@ class UserActionPlanAdviceService
                         $savingsMoney = is_null($advice->savings_money) ? 0 : NumberFormatter::round(Calculator::indexCosts($advice->savings_money, $costYear));
                         $savingsMoney = Number::isNegative($savingsMoney) ? 0 : $savingsMoney;
 
-                        // while there is no relation between a action plan advice and a element/service
-                        // there is between a relation between a action plan advice and a measure application
-                        if ($step->short == 'insulated-glazing') {
-                            $advice->measureApplication;
-                            // get the stuff from measure application
-                        } else if($step->short == 'roof-insulation') {
-                            // user -> building -> builingRoofType -> extra and search for desired measure application
-                        }
-                        else {
-                            $elementShort = array_search($step->short, StepHelper::ELEMENT_TO_SHORT);
+                        // check if we have to set the $savingsMoney to ntb.
+                        // We do this when the selected insulation is "Matige isolatie (tot 8 cm isolatie)" or higher
+                        // also known als calculate_value >= 3
 
-                            // wall, floor,
-                            if ($user->building->getBuildingElement($elementShort)->elementValue->calculate_value >= 3) {
-                                $savingsMoney = 'ntb.';
+                        if ($advice->measureApplication->measure_type == 'energy_saving') {
+                            if ($step->short == 'roof-insulation') {
+
+                                // the energy saving measure application shorts.
+                                $flatRoofMeasureApplications = ['roof-insulation-flat-replace-current', 'roof-insulation-flat-current'];
+                                $pitchedRoofMeasureApplications = ['roof-insulation-pitched-replace-tiles', 'roof-insulation-pitched-inside'];
+
+                                // check the current advice its measure application, this way we can determine which roofType we have to check
+                                if (in_array($advice->measureApplication->short, $pitchedRoofMeasureApplications)) {
+                                    $roofType = RoofType::findByShort('pitched');
+                                }
+                                if (in_array($advice->measureApplication->short, $flatRoofMeasureApplications)) {
+                                    $roofType = RoofType::findByShort('flat');
+                                }
+
+                                // get the right matching roof type.
+                                $buildingRoofType = $user->building->roofTypes()->where('roof_type_id', $roofType->id)->first();
+
+                                if ($buildingRoofType->elementValue->calculate_value >= 3) {
+                                    $savingsMoney = 'ntb.';
+                                }
+                            } else if (in_array($step->short, ['floor-insulation', 'wall-insulation'])) {
+
+                                $elementShort = array_search($step->short, StepHelper::ELEMENT_TO_SHORT);
+
+                                if ($user->building->getBuildingElement($elementShort)->elementValue->calculate_value >= 3) {
+                                    $savingsMoney = 'ntb.';
+                                }
                             }
                         }
-
 
                         $sortedAdvices[$year][$step->name][$advice->measureApplication->short] = [
                             'interested' => $advice->planned,
@@ -194,8 +212,10 @@ class UserActionPlanAdviceService
     public static function getCategorizedActionPlan(User $user, InputSource $inputSource, $withAdvices = true)
     {
         $result = [];
+
         $advices = UserActionPlanAdvice::forInputSource($inputSource)
             ->where('user_id', $user->id)
+            ->with('user.building', 'measureApplication', 'step')
             ->orderBy('step_id', 'asc')
             ->orderBy('year', 'asc')
             ->get();

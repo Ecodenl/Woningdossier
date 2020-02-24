@@ -14,7 +14,6 @@ class ReportController extends Controller
     public function index(Cooperation $cooperation)
     {
 
-        dd(CsvService::totalReport($cooperation, InputSource::findByShort('resident'), true));
         $reportFileTypeCategory = FileTypeCategory::short('report')
             ->with(['fileTypes' => function ($query) {
                 $query->where('short', '!=', 'pdf-report')

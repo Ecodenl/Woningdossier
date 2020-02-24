@@ -197,7 +197,7 @@ class UserActionPlanAdviceService
             }
 
             // get the right matching roof type.
-            $buildingRoofType = $user->building->roofTypes()->where('roof_type_id', $roofType->id)->first();
+            $buildingRoofType = $user->building->roofTypes()->forInputSource($advice->inputSource)->where('roof_type_id', $roofType->id)->first();
 
             if ($buildingRoofType->elementValue->calculate_value >= 3) {
                 $savingsMoney = 'ntb.';
@@ -206,7 +206,7 @@ class UserActionPlanAdviceService
 
             $elementShort = array_search($step->short, StepHelper::ELEMENT_TO_SHORT);
 
-            if ($user->building->getBuildingElement($elementShort)->elementValue->calculate_value >= 3) {
+            if ($user->building->getBuildingElement($elementShort, $advice->inputSource)->elementValue->calculate_value >= 3) {
                 $savingsMoney = 'ntb.';
             }
         }

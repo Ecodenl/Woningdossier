@@ -102,10 +102,10 @@
 
             <div id="costs" class="row">
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.gas', ['step' => 'high-efficiency-boiler'])
+                    @include('cooperation.layouts.indication-for-costs.gas', ['translation' => 'high-efficiency-boiler.index.costs.gas'])
                 </div>
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.co2', ['step' => 'high-efficiency-boiler'])
+                    @include('cooperation.layouts.indication-for-costs.co2', ['translation' => 'high-efficiency-boiler.index.costs.co2'])
                 </div>
                 <div class="col-sm-4">
                     @include('cooperation.layouts.indication-for-costs.savings-in-euro',[

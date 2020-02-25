@@ -148,7 +148,7 @@
                             @endcomponent
                     </div>
                     <div class="col-sm-4">
-                        @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
+                        @include('cooperation.layouts.indication-for-costs.co2', ['translation' => 'solar-panels.index.costs.co2'])
                     </div>
                 </div>
             </div>

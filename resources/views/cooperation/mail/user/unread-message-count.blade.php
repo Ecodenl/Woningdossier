@@ -10,8 +10,6 @@ $cooperationWebsiteHref = '<a target="_blank" href="'.$userCooperation->website_
     'first_name' => $user->first_name,
     'last_name' => $user->last_name
 ])
-<br>
-<br>
 @lang('cooperation/mail/unread-message-count.text', [
     'unread_message_count' => $unreadMessageCount,
 ])

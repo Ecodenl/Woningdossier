@@ -9,9 +9,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class UserAssociatedWithCooperation extends Mailable implements ShouldQueue
+class UserAssociatedWithCooperation extends Mailable
 {
-    use Queueable;
     use SerializesModels;
 
     public $cooperation;
@@ -39,7 +38,7 @@ class UserAssociatedWithCooperation extends Mailable implements ShouldQueue
     public function build()
     {
         return $this
-            ->subject(__('mail.account-associated-with-cooperation.subject', ['cooperation_name' => $this->cooperation->name]))
+            ->subject(__('cooperation/mail/account-associated-with-cooperation.subject', ['cooperation_name' => $this->cooperation->name]))
             ->markdown('cooperation.mail.user.associated')
             ->with('userCooperation', $this->cooperation)
             ->with('associatedUser', $this->associatedUser)

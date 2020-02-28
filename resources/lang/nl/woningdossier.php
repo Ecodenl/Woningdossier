@@ -122,6 +122,7 @@ return [
                                 'name' => 'Stap naam',
                                 'actions' => 'Acties',
                             ],
+                            'pdf' => 'PDF Vertalingen',
                             'main-translations' => 'Herhalende teksten',
                             'see' => 'Bekijk vertalingen',
                         ],

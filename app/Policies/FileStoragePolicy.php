@@ -2,6 +2,8 @@
 
 namespace App\Policies;
 
+use App\Helpers\Hoomdossier;
+use App\Helpers\HoomdossierSession;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\User;
@@ -11,10 +13,26 @@ class FileStoragePolicy
 {
     use HandlesAuthorization;
 
+    public function download(User $user, FileStorage $fileStorage)
+    {
+        // some other logic for resident wil come in the near future.
+        if ($user->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']) && $fileStorage->cooperation_id == HoomdossierSession::getCooperation()) {
+            return true;
+        }
+
+        $inputSource = HoomdossierSession::getInputSource(true);
+
+        if ($user->building->isOwnerOfFileStorage($inputSource, $fileStorage)) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Determine whether the user can view the fileStorage.
      *
-     * @param \App\Models\User        $user
+     * @param \App\Models\User $user
      * @param \App\Models\FileStorage $fileStorage
      *
      * @return mixed
@@ -37,9 +55,9 @@ class FileStoragePolicy
     /**
      * Determine whether the user can store a file.
      *
-     * @param User        $user
+     * @param User $user
      * @param FileStorage $fileStorage
-     * @param FileType    $fileType
+     * @param FileType $fileType
      *
      * @return bool
      */
@@ -65,7 +83,7 @@ class FileStoragePolicy
     /**
      * Determine whether the user can update the fileStorage.
      *
-     * @param \App\Models\User        $user
+     * @param \App\Models\User $user
      * @param \App\Models\FileStorage $fileStorage
      *
      * @return mixed
@@ -77,7 +95,7 @@ class FileStoragePolicy
     /**
      * Determine whether the user can delete the fileStorage.
      *
-     * @param \App\Models\User        $user
+     * @param \App\Models\User $user
      * @param \App\Models\FileStorage $fileStorage
      *
      * @return mixed

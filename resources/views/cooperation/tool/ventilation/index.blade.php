@@ -238,27 +238,33 @@
         <div id="indication-for-costs">
             <hr>
             @include('cooperation.tool.includes.section-title', [
-                    'translation' => 'cooperation/tool/ventilation.index.indication-for-costs',
-                    'id' => 'indication-for-costs'
-                ])
+                'translation' => 'cooperation/tool/ventilation.index.indication-for-costs',
+                'id' => 'indication-for-costs'
+            ])
 
             <div id="costs" class="row">
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
+                    @include('cooperation.layouts.indication-for-costs.gas', ['translation' => 'cooperation/tool/ventilation.index.costs.gas'])
                 </div>
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
+                    @include('cooperation.layouts.indication-for-costs.co2', ['translation' => 'cooperation/tool/ventilation.index.costs.co2'])
                 </div>
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.savings-in-euro')
+                    @include('cooperation.layouts.indication-for-costs.savings-in-euro', [
+                        'translation' => 'cooperation/tool/ventilation.index.savings-in-euro'
+                    ])
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.indicative-costs')
+                    @include('cooperation.layouts.indication-for-costs.indicative-costs', [
+                        'translation' => 'cooperation/tool/ventilation.index.indicative-costs'
+                    ])
                 </div>
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.comparable-rent')
+                    @include('cooperation.layouts.indication-for-costs.comparable-rent', [
+                        'translation' => 'cooperation/tool/ventilation.index.comparable-rent'
+                    ])
                 </div>
             </div>
         </div>
@@ -277,7 +283,7 @@
         </div>
 
         @include('cooperation.tool.includes.comment', [
-           'translation' => 'general.specific-situation'
+           'translation' => 'cooperation/tool/ventilation.index.specific-situation'
         ])
 
         <div class="row">

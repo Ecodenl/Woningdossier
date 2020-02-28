@@ -353,9 +353,9 @@ class ToolHelper
                     'calculations' => [
                         'savings_gas' => __('ventilation.costs.gas.title'),
                         'savings_co2' => __('ventilation.costs.co2.title'),
-                        'savings_money' => __('general.costs.savings-in-euro.title'),
-                        'cost_indication' => __('general.costs.indicative-costs.title'),
-                        'interest_comparable' => __('general.costs.comparable-rent.title'),
+                        'savings_money' => __('cooperation/tool/ventilation.index.savings-in-euro.title'),
+                        'cost_indication' => __('cooperation/tool/ventilation.index.indicative-costs.title'),
+                        'interest_comparable' => __('cooperation/tool/ventilation.index.comparable-rent.title'),
                     ],
                 ],
             ],
@@ -364,7 +364,7 @@ class ToolHelper
                 '-' => [
                     $stepUserInterestKey . $wallInsulation->id . 'interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $wallInsulation->name . ': ' . __('general.interested-in-improvement.title'),
+                        'label' => $wallInsulation->name . ': ' . __('wall-insulation.index.interested-in-improvement.title'),
                         'type' => 'select',
                         'options' => $interestOptions,
                     ],
@@ -421,9 +421,9 @@ class ToolHelper
                     'calculations' => [
                         'savings_gas' => __('wall-insulation.costs.gas.title'),
                         'savings_co2' => __('wall-insulation.costs.co2.title'),
-                        'savings_money' => __('general.costs.savings-in-euro.title'),
-                        'cost_indication' => __('general.costs.indicative-costs.title'),
-                        'interest_comparable' => __('general.costs.comparable-rent.title'),
+                        'savings_money' => __('wall-insulation.index.savings-in-euro.title'),
+                        'cost_indication' => __('wall-insulation.index.indicative-costs.title'),
+                        'interest_comparable' => __('wall-insulation.index.comparable-rent.title'),
 
                         'repair_joint' => [
                             'costs' => __('wall-insulation.taking-into-account.repair-joint.title'),
@@ -487,7 +487,7 @@ class ToolHelper
                 '-' => [
                     $stepUserInterestKey . Step::findByShort('floor-insulation')->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $floorInsulation->name . ': ' . __('general.interested-in-improvement.title'),
+                        'label' => $floorInsulation->name . ': ' . __('floor-insulation.index.interested-in-improvement.title'),
                         'type' => 'select',
                         'options' => $interestOptions,
                     ],
@@ -520,9 +520,9 @@ class ToolHelper
                     'calculations' => [
                         'savings_gas' => __('floor-insulation.costs.gas.title'),
                         'savings_co2' => __('floor-insulation.costs.co2.title'),
-                        'savings_money' => __('general.costs.savings-in-euro.title'),
-                        'cost_indication' => __('general.costs.indicative-costs.title'),
-                        'interest_comparable' => __('general.costs.comparable-rent.title'),
+                        'savings_money' => __('floor-insulation.index.savings-in-euro.title'),
+                        'cost_indication' => __('floor-insulation.index.indicative-costs.title'),
+                        'interest_comparable' => __('floor-insulation.index.comparable-rent.title'),
                     ],
                 ]
             ],
@@ -531,7 +531,7 @@ class ToolHelper
                 '-' => [
                     $stepUserInterestKey . Step::findByShort('roof-insulation')->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $roofInsulation->name . ': ' . __('general.interested-in-improvement.title'),
+                        'label' => $roofInsulation->name . ': ' . __('roof-insulation.index.interested-in-improvement.title'),
                         'type' => 'select',
                         'options' => $interestOptions,
                     ],
@@ -549,7 +549,7 @@ class ToolHelper
                 '-' => [
                     $stepUserInterestKey . Step::findByShort('high-efficiency-boiler')->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $hrBoiler->name . ': ' . __('general.interested-in-improvement.title'),
+                        'label' => $hrBoiler->name . ': ' . __('high-efficiency-boiler.index.interested-in-improvement.title'),
                         'type' => 'select',
                         'options' => $interestOptions,
                     ],
@@ -576,9 +576,9 @@ class ToolHelper
                     'calculations' => [
                         'savings_gas' => __('high-efficiency-boiler.costs.gas.title'),
                         'savings_co2' => __('high-efficiency-boiler.costs.co2.title'),
-                        'savings_money' => __('general.costs.savings-in-euro.title'),
-                        'cost_indication' => __('general.costs.indicative-costs.title'),
-                        'interest_comparable' => __('general.costs.comparable-rent.title'),
+                        'savings_money' => __('high-efficiency-boiler.index.savings-in-euro.title'),
+                        'cost_indication' => __('high-efficiency-boiler.index.indicative-costs.title'),
+                        'interest_comparable' => __('high-efficiency-boiler.index.comparable-rent.title'),
 
                         'replace_year' => __('high-efficiency-boiler.indication-for-costs.indicative-replacement.title'),
                     ],
@@ -589,7 +589,7 @@ class ToolHelper
                 '-' => [
                     $stepUserInterestKey . Step::findByShort('solar-panels')->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $solarPanels->name . ': ' . __('general.interested-in-improvement.title'),
+                        'label' => $solarPanels->name . ': ' . __('solar-panels.index.interested-in-improvement.title'),
                         'type' => 'select',
                         'options' => $interestOptions,
                     ],
@@ -625,9 +625,9 @@ class ToolHelper
                         'raise_own_consumption' => __('solar-panels.indication-for-costs.raise-own-consumption.title'),
 
                         'savings_co2' => __('solar-panels.costs.co2.title'),
-                        'savings_money' => __('general.costs.savings-in-euro.title'),
-                        'cost_indication' => __('general.costs.indicative-costs.title'),
-                        'interest_comparable' => __('general.costs.comparable-rent.title'),
+                        'savings_money' => __('solar-panels.index.savings-in-euro.title'),
+                        'cost_indication' => __('solar-panels.index.indicative-costs.title'),
+                        'interest_comparable' => __('solar-panels.index.comparable-rent.title'),
                     ],
                 ]
             ],
@@ -636,7 +636,7 @@ class ToolHelper
                 '-' => [
                     $stepUserInterestKey . Step::findByShort('heater')->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $heater->name . ': ' . __('general.interested-in-improvement.title'),
+                        'label' => $heater->name . ': ' . __('heater.index.interested-in-improvement.title'),
                         'type' => 'select',
                         'options' => $interestOptions,
                     ],
@@ -671,9 +671,9 @@ class ToolHelper
                         'percentage_consumption' => __('heater.indication-for-costs.percentage-consumption.title'),
                         'savings_gas' => __('heater.costs.gas.title'),
                         'savings_co2' => __('heater.costs.co2.title'),
-                        'savings_money' => __('general.costs.savings-in-euro.title'),
-                        'cost_indication' => __('general.costs.indicative-costs.title'),
-                        'interest_comparable' => __('general.costs.comparable-rent.title'),
+                        'savings_money' => __('heater.index.savings-in-euro.title'),
+                        'cost_indication' => __('heater.index.indicative-costs.title'),
+                        'interest_comparable' => __('heater.index.comparable-rent.title'),
                     ],
                 ],
             ]
@@ -772,9 +772,9 @@ class ToolHelper
         $structure['insulated-glazing']['-']['calculations'] = [
             'savings_gas' => __('insulated-glazing.costs.gas.title'),
             'savings_co2' => __('insulated-glazing.costs.co2.title'),
-            'savings_money' => __('general.costs.savings-in-euro.title'),
-            'cost_indication' => __('general.costs.indicative-costs.title'),
-            'interest_comparable' => __('general.costs.comparable-rent.title'),
+            'savings_money' => __('insulated-glazing.index.savings-in-euro.title'),
+            'cost_indication' => __('insulated-glazing.index.indicative-costs.title'),
+            'interest_comparable' => __('insulated-glazing.index.comparable-rent.title'),
 
             'paintwork' => [
                 'costs' => __('insulated-glazing.taking-into-account.paintwork.title'),
@@ -851,9 +851,9 @@ class ToolHelper
                     'flat' => [
                         'savings_gas' => __('roof-insulation.flat.costs.gas.title'),
                         'savings_co2' => __('roof-insulation.flat.costs.co2.title'),
-                        'savings_money' => __('general.costs.savings-in-euro.title'),
-                        'cost_indication' => __('general.costs.indicative-costs.title'),
-                        'interest_comparable' => __('general.costs.comparable-rent.title'),
+                        'savings_money' => __('roof-insulation.index.savings-in-euro.title'),
+                        'cost_indication' => __('roof-insulation.index.indicative-costs.title'),
+                        'interest_comparable' => __('roof-insulation.index.comparable-rent.title'),
 
                         'replace' => [
                             'costs' => __('roof-insulation.flat.indicative-costs-replacement.title'),
@@ -863,9 +863,9 @@ class ToolHelper
                     'pitched' => [
                         'savings_gas' => __('roof-insulation.pitched.costs.gas.title'),
                         'savings_co2' => __('roof-insulation.pitched.costs.co2.title'),
-                        'savings_money' => __('general.costs.savings-in-euro.title'),
-                        'cost_indication' => __('general.costs.indicative-costs.title'),
-                        'interest_comparable' => __('general.costs.comparable-rent.title'),
+                        'savings_money' => __('roof-insulation.index.savings-in-euro.title'),
+                        'cost_indication' => __('roof-insulation.index.indicative-costs.title'),
+                        'interest_comparable' => __('roof-insulation.index.comparable-rent.title'),
 
                         'replace' => [
                             'costs' => __('roof-insulation.pitched.indicative-costs-replacement.title'),

@@ -36,7 +36,7 @@
                 ?>
 
                 {{csrf_field()}}
-                @component('cooperation.tool.components.step-question', ['id' => 'comment', 'translation' => 'general.specific-situation'])
+                @component('cooperation.tool.components.step-question', ['id' => 'comment', 'translation' => 'my-plan.specific-situation'])
                     ({{\App\Helpers\HoomdossierSession::getInputSource(true)->name}})
                     <textarea @if(\App\Helpers\HoomdossierSession::isUserObserving()) disabled="disabled"
                               @endif name="comment"
@@ -55,7 +55,7 @@
     @foreach($actionPlanComments as $actionPlanComment)
         <div class="row">
             <div class="col-sm-12">
-                @component('cooperation.tool.components.step-question', ['id' => null, 'translation' => 'general.specific-situation'])
+                @component('cooperation.tool.components.step-question', ['id' => null, 'translation' => 'my-plan.specific-situation'])
                     ({{$actionPlanComment->inputSource->name}})
                     <textarea disabled="disabled"
                               class="disabled form-control">{{$actionPlanComment->comment}}</textarea>
@@ -226,17 +226,26 @@
                                     totalCosts += parseFloat(stepData.costs);
                                     totalSavingsGas += parseFloat(stepData.savings_gas);
                                     totalSavingsElectricity += parseFloat(stepData.savings_electricity);
-                                    totalSavingsMoney += parseFloat(stepData.savings_money);
+
+                                    // only count up when its a number.
+                                    if (!isNaN(stepData.savings_money)) {
+                                        totalSavingsMoney += parseFloat(stepData.savings_money);
+                                    }
 
                                     var slug = stepName.replace(/\s+/g, '');
 
+                                    var savingMoney = stepData.savings_money;
+                                    // when its a number, round it
+                                    if (!isNaN(stepData.savings_money)) {
+                                        savingMoney = Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}');
+                                    }
                                     table += "<tr>" +
                                         "<td>" +
                                         "<a type=\"#\" class='turn-on-click' data-toggle=\"collapse\" data-target=\"#more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "\">" +
                                         "<i class=\"glyphicon glyphicon-chevron-down\"></i>" +
                                         "</a>" +
                                         "</td>" +
-                                        "<td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + Math.round(stepData.savings_money).toLocaleString('{{ app()->getLocale() }}') + "</td><td>" +
+                                        "<td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + savingMoney + "</td><td>" +
                                         "<a href='" + conversationRequestRoute.replace('action', MEASURE).replace('measure_application_short', stepData.measure_short) + "' class='take-action btn btn-default' type='button'>@lang('my-plan.columns.take-action.title')</a></td></tr>";
                                     table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "' > <td colspan='1'></td><td colspan=''> <strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-gas.title') }}:</strong> <br><strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-electricity.title') }}:</strong> </td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup> <br>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh </td><td colspan='1'></td></tr>";
                                 });

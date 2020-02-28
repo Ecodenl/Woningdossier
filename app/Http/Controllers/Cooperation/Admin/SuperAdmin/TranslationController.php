@@ -75,6 +75,10 @@ class TranslationController extends Controller
             $group = "cooperation/tool/{$group}";
         }
 
+        if ($group == 'pdf-user-report') {
+            $group = "pdf/user-report";
+        }
+
         $translations = LanguageLine::with([
             'subQuestions' => function ($query) {
                 return $query->with('helpText');

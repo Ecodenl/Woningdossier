@@ -4,12 +4,12 @@
 
 
 @section('step_content')
-    <form  method="POST"
+    <form method="POST"
           action="{{ route('cooperation.tool.floor-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 
         @include('cooperation.tool.includes.interested', [
-            'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+            'translation' => 'floor-insulation.index.interested-in-improvement', 'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
         ])
         <div id="floor-insulation">
             <div class="row">
@@ -178,21 +178,27 @@
 
                     <div id="costs" class="row">
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
+                            @include('cooperation.layouts.indication-for-costs.gas', ['translation' => 'floor-insulation.index.costs.gas'])
                         </div>
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
+                            @include('cooperation.layouts.indication-for-costs.co2', ['translation' => 'floor-insulation.index.costs.co2'])
                         </div>
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.savings-in-euro')
+                            @include('cooperation.layouts.indication-for-costs.savings-in-euro',[
+                                'translation' => 'floor-insulation.index.savings-in-euro'
+                            ])
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.indicative-costs')
+                            @include('cooperation.layouts.indication-for-costs.indicative-costs',[
+                                'translation' => 'floor-insulation.index.indicative-costs'
+                            ])
                         </div>
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.comparable-rent')
+                            @include('cooperation.layouts.indication-for-costs.comparable-rent',[
+                                'translation' => 'floor-insulation.index.comparable-rent'
+                            ])
                         </div>
                     </div>
                 </div>
@@ -209,7 +215,7 @@
 
 
         @include('cooperation.tool.includes.comment', [
-             'translation' => 'general.specific-situation'
+             'translation' => 'floor-insulation.index.specific-situation'
         ])
 
 

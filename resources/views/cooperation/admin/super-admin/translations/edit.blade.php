@@ -41,7 +41,7 @@
                                                 <?php
 
                                                 $groupsToTreatAllTextsAsHelpText = ['home', 'heat-pump',
-
+                                                    'pdf/user-report',
                                                     'cooperation/mail/account-associated-with-cooperation',
                                                     'cooperation/mail/account-created',
                                                     'cooperation/mail/changed-email',
@@ -127,8 +127,14 @@
 @push('js')
     <script>
 
+        {{--
+         https://www.tiny.cloud/docs/configure/content-filtering/#forced_root_block
+         --}}
         tinymce.init({
             selector: 'textarea',
+            @if($group == 'pdf/user-report')
+            forced_root_block: "",
+            @endif
             menubar: 'edit format',
             plugins: 'code link',
             toolbar: 'code link unlink bold italic underline strikethrough cut copy paste undo redo restoreOriginalText ',

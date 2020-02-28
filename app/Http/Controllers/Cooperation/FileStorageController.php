@@ -6,6 +6,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Cooperation\FileStorageFormRequest;
 use App\Jobs\GenerateCustomQuestionnaireReport;
 use App\Jobs\GenerateMeasureReport;
 use App\Jobs\GenerateTotalReport;
@@ -15,8 +16,10 @@ use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
+use App\Models\Questionnaire;
 use App\Models\User;
 use App\Services\FileStorageService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -26,32 +29,19 @@ class FileStorageController extends Controller
      * Download method to retrieve a file from the storage.
      *
      * @param Cooperation $cooperation
-     * @param FileType    $fileType
-     * @param             $fileStorageFilename
+     * @param FileStorage $fileStorage
      *
-     * @return StreamedResponse|\Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function download(Cooperation $cooperation, FileType $fileType, $fileStorageFilename)
+    public function download(Cooperation $cooperation, FileStorage $fileStorage)
     {
-        $fileStorage = $fileType
-            ->files()
-            ->where('filename', $fileStorageFilename)
-            ->first();
 
-        if ($fileStorage instanceof FileStorage) {
-            if (\Storage::disk('downloads')->exists($fileStorageFilename)) {
-                return \Storage::disk('downloads')->download($fileStorageFilename, $fileStorageFilename, [
-                    'Content-type'  => $fileStorage->fileType->content_type,
-                    'Pragma'        => 'no-cache',
-                    'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-                    'Expires'       => '0',
-                ]);
-            } else {
-                return redirect()->back()->with('warning', 'Er is iets fout gegaan');
-            }
-        }
+        // because of the global scope on the file storage its impossible to retrieve a file from a other cooperation
+        // but we will still do some additional checks
+        $this->authorize('download', $fileStorage);
 
-        return redirect()->back();
+        return FileStorageService::download($fileStorage);
     }
 
     /**
@@ -70,18 +60,12 @@ class FileStorageController extends Controller
         if ($user->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']) && 'pdf-report' != $fileType->short) {
             $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForCooperation($fileType, $cooperation);
             $file = $fileType->files()->first();
-            $downloadLinkForFileType = route('cooperation.file-storage.download', [
-                'fileType' => $fileType->short,
-                'fileStorageFilename' => $file->filename,
-            ]);
+            $downloadLinkForFileType = route('cooperation.file-storage.download', compact('file'));
         } else {
             $buildingOwner = HoomdossierSession::getBuilding(true);
             $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForUser($fileType, $buildingOwner->user, $inputSource);
             $file = $fileType->files()->forMe($buildingOwner->user)->forInputSource($inputSource)->first();
-            $downloadLinkForFileType = $file instanceof FileStorage ? route('cooperation.file-storage.download', [
-                'fileType' => $fileType->short,
-                'fileStorageFilename' => $file->filename,
-            ]) : null;
+            $downloadLinkForFileType = $file instanceof FileStorage ? route('cooperation.file-storage.download', compact('file')) : null;
         }
 
         return response()->json([
@@ -92,7 +76,7 @@ class FileStorageController extends Controller
         ]);
     }
 
-    public function store(Cooperation $cooperation, FileType $fileType)
+    public function store(Cooperation $cooperation, FileType $fileType, FileStorageFormRequest $request)
     {
         if ($fileType->isBeingProcessed()) {
             return redirect()->back();
@@ -102,11 +86,13 @@ class FileStorageController extends Controller
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
 
-        \Log::debug('Generate '.$fileType->short.' file..');
+        $questionnaire = Questionnaire::find($request->input('file_storages.questionnaire_id'));
+
+        \Log::debug('Generate ' . $fileType->short . ' file..');
         \Log::debug('Context:');
         $account = Hoomdossier::account();
         $inputSourceValue = HoomdossierSession::getInputSourceValue();
-        if (! is_null($inputSourceValue)) {
+        if (!is_null($inputSourceValue)) {
             $inputSourceValue = \App\Helpers\Cache\InputSource::find($inputSourceValue);
         }
 
@@ -136,7 +122,7 @@ class FileStorageController extends Controller
         // we will create the file storage here, if we would do it in the job itself it would bring confusion to the user.
         $fileName = $this->getFileNameForFileType($fileType, $user, $inputSource);
 
-        $this->handleExistingFiles($building, $inputSource, $fileType);
+        $this->handleExistingFiles($building, $inputSource, $fileType, $questionnaire);
 
         // and we create the new file
         $fileStorage = new FileStorage([
@@ -154,6 +140,7 @@ class FileStorageController extends Controller
         }
 
         $fileStorage->save();
+
         // flash messages will be stored here
         $with = [];
         switch ($fileType->short) {
@@ -173,11 +160,26 @@ class FileStorageController extends Controller
             case 'measure-report-anonymized':
                 GenerateMeasureReport::dispatch($cooperation, $fileType, $fileStorage, true);
                 break;
-            case 'custom-questionnaires-report':
-                GenerateCustomQuestionnaireReport::dispatch($cooperation, $fileType, $fileStorage);
+            case 'custom-questionnaire-report':
+                $date = Carbon::now()->format('y-m-d');
+                $questionnaireName = \Illuminate\Support\Str::slug($questionnaire->name);
+                $filename = "{$date}-{$questionnaireName}-met-adresgegevens.csv";
+
+                $fileStorage->update([
+                    'filename' => $filename,
+                    'questionnaire_id' => $questionnaire->id,
+                ]);
+                GenerateCustomQuestionnaireReport::dispatch($questionnaire, $filename, $fileType, $fileStorage);
                 break;
-            case 'custom-questionnaires-report-anonymized':
-                GenerateCustomQuestionnaireReport::dispatch($cooperation, $fileType, $fileStorage, true);
+            case 'custom-questionnaire-report-anonymized':
+                $date = Carbon::now()->format('y-m-d');
+                $questionnaireName = \Illuminate\Support\Str::slug($questionnaire->name);
+                $filename = "{$date}-{$questionnaireName}-zonder-adresgegevens.csv";
+                $fileStorage->update([
+                    'filename' => $filename,
+                    'questionnaire_id' => $questionnaire->id,
+                ]);
+                GenerateCustomQuestionnaireReport::dispatch($questionnaire, $filename, $fileType, $fileStorage, true);
                 break;
         }
 
@@ -187,34 +189,51 @@ class FileStorageController extends Controller
     /**
      * Handle the existing files, overwrite if needed.
      *
-     * @param Building    $building
+     * @param Building $building
      * @param InputSource $inputSource
-     * @param FileType    $fileType
+     * @param FileType $fileType
      *
      * @throws \Exception
      */
-    private function handleExistingFiles(Building $building, InputSource $inputSource, FileType $fileType)
+    private function handleExistingFiles(Building $building, InputSource $inputSource, FileType $fileType, Questionnaire $questionnaire = null)
     {
-        // and delete the other available files
+        // For the users: delete the other existing file storages and files for the given file type.
         if (InputSource::COOPERATION_SHORT != $inputSource->short) {
-            $fileStorage = $fileType->files()->forMe($building->user)->forInputSource($inputSource)->first();
-
-            if ($fileStorage instanceof FileStorage) {
-                $fileStorage->delete();
-                \Storage::disk('downloads')->delete($fileStorage->filename);
-            }
+            // with expired, otherwise the expired files will never be deleted.
+            $fileStorages = $fileType
+                ->files()
+                ->withExpired()
+                ->forMe($building->user)
+                ->forInputSource($inputSource)
+                ->get();
         } else {
-            $fileStorages = $fileType->files()->withExpired()->get();
-            foreach ($fileStorages as $fileStorage) {
-                $fileStorage->delete();
-                \Storage::disk('downloads')->delete($fileStorage->filename);
+            // For the cooperation: delete the other existing file storages and files for given file type
+            $fileStorages = $fileType
+                ->files()
+                // just to be sure, the building id should never be filled when a csv report is generated for the cooperation
+                // but better safe than deleting the whole cooperation->users file storages.
+                ->whereNull('building_id')
+                ->withExpired()->get();
+
+            if ($questionnaire instanceof Questionnaire) {
+                $fileStorages = $fileType
+                    ->files()
+                    ->whereNull('building_id')
+                    ->where('questionnaire_id', $questionnaire->id)
+                    ->withExpired()
+                    ->get();
             }
         }
+
+        foreach ($fileStorages as $fileStorage) {
+            FileStorageService::delete($fileStorage);
+        }
+
     }
 
     private function getRedirectUrl(InputSource $inputSource)
     {
-        $url = route('cooperation.tool.my-plan.index').'#download-section';
+        $url = route('cooperation.tool.my-plan.index') . '#download-section';
         if (InputSource::COOPERATION_SHORT == $inputSource->short) {
             $url = route('cooperation.admin.cooperation.reports.index');
         }
@@ -226,8 +245,8 @@ class FileStorageController extends Controller
     /**
      * Get the file name for the filetype.
      *
-     * @param FileType    $fileType
-     * @param User        $user
+     * @param FileType $fileType
+     * @param User $user
      * @param InputSource $inputSource
      *
      * @return mixed|string
@@ -237,19 +256,19 @@ class FileStorageController extends Controller
         if ('pdf-report' == $fileType->short) {
 //            2013es14-Bewonster-A-g-Bewoner.pdf;
 
-            $fileName = trim($user->building->postal_code).$user->building->number.'-'.\Illuminate\Support\Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
+            $fileName = trim($user->building->postal_code) . $user->building->number . '-' . \Illuminate\Support\Str::slug($user->getFullName()) . '-' . $inputSource->name . '.pdf';
 
 //            $fileName = time().'-'.\Illuminate\Support\Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
         } else {
             // create a short hash to prepend on the filename.
             $substrBycrypted = substr(\Hash::make(Str::uuid()), 7, 5);
             $substrUuid = substr(Str::uuid(), 0, 8);
-            $hash = $substrUuid.$substrBycrypted;
+            $hash = $substrUuid . $substrBycrypted;
 
             // we will create the file storage here, if we would do it in the job itself it would bring confusion to the user.
             // Because if there are multiple jobs in the queue, only the job thats being processed would show up as "generating"
             // remove the / to prevent unwanted directories
-            $fileName = str_replace('/', '', $hash.\Illuminate\Support\Str::slug($fileType->name).'.csv');
+            $fileName = str_replace('/', '', $hash . \Illuminate\Support\Str::slug($fileType->name) . '.csv');
         }
 
         return $fileName;

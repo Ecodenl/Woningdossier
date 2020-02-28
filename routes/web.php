@@ -12,9 +12,21 @@
 */
 
 
+use App\Mail\UserAssociatedWithCooperation;
+
 Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function () {
 
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
+
+
+        if (app()->environment() == 'local') {
+        Route::get('mail', function () {
+
+//            return new UserAssociatedWithCooperation(App\Models\Cooperation::find(1), \App\Models\Account::find(1)->user());
+            return new \App\Mail\UserCreatedEmail(\App\Models\Cooperation::find(1), \App\Models\User::find(1), 'sdfkhasgdfuiasdgfyu');
+//            return new \App\Mail\UserAssociatedWithCooperation(\App\Models\Cooperation::find(1), \App\Models\User::find(1));
+        });
+        }
 
         Route::get('/', function () {
             return view('cooperation.welcome');
@@ -79,7 +91,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     });
                 });
             }
-
             Route::get('home', 'HomeController@index')->name('home')->middleware('deny-if-filling-for-other-building');
 
             Route::resource('privacy', 'PrivacyController')->only('index');
@@ -89,12 +100,12 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::post('{fileType}', 'FileStorageController@store')
                     ->name('store');
                 Route::get('is-being-processed/{fileType}', 'FileStorageController@checkIfFileIsBeingProcessed')->name('check-if-file-is-being-processed');
-                Route::get('download/{fileType}/{fileStorageFilename}', 'FileStorageController@download')
-                    ->middleware('file-storage-download')
+
+                Route::get('download/{fileStorage}', 'FileStorageController@download')
                     ->name('download');
             });
 
-            //Route::get('measures', 'MeasureController@index')->name('measures.index');
+
             Route::get('input-source/{input_source_value_id}', 'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
 
             Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {

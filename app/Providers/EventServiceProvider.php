@@ -30,6 +30,7 @@ use App\Listeners\ParticipantRevokedListener;
 use App\Listeners\PreventChangeNotificationWhenStarting;
 use App\Listeners\PrivateMessageReceiverListener;
 use App\Listeners\RevokeBuildingPermissionForCoaches;
+use App\Listeners\SendUserAssociatedWithCooperationMail;
 use App\Listeners\SetMessagesReadForBuilding;
 use App\Listeners\SetMessagesUnreadForRevokedUserOnBuilding;
 use App\Listeners\SetOldEmailListener;
@@ -64,6 +65,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         UserAssociatedWithOtherCooperation::class => [
             LogUserAssociatedWithOtherCooperation::class,
+            SendUserAssociatedWithCooperationMail::class
         ],
         FillingToolForUserEvent::class => [
             FillingToolForUserListener::class,

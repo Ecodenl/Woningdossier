@@ -3,8 +3,7 @@
 @section('step_title', "Ventilatie: " . $buildingVentilation->value)
 
 @section('step_content')
-    <form method="POST" action="{{ route('cooperation.tool.ventilation.store', ['cooperation' => $cooperation]) }}"
-          autocomplete="off">
+    <form method="POST" action="{{ route('cooperation.tool.ventilation.store', ['cooperation' => $cooperation]) }}" autocomplete="off">
         {{ csrf_field() }}
 
         <div class="row">
@@ -42,7 +41,7 @@
 
                     @component('cooperation.tool.components.step-question', ['id' => 'how', 'name' => 'building_ventilations.how', 'translation' => 'cooperation/tool/ventilation.index.how', 'required' => true])
                         @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'how'])
+                  ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'how'])
 
                             @foreach($howValues as $howKey => $howValue)
                                 <div class="row" style="margin-left:5px;">
@@ -143,22 +142,11 @@
                     <div class="col-sm-12 col-md-8 col-md-offset-2">
                         <div class="alert alert-warning" role="alert">
                             <ul>
-                                <li class="dry-laundry" style="display: none;">Ventileer extra als de was te drogen
-                                    hangt, door de schakelaar op de hoogste stand te zetten of een raam open te doen.
-                                    Hang de was zoveel mogelijk buiten te drogen.
+                                @foreach(__('cooperation/tool/ventilation.index.living-situation-warnings') as $livingSituationWarningType => $livingSituationWarningTranslation)
+                                <li class="{{$livingSituationWarningType}}" style="display: none;">
+                                    {!! $livingSituationWarningTranslation !!}
                                 </li>
-                                <li class="fireplace" style="display: none;">Zorg voor extra ventilatie tijdens het
-                                    stoken van open haard of houtkachel, zowel voor de aanvoer van zuurstof als de
-                                    afvoer van schadelijke stoffen. Zet bijvoorbeeld een (klep)raam open.
-                                </li>
-                                <li class="combustion-device" style="display: none;">Zorg bij een open
-                                    verbrandingstoestel in ieder geval dat er altijd voldoende luchttoevoer is. Anders
-                                    kan onvolledige verbranding optreden waarbij het gevaarlijke koolmonoxide kan
-                                    ontstaan.
-                                </li>
-                                <li class="moisture" style="display: none;">Wanneer u last heeft van schimmel of vocht
-                                    in huis dan wordt geadviseerd om dit door een specialist te laten beoordelen.
-                                </li>
+                                @endforeach
                             </ul>
                         </div>
                     </div>
@@ -215,23 +203,11 @@
                     <div class="col-sm-12 col-md-8 col-md-offset-2">
                         <div class="alert alert-warning" role="alert">
                             <ul>
-                                <li class="sometimes-off" style="display: none;">Laat de ventilatie unit altijd aan
-                                    staan, anders wordt er helemaal niet geventileerd en hoopt vocht en vieze lucht zich
-                                    op. Trek alleen bij onderhoud of in geval van een ramp (als de overheid adviseert
-                                    ramen en deuren te sluiten) de stekker van de ventilatie-unit uit het stopcontact.
-                                </li>
-                                <li class="no-maintenance" style="display: none;">Laat iedere 2 jaar een
-                                    onderhoudsmonteur langskomen, regelmatig onderhoud van de ventilatie-unit is
-                                    belangrijk. Kijk in de gebruiksaanwijzing hoe vaak onderhoud aan de unit nodig is.
-                                </li>
-                                <li class="filter-replacement" style="display: none;">Voor een goede luchtkwaliteit is
-                                    het belangrijk om regelmatig de filter te vervangen. Kijk in de gebruiksaanwijzing
-                                    hoe vaak de filters vervangen moeten worden.
-                                </li>
-                                <li class="closed" style="display: none;">Zorg dat de roosters in de woonkamer en
-                                    slaapkamers altijd open staan. Schone lucht in huis is noodzakelijk voor je
-                                    gezondheid.
-                                </li>
+                                @foreach(__('cooperation/tool/ventilation.index.usage-warnings') as $usageWarningType => $usageWarningTranslation)
+                                    <li class="{{$usageWarningType}}" style="display: none;">
+                                        {!! $usageWarningTranslation !!}
+                                    </li>
+                                @endforeach
                             </ul>
                         </div>
                     </div>
@@ -261,27 +237,33 @@
         <div id="indication-for-costs">
             <hr>
             @include('cooperation.tool.includes.section-title', [
-                    'translation' => 'cooperation/tool/ventilation.index.indication-for-costs',
-                    'id' => 'indication-for-costs'
-                ])
+                'translation' => 'cooperation/tool/ventilation.index.indication-for-costs',
+                'id' => 'indication-for-costs'
+            ])
 
             <div id="costs" class="row">
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
+                    @include('cooperation.layouts.indication-for-costs.gas', ['translation' => 'cooperation/tool/ventilation.index.costs.gas'])
                 </div>
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
+                    @include('cooperation.layouts.indication-for-costs.co2', ['translation' => 'cooperation/tool/ventilation.index.costs.co2'])
                 </div>
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.savings-in-euro')
+                    @include('cooperation.layouts.indication-for-costs.savings-in-euro', [
+                        'translation' => 'cooperation/tool/ventilation.index.savings-in-euro'
+                    ])
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.indicative-costs')
+                    @include('cooperation.layouts.indication-for-costs.indicative-costs', [
+                        'translation' => 'cooperation/tool/ventilation.index.indicative-costs'
+                    ])
                 </div>
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.comparable-rent')
+                    @include('cooperation.layouts.indication-for-costs.comparable-rent', [
+                        'translation' => 'cooperation/tool/ventilation.index.comparable-rent'
+                    ])
                 </div>
             </div>
         </div>
@@ -300,7 +282,7 @@
         </div>
 
         @include('cooperation.tool.includes.comment', [
-           'translation' => 'general.specific-situation'
+           'translation' => 'cooperation/tool/ventilation.index.specific-situation'
         ])
 
         <div class="row">

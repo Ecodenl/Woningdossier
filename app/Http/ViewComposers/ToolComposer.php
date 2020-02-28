@@ -60,15 +60,20 @@ class ToolComposer
 //                $this->unreadMessageCount = PrivateMessageView::getTotalUnreadMessagesForCurrentRole();
 //            }
 
-            if (is_null($this->currentStep)){
+            if (is_null($this->currentStep) ){
                 $toolUrl = explode('/', request()->getRequestUri());
-                $currentSubStep = isset($toolUrl[3]) ? Step::where('slug', $toolUrl[3])->first() : null;
 
-                $this->currentStep = Step::where('slug', $toolUrl[2])
-                    ->with(['questionnaires' => function ($query) {
-                        $query->orderBy('order');
-                    }])->first();
-                $this->currentSubStep = $currentSubStep;
+                if ($toolUrl[2] !== 'my-plan') {
+                    $currentSubStep = isset($toolUrl[3]) ? Step::where('slug', $toolUrl[3])->first() : null;
+
+
+
+                    $this->currentStep = Step::where('slug', $toolUrl[2])
+                        ->with(['questionnaires' => function ($query) {
+                            $query->orderBy('order');
+                        }])->first();
+                    $this->currentSubStep = $currentSubStep;
+                }
             }
 
 

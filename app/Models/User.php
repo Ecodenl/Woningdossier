@@ -66,7 +66,6 @@ class User extends Model implements AuthorizableContract
 
     protected $guard_name = 'web';
 
-
     /**
      * Return the intermediary table of the interests
      *
@@ -76,6 +75,8 @@ class User extends Model implements AuthorizableContract
     {
         return $this->hasMany(UserInterest::class);
     }
+
+
 
     /**
      * Scope like method because of relationships

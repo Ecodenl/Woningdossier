@@ -38,6 +38,14 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td>@lang('woningdossier.cooperation.admin.super-admin.translations.index.table.pdf')</td>
+                                <td>
+                                    <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.translations.edit', ['group' => 'pdf-user-report'])}}">
+                                        @lang('woningdossier.cooperation.admin.super-admin.translations.index.table.see')
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>My plan</td>
                                 <td>
                                     <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.translations.edit', ['group' => 'my-plan'])}}">

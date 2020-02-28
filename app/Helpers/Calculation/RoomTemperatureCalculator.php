@@ -85,6 +85,15 @@ class RoomTemperatureCalculator
 
     public function __construct(UserEnergyHabit $habits)
     {
+
+        if (!$habits->heatingFirstFloor instanceof BuildingHeating) {
+            $habits->heatingFirstFloor = BuildingHeating::where('is_default', true)->first();
+        }
+
+        if (!$habits->heatingSecondFloor instanceof BuildingHeating) {
+            $habits->heatingSecondFloor = BuildingHeating::where('is_default', true)->first();
+        }
+
         // new logic:
         // if the heating_(first/second)_floor is Not applicable (calculate_value 4):
         // set ALL m2 for that FLOOR to 0

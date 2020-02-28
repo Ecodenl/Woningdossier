@@ -50,6 +50,16 @@ class Cooperation extends Model
     }
 
     /**
+     * Return the questionnaires of a cooperation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function questionnaires()
+    {
+        return $this->hasMany(Questionnaire::class);
+    }
+
+    /**
      * Return the example buildings for the cooperation
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

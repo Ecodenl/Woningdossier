@@ -38,7 +38,7 @@
                                             <div class="col-sm-12">
                                                 <?php
 
-                                                    $groupsToTreatAllTextsAsHelpText = ['home', 'heat-pump'];
+                                                    $groupsToTreatAllTextsAsHelpText = ['home', 'heat-pump', 'pdf/user-report'];
                                                     $keysToTreatAsHelpText = ['index.indication-for-costs-other.text']
                                                 ?>
 
@@ -109,8 +109,14 @@
 @push('js')
     <script>
 
+        {{--
+         https://www.tiny.cloud/docs/configure/content-filtering/#forced_root_block
+         --}}
         tinymce.init({
             selector: 'textarea',
+            @if($group == 'pdf/user-report')
+            forced_root_block: "",
+            @endif
             menubar: 'edit format',
             plugins: 'code link',
             toolbar: 'code link unlink bold italic underline strikethrough cut copy paste undo redo restoreOriginalText ',

@@ -12,7 +12,14 @@ return [
         'title' => 'Gegevens van :input_source_name'
     ],
     'warnings' => [
-        'ventilation' => 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.'
+        'ventilation' => 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.',
+        'roof-insulation' => [
+            'check-order' => 'U probeert dakisolatie met vervanging van de dakbedekking te plannen, maar de onderhoudsmaatregel voor het vervangen van de dakpannen of dakbedekking staat uit',
+            'planned-year' => 'De uitvoeringsjaren van de energiebesparende maatregel en de onderhoudsmaatregel zijn niet gelijk! U heeft gekozen voor het isoleren van het dak met vervanging van de dakbedekking, Daarom moeten deze twee maatregelen gelijktijdig worden uitgevoerd.'
+        ],
+        'wall-insulation' => [
+            'cavity-wall-with-paint' => 'Geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie.'
+        ],
     ],
     'modal-for-other-input-source' => [
         'title' => 'Persoonlijke plan van de :input_source_name',

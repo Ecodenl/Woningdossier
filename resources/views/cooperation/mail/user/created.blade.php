@@ -1,5 +1,5 @@
 @component('mail::message')
-@lang('cooperation/mail/account-created-by-cooperation.salutation', [
+@lang('cooperation/mail/account-created.salutation', [
     'first_name' => $createdUser->first_name,
     'last_name' => $createdUser->last_name,
 ])
@@ -12,23 +12,23 @@
     $cooperation_href = '<a target="_blank" href="'.$userCooperation->website_url.'">'.$userCooperation->name.'</a>';
 ?>
 
-@lang('cooperation/mail/account-created-by-cooperation.text', compact('hoomdossier_href'))
+@lang('cooperation/mail/account-created.text', compact('hoomdossier_href'))
 <br>
 <br>
-@lang('cooperation/mail/account-created-by-cooperation.confirm')
+@lang('cooperation/mail/account-created.confirm')
 
 @component('mail::button', ['url' => $confirm_url])
-    @lang('cooperation/mail/account-created-by-cooperation.button')
+    @lang('cooperation/mail/account-created.button')
 @endcomponent
 
-@lang('cooperation/mail/account-created-by-cooperation.button-does-not-work')
+@lang('cooperation/mail/account-created.button-does-not-work')
 <br>
 <a href="{!! $confirm_url !!}">{!! $confirm_url !!}</a>
 <br>
 <br>
-@lang('cooperation/mail/account-created-by-cooperation.any-questions', compact('cooperation_href'))
+@lang('cooperation/mail/account-created.any-questions', compact('cooperation_href'))
 <br>
 <br>
-@lang('cooperation/mail/account-created-by-cooperation.kind_regards', ['app_name' => config('app.name')])
+@lang('cooperation/mail/account-created.kind_regards', ['app_name' => config('app.name')])
 
 @endcomponent

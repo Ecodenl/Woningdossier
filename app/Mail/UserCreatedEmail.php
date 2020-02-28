@@ -40,7 +40,7 @@ class UserCreatedEmail extends Mailable implements ShouldQueue
     public function build()
     {
         return $this
-            ->subject(__('cooperation/mail/account-created-by-cooperation.subject'))
+            ->subject(strip_tags(__('cooperation/mail/account-created.subject')))
             ->markdown('cooperation.mail.user.created')
             ->with('userCooperation', $this->cooperation)
             ->with('createdUser', $this->createdUser)

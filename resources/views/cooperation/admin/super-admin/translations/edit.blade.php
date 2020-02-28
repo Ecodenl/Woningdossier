@@ -43,7 +43,7 @@
                                                 $groupsToTreatAllTextsAsHelpText = ['home', 'heat-pump',
                                                     'pdf/user-report',
                                                     'cooperation/mail/account-associated-with-cooperation',
-                                                    'cooperation/mail/account-created-by-cooperation',
+                                                    'cooperation/mail/account-created',
                                                     'cooperation/mail/changed-email',
                                                     'cooperation/mail/confirm-account',
                                                     'cooperation/mail/reset-password',

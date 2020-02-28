@@ -47,7 +47,7 @@ class TestMails extends Command
     {
 //        $u = User::find(1);
 //        $c = Cooperation::find(1);
-
+//
 //        \Mail::to('demo@example.org')->sendNow(
 //            new RequestAccountConfirmationEmail($u, $c)
 //        );
@@ -66,7 +66,7 @@ class TestMails extends Command
 //        \Mail::to('demo@example.org')->sendNow(
 //            new UserCreatedEmail($c, $u, 'sdfkhasgdfuiasdgfyu')
 //        );
-
+//
 
     }
 }

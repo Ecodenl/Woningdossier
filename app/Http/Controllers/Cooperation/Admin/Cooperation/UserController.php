@@ -120,7 +120,7 @@ class UserController extends Controller
             $this->sendAccountConfirmationMail($cooperation, $account);
             $account->confirm();
         } else {
-            $this->sendAccountAssociatedMail($cooperation, $account);
+            UserAssociatedWithOtherCooperation::dispatch($cooperation, $user);
         }
 
         return redirect()
@@ -140,11 +140,6 @@ class UserController extends Controller
 
         // send a mail to the user
         \Mail::to($account->email)->sendNow(new UserCreatedEmail($cooperation, $account->user(), $token));
-    }
-
-    public function sendAccountAssociatedMail(Cooperation $cooperation, Account $account)
-    {
-        \Mail::to($account->email)->sendNow(new UserAssociatedWithCooperation($cooperation, $account->user()));
     }
 
     /**

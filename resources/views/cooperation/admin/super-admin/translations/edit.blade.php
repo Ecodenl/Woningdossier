@@ -5,19 +5,21 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="form-group">
-                <input type="text" class="form-control" id="search" placeholder="@lang('woningdossier.cooperation.admin.super-admin.translations.edit.search.placeholder')">
+                <input type="text" class="form-control" id="search"
+                       placeholder="@lang('woningdossier.cooperation.admin.super-admin.translations.edit.search.placeholder')">
             </div>
         </div>
     </div>
     <div class="panel panel-default">
         <div class="panel-heading">
-{{--            @lang('woningdossier.cooperation.admin.super-admin.translations.edit.header', ['step_name' =>  \App\Models\Step::where('short', $group)->first() instanceOf \App\Models\Step ? \App\Models\Step::where('group', $group)->first()->name : $stepSlug])--}}
+            {{--            @lang('woningdossier.cooperation.admin.super-admin.translations.edit.header', ['step_name' =>  \App\Models\Step::where('short', $group)->first() instanceOf \App\Models\Step ? \App\Models\Step::where('group', $group)->first()->name : $stepSlug])--}}
             @lang('woningdossier.cooperation.admin.super-admin.translations.edit.header', ['step_name' =>  $group])
         </div>
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <form action="{{route('cooperation.admin.super-admin.translations.update', ['group' => str_replace('/', '_', $group)])}}" method="post" autocomplete="off">
+                    <form action="{{route('cooperation.admin.super-admin.translations.update', ['group' => str_replace('/', '_', $group)])}}"
+                          method="post" autocomplete="off">
                         <div class="form-group">
                             <a href="{{route('cooperation.admin.super-admin.translations.index')}}"
                                class="btn btn-default"><i
@@ -38,28 +40,42 @@
                                             <div class="col-sm-12">
                                                 <?php
 
-                                                    $groupsToTreatAllTextsAsHelpText = ['home', 'heat-pump', 'pdf/user-report'];
-                                                    $keysToTreatAsHelpText = ['index.indication-for-costs-other.text']
+                                                $groupsToTreatAllTextsAsHelpText = ['home', 'heat-pump',
+                                                    'pdf/user-report',
+                                                    'cooperation/mail/account-associated-with-cooperation',
+                                                    'cooperation/mail/account-created',
+                                                    'cooperation/mail/changed-email',
+                                                    'cooperation/mail/confirm-account',
+                                                    'cooperation/mail/reset-password',
+                                                    'cooperation/mail/unread-message-count',];
+                                                $keysToTreatAsHelpText = ['index.indication-for-costs-other.text']
                                                 ?>
 
                                                 @foreach($translation->text as $locale => $text)
                                                     <div class="form-group">
                                                         <label for="">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.question', ['locale' => $locale])</label>
                                                         @if(in_array($translation->key, $keysToTreatAsHelpText) || in_array($translation->group, $groupsToTreatAllTextsAsHelpText))
-                                                            <textarea class="form-control question-input" name="language_lines[{{$locale}}][question][{{$translation->id}}]">{{$text}}</textarea>
+                                                            <textarea class="form-control question-input"
+                                                                      name="language_lines[{{$locale}}][question][{{$translation->id}}]">{{$text}}</textarea>
                                                         @else
-                                                            <input class="form-control question-input" name="language_lines[{{$locale}}][question][{{$translation->id}}]" value="{{$text}}">
+                                                            <input class="form-control question-input"
+                                                                   name="language_lines[{{$locale}}][question][{{$translation->id}}]"
+                                                                   value="{{$text}}">
                                                         @endif
-                                                        <label for="">key: {{$translation->group}}.{{$translation->key}}</label>
+                                                        <label for="">key: {{$translation->group}}
+                                                            .{{$translation->key}}</label>
                                                     </div>
                                                 @endforeach
                                                 @if($translation->helpText instanceof \Spatie\TranslationLoader\LanguageLine)
                                                     @foreach($translation->helpText->text as $locale => $text)
                                                         <div class="form-group">
                                                             <label for="">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.help', ['locale' => $locale])</label>
-                                                            <textarea class="form-control" name="language_lines[{{$locale}}][help][{{$translation->helpText->id}}]">{{$text}}</textarea>
-                                                            <label for="">key: {{$translation->helpText->group}}.{{$translation->helpText->key}}</label>
-                                                            <input type="hidden" class="original-help-text" disabled="disabled" value="{{$text}}">
+                                                            <textarea class="form-control"
+                                                                      name="language_lines[{{$locale}}][help][{{$translation->helpText->id}}]">{{$text}}</textarea>
+                                                            <label for="">key: {{$translation->helpText->group}}
+                                                                .{{$translation->helpText->key}}</label>
+                                                            <input type="hidden" class="original-help-text"
+                                                                   disabled="disabled" value="{{$text}}">
                                                         </div>
                                                     @endforeach
                                                 @endif
@@ -77,7 +93,9 @@
                                             <div class="col-sm-12">
                                                 @foreach($translation->subQuestions as $subQuestion)
                                                     <br>
-                                                    <a data-toggle="modal" data-target="#sub-question-modal-{{$subQuestion->id}}" class="label label-success">
+                                                    <a data-toggle="modal"
+                                                       data-target="#sub-question-modal-{{$subQuestion->id}}"
+                                                       class="label label-success">
                                                         {{$subQuestion->text['nl']}}
                                                     </a>
                                                     @include('cooperation.admin.super-admin.translations.sub-question-modal', [
@@ -134,7 +152,7 @@
             }
         });
 
-        $(document).on('focusin', function(e) {
+        $(document).on('focusin', function (e) {
             var target = $(e.target);
             if (target.closest(".mce-window").length || target.closest(".tox-dialog").length) {
                 e.stopImmediatePropagation();

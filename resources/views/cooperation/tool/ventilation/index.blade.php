@@ -3,8 +3,7 @@
 @section('step_title', "Ventilatie: " . $buildingVentilation->value)
 
 @section('step_content')
-    <form method="POST" action="{{ route('cooperation.tool.ventilation.store', ['cooperation' => $cooperation]) }}"
-          autocomplete="off">
+    <form method="POST" action="{{ route('cooperation.tool.ventilation.store', ['cooperation' => $cooperation]) }}" autocomplete="off">
         {{ csrf_field() }}
 
         <div class="row">
@@ -42,7 +41,7 @@
 
                     @component('cooperation.tool.components.step-question', ['id' => 'how', 'name' => 'building_ventilations.how', 'translation' => 'cooperation/tool/ventilation.index.how', 'required' => true])
                         @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'how'])
+                  ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'how'])
 
                             @foreach($howValues as $howKey => $howValue)
                                 <div class="row" style="margin-left:5px;">

@@ -27,7 +27,8 @@
 
 {{-- this had the add-space class --}}
 <div class="form-group {{ $errors->has($name) ? ' has-error' : '' }}" style="{{$labelStyling}}">
-    <label for="{{ $id }}" class="control-label {{$labelClass}}" style="display: inline; ">
+    {{--This caused the dropdown or input to trigger, on ios safari this would result in a opened select.--}}
+    <label {{--for="{{ $id }}"--}} class="control-label {{$labelClass}}" style="display: inline; ">
         <?php // show help icon? ?>
         @if(isset($translation) && $shouldShowHelpIcon)
             <i data-target="#{{ $id }}-info"

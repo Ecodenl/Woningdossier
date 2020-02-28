@@ -23,7 +23,7 @@ class TranslationController extends Controller
 
         $mailLangFiles = [
             'cooperation/mail/account-associated-with-cooperation' => '(mail) | Account gekoppeld met coöperatie',
-            'cooperation/mail/account-created-by-cooperation' => '(mail) | Account aangemaakt door coöperatie',
+            'cooperation/mail/account-created' => '(mail) | Account aangemaakt',
             'cooperation/mail/changed-email' => '(mail) | Email aangepast',
             'cooperation/mail/confirm-account' => '(mail) | Bevestig account',
             'cooperation/mail/reset-password' => '(mail) | Reset wachtwoord',

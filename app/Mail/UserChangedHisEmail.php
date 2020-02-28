@@ -42,7 +42,7 @@ class UserChangedHisEmail extends Mailable
     public function build()
     {
         return $this
-            ->subject(__('cooperation/mail/changed-email.subject'))
+            ->subject(strip_tags(__('cooperation/mail/changed-email.subject')))
             ->markdown('cooperation.mail.user.changed-email');
     }
 }

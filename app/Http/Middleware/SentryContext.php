@@ -40,6 +40,7 @@ class SentryContext
                 'input_source' => $inputSource->short,
                 'operating_on_own_building' => optional($building)->user_id == $user->id ? 'yes' : 'no',
                 'operating_as' => $inputSourceValue->short,
+                'all_session_data' => \App\Helpers\HoomdossierSession::all(),
             ];
 
             $tags = [

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Cooperation\Tool;
 
 use App\Models\Question;
+use App\Services\QuestionnaireService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
@@ -67,36 +68,7 @@ class QuestionnaireRequest extends FormRequest
 
                 // if the question is not found, return the user back
                 if ($currentQuestion instanceof Question) {
-
-                    $validation = $currentQuestion->validation;
-
-                    // nullable is still needed, in some cases the strings will be converted to null
-                    // if that happens sometimes would not work
-                    // see ConvertEmptyStringsToNull middleware class
-                    $rule = 'sometimes|nullable|';
-                    // if its required add the required rule
-                    if ($currentQuestion->isRequired()) {
-                        $rule .= 'required|';
-                    }
-                    foreach ($validation as $mainRule => $rules) {
-                        // check if there is validation for the question
-                        if (!empty($validation)) {
-                            // let the concat start
-                            $rule .= "{$mainRule}|";
-
-                            foreach ($rules as $subRule => $subRuleCheckValues) {
-                                $rule .= "{$subRule}:";
-                                foreach ($subRuleCheckValues as $subRuleCheckValue) {
-                                    $rule .= "{$subRuleCheckValue},";
-                                }
-                            }
-
-                            // remove the last "," from the rule and replace it with a pipe
-                            $rule = rtrim($rule, ',');
-                            $rule .= '|';
-                        }
-                    }
-                    $validationRules['questions.' . $questionId] = $rule;
+                    $validationRules['questions.' . $questionId] = QuestionnaireService::createValidationRuleForQuestion($currentQuestion);
                 }
             }
         }

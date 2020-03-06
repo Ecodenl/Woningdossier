@@ -91,5 +91,4 @@ class QuestionnaireServiceTest extends TestCase
 
         $this->assertEquals(1, Questionnaire::count());
     }
-
 }

@@ -15,6 +15,49 @@ class QuestionnaireService {
 
 
     /**
+     * Method to create a laravel validation rule for a given question.
+     *
+     * @param Question $question
+     *
+     * @return array
+     */
+    public static function createValidationRuleForQuestion(Question $question): array
+    {
+        $validation = $question->validation;
+
+        // built the validation
+        // nullable is still needed, in some cases the strings will be converted to null
+        // if that happens sometimes would not work
+        // see ConvertEmptyStringsToNull middleware class
+        $rule = [
+            'sometimes',
+            'nullable'
+        ];
+        // if its required add the required rule
+        if ($question->isRequired()) {
+            $rule = [
+                'required'
+            ];
+        }
+
+        foreach ($validation as $mainRule => $rules) {
+            // check if there is validation for the question
+            if (!empty($validation)) {
+                array_push($rule, $mainRule);
+
+                // create the "sub rule"
+                foreach ($rules as $subRule => $subRuleCheckValues) {
+                    $subRuleProperties = implode($subRuleCheckValues, ',');
+                    $subRule = "{$subRule}:$subRuleProperties";
+                    array_push($rule, $subRule);
+                }
+            }
+        }
+
+        return $rule;
+    }
+
+    /**
      * Method to create a new questionnaire.
      *
      * @param Cooperation $cooperation

@@ -8,18 +8,19 @@ use App\Models\Step;
 use App\Models\User;
 use App\Services\QuestionnaireService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\CreatesApplication;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class QuestionnaireServiceTest extends TestCase
 {
-    use RefreshDatabase;
+    use CreatesApplication, DatabaseTransactions;
+
     public function setUp()
     {
         parent::setUp();
-        $this->refreshDatabase();
-        $this->seed();
     }
 
     public static function hasQuestionOptionsProvider()
@@ -79,41 +80,16 @@ class QuestionnaireServiceTest extends TestCase
         $this->assertEquals($expected, QuestionnaireService::isEmptyTranslation($translations));
     }
 
-    public function createQuestionProvider()
-    {
-
-
-//        return [
-//            [
-//                Questionnaire::find(1),
-//                [
-//                    'question' => [
-//                        'nl' => 'Dit is een kort antwoord'
-//                    ],
-//                    'type' => 'text',
-//                    'guid' => com_create_guid()
-//                ]
-//            ]
-//        ];
-    }
-
 
     public function testCreateQuestionnaire()
     {
         $cooperation = Cooperation::find(1);
         $step = Step::find(1);
-        QuestionnaireService::createQuestionnaire(        $cooperation,
-            $step,
-            ['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling',]);
+        QuestionnaireService::createQuestionnaire(
+            $cooperation, $step, ['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling',]
+        );
 
         $this->assertEquals(1, Questionnaire::count());
     }
 
-    public function testCreateQuestion()
-    {
-        $this->assertEquals(1, User::all()->count());
-//        $this->refreshDatabase();
-//        $questionnaire, $questionData, $questionType, $validation, $order
-//        $this->assertDatabaseHas('cooperations');
-    }
 }

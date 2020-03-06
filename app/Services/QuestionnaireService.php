@@ -14,7 +14,16 @@ use Ramsey\Uuid\Uuid;
 class QuestionnaireService {
 
 
-    public static function createQuestionnaire(Cooperation $cooperation, Step $step, array $questionnaireNameTranslations)
+    /**
+     * Method to create a new questionnaire.
+     *
+     * @param Cooperation $cooperation
+     * @param Step $step
+     * @param array $questionnaireNameTranslations
+     * @return Questionnaire
+     * @throws \Exception
+     */
+    public static function createQuestionnaire(Cooperation $cooperation, Step $step, array $questionnaireNameTranslations): Questionnaire
     {
         $questionnaireNameKey = Uuid::uuid4();
 
@@ -40,6 +49,7 @@ class QuestionnaireService {
                 ]);
             }
         }
+        return $questionnaire;
     }
     /**
      * Determine whether a question has options based on the type

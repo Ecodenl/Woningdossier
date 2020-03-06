@@ -4,6 +4,9 @@ namespace App\Http\Requests\Cooperation\Tool;
 
 use App\Models\Question;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class QuestionnaireRequest extends FormRequest
 {
@@ -31,12 +34,13 @@ class QuestionnaireRequest extends FormRequest
 
         $attributes = [];
 
-        if (is_array($questions) && ! empty($questions)) {
+        if (is_array($questions) && !empty($questions)) {
             foreach ($questions as $questionId => $questionAnswer) {
                 $currentQuestion = Question::find($questionId);
-
-                // instead of using the array key as name in validation we give a "dynamic" name
-                $attributes['questions.'.$questionId] = "vraag '$currentQuestion->name'";
+                if ($currentQuestion instanceof Question) {
+                    // instead of using the array key as name in validation we give a "dynamic" name
+                    $attributes['questions.' . $questionId] = "vraag '$currentQuestion->name'";
+                }
             }
         }
 
@@ -50,46 +54,50 @@ class QuestionnaireRequest extends FormRequest
      */
     public function makeRules()
     {
-        $this->redirect = url()->previous().'/'.$this->request->get('tab_id', 'main-tab');
+        $this->redirect = url()->previous() . '/' . $this->request->get('tab_id', 'main-tab');
 
-        $request = $this->request;
-        $questions = $request->get('questions');
+        $questions = $this->get('questions');
         $validationRules = [];
 
-        if (is_array($questions) && ! empty($questions)) {
+        if (is_array($questions) && !empty($questions)) {
             // loop through the questions
             foreach ($questions as $questionId => $questionAnswer) {
                 // get the current question and the validation for that question
                 $currentQuestion = Question::find($questionId);
-                $validation = $currentQuestion->validation;
 
-                // nullable is still needed, in some cases the strings will be converted to null
-                // if that happens sometimes would not work
-                // see ConvertEmptyStringsToNull middleware class
-                $rule = 'sometimes|nullable|';
-                // if its required add the required rule
-                if ($currentQuestion->isRequired()) {
-                    $rule .= 'required|';
-                }
-                foreach ($validation as $mainRule => $rules) {
-                    // check if there is validation for the question
-                    if (! empty($validation)) {
-                        // let the concat start
-                        $rule .= "{$mainRule}|";
+                // if the question is not found, return the user back
+                if ($currentQuestion instanceof Question) {
 
-                        foreach ($rules as $subRule => $subRuleCheckValues) {
-                            $rule .= "{$subRule}:";
-                            foreach ($subRuleCheckValues as $subRuleCheckValue) {
-                                $rule .= "{$subRuleCheckValue},";
-                            }
-                        }
+                    $validation = $currentQuestion->validation;
 
-                        // remove the last "," from the rule and replace it with a pipe
-                        $rule = rtrim($rule, ',');
-                        $rule .= '|';
+                    // nullable is still needed, in some cases the strings will be converted to null
+                    // if that happens sometimes would not work
+                    // see ConvertEmptyStringsToNull middleware class
+                    $rule = 'sometimes|nullable|';
+                    // if its required add the required rule
+                    if ($currentQuestion->isRequired()) {
+                        $rule .= 'required|';
                     }
+                    foreach ($validation as $mainRule => $rules) {
+                        // check if there is validation for the question
+                        if (!empty($validation)) {
+                            // let the concat start
+                            $rule .= "{$mainRule}|";
+
+                            foreach ($rules as $subRule => $subRuleCheckValues) {
+                                $rule .= "{$subRule}:";
+                                foreach ($subRuleCheckValues as $subRuleCheckValue) {
+                                    $rule .= "{$subRuleCheckValue},";
+                                }
+                            }
+
+                            // remove the last "," from the rule and replace it with a pipe
+                            $rule = rtrim($rule, ',');
+                            $rule .= '|';
+                        }
+                    }
+                    $validationRules['questions.' . $questionId] = $rule;
                 }
-                $validationRules['questions.'.$questionId] = $rule;
             }
         }
 
@@ -103,8 +111,27 @@ class QuestionnaireRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = $this->makeRules();
+        return $this->makeRules();
+    }
 
-        return  $rules;
+    public function withValidator(Validator $validator)
+    {
+        // Check if a question exists in the database
+        // for ex; a user can be filling a questionnaire its question while its removed in the backend
+        // this wont happen much, but it can happen.
+        $validator->after(function ($validator) {
+            $questions = $this->get('questions');
+            if (is_array($questions) && !empty($questions)) {
+                foreach ($questions as $questionId => $questionAnswer) {
+                    // check whether the question exists or not.
+                    if (!Question::find($questionId) instanceof Question) {
+                        $validator->errors()->add('faulty_question', 'Er is iets fout gegaan, vul het formulier opniew in.');
+                        Log::debug(__METHOD__ . 'user submitted a custom questionnaire but question was not found.');
+                        Log::debug(__METHOD__ . "question_id: {$questionId}");
+                        Log::debug(__METHOD__ . "questionnaire_id: {$this->get('questionnaire_id')}");
+                    }
+                }
+            }
+        });
     }
 }

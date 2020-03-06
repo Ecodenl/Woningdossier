@@ -4,12 +4,12 @@
 
 
 @section('step_content')
-    <form  method="POST"
+    <form method="POST"
           action="{{ route('cooperation.tool.floor-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 
         @include('cooperation.tool.includes.interested', [
-            'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+            'translation' => 'floor-insulation.index.interested-in-improvement', 'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
         ])
         <div id="floor-insulation">
             <div class="row">
@@ -178,29 +178,35 @@
 
                     <div id="costs" class="row">
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
+                            @include('cooperation.layouts.indication-for-costs.gas', ['translation' => 'floor-insulation.index.costs.gas'])
                         </div>
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
+                            @include('cooperation.layouts.indication-for-costs.co2', ['translation' => 'floor-insulation.index.costs.co2'])
                         </div>
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.savings-in-euro')
+                            @include('cooperation.layouts.indication-for-costs.savings-in-euro',[
+                                'translation' => 'floor-insulation.index.savings-in-euro'
+                            ])
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.indicative-costs')
+                            @include('cooperation.layouts.indication-for-costs.indicative-costs',[
+                                'translation' => 'floor-insulation.index.indicative-costs'
+                            ])
                         </div>
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.comparable-rent')
+                            @include('cooperation.layouts.indication-for-costs.comparable-rent',[
+                                'translation' => 'floor-insulation.index.comparable-rent'
+                            ])
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row" id="no-crawlspace-error">
+            <div class="row d-none" id="no-crawlspace-error">
                 <div class="col-md-12">
-                    <div class="alert alert-danger show" role="alert">
+                    <div class="alert alert-danger" role="alert">
                         <p>{{ \App\Helpers\Translation::translate('floor-insulation.has-crawlspace.no-crawlspace.title') }}</p>
                     </div>
                 </div>
@@ -209,7 +215,7 @@
 
 
         @include('cooperation.tool.includes.comment', [
-             'translation' => 'floor-insulation.comment'
+             'translation' => 'floor-insulation.index.specific-situation'
         ])
 
 
@@ -310,10 +316,12 @@
                 $("#hideable").show();
                 $("#answers").show();
                 $("#has-no-crawlspace").show();
+                console.log('reset');
             }
 
             function crawlspaceOptions() {
                 if ($("#has_crawlspace").val() === "no") {
+                    console.log('weird');
                     $(".crawlspace-accessible").hide();
                     $("#no-crawlspace-error").show();
                 } else {

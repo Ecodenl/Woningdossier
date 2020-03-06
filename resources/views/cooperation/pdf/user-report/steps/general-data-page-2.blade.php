@@ -1,10 +1,9 @@
 <div class="question-answer-section">
     <p class="lead">{{__('pdf/user-report.general-data.resume-energy-saving-measures.title')}}</p>
     <table class="full-width">
-        <thead>
+        <thead class="no-background">
         <tr>
             <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.planned-year')}}</th>
-            <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.interested')}}</th>
             <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.measure')}}</th>
             <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.costs')}}</th>
             <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.savings')}}</th>
@@ -17,16 +16,11 @@
         @foreach($userActionPlanAdvices as $year => $advices)
             @foreach($advices as $adviceData)
                 @foreach($adviceData as $advice)
-                    <tr class="border-bottom">
-                        <?php
-                        // if its a string, the $year contains 'geen jaartal'
-                        is_string($year) ? $year = \Carbon\Carbon::now()->year : $year;
-                        ?>
-                        <td align="center">{{$year}}</td>
-                        <td align="center">{{$advice['interested'] ? 'Ja' : 'Nee'}}</td>
+                    <tr>
+                        <td>{{$year}}</td>
                         <td>{{$advice['measure']}}</td>
-                        <td align="right">{{\App\Helpers\NumberFormatter::format($advice['costs'])}}</td>
-                        <td align="right">{{\App\Helpers\NumberFormatter::format($advice['savings_money'])}}</td>
+                        <td>{{\App\Helpers\NumberFormatter::format($advice['costs'])}}</td>
+                        <td>{{\App\Helpers\NumberFormatter::format($advice['savings_money'])}}</td>
                     </tr>
                     @if(array_key_exists('warning', $advice) && !array_key_exists($advice['warning'], $shownWarnings))
                         {{--so we can check on key, if it already exists we dont show it--}}
@@ -48,27 +42,20 @@
 </div>
 
 
-<div class="question-answer-section">
-    <p class="lead">{{__('pdf/user-report.general-data.comment-action-plan')}}</p>
-    @foreach($userActionPlanAdviceComments as $userActionPlanAdviceComment)
-        <table class="full-width">
-            <tr>
-                <td class="w-100">{{$userActionPlanAdviceComment->inputSource->name}}</td>
-                <td>{!! strip_tags(nl2br($userActionPlanAdviceComment->comment), '<br>') !!}</td>
-            </tr>
-        </table>
-    @endforeach
-</div>
+@if(!\App\Helpers\Arr::isWholeArrayEmpty($userActionPlanAdviceComments))
+    @include('cooperation.pdf.user-report.parts.measure-page.comments', [
+        'comments' => $userActionPlanAdviceComments,
+        'title' => __('pdf/user-report.general-data.comment-action-plan')
+    ])
+@endif
 
 <?php
 // if the total comment count exceeds a specific amount, we will create a new page otherwise it will overflow the footer..
-$comments = $userActionPlanAdviceComments->pluck('comment')->toArray();
-
 // map the array to count the total comments, and then sum it.
 $totalCommentCount = array_sum(
     array_map(function ($comment) {
         return strlen($comment);
-    }, $comments)
+    }, $userActionPlanAdviceComments)
 );
 ?>
 

@@ -18,6 +18,18 @@
                         </thead>
                         <tbody>
                         {{--todo: this needs refactoring so we can just treat translations as translations instead of steps--}}
+                        @foreach($mailLangFiles as $group =>  $translation)
+                            <tr>
+                                <td>{{$translation}}</td>
+                                <td>
+                                    <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.translations.edit', [
+                                                'group' => str_replace('/', '_', $group)
+                                                ])}}">
+                                        @lang('woningdossier.cooperation.admin.super-admin.translations.index.table.see')
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
                         @forelse($steps as $step)
                             <tr>
                                 <td>{{optional($step->parentStep)->name.'/'. $step->name}}</td>
@@ -33,6 +45,14 @@
                                 <td>@lang('woningdossier.cooperation.admin.super-admin.translations.index.table.main-translations')</td>
                                 <td>
                                     <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.translations.edit', ['group' => 'general'])}}">
+                                        @lang('woningdossier.cooperation.admin.super-admin.translations.index.table.see')
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>@lang('woningdossier.cooperation.admin.super-admin.translations.index.table.pdf')</td>
+                                <td>
+                                    <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.translations.edit', ['group' => 'pdf-user-report'])}}">
                                         @lang('woningdossier.cooperation.admin.super-admin.translations.index.table.see')
                                     </a>
                                 </td>

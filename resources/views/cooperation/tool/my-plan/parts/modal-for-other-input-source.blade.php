@@ -1,34 +1,35 @@
 @component('cooperation.tool.components.modal', ['id' => $inputSourceName, 'class' => 'modal-lg'])
-    <?php
-    //filter out the coach comments so we can check if there are any.
-    $commentsForInputSource = [];
-    foreach ($commentsByStep as $stepSlug => $commentsBySubStep) {
-        foreach ($commentsBySubStep as $subStep => $commentsByInputSource) {
-            // filter the coach comments and leave out empty stuff
-            $commentsForInputSource[$stepSlug][$subStep] = array_filter($commentsByInputSource, function ($inputSource) use ($inputSourceName) {
-                return $inputSource === $inputSourceName;
-            }, ARRAY_FILTER_USE_KEY);
-        }
-    }
-    $commentsForInputSource = array_filter($commentsForInputSource);
-    ?>
+
     @slot('title')
         {{$inputSourceName}}
     @endslot
     <h1>@lang('my-plan.modal-for-other-input-source.title', ['input_source_name' => strtolower($inputSourceName)])</h1>
     <p>@lang('my-plan.modal-for-other-input-source.text', ['input_source_name' => strtolower($inputSourceName)])</p>
     <hr>
-    @foreach ($commentsForInputSource as $stepSlug => $commentsBySubStep)
+
+    <?php
+        // get the comments by the step, but only for the given input source
+        $commentsByStep = App\Helpers\StepHelper::getAllCommentsByStep(
+            $building,
+            false,
+            \App\Models\InputSource::where('name', $inputSourceName)->first()
+        );
+    ?>
+    @foreach ($commentsByStep as $stepSlug => $commentsBySubStep)
+        {{-- filter out empty comments --}}
+        <?php
+            $commentsBySubStep = array_map('array_filter', $commentsBySubStep);
+        ?>
         @foreach ($commentsBySubStep as $subStep => $commentsByInputSource)
-        <?php $commentsByInputSource = \Illuminate\Support\Arr::dot($commentsByInputSource) ?>
-        <h4>{{\App\Models\Step::findByShort($subStep === '-' ? $stepSlug : $subStep)->name}}</h4>
-            @foreach($commentsByInputSource as $comment)
+            {{-- dot it so we dont need a extra loop --}}
+            <?php $comments = \Illuminate\Support\Arr::dot($commentsByInputSource); ?>
+            @foreach($comments as $comment)
+                <h4>{{\App\Models\Step::findByShort($subStep === '-' ? $stepSlug : $subStep)->name}}</h4>
                 <p>{{$comment}}</p>
+                <hr>
             @endforeach
-        <hr>
         @endforeach
     @endforeach
-
 
     @foreach($measuresByYear as $year => $stepMeasures)
         <li style="list-style: none;">

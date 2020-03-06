@@ -8,6 +8,7 @@ use App\Models\LanguageLine;
 use App\Models\Step;
 use App\Models\Translation;
 use Illuminate\Http\Request;
+use WeDesignIt\LaravelTranslationsImport\Helpers\LangDirectory;
 
 class TranslationController extends Controller
 {
@@ -20,7 +21,16 @@ class TranslationController extends Controller
     {
         $steps = Step::where('short', '!=', 'general-data')->get();
 
-        return view('cooperation.admin.super-admin.translations.index', compact('steps'));
+        $mailLangFiles = [
+            'cooperation/mail/account-associated-with-cooperation' => '(mail) | Account gekoppeld met coöperatie',
+            'cooperation/mail/account-created' => '(mail) | Account aangemaakt',
+            'cooperation/mail/changed-email' => '(mail) | Email aangepast',
+            'cooperation/mail/confirm-account' => '(mail) | Bevestig account',
+            'cooperation/mail/reset-password' => '(mail) | Reset wachtwoord',
+            'cooperation/mail/unread-message-count' => '(mail) | Ongelezen berichten'
+        ];
+
+        return view('cooperation.admin.super-admin.translations.index', compact('steps', 'mailLangFiles'));
     }
 
     /**
@@ -52,11 +62,23 @@ class TranslationController extends Controller
     public function edit(Cooperation $cooperation, $group)
     {
 
+        // see the index file, we change the "/" to "_" otherwise it wont be picked up by routing
+
+        $group = str_replace('_', '/', $group);
         // it is what it is, for the time being this will do. should be refactored
         $step = Step::findByShort($group);
+
         if ($step instanceof Step && $step->isSubStep()) {
             $group = "cooperation/tool/general-data/{$group}";
         }
+        if ($group == 'ventilation') {
+            $group = "cooperation/tool/{$group}";
+        }
+
+        if ($group == 'pdf-user-report') {
+            $group = "pdf/user-report";
+        }
+
         $translations = LanguageLine::with([
             'subQuestions' => function ($query) {
                 return $query->with('helpText');
@@ -95,10 +117,13 @@ class TranslationController extends Controller
             }
         }
 
+        \Artisan::call('queue:restart');
+
         return redirect()
             ->route('cooperation.admin.super-admin.translations.index')
             ->with('success', __('woningdossier.cooperation.admin.super-admin.translations.update.success'));
     }
+
     /**
      * Remove the specified resource from storage.
      *

@@ -36,18 +36,21 @@
 
     @include('cooperation.admin.layouts.navbar')
     @include('cooperation.layouts.messages')
+    <div class="container">
+        @yield('top-container')
+    </div>
 
     <div class="container-fluid">
         @if(stristr(Route::currentRouteName(), 'cooperation-to-manage'))
             {{--a little magic--}}
             <?php $cooperationToManage = request()->route()->parameters()['cooperationToManage']; ?>
             <div class="row">
-                <div class="col-md-3">
-                    <a href="{{route('cooperation.admin.super-admin.index')}}" class="btn btn-default btn-block">
+                <div class="col-md-2">
+                    <a href="{{route('cooperation.admin.super-admin.index')}}" class="btn btn-default btn-block" style="white-space: normal">
                         @lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.back-to-normal-environment')
                     </a>
                 </div>
-                <div class="col-md-9">
+                <div class="col-md-10">
                     <div class="alert alert-warning">
                         <strong>Letop!</strong> @lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.alert-on-top', ['cooperation' => $cooperationToManage->name])
                     </div>
@@ -92,7 +95,7 @@
 
 <script>
     $(document).ready(function () {
-        // pollForMessageCount();
+        pollForMessageCount();
 
         $('.collapse').on('shown.bs.collapse', function () {
             $(this).parent().find(".glyphicon-chevron-down").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");

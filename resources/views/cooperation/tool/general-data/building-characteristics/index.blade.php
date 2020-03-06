@@ -55,9 +55,8 @@
 
                                 <select id="example_building_id" data-ays-ignore="true" class="form-control" name="buildings[example_building_id]"> {{-- data-ays-ignore="true" makes sure this field is not picked up by Are You Sure --}}
                                     @foreach($exampleBuildings as $exampleBuilding)
-                                        <option @if(is_null(old('buildings.example_building_id')) && is_null($building->example_building_id) && !$building->hasCompleted($step) && $exampleBuilding->is_default)
-                                                selected="selected"
-                                                @elseif($exampleBuilding->id == old('example_building_id'))
+
+                                        <option @if(is_null($building->example_building_id) && $exampleBuilding->is_default)
                                                 selected="selected"
                                                 @elseif ($building->example_building_id == $exampleBuilding->id)
                                                 selected="selected"
@@ -70,7 +69,7 @@
                                             // we select this empty value as default.
                                             $currentNotInExampleBuildings = !$exampleBuildings->contains('id', '=', $building->example_building_id);
                                             ?>
-                                            @if(empty(old('buildings.example_building_id', $building->example_building_id)) || $currentNotInExampleBuildings) selected="selected"@endif >@lang('cooperation/tool/general-data/building-characteristics.index.example-building.no-match.title') </option>
+                                            @if($currentNotInExampleBuildings) selected="selected"@endif >@lang('cooperation/tool/general-data/building-characteristics.index.example-building.no-match.title') </option>
                                 </select>
 
                             @endcomponent
@@ -191,7 +190,7 @@
 
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    <span class="caret"></span>
+                                    <img  src="{{asset('images/input-source-icon.png')}}" alt="" style="height: 22px; display: block;">
                                 </button>
                                 <ul class="dropdown-menu">
                                     <?php
@@ -238,6 +237,7 @@
 
 @push('js')
     <script>
+
         $(document).ready(function () {
 
             var getQualifiedExampleBuildingsRoute = '{{route('cooperation.tool.general-data.building-characteristics.qualified-example-buildings')}}';
@@ -253,7 +253,6 @@
             var previousExampleBuilding = exampleBuilding.val();
             previousExampleBuilding = isNaN(previousExampleBuilding) ? "" : previousExampleBuilding;
 
-
             $('#build_year, #building_type_id').change(function () {
                 if (confirm('{{__('cooperation/tool/general-data/building-characteristics.index.building-type.are-you-sure.title')}}')) {
                     $.ajax({
@@ -264,14 +263,25 @@
                             build_year: buildYear.val(),
                         },
                         success: function (data) {
+                            removeErrors();
                             handleExampleBuildingSelect(buildingType.val(), buildYear.val());
                             storeExampleBuilding(buildingType.val(), buildYear.val());
 
                             // update the previous values
                             previousBuildingType = buildingType.val();
                             previousBuildYear = buildYear.val();
-                        }
+                        },
+                        error: function (request, status, error) {
+                            removeErrors();
+                            var errorMessage = $.parseJSON(request.responseText);
+                            $.each(errorMessage.errors, function (fieldName, message) {
+                                var input = $('input[id=' + fieldName + ']');
+                                addError(input, message)
+                            });
+                        },
+                        dataType: 'json'
                     });
+
                 } else {
                     // user canceled the operation so we set back the option
                     buildingType.val(previousBuildingType);

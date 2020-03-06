@@ -1,33 +1,37 @@
 <?php
-    $helpId = time();
-    $currentInputSource = \App\Helpers\HoomdossierSession::getInputSource(true);
-    // set some default to prevent isset spaghetti stuff.
-    $currentInputSourceHasNoPlacedComment = false;
-    $currentInputSourceHasACommentButIsEmpty = true;
-    $commentsForCurrentStep = [];
-    $columnName = isset($short) ? "step_comments[comment][{$short}]" : "step_comments[comment]";
+$helpId = time();
+$currentInputSource = \App\Helpers\HoomdossierSession::getInputSource(true);
+// set some default to prevent isset spaghetti stuff.
+$currentInputSourceHasNoPlacedComment = false;
+$currentInputSourceHasACommentButIsEmpty = true;
+$commentsForCurrentStep = [];
+$columnName = isset($short) ? "step_comments[comment][{$short}]" : "step_comments[comment]";
 
-    // obtain the comments for the current step, when its a substep, the comment will be stored in the substep
-    // else get it from the main step
-    $subStepShort = $currentSubStep->short ?? '-';
-    // make sure the steps / keys exist before proceeding
-    if (array_key_exists($currentStep->short, $commentsByStep) && array_key_exists($subStepShort, $commentsByStep[$currentStep->short])) {
+// replace the brackets to dots
+$oldValueKey = str_replace(']', '', str_replace('[', '.', $columnName));
 
-        $commentsForCurrentStep = $commentsByStep[$currentStep->short][$currentSubStep->short ?? '-'];
-        if (isset($short)) {
 
-            $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name][$short]);
+// obtain the comments for the current step, when its a substep, the comment will be stored in the substep
+// else get it from the main step
+$subStepShort = $currentSubStep->short ?? '-';
+// make sure the steps / keys exist before proceeding
+if (array_key_exists($currentStep->short, $commentsByStep) && array_key_exists($subStepShort, $commentsByStep[$currentStep->short])) {
 
-            $currentInputSourceHasACommentButIsEmpty = empty($commentsForCurrentStep[$currentInputSource->name][$short]);
-        } else {
-            $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name]);
-            $currentInputSourceHasACommentButIsEmpty = empty($commentsForCurrentStep[$currentInputSource->name]);
-        }
+    $commentsForCurrentStep = $commentsByStep[$currentStep->short][$currentSubStep->short ?? '-'];
+    if (isset($short)) {
+
+        $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name][$short]);
+
+        $currentInputSourceHasACommentButIsEmpty = empty($commentsForCurrentStep[$currentInputSource->name][$short]);
+    } else {
+        $currentInputSourceHasNoPlacedComment = !isset($commentsForCurrentStep[$currentInputSource->name]);
+        $currentInputSourceHasACommentButIsEmpty = empty($commentsForCurrentStep[$currentInputSource->name]);
     }
+}
 
 ?>
 @if(!empty($commentsForCurrentStep))
-@foreach($commentsForCurrentStep as $inputSourceName => $comment)
+    @foreach($commentsForCurrentStep as $inputSourceName => $comment)
         {{--a nice uitzondering op de regel for only one case--}}
         @if(is_array($comment))
             <?php $comment = $comment[$short]; ?>
@@ -38,29 +42,30 @@
             We dont want to show that to the user
          --}}
         @if(!empty($comment))
-        <div class="row">
-            <div class="col-sm-12">
-                @component('cooperation.tool.components.step-question', ['id' => $columnName, 'translation' => $translation])
-                    @if($currentInputSource->name != $inputSourceName)({{$inputSourceName}}) @endif
+            <div class="row">
+                <div class="col-sm-12">
+                    {{-- A translation replace is given, if :item exists in the translation it will be replaced otherwise nothing will hapen --}}
+                    @component('cooperation.tool.components.step-question', ['id' => $oldValueKey, 'translation' => $translation, 'translationReplace' => ['item' => $currentStep->name]])
+                        @if($currentInputSource->name != $inputSourceName)({{$inputSourceName}}) @endif
 
-                    @if($inputSourceName === $currentInputSource->name)
-                        <textarea name="{{$columnName}}" class="form-control">{{old($columnName, $comment)}}</textarea>
-                    @else
-                        <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
-                    @endif
-                @endcomponent
+                        @if($inputSourceName === $currentInputSource->name)
+                            <textarea name="{{$columnName}}" class="form-control">{{old($oldValueKey, $comment)}}</textarea>
+                        @else
+                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                        @endif
+                    @endcomponent
 
+                </div>
             </div>
-        </div>
         @endif
     @endforeach
 @endif
 @if($currentInputSourceHasACommentButIsEmpty || $currentInputSourceHasNoPlacedComment)
-<div class="row">
-    <div class="col-sm-12">
-        @component('cooperation.tool.components.step-question', ['id' => $columnName, 'translation' => $translation])
-            <textarea name="{{$columnName}}" class="form-control">{{old($columnName)}}</textarea>
-        @endcomponent
+    <div class="row">
+        <div class="col-sm-12">
+            @component('cooperation.tool.components.step-question', ['id' => $oldValueKey, 'translation' => $translation, 'translationReplace' => ['item' => $currentStep->name]])
+                <textarea name="{{$columnName}}" class="form-control">{{old($oldValueKey)}}</textarea>
+            @endcomponent
+        </div>
     </div>
-</div>
 @endif

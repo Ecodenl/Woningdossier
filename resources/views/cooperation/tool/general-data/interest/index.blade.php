@@ -86,17 +86,13 @@
 
         <div class="row mt-20">
             <div class="col-sm-12">
-                <h4>
-                    <i data-target="#motivation-info" class="glyphicon glyphicon-info-sign glyphicon-padding collapsed"
-                       aria-expanded="false"></i>
-                    @lang('cooperation/tool/general-data/interest.index.motivation.title.title')
-                </h4>
+                @include('cooperation.tool.includes.section-title', [
+                     'translation' => 'cooperation/tool/general-data/interest.index.motivation.title',
+                     'id' => 'motivation-info'
+                 ])
             </div>
-            @component('cooperation.tool.components.help-modal')
-                @lang('cooperation/tool/general-data/interest.index.motivation.title.help')
-            @endcomponent
             <?php
-            $oldMotivations = old('motivations');
+            $oldMotivations = old('user_motivations.id.*');
             $motivationsToSelect = empty(is_array($oldMotivations) ? $oldMotivations : []) ? $userMotivations->pluck('motivation_id')->toArray() : $motivationsToSelect;
             ?>
             <div class="col-sm-12">
@@ -158,7 +154,18 @@
 
     <script>
         $(document).ready(function () {
-            $('#motivation').select2();
+            var motivation = $('#motivation');
+
+            motivation.select2();
+
+            motivation.on("select2:select", function (evt) {
+                var element = evt.params.data.element;
+                var $element = $(element);
+
+                $element.detach();
+                $(this).append($element);
+                $(this).trigger("change");
+            });
         });
     </script>
 @endpush

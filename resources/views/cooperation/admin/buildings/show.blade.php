@@ -9,7 +9,7 @@
             @lang('woningdossier.cooperation.admin.users.show.header', [
                 'name' => $user->getFullName(),
                 'street-and-number' => $building->street.' '.$building->number.' '.$building->extension,
-                'zipcode-and-city' => !$building->postal_code.' '.$building->city,
+                'zipcode-and-city' => $building->postal_code.' '.$building->city,
                 'email' => $user->account->email,
                 'phone-number' => $user->phone_number
             ])
@@ -221,24 +221,6 @@
                     </div>
                 </div>
             @endif
-        </div>
-        <div class="panel-footer">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="btn-group">
-                        <a @if(!is_null($previous)) href="{{route('cooperation.admin.buildings.show', ['id' => $previous])}}" @endif
-                           type="button" {{is_null($previous) ? 'disabled="disabled"' : '' }} id="previous" class="btn btn-default {{is_null($previous) ? 'btn-disabled' : '' }}">
-                            <i class="glyphicon glyphicon-chevron-left"></i>
-                            @lang('woningdossier.cooperation.admin.users.show.previous')
-                        </a>
-                        <a @if(!is_null($next)) href="{{route('cooperation.admin.buildings.show', ['id' => $next])}}" @endif
-                           id="observe-building" {{is_null($next) ? 'disabled="disabled"' : '' }} class="btn btn-default {{is_null($next) ? 'btn-disabled' : '' }}">
-                            @lang('woningdossier.cooperation.admin.users.show.next')
-                            <i class="glyphicon glyphicon-chevron-right"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 @endsection

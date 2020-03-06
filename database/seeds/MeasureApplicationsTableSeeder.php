@@ -349,7 +349,60 @@ class MeasureApplicationsTableSeeder extends Seeder
                 ],
                 'step' => 'solar-panels',
             ],
-
+            [
+                'measure_type' =>'energy_saving',
+                'measure_names' => [
+                    'nl' => 'Gebalanceerde ventilatie met warmte terugwinning',
+                ],
+                'short' => 'ventilation-balanced-wtw',
+                'application' => 'place',
+                'costs' => 0,
+                'cost_unit' => [
+                    'nl' => 'per stuk'
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'ventilation',
+            ],
+            [
+                'measure_type' =>'energy_saving',
+                'measure_names' => [
+                    'nl' => 'Decentrale mechanische ventilatie met warmte terugwinning',
+                ],
+                'short' => 'ventilation-decentral-wtw',
+                'application' => 'place',
+                'costs' => 0,
+                'cost_unit' => [
+                    'nl' => 'per stuk'
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'ventilation',
+            ],
+            [
+                'measure_type' =>'energy_saving',
+                'measure_names' => [
+                    'nl' => 'Vraag gestuurde ventilatie',
+                ],
+                'short' => 'ventilation-demand-driven',
+                'application' => 'place',
+                'costs' => 0,
+                'cost_unit' => [
+                    'nl' => 'per stuk'
+                ],
+                'minimal_costs' => 0,
+                'maintenance_interval' => 0,
+                'maintenance_unit' => [
+                    'nl' => 'jaar',
+                ],
+                'step' => 'ventilation',
+            ],
             // add more energiebesparende maatregelen here!
 
             // Onderhoudsmaatregelen

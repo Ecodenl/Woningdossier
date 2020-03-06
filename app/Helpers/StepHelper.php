@@ -31,7 +31,15 @@ class StepHelper
         'house-ventilation' => 'ventilation'
     ];
 
-    public static function getAllCommentsByStep(Building $building, $withEmptyComments = false): array
+    /**
+     * Get alle the comments categorized under step and input source
+     *
+     * @param Building $building
+     * @param bool $withEmptyComments
+     * @param null $specificInputSource
+     * @return array
+     */
+    public static function getAllCommentsByStep(Building $building, $withEmptyComments = false, $specificInputSource = null): array
     {
         $commentsByStep = [];
 
@@ -41,8 +49,12 @@ class StepHelper
 
         $stepComments = StepComment::forMe($building->user)->with('step', 'inputSource')->get();
 
-        foreach ($stepComments as $stepComment) {
+        // when set, we will only return the comments for the given input source
+        if ($specificInputSource instanceof InputSource) {
+            $stepComments = $stepComments->where('input_source_id', $specificInputSource->id);
+        }
 
+        foreach ($stepComments as $stepComment) {
 
             if ($stepComment->step->isSubStep()) {
                 if (is_null($stepComment->short)) {
@@ -94,12 +106,13 @@ class StepHelper
      * @param Building $building
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
-    public static function getUnfinishedSubStepsForStep(Step $step, Building $building)
+    public static function getUnfinishedSubStepsForStep(Step $step, Building $building, InputSource $inputSource)
     {
         return $step->subSteps()
-            ->whereNotExists(function (Builder $query) use ($building) {
+            ->whereNotExists(function (Builder $query) use ($building, $inputSource) {
                 $query->select('*')
                     ->from('completed_steps')
+                    ->where('completed_steps.input_source_id', $inputSource->id)
                     ->whereRaw('steps.id = completed_steps.step_id')
                     ->where('building_id', $building->id);
             })->get();
@@ -135,7 +148,7 @@ class StepHelper
         $nonCompletedSteps = collect();
         // when there is a substep try to redirect them to the next sub step
         if ($subStep instanceof Step) {
-            $nonCompletedSteps = static::getUnfinishedSubStepsForStep($parentStep, $building);
+            $nonCompletedSteps = static::getUnfinishedSubStepsForStep($parentStep, $building, $inputSource);
         }
 
         // there are no uncompleted sub steps for the parent, try to redirect them to a questionnaire that may exists on the parent step.

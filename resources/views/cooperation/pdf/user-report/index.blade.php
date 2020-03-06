@@ -21,13 +21,10 @@
     So have to create our own order.
 --}}
 
-@component('cooperation.pdf.components.new-page')
-    <div class="container">
-        @include('cooperation.pdf.user-report.steps.general-data-page-1', [
-            'stepShort' => 'general-data'
-        ])
-    </div>
-@endcomponent
+
+@include('cooperation.pdf.user-report.steps.general-data-page-1', [
+    'stepShort' => 'general-data'
+])
 
 @component('cooperation.pdf.components.new-page')
     <div class="container">
@@ -43,7 +40,13 @@
 
 
 @foreach ($reportData as $stepShort => $dataForStep)
-    @if (array_key_exists($stepShort, $stepShorts) && \App\Models\UserActionPlanAdvice::hasInterestInMeasure($building, $inputSource, $steps->where('slug', $stepShort)->first()))
+    <?php
+        $hasResidentCompletedStep = $building->hasCompleted(
+            \App\Models\Step::findByShort($stepShort),
+            $inputSource
+        );
+    ?>
+    @if (array_key_exists($stepShort, $stepShorts) && $hasResidentCompletedStep)
         @foreach ($dataForStep as $subStepShort => $dataForSubStep)
             <?php
                 $shortToUseAsMainSubject = $subStepShort == '-' ? $stepShort : $subStepShort

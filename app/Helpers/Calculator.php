@@ -12,6 +12,7 @@ use App\Models\InputSource;
 use App\Models\Log;
 use App\Models\MeasureApplication;
 use App\Models\PriceIndexing;
+use App\Models\ServiceValue;
 use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
 
@@ -21,9 +22,9 @@ class Calculator
      * Calculate the gas savings for the given building when applying the
      * given Element.
      *
-     * @param Building        $building
-     * @param InputSource     $inputSource
-     * @param ElementValue    $element
+     * @param Building $building
+     * @param InputSource $inputSource
+     * @param ElementValue $element
      * @param UserEnergyHabit $energyHabit
      * @param $surface
      * @param $measureAdvice
@@ -37,16 +38,16 @@ class Calculator
 
         $roomTempCalculator = new RoomTemperatureCalculator($energyHabit);
         $averageHouseTemperature = $roomTempCalculator->getAverageHouseTemperature();
-        self::debug(__METHOD__.' Average house temperature = '.$averageHouseTemperature);
+        self::debug(__METHOD__ . ' Average house temperature = ' . $averageHouseTemperature);
         $kengetalEnergySaving = Temperature::energySavingFigureWallInsulation($measureAdvice, $averageHouseTemperature);
-        self::debug(__METHOD__.' Kengetal energiebesparing = '.$kengetalEnergySaving);
+        self::debug(__METHOD__ . ' Kengetal energiebesparing = ' . $kengetalEnergySaving);
 
         if (isset($element->calculate_value) && $element->calculate_value < 3) {
             $result = min(
                 $surface * $kengetalEnergySaving,
                 self::maxGasSavings($building, $inputSource, $energyHabit, $element->element)
             );
-            self::debug(__METHOD__.' '.$result.' = min('.$surface.' * '.$kengetalEnergySaving.', '.self::maxGasSavings($building, $inputSource, $energyHabit, $element->element).')');
+            self::debug(__METHOD__ . ' ' . $result . ' = min(' . $surface . ' * ' . $kengetalEnergySaving . ', ' . self::maxGasSavings($building, $inputSource, $energyHabit, $element->element) . ')');
         }
 
         return $result;
@@ -62,7 +63,7 @@ class Calculator
     public static function calculateCo2Savings($gasSavings)
     {
         $result = $gasSavings * Kengetallen::CO2_SAVING_GAS;
-        self::debug(__METHOD__.' CO2 besparing: '.$result.' = '.$gasSavings.' * '.Kengetallen::CO2_SAVING_GAS);
+        self::debug(__METHOD__ . ' CO2 besparing: ' . $result . ' = ' . $gasSavings . ' * ' . Kengetallen::CO2_SAVING_GAS);
 
         return $result;
     }
@@ -77,14 +78,14 @@ class Calculator
     public static function calculateMoneySavings($gasSavings)
     {
         $result = $gasSavings * Kengetallen::EURO_SAVINGS_GAS;
-        self::debug(__METHOD__." Euro's besparing: ".$result.' = '.$gasSavings.' * '.Kengetallen::EURO_SAVINGS_GAS);
+        self::debug(__METHOD__ . " Euro's besparing: " . $result . ' = ' . $gasSavings . ' * ' . Kengetallen::EURO_SAVINGS_GAS);
 
         return $result;
     }
 
     public static function calculateCostIndication($surface, MeasureApplication $measureApplication)
     {
-        if (! $measureApplication instanceof MeasureApplication) {
+        if (!$measureApplication instanceof MeasureApplication) {
             return 0;
         }
 
@@ -94,7 +95,7 @@ class Calculator
             $result = max($surface * $measureApplication->costs, $measureApplication->minimal_costs);
         }
 
-        self::debug(__METHOD__.' Cost indication: '.$result.' = max('.$surface.' * '.$measureApplication->costs.', '.$measureApplication->minimal_costs.')');
+        self::debug(__METHOD__ . ' Cost indication: ' . $result . ' = max(' . $surface . ' * ' . $measureApplication->costs . ', ' . $measureApplication->minimal_costs . ')');
 
         return $result;
     }
@@ -103,16 +104,16 @@ class Calculator
      * Return the costs of applying a particular measure in a particular year.
      * This takes yearly cost indexing into account.
      *
-     * @param MeasureApplication $measure         The measure to apply
-     * @param mixed              $number          The amount of measures. (might be m2, pieces, etc.)
-     * @param int|null           $applicationYear
-     * @param bool               $applyIndexing   Whether or not to apply indexing
+     * @param MeasureApplication $measure The measure to apply
+     * @param mixed $number The amount of measures. (might be m2, pieces, etc.)
+     * @param int|null $applicationYear
+     * @param bool $applyIndexing Whether or not to apply indexing
      *
      * @return float|int
      */
     public static function calculateMeasureApplicationCosts(MeasureApplication $measure, $number, $applicationYear = null, $applyIndexing = true)
     {
-        self::debug(__METHOD__.' for measure '.$measure->measure_name);
+        self::debug(__METHOD__ . ' for measure ' . $measure->measure_name);
         if ($number <= 0) {
             return 0;
         }
@@ -126,7 +127,7 @@ class Calculator
         }
 
         $total = max($number * $measure->costs, $measure->minimal_costs);
-        self::debug(__METHOD__.' Non indexed costs: '.$total.' = max('.$number.' * '.$measure->costs.', '.$measure->minimal_costs.')');
+        self::debug(__METHOD__ . ' Non indexed costs: ' . $total . ' = max(' . $number . ' * ' . $measure->costs . ', ' . $measure->minimal_costs . ')');
         // Apply indexing (general indexing which applies for measures)
 
         if ($applyIndexing) {
@@ -142,16 +143,16 @@ class Calculator
 
         $totalIndexed = $total * pow((1 + ($costIndex / 100)), $yearFactor);
 
-        self::debug(__METHOD__.' Indexed costs: '.$totalIndexed.' = '.$total.' * '.(1 + ($costIndex / 100)).'^'.$yearFactor);
+        self::debug(__METHOD__ . ' Indexed costs: ' . $totalIndexed . ' = ' . $total . ' * ' . (1 + ($costIndex / 100)) . '^' . $yearFactor);
 
         return $totalIndexed;
     }
 
     /**
-     * @param float|int                    $costs    Amount indexed on $fromYear
-     * @param int                          $fromYear Previous year used for indexing
-     * @param int                          $toYear   New year to index
-     * @param int|float|PriceIndexing|null $index    Null will fall back on default price index (from db). Otherwise a PriceIndex object or "just" a percentage (>= 0, <= 100)
+     * @param float|int $costs Amount indexed on $fromYear
+     * @param int $fromYear Previous year used for indexing
+     * @param int $toYear New year to index
+     * @param int|float|PriceIndexing|null $index Null will fall back on default price index (from db). Otherwise a PriceIndex object or "just" a percentage (>= 0, <= 100)
      *
      * @return float|int
      */
@@ -173,12 +174,12 @@ class Calculator
         $costIndex = 2;
         if ($index instanceof PriceIndexing) {
             $costIndex = $index->percentage;
-        } elseif (! is_null($index) && $index >= 0 && $index <= 100) {
+        } elseif (!is_null($index) && $index >= 0 && $index <= 100) {
             $costIndex = $index;
         }
 
         $costsIndexed = $costs * pow((1 + ($costIndex / 100)), $yearFactor);
-        self::debug(__METHOD__.' Re-indexed costs: '.$costsIndexed.' = '.$costs.' * '.(1 + ($costIndex / 100)).'^'.$yearFactor);
+        self::debug(__METHOD__ . ' Re-indexed costs: ' . $costsIndexed . ' = ' . $costs . ' * ' . (1 + ($costIndex / 100)) . '^' . $yearFactor);
 
         return $costsIndexed;
     }
@@ -188,7 +189,7 @@ class Calculator
      * for this year.
      *
      * @param float|int $costs
-     * @param int       $toYear
+     * @param int $toYear
      *
      * @return float|int
      */
@@ -202,35 +203,39 @@ class Calculator
      * Based on the building, only a max percentage of gas can be saved for
      * particular Elements.
      *
-     * @param Building             $building
-     * @param InputSource          $inputSource
+     * @param Building $building
+     * @param InputSource $inputSource
      * @param UserEnergyHabit|null $energyHabit
-     * @param Element              $element
+     * @param Element $element
      *
      * @return float|int
      */
     public static function maxGasSavings(Building $building, InputSource $inputSource, $energyHabit, Element $element)
     {
         $boiler = $building->getServiceValue('boiler', $inputSource);
+        $result = 0;
 
-        $buildingType = $building->getBuildingType($inputSource);
-        $usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler, $energyHabit);
-        $usage = $usages['heating']['bruto'];
-        $saving = 0;
-        $maxSaving = BuildingTypeElementMaxSaving::where('building_type_id', $buildingType->id)
-                                                 ->where('element_id', $element->id)
-                                                 ->first();
+        if ($boiler instanceof ServiceValue) {
 
-        if ($maxSaving instanceof BuildingTypeElementMaxSaving) {
-            $saving = $maxSaving->max_saving;
+            $buildingType = $building->getBuildingType($inputSource);
+            $usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler, $energyHabit);
+            $usage = $usages['heating']['bruto'];
+            $saving = 0;
+            $maxSaving = BuildingTypeElementMaxSaving::where('building_type_id', $buildingType->id)
+                ->where('element_id', $element->id)
+                ->first();
+
+            if ($maxSaving instanceof BuildingTypeElementMaxSaving) {
+                $saving = $maxSaving->max_saving;
+            }
+            self::debug(__METHOD__ . ' Max saving for building_type ' . $buildingType->id . ' + element ' . $element->id . ' (' . $element->short . ') = ' . $saving . '%');
+            $result = $usage * ($saving / 100);
+            self::debug(__METHOD__ . ' ' . $result . ' = ' . $usage . ' * ' . ($saving / 100));
+
         }
-        self::debug(__METHOD__.' Max saving for building_type '.$buildingType->id.' + element '.$element->id.' ('.$element->short.') = '.$saving.'%');
-        $result = $usage * ($saving / 100);
-        self::debug(__METHOD__.' '.$result.' = '.$usage.' * '.($saving / 100));
-
         // when someone fills in a way to low non realistic gas usage it will be below 0
         // if so we display 0.
-        if ($result < 0) {
+        if (Number::isNegative($result)) {
             $result = 0;
         }
 

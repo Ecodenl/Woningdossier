@@ -30,6 +30,9 @@ use App\Listeners\ParticipantRevokedListener;
 use App\Listeners\PreventChangeNotificationWhenStarting;
 use App\Listeners\PrivateMessageReceiverListener;
 use App\Listeners\RevokeBuildingPermissionForCoaches;
+use App\Listeners\SendUserAssociatedWithCooperationMail;
+use App\Listeners\SetMessagesReadForBuilding;
+use App\Listeners\SetMessagesUnreadForRevokedUserOnBuilding;
 use App\Listeners\SetOldEmailListener;
 use App\Listeners\StepDataHasBeenChangedListener;
 use App\Listeners\SuccessFullLoginListener;
@@ -54,12 +57,6 @@ class EventServiceProvider extends ServiceProvider
         PrivateMessageReceiverEvent::class => [
             PrivateMessageReceiverListener::class,
         ],
-        ParticipantRevokedEvent::class => [
-            ParticipantRevokedListener::class,
-        ],
-        ParticipantAddedEvent::class => [
-            ParticipantAddedListener::class,
-        ],
         Login::class => [
             SuccessFullLoginListener::class,
         ],
@@ -68,6 +65,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         UserAssociatedWithOtherCooperation::class => [
             LogUserAssociatedWithOtherCooperation::class,
+            SendUserAssociatedWithCooperationMail::class
         ],
         FillingToolForUserEvent::class => [
             FillingToolForUserListener::class,
@@ -83,6 +81,13 @@ class EventServiceProvider extends ServiceProvider
         UserChangedHisEmailEvent::class => [
             SetOldEmailListener::class,
         ],
+        ParticipantRevokedEvent::class => [
+            ParticipantRevokedListener::class,
+            SetMessagesUnreadForRevokedUserOnBuilding::class
+        ],
+        ParticipantAddedEvent::class => [
+            ParticipantAddedListener::class,
+        ],
         UserAllowedAccessToHisBuilding::class => [
             GiveCoachesBuildingPermission::class,
             LogAllowedAccessToBuilding::class,
@@ -90,6 +95,7 @@ class EventServiceProvider extends ServiceProvider
         UserRevokedAccessToHisBuilding::class => [
             LogRevokedAccessToBuilding::class,
             RevokeBuildingPermissionForCoaches::class,
+            SetMessagesReadForBuilding::class,
         ],
     ];
 

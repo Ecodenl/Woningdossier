@@ -20,26 +20,31 @@ class QuestionnaireController extends Controller
 {
     public function index()
     {
-
         $questionnaires = Questionnaire::all();
 
         return view('cooperation.admin.cooperation.questionnaires.index', compact('questionnaires'));
     }
 
-    public function edit(Cooperation $cooperation, $questionnaireId)
+    public function destroy(Cooperation $cooperation, Questionnaire $questionnaire)
     {
-        $questionnaire = Questionnaire::find($questionnaireId);
+        $questionnaire->delete();
+
+        return response(200);
+    }
+
+    public function edit(Cooperation $cooperation, Questionnaire $questionnaire)
+    {
 
         $this->authorize('edit', $questionnaire);
 
-        $steps = Step::orderBy('order')->get();
+        $steps = Step::withoutSubSteps()->orderBy('order')->get();
 
         return view('cooperation.admin.cooperation.questionnaires.questionnaire-editor', compact('questionnaire', 'steps'));
     }
 
     public function create()
     {
-        $steps = Step::orderBy('order')->get();
+        $steps = Step::withoutSubSteps()->orderBy('order')->get();
 
         return view('cooperation.admin.cooperation.questionnaires.create', compact('steps'));
     }

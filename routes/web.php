@@ -12,9 +12,21 @@
 */
 
 
+use App\Mail\UserAssociatedWithCooperation;
+
 Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function () {
 
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
+
+
+        if (app()->environment() == 'local') {
+        Route::get('mail', function () {
+
+//            return new UserAssociatedWithCooperation(App\Models\Cooperation::find(1), \App\Models\Account::find(1)->user());
+            return new \App\Mail\UserCreatedEmail(\App\Models\Cooperation::find(1), \App\Models\User::find(1), 'sdfkhasgdfuiasdgfyu');
+//            return new \App\Mail\UserAssociatedWithCooperation(\App\Models\Cooperation::find(1), \App\Models\User::find(1));
+        });
+        }
 
         Route::get('/', function () {
             return view('cooperation.welcome');
@@ -79,8 +91,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     });
                 });
             }
-
-            Route::view('test', 'test');
             Route::get('home', 'HomeController@index')->name('home')->middleware('deny-if-filling-for-other-building');
 
             Route::resource('privacy', 'PrivacyController')->only('index');
@@ -90,19 +100,20 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::post('{fileType}', 'FileStorageController@store')
                     ->name('store');
                 Route::get('is-being-processed/{fileType}', 'FileStorageController@checkIfFileIsBeingProcessed')->name('check-if-file-is-being-processed');
-                Route::get('download/{fileType}/{fileStorageFilename}', 'FileStorageController@download')
-                    ->middleware('file-storage-download')
+
+                Route::get('download/{fileStorage}', 'FileStorageController@download')
                     ->name('download');
             });
 
-            //Route::get('measures', 'MeasureController@index')->name('measures.index');
+
             Route::get('input-source/{input_source_value_id}', 'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
 
             Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
                 Route::group(['as' => 'participants.', 'prefix' => 'participants'], function () {
+
                     Route::post('revoke-access', 'ParticipantController@revokeAccess')->name('revoke-access');
-                    Route::post('add-with-building-access',
-                        'ParticipantController@addWithBuildingAccess')->name('add-with-building-access');
+
+                    Route::post('add-with-building-access', 'ParticipantController@addWithBuildingAccess')->name('add-with-building-access');
 
                     Route::post('set-read', 'ParticipantController@setRead')->name('set-read');
                 });
@@ -135,9 +146,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::get('', 'MessagesController@index')->name('index');
                     Route::get('edit', 'MessagesController@edit')->name('edit');
                     Route::post('edit', 'MessagesController@store')->name('store');
-                    Route::post('revoke-access', 'MessagesController@revokeAccess')->name('revoke-access');
                 });
 
+                // the checkbox to deny the whole access for everyone.
                 Route::post('access/allow-access', 'AccessController@allowAccess')->name('access.allow-access');
 
             });
@@ -179,45 +190,57 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
 
                 Route::group(['middleware' => 'filled-step:general-data'], function () {
-                    // Ventilation information: info for now
-                    Route::resource('ventilation', 'VentilationController',
-                        ['only' => ['index', 'store']]);
+
                     // Heat pump: info for now
-                    Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']]);
+                    Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']])
+                        ->middleware('step-disabled:heat-pump');
+
+                    Route::group(['prefix' => 'ventilation', 'as' => 'ventilation.', 'middleware' => 'step-disabled:ventilation'], function () {
+                        Route::resource('', 'VentilationController', ['only' => ['index', 'store',]]);
+                        Route::post('calculate', 'VentilationController@calculate')->name('calculate');
+                    });
 
                     // Wall Insulation
-                    Route::resource('wall-insulation', 'WallInsulationController', ['only' => ['index', 'store']]);
-                    Route::post('wall-insulation/calculate',
-                        'WallInsulationController@calculate')->name('wall-insulation.calculate');
+                    Route::group(['prefix' => 'wall-insulation', 'as' => 'wall-insulation.', 'middleware' => 'step-disabled:wall-insulation'], function () {
+                        Route::resource('', 'WallInsulationController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'WallInsulationController@calculate')->name('calculate');
+                    });
 
                     // Insulated glazing
-                    Route::resource('insulated-glazing', 'InsulatedGlazingController', ['only' => ['index', 'store']]);
-                    Route::post('insulated-glazing/calculate',
-                        'InsulatedGlazingController@calculate')->name('insulated-glazing.calculate');
+                    Route::group(['prefix' => 'insulated-glazing', 'as' => 'insulated-glazing.', 'middleware' => 'step-disabled:insulated-glazing'], function () {
+                        Route::resource('', 'InsulatedGlazingController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'InsulatedGlazingController@calculate')->name('calculate');
+                    });
 
                     // Floor Insulation
-                    Route::resource('floor-insulation', 'FloorInsulationController', ['only' => ['index', 'store']]);
-                    Route::post('floor-insulation/calculate', 'FloorInsulationController@calculate')->name('floor-insulation.calculate');
+                    Route::group(['prefix' => 'floor-insulation', 'as' => 'floor-insulation.', 'middleware' => 'step-disabled:insulated-glazing'], function () {
+                        Route::resource('', 'FloorInsulationController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'FloorInsulationController@calculate')->name('calculate');
+                    });
 
                     // Roof Insulation
-                    Route::resource('roof-insulation', 'RoofInsulationController');
-                    Route::post('roof-insulation/calculate',
-                        'RoofInsulationController@calculate')->name('roof-insulation.calculate');
+                    Route::group(['prefix' => 'roof-insulation', 'as' => 'roof-insulation.', 'middleware' => 'step-disabled:roof-insulation'], function () {
+                        Route::resource('', 'RoofInsulationController');
+                        Route::post('calculate', 'RoofInsulationController@calculate')->name('calculate');
+                    });
 
                     // HR boiler
-                    Route::resource('high-efficiency-boiler', 'HighEfficiencyBoilerController',
-                        ['only' => ['index', 'store']]);
-                    Route::post('high-efficiency-boiler/calculate',
-                        'HighEfficiencyBoilerController@calculate')->name('high-efficiency-boiler.calculate');
+                    Route::group(['prefix' => 'high-efficiency-boiler', 'as' => 'high-efficiency-boiler.', 'middleware' => 'step-disabled:high-efficiency-boiler'], function () {
+                        Route::resource('', 'HighEfficiencyBoilerController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'HighEfficiencyBoilerController@calculate')->name('calculate');
+                    });
 
                     // Solar panels
-                    Route::resource('solar-panels', 'SolarPanelsController', ['only' => ['index', 'store']]);
-                    Route::post('solar-panels/calculate',
-                        'SolarPanelsController@calculate')->name('solar-panels.calculate');
+                    Route::group(['prefix' => 'solar-panels', 'as' => 'solar-panels.', 'middleware' => 'step-disabled:solar-panels'], function () {
+                        Route::resource('', 'SolarPanelsController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'SolarPanelsController@calculate')->name('calculate');
+                    });
 
                     // Heater (solar boiler)
-                    Route::resource('heater', 'HeaterController', ['only' => ['index', 'store']]);
-                    Route::post('heater/calculate', 'HeaterController@calculate')->name('heater.calculate');
+                    Route::group(['prefix' => 'heater', 'as' => 'heater.', 'middleware' => 'step-disabled:heater'], function () {
+                        Route::resource('', 'HeaterController', ['only' => ['index', 'store']]);
+                        Route::post('calculate', 'HeaterController@calculate')->name('calculate');
+                    });
                 });
 
                 Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');
@@ -292,14 +315,11 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     });
 
 
+
+                    Route::resource('questionnaires', 'QuestionnaireController')
+                        ->middleware('current-role:cooperation-admin');
                     // not in the cooperation-admin group, probably need to be used for hte coordinator aswell.
                     Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire', 'middleware' => ['current-role:cooperation-admin']], function () {
-                        Route::get('', 'QuestionnaireController@index')->name('index');
-                        Route::post('', 'QuestionnaireController@update')->name('update');
-                        Route::get('create', 'QuestionnaireController@create')->name('create');
-                        Route::get('edit/{id}', 'QuestionnaireController@edit')->name('edit');
-                        Route::post('create-questionnaire', 'QuestionnaireController@store')->name('store');
-
                         Route::delete('delete-question/{questionId}', 'QuestionnaireController@deleteQuestion')->name('delete');
                         Route::delete('delete-option/{questionId}/{optionId}', 'QuestionnaireController@deleteQuestionOption')->name('delete-question-option');
                         Route::post('set-active', 'QuestionnaireController@setActive')->name('set-active');
@@ -341,26 +361,26 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     /* Section for the cooperations */
                     Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.', 'namespace' => 'Cooperation'], function () {
                         Route::get('', 'CooperationController@index')->name('index');
+                        Route::delete('destroy/{cooperationToDestroy}', 'CooperationController@destroy')->name('destroy');
                         Route::get('edit/{cooperationToEdit}', 'CooperationController@edit')->name('edit');
                         Route::get('create', 'CooperationController@create')->name('create');
                         Route::post('', 'CooperationController@store')->name('store');
                         Route::post('edit', 'CooperationController@update')->name('update');
 
                         /* Actions that will be done per cooperation */
-                        Route::group(['prefix' => '{cooperationToManage}/', 'as' => 'cooperation-to-manage.'], function () {
-                            Route::resource('home', 'HomeController')->only('index');
+                        Route::group(['prefix' => '{cooperationToManage}/', 'as' => 'cooperation-to-manage.'],
+                            function () {
+                                Route::resource('home', 'HomeController')->only('index');
 
-                            Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
-                            Route::resource('coordinator', 'CoordinatorController')->only(['index']);
-                            Route::resource('users', 'UserController')->only(['index', 'show']);
+                                Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
+                                Route::resource('coordinator', 'CoordinatorController')->only(['index']);
+                                Route::resource('users', 'UserController')->only(['index', 'show']);
                             Route::post('users/{id}/confirm', 'UserController@confirm')->name('users.confirm');});
                     });
                 });
 
                 /* Section for the coach */
-                Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach',
-                    'middleware' => ['current-role:coach']
-                ], function () {
+                Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['current-role:coach']], function () {
 
                     Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
                         Route::get('', 'BuildingController@index')->name('index');

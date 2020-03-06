@@ -50,6 +50,16 @@ class Cooperation extends Model
     }
 
     /**
+     * Return the questionnaires of a cooperation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function questionnaires()
+    {
+        return $this->hasMany(Questionnaire::class);
+    }
+
+    /**
      * Return the example buildings for the cooperation
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -147,13 +157,4 @@ class Cooperation extends Model
         );
     }
 
-//    public function scopeUsersWithRole(Builder $query, Role $role)
-//    {
-//        return $query
-//            ->leftJoin(config('permission.table_names.model_has_roles'), 'cooperations.id', '=', 'model_has_roles.cooperation_id')
-//            ->where('model_has_roles.role_id', $role->id)
-//            ->leftJoin('users', config('permission.table_names.model_has_roles').'.'.config('permission.column_names.model_morph_key'), '=', 'users.id')
-//            ->select('users.*');
-//    }
-//
 }

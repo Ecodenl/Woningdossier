@@ -80,6 +80,23 @@ class UserController extends Controller
         $building = $user->building;
 
 
+        // we always have to set the access to true when a user is created through the admin environment
+        PrivateMessage::create(
+            [
+                // we get the selected option from the language file, we can do this cause the submitted value = key from localization
+                'is_public' => true,
+                'message' => __('woningdossier.cooperation.admin.cooperation.users.store.private-message-allowed-access'),
+                'from_user_id' => $user->id,
+                'from_user' => $user->getFullName(),
+                'to_cooperation_id' => $cooperation->id,
+                'building_id' => $building->id,
+                'request_type' => 'user-created-by-cooperation',
+                'allow_access' => true,
+            ]
+        );
+
+
+
 
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.
         if ($request->has('coach_id')) {
@@ -95,13 +112,15 @@ class UserController extends Controller
             ParticipantAddedEvent::dispatch($coach, $building);
         }
 
+
         // if the account is recently created we have to send a confirmation mail
         // else we send a notification to the user he is associated with a new cooperation
         if ($account->wasRecentlyCreated) {
             // and send the account confirmation mail.
             $this->sendAccountConfirmationMail($cooperation, $account);
+            $account->confirm();
         } else {
-            $this->sendAccountAssociatedMail($cooperation, $account);
+            UserAssociatedWithOtherCooperation::dispatch($cooperation, $user);
         }
 
         return redirect()
@@ -121,11 +140,6 @@ class UserController extends Controller
 
         // send a mail to the user
         \Mail::to($account->email)->sendNow(new UserCreatedEmail($cooperation, $account->user(), $token));
-    }
-
-    public function sendAccountAssociatedMail(Cooperation $cooperation, Account $account)
-    {
-        \Mail::to($account->email)->sendNow(new UserAssociatedWithCooperation($cooperation, $account->user()));
     }
 
     /**

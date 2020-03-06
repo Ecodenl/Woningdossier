@@ -25,13 +25,13 @@
                     @if(isset($currentStep))
                         <?php $subStepsForStep = $cooperation->getSubStepsForStep($currentStep); ?>
                         @if($subStepsForStep->isEmpty())
-                            <li  class="active @if($building->hasCompleted($currentStep)) completed @endif">
-                                <a href="{{route("cooperation.tool.{$currentStep->short}.index")}}" >{{$currentStep->name}}</a>
+                            <li class="active @if($building->hasCompleted($currentStep)) completed @endif">
+                                <a href="{{route("cooperation.tool.{$currentStep->short}.index")}}">{{$currentStep->name}}</a>
                             </li>
                         @endif
                         @foreach($subStepsForStep as $subStep)
-                            <li  class="@if($subStep->short == $currentSubStep->short) active @endif @if($building->hasCompleted($subStep)) completed @endif">
-                                <a href="{{route("cooperation.tool.{$currentStep->short}.{$subStep->short}.index")}}" >{{$subStep->name}}</a>
+                            <li class="@if($subStep->short == $currentSubStep->short) active @endif @if($building->hasCompleted($subStep)) completed @endif">
+                                <a href="{{route("cooperation.tool.{$currentStep->short}.{$subStep->short}.index")}}">{{$subStep->name}}</a>
                             </li>
                         @endforeach
                     @endif
@@ -41,7 +41,8 @@
 
                             @if($questionnaire->isActive())
                                 <li class="@if($buildingOwner->hasCompletedQuestionnaire($questionnaire)) completed @endif">
-                                    <a href="#questionnaire-{{$questionnaire->id}}" data-toggle="tab">{{$questionnaire->name}}</a>
+                                    <a href="#questionnaire-{{$questionnaire->id}}"
+                                       data-toggle="tab">{{$questionnaire->name}}</a>
                                 </li>
                             @endif
                         @endforeach
@@ -66,9 +67,11 @@
                                     @endif
                                 </button>
                             @elseif(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']) && $buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
-                                <form action="{{route('cooperation.file-storage.store', ['fileType' => $pdfReportFileType->short])}}" method="post">
+                                <form action="{{route('cooperation.file-storage.store', ['fileType' => $pdfReportFileType->short])}}"
+                                      method="post">
                                     {{csrf_field()}}
-                                    <button style="margin-top: -35px" type="submit" class="pull-right btn btn-primary pdf-report">
+                                    <button style="margin-top: -35px" type="submit"
+                                            class="pull-right btn btn-primary pdf-report">
                                         {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
                                     </button>
                                 </form>
@@ -85,30 +88,43 @@
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <?php
-                                            // some way of determining the previous step
-                                            if ($currentSubStep instanceof \App\Models\Step) {
-                                                $subStepsForCurrentStep = $currentStep->subSteps;
-                                                $previousStep = $subStepsForCurrentStep->where('order', '<', $currentSubStep->order)->last();
-                                            } else {
-                                                $previousStep = $steps->where('order', '<', $currentSubStep->order ?? $currentStep->order)->last();
-                                            }
-                                            $previousUrl = $currentSubStep instanceof \App\Models\Step && $previousStep instanceof \App\Models\Step
-                                                ? route("cooperation.tool.{$currentStep->short}.{$previousStep->short}.index")
-                                                : route("cooperation.tool.{$currentStep->short}.index")
+                                        // some way of determining the previous step
+
+                                        if ($currentSubStep instanceof \App\Models\Step) {
+                                            $subStepsForCurrentStep = $currentStep->subSteps;
+                                            $previousStep = $subStepsForCurrentStep->where('order', '<', $currentSubStep->order)->last();
+                                        } else {
+                                            $previousStep = $steps->where('order', '<', $currentSubStep->order ?? $currentStep->order)->last();
+                                        }
+
+                                        if ($currentSubStep instanceof \App\Models\Step && $previousStep instanceof \App\Models\Step) {
+                                            $previousUrl = route("cooperation.tool.{$currentStep->short}.{$previousStep->short}.index");
+                                        } elseif ($previousStep instanceof \App\Models\Step) {
+                                            $previousUrl = route("cooperation.tool.{$previousStep->short}.index");
+                                        }
                                         ?>
                                         @if($previousStep instanceof \App\Models\Step)
-                                            <a class="btn btn-success pull-left" href="{{ url('tool/'.$previousStep->slug)}}">@lang('default.buttons.prev')</a>
+                                            <a class="btn btn-success pull-left"
+                                               href="{{$previousUrl}}">@lang('default.buttons.prev')</a>
                                         @endif
                                     </div>
+{{--                                    @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')--}}
+{{--                                        @lang('default.buttons.next-page')--}}
+{{--                                        <div class="col-sm-6">--}}
+{{--                                            <a href="" class="pull-right btn btn-primary submit-main-form">--}}
+{{--                                                @lang('default.buttons.next-page')--}}
+{{--                                            </a>--}}
+{{--                                        </div>--}}
+{{--                                    @else--}}
                                     <div class="col-sm-6">
                                         <button class="pull-right btn btn-primary submit-main-form">
                                             @lang('default.buttons.next')
                                         </button>
                                     </div>
-                                    </div>
+{{--                                    @endif--}}
                                 </div>
-                            @endif
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -119,7 +135,24 @@
 
 @push('js')
     <script>
-        $('input').keypress(function(event) {
+
+        function removeErrors()
+        {
+            $('.has-error').removeClass('has-error')
+            $('.help-block').remove()
+        }
+        function addError(input, message) {
+            var helpBlock = '<span class="help-block"></span>';
+            input.parents('.form-group').addClass('has-error');
+            input.parents('.form-group').append($(helpBlock).append('<strong>' + message + '</strong>'));
+        }
+
+        function removeError(input) {
+            input.parents('.has-error').removeClass('has-error');
+            input.parents('.form-group').next('.help-block').remove()
+        }
+
+        $('input').keypress(function (event) {
             // get the current keycode
             var keycode = (event.keyCode ? event.keyCode : event.which);
             if (keycode === 13) {
@@ -144,8 +177,24 @@
             // set the hash in url
             $('.nav-tabs a').on('shown.bs.tab', function (e) {
                 window.location.hash = e.target.hash;
-            })
+            });
+
+            compareInputSourceValues();
+            whenObservingDisableInputs();
         });
+
+        function whenObservingDisableInputs()
+        {
+            var isUserObservingTool = '{{\App\Helpers\HoomdossierSession::getIsObserving()}}';
+
+            if (isUserObservingTool) {
+                var tabContent = $('.tab-content');
+
+                tabContent.find('.form-control').addClass('disabled').prop('disabled', true);
+                tabContent.find('input[type=radio]').addClass('disabled').prop('disabled', true);
+                tabContent.find('input[type=checkbox]').addClass('disabled').prop('disabled', true);
+            }
+        }
 
         $('.submit-main-form').click(function () {
             // submit the main form / tool tab
@@ -153,7 +202,7 @@
         });
 
         $('#copy-coach-input').on('submit', function (event) {
-            if(confirm('@lang('woningdossier.cooperation.tool.general-data.coach-input.copy.help')')) {
+            if (confirm('@lang('woningdossier.cooperation.tool.general-data.coach-input.copy.help')')) {
 
             } else {
                 event.preventDefault();
@@ -161,7 +210,7 @@
             }
         });
         $('#copy-example-building-input').on('submit', function (event) {
-            if(confirm('Weet u zeker dat u alle waardes van de voorbeeldwoning wilt overnemen ? Al uw huidige antwoorden zullen worden overschreven door die van de voorbeeldwoning.')) {
+            if (confirm('Weet u zeker dat u alle waardes van de voorbeeldwoning wilt overnemen ? Al uw huidige antwoorden zullen worden overschreven door die van de voorbeeldwoning.')) {
 
             } else {
                 event.preventDefault();
@@ -169,20 +218,19 @@
             }
         });
 
-        $(document).ready(compareInputSourceValues());
 
-        function isUserComparingInputSources()
-        {
+        function isUserComparingInputSources() {
             var isUserComparingInputSources = '{{\App\Helpers\HoomdossierSession::isUserComparingInputSources()}}';
             if (isUserComparingInputSources) {
                 return true;
             }
             return false;
         }
-        function inputType(input)
-        {
+
+        function inputType(input) {
             return input.prop('type');
         }
+
         function compareInputSourceValues() {
             if (isUserComparingInputSources()) {
                 var formGroups = $('.input-source-group');
@@ -199,7 +247,7 @@
                             userInputValues.push(formGroup.find('input[type=radio]:checked').val());
                             break;
                         case 'checkbox':
-                            formGroup.find('input[type=checkbox]:checked').each(function() {
+                            formGroup.find('input[type=checkbox]:checked').each(function () {
                                 userInputValues.push($(this).val());
                             });
                             break;
@@ -238,9 +286,9 @@
     <script src="{{ asset('js/are-you-sure.js') }}"></script>
 
     @if(!in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']))
-    <script>
-        $("form.form-horizontal").areYouSure();
-    </script>
+        <script>
+            $("form.form-horizontal").areYouSure();
+        </script>
     @endif
 
 @endpush

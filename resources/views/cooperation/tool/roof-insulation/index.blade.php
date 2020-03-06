@@ -8,7 +8,7 @@
 
         {{csrf_field()}}
         @include('cooperation.tool.includes.interested', [
-            'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+            'translation' => 'roof-insulation.index.interested-in-improvement', 'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
         ])
         <div class="row">
             <div id="current-situation" class="col-md-12">
@@ -281,20 +281,20 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4 {{$roofCat}}-hideable">
-                            @include('cooperation.layouts.indication-for-costs.gas', ['id' => $roofCat, 'step' => $currentStep->slug.'.'.$roofCat])
+                            @include('cooperation.layouts.indication-for-costs.gas', ['id' => $roofCat, 'translation' => "{$currentStep->slug}.{$roofCat}.costs.gas"])
                         </div>
 
                         <div class="col-md-4 {{$roofCat}}-hideable">
-                            @include('cooperation.layouts.indication-for-costs.co2', ['id' => $roofCat, 'step' => $currentStep->slug.'.'.$roofCat])
+                            @include('cooperation.layouts.indication-for-costs.co2', ['id' => $roofCat, 'translation' => "{$currentStep->slug}.{$roofCat}.costs.co2"])
                         </div>
                         <div class="col-md-4 {{$roofCat}}-hideable">
-                            @include('cooperation.layouts.indication-for-costs.savings-in-euro', ['id' => $roofCat])
+                            @include('cooperation.layouts.indication-for-costs.savings-in-euro', ['id' => $roofCat, 'translation' => 'roof-insulation.index.savings-in-euro'])
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-4 {{$roofCat}}-hideable">
-                            @include('cooperation.layouts.indication-for-costs.indicative-costs', ['id' => $roofCat])
+                            @include('cooperation.layouts.indication-for-costs.indicative-costs', ['id' => $roofCat, 'translation' => 'roof-insulation.index.indicative-costs'])
                         </div>
                         <div class="col-md-4">
                             @component('cooperation.tool.components.step-question', ['id' => 'indicative-costs-id', 'translation' => 'roof-insulation.'.$roofCat.'.indicative-costs-replacement', 'required' => false])
@@ -319,7 +319,7 @@
                             @endcomponent
                         </div>
                         <div class="col-md-4 {{$roofCat}}-hideable">
-                            @include('cooperation.layouts.indication-for-costs.comparable-rent', ['id' => $roofCat])
+                            @include('cooperation.layouts.indication-for-costs.comparable-rent', ['id' => $roofCat,  'translation' => 'roof-insulation.index.comparable-rent'])
                         </div>
                     </div>
                 </div>
@@ -328,7 +328,7 @@
 
 
         @include('cooperation.tool.includes.comment', [
-           'translation' => 'roof-insulation.comment'
+           'translation' => 'roof-insulation.index.specific-situation'
         ])
 
         <div class="row">

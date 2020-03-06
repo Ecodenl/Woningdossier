@@ -151,6 +151,7 @@ return [
         'building_features.building_layers' => __('cooperation/tool/general-data/building-characteristics.index.building-layers.title'),
         'building_features.surface' => __('cooperation/tool/general-data/building-characteristics.index.surface.title'),
         'building_features.build_year' => __('cooperation/tool/general-data/building-characteristics.index.build-year.title'),
+        'build_year' => __('cooperation/tool/general-data/building-characteristics.index.build-year.title'),
         'user_energy_habits.resident_count' => __('cooperation/tool/general-data/usage.index.water-gas.resident-count.title'),
         'user_energy_habits.thermostat_high' => __('cooperation/tool/general-data/usage.index.heating-habits.thermostat-high.title'),
         'user_energy_habits.thermostat_low' => __('cooperation/tool/general-data/usage.index.heating-habits.thermostat-low.title'),
@@ -166,6 +167,9 @@ return [
         'building_pv_panels.total_installed_power' => __('cooperation/tool/general-data/current-state.index.installed-power.title'),
 
         'building_features.window_surface' => 'totale raamopperlake van de woning',
+
+        // ventilation
+        'building_ventilations.how' => __('cooperation/tool/ventilation.index.how.title'),
 
         // roof insulation
         'building_roof_types.pitched.roof_surface' => __('roof-insulation.current-situation.pitched-roof-surface.title'),

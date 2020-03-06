@@ -3,13 +3,13 @@
 @section('step_title', \App\Helpers\Translation::translate('wall-insulation.title.title'))
 
 @section('step_content')
-    <form  method="POST"
+    <form method="POST"
           action="{{ route('cooperation.tool.wall-insulation.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
 
         <div id="intro">
             @include('cooperation.tool.includes.interested', [
-                'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+                'translation' => 'wall-insulation.index.interested-in-improvement', 'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
             ])
             <div class="row">
                 <div class="col-sm-12">
@@ -39,7 +39,7 @@
             @if(isset($building->buildingFeatures->build_year))
                 <div class="row">
                     <div class="col-sm-12">
-                        <label for="house_has_insulation" class=" control-label">
+                        <label for="house_has_insulation" class="control-label">
                             {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year.title', ['year' => $building->buildingFeatures->build_year]) }}
                             @if($building->buildingFeatures->build_year >= 1985)
                                 {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year-post-1985.title')}}
@@ -163,32 +163,32 @@
         </div>
         <div class="row">
             <div class="hideable" id="surfaces">
-                    <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'wall_surface', 'translation' => 'wall-insulation.optional.facade-surface', 'required' => false])
+                <div class="col-sm-6">
+                    @component('cooperation.tool.components.step-question', ['id' => 'wall_surface', 'translation' => 'wall-insulation.optional.facade-surface', 'required' => false])
 
-                            @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_surface', 'needsFormat' => true])
-                                <input id="wall_surface" type="text" name="wall_surface"
-                                       value="{{ \App\Helpers\NumberFormatter::format(old('wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'wall_surface')),1) }}"
-                                       class="form-control">
-                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                            @endcomponent
-
+                        @component('cooperation.tool.components.input-group',
+                        ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_surface', 'needsFormat' => true])
+                            <input id="wall_surface" type="text" name="wall_surface"
+                                   value="{{ \App\Helpers\NumberFormatter::format(old('wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'wall_surface')),1) }}"
+                                   class="form-control">
+                            <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
                         @endcomponent
-                    </div>
-                    <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'insulation_wall_surface', 'translation' => 'wall-insulation.optional.insulated-surface', 'required' => false])
 
-                            @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'insulation_wall_surface', 'needsFormat' => true])
-                                <input id="insulation_wall_surface" type="text" name="insulation_wall_surface"
-                                       value="{{ \App\Helpers\NumberFormatter::format(old('insulation_wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'insulation_wall_surface')),1) }}"
-                                       class="form-control">
-                                <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                            @endcomponent
+                    @endcomponent
+                </div>
+                <div class="col-sm-6">
+                    @component('cooperation.tool.components.step-question', ['id' => 'insulation_wall_surface', 'translation' => 'wall-insulation.optional.insulated-surface', 'required' => false])
 
+                        @component('cooperation.tool.components.input-group',
+                    ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'insulation_wall_surface', 'needsFormat' => true])
+                            <input id="insulation_wall_surface" type="text" name="insulation_wall_surface"
+                                   value="{{ \App\Helpers\NumberFormatter::format(old('insulation_wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'insulation_wall_surface')),1) }}"
+                                   class="form-control">
+                            <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
                         @endcomponent
-                    </div>
+
+                    @endcomponent
+                </div>
             </div>
 
             <div class="hideable">
@@ -263,21 +263,27 @@
 
                     <div id="costs" class="row">
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
+                            @include('cooperation.layouts.indication-for-costs.gas', ['translation' => 'wall-insulation.index.costs.gas'])
                         </div>
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
+                            @include('cooperation.layouts.indication-for-costs.co2', ['translation' => 'wall-insulation.index.costs.co2'])
                         </div>
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.savings-in-euro')
+                            @include('cooperation.layouts.indication-for-costs.savings-in-euro', [
+                                'translation' => 'wall-insulation.index.savings-in-euro'
+                             ])
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.indicative-costs')
+                            @include('cooperation.layouts.indication-for-costs.indicative-costs', [
+                                'translation' => 'wall-insulation.index.indicative-costs'
+                             ])
                         </div>
                         <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.comparable-rent')
+                            @include('cooperation.layouts.indication-for-costs.comparable-rent', [
+                                'translation' => 'wall-insulation.index.comparable-rent'
+                             ])
                         </div>
                     </div>
                 </div>
@@ -334,8 +340,8 @@
             </div>
 
             @include('cooperation.tool.includes.comment', [
-                 'translation' => 'wall-insulation.comment'
-             ])
+                 'translation' => 'wall-insulation.index.specific-situation'
+            ])
 
             <div class="row">
                 <div class="col-md-12">

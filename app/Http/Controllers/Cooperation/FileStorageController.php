@@ -63,7 +63,9 @@ class FileStorageController extends Controller
             $file = $fileType->files()->first();
             $downloadLinkForFileType = route('cooperation.file-storage.download', compact('file'));
 
-            $this->authorize('download', $file);
+            if ($file instanceof FileStorage) {
+                $this->authorize('download', $file);
+            }
         } else {
             $building = HoomdossierSession::getBuilding(true);
             $buildingOwner = $building->user;
@@ -73,7 +75,11 @@ class FileStorageController extends Controller
             $file = $fileType->files()->forMe($buildingOwner)->forInputSource($inputSource)->first();
             $downloadLinkForFileType = $file instanceof FileStorage ? route('cooperation.file-storage.download', compact('file')) : null;
 
-            $this->authorize('download', [$file, $building]);
+            // as this checks for file processing, there's a chance it isn't picked up by the queue
+            // so we check if it actually exisits
+            if ($file instanceof FileStorage) {
+                $this->authorize('download', [$file, $building]);
+            }
         }
 
         return response()->json([

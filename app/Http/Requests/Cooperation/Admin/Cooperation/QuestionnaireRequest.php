@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Cooperation\Admin\Cooperation;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class QuestionnaireRequest extends FormRequest
 {
@@ -24,6 +25,7 @@ class QuestionnaireRequest extends FormRequest
     public function rules()
     {
         return [
+            'questionnaire.step_id' => ['required', Rule::exists('steps', 'id')],
             'questionnaire.name.*' => 'required',
             'validation.*.main-rule' => 'required',
             'validation.*.sub-rule' => 'required',

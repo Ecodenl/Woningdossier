@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Models\Building;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\User;
@@ -13,7 +13,7 @@ class FileStoragePolicy
 {
     use HandlesAuthorization;
 
-    public function download(User $user, FileStorage $fileStorage)
+    public function download(User $user, FileStorage $fileStorage, Building $building = null)
     {
         // some other logic for resident wil come in the near future.
         if ($user->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']) && $fileStorage->cooperation_id == HoomdossierSession::getCooperation()) {
@@ -22,7 +22,7 @@ class FileStoragePolicy
 
         $inputSource = HoomdossierSession::getInputSource(true);
 
-        if ($user->building->isOwnerOfFileStorage($inputSource, $fileStorage)) {
+        if ($building instanceof Building && $building->isOwnerOfFileStorage($inputSource, $fileStorage)) {
             return true;
         }
 

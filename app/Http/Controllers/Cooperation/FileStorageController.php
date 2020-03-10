@@ -37,9 +37,10 @@ class FileStorageController extends Controller
     public function download(Cooperation $cooperation, FileStorage $fileStorage)
     {
 
+        $building = HoomdossierSession::getBuilding(true);
         // because of the global scope on the file storage its impossible to retrieve a file from a other cooperation
         // but we will still do some additional checks
-        $this->authorize('download', $fileStorage);
+        $this->authorize('download', [$fileStorage, $building]);
 
         return FileStorageService::download($fileStorage);
     }
@@ -61,11 +62,24 @@ class FileStorageController extends Controller
             $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForCooperation($fileType, $cooperation);
             $file = $fileType->files()->first();
             $downloadLinkForFileType = route('cooperation.file-storage.download', compact('file'));
+
+            if ($file instanceof FileStorage) {
+                $this->authorize('download', $file);
+            }
         } else {
-            $buildingOwner = HoomdossierSession::getBuilding(true);
-            $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForUser($fileType, $buildingOwner->user, $inputSource);
-            $file = $fileType->files()->forMe($buildingOwner->user)->forInputSource($inputSource)->first();
+            $building = HoomdossierSession::getBuilding(true);
+            $buildingOwner = $building->user;
+
+
+            $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForUser($fileType, $buildingOwner, $inputSource);
+            $file = $fileType->files()->forMe($buildingOwner)->forInputSource($inputSource)->first();
             $downloadLinkForFileType = $file instanceof FileStorage ? route('cooperation.file-storage.download', compact('file')) : null;
+
+            // as this checks for file processing, there's a chance it isn't picked up by the queue
+            // so we check if it actually exisits
+            if ($file instanceof FileStorage) {
+                $this->authorize('download', [$file, $building]);
+            }
         }
 
         return response()->json([

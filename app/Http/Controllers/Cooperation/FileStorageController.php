@@ -68,6 +68,8 @@ class FileStorageController extends Controller
             $downloadLinkForFileType = $file instanceof FileStorage ? route('cooperation.file-storage.download', compact('file')) : null;
         }
 
+        $this->authorize('download', $file);
+
         return response()->json([
             'file_created_at' => $file instanceof FileStorage ? $file->created_at->format('Y-m-d H:i') : null,
             'file_type_name' => $fileType->name,

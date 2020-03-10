@@ -38,17 +38,18 @@ class SentryContext
                 'is_observing' => HoomdossierSession::isUserObserving() ? 'yes' : 'no',
                 'is_comparing' => HoomdossierSession::isUserComparingInputSources() ? 'yes' : 'no',
                 'input_source' => $inputSource->short,
-                'operating_on_own_building' => optional($building->user)->id == $user->id ? 'yes' : 'no',
+                'operating_on_own_building' => optional($building)->user_id == $user->id ? 'yes' : 'no',
                 'operating_as' => $inputSourceValue->short,
+                'all_session_data' => \App\Helpers\HoomdossierSession::all(),
             ];
 
             $tags = [
-                'building:id' => $building->id,
-                'building:owner' => optional($building->user)->id,
+                'building:id' => optional($building)->id,
+                'building:owner' => optional($building)->user_id,
             ];
 
-            if (!$building->user instanceof User){
-                \Log::error("SentryContext : building -> user is no instance of App\Models\User !! a: " . $account->id . ", u: " . $user->id . ", b: " . $building->id);
+            if (!optional($building)->user instanceof User){
+                \Log::error("SentryContext : building -> user is no instance of App\Models\User !! a: " . $account->id . ", u: " . $user->id . ", b: " . optional($building)->id);
             }
 
             \Sentry\configureScope(function (Scope $scope) use ($u, $tags) {

@@ -298,7 +298,7 @@ return [
                         'button' => 'Bijwerken'
                     ],
                     'status' => [
-                        'current' => 'Huige status: ',
+                        'current' => 'Huidige status: ',
                         'label' => 'Status: ',
                         'button' => 'Kies status'
                     ],

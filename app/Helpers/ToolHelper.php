@@ -667,7 +667,7 @@ class ToolHelper
                             'size_boiler' => __('heater.size-boiler.title'),
                             'size_collector' => __('heater.size-collector.title'),
                         ],
-                        'production_heat' => __('heater.indication-for-costs.production-heat'),
+                        'production_heat' => __('heater.indication-for-costs.production-heat.title'),
                         'percentage_consumption' => __('heater.indication-for-costs.percentage-consumption.title'),
                         'savings_gas' => __('heater.index.costs.gas.title'),
                         'savings_co2' => __('heater.index.costs.co2.title'),

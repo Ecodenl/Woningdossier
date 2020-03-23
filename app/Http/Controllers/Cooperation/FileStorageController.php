@@ -146,9 +146,6 @@ class FileStorageController extends Controller
             'filename' => $fileName,
         ]);
 
-        GenerateTotalReport::dispatch($cooperation, $fileType, $fileStorage);
-
-        dd('oke');
         $this->authorize('store', [$fileStorage, $fileType]);
 
         // this is only needed when its not the cooperation generating a file.

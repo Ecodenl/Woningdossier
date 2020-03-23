@@ -584,12 +584,11 @@ class ToolHelper
                     ],
                 ]
             ],
-
             'solar-panels' => [
                 '-' => [
                     $stepUserInterestKey . Step::findByShort('solar-panels')->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $solarPanels->name . ': ' . __('solar-panels.index.interested-in-improvement.title'),
+                        'label' => __('solar-panels.index.interested-in-improvement.title'),
                         'type' => 'select',
                         'options' => $interestOptions,
                     ],

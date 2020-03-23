@@ -96,7 +96,6 @@ class FileStorageController extends Controller
         if ($fileType->isBeingProcessed()) {
             return redirect()->back();
         }
-
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);

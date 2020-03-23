@@ -516,8 +516,10 @@ class DumpService
                                     // if is array, try to get the answer from the extra column, does the key not exist set a default value.
                                     $answer = $extraIsArray ? optional($buildingService->extra)[$extraKey] : null;
 
+
                                     // when the answer is a bool / true its checked, so instead of showing true we show ja.
-                                    if ($answer == 'true') {
+                                    // total sun panels is stored in same column, but need to be treated as a number
+                                    if ($answer == 'true' && $buildingService->service->short !== 'total-sun-panels') {
                                         $answer = 'Ja';
                                     }
 

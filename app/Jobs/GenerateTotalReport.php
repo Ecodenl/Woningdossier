@@ -15,11 +15,10 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Maatwebsite\Excel\Facades\Excel;
 
-class GenerateTotalReport implements ShouldQueue
+class GenerateTotalReport
 {
     use Dispatchable;
     use InteractsWithQueue;
-    use Queueable;
     use SerializesModels;
 
     protected $cooperation;

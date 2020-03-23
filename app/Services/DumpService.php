@@ -52,6 +52,18 @@ use Illuminate\Support\Collection;
 
 class DumpService
 {
+
+    public static function makeHeaderText($stepName, $subStepName, $text)
+    {
+        // inside the content structure a step with no sub steps will be given a "-" as step
+        // this way we can maintain nest
+        if (empty($subStepName) || $subStepName == '-') {
+            $headerText = "{$stepName}: {$text}";
+        } else {
+            $headerText = "{$stepName}, {$subStepName}: {$text}";
+        }
+        return $headerText;
+    }
     public static function getStructureForTotalDumpService(bool $anonymized, $prefixValuesWithStep = true)
     {
 
@@ -122,7 +134,7 @@ class DumpService
                             // If you want to go ahead and translate in a different namespace, do it here
                             // we will dot the array, map it so we can add the step name to it
                             $deeperContents = array_map(function ($content) use ($step, $subStep) {
-                                return $step->name . ','.$subStep.': ' . $content;
+                                return self::makeHeaderText($step->name, $subStep, $content);
                             }, Arr::dot($contents, $stepShort.'.'.$subStep.'.calculation.'));
                         } else {
                             $deeperContents = Arr::dot($contents, $stepShort.'.'.$subStep.'.calculation.');
@@ -135,7 +147,8 @@ class DumpService
                         if ($prefixValuesWithStep) {
 
                             $subStepName = optional(Step::findByShort($subStep))->name;
-                            $headers[$stepShort.'.'.$subStep. '.' . $tableWithColumnOrAndId] = "{$step->name}, {$subStepName}: {$labelWithEuroNormalization}";
+
+                            $headers[$stepShort.'.'.$subStep. '.' . $tableWithColumnOrAndId] = self::makeHeaderText($step->name, $subStepName, $labelWithEuroNormalization);
 
                         } else {
                             $headers[$stepShort.'.'.$subStep. '.' . $tableWithColumnOrAndId] = $labelWithEuroNormalization;

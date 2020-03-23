@@ -92,6 +92,7 @@ class FileStorageController extends Controller
 
     public function store(Cooperation $cooperation, FileType $fileType, FileStorageFormRequest $request)
     {
+
         if ($fileType->isBeingProcessed()) {
             return redirect()->back();
         }
@@ -146,6 +147,9 @@ class FileStorageController extends Controller
             'filename' => $fileName,
         ]);
 
+        GenerateTotalReport::dispatch($cooperation, $fileType, $fileStorage);
+
+        dd('oke');
         $this->authorize('store', [$fileStorage, $fileType]);
 
         // this is only needed when its not the cooperation generating a file.

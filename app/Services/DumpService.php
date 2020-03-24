@@ -256,13 +256,6 @@ class DumpService
 
         $calculateData = static::getCalculateData($user, $inputSource);
 
-        // one correction because of bad headers
-        if (isset($calculateData['heater']['-']['production_heat']) && !is_array($calculateData['heater']['-']['production_heat'])) {
-            if (!isset($calculateData['heater']['-']['production_heat']['title'])) {
-                $calculateData['heater']['-']['production_heat'] = ['title' => $calculateData['heater']['-']['production_heat']];
-            }
-        }
-
         // loop through the headers
         foreach ($headers as $tableWithColumnOrAndIdKey => $translatedInputName) {
             if (is_string($tableWithColumnOrAndIdKey)) {
@@ -844,7 +837,6 @@ class DumpService
             'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id ?? null,
             'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
         ]);
-//        dd($wallInsulationSavings);
 
         $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit, [
             'user_interests' => $userInterestsForInsulatedGlazing,

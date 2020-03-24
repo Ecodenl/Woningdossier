@@ -15,8 +15,9 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Maatwebsite\Excel\Facades\Excel;
 
-class GenerateTotalReport
+class GenerateTotalReport implements ShouldQueue
 {
+    use Queueable;
     use Dispatchable;
     use InteractsWithQueue;
     use SerializesModels;

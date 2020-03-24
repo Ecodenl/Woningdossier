@@ -85,7 +85,6 @@ class VentilationController extends Controller
             $defaultInterest = $stepUserInterest->interest;
         }
 
-
         foreach ($interestsInMeasureApplications as $measureApplicationId) {
             UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationId, $defaultInterest->id);
         }
@@ -114,6 +113,7 @@ class VentilationController extends Controller
         StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
         $nextStep = StepHelper::getNextStep($building, $inputSource, $step);
         $url = $nextStep['url'];
+        return redirect()->back();
         if (!empty($nextStep['tab_id'])) {
             $url .= '#' . $nextStep['tab_id'];
         }

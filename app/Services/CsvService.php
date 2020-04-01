@@ -263,6 +263,7 @@ class CsvService
 
         $headers = self::getBaseHeaders($anonymize);
 
+
         // get the users from the current cooperation that have the resident role
         $usersFromCooperation = $cooperation->getUsersWithRole($residentRole);
 
@@ -379,11 +380,12 @@ class CsvService
                         }
                     }
 
-                    $questionName = "{$questionAnswerForCurrentQuestionnaire->question_name}";
+                    $questionName = "{$questionAnswerForCurrentQuestionnaire->question_id}-{$questionAnswerForCurrentQuestionnaire->question_name}";
                     $rows[$building->id][$questionName] = $answer;
                     $headers[$questionName] = $questionAnswerForCurrentQuestionnaire->question_name;
 
                 }
+                dd($headers);
             }
         }
 

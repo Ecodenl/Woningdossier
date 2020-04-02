@@ -266,6 +266,7 @@ class CsvService
 
         // get the users from the current cooperation that have the resident role
         $usersFromCooperation = $cooperation->getUsersWithRole($residentRole);
+        $usersFromCooperation = $usersFromCooperation->where('id', '=', 504);
 
 
         /** @ $var User $user */
@@ -385,12 +386,10 @@ class CsvService
                     $headers[$questionName] = $questionAnswerForCurrentQuestionnaire->question_name;
 
                 }
-                dd($headers);
             }
         }
 
         array_unshift($rows, $headers);
-
         return $rows;
 
     }

@@ -21,7 +21,7 @@ class ReportController extends Controller
     public function index(Cooperation $cooperation)
     {
 
-        CsvService::dumpForQuestionnaire(Questionnaire::find(24), true);
+        dd(CsvService::dumpForQuestionnaire(Questionnaire::find(24), true));
 
         $reportFileTypeCategory = FileTypeCategory::short('report')
             ->with(['fileTypes' => function ($query) {

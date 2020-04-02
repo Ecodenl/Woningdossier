@@ -132,27 +132,25 @@
                     <div class="row crawlspace-accessible">
                         <div class="col-sm-6">
 
-                            @component('cooperation.tool.components.step-question', ['id' => 'building_features.floor_surface', 'translation' => 'floor-insulation.surface', 'required' => false])
+                            @component('cooperation.tool.components.step-question', ['id' => 'building_features.floor_surface', 'translation' => 'floor-insulation.surface', 'required' => true])
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'floor_surface', 'needsFormat' => true])
                                     <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                                    <input id="floor_surface" type="text" name="building_features[floor_surface]"
+                                    <input id="floor_surface" type="text" name="building_features[floor_surface]" required="required"
                                            value="{{ \App\Helpers\NumberFormatter::format(old('building_features.floor_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'floor_surface')),1) }}"
                                            class="form-control">
-                                    {{--<input id="floor_surface" type="text" name="building_features[floor_surface]" class="form-control" value="{{ old('building_features.floor_surface', \App\Helpers\NumberFormatter::format($buildingFeatures->floor_surface, 1)) }}">--}}
                                 @endcomponent
                             @endcomponent
                         </div>
                         <div class="col-sm-6">
-                            @component('cooperation.tool.components.step-question', ['id' => 'building_features.insulation_surface', 'translation' => 'floor-insulation.insulation-surface', 'required' => false])
+                            @component('cooperation.tool.components.step-question', ['id' => 'building_features.insulation_surface', 'translation' => 'floor-insulation.insulation-surface', 'required' => true])
                                 @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'insulation_surface', 'needsFormat' => true])
                                     <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                                    <input id="insulation_floor_surface" type="text"
+                                    <input id="insulation_floor_surface" type="text" required="required"
                                            name="building_features[insulation_surface]"
                                            value="{{ \App\Helpers\NumberFormatter::format(old('building_features.insulation_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'insulation_surface')),1) }}"
                                            class="form-control">
-                                    {{--<input id="insulation_floor_surface" type="text" name="building_features[insulation_surface]" class="form-control" value="{{ old('building_features.insulation_surface', \App\Helpers\NumberFormatter::format($buildingFeatures->insulation_surface, 1)) }}">--}}
                                 @endcomponent
                             @endcomponent
                         </div>

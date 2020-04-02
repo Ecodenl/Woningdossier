@@ -17,7 +17,8 @@ class FloorInsulationHelper
      *
      * @param Building $building
      * @param InputSource $inputSource
-     * @param array $saveData
+     * @param array $buildingFeatureData
+     * @param array $buildingElementData
      */
     public static function save(Building $building, InputSource $inputSource, array $buildingFeatureData, array $buildingElementData)
     {
@@ -55,14 +56,8 @@ class FloorInsulationHelper
                 'input_source_id' => $inputSource->id,
             ],
             [
-                'facade_plastered_surface_id' => null,
-                'wall_joints' => null,
-                'cavity_wall' => null,
-                'contaminated_wall_joints' => null,
-                'wall_surface' => null,
-                'insulation_wall_surface' => null,
-                'facade_damaged_paintwork_id' => null,
-                'facade_plastered_painted' => null
+                'floor_surface' => null,
+                'insulation_surface' => null
             ]
         );
     }

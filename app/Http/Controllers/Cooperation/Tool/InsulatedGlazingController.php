@@ -184,8 +184,6 @@ class InsulatedGlazingController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
-        $buildingId = $building->id;
-        $inputSourceId = $inputSource->id;
 
         $userInterests = $request->input('user_interests');
         $interests = collect();
@@ -203,12 +201,8 @@ class InsulatedGlazingController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-
-        $buildingInsulatedGlazingData = $request->input('building_insulated_glazings', '');
-        $buildingFeatureData = $request->input('building_features');
-        $buildingElementData = $request->input('building_elements');
-        $buildingPaintWorkStatusData = $request->get('building_paintwork_statuses', '');
-
+        // save the step data
+        // todo: add if no interest clear step
         $saveData = $request->only('building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses');
         InsulatedGlazingHelper::save(
             $building,

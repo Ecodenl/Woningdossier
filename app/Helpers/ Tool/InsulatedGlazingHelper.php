@@ -80,6 +80,16 @@ class InsulatedGlazingHelper
         );
 
 
+        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+            [
+                'building_id' => $building->id,
+                'input_source_id' => $inputSource->id,
+            ],
+            $buildingFeatureData
+        );
+
+
+
         $lastPaintedYear = null;
         if (array_key_exists('last_painted_year', $buildingPaintworkStatusData)) {
             $year = (int)$buildingPaintworkStatusData['last_painted_year'];
@@ -87,7 +97,6 @@ class InsulatedGlazingHelper
                 $buildingPaintworkStatusData['last_painted_year'] = $year;
             }
         }
-
         BuildingPaintworkStatus::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $building->id,

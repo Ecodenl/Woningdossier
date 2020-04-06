@@ -146,7 +146,7 @@ class InsulatedGlazing
             // frame type use used as ratio (e.g. wood + some others -> use 70% of surface)
             $woodElementValues = [];
 
-            // wood element values to array.
+            // wood element values to array, from the checkbox.
             if (array_key_exists($woodElements->id, $buildingElements)) {
                 foreach ($buildingElements[$woodElements->id] as $woodElementValueId) {
                     $woodElementValue = ElementValue::where('id', $woodElementValueId)

@@ -90,7 +90,7 @@ class InsulatedGlazingController extends Controller
                 $currentInsulatedGlazing = $building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id)->first();
                 $currentInsulatedGlazingInputs = BuildingInsulatedGlazing::where('measure_application_id', $measureApplication->id)->forMe()->get();
 
-                if (! $currentInsulatedGlazingInputs->isEmpty()) {
+                if (!$currentInsulatedGlazingInputs->isEmpty()) {
                     $buildingInsulatedGlazingsForMe[$measureApplication->id] = $currentInsulatedGlazingInputs;
                 }
                 if ($currentInsulatedGlazing instanceof BuildingInsulatedGlazing) {
@@ -207,52 +207,14 @@ class InsulatedGlazingController extends Controller
         $buildingInsulatedGlazingData = $request->input('building_insulated_glazings', '');
         $buildingFeatureData = $request->input('building_features');
         $buildingElementData = $request->input('building_elements');
+        $buildingPaintWorkStatusData = $request->get('building_paintwork_statuses', '');
 
-        // todo: check buildingElement data
-        InsulatedGlazingHelper::save($building, $inputSource, $buildingFeatureData, $buildingInsulatedGlazingData, $buildingElementData);
-
-        $woodElements = $request->input('building_elements.wood-elements', []);
-
-        $woodElementCreateData = [];
-        foreach ($woodElements as $woodElementId => $woodElementValueIds) {
-            // add the data we need to perform a create
-            foreach ($woodElementValueIds as $woodElementValueId) {
-                array_push($woodElementCreateData, ['element_value_id' => $woodElementValueId]);
-            }
-
-            ModelService::deleteAndCreate(BuildingElement::class,
-                [
-                    'building_id' => $buildingId,
-                    'element_id' => $woodElementId,
-                    'input_source_id' => $inputSourceId,
-                ],
-                $woodElementCreateData
-            );
-        }
-
-        // Save the paintwork statuses
-        $paintWorkStatuses = $request->get('building_paintwork_statuses', '');
-
-        $lastPaintedYear = null;
-        if (array_key_exists('last_painted_year', $paintWorkStatuses)) {
-            $year = (int) $paintWorkStatuses['last_painted_year'];
-            if ($year > 1950) {
-                $lastPaintedYear = $year;
-            }
-        }
-
-        BuildingPaintworkStatus::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
-            ],
-            [
-                'last_painted_year' => $lastPaintedYear,
-                'paintwork_status_id' => $paintWorkStatuses['paintwork_status_id'],
-                'wood_rot_status_id' => $paintWorkStatuses['wood_rot_status_id'],
-            ]
+        $saveData = $request->only('building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses');
+        InsulatedGlazingHelper::save(
+            $building,
+            $inputSource,
+            $saveData
         );
-
 
 
         $this->saveAdvices($request);
@@ -263,8 +225,8 @@ class InsulatedGlazingController extends Controller
         $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
         $url = $nextStep['url'];
 
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#' . $nextStep['tab_id'];
         }
 
         return redirect($url);

@@ -92,9 +92,16 @@ class HighEfficiencyBoilerController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-
         $saveData = $request->only('user_energy_habits', 'building_services');
-        HighEfficiencyBoilerHelper::save($building, $inputSource, $saveData);
+        // todo, no interest but the has interest returns true
+        dd(StepHelper::hasInterestInStep($user, Step::class, $this->step), $this->step);
+        if (StepHelper::hasInterestInStep($user, Step::class, $this->step)) {
+            HighEfficiencyBoilerHelper::save($building, $inputSource, $saveData);
+        } else {
+            dd('bier');
+            HighEfficiencyBoilerHelper::clear($building, $inputSource);
+        }
+
 
         // Save progress
         $this->saveAdvices($request);

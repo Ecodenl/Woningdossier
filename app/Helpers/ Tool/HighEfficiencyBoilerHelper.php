@@ -45,21 +45,30 @@ class HighEfficiencyBoilerHelper
     }
 
     /**
-     * Method to clear the building feature data for wall insulation step.
+     * Method to clear the hr step
      *
      * @param Building $building
      * @param InputSource $inputSource
      */
     public static function clear(Building $building, InputSource $inputSource)
     {
-        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+        $service = Service::findByShort('boiler');
+
+        BuildingService::forMe($building->user)
+            ->forInputSource($inputSource)
+            ->where('service_id', $service->id)
+            ->delete();
+
+
+        // questionable reset as this is base data
+        UserEnergyHabit::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'building_id' => $building->id,
+                'user_id' => $building->user->id,
                 'input_source_id' => $inputSource->id,
             ],
             [
-                'floor_surface' => null,
-                'insulation_surface' => null
+                'amount_gas' => null,
+                'resident_count' => null,
             ]
         );
     }

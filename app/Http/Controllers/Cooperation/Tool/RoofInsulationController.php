@@ -192,7 +192,9 @@ class RoofInsulationController extends Controller
                 $zincSurface = 0;
                 if ($roofType instanceof RoofType) {
                     $buildingRoofType = $building->roofTypes()->where('roof_type_id', '=', $roofType->id)->first();
-                    $zincSurface = $buildingRoofType->zinc_surface;
+                    if ($buildingRoofType instanceof BuildingRoofType) {
+                        $zincSurface = $buildingRoofType->zinc_surface;
+                    }
                 }
                 // Note there's no such request input just yet. We're not sure this will be available for the user
                 // to fill in.
@@ -332,9 +334,7 @@ class RoofInsulationController extends Controller
                     'insulation_roof_surface' => $insulationRoofSurface,
                     'zinc_surface' => $zincSurface,
                     'building_heating_id' => $buildingHeating,
-                    'extra' => [
-                        $roofTypes[$cat]['extra']
-                    ],
+                    'extra' => $roofTypes[$cat]['extra']
                 ]);
             }
         }

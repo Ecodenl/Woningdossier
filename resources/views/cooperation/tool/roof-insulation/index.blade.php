@@ -218,6 +218,12 @@
                                         @component('cooperation.tool.components.step-question', ['id' => 'building_roof_types.' . $roofCat . '.extra.measure_application_id', 'translation' => 'roof-insulation.'.$roofCat.'-roof.insulate-roof', 'required' => false])
 
                                             <?php
+//                                                try {
+//                                                    dd($currentCategorizedRoofTypes[$roofCat]['extra']['measure_application_id'], $roofCat);
+//                                                } catch (Exception $e) {
+//                                                    dd($currentCategorizedRoofTypes[$roofCat]['extra'], $roofCat);
+//                                                }
+
                                                 $default = isset($currentCategorizedRoofTypes[$roofCat]['extra']['measure_application_id']) ? $currentCategorizedRoofTypes[$roofCat]['extra']['measure_application_id'] : 0;
                                             ?>
 

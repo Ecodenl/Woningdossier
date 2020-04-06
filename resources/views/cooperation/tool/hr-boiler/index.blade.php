@@ -44,16 +44,15 @@
             <div class="row">
                 <div id="boiler-options">
                     <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'building_services.' . $boiler->short . '.service_value_id', 'translation' => 'high-efficiency-boiler.boiler-type', 'required' => false])
+                        @component('cooperation.tool.components.step-question', ['id' => 'building_services.service_value_id', 'translation' => 'high-efficiency-boiler.boiler-type', 'required' => false])
 
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => $boilerTypes, 'userInputValues' => $installedBoilerForMe, 'userInputColumn' => 'service_value_id'])
                                 <select id="high_efficiency_boiler_id" class="form-control"
-                                        name="building_services[{{ $boiler->short  }}][service_value_id]">
+                                        name="building_services[service_value_id]">
                                     @foreach($boilerTypes as $boilerType)
-                                        <option @if(old('building_services.' . $boiler->short . '.service_value_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $boiler->id), 'service_value_id')) == $boilerType->id) selected="selected"
+                                        <option @if(old('building_services.service_value_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $boiler->id), 'service_value_id')) == $boilerType->id) selected="selected"
                                                 @endif value="{{ $boilerType->id }}">{{ $boilerType->value }}</option>
-                                        {{--<option @if(old('building_services.' . $boiler->short . '.service_value_id') == $boilerType->id || ($installedBoiler instanceof \App\Models\BuildingService && $installedBoiler->service_value_id == $boilerType->id)) selected @endif value="{{ $boilerType->id }}">{{ $boilerType->value }}</option>--}}
                                     @endforeach
                                 </select>
                             @endcomponent
@@ -65,7 +64,7 @@
 
                 </div>
                 <div class="col-sm-6">
-                    @component('cooperation.tool.components.step-question', ['id' => 'building_services.' . $boiler->short . '.extra', 'translation' => 'high-efficiency-boiler.boiler-placed-date', 'required' => true])
+                    @component('cooperation.tool.components.step-question', ['id' => 'building_services.extra.date', 'translation' => 'high-efficiency-boiler.boiler-placed-date', 'required' => true])
 
                         <?php
                             /** @var \Illuminate\Support\Collection $installedBoilerForMe */
@@ -75,9 +74,8 @@
                         @component('cooperation.tool.components.input-group',
                         ['inputType' => 'input', 'userInputValues' => $installedBoilerForMe, 'userInputColumn' => 'extra.date'])
                             <input type="text" required class="form-control"
-                                   value="{{ old('building_services.' . $boiler->short . '.extra', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $boiler->id), 'extra.date')) }}"
-                                   name="building_services[{{ $boiler->short }}][extra]">
-                            {{--<input type="text" required class="form-control" value="{{ old('building_services.' . $boiler->short . '.extra', $default) }}" name="building_services[{{ $boiler->short }}][extra]">--}}
+                                   value="{{ old('building_services.extra.date', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingServices()->where('service_id', $boiler->id), 'extra.date')) }}"
+                                   name="building_services[extra][date]">
                         @endcomponent
 
                     @endcomponent

@@ -88,8 +88,6 @@ class InsulatedGlazingHelper
             $buildingFeatureData
         );
 
-
-
         $lastPaintedYear = null;
         if (array_key_exists('last_painted_year', $buildingPaintworkStatusData)) {
             $year = (int)$buildingPaintworkStatusData['last_painted_year'];

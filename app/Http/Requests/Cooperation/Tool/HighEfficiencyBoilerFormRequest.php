@@ -29,9 +29,8 @@ class HighEfficiencyBoilerFormRequest extends FormRequest
         return [
             'user_energy_habits.amount_gas' => 'required|numeric|min:0|max:10000',
             'user_energy_habits.resident_count' => 'nullable|numeric|min:1|max:8',
-//            'user_energy_habits.*' => 'required|numeric',
-            'building_services.*.service_value_id' => 'exists:service_values,id',
-            'building_services.*.extra' => 'nullable|numeric|between:1970,'.$max,
+            'building_services.service_value_id' => 'exists:service_values,id',
+            'building_services.extra.date' => 'nullable|numeric|between:1970,'.$max,
         ];
     }
 }

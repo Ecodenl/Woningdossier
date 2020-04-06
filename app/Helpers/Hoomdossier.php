@@ -79,6 +79,11 @@ class Hoomdossier
             ->join('input_sources', $relation->getRelated()->getTable().'.input_source_id', '=', 'input_sources.id')
             ->orderBy('input_sources.order', 'ASC');
 
+
+//        if ($column == 'extra.bitumen_replaced_date') {
+//            dd($baseQuery->get());
+//        }
+
         // if is not empty, we need to search the answers for a particular input source
         if (! is_null($onlyReturnForInputSource)) {
             $inputSourceToReturn = InputSource::findByShort($onlyReturnForInputSource);
@@ -89,6 +94,10 @@ class Hoomdossier
         }
 
         $results = $found->pluck($column, 'short');
+
+//        if ($column == 'extra.bitumen_replaced_date') {
+//            dd($results);
+//        }
 
 
         // if the column name contains 'surface' there is particular logic:

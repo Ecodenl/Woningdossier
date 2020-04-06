@@ -126,15 +126,17 @@ class InsulatedGlazing
         ];
 
         $frames = Element::where('short', 'frames')->first();
+        $woodElements = Element::where('short', 'wood-elements')->first();
         $buildingElements = $calculateData['building_elements'] ?? [];
         $framesValueId = 0;
-        if (array_key_exists($frames->id, $buildingElements) && array_key_exists('frames', $buildingElements[$frames->id])) {
-            $framesValueId = (int) $buildingElements[$frames->id]['frames'];
+
+        if (array_key_exists($frames->id, $buildingElements)) {
+            $framesValueId = (int) $buildingElements[$frames->id];
         }
         $frameElementValue = ElementValue::find($framesValueId);
 
         // only applies for wooden frames
-        if ($frameElementValue instanceof ElementValue && 'frames' == $frameElementValue->element->short/* && $frameElementValue->calculate_value > 0*/) {
+        if ($frameElementValue instanceof ElementValue && 'frames' == $frameElementValue->element->short) {
             $windowSurface = 0;
 
             $windowSurfaceFormatted = NumberFormatter::reverseFormat($calculateData['window_surface'] ?? 0);
@@ -144,20 +146,18 @@ class InsulatedGlazing
             // frame type use used as ratio (e.g. wood + some others -> use 70% of surface)
             $woodElementValues = [];
 
-            foreach ($buildingElements as $short => $serviceIds) {
-                if ('wood-elements' == $short) {
-                    foreach ($serviceIds as $serviceId => $ids) {
-                        foreach (array_keys($ids) as $id) {
-                            $woodElementValue = ElementValue::where('id', $id)->where('element_id',
-                                $serviceId)->first();
-
-                            if ($woodElementValue instanceof ElementValue && $woodElementValue->element->short == $short) {
-                                $woodElementValues[] = $woodElementValue;
-                            }
-                        }
+            // wood element values to array.
+            if (array_key_exists($woodElements->id, $buildingElements)) {
+                foreach ($buildingElements[$woodElements->id] as $woodElementValueId) {
+                    $woodElementValue = ElementValue::where('id', $woodElementValueId)
+                        ->where('element_id', $woodElements->id)
+                        ->first();
+                    if ($woodElementValue instanceof ElementValue) {
+                        $woodElementValues[] = $woodElementValue;
                     }
                 }
             }
+
 
             $measureApplication = MeasureApplication::where('short', 'paint-wood-elements')->first();
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\InsulatedGlazing;
 use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Cooperation\Tool\InsulatedGlazingHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
@@ -203,52 +204,12 @@ class InsulatedGlazingController extends Controller
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
 
-        $buildingInsulatedGlazings = $request->input('building_insulated_glazings', '');
+        $buildingInsulatedGlazingData = $request->input('building_insulated_glazings', '');
+        $buildingFeatureData = $request->input('building_features');
+        $buildingElementData = $request->input('building_elements');
 
-        // Saving the insulate glazings
-        $interests = collect();
-        foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazing) {
-
-            $insulatedGlazingId = $buildingInsulatedGlazing['insulated_glazing_id'];
-            $buildingHeatingId = $buildingInsulatedGlazing['building_heating_id'];
-            $m2 = isset($buildingInsulatedGlazing['m2']) ? $buildingInsulatedGlazing['m2'] : 0;
-            $windows = isset($buildingInsulatedGlazing['windows']) ? $buildingInsulatedGlazing['windows'] : 0;
-
-            // Update or Create the buildingInsulatedGlazing
-            BuildingInsulatedGlazing::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-                [
-                    'building_id' => $buildingId,
-                    'input_source_id' => $inputSourceId,
-                    'measure_application_id' => $measureApplicationId,
-                ],
-                [
-                    'insulating_glazing_id' => $insulatedGlazingId,
-                    'building_heating_id' => $buildingHeatingId,
-                    'm2' => $m2,
-                    'windows' => $windows,
-                ]
-            );
-        }
-
-        // saving the main building elements
-        $elements = $request->input('building_elements', []);
-        foreach ($elements as $elementId => $elementValueId) {
-            $element = Element::find($elementId);
-            $elementValue = ElementValue::find(reset($elementValueId));
-
-            if ($element instanceof Element && $elementValue instanceof ElementValue) {
-                BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-                    [
-                        'element_id' => $element->id,
-                        'input_source_id' => $inputSourceId,
-                        'building_id' => $buildingId,
-                    ],
-                    [
-                        'element_value_id' => $elementValue->id,
-                    ]
-                );
-            }
-        }
+        // todo: check buildingElement data
+        InsulatedGlazingHelper::save($building, $inputSource, $buildingFeatureData, $buildingInsulatedGlazingData, $buildingElementData);
 
         $woodElements = $request->input('building_elements.wood-elements', []);
 
@@ -292,13 +253,7 @@ class InsulatedGlazingController extends Controller
             ]
         );
 
-        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
-            ],
-            $request->input('building_features')
-        );
+
 
         $this->saveAdvices($request);
         // Save progress

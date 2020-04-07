@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\HighEfficiencyBoiler;
 use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Cooperation\Tool\HighEfficiencyBoilerHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
@@ -86,23 +87,17 @@ class HighEfficiencyBoilerController extends Controller
 
         // Save the building service
         $userInterests = $request->input('user_interests');
-        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+        UserInterestService::save($user, $inputSource, Step::class, $this->step->id, $userInterests['interest_id']);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        $serviceValueId = $request->input('building_services.boiler.service_value_id');
-        $date = $request->input('building_services.boiler.extra');
-
-
-        $service = Service::findByShort('boiler');
-
-        $building->buildingServices()->updateOrCreate(
-            ['input_source_id' => $inputSource->id, 'service_id' => $service->id],
-            ['service_value_id' => $serviceValueId, 'extra' => ['date' => $date]]
-        );
-
-        $user->energyHabit()->updateOrCreate(['input_source_id' => $inputSource->id], $request->input('user_energy_habits'));
+        $saveData = $request->only('user_energy_habits', 'building_services');
+        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
+            HighEfficiencyBoilerHelper::save($building, $inputSource, $saveData);
+        } else {
+            HighEfficiencyBoilerHelper::clear($building, $inputSource);
+        }
 
         // Save progress
         $this->saveAdvices($request);

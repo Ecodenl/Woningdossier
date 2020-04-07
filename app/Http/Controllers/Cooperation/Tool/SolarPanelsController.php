@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\SolarPanel;
 use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Cooperation\Tool\SolarPanelHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
@@ -80,12 +81,7 @@ class SolarPanelsController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
-        $buildingId = $building->id;
         $inputSource = HoomdossierSession::getInputSource(true);
-        $inputSourceId = $inputSource->id;
-
-        $habit = $request->input('user_energy_habits', '');
-        $habitAmountElectricity = isset($habit['amount_electricity']) ? $habit['amount_electricity'] : '0';
 
         $userInterests = $request->input('user_interests');
         UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
@@ -93,26 +89,12 @@ class SolarPanelsController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->update(['amount_electricity' => $habitAmountElectricity]);
-
-        $pvPanels = $request->input('building_pv_panels', '');
-        $peakPower = isset($pvPanels['peak_power']) ? $pvPanels['peak_power'] : '';
-        $number = isset($pvPanels['number']) ? $pvPanels['number'] : '';
-        $angle = isset($pvPanels['angle']) ? $pvPanels['angle'] : '';
-        $orientation = isset($pvPanels['pv_panel_orientation_id']) ? $pvPanels['pv_panel_orientation_id'] : '';
-
-        BuildingPvPanel::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
-            ],
-            [
-                'peak_power' => $peakPower,
-                'number' => $number,
-                'pv_panel_orientation_id' => $orientation,
-                'angle' => $angle,
-            ]
-        );
+        $saveData = $request->only('building_pv_panels', 'user_energy_habits');
+        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
+            SolarPanelHelper::save($building, $inputSource, $saveData);
+        } else {
+            SolarPanelHelper::clear($building, $inputSource);
+        }
 
         // Save progress
         $this->saveAdvices($request);

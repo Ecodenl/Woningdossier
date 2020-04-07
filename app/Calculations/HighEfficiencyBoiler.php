@@ -24,44 +24,39 @@ class HighEfficiencyBoiler
             'interest_comparable' => 0,
         ];
 
-        $services = $calculateData['building_services'] ?? [];
+        $buildingServiceData = $calculateData['building_services'] ?? [];
 
-        // (there's only one..)
-        foreach ($services as $boilerShort => $options) {
-            $boilerService = Service::where('short', $boilerShort)->first();
+        $boilerService = Service::where('short', 'boiler')->first();
 
-            if (array_key_exists('service_value_id', $options)) {
-                /** @var ServiceValue $boilerType */
-                $boilerType = ServiceValue::where('service_id', $boilerService->id)
-                                          ->where('id', $options['service_value_id'])
-                                          ->first();
+        if (array_key_exists('service_value_id', $buildingServiceData)) {
+            /** @var ServiceValue $boilerType */
+            $boilerType = ServiceValue::where('service_id', $boilerService->id)
+                ->where('id', $buildingServiceData['service_value_id'])
+                ->first();
 
-                if ($boilerType instanceof ServiceValue) {
-                    $boilerEfficiency = $boilerType->keyFigureBoilerEfficiency;
-                    if ($boilerEfficiency->heating > 95) {
-                        $result['boiler_advice'] = __('boiler.already-efficient');
-                    }
+            if ($boilerType instanceof ServiceValue) {
+                $boilerEfficiency = $boilerType->keyFigureBoilerEfficiency;
+                if ($boilerEfficiency->heating > 95) {
+                    $result['boiler_advice'] = __('boiler.already-efficient');
                 }
+            }
 
-                if (array_key_exists('extra', $options)) {
-                    $year = is_numeric(NumberFormatter::reverseFormat($options['extra'])) ? NumberFormatter::reverseFormat($options['extra']) : 0;
+            if (array_key_exists('extra', $buildingServiceData)) {
+                $date = NumberFormatter::reverseFormat($buildingServiceData['extra']['date']);
+                $year = is_numeric($date) ? NumberFormatter::reverseFormat($date) : 0;
 
-                    $measure = MeasureApplication::byShort('high-efficiency-boiler-replace');
-                    //$measure = MeasureApplication::where('short', '=', 'high-efficiency-boiler-replace')->first();
-                    //$measure = MeasureApplication::translated('measure_name', 'Vervangen cv ketel', 'nl')->first(['measure_applications.*']);
+                $measure = MeasureApplication::byShort('high-efficiency-boiler-replace');
 
-                    $amountGas = $calculateData['user_energy_habits']['amount_gas'] ?? null;
+                $amountGas = $calculateData['user_energy_habits']['amount_gas'] ?? null;
 
-                    if ($energyHabit instanceof UserEnergyHabit) {
-                        $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $energyHabit, $amountGas);
-                    }
-                    $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
-                    $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
-                    //$result['cost_indication'] = Calculator::calculateCostIndication(1, $measure);
-                    $result['replace_year'] = HighEfficiencyBoilerCalculator::determineApplicationYear($measure, $year);
-                    $result['cost_indication'] = Calculator::calculateMeasureApplicationCosts($measure, 1, $result['replace_year'], false);
-                    $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
+                if ($energyHabit instanceof UserEnergyHabit) {
+                    $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $energyHabit, $amountGas);
                 }
+                $result['savings_co2'] = Calculator::calculateCo2Savings($result['savings_gas']);
+                $result['savings_money'] = round(Calculator::calculateMoneySavings($result['savings_gas']));
+                $result['replace_year'] = HighEfficiencyBoilerCalculator::determineApplicationYear($measure, $year);
+                $result['cost_indication'] = Calculator::calculateMeasureApplicationCosts($measure, 1, $result['replace_year'], false);
+                $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
             }
         }
 

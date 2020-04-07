@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Calculator;
+use App\Helpers\Cooperation\Tool\RoofInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoofInsulation;
@@ -12,7 +13,6 @@ use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\RoofInsulationFormRequest;
 use App\Models\Building;
-use App\Models\BuildingFeature;
 use App\Models\BuildingHeating;
 use App\Models\BuildingRoofType;
 use App\Models\Element;
@@ -22,9 +22,6 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserInterest;
-use App\Scopes\GetValueScope;
-use App\Services\ModelService;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
 use Carbon\Carbon;
@@ -119,7 +116,7 @@ class RoofInsulationController extends Controller
         UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
 
         // TODO: same as what we did in the calculations.
-        $roofTypeIds = $request->input('building_roof_types.id', []);
+        $roofTypeIds = $request->input('building_roof_type_ids', []);
         foreach ($roofTypeIds as $roofTypeId) {
             $roofType = RoofType::findOrFail($roofTypeId);
             if ($roofType instanceof RoofType) {
@@ -136,7 +133,7 @@ class RoofInsulationController extends Controller
             // It's a bitumen roof is the category is not pitched or none (so currently only: flat)
             $isBitumenRoof = ! in_array($roofCat, ['none', 'pitched']) || $isBitumenOnPitchedRoof;
 
-            $measureApplicationId = $request->input('building_roof_types.'.$roofCat.'.measure_application_id', 0);
+            $measureApplicationId = $request->input("building_roof_types.{$roofCat}.extra.measure_application_id", 0);
             if ($measureApplicationId > 0) {
                 // results in an advice
                 $measureApplication = MeasureApplication::find($measureApplicationId);
@@ -191,7 +188,9 @@ class RoofInsulationController extends Controller
                 $zincSurface = 0;
                 if ($roofType instanceof RoofType) {
                     $buildingRoofType = $building->roofTypes()->where('roof_type_id', '=', $roofType->id)->first();
-                    $zincSurface = $buildingRoofType->zinc_surface;
+                    if ($buildingRoofType instanceof BuildingRoofType) {
+                        $zincSurface = $buildingRoofType->zinc_surface;
+                    }
                 }
                 // Note there's no such request input just yet. We're not sure this will be available for the user
                 // to fill in.
@@ -292,12 +291,14 @@ class RoofInsulationController extends Controller
 
         // the selected roof types for the current situation
         // get the selected roof type ids
-        $roofTypeIds = $request->input('building_roof_types.id', []);
+        $roofTypeIds = $request->input('building_roof_type_ids', []);
 
         $roofTypes = $request->input('building_roof_types', []);
 
+        $buildingFeatureData = ['roof_type_id' => $request->input('building_features.roof_type_id')];
 
-        $createData = [];
+        $buildingRoofTypeData = [];
+
         foreach ($roofTypeIds as $roofTypeId) {
             $roofType = RoofType::findOrFail($roofTypeId);
             if ($roofType instanceof RoofType) {
@@ -318,47 +319,27 @@ class RoofInsulationController extends Controller
 
                 $elementValueId = isset($roofTypes[$cat]['element_value_id']) ? $roofTypes[$cat]['element_value_id'] : null;
 
-                $extraMeasureApplication = isset($roofTypes[$cat]['measure_application_id']) ? $roofTypes[$cat]['measure_application_id'] : '';
-                $extraBitumenReplacedDate = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? $roofTypes[$cat]['extra']['bitumen_replaced_date'] : Carbon::now()->year - 10;
-                $extraZincReplacedDate = isset($roofTypes[$cat]['extra']['zinc_replaced_date']) ? $roofTypes[$cat]['extra']['zinc_replaced_date'] : '';
-                $extraTilesCondition = isset($roofTypes[$cat]['extra']['tiles_condition']) ? $roofTypes[$cat]['extra']['tiles_condition'] : '';
+                $roofTypes[$cat]['extra']['bitumen_replaced_date'] = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? $roofTypes[$cat]['extra']['bitumen_replaced_date'] : Carbon::now()->year - 10;
 
                 $buildingHeating = isset($roofTypes[$cat]['building_heating_id']) ? $roofTypes[$cat]['building_heating_id'] : null;
 
-                BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-                    [
-                        'building_id' => $buildingId,
-                        'input_source_id' => $inputSourceId,
-                    ],
-                    [
-                        'roof_type_id' => $request->input('building_features.roof_type_id'),
-                    ]
-                );
-
-                array_push($createData, [
+                array_push($buildingRoofTypeData, [
                     'roof_type_id' => $roofType->id,
                     'element_value_id' => $elementValueId,
                     'roof_surface' => $roofSurface,
                     'insulation_roof_surface' => $insulationRoofSurface,
                     'zinc_surface' => $zincSurface,
                     'building_heating_id' => $buildingHeating,
-                    'extra' => [
-                        'measure_application_id' => $extraMeasureApplication,
-                        'bitumen_replaced_date' => $extraBitumenReplacedDate,
-                        'zinc_replaced_date' => $extraZincReplacedDate,
-                        'tiles_condition' => $extraTilesCondition,
-                    ],
+                    'extra' => $roofTypes[$cat]['extra']
                 ]);
             }
         }
 
-        ModelService::deleteAndCreate(BuildingRoofType::class,
-            [
-                'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
-            ],
-            $createData
-        );
+        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
+            RoofInsulationHelper::save($building, $inputSource, $buildingFeatureData, $buildingRoofTypeData);
+        } else {
+            RoofInsulationHelper::clear($building, $inputSource);
+        }
 
         // Save progress
         $this->saveAdvices($request);

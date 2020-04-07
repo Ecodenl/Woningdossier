@@ -44,14 +44,14 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div id="has-no-crawlspace">
-                            @component('cooperation.tool.components.step-question', ['id' => 'building_elements.crawlspace', 'translation' => 'floor-insulation.has-crawlspace', 'required' => false])
+                            @component('cooperation.tool.components.step-question', ['id' => 'building_elements.extra.crawlspace', 'translation' => 'floor-insulation.has-crawlspace', 'required' => false])
 
                                 @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'extra.has_crawlspace'])
                                     <select id="has_crawlspace" class="form-control"
-                                            name="building_elements[crawlspace]">
+                                            name="building_elements[extra][has_crawlspace]">
                                         @foreach(__('woningdossier.cooperation.option') as $i => $option)
-                                            <option @if(old('building_elements.crawlspace', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $crawlspace->id), 'extra.has_crawlspace')) == $i) selected="selected"
+                                            <option @if(old('building_elements.extra.has_crawlspace', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $crawlspace->id), 'extra.has_crawlspace')) == $i) selected="selected"
                                                     @endif value="{{ $i }}">{{ $option }}</option>
                                         @endforeach
                                     </select>@endcomponent
@@ -74,21 +74,15 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-6">
                             <div id="has-crawlspace-access">
-                                @component('cooperation.tool.components.step-question', ['id' => 'building_elements.' . $crawlspace->id .'.extra', 'translation' => 'floor-insulation.crawlspace-access', 'required' => false])
+                                @component('cooperation.tool.components.step-question', ['id' => 'building_elements.extra.access', 'translation' => 'floor-insulation.crawlspace-access', 'required' => false])
 
                                     @component('cooperation.tool.components.input-group',
                                     ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'extra.access'])
                                         <select id="crawlspace_access" class="form-control"
-                                                name="building_elements[{{ $crawlspace->id }}][extra]">
+                                                name="building_elements[extra][access]">
                                             @foreach(__('woningdossier.cooperation.option') as $i => $option)
-                                                <option @if(old('building_elements.crawlspace_access', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $crawlspace->id), 'extra.access')) == $i) selected="selected"
+                                                <option @if(old('building_elements.extra.access', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $crawlspace->id), 'extra.access')) == $i) selected="selected"
                                                         @endif value="{{ $i }}">{{ $option }}</option>
-                                                {{--<option @if(old('building_elements.crawlspace_access') == $option) selected
-                                                    @elseif(isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
-                                                    &&is_array($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
-                                                    && array_key_exists('access', $buildingElement->where('element_id', $crawlspace->id)->first()->extra)
-                                                    && $buildingElement->where('element_id', $crawlspace->id)->first()->extra['access'] == $i) selected
-                                                    @endif value="{{ $i }}">{{ $option }}</option>--}}
                                             @endforeach
                                         </select>@endcomponent
                                 @endcomponent
@@ -105,21 +99,15 @@
 
                         <div class="col-sm-12 col-md-6">
                             @component('cooperation.tool.components.step-question',
-                             ['id' => 'building_elements.' . $crawlspace->id .'.element_value_id', 'translation' => 'floor-insulation.crawlspace-height', 'required' => false])
+                             ['id' => 'building_elements.element_value_id', 'translation' => 'floor-insulation.crawlspace-height', 'required' => false])
 
                                 @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => $crawlspace->values, 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'element_value_id'])
                                     <select id="crawlspace_height" class="form-control"
-                                            name="building_elements[{{ $crawlspace->id }}][element_value_id]">
+                                            name="building_elements[element_value_id]">
                                         @foreach($crawlspace->values as $crawlHeight)
                                             <option @if(old('crawlspace_height', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $crawlspace->id), 'element_value_id')) == $crawlHeight->id) selected="selected"
                                                     @endif value="{{ $crawlHeight->id }}">{{ $crawlHeight->value }}</option>
-                                            {{--<option @if(old('crawlspace_height') == $crawlHeight->id) selected
-                                                    @elseif(
-                                                isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
-                                                && $buildingElement->where('element_id', $crawlspace->id)->first()->element_value_id == $crawlHeight->id)
-                                                    selected
-                                                @endif value="{{ $crawlHeight->id }}">{{ $crawlHeight->value }}</option>--}}
                                         @endforeach
                                     </select>@endcomponent
 

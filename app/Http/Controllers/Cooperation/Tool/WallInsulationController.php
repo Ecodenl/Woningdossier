@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\WallInsulation;
 use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Cooperation\Tool\WallInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
@@ -95,16 +96,20 @@ class WallInsulationController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
+
+        $buildingFeatureData = $request->only([
+            'facade_plastered_surface_id',
+            'wall_joints',
+            'cavity_wall',
+            'contaminated_wall_joints',
+            'wall_surface',
+            'insulation_wall_surface',
+            'facade_damaged_paintwork_id',
+            'facade_plastered_painted'
+        ]);
+
         // Get all the values from the form
         $wallInsulationQualities = $request->get('element', '');
-        $plasteredWallSurface = $request->get('facade_plastered_surface_id', '');
-        $damagedPaintwork = $request->get('facade_damaged_paintwork_id', 0);
-        $wallJoints = $request->get('wall_joints', '');
-        $wallJointsContaminated = $request->get('contaminated_wall_joints', '');
-        $wallSurface = $request->get('wall_surface', 0);
-        $insulationWallSurface = $request->get('insulation_wall_surface', 0);
-        $cavityWall = $request->get('cavity_wall', '');
-        $facadePlasteredOrPainted = $request->get('facade_plastered_painted', '');
 
         // Element id's and values
         $elementId = key($wallInsulationQualities);
@@ -122,22 +127,13 @@ class WallInsulationController extends Controller
             ]
         );
 
-        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
-            ],
-            [
-                'facade_plastered_surface_id' => $plasteredWallSurface,
-                'wall_joints' => $wallJoints,
-                'cavity_wall' => $cavityWall,
-                'contaminated_wall_joints' => $wallJointsContaminated,
-                'wall_surface' => $wallSurface,
-                'insulation_wall_surface' => $insulationWallSurface,
-                'facade_damaged_paintwork_id' => $damagedPaintwork,
-                'facade_plastered_painted' => $facadePlasteredOrPainted,
-            ]
-        );
+        // when its a step, and a user has no interest in it we will clear the data for that step
+        // a user may had interest in the step and later on decided he has no interest, so we clear the data to prevent weird data in the dumps.
+        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
+            WallInsulationHelper::save($building, $inputSource, $buildingFeatureData);
+        } else {
+            WallInsulationHelper::clear($building, $inputSource);
+        }
 
         // Save progress
         $this->saveAdvices($request);

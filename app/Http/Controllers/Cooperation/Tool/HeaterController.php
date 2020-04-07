@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\Heater;
 use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Cooperation\Tool\HeaterHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
@@ -87,9 +88,7 @@ class HeaterController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
-        $buildingId = $building->id;
         $inputSource = HoomdossierSession::getInputSource(true);
-        $inputSourceId = $inputSource->id;
 
 
         $userInterests = $request->input('user_interests');
@@ -98,27 +97,14 @@ class HeaterController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        // Store the building heater part
-        $buildingHeaters = $request->input('building_heaters', '');
-        $pvPanelOrientation = isset($buildingHeaters['pv_panel_orientation_id']) ? $buildingHeaters['pv_panel_orientation_id'] : '';
-        $angle = isset($buildingHeaters['angle']) ? $buildingHeaters['angle'] : '';
+        $saveData = $request->only('building_heaters', 'user_energy_habits');
 
-        BuildingHeater::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
-            ],
-            [
-                'pv_panel_orientation_id' => $pvPanelOrientation,
-                'angle' => $angle,
-            ]
-        );
+        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
+            HeaterHelper::save($building, $inputSource, $saveData);
+        } else {
+            HeaterHelper::clear($building, $inputSource);
+        }
 
-        // Update the habit
-        $habits = $request->input('user_energy_habits', '');
-        $waterComFortId = isset($habits['water_comfort_id']) ? $habits['water_comfort_id'] : '';
-
-        $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->update(['water_comfort_id' => $waterComFortId]);
 
         // Save progress
         $this->saveAdvices($request);

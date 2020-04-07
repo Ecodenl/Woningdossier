@@ -12,7 +12,9 @@ use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\User;
 use App\Models\UserEnergyHabit;
+use App\Services\DumpService;
 use Carbon\Carbon;
 
 class WallInsulation

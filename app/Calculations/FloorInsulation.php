@@ -12,6 +12,7 @@ use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserEnergyHabit;
+use App\Services\DumpService;
 use function Couchbase\defaultDecoder;
 
 class FloorInsulation
@@ -28,6 +29,7 @@ class FloorInsulation
      */
     public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData): array
     {
+
         $result = [
             'savings_gas' => 0,
             'savings_co2' => 0,
@@ -44,9 +46,9 @@ class FloorInsulation
 
         $surface = array_key_exists('insulation_surface', $buildingFeatures) ? $buildingFeatures['insulation_surface'] : 0;
 
-        if (array_key_exists('crawlspace', $buildingElements)) {
+        if (array_key_exists('has_crawlspace', $buildingElements['extra'])) {
             // Check if crawlspace is accessible. If not: show warning!
-            if (in_array($buildingElements['crawlspace'], ['unknown'])) {
+            if (in_array($buildingElements['extra']['has_crawlspace'], ['unknown'])) {
                 $result['crawlspace'] = 'warning';
             }
         }

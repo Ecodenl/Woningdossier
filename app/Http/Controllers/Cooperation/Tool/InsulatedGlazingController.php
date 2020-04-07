@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\InsulatedGlazing;
 use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Cooperation\Tool\InsulatedGlazingHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
@@ -26,6 +27,7 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
+use App\Services\DumpService;
 use App\Services\ModelService;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
@@ -89,7 +91,7 @@ class InsulatedGlazingController extends Controller
                 $currentInsulatedGlazing = $building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id)->first();
                 $currentInsulatedGlazingInputs = BuildingInsulatedGlazing::where('measure_application_id', $measureApplication->id)->forMe()->get();
 
-                if (! $currentInsulatedGlazingInputs->isEmpty()) {
+                if (!$currentInsulatedGlazingInputs->isEmpty()) {
                     $buildingInsulatedGlazingsForMe[$measureApplication->id] = $currentInsulatedGlazingInputs;
                 }
                 if ($currentInsulatedGlazing instanceof BuildingInsulatedGlazing) {
@@ -183,8 +185,6 @@ class InsulatedGlazingController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
-        $buildingId = $building->id;
-        $inputSourceId = $inputSource->id;
 
         $userInterests = $request->input('user_interests');
         $interests = collect();
@@ -202,103 +202,15 @@ class InsulatedGlazingController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-
-        $buildingInsulatedGlazings = $request->input('building_insulated_glazings', '');
-
-        // Saving the insulate glazings
-        $interests = collect();
-        foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazing) {
-
-            $insulatedGlazingId = $buildingInsulatedGlazing['insulated_glazing_id'];
-            $buildingHeatingId = $buildingInsulatedGlazing['building_heating_id'];
-            $m2 = isset($buildingInsulatedGlazing['m2']) ? $buildingInsulatedGlazing['m2'] : 0;
-            $windows = isset($buildingInsulatedGlazing['windows']) ? $buildingInsulatedGlazing['windows'] : 0;
-
-            // Update or Create the buildingInsulatedGlazing
-            BuildingInsulatedGlazing::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-                [
-                    'building_id' => $buildingId,
-                    'input_source_id' => $inputSourceId,
-                    'measure_application_id' => $measureApplicationId,
-                ],
-                [
-                    'insulating_glazing_id' => $insulatedGlazingId,
-                    'building_heating_id' => $buildingHeatingId,
-                    'm2' => $m2,
-                    'windows' => $windows,
-                ]
-            );
-        }
-
-        // saving the main building elements
-        $elements = $request->input('building_elements', []);
-        foreach ($elements as $elementId => $elementValueId) {
-            $element = Element::find($elementId);
-            $elementValue = ElementValue::find(reset($elementValueId));
-
-            if ($element instanceof Element && $elementValue instanceof ElementValue) {
-                BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-                    [
-                        'element_id' => $element->id,
-                        'input_source_id' => $inputSourceId,
-                        'building_id' => $buildingId,
-                    ],
-                    [
-                        'element_value_id' => $elementValue->id,
-                    ]
-                );
-            }
-        }
-
-        $woodElements = $request->input('building_elements.wood-elements', []);
-
-        $woodElementCreateData = [];
-        foreach ($woodElements as $woodElementId => $woodElementValueIds) {
-            // add the data we need to perform a create
-            foreach ($woodElementValueIds as $woodElementValueId) {
-                array_push($woodElementCreateData, ['element_value_id' => $woodElementValueId]);
-            }
-
-            ModelService::deleteAndCreate(BuildingElement::class,
-                [
-                    'building_id' => $buildingId,
-                    'element_id' => $woodElementId,
-                    'input_source_id' => $inputSourceId,
-                ],
-                $woodElementCreateData
-            );
-        }
-
-        // Save the paintwork statuses
-        $paintWorkStatuses = $request->get('building_paintwork_statuses', '');
-
-        $lastPaintedYear = null;
-        if (array_key_exists('last_painted_year', $paintWorkStatuses)) {
-            $year = (int) $paintWorkStatuses['last_painted_year'];
-            if ($year > 1950) {
-                $lastPaintedYear = $year;
-            }
-        }
-
-        BuildingPaintworkStatus::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
-            ],
-            [
-                'last_painted_year' => $lastPaintedYear,
-                'paintwork_status_id' => $paintWorkStatuses['paintwork_status_id'],
-                'wood_rot_status_id' => $paintWorkStatuses['wood_rot_status_id'],
-            ]
+        // save the step data
+        // todo: add if no interest clear step
+        $saveData = $request->only('building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses');
+        InsulatedGlazingHelper::save(
+            $building,
+            $inputSource,
+            $saveData
         );
 
-        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
-            ],
-            $request->input('building_features')
-        );
 
         $this->saveAdvices($request);
         // Save progress
@@ -308,8 +220,8 @@ class InsulatedGlazingController extends Controller
         $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
         $url = $nextStep['url'];
 
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#' . $nextStep['tab_id'];
         }
 
         return redirect($url);

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\FloorInsulation;
 use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
+use App\Helpers\Cooperation\Tool\WallInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
@@ -21,6 +23,7 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Services\CsvService;
+use App\Services\DumpService;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
 use Illuminate\Http\JsonResponse;
@@ -68,6 +71,8 @@ class FloorInsulationController extends Controller
         } else {
             $crawlspacePresent = 1; // now
         }
+
+//        dd(DumpService::getCalculateData($building->user, HoomdossierSession::getInputSource(true)));
 
         $buildingElement = $building->buildingElements;
         $buildingElementsForMe = BuildingElement::forMe()->get();
@@ -132,39 +137,17 @@ class FloorInsulationController extends Controller
             );
         }
 
-        $buildingElements = $request->input('building_elements', '');
-        $buildingElementId = array_keys($buildingElements)[1];
 
-        $crawlspaceHasAccess = isset($buildingElements[$buildingElementId]['extra']) ? $buildingElements[$buildingElementId]['extra'] : '';
-        $hasCrawlspace = isset($buildingElements['crawlspace']) ? $buildingElements['crawlspace'] : '';
-        $heightCrawlspace = isset($buildingElements[$buildingElementId]['element_value_id']) ? $buildingElements[$buildingElementId]['element_value_id'] : '';
+        $buildingFeatureData = $request->input('building_features');
+        $buildingElementData = $request->input('building_elements');
 
-        BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'building_id' => $buildingId,
-                'element_id' => $buildingElementId,
-                'input_source_id' => $inputSourceId,
-            ],
-            [
-                'element_value_id' => $heightCrawlspace,
-                'extra' => [
-                    'has_crawlspace' => $hasCrawlspace,
-                    'access' => $crawlspaceHasAccess,
-                ],
-            ]
-        );
-        $floorSurface = $request->input('building_features', '');
-
-        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
-            ],
-            [
-                'floor_surface' => isset($floorSurface['floor_surface']) ? $floorSurface['floor_surface'] : '0.0',
-                'insulation_surface' => isset($floorSurface['insulation_surface']) ? $floorSurface['insulation_surface'] : '0.0',
-            ]
-        );
+        // when its a step, and a user has no interest in it we will clear the data for that step
+        // a user may had interest in the step and later on decided he has no interest, so we clear the data to prevent weird data in the dumps.
+        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
+            FloorInsulationHelper::save($building, $inputSource, $buildingFeatureData, $buildingElementData);
+        } else {
+            FloorInsulationHelper::clear($building, $inputSource);
+        }
 
         // Save progress
         $this->saveAdvices($request);

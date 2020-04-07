@@ -705,7 +705,6 @@ class DumpService
         $wallInsulationElement = Element::findByShort('wall-insulation');
         $woodElements = Element::findByShort('wood-elements');
         $frames = Element::findByShort('frames');
-        $crackSealing = Element::findByShort('crack-sealing');
         $floorInsulationElement = Element::findByShort('floor-insulation');
         $crawlspaceElement = Element::findByShort('crawlspace');
 
@@ -775,7 +774,8 @@ class DumpService
 
 
         // now lets handle the roof insulation stuff.
-        $buildingRoofTypesArray = ['id' => []];
+        $buildingRoofTypesArray = [];
+        $buildingRoofTypeIds = [];
 
         /** @var BuildingRoofType $buildingRoofType */
         foreach ($buildingRoofTypes as $buildingRoofType) {
@@ -788,7 +788,7 @@ class DumpService
                 'measure_application_id' => $buildingRoofType->extra['measure_application_id'] ?? null,
                 'building_heating_id' => $buildingRoofType->building_heating_id,
             ];
-            $buildingRoofTypesArray['id'][] = $buildingRoofType->roofType->id;
+            $buildingRoofTypeIds[] = $buildingRoofType->roofType->id;
 
             // if the roof is a flat roof OR the tiles_condition is empty: remove it!!
             // this is needed as the tiles condition has a different type of calculation
@@ -845,6 +845,7 @@ class DumpService
 
         $roofInsulationSavings = RoofInsulation::calculate($building, $inputSource, $userEnergyHabit, [
             'building_roof_types' => $buildingRoofTypesArray,
+            'building_roof_type_ids' => $buildingRoofTypeIds
         ]);
 
         $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($userEnergyHabit, [

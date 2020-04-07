@@ -27,6 +27,7 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use App\Scopes\GetValueScope;
+use App\Services\DumpService;
 use App\Services\ModelService;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
@@ -53,11 +54,13 @@ class InsulatedGlazingController extends Controller
      */
     public function index()
     {
+
         /**
          * @var Building
          */
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
+        dd(DumpService::getCalculateData($buildingOwner, HoomdossierSession::getInputSource(true)));
 
         $interests = Interest::orderBy('order')->get();
 

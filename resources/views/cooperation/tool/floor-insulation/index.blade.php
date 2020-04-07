@@ -49,9 +49,9 @@
                                 @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'extra.has_crawlspace'])
                                     <select id="has_crawlspace" class="form-control"
-                                            name="building_elements[extra][crawlspace]">
+                                            name="building_elements[extra][has_crawlspace]">
                                         @foreach(__('woningdossier.cooperation.option') as $i => $option)
-                                            <option @if(old('building_elements.extra.crawlspace', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $crawlspace->id), 'extra.has_crawlspace')) == $i) selected="selected"
+                                            <option @if(old('building_elements.extra.has_crawlspace', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $crawlspace->id), 'extra.has_crawlspace')) == $i) selected="selected"
                                                     @endif value="{{ $i }}">{{ $option }}</option>
                                         @endforeach
                                     </select>@endcomponent

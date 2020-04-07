@@ -23,6 +23,7 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Services\CsvService;
+use App\Services\DumpService;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
 use Illuminate\Http\JsonResponse;
@@ -70,6 +71,8 @@ class FloorInsulationController extends Controller
         } else {
             $crawlspacePresent = 1; // now
         }
+
+//        dd(DumpService::getCalculateData($building->user, HoomdossierSession::getInputSource(true)));
 
         $buildingElement = $building->buildingElements;
         $buildingElementsForMe = BuildingElement::forMe()->get();

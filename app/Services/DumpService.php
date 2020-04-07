@@ -748,25 +748,30 @@ class DumpService
 
         $buildingFrameElement = $buildingElements->where('element_id', $frames->id)->first();
         $buildingElementsArray[$frames->id][$frames->short] = $buildingFrameElement->element_value_id ?? null;
-
-        $buildingCrackSealingElement = $buildingElements->where('element_id', $crackSealing->id)->first();
-        $buildingElementsArray[$crackSealing->id][$crackSealing->short] = $buildingCrackSealingElement->element_value_id ?? null;
-
+        
         $buildingPaintworkStatusesArray = [
             'last_painted_year' => $buildingPaintworkStatus->last_painted_year ?? null,
             'paintwork_status_id' => $buildingPaintworkStatus->paintwork_status_id ?? null,
             'wood_rot_status_id' => $buildingPaintworkStatus->wood_rot_status_id ?? null,
         ];
 
+        dd([
+                'user_interests' => $userInterestsForInsulatedGlazing,
+                'building_insulated_glazings' => $buildingInsulatedGlazingArray,
+                'building_elements' => $buildingElementsArray,
+                'window_surface' => $buildingFeature->window_surface ?? null,
+                'building_paintwork_statuses' => $buildingPaintworkStatusesArray,
+        ]);
+
         // handle the stuff for the floor insulation.
         $floorInsulationElementValueId = $buildingElements->where('element_id', $floorInsulationElement->id)->first()->element_value_id ?? null;
         $buildingCrawlspaceElement = $buildingElements->where('element_id', $crawlspaceElement->id)->first();
 
         $floorInsulationBuildingElements = [
-            'crawlspace' => $buildingCrawlspaceElement->extra['has_crawlspace'] ?? null,
-            $crawlspaceElement->id => [
-                'extra' => $buildingCrawlspaceElement->extra['access'] ?? null,
-                'element_value_id' => $buildingCrawlspaceElement->element_value_id ?? null,
+            'element_value_id' => $buildingCrawlspaceElement->element_value_id ?? null,
+            'extra' => [
+                'has_crawlspace' => $buildingCrawlspaceElement->extra['has_crawlspace'] ?? null,
+                'access' => $buildingCrawlspaceElement->extra['access'] ?? null,
             ],
         ];
 
@@ -774,6 +779,7 @@ class DumpService
             'floor_surface' => $buildingFeature->floor_surface ?? null,
             'insulation_surface' => $buildingFeature->insulation_surface ?? null,
         ];
+
 
         // now lets handle the roof insulation stuff.
         $buildingRoofTypesArray = ['id' => []];
@@ -819,6 +825,7 @@ class DumpService
         $userInterestsForHeater = $user->userInterestsForSpecificType(Step::class, Step::findByShort('heater')->id, $inputSource)->first();
 
 
+
         $wallInsulationSavings = WallInsulation::calculate($building, $inputSource, $userEnergyHabit, [
             'cavity_wall' => $buildingFeature->cavity_wall ?? null,
             'element' => [$wallInsulationElement->id => $wallInsulationBuildingElement->element_value_id ?? null],
@@ -829,7 +836,6 @@ class DumpService
             'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id ?? null,
             'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
         ]);
-//        dd($wallInsulationSavings);
 
         $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit, [
             'user_interests' => $userInterestsForInsulatedGlazing,

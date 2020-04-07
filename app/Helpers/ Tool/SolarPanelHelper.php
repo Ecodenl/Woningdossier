@@ -32,13 +32,7 @@ class SolarPanelHelper
             $saveData['building_pv_panels']
         );
 
-        UserEnergyHabit::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'user_id' => $building->user_id,
-                'input_source_id' => $inputSource->id,
-            ],
-            $saveData['user_energy_habits']
-        );
+        $building->user->energyHabit()->withoutGlobalScope(GetValueScope::class)->update($saveData['user_energy_habits']);
     }
 
     /**

@@ -122,10 +122,10 @@ class DumpService
                             // If you want to go ahead and translate in a different namespace, do it here
                             // we will dot the array, map it so we can add the step name to it
                             $deeperContents = array_map(function ($content) use ($step, $subStep) {
-                                return $step->name . ','.$subStep.': ' . $content;
-                            }, Arr::dot($contents, $stepShort.'.'.$subStep.'.calculation.'));
+                                return $step->name . ',' . $subStep . ': ' . $content;
+                            }, Arr::dot($contents, $stepShort . '.' . $subStep . '.calculation.'));
                         } else {
-                            $deeperContents = Arr::dot($contents, $stepShort.'.'.$subStep.'.calculation.');
+                            $deeperContents = Arr::dot($contents, $stepShort . '.' . $subStep . '.calculation.');
                         }
 
                         $headers = array_merge($headers, $deeperContents);
@@ -135,10 +135,10 @@ class DumpService
                         if ($prefixValuesWithStep) {
 
                             $subStepName = optional(Step::findByShort($subStep))->name;
-                            $headers[$stepShort.'.'.$subStep. '.' . $tableWithColumnOrAndId] = "{$step->name}, {$subStepName}: {$labelWithEuroNormalization}";
+                            $headers[$stepShort . '.' . $subStep . '.' . $tableWithColumnOrAndId] = "{$step->name}, {$subStepName}: {$labelWithEuroNormalization}";
 
                         } else {
-                            $headers[$stepShort.'.'.$subStep. '.' . $tableWithColumnOrAndId] = $labelWithEuroNormalization;
+                            $headers[$stepShort . '.' . $subStep . '.' . $tableWithColumnOrAndId] = $labelWithEuroNormalization;
                         }
                     }
                 }
@@ -159,7 +159,7 @@ class DumpService
      * This dump collects all possible data for a given user for the tool and returns it in an array.
      *
      * @param array $structureForTotalDump | we need the headers to get table and row data, provide from the self::getStructureForTotalDumpService.
-     * @param Cooperation $cooperation,
+     * @param Cooperation $cooperation ,
      * @param User $user
      * @param InputSource $inputSource
      * @param bool $anonymized
@@ -702,14 +702,14 @@ class DumpService
         $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
 //
 //
-        $wallInsulationElement = Element::findByShort( 'wall-insulation');
-        $woodElements = Element::findByShort( 'wood-elements');
-        $frames = Element::findByShort( 'frames');
-        $crackSealing = Element::findByShort( 'crack-sealing');
-        $floorInsulationElement = Element::findByShort( 'floor-insulation');
-        $crawlspaceElement = Element::findByShort( 'crawlspace');
+        $wallInsulationElement = Element::findByShort('wall-insulation');
+        $woodElements = Element::findByShort('wood-elements');
+        $frames = Element::findByShort('frames');
+        $crackSealing = Element::findByShort('crack-sealing');
+        $floorInsulationElement = Element::findByShort('floor-insulation');
+        $crawlspaceElement = Element::findByShort('crawlspace');
 
-        $boilerService = Service::findByShort( 'boiler');
+        $boilerService = Service::findByShort('boiler');
 
         // handle stuff for the wall insulation
         $wallInsulationBuildingElement = $buildingElements->where('element_id', $wallInsulationElement->id)->first();
@@ -744,24 +744,17 @@ class DumpService
         $buildingElementsArray = [];
 
         $buildingWoodElement = $buildingElements->where('element_id', $woodElements->id)->pluck('element_value_id')->toArray();
-        $buildingElementsArray[$woodElements->short][$woodElements->id] = array_combine($buildingWoodElement, $buildingWoodElement) ?? null;
+        $buildingElementsArray[$woodElements->id] = array_combine($buildingWoodElement, $buildingWoodElement) ?? null;
 
         $buildingFrameElement = $buildingElements->where('element_id', $frames->id)->first();
-        $buildingElementsArray[$frames->id][$frames->short] = $buildingFrameElement->element_value_id ?? null;
-        
+        $buildingElementsArray[$frames->id] = $buildingFrameElement->element_value_id ?? null;
+
         $buildingPaintworkStatusesArray = [
             'last_painted_year' => $buildingPaintworkStatus->last_painted_year ?? null,
             'paintwork_status_id' => $buildingPaintworkStatus->paintwork_status_id ?? null,
             'wood_rot_status_id' => $buildingPaintworkStatus->wood_rot_status_id ?? null,
         ];
 
-        dd([
-                'user_interests' => $userInterestsForInsulatedGlazing,
-                'building_insulated_glazings' => $buildingInsulatedGlazingArray,
-                'building_elements' => $buildingElementsArray,
-                'window_surface' => $buildingFeature->window_surface ?? null,
-                'building_paintwork_statuses' => $buildingPaintworkStatusesArray,
-        ]);
 
         // handle the stuff for the floor insulation.
         $floorInsulationElementValueId = $buildingElements->where('element_id', $floorInsulationElement->id)->first()->element_value_id ?? null;
@@ -823,7 +816,6 @@ class DumpService
 
         // handle the heater stuff
         $userInterestsForHeater = $user->userInterestsForSpecificType(Step::class, Step::findByShort('heater')->id, $inputSource)->first();
-
 
 
         $wallInsulationSavings = WallInsulation::calculate($building, $inputSource, $userEnergyHabit, [

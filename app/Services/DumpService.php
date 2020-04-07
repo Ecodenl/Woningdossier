@@ -833,7 +833,7 @@ class DumpService
             'user_interests' => $userInterestsForInsulatedGlazing,
             'building_insulated_glazings' => $buildingInsulatedGlazingArray,
             'building_elements' => $buildingElementsArray,
-            'window_surface' => $buildingFeature->window_surface ?? null,
+            'building_features' => ['window_surface' => $buildingFeature->window_surface ?? null],
             'building_paintwork_statuses' => $buildingPaintworkStatusesArray,
         ]);
 

@@ -139,7 +139,7 @@ class InsulatedGlazing
         if ($frameElementValue instanceof ElementValue && 'frames' == $frameElementValue->element->short) {
             $windowSurface = 0;
 
-            $windowSurfaceFormatted = NumberFormatter::reverseFormat($calculateData['window_surface'] ?? 0);
+            $windowSurfaceFormatted = NumberFormatter::reverseFormat($calculateData['building_features']['window_surface'] ?? 0);
             if (is_numeric($windowSurfaceFormatted)) {
                 $windowSurface = $windowSurfaceFormatted;
             }

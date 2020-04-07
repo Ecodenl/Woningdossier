@@ -805,9 +805,9 @@ class DumpService
         $buildingBoilerService = $buildingServices->where('service_id', $boilerService->id)->first();
 
         $buildingBoilerArray = [
-            $boilerService->short => [
-                'service_value_id' => $buildingBoilerService->service_value_id ?? null,
-                'extra' => $buildingBoilerService->extra['date'] ?? null,
+            'service_value_id' => $buildingBoilerService->service_value_id ?? null,
+            'extra' => [
+                'date' => $buildingBoilerService->extra['date'] ?? null
             ],
         ];
 

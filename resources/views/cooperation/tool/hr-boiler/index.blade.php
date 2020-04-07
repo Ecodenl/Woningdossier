@@ -4,11 +4,10 @@
 
 
 @section('step_content')
-    <form  method="POST"
-          action="{{ route('cooperation.tool.high-efficiency-boiler.store', ['cooperation' => $cooperation]) }}">
+    <form  method="POST" action="{{ route('cooperation.tool.high-efficiency-boiler.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
         @include('cooperation.tool.includes.interested', [
-          'translation' => 'high-efficiency-boiler.index.interested-in-improvement', 'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+            'translation' => 'high-efficiency-boiler.index.interested-in-improvement', 'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
         ])
         <div id="start-information">
             <div class="row">

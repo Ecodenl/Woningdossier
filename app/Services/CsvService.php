@@ -379,7 +379,7 @@ class CsvService
                     }
 
                     $questionName = "{$questionAnswerForCurrentQuestionnaire->question_id}-{$questionAnswerForCurrentQuestionnaire->question_name}";
-                    $rows[$building->id][$questionName] = $answer;
+                    $rows[$building->id][$questionName] = preg_replace("/\r|\n/", " ", $answer);
                     $headers[$questionName] = $questionAnswerForCurrentQuestionnaire->question_name;
 
                 }

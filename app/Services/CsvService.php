@@ -21,6 +21,7 @@ use App\Models\Step;
 use App\Models\User;
 use App\Scopes\CooperationScope;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class CsvService
@@ -269,6 +270,8 @@ class CsvService
          * @var User $user
          */
         foreach ($usersFromCooperation as $user) {
+            // reset it for each user.
+            $inputSource = $residentRole->inputSource;
             $building = $user->building;
             if ($building instanceof Building) {
 

@@ -9,6 +9,7 @@ use App\Models\FileTypeCategory;
 use App\Models\InputSource;
 use App\Models\Question;
 use App\Models\Questionnaire;
+use App\Models\User;
 use App\Services\CsvService;
 
 class ReportController extends Controller
@@ -20,9 +21,6 @@ class ReportController extends Controller
      */
     public function index(Cooperation $cooperation)
     {
-
-        dd(CsvService::dumpForQuestionnaire(Questionnaire::find(24), true));
-
         $reportFileTypeCategory = FileTypeCategory::short('report')
             ->with(['fileTypes' => function ($query) {
                 $query->where('short', '!=', 'pdf-report')

@@ -4,12 +4,14 @@ namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
 use App\NotificationSetting;
+use App\Scopes\GetValueScope;
 use App\Traits\HasCooperationTrait;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\Rules\In;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -75,7 +77,6 @@ class User extends Model implements AuthorizableContract
     {
         return $this->hasMany(UserInterest::class);
     }
-
 
 
     /**
@@ -302,16 +303,16 @@ class User extends Model implements AuthorizableContract
      * Returns if a user has interest in a specific model (mostly Step or
      * MeasureApplication).
      *
-     * @param  Model  $model
-     * @param  InputSource|null  $inputSource
+     * @param Model $model
+     * @param InputSource|null $inputSource
      *
      * @return bool
      */
     public function hasInterestIn(Model $model, InputSource $inputSource = null)
     {
         $userInterests = $this->userInterestsForSpecificType(get_class($model), $model->id, $inputSource)->with('interest')->get();
-        foreach($userInterests as $userInterest){
-            if ($userInterest->interest->calculate_value <= 2){
+        foreach ($userInterests as $userInterest) {
+            if ($userInterest->interest->calculate_value <= 2) {
                 return true;
             }
         }
@@ -505,7 +506,6 @@ class User extends Model implements AuthorizableContract
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function completedQuestionnaires(InputSource $inputSource = null)
-
     {
         // global scopes wont work on the intermediary table
         $inputSource = is_null($inputSource) ? HoomdossierSession::getInputSource(true) : $inputSource;
@@ -514,9 +514,25 @@ class User extends Model implements AuthorizableContract
             ->wherePivot('input_source_id', $inputSource->id);
     }
 
-    public function hasCompletedQuestionnaire(Questionnaire $questionnaire)
+    /**
+     * Check whether a user completed a questionnaire
+     *
+     * @param Questionnaire $questionnaire
+     * @param InputSource|null $inputSource
+     * @return bool
+     */
+    public function hasCompletedQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource = null)
     {
-        return $this->completedQuestionnaires()->where('questionnaire_id', $questionnaire->id)->first() instanceof Questionnaire;
+        if ($inputSource instanceof InputSource) {
+            return $this
+                ->completedQuestionnaires($inputSource)
+                ->where('questionnaire_id', $questionnaire->id)
+                ->exists();
+        }
+
+        return $this->completedQuestionnaires()
+            ->where('questionnaire_id', $questionnaire->id)
+            ->exists();
     }
 
     /**

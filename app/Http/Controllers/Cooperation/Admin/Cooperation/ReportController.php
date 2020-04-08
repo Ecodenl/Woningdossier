@@ -6,11 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileTypeCategory;
-use App\Models\InputSource;
-use App\Models\Question;
-use App\Models\Questionnaire;
-use App\Models\User;
-use App\Services\CsvService;
 
 class ReportController extends Controller
 {

@@ -265,12 +265,9 @@ class CsvService
 
         // get the users from the current cooperation that have the resident role
         $usersFromCooperation = $cooperation->getUsersWithRole($residentRole);
-        $usersFromCooperation = $usersFromCooperation->where('id', '=', 504);
-
 
         /**
          * @var User $user
-         *
          */
         foreach ($usersFromCooperation as $user) {
             $building = $user->building;

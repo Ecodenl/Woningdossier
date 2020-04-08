@@ -258,7 +258,6 @@ class CsvService
 
         $inputSource = $residentRole->inputSource;
 
-        $generalDataStep = Step::findByShort('general-data');
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
         $headers = self::getBaseHeaders($anonymize);
@@ -266,22 +265,21 @@ class CsvService
         // get the users from the current cooperation that have the resident role
         $usersFromCooperation = $cooperation->getUsersWithRole($residentRole);
 
-
-        /** @ $var User $user */
+        /**
+         * @var User $user
+         */
         foreach ($usersFromCooperation as $user) {
             $building = $user->building;
             if ($building instanceof Building) {
 
-                // well in every case there is a uitzondering op de regel
                 // normally we would pick the given input source
                 // but when coach input is available we use the coach input source for that particular user
-                // coach input is available when he has completed the general data step
-                if ($building->hasCompleted($generalDataStep, $coachInputSource)) {
+                // coach input is available when he has completed the questionnaire
+                if ($user->hasCompletedQuestionnaire($questionnaire, $coachInputSource)) {
                     $inputSource = $coachInputSource;
                 }
 
                 /** @var Collection $conversationRequestsForBuilding */
-
                 $createdAt = optional($user->created_at)->format('Y-m-d');
                 $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
                 $allowAccess = PrivateMessage::allowedAccess($building);
@@ -379,8 +377,8 @@ class CsvService
                         }
                     }
 
-                    $questionName = "{$questionAnswerForCurrentQuestionnaire->question_name}";
-                    $rows[$building->id][$questionName] = $answer;
+                    $questionName = "{$questionAnswerForCurrentQuestionnaire->question_id}-{$questionAnswerForCurrentQuestionnaire->question_name}";
+                    $rows[$building->id][$questionName] = preg_replace("/\r|\n/", " ", $answer);
                     $headers[$questionName] = $questionAnswerForCurrentQuestionnaire->question_name;
 
                 }
@@ -388,7 +386,6 @@ class CsvService
         }
 
         array_unshift($rows, $headers);
-
         return $rows;
 
     }

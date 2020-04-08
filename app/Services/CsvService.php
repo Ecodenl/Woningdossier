@@ -262,7 +262,6 @@ class CsvService
 
         $headers = self::getBaseHeaders($anonymize);
 
-
         // get the users from the current cooperation that have the resident role
         $usersFromCooperation = $cooperation->getUsersWithRole($residentRole);
 

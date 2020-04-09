@@ -456,31 +456,29 @@
                         console.log(data);
                         @endif
 
-                        changeOnInterests();
+                        $('.user-interest').trigger('change')
                     }
                 });
             });
 
-            function changeOnInterests() {
-                $('.user-interest').each(function (i, element) {
-                    // the input field
-                    var userInterest = $(element);
-                    // the user interest calculate value
-                    var userInterestCalculateValue = userInterest.find('option:selected').data('calculate-value');
+            $('.user-interest').change(function () {
+                // the input field
+                var userInterest = $(this);
+                // the user interest calculate value
+                var userInterestCalculateValue = userInterest.find('option:selected').data('calculate-value');
 
-                    // div that holds the inputs (m2 and windows)
-                    var valueElements = $(this).parents('.row').first().find('.values');
+                // div that holds the inputs (m2 and windows)
+                var valueElements = userInterest.parents('.row').first().find('.values');
 
-                    if (userInterestCalculateValue === 4 || userInterestCalculateValue === 5) {
-                        valueElements.hide();
-                        // clear the inputs, if the user filled in a faulty input it will still be send to the backend
-                        // validation fails, inputs are hidden and the user would not know whats wrong
-                        valueElements.find('input').val(null)
-                    } else {
-                        valueElements.hide();
-                    }
-                });
-            }
+                if (userInterestCalculateValue === 4 || userInterestCalculateValue === 5) {
+                    valueElements.hide();
+                    // clear the inputs, if the user filled in a faulty input it will still be send to the backend
+                    // validation fails, inputs are hidden and the user would not know whats wrong
+                    valueElements.find('input').val(null)
+                } else {
+                    valueElements.show();
+                }
+            });
 
             // Trigger the change event so it will load the data
             //$('form').find('*').filter(':input:visible:first').trigger('change');

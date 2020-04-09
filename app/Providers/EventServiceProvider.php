@@ -10,11 +10,13 @@ use App\Events\ParticipantAddedEvent;
 use App\Events\ParticipantRevokedEvent;
 use App\Events\PrivateMessageReceiverEvent;
 use App\Events\Registered;
+use App\Events\StepCleared;
 use App\Events\StepDataHasBeenChanged;
 use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
 use App\Events\UserChangedHisEmailEvent;
 use App\Events\UserRevokedAccessToHisBuilding;
+use App\Listeners\DeleteUserActionPlanAdvicesForStep;
 use App\Listeners\DossierResetListener;
 use App\Listeners\FillingToolForUserListener;
 use App\Listeners\GiveCoachesBuildingPermission;
@@ -96,6 +98,9 @@ class EventServiceProvider extends ServiceProvider
             LogRevokedAccessToBuilding::class,
             RevokeBuildingPermissionForCoaches::class,
             SetMessagesReadForBuilding::class,
+        ],
+        StepCleared::class => [
+            DeleteUserActionPlanAdvicesForStep::class
         ],
     ];
 

@@ -2,9 +2,11 @@
 
 namespace App\Helpers\Cooperation\Tool;
 
+use App\Events\StepCleared;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\InputSource;
+use App\Models\Step;
 use App\Scopes\GetValueScope;
 
 class WallInsulationHelper
@@ -52,5 +54,7 @@ class WallInsulationHelper
                 'facade_plastered_painted' => null
             ]
         );
+
+        StepCleared::dispatch($building->user, $inputSource, Step::findByShort('wall-insulation'));
     }
 }

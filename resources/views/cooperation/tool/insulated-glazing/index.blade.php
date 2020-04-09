@@ -468,10 +468,16 @@
                     // the user interest calculate value
                     var userInterestCalculateValue = userInterest.find('option:selected').data('calculate-value');
 
+                    // div that holds the inputs (m2 and windows)
+                    var valueElements = $(this).parents('.row').first().find('.values');
+
                     if (userInterestCalculateValue === 4 || userInterestCalculateValue === 5) {
-                        $(this).parent().parent().parent().parent().find('.values').hide();
+                        valueElements.hide();
+                        // clear the inputs, if the user filled in a faulty input it will still be send to the backend
+                        // validation fails, inputs are hidden and the user would not know whats wrong
+                        valueElements.find('input').val(null)
                     } else {
-                        $(this).parent().parent().parent().parent().find('.values').show();
+                        valueElements.hide();
                     }
                 });
             }

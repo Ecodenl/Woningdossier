@@ -257,8 +257,6 @@ class CsvService
         $rows = [];
         $residentRole = Role::findByName('resident');
 
-        $inputSource = $residentRole->inputSource;
-
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
         $headers = self::getBaseHeaders($anonymize);
@@ -285,7 +283,7 @@ class CsvService
                 /** @var Collection $conversationRequestsForBuilding */
                 $createdAt = optional($user->created_at)->format('Y-m-d');
                 $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
-                $allowAccess = PrivateMessage::allowedAccess($building);
+                $allowAccess = PrivateMessage::allowedAccess($building) ? 'Ja' : 'Nee';
 
                 $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
                 $connectedCoachNames = [];

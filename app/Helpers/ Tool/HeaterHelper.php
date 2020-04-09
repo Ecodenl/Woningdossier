@@ -29,7 +29,7 @@ class HeaterHelper
         BuildingHeater::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $building->id,
-                'input_source_id' => $building->id,
+                'input_source_id' => $inputSource->id
             ],
             $saveData['building_heaters']
         );

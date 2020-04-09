@@ -5,16 +5,12 @@ namespace App\Events;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\User;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class StepCleared implements ShouldQueue
+class StepCleared
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -29,6 +25,7 @@ class StepCleared implements ShouldQueue
      */
     public function __construct(User $user, InputSource $inputSource, Step $step)
     {
+        $this->inputSource = $inputSource;
         $this->user = $user;
         $this->step = $step;
     }

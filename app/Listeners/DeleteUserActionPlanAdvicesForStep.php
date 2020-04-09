@@ -4,8 +4,9 @@ namespace App\Listeners;
 
 use App\Events\StepCleared;
 use App\Services\UserActionPlanAdviceService;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class DeleteUserActionPlanAdvicesForStep
+class DeleteUserActionPlanAdvicesForStep implements ShouldQueue
 {
     /**
      * Create the event listener.

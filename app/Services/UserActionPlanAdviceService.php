@@ -27,7 +27,7 @@ class UserActionPlanAdviceService
      * @param Step $step
      * @throws \Exception
      */
-    public function clearForStep(User $user, InputSource $inputSource, Step $step)
+    public static function clearForStep(User $user, InputSource $inputSource, Step $step)
     {
         UserActionPlanAdvice::forMe($user)
             ->forInputSource($inputSource)

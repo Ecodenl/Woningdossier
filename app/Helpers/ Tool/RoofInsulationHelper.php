@@ -98,7 +98,9 @@ class RoofInsulationHelper
                     }
                 }
             }
-            $extra = $buildingRoofTypeData[$roofCat]['extra'] ?? [];
+
+            $roofCatData = $buildingRoofTypeData[$roofCat] ?? [];
+            $extra = $roofCatData['extra'] ?? [];
             if (array_key_exists('zinc_replaced_date', $extra)) {
                 $zincReplaceYear = (int) $extra['zinc_replaced_date'];
                 // todo Get surface for $roofCat from building_roof_types (or elsewhere) for this input source
@@ -114,7 +116,7 @@ class RoofInsulationHelper
                 }
                 // Note there's no such request input just yet. We're not sure this will be available for the user
                 // to fill in.
-                $zincSurface = $request->input('building_roof_types.'.$roofCat.'.zinc_surface', $zincSurface);
+                $zincSurface = $roofCatData['zinc_surface'] ?? $zincSurface;
 
                 if ($zincReplaceYear > 0 && $zincSurface > 0) {
                     /** @var MeasureApplication $zincReplaceMeasure */
@@ -132,7 +134,8 @@ class RoofInsulationHelper
             }
             if (array_key_exists('tiles_condition', $extra)) {
                 $tilesCondition = (int) $extra['tiles_condition'];
-                $surface = $request->input('building_roof_types.'.$roofCat.'.roof_surface', 0);
+
+                $surface = $roofCatData['roof_surface'] ?? 0;
                 if ($tilesCondition > 0 && $surface > 0) {
                     $replaceMeasure = MeasureApplication::where('short', 'replace-tiles')->first();
                     // no year here. Default is this year. It is incremented by factor * maintenance years
@@ -158,7 +161,8 @@ class RoofInsulationHelper
                 if ($bitumenReplaceYear <= 0) {
                     $bitumenReplaceYear = Carbon::now()->year - 10;
                 }
-                $surface = $request->input('building_roof_types.'.$roofCat.'.roof_surface', 0);
+
+                $surface = $roofCatData['roof_surface'] ?? 0;
 
                 if ($bitumenReplaceYear > 0 && $surface > 0) {
                     $replaceMeasure = MeasureApplication::where('short', 'replace-roof-insulation')->first();
@@ -177,6 +181,7 @@ class RoofInsulationHelper
                 }
             }
         }
+
     }
 
     /**

@@ -136,10 +136,10 @@ class RoofInsulationController extends Controller
             RoofInsulationHelper::clear($building, $inputSource);
         }
 
-        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
+        StepHelper::complete($this->step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
-        $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
+        $nextStep = StepHelper::getNextStep($building, $inputSource, $this->step);
         $url = $nextStep['url'];
 
         if (! empty($nextStep['tab_id'])) {

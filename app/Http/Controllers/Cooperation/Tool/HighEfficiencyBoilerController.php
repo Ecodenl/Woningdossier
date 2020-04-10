@@ -99,8 +99,6 @@ class HighEfficiencyBoilerController extends Controller
             HighEfficiencyBoilerHelper::clear($building, $inputSource);
         }
 
-        // Save progress
-        $this->saveAdvices($request);
         StepHelper::complete($this->step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
@@ -112,31 +110,5 @@ class HighEfficiencyBoilerController extends Controller
         }
 
         return redirect($url);
-    }
-
-    protected function saveAdvices(Request $request)
-    {
-        $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
-
-        /** @var JsonResponse $results */
-        $results = $this->calculate($request, $user);
-        $results = $results->getData(true);
-
-        // Remove old results
-        $user->actionPlanAdvices()->forStep($this->step)->delete();
-
-        if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
-            $measureApplication = MeasureApplication::where('short', 'high-efficiency-boiler-replace')->first();
-            if ($measureApplication instanceof MeasureApplication) {
-                $actionPlanAdvice = new UserActionPlanAdvice($results);
-                $actionPlanAdvice->costs = $results['cost_indication'];
-                $actionPlanAdvice->year = $results['replace_year'];
-                $actionPlanAdvice->user()->associate($user);
-                $actionPlanAdvice->measureApplication()->associate($measureApplication);
-                $actionPlanAdvice->step()->associate($this->step);
-                $actionPlanAdvice->save();
-            }
-        }
     }
 }

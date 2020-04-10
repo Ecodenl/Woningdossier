@@ -72,8 +72,6 @@ class FloorInsulationController extends Controller
             $crawlspacePresent = 1; // now
         }
 
-//        dd(DumpService::getCalculateData($building->user, HoomdossierSession::getInputSource(true)));
-
         $buildingElement = $building->buildingElements;
         $buildingElementsForMe = BuildingElement::forMe()->get();
 
@@ -111,9 +109,7 @@ class FloorInsulationController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
-        $buildingId = $building->id;
         $inputSource = HoomdossierSession::getInputSource(true);
-        $inputSourceId = $inputSource->id;
 
         $userInterests = $request->input('user_interests');
         UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
@@ -121,40 +117,18 @@ class FloorInsulationController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        // Get the value's from the input's
-        $elements = $request->input('element', '');
-
-        foreach ($elements as $elementId => $elementValueId) {
-            BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-                [
-                    'building_id' => $buildingId,
-                    'element_id' => $elementId,
-                    'input_source_id' => $inputSourceId,
-                ],
-                [
-                    'element_value_id' => $elementValueId,
-                ]
-            );
-        }
-
-
-        $buildingFeatureData = $request->input('building_features');
-        $buildingElementData = $request->input('building_elements');
-
         // when its a step, and a user has no interest in it we will clear the data for that step
         // a user may had interest in the step and later on decided he has no interest, so we clear the data to prevent weird data in the dumps.
         if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
-            FloorInsulationHelper::save($building, $inputSource, $buildingFeatureData, $buildingElementData);
+            FloorInsulationHelper::save($building, $inputSource, $request->validated());
         } else {
             FloorInsulationHelper::clear($building, $inputSource);
         }
 
-        // Save progress
-        $this->saveAdvices($request);
-        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
+        StepHelper::complete($this->step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
-        $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
+        $nextStep = StepHelper::getNextStep($building, $inputSource, $this->step);
         $url = $nextStep['url'];
 
         if (! empty($nextStep['tab_id'])) {
@@ -164,39 +138,4 @@ class FloorInsulationController extends Controller
         return redirect($url);
     }
 
-    protected function saveAdvices(Request $request)
-    {
-        // Remove old results
-        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
-
-        $user = HoomdossierSession::getBuilding(true)->user;
-        $floorInsulation = Element::where('short', 'floor-insulation')->first();
-        $elements = $request->input('element');
-
-        if (array_key_exists($floorInsulation->id, $elements)) {
-            $floorInsulationValue = ElementValue::where('element_id',
-                $floorInsulation->id)->where('id',
-                $elements[$floorInsulation->id])->first();
-            // don't save if not applicable
-            if ($floorInsulationValue instanceof ElementValue && $floorInsulationValue->calculate_value < 5) {
-                /** @var JsonResponse $results */
-                $results = $this->calculate($request);
-                $results = $results->getData(true);
-
-                if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
-                    $measureApplication = MeasureApplication::translated('measure_name',
-                        $results['insulation_advice'],
-                        'nl')->first(['measure_applications.*']);
-                    if ($measureApplication instanceof MeasureApplication) {
-                        $actionPlanAdvice = new UserActionPlanAdvice($results);
-                        $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
-                        $actionPlanAdvice->user()->associate($user);
-                        $actionPlanAdvice->measureApplication()->associate($measureApplication);
-                        $actionPlanAdvice->step()->associate($this->step);
-                        $actionPlanAdvice->save();
-                    }
-                }
-            }
-        }
-    }
 }

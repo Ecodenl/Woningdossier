@@ -2,7 +2,10 @@
 
 namespace App\Helpers\Cooperation\Tool;
 
+use App\Calculations\Heater;
+use App\Calculations\InsulatedGlazing;
 use App\Events\StepCleared;
+use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
@@ -11,9 +14,14 @@ use App\Models\BuildingPaintworkStatus;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\InputSource;
+use App\Models\MeasureApplication;
 use App\Models\Step;
+use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
 use App\Services\ModelService;
+use App\Services\UserActionPlanAdviceService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class InsulatedGlazingHelper
 {
@@ -104,49 +112,105 @@ class InsulatedGlazingHelper
             ],
             $buildingPaintworkStatusData
         );
+
+        self::saveAdvices($building, $inputSource, $saveData);
     }
 
     /**
-     * Method to clear the building feature data for wall insulation step.
+     * Save the advices for the step
      *
      * @param Building $building
      * @param InputSource $inputSource
+     * @param array $saveData
+     * @throws \Exception
      */
-    public static function clear(Building $building, InputSource $inputSource)
+    public static function saveAdvices(Building $building, InputSource $inputSource, array $saveData)
     {
-        $frames = Element::where('short', 'frames')->first();
-        $woodElements = Element::where('short', 'wood-elements')->first();
 
-        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'building_id' => $building->id,
-                'input_source_id' => $inputSource->id,
-            ],
-            [
-                'window_surface' => null
-            ]
-        );
+        $user = $building->user;
+        $step = Step::findByShort('insulated-glazing');
 
-        // delete the building elements for the page, wood element and frame
-        BuildingElement::forMe($building->user)
-            ->forInputSource($inputSource)
-            ->where(function ($query) use ($woodElements, $frames) {
-                return $query->where('element_id', $woodElements->id)
-                    ->orWhere('element_id', $frames->id);
-            })->delete();
+        $results = InsulatedGlazing::calculate($building, $inputSource, $user->energyHabit, $saveData);
 
-        BuildingPaintworkStatus::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'building_id' => $building->id,
-                'input_source_id' => $inputSource->id,
-            ],
-            [
-                'last_painted_year' => null,
-                'paintwork_status_id' => null,
-                'wood_rot_status_id' => null
-            ]
-        );
+        // remove old results
+        UserActionPlanAdviceService::clearForStep($user, $inputSource, $step);
 
-        StepCleared::dispatch($building->user, $inputSource, Step::findByShort('insulated-glazing'));
+        foreach ($results['measure'] as $measureId => $data) {
+            if (array_key_exists('costs', $data) && $data['costs'] > 0) {
+                $measureApplication = MeasureApplication::where('id',
+                    $measureId)->where('step_id', $step->id)->first();
+
+                if ($measureApplication instanceof MeasureApplication) {
+                    $actionPlanAdvice = new UserActionPlanAdvice($data);
+                    $actionPlanAdvice->user()->associate($user);
+                    $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                    $actionPlanAdvice->step()->associate($step);
+                    $actionPlanAdvice->save();
+                }
+            }
+        }
+
+        $keysToMeasure = [
+            'paintwork' => 'paint-wood-elements',
+            'crack-sealing' => 'crack-sealing',
+        ];
+
+        foreach ($keysToMeasure as $key => $measureShort) {
+            if (isset($results[$key]['costs']) && $results[$key]['costs'] > 0) {
+                $measureApplication = MeasureApplication::where('short', $measureShort)->first();
+                if ($measureApplication instanceof MeasureApplication) {
+                    $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
+                    $actionPlanAdvice->user()->associate($user);
+                    $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                    $actionPlanAdvice->step()->associate($step);
+                    $actionPlanAdvice->save();
+                }
+            }
+        }
     }
+
+    // not used at the moment as there is no main question for the element.
+//    /**
+//     * Method to clear the building feature data for wall insulation step.
+//     *
+//     * @param Building $building
+//     * @param InputSource $inputSource
+//     */
+//    public static function clear(Building $building, InputSource $inputSource)
+//    {
+//        $frames = Element::where('short', 'frames')->first();
+//        $woodElements = Element::where('short', 'wood-elements')->first();
+//
+//        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+//            [
+//                'building_id' => $building->id,
+//                'input_source_id' => $inputSource->id,
+//            ],
+//            [
+//                'window_surface' => null
+//            ]
+//        );
+//
+//        // delete the building elements for the page, wood element and frame
+//        BuildingElement::forMe($building->user)
+//            ->forInputSource($inputSource)
+//            ->where(function ($query) use ($woodElements, $frames) {
+//                return $query->where('element_id', $woodElements->id)
+//                    ->orWhere('element_id', $frames->id);
+//            })->delete();
+//
+//        BuildingPaintworkStatus::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+//            [
+//                'building_id' => $building->id,
+//                'input_source_id' => $inputSource->id,
+//            ],
+//            [
+//                'last_painted_year' => null,
+//                'paintwork_status_id' => null,
+//                'wood_rot_status_id' => null
+//            ]
+//        );
+//
+//        StepCleared::dispatch($building->user, $inputSource, Step::findByShort('insulated-glazing'));
+//    }
 }

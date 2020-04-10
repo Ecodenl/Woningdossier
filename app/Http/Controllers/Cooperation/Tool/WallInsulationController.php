@@ -135,8 +135,6 @@ class WallInsulationController extends Controller
             WallInsulationHelper::clear($building, $inputSource);
         }
 
-        // Save progress
-        $this->saveAdvices($request);
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
@@ -148,49 +146,6 @@ class WallInsulationController extends Controller
         }
 
         return redirect($url);
-    }
-
-    protected function saveAdvices(Request $request)
-    {
-        $user = HoomdossierSession::getBuilding(true)->user;
-        /** @var JsonResponse $results */
-        $results = $this->calculate($request);
-        $results = $results->getData(true);
-
-        // Remove old results
-        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
-
-        if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
-            $measureApplication = MeasureApplication::translated('measure_name', $results['insulation_advice'], 'nl')->first(['measure_applications.*']);
-            if ($measureApplication instanceof MeasureApplication) {
-                $actionPlanAdvice = new UserActionPlanAdvice($results);
-                $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
-                $actionPlanAdvice->user()->associate($user);
-                $actionPlanAdvice->measureApplication()->associate($measureApplication);
-                $actionPlanAdvice->step()->associate($this->step);
-                $actionPlanAdvice->save();
-            }
-        }
-
-        $keysToMeasure = [
-            'paint_wall' => 'paint-wall',
-            'repair_joint' => 'repair-joint',
-            'clean_brickwork' => 'clean-brickwork',
-            'impregnate_wall' => 'impregnate-wall',
-        ];
-
-        foreach ($keysToMeasure as $key => $measureShort) {
-            if (isset($results[$key]['costs']) && $results[$key]['costs'] > 0) {
-                $measureApplication = MeasureApplication::where('short', $measureShort)->first();
-                if ($measureApplication instanceof MeasureApplication) {
-                    $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
-                    $actionPlanAdvice->user()->associate($user);
-                    $actionPlanAdvice->measureApplication()->associate($measureApplication);
-                    $actionPlanAdvice->step()->associate($this->step);
-                    $actionPlanAdvice->save();
-                }
-            }
-        }
     }
 
     public function calculate(WallInsulationRequest $request)

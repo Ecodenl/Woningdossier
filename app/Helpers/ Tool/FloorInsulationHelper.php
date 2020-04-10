@@ -2,23 +2,14 @@
 
 namespace App\Helpers\Cooperation\Tool;
 
-use App\Calculations\FloorInsulation;
-use App\Calculations\WallInsulation;
 use App\Events\StepCleared;
-use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\Element;
-use App\Models\ElementValue;
 use App\Models\InputSource;
-use App\Models\MeasureApplication;
 use App\Models\Step;
-use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
-use App\Services\UserActionPlanAdviceService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class FloorInsulationHelper
 {
@@ -31,25 +22,37 @@ class FloorInsulationHelper
      * @param array $buildingFeatureData
      * @param array $buildingElementData
      */
-    public static function save(Building $building, InputSource $inputSource, array $buildingFeatureData, array $buildingElementData)
+    public static function save(Building $building, InputSource $inputSource, array $saveData)
     {
-        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'building_id' => $building->id,
-                'input_source_id' => $inputSource->id,
-            ],
-            $buildingFeatureData
-        );
-
-        $element = Element::findByShort('crawlspace');
+        $floorInsulationElement = Element::findByShort('floor-insulation');
 
         BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $building->id,
                 'input_source_id' => $inputSource->id,
-                'element_id' => $element->id,
+                'element_id' => $floorInsulationElement->id,
             ],
-            $buildingElementData
+            [
+                'element_value_id' => $saveData['element'][$floorInsulationElement->id]
+            ]
+        );
+
+        BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+            [
+                'building_id' => $building->id,
+                'input_source_id' => $inputSource->id,
+            ],
+            $saveData['building_features']
+        );
+
+        $crawlspaceElement = Element::findByShort('crawlspace');
+        BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
+            [
+                'building_id' => $building->id,
+                'input_source_id' => $inputSource->id,
+                'element_id' => $crawlspaceElement->id,
+            ],
+            $saveData['building_elements']
         );
 
     }

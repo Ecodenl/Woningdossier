@@ -109,9 +109,7 @@ class FloorInsulationController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
-        $buildingId = $building->id;
         $inputSource = HoomdossierSession::getInputSource(true);
-        $inputSourceId = $inputSource->id;
 
         $userInterests = $request->input('user_interests');
         UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
@@ -119,41 +117,18 @@ class FloorInsulationController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        // Get the value's from the input's
-        $elements = $request->input('element', '');
-
-        foreach ($elements as $elementId => $elementValueId) {
-            BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-                [
-                    'building_id' => $buildingId,
-                    'element_id' => $elementId,
-                    'input_source_id' => $inputSourceId,
-                ],
-                [
-                    'element_value_id' => $elementValueId,
-                ]
-            );
-        }
-
-
-        $buildingFeatureData = $request->input('building_features');
-        $buildingElementData = $request->input('building_elements');
-        dd($request->validated());
-
         // when its a step, and a user has no interest in it we will clear the data for that step
         // a user may had interest in the step and later on decided he has no interest, so we clear the data to prevent weird data in the dumps.
         if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
-            FloorInsulationHelper::save($building, $inputSource, $buildingFeatureData, $buildingElementData);
+            FloorInsulationHelper::save($building, $inputSource, $request->validated());
         } else {
             FloorInsulationHelper::clear($building, $inputSource);
         }
 
-//         Save progress
-        $this->saveAdvices($request);
-        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
+        StepHelper::complete($this->step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
-        $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
+        $nextStep = StepHelper::getNextStep($building, $inputSource, $this->step);
         $url = $nextStep['url'];
 
         if (! empty($nextStep['tab_id'])) {

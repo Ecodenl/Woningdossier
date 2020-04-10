@@ -819,14 +819,16 @@ class DumpService
 
 
         $wallInsulationSavings = WallInsulation::calculate($building, $inputSource, $userEnergyHabit, [
-            'cavity_wall' => $buildingFeature->cavity_wall ?? null,
             'element' => [$wallInsulationElement->id => $wallInsulationBuildingElement->element_value_id ?? null],
-            'insulation_wall_surface' => $buildingFeature->insulation_wall_surface ?? null,
-            'wall_joints' => $buildingFeature->wall_joints ?? null,
-            'contaminated_wall_joints' => $buildingFeature->contaminated_wall_joints ?? null,
-            'facade_plastered_painted' => $buildingFeature->facade_plastered_painted ?? null,
-            'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id ?? null,
-            'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
+            'building_features' => [
+                'cavity_wall' => $buildingFeature->cavity_wall ?? null,
+                'insulation_wall_surface' => $buildingFeature->insulation_wall_surface ?? null,
+                'wall_joints' => $buildingFeature->wall_joints ?? null,
+                'contaminated_wall_joints' => $buildingFeature->contaminated_wall_joints ?? null,
+                'facade_plastered_painted' => $buildingFeature->facade_plastered_painted ?? null,
+                'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id ?? null,
+                'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
+            ]
         ]);
 
         $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit, [

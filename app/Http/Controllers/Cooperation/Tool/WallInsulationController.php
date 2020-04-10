@@ -87,8 +87,6 @@ class WallInsulationController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
-        $buildingId = $building->id;
-        $inputSourceId = $inputSource->id;
 
         $userInterests = $request->input('user_interests');
         UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
@@ -96,41 +94,10 @@ class WallInsulationController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-
-        $buildingFeatureData = $request->only([
-            'facade_plastered_surface_id',
-            'wall_joints',
-            'cavity_wall',
-            'contaminated_wall_joints',
-            'wall_surface',
-            'insulation_wall_surface',
-            'facade_damaged_paintwork_id',
-            'facade_plastered_painted'
-        ]);
-
-        // Get all the values from the form
-        $wallInsulationQualities = $request->get('element', '');
-
-        // Element id's and values
-        $elementId = key($wallInsulationQualities);
-        $elementValueId = reset($wallInsulationQualities);
-
-        // Save the wall insulation
-        BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
-                'element_id' => $elementId,
-            ],
-            [
-                'element_value_id' => $elementValueId,
-            ]
-        );
-
         // when its a step, and a user has no interest in it we will clear the data for that step
         // a user may had interest in the step and later on decided he has no interest, so we clear the data to prevent weird data in the dumps.
         if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
-            WallInsulationHelper::save($building, $inputSource, $buildingFeatureData);
+            WallInsulationHelper::save($building, $inputSource, $request->validated());
         } else {
             WallInsulationHelper::clear($building, $inputSource);
         }

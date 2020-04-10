@@ -119,49 +119,6 @@ class InsulatedGlazingController extends Controller
         ));
     }
 
-    protected function saveAdvices(Request $request)
-    {
-        $user = HoomdossierSession::getBuilding(true)->user;
-        /** @var JsonResponse $results */
-        $results = $this->calculate($request);
-        $results = $results->getData(true);
-
-        // Remove old results
-        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
-
-        foreach ($results['measure'] as $measureId => $data) {
-            if (array_key_exists('costs', $data) && $data['costs'] > 0) {
-                $measureApplication = MeasureApplication::where('id',
-                    $measureId)->where('step_id', $this->step->id)->first();
-
-                if ($measureApplication instanceof MeasureApplication) {
-                    $actionPlanAdvice = new UserActionPlanAdvice($data);
-                    $actionPlanAdvice->user()->associate($user);
-                    $actionPlanAdvice->measureApplication()->associate($measureApplication);
-                    $actionPlanAdvice->step()->associate($this->step);
-                    $actionPlanAdvice->save();
-                }
-            }
-        }
-
-        $keysToMeasure = [
-            'paintwork' => 'paint-wood-elements',
-            'crack-sealing' => 'crack-sealing',
-        ];
-
-        foreach ($keysToMeasure as $key => $measureShort) {
-            if (isset($results[$key]['costs']) && $results[$key]['costs'] > 0) {
-                $measureApplication = MeasureApplication::where('short', $measureShort)->first();
-                if ($measureApplication instanceof MeasureApplication) {
-                    $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
-                    $actionPlanAdvice->user()->associate($user);
-                    $actionPlanAdvice->measureApplication()->associate($measureApplication);
-                    $actionPlanAdvice->step()->associate($this->step);
-                    $actionPlanAdvice->save();
-                }
-            }
-        }
-    }
 
     public function calculate(Request $request)
     {
@@ -203,16 +160,9 @@ class InsulatedGlazingController extends Controller
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         // save the step data
-        // todo: add if no interest clear step
-        $saveData = $request->only('building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses');
-        InsulatedGlazingHelper::save(
-            $building,
-            $inputSource,
-            $saveData
-        );
+        $saveData = $request->only('user_interests', 'building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses');
+        InsulatedGlazingHelper::save($building, $inputSource, $saveData);
 
-
-        $this->saveAdvices($request);
         // Save progress
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());

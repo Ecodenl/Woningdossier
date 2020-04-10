@@ -2,7 +2,10 @@
 
 namespace App\Helpers\Cooperation\Tool;
 
+use App\Calculations\Heater;
+use App\Calculations\InsulatedGlazing;
 use App\Events\StepCleared;
+use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
@@ -11,9 +14,14 @@ use App\Models\BuildingPaintworkStatus;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\InputSource;
+use App\Models\MeasureApplication;
 use App\Models\Step;
+use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
 use App\Services\ModelService;
+use App\Services\UserActionPlanAdviceService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class InsulatedGlazingHelper
 {
@@ -104,6 +112,61 @@ class InsulatedGlazingHelper
             ],
             $buildingPaintworkStatusData
         );
+
+        self::saveAdvices($building, $inputSource, $saveData);
+    }
+
+    /**
+     * Save the advices for the step
+     *
+     * @param Building $building
+     * @param InputSource $inputSource
+     * @param array $saveData
+     * @throws \Exception
+     */
+    public static function saveAdvices(Building $building, InputSource $inputSource, array $saveData)
+    {
+
+        $user = $building->user;
+        $step = Step::findByShort('insulated-glazing');
+
+        $results = InsulatedGlazing::calculate($building, $inputSource, $user->energyHabit, $saveData);
+
+        // remove old results
+        UserActionPlanAdviceService::clearForStep($user, $inputSource, $step);
+
+        foreach ($results['measure'] as $measureId => $data) {
+            if (array_key_exists('costs', $data) && $data['costs'] > 0) {
+                $measureApplication = MeasureApplication::where('id',
+                    $measureId)->where('step_id', $step->id)->first();
+
+                if ($measureApplication instanceof MeasureApplication) {
+                    $actionPlanAdvice = new UserActionPlanAdvice($data);
+                    $actionPlanAdvice->user()->associate($user);
+                    $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                    $actionPlanAdvice->step()->associate($step);
+                    $actionPlanAdvice->save();
+                }
+            }
+        }
+
+        $keysToMeasure = [
+            'paintwork' => 'paint-wood-elements',
+            'crack-sealing' => 'crack-sealing',
+        ];
+
+        foreach ($keysToMeasure as $key => $measureShort) {
+            if (isset($results[$key]['costs']) && $results[$key]['costs'] > 0) {
+                $measureApplication = MeasureApplication::where('short', $measureShort)->first();
+                if ($measureApplication instanceof MeasureApplication) {
+                    $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
+                    $actionPlanAdvice->user()->associate($user);
+                    $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                    $actionPlanAdvice->step()->associate($step);
+                    $actionPlanAdvice->save();
+                }
+            }
+        }
     }
 
     /**

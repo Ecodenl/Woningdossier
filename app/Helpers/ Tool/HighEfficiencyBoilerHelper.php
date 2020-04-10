@@ -106,19 +106,6 @@ class HighEfficiencyBoilerHelper
             ->delete();
 
 
-
-        // questionable reset as this is base data
-//        UserEnergyHabit::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-//            [
-//                'user_id' => $building->user->id,
-//                'input_source_id' => $inputSource->id,
-//            ],
-//            [
-//                'amount_gas' => null,
-//                'resident_count' => null,
-//            ]
-//        );
-
         StepCleared::dispatch($building->user, $inputSource, Step::findByShort('high-efficiency-boiler'));
     }
 }

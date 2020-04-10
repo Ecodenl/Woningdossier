@@ -97,17 +97,13 @@ class HeaterController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        $saveData = $request->only('building_heaters', 'user_energy_habits');
-
+        $saveData = $request->only('user_interests', 'building_heaters', 'user_energy_habits');
         if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
             HeaterHelper::save($building, $inputSource, $saveData);
         } else {
             HeaterHelper::clear($building, $inputSource);
         }
 
-
-        // Save progress
-        $this->saveAdvices($request);
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
@@ -119,30 +115,5 @@ class HeaterController extends Controller
         }
 
         return redirect($url);
-    }
-
-    protected function saveAdvices(Request $request)
-    {
-        $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
-
-        /** @var JsonResponse $results */
-        $results = $this->calculate($request);
-        $results = $results->getData(true);
-
-        // Remove old results
-        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
-
-        if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
-            $measureApplication = MeasureApplication::where('short', 'heater-place-replace')->first();
-            if ($measureApplication instanceof MeasureApplication) {
-                $actionPlanAdvice = new UserActionPlanAdvice($results);
-                $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
-                $actionPlanAdvice->user()->associate($user);
-                $actionPlanAdvice->measureApplication()->associate($measureApplication);
-                $actionPlanAdvice->step()->associate($this->step);
-                $actionPlanAdvice->save();
-            }
-        }
     }
 }

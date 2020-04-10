@@ -35,7 +35,7 @@ class WallInsulationHelper
             [
                 'building_id' => $building->id,
                 'input_source_id' => $inputSource->id,
-                'element_id' => $wallInsulationElement
+                'element_id' => $wallInsulationElement->id,
             ],
             [
                 'element_value_id' => $saveData['element'][$wallInsulationElement->id]

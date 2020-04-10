@@ -2,14 +2,23 @@
 
 namespace App\Helpers\Cooperation\Tool;
 
+use App\Calculations\FloorInsulation;
+use App\Calculations\WallInsulation;
 use App\Events\StepCleared;
+use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\Element;
+use App\Models\ElementValue;
 use App\Models\InputSource;
+use App\Models\MeasureApplication;
 use App\Models\Step;
+use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
+use App\Services\UserActionPlanAdviceService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class FloorInsulationHelper
 {

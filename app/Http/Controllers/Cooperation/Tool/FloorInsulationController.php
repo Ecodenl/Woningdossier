@@ -72,8 +72,6 @@ class FloorInsulationController extends Controller
             $crawlspacePresent = 1; // now
         }
 
-//        dd(DumpService::getCalculateData($building->user, HoomdossierSession::getInputSource(true)));
-
         $buildingElement = $building->buildingElements;
         $buildingElementsForMe = BuildingElement::forMe()->get();
 
@@ -140,6 +138,7 @@ class FloorInsulationController extends Controller
 
         $buildingFeatureData = $request->input('building_features');
         $buildingElementData = $request->input('building_elements');
+        dd($request->validated());
 
         // when its a step, and a user has no interest in it we will clear the data for that step
         // a user may had interest in the step and later on decided he has no interest, so we clear the data to prevent weird data in the dumps.
@@ -149,7 +148,7 @@ class FloorInsulationController extends Controller
             FloorInsulationHelper::clear($building, $inputSource);
         }
 
-        // Save progress
+//         Save progress
         $this->saveAdvices($request);
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());

@@ -185,12 +185,12 @@ class RoofInsulationHelper
     }
 
     /**
-     * Method to clear all the saved data for the step, except for the comments.
+     * Method to save the roof insulation data
      *
      * @param Building $building
      * @param InputSource $inputSource
-     * @param array $buildingFeatureData
-     * @param array $buildingElementData
+     * @param array $saveData
+     * @throws \Exception
      */
     public static function save(Building $building, InputSource $inputSource, array $saveData)
     {

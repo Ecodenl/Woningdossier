@@ -34,7 +34,7 @@ class UserController extends Controller
             ->whereHas('building')
             ->with(['building' => function ($query) {
                 $query->with(['buildingStatuses' => function ($query) {
-                    $query->mostRecent();
+                    $query->mostRecent()->with('status');
                 }]);
             }])->get();
         $roles = Role::all();

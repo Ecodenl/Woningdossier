@@ -225,7 +225,6 @@
 
         function addAdditionalQuestionOptions(question, guid)
         {
-            console.log(question);
             // we need to create this for every new option
             // so we can make a difference between the multiple options
             var additionalQuestionOptionGuid = createGuid();

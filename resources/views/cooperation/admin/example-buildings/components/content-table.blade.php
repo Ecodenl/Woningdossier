@@ -34,9 +34,10 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
     </thead>
     <tbody>
         @foreach($contentStructure as $step => $dataForSubSteps)
+            <?php $stepName = \App\Models\Step::findByShort($step)->name ?>
             <tr>
                 <td colspan="2">
-                    <h3>@lang('woningdossier.cooperation.tool.' . $step . '.title')</h3>
+                    <h3>{{$stepName}}</h3>
                 </td>
             </tr>
 

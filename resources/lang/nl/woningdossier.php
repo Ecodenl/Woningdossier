@@ -78,6 +78,7 @@ return [
                     'home' => 'Home',
                     'cooperations' => 'Cooperaties',
                     'users' => 'Gebruikers filteren',
+                    'questionnaires' => 'Vragenlijsten',
                     'key-figures' => 'Kengetallen',
                     'translations' => 'Vertalingen',
                     'example-buildings' => 'Voorbeeldwoningen',

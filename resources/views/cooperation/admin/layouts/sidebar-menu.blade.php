@@ -177,6 +177,9 @@
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.users.index', 'cooperation.admin.super-admin.users.filter'])) active @endif">
                                     <a href="{{route('cooperation.admin.super-admin.users.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.users')</a>
                                 </li>
+                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.questionnaires.index', 'cooperation.admin.super-admin.questionnaires.filter'])) active @endif">
+                                    <a href="{{route('cooperation.admin.super-admin.questionnaires.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.questionnaires')</a>
+                                </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.translations.index', 'cooperation.admin.super-admin.translations.edit'])) active @endif">
                                     <a href="{{route('cooperation.admin.super-admin.translations.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.translations')</a>
                                 </li>

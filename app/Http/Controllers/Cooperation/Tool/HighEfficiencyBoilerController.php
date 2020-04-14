@@ -95,8 +95,6 @@ class HighEfficiencyBoilerController extends Controller
         $saveData = $request->only('user_energy_habits', 'building_services');
         if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
             HighEfficiencyBoilerHelper::save($building, $inputSource, $saveData);
-        } else {
-            HighEfficiencyBoilerHelper::clear($building, $inputSource);
         }
 
         StepHelper::complete($this->step, $building, $inputSource);

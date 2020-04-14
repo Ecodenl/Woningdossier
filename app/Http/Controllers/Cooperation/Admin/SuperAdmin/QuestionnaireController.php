@@ -23,8 +23,9 @@ class QuestionnaireController extends Controller
     {
         $questionnaires = Questionnaire::all();
         $cooperations = Cooperation::all();
+        $selectedQuestionnaire = $questionnaire;
 
-        return view('cooperation.admin.super-admin.questionnaires.edit', compact('questionnaires', 'cooperations'));
+        return view('cooperation.admin.super-admin.questionnaires.edit', compact('selectedQuestionnaire', 'questionnaires', 'cooperations'));
     }
 
 

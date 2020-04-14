@@ -15,7 +15,7 @@
                             <label for="questionnaires">@lang('cooperation/admin/super-admin/questionnaires.edit.form.questionnaire')</label>
                             <select name="questionnaires[id]" id="questionnaires" class="form-control">
                                 @foreach($questionnaires as $questionnaire)
-                                    <option selected="selected" value="{{$questionnaire->id}}">
+                                    <option @if($selectedQuestionnaire->id == $questionnaire->id) selected="selected" @endif value="{{$questionnaire->id}}">
                                         {{$questionnaire->name}}
                                     </option>
                                 @endforeach
@@ -26,9 +26,9 @@
                         <div class="form-group">
                             <label for="cooperations">@lang('cooperation/admin/super-admin/questionnaires.edit.form.cooperations')</label>
                             <select name="cooperations[id][]" id="cooperations" class="form-control" multiple="multiple">
-                                @foreach($cooperations as $questionnaire)
-                                    <option value="{{$questionnaire->id}}">
-                                        {{$questionnaire->name}}
+                                @foreach($cooperations as $cooperation)
+                                    <option value="{{$cooperation->id}}">
+                                        {{$cooperation->name}}
                                     </option>
                                 @endforeach
                             </select>

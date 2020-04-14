@@ -15,19 +15,21 @@ class UpdateTranslationOnTranslationsTable extends Migration
     {
         $step = DB::table('steps')->where('short', 'ventilation')->first();
 
-        DB::table('translations')
-            ->where('key', $step->name)
-            ->where('language', 'nl')
-            ->update([
-                'translation' => 'Ventilatie'
-            ]);
+        if ($step instanceof stdClass) {
+            DB::table('translations')
+                ->where('key', $step->name)
+                ->where('language', 'nl')
+                ->update([
+                    'translation' => 'Ventilatie'
+                ]);
 
-        DB::table('translations')
-            ->where('key', $step->name)
-            ->where('language', 'en')
-            ->update([
-                'translation' => 'Ventilation'
-            ]);
+            DB::table('translations')
+                ->where('key', $step->name)
+                ->where('language', 'en')
+                ->update([
+                    'translation' => 'Ventilation'
+                ]);
+        }
     }
 
     /**
@@ -39,18 +41,20 @@ class UpdateTranslationOnTranslationsTable extends Migration
     {
         $step = DB::table('steps')->where('short', 'ventilation')->first();
 
-        DB::table('translations')
-            ->where('key', $step->name)
-            ->where('language', 'nl')
-            ->update([
-                'translation' => 'Ventilatie informatie'
-            ]);
+        if ($step instanceof stdClass) {
+            DB::table('translations')
+                ->where('key', $step->name)
+                ->where('language', 'nl')
+                ->update([
+                    'translation' => 'Ventilatie informatie'
+                ]);
 
-        DB::table('translations')
-            ->where('key', $step->name)
-            ->where('language', 'en')
-            ->update([
-                'translation' => 'Ventilation information'
-            ]);
+            DB::table('translations')
+                ->where('key', $step->name)
+                ->where('language', 'en')
+                ->update([
+                    'translation' => 'Ventilation information'
+                ]);
+        }
     }
 }

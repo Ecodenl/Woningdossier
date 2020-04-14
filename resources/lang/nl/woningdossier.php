@@ -71,6 +71,9 @@ return [
                 'index' => [
                     'header' => 'Voorbeeldwoningen',
                 ],
+                'create' => [
+                    'header' => 'Voorbeeldwoning aanmaken'
+                ],
             ],
             'super-admin' => [
                 'side-nav' => [
@@ -142,7 +145,6 @@ return [
                         'success' => 'Vertalingen zijn bijgewerkt.',
                     ],
                 ],
-
                 'cooperations' => [
                     'index' => [
                         'header' => 'Cooperaties',

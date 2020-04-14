@@ -88,24 +88,4 @@ class HighEfficiencyBoilerHelper
             }
         }
     }
-
-    /**
-     * * Method to clear the hr step
-     *
-     * @param Building $building
-     * @param InputSource $inputSource
-     * @throws \Exception
-     */
-    public static function clear(Building $building, InputSource $inputSource)
-    {
-        $service = Service::findByShort('boiler');
-
-        BuildingService::forMe($building->user)
-            ->forInputSource($inputSource)
-            ->where('service_id', $service->id)
-            ->delete();
-
-
-        StepCleared::dispatch($building->user, $inputSource, Step::findByShort('high-efficiency-boiler'));
-    }
 }

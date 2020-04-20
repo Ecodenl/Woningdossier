@@ -16,11 +16,11 @@
                     <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
                         <thead>
                             <tr>
-                                @lang('cooperation/admin/example-buildings.index.table.name')
-                                @lang('cooperation/admin/example-buildings.index.table.order')
-                                @lang('cooperation/admin/example-buildings.index.table.cooperation')
-                                @lang('cooperation/admin/example-buildings.index.table.default')
-                                @lang('cooperation/admin/example-buildings.index.table.actions')
+                                <td>@lang('cooperation/admin/example-buildings.index.table.name')</td>
+                                <td>@lang('cooperation/admin/example-buildings.index.table.order')</td>
+                                <td>@lang('cooperation/admin/example-buildings.index.table.cooperation')</td>
+                                <td>@lang('cooperation/admin/example-buildings.index.table.default')</td>
+                                <td>@lang('cooperation/admin/example-buildings.index.table.actions')</td>
                             </tr>
                         </thead>
                         <tbody>

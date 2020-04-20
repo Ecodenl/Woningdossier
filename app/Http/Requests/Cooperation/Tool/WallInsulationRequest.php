@@ -58,5 +58,4 @@ class WallInsulationRequest extends FormRequest
             'building_features.insulation_wall_surface' => 'nullable|numeric|min:0|needs_to_be_lower_or_same_as:building_features.wall_surface',
         ];
     }
-
 }

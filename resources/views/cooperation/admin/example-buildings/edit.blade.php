@@ -3,7 +3,7 @@
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3>Edit: {{ $exampleBuilding->name }}</h3>
+            <h3>@lang('cooperation/admin/example-buildings.edit.title', ['name' => $exampleBuilding->name])</h3>
         </div>
         <div class="panel-body">
             <div class="row">

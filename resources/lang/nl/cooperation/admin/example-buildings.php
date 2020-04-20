@@ -19,6 +19,9 @@ return [
             'actions' => 'Acties',
         ],
     ],
+    'edit' => [
+        'title' => 'Aan het bewerken: :name'
+    ],
     'form' => [
         'update' => 'Opslaan'
     ],

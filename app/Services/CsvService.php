@@ -263,12 +263,14 @@ class CsvService
 
         $headers = self::getBaseHeaders($anonymize);
 
-        // get the users from the current cooperation that have the resident role
-        $usersFromCooperation = $cooperation->getUsersWithRole($residentRole);
-
+        // get the users from the cooperation, that have a building.
+        $users = $cooperation
+            ->users()
+            ->whereHas('buildings')
+            ->get();
 
         /** @ $var User $user */
-        foreach ($usersFromCooperation as $user) {
+        foreach ($users as $user) {
             $building = $user->building;
             if ($building instanceof Building) {
 

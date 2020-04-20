@@ -24,7 +24,7 @@
 
                         <div class="form-group" style="margin-top: 5em;">
                             <input type="hidden" name="new" value="0">
-                            <input type="submit" name="update" value="Update" class="btn btn-success btn-block">
+                            <button type="submit" class="btn btn-success btn-block">@lang('cooperation/admin/example-buildings.form.update')</button>
                         </div>
                     </form>
 

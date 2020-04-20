@@ -4,7 +4,10 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.example-buildings.index.header')
-            <a href="{{ route('cooperation.admin.example-buildings.create') }}" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Add new</a>
+            <a href="{{ route('cooperation.admin.example-buildings.create') }}" class="btn btn-success">
+                <i class="glyphicon glyphicon-plus"></i>
+                @lang('cooperation/admin/example-buildings.index.create-button')
+            </a>
         </div>
 
         <div class="panel-body">

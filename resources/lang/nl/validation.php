@@ -185,6 +185,8 @@ return [
         'building_roof_types.flat.extra.bitumen_replaced_date' =>  __('roof-insulation.current-situation.bitumen-insulated.title'),
 
         // wall insulation
+        'building_features.cavity_wall' => __('wall-insulation.intro.has-cavity-wall.title'),
+        'building_features.facade_plastered_painted' => __('wall-insulation.intro.is-facade-plastered-painted.title'),
         'building_features.wall_surface' => __('wall-insulation.optional.facade-surface.title'),
         'building_features.insulation_wall_surface' => __('wall-insulation.optional.insulated-surface.title'),
 

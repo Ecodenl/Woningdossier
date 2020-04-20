@@ -10,7 +10,14 @@ return [
         ],
     ],
     'index' => [
-        'create-button' => 'Nieuwe toevoegen'
+        'create-button' => 'Nieuwe toevoegen',
+        'table' => [
+            'name' => 'Naam',
+            'order' => 'Volgorde',
+            'cooperation' => 'Coöperatie',
+            'default' => 'Standaard',
+            'actions' => 'Acties',
+        ],
     ],
     'form' => [
         'update' => 'Opslaan'

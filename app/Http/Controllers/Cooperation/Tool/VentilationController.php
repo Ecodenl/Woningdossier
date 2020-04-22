@@ -113,7 +113,6 @@ class VentilationController extends Controller
         StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
         $nextStep = StepHelper::getNextStep($building, $inputSource, $step);
         $url = $nextStep['url'];
-        return redirect()->back();
         if (!empty($nextStep['tab_id'])) {
             $url .= '#' . $nextStep['tab_id'];
         }

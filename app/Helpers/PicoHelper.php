@@ -48,7 +48,7 @@ class PicoHelper
     {
         $options = collect(static::getBagAddressData($postalCode, $number))->keyBy('huisletter');
         $result = [];
-        if ($options->isEmpty()) {
+        if ($options->isNotEmpty()) {
             // get the best address option for the result.
             if (empty($houseNumberExtension) || !isset($options[$houseNumberExtension])) {
                 $best = 'None';

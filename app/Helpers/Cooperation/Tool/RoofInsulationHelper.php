@@ -200,7 +200,12 @@ class RoofInsulationHelper
         $roofTypeIds = $saveData['building_roof_type_ids'];
         $buildingRoofTypeData = $saveData['building_roof_types'];
 
+        // here we will store the data that we will need to create.
+        // the building roof type data will always be filled, even though the roof type ids are not selected.
+        $buildingRoofTypeCreateData = [];
 
+
+        // so now we loop through the selected roof types so we can determine which $buildingRoofTypeData we will put in the $buildingRoofTypeCreateData.
         foreach ($roofTypeIds as $roofTypeId) {
             $roofType = RoofType::findOrFail($roofTypeId);
             if ($roofType instanceof RoofType) {
@@ -212,6 +217,8 @@ class RoofInsulationHelper
                 // to fill in.
                 $buildingRoofTypeData[$roofType->short]['zinc_surface'] = $zincSurface;
                 $buildingRoofTypeData[$roofType->short]['roof_type_id'] = $roofType->id;
+
+                $buildingRoofTypeCreateData[] = $buildingRoofTypeData[$roofType->short];
             }
         }
 
@@ -229,7 +236,7 @@ class RoofInsulationHelper
                 'building_id' => $building->id,
                 'input_source_id' => $inputSource->id,
             ],
-            $buildingRoofTypeData
+            $buildingRoofTypeCreateData
         );
 
         self::saveAdvices($building, $inputSource, $saveData);

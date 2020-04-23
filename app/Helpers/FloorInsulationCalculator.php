@@ -32,6 +32,6 @@ class FloorInsulationCalculator
 
     protected static function debug($line)
     {
-        \Log::debug($line);
+        // \Log::debug($line);
     }
 }

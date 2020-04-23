@@ -12,7 +12,7 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
 
 ?>
 <div class="form-group {{ $errors->has('content.'.$fkey.'.build_year') ? ' has-error' : '' }}">
-    <label for="build_year">Build year:</label>
+    <label for="build_year">@lang('cooperation/admin/example-buildings.form.build-year')</label>
 
 
     <input id="build_year" type="number" min="0" name="content[{{ $fkey }}][build_year]"
@@ -28,8 +28,8 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
 <table class="table table-responsive table-condensed">
     <thead>
     <tr>
-        <th>Name</th>
-        <th>Value</th>
+        <th>@lang('cooperation/admin/example-buildings.form.field-name')</th>
+        <th>@lang('cooperation/admin/example-buildings.form.field-value')</th>
     </tr>
     </thead>
     <tbody>

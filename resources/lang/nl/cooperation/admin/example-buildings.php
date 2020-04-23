@@ -4,7 +4,13 @@ return [
     'components' => [
         'cooperation' => 'Coöperatie',
         'order' => 'Volgorde',
-        'is-default' => 'Standaard waarde',
+        'is-default' => [
+            'label' => 'Standaard waarde',
+            'options' => [
+                0 => 'Nee',
+                1 => 'Ja'
+            ]
+        ],
         'contents' => [
             'title' => 'Bouw jaren'
         ],
@@ -23,6 +29,9 @@ return [
         'title' => 'Aan het bewerken: :name'
     ],
     'form' => [
+        'build-year' => 'Bouwjaar',
+        'field-name' => 'Veldnaam',
+        'field-value' => 'Waarde',
         'update' => 'Opslaan'
     ],
     'store' => [

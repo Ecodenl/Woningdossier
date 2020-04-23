@@ -38,7 +38,7 @@ class SolarPanel
         ];
 
         $buildingPvPanels = $calculateData['building_pv_panels'] ?? [];
-        \Log::debug('Data input: '.json_encode($buildingPvPanels));
+        // // \Log::debug('Data input: '.json_encode($buildingPvPanels));
         $amountElectricity = $calculateData['user_energy_habits']['amount_electricity'] ?? 0;
         $peakPower = $buildingPvPanels['peak_power'] ?? 0;
         // check if its set and if its a number since input like 12-14 is allowed.
@@ -60,16 +60,16 @@ class SolarPanel
 
         if ($peakPower > 0) {
             $number = ceil(($amountElectricity / $helpFactor) / $peakPower);
-            \Log::debug(__METHOD__.' Advised number of panels: '.$number.' = ceil(( '.$amountElectricity.' / '.$helpFactor.') / '.$peakPower.')');
+            // \Log::debug(__METHOD__.' Advised number of panels: '.$number.' = ceil(( '.$amountElectricity.' / '.$helpFactor.') / '.$peakPower.')');
             $result['advice'] = Translation::translate('solar-panels.advice-text', ['number' => $number]);
             $wp = $panels * $peakPower;
             $result['total_power'] = Translation::translate('solar-panels.total-power', ['wp' => $wp]);
 
             $result['yield_electricity'] = $wp * $helpFactor;
-            \Log::debug(__METHOD__.' Electricity yield: '.$result['yield_electricity'].' = '.$wp.' * '.$helpFactor);
+            // \Log::debug(__METHOD__.' Electricity yield: '.$result['yield_electricity'].' = '.$wp.' * '.$helpFactor);
 
             $result['raise_own_consumption'] = $amountElectricity <= 0 ? 0 : ($result['yield_electricity'] / $amountElectricity) * 100;
-            \Log::debug(__METHOD__.' % of own consumption: '.$result['raise_own_consumption'].' = ('.$result['yield_electricity'].' / '.$amountElectricity.') * 100');
+            // \Log::debug(__METHOD__.' % of own consumption: '.$result['raise_own_consumption'].' = ('.$result['yield_electricity'].' / '.$amountElectricity.') * 100');
 
             $result['savings_co2'] = $result['yield_electricity'] * Kengetallen::CO2_SAVINGS_ELECTRICITY;
             $result['savings_money'] = $result['yield_electricity'] * KeyFigures::COST_KWH;

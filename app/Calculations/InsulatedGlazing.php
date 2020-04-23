@@ -92,14 +92,14 @@ class InsulatedGlazing
         // should be relative to that
         $rawTotalSavingsGas = $result['savings_gas'];
 
-        \Log::debug(__METHOD__.' Raw total gas savings: '.$rawTotalSavingsGas);
+        // \Log::debug(__METHOD__.' Raw total gas savings: '.$rawTotalSavingsGas);
 
         // note: first no instanceof was used
         // now calculate the net gas savings (based on the sum of all measure applications)
         // + calculate and add savings_co2 and savings_money to the result structure
         $result['savings_gas'] = InsulatedGlazingCalculator::calculateNetGasSavings($rawTotalSavingsGas, $building, $inputSource, $energyHabit);
 
-        \Log::debug(__METHOD__.' Net total gas savings: '.$result['savings_gas']);
+        // \Log::debug(__METHOD__.' Net total gas savings: '.$result['savings_gas']);
 
         $result['savings_co2'] += Calculator::calculateCo2Savings($result['savings_gas']);
         $result['savings_money'] += Calculator::calculateMoneySavings($result['savings_gas']);
@@ -111,7 +111,7 @@ class InsulatedGlazing
             // otherwise we could still end up saving more than the building would allow..
             $measureGasSavings = $rawTotalSavingsGas > 0 ? min(1, ($rawMeasureSavingsGas / $rawTotalSavingsGas)) * $result['savings_gas'] : 0;
             $result['measure'][$maId]['savings_gas'] = $measureGasSavings;
-            \Log::debug(__METHOD__.' Measure '.$maId.' factor: '.$measureGasSavings);
+            // \Log::debug(__METHOD__.' Measure '.$maId.' factor: '.$measureGasSavings);
             $result['measure'][$maId]['savings_co2'] = Calculator::calculateCo2Savings($result['measure'][$maId]['savings_gas']);
             $result['measure'][$maId]['savings_money'] = Calculator::calculateMoneySavings($result['measure'][$maId]['savings_gas']);
         }

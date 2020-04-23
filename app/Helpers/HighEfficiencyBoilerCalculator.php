@@ -132,6 +132,6 @@ class HighEfficiencyBoilerCalculator
 
     protected static function debug($line)
     {
-        \Log::debug($line);
+        // \Log::debug($line);
     }
 }

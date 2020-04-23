@@ -305,14 +305,16 @@ class User extends Model implements AuthorizableContract
      *
      * @param Model $model
      * @param InputSource|null $inputSource
+     * @param int $interestCalculateValue
      *
      * @return bool
      */
-    public function hasInterestIn(Model $model, InputSource $inputSource = null)
+    public function hasInterestIn(Model $model, InputSource $inputSource = null, int $interestCalculateValue = 2)
     {
         $userInterests = $this->userInterestsForSpecificType(get_class($model), $model->id, $inputSource)->with('interest')->get();
         foreach ($userInterests as $userInterest) {
-            if ($userInterest->interest->calculate_value <= 2) {
+            // the $interestCalculateValue is default 2, but due to some exceptions in the app this may be variable.
+            if ($userInterest->interest->calculate_value <= $interestCalculateValue) {
                 return true;
             }
         }

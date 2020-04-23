@@ -130,7 +130,7 @@
                 <div class="col-sm-6">
                     @component('cooperation.tool.components.step-question', ['id' => 'building_features.facade_plastered_surface_id', 'translation' => 'wall-insulation.intro.surface-paintwork', 'required' => false])
                         @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => $facadePlasteredSurfaces, 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'building_features.facade_plastered_surface_id'])
+                        ['inputType' => 'select', 'inputValues' => $facadePlasteredSurfaces, 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_surface_id'])
                             <select id="building_features.facade_plastered_surface_id" class="form-control"
                                     name="building_features[facade_plastered_surface_id]">
                                 @foreach($facadePlasteredSurfaces as $facadePlasteredSurface)
@@ -212,7 +212,7 @@
 
                     @component('cooperation.tool.components.step-question', ['id' => 'building_features.wall_joints', 'translation' => 'wall-insulation.optional.flushing', 'required' => false])
                         @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'select', 'inputValues' => $surfaces, 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'building_features.wall_joints'])
+                    ['inputType' => 'select', 'inputValues' => $surfaces, 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_joints'])
                             <select id="building_features.wall_joints" class="form-control" name="building_features[wall_joints]">
                                 @foreach($surfaces as $surface)
                                     <option @if(old('building_features.wall_joints', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'wall_joints'))  == $surface->id) selected="selected"

@@ -97,6 +97,8 @@ class InsulatedGlazingController extends Controller
                 if ($currentInsulatedGlazing instanceof BuildingInsulatedGlazing) {
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
                 }
+
+
                 // get interests for the measure
                 $measureInterestId = Hoomdossier::getMostCredibleValue(
                     $buildingOwner->userInterestsForSpecificType(MeasureApplication::class, $measureApplication->id), 'interest_id'
@@ -116,7 +118,7 @@ class InsulatedGlazingController extends Controller
         }
 
         $myBuildingElements = BuildingElement::forMe()->get();
-        $userInterestsForMe = UserInterest::forMe()->where('interested_in_type', 'measure_application')->get();
+        $userInterestsForMe = UserInterest::forMe()->where('interested_in_type', MeasureApplication::class)->get();
 
         return view('cooperation.tool.insulated-glazing.index', compact(
             'building', 'interests', 'myBuildingElements', 'buildingOwner', 'userInterestsForMe',

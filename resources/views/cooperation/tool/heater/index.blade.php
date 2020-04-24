@@ -160,7 +160,7 @@
                     @include('cooperation.layouts.indication-for-costs.gas', ['translation' => 'heater.index.costs.gas'])
                 </div>
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.co2', ['translation' => 'heater.index.costs.gas'])
+                    @include('cooperation.layouts.indication-for-costs.co2', ['translation' => 'heater.index.costs.co2'])
                 </div>
                 <div class="col-sm-4">
                     @include('cooperation.layouts.indication-for-costs.savings-in-euro',[

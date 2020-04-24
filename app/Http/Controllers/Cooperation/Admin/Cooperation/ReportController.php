@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileTypeCategory;
-use App\Models\InputSource;
-use App\Services\CsvService;
 
 class ReportController extends Controller
 {
@@ -18,7 +16,6 @@ class ReportController extends Controller
      */
     public function index(Cooperation $cooperation)
     {
-
         $reportFileTypeCategory = FileTypeCategory::short('report')
             ->with(['fileTypes' => function ($query) {
                 $query->where('short', '!=', 'pdf-report')

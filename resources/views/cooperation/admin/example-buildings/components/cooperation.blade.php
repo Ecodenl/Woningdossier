@@ -1,5 +1,5 @@
 <div class="form-group {{ $errors->has('cooperation_id') ? ' has-error' : '' }}">
-    <label for="cooperation">Cooperation:</label>
+    <label for="cooperation">@lang('cooperation/admin/example-buildings.components.cooperation')</label>
     <select id="cooperation" name="cooperation_id" class="form-control">
         <option value="" @if(!isset($exampleBuilding) || !$exampleBuilding->cooperation instanceof \App\Models\Cooperation)selected="selected"@endif>-</option>
         @foreach($cooperations as $cooperation)

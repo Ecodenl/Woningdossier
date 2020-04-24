@@ -479,7 +479,7 @@
                 }
             });
 
-            $('.user-interest').trigger('change')
+            $('.user-interest').trigger('change');
 
             // Trigger the change event so it will load the data
             //$('form').find('*').filter(':input:visible:first').trigger('change');

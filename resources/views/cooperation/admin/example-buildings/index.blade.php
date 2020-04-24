@@ -4,7 +4,10 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('woningdossier.cooperation.admin.example-buildings.index.header')
-            <a href="{{ route('cooperation.admin.example-buildings.create') }}" class="btn btn-success"><i class="glyphicon glyphicon-plus"></i> Add new</a>
+            <a href="{{ route('cooperation.admin.example-buildings.create') }}" class="btn btn-success">
+                <i class="glyphicon glyphicon-plus"></i>
+                @lang('cooperation/admin/example-buildings.index.create-button')
+            </a>
         </div>
 
         <div class="panel-body">
@@ -13,11 +16,11 @@
                     <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Order</th>
-                                <th>Cooperation</th>
-                                <th>Default</th>
-                                <th>Actions</th>
+                                <td>@lang('cooperation/admin/example-buildings.index.table.name')</td>
+                                <td>@lang('cooperation/admin/example-buildings.index.table.order')</td>
+                                <td>@lang('cooperation/admin/example-buildings.index.table.cooperation')</td>
+                                <td>@lang('cooperation/admin/example-buildings.index.table.default')</td>
+                                <td>@lang('cooperation/admin/example-buildings.index.table.actions')</td>
                             </tr>
                         </thead>
                         <tbody>

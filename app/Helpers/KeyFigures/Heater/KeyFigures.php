@@ -63,11 +63,11 @@ class KeyFigures implements KeyFiguresInterface
                                            ->first();
 
         if ($consumption instanceof KeyFigureConsumptionTapWater) {
-            \Log::debug(__METHOD__.' consumption: for '.
-                    $habit->resident_count.' residents on comfort level '.
-                    $comfortLevel->name.' is '.
-                    $consumption->water_consumption.' (water) and '.
-                    $consumption->energy_consumption.' (gas)');
+            // \Log::debug(__METHOD__.' consumption: for '.
+//                    $habit->resident_count.' residents on comfort level '.
+//                    $comfortLevel->name.' is '.
+//                    $consumption->water_consumption.' (water) and '.
+//                    $consumption->energy_consumption.' (gas)');
         }
 
         return $consumption;
@@ -89,10 +89,10 @@ class KeyFigures implements KeyFiguresInterface
             return [];
         }
         $relativeCollectorSize = $initialHeater->collector * (1 / $helpFactor);
-        \Log::debug('Heater: Relative collector size: '.$relativeCollectorSize);
+        // \Log::debug('Heater: Relative collector size: '.$relativeCollectorSize);
 
         $advisedSize = self::getAdvisedCollectorSize($relativeCollectorSize);
-        \Log::debug('Heater: Advised collector size: '.$advisedSize);
+        // \Log::debug('Heater: Advised collector size: '.$advisedSize);
 
         return [
             'boiler' => $initialHeater->boiler,

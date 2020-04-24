@@ -25,24 +25,24 @@ class FilledStep
         if ($building instanceof Building) {
             // get the current step
             $step = Step::whereSlug($stepSlug)->first();
-            $debugMsg = 'For this step, the '.$stepSlug.' should be filled';
+//            $debugMsg = 'For this step, the '.$stepSlug.' should be filled';
 
             // if the user / building did not complete the given step redirect him back.
             if ($building->hasNotCompleted($step)) {
-                \Log::debug($debugMsg.".. And it wasn't. So, redirecting to that step..");
+//                \Log::debug($debugMsg.".. And it wasn't. So, redirecting to that step..");
 
                 return redirect('/tool/'.$stepSlug.'/');
             }
-            \Log::debug($debugMsg.'.. And it was :-)');
+//            \Log::debug($debugMsg.'.. And it was :-)');
         } else {
-            $buildingDebugMsg = 'The $building is not an instance,';
-            $buildingWithTrashed = Building::withTrashed()->find(HoomdossierSession::getBuilding());
-            if ($buildingWithTrashed instanceof Building) {
-                $buildingDebugMsg .= 'the building has been thrashed.';
-            } else {
-                $buildingDebugMsg .= 'The building is not trashed so the building session is empty for user_id: '.Hoomdossier::user()->id;
-            }
-            \Log::debug($buildingDebugMsg);
+//            $buildingDebugMsg = 'The $building is not an instance,';
+//            $buildingWithTrashed = Building::withTrashed()->find(HoomdossierSession::getBuilding());
+//            if ($buildingWithTrashed instanceof Building) {
+//                $buildingDebugMsg .= 'the building has been thrashed.';
+//            } else {
+//                $buildingDebugMsg .= 'The building is not trashed so the building session is empty for user_id: '.Hoomdossier::user()->id;
+//            }
+//            \Log::debug($buildingDebugMsg);
 
             // since the building is not set, we logout the user otherwise it would lead to weird behaviour
             HoomdossierSession::destroy();

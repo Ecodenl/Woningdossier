@@ -246,9 +246,7 @@ class StepHelper
         // check if all sub steps are completed, if so complete the parent step
         if ($step->isSubStep()) {
             $parentStep = $step->parentStep;
-            $uncompletedSubStepsForParentStep = $parentStep
-                ->subSteps()
-                ->whereNotExists(function (Builder $query) use ($building, $inputSource) {
+            $uncompletedSubStepsForParentStep = $parentStep->subSteps()->whereNotExists(function (Builder $query) use ($building, $inputSource) {
                 $query->select('*')
                     ->from('completed_steps')
                     ->whereRaw('steps.id = completed_steps.step_id')

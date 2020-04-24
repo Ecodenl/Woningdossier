@@ -52,7 +52,7 @@ class Heater
                     'gas' => $consumption->energy_consumption,
                 ];
             }
-            \Log::debug('Heater: Current consumption: '.json_encode($result['consumption']));
+            // \Log::debug('Heater: Current consumption: '.json_encode($result['consumption']));
 
             $buildingHeaters = $calculateData['building_heaters'] ?? [];
             $angle = $buildingHeaters['angle'] ?? 0;
@@ -63,13 +63,13 @@ class Heater
             $helpFactor = 1;
             if ($orientation instanceof PvPanelOrientation && $angle > 0) {
                 $yield = KeyFigures::getYield($orientation, $angle);
-                \Log::debug('Heater: Yield for '.$orientation->name.' at '.$angle.' degrees = '.$yield->yield);
+                // \Log::debug('Heater: Yield for '.$orientation->name.' at '.$angle.' degrees = '.$yield->yield);
                 if ($yield instanceof PvPanelYield && $locationFactor instanceof PvPanelLocationFactor) {
-                    \Log::debug('Heater: Location factor for '.$building->postal_code.' is '.$locationFactor->factor);
+                    // \Log::debug('Heater: Location factor for '.$building->postal_code.' is '.$locationFactor->factor);
                     $helpFactor = $yield->yield * $locationFactor->factor;
                 }
             }
-            \Log::debug('Heater: helpfactor: '.$helpFactor);
+            // \Log::debug('Heater: helpfactor: '.$helpFactor);
 
             $systemSpecs = KeyFigures::getSystemSpecifications($result['consumption']['water'], $helpFactor);
 
@@ -79,7 +79,7 @@ class Heater
                     'size_collector' => $systemSpecs['collector'],
                 ];
 
-                \Log::debug('Heater: For this water consumption you need this heater: '.json_encode($systemSpecs));
+                // \Log::debug('Heater: For this water consumption you need this heater: '.json_encode($systemSpecs));
                 $result['production_heat'] = $systemSpecs['production_heat'];
                 $result['savings_gas'] = $result['production_heat'] / Kengetallen::gasKwhPerM3();
                 $result['percentage_consumption'] = isset($result['consumption']['gas']) ? ($result['savings_gas'] / $result['consumption']['gas']) * 100 : 0;

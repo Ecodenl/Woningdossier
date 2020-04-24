@@ -300,7 +300,7 @@ return [
                         'button' => 'Bijwerken'
                     ],
                     'status' => [
-                        'current' => 'Huige status: ',
+                        'current' => 'Huidige status: ',
                         'label' => 'Status: ',
                         'button' => 'Kies status'
                     ],
@@ -657,9 +657,9 @@ return [
                             'text' => 'Kort antwoord',
                             'textarea' => 'Alinea',
                             'select' => 'Dropdownmenu',
-                            'radio' => 'Meerkeuze',
+                            'radio' => 'Selectievakjes',
                             'date' => 'Datum',
-                            'checkbox' => 'Selectievakjes',
+                            'checkbox' => 'Meerkeuze',
                         ],
                         'add-validation' => 'Voeg validatie toe',
                         'success' => 'Vragenlijst is bijgewerkt',

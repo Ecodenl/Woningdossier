@@ -75,10 +75,12 @@ class InsulatedGlazingHelper
         // collect the wood element create data
         // after that we can delete the old records and create the new ones
         $woodElementCreateData = [];
-        foreach ($buildingElementData[$woodElements->id] as $woodElementValueId) {
-            $woodElementCreateData[] = [
-                'element_value_id' => $woodElementValueId
-            ];
+        if (array_key_exists($woodElements->id, $buildingElementData)) {
+            foreach ($buildingElementData[$woodElements->id] as $woodElementValueId) {
+                $woodElementCreateData[] = [
+                    'element_value_id' => $woodElementValueId
+                ];
+            }
         }
         ModelService::deleteAndCreate(BuildingElement::class,
             [

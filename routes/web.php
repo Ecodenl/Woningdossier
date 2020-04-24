@@ -11,13 +11,11 @@
 |
 */
 
-
 use App\Mail\UserAssociatedWithCooperation;
 
 Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function () {
 
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
-
 
         if (app()->environment() == 'local') {
         Route::get('mail', function () {

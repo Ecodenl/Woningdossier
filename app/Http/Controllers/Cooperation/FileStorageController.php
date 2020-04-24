@@ -92,10 +92,10 @@ class FileStorageController extends Controller
 
     public function store(Cooperation $cooperation, FileType $fileType, FileStorageFormRequest $request)
     {
+
         if ($fileType->isBeingProcessed()) {
             return redirect()->back();
         }
-
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);

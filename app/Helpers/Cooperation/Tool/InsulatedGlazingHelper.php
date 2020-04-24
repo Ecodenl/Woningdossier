@@ -51,7 +51,7 @@ class InsulatedGlazingHelper
                     'input_source_id' => $inputSource->id,
                     'measure_application_id' => $measureApplicationId,
                 ],
-                $buildingInsulatedGlazingData
+                $buildingInsulatedGlazing
             );
         }
 

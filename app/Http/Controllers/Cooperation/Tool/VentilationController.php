@@ -85,7 +85,6 @@ class VentilationController extends Controller
             $defaultInterest = $stepUserInterest->interest;
         }
 
-
         foreach ($interestsInMeasureApplications as $measureApplicationId) {
             UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationId, $defaultInterest->id);
         }

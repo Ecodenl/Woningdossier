@@ -9,12 +9,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <p style="margin-left: -5px">
-                    U heeft aangegeven dat er in de woning natuurlijke
-                    ventilatie aanwezig is. In een huis met natuurlijke
-                    ventilatie zit geen mechanisch ventilatiesysteem, dat
-                    betekent dat er alleen via natuurlijke weg geventileerd kan
-                    worden door ventilatieroosters en bijvoorbeeld ramen of
-                    deuren.
+                    @lang('cooperation/tool/ventilation.index.intro.'.\Illuminate\Support\Str::slug($buildingVentilation->value))
                 </p>
             </div>
         </div>

@@ -1,4 +1,4 @@
-<h4>Build years</h4>
+<h4>@lang('cooperation/admin/example-buildings.components.contents.title')</h4>
 <ul class="nav nav-tabs" role="tablist">
     {{-- tabs --}}
     @if(isset($exampleBuilding) && $exampleBuilding instanceof \App\Models\ExampleBuilding)

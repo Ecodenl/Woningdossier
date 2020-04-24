@@ -48,7 +48,13 @@
                                                     'cooperation/mail/confirm-account',
                                                     'cooperation/mail/reset-password',
                                                     'cooperation/mail/unread-message-count',];
-                                                $keysToTreatAsHelpText = ['index.indication-for-costs-other.text']
+                                                $keysToTreatAsHelpText = [
+                                                    'index.indication-for-costs-other.text',
+                                                    'index.intro.decentrale-mechanische-ventilatie',
+                                                    'index.intro.gebalanceerde-ventilatie',
+                                                    'index.intro.mechanische-ventilatie',
+                                                    'index.intro.natuurlijke-ventilatie'
+                                                ]
                                                 ?>
 
                                                 @foreach($translation->text as $locale => $text)

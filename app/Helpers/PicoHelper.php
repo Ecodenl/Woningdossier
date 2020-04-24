@@ -17,7 +17,7 @@ class PicoHelper
      */
     public static function getBagAddressData($postalCode, $number)
     {
-        \Log::debug($postalCode . ' ' . $number);
+        // \Log::debug($postalCode . ' ' . $number);
 
         /** @var PicoClient $pico */
         $pico = app()->make('pico');

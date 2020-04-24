@@ -22,7 +22,7 @@ class RoofInsulation
 {
     public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData)
     {
-        \Log::debug(__METHOD__);
+        // \Log::debug(__METHOD__);
         $result = [];
 
         $roofTypeIds = $calculateData['building_roof_types']['id'] ?? [];
@@ -37,7 +37,7 @@ class RoofInsulation
             }
         }
 
-        \Log::debug(json_encode($result));
+        // \Log::debug(json_encode($result));
 
         $roofInsulation = Element::where('short', 'roof-insulation')->first();
         $adviceMap = RoofInsulationHelper::getMeasureApplicationsAdviceMap();
@@ -88,9 +88,9 @@ class RoofInsulation
             $isBitumenRoof = ! in_array($cat, ['none', 'pitched']) || $isBitumenOnPitchedRoof;
 
             if ($isBitumenRoof) {
-                \Log::debug('The roof is a bitumen roof');
+                // \Log::debug('The roof is a bitumen roof');
                 $year = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? (int) $roofTypes[$cat]['extra']['bitumen_replaced_date'] : Carbon::now()->year - 10;
-                \Log::debug('Bitumen last replacement was set to '.$year);
+                // \Log::debug('Bitumen last replacement was set to '.$year);
             } else {
                 $year = Carbon::now()->year;
             }
@@ -141,7 +141,7 @@ class RoofInsulation
                 $replaceMeasure = MeasureApplication::where('short', 'replace-tiles')->first();
                 // no year here. Default is this year. It is incremented by factor * maintenance years
                 $year = Carbon::now()->year;
-                \Log::debug('Tiles condition was set, year is set to this year as the tiles condition is used as a factor for replacement');
+                // \Log::debug('Tiles condition was set, year is set to this year as the tiles condition is used as a factor for replacement');
                 $roofTilesStatus = RoofTileStatus::find($tilesCondition);
                 if ($roofTilesStatus instanceof RoofTileStatus) {
                     $factor = ($roofTilesStatus->calculate_value / 100);
@@ -156,7 +156,7 @@ class RoofInsulation
 
             if (isset($replaceMeasure)) {
                 $surface = $roofTypes[$cat]['roof_surface'] ?? 0;
-                \Log::debug('Calculating costs for replacement measure..');
+                // \Log::debug('Calculating costs for replacement measure..');
                 $catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
                 $catData['replace']['costs'] = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $catData['replace']['year'], false);
             }
@@ -164,7 +164,7 @@ class RoofInsulation
             $result[$cat] = array_merge($result[$cat], $catData);
         }
 
-        \Log::debug(__METHOD__.' END');
+        // \Log::debug(__METHOD__.' END');
 
         return $result;
     }

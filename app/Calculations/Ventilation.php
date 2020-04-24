@@ -217,7 +217,9 @@ class Ventilation
             $buildingOwner = $building->user;
 
             foreach ($advices as $advice) {
-                if ($buildingOwner->hasInterestIn($advice, $inputSource)) {
+                // exception for this page..
+                // 3 so the options "meer informatie" is also interested
+                if ($buildingOwner->hasInterestIn($advice, $inputSource, 3)) {
                     $advice->interest = true;
                 }
             }

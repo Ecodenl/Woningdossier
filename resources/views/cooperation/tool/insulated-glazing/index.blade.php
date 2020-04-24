@@ -456,7 +456,6 @@
                         console.log(data);
                         @endif
 
-                        $('.user-interest').trigger('change')
                     }
                 });
             });
@@ -479,6 +478,8 @@
                     valueElements.show();
                 }
             });
+
+            $('.user-interest').trigger('change')
 
             // Trigger the change event so it will load the data
             //$('form').find('*').filter(':input:visible:first').trigger('change');

@@ -119,6 +119,6 @@ class InsulatedGlazingCalculator
 
     protected static function debug($line)
     {
-        \Log::debug($line);
+        // \Log::debug($line);
     }
 }

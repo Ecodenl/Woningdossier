@@ -104,7 +104,7 @@ class RoomTemperatureCalculator
                 self::FLOOR_ONE_ROOM_HALL,
                 self::ROOM_BATHROOM,
             ];
-            \Log::debug('No heating on first floor, setting the following rooms to 0 m2: '.implode(', ', $firstFloorRooms));
+            // \Log::debug('No heating on first floor, setting the following rooms to 0 m2: '.implode(', ', $firstFloorRooms));
             foreach ($firstFloorRooms as $firstFloorRoom) {
                 $this->rooms[$firstFloorRoom]['m2'] = 0;
             }
@@ -113,7 +113,7 @@ class RoomTemperatureCalculator
             $secondFloorRooms = [
                 self::ROOM_ATTIC,
             ];
-            \Log::debug('No heating on second floor, setting the following rooms to 0 m2: '.implode(', ', $secondFloorRooms));
+            // \Log::debug('No heating on second floor, setting the following rooms to 0 m2: '.implode(', ', $secondFloorRooms));
             foreach ($secondFloorRooms as $secondFloorRoom) {
                 $this->rooms[$secondFloorRoom]['m2'] = 0;
             }
@@ -181,8 +181,8 @@ class RoomTemperatureCalculator
         $total = 0;
         $surface = 0;
 
-        \Log::debug(__METHOD__.' Rooms:');
-        \Log::debug(json_encode($this->rooms));
+        // \Log::debug(__METHOD__.' Rooms:');
+        // \Log::debug(json_encode($this->rooms));
 
         foreach ($this->rooms as $room => $values) {
             $total += $values['m2'] * $values['average'];

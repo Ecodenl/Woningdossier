@@ -353,6 +353,13 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         Route::get('search', 'UserController@filter')->name('filter');
                     });
 
+                    Route::resource('questionnaires', 'QuestionnaireController')->parameter('questionnaires', 'questionnaire');
+                    Route::post('questionnaires/copy', 'QuestionnaireController@copy')->name('questionnaire.copy');
+//                    Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire'], function () {
+//                        Route::get('', 'QuestionnaireController@index')->name('index');
+//                        Route::get('show', 'QuestionnaireController@show')->name('show');
+//                    });
+
                     Route::resource('key-figures', 'KeyFiguresController')->only('index');
                     Route::resource('translations', 'TranslationController')->except(['show'])->parameters(['id' => 'group']);
 

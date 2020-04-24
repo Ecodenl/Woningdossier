@@ -17,9 +17,9 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class GenerateTotalReport implements ShouldQueue
 {
+    use Queueable;
     use Dispatchable;
     use InteractsWithQueue;
-    use Queueable;
     use SerializesModels;
 
     protected $cooperation;

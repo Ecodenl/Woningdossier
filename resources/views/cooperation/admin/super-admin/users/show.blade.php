@@ -3,7 +3,7 @@
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('admin/super-admin.users.show.header')
+            @lang('cooperation/admin/super-admin/users.show.header')
         </div>
 
         <div class="panel-body">
@@ -19,13 +19,13 @@
                     <table id="table" class="table table-striped table-bordered compact nowrap table-responsive" style="width: 100%">
                         <thead>
                         <tr>
-                            <th>@lang('admin/super-admin.users.show.table.columns.cooperation')</th>
-                            <th>@lang('admin/super-admin.users.show.table.columns.email')</th>
-                            <th>@lang('admin/super-admin.users.show.table.columns.name')</th>
-                            <th>@lang('admin/super-admin.users.show.table.columns.street-house-number')</th>
-                            <th>@lang('admin/super-admin.users.show.table.columns.zip-code')</th>
-                            <th>@lang('admin/super-admin.users.show.table.columns.city')</th>
-                            <th>@lang('admin/super-admin.users.show.table.columns.roles')</th>
+                            <th>@lang('cooperation/admin/super-admin/users.show.table.columns.cooperation')</th>
+                            <th>@lang('cooperation/admin/super-admin/users.show.table.columns.email')</th>
+                            <th>@lang('cooperation/admin/super-admin/users.show.table.columns.name')</th>
+                            <th>@lang('cooperation/admin/super-admin/users.show.table.columns.street-house-number')</th>
+                            <th>@lang('cooperation/admin/super-admin/users.show.table.columns.zip-code')</th>
+                            <th>@lang('cooperation/admin/super-admin/users.show.table.columns.city')</th>
+                            <th>@lang('cooperation/admin/super-admin/users.show.table.columns.roles')</th>
                         </tr>
                         </thead>
                         <tbody>

@@ -52,6 +52,18 @@ use Illuminate\Support\Collection;
 
 class DumpService
 {
+
+    public static function makeHeaderText($stepName, $subStepName, $text)
+    {
+        // inside the content structure a step with no sub steps will be given a "-" as step
+        // this way we can maintain nest
+        if (empty($subStepName) || $subStepName == '-') {
+            $headerText = "{$stepName}: {$text}";
+        } else {
+            $headerText = "{$stepName}, {$subStepName}: {$text}";
+        }
+        return $headerText;
+    }
     public static function getStructureForTotalDumpService(bool $anonymized, $prefixValuesWithStep = true)
     {
 
@@ -122,7 +134,7 @@ class DumpService
                             // If you want to go ahead and translate in a different namespace, do it here
                             // we will dot the array, map it so we can add the step name to it
                             $deeperContents = array_map(function ($content) use ($step, $subStep) {
-                                return $step->name . ','.$subStep.': ' . $content;
+                                return self::makeHeaderText($step->name, $subStep, $content);
                             }, Arr::dot($contents, $stepShort.'.'.$subStep.'.calculation.'));
                         } else {
                             $deeperContents = Arr::dot($contents, $stepShort.'.'.$subStep.'.calculation.');
@@ -135,7 +147,8 @@ class DumpService
                         if ($prefixValuesWithStep) {
 
                             $subStepName = optional(Step::findByShort($subStep))->name;
-                            $headers[$stepShort.'.'.$subStep. '.' . $tableWithColumnOrAndId] = "{$step->name}, {$subStepName}: {$labelWithEuroNormalization}";
+
+                            $headers[$stepShort.'.'.$subStep. '.' . $tableWithColumnOrAndId] = self::makeHeaderText($step->name, $subStepName, $labelWithEuroNormalization);
 
                         } else {
                             $headers[$stepShort.'.'.$subStep. '.' . $tableWithColumnOrAndId] = $labelWithEuroNormalization;
@@ -242,13 +255,6 @@ class DumpService
         }
 
         $calculateData = static::getCalculateData($user, $inputSource);
-
-        // one correction because of bad headers
-        if (isset($calculateData['heater']['-']['production_heat']) && !is_array($calculateData['heater']['-']['production_heat'])) {
-            if (!isset($calculateData['heater']['-']['production_heat']['title'])) {
-                $calculateData['heater']['-']['production_heat'] = ['title' => $calculateData['heater']['-']['production_heat']];
-            }
-        }
 
         // loop through the headers
         foreach ($headers as $tableWithColumnOrAndIdKey => $translatedInputName) {
@@ -503,8 +509,10 @@ class DumpService
                                     // if is array, try to get the answer from the extra column, does the key not exist set a default value.
                                     $answer = $extraIsArray ? optional($buildingService->extra)[$extraKey] : null;
 
+
                                     // when the answer is a bool / true its checked, so instead of showing true we show ja.
-                                    if ($answer == 'true') {
+                                    // total sun panels is stored in same column, but need to be treated as a number
+                                    if ($answer == 'true' && $buildingService->service->short !== 'total-sun-panels') {
                                         $answer = 'Ja';
                                     }
 
@@ -829,7 +837,6 @@ class DumpService
             'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id ?? null,
             'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
         ]);
-//        dd($wallInsulationSavings);
 
         $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit, [
             'user_interests' => $userInterestsForInsulatedGlazing,

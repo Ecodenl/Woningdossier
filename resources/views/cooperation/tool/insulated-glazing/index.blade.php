@@ -456,25 +456,30 @@
                         console.log(data);
                         @endif
 
-                        changeOnInterests();
                     }
                 });
             });
 
-            function changeOnInterests() {
-                $('.user-interest').each(function (i, element) {
-                    // the input field
-                    var userInterest = $(element);
-                    // the user interest calculate value
-                    var userInterestCalculateValue = userInterest.find('option:selected').data('calculate-value');
+            $('.user-interest').change(function () {
+                // the input field
+                var userInterest = $(this);
+                // the user interest calculate value
+                var userInterestCalculateValue = userInterest.find('option:selected').data('calculate-value');
 
-                    if (userInterestCalculateValue === 4 || userInterestCalculateValue === 5) {
-                        $(this).parent().parent().parent().parent().find('.values').hide();
-                    } else {
-                        $(this).parent().parent().parent().parent().find('.values').show();
-                    }
-                });
-            }
+                // div that holds the inputs (m2 and windows)
+                var valueElements = userInterest.parents('.row').first().find('.values');
+
+                if (userInterestCalculateValue === 4 || userInterestCalculateValue === 5) {
+                    valueElements.hide();
+                    // clear the inputs, if the user filled in a faulty input it will still be send to the backend
+                    // validation fails, inputs are hidden and the user would not know whats wrong
+                    valueElements.find('input').val(null)
+                } else {
+                    valueElements.show();
+                }
+            });
+
+            $('.user-interest').trigger('change');
 
             // Trigger the change event so it will load the data
             //$('form').find('*').filter(':input:visible:first').trigger('change');

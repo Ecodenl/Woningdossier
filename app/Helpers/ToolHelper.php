@@ -419,8 +419,8 @@ class ToolHelper
                     ],
 
                     'calculations' => [
-                        'savings_gas' => __('wall-insulation.costs.gas.title'),
-                        'savings_co2' => __('wall-insulation.costs.co2.title'),
+                        'savings_gas' => __('wall-insulation.index.costs.gas.title'),
+                        'savings_co2' => __('wall-insulation.index.costs.co2.title'),
                         'savings_money' => __('wall-insulation.index.savings-in-euro.title'),
                         'cost_indication' => __('wall-insulation.index.indicative-costs.title'),
                         'interest_comparable' => __('wall-insulation.index.comparable-rent.title'),
@@ -518,8 +518,8 @@ class ToolHelper
                     ],
 
                     'calculations' => [
-                        'savings_gas' => __('floor-insulation.costs.gas.title'),
-                        'savings_co2' => __('floor-insulation.costs.co2.title'),
+                        'savings_gas' => __('floor-insulation.index.costs.gas.title'),
+                        'savings_co2' => __('floor-insulation.index.costs.co2.title'),
                         'savings_money' => __('floor-insulation.index.savings-in-euro.title'),
                         'cost_indication' => __('floor-insulation.index.indicative-costs.title'),
                         'interest_comparable' => __('floor-insulation.index.comparable-rent.title'),
@@ -574,8 +574,8 @@ class ToolHelper
                         'unit' => __('general.unit.year.title'),
                     ],
                     'calculations' => [
-                        'savings_gas' => __('high-efficiency-boiler.costs.gas.title'),
-                        'savings_co2' => __('high-efficiency-boiler.costs.co2.title'),
+                        'savings_gas' => __('high-efficiency-boiler.index.costs.gas.title'),
+                        'savings_co2' => __('high-efficiency-boiler.index.costs.co2.title'),
                         'savings_money' => __('high-efficiency-boiler.index.savings-in-euro.title'),
                         'cost_indication' => __('high-efficiency-boiler.index.indicative-costs.title'),
                         'interest_comparable' => __('high-efficiency-boiler.index.comparable-rent.title'),
@@ -584,12 +584,11 @@ class ToolHelper
                     ],
                 ]
             ],
-
             'solar-panels' => [
                 '-' => [
                     $stepUserInterestKey . Step::findByShort('solar-panels')->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $solarPanels->name . ': ' . __('solar-panels.index.interested-in-improvement.title'),
+                        'label' => __('solar-panels.index.interested-in-improvement.title'),
                         'type' => 'select',
                         'options' => $interestOptions,
                     ],
@@ -624,7 +623,7 @@ class ToolHelper
                         'yield_electricity' => __('solar-panels.indication-for-costs.yield-electricity.title'),
                         'raise_own_consumption' => __('solar-panels.indication-for-costs.raise-own-consumption.title'),
 
-                        'savings_co2' => __('solar-panels.costs.co2.title'),
+                        'savings_co2' => __('solar-panels.index.costs.co2.title'),
                         'savings_money' => __('solar-panels.index.savings-in-euro.title'),
                         'cost_indication' => __('solar-panels.index.indicative-costs.title'),
                         'interest_comparable' => __('solar-panels.index.comparable-rent.title'),
@@ -667,10 +666,10 @@ class ToolHelper
                             'size_boiler' => __('heater.size-boiler.title'),
                             'size_collector' => __('heater.size-collector.title'),
                         ],
-                        'production_heat' => __('heater.indication-for-costs.production-heat'),
+                        'production_heat' => __('heater.indication-for-costs.production-heat.title'),
                         'percentage_consumption' => __('heater.indication-for-costs.percentage-consumption.title'),
-                        'savings_gas' => __('heater.costs.gas.title'),
-                        'savings_co2' => __('heater.costs.co2.title'),
+                        'savings_gas' => __('heater.index.costs.gas.title'),
+                        'savings_co2' => __('heater.index.costs.co2.title'),
                         'savings_money' => __('heater.index.savings-in-euro.title'),
                         'cost_indication' => __('heater.index.indicative-costs.title'),
                         'interest_comparable' => __('heater.index.comparable-rent.title'),
@@ -770,8 +769,8 @@ class ToolHelper
 
         // set the calculations on the end because of the order
         $structure['insulated-glazing']['-']['calculations'] = [
-            'savings_gas' => __('insulated-glazing.costs.gas.title'),
-            'savings_co2' => __('insulated-glazing.costs.co2.title'),
+            'savings_gas' => __('insulated-glazing.index.costs.gas.title'),
+            'savings_co2' => __('insulated-glazing.index.costs.co2.title'),
             'savings_money' => __('insulated-glazing.index.savings-in-euro.title'),
             'cost_indication' => __('insulated-glazing.index.indicative-costs.title'),
             'interest_comparable' => __('insulated-glazing.index.comparable-rent.title'),

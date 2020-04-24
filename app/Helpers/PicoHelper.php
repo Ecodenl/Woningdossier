@@ -17,7 +17,7 @@ class PicoHelper
      */
     public static function getBagAddressData($postalCode, $number)
     {
-        \Log::debug($postalCode . ' ' . $number);
+        // \Log::debug($postalCode . ' ' . $number);
 
         /** @var PicoClient $pico */
         $pico = app()->make('pico');
@@ -48,7 +48,7 @@ class PicoHelper
     {
         $options = collect(static::getBagAddressData($postalCode, $number))->keyBy('huisletter');
         $result = [];
-        if ($options->isEmpty()) {
+        if ($options->isNotEmpty()) {
             // get the best address option for the result.
             if (empty($houseNumberExtension) || !isset($options[$houseNumberExtension])) {
                 $best = 'None';

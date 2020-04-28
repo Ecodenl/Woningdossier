@@ -155,7 +155,7 @@ class RoofInsulation
             }
 
             if (isset($replaceMeasure)) {
-                $surface = $roofTypes[$cat]['roof_surface'] ?? 0;
+                $surface = NumberFormatter::reverseFormat($roofTypes[$cat]['roof_surface'] ?? 0);
                 // \Log::debug('Calculating costs for replacement measure..');
                 $catData['replace']['year'] = RoofInsulationCalculator::determineApplicationYear($replaceMeasure, $year, $factor);
                 $catData['replace']['costs'] = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $catData['replace']['year'], false);

@@ -9,3 +9,4 @@ tool. We tend to document the implementations and their consequences because of
 
 - We use a [custom user resolver](./custom-user-resolver.md). Use `\App\Helpers\Hoomdossier::user()` instead of `\Auth::user()`
 - There's a [custom session handler](./session-handling.md) in `\App\Helpers\HoomdossierSession`
+- Password reset token validity: 30 days (`config/auth.php`). Config is done in minutes.

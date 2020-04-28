@@ -34,7 +34,7 @@ class MyPlanHelper
         // update the planned year
         $updates = [
             'planned' => $interested,
-            // sometimes a coach will fill in a "?" for the planned year.
+            // sometimes a user will fill in a "?" for the planned year.
             // we cant save this, so we will set it to null.
             // this we could add this in a form request but then the whole request wont happen and the personal plan wont load.
             'planned_year' => is_numeric($requestPlannedYear) ? $requestPlannedYear : null,

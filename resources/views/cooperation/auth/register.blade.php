@@ -243,7 +243,10 @@
 @push('js')
     <script>
         $(document).ready(function () {
-
+            // prevent double clicked submit buttons
+            $('form').on('submit', function () {
+                $('button[type="submit"]').prop('disabled', 'disabled').addClass('disabled');
+            });
             var email = $('#email');
 
             email.on('change', function () {

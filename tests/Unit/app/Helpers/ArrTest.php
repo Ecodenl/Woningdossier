@@ -21,4 +21,42 @@ class ArrTest extends TestCase
     {
         $this->assertEquals($expected, Arr::arrayUndot($input));
     }
+
+    public static function isWholeArrayEmptyProvider()
+    {
+        return [
+            [
+                [
+                    'Bewoner' => [
+                        'element' => '',
+                        'service' => '',
+                    ],
+                    'Coach' => [
+                        'element' => 'een comment dat dus absoluut niet leeg is.',
+                        'service' => '',
+                    ],
+                ],
+                false
+            ],
+            [
+                [
+                    'Bewoner' => [
+                        'element' => null
+                    ],
+                    'Coach' => [
+                        'service' => ''
+                    ],
+                ],
+                true
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider isWholeArrayEmptyProvider
+     */
+    public function testIsWholeArrayEmpty($input, $expected)
+    {
+        $this->assertEquals($expected, Arr::isWholeArrayEmpty($input));
+    }
 }

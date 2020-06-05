@@ -69,16 +69,20 @@ class FloorInsulationController extends Controller
             $crawlspacePresent = 1; // now
         }
 
-        $buildingElement = $building->buildingElements;
-        $buildingElementsForMe = BuildingElement::forMe()->get();
 
-        $buildingFeatures = $building->buildingFeatures;
-        $buildingFeaturesForMe = BuildingFeature::forMe()->get();
+        $buildingElementsOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+            $building->buildingElements()->where('element_id', $crawlspace->id)
+        )->get();
+
+        $buildingFeaturesOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+            $building->buildingFeatures()
+        )->get();
+
 
         return view('cooperation.tool.floor-insulation.index', compact(
-            'floorInsulation', 'buildingInsulation',
-            'crawlspace', 'buildingCrawlspace', 'typeIds', 'buildingElementForMe', 'buildingFeaturesForMe', 'buildingElementsForMe',
-            'crawlspacePresent', 'buildingFeatures', 'buildingElement', 'building', 'buildingInsulationForMe'
+            'floorInsulation', 'buildingInsulation', 'buildingInsulationForMe', 'buildingElementsOrderedOnInputSourceCredibility',
+            'crawlspace', 'buildingCrawlspace', 'typeIds', 'buildingFeaturesOrderedOnInputSourceCredibility',
+            'crawlspacePresent', 'buildingFeatures', 'buildingElement', 'building'
         ));
     }
 
@@ -174,8 +178,8 @@ class FloorInsulationController extends Controller
         $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
         $url = $nextStep['url'];
 
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#' . $nextStep['tab_id'];
         }
 
         return redirect($url);

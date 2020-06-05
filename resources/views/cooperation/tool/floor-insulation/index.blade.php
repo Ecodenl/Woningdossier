@@ -47,11 +47,11 @@
                             @component('cooperation.tool.components.step-question', ['id' => 'building_elements.crawlspace', 'translation' => 'floor-insulation.has-crawlspace', 'required' => false])
 
                                 @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'extra.has_crawlspace'])
+                            ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsOrderedOnInputSourceCredibility ,'userInputColumn' => 'extra.has_crawlspace'])
                                     <select id="has_crawlspace" class="form-control"
                                             name="building_elements[crawlspace]">
                                         @foreach(__('woningdossier.cooperation.option') as $i => $option)
-                                            <option @if(old('building_elements.crawlspace', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $crawlspace->id), 'extra.has_crawlspace')) == $i) selected="selected"
+                                            <option @if(old('building_elements.crawlspace', Hoomdossier::getMostCredibleValueFromCollection($buildingElementsOrderedOnInputSourceCredibility, 'extra.has_crawlspace')) == $i) selected="selected"
                                                     @endif value="{{ $i }}">{{ $option }}</option>
                                         @endforeach
                                     </select>@endcomponent
@@ -77,18 +77,12 @@
                                 @component('cooperation.tool.components.step-question', ['id' => 'building_elements.' . $crawlspace->id .'.extra', 'translation' => 'floor-insulation.crawlspace-access', 'required' => false])
 
                                     @component('cooperation.tool.components.input-group',
-                                    ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'extra.access'])
+                                    ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsOrderedOnInputSourceCredibility ,'userInputColumn' => 'extra.access'])
                                         <select id="crawlspace_access" class="form-control"
                                                 name="building_elements[{{ $crawlspace->id }}][extra]">
                                             @foreach(__('woningdossier.cooperation.option') as $i => $option)
-                                                <option @if(old('building_elements.crawlspace_access', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $crawlspace->id), 'extra.access')) == $i) selected="selected"
+                                                <option @if(old('building_elements.crawlspace_access', Hoomdossier::getMostCredibleValueFromCollection($buildingElementsOrderedOnInputSourceCredibility, 'extra.access')) == $i) selected="selected"
                                                         @endif value="{{ $i }}">{{ $option }}</option>
-                                                {{--<option @if(old('building_elements.crawlspace_access') == $option) selected
-                                                    @elseif(isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
-                                                    &&is_array($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
-                                                    && array_key_exists('access', $buildingElement->where('element_id', $crawlspace->id)->first()->extra)
-                                                    && $buildingElement->where('element_id', $crawlspace->id)->first()->extra['access'] == $i) selected
-                                                    @endif value="{{ $i }}">{{ $option }}</option>--}}
                                             @endforeach
                                         </select>@endcomponent
                                 @endcomponent
@@ -108,18 +102,12 @@
                              ['id' => 'building_elements.' . $crawlspace->id .'.element_value_id', 'translation' => 'floor-insulation.crawlspace-height', 'required' => false])
 
                                 @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'select', 'inputValues' => $crawlspace->values, 'userInputValues' => $buildingElementsForMe->where('element_id', $crawlspace->id) ,'userInputColumn' => 'element_value_id'])
+                            ['inputType' => 'select', 'inputValues' => $crawlspace->values, 'userInputValues' => $buildingElementsOrderedOnInputSourceCredibility ,'userInputColumn' => 'element_value_id'])
                                     <select id="crawlspace_height" class="form-control"
                                             name="building_elements[{{ $crawlspace->id }}][element_value_id]">
                                         @foreach($crawlspace->values as $crawlHeight)
-                                            <option @if(old('crawlspace_height', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $crawlspace->id), 'element_value_id')) == $crawlHeight->id) selected="selected"
+                                            <option @if(old('crawlspace_height', Hoomdossier::getMostCredibleValueFromCollection($buildingElementsOrderedOnInputSourceCredibility, 'element_value_id')) == $crawlHeight->id) selected="selected"
                                                     @endif value="{{ $crawlHeight->id }}">{{ $crawlHeight->value }}</option>
-                                            {{--<option @if(old('crawlspace_height') == $crawlHeight->id) selected
-                                                    @elseif(
-                                                isset($buildingElement->where('element_id', $crawlspace->id)->first()->extra)
-                                                && $buildingElement->where('element_id', $crawlspace->id)->first()->element_value_id == $crawlHeight->id)
-                                                    selected
-                                                @endif value="{{ $crawlHeight->id }}">{{ $crawlHeight->value }}</option>--}}
                                         @endforeach
                                     </select>@endcomponent
 
@@ -134,10 +122,10 @@
 
                             @component('cooperation.tool.components.step-question', ['id' => 'building_features.floor_surface', 'translation' => 'floor-insulation.surface', 'required' => true])
                                 @component('cooperation.tool.components.input-group',
-                                ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'floor_surface', 'needsFormat' => true])
+                                ['inputType' => 'input', 'userInputValues' => $buildingFeaturesOrderedOnInputSourceCredibility, 'userInputColumn' => 'floor_surface', 'needsFormat' => true])
                                     <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
                                     <input id="floor_surface" type="text" name="building_features[floor_surface]" required="required"
-                                           value="{{ \App\Helpers\NumberFormatter::format(old('building_features.floor_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'floor_surface')),1) }}"
+                                           value="{{ \App\Helpers\NumberFormatter::format(old('building_features.floor_surface', Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnInputSourceCredibility, 'floor_surface')),1) }}"
                                            class="form-control">
                                 @endcomponent
                             @endcomponent
@@ -145,11 +133,11 @@
                         <div class="col-sm-6">
                             @component('cooperation.tool.components.step-question', ['id' => 'building_features.insulation_surface', 'translation' => 'floor-insulation.insulation-surface', 'required' => true])
                                 @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'insulation_surface', 'needsFormat' => true])
+                            ['inputType' => 'input', 'userInputValues' => $buildingFeaturesOrderedOnInputSourceCredibility, 'userInputColumn' => 'insulation_surface', 'needsFormat' => true])
                                     <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
                                     <input id="insulation_floor_surface" type="text" required="required"
                                            name="building_features[insulation_surface]"
-                                           value="{{ \App\Helpers\NumberFormatter::format(old('building_features.insulation_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'insulation_surface')),1) }}"
+                                           value="{{ \App\Helpers\NumberFormatter::format(old('building_features.insulation_surface', Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnInputSourceCredibility, 'insulation_surface')),1) }}"
                                            class="form-control">
                                 @endcomponent
                             @endcomponent

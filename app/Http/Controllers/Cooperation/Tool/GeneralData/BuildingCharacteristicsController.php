@@ -35,6 +35,8 @@ class BuildingCharacteristicsController extends Controller
 
         $buildingType = $building->getBuildingType(HoomdossierSession::getInputSource(true));
 
+        $buildingFeaturesOrderedOnCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility($building->buildingFeatures())->get();
+
         $exampleBuildings = collect();
 
         if ($buildingType instanceof BuildingType) {
@@ -45,7 +47,7 @@ class BuildingCharacteristicsController extends Controller
 
         return view('cooperation.tool.general-data.building-characteristics.index', compact(
             'building', 'buildingOwner', 'buildingTypes', 'energyLabels', 'roofTypes', 'exampleBuildings', 'myBuildingFeatures',
-            'prevBt', 'prevBy'
+            'prevBt', 'prevBy', 'buildingFeaturesOrderedOnCredibility'
         ));
     }
 

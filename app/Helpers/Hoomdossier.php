@@ -74,10 +74,10 @@ class Hoomdossier
     }
 
     /**
-     * Return the most credible value of an array
+     * Return the most credible value from a given collection
      *
-     * @param $results |  ['resident' => 5, 'coach' => 2]
-     * @param $column
+     * @param Collection $results
+     * @param string $column
      * @param null $default
      * @return mixed|null
      */
@@ -157,6 +157,12 @@ class Hoomdossier
         return $default;
     }
 
+    /**
+     * Will return a collection ordered on the input source credibility.
+     *
+     * @param Relation $relation
+     * @return Relation
+     */
     public static function orderRelationShipOnInputSourceCredibility(Relation $relation): Relation
     {
         $baseQuery = $relation
@@ -168,7 +174,7 @@ class Hoomdossier
     }
 
     /**
-     * Will return the most credible value if the column is given else it will return the ordered collection.
+     * Will return the most credible value from a given relationship.
      *
      * @param Relation $relation
      * @param null $column

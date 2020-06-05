@@ -6,6 +6,7 @@ use App\Models\Account;
 use App\Models\InputSource;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Collection;
 
 class Hoomdossier
 {
@@ -72,25 +73,17 @@ class Hoomdossier
         return $unit ?? $unitsForCalculations[$column] ?? '';
     }
 
-    public static function getMostCredibleValue(Relation $relation, $column, $default = null, $onlyReturnForInputSource = null)
+    /**
+     * Return the most credible value of an array
+     *
+     * @param $results |  ['resident' => 5, 'coach' => 2]
+     * @param $column
+     * @param null $default
+     * @return mixed|null
+     */
+    public static function getMostCredibleValueFromCollection(Collection $results, $column, $default = null)
     {
-        $baseQuery = $relation
-            ->withoutGlobalScope(GetValueScope::class)
-            ->join('input_sources', $relation->getRelated()->getTable().'.input_source_id', '=', 'input_sources.id')
-            ->orderBy('input_sources.order', 'ASC');
-
-        // if is not empty, we need to search the answers for a particular input source
-        if (! is_null($onlyReturnForInputSource)) {
-            $inputSourceToReturn = InputSource::findByShort($onlyReturnForInputSource);
-            $found = $baseQuery->where('input_source_id', $inputSourceToReturn->id);
-        } else {
-            // if the $onlyReturnForInputSource is empty, the base query is enough
-            $found = $baseQuery->get([$relation->getRelated()->getTable().'.*', 'input_sources.short']);
-        }
-
-        $results = $found->pluck($column, 'short');
-
-
+        $results = $results->pluck($column, 'short');
         // if the column name contains 'surface' there is particular logic:
         // if $value <= 0 we don't return it. We just check next sources to
         // see if there's a proper value and return that.
@@ -162,6 +155,41 @@ class Hoomdossier
         }
         // No value found
         return $default;
+    }
+
+    public static function orderRelationShipOnInputSourceCredibility(Relation $relation): Relation
+    {
+        $baseQuery = $relation
+            ->withoutGlobalScope(GetValueScope::class)
+            ->join('input_sources', $relation->getRelated()->getTable().'.input_source_id', '=', 'input_sources.id')
+            ->orderBy('input_sources.order', 'ASC');
+
+        return $baseQuery;
+    }
+
+    /**
+     * Will return the most credible value if the column is given else it will return the ordered collection.
+     *
+     * @param Relation $relation
+     * @param null $column
+     * @param null $default
+     * @param null $onlyReturnForInputSource
+     * @return \Illuminate\Database\Eloquent\Collection|mixed|null
+     */
+    public static function getMostCredibleValue(Relation $relation, $column = null, $default = null, $onlyReturnForInputSource = null)
+    {
+        $baseQuery = self::orderRelationShipOnInputSourceCredibility($relation);
+
+        // if is not empty, we need to search the answers for a particular input source
+        if (! is_null($onlyReturnForInputSource)) {
+            $inputSourceToReturn = InputSource::findByShort($onlyReturnForInputSource);
+            $found = $baseQuery->where('input_source_id', $inputSourceToReturn->id)->get();
+        } else {
+            // if the $onlyReturnForInputSource is empty, the base query is enough
+            $found = $baseQuery->get([$relation->getRelated()->getTable().'.*', 'input_sources.short']);
+        }
+
+        return self::getMostCredibleValueFromCollection($found,  $column, $default);
     }
 
     /**

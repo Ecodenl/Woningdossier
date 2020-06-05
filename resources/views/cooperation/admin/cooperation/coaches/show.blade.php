@@ -16,7 +16,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
+                    <table id="table" class="table table-responsive table-bordered compact nowrap">
                         <thead>
                         <tr>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.show.table.columns.date')</th>
@@ -47,7 +47,9 @@
 
                                 $userIsAuthUser = $user->id == \App\Helpers\Hoomdossier::user()->id;
                             ?>
-                            <tr>
+
+                            {{-- do a quick check if the user currently has access to the building--}}
+                            <tr @if($connectedBuildingsForUser->contains('building_id', $building->id) == false) class="bg-danger" @endif>
                                 <td data-sort="{{$userCreatedAtStrotime}}">
                                     {{$userCreatedAtFormatted ?? '-'}}
                                 </td>

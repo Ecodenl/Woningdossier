@@ -51,8 +51,12 @@ class CoachController extends Controller
             ->select(['building_id', 'coach_id'])
             ->get();
 
+        $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser($userToShow, $cooperation);
+
         $roles = $userToShow->roles->pluck('human_readable_name')->toArray();
 
-        return view('cooperation.admin.cooperation.coaches.show', compact('buildingCoachStatuses', 'userToShow', 'roles', 'buildingFromUser'));
+        return view('cooperation.admin.cooperation.coaches.show', compact(
+            'connectedBuildingsForUser', 'buildingCoachStatuses', 'userToShow', 'roles', 'buildingFromUser'
+        ));
     }
 }

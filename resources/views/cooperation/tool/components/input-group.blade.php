@@ -12,6 +12,7 @@
                 } else {
                     $hasAnswer = collect($userInputValues)->contains($userInputColumn, '!=', '');
                 }
+                $userInputValues->load('inputSource')
             ?>
             @if(!$hasAnswer)
                 @include('cooperation.tool.includes.no-answer-available')

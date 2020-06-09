@@ -58,6 +58,10 @@ class WallInsulationController extends Controller
         $buildingFeature = $building->buildingFeatures;
         $buildingElements = $facadeInsulation->element;
 
+        $buildingFeaturesRelationShip = $building->buildingFeatures();
+
+        $buildingFeaturesOrderedOnCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility($buildingFeaturesRelationShip)->get();
+
         $buildingFeaturesForMe = BuildingFeature::withoutGlobalScope(GetValueScope::class)->forMe()->get();
 
         /** @var BuildingElement $houseInsulation */
@@ -68,10 +72,10 @@ class WallInsulationController extends Controller
         $interests = Interest::orderBy('order')->get();
 
         return view('cooperation.tool.wall-insulation.index', compact(
-             'building', 'facadeInsulation',
+             'building', 'facadeInsulation', 'buildingFeaturesOrderedOnCredibility',
             'surfaces', 'buildingFeature', 'interests', 'typeIds',
             'facadePlasteredSurfaces', 'facadeDamages', 'buildingFeaturesForMe',
-            'buildingElements'
+            'buildingElements', 'buildingFeaturesRelationShip'
         ));
     }
 

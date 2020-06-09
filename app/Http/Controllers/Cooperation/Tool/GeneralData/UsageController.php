@@ -26,11 +26,12 @@ class UsageController extends Controller
         $userEnergyHabitsForMe = $buildingOwner->energyHabit()->forMe()->get();
         $buildingHeatings = BuildingHeating::all();
 
+        $energyHabitsOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility($buildingOwner->energyHabit())->get();
 
         $commentsByStep = StepHelper::getAllCommentsByStep($building);
         return view('cooperation.tool.general-data.usage.index', compact(
             'building', 'buildingOwner', 'userEnergyHabitsForMe', 'commentsByStep', 'comfortLevelsTapWater',
-            'buildingHeatings'
+            'buildingHeatings', 'energyHabitsOrderedOnInputSourceCredibility'
         ));
     }
 

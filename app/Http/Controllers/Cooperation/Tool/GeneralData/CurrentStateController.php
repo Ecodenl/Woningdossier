@@ -29,7 +29,6 @@ class CurrentStateController extends Controller
 {
     public function index()
     {
-
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $userInterestsForMe = UserInterest::forMe()->get();

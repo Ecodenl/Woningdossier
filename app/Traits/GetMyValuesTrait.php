@@ -168,6 +168,6 @@ trait GetMyValuesTrait
      */
     public function getInputSourceName()
     {
-        return $this->inputSource()->first()->name;
+        return $this->inputSource->name;
     }
 }

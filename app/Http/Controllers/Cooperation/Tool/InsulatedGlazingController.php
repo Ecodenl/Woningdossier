@@ -62,6 +62,10 @@ class InsulatedGlazingController extends Controller
 
         $interests = Interest::orderBy('order')->get();
 
+        $buildingPaintworkStatusesOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+            $building->currentPaintworkStatus()
+        )->get();
+
         $insulatedGlazings = InsulatingGlazing::all();
         $crackSealing = Element::where('short', 'crack-sealing')->first();
         $frames = Element::where('short', 'frames')->first();
@@ -124,7 +128,7 @@ class InsulatedGlazingController extends Controller
             'building', 'interests', 'myBuildingElements', 'buildingOwner', 'userInterestsForMe',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
             'userInterests', 'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
-            'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe'
+            'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe', 'buildingPaintworkStatusesOrderedOnInputSourceCredibility'
         ));
     }
 

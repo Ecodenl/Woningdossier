@@ -142,6 +142,7 @@ class Question extends Model
         return $this->hasMany(QuestionsAnswer::class);
     }
 
+    // only there for eager loading, user in the App\Http\ViewComposers\ToolCompsoser
     public function questionAnswersForMe()
     {
         return $this->questionAnswers()->forMe();

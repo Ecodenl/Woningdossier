@@ -142,9 +142,14 @@ class Question extends Model
         return $this->hasMany(QuestionsAnswer::class);
     }
 
-    // only there for eager loading, user in the App\Http\ViewComposers\ToolCompsoser
+    /**
+     * Return the question answers for all input sources.
+     *
+     * @return mixed
+     */
     public function questionAnswersForMe()
     {
+        // only there for eager loading, user in the App\Http\ViewComposers\ToolCompsoser
         return $this->questionAnswers()->forMe();
     }
 

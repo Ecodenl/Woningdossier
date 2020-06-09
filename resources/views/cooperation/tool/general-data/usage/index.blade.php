@@ -15,7 +15,7 @@
                 @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.resident_count', 'translation' => 'cooperation/tool/general-data/usage.index.water-gas.resident-count', 'required' => true])
                     @component('cooperation.tool.components.input-group',
                     ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'resident_count'])
-                        <input type="text" id="resident_count" class="form-control" value="{{ old('user_energy_habits.resident_count', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'resident_count')) }}" name="user_energy_habits[resident_count]" required="required">
+                        <input type="text" id="resident_count" class="form-control" value="{{ old('user_energy_habits.resident_count', Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'resident_count')) }}" name="user_energy_habits[resident_count]" required="required">
                     @endcomponent
                 @endcomponent
             </div>
@@ -26,7 +26,7 @@
                     ['inputType' => 'select', 'inputValues' => $comfortLevelsTapWater, 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'water_comfort_id'])
                         <select id="water_comfort" class="form-control" name="user_energy_habits[water_comfort_id]">
                             @foreach($comfortLevelsTapWater as $comfortLevelTapWater)
-                                <option @if(old('user_energy_habits.water_comfort_id', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'water_comfort_id')) == $comfortLevelTapWater->id)
+                                <option @if(old('user_energy_habits.water_comfort_id', Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'water_comfort_id')) == $comfortLevelTapWater->id)
                                             selected="selected"
                                         @endif value="{{ $comfortLevelTapWater->id }}">{{ $comfortLevelTapWater->name }}</option>
                             @endforeach
@@ -40,10 +40,10 @@
 
                     <div class="input-group input-source-group">
                         <label class="radio-inline">
-                            <input type="radio" name="user_energy_habits[cook_gas]" required="required" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'cook_gas')) == 1) checked @endif value="1">{{\App\Helpers\Translation::translate('general.options.yes.title')}}
+                            <input type="radio" name="user_energy_habits[cook_gas]" required="required" @if(old('cook_gas', Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'cook_gas')) == 1) checked @endif value="1">{{\App\Helpers\Translation::translate('general.options.yes.title')}}
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="user_energy_habits[cook_gas]" required="required" @if(old('cook_gas', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'cook_gas')) == 2) checked @endif value="2">{{\App\Helpers\Translation::translate('general.options.no.title')}}
+                            <input type="radio" name="user_energy_habits[cook_gas]" required="required" @if(old('cook_gas', Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'cook_gas')) == 2) checked @endif value="2">{{\App\Helpers\Translation::translate('general.options.no.title')}}
                         </label>
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -91,7 +91,7 @@
                             ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'thermostat_high', 'needsFormat' => true])
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.degrees.title')}}</span>
                                 <input type="text" id="thermostat_high" class="form-control"
-                                       value="{{ old('user_energy_habits.thermostat_high', \App\Helpers\NumberFormatter::format(\App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'thermostat_high', 20), 1)) }}"
+                                       value="{{ old('user_energy_habits.thermostat_high', \App\Helpers\NumberFormatter::format(Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'thermostat_high', 20), 1)) }}"
                                        name="user_energy_habits[thermostat_high]">
                             @endcomponent
 
@@ -104,7 +104,7 @@
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'thermostat_low', 'needsFormat' => true])
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.degrees.title')}}</span>
-                                <input id="thermostat_low" type="text" class="form-control" name="user_energy_habits[thermostat_low]" value="{{ old('user_energy_habits.thermostat_low', \App\Helpers\NumberFormatter::format(\App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'thermostat_low', 16), 1)) }}">
+                                <input id="thermostat_low" type="text" class="form-control" name="user_energy_habits[thermostat_low]" value="{{ old('user_energy_habits.thermostat_low', \App\Helpers\NumberFormatter::format(Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'thermostat_low', 16), 1)) }}">
                             @endcomponent
                         @endcomponent
 
@@ -118,7 +118,7 @@
 
                             <?php
                                 $hours = range(1, 24);
-                                $selectedHours = old('user_energy_habits.hours_high', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'hours_high', 12));
+                                $selectedHours = old('user_energy_habits.hours_high', Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'hours_high', 12));
                                 // We have to prepend the value so the key => value pairs are in order for the input group addon
                                 $inputValues = $hours;
                                 array_unshift($inputValues, __('woningdossier.cooperation.radiobutton.not-important'));
@@ -150,7 +150,7 @@
                             $defaultHFF = $bhDefault->id;
                         }
 
-                        $selectedHFF = old('user_energy_habits.heating_first_floor', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'heating_first_floor', $defaultHFF));
+                        $selectedHFF = old('user_energy_habits.heating_first_floor', Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'heating_first_floor', $defaultHFF));
 
 
                         ?>
@@ -176,7 +176,7 @@
                                 $defaultHSF = $bhDefault->id;
                             }
 
-                            $selectedHSF = old('user_energy_habits.heating_second_floor', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'heating_second_floor', $defaultHSF));
+                            $selectedHSF = old('user_energy_habits.heating_second_floor', Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'heating_second_floor', $defaultHSF));
 
                             ?>
 
@@ -208,7 +208,7 @@
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'amount_electricity'])
                                 <span class="input-group-addon">@lang('general.unit.kwh.title')</span>
-                                <input id="user_energy_habits[amount_electricity]" type="text" value="{{ old('user_energy_habits.amount_electricity', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'amount_electricity')) }}" class="form-control" name="user_energy_habits[amount_electricity]" required="required">
+                                <input id="user_energy_habits[amount_electricity]" type="text" value="{{ old('user_energy_habits.amount_electricity', Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'amount_electricity')) }}" class="form-control" name="user_energy_habits[amount_electricity]" required="required">
                             @endcomponent
                         @endcomponent
 
@@ -218,7 +218,7 @@
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsForMe, 'userInputColumn' => 'amount_gas'])
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.cubic-meters.title')}}</span>
-                                <input type="text" value="{{ old('user_energy_habits.amount_gas', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'amount_gas')) }}" class="form-control" name="user_energy_habits[amount_gas]" required="required">
+                                <input type="text" value="{{ old('user_energy_habits.amount_gas', Hoomdossier::getMostCredibleValueFromCollection($energyHabitsOrderedOnInputSourceCredibility, 'amount_gas')) }}" class="form-control" name="user_energy_habits[amount_gas]" required="required">
                             @endcomponent
                         @endcomponent
                     </div>

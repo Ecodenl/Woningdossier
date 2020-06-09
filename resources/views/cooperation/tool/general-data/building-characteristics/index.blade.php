@@ -17,7 +17,7 @@
                     ])
                         <select id="building_type_id" class="form-control" name="building_features[building_type_id]" data-ays-ignore="true">
                             @foreach($buildingTypes as $buildingType)
-                                <option @if($buildingType->id == old('building_features.building_type_id', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'building_type_id')))
+                                <option @if($buildingType->id == old('building_features.building_type_id', Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'building_type_id')))
                                         selected="selected"
                                         @endif value="{{ $buildingType->id }}">{{ $buildingType->name }}
                                 </option>
@@ -35,7 +35,7 @@
                     @component('cooperation.tool.components.input-group',
                     ['inputType' => 'input', 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'build_year'])
                         <input id="build_year" type="text" class="form-control" name="building_features[build_year]"
-                               value="{{ old('building_features.build_year', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'build_year')) }}"
+                               value="{{ old('building_features.build_year', Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'build_year')) }}"
                                required autofocus
                                data-ays-ignore="true">
                     @endcomponent
@@ -85,7 +85,7 @@
                             ['inputType' => 'input', 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'surface', 'needsFormat' => true])
                                 <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
                                 <input id="surface" type="text" class="form-control" name="building_features[surface]"
-                                       value="{{ old('building_features.surface', \App\Helpers\NumberFormatter::format(\App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'surface'), 1)) }}"
+                                       value="{{ old('building_features.surface', \App\Helpers\NumberFormatter::format(Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'surface'), 1)) }}"
                                        required autofocus>
                             @endcomponent
 
@@ -99,7 +99,7 @@
                             @component('cooperation.tool.components.input-group',
                             ['inputType' => 'input', 'userInputValues' => $myBuildingFeatures, 'userInputColumn' => 'building_layers', 'needsFormat' => true, 'decimals' => 0])
                                 <input id="building_layers" type="text" class="form-control" name="building_features[building_layers]"
-                                       value="{{ old('building_features.building_layers', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'building_layers')) }}"
+                                       value="{{ old('building_features.building_layers', Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'building_layers')) }}"
                                        autofocus>
                             @endcomponent
 
@@ -117,7 +117,7 @@
                                 <select id="roof_type_id" class="form-control" name="building_features[roof_type_id]">
                                     @foreach($roofTypes as $roofType)
                                         <option
-                                                @if(old('building_features.roof_type_id', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'roof_type_id')) == $roofType->id)
+                                                @if(old('building_features.roof_type_id', Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'roof_type_id')) == $roofType->id)
                                                 selected="selected"
                                                 @endif
                                                 value="{{ $roofType->id }}">{{ $roofType->name }}</option>
@@ -136,7 +136,7 @@
                             //  2) db value
                             //  3) default (G)
 
-                            $selected = old('building_features.energy_label_id', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'energy_label_id'));
+                            $selected = old('building_features.energy_label_id', Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'energy_label_id'));
 
                             /*
                                 if (is_null($selected)){
@@ -174,7 +174,7 @@
                         <div class="input-group input-source-group">
                             @component('cooperation.tool.components.step-question', ['id' => 'building_features.monument', 'translation' => 'cooperation/tool/general-data/building-characteristics.index.monument', 'required' => false])
                                 <?php
-                                $checked = old('building_features.monument', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'monument'));
+                                $checked = old('building_features.monument', Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'monument'));
                                 ?>
                                 <label class="radio-inline">
                                     <input type="radio" name="building_features[monument]" value="1" @if($checked === 1) checked @endif>{{\App\Helpers\Translation::translate('general.options.yes.title')}}

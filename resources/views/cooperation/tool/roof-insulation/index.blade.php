@@ -93,8 +93,6 @@
                             <div class="row">
                             <!-- is the {{ $roofCat }} roof insulated? -->
                                 <div class="col-sm-12 col-md-12">
-
-                                    bier
                                     @component('cooperation.tool.components.step-question', ['id' => $roofCat .'_roof_insulation', 'name' => 'building_roof_types.' . $roofCat . '.element_value_id', 'translation' => 'roof-insulation.current-situation.is-'.$roofCat.'-roof-insulated'])
 
                                         @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $roofInsulation->values, 'userInputValues' => $buildingRoofTypesOrderedOnInputSourceCredibility, 'userInputColumn' => 'element_value_id'])

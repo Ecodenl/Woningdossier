@@ -5,10 +5,10 @@
             <br>
             <?php
                 // explode it on pipe | and create a collection from it.
-                $answers = collect(explode('|', \App\Helpers\Hoomdossier::getMostCredibleValue($question->questionAnswers()->where('building_id', \App\Helpers\HoomdossierSession::getBuilding()), 'answer')));
+                $answers = collect(explode('|', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($question->questionAnswers, 'answer')));
             ?>
             @component('cooperation.tool.questionnaires.components.input-group',
-            ['inputType' => 'checkbox', 'inputValues' => $question->questionOptions, 'userInputValues' => $question->questionAnswers()->forMe()->get()])
+            ['inputType' => 'checkbox', 'inputValues' => $question->questionOptions, 'userInputValues' => $question->questionAnswersForMe])
                 @foreach($question->questionOptions as $option)
                     <label class="checkbox-inline">
                         <input type="checkbox" name="questions[{{$question->id}}][]" value="{{$option->id}}" @if(old('questions.'.$question->id) == $option->id || $answers->contains($option->id)) checked @endif>

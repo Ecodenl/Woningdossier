@@ -142,6 +142,11 @@ class Question extends Model
         return $this->hasMany(QuestionsAnswer::class);
     }
 
+    public function questionAnswersForMe()
+    {
+        return $this->questionAnswers()->forMe();
+    }
+
     /**
      * Return the answer on a question for a building and input source.
      *

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Cooperation\Tool;
 
+use App\Helpers\KeyFigures\PvPanels\KeyFigures;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class SolarPanelFormRequest extends FormRequest
 {
@@ -24,7 +26,7 @@ class SolarPanelFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'building_pv_panels.peak_power' => 'required|numeric|between:260,330',
+            'building_pv_panels.peak_power' => ['required', 'numeric', Rule::in(KeyFigures::getPeakPowers())],
             'building_pv_panels.number' => 'required|numeric|min:0|max:50',
             'building_pv_panels.angle' => 'required|numeric',
             'building_pv_panels.pv_panel_orientation_id' => 'required|exists:pv_panel_orientations,id',

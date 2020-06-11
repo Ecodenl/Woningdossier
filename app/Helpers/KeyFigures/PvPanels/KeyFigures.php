@@ -39,6 +39,7 @@ class KeyFigures implements KeyFiguresInterface
         295 => 295,
         300 => 300,
         330 => 330,
+        360 => 360,
     ];
 
     /**

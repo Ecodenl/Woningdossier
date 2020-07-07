@@ -35,16 +35,9 @@ class QuestionnaireController extends Controller
             foreach ($questions as $questionId => $questionAnswer) {
                 // this will only be a array if the user can select multiple answers for one question.
                 // in the current state this will only be applied for a checkbox.
-                if (is_array($questionAnswer)) {
-                    $answer = '';
 
-                    // we pipe the answer, later on we can explode it and check it against the question ids
-                    foreach ($questionAnswer as $qAnswer) {
-                        $answer .= "{$qAnswer}|";
-                    }
-                } else {
-                    $answer = $questionAnswer;
-                }
+                // if its an array we will implode it, so we can explode it later on
+                $answer = is_array($questionAnswer) ? implode('|', $questionAnswer) : $questionAnswer;
 
                 // check if the answer is not empty
                 if (! empty($answer)) {

@@ -136,9 +136,10 @@
 @push('js')
     <script>
 
+
         function removeErrors()
         {
-            $('.has-error').removeClass('has-error')
+            $('.has-error').removeClass('has-error');
             $('.help-block').remove()
         }
         function addError(input, message) {
@@ -199,6 +200,7 @@
         $('.submit-main-form').click(function () {
             // submit the main form / tool tab
             $('.panel#main-tab form').submit();
+            $('.submit-main-form').prop('disabled', 'disabled').addClass('disabled');
         });
 
         $('#copy-coach-input').on('submit', function (event) {

@@ -32,6 +32,14 @@ Options:
 ## PHP version
 PHP 7.1 is the current targeted version as this is required by Laravel 5.5.
 
+## Translations
+We try to use as much of the translation files as possible, these will be stored in the database with the following commands.
+
+    1: php artisan translations:import
+    2: php artisan languageline:to-question-structure --groups-to-convert=cooperation/tool/general-data/building-characteristics
+    
+[Laravel translations import](https://github.com/WeDesignIt/laravel-translations-import)
+
 ## Conventions
 The woningdossier is based on Laravel 5.5 LTS. Our goal is to confirm as much as 
 possible to the conventions by the framework (i.e. PSR-4 autoloading).

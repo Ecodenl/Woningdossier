@@ -3,7 +3,7 @@
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('admin/super-admin.users.index.header')
+            @lang('cooperation/admin/super-admin/users.index.header')
         </div>
 
         <div class="panel-body">

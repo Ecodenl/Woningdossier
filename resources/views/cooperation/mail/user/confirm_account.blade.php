@@ -1,4 +1,4 @@
-@lang('mail.confirm-account.salutation', [
+@lang('cooperation/mail/confirm-account.salutation', [
     'first_name' => $user->first_name,
      'last_name' => $user->last_name
 ])
@@ -13,11 +13,11 @@
     $cooperationWebsiteHref = '<a target="_blank" href="'.$userCooperation->website_url.'">'.$userCooperation->name.'</a>'
 
 ?>
-@lang('mail.confirm-account.text', [
+@lang('cooperation/mail/confirm-account.text', [
     'hoomdossier_link' => $cooperationHoomdossierHref,
     'home_url' => config('app.url'),
     'confirm_url' => $confirmHref,
     'cooperation_link' => $cooperationWebsiteHref
 ])
 <br><br>
-@lang('mail.confirm-account.kind_regards', ['app_name' => config('app.name')])
+@lang('cooperation/mail/confirm-account.kind_regards', ['app_name' => config('app.name')])

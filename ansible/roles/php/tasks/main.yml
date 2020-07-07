@@ -1,22 +1,27 @@
 ---
 - name: Add ppa Repository
-  sudo: yes
+  become: yes
+  become_user: root
   apt_repository: repo=ppa:ondrej/{{ php.ppa }}
 
 - name: Update apt
-  sudo: yes
+  become: yes
+  become_user: root
   apt: update_cache=yes
 
 - name: Install php7
-  sudo: yes
-  apt: pkg=php7.1 state=latest
+  become: yes
+  become_user: root
+  apt: pkg=php7.2 state=latest
 
 - name: Install php7-fpm
-  sudo: yes
-  apt: pkg=php7.1-fpm state=latest
+  become: yes
+  become_user: root
+  apt: pkg=php7.2-fpm state=latest
 
 - name: Install PHP Packages
-  sudo: yes
+  become: yes
+  become_user: root
   apt: pkg={{ item }} state=latest
   with_items: '{{ php.packages }}'
   when: php.packages is defined

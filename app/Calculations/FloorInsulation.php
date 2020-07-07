@@ -12,6 +12,7 @@ use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserEnergyHabit;
+use function Couchbase\defaultDecoder;
 
 class FloorInsulation
 {

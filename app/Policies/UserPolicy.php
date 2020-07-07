@@ -157,23 +157,4 @@ class UserPolicy
         return false;
     }
 
-    /**
-     * Returns if a user can assign a particular role to another user.
-     * This checks the cooperation, and the role of the 'giving' user.
-     *
-     * @param User $user
-     * @param Role $role   The role which is to be assigned
-     * @param User $toUser The user who should get the role
-     *
-     * @return bool
-     */
-    public function assignRoleToUser(User $user, Role $role, User $toUser)
-    {
-        \Log::debug(__METHOD__.' cooperation check: '.$user->cooperation_id.' vs '.$toUser->cooperation_id);
-        if ($user->cooperation_id !== $toUser->cooperation_id) {
-            return false;
-        }
-
-        return $this->assignRole($user, $role);
-    }
 }

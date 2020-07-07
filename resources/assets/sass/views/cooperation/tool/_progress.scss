@@ -4,46 +4,53 @@ ul.progress-list {
   $imageSize: 50px;
 
   li {
+    width: 75px;
+    .glyphicon {
+      top: 25px;
+      //left: -25px;
+      margin-left: -25px;
+      font-size: 25px;
+    }
+
+    &.done {
+      .glyphicon {
+        color: $brand-secundairy;
+      }
+    }
+    &.not-available {
+      .glyphicon {
+        color: $brand-danger;
+      }
+    }
+
     a {
+      // trans border so we dont have a jumpy layout
+      border: 5px solid transparent;
+      border-radius: 100%;
+      display: inline-block;
+
       img {
         width: $imageSize;
         height: $imageSize;
-        border: $borderWidth solid transparent;
+        border: 1px solid #939596;
+        &.no-border {
+          border: none;
+        }
       }
+
+
       &:hover, &:active, &:focus {
-        img {
-          border: $borderWidth solid $brand-secundairy !important;
+        text-decoration: none;
+        border: $borderWidth solid $brand-secundairy;
+        &.no-border {
+          border: none;
         }
       }
     }
 
     &.active {
       a {
-        img {
-          border: $borderWidth solid $brand-tertiary;
-        }
-      }
-
-    }
-    &.done {
-      a {
-        img {
-          border: $borderWidth solid $brand-primary;
-        }
-      }
-    }
-    &.not-available {
-      a {
-        img {
-          opacity: 0.5;
-          border: $borderWidth solid $brand-warning;
-        }
-        &:hover, &:active, &:focus {
-          img {
-            opacity: 0.5;
-            border: $borderWidth solid $brand-warning !important;
-          }
-        }
+        border: $borderWidth solid $brand-tertiary;
       }
     }
   }

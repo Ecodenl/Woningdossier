@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\TranslatableTrait;
+use App\Traits\HasShortTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -35,27 +36,85 @@ class Step extends Model
 {
     protected $fillable = ['slug', 'name', 'order'];
 
-    use TranslatableTrait;
+    use TranslatableTrait, HasShortTrait;
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+    /**
+     * Return the children or so called "sub steps" of a step
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function subSteps()
+    {
+        return $this->hasMany(Step::class, 'parent_id', 'id');
+    }
 
     /**
-     * The "booting" method of the model.
+     * Return the parent of the step
      *
-     * @return void
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    protected static function boot()
+    public function parentStep()
     {
-        parent::boot();
+        return $this->belongsTo(Step::class, 'parent_id', 'id');
+    }
 
-        static::created(function (Step $step) {
-            foreach (Cooperation::all() as $cooperation) {
-                $cooperationStepsQuery = $cooperation->steps();
-                $cooperationStepsQuery->attach($step->id);
-                $cooperationStep = $cooperationStepsQuery->find($step->id);
-                $cooperationStepsQuery->updateExistingPivot($cooperationStep->id, ['order' => $step->order]);
-            }
-        });
-        // for now, we keep it in kees.
-//        static::addGlobalScope(new CooperationScope());
+    /**
+     * Check whether a step has substeps
+     *
+     * @return bool
+     */
+    public function hasSubSteps()
+    {
+        return $this->subSteps()->exists();
+    }
+
+    /**
+     * Method to scope the active steps in a ordered order.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeActiveOrderedSteps(Builder $query)
+    {
+        return $query->where('steps.short', '!=', 'building-detail')
+            ->orderBy('cooperation_steps.order')
+            ->where('cooperation_steps.is_active', '1');
+    }
+
+    public function scopeSubStepsForStep(Builder $query, Step $step)
+    {
+        return $query->where('parent_id', $step->id);
+    }
+
+    public function scopeOnlySubSteps(Builder $query)
+    {
+        return $query->whereNotNull('parent_id');
+    }
+
+    /**
+     * Method to leave out the sub steps
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeWithoutSubSteps(Builder $query)
+    {
+        return $query->where('parent_id', null);
+    }
+
+    /**
+     * Check whether a step is a sub step
+     *
+     * @return bool
+     */
+    public function isSubStep(): bool
+    {
+        // when the parent id is null, its a parent else its a sub step / child.
+        return !is_null($this->parent_id);
     }
 
     public function questionnaires()

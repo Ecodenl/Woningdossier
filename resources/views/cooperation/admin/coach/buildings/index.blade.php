@@ -10,13 +10,13 @@
                     <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.date')</th>
+                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.appointment-date')</th>
+                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.status')</th>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.name')</th>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.street-house-number')</th>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.zip-code')</th>
                             <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.city')</th>
-                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.status')</th>
-                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.appointment-date')</th>
+                            <th>@lang('woningdossier.cooperation.admin.coach.buildings.index.table.columns.date')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -39,7 +39,10 @@
                             ?>
                             <tr>
                                 <td data-sort="{{$appointmentDateStrotime ?? '-'}}">
-                                    {{$userCreatedAtFormatted ?? '-'}}
+                                    {{$appointmentDateFormatted ?? '-'}}
+                                </td>
+                                <td>
+                                    {{$buildingStatus->status->name}}
                                 </td>
                                 <td>{{$user->getFullName()}}</td>
                                 <td>
@@ -55,11 +58,8 @@
                                 <td>
                                     {{$building->city}}
                                 </td>
-                                <td>
-                                    {{$buildingStatus->status->name}}
-                                </td>
                                 <td data-sort="{{$appointmentDateStrotime ?? '-'}}">
-                                    {{$appointmentDateFormatted ?? '-'}}
+                                    {{$userCreatedAtFormatted ?? '-'}}
                                 </td>
                             </tr>
                         @endforeach
@@ -78,11 +78,13 @@
             $('#table').DataTable({
                 responsive: true,
                 columnDefs: [
-                    {responsivePriority: 4, targets: 4},
-                    {responsivePriority: 5, targets: 3},
-                    {responsivePriority: 3, targets: 2},
-                    {responsivePriority: 2, targets: 1},
-                    {responsivePriority: 1, targets: 0}
+                    {responsivePriority: 7, targets: 6, width: "10%"},
+                    {responsivePriority: 6, targets: 5, width: "20%"},
+                    {responsivePriority: 5, targets: 4, width: "10%"}, // zipcode
+                    {responsivePriority: 4, targets: 3, width: "20%"},
+                    {responsivePriority: 3, targets: 2, width: "20%"},
+                    {responsivePriority: 2, targets: 1, width: "10%"},
+                    {responsivePriority: 1, targets: 0, width: "10%"}
                 ],
             });
         });

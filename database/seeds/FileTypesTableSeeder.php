@@ -49,19 +49,21 @@ class FileTypesTableSeeder extends Seeder
                 ],
                 'content_type' => 'application/pdf',
                 'short' => 'pdf-report'
-            ]
-            /*[
+            ],
+            [
                 'names' => [
                     'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, met alle adresgegevens'
                 ],
-                'short' => 'custom-questionnaires-report'
+                'content_type' => 'text/csv',
+                'short' => 'custom-questionnaire-report'
             ],
             [
                 'names' => [
                     'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, zonder adresgegevens'
                 ],
-                'short' => 'custom-questionnaires-report-anonymized'
-            ],*/
+                'content_type' => 'text/csv',
+                'short' => 'custom-questionnaire-report-anonymized'
+            ],
 
         ];
 

@@ -13,14 +13,25 @@ class UserObserver
     {
         // we create for every notification type a setting with daily interval and set the last_notified_at to now
         $notificationTypes = NotificationType::all();
-        $interval = NotificationInterval::where('short', 'daily')->first();
+        $interval          = NotificationInterval::where('short',
+            'daily')->first();
 
         foreach ($notificationTypes as $notificationType) {
             $user->notificationSettings()->create([
-                'type_id'     => $notificationType->id,
-                'interval_id' => $interval->id,
+                'type_id'          => $notificationType->id,
+                'interval_id'      => $interval->id,
                 'last_notified_at' => Carbon::now(),
             ]);
         }
+    }
+
+    public function updated(User $user)
+    {
+        \App\Helpers\Cache\Account::wipe($user->account->id);
+    }
+
+    public function deleted(User $user)
+    {
+        \App\Helpers\Cache\Account::wipe($user->account->id);
     }
 }

@@ -58,35 +58,4 @@ class PrivateMessageViewService
                 ->update(['read_at' => Carbon::now()]);
         }
     }
-
-    /*
-     * Sets the incoming messages to read.
-     *
-     * @param Collection $privateMessages
-     * @param null|InputSource $inputSource
-     * @param null|Cooperation $cooperation
-     */
-    /*
-    public static function setRead(Collection $privateMessages, InputSource $inputSource = null, Cooperation $cooperation = null)
-    {
-
-
-        foreach ($privateMessages as $privateMessage) {
-            $privateMessageQuery = PrivateMessageView::where('private_message_id', $privateMessage->id);
-
-            if ($cooperation instanceof Cooperation){
-
-            }
-            elseif ($inputSource instanceof InputSource)
-            if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
-                $privateMessageQuery
-                    ->where('to_cooperation_id', HoomdossierSession::getCooperation())
-                    ->update(['read_at' => Carbon::now()]);
-            } else {
-                $privateMessageQuery
-                    ->where('user_id', Hoomdossier::user()->id)
-                    ->update(['read_at' => Carbon::now()]);
-            }
-        }
-    }*/
 }

@@ -6,9 +6,6 @@
             @include('cooperation.messages.parts.group-participants', ['groupParticipants' => $groupParticipants, 'buildingId' => $buildingId])
         </div>
         <div class="panel-body panel-chat-body" id="chat">
-            <form id="revoke-access-form" action="{{route('cooperation.my-account.messages.revoke-access')}}" method="post">
-                {{csrf_field()}}
-            </form>
             @component('cooperation.messages.parts.messages')
                 @foreach($privateMessages as $privateMessage)
                     @include('cooperation.messages.parts.message', compact('privateMessage'))
@@ -34,16 +31,6 @@
 @push('js')
     <script>
         $('document').ready(function () {
-            $('#revoke-access').on('click', function (event) {
-                // Bij de "weet je het zeker" voor de gebruiker aangeven dat de toegang tot de woning word ingetrokken en de aanvraag bij de cooperatie wordt teruggelegd
-                if (confirm('Weet u zeker dat u geen contact wilt met deze coach, de toegang tot de woning word voor de coach ingetrokken. Ook word de cooperatie teruggelegd bij de cooperatie, het kan enige tijd duren tot er een nieuwe coach word gekoppeld.')) {
-                    $('#revoke-access-form').submit();
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
-            });
-
             var chat = $('.panel-chat-body')[0];
             if (typeof chat !== "undefined") {
                 chat.scrollTop = chat.scrollHeight - chat.clientHeight;

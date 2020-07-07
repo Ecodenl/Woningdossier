@@ -8,6 +8,7 @@ use App\Models\LanguageLine;
 use App\Models\Step;
 use App\Models\Translation;
 use Illuminate\Http\Request;
+use WeDesignIt\LaravelTranslationsImport\Helpers\LangDirectory;
 
 class TranslationController extends Controller
 {
@@ -18,9 +19,18 @@ class TranslationController extends Controller
      */
     public function index()
     {
-        $steps = Step::all();
+        $steps = Step::where('short', '!=', 'general-data')->get();
 
-        return view('cooperation.admin.super-admin.translations.index', compact('steps'));
+        $mailLangFiles = [
+            'cooperation/mail/account-associated-with-cooperation' => '(mail) | Account gekoppeld met coöperatie',
+            'cooperation/mail/account-created' => '(mail) | Account aangemaakt',
+            'cooperation/mail/changed-email' => '(mail) | Email aangepast',
+            'cooperation/mail/confirm-account' => '(mail) | Bevestig account',
+            'cooperation/mail/reset-password' => '(mail) | Reset wachtwoord',
+            'cooperation/mail/unread-message-count' => '(mail) | Ongelezen berichten'
+        ];
+
+        return view('cooperation.admin.super-admin.translations.index', compact('steps', 'mailLangFiles'));
     }
 
     /**
@@ -45,38 +55,51 @@ class TranslationController extends Controller
 
     /**
      * @param Cooperation $cooperation
-     * @param string      $stepSlug|   So we can get the translations / questions from language_line table for the step
+     * @param string $group |   So we can get the translations / questions from language_line table for the step
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(Cooperation $cooperation, $stepSlug)
+    public function edit(Cooperation $cooperation, $group)
     {
-        $step = Step::where('slug', $stepSlug)->first();
-        if ($step instanceof Step) {
-            $questions = LanguageLine::where('step_id', $step->id)
-                ->mainQuestions()
-                ->get();
 
-        // if it isn't a instance, then its a general translation group
-        } elseif (in_array($stepSlug, ['general', 'my-plan', 'home'])) {
-            $questions = LanguageLine::where('group', $stepSlug)
-                ->mainQuestions()
-                ->get();
+        // see the index file, we change the "/" to "_" otherwise it wont be picked up by routing
+
+        $group = str_replace('_', '/', $group);
+        // it is what it is, for the time being this will do. should be refactored
+        $step = Step::findByShort($group);
+
+        if ($step instanceof Step && $step->isSubStep()) {
+            $group = "cooperation/tool/general-data/{$group}";
+        }
+        if ($group == 'ventilation') {
+            $group = "cooperation/tool/{$group}";
         }
 
-        return view('cooperation.admin.super-admin.translations.edit', compact('questions', 'stepSlug'));
+        if ($group == 'pdf-user-report') {
+            $group = "pdf/user-report";
+        }
+
+        $translations = LanguageLine::with([
+            'subQuestions' => function ($query) {
+                return $query->with('helpText');
+            }, 'helpText'])
+            ->forGroup($group)
+            ->mainQuestions()
+            ->get();
+
+        return view('cooperation.admin.super-admin.translations.edit', compact('translations', 'group'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param Cooperation              $cooperation
-     * @param string                   $stepId
+     * @param Cooperation $cooperation
+     * @param string $stepId
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Cooperation $cooperation, $stepSlug)
+    public function update(Request $request, Cooperation $cooperation, $group)
     {
         $languageLinesData = $request->get('language_lines', []);
 
@@ -94,7 +117,10 @@ class TranslationController extends Controller
             }
         }
 
-        return redirect(route('cooperation.admin.super-admin.translations.edit', ['step-slug' => $stepSlug]))
+        \Artisan::call('queue:restart');
+
+        return redirect()
+            ->route('cooperation.admin.super-admin.translations.index')
             ->with('success', __('woningdossier.cooperation.admin.super-admin.translations.update.success'));
     }
 

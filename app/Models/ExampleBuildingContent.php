@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 /**
  * App\Models\ExampleBuildingContent.
@@ -48,6 +50,8 @@ class ExampleBuildingContent extends Model
 
     public function getValue($key)
     {
-        return array_get($this->content, $key);
+        // for some weird reason the array get does not work, while it should do the same thing
+        return Arr::dot($this->content)[$key] ?? '';
+//        return array_get($this->content, $key);
     }
 }

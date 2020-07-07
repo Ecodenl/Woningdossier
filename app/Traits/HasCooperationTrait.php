@@ -20,7 +20,9 @@ trait HasCooperationTrait
 
     public function scopeForMyCooperation(Builder $builder, $cooperationId)
     {
-        return $builder->where('cooperation_id', $cooperationId);
+        return $builder
+            ->withoutGlobalScope(CooperationScope::class)
+            ->where('cooperation_id', $cooperationId);
     }
 
     public function scopeForAllCooperations(Builder $query)

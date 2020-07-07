@@ -4,10 +4,12 @@
 
 
 @section('step_content')
-    <form class="form-horizontal" method="POST"
+    <form  method="POST"
           action="{{ route('cooperation.tool.heater.store', ['cooperation' => $cooperation]) }}">
         {{ csrf_field() }}
-        @include('cooperation.tool.includes.interested', ['type' => 'service'])
+        @include('cooperation.tool.includes.interested', [
+            'translation' => 'heater.index.interested-in-improvement', 'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+        ])
         <div id="heater">
             <div class="row">
                 <div class="col-sm-4">
@@ -132,7 +134,6 @@
                 <div class="row">
 
                     <div class="col-sm-6">
-                        <div class="form-group add-space">
                             @component('cooperation.tool.components.step-question', ['id' => 'production-heat', 'translation' => 'heater.indication-for-costs.production-heat', 'required' => false])
                                 <div class="input-group">
                                     <span class="input-group-addon">kWh / {{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
@@ -140,7 +141,6 @@
                                            value="0">
                                 </div>
                             @endcomponent
-                        </div>
                     </div>
                     <div class="col-sm-6">
                         @component('cooperation.tool.components.step-question', ['id' => 'percentage-consumption', 'translation' => 'heater.indication-for-costs.percentage-consumption', 'required' => false])
@@ -157,21 +157,27 @@
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.gas', ['step' => $currentStep->slug])
+                    @include('cooperation.layouts.indication-for-costs.gas', ['translation' => 'heater.index.costs.gas'])
                 </div>
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.co2', ['step' => $currentStep->slug])
+                    @include('cooperation.layouts.indication-for-costs.co2', ['translation' => 'heater.index.costs.co2'])
                 </div>
                 <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.savings-in-euro')
+                    @include('cooperation.layouts.indication-for-costs.savings-in-euro',[
+                                'translation' => 'heater.index.savings-in-euro'
+                            ])
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-6">
-                    @include('cooperation.layouts.indication-for-costs.indicative-costs')
+                    @include('cooperation.layouts.indication-for-costs.indicative-costs',[
+                                'translation' => 'heater.index.indicative-costs'
+                            ])
                 </div>
                 <div class="col-sm-6">
-                    @include('cooperation.layouts.indication-for-costs.comparable-rent')
+                    @include('cooperation.layouts.indication-for-costs.comparable-rent',[
+                                'translation' => 'heater.index.comparable-rent'
+                            ])
                 </div>
             </div>
 
@@ -185,7 +191,7 @@
 
 
             @include('cooperation.tool.includes.comment', [
-                 'translation' => 'heater.comment'
+                 'translation' => 'heater.index.specific-situation'
              ])
 
             <div class="row">
@@ -208,18 +214,6 @@
                             </ol>
                         </div>
                     </div>
-                    <hr>
-                    @if(!\App\helpers\HoomdossierSession::isUserObserving())
-                    <div class="form-group add-space">
-                        <div class="">
-                            <a class="btn btn-success pull-left"
-                               href="{{route('cooperation.tool.solar-panels.index', ['cooperation' => $cooperation])}}">@lang('default.buttons.prev')</a>
-                            <button type="submit" class="btn btn-primary pull-right">
-                                @lang('default.buttons.next')
-                            </button>
-                        </div>
-                    </div>
-                    @endif
                 </div>
             </div>
         </div>

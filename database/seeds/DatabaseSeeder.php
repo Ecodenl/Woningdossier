@@ -44,6 +44,7 @@ class DatabaseSeeder extends Seeder
         $this->call(AssessmentTypesTableSeeder::class);
         $this->call(BuildingTypesTableSeeder::class);
         $this->call(EnergyLabelsTableSeeder::class);
+        $this->call(BuildingHeatingApplicationsTableSeeder::class);
         $this->call(ServiceTypesTableSeeder::class);
         $this->call(RoofTypesTableSeeder::class);
         $this->call(CooperationsTableSeeder::class);
@@ -104,6 +105,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call(StatusesTableSeeder::class);
 
-        $this->call(SqlDumpSeeder::class);
+        if (app()->environment() !== 'testing') {
+            $this->call(SqlDumpSeeder::class);
+        }
     }
 }

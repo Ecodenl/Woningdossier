@@ -11,7 +11,6 @@ use Illuminate\Queue\SerializesModels;
 class UserAssociatedWithOtherCooperation
 {
     use Dispatchable;
-    use InteractsWithSockets;
     use SerializesModels;
 
     /**

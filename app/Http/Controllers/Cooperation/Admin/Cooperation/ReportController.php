@@ -3,12 +3,18 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileTypeCategory;
 
 class ReportController extends Controller
 {
-    public function index()
+    /**
+     *
+     * @param Cooperation $cooperation
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function index(Cooperation $cooperation)
     {
         $reportFileTypeCategory = FileTypeCategory::short('report')
             ->with(['fileTypes' => function ($query) {
@@ -18,9 +24,11 @@ class ReportController extends Controller
                     }]);
             }])->first();
 
+        $questionnaires = $cooperation->questionnaires;
+
         // Is there any file being processed for my cooperation
         $anyFilesBeingProcessed = FileStorage::leaveOutPersonalFiles()->withExpired()->beingProcessed()->count();
 
-        return view('cooperation.admin.cooperation.reports.index', compact('reportFileTypeCategory', 'anyFilesBeingProcessed'));
+        return view('cooperation.admin.cooperation.reports.index', compact('questionnaires','reportFileTypeCategory', 'anyFilesBeingProcessed'));
     }
 }

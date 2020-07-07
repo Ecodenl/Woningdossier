@@ -6,11 +6,13 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role;
 
@@ -86,15 +88,28 @@ class LoginController extends Controller
         return array_merge($request->only($this->username(), 'password'), ['active' => 1, 'confirm_token' => null]);
     }
 
+
+    /**
+     * Validate the user login request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
+    public function validateLogin(Request $request)
+    {
+        $this->validate($request, [
+            $this->username() => 'required|string',
+            'password' => 'required|string',
+        ]);
+    }
+
     /**
      * Handle a login request to the application.
      *
-     * @param Request     $request
+     * @param Request $request
      * @param Cooperation $cooperation
-     *
+     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
      * @throws ValidationException
-     *
-     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response|void
      */
     public function login(Request $request, Cooperation $cooperation)
     {
@@ -120,6 +135,11 @@ class LoginController extends Controller
                     'cooperation' => [trans('auth.cooperation')],
                 ]);
             }
+
+            if (!$account->user()->building instanceof Building) {
+                Log::error('no building attached for user id: '.$account->user()->id.' account id:' .$account->id);
+                return redirect(route('cooperation.create-building.index'))->with('warning', __('auth.login.warning'));
+            }
         }
 
         // check if the account is confirmed.
@@ -127,12 +147,12 @@ class LoginController extends Controller
             $this->sendAccountNotConfirmedResponse();
         }
 
+
         // everything is ok with the user at this point, now we log him in.
         if ($this->attemptLogin($request)) {
             // the guard()->user() will return the auth model, in our case this is the Account model
             // but we want the user from the account, so thats why we do ->user()->user();
             $user = $this->guard()->user()->user();
-
             $role = Role::findByName($user->roles()->first()->name);
 
             1 == $user->roles->count() ? $this->redirectTo = RoleHelper::getUrlByRole($role) : $this->redirectTo = '/admin';
@@ -143,7 +163,7 @@ class LoginController extends Controller
         // if the login attempt was unsuccessful we will increment the number of attempts
         // to login and redirect the user back to the login form. Of course, when this
         // user surpasses their maximum number of attempts they will get locked out.
-        $this->incrementLoginAttempts($request);
+//        $this->incrementLoginAttempts($request);
 
         return $this->sendFailedLoginResponse($request);
     }

@@ -85,6 +85,15 @@ class RoomTemperatureCalculator
 
     public function __construct(UserEnergyHabit $habits)
     {
+
+        if (!$habits->heatingFirstFloor instanceof BuildingHeating) {
+            $habits->heatingFirstFloor = BuildingHeating::where('is_default', true)->first();
+        }
+
+        if (!$habits->heatingSecondFloor instanceof BuildingHeating) {
+            $habits->heatingSecondFloor = BuildingHeating::where('is_default', true)->first();
+        }
+
         // new logic:
         // if the heating_(first/second)_floor is Not applicable (calculate_value 4):
         // set ALL m2 for that FLOOR to 0
@@ -95,7 +104,7 @@ class RoomTemperatureCalculator
                 self::FLOOR_ONE_ROOM_HALL,
                 self::ROOM_BATHROOM,
             ];
-            \Log::debug('No heating on first floor, setting the following rooms to 0 m2: '.implode(', ', $firstFloorRooms));
+            // \Log::debug('No heating on first floor, setting the following rooms to 0 m2: '.implode(', ', $firstFloorRooms));
             foreach ($firstFloorRooms as $firstFloorRoom) {
                 $this->rooms[$firstFloorRoom]['m2'] = 0;
             }
@@ -104,7 +113,7 @@ class RoomTemperatureCalculator
             $secondFloorRooms = [
                 self::ROOM_ATTIC,
             ];
-            \Log::debug('No heating on second floor, setting the following rooms to 0 m2: '.implode(', ', $secondFloorRooms));
+            // \Log::debug('No heating on second floor, setting the following rooms to 0 m2: '.implode(', ', $secondFloorRooms));
             foreach ($secondFloorRooms as $secondFloorRoom) {
                 $this->rooms[$secondFloorRoom]['m2'] = 0;
             }
@@ -172,8 +181,8 @@ class RoomTemperatureCalculator
         $total = 0;
         $surface = 0;
 
-        \Log::debug(__METHOD__.' Rooms:');
-        \Log::debug(json_encode($this->rooms));
+        // \Log::debug(__METHOD__.' Rooms:');
+        // \Log::debug(json_encode($this->rooms));
 
         foreach ($this->rooms as $room => $values) {
             $total += $values['m2'] * $values['average'];

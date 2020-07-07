@@ -3,7 +3,7 @@
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3>Edit: {{ $exampleBuilding->name }}</h3>
+            <h3>@lang('cooperation/admin/example-buildings.edit.title', ['name' => $exampleBuilding->name])</h3>
         </div>
         <div class="panel-body">
             <div class="row">
@@ -24,7 +24,7 @@
 
                         <div class="form-group" style="margin-top: 5em;">
                             <input type="hidden" name="new" value="0">
-                            <input type="submit" name="update" value="Update" class="btn btn-success btn-block">
+                            <button type="submit" class="btn btn-success btn-block">@lang('cooperation/admin/example-buildings.form.update')</button>
                         </div>
                     </form>
 
@@ -36,6 +36,8 @@
 
 @push('js')
     <script>
+
+
         $("form").on('submit', function (e) {
             var openTabId = $(".tab-content .tab-pane.active").attr('id');
             if (openTabId === 'new') {

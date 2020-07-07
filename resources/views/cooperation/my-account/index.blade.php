@@ -8,7 +8,8 @@
                     <div class="panel-heading">@lang('my-account.index.header')</div>
                 </div>
 
-                <form class="has-address-data" method="POST" action="{{ route('cooperation.my-account.settings.update') }}"
+                <form class="has-address-data" method="POST"
+                      action="{{ route('cooperation.my-account.settings.update') }}"
                       autocomplete="off">
                     {{ method_field('PUT')  }}
                     {{ csrf_field() }}
@@ -37,7 +38,8 @@
 
 
                                         <input id="first_name" type="text" class="form-control" name="user[first_name]"
-                                               value="{{ old('user.first_name', $user->first_name) }}" required autofocus>
+                                               value="{{ old('user.first_name', $user->first_name) }}" required
+                                               autofocus>
 
                                         @if ($errors->has('user.first_name'))
                                             <span class="help-block">
@@ -101,8 +103,10 @@
                                         <label for="building.postal_code" class="control-label">
                                             @lang('my-account.settings.index.form.building.postal-code')
                                         </label>
-                                        <input type="text" class="form-control" name="building[postal_code]" id="postal_code"
-                                               value="{{ old('building.postal_code', $building->postal_code) }}" required autofocus>
+                                        <input type="text" class="form-control" name="building[postal_code]"
+                                               id="postal_code"
+                                               value="{{ old('building.postal_code', $building->postal_code) }}"
+                                               required autofocus>
 
                                         @if ($errors->has('building.postal_code'))
                                             <span class="help-block">
@@ -118,8 +122,10 @@
                                         <label for="building.number"
                                                class="control-label">@lang('my-account.settings.index.form.building.number')</label>
 
-                                        <input type="text" class="form-control" name="building[house_number]" id="number"
-                                               value="{{ old('building.house_number', $building->number) }}" required autofocus>
+                                        <input type="text" class="form-control" name="building[house_number]"
+                                               id="number"
+                                               value="{{ old('building.house_number', $building->number) }}" required
+                                               autofocus>
 
                                         @if ($errors->has('building.house_number'))
                                             <span class="help-block">
@@ -158,7 +164,8 @@
                                                class="control-label">@lang('my-account.settings.index.form.building.street')</label>
 
                                         <input type="text" class="form-control" name="building[street]" id="street"
-                                               value="{{ old('building.street', $building->street) }}" required autofocus>
+                                               value="{{ old('building.street', $building->street) }}" required
+                                               autofocus>
 
                                         @if ($errors->has('building.street'))
                                             <span class="help-block">
@@ -201,7 +208,8 @@
                     </div>
                 </form>
 
-                <form method="POST" action="{{ route('cooperation.my-account.hoom-settings.update', $account->id) }}" autocomplete="off">
+                <form method="POST" action="{{ route('cooperation.my-account.hoom-settings.update', $account->id) }}"
+                      autocomplete="off">
                     {{ method_field('PUT')  }}
                     {{ csrf_field() }}
 
@@ -222,10 +230,12 @@
 
 
                                     <div class="form-group{{ $errors->has('account.email') ? ' has-error' : '' }}">
-                                        <label for="email" class="control-label">@lang('my-account.hoom-settings.index.form.account.e-mail')</label>
+                                        <label for="email"
+                                               class="control-label">@lang('my-account.hoom-settings.index.form.account.e-mail')</label>
 
 
-                                        <input id="email" type="email" class="form-control" name="account[email]"  value="{{ old('account.email', $account->email) }}" required autofocus>
+                                        <input id="email" type="email" class="form-control" name="account[email]"
+                                               value="{{ old('account.email', $account->email) }}" required autofocus>
 
                                         @if ($errors->has('account.email'))
                                             <span class="help-block">
@@ -240,10 +250,12 @@
                                 </div>
                                 <div class="col-sm-12">
                                     <div class="form-group{{ $errors->has('account.current_password') ? ' has-error' : '' }}">
-                                        <label for="current_password" class="control-label">@lang('my-account.hoom-settings.index.form.account.current-password')</label>
+                                        <label for="current_password"
+                                               class="control-label">@lang('my-account.hoom-settings.index.form.account.current-password')</label>
 
 
-                                        <input id="current_password" type="password" class="form-control" name="account[current_password]">
+                                        <input id="current_password" type="password" class="form-control"
+                                               name="account[current_password]">
 
                                         @if ($errors->has('account.current_password'))
                                             <span class="help-block">
@@ -258,7 +270,8 @@
                                                class="control-label">@lang('my-account.hoom-settings.index.form.account.new-password')</label>
 
 
-                                        <input id="password" type="password" class="form-control" name="account[password]">
+                                        <input id="password" type="password" class="form-control"
+                                               name="account[password]">
 
                                         @if ($errors->has('account.password'))
                                             <span class="help-block">
@@ -270,10 +283,12 @@
 
                                 <div class="col-sm-6">
                                     <div class="form-group{{ $errors->has('account.password') || $errors->has('account.password_confirmation') ? ' has-error' : '' }}">
-                                        <label for="password-confirm" class="control-label">@lang('my-account.hoom-settings.index.form.account.new-password-confirmation')</label>
+                                        <label for="password-confirm"
+                                               class="control-label">@lang('my-account.hoom-settings.index.form.account.new-password-confirmation')</label>
 
 
-                                        <input id="password-confirm" type="password" class="form-control" name="account[password_confirmation]">
+                                        <input id="password-confirm" type="password" class="form-control"
+                                               name="account[password_confirmation]">
                                         @if ($errors->has('account.password') || $errors->has('account.password_confirmation'))
                                             <span class="help-block">
                                     <strong>{{ $errors->first('account.password') }}</strong>
@@ -300,26 +315,59 @@
                     </div>
                 </form>
 
+
+                <div id="reset-modal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">@lang('my-account.settings.reset-file.modal.title')</h4>
+                            </div>
+                            <div class="modal-body">
+                                @lang('my-account.settings.reset-file.modal.text')
+                            </div>
+                            <div class="modal-footer">
+                                <form class="form-horizontal" method="POST"
+                                      action="{{ route('cooperation.my-account.settings.reset-file', ['cooperation' => $cooperation]) }}">
+                                    {{ csrf_field() }}
+                                    <input type="hidden" name="input_sources[id][]"
+                                           value="{{\App\Models\InputSource::findByShort('resident')->id}}">
+                                    <button type="button"
+                                            class="reset-account pull-left btn btn-warning">@lang('my-account.settings.reset-file.modal.reset-resident')</button>
+                                </form>
+                                <form class="form-horizontal" method="POST"
+                                      action="{{ route('cooperation.my-account.settings.reset-file', ['cooperation' => $cooperation]) }}">
+                                    {{ csrf_field() }}
+                                    <input type="hidden" name="input_sources[id][]"
+                                           value="{{\App\Models\InputSource::findByShort('resident')->id}}">
+                                    <input type="hidden" name="input_sources[id][]"
+                                           value="{{\App\Models\InputSource::findByShort('coach')->id}}">
+                                    <button type="button"
+                                            class="reset-account btn btn-warning">@lang('my-account.settings.reset-file.modal.reset-both')</button>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
                 <div class="panel panel-default">
                     <div class="panel-heading">@lang('my-account.settings.reset-file.header')</div>
 
                     <div class="panel-body">
                         @lang('my-account.settings.reset-file.description')
-                        <form class="form-horizontal" method="POST"
-                              action="{{ route('cooperation.my-account.settings.reset-file', ['cooperation' => $cooperation]) }}">
-                            {{ csrf_field() }}
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label for="reset-file"
+                                       class="control-label">@lang('my-account.settings.reset-file.label')</label>
 
-                            <div class="form-group">
-                                <div class="col-sm-12">
-                                    <label for="reset-file"
-                                           class="control-label">@lang('my-account.settings.reset-file.label')</label>
-
-                                    <a id="reset-account" class="btn btn-danger">
-                                        @lang('my-account.settings.reset-file.submit')
-                                    </a>
-                                </div>
+                                <a data-toggle="modal" data-target="#reset-modal" class="btn btn-danger">
+                                    @lang('my-account.settings.reset-file.submit')
+                                </a>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
 
@@ -361,7 +409,8 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-sm-12">
-                                <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
+                                <table id="table"
+                                       class="table table-striped table-responsive table-bordered compact nowrap">
                                     <thead>
                                     <tr>
                                         <th>@lang('my-account.notification-settings.index.table.columns.name')</th>
@@ -375,12 +424,15 @@
                                             <td>{{ $notificationSetting->type->name }}</td>
                                             <td>
 
-                                                <form action="{{route('cooperation.my-account.notification-settings.update', $notificationSetting->id)}}" method="post">
+                                                <form action="{{route('cooperation.my-account.notification-settings.update', $notificationSetting->id)}}"
+                                                      method="post">
                                                     {{csrf_field()}}
                                                     {{method_field('put')}}
-                                                    <select name="notification_setting[{{$notificationSetting->id}}][interval_id]" class="form-control change-interval">
+                                                    <select name="notification_setting[{{$notificationSetting->id}}][interval_id]"
+                                                            class="form-control change-interval">
                                                         @foreach($notificationIntervals as $notificationInterval)
-                                                            <option @if(old('notification_setting.interval_id', $notificationSetting->interval_id) == $notificationInterval->id) selected="selected" @endif value="{{$notificationInterval->id}}">{{$notificationInterval->name}}</option>
+                                                            <option @if(old('notification_setting.interval_id', $notificationSetting->interval_id) == $notificationInterval->id) selected="selected"
+                                                                    @endif value="{{$notificationInterval->id}}">{{$notificationInterval->name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </form>
@@ -405,7 +457,9 @@
                         @if($conversationRequests->isNotEmpty())
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <form id="allow-access-form" action="{{route('cooperation.my-account.access.allow-access')}}" method="post">
+                                    <form id="allow-access-form"
+                                          action="{{route('cooperation.my-account.access.allow-access')}}"
+                                          method="post">
                                         {{csrf_field()}}
                                         <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
                                             <label for="allow_access">
@@ -428,7 +482,8 @@
                         @endif
                         <div class="row">
                             <div class="col-sm-12">
-                                <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
+                                <table id="table"
+                                       class="table table-striped table-responsive table-bordered compact nowrap">
                                     <thead>
                                     <tr>
                                         <th>@lang('my-account.access.index.table.columns.coach')</th>
@@ -437,15 +492,21 @@
                                     </thead>
                                     <tbody>
                                     @foreach($buildingPermissions as $i => $buildingPermission)
-                                        <form id="revoke-access-{{$buildingPermission->id}}" action="{{route('cooperation.messages.participants.revoke-access')}}" method="post">
+                                        <form id="revoke-access-{{$buildingPermission->id}}"
+                                              action="{{route('cooperation.messages.participants.revoke-access')}}"
+                                              method="post">
                                             {{csrf_field()}}
-                                            <input type="hidden" name="user_id" value="{{$buildingPermission->user_id}}">
-                                            <input type="hidden" name="building_owner_id" value="{{$buildingPermission->building_id}}">
+                                            <input type="hidden" name="user_id"
+                                                   value="{{$buildingPermission->user_id}}">
+                                            <input type="hidden" name="building_owner_id"
+                                                   value="{{$buildingPermission->building_id}}">
                                         </form>
                                         <tr>
                                             <td>{{ $buildingPermission->user->getFullName() }}</td>
                                             <td>
-                                                <a data-form-id="revoke-access-{{$buildingPermission->id}}" class="revoke-access btn btn-danger"><i class="glyphicon glyphicon-trash"></i></a>
+                                                <a data-form-id="revoke-access-{{$buildingPermission->id}}"
+                                                   class="revoke-access btn btn-danger"><i
+                                                            class="glyphicon glyphicon-trash"></i></a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -471,7 +532,7 @@
             $('.revoke-access').click(function () {
                 if (confirm('Weet u zeker dat u deze gebruiker de toegang wilt ontzetten ?')) {
                     var formId = $(this).data('form-id');
-                    $('form#'+formId).submit();
+                    $('form#' + formId).submit();
                 }
             });
 
@@ -485,17 +546,19 @@
                         // otherwise this may seems weird, so on cancel. we check the box again.
                         $(this).prop('checked', true);
                     }
-                }  else {
+                } else {
                     $('#allow-access-form').submit();
                 }
             });
 
 
             var areYouSure = '@lang('my-account.settings.reset-file.are-you-sure')';
-            $('#reset-account').click(function (event) {
+            $('.reset-account').click(function (event) {
                 if (confirm(areYouSure)) {
                     $(this).closest('form').submit();
                 } else {
+                    // so the opened modal will close.
+                    $('.modal').modal('hide');
                     event.preventDefault();
                     return false;
                 }

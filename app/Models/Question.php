@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\TranslatableTrait;
+use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -108,6 +109,13 @@ class Question extends Model
     public function questionOptions()
     {
         return $this->hasMany(QuestionOption::class);
+    }
+
+    public function getQuestionAnswersForInputSource(InputSource $inputSource)
+    {
+        return $this
+            ->questionAnswers()
+            ->forInputSource($inputSource)->get();
     }
 
     /**

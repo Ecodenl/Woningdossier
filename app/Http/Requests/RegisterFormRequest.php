@@ -55,25 +55,13 @@ class RegisterFormRequest extends FormRequest
     }
 
     /**
-     * Extend the default getValidatorInstance method
      * so fields can be modified or added before validation.
-     *
-     * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function getValidatorInstance()
+    public function prepareForValidation()
     {
         // Add new data field before it gets sent to the validator
-        //$this->merge(array('date_of_birth' => 'test'));
         $this->merge([
             'house_number_extension' => strtolower(preg_replace("/[\s-]+/", '', $this->get('house_number_extension', ''))),
         ]);
-
-        // Replace ALL data fields before they're sent to the validator
-        //$this->replace([
-        //	'house_number_extension' => strtolower(preg_replace("/[\s-]+/", "", $this->get('house_number_extension', ''))),
-        //]);
-
-        // Fire the parent getValidatorInstance method
-        return parent::getValidatorInstance();
     }
 }

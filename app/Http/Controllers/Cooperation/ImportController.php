@@ -8,6 +8,7 @@ use App\Models\InputSource;
 use App\Services\BuildingDataCopyService;
 use App\Services\ToolSettingService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ImportController extends Controller
 {
@@ -26,7 +27,11 @@ class ImportController extends Controller
         $desiredInputSource = InputSource::findByShort($desiredInputSourceName);
         $targetInputSource = HoomdossierSession::getInputSource(true);
 
+
+        Log::debug(__CLASS__.__METHOD__);
+        Log::debug('Copy: start');
         BuildingDataCopyService::copy($building, $desiredInputSource, $targetInputSource);
+        Log::debug('Copy: end');
 
         ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $desiredInputSource->id, false);
         HoomdossierSession::stopUserComparingInputSources();

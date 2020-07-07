@@ -3,18 +3,10 @@
 namespace App\Listeners;
 
 use App\Models\Log;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class LogUserAssociatedWithOtherCooperation
+class LogUserAssociatedWithOtherCooperation implements ShouldQueue
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-    }
-
     /**
      * Handle the event.
      *

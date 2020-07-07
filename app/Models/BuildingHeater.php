@@ -45,7 +45,7 @@ class BuildingHeater extends Model
     use ToolSettingTrait;
 
     protected $fillable = [
-        'building_id', 'input_source_id', 'pv_panel_orientation_id', 'angle', 'comment',
+        'building_id', 'input_source_id', 'pv_panel_orientation_id', 'angle'
     ];
 
     public function building()

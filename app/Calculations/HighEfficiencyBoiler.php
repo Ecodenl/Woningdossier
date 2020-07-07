@@ -27,8 +27,8 @@ class HighEfficiencyBoiler
         $services = $calculateData['building_services'] ?? [];
 
         // (there's only one..)
-        foreach ($services as $serviceId => $options) {
-            $boilerService = Service::find($serviceId);
+        foreach ($services as $boilerShort => $options) {
+            $boilerService = Service::where('short', $boilerShort)->first();
 
             if (array_key_exists('service_value_id', $options)) {
                 /** @var ServiceValue $boilerType */
@@ -39,7 +39,7 @@ class HighEfficiencyBoiler
                 if ($boilerType instanceof ServiceValue) {
                     $boilerEfficiency = $boilerType->keyFigureBoilerEfficiency;
                     if ($boilerEfficiency->heating > 95) {
-                        $result['boiler_advice'] = Translation::translate('boiler.already-efficient');
+                        $result['boiler_advice'] = __('boiler.already-efficient');
                     }
                 }
 
@@ -50,7 +50,7 @@ class HighEfficiencyBoiler
                     //$measure = MeasureApplication::where('short', '=', 'high-efficiency-boiler-replace')->first();
                     //$measure = MeasureApplication::translated('measure_name', 'Vervangen cv ketel', 'nl')->first(['measure_applications.*']);
 
-                    $amountGas = $calculateData['habit']['gas_usage'] ?? null;
+                    $amountGas = $calculateData['user_energy_habits']['amount_gas'] ?? null;
 
                     if ($energyHabit instanceof UserEnergyHabit) {
                         $result['savings_gas'] = HighEfficiencyBoilerCalculator::calculateGasSavings($boilerType, $energyHabit, $amountGas);

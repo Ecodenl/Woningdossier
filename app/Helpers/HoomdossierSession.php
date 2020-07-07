@@ -301,7 +301,7 @@ class HoomdossierSession extends Session
     {
         $building = self::getHoomdossierSession('building_id');
         if ($object) {
-            $building = Building::find($building);
+            $building = \App\Helpers\Cache\Building::find($building);
         }
 
         return $building;

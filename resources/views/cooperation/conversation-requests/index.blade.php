@@ -52,7 +52,6 @@
                                     @endif
                                 </div>
                             </div>
-
                             @if($userDidNotAllowAccessToBuilding || !$userAlreadyHadContactWithCooperation)
                             <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
@@ -105,7 +104,7 @@
             // when the form gets submited check if the user agreed with the allow_access
             // if so submit, else do nothing
             $('form').on('submit', function (event) {
-                if (!$('input[name=allow_access]').is(':checked') && $('#user-did-not-allow-access-to-his-building').val() && $('#user-already-had-contact-with-cooperation').val() == false) {
+                if (!$('input[name=allow_access]').is(':checked') && $('#user-did-not-allow-access-to-his-building').val() && !$('#user-already-had-contact-with-cooperation').val()) {
 
                     if (!confirm('@lang('conversation-requests.index.form.are-you-sure')')) {
                         event.preventDefault();

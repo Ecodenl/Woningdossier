@@ -52,7 +52,7 @@ trait GetMyValuesTrait
      */
     public function scopeForInputSource(Builder $query, InputSource $inputSource)
     {
-        return $query->withoutGlobalScopes()->where('input_source_id', $inputSource->id);
+        return $query->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id);
     }
 
     /**

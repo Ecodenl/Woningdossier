@@ -12,7 +12,7 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
 
 ?>
 <div class="form-group {{ $errors->has('content.'.$fkey.'.build_year') ? ' has-error' : '' }}">
-    <label for="build_year">Build year:</label>
+    <label for="build_year">@lang('cooperation/admin/example-buildings.form.build-year')</label>
 
 
     <input id="build_year" type="number" min="0" name="content[{{ $fkey }}][build_year]"
@@ -28,88 +28,33 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
 <table class="table table-responsive table-condensed">
     <thead>
     <tr>
-        <th>Name</th>
-        <th>Value</th>
+        <th>@lang('cooperation/admin/example-buildings.form.field-name')</th>
+        <th>@lang('cooperation/admin/example-buildings.form.field-value')</th>
     </tr>
     </thead>
     <tbody>
-        @foreach($contentStructure as $step => $formFields)
-
+        @foreach($contentStructure as $step => $dataForSubSteps)
+            <?php $stepName = \App\Models\Step::findByShort($step)->name ?>
             <tr>
                 <td colspan="2">
-                    <h3>{{ \App\Helpers\Translation::translate('woningdossier.cooperation.tool.' . $step . '.title') }}</h3>
+                    <h3>{{$stepName}}</h3>
                 </td>
             </tr>
 
-            @foreach($formFields as $formFieldName => $rowData)
-                @if($formFieldName != 'calculations')
-	            <?php
-                    // full html array
-                    $fname = 'content['.$fkey.'][content]['.$step.']['.$formFieldName.']';
-                    // laravel dotted notation
-                    $fvalKey = str_replace(['[', ']'], ['.', ''], $fname);
-                    // fallback value for old functions
-                    $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->getValue($step.'.'.$formFieldName) : '';
-                ?>
-
-            <tr>
-                <td>
-                    {!! $rowData['label'] !!}
-                </td>
-                <td>
-
-                    <div class="form-group {{ $errors->has($fvalKey) ? ' has-error' : '' }}">
-
-                    @if(isset($rowData['unit']))
-                        <div class="input-group" >
-                            <span class="input-group-addon">{!! $rowData['unit'] !!}</span>
-                    @endif
-
-                    @if($rowData['type'] == 'text')
-                        <input type="text" class="form-control" name="{{ $fname }}" value="{{ App\Helpers\Old::get($fvalKey, $fallback) }}">
-                        {{--<input type="text" class="form-control" name="content[@if($content instanceof \App\Models\ExampleBuildingContent){{ $content->id }}@endif][content][{{ $step }}][{{ $formFieldName }}]" value="@if($content instanceof \App\Models\ExampleBuildingContent){{ $content->getValue($step . '.'. $formFieldName) }}@endif">--}}
-                    @elseif($rowData['type'] == 'select')
-
-                        <select class="form-control" name="{{ $fname }}">
-                            @foreach($rowData['options'] as $value => $label)
-                                <option value="{{ $value }}" @if(App\Helpers\Old::get($fvalKey, $fallback) == $value)selected="selected"@endif>
-                                    {{ $label }}
-                                </option>
-                            @endforeach
-                        </select>
-                    @elseif($rowData['type'] == 'multiselect')
-                        <?php
-                                if (empty($fallback)){
-                                	$fallback = [];
-                                }
-                                elseif(!is_array($fallback)){
-                                	$fallback = [ $fallback ];
-                                }
-                                ?>
-                        <select class="form-control" name="{{ $fname }}[]" multiple>
-                            @foreach($rowData['options'] as $value => $label)
-                                <option value="{{ $value }}" @if(in_array($value, App\Helpers\Old::get($fvalKey, $fallback)))selected="selected"@endif>
-                                    {{ $label }}
-                                </option>
-                            @endforeach
-                        </select>
-                    @endif
-
-                    @if(isset($rowData['unit']))
-                        </div>
-                    @endif
-
-                    @if ($errors->has($fvalKey))
-                        <span class="help-block">
-                        <strong>{{ $errors->first($fvalKey) }}</strong>
-                    </span>
-                    @endif
-
-                    </div>
-                </td>
-            </tr>
+            @foreach($dataForSubSteps as $subStep => $subStepData)
+                <?php $possibleSubStep = \App\Models\Step::findByShort($subStep); ?>
+                @if($possibleSubStep instanceof \App\Models\Step)
+                <tr>
+                    <td colspan="2">
+                        <h4>{{$possibleSubStep->name}}</h4>
+                    </td>
+                </tr>
                 @endif
-
+                @foreach($subStepData as $formFieldName => $rowData)
+                    @if($formFieldName != 'calculations' )
+                        @include('cooperation.admin.example-buildings.parts.row-data')
+                    @endif
+                @endforeach
             @endforeach
         @endforeach
     </tbody>

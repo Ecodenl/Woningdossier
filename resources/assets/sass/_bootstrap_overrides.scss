@@ -7,10 +7,18 @@
 }
 
 .nav-tabs {
-  li.active {
-    a {
-      background-color: $brand-primary;
-      color: white;
+  li {
+    &.completed {
+      a {
+        background-color: $brand-success;
+        color: white;
+      }
+    }
+    &.active {
+      a {
+        background-color: $brand-primary;
+        color: white;
+      }
     }
   }
 }
@@ -31,7 +39,6 @@
     width: $container-lg;
   }
 }
-
 
 .dropdown-menu {
   right: 0;

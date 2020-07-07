@@ -5,7 +5,7 @@ if (isset($id)) {
     $infoAlertId = 'indicative-costs-info';
 }
 ?>
-@component('cooperation.tool.components.step-question', ['id' => $infoAlertId, 'translation' => 'general.costs.indicative-costs'])
+@component('cooperation.tool.components.step-question', ['id' => $infoAlertId, 'translation' => $translation])
     <div class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
         <input type="text" id="{{isset($id) ? $id.'_' : ''}}cost_indication" class="form-control disabled" disabled=""

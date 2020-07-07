@@ -76,16 +76,14 @@
                 @else
 
                     {{-- for residents only show 'Start' and 'Basisadvies' --}}
-                    @if(\App\Helpers\Hoomdossier::user()->hasRole('resident'))
+                    @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('resident'))
                         @if (!\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
                         <li>
                             <a href="{{url('/home')}}">@lang('woningdossier.cooperation.navbar.start')</a>
                         </li>
                         @endif
                         <li>
-                            <a href="{{
-                                        \App\Models\Building::find(\App\Helpers\HoomdossierSession::getBuilding())->hasCompleted(\App\Models\Step::where('slug', 'building-detail')->first()) ? route('cooperation.tool.general-data.index', ['cooperation' => $cooperation]) : route('cooperation.tool.building-detail.index', ['cooperation' => $cooperation])
-                                     }}">
+                            <a href="{{route('cooperation.tool.general-data.index')}}">
                                 @lang('woningdossier.cooperation.tool.title')
                             </a>
                         </li>

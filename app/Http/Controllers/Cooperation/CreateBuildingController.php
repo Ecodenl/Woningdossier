@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Cooperation;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\PicoHelper;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateBuildingFormRequest;
+use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
@@ -38,92 +40,32 @@ class CreateBuildingController extends Controller
     public function store(CreateBuildingFormRequest $request, Cooperation $cooperation)
     {
         $email = $request->get('email');
-        $password = $request->get('password');
 
-        // get the user from the current cooperation
-        $user = $cooperation->users()->where('email', $email)->first();
-
-        // if the user already has a building, redirect him to the login page.
-        if ($user->building instanceof Building) {
-            return redirect(route('cooperation.home'));
-        }
+        $account = Account::where('email', $email)->first();
+        $user = $account->user();
 
         // a user has to give up his mail and password again, so we can verify he is only creating the building for himself.
-        if (\Auth::attempt(['email' => $email, 'password' => $password])) {
-            $data = $request->all();
+        $data = $request->all();
 
-            $address = $this->getAddressData($data['postal_code'], $data['number'], $data['addressid']);
-            $data['bag_addressid'] = isset($address['bag_adresid']) ? $address['bag_adresid'] : '';
+        // now get the picoaddress data.
+        $picoAddressData = PicoHelper::getAddressData(
+            $data['postal_code'], $data['number']
+        );
 
-            $features = new BuildingFeature([
-                'surface' => array_key_exists('adresopp', $address) ? $address['adresopp'] : null,
-                'build_year' => array_key_exists('bouwjaar', $address) ? $address['bouwjaar'] : null,
-            ]);
+        $data['bag_addressid'] = isset($picoAddressData['bag_adresid']) ? $picoAddressData ['bag_adresid'] : '';
 
-            $address = new Building($data);
-            $address->user()->associate($user)->save();
-
-            $features->building()->associate($address)->save();
-
-            // now do all the stuff we would normaly do in the login controller
-            // we cant query on the Spatie\Role model so we first get the result on the "original model"
-            $role = Role::findByName($user->roles->first()->name);
-
-            // get the input source
-            $inputSource = $role->inputSource;
-
-            // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
-            if (! $role->inputSource instanceof InputSource) {
-                $inputSource = InputSource::findByShort('resident');
-            }
-
-            // set the required sessions
-            HoomdossierSession::setHoomdossierSessions($address, $inputSource, $inputSource, $role);
-
-            // set the redirect url
-            if (1 == $user->roles->count()) {
-                return redirect(RoleHelper::getUrlByRole($role))->with('success', __('woningdossier.cooperation.create-building.store.success'));
-            } else {
-                return redirect(url('/admin'))->with('success', __('woningdossier.cooperation.create-building.store.success'));
-            }
-        }
-
-        throw ValidationException::withMessages([
-            'email' => [trans('auth.failed')],
+        $features = new BuildingFeature([
+            'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
+            'build_year' => empty($picoAddressData['build_year']) ? null : $picoAddressData['build_year'],
         ]);
+
+        $address = new Building($data);
+        $address->user()->associate($user)->save();
+
+        $features->building()->associate($address)->save();
+
+        return redirect(route('cooperation.auth.login'))->with('success', __('woningdossier.cooperation.create-building.store.success'));
     }
 
-    protected function logout(Request $request)
-    {
-        HoomdossierSession::destroy();
 
-        $this->guard()->logout();
-
-        $request->session()->invalidate();
-    }
-
-    protected function getAddressData($postalCode, $number, $pointer = null)
-    {
-        \Log::debug($postalCode.' '.$number.' '.$pointer);
-        /** @var PicoClient $pico */
-        $pico = app()->make('pico');
-        $postalCode = str_replace(' ', '', trim($postalCode));
-
-        $response = $pico->bag_adres_pchnr(['query' => ['pc' => $postalCode, 'hnr' => $number]]);
-
-        if (! is_null($pointer)) {
-            foreach ($response as $addrInfo) {
-                if (array_key_exists('bag_adresid', $addrInfo) && $pointer == md5($addrInfo['bag_adresid'])) {
-                    //$data['bag_addressid'] = $addrInfo['bag_adresid'];
-                    \Log::debug(json_encode($addrInfo));
-
-                    return $addrInfo;
-                }
-            }
-
-            return [];
-        }
-
-        return $response;
-    }
 }

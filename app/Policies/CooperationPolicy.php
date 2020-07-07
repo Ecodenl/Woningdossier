@@ -59,6 +59,10 @@ class CooperationPolicy
      */
     public function delete(User $user, Cooperation $cooperation)
     {
-        return 'super-admin' == (bool) HoomdossierSession::currentRole();
+        // hoom mag niet.
+        if ($cooperation->slug !== 'hoom') {
+            return 'super-admin' == (bool) HoomdossierSession::currentRole();
+        }
+        return false;
     }
 }

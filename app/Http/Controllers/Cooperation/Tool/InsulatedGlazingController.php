@@ -104,6 +104,13 @@ class InsulatedGlazingController extends Controller
                     $buildingOwner->userInterestsForSpecificType(MeasureApplication::class, $measureApplication->id), 'interest_id'
                 );
 
+                // when there is no interest found and the short is for hrpp glass, then we will set the interest given for the step insulated glazing.
+                if (is_null($measureInterestId) && in_array($measureApplicationShort, ['hrpp-glass-only'])) {
+                    $measureInterestId = Hoomdossier::getMostCredibleValue(
+                        $buildingOwner->userInterestsForSpecificType(Step::class, $this->step->id), 'interest_id'
+                    );
+                }
+
                 $userInterests[$measureApplication->id] = $measureInterestId;
 
                 $measureApplications[] = $measureApplication;

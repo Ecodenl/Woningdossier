@@ -21,6 +21,7 @@ use App\Models\Step;
 use App\Models\User;
 use App\Scopes\CooperationScope;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class CsvService
@@ -256,35 +257,35 @@ class CsvService
         $rows = [];
         $residentRole = Role::findByName('resident');
 
-        $inputSource = $residentRole->inputSource;
-
-        $generalDataStep = Step::findByShort('general-data');
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
         $headers = self::getBaseHeaders($anonymize);
 
-        // get the users from the current cooperation that have the resident role
-        $usersFromCooperation = $cooperation->getUsersWithRole($residentRole);
-
-
-        /** @ $var User $user */
-        foreach ($usersFromCooperation as $user) {
+        // get the users from the cooperation, that have a building.
+        $users = $cooperation
+            ->users()
+            ->whereHas('buildings')
+            ->get();
+        /**
+         * @var User $user
+         */
+        foreach ($users as $user) {
+            // reset it for each user.
+            $inputSource = $residentRole->inputSource;
             $building = $user->building;
             if ($building instanceof Building) {
 
-                // well in every case there is a uitzondering op de regel
                 // normally we would pick the given input source
                 // but when coach input is available we use the coach input source for that particular user
-                // coach input is available when he has completed the general data step
-                if ($building->hasCompleted($generalDataStep, $coachInputSource)) {
+                // coach input is available when he has completed the questionnaire
+                if ($user->hasCompletedQuestionnaire($questionnaire, $coachInputSource)) {
                     $inputSource = $coachInputSource;
                 }
 
                 /** @var Collection $conversationRequestsForBuilding */
-
                 $createdAt = optional($user->created_at)->format('Y-m-d');
                 $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
-                $allowAccess = PrivateMessage::allowedAccess($building);
+                $allowAccess = PrivateMessage::allowedAccess($building) ? 'Ja' : 'Nee';
 
                 $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
                 $connectedCoachNames = [];
@@ -379,8 +380,8 @@ class CsvService
                         }
                     }
 
-                    $questionName = "{$questionAnswerForCurrentQuestionnaire->question_name}";
-                    $rows[$building->id][$questionName] = $answer;
+                    $questionName = "{$questionAnswerForCurrentQuestionnaire->question_id}-{$questionAnswerForCurrentQuestionnaire->question_name}";
+                    $rows[$building->id][$questionName] = preg_replace("/\r|\n/", " ", $answer);
                     $headers[$questionName] = $questionAnswerForCurrentQuestionnaire->question_name;
 
                 }
@@ -388,7 +389,6 @@ class CsvService
         }
 
         array_unshift($rows, $headers);
-
         return $rows;
 
     }

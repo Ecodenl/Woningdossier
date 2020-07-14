@@ -31,7 +31,7 @@
                         @foreach($users as $user)
                             <?php
                                 $building = $user->building;
-                                $mostRecentBuildingStatus = $building->getMostRecentBuildingStatus();
+                                $mostRecentBuildingStatus = $building->buildingStatuses->first();
 
                                 $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
                                 $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);

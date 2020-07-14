@@ -129,7 +129,7 @@
                                         @component('cooperation.tool.components.input-group',
                                         ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'roof_surface'])
                                             <span class="input-group-addon">@lang('general.unit.square-meters.title')</span>
-                                            <input type="text" class="form-control"
+                                            <input type="text" class="form-control" required="required"
                                                    name="building_roof_types[{{ $roofCat }}][roof_surface]"
                                                    value="{{ old('building_roof_types.' . $roofCat . '.roof_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_surface')) }}">
                                             {{--<input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['roof_surface'] : old('building_roof_types.' . $roofCat . '.roof_surface')}}">--}}
@@ -140,12 +140,12 @@
                                 </div>
                                 <div class="col-sm-12 col-md-6">
 
-                                    @component('cooperation.tool.components.step-question', ['id' => 'building_roof_types.' . $roofCat . '.insulation_roof_surface', 'translation' => 'roof-insulation.current-situation.insulation-'.$roofCat.'-roof-surface', 'required' => false])
+                                    @component('cooperation.tool.components.step-question', ['id' => 'building_roof_types.' . $roofCat . '.insulation_roof_surface', 'translation' => 'roof-insulation.current-situation.insulation-'.$roofCat.'-roof-surface', 'required' => true])
 
                                         @component('cooperation.tool.components.input-group',
                                     ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'insulation_roof_surface'])
                                             <span class="input-group-addon">@lang('general.unit.square-meters.title')</span>
-                                            <input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]" value="{{ old('building_roof_types.' . $roofCat . '.insulation_roof_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'insulation_roof_surface')) }}">
+                                            <input type="text" required="required" class="form-control" name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]" value="{{ old('building_roof_types.' . $roofCat . '.insulation_roof_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'insulation_roof_surface')) }}">
                                             {{--<input type="text"  class="form-control" name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface'] : old('building_roof_types.' . $roofCat . '.insulation_roof_surface')}}">--}}
                                         @endcomponent
                                     @endcomponent

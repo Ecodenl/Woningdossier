@@ -53,9 +53,9 @@ class WallInsulationRequest extends FormRequest
             'building_features.wall_joints' => 'exists:facade_surfaces,id',
             'building_features.contaminated_wall_joints' => 'exists:facade_surfaces,id',
             // gevel oppervlakte van de woning
-            'building_features.wall_surface' => 'nullable|numeric|min:1|max:100000',
+            'building_features.wall_surface' => 'required|numeric|min:1|max:100000',
             // te isoleren oppervlakte
-            'building_features.insulation_wall_surface' => 'nullable|numeric|min:0|needs_to_be_lower_or_same_as:building_features.wall_surface',
+            'building_features.insulation_wall_surface' => 'required|numeric|min:0|needs_to_be_lower_or_same_as:building_features.wall_surface',
         ];
     }
 }

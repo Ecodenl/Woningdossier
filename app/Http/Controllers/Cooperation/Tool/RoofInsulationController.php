@@ -130,11 +130,11 @@ class RoofInsulationController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
+//        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
             RoofInsulationHelper::save($building, $inputSource, $request->all());
-        } else {
-            RoofInsulationHelper::clear($building, $inputSource);
-        }
+//        } else {
+//            RoofInsulationHelper::clear($building, $inputSource);
+//        }
 
         StepHelper::complete($this->step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());

@@ -98,11 +98,11 @@ class HeaterController extends Controller
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         $saveData = $request->only('user_interests', 'building_heaters', 'user_energy_habits');
-        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
+//        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
             HeaterHelper::save($building, $inputSource, $saveData);
-        } else {
-            HeaterHelper::clear($building, $inputSource);
-        }
+//        } else {
+//            HeaterHelper::clear($building, $inputSource);
+//        }
 
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());

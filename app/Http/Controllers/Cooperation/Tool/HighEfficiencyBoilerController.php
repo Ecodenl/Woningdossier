@@ -93,9 +93,12 @@ class HighEfficiencyBoilerController extends Controller
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         $saveData = $request->only('user_energy_habits', 'building_services');
-        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
+
+
+//        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
             HighEfficiencyBoilerHelper::save($building, $inputSource, $saveData);
-        }
+//        }
+        // no clear method yet ?
 
         StepHelper::complete($this->step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());

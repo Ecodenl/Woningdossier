@@ -96,11 +96,11 @@ class WallInsulationController extends Controller
 
         // when its a step, and a user has no interest in it we will clear the data for that step
         // a user may had interest in the step and later on decided he has no interest, so we clear the data to prevent weird data in the dumps.
-        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
+//        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
             WallInsulationHelper::save($building, $inputSource, $request->validated());
-        } else {
-            WallInsulationHelper::clear($building, $inputSource);
-        }
+//        } else {
+//            WallInsulationHelper::clear($building, $inputSource);
+//        }
 
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());

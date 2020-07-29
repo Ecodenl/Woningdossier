@@ -10,7 +10,9 @@ $hoomdossier_url = route('cooperation.home', ['cooperation' => $userCooperation]
 $hoomdossier_href = __('<a href=":hoomdossier_url" target="_blank">:hoomdossier_url</a>', compact('hoomdossier_url'));
 
 // the url to the website of the cooperation itself.
-$cooperation_href = __('<a href=":cooperation_url" target="_blank">:cooperation_url</a>', ['cooperation_url' => $userCooperation->website_url]);
+$href = is_null($userCooperation->cooperation_email) ? $userCooperation->website_url : "mailto:".$userCooperation->cooperation_email;
+$cooperation_href = '<a href="'.$href.'" target="_blank">'.$userCooperation->name.'</a>';
+
 // the name of the cooperation itself
 $cooperation_name = $userCooperation->name;
 // imploded names from all the cooperations the user is associated with

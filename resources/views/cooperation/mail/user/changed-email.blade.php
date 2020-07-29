@@ -12,7 +12,8 @@ $changedEmailUrl = route('cooperation.recover-old-email.recover', ['cooperation'
 $changedEmailHref = '<a target="_blank" href="'.$changedEmailUrl.'">'.$changedEmailUrl.'</a>';
 
 // the route to the website of the cooperation itself.
-$cooperationWebsiteHref = '<a target="_blank" href="'.$user->cooperation->website_url.'">'.$user->cooperation->name.'</a>'
+$href = is_null($user->cooperation->cooperation_email) ? $user->cooperation->website_url : "mailto:".$user->cooperation->cooperation_email;
+$cooperationWebsiteHref = '<a target="_blank" href="'.$href.'">'.$user->cooperation->name.'</a>'
 
 ?>
 

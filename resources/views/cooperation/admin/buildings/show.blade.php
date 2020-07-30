@@ -6,7 +6,7 @@
             {{--
                 When merging accept the $user->account stuff, remove all if else checks
             --}}
-            @lang('woningdossier.cooperation.admin.users.show.header', [
+            @lang('cooperation/admin/buildings.show.header', [
                 'name' => $user->getFullName(),
                 'street-and-number' => $building->street.' '.$building->number.' '.$building->extension,
                 'zipcode-and-city' => $building->postal_code.' '.$building->city,
@@ -26,23 +26,28 @@
                     <div class="btn-group">
                         @can('delete-user', $user)
                             <button type="button" id="delete-user" class="btn btn-danger">
-                                @lang('woningdossier.cooperation.admin.users.show.delete-account.label')
-                                @lang('woningdossier.cooperation.admin.users.show.delete-account.button')
+                                @lang('cooperation/admin/buildings.show.delete-account.label')
+                                @lang('cooperation/admin/buildings.show.delete-account.button')
                             </button>
                         @endcan
                         @can('access-building', $building)
-                            <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}"
-                               id="observe-building" class="btn btn-primary">
-                                @lang('woningdossier.cooperation.admin.users.show.observe-building.label')
-                                @lang('woningdossier.cooperation.admin.users.show.observe-building.button')
+                            <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}" id="observe-building" class="btn btn-primary">
+                                @lang('cooperation/admin/buildings.show.observe-building.label')
+                                @lang('cooperation/admin/buildings.show.observe-building.button')
                             </a>
                             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
                                 <a href="{{route('cooperation.admin.tool.fill-for-user', ['buildingId' => $building->id])}}"
                                    id="edit-building" class="btn btn-warning">
-                                    @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.label')
-                                    @lang('woningdossier.cooperation.admin.coach.buildings.show.fill-for-user.button')
+                                    @lang('cooperation/admin/buildings.show.fill-for-user.label')
+                                    @lang('cooperation/admin/buildings.show.fill-for-user.button')
                                 </a>
                             @endif
+                        @endcan
+                        @can('edit', $building)
+                            <a href="{{route('cooperation.admin.buildings.edit', compact('building'))}}" id="edit-building" class="btn btn-success">
+                                @lang('cooperation/admin/buildings.show.edit.label')
+                                @lang('cooperation/admin/buildings.show.edit.button')
+                            </a>
                         @endcan
                     </div>
                 </div>
@@ -51,12 +56,12 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="building-coach-status">@lang('woningdossier.cooperation.admin.users.show.status.label')</label>
+                        <label for="building-coach-status">@lang('cooperation/admin/buildings.show.status.label')</label>
                         <select autocomplete="off" class="form-control" name="building[building_statuses][id]" id="building-status">
                             @foreach($statuses as $status)
                                 <option {{$mostRecentStatus->status_id == $status->id ? 'selected="selected"' : ''}} value="{{$status->id}}">
                                     @if($mostRecentStatus->status_id == $status->id)
-                                        @lang('woningdossier.cooperation.admin.users.show.status.current')
+                                        @lang('cooperation/admin/buildings.show.status.current')
                                     @endif
                                     {{$status->name}}
                                 </option>
@@ -66,7 +71,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="appointment-date">@lang('woningdossier.cooperation.admin.users.show.appointment-date.label')</label>
+                        <label for="appointment-date">@lang('cooperation/admin/buildings.show.appointment-date.label')</label>
                         <div class='input-group date' id="appointment-date">
                             <input autocomplete="off" id="appointment-date" name="building[building_statuses][appointment_date]" type='text' class="form-control"
                                    @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate())
@@ -87,7 +92,7 @@
                 @if($publicMessages->isNotEmpty())
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="associated-coaches">@lang('woningdossier.cooperation.admin.users.show.associated-coach.label')</label>
+                            <label for="associated-coaches">@lang('cooperation/admin/buildings.show.associated-coach.label')</label>
                             <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif name="user[associated_coaches]" id="associated-coaches" class="form-control" multiple="multiple">
                                 @foreach($coaches as $coach)
                                     <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
@@ -104,7 +109,7 @@
                 @endif
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="role-select">@lang('woningdossier.cooperation.admin.users.show.role.label')</label>
+                        <label for="role-select">@lang('cooperation/admin/buildings.show.role.label')</label>
                         <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled
                                 @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                             @foreach($roles as $role)
@@ -124,7 +129,7 @@
 
             <li @if(session('fragment') == 'messages-intern') class="active" @endif>
                 <a data-toggle="tab" href="#messages-intern">
-                    @lang('woningdossier.cooperation.admin.users.show.tabs.messages-intern.title')
+                    @lang('cooperation/admin/buildings.show.tabs.messages-intern.title')
                 </a>
             </li>
 
@@ -132,23 +137,23 @@
                 <li @if(session('fragment') == 'messages-public' || empty(session('fragment'))) class="active" @endif>
                     <a data-toggle="tab" href="#messages-public">
                         @if($user->retrievesNotifications(\App\Models\NotificationType::PRIVATE_MESSAGE))
-                            <i class="glyphicon glyphicon-bell" data-placement="top" data-toggle="tooltip" title="@lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.user-notification.yes')"></i>
+                            <i class="glyphicon glyphicon-bell" data-placement="top" data-toggle="tooltip" title="@lang('cooperation/admin/buildings.show.tabs.messages-public.user-notification.yes')"></i>
                         @else
-                            <i class="glyphicon glyphicon-ban-circle" data-placement="top" data-toggle="tooltip" title="@lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.user-notification.no')"></i>
+                            <i class="glyphicon glyphicon-ban-circle" data-placement="top" data-toggle="tooltip" title="@lang('cooperation/admin/buildings.show.tabs.messages-public.user-notification.no')"></i>
                         @endif
-                        @lang('woningdossier.cooperation.admin.users.show.tabs.messages-public.title')
+                        @lang('cooperation/admin/buildings.show.tabs.messages-public.title')
                     </a>
                 </li>
             @endcan
             <li @if(session('fragment') == 'comments-on-building') class="active" @endif>
                 <a data-toggle="tab" href="#comments-on-building">
-                    @lang('woningdossier.cooperation.admin.users.show.tabs.comments-on-building.title')
+                    @lang('cooperation/admin/buildings.show.tabs.comments-on-building.title')
                 </a>
             </li>
             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
                 <li>
                     <a data-toggle="tab" id="trigger-fill-in-history-tab" href="#fill-in-history">
-                        @lang('woningdossier.cooperation.admin.users.show.tabs.fill-in-history.title')
+                        @lang('cooperation/admin/buildings.show.tabs.fill-in-history.title')
                     </a>
                 </li>
             @endif
@@ -183,11 +188,11 @@
                             <input type="hidden" name="building[id]" value="{{$building->id}}">
                             <div class="form-group">
 
-                                <label for="building-note">@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.comments-on-building.note')</label>
+                                <label for="building-note">@lang('cooperation/admin/buildings.show.tabs.comments-on-building.note')</label>
                                 <textarea id="building-note" name="building[note]" class="form-control">{{old('building.note')}}</textarea>
                             </div>
                             <button type="submit" class="btn btn-default">
-                                @lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.comments-on-building.save')
+                                @lang('cooperation/admin/buildings.show.tabs.comments-on-building.save')
                             </button>
                         </form>
                     </div>
@@ -203,8 +208,8 @@
                                    style="width: 100%">
                                 <thead>
                                 <tr>
-                                    <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.happened-on')</th>
-                                    <th>@lang('woningdossier.cooperation.admin.coach.buildings.show.tabs.fill-in-history.table.columns.message')</th>
+                                    <th>@lang('cooperation/admin/buildings.show.tabs.fill-in-history.table.columns.happened-on')</th>
+                                    <th>@lang('cooperation/admin/buildings.show.tabs.fill-in-history.table.columns.message')</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -268,10 +273,10 @@
                 showClear: true,
             }).on('dp.hide', function (event) {
                 var date = appointmentDate.find('input').val();
-                var confirmMessage = "@lang('woningdossier.cooperation.admin.users.show.set-empty-appointment-date')";
+                var confirmMessage = "@lang('cooperation/admin/buildings.show.set-empty-appointment-date')";
 
                 if (date.length > 0) {
-                    confirmMessage = "@lang('woningdossier.cooperation.admin.users.show.set-appointment-date')"
+                    confirmMessage = "@lang('cooperation/admin/buildings.show.set-appointment-date')"
                 }
 
                 if (confirm(confirmMessage)) {
@@ -295,7 +300,7 @@
 
             // delete the current user
             $('#delete-user').click(function () {
-                if (confirm('@lang('woningdossier.cooperation.admin.users.show.delete-user')')) {
+                if (confirm('@lang('cooperation/admin/buildings.show.delete-user')')) {
 
                     $.ajax({
                         url: '{{route('cooperation.admin.cooperation.users.destroy')}}',
@@ -313,7 +318,7 @@
             $('#building-status').select2({}).on('select2:selecting', function (event) {
                 var statusToSelect = $(event.params.args.data.element);
 
-                if (confirm('@lang('woningdossier.cooperation.admin.users.show.set-status')')) {
+                if (confirm('@lang('cooperation/admin/buildings.show.set-status')')) {
                     $.ajax({
                         method: 'POST',
                         url: '{{route('cooperation.admin.building-status.set-status')}}',
@@ -344,7 +349,7 @@
 
                 // check if the option is locked
                 if (typeof optionToUnselect.attr('locked') === "undefined") {
-                    if (confirm('@lang('woningdossier.cooperation.admin.users.show.revoke-access')')) {
+                    if (confirm('@lang('cooperation/admin/buildings.show.revoke-access')')) {
                         $.ajax({
                             url: '{{route('cooperation.messages.participants.revoke-access')}}',
                             method: 'POST',
@@ -367,7 +372,7 @@
             }).on('select2:selecting', function (event) {
                 var optionToSelect = $(event.params.args.data.element);
 
-                if (confirm('@lang('woningdossier.cooperation.admin.users.show.add-with-building-access')')) {
+                if (confirm('@lang('cooperation/admin/buildings.show.add-with-building-access')')) {
                     $.ajax({
                         url: '{{route('cooperation.messages.participants.add-with-building-access')}}',
                         method: 'POST',
@@ -399,7 +404,7 @@
                 .on('select2:selecting', function (event) {
                     var roleToSelect = $(event.params.args.data.element);
 
-                    if (confirm('@lang('woningdossier.cooperation.admin.users.show.give-role')')) {
+                    if (confirm('@lang('cooperation/admin/buildings.show.give-role')')) {
                         $.ajax({
                             url: '{{route('cooperation.admin.roles.assign-role')}}',
                             method: 'POST',
@@ -420,7 +425,7 @@
                 .on('select2:unselecting', function (event) {
                     var roleToUnselect = $(event.params.args.data.element);
 
-                    if (confirm('@lang('woningdossier.cooperation.admin.users.show.remove-role')')) {
+                    if (confirm('@lang('cooperation/admin/buildings.show.remove-role')')) {
                         $.ajax({
                             url: '{{route('cooperation.admin.roles.remove-role')}}',
                             method: 'POST',

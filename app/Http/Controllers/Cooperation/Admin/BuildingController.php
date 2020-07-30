@@ -71,4 +71,9 @@ class BuildingController extends Controller
             )
         );
     }
+
+    public function edit(Cooperation $cooperation, Building $building)
+    {
+        return view('cooperation.admin.buildings.edit', compact('building'));
+    }
 }

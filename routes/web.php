@@ -292,8 +292,15 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                 Route::group(['middleware' => ['current-role:cooperation-admin|coach|coordinator|super-admin']], function () {
 
-                    Route::get('buildings/show/{buildingId}', 'BuildingController@show')
-                        ->name('buildings.show');
+                    Route::group(['as' => 'buildings.', 'prefix' => 'buildings'], function () {
+
+                        Route::get('show/{buildingId}', 'BuildingController@show')->name('show');
+
+                        Route::group(['middleware' => ['current-role:cooperation-admin|coordinator|super-admin']], function () {
+                            Route::get('{building}/edit', 'BuildingController@edit')->name('edit');
+                            Route::put('{building}', 'BuildingController@update')->name('update');
+                        });
+                    });
                 });
 
                 /* Section for the cooperation-admin and coordinator */
@@ -314,7 +321,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         Route::get('', 'ReportController@index')->name('index');
                         Route::get('generate/{fileType}', 'ReportController@generate')->name('generate');
                     });
-
 
 
                     Route::resource('questionnaires', 'QuestionnaireController')
@@ -383,7 +389,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                                 Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
                                 Route::resource('coordinator', 'CoordinatorController')->only(['index']);
                                 Route::resource('users', 'UserController')->only(['index', 'show']);
-                            Route::post('users/{id}/confirm', 'UserController@confirm')->name('users.confirm');});
+                                Route::post('users/{id}/confirm', 'UserController@confirm')->name('users.confirm');
+                            });
                     });
                 });
 

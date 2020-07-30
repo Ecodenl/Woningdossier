@@ -13,24 +13,6 @@ return [
             'button' => '<i class="glyphicon glyphicon-edit"></i>'
         ],
 
-//        'tabs' => [
-//            'messages-public' => [
-//                'title' => 'Berichten bewoner'
-//            ],
-//            'messages-intern' => [
-//                'title' => 'Berichten intern'
-//            ],
-//            'comments-on-building' => [
-//                'title' => 'Opmerkingen bij woning',
-//                'note' => 'Opmerking',
-//                'save' => 'Opmerking opslaan',
-//            ],
-//            'fill-in-history' => [
-//                'title' => 'Invulhistorie',
-//
-//            ]
-//        ],
-
 
         'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city, :email, :phone-number',
 
@@ -103,5 +85,15 @@ return [
         ],
         'next' => 'Volgende',
         'previous' => 'Vorige'
+    ],
+    'edit' => [
+        'account-user-info-title' => 'Gebruiker gegevens',
+        'address-info-title' => 'Adres gegevens',
+        'form' => [
+            'submit' => 'Gegevens bijwerken',
+        ],
+    ],
+    'update' => [
+        'success' => 'Gegevens bijgewerkt',
     ],
 ];

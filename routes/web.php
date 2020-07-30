@@ -292,7 +292,11 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::group(['as' => 'buildings.', 'prefix' => 'buildings'], function () {
 
                         Route::get('show/{buildingId}', 'BuildingController@show')->name('show');
-                        Route::get('{building}/edit', 'BuildingController@edit')->name('edit');
+
+                        Route::group(['middleware' => ['current-role:cooperation-admin|coordinator|super-admin']], function () {
+                            Route::get('{building}/edit', 'BuildingController@edit')->name('edit');
+                            Route::put('{building}', 'BuildingController@update')->name('update');
+                        });
                     });
                 });
 

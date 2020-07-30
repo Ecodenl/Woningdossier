@@ -72,11 +72,4 @@ class RegisterFormRequest extends FormRequest
             'house_number_extension' => strtolower(preg_replace("/[\s-]+/", '', $this->get('house_number_extension', ''))),
         ]);
     }
-
-    public function withValidator($v)
-    {
-        $v->after(function ($x) {
-           dd($x->errors());
-        });
-    }
 }

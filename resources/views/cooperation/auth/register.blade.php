@@ -260,16 +260,16 @@
         $(document).ready(function () {
 
             var submitButton = $('button[type="submit"]');
-            submitButton.tooltip();
             var email = $('#email');
+            submitButton.tooltip();
 
             $('#allow_access').change(function () {
                 if ($(this).is(':checked')) {
                     submitButton.prop('disabled', false).removeClass('disabled');
                     submitButton.tooltip('disable');
                 } else {
-                    submitButton.tooltip('enable');
                     submitButton.prop('disabled', true).addClass('disabled');
+                    submitButton.tooltip('enable');
                 }
             });
 

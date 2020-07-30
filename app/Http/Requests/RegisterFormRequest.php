@@ -36,7 +36,7 @@ class RegisterFormRequest extends FormRequest
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'postal_code' => ['required', new PostalCode('nl')],
-            'number' => ['required', new HouseNumber('nl')],
+            'number' => ['required', 'integer', new HouseNumber('nl')],
             'house_number_extension' => [new HouseNumberExtension('nl')],
             'street' => 'required|string|max:255',
             'city' => 'required|string|max:255',

@@ -12,7 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-class SendRequestAccountConfirmationEmail implements ShouldQueue
+class SendRequestAccountConfirmationEmail
 {
     use Dispatchable;
     use InteractsWithQueue;

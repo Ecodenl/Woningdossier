@@ -59,26 +59,32 @@ class GiveCoachesBuildingPermission
             $privateMessage = PrivateMessage::class;
             $privateMessage::unsetEventDispatcher();
 
-            // create the initial message
-            $privateMessage = $privateMessage::create([
-                'is_public' => true,
-                'from_cooperation_id' => $cooperation->id,
-                'to_cooperation_id' => $cooperation->id,
-                'from_user' => $cooperation->name,
-                'message' => 'Welkom bij het Hoomdossier, hier kunt u chatten met de coöperatie.',
-                'building_id' => $building->id,
-                'allow_access' => true,
-            ]);
+            // only send the welcome message when there are no messages
+            if (PrivateMessage::public()->conversation($building->id)->exists()) {
+                PrivateMessage::public()->conversation($building->id)->update(['allow_access' => true]);
+            } else {
 
-            // what should we set the building status to ?
-            $building->setStatus('pending');
+                // create the initial message
+                $privateMessage = $privateMessage::create([
+                    'is_public' => true,
+                    'from_cooperation_id' => $cooperation->id,
+                    'to_cooperation_id' => $cooperation->id,
+                    'from_user' => $cooperation->name,
+                    'message' => 'Welkom bij het Hoomdossier, hier kunt u chatten met de coöperatie.',
+                    'building_id' => $building->id,
+                    'allow_access' => true,
+                ]);
 
-            // give the user a unread message.
-            PrivateMessageView::create([
-                'input_source_id' => InputSource::findByShort(InputSource::RESIDENT_SHORT)->id,
-                'private_message_id' => $privateMessage->id,
-                'user_id' => $building->user->id,
-            ]);
+                // what should we set the building status to ?
+                $building->setStatus('pending');
+
+                // give the user a unread message.
+                PrivateMessageView::create([
+                    'input_source_id' => InputSource::findByShort(InputSource::RESIDENT_SHORT)->id,
+                    'private_message_id' => $privateMessage->id,
+                    'user_id' => $building->user->id,
+                ]);
+            }
         }
     }
 }

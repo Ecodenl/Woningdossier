@@ -30,12 +30,14 @@ class KeyFigures implements KeyFiguresInterface
 
     protected static $peakPowers = [
         260 => 260,
+        265 => 265,
         270 => 270,
+        275 => 275,
         280 => 280,
+        285 => 285,
         290 => 290,
+        295 => 295,
         300 => 300,
-        310 => 310,
-        320 => 320,
         330 => 330,
         340 => 340,
         350 => 350,

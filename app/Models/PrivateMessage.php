@@ -90,7 +90,7 @@ class PrivateMessage extends Model
      */
     public function scopeConversationRequestByBuildingId($query, $buildingId)
     {
-        return $query->public()->conversation($buildingId)->where('request_type', '!=', null);
+        return $query->public()->conversation($buildingId)->whereNotNull('request_type');
     }
 
     /**

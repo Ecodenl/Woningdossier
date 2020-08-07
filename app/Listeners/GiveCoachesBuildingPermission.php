@@ -67,6 +67,7 @@ class GiveCoachesBuildingPermission
                 'from_user' => $cooperation->name,
                 'message' => 'Welkom bij het Hoomdossier, hier kunt u chatten met de coöperatie.',
                 'building_id' => $building->id,
+                'allow_access' => true,
             ]);
 
             // what should we set the building status to ?

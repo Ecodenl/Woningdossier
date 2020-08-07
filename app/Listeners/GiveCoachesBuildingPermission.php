@@ -56,6 +56,7 @@ class GiveCoachesBuildingPermission
 
             // withoutEvents is added in laravel 7, for now this will do.
             // https://github.com/laravel/framework/blob/7.x/src/Illuminate/Database/Eloquent/Concerns/HasEvents.php#L399
+            // we do this for the App/Listeners/PrivateMessageReceiverListener.php
             $privateMessage = PrivateMessage::class;
             $privateMessage::unsetEventDispatcher();
 

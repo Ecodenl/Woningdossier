@@ -286,69 +286,8 @@ return [
             ],
             'users' => [
                 'show' => [
-                    'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city, :email, :phone-number',
-
-                    'observe-building' => [
-                        'label' => 'Woning bekijken',
-                        'button' => '<i class="glyphicon glyphicon-eye-open"></i>'
-                    ],
-                    'delete-account' => [
-                        'label' => 'Account verwijderen',
-                        'button' => '<i class="glyphicon glyphicon-trash"></i>'
-                    ],
-                    'role' => [
-                        'label' => 'Rol',
-                        'button' => 'Bijwerken'
-                    ],
-                    'status' => [
-                        'current' => 'Huidige status: ',
-                        'label' => 'Status: ',
-                        'button' => 'Kies status'
-                    ],
-                    'associated-coach' => [
-                        'label' => 'Gekoppelde coaches',
-                        'button' => 'Kies coach'
-                    ],
-                    'appointment-date' => [
-                        'label' => 'Datum afspraak',
-                        'button' => 'Kies datum'
-                    ],
-
-                    'has-building-access' => [
-                        'no' => 'Geen toegang tot woning',
-                        'yes' => 'Toegang tot woning'
-                    ],
-
-                    'delete-user' => 'Weet u zeker dat u deze gebruiker wilt verwijderen, deze actie kan niet ongedaan worden gemaakt',
-                    'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot de woning.',
-                    'add-with-building-access' => 'Weet u zeker dat u deze gebruiker aan de groeps-chat toegang wilt geven ? De gebruiker heeft hierna ook toegang tot de woning',
-
-                    'set-status' => 'Weet u zeker dat u deze status wilt zetten voor het huidige gebouw?',
-                    'set-appointment-date' => 'Weet u zeker dat u deze datum wilt zetten voor het huidige gebouw?',
-                    'set-empty-appointment-date' => 'Weet u zeker dat u de afspraak wilt verwijderen?',
                     'give-role' => 'Weet u zeker dat u deze gebruiker de rol wilt geven?',
                     'remove-role' => 'Weet u zeker dat u de rol wilt intrekken van deze gebruiker?',
-
-                    'tabs' => [
-                        'messages-public' => [
-                            'user-notification' => [
-                                'yes' => 'Gebruiker heeft notificaties aanstaan, hij zal op de hoogte worden gesteld van de verstuurde berichten.',
-                                'no' => 'Gebruiker ontvangt hier geen melding van.'
-                            ],
-                            'title' => 'Berichten bewoner'
-                        ],
-                        'messages-intern' => [
-                            'title' => 'Berichten intern'
-                        ],
-                        'comments-on-building' => [
-                            'title' => 'Opmerkingen bij woning'
-                        ],
-                        'fill-in-history' => [
-                            'title' => 'Invulhistorie'
-                        ]
-                    ],
-                    'next' => 'Volgende',
-                    'previous' => 'Vorige'
                 ],
             ],
             /* translations for the coach environment */
@@ -407,71 +346,6 @@ return [
                                 'appointment-date' => 'Datum afspraak',
                             ],
                         ],
-                    ],
-
-                    'show' => [
-                        'save-building-detail' => 'Opmerking opslaan',
-                        'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city',
-
-                        'observe-building' => [
-                            'label' => 'Woning bekijken',
-                            'button' => '<i class="glyphicon glyphicon-eye-open"></i>'
-                        ],
-                        'fill-for-user' => [
-                            'label' => 'Woning als coach bewerken',
-                            'button' => '<i class="glyphicon glyphicon-edit"></i>'
-                        ],
-                        'role' => [
-                            'label' => 'Rol',
-                            'button' => 'Bijwerken'
-                        ],
-                        'status' => [
-                            'label' => 'Kies status: ',
-                        ],
-                        'associated-coach' => [
-                            'label' => 'Gekoppelde coaches',
-                            'button' => 'Kies coach'
-                        ],
-                        'appointment-date' => [
-                            'label' => 'Datum afspraak',
-                            'button' => 'Kies datum'
-                        ],
-
-                        'has-building-access' => [
-                            'no' => 'Geen toegang tot woning',
-                            'yes' => 'Toegang tot woning'
-                        ],
-
-                        'set-status' => 'Weet u zeker dat u deze status aan de woning wilt hangen?',
-                        'set-appointment-date' => 'Weet u zeker dat u de afspraak wilt vastzetten op de gekozen datum?',
-                        'set-empty-appointment-date' => 'Weet u zeker dat u de afspraak wilt verwijderen?',
-                        'tabs' => [
-                            'messages-public' => [
-                                'title' => 'Berichten bewoner'
-                            ],
-                            'messages-intern' => [
-                                'title' => 'Berichten intern'
-                            ],
-                            'comments-on-building' => [
-                                'title' => 'Opmerkingen bij woning',
-                                'note' => 'Opmerking',
-                                'save' => 'Opmerking opslaan',
-                            ],
-                            'fill-in-history' => [
-                                'title' => 'Invulhistorie',
-                                'table' => [
-                                    'columns' => [
-                                        'user' => 'Gebruiker die de actie heeft gedaan',
-                                        'building' => 'Actie voor woning',
-                                        'for-user' => 'Actie op gebruiker',
-                                        'message' => 'Bericht',
-                                        'happened-on' => 'Gebeurt op'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'next' => 'Volgende',
-                        'previous' => 'Vorige'
                     ],
                 ],
             ],

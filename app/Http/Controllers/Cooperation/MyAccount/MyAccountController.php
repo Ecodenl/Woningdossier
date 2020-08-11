@@ -25,12 +25,12 @@ class MyAccountController extends Controller
         $notificationIntervals = NotificationInterval::all();
 
         // for the access parts
-        $buildingPermissions = BuildingPermission::where('building_id', HoomdossierSession::getBuilding())->get();
-        /* @var Collection $conversationRequests */
-        $conversationRequests = PrivateMessage::conversationRequestByBuildingId(HoomdossierSession::getBuilding())->get();
+        $buildingPermissions = BuildingPermission::where('building_id', $building->id)->get();
+        /* @var Collection $messages */
+        $messages = PrivateMessage::public()->conversation($building->id)->get();
 
         return view('cooperation.my-account.index', compact(
-            'user', 'account', 'building', 'notificationIntervals', 'notificationSettings', 'buildingPermissions', 'conversationRequests'
+            'user', 'account', 'building', 'notificationIntervals', 'notificationSettings', 'buildingPermissions', 'messages'
         ));
     }
 }

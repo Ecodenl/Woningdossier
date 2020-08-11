@@ -18,7 +18,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
 
         if (app()->environment() == 'local') {
-        Route::get('mail', function () {
+            Route::get('mail', function () {
 
 //            return new \App\Mail\UserChangedHisEmail(\App\Models\User::find(1), \App\Models\Account::find(1), 'demo@eg.com', 'bier@pils.com');
 //            return new  \App\Mail\UnreadMessagesEmail(\App\Models\User::find(1), \App\Models\Cooperation::find(1), 10);
@@ -26,7 +26,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             return new UserAssociatedWithCooperation(App\Models\Cooperation::find(1), \App\Models\Account::find(1)->user());
 //            return new \App\Mail\UserCreatedEmail(\App\Models\Cooperation::find(1), \App\Models\User::find(1), 'sdfkhasgdfuiasdgfyu');
 //            return new \App\Mail\UserAssociatedWithCooperation(\App\Models\Cooperation::find(1), \App\Models\User::find(1));
-        });
+            });
         }
 
         Route::get('/', function () {
@@ -292,8 +292,15 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                 Route::group(['middleware' => ['current-role:cooperation-admin|coach|coordinator|super-admin']], function () {
 
-                    Route::get('buildings/show/{buildingId}', 'BuildingController@show')
-                        ->name('buildings.show');
+                    Route::group(['as' => 'buildings.', 'prefix' => 'buildings'], function () {
+
+                        Route::get('show/{buildingId}', 'BuildingController@show')->name('show');
+
+                        Route::group(['middleware' => ['current-role:cooperation-admin|coordinator|super-admin']], function () {
+                            Route::get('{building}/edit', 'BuildingController@edit')->name('edit');
+                            Route::put('{building}', 'BuildingController@update')->name('update');
+                        });
+                    });
                 });
 
                 /* Section for the cooperation-admin and coordinator */
@@ -314,7 +321,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         Route::get('', 'ReportController@index')->name('index');
                         Route::get('generate/{fileType}', 'ReportController@generate')->name('generate');
                     });
-
 
 
                     Route::resource('questionnaires', 'QuestionnaireController')
@@ -383,7 +389,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                                 Route::resource('cooperation-admin', 'CooperationAdminController')->only(['index']);
                                 Route::resource('coordinator', 'CoordinatorController')->only(['index']);
                                 Route::resource('users', 'UserController')->only(['index', 'show']);
-                            Route::post('users/{id}/confirm', 'UserController@confirm')->name('users.confirm');});
+                                Route::post('users/{id}/confirm', 'UserController@confirm')->name('users.confirm');
+                            });
                     });
                 });
 

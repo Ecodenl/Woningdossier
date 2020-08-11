@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\RoleHelper;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
@@ -22,6 +23,12 @@ class BuildingPolicy
      */
     public function __construct()
     {
+
+    }
+
+    public function edit(User $user, Building $building)
+    {
+        return $user->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']);
     }
 
     /**

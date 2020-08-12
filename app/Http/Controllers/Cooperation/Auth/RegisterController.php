@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Auth;
 
 use App\Events\Registered;
+use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\PicoHelper;
@@ -81,6 +82,9 @@ class RegisterController extends Controller
             $successMessage = __('auth.register.form.message.account-connected');
             UserAssociatedWithOtherCooperation::dispatch($cooperation, $user);
         }
+
+        // at this point, a user cant register without accepting the privacy terms.
+        UserAllowedAccessToHisBuilding::dispatch($user->building);
 
         return redirect($this->redirectPath())->with('success', $successMessage);
     }

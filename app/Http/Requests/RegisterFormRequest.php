@@ -41,6 +41,7 @@ class RegisterFormRequest extends FormRequest
             'street' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'phone_number' => ['nullable', new PhoneNumber('nl')],
+            'allow_access' => 'required|accepted'
         ];
 
         // try to get the account
@@ -52,6 +53,13 @@ class RegisterFormRequest extends FormRequest
         }
 
         return $rules;
+    }
+
+    public function messages()
+    {
+        return [
+            'allow_access.required' => __('auth.register.validation.allow_access')
+        ];
     }
 
     /**

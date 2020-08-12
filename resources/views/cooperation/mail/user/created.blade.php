@@ -9,7 +9,9 @@
     $hoomdossier_href = __('<a href=":hoomdossier_url" target="_blank">:hoomdossier_url</a>', compact('hoomdossier_url'));
 
     $confirm_url = route('cooperation.auth.password.reset.show', ['token' => $token, 'cooperation' => $userCooperation, 'email' => encrypt($createdUser->account->email)]);
-    $cooperation_href = '<a target="_blank" href="'.$userCooperation->website_url.'">'.$userCooperation->name.'</a>';
+
+    $href = is_null($userCooperation->cooperation_email) ? $userCooperation->website_url : "mailto:".$userCooperation->cooperation_email;
+    $cooperation_href = '<a target="_blank" href="'.$href.'">'.$userCooperation->name.'</a>';
 ?>
 
 @lang('cooperation/mail/account-created.text', compact('hoomdossier_href'))

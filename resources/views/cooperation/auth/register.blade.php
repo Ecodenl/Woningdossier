@@ -224,9 +224,24 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
+                                    <div class="col-md-push-4 col-md-8">
+                                        <label for="allow_access">
+                                            <input id="allow_access" name="allow_access" type="checkbox" @if(old('allow_access') && old('allow_access') == 'on')checked="checked"@endif>
+                                            @lang('conversation-requests.index.form.allow_access', ['cooperation' => \App\Helpers\HoomdossierSession::getCooperation(true)->name])
+                                        </label>
+                                        @if ($errors->has('allow_access'))
+                                            <span class="help-block">
+                                            <strong>{{ $errors->first('allow_access') }}</strong>
+                                        </span>
+                                        @endif
+                                        <p>@lang('conversation-requests.index.text')</p>
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
                                     <div class="col-md-8 col-md-offset-4">
-                                        <button type="submit" class="btn btn-primary">
+                                        <button data-toggle="tooltip" type="submit" class="btn btn-primary disabled" disabled="disabled" title="@lang('auth.register.form.allow-access')">
                                             @lang('auth.register.form.button')
                                         </button>
                                     </div>
@@ -243,11 +258,26 @@
 @push('js')
     <script>
         $(document).ready(function () {
+
+            var submitButton = $('button[type="submit"]');
+            var email = $('#email');
+            submitButton.tooltip();
+
+            $('#allow_access').change(function () {
+                if ($(this).is(':checked')) {
+                    submitButton.prop('disabled', false).removeClass('disabled');
+                    submitButton.tooltip('disable');
+                } else {
+                    submitButton.prop('disabled', true).addClass('disabled');
+                    submitButton.tooltip('enable');
+                }
+            });
+
             // prevent double clicked submit buttons
             $('form').on('submit', function () {
-                $('button[type="submit"]').prop('disabled', 'disabled').addClass('disabled');
+                submitButton.prop('disabled', 'disabled').addClass('disabled');
             });
-            var email = $('#email');
+
 
             email.on('change', function () {
                 if ($(this).val().length > 0) {

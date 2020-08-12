@@ -31,7 +31,7 @@
         @component('cooperation.tool.components.alert', ['alertType' => 'info', 'dismissible' => false, 'classes' => 'building-notification'])
             @lang('woningdossier.cooperation.tool.current-building-address', [
                 'street' => $building->street,
-                'number' => $building->number,
+                'number' => $building->number.' '. $building->extension,
                 'extension' => $building->extension,
                 'zip_code' => $building->postal_code,
                 'city' => $building->city

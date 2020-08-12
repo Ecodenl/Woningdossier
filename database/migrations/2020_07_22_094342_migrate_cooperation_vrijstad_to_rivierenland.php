@@ -17,31 +17,37 @@ class MigrateCooperationVrijstadToRivierenland extends Migration
         // cooperation to remove.
         $vrijstadEnergie = DB::table('cooperations')->where('slug', '=', 'vrijstadenergie')->first();
 
-        // only migrate the pdf file file types.
-        // cvs dont matter at this point
-        DB::table('file_types')
-            ->select('file_storages.*')
-            ->where('content_type', '=', 'application/pdf')
-            ->where('cooperation_id', '=', $vrijstadEnergie->id)
-            ->leftJoin('file_storages', 'file_types.id', '=', 'file_storages.file_type_id')
-            ->update(['cooperation_id' => $rivierenLand->id]);
+        if (!is_null($rivierenLand) && !is_null($vrijstadEnergie)) {
+            // only migrate the pdf file file types.
+            // cvs dont matter at this point
+            DB::table('file_types')
+              ->select('file_storages.*')
+              ->where('content_type', '=', 'application/pdf')
+              ->where('cooperation_id', '=', $vrijstadEnergie->id)
+              ->leftJoin('file_storages', 'file_types.id', '=',
+                  'file_storages.file_type_id')
+              ->update(['cooperation_id' => $rivierenLand->id]);
 
-        // after the update we can delete the remaining file storages
-        //DB::table('file_storages')->where('cooperation_id', $vrijstadEnergie->id)->delete();
+            // after the update we can delete the remaining file storages
+            //DB::table('file_storages')->where('cooperation_id', $vrijstadEnergie->id)->delete();
 
-        // remove the cooperation steps for the old cooperation
-        //DB::table('cooperation_steps')->where('cooperation_id', $vrijstadEnergie->id)->delete();
+            // remove the cooperation steps for the old cooperation
+            //DB::table('cooperation_steps')->where('cooperation_id', $vrijstadEnergie->id)->delete();
 
-        // update the users to the new cooperation
-        DB::table('users')
-            ->where('cooperation_id', '=', $vrijstadEnergie->id)
-            ->update(['cooperation_id' => $rivierenLand->id]);
+            // update the users to the new cooperation
+            DB::table('users')
+              ->where('cooperation_id', '=', $vrijstadEnergie->id)
+              ->update(['cooperation_id' => $rivierenLand->id]);
 
 
-        // and finally delete the cooperation
-        //DB::table('cooperations')->where('slug', '=', 'vrijstadenergie')->delete();
-        // Update the slug
-        DB::table('cooperations')->where('slug', '=', 'hnwr')->update(['name' => 'Energieloket Rivierenland', 'slug' => 'energieloketrivierenland']);
+            // and finally delete the cooperation
+            //DB::table('cooperations')->where('slug', '=', 'vrijstadenergie')->delete();
+            // Update the slug
+            DB::table('cooperations')->where('slug', '=', 'hnwr')->update([
+                'name' => 'Energieloket Rivierenland',
+                'slug' => 'energieloketrivierenland'
+            ]);
+        }
     }
 
     /**

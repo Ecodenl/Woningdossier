@@ -40,6 +40,8 @@ class MigrateCooperationVrijstadToRivierenland extends Migration
 
         // and finally delete the cooperation
         //DB::table('cooperations')->where('slug', '=', 'vrijstadenergie')->delete();
+        // Update the slug
+        DB::table('cooperations')->where('slug', '=', 'hnwr')->update(['name' => 'Energieloket Rivierenland', 'slug' => 'energieloketrivierenland']);
     }
 
     /**

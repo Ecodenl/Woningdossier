@@ -126,8 +126,8 @@ class Handler extends ExceptionHandler
         if ($exception instanceof ModelNotFoundException) {
             // vrijstadenergie is a old cooperation, the users are migrated to hnwr / rivierenland.
             // so redirect them.
-            if ($request->route('cooperation') == 'vrijstadenergie') {
-                return redirect()->route('cooperation.home', ['cooperation' => 'hnwr']);
+            if (in_array($request->route('cooperation'), ['vrijstadenergie', 'hnwr'])) {
+                return redirect()->route('cooperation.welcome', ['cooperation' => 'energieloketrivierenland']);
             }
         }
 

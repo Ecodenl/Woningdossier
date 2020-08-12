@@ -30,7 +30,7 @@ class MigrateCooperationVrijstadToRivierenland extends Migration
         //DB::table('file_storages')->where('cooperation_id', $vrijstadEnergie->id)->delete();
 
         // remove the cooperation steps for the old cooperation
-        //DB::table('cooperation_steps')->where('cooperation_id', $vrijstadEnergie)->delete();
+        //DB::table('cooperation_steps')->where('cooperation_id', $vrijstadEnergie->id)->delete();
 
         // update the users to the new cooperation
         DB::table('users')

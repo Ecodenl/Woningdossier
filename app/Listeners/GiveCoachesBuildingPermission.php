@@ -38,8 +38,6 @@ class GiveCoachesBuildingPermission
             PrivateMessage::public()->conversation($building->id)
                 ->update(['allow_access' => true]);
 
-            // todo: allowing access to a building became mandatory upon registering.
-
             // get all the coaches that are currently connected to the building
             $coachesWithAccessToResidentBuildingStatuses = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
 

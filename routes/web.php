@@ -114,7 +114,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     Route::post('revoke-access', 'ParticipantController@revokeAccess')->name('revoke-access');
 
-                    Route::get('add-with-building-access', 'ParticipantController@addWithBuildingAccess')->name('add-with-building-access');
+                    Route::post('add-with-building-access', 'ParticipantController@addWithBuildingAccess')->name('add-with-building-access');
 
                     Route::post('set-read', 'ParticipantController@setRead')->name('set-read');
                 });

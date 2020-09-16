@@ -30,10 +30,6 @@ class ReportController extends Controller
         // Is there any file being processed for my cooperation
         $anyFilesBeingProcessed = FileStorage::leaveOutPersonalFiles()->withExpired()->beingProcessed()->count();
 
-        dd(
-            $rows = CsvService::byMeasure($cooperation, false)
-        );
-
         return view('cooperation.admin.cooperation.reports.index', compact('questionnaires','reportFileTypeCategory', 'anyFilesBeingProcessed'));
     }
 }

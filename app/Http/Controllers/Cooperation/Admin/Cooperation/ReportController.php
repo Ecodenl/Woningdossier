@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileTypeCategory;
+use App\Services\CsvService;
 
 class ReportController extends Controller
 {
@@ -28,6 +29,10 @@ class ReportController extends Controller
 
         // Is there any file being processed for my cooperation
         $anyFilesBeingProcessed = FileStorage::leaveOutPersonalFiles()->withExpired()->beingProcessed()->count();
+
+        dd(
+            $rows = CsvService::byMeasure($cooperation, false)
+        );
 
         return view('cooperation.admin.cooperation.reports.index', compact('questionnaires','reportFileTypeCategory', 'anyFilesBeingProcessed'));
     }

@@ -372,7 +372,7 @@
                 if (confirm('@lang('cooperation/admin/buildings.show.add-with-building-access')')) {
                     $.ajax({
                         url: '{{route('cooperation.messages.participants.add-with-building-access')}}',
-                        method: 'POST',
+                        // method: 'POST',
                         data: {
                             user_id: optionToSelect.val(),
                             building_id: buildingOwnerId

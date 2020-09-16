@@ -28,8 +28,8 @@ class BuildingPermissionService
     /**
      * Give a user permission to a building.
      *
-     * @param $userId
-     * @param $buildingId
+     * @param User $user
+     * @param Building $building
      *
      * @return bool
      */

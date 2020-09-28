@@ -205,7 +205,7 @@ class DumpService
 
         $createdAt = optional($user->created_at)->format('Y-m-d');
         $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
-        $allowAccess = $allowedAccess;
+        $allowAccess = $allowedAccess ? 'Ja' : 'Nee';
         $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
         $connectedCoachNames = [];
 

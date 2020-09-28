@@ -117,7 +117,7 @@ class CsvService
             $createdAt = optional($user->created_at)->format('Y-m-d');
             //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
             $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
-            $allowAccess = $allowedAccess;
+            $allowAccess = $allowedAccess ? 'Ja' : 'Nee';
             $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
             $connectedCoachNames = [];
             // get the names from the coaches and add them to a array

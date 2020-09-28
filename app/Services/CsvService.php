@@ -108,15 +108,16 @@ class CsvService
             /** @var Building $building */
             $building = $user->building;
 
-            /** @var Collection $conversationRequestsForBuilding */
-            $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope())
-                ->conversationRequestByBuildingId($building->id)
-                ->where('to_cooperation_id', $cooperation->id)->get();
+            // normally we could use the PrivateMessage::allowedAccess, but we need to qeury on the to_cooperation_id.
+            $allowedAccess = PrivateMessage::conversation($building->id)
+                ->accessAllowed()
+                ->where('to_cooperation_id', $cooperation->id)
+                ->first() instanceof PrivateMessage;
 
             $createdAt = optional($user->created_at)->format('Y-m-d');
             //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
             $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
-            $allowAccess = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
+            $allowAccess = $allowedAccess;
             $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
             $connectedCoachNames = [];
             // get the names from the coaches and add them to a array

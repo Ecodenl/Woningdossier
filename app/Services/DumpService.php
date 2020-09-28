@@ -197,14 +197,15 @@ class DumpService
         $building = $user->building;
         $buildingId = $building->id;
 
-        /** @var Collection $conversationRequestsForBuilding */
-        $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope())
-            ->conversationRequestByBuildingId($building->id)
-            ->where('to_cooperation_id', $cooperation->id)->get();
+        // normally we could use the PrivateMessage::allowedAccess, but we need to qeury on the to_cooperation_id.
+        $allowedAccess = PrivateMessage::conversation($building->id)
+                ->accessAllowed()
+                ->where('to_cooperation_id', $cooperation->id)
+                ->first() instanceof PrivateMessage;
 
         $createdAt = optional($user->created_at)->format('Y-m-d');
         $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
-        $allowAccess = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
+        $allowAccess = $allowedAccess;
         $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
         $connectedCoachNames = [];
 

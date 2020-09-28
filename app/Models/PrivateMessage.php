@@ -319,7 +319,7 @@ class PrivateMessage extends Model
      */
     public static function allowedAccess(Building $building)
     {
-        return static::conversationRequestByBuildingId($building->id)->accessAllowed()->first() instanceof PrivateMessage;
+        return static::conversation($building->id)->accessAllowed()->first() instanceof PrivateMessage;
     }
 
     /**

@@ -77,6 +77,7 @@
         $(document).ready(function () {
             $('#table').DataTable({
                 responsive: true,
+                order: [[0, "desc"]],
                 columnDefs: [
                     {responsivePriority: 7, targets: 6, width: "10%"},
                     {responsivePriority: 6, targets: 5, width: "20%"},

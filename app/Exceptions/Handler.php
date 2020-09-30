@@ -9,6 +9,7 @@ use App\Models\Cooperation;
 use App\Models\Role;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Spatie\Permission\Exceptions\UnauthorizedException as SpatieUnauthorizedException;
@@ -120,6 +121,14 @@ class Handler extends ExceptionHandler
         // The user is not authorized at all.
         if ($exception instanceof UnauthorizedException) {
             return redirect()->route('cooperation.home');
+        }
+
+        if ($exception instanceof ModelNotFoundException) {
+            // vrijstadenergie is an old cooperation, the users are migrated to hnwr / rivierenland.
+            // so redirect them.
+            if (in_array($request->route('cooperation'), ['vrijstadenergie', 'hnwr'])) {
+                return redirect()->route('cooperation.welcome', ['cooperation' => 'energieloketrivierenland']);
+            }
         }
 
         return parent::render($request, $exception);

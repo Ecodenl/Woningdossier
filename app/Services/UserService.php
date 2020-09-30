@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Helpers\HoomdossierSession;
 use App\Helpers\PicoHelper;
 use App\Models\Account;
 use App\Models\Building;
@@ -10,9 +9,8 @@ use App\Models\BuildingFeature;
 use App\Models\CompletedQuestionnaire;
 use App\Models\Cooperation;
 use App\Models\InputSource;
-use App\Models\Role;
 use App\Models\User;
-use App\Scopes\GetValueScope;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class UserService
@@ -20,14 +18,14 @@ class UserService
 
     /**
      * Method to reset a user his file for a specific input source
-     * 
-     * @param User $user
-     * @param InputSource $inputSource
+     *
+     * @param  User  $user
+     * @param  InputSource  $inputSource
      */
     public static function resetUser(User $user, InputSource $inputSource)
     {
         // only remove the example building id from the building
-        $building = $user->building;
+        $building                      = $user->building;
         $building->example_building_id = null;
         $building->save();
 
@@ -65,26 +63,33 @@ class UserService
         // remove the progress of the completed questionnaires
         CompletedQuestionnaire::forMe($user)->forInputSource($inputSource)->delete();
     }
+
     /**
      * Method to register a user.
      *
-     * @param Cooperation $cooperation
-     * @param array $registerData
-     * @param array $roles
+     * @param  Cooperation  $cooperation
+     * @param  array  $registerData
+     * @param  array  $roles
+     *
      * @return User
      */
-    public static function register(Cooperation $cooperation, array $roles, array $registerData)
-    {
+    public static function register(
+        Cooperation $cooperation,
+        array $roles,
+        array $registerData
+    ) {
         $email = $registerData['email'];
         // try to obtain the existing account
         $account = Account::where('email', $email)->first();
 
         // if its not found we will create a new one.
-        if (!$account instanceof Account) {
-            $account = AccountService::create($email, $registerData['password']);
+        if ( ! $account instanceof Account) {
+            $account = AccountService::create($email,
+                $registerData['password']);
         }
 
-        $user = self::create($cooperation, $roles, $account, array_except($registerData, ['email', 'password']));
+        $user = self::create($cooperation, $roles, $account,
+            array_except($registerData, ['email', 'password']));
 
         // associate it with the user
         $user->account()->associate(
@@ -97,21 +102,26 @@ class UserService
     /**
      * Method to create a new user with all necessary actions to make the tool work
      *
-     * @param Cooperation $cooperation
+     * @param  Cooperation  $cooperation
      * @param $account
      * @param $data
+     *
      * @return User|\Illuminate\Database\Eloquent\Model
      */
-    public static function create(Cooperation $cooperation, array $roles, $account, $data)
-    {
+    public static function create(
+        Cooperation $cooperation,
+        array $roles,
+        $account,
+        $data
+    ) {
 
-        Log::debug('account id for registration: ' . $account->id);
+        Log::debug('account id for registration: '.$account->id);
         // Create the user for an account
         $user = User::create(
             [
-                'account_id' => $account->id,
-                'first_name' => $data['first_name'],
-                'last_name' => $data['last_name'],
+                'account_id'   => $account->id,
+                'first_name'   => $data['first_name'],
+                'last_name'    => $data['last_name'],
                 'phone_number' => is_null($data['phone_number']) ? '' : $data['phone_number'],
             ]
         );
@@ -122,10 +132,10 @@ class UserService
         );
 
         $data['bag_addressid'] = $picoAddressData['id'] ?? $data['addressid'] ?? '';
-        $data['extension'] = $data['house_number_extension'] ?? null;
+        $data['extension']     = $data['house_number_extension'] ?? null;
 
         $features = new BuildingFeature([
-            'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
+            'surface'    => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
             'build_year' => empty($picoAddressData['build_year']) ? null : $picoAddressData['build_year'],
         ]);
 
@@ -156,14 +166,17 @@ class UserService
     /**
      * Method to delete a user and its user info
      *
-     * @param User $user
-     * @param bool $shouldForceDeleteBuilding
+     * @param  User  $user
+     * @param  bool  $shouldForceDeleteBuilding
+     *
      * @throws \Exception
      */
-    public static function deleteUser(User $user, $shouldForceDeleteBuilding = false)
-    {
+    public static function deleteUser(
+        User $user,
+        $shouldForceDeleteBuilding = false
+    ) {
         $accountId = $user->account_id;
-        $building = $user->building;
+        $building  = $user->building;
 
         if ($building instanceof Building) {
             if ($shouldForceDeleteBuilding) {
@@ -193,9 +206,97 @@ class UserService
 
         // remove the user itself.
         // if the account has no users anymore then we delete the account itself too.
-        if (0 == User::withoutGlobalScopes()->where('account_id', $accountId)->count()) {
+        if (0 == User::withoutGlobalScopes()->where('account_id',
+                $accountId)->count()) {
             // bye !
             Account::find($accountId)->delete();
         }
+    }
+
+    /**
+     * Merges two users. Some data will be just updated because it's only user-related.
+     * When building(data) related: Where possible, non conflicting input from different
+     * input sources will be combined. If not possible, the data of $user1 will be
+     * leading and the data of user2 will be deleted.
+     *
+     * @param  User  $user1
+     * @param  User  $user2
+     *
+     * @return User
+     * @throws \Exception
+     */
+    public static function merge(User $user1, User $user2)
+    {
+        // The simple cases: where we can just update the user_id or coach_id
+        $tables = [
+            'user_id'      => [
+                'building_permissions',
+                //'buildings', will be deleted
+                'logs',
+                //'notification_settings', will be deleted
+                'private_message_views',
+                //'user_motivations', will be deleted
+            ],
+            'for_user_id' => [
+                'logs',
+            ],
+            'from_user_id' => [
+                'private_messages',
+            ],
+        ];
+
+        if ($user1->hasRole('coach')) {
+            $tables['coach_id'] = [
+                'building_coach_statuses', 'building_notes',
+            ];
+        }
+
+        foreach ($tables as $column => $tablesWithColumn) {
+            foreach ($tablesWithColumn as $tableWithColumn) {
+                Log::debug("UPDATE ".$tableWithColumn." SET ".$column." = ".$user1->id." WHERE ".$column." = ".$user2->id.";");
+                DB::table($tableWithColumn)
+                  ->where($column, '=', $user2->id)
+                  ->update([$column => $user1->id]);
+            }
+        }
+
+        // The more complex cases: where we *only* want to copy data for
+        // input sources which were present for user2 and not user1.
+
+        $tables = [
+            'user_id' => [
+                'completed_questionnaires',
+                'user_action_plan_advice_comments',
+                'user_action_plan_advices',
+                'user_energy_habits',
+                'user_interests',
+            ],
+        ];
+
+        foreach ($tables as $column => $tablesWithColumn) {
+            foreach ($tablesWithColumn as $tableWithColumn) {
+                Log::debug("Checking input sources for ".$tableWithColumn);
+                $inputSources = DB::table($tableWithColumn)
+                                  ->where($column, "=", $user1->id)
+                                  ->select('input_source_id')
+                                  ->distinct()
+                                  ->pluck('input_source_id')
+                                  ->toArray();
+
+                Log::debug("UPDATE ".$tableWithColumn." SET ".$column." = ".$user1->id." WHERE ".$column." = ".$user2->id." AND WHERE input_source NOT IN (".implode(",", $inputSources).");");
+                DB::table($tableWithColumn)
+                  ->where($column, '=', $user2->id)
+                  ->whereNotIn('input_source_id', $inputSources)
+                  ->update([$column => $user1->id]);
+
+                // the rest will stay and will be deleted
+            }
+        }
+
+        // Now delete $user2
+        static::deleteUser($user2);
+
+        // and return the resulting user
+        return $user1;
     }
 }

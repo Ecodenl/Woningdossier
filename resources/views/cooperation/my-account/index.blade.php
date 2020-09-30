@@ -454,7 +454,7 @@
                     </div>
 
                     <div class="panel-body">
-                        @if($conversationRequests->isNotEmpty())
+                        @if($messages->isNotEmpty())
                             <div class="row">
                                 <div class="col-sm-12">
                                     <form id="allow-access-form"
@@ -464,7 +464,7 @@
                                         <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
                                             <label for="allow_access">
                                                 <input id="allow_access" name="allow_access" type="checkbox"
-                                                       @if(old('allow_access') && old('allow_access') == 'on' || $conversationRequests->contains('allow_access', true))
+                                                       @if(old('allow_access') && old('allow_access') == 'on' || $messages->contains('allow_access', true))
                                                        checked="checked"
                                                         @endif>
                                                 @lang('my-account.access.index.form.allow_access', ['cooperation' => \App\Models\Cooperation::find(\App\Helpers\HoomdossierSession::getCooperation())->name])

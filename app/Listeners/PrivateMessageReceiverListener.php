@@ -63,7 +63,7 @@ class PrivateMessageReceiverListener
         }
 
         // avoid unnecessary privateMessagesViews, we dont want to create a row for the user itself
-        if (! \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator'])) {
+        if (! Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator'])) {
             // since a cooperation is not a 'participant' of a chat we need to create a row for the manually
             PrivateMessageView::create([
                 'private_message_id' => $event->privateMessage->id,

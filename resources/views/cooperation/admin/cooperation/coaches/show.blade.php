@@ -89,6 +89,7 @@
         $(document).ready(function () {
             $('#table').DataTable({
                 responsive: true,
+                order: [[0, "desc"]],
                 columnDefs: [
                     {responsivePriority: 4, targets: 4},
                     {responsivePriority: 5, targets: 3},

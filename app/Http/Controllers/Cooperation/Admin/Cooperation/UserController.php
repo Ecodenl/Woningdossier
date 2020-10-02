@@ -97,8 +97,6 @@ class UserController extends Controller
         );
 
 
-
-
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.
         if ($request->has('coach_id')) {
 

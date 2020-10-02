@@ -36,7 +36,8 @@ class UserController extends Controller
                 $query->with(['buildingStatuses' => function ($query) {
                     $query->mostRecent()->with('status');
                 }]);
-            }])->get();
+            }])
+            ->get();
         $roles = Role::all();
 
         return view('cooperation.admin.cooperation.users.index', compact('roles', 'users'));
@@ -94,8 +95,6 @@ class UserController extends Controller
                 'allow_access' => true,
             ]
         );
-
-
 
 
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.

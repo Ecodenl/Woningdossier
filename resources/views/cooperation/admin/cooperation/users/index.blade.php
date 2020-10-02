@@ -76,6 +76,7 @@
             var table = $('table');
             table.DataTable({
                 responsive: true,
+                order: [[0, "desc"]],
                 columns: [
                     {responsivePriority: 1},
                     {responsivePriority: 2},

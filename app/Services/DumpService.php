@@ -83,6 +83,7 @@ class DumpService
             $headers = [
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.coach-appointment-date'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
 
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
@@ -197,14 +198,15 @@ class DumpService
         $building = $user->building;
         $buildingId = $building->id;
 
-        /** @var Collection $conversationRequestsForBuilding */
-        $conversationRequestsForBuilding = PrivateMessage::withoutGlobalScope(new CooperationScope())
-            ->conversationRequestByBuildingId($building->id)
-            ->where('to_cooperation_id', $cooperation->id)->get();
+        // normally we could use the PrivateMessage::allowedAccess, but we need to qeury on the to_cooperation_id.
+        $allowedAccess = PrivateMessage::conversation($building->id)
+                ->accessAllowed()
+                ->where('to_cooperation_id', $cooperation->id)
+                ->first() instanceof PrivateMessage;
 
         $createdAt = optional($user->created_at)->format('Y-m-d');
         $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
-        $allowAccess = $conversationRequestsForBuilding->contains('allow_access', true) ? 'Ja' : 'Nee';
+        $allowAccess = $allowedAccess ? 'Ja' : 'Nee';
         $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
         $connectedCoachNames = [];
 
@@ -236,6 +238,9 @@ class DumpService
         $buildYear = $buildingFeature->build_year ?? '';
         $exampleBuilding = optional($building->exampleBuilding)->isSpecific() ? $building->exampleBuilding->name : '';
 
+        $mostRecentStatus = $building->getMostRecentBuildingStatus();
+        $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
+
         // set the personal userinfo
         if ($anonymized) {
             // set the personal userinfo
@@ -247,7 +252,7 @@ class DumpService
         } else {
             $row[$building->id] = [
                 $inputSource->name,
-                $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
+                $createdAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
                 $firstName, $lastName, $email, $phoneNumber,
                 $street, $number, $postalCode, $city,
                 $buildingType, $buildYear, $exampleBuilding,
@@ -514,6 +519,8 @@ class DumpService
                                     // total sun panels is stored in same column, but need to be treated as a number
                                     if ($answer == 'true' && $buildingService->service->short !== 'total-sun-panels') {
                                         $answer = 'Ja';
+                                    } else {
+                                        $answer = 'Nee';
                                     }
 
                                     $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer;

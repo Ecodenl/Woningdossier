@@ -45,7 +45,6 @@ class CoachController extends Controller
 
         $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser($userToShow, $cooperation)->pluck('building_id');
 
-        dd($connectedBuildingsForUser);
         // now we got the connected buildings of the user, get the models.
         $buildings = Building::findMany($connectedBuildingsForUser)->load('user', 'buildingStatuses');
 

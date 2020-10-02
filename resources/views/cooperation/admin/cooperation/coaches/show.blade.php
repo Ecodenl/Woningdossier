@@ -30,12 +30,11 @@
                         </thead>
                         <tbody>
 
-                        @foreach($buildingCoachStatuses as $buildingCoachStatus)
+                        @foreach($buildings as $building)
                             <?php
                                 /**
                                 * @var \App\Models\Building $building
                                 */
-                                $building = $buildingCoachStatus->building;
                                 $user = $building->user;
                                 $buildingStatus = $building->buildingStatuses->first();
 
@@ -47,9 +46,7 @@
 
                                 $userIsAuthUser = $user->id == \App\Helpers\Hoomdossier::user()->id;
                             ?>
-
-                            {{-- do a quick check if the user currently has access to the building--}}
-                            <tr @if($connectedBuildingsForUser->contains('building_id', $building->id) == false) class="bg-danger" @endif>
+                            <tr>
                                 <td data-sort="{{$userCreatedAtStrotime}}">
                                     {{$userCreatedAtFormatted ?? '-'}}
                                 </td>

@@ -51,7 +51,9 @@
 @push('js')
     <script>
         $(document).ready(function () {
-            $('table').dataTable();
+            $('table').dataTable({
+                order: [[0, "desc"]],
+            });
         });
     </script>
 @endpush

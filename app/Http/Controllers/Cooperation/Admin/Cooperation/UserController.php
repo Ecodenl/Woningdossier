@@ -36,7 +36,8 @@ class UserController extends Controller
                 $query->with(['buildingStatuses' => function ($query) {
                     $query->mostRecent()->with('status');
                 }]);
-            }])->get();
+            }])
+            ->get();
         $roles = Role::all();
 
         return view('cooperation.admin.cooperation.users.index', compact('roles', 'users'));

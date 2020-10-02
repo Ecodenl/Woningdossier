@@ -557,24 +557,6 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
-     * Check if a user gave permission to let cooperations access his building.
-     *
-     * @param $buildingId
-     *
-     * @return bool
-     */
-    public function allowedAccessToHisBuilding($buildingId)
-    {
-        $conversationRequest = PrivateMessage::conversationRequestByBuildingId($buildingId)->first();
-
-        if ($conversationRequest instanceof PrivateMessage && $conversationRequest->allow_access) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Return the user its account information.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

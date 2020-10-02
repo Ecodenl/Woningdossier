@@ -55,6 +55,7 @@ class CsvService
             $csvHeaders = [
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
+                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.coach-appointment-date'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
 
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
@@ -147,6 +148,9 @@ class CsvService
             $buildYear = $buildingFeatures->build_year ?? '';
             $exampleBuilding = optional($building->exampleBuilding)->isSpecific() ? $building->exampleBuilding->name : '';
 
+            $mostRecentStatus = $building->getMostRecentBuildingStatus();
+            $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
+
             if ($anonymize) {
                 // set the personal userinfo
                 $row[$key] = [
@@ -156,7 +160,7 @@ class CsvService
             } else {
                 // set the personal userinfo
                 $row[$key] = [
-                    $inputSourceForDump->name, $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
+                    $inputSourceForDump->name, $createdAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
                     $firstName, $lastName, $email, $phoneNumber,
                     $street, $number, $postalCode, $city,
                     $buildingType, $buildYear, $exampleBuilding,

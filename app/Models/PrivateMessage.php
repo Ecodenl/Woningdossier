@@ -29,7 +29,6 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage accessAllowed()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversation($buildingId)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversationRequest()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversationRequestByBuildingId($buildingId)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage forMyCooperation()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage myPrivateMessages()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage newModelQuery()
@@ -80,18 +79,6 @@ class PrivateMessage extends Model
         return $query->where('to_cooperation_id', HoomdossierSession::getCooperation());
     }
 
-    /**
-     * Scope a conversation requests for a building.
-     *
-     * @param $query
-     * @param $buildingId
-     *
-     * @return mixed
-     */
-    public function scopeConversationRequestByBuildingId($query, $buildingId)
-    {
-        return $query->public()->conversation($buildingId)->whereNotNull('request_type');
-    }
 
     /**
      * Scope a query to return all the conversation requests.
@@ -319,7 +306,7 @@ class PrivateMessage extends Model
      */
     public static function allowedAccess(Building $building)
     {
-        return static::conversationRequestByBuildingId($building->id)->accessAllowed()->first() instanceof PrivateMessage;
+        return static::conversation($building->id)->accessAllowed()->first() instanceof PrivateMessage;
     }
 
     /**

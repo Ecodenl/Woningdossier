@@ -428,6 +428,7 @@ return [
                     'csv-columns' => [
                         'input-source' => 'Rol',
                         'created-at' => 'Datum account',
+                        'coach-appointment-date' => 'Datum afspraak coachgesprek',
                         'status' => 'Status',
                         'allow-access' => 'Toestemming aanwezig',
                         'associated-coaches' => 'Gekoppelde coaches',

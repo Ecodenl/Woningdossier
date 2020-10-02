@@ -97,6 +97,11 @@
     $(document).ready(function () {
         pollForMessageCount();
 
+        // this will prevent another button from being clicked, or prevent double clicks during form submit.
+        $('form').on('submit', function () {
+            $('button[type=submit]').prop('disabled', 'disabled')
+        });
+
         $('.collapse').on('shown.bs.collapse', function () {
             $(this).parent().find(".glyphicon-chevron-down").removeClass("glyphicon-chevron-down").addClass("glyphicon-chevron-up");
         }).on('hidden.bs.collapse', function () {
@@ -109,7 +114,6 @@
                 url: "{{asset('js/datatables-dutch.json')}}"
             }
         });
-
     });
 
     var diacriticsMap = {

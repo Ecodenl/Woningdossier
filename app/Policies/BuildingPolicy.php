@@ -105,7 +105,7 @@ class BuildingPolicy
         }
 
         // they can always access a building (if the user / resident gave access)
-        return  PrivateMessage::allowedAccess($building) && $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
+        return PrivateMessage::allowedAccess($building) && $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
     }
 
     /**

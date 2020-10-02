@@ -68,7 +68,7 @@ class ParticipantController extends Controller
         if ($user instanceof User) {
             $residentBuilding = Building::find($buildingId);
 
-            $privateMessage = PrivateMessage::conversationRequestByBuildingId($buildingId)->first();
+            $privateMessage = PrivateMessage::public()->conversation($buildingId)->first();
 
             if ($privateMessage->allow_access) {
                 // give the coach permission to the resident his building
@@ -77,7 +77,7 @@ class ParticipantController extends Controller
 
             BuildingCoachStatusService::giveAccess($user, $residentBuilding);
 
-            event(new ParticipantAddedEvent($user, $residentBuilding));
+            ParticipantAddedEvent::dispatch($user, $residentBuilding);
         }
 
         // since the coordinator is the only one who can do this atm.
@@ -110,7 +110,7 @@ class ParticipantController extends Controller
 
         $messagesToSetRead = $messagesToSetRead->get();
 
-        if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+        if (Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
             PrivateMessageViewService::markAsReadByCooperation($messagesToSetRead, $cooperation);
         } elseif (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
             $inputSource = InputSource::findByShort(InputSource::COACH_SHORT);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Http\Controllers\Controller;
+use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\Role;
@@ -42,17 +43,15 @@ class CoachController extends Controller
         $userToShow = User::findOrFail($userId);
         $buildingFromUser = $userToShow->building;
 
-        $buildingCoachStatuses = BuildingCoachStatus::where('coach_id', $userId)
-            ->whereHas('building')
-            ->with(['building.buildingStatuses' => function ($query) {
-                $query->mostRecent();
-            }])
-            ->groupBy(['building_id', 'coach_id'])
-            ->select(['building_id', 'coach_id'])
-            ->get();
+        $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser($userToShow, $cooperation)->pluck('building_id');
+
+        // now we got the connected buildings of the user, get the models.
+        $buildings = Building::findMany($connectedBuildingsForUser)->load('user', 'buildingStatuses');
 
         $roles = $userToShow->roles->pluck('human_readable_name')->toArray();
 
-        return view('cooperation.admin.cooperation.coaches.show', compact('buildingCoachStatuses', 'userToShow', 'roles', 'buildingFromUser'));
+        return view('cooperation.admin.cooperation.coaches.show', compact(
+            'connectedBuildingsForUser', 'userToShow', 'roles', 'buildingFromUser', 'buildings'
+        ));
     }
 }

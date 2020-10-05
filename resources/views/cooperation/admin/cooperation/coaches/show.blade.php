@@ -16,7 +16,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <table id="table" class="table table-striped table-responsive table-bordered compact nowrap">
+                    <table id="table" class="table table-responsive table-bordered compact nowrap">
                         <thead>
                         <tr>
                             <th>@lang('woningdossier.cooperation.admin.cooperation.coaches.show.table.columns.date')</th>
@@ -30,12 +30,11 @@
                         </thead>
                         <tbody>
 
-                        @foreach($buildingCoachStatuses as $buildingCoachStatus)
+                        @foreach($buildings as $building)
                             <?php
                                 /**
                                 * @var \App\Models\Building $building
                                 */
-                                $building = $buildingCoachStatus->building;
                                 $user = $building->user;
                                 $buildingStatus = $building->buildingStatuses->first();
 

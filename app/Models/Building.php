@@ -480,7 +480,7 @@ class Building extends Model
 
         $this->buildingStatuses()->create([
             'status_id' => $statusModel->id,
-            'appointment_date' => optional($this->getMostRecentBuildingStatus())->appointment_date,
+            'appointment_date' => $this->getAppointmentDate()
         ]);
     }
 
@@ -497,5 +497,15 @@ class Building extends Model
             'status_id' => $this->getMostRecentBuildingStatus()->status_id,
             'appointment_date' => $appointmentDate,
         ]);
+    }
+
+    /**
+     * Method to return the most recent appointment date.
+     *
+     * @return \Illuminate\Support\Carbon|mixed|null
+     */
+    public function getAppointmentDate()
+    {
+        return optional($this->getMostRecentBuildingStatus())->appointment_date;
     }
 }

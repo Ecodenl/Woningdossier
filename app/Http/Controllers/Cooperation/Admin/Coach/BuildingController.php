@@ -13,11 +13,20 @@ class BuildingController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        // get most recent building coach statuses for
-        $buildingCoachStatuses = BuildingCoachStatus::hydrate(
-            BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user(), $cooperation)->all()
-        );
+        $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user(), $cooperation)->pluck('building_id');
 
-        return view('cooperation.admin.coach.buildings.index', compact('buildings', 'buildingCoachStatuses'));
+        // we do the sort on the collection, this would be another "complicated" query.
+        // for now this will do.
+        $buildings = Building::findMany($connectedBuildingsForUser)
+            ->load([
+                    'user',
+                    'buildingStatuses' => function ($q) {
+                        $q->with('status')->mostRecent();
+                    }]
+            )->sortByDesc(function (Building $building) {
+                return $building->buildingStatuses->first()->appointment_date;
+            });
+
+        return view('cooperation.admin.coach.buildings.index', compact('buildings', 'buildings'));
     }
 }

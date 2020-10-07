@@ -412,15 +412,15 @@ class User extends Model implements AuthorizableContract
     {
         // if the building is not set it is null, so return false.
         // this will only happen in very rare occasions (prob only on dev / local)
-        if (is_null(HoomdossierSession::getBuilding())) {
-            return false;
-        } else {
-            if ($this->building->id != HoomdossierSession::getBuilding()) {
-                return true;
-            }
-
-            return false;
+//        if (is_null(HoomdossierSession::getBuilding())) {
+//            return false;
+//        } else {
+        if ($this->building->id != HoomdossierSession::getBuilding()) {
+            return true;
         }
+
+        return false;
+//    }
     }
 
     /**

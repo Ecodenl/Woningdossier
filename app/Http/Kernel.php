@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
         'deny-if-filling-for-other-building' => \App\Http\Middleware\RedirectIfIsFillingForOtherBuilding::class,
         'deny-if-observing-building' => \App\Http\Middleware\RedirectIfIsObservingBuilding::class,
         'step-disabled' => \App\Http\Middleware\RedirectIfStepDisabled::class,
+        'restore-building-session-if-filling-for-other-building' => \App\Http\Middleware\RestoreBuildingSessionIfFillingForOtherBuilding::class
     ];
 }

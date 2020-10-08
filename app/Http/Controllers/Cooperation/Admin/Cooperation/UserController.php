@@ -37,6 +37,7 @@ class UserController extends Controller
                     $query->mostRecent()->with('status');
                 }]);
             }])
+            ->orderByDesc('created_at')
             ->get();
         $roles = Role::all();
 

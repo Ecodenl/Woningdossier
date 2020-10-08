@@ -15942,6 +15942,6 @@ ul.progress-list li.active a {
   color: #2d2c2c;
   text-rendering: optimizeLegibility !important;
   -webkit-font-smoothing: antialiased !important;
-  font-size: 15px;
+  font-weight: 400;
 }
 

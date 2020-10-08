@@ -23,7 +23,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 //            return new \App\Mail\UserChangedHisEmail(\App\Models\User::find(1), \App\Models\Account::find(1), 'demo@eg.com', 'bier@pils.com');
 //            return new  \App\Mail\UnreadMessagesEmail(\App\Models\User::find(1), \App\Models\Cooperation::find(1), 10);
 //            return new \App\Mail\ResetPasswordRequest(\App\Models\Cooperation::find(1), \App\Models\Account::find(1), 'sfklhasdjkfhsjkf');
-            return new UserAssociatedWithCooperation(App\Models\Cooperation::find(1), \App\Models\Account::find(1)->user());
+                return new UserAssociatedWithCooperation(App\Models\Cooperation::find(1), \App\Models\Account::find(1)->user());
 //            return new \App\Mail\UserCreatedEmail(\App\Models\Cooperation::find(1), \App\Models\User::find(1), 'sdfkhasgdfuiasdgfyu');
 //            return new \App\Mail\UserAssociatedWithCooperation(\App\Models\Cooperation::find(1), \App\Models\User::find(1));
             });
@@ -252,7 +252,12 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 //                Route::get('my-plan/export', 'MyPlanController@export')->name('my-plan.export');
             });
 
-            Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['role:cooperation-admin|coordinator|coach|super-admin|superuser']], function () {
+            Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin',
+                'middleware' => [
+                    'role:cooperation-admin|coordinator|coach|super-admin|superuser',
+                    'restore-building-session-if-filling-for-other-building'
+                ]
+            ], function () {
 
                 Route::get('/', 'AdminController@index')->name('index');
                 Route::get('stop-session', 'AdminController@stopSession')->name('stop-session');

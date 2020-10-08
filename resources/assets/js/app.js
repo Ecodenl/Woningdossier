@@ -92,7 +92,7 @@ $(document).ready(function () {
 
 });
 
-$(".has-address-data #number, #house_number_extension").focusout(function () {
+$(".has-address-data, #postal_code #number, #house_number_extension").focusout(function () {
     var postalCode = $(".has-address-data #postal_code");
     var number = $(".has-address-data #number");
     var houseNumberExtension = $(".has-address-data #house_number_extension");

@@ -15945,3 +15945,10 @@ ul.progress-list li.active a {
   font-weight: 400;
 }
 
+.navbar-default .navbar-brand {
+  color: #2d2c2c;
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+  font-weight: 400;
+}
+

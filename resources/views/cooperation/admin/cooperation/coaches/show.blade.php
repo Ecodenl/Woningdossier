@@ -41,7 +41,7 @@
                                 $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
                                 $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
 
-                                $appointmentDateFormatted = optional($buildingStatus->appointment_date)->format('d-m-Y');
+                                $appointmentDateFormatted = optional($building->getAppointmentDate())->format('d-m-Y');
                                 $appointmentDateStrotime = strtotime($appointmentDateFormatted);
 
                                 $userIsAuthUser = $user->id == \App\Helpers\Hoomdossier::user()->id;

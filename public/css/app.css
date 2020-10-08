@@ -15940,5 +15940,8 @@ ul.progress-list li.active a {
 
 .navbar-default .navbar-nav > li > a {
   color: #2d2c2c;
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+  font-size: 15px;
 }
 

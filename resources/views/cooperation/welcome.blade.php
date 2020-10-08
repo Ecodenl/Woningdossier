@@ -11,30 +11,6 @@
             margin: 0;
         }
 
-        .full-height {
-            height: 100vh;
-        }
-
-        .flex-center {
-            align-items: center;
-            display: flex;
-            justify-content: center;
-        }
-
-        .position-ref {
-            position: relative;
-        }
-
-        .top-right {
-            position: absolute;
-            right: 10px;
-            top: 18px;
-        }
-
-        .content {
-            text-align: center;
-        }
-
         .title {
             font-size: 84px;
         }
@@ -56,11 +32,11 @@
 @endpush
 
 @section('content')
-    <div class="content">
+    <div class="container text-center">
 
-        <div class="title m-b-md">
+        <h1 class="title m-b-md">
             {{ $cooperation->name }}
-        </div>
+        </h1>
         <h2>{{ config('app.name') }}</h2>
 
     </div>

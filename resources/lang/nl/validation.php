@@ -126,7 +126,10 @@ return [
             'required' => '"aantal te vervangen ruiten?" is een verplicht veld.',
             'numeric' => '"aantal te vervangen ruiten?" moet een getal bevatten.',
             'min' => '"aantal te vervangen ruiten?" moet tenminste :min zijn.',
-        ]
+        ],
+        'accounts.email' => [
+            'unique' => 'Dit e-mailadres is al geregistreerd.',
+        ],
     ],
 
     /*

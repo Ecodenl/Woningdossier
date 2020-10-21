@@ -32,16 +32,13 @@
         @lang('cooperation/mail/account-created.button-does-not-work')
     @endcomponent
 
-{{--    @component('cooperation.mail.components.text')--}}
-        @include('cooperation.mail.parts.long-ahref', ['href' => $confirmUrl])
-{{--        <a href="http://hoom.woondossier.vm/password/reset/7dc7d4a59eb923606129182d2beaaa361ad696dac8fb77de988a03ca2e7874c4/eyJpdiI6Im5BaklDNVhKMkpqKytERVV6bmk2WkE9PSIsInZhbHVlIjoiTjhFWHpRMkJjZnEzYkNpd1wvU3Yrd0dLS0lnQndjdUZwNEV5aWtTa0Q2bk09IiwibWFjIjoiMDBjOWIyOTEyY2NkYmJlYzYxNWI2ODQzZDc1MTg2NGIwNWU1Njk3MzY3Njc4ZDA3ZWNmZjc5YmM1NDFlMmIwMyJ9" style="word-break:break-all; display: block !important; max-width: 570px; font-family: Avenir, Helvetica, sans-serif; box-sizing: border-box; color: #3869D4;">--}}
-{{--            http://hoom.woondossier.vm/password/reset/7dc7d4a59eb923606129182d2beaaa361ad696dac8fb77de988a03ca2e7874c4/eyJpdiI6Im5BaklDNVhKMkpqKytERVV6bmk2WkE9PSIsInZhbHVlIjoiTjhFWHpRMkJjZnEzYkNpd1wvU3Yrd0dLS0lnQndjdUZwNEV5aWtTa0Q2bk09IiwibWFjIjoiMDBjOWIyOTEyY2NkYmJlYzYxNWI2ODQzZDc1MTg2NGIwNWU1Njk3MzY3Njc4ZDA3ZWNmZjc5YmM1NDFlMmIwMyJ9--}}
-{{--        </a>--}}
-{{--    @endcomponent--}}
+    @include('cooperation.mail.parts.long-ahref', ['href' => $confirmUrl])
 
     @component('cooperation.mail.components.text')
         @lang('cooperation/mail/account-created.any-questions', compact('cooperation_href'))
     @endcomponent
 
-
+    @component('cooperation.mail.components.text')
+        @lang('cooperation/mail/account-created.kind_regards', ['app_name' => config('app.name')])
+    @endcomponent
 @endcomponent

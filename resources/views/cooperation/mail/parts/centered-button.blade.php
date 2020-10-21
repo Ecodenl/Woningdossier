@@ -14,10 +14,10 @@
                     <tbody>
                     <tr>
                         <td align="center">
-                            <table border="0" cellpadding="0" cellspacing="0" style="margin:0 auto;">
+                            <table border="0" cellpadding="0" cellspacing="0" style="margin:0 auto; ">
                                 <tr>
-                                    <td align="center" bgcolor="#3498DB" width="150">
-                                        <a href="{{$href}}" style="padding: 10px;width:150px;display: block;text-decoration: none;border:0;text-align: center ;font-family: Calibri, sans-serif, 'Open Sans';color: #ffffff;background: #3498DB;border: 1px solid #3498DB;line-height:17px;" class="button_link">
+                                    <td align="center" bgcolor="#2ca982" width="150">
+                                        <a href="{{$href}}" style="padding: 10px;width:150px;display: block;text-decoration: none;border:0;text-align: center ;font-family: Calibri, sans-serif, 'Open Sans';color: #ffffff;background: #2ca982;border: 1px solid #2ca982;line-height:17px;" class="button_link">
                                             {!! $slot !!}
                                         </a>
                                     </td>

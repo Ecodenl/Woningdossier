@@ -5,8 +5,7 @@
 
         $confirmUrl = route('cooperation.auth.password.reset.show', ['token' => $token, 'cooperation' => $userCooperation, 'email' => encrypt($createdUser->account->email)]);
 
-        $href = is_null($userCooperation->cooperation_email) ? $userCooperation->website_url : "mailto:".$userCooperation->cooperation_email;
-        $cooperation_href = '<a target="_blank" href="'.$href.'">'.$userCooperation->name.'</a>';
+        $cooperationHref = is_null($userCooperation->cooperation_email) ? $userCooperation->website_url : "mailto:".$userCooperation->cooperation_email;
     ?>
 
     @component('cooperation.mail.components.text')
@@ -35,7 +34,7 @@
     @include('cooperation.mail.parts.long-ahref', ['href' => $confirmUrl])
 
     @component('cooperation.mail.components.text')
-        @lang('cooperation/mail/account-created.any-questions', compact('cooperation_href'))
+        @lang('cooperation/mail/account-created.any-questions', ['cooperation_href' => View::make('cooperation.mail.parts.ahref', ['href' => $cooperationHref, 'text' => $userCooperation->name])->render()])
     @endcomponent
 
     @component('cooperation.mail.components.text')

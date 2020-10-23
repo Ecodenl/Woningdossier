@@ -23,6 +23,7 @@
 
     @component('cooperation.mail.components.text')
         @lang('cooperation/mail/unread-message-count.button-does-not-work')
+        <br>
         @include('cooperation.mail.parts.ahref', ['href' => $cooperationHoomdossierLink])
     @endcomponent
 

@@ -1,15 +1,8 @@
 @component('cooperation.mail.components.message')
 
     <?php
-
-    // the confirm route.
-    $changedEmailUrl = route('cooperation.recover-old-email.recover', ['cooperation' => $user->cooperation, 'token' => $account->old_email_token]);
-    $changedEmailHref = '<a target="_blank" href="'.$changedEmailUrl.'">'.$changedEmailUrl.'</a>';
-
-    // the route to the website of the cooperation itself.
-    $href = is_null($user->cooperation->cooperation_email) ? $user->cooperation->website_url : "mailto:".$user->cooperation->cooperation_email;
-    $cooperationWebsiteHref = '<a target="_blank" href="'.$href.'">'.$user->cooperation->name.'</a>'
-
+        // the confirm route.
+        $changedEmailUrl = route('cooperation.recover-old-email.recover', ['cooperation' => $user->cooperation, 'token' => $account->old_email_token]);
     ?>
 
     @lang('cooperation/mail/changed-email.salutation', [
@@ -35,7 +28,9 @@
 
     @component('cooperation.mail.components.text')
         @lang('cooperation/mail/changed-email.any-questions', [
-            'cooperation_link' => View::make('cooperation.mail.parts.ahref', ['href' => $href])
+            'cooperation_link' => View::make('cooperation.mail.parts.ahref', [
+                'href' => is_null($user->cooperation->cooperation_email) ? $user->cooperation->website_url : "mailto:".$user->cooperation->cooperation_email,
+            ])
         ])
     @endcomponent
 

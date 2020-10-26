@@ -18,7 +18,9 @@
                                 <tr>
                                     <td align="center" bgcolor="#2ca982" width="{{$width ?? 150}}">
                                         <a href="{{$href}}" style="padding: 10px;display: block;text-decoration: none;border:0;text-align: center ;font-family: Calibri, sans-serif, 'Open Sans';color: #ffffff;background: #2ca982;border: 1px solid #2ca982;line-height:17px;" class="button_link">
-                                            {!! $slot !!}
+                                            <p style="color: #ffffff; text-align: center">
+                                                {!! $slot !!}
+                                            </p>
                                         </a>
                                     </td>
                                 </tr>

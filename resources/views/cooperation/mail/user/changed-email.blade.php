@@ -1,40 +1,41 @@
-@component('mail::message')
+@component('cooperation.mail.components.message')
 
-@lang('cooperation/mail/changed-email.salutation', [
-    'first_name' => $user->first_name,
-    'last_name' => $user->last_name
-])
-<br>
-<?php
+    <?php
+        // the confirm route.
+        $changedEmailUrl = route('cooperation.recover-old-email.recover', ['cooperation' => $user->cooperation, 'token' => $account->old_email_token]);
+    ?>
 
-// the confirm route.
-$changedEmailUrl = route('cooperation.recover-old-email.recover', ['cooperation' => $user->cooperation, 'token' => $account->old_email_token]);
-$changedEmailHref = '<a target="_blank" href="'.$changedEmailUrl.'">'.$changedEmailUrl.'</a>';
+    @lang('cooperation/mail/changed-email.salutation', [
+        'first_name' => $user->first_name,
+        'last_name' => $user->last_name
+    ])
+    <br>
+    <br>
+    @component('cooperation.mail.components.text')
+        @lang('cooperation/mail/changed-email.text', [
+            'home_url' => config('app.url'),
+        ])
+    @endcomponent
 
-// the route to the website of the cooperation itself.
-$href = is_null($user->cooperation->cooperation_email) ? $user->cooperation->website_url : "mailto:".$user->cooperation->cooperation_email;
-$cooperationWebsiteHref = '<a target="_blank" href="'.$href.'">'.$user->cooperation->name.'</a>'
+    @component('cooperation.mail.parts.centered-button', ['href' => $changedEmailUrl, 'width' => '200'])
+        @lang('cooperation/mail/changed-email.button')
+    @endcomponent
 
-?>
+    @component('cooperation.mail.components.text')
+        @lang('cooperation/mail/changed-email.button-does-not-work')
+        @include('cooperation.mail.parts.long-ahref', ['href' => $changedEmailUrl])
+    @endcomponent
 
-@lang('cooperation/mail/changed-email.text', [
-    'home_url' => config('app.url'),
-])
+    @component('cooperation.mail.components.text')
+        @lang('cooperation/mail/changed-email.any-questions', [
+            'cooperation_link' => View::make('cooperation.mail.parts.ahref', [
+                'href' => is_null($user->cooperation->cooperation_email) ? $user->cooperation->website_url : "mailto:".$user->cooperation->cooperation_email,
+            ])
+        ])
+    @endcomponent
 
-@component('mail::button', ['url' => $changedEmailUrl])
-    @lang('cooperation/mail/changed-email.button')
-@endcomponent
-
-@lang('cooperation/mail/changed-email.button-does-not-work')
-<br>
-{!! $changedEmailHref !!}
-<br>
-<br>
-@lang('cooperation/mail/changed-email.any-questions', [
-    'cooperation_link' => $cooperationWebsiteHref
-])
-<br>
-<br>
-@lang('cooperation/mail/changed-email.kind_regards', ['app_name' => config('app.name')])
+    @component('cooperation.mail.components.text')
+        @lang('cooperation/mail/changed-email.kind_regards', ['app_name' => config('app.name')])
+    @endcomponent
 
 @endcomponent

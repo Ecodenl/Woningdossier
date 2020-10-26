@@ -1,25 +1,36 @@
-@component('mail::message')
+@component('cooperation.mail.components.message')
 
-@lang('cooperation/mail/reset-password.salutation', [
-    'first_name' => $user->first_name,
-    'last_name' => $user->last_name
-])
-<br>
-<br>
-@lang('cooperation/mail/reset-password.why')
+    @component('cooperation.mail.components.text')
+        @lang('cooperation/mail/reset-password.salutation', [
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name
+        ])
+    @endcomponent
 
-@component('mail::button', ['url' => route('cooperation.auth.password.reset.show', ['cooperation' => $userCooperation, 'token' => $token, 'email' => $email])])
-    @lang('cooperation/mail/reset-password.button')
-@endcomponent
+    @component('cooperation.mail.components.text')
+        @lang('cooperation/mail/reset-password.why')
+    @endcomponent
 
-@lang('cooperation/mail/reset-password.button-does-not-work')
-<br>
-<a href="{{ route('cooperation.auth.password.reset.show', ['cooperation' => $userCooperation, 'token' => $token, 'email' => $email]) }}">{{ route('cooperation.auth.password.reset.show', ['cooperation' => $userCooperation, 'token' => $token, 'email' => $email]) }}</a>
-<br>
-<br>
-@lang('cooperation/mail/reset-password.not_requested')
+    @component('cooperation.mail.parts.centered-button', [
+        'href' => route('cooperation.auth.password.reset.show', ['cooperation' => $userCooperation, 'token' => $token, 'email' => $email]),
+        'width' => '200'
+    ])
+        @lang('cooperation/mail/reset-password.button')
+    @endcomponent
 
-<br><br>
-@lang('cooperation/mail/reset-password.kind_regards', ['app_name' => config('app.name')])
+    @component('cooperation.mail.components.text', ['style' => 'margin-bottom: 0px;'])
+        @lang('cooperation/mail/reset-password.button-does-not-work')
+        @include('cooperation.mail.parts.long-ahref', [
+            'href' =>  route('cooperation.auth.password.reset.show', ['cooperation' => $userCooperation, 'token' => $token, 'email' => $email])
+        ])
+    @endcomponent
+
+    @component('cooperation.mail.components.text')
+        @lang('cooperation/mail/reset-password.not_requested')
+    @endcomponent
+
+    @component('cooperation.mail.components.text')
+        @lang('cooperation/mail/reset-password.kind_regards', ['app_name' => config('app.name')])
+    @endcomponent
 
 @endcomponent

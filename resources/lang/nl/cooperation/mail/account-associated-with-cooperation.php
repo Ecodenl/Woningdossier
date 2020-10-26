@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'subject' => 'Welkom in het Hoomdossier van :cooperation_name',
+    'subject' => 'bumba',
     'salutation' => 'Beste :first_name :last_name,',
     'account-created' => 'Er is een account voor u aangemaakt op :hoomdossier_href',
     'text' => '

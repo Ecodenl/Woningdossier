@@ -13,7 +13,10 @@ class DeleteOldMailTranslationsOnLanguageLinesTable extends Migration
      */
     public function up()
     {
-        $groupsToDelete = ['cooperation/mail/account-associated-with-cooperation'];
+        $groupsToDelete = [
+            'cooperation/mail/account-associated-with-cooperation',
+            'cooperation/mail/changed-email'
+        ];
 
         DB::table('language_lines')
             ->whereIn('group', $groupsToDelete)

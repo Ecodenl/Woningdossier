@@ -15,7 +15,11 @@ class DeleteOldMailTranslationsOnLanguageLinesTable extends Migration
     {
         $groupsToDelete = [
             'cooperation/mail/account-associated-with-cooperation',
-            'cooperation/mail/changed-email'
+            'cooperation/mail/account-created',
+            'cooperation/mail/changed-email',
+            'cooperation/mail/confirm-account',
+            'cooperation/mail/reset-password',
+            'cooperation/mail/unread-message-count',
         ];
 
         DB::table('language_lines')

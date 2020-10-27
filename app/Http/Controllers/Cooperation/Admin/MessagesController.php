@@ -19,9 +19,7 @@ class MessagesController extends Controller
             $connectedBuildingsByUserId = BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user(), $cooperation);
             $buildingIds = $connectedBuildingsByUserId->pluck('building_id')->all();
         } else {
-            $privateMessages = PrivateMessage::where('to_cooperation_id', $cooperation->id)
-                ->conversationRequest()
-                ->get();
+            $privateMessages = PrivateMessage::forMyCooperation()->get();
 
             $buildingIds = $privateMessages->pluck('building_id')->all();
         }

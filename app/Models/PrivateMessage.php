@@ -79,19 +79,6 @@ class PrivateMessage extends Model
         return $query->where('to_cooperation_id', HoomdossierSession::getCooperation());
     }
 
-
-    /**
-     * Scope a query to return all the conversation requests.
-     *
-     * @param $query
-     *
-     * @return mixed
-     */
-    public function scopeConversationRequest($query)
-    {
-        return $query->public()->whereNotNull('request_type');
-    }
-
     /**
      * Determine if a private message is public.
      *

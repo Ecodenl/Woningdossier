@@ -520,7 +520,7 @@ class DumpService
                                     // total sun panels is stored in same column, but need to be treated as a number
                                     if ($answer == 'true' && $buildingService->service->short !== 'total-sun-panels') {
                                         $answer = 'Ja';
-                                    } else {
+                                    } else if ($buildingService->service->short !== 'total-sun-panels') {
                                         $answer = 'Nee';
                                     }
 

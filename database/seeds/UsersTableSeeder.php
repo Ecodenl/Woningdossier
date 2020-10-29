@@ -35,7 +35,10 @@ class UsersTableSeeder extends Seeder
             $users = $account['users'];
             unset($account['users']);
 
-            $accountId = DB::table('accounts')->insertGetId($account);
+            DB::table('accounts')->updateOrInsert($account['email'], $account);
+            $row = DB::table('accounts')->where('email', '=', $account['email'])->first();
+
+            $accountId = $row->id;
 
             foreach ($users as $user) {
                 $user['cooperation_id'] = null;
@@ -43,10 +46,7 @@ class UsersTableSeeder extends Seeder
                     $user['cooperation_id'] = $cooperation->id;
                 }
                 $user['account_id'] = $accountId;
-                DB::table('users')->updateOrInsert(
-                    $user['email'],
-                    $user
-                );
+                DB::table('users')->insert($user);
             }
         }
 

@@ -22,7 +22,6 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Services\ModelService;
 use App\Services\StepCommentService;
@@ -273,7 +272,6 @@ class RoofInsulationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param RoofInsulationFormRequest $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function store(RoofInsulationFormRequest $request)
@@ -295,7 +293,6 @@ class RoofInsulationController extends Controller
         $roofTypeIds = $request->input('building_roof_types.id', []);
 
         $roofTypes = $request->input('building_roof_types', []);
-
 
         $createData = [];
         foreach ($roofTypeIds as $roofTypeId) {

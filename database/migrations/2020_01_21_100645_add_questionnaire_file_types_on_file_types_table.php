@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class AddQuestionnaireFileTypesOnFileTypesTable extends Migration
@@ -19,19 +17,18 @@ class AddQuestionnaireFileTypesOnFileTypesTable extends Migration
             $fileTypes = [
                 [
                     'names' => [
-                        'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, met alle adresgegevens'
+                        'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, met alle adresgegevens',
                     ],
                     'content_type' => 'text/csv',
-                    'short' => 'custom-questionnaire-report'
+                    'short' => 'custom-questionnaire-report',
                 ],
                 [
                     'names' => [
-                        'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, zonder adresgegevens'
+                        'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, zonder adresgegevens',
                     ],
                     'content_type' => 'text/csv',
-                    'short' => 'custom-questionnaire-report-anonymized'
+                    'short' => 'custom-questionnaire-report-anonymized',
                 ],
-
             ];
 
             foreach ($fileTypes as $fileType) {
@@ -50,7 +47,7 @@ class AddQuestionnaireFileTypesOnFileTypesTable extends Migration
                     'name' => $uuid,
                     'file_type_category_id' => $fileTypeCategory->id,
                     'short' => $fileType['short'],
-                    'content_type' => $fileType['content_type']
+                    'content_type' => $fileType['content_type'],
                 ]);
             }
         }
@@ -63,10 +60,9 @@ class AddQuestionnaireFileTypesOnFileTypesTable extends Migration
      */
     public function down()
     {
-
         $fileTypes = [
             'custom-questionnaire-report',
-            'custom-questionnaire-report-anonymized'
+            'custom-questionnaire-report-anonymized',
         ];
 
         foreach ($fileTypes as $fileTypeShort) {

@@ -4,7 +4,6 @@ namespace App\Http\Requests\Cooperation;
 
 use App\Models\Questionnaire;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 class FileStorageFormRequest extends FormRequest
@@ -27,7 +26,6 @@ class FileStorageFormRequest extends FormRequest
     public function rules()
     {
         return [
-
         ];
     }
 
@@ -39,7 +37,7 @@ class FileStorageFormRequest extends FormRequest
                 $questionnaire = Questionnaire::find(
                     $this->input('file_storages.questionnaire_id')
                 );
-                if (!$questionnaire instanceof Questionnaire) {
+                if (! $questionnaire instanceof Questionnaire) {
                     $v->errors()->add('file_storages.questionnaire_id', 'Invalid.');
                 }
             });

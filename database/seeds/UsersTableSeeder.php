@@ -11,7 +11,6 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-
         $accounts = [
             [
                 'email'    => 'demo@example.org',
@@ -49,6 +48,5 @@ class UsersTableSeeder extends Seeder
                 DB::table('users')->insert($user);
             }
         }
-
     }
 }

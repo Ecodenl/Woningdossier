@@ -17,9 +17,6 @@ class Hoomdossier
     /**
      * Check if a column contains a needle, wrapper for stristr.
      *
-     * @param string $column
-     * @param string $needle
-     *
      * @return bool
      */
     public static function columnContains(string $column, string $needle)
@@ -90,7 +87,6 @@ class Hoomdossier
 
         $results = $found->pluck($column, 'short');
 
-
         // if the column name contains 'surface' there is particular logic:
         // if $value <= 0 we don't return it. We just check next sources to
         // see if there's a proper value and return that.
@@ -115,7 +111,7 @@ class Hoomdossier
 
         // the columns that may return zero values from a resident
         $valuesThatMayReturnZeroValues = [
-            'insulation_wall_surface', 'insulation_surface', 'insulation_roof_surface'
+            'insulation_wall_surface', 'insulation_surface', 'insulation_roof_surface',
         ];
 
         // Always check my own input source first. If that is properly filled
@@ -125,7 +121,7 @@ class Hoomdossier
         if ($results->has($myInputSource->short)) {
             $value = $results->get($myInputSource->short);
 
-            if ((false !== stristr($column, 'surface') && $value <= 0) && !in_array($column, $valuesThatMayReturnZeroValues)) {
+            if ((false !== stristr($column, 'surface') && $value <= 0) && ! in_array($column, $valuesThatMayReturnZeroValues)) {
                 // skip this one
                 $value = null;
             }
@@ -166,8 +162,6 @@ class Hoomdossier
 
     /**
      * Return the most credible input source for a relationship.
-     *
-     * @param Relation $relation
      *
      * @return int|mixed|null
      */

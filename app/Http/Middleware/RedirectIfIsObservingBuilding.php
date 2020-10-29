@@ -11,8 +11,8 @@ class RedirectIfIsObservingBuilding
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -20,6 +20,7 @@ class RedirectIfIsObservingBuilding
         if (HoomdossierSession::isUserObserving()) {
             Log::debug(__CLASS__.'::'.__METHOD__);
             Log::debug("Middleware: user id: {$request->user()->id} tried to access {$request->route()->uri} while observing");
+
             return redirect()->back();
         }
 

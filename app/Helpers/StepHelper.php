@@ -3,13 +3,13 @@
 namespace App\Helpers;
 
 use App\Models\Building;
+use App\Models\CompletedStep;
 use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\Questionnaire;
 use App\Models\Step;
 use App\Models\StepComment;
 use App\Models\User;
-use App\Models\CompletedStep;
 use App\Models\UserInterest;
 use Illuminate\Database\Query\Builder;
 
@@ -28,27 +28,23 @@ class StepHelper
         'boiler' => 'high-efficiency-boiler',
         'total-sun-panels' => 'solar-panels',
         'sun-boiler' => 'heater',
-        'house-ventilation' => 'ventilation'
+        'house-ventilation' => 'ventilation',
     ];
 
     /**
-     * Get alle the comments categorized under step and input source
+     * Get alle the comments categorized under step and input source.
      *
-     * @param Building $building
      * @param bool $withEmptyComments
      * @param null $specificInputSource
-     *
-     * @return array
      */
     public static function getAllCommentsByStep(
         Building $building,
         $withEmptyComments = false,
         $specificInputSource = null
-    ): array
-    {
+    ): array {
         $commentsByStep = [];
 
-        if (!$building instanceof Building) {
+        if (! $building instanceof Building) {
             return [];
         }
 
@@ -62,7 +58,6 @@ class StepHelper
         }
 
         foreach ($stepComments as $stepComment) {
-
             if ($stepComment->step->isSubStep()) {
                 if (is_null($stepComment->short)) {
                     $commentsByStep[$stepComment->step->parentStep->short][$stepComment->step->short][$stepComment->inputSource->name] = $stepComment->comment;
@@ -80,22 +75,18 @@ class StepHelper
     }
 
     /**
-     * Method to check whether a user has interest in a step
+     * Method to check whether a user has interest in a step.
      *
-     * @param User $user
      * @param InputSource $inputSource
      * @param $interestedInType
      * @param $interestedInId
-     *
-     * @return bool
      */
     public static function hasInterestInStep(
         User $user,
         $interestedInType,
         $interestedInId,
         $inputSource = null
-    ): bool
-    {
+    ): bool {
         $noInterestIds = Interest::whereIn('calculate_value',
             [4, 5])->select('id')->get()->pluck('id')->toArray();
 
@@ -112,14 +103,11 @@ class StepHelper
             $userSelectedInterestedId = $userSelectedUserInterest->interest_id;
         }
 
-        return !in_array($userSelectedInterestedId, $noInterestIds);
+        return ! in_array($userSelectedInterestedId, $noInterestIds);
     }
 
     /**
-     * Method to retrieve the unfinished sub steps of a step for a building
-     *
-     * @param Step $step
-     * @param Building $building
+     * Method to retrieve the unfinished sub steps of a step for a building.
      *
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
@@ -127,8 +115,7 @@ class StepHelper
         Step $step,
         Building $building,
         InputSource $inputSource
-    )
-    {
+    ) {
         return $step->subSteps()
             ->whereNotExists(function (Builder $query) use (
                 $building,
@@ -146,22 +133,16 @@ class StepHelper
     /**
      * Get the next step for a user where the user shows interest in or the next questionnaire for a user.
      *
-     * @param Building $building
-     * @param InputSource $inputSource
-     * @param Step $current
      * @param Questionnaire $currentQuestionnaire
-     *
-     * @return array
      */
     public static function getNextStep(
         Building $building,
         InputSource $inputSource,
         Step $current,
         Questionnaire $currentQuestionnaire = null
-    ): array
-    {
+    ): array {
         /**
-         * some default stuff set so we dont get if else in this method all over the place
+         * some default stuff set so we dont get if else in this method all over the place.
          *
          * @var Step $parentStep
          * @var Step $subStep
@@ -225,14 +206,11 @@ class StepHelper
                 })->get();
         }
 
-
         foreach ($nonCompletedSteps as $nonCompletedStep) {
-
             // when the non completed step is a substep, we can always return it.
             // else we have to check whether the user has interest in the step
             if ($nonCompletedStep instanceof Step && ($nonCompletedStep->isSubStep() || self::hasInterestInStep($user,
                         Step::class, $nonCompletedStep->id))) {
-
                 // when its a substep we need to build it again for the sub step
                 if ($nonCompletedStep->isSubStep()) {
                     $url = static::buildStepUrl($parentStep, $nonCompletedStep);
@@ -246,39 +224,31 @@ class StepHelper
             if ($nonCompletedStep instanceof Questionnaire) {
                 return [
                     'url' => $url,
-                    'tab_id' => 'questionnaire-' . $nonCompletedStep->id
+                    'tab_id' => 'questionnaire-'.$nonCompletedStep->id,
                 ];
             }
         }
 
         // if the user has no steps left where they do not have any interest in, redirect them to their plan
         return [
-            'url' => route('cooperation.tool.my-plan.index'), 'tab_id' => ''
+            'url' => route('cooperation.tool.my-plan.index'), 'tab_id' => '',
         ];
     }
 
     /**
-     * Return a step url
+     * Return a step url.
      *
-     * @param Step $parentStep
      * @param null $subStep
-     *
-     * @return string
      */
     public static function buildStepUrl(Step $parentStep, $subStep = null): string
     {
         return route(
-            $subStep instanceof Step ? 'cooperation.tool.' . $parentStep->short . '.' . $subStep->short . '.index' : 'cooperation.tool.' . $parentStep->short . '.index'
+            $subStep instanceof Step ? 'cooperation.tool.'.$parentStep->short.'.'.$subStep->short.'.index' : 'cooperation.tool.'.$parentStep->short.'.index'
         );
     }
 
     /**
      * Complete a step for a building.
-     *
-     * @param Step $step
-     * @param Building $building
-     * @param InputSource $inputSource
-     *
      */
     public static function complete(Step $step, Building $building, InputSource $inputSource)
     {
@@ -310,6 +280,5 @@ class StepHelper
                 ]);
             }
         }
-
     }
 }

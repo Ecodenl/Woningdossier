@@ -61,7 +61,6 @@ class GiveCoachesBuildingPermission
             if (PrivateMessage::public()->conversation($building->id)->exists()) {
                 PrivateMessage::public()->conversation($building->id)->update(['allow_access' => true]);
             } else {
-
                 // create the initial message
                 $privateMessage = $privateMessage::create([
                     'is_public' => true,

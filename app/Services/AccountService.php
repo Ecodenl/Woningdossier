@@ -7,7 +7,6 @@ use App\Models\Account;
 
 class AccountService
 {
-
     public static function create($email, $password)
     {
         return Account::create([

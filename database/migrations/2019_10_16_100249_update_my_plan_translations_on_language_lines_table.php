@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class UpdateMyPlanTranslationsOnLanguageLinesTable extends Migration
@@ -15,12 +13,12 @@ class UpdateMyPlanTranslationsOnLanguageLinesTable extends Migration
     {
         $keysToDelete = [
             'coach-comments.title',
-            'description.help'
+            'description.help',
         ];
         $keysToAdd = [
             'trigger-modal-for-other-input-source.title',
             'modal-for-other-input-source.title',
-            'modal-for-other-input-source.text'
+            'modal-for-other-input-source.text',
         ];
 
         foreach ($keysToDelete as $keyToDelete) {
@@ -34,7 +32,7 @@ class UpdateMyPlanTranslationsOnLanguageLinesTable extends Migration
             DB::table('language_lines')->insert([
                 'group' => 'my-plan',
                 'key' => $keyToAdd,
-                'text' => json_encode(['nl' => __('my-plan.'.$keyToAdd)])
+                'text' => json_encode(['nl' => __('my-plan.'.$keyToAdd)]),
             ]);
         }
     }

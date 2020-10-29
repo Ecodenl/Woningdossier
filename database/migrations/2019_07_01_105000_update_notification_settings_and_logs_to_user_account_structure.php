@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class UpdateNotificationSettingsAndLogsToUserAccountStructure extends Migration
@@ -17,7 +15,7 @@ class UpdateNotificationSettingsAndLogsToUserAccountStructure extends Migration
         foreach ($notificationSettings as $notificationSetting) {
             $siblings = $this->getUserSiblingPerCooperation($notificationSetting->user_id);
             foreach ($siblings as $sibling) {
-                /** @var stdClass $sibling */
+                /* @var stdClass $sibling */
                 $this->copyTableDataForSiblings('notification_settings',
                     $notificationSetting->user_id, $sibling->id);
             }
@@ -28,12 +26,11 @@ class UpdateNotificationSettingsAndLogsToUserAccountStructure extends Migration
             $hasSiblings = $this->hasSiblings($log->building_id);
             // only if a building has siblings we need to check data consistency
             if ($hasSiblings) {
-
-                $stuff     = [];
+                $stuff = [];
                 $buildings = $this->getBuildingSiblingPerCooperation($log->building_id);
 
                 foreach ($buildings as $cooperationId => $building) {
-                    if ( ! array_key_exists($cooperationId, $stuff)) {
+                    if (! array_key_exists($cooperationId, $stuff)) {
                         $stuff[$cooperationId] = ['building' => $building];
                     }
                 }
@@ -53,13 +50,13 @@ class UpdateNotificationSettingsAndLogsToUserAccountStructure extends Migration
                 }
 
                 foreach ($stuff as $data) {
-                    if (array_key_exists('building', $data) && array_key_exists('user', $data)){
+                    if (array_key_exists('building', $data) && array_key_exists('user', $data)) {
                         $copy = (array) $log;
                         unset($copy['id']);
 
                         $copy['building_id'] = $data['building']->id;
                         $copy['user_id'] = $data['user']->id;
-                        if (array_key_exists('for', $data)){
+                        if (array_key_exists('for', $data)) {
                             $copy['for_user_id'] = $data['for']->id;
                         }
 
@@ -68,7 +65,6 @@ class UpdateNotificationSettingsAndLogsToUserAccountStructure extends Migration
                 }
                 // Remove the old record
                 DB::table('logs')->delete($log->id);
-
             }
         }
     }
@@ -78,10 +74,9 @@ class UpdateNotificationSettingsAndLogsToUserAccountStructure extends Migration
         $result = [];
 
         $userId = (int) $userId;
-        $user   = DB::table('users')->find($userId);
+        $user = DB::table('users')->find($userId);
 
         if ($user instanceof stdClass) {
-
             $siblings = DB::table('users')->where('account_id', '=',
                 $user->account_id)->get();
 
@@ -105,15 +100,13 @@ class UpdateNotificationSettingsAndLogsToUserAccountStructure extends Migration
         $result = [];
 
         $buildingId = (int) $buildingId;
-        $building   = DB::table('buildings')->find($buildingId);
+        $building = DB::table('buildings')->find($buildingId);
 
         if ($building instanceof stdClass) {
-
             // Get the sibling of this building's user
             $users = $this->getUserSiblingPerCooperation($building->user_id);
 
             foreach ($users as $cooperation => $user) {
-
                 $b = DB::table('buildings')->where('user_id',
                     '=', $user->id)->first();
 
@@ -129,10 +122,10 @@ class UpdateNotificationSettingsAndLogsToUserAccountStructure extends Migration
     /**
      * Creates separate copies a table row for all buildings.
      *
-     * @param  string  $table
-     * @param  integer  $fromUserId
-     * @param  integer  $toUserId
-     * @param  string  $userColumn
+     * @param string $table
+     * @param int    $fromUserId
+     * @param int    $toUserId
+     * @param string $userColumn
      */
     protected function copyTableDataForSiblings(
         $table,
@@ -141,7 +134,7 @@ class UpdateNotificationSettingsAndLogsToUserAccountStructure extends Migration
         $userColumn = 'user_id'
     ) {
         $fromUserId = (int) $fromUserId;
-        $toUserId   = (int) $toUserId;
+        $toUserId = (int) $toUserId;
         if ($fromUserId == $toUserId) {
             return;
         }
@@ -165,6 +158,5 @@ class UpdateNotificationSettingsAndLogsToUserAccountStructure extends Migration
      */
     public function down()
     {
-        //
     }
 }

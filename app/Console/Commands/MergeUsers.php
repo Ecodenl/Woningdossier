@@ -43,25 +43,25 @@ class MergeUsers extends Command
     {
         $userId1 = (int) $this->argument('userId1');
         $userId2 = (int) $this->argument('userId2');
-        $user1   = User::find($userId1);
-        $user2   = User::find($userId2);
+        $user1 = User::find($userId1);
+        $user2 = User::find($userId2);
 
-        if ( ! $user1 instanceof User) {
-            $this->error("No user with ID ".$userId1);
+        if (! $user1 instanceof User) {
+            $this->error('No user with ID '.$userId1);
             exit;
         }
-        if ( ! $user2 instanceof User) {
-            $this->error("No user with ID ".$userId2);
+        if (! $user2 instanceof User) {
+            $this->error('No user with ID '.$userId2);
             exit;
         }
         if ($user1->cooperation_id !== $user2->cooperation_id) {
-            $this->error("Users are not part of the same cooperation!");
+            $this->error('Users are not part of the same cooperation!');
             exit;
         }
 
         Log::warning(
             sprintf(
-                "Merging users %s %s (%s) and %s %s (%s)",
+                'Merging users %s %s (%s) and %s %s (%s)',
                 $user1->first_name, $user1->last_name, $user1->id,
                 $user2->first_name, $user2->last_name, $user2->id
             )
@@ -70,6 +70,6 @@ class MergeUsers extends Command
         $user = UserService::merge($user1, $user2);
 
 //        Artisan::call('user:delete', ['user' => $userId2]);
-        Log::info(sprintf("Users %s and %s were merged", $userId1, $userId2));
+        Log::info(sprintf('Users %s and %s were merged', $userId1, $userId2));
     }
 }

@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class AddInputSourceIdsToInputSourceColumnOnCompletedQuestionnairesTable extends Migration
@@ -17,7 +15,7 @@ class AddInputSourceIdsToInputSourceColumnOnCompletedQuestionnairesTable extends
 
         if ($residentInputSource instanceof stdClass) {
             DB::table('completed_questionnaires')->update([
-                'input_source_id' => $residentInputSource->id
+                'input_source_id' => $residentInputSource->id,
             ]);
         }
     }
@@ -29,6 +27,5 @@ class AddInputSourceIdsToInputSourceColumnOnCompletedQuestionnairesTable extends
      */
     public function down()
     {
-        //
     }
 }

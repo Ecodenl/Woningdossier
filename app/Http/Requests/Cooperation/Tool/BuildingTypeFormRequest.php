@@ -25,6 +25,7 @@ class BuildingTypeFormRequest extends FormRequest
     public function rules()
     {
         $max = Carbon::now()->year;
+
         return [
             'build_year' => "numeric|between:1000,{$max}",
         ];

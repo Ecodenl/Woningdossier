@@ -6,7 +6,6 @@ use App\Models\Translation;
 
 class TranslationObserver
 {
-
     public function created(Translation $translation)
     {
         // cache it

@@ -140,7 +140,6 @@ class StepsTableSeeder extends Seeder
             ],
         ];
 
-
         foreach ($steps as $step) {
             $uuid = \App\Helpers\Str::uuid();
             foreach ($step['names'] as $locale => $name) {
@@ -152,7 +151,6 @@ class StepsTableSeeder extends Seeder
             }
 
             if (! DB::table('steps')->where('slug', $step['slug'])->first() instanceof stdClass) {
-
                 $insertStepData = [
                     'slug' => $step['slug'],
                     'short' => $step['short'],

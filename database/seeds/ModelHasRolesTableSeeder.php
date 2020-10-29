@@ -77,27 +77,23 @@ class ModelHasRolesTableSeeder extends Seeder
 
         $accounts = DB::table('accounts')->where('is_admin', '=', 1)->get();
 
-
-        foreach($accounts as $account) {
-
+        foreach ($accounts as $account) {
             $users = DB::table('users')->where('account_id', '=', $account->id)->get();
 
             foreach ($users as $user) {
-
                 $isSuperAdmin = DB::table('model_has_roles')
                   ->where('model_type', 'App\Models\User')
                     ->where('model_id', '=', $user->id)
                     ->where('role_id', '=', 1)
                     ->exists();
 
-                if (!$isSuperAdmin){
+                if (! $isSuperAdmin) {
                     DB::table('model_has_roles')->insert([
                         'model_type' => 'App\Models\User',
                         'model_id' => $user->id,
                         'role_id' => 1,
                     ]);
                 }
-
             }
         }
     }

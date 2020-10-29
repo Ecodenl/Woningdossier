@@ -52,7 +52,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class FileStorage extends Model
 {
-    use GetValueTrait, GetMyValuesTrait;
+    use GetValueTrait;
+    use GetMyValuesTrait;
 
     public static function boot()
     {
@@ -79,8 +80,6 @@ class FileStorage extends Model
     /**
      * Query to scope the expired files.
      *
-     * @param Builder $query
-     *
      * @return Builder
      */
     public function scopeWithExpired(Builder $query)
@@ -90,8 +89,6 @@ class FileStorage extends Model
 
     /**
      * Query to leave out the personal files.
-     *
-     * @param Builder $query
      *
      * @return Builder
      */
@@ -103,8 +100,6 @@ class FileStorage extends Model
     /**
      * Query to scope the file's that are being processed.
      *
-     * @param Builder $query
-     *
      * @return Builder
      */
     public function scopeBeingProcessed(Builder $query)
@@ -115,8 +110,6 @@ class FileStorage extends Model
     /**
      * Query to scope the most recent report.
      *
-     * @param Builder $query
-     * @param Questionnaire|null $questionnaire
      * @return Builder
      */
     public function scopeMostRecent(Builder $query, Questionnaire $questionnaire = null)
@@ -130,8 +123,6 @@ class FileStorage extends Model
 
     /**
      * Return the belongsto relationship on a cooperation.
-     *
-     * @return BelongsTo
      */
     public function cooperation(): BelongsTo
     {
@@ -145,8 +136,6 @@ class FileStorage extends Model
 
     /**
      * Return the belongsto relationship on a user.
-     *
-     * @return BelongsTo
      */
     public function user(): BelongsTo
     {
@@ -155,8 +144,6 @@ class FileStorage extends Model
 
     /**
      * Check if a specific file is being processed.
-     *
-     * @return bool
      */
     public function isBeingProcessed(): bool
     {

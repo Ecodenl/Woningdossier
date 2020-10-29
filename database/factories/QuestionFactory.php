@@ -8,7 +8,7 @@ $factory->define(\App\Models\Question::class, function (Faker $faker) {
     \App\Models\Translation::create([
         'key' => $uuid,
         'translation' => $faker->text(80),
-        'language' => 'nl'
+        'language' => 'nl',
     ]);
 
     return [

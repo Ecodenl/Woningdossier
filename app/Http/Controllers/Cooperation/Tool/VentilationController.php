@@ -17,8 +17,8 @@ use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
-use App\Services\UserInterestService;
 use App\Services\StepCommentService;
+use App\Services\UserInterestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -61,7 +61,6 @@ class VentilationController extends Controller
     /**
      * Method to store the data from the ventilation form.
      *
-     * @param VentilationFormRequest $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function store(VentilationFormRequest $request)
@@ -113,9 +112,10 @@ class VentilationController extends Controller
         StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
         $nextStep = StepHelper::getNextStep($building, $inputSource, $step);
         $url = $nextStep['url'];
-        if (!empty($nextStep['tab_id'])) {
-            $url .= '#' . $nextStep['tab_id'];
+        if (! empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
         }
+
         return redirect($url);
     }
 
@@ -146,7 +146,7 @@ class VentilationController extends Controller
         foreach ($relevantAdvices as $advice) {
             $measureApplication = MeasureApplication::find($advice['id']);
             if ($measureApplication instanceof MeasureApplication) {
-                if ($measureApplication->short == 'crack-sealing') {
+                if ('crack-sealing' == $measureApplication->short) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results['result']['crack_sealing'] ?? []);
                     $actionPlanAdvice->costs = $results['result']['crack_sealing']['cost_indication'] ?? null; // only outlier
                 } else {

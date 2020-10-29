@@ -65,7 +65,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         UserAssociatedWithOtherCooperation::class => [
             LogUserAssociatedWithOtherCooperation::class,
-            SendUserAssociatedWithCooperationMail::class
+            SendUserAssociatedWithCooperationMail::class,
         ],
         FillingToolForUserEvent::class => [
             FillingToolForUserListener::class,
@@ -83,7 +83,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         ParticipantRevokedEvent::class => [
             ParticipantRevokedListener::class,
-            SetMessagesUnreadForRevokedUserOnBuilding::class
+            SetMessagesUnreadForRevokedUserOnBuilding::class,
         ],
         ParticipantAddedEvent::class => [
             ParticipantAddedListener::class,

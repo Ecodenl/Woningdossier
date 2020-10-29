@@ -8,10 +8,10 @@ return [
                 'role' => 'Rol',
                 'title' => 'Filteren op gebruiker',
                 'first-name' => 'Voornaam',
-                'last-name' => 'Achternaam'
+                'last-name' => 'Achternaam',
             ],
             'account' => [
-                'email' => 'Email'
+                'email' => 'Email',
             ],
             'building' => [
                 'title' => 'Filteren op adres',
@@ -38,7 +38,7 @@ return [
                 'zip-code' => 'Postcode',
                 'city' => 'Stad',
                 'status' => 'Status',
-                'no-known-created-at' => 'Niet bekend'
+                'no-known-created-at' => 'Niet bekend',
             ],
         ],
     ],

@@ -15,7 +15,6 @@ class ToolController extends Controller
     /**
      * Set the sessions and after that redirect them to the tool.
      *
-     * @param Cooperation $cooperation
      * @param $buildingId
      *
      * @return \Illuminate\Http\RedirectResponse
@@ -35,7 +34,6 @@ class ToolController extends Controller
     /**
      * Sessions that need to be set so we can let a user observe a building / tool.
      *
-     * @param Cooperation $cooperation
      * @param $buildingId
      *
      * @return \Illuminate\Http\RedirectResponse

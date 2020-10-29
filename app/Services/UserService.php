@@ -15,12 +15,8 @@ use Illuminate\Support\Facades\Log;
 
 class UserService
 {
-
     /**
-     * Method to reset a user his file for a specific input source
-     *
-     * @param User $user
-     * @param InputSource $inputSource
+     * Method to reset a user his file for a specific input source.
      */
     public static function resetUser(User $user, InputSource $inputSource)
     {
@@ -67,10 +63,6 @@ class UserService
     /**
      * Method to register a user.
      *
-     * @param Cooperation $cooperation
-     * @param array $registerData
-     * @param array $roles
-     *
      * @return User
      */
     public static function register(Cooperation $cooperation, array $roles, array $registerData)
@@ -80,7 +72,7 @@ class UserService
         $account = Account::where('email', $email)->first();
 
         // if its not found we will create a new one.
-        if (!$account instanceof Account) {
+        if (! $account instanceof Account) {
             $account = AccountService::create($email, $registerData['password']);
         }
 
@@ -95,9 +87,8 @@ class UserService
     }
 
     /**
-     * Method to create a new user with all necessary actions to make the tool work
+     * Method to create a new user with all necessary actions to make the tool work.
      *
-     * @param Cooperation $cooperation
      * @param $account
      * @param $data
      *
@@ -108,10 +99,8 @@ class UserService
         array $roles,
         $account,
         $data
-    )
-    {
-
-        Log::debug('account id for registration: ' . $account->id);
+    ) {
+        Log::debug('account id for registration: '.$account->id);
         // Create the user for an account
         $user = User::create(
             [
@@ -160,9 +149,8 @@ class UserService
     }
 
     /**
-     * Method to delete a user and its user info
+     * Method to delete a user and its user info.
      *
-     * @param User $user
      * @param bool $shouldForceDeleteBuilding
      *
      * @throws \Exception
@@ -170,8 +158,7 @@ class UserService
     public static function deleteUser(
         User $user,
         $shouldForceDeleteBuilding = false
-    )
-    {
+    ) {
         $accountId = $user->account_id;
         $building = $user->building;
 
@@ -216,11 +203,9 @@ class UserService
      * input sources will be combined. If not possible, the data of $user1 will be
      * leading and the data of user2 will be deleted.
      *
-     * @param User $user1
-     * @param User $user2
+     * @throws \Exception
      *
      * @return User
-     * @throws \Exception
      */
     public static function merge(User $user1, User $user2)
     {
@@ -250,7 +235,7 @@ class UserService
 
         foreach ($tables as $column => $tablesWithColumn) {
             foreach ($tablesWithColumn as $tableWithColumn) {
-                Log::debug("UPDATE " . $tableWithColumn . " SET " . $column . " = " . $user1->id . " WHERE " . $column . " = " . $user2->id . ";");
+                Log::debug('UPDATE '.$tableWithColumn.' SET '.$column.' = '.$user1->id.' WHERE '.$column.' = '.$user2->id.';');
                 DB::table($tableWithColumn)
                     ->where($column, '=', $user2->id)
                     ->update([$column => $user1->id]);
@@ -272,15 +257,15 @@ class UserService
 
         foreach ($tables as $column => $tablesWithColumn) {
             foreach ($tablesWithColumn as $tableWithColumn) {
-                Log::debug("Checking input sources for " . $tableWithColumn);
+                Log::debug('Checking input sources for '.$tableWithColumn);
                 $inputSources = DB::table($tableWithColumn)
-                    ->where($column, "=", $user1->id)
+                    ->where($column, '=', $user1->id)
                     ->select('input_source_id')
                     ->distinct()
                     ->pluck('input_source_id')
                     ->toArray();
 
-                Log::debug("UPDATE " . $tableWithColumn . " SET " . $column . " = " . $user1->id . " WHERE " . $column . " = " . $user2->id . " AND WHERE input_source NOT IN (" . implode(",", $inputSources) . ");");
+                Log::debug('UPDATE '.$tableWithColumn.' SET '.$column.' = '.$user1->id.' WHERE '.$column.' = '.$user2->id.' AND WHERE input_source NOT IN ('.implode(',', $inputSources).');');
                 DB::table($tableWithColumn)
                     ->where($column, '=', $user2->id)
                     ->whereNotIn('input_source_id', $inputSources)

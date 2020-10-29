@@ -2,9 +2,7 @@
 
 namespace App\Services;
 
-use App\Helpers\Arr;
 use App\Helpers\FileFormats\CsvHelper;
-use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
 use App\Helpers\Translation;
 use App\Models\Building;
@@ -19,10 +17,7 @@ use App\Models\QuestionOption;
 use App\Models\Role;
 use App\Models\Step;
 use App\Models\User;
-use App\Scopes\CooperationScope;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class CsvService
 {
@@ -31,8 +26,6 @@ class CsvService
      *
      * @param $cooperation
      * @param $anonymize
-     *
-     * @return array
      */
     public static function byMeasure($cooperation, $anonymize): array
     {
@@ -185,8 +178,6 @@ class CsvService
 
             // get the user measures / advices
             foreach ($userActionPlanAdvices as $actionPlanAdvice) {
-
-
                 $measureName = $actionPlanAdvice->measureApplication->measure_name;
 
                 $plannedYear = UserActionPlanAdviceService::getYear($actionPlanAdvice);
@@ -203,12 +194,10 @@ class CsvService
         return $rows;
     }
 
-
     /**
      * Return the base headers for a csv.
      *
      * @param $anonymize
-     * @return array
      */
     public static function getBaseHeaders($anonymize): array
     {
@@ -247,14 +236,10 @@ class CsvService
         }
     }
 
-
     /**
-     * Method to dump the results of a given questionnaire
+     * Method to dump the results of a given questionnaire.
      *
      * @param Cooperation $cooperation
-     * @param bool $anonymize
-     *
-     * @return array
      */
     public static function dumpForQuestionnaire(Questionnaire $questionnaire, bool $anonymize): array
     {
@@ -279,7 +264,6 @@ class CsvService
             $inputSource = $residentRole->inputSource;
             $building = $user->building;
             if ($building instanceof Building) {
-
                 // normally we would pick the given input source
                 // but when coach input is available we use the coach input source for that particular user
                 // coach input is available when he has completed the questionnaire
@@ -358,16 +342,14 @@ class CsvService
                         ->orderBy('questions.order')
                         ->get();
 
-
                 foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {
                     $answer = $questionAnswerForCurrentQuestionnaire->answer;
                     $currentQuestion = Question::withTrashed()->find($questionAnswerForCurrentQuestionnaire->question_id);
 
                     if ($currentQuestion instanceof Question) {
-
                         // when the question has options, the answer is imploded.
                         if ($currentQuestion->hasQuestionOptions()) {
-                            if (!empty($answer)) {
+                            if (! empty($answer)) {
                                 // this will contain the question option ids
                                 // and filter out the empty answers.
                                 $answers = array_filter(explode('|', $answer));
@@ -386,26 +368,19 @@ class CsvService
                     }
 
                     $questionName = "{$questionAnswerForCurrentQuestionnaire->question_id}-{$questionAnswerForCurrentQuestionnaire->question_name}";
-                    $rows[$building->id][$questionName] = preg_replace("/\r|\n/", " ", $answer);
+                    $rows[$building->id][$questionName] = preg_replace("/\r|\n/", ' ', $answer);
                     $headers[$questionName] = $questionAnswerForCurrentQuestionnaire->question_name;
-
                 }
             }
         }
 
         array_unshift($rows, $headers);
-        return $rows;
 
+        return $rows;
     }
 
     /**
      * Get the total report for all users by the cooperation.
-     *
-     * @param Cooperation $cooperation
-     * @param InputSource $inputSource
-     * @param bool $anonymized
-     *
-     * @return array
      */
     public static function totalReport(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
     {
@@ -452,7 +427,7 @@ class CsvService
             return $value;
         }
 
-        if (!is_numeric($value)) {
+        if (! is_numeric($value)) {
             return $value;
         }
 
@@ -474,9 +449,9 @@ class CsvService
      * Format the output of the given column and value.
      *
      * @param string $column
-     * @param mixed $value
-     * @param int $decimals
-     * @param bool $shouldRound
+     * @param mixed  $value
+     * @param int    $decimals
+     * @param bool   $shouldRound
      *
      * @return float|int|string
      */
@@ -514,7 +489,7 @@ class CsvService
      */
     protected static function isYear($column, $extraValue = '')
     {
-        if (!is_null($column)) {
+        if (! is_null($column)) {
             if (false !== stristr($column, 'year')) {
                 return true;
             }

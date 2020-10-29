@@ -7,16 +7,13 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\InputSource;
-use App\Models\Interest;
 use App\Models\PrivateMessageView;
 use App\Models\Step;
 use App\Models\ToolSetting;
-use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class ToolComposer
 {
-
     private $cooperation;
     private $currentUser;
     private $commentsByStep;
@@ -26,7 +23,6 @@ class ToolComposer
     private $currentBuilding;
     private $buildingOwner;
     private $changedSettings;
-
 
     public function create(View $view)
     {
@@ -38,15 +34,10 @@ class ToolComposer
         // which meens we hef to refaktor.
         $excludedViews = ['cooperation.tool.components.alert'];
 
-        if ( ! in_array($view->getName(), $excludedViews)) {
-
-
-
+        if (! in_array($view->getName(), $excludedViews)) {
             $user = Hoomdossier::user();
 
             $view->with('user', $user);
-
-
 
             if (is_null($this->cooperation)) {
                 $this->cooperation = HoomdossierSession::getCooperation(true);
@@ -60,13 +51,11 @@ class ToolComposer
 //                $this->unreadMessageCount = PrivateMessageView::getTotalUnreadMessagesForCurrentRole();
 //            }
 
-            if (is_null($this->currentStep) ){
+            if (is_null($this->currentStep)) {
                 $toolUrl = explode('/', request()->getRequestUri());
 
-                if ($toolUrl[2] !== 'my-plan') {
+                if ('my-plan' !== $toolUrl[2]) {
                     $currentSubStep = isset($toolUrl[3]) ? Step::where('slug', $toolUrl[3])->first() : null;
-
-
 
                     $this->currentStep = Step::where('slug', $toolUrl[2])
                         ->with(['questionnaires' => function ($query) {
@@ -75,7 +64,6 @@ class ToolComposer
                     $this->currentSubStep = $currentSubStep;
                 }
             }
-
 
             $view->with('commentsByStep', $this->commentsByStep);
             //$view->with('inputSources', InputSource::orderBy('order', 'desc')->get());
@@ -93,7 +81,7 @@ class ToolComposer
 
             $changedSettings = collect([]);
             if ($this->currentBuilding instanceof Building) {
-                if (is_null($this->buildingOwner)){
+                if (is_null($this->buildingOwner)) {
                     $this->buildingOwner = $this->currentBuilding->user;
                 }
 
@@ -108,7 +96,6 @@ class ToolComposer
                 $changedSettings = $this->changedSettings;
             }
             $view->with('toolSettings', $changedSettings);
-
         }
     }
 }

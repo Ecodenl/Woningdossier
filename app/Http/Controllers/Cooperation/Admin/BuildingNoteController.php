@@ -6,14 +6,11 @@ use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingNoteRequest;
 use App\Models\BuildingNotes;
-use Illuminate\Http\Request;
 
 class BuildingNoteController extends Controller
 {
     /**
      * Method to store a note for a building.
-     *
-     * @param BuildingNoteRequest $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */

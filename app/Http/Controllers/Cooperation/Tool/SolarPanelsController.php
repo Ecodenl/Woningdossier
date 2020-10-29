@@ -15,7 +15,6 @@ use App\Models\PvPanelOrientation;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
-use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
@@ -75,8 +74,6 @@ class SolarPanelsController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param SolarPanelFormRequest $request
      *
      * @return \Illuminate\Http\Response
      */

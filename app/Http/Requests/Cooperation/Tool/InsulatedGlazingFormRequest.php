@@ -4,14 +4,11 @@ namespace App\Http\Requests\Cooperation\Tool;
 
 use App\Http\Requests\DecimalReplacementTrait;
 use App\Models\Interest;
-use App\Models\MeasureApplication;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Fluent;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 class InsulatedGlazingFormRequest extends FormRequest
@@ -32,10 +29,9 @@ class InsulatedGlazingFormRequest extends FormRequest
     {
         $this->decimals([
             'building_insulated_glazings' => 'm2',
-            'window_surface'
+            'window_surface',
         ]);
     }
-
 
     public function rules()
     {
@@ -49,7 +45,7 @@ class InsulatedGlazingFormRequest extends FormRequest
             'building_features.window_surface' => 'nullable|numeric|min:1',
             'building_paintwork_statuses.wood_rot_status_id' => 'required|exists:wood_rot_statuses,id',
             'building_paintwork_statuses.paintwork_status_id' => 'required|exists:paintwork_statuses,id',
-            'building_paintwork_statuses.last_painted_year' => 'nullable|numeric|between:1990,' . $max,
+            'building_paintwork_statuses.last_painted_year' => 'nullable|numeric|between:1990,'.$max,
         ];
 
         return $rules;
@@ -66,13 +62,13 @@ class InsulatedGlazingFormRequest extends FormRequest
             // when no interest, its not required. The field should be empty, but the field can still be filled. So validate.
             if ($this->isUserInterested($userInterest['interest_id'])) {
                 $validator->addRules([
-                    $big . $measureApplicationId . '.m2' => 'required|numeric|min:1',
-                    $big . $measureApplicationId . '.windows' => 'required|numeric|min:1'
+                    $big.$measureApplicationId.'.m2' => 'required|numeric|min:1',
+                    $big.$measureApplicationId.'.windows' => 'required|numeric|min:1',
                 ]);
             } else {
                 $validator->addRules([
-                    $big . $measureApplicationId . '.m2' => 'nullable|numeric|min:1',
-                    $big . $measureApplicationId . '.windows' => 'nullable|numeric|min:1'
+                    $big.$measureApplicationId.'.m2' => 'nullable|numeric|min:1',
+                    $big.$measureApplicationId.'.windows' => 'nullable|numeric|min:1',
                 ]);
             }
         }
@@ -82,12 +78,13 @@ class InsulatedGlazingFormRequest extends FormRequest
      * Check whether the user has interest in the particular measure.
      *
      * @param $userInterest
+     *
      * @return bool
      */
     public function isUserInterested($userInterest)
     {
         $noInterestIds = Interest::where('calculate_value', 4)->orWhere('calculate_value', 5)->select('id')->get()->pluck('id')->toArray();
 
-        return !in_array($userInterest, $noInterestIds);
+        return ! in_array($userInterest, $noInterestIds);
     }
 }

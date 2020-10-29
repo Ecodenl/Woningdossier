@@ -85,12 +85,11 @@ class RoomTemperatureCalculator
 
     public function __construct(UserEnergyHabit $habits)
     {
-
-        if (!$habits->heatingFirstFloor instanceof BuildingHeating) {
+        if (! $habits->heatingFirstFloor instanceof BuildingHeating) {
             $habits->heatingFirstFloor = BuildingHeating::where('is_default', true)->first();
         }
 
-        if (!$habits->heatingSecondFloor instanceof BuildingHeating) {
+        if (! $habits->heatingSecondFloor instanceof BuildingHeating) {
             $habits->heatingSecondFloor = BuildingHeating::where('is_default', true)->first();
         }
 

@@ -31,15 +31,12 @@ class GiveCoachesBuildingPermission
     {
         $building = $event->building;
 
-        // check if there are any conversation requests.
-        // if so, set the allow access to true, and give the connected coaches access.
-        if (PrivateMessage::conversationRequestByBuildingId($building->id)->exists()) {
+        // first we check if a public conversation exists, if so we need to set the allowed access to true
+        // and we need to check if there were "connected" coaches, if so we have to give them building permissions
+        if (PrivateMessage::public()->conversation($building->id)->exists()) {
             // update all messages with allow_access to true.
-            PrivateMessage::conversationRequestByBuildingId($building->id)
+            PrivateMessage::public()->conversation($building->id)
                 ->update(['allow_access' => true]);
-
-            // todo: allowing access to a building became mandatory upon registering.
-            // todo: the code beneath here will become redundant when we decide to make it permanent.
 
             // get all the coaches that are currently connected to the building
             $coachesWithAccessToResidentBuildingStatuses = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
@@ -64,7 +61,6 @@ class GiveCoachesBuildingPermission
             if (PrivateMessage::public()->conversation($building->id)->exists()) {
                 PrivateMessage::public()->conversation($building->id)->update(['allow_access' => true]);
             } else {
-
                 // create the initial message
                 $privateMessage = $privateMessage::create([
                     'is_public' => true,

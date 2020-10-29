@@ -18,10 +18,10 @@ return [
         'form' => [
             'questionnaire' => 'Vragenlijst om te kopiëren',
             'cooperations' => 'Vragenlijst naar de volgende coöperaties kopiëren',
-            'submit' => 'Vragenlijst kopiëren'
-        ]
+            'submit' => 'Vragenlijst kopiëren',
+        ],
     ],
     'copy' => [
-        'success' => 'Vragenlijst word gekopieerd naar de coöperaties.'
+        'success' => 'Vragenlijst word gekopieerd naar de coöperaties.',
     ],
 ];

@@ -23,8 +23,6 @@ class Old
      * Determine if a given key exists in the _modified_old_input session.
      *
      * @param $key
-     *
-     * @return bool
      */
     protected static function hasOld($key): bool
     {

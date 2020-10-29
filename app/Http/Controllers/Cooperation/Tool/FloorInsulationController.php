@@ -18,9 +18,7 @@ use App\Models\ElementValue;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
-use App\Services\CsvService;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
 use Illuminate\Http\JsonResponse;
@@ -42,12 +40,10 @@ class FloorInsulationController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Cooperation $cooperation
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Cooperation $cooperation)
     {
-
         $typeIds = [4];
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
@@ -101,8 +97,6 @@ class FloorInsulationController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param FloorInsulationFormRequest $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */

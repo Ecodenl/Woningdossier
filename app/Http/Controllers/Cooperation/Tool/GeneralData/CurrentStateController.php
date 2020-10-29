@@ -6,23 +6,18 @@ use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\GeneralData\CurrentStateFormRequest;
 use App\Models\BuildingHeatingApplication;
-use App\Models\BuildingService;
-use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\ElementValue;
-use App\Models\ExampleBuildingContent;
-use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\UserInterest;
-use App\Http\Controllers\Controller;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
-
 use Illuminate\Support\Arr;
 
 class CurrentStateController extends Controller
@@ -49,6 +44,7 @@ class CurrentStateController extends Controller
         $buildingHeatingApplications = BuildingHeatingApplication::orderBy('order')->get();
 
         $commentsByStep = StepHelper::getAllCommentsByStep($building);
+
         return view('cooperation.tool.general-data.current-state.index', compact(
             'building', 'buildingOwner', 'elements', 'services', 'userInterestsForMe', 'services',
             'buildingHeatingApplications', 'myBuildingFeatures', 'commentsByStep'
@@ -73,7 +69,7 @@ class CurrentStateController extends Controller
                     'input_source_id' => $inputSource->id,
                 ],
                 [
-                    'element_value_id' => $elementData['element_value_id']
+                    'element_value_id' => $elementData['element_value_id'],
                 ]
             );
         }
@@ -92,7 +88,7 @@ class CurrentStateController extends Controller
 
         // when the user has no interests, we have to do some A.I to determine the interest of a user
         // basic rule: when something is "bad" the user has interest in the service / element
-        if (!$userHasInterests) {
+        if (! $userHasInterests) {
             // key value
             // $stepShort => $interestId
             $userInterests = [];
@@ -124,7 +120,7 @@ class CurrentStateController extends Controller
                         $userInterests['high-efficiency-boiler'] = in_array($serviceValueCalculateValue, [2, 5]) ? $yesOnShortTermInterestId : $noInterestNotPossibleId;
                         break;
                     case 'heat-pump':
-                        $userInterests[$serviceShort] = $serviceValueCalculateValue == 1 ? $maybeMoreInfoInterestId : $noInterestNotPossibleId;
+                        $userInterests[$serviceShort] = 1 == $serviceValueCalculateValue ? $maybeMoreInfoInterestId : $noInterestNotPossibleId;
                         break;
                     case 'total-sun-panels':
                         $userInterests['solar-panels'] = empty($serviceData['extra']['value']) ? $yesOnShortTermInterestId : $noInterestNotPossibleId;
@@ -133,11 +129,9 @@ class CurrentStateController extends Controller
                         $userInterests['ventilation'] = $yesOnShortTermInterestId;
                         break;
                     case 'sun-boiler':
-                        $userInterests['heater'] = $serviceValueCalculateValue == 1 ? $maybeMoreInfoInterestId : $noInterestNotPossibleId;
-
+                        $userInterests['heater'] = 1 == $serviceValueCalculateValue ? $maybeMoreInfoInterestId : $noInterestNotPossibleId;
                 }
             }
-
 
             // now save the interests
             foreach ($userInterests as $stepShort => $interestId) {
@@ -158,8 +152,8 @@ class CurrentStateController extends Controller
         $nextStep = StepHelper::getNextStep($building, $inputSource, $step);
         $url = $nextStep['url'];
 
-        if (!empty($nextStep['tab_id'])) {
-            $url .= '#' . $nextStep['tab_id'];
+        if (! empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
         }
 
         return redirect($url);

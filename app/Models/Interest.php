@@ -31,7 +31,6 @@ class Interest extends Model
 {
     use TranslatableTrait;
 
-
     public function users()
     {
         return $this->morphedByMany(User::class, 'interest', 'user_interests');

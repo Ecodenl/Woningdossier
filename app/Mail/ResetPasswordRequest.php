@@ -23,8 +23,6 @@ class ResetPasswordRequest extends Mailable
      * Create new message instance.
      *
      * UserCreatedEmail constructor.
-     *
-     * @param Cooperation $cooperation
      */
     public function __construct(Cooperation $cooperation, Account $account, $token)
     {

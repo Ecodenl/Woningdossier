@@ -21,9 +21,6 @@ class ParticipantController extends Controller
     /**
      * Remove a participant from a group chat and revoke his building access permissions.
      *
-     * @param Cooperation $cooperation
-     * @param Request     $request
-     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function revokeAccess(Cooperation $cooperation, Request $request)
@@ -52,9 +49,6 @@ class ParticipantController extends Controller
     /**
      * Add a user / participant to a group chat and give him building access permission.
      *
-     * @param Cooperation $cooperation
-     * @param Request     $request
-     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function addWithBuildingAccess(Cooperation $cooperation, Request $request)
@@ -68,7 +62,7 @@ class ParticipantController extends Controller
         if ($user instanceof User) {
             $residentBuilding = Building::find($buildingId);
 
-            $privateMessage = PrivateMessage::conversationRequestByBuildingId($buildingId)->first();
+            $privateMessage = PrivateMessage::public()->conversation($buildingId)->first();
 
             if ($privateMessage->allow_access) {
                 // give the coach permission to the resident his building
@@ -77,7 +71,7 @@ class ParticipantController extends Controller
 
             BuildingCoachStatusService::giveAccess($user, $residentBuilding);
 
-            event(new ParticipantAddedEvent($user, $residentBuilding));
+            ParticipantAddedEvent::dispatch($user, $residentBuilding);
         }
 
         // since the coordinator is the only one who can do this atm.
@@ -87,9 +81,6 @@ class ParticipantController extends Controller
 
     /**
      * Method to set a collection of messages to read.
-     *
-     * @param Cooperation $cooperation
-     * @param Request     $request
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
@@ -110,7 +101,7 @@ class ParticipantController extends Controller
 
         $messagesToSetRead = $messagesToSetRead->get();
 
-        if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+        if (Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
             PrivateMessageViewService::markAsReadByCooperation($messagesToSetRead, $cooperation);
         } elseif (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
             $inputSource = InputSource::findByShort(InputSource::COACH_SHORT);

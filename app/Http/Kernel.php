@@ -53,7 +53,6 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'is-admin' => \App\Http\Middleware\IsAdmin::class,
         'cooperation' => \App\Http\Middleware\CooperationMiddleware::class,
         'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
@@ -69,5 +68,6 @@ class Kernel extends HttpKernel
         'deny-if-filling-for-other-building' => \App\Http\Middleware\RedirectIfIsFillingForOtherBuilding::class,
         'deny-if-observing-building' => \App\Http\Middleware\RedirectIfIsObservingBuilding::class,
         'step-disabled' => \App\Http\Middleware\RedirectIfStepDisabled::class,
+        'restore-building-session-if-filling-for-other-building' => \App\Http\Middleware\RestoreBuildingSessionIfFillingForOtherBuilding::class,
     ];
 }

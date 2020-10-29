@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class DropMotivationExtraFromUserEnergyHabitsTable extends Migration
 {
@@ -14,7 +14,7 @@ class DropMotivationExtraFromUserEnergyHabitsTable extends Migration
     public function up()
     {
         Schema::table('user_energy_habits', function (Blueprint $table) {
-           $table->dropColumn('motivation_extra');
+            $table->dropColumn('motivation_extra');
         });
     }
 

@@ -20,8 +20,6 @@ class ParticipantAddedEvent
 
     /**
      * Event to be triggered when a participant gets added to a group message / building.
-     * @param User $addedParticipant
-     * @param Building $building
      */
     public function __construct(User $addedParticipant, Building $building)
     {

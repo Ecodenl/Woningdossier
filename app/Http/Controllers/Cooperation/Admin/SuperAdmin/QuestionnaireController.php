@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
+use App\Http\Controllers\Controller;
 use App\Jobs\CopyQuestionnaireToCooperation;
 use App\Models\Cooperation;
-use App\Models\Question;
 use App\Models\Questionnaire;
-use App\Models\QuestionOption;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class QuestionnaireController extends Controller
 {
@@ -28,11 +26,9 @@ class QuestionnaireController extends Controller
         return view('cooperation.admin.super-admin.questionnaires.edit', compact('selectedQuestionnaire', 'questionnaires', 'cooperations'));
     }
 
-
     /**
-     * Copy the questionnaire to other cooperations
+     * Copy the questionnaire to other cooperations.
      *
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function copy(Request $request)
@@ -47,6 +43,7 @@ class QuestionnaireController extends Controller
             $cooperation = Cooperation::find($cooperationId);
             CopyQuestionnaireToCooperation::dispatch($cooperation, $questionnaire);
         }
+
         return redirect()
             ->route('cooperation.admin.super-admin.questionnaires.index')
             ->with('success', __('cooperation/admin/super-admin/questionnaires.copy.success'));

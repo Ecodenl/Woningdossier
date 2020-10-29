@@ -17,7 +17,6 @@ trait GetMyValuesTrait
      * Scope all the available input for a user.
      *
      * @param $query
-     * @param User|null $user
      *
      * @return mixed
      */
@@ -45,9 +44,6 @@ trait GetMyValuesTrait
     /**
      * Scope a query for a specific input source id.
      *
-     * @param Builder     $query
-     * @param InputSource $inputSource
-     *
      * @return Builder
      */
     public function scopeForInputSource(Builder $query, InputSource $inputSource)
@@ -57,8 +53,6 @@ trait GetMyValuesTrait
 
     /**
      * Determine if we should query on the user or building id.
-     *
-     * @return array
      */
     protected function determineWhereColumn(User $user = null): array
     {
@@ -96,10 +90,6 @@ trait GetMyValuesTrait
     /**
      * Check on a collection that comes from the forMe() scope if it contains a
      * Coach input source.
-     *
-     * @param Collection $inputSourcesForMe
-     *
-     * @return bool
      */
     public static function hasCoachInputSource(Collection $inputSourcesForMe): bool
     {
@@ -115,10 +105,6 @@ trait GetMyValuesTrait
      * Check on a collection that comes from the forMe() scope if it contains a
      * resident input source.
      *tom.
-     *
-     * @param Collection $inputSourcesForMe
-     *
-     * @return bool
      */
     public static function hasResidentInputSource(Collection $inputSourcesForMe): bool
     {
@@ -133,8 +119,6 @@ trait GetMyValuesTrait
     /**
      * Get the coach input from a collection that comes from the forMe() scope.
      *
-     * @param Collection $inputSourcesForMe
-     *
      * @return mixed
      */
     public static function getCoachInput(Collection $inputSourcesForMe)
@@ -147,8 +131,6 @@ trait GetMyValuesTrait
 
     /**
      * Get the resident input from a collection that comes from the forMe() scope.
-     *
-     * @param Collection $inputSourcesForMe
      *
      * @return mixed
      */

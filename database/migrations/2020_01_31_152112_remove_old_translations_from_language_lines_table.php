@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class RemoveOldTranslationsFromLanguageLinesTable extends Migration
@@ -36,6 +34,5 @@ class RemoveOldTranslationsFromLanguageLinesTable extends Migration
      */
     public function down()
     {
-        //
     }
 }

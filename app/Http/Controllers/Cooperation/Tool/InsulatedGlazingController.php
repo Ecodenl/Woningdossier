@@ -185,8 +185,6 @@ class InsulatedGlazingController extends Controller
     /**
      * Store the incoming request and redirect to the next step.
      *
-     * @param InsulatedGlazingFormRequest $request
-     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(InsulatedGlazingFormRequest $request)
@@ -213,13 +211,11 @@ class InsulatedGlazingController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-
         $buildingInsulatedGlazings = $request->input('building_insulated_glazings', '');
 
         // Saving the insulate glazings
         $interests = collect();
         foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazing) {
-
             $insulatedGlazingId = $buildingInsulatedGlazing['insulated_glazing_id'];
             $buildingHeatingId = $buildingInsulatedGlazing['building_heating_id'];
             $m2 = isset($buildingInsulatedGlazing['m2']) ? $buildingInsulatedGlazing['m2'] : 0;

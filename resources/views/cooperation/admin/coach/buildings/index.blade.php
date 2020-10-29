@@ -20,14 +20,13 @@
                         </tr>
                         </thead>
                         <tbody>
-                     
 
-                        @foreach($buildingCoachStatuses as $buildingCoachStatus)
+
+                        @foreach($buildings as $building)
                             <?php
                                 /** @var \App\Models\Building $building */
-                                $building = $buildingCoachStatus->building()->first();
                                 $user = $building->user;
-                                $buildingStatus = $building->getMostRecentBuildingStatus();
+                                $buildingStatus = $building->buildingStatuses->first();
 
                                 $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
                                 $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
@@ -77,6 +76,7 @@
         $(document).ready(function () {
             $('#table').DataTable({
                 responsive: true,
+                order: [[0, "desc"]],
                 columnDefs: [
                     {responsivePriority: 7, targets: 6, width: "10%"},
                     {responsivePriority: 6, targets: 5, width: "20%"},

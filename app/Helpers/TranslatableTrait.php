@@ -123,8 +123,6 @@ trait TranslatableTrait
     }
 
     /**
-     * @param array $localizedTexts
-     *
      * @return string The translation UUID
      */
     public function createTranslations($attribute, array $localizedTexts)
@@ -169,8 +167,6 @@ trait TranslatableTrait
      * Return all the translations that are available in a collection.
      *
      * @param string $attribute default 'name' since this is the most common used field
-     *
-     * @return Collection
      */
     public function getAllTranslations(string $attribute = 'name'): Collection
     {

@@ -70,16 +70,12 @@ class BuildingCoachStatus extends Model
      */
     public function coach()
     {
-        return $this->belongsTo('App\Models\User', 'coach_id', 'id');
+        return $this->belongsTo(\App\Models\User::class, 'coach_id', 'id');
     }
 
     /**
      * Returns the 'connected' coaches from a given building id.
      * A coach is considered to be connected when he has more pending statuses then removed statuses.
-     *
-     * @param int $buildingId
-     *
-     * @return \Illuminate\Support\Collection
      */
     public static function getConnectedCoachesByBuildingId(int $buildingId): Collection
     {
@@ -115,12 +111,12 @@ class BuildingCoachStatus extends Model
         $coachesWithPendingBuildingCoachStatus =
             \DB::query()->select('bcs2.coach_id', 'bcs2.building_id', 'bcs2.count_pending AS count_pending',
                 'bcs3.count_removed AS count_removed', 'bp.count_building_permission as count_building_permission')
-               ->from($pendingCount)
-               ->leftJoin($removedCount, 'bcs2.coach_id', '=', 'bcs3.coach_id')
-               ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
-               ->where('bcs3.coach_id', '!=', null)
+                ->from($pendingCount)
+                ->leftJoin($removedCount, 'bcs2.coach_id', '=', 'bcs3.coach_id')
+                ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
+                ->where('bcs3.coach_id', '!=', null)
                 ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
-               ->get();
+                ->get();
 
         return $coachesWithPendingBuildingCoachStatus;
     }
@@ -128,10 +124,8 @@ class BuildingCoachStatus extends Model
     /**
      * Returns all the connected buildings from a user (coach).
      *
-     * @param User        $user,        the user we want the connected buildings from
-     * @param Cooperation $cooperation, from which cooperation we want to retrieve it
-     *
-     * @return Collection
+     * @param User        $user        ,        the user we want the connected buildings from
+     * @param Cooperation $cooperation , from which cooperation we want to retrieve it
      */
     public static function getConnectedBuildingsByUser(User $user, Cooperation $cooperation): Collection
     {
@@ -164,26 +158,26 @@ class BuildingCoachStatus extends Model
                 // accept from the cooperation-building-link
                 'users.cooperation_id')
                 // count the pending statuses
-               ->from($pendingCount)
+                ->from($pendingCount)
                 // count the removed count
-               ->leftJoin($removedCount, 'bcs2.building_id', '=', 'bcs3.building_id')
+                ->leftJoin($removedCount, 'bcs2.building_id', '=', 'bcs3.building_id')
                 // check the building permissions
-               ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
+                ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
                 // get the buildings
-               ->leftJoin('buildings', 'bcs2.building_id', '=', 'buildings.id')
+                ->leftJoin('buildings', 'bcs2.building_id', '=', 'buildings.id')
                 // check if the building its user / resident is associated with the given cooperation
 
                 // accept from the cooperation-building-link
-               ->join('users', function ($joinUsers) use ($cooperationId) {
-                   $joinUsers->on('buildings.user_id', '=', 'users.id')
-                                       ->where('cooperation_id', $cooperationId);
-               })
+                ->join('users', function ($joinUsers) use ($cooperationId) {
+                    $joinUsers->on('buildings.user_id', '=', 'users.id')
+                        ->where('cooperation_id', $cooperationId);
+                })
                 // check if the coach has access
-               ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
-               ->where('buildings.deleted_at', '=', null)
+                ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
+                ->where('buildings.deleted_at', '=', null)
                 // accept from the cooperation-building-link
-               ->groupBy('building_id', 'users.cooperation_id', 'coach_id', 'count_removed', 'count_pending', 'count_building_permission')
-               ->get();
+                ->groupBy('building_id', 'users.cooperation_id', 'coach_id', 'count_removed', 'count_pending', 'count_building_permission')
+                ->get();
 
         return $buildingsTheCoachIsConnectedTo;
     }
@@ -191,11 +185,6 @@ class BuildingCoachStatus extends Model
     /**
      * Get the current status for a given building id, can return the translation or the status key
      * will return the translation by default.
-     *
-     * @param int  $buildingId
-     * @param bool $returnTranslation
-     *
-     * @return string
      */
     public static function getCurrentStatusForBuildingId(int $buildingId, bool $returnTranslation = true): string
     {

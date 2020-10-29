@@ -9,15 +9,12 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\HighEfficiencyBoilerFormRequest;
-use App\Models\BuildingService;
 use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
-use App\Models\UserInterest;
-use App\Scopes\GetValueScope;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
 use Illuminate\Http\JsonResponse;
@@ -80,7 +77,6 @@ class HighEfficiencyBoilerController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param HighEfficiencyBoilerFormRequest $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function store(HighEfficiencyBoilerFormRequest $request)
@@ -98,7 +94,6 @@ class HighEfficiencyBoilerController extends Controller
 
         $serviceValueId = $request->input('building_services.boiler.service_value_id');
         $date = $request->input('building_services.boiler.extra');
-
 
         $service = Service::findByShort('boiler');
 

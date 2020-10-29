@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpParamsInspection */
+<?php
+
+/** @noinspection PhpParamsInspection */
 
 /*
 |--------------------------------------------------------------------------
@@ -13,17 +15,14 @@
 
 use App\Mail\UserAssociatedWithCooperation;
 
-Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function () {
-
+Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () {
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
-
-        if (app()->environment() == 'local') {
+        if ('local' == app()->environment()) {
             Route::get('mail', function () {
-
 //            return new \App\Mail\UserChangedHisEmail(\App\Models\User::find(1), \App\Models\Account::find(1), 'demo@eg.com', 'bier@pils.com');
 //            return new  \App\Mail\UnreadMessagesEmail(\App\Models\User::find(1), \App\Models\Cooperation::find(1), 10);
 //            return new \App\Mail\ResetPasswordRequest(\App\Models\Cooperation::find(1), \App\Models\Account::find(1), 'sfklhasdjkfhsjkf');
-            return new UserAssociatedWithCooperation(App\Models\Cooperation::find(1), \App\Models\Account::find(1)->user());
+                return new UserAssociatedWithCooperation(App\Models\Cooperation::find(1), \App\Models\Account::find(1)->user());
 //            return new \App\Mail\UserCreatedEmail(\App\Models\Cooperation::find(1), \App\Models\User::find(1), 'sdfkhasgdfuiasdgfyu');
 //            return new \App\Mail\UserAssociatedWithCooperation(\App\Models\Cooperation::find(1), \App\Models\User::find(1));
             });
@@ -36,7 +35,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
         Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
 
         Route::group(['namespace' => 'Auth'], function () {
-
             Route::get('check-existing-mail', 'RegisterController@checkExistingEmail')->name('check-existing-email');
             Route::post('connect-existing-account', 'RegisterController@connectExistingAccount')->name('connect-existing-account');
 
@@ -44,14 +42,12 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::post('register', 'RegisterController@register');
 
             Route::group(['as' => 'auth.'], function () {
-
                 Route::get('login', 'LoginController@showLoginForm')->name('login');
                 Route::post('login', 'LoginController@login');
 
                 Route::post('logout', 'LoginController@logout')->name('logout');
 
                 Route::group(['prefix' => 'password', 'as' => 'password.'], function () {
-
                     Route::get('request', 'ForgotPasswordController@index')->name('request.index');
                     Route::post('request', 'ForgotPasswordController@store')->name('request.store');
 
@@ -81,10 +77,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
         // group can be accessed by everyone that's authorized and has a role in its session
         Route::group(['middleware' => ['auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser']], function () {
-
             Route::get('messages/count', 'MessagesController@getTotalUnreadMessageCount')->name('message.get-total-unread-message-count');
 
-            if (app()->environment() == 'local') {
+            if ('local' == app()->environment()) {
                 // debug purpose only
                 Route::group(['as' => 'pdf.', 'namespace' => 'Pdf', 'prefix' => 'pdf'], function () {
                     Route::group(['as' => 'user-report.', 'prefix' => 'user-report'], function () {
@@ -106,12 +101,10 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     ->name('download');
             });
 
-
             Route::get('input-source/{input_source_value_id}', 'InputSourceController@changeInputSourceValue')->name('input-source.change-input-source-value');
 
             Route::group(['as' => 'messages.', 'prefix' => 'messages', 'namespace' => 'Messages'], function () {
                 Route::group(['as' => 'participants.', 'prefix' => 'participants'], function () {
-
                     Route::post('revoke-access', 'ParticipantController@revokeAccess')->name('revoke-access');
 
                     Route::post('add-with-building-access', 'ParticipantController@addWithBuildingAccess')->name('add-with-building-access');
@@ -130,9 +123,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     Route::post('reset-dossier', 'SettingsController@resetFile')->name('reset-file');
                 });
 
-
                 Route::resource('hoom-settings', 'HoomSettingsController');
-
 
                 Route::group(['as' => 'import-center.', 'prefix' => 'import-centrum'], function () {
                     Route::get('set-compare-session/{inputSourceShort}', 'ImportCenterController@setCompareSession')->name('set-compare-session');
@@ -140,7 +131,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
 
                 Route::resource('notification-settings', 'NotificationSettingsController')->only([
-                    'index', 'show', 'update'
+                    'index', 'show', 'update',
                 ]);
 
                 Route::group(['as' => 'messages.', 'prefix' => 'messages'], function () {
@@ -151,7 +142,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                 // the checkbox to deny the whole access for everyone.
                 Route::post('access/allow-access', 'AccessController@allowAccess')->name('access.allow-access');
-
             });
 
             // conversation requests
@@ -176,7 +166,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::resource('building-type', 'BuildingTypeController')->only('store');
 
                 Route::group(['as' => 'general-data.', 'prefix' => 'general-data'], function () {
-
                     Route::get('', 'GeneralDataController@index')->name('index');
 
                     Route::group(['namespace' => 'GeneralData'], function () {
@@ -186,18 +175,16 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         Route::resource('huidige-staat', 'CurrentStateController')->names('current-state')->only(['index', 'store']);
                         Route::resource('gebruik', 'UsageController')->only(['index', 'store'])->names('usage');
                         Route::resource('interesse', 'InterestController')->only(['index', 'store'])->names('interest');
-
                     });
                 });
 
                 Route::group(['middleware' => 'filled-step:general-data'], function () {
-
                     // Heat pump: info for now
                     Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']])
                         ->middleware('step-disabled:heat-pump');
 
                     Route::group(['prefix' => 'ventilation', 'as' => 'ventilation.', 'middleware' => 'step-disabled:ventilation'], function () {
-                        Route::resource('', 'VentilationController', ['only' => ['index', 'store',]]);
+                        Route::resource('', 'VentilationController', ['only' => ['index', 'store']]);
                         Route::post('calculate', 'VentilationController@calculate')->name('calculate');
                     });
 
@@ -252,8 +239,12 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 //                Route::get('my-plan/export', 'MyPlanController@export')->name('my-plan.export');
             });
 
-            Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['role:cooperation-admin|coordinator|coach|super-admin|superuser']], function () {
-
+            Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin',
+                'middleware' => [
+                    'role:cooperation-admin|coordinator|coach|super-admin|superuser',
+                    'restore-building-session-if-filling-for-other-building',
+                ],
+            ], function () {
                 Route::get('/', 'AdminController@index')->name('index');
                 Route::get('stop-session', 'AdminController@stopSession')->name('stop-session');
                 Route::get('/switch-role/{role}', 'SwitchRoleController@switchRole')->name('switch-role');
@@ -270,7 +261,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                 /* Section that a coach, coordinator and cooperation-admin can access */
                 Route::group(['middleware' => ['current-role:cooperation-admin|coach|coordinator']], function () {
-
                     Route::resource('messages', 'MessagesController')->only('index');
 
                     Route::group(['prefix' => 'tool', 'as' => 'tool.'], function () {
@@ -291,9 +281,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
 
                 Route::group(['middleware' => ['current-role:cooperation-admin|coach|coordinator|super-admin']], function () {
-
                     Route::group(['as' => 'buildings.', 'prefix' => 'buildings'], function () {
-
                         Route::get('show/{buildingId}', 'BuildingController@show')->name('show');
 
                         Route::group(['middleware' => ['current-role:cooperation-admin|coordinator|super-admin']], function () {
@@ -322,7 +310,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         Route::get('generate/{fileType}', 'ReportController@generate')->name('generate');
                     });
 
-
                     Route::resource('questionnaires', 'QuestionnaireController')
                         ->middleware('current-role:cooperation-admin');
                     // not in the cooperation-admin group, probably need to be used for hte coordinator aswell.
@@ -332,17 +319,14 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         Route::post('set-active', 'QuestionnaireController@setActive')->name('set-active');
                     });
 
-
                     /* Section for the coordinator */
                     Route::group(['prefix' => 'coordinator', 'as' => 'coordinator.', 'namespace' => 'Coordinator', 'middleware' => ['current-role:coordinator']], function () {
-
                         // needs to be the last route due to the param
                         Route::get('home', 'CoordinatorController@index')->name('index');
                     });
 
                     /* section for the cooperation-admin */
                     Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['current-role:cooperation-admin|super-admin']], function () {
-
                         Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
                             Route::get('', 'StepController@index')->name('index');
                             Route::post('set-active', 'StepController@setActive')->name('set-active');
@@ -396,7 +380,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                 /* Section for the coach */
                 Route::group(['prefix' => 'coach', 'as' => 'coach.', 'namespace' => 'Coach', 'middleware' => ['current-role:coach']], function () {
-
                     Route::group(['prefix' => 'buildings', 'as' => 'buildings.'], function () {
                         Route::get('', 'BuildingController@index')->name('index');
                         Route::get('edit/{id}', 'BuildingController@edit')->name('edit');
@@ -404,7 +387,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         Route::post('', 'BuildingController@setBuildingStatus')->name('set-building-status');
 
                         Route::resource('details', 'BuildingDetailsController')->only('store');
-
                     });
 
                     // needs to be the last route due to the param
@@ -415,9 +397,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
     });
 });
 
-
 Route::get('/', function () {
-
     if (stristr(\Request::url(), '://www.')) {
         // The user has prefixed the subdomain with a www subdomain.
         // Remove the www part and redirect to that.

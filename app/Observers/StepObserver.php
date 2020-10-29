@@ -5,12 +5,10 @@ namespace App\Observers;
 use App\Models\Cooperation;
 use App\Models\Step;
 
-class StepObserver {
-
+class StepObserver
+{
     /**
      * When a new step is created add them to all the cooperations.
-     *
-     * @param Step $step
      */
     public function created(Step $step)
     {

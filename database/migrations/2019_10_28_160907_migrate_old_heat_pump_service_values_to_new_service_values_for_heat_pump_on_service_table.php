@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class MigrateOldHeatPumpServiceValuesToNewServiceValuesForHeatPumpOnServiceTable extends Migration
@@ -17,7 +15,7 @@ class MigrateOldHeatPumpServiceValuesToNewServiceValuesForHeatPumpOnServiceTable
         $heatPumpServiceValues = \DB::table('services')
             ->select('service_values.*')
             ->where('short', 'heat-pump')
-            ->leftJoin('service_values', 'services.id','=', 'service_values.service_id')
+            ->leftJoin('service_values', 'services.id', '=', 'service_values.service_id')
             ->get()->keyBy('calculate_value');
 
         // get the old heat pump services
@@ -48,7 +46,7 @@ class MigrateOldHeatPumpServiceValuesToNewServiceValuesForHeatPumpOnServiceTable
                 $answerForFullHeatPump = $buildingServicesForHeatPumps[$fullHeatPumpService->id];
 
                 // when nothing its selected its a example building input source or some old account, skip it.
-                if (is_null($answerForHybridHeatPump->service_value_id) &&  is_null($answerForFullHeatPump->service_value_id)) {
+                if (is_null($answerForHybridHeatPump->service_value_id) && is_null($answerForFullHeatPump->service_value_id)) {
                     $this->line('service_value_id is empty for the hybrid and full heat pump on building id :'.$building->id);
                     $this->line('continue...');
                     continue;
@@ -62,9 +60,9 @@ class MigrateOldHeatPumpServiceValuesToNewServiceValuesForHeatPumpOnServiceTable
                 // when the calc value for the hybrid pump is set to two the user has an hybrid pump, so we will set it to 4 since that's the new calc value for the hybrid pump
                 // else we will get the calc value from the full heat pump, those stayed the same
 
-                if ($calculateValueForHybridHeatPump == 1 && $calculateValueForFullHeatPump == 1) {
+                if (1 == $calculateValueForHybridHeatPump && 1 == $calculateValueForFullHeatPump) {
                     $newCalculateValueForAnswer = 1;
-                } else if ($calculateValueForHybridHeatPump == 2) {
+                } elseif (2 == $calculateValueForHybridHeatPump) {
                     $newCalculateValueForAnswer = 4;
                 } else {
                     $newCalculateValueForAnswer = $calculateValueForFullHeatPump;
@@ -73,19 +71,17 @@ class MigrateOldHeatPumpServiceValuesToNewServiceValuesForHeatPumpOnServiceTable
                 $this->line('the determined calculate value will be: '.$newCalculateValueForAnswer);
                 $this->line('the new service value id will be: '.$heatPumpServiceValues[$newCalculateValueForAnswer]->id);
 
-
                 // and insert the new rows.
                 \DB::table('building_services')->insert([
                     'building_id' => $building->id,
                     'input_source_id' => $inputSourceId,
                     'service_id' => $heatPumpServiceValues->first()->service_id,
-                    'service_value_id' => $heatPumpServiceValues[$newCalculateValueForAnswer]->id
+                    'service_value_id' => $heatPumpServiceValues[$newCalculateValueForAnswer]->id,
                 ]);
             }
         }
 
-        if($fullHeatPumpService instanceof stdClass && $hybridHeatPump instanceof stdClass) {
-
+        if ($fullHeatPumpService instanceof stdClass && $hybridHeatPump instanceof stdClass) {
             // and delete all the old hybrid and full heat pump building services.
             \DB::table('building_services')
                 ->where('service_id', $fullHeatPumpService->id)
@@ -106,6 +102,5 @@ class MigrateOldHeatPumpServiceValuesToNewServiceValuesForHeatPumpOnServiceTable
      */
     public function down()
     {
-        //
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class RemoveOldCommentsFromVariousTables extends Migration
 {
@@ -24,28 +24,27 @@ class RemoveOldCommentsFromVariousTables extends Migration
             'building_insulated_glazings' => 'extra',
             'building_roof_types' => 'extra',
             'building_pv_panels' => 'comment',
-            'building_heaters' => 'comment'
+            'building_heaters' => 'comment',
         ];
 
         foreach ($tablesThatHaveComments as $table => $column) {
             // the comment is stored in the extra column inside json key comment
             // else its stored inside the given column, we will just drop that column.
-            if ($column == 'extra') {
+            if ('extra' == $column) {
                 foreach (DB::table($table)->get() as $tableData) {
                     $extraValue = json_decode($tableData->extra, true);
                     unset($extraValue['comment']);
                     DB::table($table)
                         ->where('id', $tableData->id)
                         ->update([
-                            'extra' => json_encode($extraValue)
+                            'extra' => json_encode($extraValue),
                         ]);
                 }
             } else {
                 Schema::table($table, function (Blueprint $table) use ($column) {
-                   $table->dropColumn($column);
+                    $table->dropColumn($column);
                 });
             }
-
         }
     }
 
@@ -56,6 +55,5 @@ class RemoveOldCommentsFromVariousTables extends Migration
      */
     public function down()
     {
-        //
     }
 }

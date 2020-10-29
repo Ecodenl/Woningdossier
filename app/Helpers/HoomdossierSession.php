@@ -12,11 +12,6 @@ class HoomdossierSession extends Session
 {
     /**
      * Set all the required values.
-     *
-     * @param Building    $building
-     * @param InputSource $inputSource
-     * @param InputSource $inputSourceValue
-     * @param Role        $role
      */
     public static function setHoomdossierSessions(Building $building, InputSource $inputSource, InputSource $inputSourceValue, Role $role)
     {
@@ -41,8 +36,6 @@ class HoomdossierSession extends Session
 
     /**
      * Set the Cooperation id.
-     *
-     * @param Cooperation $cooperation
      */
     public static function setCooperation(Cooperation $cooperation)
     {
@@ -51,8 +44,6 @@ class HoomdossierSession extends Session
 
     /**
      * Check if the cooperation session is set.
-     *
-     * @return bool
      */
     public static function hasCooperation(): bool
     {
@@ -111,8 +102,6 @@ class HoomdossierSession extends Session
 
     /**
      * Returns whether or not this session contains a current role.
-     *
-     * @return bool
      */
     public static function hasRole(): bool
     {
@@ -121,8 +110,6 @@ class HoomdossierSession extends Session
 
     /**
      * Set the role.
-     *
-     * @param Role $role
      */
     public static function setRole(Role $role)
     {
@@ -133,8 +120,6 @@ class HoomdossierSession extends Session
      * Set the observing boolean.
      *
      * @NOTE key meant to determine if a user is observing someones tool / building.
-     *
-     * @param bool $observing
      */
     public static function setIsObserving(bool $observing = false)
     {
@@ -143,8 +128,6 @@ class HoomdossierSession extends Session
 
     /**
      * Check if a user is observing someones tool / building.
-     *
-     * @return bool
      */
     public static function getIsObserving(): bool
     {
@@ -155,8 +138,6 @@ class HoomdossierSession extends Session
      * Set the input source value id.
      *
      * @NOTE: this is not the same as the input source, this input source will be used to get the right values for the form.
-     *
-     * @param InputSource $inputSource
      */
     public static function setInputSourceValue(InputSource $inputSource)
     {
@@ -165,8 +146,6 @@ class HoomdossierSession extends Session
 
     /**
      * Set the input source id.
-     *
-     * @param InputSource $inputSource
      */
     public static function setInputSource(InputSource $inputSource)
     {
@@ -175,8 +154,6 @@ class HoomdossierSession extends Session
 
     /**
      * Set the bool, this determines if the logged in user is comparing input sources.
-     *
-     * @param bool $isUserComparing
      */
     public static function setIsUserComparingInputSources(bool $isUserComparing)
     {
@@ -185,8 +162,6 @@ class HoomdossierSession extends Session
 
     /**
      * Set the compare input source short, this is used to retrieve the right compare value from the dom.
-     *
-     * @param string $inputSourceShort
      */
     public static function setCompareInputSourceShort(string $inputSourceShort)
     {
@@ -205,8 +180,6 @@ class HoomdossierSession extends Session
 
     /**
      * Get the compare input source.
-     *
-     * @return string
      */
     public static function getCompareInputSourceShort(): string
     {
@@ -215,8 +188,6 @@ class HoomdossierSession extends Session
 
     /**
      * Set the building id.
-     *
-     * @param Building $building
      */
     public static function setBuilding(Building $building)
     {
@@ -309,8 +280,6 @@ class HoomdossierSession extends Session
 
     /**
      * Returns if a user is comparing input sources.
-     *
-     * @return bool
      */
     public static function getIsUserComparingInputSources(): bool
     {
@@ -319,8 +288,6 @@ class HoomdossierSession extends Session
 
     /**
      * Check if a user is comparing his own values against the values from a other input source.
-     *
-     * @return bool
      */
     public static function isUserComparingInputSources(): bool
     {
@@ -329,8 +296,6 @@ class HoomdossierSession extends Session
 
     /**
      * Check if a user is NOT comparing his own values against the values from a other input source.
-     *
-     * @return bool
      */
     public static function isUserNotComparingInputSources(): bool
     {
@@ -339,8 +304,6 @@ class HoomdossierSession extends Session
 
     /**
      * Check if a user is observing a building / tool.
-     *
-     * @return bool
      */
     public static function isUserObserving(): bool
     {
@@ -349,8 +312,6 @@ class HoomdossierSession extends Session
 
     /**
      * Return the Hoomdossier session data.
-     *
-     * @return array
      */
     public static function getAll(): array
     {

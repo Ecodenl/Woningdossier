@@ -22,8 +22,7 @@ class MessagesController extends Controller
                 $connectedBuildingsByUserId->pluck('building_id')->all()
             );
         } else {
-            // safest method of retrieving the buildings for each message
-
+            // 'safest' method of retrieving the buildings for each message
             // retrieve all the buildings, for the current cooperation that have a private message
             $buildings = Building::hydrate($cooperation
                 ->users()

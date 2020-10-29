@@ -103,7 +103,7 @@ checks:
 build:
     dependencies:
         before:
-#            - mysql -uroot -e 'CREATE DATABASE IF NOT EXISTS scrutinizer'
+            - mysql -uroot -e 'CREATE DATABASE IF NOT EXISTS hoomdossier'
 #            - php artisan migrate:fresh --seed
     environment:
         php: '7.2'
@@ -117,7 +117,7 @@ build:
             APP_URL: 'http://woondossier.dev'
             API_HOST: 'laravel.dev'
             DB_HOST: '127.0.0.1'
-            DB_DATABASE: 'scrutinizer'
+            DB_DATABASE: 'hoomdossier'
             DB_USERNAME: 'root'
             DB_PASSWORD: ''
             MAIL_DRIVER: 'log'

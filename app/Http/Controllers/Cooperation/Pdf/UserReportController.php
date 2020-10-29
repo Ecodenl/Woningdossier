@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Cooperation\Pdf;
 
-use App\Helpers\Arr;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
-use App\Helpers\ToolHelper;
 use App\Http\Controllers\Controller;
 use App\Models\BuildingInsulatedGlazing;
 use App\Models\Cooperation;
 use App\Models\Interest;
 use App\Models\UserActionPlanAdviceComments;
-use App\Scopes\GetValueScope;
 use App\Services\DumpService;
 use App\Services\UserActionPlanAdviceService;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -20,8 +17,6 @@ class UserReportController extends Controller
 {
     /**
      * TESTING only, turn on the routes to use it.
-     *
-     * @param Cooperation $userCooperation
      */
     public function index(Cooperation $userCooperation)
     {
@@ -38,7 +33,6 @@ class UserReportController extends Controller
             ->forInputSource($inputSource)
             ->with('measureApplication', 'insulatedGlazing', 'buildingHeating')
             ->get();
-
 
         $steps = $userCooperation->getActiveOrderedSteps();
 
@@ -64,7 +58,7 @@ class UserReportController extends Controller
                 $tableData = array_splice($keys, 2);
 
                 // we dont want the calculations in the report data, we need them separate
-                if (!in_array('calculation', $tableData)) {
+                if (! in_array('calculation', $tableData)) {
                     $reportData[$keys[0]][$keys[1]][implode('.', $tableData)] = $value;
                 }
             }
@@ -73,7 +67,6 @@ class UserReportController extends Controller
         // intersect the data, we dont need the data we wont show anyway
         $activeOrderedStepShorts = $steps->pluck('short')->flip()->toArray();
         $reportData = array_intersect_key($reportData, $activeOrderedStepShorts);
-
 
         // steps that are considered to be measures.
         $stepShorts = \DB::table('steps')
@@ -86,7 +79,6 @@ class UserReportController extends Controller
 
         // retrieve all the comments by for each input source on a step
         $commentsByStep = StepHelper::getAllCommentsByStep($building);
-
 
         // the comments that have been made on the action plan
         $userActionPlanAdviceComments = UserActionPlanAdviceComments::forMe($user)

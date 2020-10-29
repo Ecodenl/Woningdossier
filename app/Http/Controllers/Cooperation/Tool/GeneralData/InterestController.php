@@ -5,14 +5,13 @@ namespace App\Http\Controllers\Cooperation\Tool\GeneralData;
 use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\GeneralData\InterestFormRequest;
 use App\Models\Cooperation;
 use App\Models\Interest;
 use App\Models\Motivation;
 use App\Models\Service;
-use App\Http\Controllers\Controller;
 use App\Models\Step;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
@@ -30,14 +29,13 @@ class InterestController extends Controller
         // used in the forloopt
         $stepCount = $steps->count();
 
-
         // we have to display the services on the left side, and elements on right side
         // collect the steps in a service / element order
         $servicesStepShorts = array_flip([
-            'high-efficiency-boiler', 'heat-pump', 'solar-panels', 'heater', 'ventilation'
+            'high-efficiency-boiler', 'heat-pump', 'solar-panels', 'heater', 'ventilation',
         ]);
         $elementsStepShorts = array_flip([
-            'insulated-glazing', 'wall-insulation', 'floor-insulation', 'roof-insulation'
+            'insulated-glazing', 'wall-insulation', 'floor-insulation', 'roof-insulation',
         ]);
 
         // filter the shorts
@@ -47,6 +45,7 @@ class InterestController extends Controller
             if (is_null($steps->where('short', $stepShort)->first())) {
                 return false;
             }
+
             return true;
         }, ARRAY_FILTER_USE_KEY);
 
@@ -54,9 +53,9 @@ class InterestController extends Controller
             if (is_null($steps->where('short', $stepShort)->first())) {
                 return false;
             }
+
             return true;
         }, ARRAY_FILTER_USE_KEY);
-
 
         $motivations = Motivation::getInOrderOfUserMotivation($buildingOwner);
 
@@ -70,6 +69,7 @@ class InterestController extends Controller
 
         // because the $steps is loaded with view composers and will be overwriten
         $filteredSteps = $steps;
+
         return view('cooperation.tool.general-data.interest.index', compact(
             'interests', 'services', 'elements', 'motivations', 'userMotivations', 'userEnergyHabitsForMe',
             'buildingOwner', 'stepCount', 'servicesStepShorts', 'elementsStepShorts', 'filteredSteps'
@@ -92,12 +92,13 @@ class InterestController extends Controller
         $buildingOwner->motivations()->delete();
 
         $userMotivations = $request->input('user_motivations.id');
-        if (!empty($userMotivations)) {
-            foreach ($request->input('user_motivations.id') as $order => $moviationId)
+        if (! empty($userMotivations)) {
+            foreach ($request->input('user_motivations.id') as $order => $moviationId) {
                 $buildingOwner->motivations()->create([
                     'motivation_id' => $moviationId,
-                    'order' => $order
+                    'order' => $order,
                 ]);
+            }
         }
         $buildingOwner->energyHabit()->updateOrCreate(['input_source_id' => $inputSource->id], $request->input('user_energy_habits'));
 
@@ -109,8 +110,8 @@ class InterestController extends Controller
         $nextStep = StepHelper::getNextStep($building, $inputSource, $step);
         $url = $nextStep['url'];
 
-        if (!empty($nextStep['tab_id'])) {
-            $url .= '#' . $nextStep['tab_id'];
+        if (! empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
         }
 
         return redirect($url);

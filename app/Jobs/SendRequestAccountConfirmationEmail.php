@@ -32,9 +32,6 @@ class SendRequestAccountConfirmationEmail
     /**
      * Create a new job instance.
      *
-     * @param User        $user
-     * @param Cooperation $cooperation
-     *
      * @return void
      */
     public function __construct(User $user, Cooperation $cooperation)

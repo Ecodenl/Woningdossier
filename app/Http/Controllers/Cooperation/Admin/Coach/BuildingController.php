@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
-use App\Models\User;
 
 class BuildingController extends Controller
 {
@@ -22,7 +21,7 @@ class BuildingController extends Controller
                     'user',
                     'buildingStatuses' => function ($q) {
                         $q->with('status')->mostRecent();
-                    }]
+                    }, ]
             )->sortByDesc(function (Building $building) {
                 return $building->buildingStatuses->first()->appointment_date;
             });

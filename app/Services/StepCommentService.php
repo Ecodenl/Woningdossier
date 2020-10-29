@@ -7,14 +7,11 @@ use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\StepComment;
 
-class StepCommentService {
-
+class StepCommentService
+{
     /**
-     * Method to save step comment(s)
+     * Method to save step comment(s).
      *
-     * @param Building $building
-     * @param InputSource $inputSource
-     * @param Step $step
      * @param $comment
      * @param null $short
      */
@@ -23,7 +20,7 @@ class StepCommentService {
         $dataToUpdate = [
             'input_source_id' => $inputSource->id,
             'step_id' => $step->id,
-            'building_id' => $building->id
+            'building_id' => $building->id,
         ];
 
         is_null($short) ?: $dataToUpdate['short'] = $short;

@@ -59,8 +59,6 @@ class LoginController extends Controller
     }
 
     /**
-     * @param Request $request
-     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function logout(Request $request)
@@ -79,8 +77,6 @@ class LoginController extends Controller
     /**
      * Get the needed authorization credentials from the request.
      *
-     * @param \Illuminate\Http\Request $request
-     *
      * @return array
      */
     protected function credentials(Request $request)
@@ -88,11 +84,9 @@ class LoginController extends Controller
         return array_merge($request->only($this->username(), 'password'), ['active' => 1, 'confirm_token' => null]);
     }
 
-
     /**
      * Validate the user login request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return void
      */
     public function validateLogin(Request $request)
@@ -106,10 +100,9 @@ class LoginController extends Controller
     /**
      * Handle a login request to the application.
      *
-     * @param Request $request
-     * @param Cooperation $cooperation
-     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
      * @throws ValidationException
+     *
+     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
      */
     public function login(Request $request, Cooperation $cooperation)
     {
@@ -131,13 +124,12 @@ class LoginController extends Controller
             $account = $this->guard()->getLastAttempted();
 
             if (! $account->isAssociatedWith($cooperation)) {
-                throw ValidationException::withMessages([
-                    'cooperation' => [trans('auth.cooperation')],
-                ]);
+                throw ValidationException::withMessages(['cooperation' => [trans('auth.cooperation')]]);
             }
 
-            if (!$account->user()->building instanceof Building) {
-                Log::error('no building attached for user id: '.$account->user()->id.' account id:' .$account->id);
+            if (! $account->user()->building instanceof Building) {
+                Log::error('no building attached for user id: '.$account->user()->id.' account id:'.$account->id);
+
                 return redirect(route('cooperation.create-building.index'))->with('warning', __('auth.login.warning'));
             }
         }
@@ -146,7 +138,6 @@ class LoginController extends Controller
         if ($this->accountIsNotConfirmed($request->get('email'))) {
             $this->sendAccountNotConfirmedResponse();
         }
-
 
         // everything is ok with the user at this point, now we log him in.
         if ($this->attemptLogin($request)) {
@@ -172,8 +163,6 @@ class LoginController extends Controller
      * Check if a account is confirmed based on its email address.
      *
      * @param $email
-     *
-     * @return bool
      */
     private function accountIsNotConfirmed($email): bool
     {
@@ -189,10 +178,6 @@ class LoginController extends Controller
     private function sendAccountNotConfirmedResponse()
     {
         // throw validation exception, with a confirmation resend link.
-        throw ValidationException::withMessages([
-            'confirm_token' => [
-                __('auth.inactive', ['resend-link' => route('cooperation.auth.confirm.resend.show')]),
-            ],
-        ]);
+        throw ValidationException::withMessages(['confirm_token' => [__('auth.inactive', ['resend-link' => route('cooperation.auth.confirm.resend.show')])]]);
     }
 }

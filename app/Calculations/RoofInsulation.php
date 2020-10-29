@@ -92,7 +92,7 @@ class RoofInsulation
             if ($isBitumenRoof) {
                 // \Log::debug('The roof is a bitumen roof');
                 $year = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? (int) $roofTypes[$cat]['extra']['bitumen_replaced_date'] : Carbon::now()->year - 10;
-                // \Log::debug('Bitumen last replacement was set to '.$year);
+            // \Log::debug('Bitumen last replacement was set to '.$year);
             } else {
                 $year = Carbon::now()->year;
             }

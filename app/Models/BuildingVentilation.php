@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class BuildingVentilation extends Model
 {
-    use GetMyValuesTrait, GetValueTrait;
+    use GetMyValuesTrait;
+    use GetValueTrait;
 
     protected $casts = [
         'how'              => 'array',

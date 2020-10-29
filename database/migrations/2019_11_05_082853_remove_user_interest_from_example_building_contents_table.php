@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class RemoveUserInterestFromExampleBuildingContentsTable extends Migration
@@ -15,7 +13,6 @@ class RemoveUserInterestFromExampleBuildingContentsTable extends Migration
      */
     public function up()
     {
-
         $exampleBuildingContents = \DB::table('example_building_contents')->get();
 
         foreach ($exampleBuildingContents as $exampleBuildingContent) {
@@ -25,7 +22,7 @@ class RemoveUserInterestFromExampleBuildingContentsTable extends Migration
             \DB::table('example_building_contents')
                 ->where('id', $exampleBuildingContent->id)
                 ->update([
-                    'content' => json_encode($ebContent)
+                    'content' => json_encode($ebContent),
                 ]);
         }
     }
@@ -37,6 +34,5 @@ class RemoveUserInterestFromExampleBuildingContentsTable extends Migration
      */
     public function down()
     {
-        //
     }
 }

@@ -21,9 +21,6 @@ class ParticipantController extends Controller
     /**
      * Remove a participant from a group chat and revoke his building access permissions.
      *
-     * @param Cooperation $cooperation
-     * @param Request     $request
-     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function revokeAccess(Cooperation $cooperation, Request $request)
@@ -51,9 +48,6 @@ class ParticipantController extends Controller
 
     /**
      * Add a user / participant to a group chat and give him building access permission.
-     *
-     * @param Cooperation $cooperation
-     * @param Request     $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -87,9 +81,6 @@ class ParticipantController extends Controller
 
     /**
      * Method to set a collection of messages to read.
-     *
-     * @param Cooperation $cooperation
-     * @param Request     $request
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */

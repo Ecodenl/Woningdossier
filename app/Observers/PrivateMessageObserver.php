@@ -10,8 +10,6 @@ class PrivateMessageObserver
     /**
      * On updating check if the allow access is dirty, if so we need to change permissions and building_coach_statuses.
      *
-     * @param PrivateMessage $privateMessage
-     *
      * @throws \Exception
      */
     public function updating(PrivateMessage $privateMessage)
@@ -21,8 +19,6 @@ class PrivateMessageObserver
 
     /**
      * For every message that is created we want to create a row in the private_message_view.
-     *
-     * @param PrivateMessage $privateMessage
      */
     public function created(PrivateMessage $privateMessage)
     {

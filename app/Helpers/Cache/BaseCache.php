@@ -17,9 +17,9 @@ class BaseCache
         $prefix = config('hoomdossier.cache.prefix', '');
 
         $cooperation = request()->route('cooperation');
-        
+
         if ($cooperation instanceof \App\Models\Cooperation) {
-            $prefix.="{$cooperation->slug}_";
+            $prefix .= "{$cooperation->slug}_";
         }
 
         return $prefix.sprintf($string, ...$parameters);

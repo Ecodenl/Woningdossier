@@ -67,6 +67,5 @@ class TestMails extends Command
 //            new UserCreatedEmail($c, $u, 'sdfkhasgdfuiasdgfyu')
 //        );
 //
-
     }
 }

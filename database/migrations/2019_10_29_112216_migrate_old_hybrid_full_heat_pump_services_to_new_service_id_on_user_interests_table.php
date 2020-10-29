@@ -1,12 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class MigrateOldHybridFullHeatPumpServicesToNewServiceIdOnUserInterestsTable extends Migration
 {
     use \App\Traits\DebugableMigrationTrait;
+
     /**
      * Run the migrations.
      *
@@ -39,7 +38,7 @@ class MigrateOldHybridFullHeatPumpServicesToNewServiceIdOnUserInterestsTable ext
                     ->whereIn('interested_in_id', $interestInIdsToMigrate)
                     ->min('interest_id');
 
-                if (!is_null($mostReliableInterestIdForHeatPumpService)) {
+                if (! is_null($mostReliableInterestIdForHeatPumpService)) {
                     $this->line('setting interest_id: '.$mostReliableInterestIdForHeatPumpService.' for interested_in_id: '.$heatPump->id);
                     \DB::table('user_interests')
                         ->insert([
@@ -47,7 +46,7 @@ class MigrateOldHybridFullHeatPumpServicesToNewServiceIdOnUserInterestsTable ext
                             'input_source_id' => $inputSource->id,
                             'interested_in_type' => 'service',
                             'interested_in_id' => $heatPump->id,
-                            'interest_id' => $mostReliableInterestIdForHeatPumpService
+                            'interest_id' => $mostReliableInterestIdForHeatPumpService,
                         ]);
                 }
             }
@@ -59,7 +58,6 @@ class MigrateOldHybridFullHeatPumpServicesToNewServiceIdOnUserInterestsTable ext
             ->where('interested_in_type', 'service')
             ->whereIn('interested_in_id', $interestInIdsToMigrate)
             ->delete();
-
     }
 
     /**
@@ -69,6 +67,5 @@ class MigrateOldHybridFullHeatPumpServicesToNewServiceIdOnUserInterestsTable ext
      */
     public function down()
     {
-        //
     }
 }

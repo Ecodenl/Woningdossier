@@ -6,21 +6,17 @@ use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\GeneralData\BuildingCharacteristicsFormRequest;
 use App\Models\Building;
-use App\Models\BuildingFeature;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\EnergyLabel;
 use App\Models\ExampleBuilding;
-use App\Models\Questionnaire;
 use App\Models\RoofType;
 use App\Models\Step;
-use App\Models\StepComment;
-use App\Services\ExampleBuildingService;
 use App\Services\StepCommentService;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class BuildingCharacteristicsController extends Controller
 {
@@ -70,14 +66,12 @@ class BuildingCharacteristicsController extends Controller
             $url .= '#'.$nextStep['tab_id'];
         }
 
-
         return redirect($url);
     }
 
     /**
-     * Retrieve the example buildings for a building type id
+     * Retrieve the example buildings for a building type id.
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function qualifiedExampleBuildings(Request $request)
@@ -98,5 +92,4 @@ class BuildingCharacteristicsController extends Controller
 
         return response()->json($exampleBuildings);
     }
-
 }

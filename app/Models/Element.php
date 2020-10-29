@@ -36,7 +36,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Element extends Model
 {
-    use TranslatableTrait, HasShortTrait;
+    use TranslatableTrait;
+    use HasShortTrait;
 
     public function serviceType()
     {

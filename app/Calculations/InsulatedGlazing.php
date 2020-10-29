@@ -4,9 +4,7 @@ namespace App\Calculations;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
-use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\InsulatedGlazingCalculator;
-use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\BuildingHeating;
@@ -17,7 +15,6 @@ use App\Models\InsulatingGlazing;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
-use App\Models\UserEnergyHabit;
 use App\Models\WoodRotStatus;
 
 class InsulatedGlazing
@@ -25,12 +22,8 @@ class InsulatedGlazing
     /**
      * Return the calculate results for the insulated glazings.
      *
-     * @param Building    $building
-     * @param InputSource $inputSource
      * @param $energyHabit
      * @param $calculateData
-     *
-     * @return array
      */
     public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData): array
     {
@@ -56,10 +49,9 @@ class InsulatedGlazing
             $interest = Interest::find($interestId);
 
             if ($measureApplication instanceof MeasureApplication && $buildingHeating instanceof BuildingHeating && $interest instanceof Interest && $interest->calculate_value <= 3) {
-
                 $m2 = NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']);
                 $gasSavings = 0;
-                if(is_numeric($m2)) {
+                if (is_numeric($m2)) {
                     $gasSavings = InsulatedGlazingCalculator::calculateRawGasSavings(
                         $m2,
                         $measureApplication,

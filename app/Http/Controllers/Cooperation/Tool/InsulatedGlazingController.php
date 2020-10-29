@@ -146,8 +146,6 @@ class InsulatedGlazingController extends Controller
     /**
      * Store the incoming request and redirect to the next step.
      *
-     * @param InsulatedGlazingFormRequest $request
-     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(InsulatedGlazingFormRequest $request)

@@ -57,9 +57,8 @@ class MeasureApplication extends Model
         return self::where('short', '=', $short)->first();
     }
 
-
     /**
-     * Returns all the interest levels given for the interest
+     * Returns all the interest levels given for the interest.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
@@ -68,10 +67,9 @@ class MeasureApplication extends Model
         return $this->morphToMany(Interest::class, 'interested_in', 'user_interests');
 //        return $this->morphed(Interest::class, 'interested_in', 'user_interests');
     }
+
     /**
      * Method to check whether a measure application is an advice.
-     *
-     * @return bool
      */
     public function isAdvice(): bool
     {

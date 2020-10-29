@@ -10,15 +10,12 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\HighEfficiencyBoilerFormRequest;
-use App\Models\BuildingService;
 use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\Step;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
-use App\Models\UserInterest;
-use App\Scopes\GetValueScope;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
 use Illuminate\Http\JsonResponse;
@@ -81,7 +78,6 @@ class HighEfficiencyBoilerController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param HighEfficiencyBoilerFormRequest $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function store(HighEfficiencyBoilerFormRequest $request)
@@ -98,9 +94,12 @@ class HighEfficiencyBoilerController extends Controller
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         $saveData = $request->only('user_energy_habits', 'building_services');
-        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
+
+
+//        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
             HighEfficiencyBoilerHelper::save($building, $inputSource, $saveData);
-        }
+//        }
+        // no clear method yet ?
 
         StepHelper::complete($this->step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());

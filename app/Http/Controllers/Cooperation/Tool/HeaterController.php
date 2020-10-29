@@ -17,7 +17,6 @@ use App\Models\PvPanelOrientation;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
-use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
@@ -82,8 +81,6 @@ class HeaterController extends Controller
     /**
      * Store or update the existing record.
      *
-     * @param HeaterFormRequest $request
-     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(HeaterFormRequest $request)
@@ -92,7 +89,6 @@ class HeaterController extends Controller
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
 
-
         $userInterests = $request->input('user_interests');
         UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
 
@@ -100,11 +96,11 @@ class HeaterController extends Controller
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         $saveData = $request->only('user_interests', 'building_heaters', 'user_energy_habits');
-        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
+//        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
             HeaterHelper::save($building, $inputSource, $saveData);
-        } else {
-            HeaterHelper::clear($building, $inputSource);
-        }
+//        } else {
+//            HeaterHelper::clear($building, $inputSource);
+//        }
 
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());

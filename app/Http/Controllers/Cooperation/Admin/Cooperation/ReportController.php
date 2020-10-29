@@ -11,8 +11,6 @@ use App\Services\CsvService;
 class ReportController extends Controller
 {
     /**
-     *
-     * @param Cooperation $cooperation
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Cooperation $cooperation)
@@ -30,6 +28,6 @@ class ReportController extends Controller
         // Is there any file being processed for my cooperation
         $anyFilesBeingProcessed = FileStorage::leaveOutPersonalFiles()->withExpired()->beingProcessed()->count();
 
-        return view('cooperation.admin.cooperation.reports.index', compact('questionnaires','reportFileTypeCategory', 'anyFilesBeingProcessed'));
+        return view('cooperation.admin.cooperation.reports.index', compact('questionnaires', 'reportFileTypeCategory', 'anyFilesBeingProcessed'));
     }
 }

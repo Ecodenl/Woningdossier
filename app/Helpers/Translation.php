@@ -25,9 +25,6 @@ class Translation
      * If the given key exist in the uuid translatable file it wil try to locate a record in the translation table and return that.
      * If it does not exist, we get the given key returned.
      *
-     * @param string $translationString
-     * @param array  $replaceArray
-     *
      * @return array|mixed|string|null
      */
     public static function translate(string $translationString, array $replaceArray = [])
@@ -43,9 +40,6 @@ class Translation
 
     /**
      * Returns whether or not there is a (non-empty) translation.
-     *
-     * @param string $translationString
-     * @param array  $replaceArray
      *
      * @return bool
      */

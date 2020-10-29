@@ -55,6 +55,7 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
     {
         return $query->where('group', $group);
     }
+
     /**
      * Scope a query to only return the main questions.
      *
@@ -71,8 +72,6 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
      * Check if a language line is a helptext.
      *
      * It is considered to be a helptext is the help_language_line_id is null
-     *
-     * @return bool
      */
     public function isHelpText(): bool
     {
@@ -90,8 +89,6 @@ class LanguageLine extends \Spatie\TranslationLoader\LanguageLine
 
     /**
      * @see isHelpText()
-     *
-     * @return bool
      */
     public function isNotHelpText(): bool
     {

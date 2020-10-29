@@ -13,19 +13,14 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserEnergyHabit;
 use App\Services\DumpService;
-use function Couchbase\defaultDecoder;
 
 class FloorInsulation
 {
     /**
      * Method to calculate the floor insulation savings and such.
      *
-     * @param Building $building
      * @param $energyHabit
-     * @param InputSource $inputSource
      * @param $calculateData
-     *
-     * @return array
      */
     public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData): array
     {

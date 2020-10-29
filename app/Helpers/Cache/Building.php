@@ -4,7 +4,6 @@ namespace App\Helpers\Cache;
 
 class Building extends BaseCache
 {
-
     const CACHE_KEY_FIND = 'Building_find_%s';
 
     /**

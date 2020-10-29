@@ -4,18 +4,17 @@ namespace App\Traits;
 
 use App\Helpers\Cache\BaseCache;
 
-
-trait HasShortTrait {
-
+trait HasShortTrait
+{
     /**
-     * Find a record by its short
+     * Find a record by its short.
      *
      * @param $short
+     *
      * @return mixed
      */
     public static function findByShort($short)
     {
-
         $cacheKey = 'HasShortTrait_find_by_short_%s_%s';
         $className = get_class(self::getModel());
 

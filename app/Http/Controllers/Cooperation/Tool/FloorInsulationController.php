@@ -20,7 +20,6 @@ use App\Models\ElementValue;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Services\CsvService;
 use App\Services\DumpService;
@@ -45,12 +44,10 @@ class FloorInsulationController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Cooperation $cooperation
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Cooperation $cooperation)
     {
-
         $typeIds = [4];
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
@@ -105,8 +102,6 @@ class FloorInsulationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param FloorInsulationFormRequest $request
-     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(FloorInsulationFormRequest $request)
@@ -123,11 +118,11 @@ class FloorInsulationController extends Controller
 
         // when its a step, and a user has no interest in it we will clear the data for that step
         // a user may had interest in the step and later on decided he has no interest, so we clear the data to prevent weird data in the dumps.
-        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
+//        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
             FloorInsulationHelper::save($building, $inputSource, $request->validated());
-        } else {
-            FloorInsulationHelper::clear($building, $inputSource);
-        }
+//        } else {
+//            FloorInsulationHelper::clear($building, $inputSource);
+//        }
 
         StepHelper::complete($this->step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());

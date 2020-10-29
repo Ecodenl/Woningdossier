@@ -35,7 +35,7 @@ class UsersTableSeeder extends Seeder
             $users = $account['users'];
             unset($account['users']);
 
-            DB::table('accounts')->updateOrInsert($account['email'], $account);
+            DB::table('accounts')->updateOrInsert(['email' => $account['email']], $account);
             $row = DB::table('accounts')->where('email', '=', $account['email'])->first();
 
             $accountId = $row->id;

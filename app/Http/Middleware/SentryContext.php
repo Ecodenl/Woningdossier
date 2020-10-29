@@ -15,7 +15,6 @@ class SentryContext
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
      *
      * @return mixed
      */
@@ -48,8 +47,8 @@ class SentryContext
                 'building:owner' => optional($building)->user_id,
             ];
 
-            if (!optional($building)->user instanceof User){
-                \Log::error("SentryContext : building -> user is no instance of App\Models\User !! a: " . $account->id . ", u: " . $user->id . ", b: " . optional($building)->id);
+            if (! optional($building)->user instanceof User) {
+                \Log::error("SentryContext : building -> user is no instance of App\Models\User !! a: ".$account->id.', u: '.$user->id.', b: '.optional($building)->id);
             }
 
             \Sentry\configureScope(function (Scope $scope) use ($u, $tags) {

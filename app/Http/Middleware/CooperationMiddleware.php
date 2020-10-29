@@ -13,7 +13,6 @@ class CooperationMiddleware
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
      *
      * @return mixed
      */
@@ -25,6 +24,9 @@ class CooperationMiddleware
             // No valid cooperation subdomain. Return to global index.
 
             return redirect()->route('index');
+        }
+        if ('vrijstadenergie' == $cooperation->slug) {
+            return redirect()->route('cooperation.welcome', ['cooperation' => 'energieloketrivierenland']);
         }
 
         HoomdossierSession::setCooperation($cooperation);

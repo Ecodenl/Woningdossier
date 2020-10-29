@@ -34,7 +34,6 @@ class Motivation extends Model
     /**
      *  Method to return the motivations, in order of the saved user motivations.
      *
-     * @param User $user
      * @return Motivation[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Query\Builder[]|\Illuminate\Support\Collection
      */
     public static function getInOrderOfUserMotivation(User $user)
@@ -52,6 +51,5 @@ class Motivation extends Model
             ->orderBy('user_motivations.order')
             ->select('motivations.name', 'motivations.id', 'user_motivations.order')
             ->get()->unique('id');
-
     }
 }

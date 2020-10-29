@@ -17,8 +17,6 @@ class PrivateMessageService
     /**
      * Create a new message between a user and user.
      *
-     * @param Request $request
-     *
      * @return bool
      */
     public static function create(Request $request)
@@ -42,14 +40,14 @@ class PrivateMessageService
             $privateMessageData = [
                 'is_public' => $isPublic,
                 'to_cooperation_id' => HoomdossierSession::getCooperation(),
-                'from_user' => \App\Helpers\Hoomdossier::user()->getFullName(),
+                'from_user' => Hoomdossier::user()->getFullName(),
                 'from_user_id' => Hoomdossier::user()->id,
                 'message' => $message,
                 'building_id' => $buildingId,
             ];
 
-            // users that have the role coordinator and cooperation admin dont talk from themself but from a cooperation
-            if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
+            // users that have the role coordinator and cooperation admin dont talk fom them self but from a cooperation
+            if (Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
                 $privateMessageData['from_cooperation_id'] = HoomdossierSession::getCooperation();
                 $privateMessageData['from_user'] = HoomdossierSession::getCooperation(true)->name;
             }
@@ -64,10 +62,6 @@ class PrivateMessageService
 
     /**
      * Method to create a conversation request for a building on a user.
-     *
-     * @param Building $building
-     * @param User     $user
-     * @param Request  $request
      */
     public static function createConversationRequest(Building $building, User $user, Request $request)
     {

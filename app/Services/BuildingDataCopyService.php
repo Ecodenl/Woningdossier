@@ -11,10 +11,6 @@ class BuildingDataCopyService
 {
     /**
      * Method to copy data from a building and input source to a other input source on the same building.
-     *
-     * @param Building    $building
-     * @param InputSource $from
-     * @param InputSource $to
      */
     public static function copy(Building $building, InputSource $from, InputSource $to)
     {
@@ -68,7 +64,7 @@ class BuildingDataCopyService
             'user_action_plan_advices' => [
                 'where_column' => 'measure_application_id',
                 // could be added but doesnt need to be
-                 'additional_where_column' => 'step_id'
+                 'additional_where_column' => 'step_id',
             ],
             'user_energy_habits',
         ];
@@ -104,12 +100,9 @@ class BuildingDataCopyService
             if (is_array($tableOrWhereColumns) && array_key_exists('where_column', $tableOrWhereColumns)) {
                 $whereColumn = $tableOrWhereColumns['where_column'];
 
-
                 // loop through the answers from the desired input source
                 foreach ($fromValues as $fromValue) {
-
                     if ($fromValue instanceof \stdClass && isset($fromValue->$whereColumn)) {
-
                         // now build the query to get the resident his answers
                         $toValueQuery = \DB::table($table)
                             ->where('input_source_id', $to->id)
@@ -155,8 +148,6 @@ class BuildingDataCopyService
                             $toValue = (array) $toValue;
                             $fromValue = (array) $fromValue;
 
-
-
                             // YAY! data has been copied so update or create the target input source his records.
                             if ($toValueQuery->first() instanceof \stdClass) {
                                 // check if its empty ornot.
@@ -164,7 +155,6 @@ class BuildingDataCopyService
                                     $toValueQuery->update($updateData);
                                 }
                             } else {
-
                                 $fromValue = static::createUpdateArray((array) $toValue, (array) $fromValue);
                                 // change the input source id to the 'to' id
                                 $fromValue['input_source_id'] = $to->id;
@@ -245,8 +235,6 @@ class BuildingDataCopyService
      * Method to filter the value's from the extra column.
      *
      * @param $extraColumnData
-     *
-     * @return array
      */
     private static function filterExtraColumn($extraColumnData): array
     {
@@ -261,17 +249,14 @@ class BuildingDataCopyService
      *
      * @param $inputSourceToUpdate
      * @param $inputSourceToCopy
-     *
-     * @return array
      */
     private static function createUpdateArray($inputSourceToUpdate, $inputSourceToCopy): array
     {
         $updateArray = [];
 
         // if the desired input source has a extra key and its not empty, then we start to compare and merge the extra column.
-        if (array_key_exists('extra', $inputSourceToCopy) && !empty($inputSourceToCopy['extra']) && is_array($inputSourceToCopy['extra'])) {
+        if (array_key_exists('extra', $inputSourceToCopy) && ! empty($inputSourceToCopy['extra']) && is_array($inputSourceToCopy['extra'])) {
             if (empty($inputSourceToUpdate['extra'])) {
-
                 $inputSourceToCopyExtra = json_decode($inputSourceToCopy['extra'], true);
 
                 // filter the values which are not considered to be empty.
@@ -283,7 +268,6 @@ class BuildingDataCopyService
                 $inputSourceToUpdateExtra = json_decode($inputSourceToUpdate['extra'], true);
 
                 $inputSourceToCopyNotNullExtraValues = static::filterExtraColumn($inputSourceToCopyExtra);
-
 
                 // set some default stuff
                 if (is_null($inputSourceToUpdateExtra)) {

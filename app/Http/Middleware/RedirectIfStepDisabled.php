@@ -2,10 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
 use Closure;
-use Illuminate\Support\Facades\URL;
 
 class RedirectIfStepDisabled
 {
@@ -13,7 +11,6 @@ class RedirectIfStepDisabled
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
      *
      * @return mixed
      */

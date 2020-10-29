@@ -26,7 +26,7 @@ class BankInterestCalculator
         } else {
             self::$numbers['increment'] = round((self::$numbers['result'] / self::$numbers['investment']) * 100);
             $gain = self::$numbers['result'] / self::$numbers['investment'];
-            if ($gain < 0){
+            if ($gain < 0) {
                 // pow on $gain < 0 would result in NAN.
                 $gain = 0;
             }

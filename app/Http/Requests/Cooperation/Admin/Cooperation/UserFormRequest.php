@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Cooperation\Admin\Cooperation;
 
-use App\Rules\AlphaSpace;
 use App\Rules\HouseNumber;
 use App\Rules\HouseNumberExtension;
 use App\Rules\PhoneNumber;

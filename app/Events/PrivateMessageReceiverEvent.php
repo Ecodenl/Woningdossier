@@ -20,8 +20,6 @@ class PrivateMessageReceiverEvent
     /**
      * Create a new event instance.
      *
-     * @param PrivateMessage $privateMessage
-     *
      * @return void
      */
     public function __construct(PrivateMessage $privateMessage)

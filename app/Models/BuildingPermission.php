@@ -46,12 +46,12 @@ class BuildingPermission extends Model
      */
     public function building()
     {
-        return $this->belongsTo('App\Models\Building');
+        return $this->belongsTo(\App\Models\Building::class);
     }
 
     public function buildingCoachStatus()
     {
-        return $this->belongsTo('App\Models\BuildingCoachStatus', 'building_id', 'building_id');
+        return $this->belongsTo(\App\Models\BuildingCoachStatus::class, 'building_id', 'building_id');
     }
 
     public function user()

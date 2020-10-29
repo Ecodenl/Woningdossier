@@ -18,7 +18,6 @@ use Carbon\Carbon;
 
 class UserActionPlanAdviceService
 {
-
     /**
      * Method to delete the user action plan advices for a given user, input source and step.
      *
@@ -38,7 +37,6 @@ class UserActionPlanAdviceService
     /**
      * Method to retrieve the advice year based on the step or when available measure interest level.
      *
-     * @param UserActionPlanAdvice $userActionPlanAdvice
      * @return int|null
      */
     public static function getAdviceYear(UserActionPlanAdvice $userActionPlanAdvice)
@@ -62,7 +60,7 @@ class UserActionPlanAdviceService
             $userInterest = $userInterestOnMeasureApplication;
         }
 
-        if (!$userInterest instanceof UserInterest) {
+        if (! $userInterest instanceof UserInterest) {
             return $adviceYear;
         }
         if (1 == $userInterest->interest->calculate_value) {
@@ -77,11 +75,11 @@ class UserActionPlanAdviceService
 
     /**
      * Method to return a year or string with no year.
+     *
      * @note this is NOT the same as getAdviceYear.
      * This will returned the planned_year as first option.
      *
-     * @param UserActionPlanAdvice $userActionPlanAdvice
-     * @return array|int|null|string
+     * @return array|int|string|null
      */
     public static function getYear(UserActionPlanAdvice $userActionPlanAdvice)
     {
@@ -99,8 +97,6 @@ class UserActionPlanAdviceService
     /**
      * Method to return input sources that have an action plan advice, on a building.
      *
-     * @param User $user
-     *
      * @return UserActionPlanAdvice[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
     public static function availableInputSourcesForActionPlan(User $user)
@@ -117,11 +113,6 @@ class UserActionPlanAdviceService
 
     /**
      * Get the personal plan for a user and its input source.
-     *
-     * @param User $user
-     * @param InputSource $inputSource
-     *
-     * @return array
      */
     public static function getPersonalPlan(User $user, InputSource $inputSource): array
     {
@@ -133,7 +124,6 @@ class UserActionPlanAdviceService
             foreach ($stepAdvices as $stepSlug => $advicesForStep) {
                 foreach ($advicesForStep as $advice) {
                     if ($advice->planned) {
-
                         $savingsMoney = $advice->savings_money;
                         $year = self::getYear($advice);
 
@@ -143,12 +133,11 @@ class UserActionPlanAdviceService
                         } else {
                             $costYear = $year;
                         }
-                        if (!array_key_exists($year, $sortedAdvices)) {
+                        if (! array_key_exists($year, $sortedAdvices)) {
                             $sortedAdvices[$year] = [];
                         }
 
-
-                        if ($savingsMoney !== 'ntb.') {
+                        if ('ntb.' !== $savingsMoney) {
                             $savingsMoney = is_null($advice->savings_money) ? 0 : NumberFormatter::round(Calculator::indexCosts($advice->savings_money, $costYear));
                             $savingsMoney = Number::isNegative($savingsMoney) ? 0 : $savingsMoney;
                         }
@@ -156,7 +145,7 @@ class UserActionPlanAdviceService
                         // get step from advice
                         $step = $advice->step;
 
-                        if (!array_key_exists($step->name, $sortedAdvices[$year])) {
+                        if (! array_key_exists($step->name, $sortedAdvices[$year])) {
                             $sortedAdvices[$year][$step->name] = [];
                         }
 
@@ -187,10 +176,10 @@ class UserActionPlanAdviceService
 
     /**
      * Check if can return the savings money or have to return "ntb."
-     * We do this when the selected insulation is "Matige isolatie (tot 8 cm isolatie)" or higher also known als calculate_value >= 3
+     * We do this when the selected insulation is "Matige isolatie (tot 8 cm isolatie)" or higher also known als calculate_value >= 3.
      *
-     * @param UserActionPlanAdvice $advice
      * @param $savingsMoney
+     *
      * @return string|int
      */
     public static function checkSavingsMoney(UserActionPlanAdvice $advice, $savingsMoney)
@@ -198,8 +187,7 @@ class UserActionPlanAdviceService
         $user = $advice->user;
         $step = $advice->step;
 
-        if ($step->short == 'roof-insulation') {
-
+        if ('roof-insulation' == $step->short) {
             // the energy saving measure application shorts.
             $flatRoofMeasureApplications = ['roof-insulation-flat-replace-current', 'roof-insulation-flat-current'];
             $pitchedRoofMeasureApplications = ['roof-insulation-pitched-replace-tiles', 'roof-insulation-pitched-inside'];
@@ -218,8 +206,7 @@ class UserActionPlanAdviceService
             if ($buildingRoofType->elementValue->calculate_value >= 3) {
                 $savingsMoney = 'ntb.';
             }
-        } else if (in_array($step->short, ['floor-insulation', 'wall-insulation'])) {
-
+        } elseif (in_array($step->short, ['floor-insulation', 'wall-insulation'])) {
             $elementShort = array_search($step->short, StepHelper::ELEMENT_TO_SHORT);
 
             if ($user->building->getBuildingElement($elementShort, $advice->inputSource)->elementValue->calculate_value >= 3) {
@@ -233,8 +220,6 @@ class UserActionPlanAdviceService
     /**
      * Get the action plan categorized under measure type.
      *
-     * @param User $user
-     * @param InputSource $inputSource
      * @param bool $withAdvices
      *
      * @return array
@@ -261,12 +246,12 @@ class UserActionPlanAdviceService
                 }
 
                 // check if we have to set the $savingsMoney to ntb.
-                if ($advice->measureApplication->measure_type == 'energy_saving') {
+                if ('energy_saving' == $advice->measureApplication->measure_type) {
                     $advice->savings_money = self::checkSavingsMoney($advice, $advice->savings_money);
                 }
 
                 // if advices are not desirable and the measureApplication is not an advice it will be added to the result
-                if (!$withAdvices && !$measureApplication->isAdvice()) {
+                if (! $withAdvices && ! $measureApplication->isAdvice()) {
                     $result[$measureApplication->measure_type][$advice->step->slug][$measureApplication->short] = $advice;
                 }
 
@@ -284,11 +269,11 @@ class UserActionPlanAdviceService
         return $result;
     }
 
-
     /**
-     * Get the right warning text
+     * Get the right warning text.
      *
      * @param $translationKey
+     *
      * @return array|string|null
      */
     public static function getWarning($translationKey)
@@ -304,17 +289,14 @@ class UserActionPlanAdviceService
     }
 
     /**
-     * Method to add warning to a categorized action plan
+     * Method to add warning to a categorized action plan.
      *
-     * @param array $categorizedActionPlan
      * @return array
      */
     public static function checkCoupledMeasuresAndMaintenance(array $categorizedActionPlan)
     {
-
         $energySaving = $categorizedActionPlan['energy_saving'] ?? [];
         $maintenance = $categorizedActionPlan['maintenance'] ?? [];
-
 
         if (isset($maintenance['wall-insulation']) && isset($energySaving['wall-insulation'])) {
             $maintenanceForWallInsulation = $maintenance['wall-insulation'];
@@ -334,17 +316,15 @@ class UserActionPlanAdviceService
 
             // flat roof
             if (isset($energySavingForRoofInsulation['roof-insulation-flat-replace-current']) && $energySavingForRoofInsulation['roof-insulation-flat-replace-current']['planned']) {
-
                 $energySavingRoofInsulationFlatReplaceCurrentYear = $energySavingForRoofInsulation['roof-insulation-flat-replace-current']['planned_year'];
                 $maintenanceReplaceRoofInsulationYear = $maintenanceForRoofInsulation['replace-roof-insulation']['planned_year'];
 
-
-                if (!$maintenanceForRoofInsulation['replace-roof-insulation']['planned']) {
+                if (! $maintenanceForRoofInsulation['replace-roof-insulation']['planned']) {
                     // set warning
                     $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = static::getWarning('roof-insulation.check-order');
                     $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] = static::getWarning('roof-insulation.check-order');
-                    // both were planned, so check whether the planned year is the same
-                } else if ($energySavingRoofInsulationFlatReplaceCurrentYear !== $maintenanceReplaceRoofInsulationYear) {
+                // both were planned, so check whether the planned year is the same
+                } elseif ($energySavingRoofInsulationFlatReplaceCurrentYear !== $maintenanceReplaceRoofInsulationYear) {
                     // set warning
                     $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = static::getWarning('roof-insulation.planned-year');
                     $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] = static::getWarning('roof-insulation.planned-year');
@@ -355,12 +335,12 @@ class UserActionPlanAdviceService
             if (isset($energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']) && $energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['planned']) {
                 $energySavingRoofInsulationPitchedReplaceTilesYear = $energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['planned_year'];
                 $maintenanceReplaceTilesYear = $maintenanceForRoofInsulation['replace-tiles']['planned_year'];
-                if (!$maintenanceForRoofInsulation['replace-tiles']['planned']) {
+                if (! $maintenanceForRoofInsulation['replace-tiles']['planned']) {
                     // set warning
                     $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = static::getWarning('roof-insulation.check-order');
                     $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = static::getWarning('roof-insulation.check-order');
-                    // both were planned, so check whether the planned year is the same
-                } else if ($energySavingRoofInsulationPitchedReplaceTilesYear !== $maintenanceReplaceTilesYear) {
+                // both were planned, so check whether the planned year is the same
+                } elseif ($energySavingRoofInsulationPitchedReplaceTilesYear !== $maintenanceReplaceTilesYear) {
                     // set warning
                     $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = static::getWarning('roof-insulation.planned-year');
                     $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = static::getWarning('roof-insulation.planned-year');
@@ -368,8 +348,6 @@ class UserActionPlanAdviceService
             }
         }
 
-
-        //
         if (isset($energySaving['ventilation'])) {
             $energySavingForVentilation = $energySaving['ventilation'];
 

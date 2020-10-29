@@ -47,6 +47,6 @@ class Role extends \Spatie\Permission\Models\Role
      */
     public function inputSource()
     {
-        return $this->belongsTo('App\Models\InputSource', 'input_source_id', 'id');
+        return $this->belongsTo(\App\Models\InputSource::class, 'input_source_id', 'id');
     }
 }

@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class AddSubStepsToStepsTable extends Migration
@@ -16,7 +14,6 @@ class AddSubStepsToStepsTable extends Migration
         $generalData = DB::table('steps')->where('short', 'general-data')->first();
 
         if ($generalData instanceof stdClass) {
-
             $subSteps = [
                 [
                     'names' => [
@@ -86,6 +83,5 @@ class AddSubStepsToStepsTable extends Migration
      */
     public function down()
     {
-        //
     }
 }

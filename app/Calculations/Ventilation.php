@@ -19,14 +19,10 @@ use Illuminate\Support\Arr;
 
 class Ventilation
 {
-
     /**
      * Calculate the wall insulation costs and savings etc.
      *
-     * @param Building $building
-     * @param InputSource $inputSource
      * @param UserEnergyHabit|null $energyHabit
-     * @param array $calculateData
      *
      * @return array;
      */
@@ -51,7 +47,6 @@ class Ventilation
         ];
 
         if ($buildingVentilationService instanceof BuildingService) {
-
             /** @var ServiceValue $buildingVentilation */
             $buildingVentilation = $buildingVentilationService->serviceValue;
 
@@ -78,15 +73,14 @@ class Ventilation
             ];
             $measures = array_flip($measures);
 
-            if ($ventilationType === 'natural') {
+            if ('natural' === $ventilationType) {
                 // "different" type which returns early
                 unset($measures['crack-sealing']);
 
                 $improvement = 'Natuurlijke ventilatie is  niet zo goed voor het comfort en zorgt voor een hoog energiegebruik. Daarom worden de huizen steeds luchtdichter gemaakt en van goede isolatie voorzien. Om een gezond binnenklimaat te bereiken is hierbij een andere vorm van ventilatie nodig. De volgende opties kunt u overwegen:';
                 $remark = __('my-plan.warnings.ventilation');
             }
-            if ($ventilationType === 'mechanic') {
-
+            if ('mechanic' === $ventilationType) {
                 if ($currentlyDemandDriven) {
                     // if the ventilation is already demand driven, remove that advice
                     unset($measures['ventilation-demand-driven']);
@@ -106,8 +100,7 @@ class Ventilation
                 $improvement = 'Oude ventilatoren gebruiken soms nog wisselstroom en verbruiken voor dezelfde prestatie veel meer elektriciteit en maken meer geluid dan moderne gelijkstroom ventilatoren. De besparing op de gebruikte stroom kan oplopen tot ca. 80 %. Een installateur kan direct beoordelen of u nog een wisselstroom ventilator heeft.';
                 $remark = __('my-plan.warnings.ventilation');
             }
-            if ($ventilationType === 'balanced') {
-
+            if ('balanced' === $ventilationType) {
                 // always unset
                 unset($measures['ventilation-decentral-wtw']);
 
@@ -135,8 +128,7 @@ class Ventilation
                 $improvement = 'Uw woning is voorzien van een energiezuinig en duurzaam ventilatiesysteem. Zorg voor goed onderhoud en goed gebruik zo dat de luchtkwaliteit in de woning optimaal blijft.';
                 $remark = __('my-plan.warnings.ventilation');
             }
-            if ($ventilationType === 'decentral') {
-
+            if ('decentral' === $ventilationType) {
                 // always unset
                 unset($measures['ventilation-balanced-wtw']);
 
@@ -176,7 +168,6 @@ class Ventilation
                 // Crack sealing gives a percentage of savings. This is dependent on the application (place or replace)
                 // and the gas usage (for heating)
 
-
                 $result['crack_sealing']['cost_indication'] = 0;
                 $result['crack_sealing']['savings_gas'] = 0;
 
@@ -193,7 +184,6 @@ class Ventilation
                         $gasSaving = (Kengetallen::PERCENTAGE_GAS_SAVINGS_REPLACE_CRACK_SEALING / 100) * $gas;
                     } else {
                         $gasSaving = (Kengetallen::PERCENTAGE_GAS_SAVINGS_PLACE_CRACK_SEALING / 100) * $gas;
-
                     }
 
                     // we dont want negative results
@@ -224,11 +214,11 @@ class Ventilation
                 }
             }
 
-            if (count($advices) > 0 && $ventilationType !== 'natural') {
+            if (count($advices) > 0 && 'natural' !== $ventilationType) {
                 $improvement .= '  Om de ventilatie verder te verbeteren kunt u de volgende opties overwegen:';
             }
-
         }
+
         return compact('improvement', 'advices', 'remark', 'result');
     }
 }

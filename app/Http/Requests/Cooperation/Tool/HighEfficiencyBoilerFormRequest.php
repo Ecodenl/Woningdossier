@@ -26,6 +26,7 @@ class HighEfficiencyBoilerFormRequest extends FormRequest
     public function rules()
     {
         $max = Carbon::now()->year;
+
         return [
             'user_interests.interest_id' => 'required|exists:interests,id',
             'user_energy_habits.amount_gas' => 'required|numeric|min:0|max:10000',

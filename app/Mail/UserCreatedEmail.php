@@ -22,8 +22,6 @@ class UserCreatedEmail extends Mailable implements ShouldQueue
      * Create new message instance.
      *
      * UserCreatedEmail constructor.
-     *
-     * @param Cooperation $cooperation
      */
     public function __construct(Cooperation $cooperation, User $createdUser, $token)
     {

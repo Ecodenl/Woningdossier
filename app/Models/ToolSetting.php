@@ -51,8 +51,6 @@ class ToolSetting extends Model
 
     /**
      * check if its changed.
-     *
-     * @return bool
      */
     public function hasChanged(): bool
     {
@@ -63,8 +61,6 @@ class ToolSetting extends Model
      * Returns a collection of changed tool settings.
      *
      * Get the changed input sources for the current input source.
-     *
-     * @param int $buildingId
      *
      * @return \Illuminate\Support\Collection
      */
@@ -90,8 +86,6 @@ class ToolSetting extends Model
 
     /**
      * Return the tool settings where has_changed is true.
-     *
-     * @param int $buildingId
      *
      * @return \Illuminate\Support\Collection
      */

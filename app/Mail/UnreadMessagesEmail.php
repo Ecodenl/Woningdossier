@@ -19,10 +19,6 @@ class UnreadMessagesEmail extends Mailable
 
     /**
      * UnreadMessagesEmail constructor.
-     *
-     * @param User        $user
-     * @param Cooperation $cooperation
-     * @param int         $unreadMessageCount
      */
     public function __construct(User $user, Cooperation $cooperation, int $unreadMessageCount)
     {

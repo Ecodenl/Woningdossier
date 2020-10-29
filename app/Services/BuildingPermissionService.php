@@ -15,8 +15,6 @@ class BuildingPermissionService
      *
      * @param $userId
      * @param $buildingId
-     *
-     * @return bool
      */
     public static function revokePermission(User $user, Building $building): bool
     {
@@ -27,9 +25,6 @@ class BuildingPermissionService
 
     /**
      * Give a user permission to a building.
-     *
-     * @param $userId
-     * @param $buildingId
      *
      * @return bool
      */

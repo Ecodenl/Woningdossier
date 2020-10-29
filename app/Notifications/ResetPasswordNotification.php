@@ -39,7 +39,6 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
      * Create a notification instance.
      *
      * @param $token
-     * @param Account $account
      * @param $cooperation
      */
     public function __construct($token, Account $account, $cooperation)

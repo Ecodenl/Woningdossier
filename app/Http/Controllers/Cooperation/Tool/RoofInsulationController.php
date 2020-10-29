@@ -115,7 +115,6 @@ class RoofInsulationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param RoofInsulationFormRequest $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function store(RoofInsulationFormRequest $request)

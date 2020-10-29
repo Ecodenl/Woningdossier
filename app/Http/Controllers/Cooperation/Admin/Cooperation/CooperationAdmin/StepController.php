@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
+use App\Helpers\Cache\Cooperation as CooperationCache;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\Step;
-use \App\Helpers\Cache\Cooperation as CooperationCache;
 use Illuminate\Http\Request;
 
 class StepController extends Controller
@@ -25,9 +25,6 @@ class StepController extends Controller
 
     /**
      * Set the active status for a cooperation step.
-     *
-     * @param Request     $request
-     * @param Cooperation $cooperation
      */
     public function setActive(Request $request, Cooperation $cooperation)
     {

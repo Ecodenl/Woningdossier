@@ -110,11 +110,11 @@ return [
         'needs-to-be-filled' => 'Dit veld moet gevuld zijn',
 
         'building_roof_types.flat.insulation_roof_surface' => [
-            'needs_to_be_lower_or_same_as' => '"Te isoleren oppervlakte van het plate dak" moet gelijk of kleiner zijn dan het veld "Dakoppervlak platte dak"'
+            'needs_to_be_lower_or_same_as' => '"Te isoleren oppervlakte van het plate dak" moet gelijk of kleiner zijn dan het veld "Dakoppervlak platte dak"',
         ],
 
         'building_roof_types.pitched.insulation_roof_surface' => [
-            'needs_to_be_lower_or_same_as' => '"Te isoleren oppervlakte van het hellende dak" moet gelijk of kleiner zijn dan het veld "Dakoppervlak hellend dak"'
+            'needs_to_be_lower_or_same_as' => '"Te isoleren oppervlakte van het hellende dak" moet gelijk of kleiner zijn dan het veld "Dakoppervlak hellend dak"',
         ],
 
         'building_insulated_glazings.*.m2' => [
@@ -126,7 +126,10 @@ return [
             'required' => '"aantal te vervangen ruiten?" is een verplicht veld.',
             'numeric' => '"aantal te vervangen ruiten?" moet een getal bevatten.',
             'min' => '"aantal te vervangen ruiten?" moet tenminste :min zijn.',
-        ]
+        ],
+        'accounts.email' => [
+            'unique' => 'Dit e-mailadres is al geregistreerd.',
+        ],
     ],
 
     /*
@@ -158,7 +161,6 @@ return [
         'user_energy_habits.amount_electricity' => __('cooperation/tool/general-data/usage.index.energy-usage.amount-electricity.title'),
         'user_energy_habits.amount_gas' => __('cooperation/tool/general-data/usage.index.energy-usage.gas-usage.title'),
 
-
         'building_services.boiler.extra' => __('high-efficiency-boiler.boiler-placed-date.title'),
         'service.6.extra.year' => 'jaartal',
 
@@ -180,7 +182,6 @@ return [
 
         'building_roof_types.pitched.extra.zinc_replaced_date' =>  __('roof-insulation.current-situation.zinc-replaced.title'),
 
-
         'building_roof_types.flat.extra.zinc_replaced_date' =>  __('roof-insulation.current-situation.zinc-replaced.title'),
         'building_roof_types.flat.extra.bitumen_replaced_date' =>  __('roof-insulation.current-situation.bitumen-insulated.title'),
 
@@ -199,6 +200,6 @@ return [
 
         // solar panels
         'building_pv_panels.number' => __('solar-panels.number.title'),
-        'building_pv_panels.peak_power' => __('solar-panels.peak-power.title')
+        'building_pv_panels.peak_power' => __('solar-panels.peak-power.title'),
     ],
 ];

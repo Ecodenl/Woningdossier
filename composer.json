@@ -1,7 +1,12 @@
 {
     "name": "ecodenl/woningdossier",
     "description": "Woningdossier",
-    "keywords": ["woningdossier", "besparing", "woning", "econobis"],
+    "keywords": [
+        "woningdossier",
+        "besparing",
+        "woning",
+        "econobis"
+    ],
     "license": "OSL-3.0",
     "type": "project",
     "require": {
@@ -44,8 +49,7 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": [
-            ]
+            "dont-discover": []
         }
     },
     "scripts": {

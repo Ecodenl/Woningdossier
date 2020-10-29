@@ -23,9 +23,6 @@ class PrivateMessagePolicy
     /**
      * Determine if the given message can be edited by the user.
      *
-     * @param User           $user
-     * @param PrivateMessage $message
-     *
      * @return bool
      */
     public function edit(User $user, PrivateMessage $message)

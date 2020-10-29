@@ -2,16 +2,14 @@
 
 namespace App\Helpers;
 
-use \Illuminate\Support\Str;
+use Illuminate\Support\Str;
 
 class Number
 {
-
     /**
-     * Check if a number is negative
+     * Check if a number is negative.
      *
      * @param $number
-     * @return bool
      */
     public static function isNegative($number): bool
     {

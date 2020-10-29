@@ -14,7 +14,6 @@ class ImportCenterController extends Controller
     /**
      * Set the compare sessions, if the user is not comparing set the compare to true; else we leave it to false.
      *
-     * @param Cooperation $cooperation
      * @param $inputSourceShort
      *
      * @return \Illuminate\Http\RedirectResponse
@@ -35,9 +34,6 @@ class ImportCenterController extends Controller
 
     /**
      * Dismiss the notification from the tool pages / set the changed column to false.
-     *
-     * @param Cooperation $cooperation
-     * @param Request     $request
      */
     public function dismissNotification(Cooperation $cooperation, Request $request)
     {

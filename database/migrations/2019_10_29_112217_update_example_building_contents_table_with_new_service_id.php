@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class UpdateExampleBuildingContentsTableWithNewServiceId extends Migration
@@ -19,7 +17,7 @@ class UpdateExampleBuildingContentsTableWithNewServiceId extends Migration
         $heatPumpServiceValues = \DB::table('services')
             ->select('service_values.*')
             ->where('short', 'heat-pump')
-            ->leftJoin('service_values', 'services.id','=', 'service_values.service_id')
+            ->leftJoin('service_values', 'services.id', '=', 'service_values.service_id')
             ->get()->keyBy('calculate_value');
 
         // get the old heat pump services
@@ -30,14 +28,12 @@ class UpdateExampleBuildingContentsTableWithNewServiceId extends Migration
         // update all the content for the example buildings
         // we have to update the old hybrid/full heat pump service to the new heat-pump
         foreach ($exampleBuildingContents as $exampleBuildingContent) {
-            $content = json_decode($exampleBuildingContent->content,true);
+            $content = json_decode($exampleBuildingContent->content, true);
             if (array_key_exists('service', $content['general-data'])) {
                 // collect some data and vars for later on
                 $serviceContent = $content['general-data']['service'];
 
-
                 if (array_key_exists($fullHeatPumpService->id, $serviceContent) && array_key_exists($hybridHeatPump->id, $serviceContent)) {
-
                     // get the old service value id's
                     $fullHeatPumpServiceValueId = $serviceContent[$fullHeatPumpService->id];
                     $hybridHeatPumpServiceValueId = $serviceContent[$hybridHeatPump->id];
@@ -57,9 +53,9 @@ class UpdateExampleBuildingContentsTableWithNewServiceId extends Migration
                         // when the calc value for the hybrid pump is set to two the user has an hybrid pump, so we will set it to 4 since that's the new calc value for the hybrid pump
                         // else we will get the calc value from the full heat pump, those stayed the same
 
-                        if ($calculateValueForHybridHeatPump == 1 && $calculateValueForFullHeatPump == 1) {
+                        if (1 == $calculateValueForHybridHeatPump && 1 == $calculateValueForFullHeatPump) {
                             $newCalculateValueForAnswer = 1;
-                        } else if ($calculateValueForHybridHeatPump == 2) {
+                        } elseif (2 == $calculateValueForHybridHeatPump) {
                             $newCalculateValueForAnswer = 4;
                         } else {
                             $newCalculateValueForAnswer = $calculateValueForFullHeatPump;
@@ -72,12 +68,11 @@ class UpdateExampleBuildingContentsTableWithNewServiceId extends Migration
                     \DB::table('example_building_contents')
                         ->where('id', $exampleBuildingContent->id)
                         ->update([
-                            'content' => json_encode($content)
+                            'content' => json_encode($content),
                         ]);
                 }
             }
         }
-
     }
 
     /**
@@ -87,6 +82,5 @@ class UpdateExampleBuildingContentsTableWithNewServiceId extends Migration
      */
     public function down()
     {
-        //
     }
 }

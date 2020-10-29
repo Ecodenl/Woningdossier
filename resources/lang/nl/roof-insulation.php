@@ -4,29 +4,29 @@ return [
     'index' => [
         'interested-in-improvement' => [
             'title' => 'Uw interesse in deze maatregel',
-            'help' => 'Hier ziet u wat u bij “Algemene gegevens” over uw interesse voor dak isolatie hebt aangegeven. Mocht u dit willen veranderen, dan kunt u dat in dit veld doen. Let wel: Aanpassingen die u hier doet zullen ook op de pagina “Algemene gegevens” mee veranderen.'
+            'help' => 'Hier ziet u wat u bij “Algemene gegevens” over uw interesse voor dak isolatie hebt aangegeven. Mocht u dit willen veranderen, dan kunt u dat in dit veld doen. Let wel: Aanpassingen die u hier doet zullen ook op de pagina “Algemene gegevens” mee veranderen.',
         ],
         'savings-in-euro' => [
             'title' => 'Besparing in €',
-            'help' => 'Indicatieve besparing in € per jaar. De gebruikte energietarieven voor gas en elektra worden jaarlijks aan de marktomstandigheden aangepast.'
+            'help' => 'Indicatieve besparing in € per jaar. De gebruikte energietarieven voor gas en elektra worden jaarlijks aan de marktomstandigheden aangepast.',
         ],
         'comparable-rent' => [
             'title' => 'Vergelijkbare rente',
-            'help' => '<p>Meer informatie over de vergelijkbare rente kunt u vinden bij Milieucentraal: <a title="Link Milieucentraal" href="https://www.milieucentraal.nl/energie-besparen/energiezuinig-huis/financiering-energie-besparen/rendement-energiebesparing/" target="_blank" rel="noopener">https://www.milieucentraal.nl/energie-besparen/energiezuinig-huis/financiering-energie-besparen/rendement-energiebesparing/</a></p>'
+            'help' => '<p>Meer informatie over de vergelijkbare rente kunt u vinden bij Milieucentraal: <a title="Link Milieucentraal" href="https://www.milieucentraal.nl/energie-besparen/energiezuinig-huis/financiering-energie-besparen/rendement-energiebesparing/" target="_blank" rel="noopener">https://www.milieucentraal.nl/energie-besparen/energiezuinig-huis/financiering-energie-besparen/rendement-energiebesparing/</a></p>',
         ],
         'indicative-costs' => [
             'title' => 'Indicatieve kosten',
-            'help' => 'Hier kunt u zien wat de indicatieve kosten voor deze maatregel zijn.'
+            'help' => 'Hier kunt u zien wat de indicatieve kosten voor deze maatregel zijn.',
         ],
         'specific-situation' => [
             'title' => 'Toelichting op specifieke situatie',
-            'help' => 'Hier kunt u opmerkingen over uw specifieke situatie vastleggen, bijvoorbeeld voor een gesprek met een energiecoach of een uitvoerend bedrijf.'
+            'help' => 'Hier kunt u opmerkingen over uw specifieke situatie vastleggen, bijvoorbeeld voor een gesprek met een energiecoach of een uitvoerend bedrijf.',
         ],
     ],
 
     'flat' => [
         'indicative-costs-replacement' => [
-            'label' => 'Vervanging dakpannen / dakbedekking'
+            'label' => 'Vervanging dakpannen / dakbedekking',
         ],
         'costs' => [
             'gas' => [
@@ -36,17 +36,17 @@ return [
             'co2' => [
                 'title' => 'CO2 Besparing',
                 'help' => '<p>Gerekend wordt met 1,88 kg/m3 gas (bron: Milieucentraal)</p>',
-            ]
+            ],
         ],
     ],
 
     'comment' => [
-        'title' => 'Toelichting op vloerisolatie'
+        'title' => 'Toelichting op vloerisolatie',
     ],
 
     'pitched' => [
         'indicative-costs-replacement' => [
-            'label' => 'Vervanging dakpannen / dakbedekking'
+            'label' => 'Vervanging dakpannen / dakbedekking',
         ],
         'costs' => [
             'gas' => [
@@ -56,7 +56,7 @@ return [
             'co2' => [
                 'title' => 'CO2 Besparing',
                 'help' => '<p>Gerekend wordt met 1,88 kg/m3 gas (bron: Milieucentraal)</p>',
-            ]
+            ],
         ],
     ],
     'current-situation' => [

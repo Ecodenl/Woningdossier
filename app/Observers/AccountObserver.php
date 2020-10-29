@@ -6,7 +6,6 @@ use App\Models\Account;
 
 class AccountObserver
 {
-
     public function saved(Account $account)
     {
         \App\Helpers\Cache\Account::wipe($account->id);

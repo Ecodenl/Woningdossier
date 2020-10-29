@@ -11,60 +11,58 @@ class FileTypesTableSeeder extends Seeder
      */
     public function run()
     {
-
         $fileTypeCategory = DB::table('file_type_categories')->where('short', 'report')->first();
 
         $fileTypes = [
             [
                 'names' => [
-                    'nl' => 'Alle ingevulde gegevens, met adresgegevens'
+                    'nl' => 'Alle ingevulde gegevens, met adresgegevens',
                 ],
                 'content_type' => 'text/csv',
-                'short' => 'total-report'
+                'short' => 'total-report',
             ],
             [
                 'names' => [
-                    'nl' => 'Alle ingevulde gegevens, zonder adresgegevens'
+                    'nl' => 'Alle ingevulde gegevens, zonder adresgegevens',
                 ],
                 'content_type' => 'text/csv',
-                'short' => 'total-report-anonymized'
+                'short' => 'total-report-anonymized',
             ],
             [
                 'names' => [
-                    'nl' => 'Actieplan per maatregel, met adresgegevens'
+                    'nl' => 'Actieplan per maatregel, met adresgegevens',
                 ],
                 'content_type' => 'text/csv',
-                'short' => 'measure-report'
+                'short' => 'measure-report',
             ],
             [
                 'names' => [
-                    'nl' => 'Actieplan per maatregel, zonder adresgegevens'
+                    'nl' => 'Actieplan per maatregel, zonder adresgegevens',
                 ],
                 'content_type' => 'text/csv',
-                'short' => 'measure-report-anonymized'
+                'short' => 'measure-report-anonymized',
             ],
             [
                 'names' => [
-                    'nl' => 'PDF Rapportage'
+                    'nl' => 'PDF Rapportage',
                 ],
                 'content_type' => 'application/pdf',
-                'short' => 'pdf-report'
+                'short' => 'pdf-report',
             ],
             [
                 'names' => [
-                    'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, met alle adresgegevens'
+                    'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, met alle adresgegevens',
                 ],
                 'content_type' => 'text/csv',
-                'short' => 'custom-questionnaire-report'
+                'short' => 'custom-questionnaire-report',
             ],
             [
                 'names' => [
-                    'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, zonder adresgegevens'
+                    'nl' => 'Antwoorden van de bewoners op de custom vragenlijsten, zonder adresgegevens',
                 ],
                 'content_type' => 'text/csv',
-                'short' => 'custom-questionnaire-report-anonymized'
+                'short' => 'custom-questionnaire-report-anonymized',
             ],
-
         ];
 
         foreach ($fileTypes as $fileType) {
@@ -83,7 +81,7 @@ class FileTypesTableSeeder extends Seeder
                 'name' => $uuid,
                 'file_type_category_id' => $fileTypeCategory->id,
                 'short' => $fileType['short'],
-                'content_type' => $fileType['content_type']
+                'content_type' => $fileType['content_type'],
             ]);
         }
     }

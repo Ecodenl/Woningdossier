@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Cooperation\Tool;
 
-use App\Models\Interest;
 use App\Models\RoofType;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
@@ -12,7 +11,6 @@ use Illuminate\Validation\Validator;
 
 class RoofInsulationFormRequest extends FormRequest
 {
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -67,7 +65,6 @@ class RoofInsulationFormRequest extends FormRequest
         ];
     }
 
-
     /**
      * small translation of the attribute.
      *
@@ -82,7 +79,6 @@ class RoofInsulationFormRequest extends FormRequest
 
     public function withValidator(Validator $validator)
     {
-
         $max = Carbon::now()->year;
 
         // retrieve the selected roof type ids
@@ -96,16 +92,15 @@ class RoofInsulationFormRequest extends FormRequest
             $roofTypeCategory = $this->getRoofTypeCategory($roofType);
 
             // when the roof type category exists add validation
-            if (!empty($roofTypeCategory)) {
+            if (! empty($roofTypeCategory)) {
                 $validator->addRules([
                     $brt.'.'.$roofTypeCategory.'.roof_surface' => 'required|numeric|min:0',
                     $brt.'.'.$roofTypeCategory.'.insulation_roof_surface' => 'required|numeric|min:0|needs_to_be_lower_or_same_as:'.$brt.'.'.$roofTypeCategory.'.roof_surface',
                     $brt.'.'.$roofTypeCategory.'.extra.zinc_replaced_date' => 'nullable|numeric|between:1960,'.$max,
                 ]);
 
-
                 // bitumen is only possible on a flat roof
-                if ($roofTypeCategory === 'flat') {
+                if ('flat' === $roofTypeCategory) {
                     $validator->addRules([
                         $brt.'.'.$roofTypeCategory.'.extra.bitumen_replaced_date' => 'nullable|numeric|between:1970,'.$max,
                     ]);

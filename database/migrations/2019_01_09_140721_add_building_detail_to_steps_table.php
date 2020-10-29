@@ -12,8 +12,6 @@ class AddBuildingDetailToStepsTable extends Migration
     public function up()
     {
         if (DB::table('steps')->count() > 0) {
-
-
             // collect the data we need
             $steps = \DB::table('steps')->get();
             $cooperations = \DB::table('cooperations')->get();

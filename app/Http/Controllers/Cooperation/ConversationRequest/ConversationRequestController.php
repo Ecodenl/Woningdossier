@@ -17,7 +17,6 @@ class ConversationRequestController extends Controller
     /**
      * Show the form.
      *
-     * @param Cooperation $cooperation
      * @param string|null $requestType             Default: null
      * @param string|null $measureApplicationShort Default: null
      *
@@ -52,8 +51,6 @@ class ConversationRequestController extends Controller
 
     /**
      * Save the conversation request for whatever the conversation request may be.
-     *
-     * @param ConversationRequest $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */

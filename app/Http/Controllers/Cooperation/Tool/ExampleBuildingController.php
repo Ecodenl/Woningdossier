@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Helpers\HoomdossierSession;
+use App\Http\Controllers\Controller;
 use App\Models\BuildingType;
 use App\Models\ExampleBuilding;
 use App\Services\ExampleBuildingService;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 
 class ExampleBuildingController extends Controller
@@ -35,7 +35,7 @@ class ExampleBuildingController extends Controller
             $building->save();
         } else {
             ExampleBuildingService::clearExampleBuilding($building);
-            Log::debug(__CLASS__. "NO example building is found, clearing for the building. (id: {$building->id})");
+            Log::debug(__CLASS__."NO example building is found, clearing for the building. (id: {$building->id})");
         }
 
         return response()->json();

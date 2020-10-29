@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class UpdateTranslationOnTranslationsTable extends Migration
@@ -20,14 +18,14 @@ class UpdateTranslationOnTranslationsTable extends Migration
                 ->where('key', $step->name)
                 ->where('language', 'nl')
                 ->update([
-                    'translation' => 'Ventilatie'
+                    'translation' => 'Ventilatie',
                 ]);
 
             DB::table('translations')
                 ->where('key', $step->name)
                 ->where('language', 'en')
                 ->update([
-                    'translation' => 'Ventilation'
+                    'translation' => 'Ventilation',
                 ]);
         }
     }
@@ -46,14 +44,14 @@ class UpdateTranslationOnTranslationsTable extends Migration
                 ->where('key', $step->name)
                 ->where('language', 'nl')
                 ->update([
-                    'translation' => 'Ventilatie informatie'
+                    'translation' => 'Ventilatie informatie',
                 ]);
 
             DB::table('translations')
                 ->where('key', $step->name)
                 ->where('language', 'en')
                 ->update([
-                    'translation' => 'Ventilation information'
+                    'translation' => 'Ventilation information',
                 ]);
         }
     }

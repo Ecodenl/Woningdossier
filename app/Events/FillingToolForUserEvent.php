@@ -20,9 +20,6 @@ class FillingToolForUserEvent
 
     /**
      * FillingToolForUserEvent constructor.
-     *
-     * @param Building $building
-     * @param User     $userThatIsFillingTool
      */
     public function __construct(Building $building, User $userThatIsFillingTool)
     {

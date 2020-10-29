@@ -9,8 +9,6 @@ class PasswordBroker extends BasePasswordBroker
     /**
      * Validate a password reset for the given credentials.
      *
-     * @param array $credentials
-     *
      * @return \Illuminate\Contracts\Auth\CanResetPassword|string
      */
     public function validateReset(array $credentials)

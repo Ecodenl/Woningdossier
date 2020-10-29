@@ -23,10 +23,6 @@ class UserPolicy
 
     /**
      * Check if a user is authorized to do admin stuff.
-     *
-     * @param User $user
-     *
-     * @return bool
      */
     public function accessAdmin(User $user): bool
     {
@@ -39,11 +35,6 @@ class UserPolicy
 
     /**
      * Check if a user is authorized to delete a user.
-     *
-     * @param User $user
-     * @param User $userToDelete
-     *
-     * @return bool
      */
     public function deleteUser(User $user, User $userToDelete): bool
     {
@@ -62,8 +53,6 @@ class UserPolicy
     /**
      * Determine if a user is authorize to delete his own account.
      *
-     * @param User $user
-     *
      * @return bool
      */
     public function deleteOwnAccount(User $user)
@@ -77,9 +66,6 @@ class UserPolicy
 
     /**
      * Check if a user is authorized to destroy a user.
-     *
-     * @param User $user
-     * @param User $userToDestroy
      *
      * @return bool
      */
@@ -97,10 +83,7 @@ class UserPolicy
     /**
      * Check if a user is allowed to participate in a group chat or not.
      *
-     * @param User $user
      * @param $buildingId
-     *
-     * @return bool
      */
     public function participateInGroupChat(User $user, $buildingId): bool
     {
@@ -119,8 +102,6 @@ class UserPolicy
      *
      * @param User $user             | Auth user
      * @param User $groupParticipant | Participant from the group chat
-     *
-     * @return bool
      */
     public function removeParticipantFromChat(User $user, User $groupParticipant): bool
     {
@@ -137,7 +118,6 @@ class UserPolicy
      * Returns if a user can assign a particular role (just if the user is
      * allowed to assign roles).
      *
-     * @param User $user
      * @param Role $role The role which is to be assigned
      *
      * @return bool
@@ -156,5 +136,4 @@ class UserPolicy
 
         return false;
     }
-
 }

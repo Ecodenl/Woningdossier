@@ -3,15 +3,11 @@
 namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
-use App\Models\Account;
-use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Log;
 use App\Models\Role;
 use App\Models\User;
-use http\Cookie;
-use Illuminate\Support\Facades\Redirect;
 
 class SuccessFullLoginListener
 {

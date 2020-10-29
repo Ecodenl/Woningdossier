@@ -70,7 +70,7 @@ class BuildingCoachStatus extends Model
      */
     public function coach()
     {
-        return $this->belongsTo('App\Models\User', 'coach_id', 'id');
+        return $this->belongsTo(\App\Models\User::class, 'coach_id', 'id');
     }
 
     /**

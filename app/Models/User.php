@@ -350,7 +350,7 @@ class User extends Model implements AuthorizableContract
 
     public function buildingPermissions()
     {
-        return $this->hasMany('App\Models\BuildingPermission');
+        return $this->hasMany(\App\Models\BuildingPermission::class);
     }
 
     public function isBuildingOwner(Building $building)

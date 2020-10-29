@@ -58,7 +58,7 @@ class HaveUserForEachCooperation extends Migration
         // Correct rights
 
         $modelsWithRoles = DB::table('model_has_roles')->where('model_type',
-            '=', 'App\Models\User')->get();
+            '=', \App\Models\User::class)->get();
         foreach ($modelsWithRoles as $modelWithRoles) {
             // get related user
             $user = DB::table('users')->find($modelWithRoles->model_id);
@@ -73,7 +73,7 @@ class HaveUserForEachCooperation extends Migration
 
                 if ($sibling instanceof stdClass && $sibling->id != $user->id) {
                     DB::table('model_has_roles')
-                      ->where('model_type', '=', 'App\Models\User')
+                      ->where('model_type', '=', \App\Models\User::class)
                       ->where('model_id', '=', $modelWithRoles->model_id)
                       ->where('cooperation_id', '=',
                           $modelWithRoles->cooperation_id)

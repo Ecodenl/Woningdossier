@@ -23,7 +23,7 @@ class CreateBuildingFormRequest extends FormRequest
         $user = $account->user();
 
         // allowed when there is no building attached
-        return $user instanceof User && !$user->building instanceof Building;
+        return $user instanceof User && ! $user->building instanceof Building;
     }
 
     /**

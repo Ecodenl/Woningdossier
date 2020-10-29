@@ -14,9 +14,6 @@ class AvailableScope implements Scope
      *
      * Global scope so it will only show file's that are available
      *
-     * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param \Illuminate\Database\Eloquent\Model   $model
-     *
      * @return void
      */
     public function apply(Builder $builder, Model $model)

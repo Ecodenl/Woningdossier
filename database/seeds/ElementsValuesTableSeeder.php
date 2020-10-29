@@ -180,13 +180,13 @@ class ElementsValuesTableSeeder extends Seeder
                         'order' => 4,
                         'calculate_value' => 5,
                     ],
-	                [
-		                'values' => [
-			                'nl' => 'Niet van toepassing',
-		                ],
-		                'order' => 5,
-		                'calculate_value' => 6,
-	                ],
+                    [
+                        'values' => [
+                            'nl' => 'Niet van toepassing',
+                        ],
+                        'order' => 5,
+                        'calculate_value' => 6,
+                    ],
                 ],
             ],
             [

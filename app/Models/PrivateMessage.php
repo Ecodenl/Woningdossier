@@ -79,7 +79,6 @@ class PrivateMessage extends Model
         return $query->where('to_cooperation_id', HoomdossierSession::getCooperation());
     }
 
-
     /**
      * Scope a query to return all the conversation requests.
      *
@@ -95,8 +94,6 @@ class PrivateMessage extends Model
     /**
      * Determine if a private message is public.
      *
-     * @param PrivateMessage $privateMessage
-     *
      * @return bool
      */
     public static function isPublic(PrivateMessage $privateMessage)
@@ -110,8 +107,6 @@ class PrivateMessage extends Model
 
     /**
      * Determine if a private message is private.
-     *
-     * @param PrivateMessage $privateMessage
      *
      * @return bool
      */
@@ -210,8 +205,6 @@ class PrivateMessage extends Model
      *
      * @param      $buildingId
      * @param bool $publicConversation
-     *
-     * @return Collection
      */
     public static function getGroupParticipants($buildingId, $publicConversation = true): Collection
     {
@@ -243,8 +236,6 @@ class PrivateMessage extends Model
 
     /**
      * Check if its the user his message.
-     *
-     * @return bool
      */
     public function isMyMessage(): bool
     {
@@ -267,8 +258,6 @@ class PrivateMessage extends Model
 
     /**
      * Returns the opposite from isMyMessage().
-     *
-     * @return bool
      */
     public function isNotMyMessage(): bool
     {
@@ -300,8 +289,6 @@ class PrivateMessage extends Model
     /**
      * Check if its allowed to access a building by its given building id.
      *
-     * @param Building $building
-     *
      * @return bool
      */
     public static function allowedAccess(Building $building)
@@ -311,8 +298,6 @@ class PrivateMessage extends Model
 
     /**
      * Get the private message views.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function privateMessageViews(): HasMany
     {

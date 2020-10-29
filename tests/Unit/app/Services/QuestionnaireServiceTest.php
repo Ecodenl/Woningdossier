@@ -13,7 +13,8 @@ use Tests\TestCase;
 
 class QuestionnaireServiceTest extends TestCase
 {
-    use CreatesApplication, DatabaseTransactions;
+    use CreatesApplication;
+    use DatabaseTransactions;
 
     public function setUp()
     {
@@ -43,9 +44,9 @@ class QuestionnaireServiceTest extends TestCase
     public static function getTranslationProvider()
     {
         return [
-            [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling',], 'Dit is een engelse vertaling'],
-            [['en' => '', 'nl' => 'Dit is een nederlandse vertaling',], 'Dit is een nederlandse vertaling',],
-            [['fr' => 'franse vertaling', 'en' => '', 'nl' => null,], 'franse vertaling',],
+            [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], 'Dit is een engelse vertaling'],
+            [['en' => '', 'nl' => 'Dit is een nederlandse vertaling'], 'Dit is een nederlandse vertaling'],
+            [['fr' => 'franse vertaling', 'en' => '', 'nl' => null], 'franse vertaling'],
         ];
     }
 
@@ -60,12 +61,12 @@ class QuestionnaireServiceTest extends TestCase
     public function isEmptyTranslationProvider()
     {
         return [
-            [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling',], false],
-            [['en' => '', 'nl' => 'Dit is een nederlandse vertaling',], false,],
-            [['fr' => 'franse vertaling', 'en' => '', 'nl' => null,], false,],
-            [['fr' => '', 'en' => '', 'nl' => '',], true,],
-            [['fr' => '', 'en' => null, 'nl' => '',], true,],
-            [['fr' => null, 'en' => null, 'nl' => '', 'de' => 'duitse tekst'], false,],
+            [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], false],
+            [['en' => '', 'nl' => 'Dit is een nederlandse vertaling'], false],
+            [['fr' => 'franse vertaling', 'en' => '', 'nl' => null], false],
+            [['fr' => '', 'en' => '', 'nl' => ''], true],
+            [['fr' => '', 'en' => null, 'nl' => ''], true],
+            [['fr' => null, 'en' => null, 'nl' => '', 'de' => 'duitse tekst'], false],
         ];
     }
 
@@ -77,13 +78,12 @@ class QuestionnaireServiceTest extends TestCase
         $this->assertEquals($expected, QuestionnaireService::isEmptyTranslation($translations));
     }
 
-
     public function testCreateQuestionnaire()
     {
         $cooperation = Cooperation::find(1);
         $step = Step::find(1);
         QuestionnaireService::createQuestionnaire(
-            $cooperation, $step, ['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling',]
+            $cooperation, $step, ['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling']
         );
 
         $this->assertEquals(1, Questionnaire::count());
@@ -94,10 +94,10 @@ class QuestionnaireServiceTest extends TestCase
         return [
             [[
                 'question' => [
-                    'nl' => 'Test questionnaire'
+                    'nl' => 'Test questionnaire',
                 ],
                 'required' => true,
-            ]]
+            ]],
         ];
     }
 
@@ -112,7 +112,7 @@ class QuestionnaireServiceTest extends TestCase
         QuestionnaireService::createQuestion($questionnaire, $questionData, 'text', [], 0);
 
         $this->assertDatabaseHas('questions', [
-            'questionnaire_id' => $questionnaire->id
+            'questionnaire_id' => $questionnaire->id,
         ]);
     }
 
@@ -120,7 +120,7 @@ class QuestionnaireServiceTest extends TestCase
     {
         // first we need to create a questionnaire with a question
         $questionnaire = factory(Questionnaire::class)->create();
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; ++$i) {
             $questionnaire->questions()->save(
                 factory(Question::class)->make(['order' => $i])
             );
@@ -148,8 +148,7 @@ class QuestionnaireServiceTest extends TestCase
         $this->assertNotSame($copiedQuestionnaire->attributesToArray()['name'], $questionnaire->attributesToArray()['name']);
 
         $this->assertDatabaseHas('questions', [
-            'questionnaire_id' => $copiedQuestionnaire->id
+            'questionnaire_id' => $copiedQuestionnaire->id,
         ]);
-
     }
 }

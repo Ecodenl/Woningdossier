@@ -39,7 +39,7 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class  ExampleBuilding extends Model
+class ExampleBuilding extends Model
 {
     use TranslatableTrait;
 
@@ -143,8 +143,6 @@ class  ExampleBuilding extends Model
 
     /**
      * Returns if this ExampleBuilding is a specific example building or not.
-     *
-     * @return bool
      */
     public function isSpecific(): bool
     {
@@ -153,8 +151,6 @@ class  ExampleBuilding extends Model
 
     /**
      * Returns if this ExampleBuilding is a generic example building or not.
-     *
-     * @return bool
      */
     public function isGeneric(): bool
     {

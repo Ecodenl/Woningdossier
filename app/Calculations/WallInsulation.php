@@ -20,9 +20,7 @@ class WallInsulation
     /**
      * Calculate the wall insulation costs and savings etc.
      *
-     * @param Building             $building
      * @param UserEnergyHabit|null $energyHabit
-     * @param array                $calculateData
      *
      * @return array;
      */
@@ -129,7 +127,6 @@ class WallInsulation
                 $year, false);
             $result['paint_wall'] = compact('costs', 'year');
         }
-
 
         return $result;
     }

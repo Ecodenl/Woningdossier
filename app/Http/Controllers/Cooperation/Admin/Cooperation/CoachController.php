@@ -14,8 +14,6 @@ class CoachController extends Controller
     /**
      * Show all the coaches and coordinators.
      *
-     * @param Cooperation $cooperation
-     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Cooperation $cooperation)
@@ -33,7 +31,6 @@ class CoachController extends Controller
     /**
      * Show a list of a coach its connected buildings.
      *
-     * @param Cooperation $cooperation
      * @param $userId
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -51,7 +48,7 @@ class CoachController extends Controller
                     'user',
                     'buildingStatuses' => function ($q) {
                         $q->with('status')->mostRecent();
-                    }]
+                    }, ]
             );
 
         $roles = $userToShow->roles->pluck('human_readable_name')->toArray();

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddZincSurfaceToRoof extends Migration
 {
@@ -14,7 +14,7 @@ class AddZincSurfaceToRoof extends Migration
     public function up()
     {
         // Add zinc column to building_roof_types table
-        if (!Schema::hasColumn('building_roof_types', 'zinc_surface')){
+        if (! Schema::hasColumn('building_roof_types', 'zinc_surface')) {
             Schema::table('building_roof_types', function (Blueprint $table) {
                 $table->integer('zinc_surface')->after('insulation_roof_surface')->unsigned()->nullable()->default(null);
             });
@@ -24,7 +24,7 @@ class AddZincSurfaceToRoof extends Migration
         $group = 'roof-insulation';
 
         $step = DB::table('steps')->where('slug', '=', $group)->first();
-        if ($step instanceof \stdClass){
+        if ($step instanceof \stdClass) {
             $step_id = $step->id;
             // proceed
             $keys = [
@@ -44,10 +44,10 @@ class AddZincSurfaceToRoof extends Migration
                 ],
             ];
 
-            foreach($keys as $key => $text) {
+            foreach ($keys as $key => $text) {
                 $text = json_encode($text);
-                if (!DB::table('language_lines')->where('group', $group)->where('key', $key)->exists()) {
-                    if (stristr($key, '.title') === false) {
+                if (! DB::table('language_lines')->where('group', $group)->where('key', $key)->exists()) {
+                    if (false === stristr($key, '.title')) {
                         $help_language_line_id = null;
                     }
                     $help_language_line_id = DB::table('language_lines')->insertGetId(compact('group',
@@ -55,7 +55,6 @@ class AddZincSurfaceToRoof extends Migration
                 }
             }
         }
-
     }
 
     /**

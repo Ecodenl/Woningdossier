@@ -4,7 +4,6 @@ namespace App\Events;
 
 use App\Models\Cooperation;
 use App\Models\User;
-use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -29,9 +28,6 @@ class UserAssociatedWithOtherCooperation
 
     /**
      * Registered constructor.
-     *
-     * @param Cooperation $cooperation
-     * @param User        $user
      */
     public function __construct(Cooperation $cooperation, User $user)
     {

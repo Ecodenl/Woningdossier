@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class MigrateCooperationVrijstadToRivierenland extends Migration
@@ -17,7 +15,7 @@ class MigrateCooperationVrijstadToRivierenland extends Migration
         // cooperation to remove.
         $vrijstadEnergie = DB::table('cooperations')->where('slug', '=', 'vrijstadenergie')->first();
 
-        if (!is_null($rivierenLand) && !is_null($vrijstadEnergie)) {
+        if (! is_null($rivierenLand) && ! is_null($vrijstadEnergie)) {
             // only migrate the pdf file file types.
             // cvs dont matter at this point
             DB::table('file_types')
@@ -39,13 +37,12 @@ class MigrateCooperationVrijstadToRivierenland extends Migration
               ->where('cooperation_id', '=', $vrijstadEnergie->id)
               ->update(['cooperation_id' => $rivierenLand->id]);
 
-
             // and finally delete the cooperation
             //DB::table('cooperations')->where('slug', '=', 'vrijstadenergie')->delete();
             // Update the slug
             DB::table('cooperations')->where('slug', '=', 'hnwr')->update([
                 'name' => 'Energieloket Rivierenland',
-                'slug' => 'energieloketrivierenland'
+                'slug' => 'energieloketrivierenland',
             ]);
         }
     }
@@ -57,6 +54,5 @@ class MigrateCooperationVrijstadToRivierenland extends Migration
      */
     public function down()
     {
-        //
     }
 }

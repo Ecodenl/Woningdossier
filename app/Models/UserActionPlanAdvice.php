@@ -2,35 +2,32 @@
 
 namespace App\Models;
 
-use App\Services\UserActionPlanAdviceService;
-use App\Services\UserInterestService;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Models\UserActionPlanAdvice.
  *
- * @property int $id
- * @property int $user_id
- * @property int|null $input_source_id
- * @property int $measure_application_id
- * @property float|null $costs
- * @property float|null $savings_gas
- * @property float|null $savings_electricity
- * @property float|null $savings_money
- * @property int|null $year
- * @property bool $planned
- * @property int|null $planned_year
- * @property int $step_id
+ * @property int                             $id
+ * @property int                             $user_id
+ * @property int|null                        $input_source_id
+ * @property int                             $measure_application_id
+ * @property float|null                      $costs
+ * @property float|null                      $savings_gas
+ * @property float|null                      $savings_electricity
+ * @property float|null                      $savings_money
+ * @property int|null                        $year
+ * @property bool                            $planned
+ * @property int|null                        $planned_year
+ * @property int                             $step_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\InputSource|null $inputSource
- * @property \App\Models\MeasureApplication $measureApplication
- * @property \App\Models\Step $step
- * @property \App\Models\User $user
+ * @property \App\Models\InputSource|null    $inputSource
+ * @property \App\Models\MeasureApplication  $measureApplication
+ * @property \App\Models\Step                $step
+ * @property \App\Models\User                $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserActionPlanAdvice forMe(\App\Models\User $user = null)
@@ -57,7 +54,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserActionPlanAdvice extends Model
 {
-    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
+    use GetValueTrait;
+    use GetMyValuesTrait;
+    use ToolSettingTrait;
 
     public $fillable = [
         'user_id', 'measure_application_id', // old
@@ -78,7 +77,6 @@ class UserActionPlanAdvice extends Model
      * Scope a query to only include results for the particular step.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param Step $step
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -104,12 +102,6 @@ class UserActionPlanAdvice extends Model
 
     /**
      * Check whether someone is interested in the measure.
-     *
-     * @param Building $building
-     * @param InputSource $inputSource
-     * @param Step $step
-     *
-     * @return bool
      */
     public static function hasInterestInMeasure(Building $building, InputSource $inputSource, Step $step): bool
     {

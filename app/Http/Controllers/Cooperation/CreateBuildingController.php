@@ -2,20 +2,14 @@
 
 namespace App\Http\Controllers\Cooperation;
 
-use App\Helpers\HoomdossierSession;
 use App\Helpers\PicoHelper;
-use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateBuildingFormRequest;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\Cooperation;
-use App\Models\InputSource;
-use App\Models\Role;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class CreateBuildingController extends Controller
 {
@@ -31,9 +25,6 @@ class CreateBuildingController extends Controller
 
     /**
      * Store the building and connect it to the user his account.
-     *
-     * @param CreateBuildingFormRequest $request
-     * @param Cooperation               $cooperation
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
@@ -52,7 +43,7 @@ class CreateBuildingController extends Controller
             $data['postal_code'], $data['number']
         );
 
-        $data['bag_addressid'] = isset($picoAddressData['bag_adresid']) ? $picoAddressData ['bag_adresid'] : '';
+        $data['bag_addressid'] = isset($picoAddressData['bag_adresid']) ? $picoAddressData['bag_adresid'] : '';
 
         $features = new BuildingFeature([
             'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
@@ -66,6 +57,4 @@ class CreateBuildingController extends Controller
 
         return redirect(route('cooperation.auth.login'))->with('success', __('woningdossier.cooperation.create-building.store.success'));
     }
-
-
 }

@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class CopyGeneralDataCommentToUsageStepOnStepCommentsTable extends Migration
@@ -32,6 +30,5 @@ class CopyGeneralDataCommentToUsageStepOnStepCommentsTable extends Migration
      */
     public function down()
     {
-        //
     }
 }

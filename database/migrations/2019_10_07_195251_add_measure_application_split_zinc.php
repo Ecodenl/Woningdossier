@@ -1,8 +1,6 @@
 <?php
 
 use App\Helpers\Str;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class AddMeasureApplicationSplitZinc extends Migration
@@ -14,20 +12,18 @@ class AddMeasureApplicationSplitZinc extends Migration
      */
     public function up()
     {
-
         // There will be no migration / changes when there's no step
         $step = DB::table('steps')->where('slug', '=',
             'roof-insulation')->first();
 
-        if (!is_null($step)) {
-
+        if (! is_null($step)) {
             // cost unit creation
             $costUnit = DB::table('translations')
                           ->where('language', '=', 'nl')
                           ->where('translation', '=', 'per m')
                           ->first();
 
-            if ( ! $costUnit) {
+            if (! $costUnit) {
                 $cuUuid = Str::uuid();
                 \DB::table('translations')->insert([
                     'key'         => $cuUuid,
@@ -50,7 +46,7 @@ class AddMeasureApplicationSplitZinc extends Migration
                         ->where('translation', '=', 'Zinkwerk hellend dak')
                         ->first();
 
-            if ( ! $mTrans) {
+            if (! $mTrans) {
                 $mnUuid = Str::uuid();
                 \DB::table('translations')->insert([
                     'key'         => $mnUuid,
@@ -60,7 +56,6 @@ class AddMeasureApplicationSplitZinc extends Migration
             } else {
                 $mnUuid = $mTrans->key;
             }
-
 
             DB::table('measure_applications')
               ->where('short', '=', 'replace-zinc')
@@ -81,7 +76,7 @@ class AddMeasureApplicationSplitZinc extends Migration
                                      'Zinkwerk plat dak')
                                  ->first();
 
-            if ( ! $flatMeasureName) {
+            if (! $flatMeasureName) {
                 $fmnUuid = Str::uuid();
                 \DB::table('translations')->insert([
                     'key'         => $fmnUuid,
@@ -97,7 +92,7 @@ class AddMeasureApplicationSplitZinc extends Migration
                                  ->where('translation', '=', 'jaar')
                                  ->first();
 
-            if ( ! $maintenanceUnit) {
+            if (! $maintenanceUnit) {
                 $maintenanceUnitId = DB::table('translations')->insertGetId([
                     'key'         => Str::uuid(),
                     'language'    => 'nl',
@@ -136,14 +131,14 @@ class AddMeasureApplicationSplitZinc extends Migration
         $step = DB::table('steps')->where('slug', '=',
             'roof-insulation')->first();
 
-        if (!is_null($step)) {
+        if (! is_null($step)) {
             // cost unit creation
             $costUnit = DB::table('translations')
                           ->where('language', '=', 'nl')
                           ->where('translation', '=', 'per m2')
                           ->first();
 
-            if ( ! $costUnit) {
+            if (! $costUnit) {
                 $cuUuid = Str::uuid();
                 \DB::table('translations')->insert([
                     'key'         => $cuUuid,

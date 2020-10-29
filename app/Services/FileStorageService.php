@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileType;
@@ -11,11 +10,9 @@ use App\Models\User;
 
 class FileStorageService
 {
-
     /**
-     * method to delete a file storage, and the file on the disk
+     * method to delete a file storage, and the file on the disk.
      *
-     * @param FileStorage $fileStorage
      * @throws \Exception
      */
     public static function delete(FileStorage $fileStorage)
@@ -23,10 +20,12 @@ class FileStorageService
         $fileStorage->delete();
         \Storage::disk('downloads')->delete($fileStorage->filename);
     }
+
     /**
      * Method to download a given file.
      *
      * @param $fileStorage
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public static function download($fileStorage)
@@ -43,13 +42,9 @@ class FileStorageService
 
         return redirect()->back()->with('warning', 'Er is iets fout gegaan');
     }
+
     /**
      * Check whether a file type is being processed for a given cooperation.
-     *
-     * @param FileType    $fileType
-     * @param Cooperation $cooperation
-     *
-     * @return bool
      */
     public static function isFileTypeBeingProcessedForCooperation(FileType $fileType, Cooperation $cooperation): bool
     {
@@ -60,12 +55,6 @@ class FileStorageService
 
     /**
      * Check whether a file type is being processed for a given user and its input source.
-     *
-     * @param FileType    $fileType
-     * @param User        $user
-     * @param InputSource $inputSource
-     *
-     * @return bool
      */
     public static function isFileTypeBeingProcessedForUser(FileType $fileType, User $user, InputSource $inputSource): bool
     {

@@ -18,7 +18,6 @@ return [
     'throttle' => 'Te veel login pogingen. U kunt het opniew proberen over :seconds seconde(n).',
     'inactive' => 'U kunt nog niet inloggen omdat uw account nog niet is bevestigd. U kunt uw account bevestigen via de bevestigingslink in de eerder gestuurde e-mail. <a href=":resend-link">Niet ontvangen?</a>',
 
-
     'register' => [
         'form' => [
             'allow-access' => 'Geef toestemming om te kunnen registreren',
@@ -26,7 +25,7 @@ return [
             'header' => 'Registreren',
             'e-mail' => 'E-mailadres',
             'e-mail-exists' => 'Het e-mailadres is al geregistreerd, wij hebben nog een aantal gegevens van uw nodig. U kunt hierna inloggen met uw E-mailadres en huidige wachtwoord.',
-            'already-member' => 'U bent a lid van deze coöperatie, ga naar de <strong><a href=' . url('login') . '>Login pagina</a></strong>',
+            'already-member' => 'U bent a lid van deze coöperatie, ga naar de <strong><a href='.url('login').'>Login pagina</a></strong>',
             'connect' => 'Koppelen aan deze coöperatie',
             'first_name' => 'Voornaam',
             'last_name' => 'Achternaam',
@@ -48,10 +47,10 @@ return [
             ],
 
             'possible-wrong-email' => 'Het lijkt er op dat er een fout in het e-mailadres zit, weet je zeker dat het opgegeven e-mailadres juist is ?',
-            'possible-wrong-postal-code' => 'De postcode die is opgegeven lijkt fout te zijn, weet u zeker dat deze correct is ingevuld ? Als u hiervan zeker bent kunt u doorgaan.'
+            'possible-wrong-postal-code' => 'De postcode die is opgegeven lijkt fout te zijn, weet u zeker dat deze correct is ingevuld ? Als u hiervan zeker bent kunt u doorgaan.',
         ],
         'validation' => [
-            'allow_access' => 'U moet toestemming geven om het Hoomdossier te gebruiken.'
+            'allow_access' => 'U moet toestemming geven om het Hoomdossier te gebruiken.',
         ],
     ],
     'login' => [
@@ -81,7 +80,7 @@ return [
             'set-password' => 'Nieuw wachtwoord instellen',
         ],
         'inactive' => 'Uw wachtwoord is gereset, maar uw account is nog niet bevestigd. U kunt uw account bevestigen via de bevestigingslink in de eerder gestuurde e-mail.',
-        'success' => 'Uw wachtwoord is gereset, u kunt nu inloggen.'
+        'success' => 'Uw wachtwoord is gereset, u kunt nu inloggen.',
     ],
     'confirm' => [
         'success' => 'Uw account is bevestigd. U kunt nu inloggen met uw gebruikersnaam en wachtwoord.',

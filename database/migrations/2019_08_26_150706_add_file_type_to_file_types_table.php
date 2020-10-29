@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class AddFileTypeToFileTypesTable extends Migration
@@ -18,12 +16,11 @@ class AddFileTypeToFileTypesTable extends Migration
         $fileTypes = [
             [
                 'names' => [
-                    'nl' => 'PDF Rapportage'
+                    'nl' => 'PDF Rapportage',
                 ],
-                'short' => 'pdf-report'
+                'short' => 'pdf-report',
             ],
         ];
-
 
         if ($fileTypeCategory instanceof stdClass) {
             foreach ($fileTypes as $fileType) {
@@ -41,7 +38,7 @@ class AddFileTypeToFileTypesTable extends Migration
                 DB::table('file_types')->insert([
                     'name' => $uuid,
                     'file_type_category_id' => $fileTypeCategory->id,
-                    'short' => $fileType['short']
+                    'short' => $fileType['short'],
                 ]);
             }
         }
@@ -54,6 +51,5 @@ class AddFileTypeToFileTypesTable extends Migration
      */
     public function down()
     {
-        //
     }
 }

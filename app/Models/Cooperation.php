@@ -2,21 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
  * App\Models\Cooperation.
  *
- * @property int $id
- * @property string $name
- * @property string $slug
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $website_url
+ * @property int                                                         $id
+ * @property string                                                      $name
+ * @property string                                                      $slug
+ * @property \Illuminate\Support\Carbon|null                             $created_at
+ * @property \Illuminate\Support\Carbon|null                             $updated_at
+ * @property string|null                                                 $website_url
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
- * @property \App\Models\CooperationStyle $style
+ * @property \App\Models\CooperationStyle                                $style
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Cooperation newModelQuery()
@@ -50,7 +49,7 @@ class Cooperation extends Model
     }
 
     /**
-     * Return the questionnaires of a cooperation
+     * Return the questionnaires of a cooperation.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -60,7 +59,7 @@ class Cooperation extends Model
     }
 
     /**
-     * Return the example buildings for the cooperation
+     * Return the example buildings for the cooperation.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -82,7 +81,6 @@ class Cooperation extends Model
     /**
      * Get the sub steps for a given step.
      *
-     * @param Step $step
      * @return mixed
      */
     public function getSubStepsForStep(Step $step)
@@ -92,10 +90,6 @@ class Cooperation extends Model
 
     /**
      * Check if the cooperation has a active step.
-     *
-     * @param Step $step
-     *
-     * @return bool
      */
     public function isStepActive(Step $step): bool
     {
@@ -141,10 +135,6 @@ class Cooperation extends Model
      * Return a collection of users for the cooperation and given role.
      *
      * This does not apply any scopes and should probably only be used in admin environments.
-     *
-     * @param Role $role
-     *
-     * @return Collection
      */
     public function getUsersWithRole(Role $role): Collection
     {
@@ -152,9 +142,8 @@ class Cooperation extends Model
             \DB::table(config('permission.table_names.model_has_roles'))
                 ->where('cooperation_id', $this->id)
                 ->where('role_id', $role->id)
-                ->leftJoin('users', config('permission.table_names.model_has_roles') . '.' . config('permission.column_names.model_morph_key'), '=', 'users.id')
+                ->leftJoin('users', config('permission.table_names.model_has_roles').'.'.config('permission.column_names.model_morph_key'), '=', 'users.id')
                 ->get()->toArray()
         );
     }
-
 }

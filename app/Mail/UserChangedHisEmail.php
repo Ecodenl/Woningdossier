@@ -21,8 +21,6 @@ class UserChangedHisEmail extends Mailable
     /**
      * UserChangedHisEmail constructor.
      *
-     * @param User    $user
-     * @param Account $account
      * @param $newMail
      * @param $oldMail
      */

@@ -38,7 +38,6 @@ class KeyFigures implements KeyFiguresInterface
     }
 
     /**
-     * @param PvPanelOrientation $orientation
      * @param $angle
      *
      * @return PvPanelYield|null
@@ -50,9 +49,6 @@ class KeyFigures implements KeyFiguresInterface
 
     /**
      * Get the key figure for the current water consumption.
-     *
-     * @param UserEnergyHabit      $habit
-     * @param ComfortLevelTapWater $comfortLevel
      *
      * @return KeyFigureConsumptionTapWater|null
      */

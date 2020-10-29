@@ -68,7 +68,7 @@ class Account extends Authenticatable
     ];
 
     /**
-     * Confirm a account
+     * Confirm a account.
      */
     public function confirm()
     {
@@ -90,8 +90,6 @@ class Account extends Authenticatable
 
     /**
      * Return a collection of cooperations that belongto the users associated with the current account.
-     *
-     * @return Collection
      */
     public function cooperations(): Collection
     {
@@ -128,8 +126,6 @@ class Account extends Authenticatable
 
     /**
      * Returns whether or not a user is associated with a particular Cooperation.
-     *
-     * @param Cooperation $cooperation
      *
      * @return bool
      */

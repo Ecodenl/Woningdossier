@@ -6,7 +6,6 @@ use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
 use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\NumberFormatter;
-use App\Helpers\Translation;
 use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\ServiceValue;

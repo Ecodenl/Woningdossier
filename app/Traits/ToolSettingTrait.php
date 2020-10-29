@@ -19,8 +19,6 @@ trait ToolSettingTrait
      * Returns an input source id if it's present on the model, we always try to get it from the current model since the example building is a input source as well.
      * However, if we cannot get it from the model we will try to get it from the session.
      *
-     * @param Model $model
-     *
      * @return int|null
      */
     public static function getChangedInputSourceId(Model $model)
@@ -57,10 +55,6 @@ trait ToolSettingTrait
 
     /**
      * Check if a model has changed.
-     *
-     * @param Model $model
-     *
-     * @return bool
      */
     private static function hasChanged(Model $model): bool
     {

@@ -14,23 +14,24 @@ class UsersTableSeeder extends Seeder
 
         $accounts = [
             [
-                'email' => 'demo@example.org',
+                'email'    => 'demo@example.org',
                 'password' => bcrypt('secret'),
                 'is_admin' => true,
 
                 'users' => [
                     [
                         'first_name' => 'Demo',
-                        'last_name' => 'Account',
+                        'last_name'  => 'Account',
                     ],
                 ],
             ],
         ];
 
         /** @var \stdClass $cooperation */
-        $cooperation = DB::table('cooperations')->where('slug', 'hoom')->first();
+        $cooperation = DB::table('cooperations')->where('slug',
+            'hoom')->first();
 
-        foreach($accounts as $account){
+        foreach ($accounts as $account) {
             $users = $account['users'];
             unset($account['users']);
 
@@ -42,7 +43,10 @@ class UsersTableSeeder extends Seeder
                     $user['cooperation_id'] = $cooperation->id;
                 }
                 $user['account_id'] = $accountId;
-                DB::table('users')->insert($user);
+                DB::table('users')->updateOrInsert(
+                    $user['email'],
+                    $user
+                );
             }
         }
 

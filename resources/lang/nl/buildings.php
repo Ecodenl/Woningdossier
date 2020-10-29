@@ -6,6 +6,6 @@ return [
         'street' => 'Straatnaam',
         'number' => 'Huisnummer',
         'postal_code' => 'Postcode',
-        'extension' => 'Toevoeging'
+        'extension' => 'Toevoeging',
     ],
 ];

@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use App\Events\PrivateMessageReceiverEvent;
-use App\Helpers\Hoomdossier;
-use App\Helpers\HoomdossierSession;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\PrivateMessage;
@@ -17,8 +15,6 @@ class PrivateMessageViewService
 {
     /**
      * Create a private message view for each group participant.
-     *
-     * @param PrivateMessage $privateMessage
      */
     public static function create(PrivateMessage $privateMessage)
     {
@@ -28,10 +24,6 @@ class PrivateMessageViewService
     /**
      * Make a collection of private messages as read by a resident or coach
      * These have a user ID - input source ID combination.
-     *
-     * @param Collection  $privateMessages
-     * @param User        $user
-     * @param InputSource $inputSource
      */
     public static function markAsReadByUser(Collection $privateMessages, User $user, InputSource $inputSource)
     {
@@ -46,9 +38,6 @@ class PrivateMessageViewService
     /**
      * Mark a collection of private messages as read by a cooperation
      * These have a cooperation ID.
-     *
-     * @param Collection  $privateMessages
-     * @param Cooperation $cooperation
      */
     public static function markAsReadByCooperation(Collection $privateMessages, Cooperation $cooperation)
     {

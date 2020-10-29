@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     'request-types' => [
         \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
         \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst',
@@ -29,7 +28,7 @@ return [
     'store' => [
         'success' => [
             \App\Models\InputSource::RESIDENT_SHORT => 'Uw aanvraag is sucessvol verstuurd, u krijgt zo spoedig mogelijk antwoord. u kunt <strong><a href=":url"">hier uw berichten bekijken</a> </strong> ',
-            \App\Models\InputSource::COACH_SHORT => 'De aanvraag is aangemaakt voor de bewoner.'
+            \App\Models\InputSource::COACH_SHORT => 'De aanvraag is aangemaakt voor de bewoner.',
         ],
     ],
 ];

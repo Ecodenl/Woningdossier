@@ -23,8 +23,8 @@ use App\Models\PvPanelOrientation;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
-use App\Models\Ventilation;
 use App\Models\Step;
+use App\Models\Ventilation;
 use App\Models\WoodRotStatus;
 use Illuminate\Support\Collection;
 
@@ -44,9 +44,9 @@ class ToolHelper
         return $options;
     }
 
-
     /**
      * @param $contentKey
+     *
      * @return array
      */
     public static function getContentStructure($contentKey = null)
@@ -77,7 +77,7 @@ class ToolHelper
 
         // Floor insulation
         /** @var Element $floorInsulation */
-        $floorInsulation = Element::findByShort( 'floor-insulation');
+        $floorInsulation = Element::findByShort('floor-insulation');
         $crawlspace = Element::findByShort('crawlspace');
 
         // Roof insulation
@@ -102,7 +102,7 @@ class ToolHelper
 
         // High efficiency boiler
         // NOTE: building element hr-boiler tells us if it's there
-        $hrBoiler = Service::findByShort( 'hr-boiler');
+        $hrBoiler = Service::findByShort('hr-boiler');
         $boiler = Service::findByShort('boiler');
 
         // Solar panels
@@ -110,7 +110,7 @@ class ToolHelper
         $solarPanelsOptionsPeakPower = ['' => '-'] + SolarPanelsKeyFigures::getPeakPowers();
         $solarPanelsOptionsAngle = ['' => '-'] + SolarPanelsKeyFigures::getAngles();
 
-        $heater = Service::findByShort( 'sun-boiler');
+        $heater = Service::findByShort('sun-boiler');
         $heaterOptionsAngle = ['' => '-'] + HeaterKeyFigures::getAngles();
 
         $comfortLevelsTapWater = ComfortLevelTapWater::all();
@@ -123,8 +123,8 @@ class ToolHelper
         $interests = Interest::orderBy('order')->get();
         $interestOptions = static::createOptions($interests);
 
-        $stepUserInterestKey = 'user_interests.' . Step::class . '.';
-        $measureApplicationInterestKey = 'user_interests.' . MeasureApplication::class . '.';
+        $stepUserInterestKey = 'user_interests.'.Step::class.'.';
+        $measureApplicationInterestKey = 'user_interests.'.MeasureApplication::class.'.';
 
         $structure = [
             'general-data' => [
@@ -169,47 +169,47 @@ class ToolHelper
                 ],
                 'current-state' => [
                     // elements and services
-                    'element.' . $livingRoomsWindows->id => [
+                    'element.'.$livingRoomsWindows->id => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $livingRoomsWindows->name,
                         'type' => 'select',
                         'options' => self::createOptions($livingRoomsWindows->values()->orderBy('order')->get(), 'value'),
                     ],
-                    'element.' . $sleepingRoomsWindows->id => [
+                    'element.'.$sleepingRoomsWindows->id => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => $sleepingRoomsWindows->name,
                         'type' => 'select',
                         'options' => self::createOptions($sleepingRoomsWindows->values()->orderBy('order')->get(), 'value'),
                     ],
-                    'element.' . $crackSealing->id => [
+                    'element.'.$crackSealing->id => [
                         'label' => $crackSealing->name,
                         'type' => 'select',
                         'options' => static::createOptions($crackSealing->values()->orderBy('order')->get(), 'value'),
                     ],
-                    'element.' . $wallInsulation->id => [
+                    'element.'.$wallInsulation->id => [
 //                    'label'   => __('wall-insulation.intro.filled-insulation.title'),
                         'label' => $wallInsulation->name,
                         'type' => 'select',
                         'options' => static::createOptions($wallInsulation->values()->orderBy('order')->get(), 'value'),
                     ],
-                    'element.' . $floorInsulation->id => [
+                    'element.'.$floorInsulation->id => [
 //                    'label'   => __('floor-insulation.floor-insulation.title'),
                         'label' => $floorInsulation->name,
                         'type' => 'select',
                         'options' => static::createOptions($floorInsulation->values()->orderBy('order')->get(), 'value'),
                     ],
-                    'element.' . $roofInsulation->id => [
+                    'element.'.$roofInsulation->id => [
                         'label' => $roofInsulation->name,
                         'type' => 'select',
                         'options' => static::createOptions($roofInsulation->values()->orderBy('order')->get(), 'value'),
                     ],
 
-                    'service.' . $hrBoiler->id => [
+                    'service.'.$hrBoiler->id => [
                         'label' => $hrBoiler->name,
                         'type' => 'select',
                         'options' => static::createOptions($hrBoiler->values()->orderBy('order')->get(), 'value'),
                     ],
-                    'service.' . $boiler->id . '.service_value_id' => [
+                    'service.'.$boiler->id.'.service_value_id' => [
                         'label' => __('boiler.boiler-type.title'),
                         'type' => 'select',
                         'options' => static::createOptions($boiler->values()->orderBy('order')->get(), 'value'),
@@ -220,13 +220,13 @@ class ToolHelper
                         'options' => static::createOptions($buildingHeatingApplications),
                     ],
 
-                    'service.' . $heatPump->id => [
+                    'service.'.$heatPump->id => [
                         'label' => $heatPump->name,
                         'type' => 'select',
                         'options' => static::createOptions($heatPump->values()->orderBy('order')->get(), 'value'),
                     ],
 
-                    'service.' . $solarPanels->id . '.extra.value' => [
+                    'service.'.$solarPanels->id.'.extra.value' => [
                         'label' => $solarPanels->name,
                         'type' => 'text',
                         'unit' => __('general.unit.pieces.title'),
@@ -237,39 +237,39 @@ class ToolHelper
                         'type' => 'text',
                         'unit' => __('general.unit.wp.title'),
                     ],
-                    'service.' . $solarPanels->id . '.extra.year' => [
+                    'service.'.$solarPanels->id.'.extra.year' => [
                         'label' => __('cooperation/tool/general-data/current-state.index.service.total-sun-panels.year.title'),
                         'type' => 'text',
                         'unit' => __('general.unit.year.title'),
                     ],
 
                     // services
-                    'service.' . $heater->id => [
+                    'service.'.$heater->id => [
                         'label' => $heater->name,
                         'type' => 'select',
                         'options' => static::createOptions($heater->values()->orderBy('order')->get(), 'value'),
                     ],
                     // ventilation
-                    'service.' . $ventilation->id . '.service_value_id' => [
+                    'service.'.$ventilation->id.'.service_value_id' => [
                         'label' => $ventilation->name,
                         'type' => 'select',
                         'options' => static::createOptions($ventilation->values()->orderBy('order')->get(), 'value'),
                     ],
-                    'service.' . $ventilation->id . '.extra.demand_driven' => [
+                    'service.'.$ventilation->id.'.extra.demand_driven' => [
                         'label' => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.demand-driven.title'),
                         'type' => 'select',
                         'options' => [
                             false => '-',
-                            true => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.demand-driven.title')
+                            true => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.demand-driven.title'),
                         ],
                     ],
-                    'service.' . $ventilation->id . '.extra.heat_recovery' => [
+                    'service.'.$ventilation->id.'.extra.heat_recovery' => [
                         'label' => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.heat-recovery.title'),
                         'type' => 'select',
                         'options' => [
                             false => '-',
-                            true => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.heat-recovery.title')
-                        ]
+                            true => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.heat-recovery.title'),
+                        ],
                     ],
                 ],
                 'usage' => [
@@ -362,9 +362,9 @@ class ToolHelper
 
             'wall-insulation' => [
                 '-' => [
-                    $stepUserInterestKey . $wallInsulation->id . 'interest_id' => [
+                    $stepUserInterestKey.$wallInsulation->id.'interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $wallInsulation->name . ': ' . __('wall-insulation.index.interested-in-improvement.title'),
+                        'label' => $wallInsulation->name.': '.__('wall-insulation.index.interested-in-improvement.title'),
                         'type' => 'select',
                         'options' => $interestOptions,
                     ],
@@ -444,7 +444,7 @@ class ToolHelper
                             'year' => __('wall-insulation.taking-into-account.wall-painting.year.title'),
                         ],
                     ],
-                ]
+                ],
             ],
 
             'insulated-glazing' => [
@@ -454,12 +454,12 @@ class ToolHelper
                         'type' => 'text',
                         'unit' => __('general.unit.square-meters.title'),
                     ],
-                    'element.' . $frames->id => [
+                    'element.'.$frames->id => [
                         'label' => __('insulated-glazing.paint-work.which-frames.title'),
                         'type' => 'select',
                         'options' => static::createOptions($frames->values()->orderBy('order')->get(), 'value'),
                     ],
-                    'element.' . $woodElements->id => [
+                    'element.'.$woodElements->id => [
                         'label' => __('insulated-glazing.paint-work.other-wood-elements.title'),
                         'type' => 'multiselect',
                         'options' => static::createOptions($woodElements->values()->orderBy('order')->get(), 'value'),
@@ -480,28 +480,28 @@ class ToolHelper
                         'type' => 'select',
                         'options' => static::createOptions($woodRotStatuses),
                     ],
-                ]
+                ],
             ],
 
             'floor-insulation' => [
                 '-' => [
-                    $stepUserInterestKey . Step::findByShort('floor-insulation')->id . '.interest_id' => [
+                    $stepUserInterestKey.Step::findByShort('floor-insulation')->id.'.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $floorInsulation->name . ': ' . __('floor-insulation.index.interested-in-improvement.title'),
+                        'label' => $floorInsulation->name.': '.__('floor-insulation.index.interested-in-improvement.title'),
                         'type' => 'select',
                         'options' => $interestOptions,
                     ],
-                    'element.' . $crawlspace->id . '.extra.has_crawlspace' => [
+                    'element.'.$crawlspace->id.'.extra.has_crawlspace' => [
                         'label' => __('floor-insulation.has-crawlspace.title'),
                         'type' => 'select',
                         'options' => __('woningdossier.cooperation.option'),
                     ],
-                    'element.' . $crawlspace->id . '.extra.access' => [
+                    'element.'.$crawlspace->id.'.extra.access' => [
                         'label' => __('floor-insulation.crawlspace-access.title'),
                         'type' => 'select',
                         'options' => __('woningdossier.cooperation.option'),
                     ],
-                    'element.' . $crawlspace->id . '.element_value_id' => [
+                    'element.'.$crawlspace->id.'.element_value_id' => [
                         'label' => __('floor-insulation.crawlspace-height.title'),
                         'type' => 'select',
                         'options' => static::createOptions($crawlspace->values()->orderBy('order')->get(), 'value'),
@@ -524,14 +524,14 @@ class ToolHelper
                         'cost_indication' => __('floor-insulation.index.indicative-costs.title'),
                         'interest_comparable' => __('floor-insulation.index.comparable-rent.title'),
                     ],
-                ]
+                ],
             ],
 
             'roof-insulation' => [
                 '-' => [
-                    $stepUserInterestKey . Step::findByShort('roof-insulation')->id . '.interest_id' => [
+                    $stepUserInterestKey.Step::findByShort('roof-insulation')->id.'.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $roofInsulation->name . ': ' . __('roof-insulation.index.interested-in-improvement.title'),
+                        'label' => $roofInsulation->name.': '.__('roof-insulation.index.interested-in-improvement.title'),
                         'type' => 'select',
                         'options' => $interestOptions,
                     ],
@@ -541,15 +541,15 @@ class ToolHelper
                         'options' => static::createOptions($roofTypes),
                         'relationship' => 'roofType',
                     ],
-                ]
+                ],
                 // rest will be added later on
             ],
 
             'high-efficiency-boiler' => [
                 '-' => [
-                    $stepUserInterestKey . Step::findByShort('high-efficiency-boiler')->id . '.interest_id' => [
+                    $stepUserInterestKey.Step::findByShort('high-efficiency-boiler')->id.'.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $hrBoiler->name . ': ' . __('high-efficiency-boiler.index.interested-in-improvement.title'),
+                        'label' => $hrBoiler->name.': '.__('high-efficiency-boiler.index.interested-in-improvement.title'),
                         'type' => 'select',
                         'options' => $interestOptions,
                     ],
@@ -562,13 +562,13 @@ class ToolHelper
                         'type' => 'text',
                         'unit' => __('general.unit.cubic-meters.title'),
                     ],
-                    'service.' . $boiler->id . '.service_value_id' => [
+                    'service.'.$boiler->id.'.service_value_id' => [
                         'label' => __('high-efficiency-boiler.boiler-type.title'),
                         'type' => 'select',
 //                    'options' => $boilerTypes
                         'options' => static::createOptions($boilerTypes, 'value'),
                     ],
-                    'service.' . $boiler->id . '.extra.date' => [
+                    'service.'.$boiler->id.'.extra.date' => [
                         'label' => __('boiler.boiler-placed-date.title'),
                         'type' => 'text',
                         'unit' => __('general.unit.year.title'),
@@ -582,11 +582,11 @@ class ToolHelper
 
                         'replace_year' => __('high-efficiency-boiler.indication-for-costs.indicative-replacement.title'),
                     ],
-                ]
+                ],
             ],
             'solar-panels' => [
                 '-' => [
-                    $stepUserInterestKey . Step::findByShort('solar-panels')->id . '.interest_id' => [
+                    $stepUserInterestKey.Step::findByShort('solar-panels')->id.'.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
                         'label' => __('solar-panels.index.interested-in-improvement.title'),
                         'type' => 'select',
@@ -628,14 +628,14 @@ class ToolHelper
                         'cost_indication' => __('solar-panels.index.indicative-costs.title'),
                         'interest_comparable' => __('solar-panels.index.comparable-rent.title'),
                     ],
-                ]
+                ],
             ],
 
             'heater' => [
                 '-' => [
-                    $stepUserInterestKey . Step::findByShort('heater')->id . '.interest_id' => [
+                    $stepUserInterestKey.Step::findByShort('heater')->id.'.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $heater->name . ': ' . __('heater.index.interested-in-improvement.title'),
+                        'label' => $heater->name.': '.__('heater.index.interested-in-improvement.title'),
                         'type' => 'select',
                         'options' => $interestOptions,
                     ],
@@ -675,7 +675,7 @@ class ToolHelper
                         'interest_comparable' => __('heater.index.comparable-rent.title'),
                     ],
                 ],
-            ]
+            ],
         ];
 
         $steps = Step::withoutSubSteps()->get();
@@ -689,10 +689,9 @@ class ToolHelper
         }
         $steps->push($ventilationInformation);
 
-
         foreach ($steps as $step) {
 //            <select id="user_interest" class="form-control" name="user_interests[{{$step->id}}][interest_id]">
-            $structure['general-data']['interest'][$stepUserInterestKey . $step->id . '.interest_id'] = [
+            $structure['general-data']['interest'][$stepUserInterestKey.$step->id.'.interest_id'] = [
                 'label' => $step->name,
                 'type' => 'select',
                 'options' => $interestOptions,
@@ -704,14 +703,13 @@ class ToolHelper
             'options' => [
                 1 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.yes-within-2-year'),
                 2 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.yes-within-5-year'),
-                0 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.none')
-            ]
+                0 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.none'),
+            ],
         ];
         $structure['general-data']['interest']['user_energy_habits.building_complaints'] = [
             'label' => __('cooperation/tool/general-data/interest.index.motivation.building-complaints.title'),
             'type' => 'text',
         ];
-
 
         // Insulated glazing
         $igShorts = [
@@ -733,32 +731,32 @@ class ToolHelper
         foreach ($igShorts as $igShort) {
             $measureApplication = MeasureApplication::where('short', $igShort)->first();
             if ($measureApplication instanceof MeasureApplication) {
-                $structure['insulated-glazing']['-'][$measureApplicationInterestKey . $measureApplication->id . '.interest_id'] = [
+                $structure['insulated-glazing']['-'][$measureApplicationInterestKey.$measureApplication->id.'.interest_id'] = [
                     //'label' => 'Interest in '.$measureApplication->measure_name,
                     'label' => __('general.change-interested.title',
                         ['item' => $measureApplication->measure_name]),
                     'type' => 'select',
                     'options' => $interestOptions,
                 ];
-                $structure['insulated-glazing']['-']['building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id'] = [
-                    'label' => $measureApplication->measure_name . ': ' . __('insulated-glazing.' . $measureApplication->short . '.current-glass.title'),
+                $structure['insulated-glazing']['-']['building_insulated_glazings.'.$measureApplication->id.'.insulated_glazing_id'] = [
+                    'label' => $measureApplication->measure_name.': '.__('insulated-glazing.'.$measureApplication->short.'.current-glass.title'),
                     'type' => 'select',
                     'options' => static::createOptions($insulatedGlazings),
                     'relationship' => 'insulatedGlazing',
                 ];
-                $structure['insulated-glazing']['-']['building_insulated_glazings.' . $measureApplication->id . '.building_heating_id'] = [
-                    'label' => $measureApplication->measure_name . ': ' . __('insulated-glazing.' . $measureApplication->short . '.rooms-heated.title'),
+                $structure['insulated-glazing']['-']['building_insulated_glazings.'.$measureApplication->id.'.building_heating_id'] = [
+                    'label' => $measureApplication->measure_name.': '.__('insulated-glazing.'.$measureApplication->short.'.rooms-heated.title'),
                     'type' => 'select',
                     'options' => static::createOptions($heatings),
                     'relationship' => 'buildingHeating',
                 ];
-                $structure['insulated-glazing']['-']['building_insulated_glazings.' . $measureApplication->id . '.m2'] = [
-                    'label' => $measureApplication->measure_name . ': ' . __('insulated-glazing.' . $measureApplication->short . '.m2.title'),
+                $structure['insulated-glazing']['-']['building_insulated_glazings.'.$measureApplication->id.'.m2'] = [
+                    'label' => $measureApplication->measure_name.': '.__('insulated-glazing.'.$measureApplication->short.'.m2.title'),
                     'type' => 'text',
                     'unit' => __('general.unit.square-meters.title'),
                 ];
-                $structure['insulated-glazing']['-']['building_insulated_glazings.' . $measureApplication->id . '.windows'] = [
-                    'label' => $measureApplication->measure_name . ': ' . __('insulated-glazing.' . $measureApplication->short . '.window-replace.title'),
+                $structure['insulated-glazing']['-']['building_insulated_glazings.'.$measureApplication->id.'.windows'] = [
+                    'label' => $measureApplication->measure_name.': '.__('insulated-glazing.'.$measureApplication->short.'.window-replace.title'),
                     'type' => 'text',
                 ];
             }
@@ -796,50 +794,50 @@ class ToolHelper
         // $roofTypes1 should become $roofTypes->where('short', '!=', 'none');
 
         foreach ($roofTypes1 as $roofType) {
-            $structure['roof-insulation']['-']['building_roof_types.' . $roofType->id . '.element_value_id'] = [
-                'label' => __('roof-insulation.current-situation.is-' . $roofType->short . '-roof-insulated.title'),
+            $structure['roof-insulation']['-']['building_roof_types.'.$roofType->id.'.element_value_id'] = [
+                'label' => __('roof-insulation.current-situation.is-'.$roofType->short.'-roof-insulated.title'),
                 'type' => 'select',
                 'options' => static::createOptions($roofInsulation->values, 'value'),
                 'relationship' => 'elementValue',
             ];
-            $structure['roof-insulation']['-']['building_roof_types.' . $roofType->id . '.roof_surface'] = [
-                'label' => __('roof-insulation.current-situation.' . $roofType->short . '-roof-surface.title'),
+            $structure['roof-insulation']['-']['building_roof_types.'.$roofType->id.'.roof_surface'] = [
+                'label' => __('roof-insulation.current-situation.'.$roofType->short.'-roof-surface.title'),
                 'type' => 'text',
                 'unit' => __('general.unit.square-meters.title'),
             ];
-            $structure['roof-insulation']['-']['building_roof_types.' . $roofType->id . '.insulation_roof_surface'] = [
-                'label' => __('roof-insulation.current-situation.insulation-' . $roofType->short . '-roof-surface.title'),
+            $structure['roof-insulation']['-']['building_roof_types.'.$roofType->id.'.insulation_roof_surface'] = [
+                'label' => __('roof-insulation.current-situation.insulation-'.$roofType->short.'-roof-surface.title'),
                 'type' => 'text',
                 'unit' => __('general.unit.square-meters.title'),
             ];
-            $structure['roof-insulation']['-']['building_roof_types.' . $roofType->id . '.extra.zinc_replaced_date'] = [
+            $structure['roof-insulation']['-']['building_roof_types.'.$roofType->id.'.extra.zinc_replaced_date'] = [
                 'label' => __('roof-insulation.current-situation.zinc-replaced.title'),
                 'type' => 'text',
                 'unit' => __('general.unit.year.title'),
             ];
             if ('flat' == $roofType->short) {
-                $structure['roof-insulation']['-']['building_roof_types.' . $roofType->id . '.extra.bitumen_replaced_date'] = [
+                $structure['roof-insulation']['-']['building_roof_types.'.$roofType->id.'.extra.bitumen_replaced_date'] = [
                     'label' => __('roof-insulation.current-situation.bitumen-insulated.title'),
                     'type' => 'text',
                     'unit' => __('general.unit.year.title'),
                 ];
             }
             if ('pitched' == $roofType->short) {
-                $structure['roof-insulation']['-']['building_roof_types.' . $roofType->id . '.extra.tiles_condition'] = [
+                $structure['roof-insulation']['-']['building_roof_types.'.$roofType->id.'.extra.tiles_condition'] = [
                     'label' => __('roof-insulation.current-situation.in-which-condition-tiles.title'),
                     'type' => 'select',
                     'options' => static::createOptions($roofTileStatuses),
                 ];
             }
-            $structure['roof-insulation']['-']['building_roof_types.' . $roofType->id . '.extra.measure_application_id'] = [
-                'label' => __('roof-insulation.' . $roofType->short . '-roof.insulate-roof.title'),
+            $structure['roof-insulation']['-']['building_roof_types.'.$roofType->id.'.extra.measure_application_id'] = [
+                'label' => __('roof-insulation.'.$roofType->short.'-roof.insulate-roof.title'),
                 'type' => 'select',
                 'options' => static::createOptions(collect($roofInsulationMeasureApplications[$roofType->short]),
                     'measure_name'),
                 'relationship' => 'measureApplication',
             ];
-            $structure['roof-insulation']['-']['building_roof_types.' . $roofType->id . '.building_heating_id'] = [
-                'label' => __('roof-insulation.' . $roofType->short . '-roof.situation.title'),
+            $structure['roof-insulation']['-']['building_roof_types.'.$roofType->id.'.building_heating_id'] = [
+                'label' => __('roof-insulation.'.$roofType->short.'-roof.situation.title'),
                 'type' => 'select',
                 'options' => static::createOptions($heatings),
                 'relationship' => 'heating',
@@ -884,7 +882,7 @@ class ToolHelper
         ])->get();
 
         foreach ($measureApplicationsForVentilation as $measureApplication) {
-            $structure['ventilation']['-'][$measureApplicationInterestKey . $measureApplication->id . '.interest_id'] = [
+            $structure['ventilation']['-'][$measureApplicationInterestKey.$measureApplication->id.'.interest_id'] = [
                 //'label' => 'Interest in '.$measureApplication->measure_name,
 //                'label' => __('general.change-interested.title', ['item' => $measureApplication->measure_name]),
                 'label' => $measureApplication->measure_name,
@@ -893,10 +891,8 @@ class ToolHelper
             ];
         }
 
-
         // when a content key is set, we will try to retrieve the specific content from the structure.
-        if (!is_null($contentKey)) {
-
+        if (! is_null($contentKey)) {
             $contentKeyData = explode('.', $contentKey, 3);
             $step = $contentKeyData[0];
             $subStep = $contentKeyData[1];
@@ -907,6 +903,4 @@ class ToolHelper
 
         return $structure;
     }
-
 }
-

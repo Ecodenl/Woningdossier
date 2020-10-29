@@ -8,15 +8,15 @@ use Illuminate\Support\Collection;
 /**
  * App\Models\BuildingCoachStatus.
  *
- * @property int $id
- * @property int|null $coach_id
- * @property int|null $building_id
- * @property string $status
+ * @property int                             $id
+ * @property int|null                        $coach_id
+ * @property int|null                        $building_id
+ * @property string                          $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\Building|null $building
- * @property \App\Models\User|null $coach
- * @property \App\Models\User|null $user
+ * @property \App\Models\Building|null       $building
+ * @property \App\Models\User|null           $coach
+ * @property \App\Models\User|null           $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus newQuery()
@@ -76,10 +76,6 @@ class BuildingCoachStatus extends Model
     /**
      * Returns the 'connected' coaches from a given building id.
      * A coach is considered to be connected when he has more pending statuses then removed statuses.
-     *
-     * @param int $buildingId
-     *
-     * @return \Illuminate\Support\Collection
      */
     public static function getConnectedCoachesByBuildingId(int $buildingId): Collection
     {
@@ -87,9 +83,9 @@ class BuildingCoachStatus extends Model
                 SELECT coach_id, building_id, count(`status`) AS count_pending
 	            FROM building_coach_statuses
 	            WHERE coach_id is not null
-	            AND building_id = ' . $buildingId . ' 
+	            AND building_id = '.$buildingId.' 
 	            AND `coach_id` IS NOT NULL 
-	            AND `status` = \'' . BuildingCoachStatus::STATUS_ADDED . ' \'
+	            AND `status` = \''.BuildingCoachStatus::STATUS_ADDED.' \'
 	            group by coach_id, building_id
             )  AS bcs2');
         $removedCount = \DB::raw('(
@@ -97,15 +93,15 @@ class BuildingCoachStatus extends Model
 	            FROM building_coach_statuses
 	            
 	            WHERE coach_id is not null
-	            AND building_id = ' . $buildingId . ' 
+	            AND building_id = '.$buildingId.' 
 	            AND `coach_id` IS NOT NULL 
-	            AND `status` = \'' . BuildingCoachStatus::STATUS_REMOVED . ' \'
+	            AND `status` = \''.BuildingCoachStatus::STATUS_REMOVED.' \'
 	            group by coach_id, building_id
             ) AS bcs3');
         $buildingPermissionCount = \DB::raw('(
                 SELECT user_id, count(`building_id`) as count_building_permission
 	            FROM building_permissions
-	            WHERE building_id = ' . $buildingId . '
+	            WHERE building_id = '.$buildingId.'
 	            GROUP BY user_id
             ) as bp');
 
@@ -128,10 +124,8 @@ class BuildingCoachStatus extends Model
     /**
      * Returns all the connected buildings from a user (coach).
      *
-     * @param User $user ,        the user we want the connected buildings from
+     * @param User        $user        ,        the user we want the connected buildings from
      * @param Cooperation $cooperation , from which cooperation we want to retrieve it
-     *
-     * @return Collection
      */
     public static function getConnectedBuildingsByUser(User $user, Cooperation $cooperation): Collection
     {
@@ -141,19 +135,19 @@ class BuildingCoachStatus extends Model
         $pendingCount = \DB::raw('(
                 SELECT coach_id, building_id, count(`status`) AS count_pending
 	            FROM building_coach_statuses
-	            WHERE coach_id = ' . $userId . ' AND `status` = \'' . BuildingCoachStatus::STATUS_ADDED . ' \'
+	            WHERE coach_id = '.$userId.' AND `status` = \''.BuildingCoachStatus::STATUS_ADDED.' \'
 	            group by coach_id, building_id
             )  AS bcs2');
         $removedCount = \DB::raw('(
                 SELECT building_id, coach_id, count(`status`) AS count_removed
 	            FROM building_coach_statuses
-	            WHERE coach_id = ' . $userId . ' AND `status` = \'' . BuildingCoachStatus::STATUS_REMOVED . ' \'
+	            WHERE coach_id = '.$userId.' AND `status` = \''.BuildingCoachStatus::STATUS_REMOVED.' \'
 	            group by coach_id, building_id
             ) AS bcs3');
         $buildingPermissionCount = \DB::raw('(
                 SELECT user_id, count(`building_id`) as count_building_permission
 	            FROM building_permissions
-	            WHERE user_id = ' . $userId . '
+	            WHERE user_id = '.$userId.'
 	            GROUP BY user_id
             ) as bp');
 
@@ -191,15 +185,10 @@ class BuildingCoachStatus extends Model
     /**
      * Get the current status for a given building id, can return the translation or the status key
      * will return the translation by default.
-     *
-     * @param int $buildingId
-     * @param bool $returnTranslation
-     *
-     * @return string
      */
     public static function getCurrentStatusForBuildingId(int $buildingId, bool $returnTranslation = true): string
     {
-        \Illuminate\Support\Facades\Log::debug(__METHOD__ . ' is still being used, remove it as soon as possible.');
+        \Illuminate\Support\Facades\Log::debug(__METHOD__.' is still being used, remove it as soon as possible.');
         // get the building, even if its deleted.
         $building = Building::withTrashed()->find($buildingId);
 

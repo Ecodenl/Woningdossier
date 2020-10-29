@@ -2,8 +2,8 @@
 
 namespace App\Helpers\Cache;
 
-class Account extends BaseCache {
-
+class Account extends BaseCache
+{
     const CACHE_KEY_FIND = 'Account_find_%s';
     const CACHE_KEY_USER = 'Account_user_%s';
 
@@ -23,7 +23,8 @@ class Account extends BaseCache {
         );
     }
 
-    public static function user($account){
+    public static function user($account)
+    {
         if (! $account instanceof \App\Models\Account) {
             $account = self::find($account);
         }

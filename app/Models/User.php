@@ -4,10 +4,8 @@ namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
 use App\NotificationSetting;
-use App\Scopes\GetValueScope;
 use App\Traits\HasCooperationTrait;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Collection;
@@ -17,33 +15,33 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * App\Models\User.
  *
- * @property int $id
- * @property int|null $account_id
- * @property int|null $cooperation_id
- * @property string $first_name
- * @property string $last_name
- * @property string $phone_number
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\Account|null $account
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
- * @property \App\Models\Building $building
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $completedQuestionnaires
- * @property \App\Models\Cooperation|null $cooperation
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
- * @property \App\Models\UserEnergyHabit $energyHabit
- * @property mixed $email
- * @property mixed $is_admin
- * @property mixed $old_email_token
- * @property mixed $oldemail
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $interests
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
- * @property \Illuminate\Database\Eloquent\Collection|\App\NotificationSetting[] $notificationSettings
- * @property \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
+ * @property int                                                                                 $id
+ * @property int|null                                                                            $account_id
+ * @property int|null                                                                            $cooperation_id
+ * @property string                                                                              $first_name
+ * @property string                                                                              $last_name
+ * @property string                                                                              $phone_number
+ * @property \Illuminate\Support\Carbon|null                                                     $created_at
+ * @property \Illuminate\Support\Carbon|null                                                     $updated_at
+ * @property \App\Models\Account|null                                                            $account
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[]         $actionPlanAdvices
+ * @property \App\Models\Building                                                                $building
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[]                $buildingNotes
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[]           $buildingPermissions
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Building[]                     $buildings
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[]                $completedQuestionnaires
+ * @property \App\Models\Cooperation|null                                                        $cooperation
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[]                  $cooperations
+ * @property \App\Models\UserEnergyHabit                                                         $energyHabit
+ * @property mixed                                                                               $email
+ * @property mixed                                                                               $is_admin
+ * @property mixed                                                                               $old_email_token
+ * @property mixed                                                                               $oldemail
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[]                 $interests
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[]               $motivations
+ * @property \Illuminate\Database\Eloquent\Collection|\App\NotificationSetting[]                 $notificationSettings
+ * @property \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[]     $permissions
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Role[]                         $roles
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdviceComments[] $userActionPlanAdviceComments
  *
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User forMyCooperation($cooperationId)
@@ -64,12 +62,14 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Model implements AuthorizableContract
 {
-    use HasRoles, HasCooperationTrait, Authorizable;
+    use HasRoles;
+    use HasCooperationTrait;
+    use Authorizable;
 
     protected $guard_name = 'web';
 
     /**
-     * Return the intermediary table of the interests
+     * Return the intermediary table of the interests.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -78,13 +78,12 @@ class User extends Model implements AuthorizableContract
         return $this->hasMany(UserInterest::class);
     }
 
-
     /**
-     * Scope like method because of relationships
+     * Scope like method because of relationships.
      *
      * @param $interestedInType
      * @param $interestedInId
-     * @param InputSource|null $inputSource
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function userInterestsForSpecificType($interestedInType, $interestedInId, InputSource $inputSource = null)
@@ -95,17 +94,18 @@ class User extends Model implements AuthorizableContract
                 ->where('interested_in_id', $interestedInId)
                 ->forInputSource($inputSource);
         }
+
         return $this->userInterests()
             ->where('interested_in_type', $interestedInType)
             ->where('interested_in_id', $interestedInId);
     }
 
     /**
-     * Method to check whether a user is interested in a step
+     * Method to check whether a user is interested in a step.
      *
-     * @param InputSource $inputSource
      * @param $interestedInType
      * @param $interestedInId
+     *
      * @return bool
      */
     public function isInterestedInStep(InputSource $inputSource, $interestedInType, $interestedInId)
@@ -114,11 +114,11 @@ class User extends Model implements AuthorizableContract
 
         $userSelectedInterestedId = $this->user->userInterestsForSpecificType($interestedInType, $interestedInId)->first()->interest_id;
 
-        return !in_array($userSelectedInterestedId, $noInterestIds);
+        return ! in_array($userSelectedInterestedId, $noInterestIds);
     }
 
     /**
-     * Return all the interest levels of a user
+     * Return all the interest levels of a user.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
@@ -128,7 +128,7 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
-     * Return all step interests
+     * Return all step interests.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
@@ -140,7 +140,7 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
-     * Return all the measure application interests
+     * Return all the measure application interests.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
@@ -191,7 +191,7 @@ class User extends Model implements AuthorizableContract
      */
     public function getAccountProperty($property)
     {
-        \Log::debug('Account property ' . $property . ' is accessed via User!');
+        \Log::debug('Account property '.$property.' is accessed via User!');
         if ($this->account instanceof Account) {
             return $this->account->$property;
         }
@@ -290,22 +290,15 @@ class User extends Model implements AuthorizableContract
 
     /**
      * Returns the first and last name, concatenated.
-     *
-     * @return string
      */
     public function getFullName(): string
     {
         return "{$this->first_name} {$this->last_name}";
     }
 
-
     /**
      * Returns if a user has interest in a specific model (mostly Step or
      * MeasureApplication).
-     *
-     * @param Model $model
-     * @param InputSource|null $inputSource
-     * @param int $interestCalculateValue
      *
      * @return bool
      */
@@ -318,6 +311,7 @@ class User extends Model implements AuthorizableContract
                 return true;
             }
         }
+
         return false;
     }
 
@@ -372,8 +366,6 @@ class User extends Model implements AuthorizableContract
      * Check if a user is not removed from the building coach status table.
      *
      * @param $buildingId
-     *
-     * @return bool
      */
     public function isRemovedFromBuildingCoachStatus($buildingId): bool
     {
@@ -395,18 +387,14 @@ class User extends Model implements AuthorizableContract
      * Return the opposite of the isRemovedFromBuildingCoachStatus function.
      *
      * @param $buildingId
-     *
-     * @return bool
      */
     public function isNotRemovedFromBuildingCoachStatus($buildingId): bool
     {
-        return !$this->isRemovedFromBuildingCoachStatus($buildingId);
+        return ! $this->isRemovedFromBuildingCoachStatus($buildingId);
     }
 
     /**
      * Check if the logged in user is filling the tool for someone else.
-     *
-     * @return bool
      */
     public function isFillingToolForOtherBuilding(): bool
     {
@@ -427,18 +415,14 @@ class User extends Model implements AuthorizableContract
      * Determine if the model has not (one of) the given role(s).
      *
      * @param string|array|\Spatie\Permission\Contracts\Role|\Illuminate\Support\Collection $roles
-     *
-     * @return bool
      */
     public function hasNotRole($roles): bool
     {
-        return !$this->hasRole($roles);
+        return ! $this->hasRole($roles);
     }
 
     /**
      * Check if a user has multiple roles.
-     *
-     * @return bool
      */
     public function hasMultipleRoles(): bool
     {
@@ -453,8 +437,6 @@ class User extends Model implements AuthorizableContract
      * Function to check if a user has a role, and if the user has that role check if the role is set in the Hoomdossier session.
      *
      * @param string|array|\Spatie\Permission\Contracts\Role|\Illuminate\Support\Collection $roles
-     *
-     * @return bool
      */
     public function hasRoleAndIsCurrentRole($roles): bool
     {
@@ -493,18 +475,17 @@ class User extends Model implements AuthorizableContract
 
     /**
      * Check if the user has one role.
-     *
-     * @return bool
      */
     public function hasNotMultipleRoles(): bool
     {
-        return !$this->hasMultipleRoles();
+        return ! $this->hasMultipleRoles();
     }
 
     /**
-     * Retrieve the completed questionnaires from the user
+     * Retrieve the completed questionnaires from the user.
      *
      * @param InputSource $inputSource
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function completedQuestionnaires(InputSource $inputSource = null)
@@ -517,10 +498,8 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
-     * Check whether a user completed a questionnaire
+     * Check whether a user completed a questionnaire.
      *
-     * @param Questionnaire $questionnaire
-     * @param InputSource|null $inputSource
      * @return bool
      */
     public function hasCompletedQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource = null)
@@ -541,7 +520,6 @@ class User extends Model implements AuthorizableContract
      * Complete a questionnaire for a user.
      *
      * @param InputSource $inputSource
-     * @param Questionnaire $questionnaire
      */
     public function completeQuestionnaire(Questionnaire $questionnaire, InputSource $inputSource = null)
     {
@@ -550,8 +528,8 @@ class User extends Model implements AuthorizableContract
         $this->completedQuestionnaires()->syncWithoutDetaching(/* @scrutinizer ignore-type, uses parseIds method. */
             [
                 $questionnaire->id => [
-                    'input_source_id' => $inputSource->id
-                ]
+                    'input_source_id' => $inputSource->id,
+                ],
             ]
         );
     }
@@ -585,7 +563,6 @@ class User extends Model implements AuthorizableContract
     {
         return $this->account->email;
     }
-
 
     public function logout()
     {

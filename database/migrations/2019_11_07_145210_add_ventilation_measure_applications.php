@@ -1,12 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class AddVentilationMeasureApplications extends Migration
 {
     use \App\Traits\DebugableMigrationTrait;
+
     /**
      * Run the migrations.
      *
@@ -24,7 +23,7 @@ class AddVentilationMeasureApplications extends Migration
                 'application' => 'place',
                 'costs' => 0,
                 'cost_unit' => [
-                    'nl' => 'per stuk'
+                    'nl' => 'per stuk',
                 ],
                 'minimal_costs' => 0,
                 'maintenance_interval' => 0,
@@ -42,7 +41,7 @@ class AddVentilationMeasureApplications extends Migration
                 'application' => 'place',
                 'costs' => 0,
                 'cost_unit' => [
-                    'nl' => 'per stuk'
+                    'nl' => 'per stuk',
                 ],
                 'minimal_costs' => 0,
                 'maintenance_interval' => 0,
@@ -60,7 +59,7 @@ class AddVentilationMeasureApplications extends Migration
                 'application' => 'place',
                 'costs' => 0,
                 'cost_unit' => [
-                    'nl' => 'per stuk'
+                    'nl' => 'per stuk',
                 ],
                 'minimal_costs' => 0,
                 'maintenance_interval' => 0,
@@ -79,14 +78,14 @@ class AddVentilationMeasureApplications extends Migration
             $this->line('General data step exists');
             foreach ($measureApplications as $measureApplication) {
                 foreach ($measureApplication['measure_names'] as $locale => $measureName) {
-                    if (!array_key_exists('measure_names', $translationUUIDs)) {
+                    if (! array_key_exists('measure_names', $translationUUIDs)) {
                         $translationUUIDs['measure_names'] = [];
                     }
-                    if (!array_key_exists($locale,
+                    if (! array_key_exists($locale,
                         $translationUUIDs['measure_names'])) {
                         $translationUUIDs['measure_names'][$locale] = [];
                     }
-                    if (!isset($translationUUIDs['measure_names'][$locale][$measureName])) {
+                    if (! isset($translationUUIDs['measure_names'][$locale][$measureName])) {
                         $mnUuid = \App\Helpers\Str::uuid();
                         \DB::table('translations')->insert([
                             'key' => $mnUuid,
@@ -100,14 +99,14 @@ class AddVentilationMeasureApplications extends Migration
                 }
 
                 foreach ($measureApplication['cost_unit'] as $locale => $costUnitName) {
-                    if (!array_key_exists('cost_unit', $translationUUIDs)) {
+                    if (! array_key_exists('cost_unit', $translationUUIDs)) {
                         $translationUUIDs['cost_unit'] = [];
                     }
-                    if (!array_key_exists($locale,
+                    if (! array_key_exists($locale,
                         $translationUUIDs['cost_unit'])) {
                         $translationUUIDs['cost_unit'][$locale] = [];
                     }
-                    if (!isset($translationUUIDs['cost_unit'][$locale][$costUnitName])) {
+                    if (! isset($translationUUIDs['cost_unit'][$locale][$costUnitName])) {
                         $cuUUID = \App\Helpers\Str::uuid();
                         \DB::table('translations')->insert([
                             'key' => $cuUUID,
@@ -121,15 +120,15 @@ class AddVentilationMeasureApplications extends Migration
                 }
 
                 foreach ($measureApplication['maintenance_unit'] as $locale => $maintenanceUnitName) {
-                    if (!array_key_exists('maintenance_unit',
+                    if (! array_key_exists('maintenance_unit',
                         $translationUUIDs)) {
                         $translationUUIDs['maintenance_unit'] = [];
                     }
-                    if (!array_key_exists($locale,
+                    if (! array_key_exists($locale,
                         $translationUUIDs['maintenance_unit'])) {
                         $translationUUIDs['maintenance_unit'][$locale] = [];
                     }
-                    if (!isset($translationUUIDs['maintenance_unit'][$locale][$maintenanceUnitName])) {
+                    if (! isset($translationUUIDs['maintenance_unit'][$locale][$maintenanceUnitName])) {
                         $muUUID = \App\Helpers\Str::uuid();
                         \DB::table('translations')->insert([
                             'key' => $muUUID,
@@ -170,6 +169,5 @@ class AddVentilationMeasureApplications extends Migration
      */
     public function down()
     {
-        //
     }
 }

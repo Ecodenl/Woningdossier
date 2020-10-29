@@ -20,8 +20,6 @@ class SettingsController extends Controller
     /**
      * Update the account.
      *
-     * @param MyAccountSettingsFormRequest $request
-     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(MyAccountSettingsFormRequest $request)

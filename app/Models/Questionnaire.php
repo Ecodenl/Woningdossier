@@ -39,7 +39,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Questionnaire extends Model
 {
-    use TranslatableTrait, HasCooperationTrait;
+    use TranslatableTrait;
+    use HasCooperationTrait;
 
     protected $fillable = [
         'name', 'step_id', 'cooperation_id', 'is_active', 'order',
@@ -71,8 +72,6 @@ class Questionnaire extends Model
 
     /**
      * Check if the questionnaire is active.
-     *
-     * @return bool
      */
     public function isActive(): bool
     {
@@ -85,7 +84,7 @@ class Questionnaire extends Model
 
     public function isNotActive()
     {
-        return !$this->isActive();
+        return ! $this->isActive();
     }
 
     /**

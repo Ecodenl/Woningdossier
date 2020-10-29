@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
-use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingFormRequest;
 use App\Models\Building;
@@ -19,12 +18,11 @@ class BuildingController extends Controller
     /**
      * Handles the data for the show user for a coach, coordinator and cooperation-admin.
      *
-     * @param Cooperation $cooperation
      * @param $buildingId
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      * @throws \Illuminate\Auth\Access\AuthorizationException
      *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      */
     public function show(Cooperation $cooperation, $buildingId)
     {
@@ -33,8 +31,8 @@ class BuildingController extends Controller
             $query->where('id', $buildingId);
         })->first();
 
-        if (!$user instanceof User) {
-            \Illuminate\Support\Facades\Log::debug('A admin tried to show a building that does not seem to exists with id: ' . $buildingId);
+        if (! $user instanceof User) {
+            \Illuminate\Support\Facades\Log::debug('A admin tried to show a building that does not seem to exists with id: '.$buildingId);
 
             return redirect(route('cooperation.admin.index'));
         }
@@ -86,8 +84,8 @@ class BuildingController extends Controller
         $validatedData = $request->validated();
 
         // cant be null in the table.
-        $validatedData['buildings']['extension'] = $validatedData['buildings']['extension'] ?? "";
-        $validatedData['users']['phone_number'] = $validatedData['users']['phone_number']  ?? "";
+        $validatedData['buildings']['extension'] = $validatedData['buildings']['extension'] ?? '';
+        $validatedData['users']['phone_number'] = $validatedData['users']['phone_number'] ?? '';
 
         $building->update($validatedData['buildings']);
         $building->user->update($validatedData['users']);

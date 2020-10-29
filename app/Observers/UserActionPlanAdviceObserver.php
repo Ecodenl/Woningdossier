@@ -3,7 +3,6 @@
 namespace App\Observers;
 
 use App\Helpers\HoomdossierSession;
-use App\Helpers\StepHelper;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Services\UserActionPlanAdviceService;
@@ -12,8 +11,6 @@ class UserActionPlanAdviceObserver
 {
     /**
      * Listen to the creating event, we need to set the input_source_id on every creating event.
-     *
-     * @param UserActionPlanAdvice $userActionPlanAdvice
      */
     public function creating(UserActionPlanAdvice $userActionPlanAdvice)
     {
@@ -36,7 +33,7 @@ class UserActionPlanAdviceObserver
         }
 
         // Ja op korte termijn, ja op termijn and more informatie
-        if ($userInterest->interest->calculate_value <= 3 ) {
+        if ($userInterest->interest->calculate_value <= 3) {
             $planned = true;
         }
 

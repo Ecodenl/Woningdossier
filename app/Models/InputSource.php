@@ -37,8 +37,6 @@ class InputSource extends Model
 
     /**
      * Check if the input source is a resident.
-     *
-     * @return bool
      */
     public function isResident(): bool
     {

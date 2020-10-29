@@ -16,7 +16,6 @@ use App\Models\PvPanelOrientation;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
-use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
@@ -79,8 +78,6 @@ class HeaterController extends Controller
     /**
      * Store or update the existing record.
      *
-     * @param HeaterFormRequest $request
-     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(HeaterFormRequest $request)
@@ -90,7 +87,6 @@ class HeaterController extends Controller
         $buildingId = $building->id;
         $inputSource = HoomdossierSession::getInputSource(true);
         $inputSourceId = $inputSource->id;
-
 
         $userInterests = $request->input('user_interests');
         UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);

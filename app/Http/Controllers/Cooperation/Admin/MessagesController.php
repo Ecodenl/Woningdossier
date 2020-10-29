@@ -8,8 +8,8 @@ use App\Http\Requests\Cooperation\Admin\MessageRequest;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
-use App\Models\PrivateMessage;
 use App\Services\PrivateMessageService;
+use \Illuminate\Database\Query\Builder;
 
 class MessagesController extends Controller
 {
@@ -17,14 +17,26 @@ class MessagesController extends Controller
     {
         if (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
             $connectedBuildingsByUserId = BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user(), $cooperation);
-            $buildingIds = $connectedBuildingsByUserId->pluck('building_id')->all();
+
+            $buildings = Building::whereHas('privateMessages')->findMany(
+                $connectedBuildingsByUserId->pluck('building_id')->all()
+            );
         } else {
-            $privateMessages = PrivateMessage::forMyCooperation()->get();
+            // safest method of retrieving the buildings for each message
 
-            $buildingIds = $privateMessages->pluck('building_id')->all();
+            // retrieve all the buildings, for the current cooperation that have a private message
+            $buildings = Building::hydrate($cooperation
+                ->users()
+                ->select('buildings.*')
+                ->join('buildings', 'users.id', 'buildings.user_id')
+                ->whereExists(function (Builder $query) {
+                    $query->select('*')
+                        ->from('private_messages')
+                        ->whereRaw('buildings.id = private_messages.building_id');
+                })->get()->toArray()
+            )->load(['privateMessages', 'user']);
+
         }
-
-        $buildings = Building::whereHas('privateMessages')->findMany($buildingIds);
 
         return view('cooperation.admin.messages.index', compact('buildings'));
     }

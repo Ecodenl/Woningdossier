@@ -13,31 +13,31 @@ return [
         'roof-insulation' => 'Warme lucht stijgt en gaat naar de bovenste verdieping. Bij niet geïsoleerde daken gaat deze warmte door het dak zelf en door naden en kieren verloren. Het isoleren van het dak zorgt ervoor dat de warmte in de winter binnen blijft en niet meer tocht bij de aansluitingen van het dak. In de zomer blijft de warmte door de isolatie juist buiten zorgt voor een koelere werk- of slaapplaats. Een gevoel van behaaglijkheid en comfort door de gehele woning is een groot voordeel van dakisolatie.',
         'high-efficiency-boiler' => 'Is uw cv-ketel ouder dan 15 jaar, dan is het tijd het om aan een nieuwe ketel te denken. De kans op storingen stijgt, en bovendien kan er het nodige aan uw situatie zijn veranderd. Is uw huishouden groter of kleiner geworden? Heeft u andere leefgewoontes? Nieuwe ketels zijn daarnaast beter in te stellen, waardoor ze ook nog eens zuiniger zijn.',
         'solar-panels' => 'Steeds meer mensen laten zonnepanelen monteren. Dat is wel zo slim. Gemiddeld verbruikt een gezin in Nederland zo’n 3500 kWh aan stroom per jaar. Met zonnepanelen kunt u deze energie zelf duurzaam opwekken. Dat scheelt op uw energierekening én is beter voor het milieu.',
-        'heater' => 'Voor huishoudens waar veel wordt gedoucht, kan de zonneboiler een uitkomst zijn. Met een zonneboiler verwarmt u water met de energie van de zon. U kunt zo bijna de helft van uw energiegebruik voor warm water besparen. Ideaal voor gezinnen met kinderen.'
+        'heater' => 'Voor huishoudens waar veel wordt gedoucht, kan de zonneboiler een uitkomst zijn. Met een zonneboiler verwarmt u water met de energie van de zon. U kunt zo bijna de helft van uw energiegebruik voor warm water besparen. Ideaal voor gezinnen met kinderen.',
     ],
     'front-page' => [
         'intro' => [
             'title' => 'Stappenplan voor het <br> verduurzamen van uw woning',
-            'text' => 'U hebt het Hoomdossier voor uw woning ingevuld. Hieronder ziet u een samenvatting van de ingevoerde gegevens, de resultaten van de berekeningen en de stappen die u kunt ondernemen om uw woning duurzamer te maken.'
+            'text' => 'U hebt het Hoomdossier voor uw woning ingevuld. Hieronder ziet u een samenvatting van de ingevoerde gegevens, de resultaten van de berekeningen en de stappen die u kunt ondernemen om uw woning duurzamer te maken.',
         ],
     ],
     'warnings' => [
         'ventilation' => 'Om te bepalen welke oplossing voor uw woning de beste is wordt geadviseerd om dit door een specialist te laten beoordelen.',
         'roof-insulation' => [
             'check-order' => 'U probeert dakisolatie met vervanging van de dakbedekking te plannen, maar de onderhoudsmaatregel voor het vervangen van de dakpannen of dakbedekking staat uit',
-            'planned-year' => 'De uitvoeringsjaren van de energiebesparende maatregel en de onderhoudsmaatregel zijn niet gelijk! U heeft gekozen voor het isoleren van het dak met vervanging van de dakbedekking, Daarom moeten deze twee maatregelen gelijktijdig worden uitgevoerd.'
+            'planned-year' => 'De uitvoeringsjaren van de energiebesparende maatregel en de onderhoudsmaatregel zijn niet gelijk! U heeft gekozen voor het isoleren van het dak met vervanging van de dakbedekking, Daarom moeten deze twee maatregelen gelijktijdig worden uitgevoerd.',
         ],
         'wall-insulation' => [
-            'cavity-wall-with-paint' => 'Geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie.'
+            'cavity-wall-with-paint' => 'Geverfde of gestukte gevels kunnen helaas niet voorzien worden van spouwmuurisolatie.',
         ],
     ],
 
     'comments' => [
-        ''
+        '',
     ],
 
     'ventilation' => [
-        'points-of-improvement' => 'Verbeteropties'
+        'points-of-improvement' => 'Verbeteropties',
     ],
 
     'general-data' => [
@@ -45,7 +45,7 @@ return [
             'title' => 'Adres gegevens',
             'name' => 'Naam',
             'address' => 'Adres',
-            'zip-code-city' => 'Postcode en plaatsnaam'
+            'zip-code-city' => 'Postcode en plaatsnaam',
         ],
         'usage-info' => [
             'title' => 'Gegevens over het gebruik van de woning',
@@ -55,7 +55,7 @@ return [
             'table' => [
                 'measure' => 'Maatregel',
                 'present-current-situation' => 'Aanwezig in huidige situatie',
-            ]
+            ],
         ],
 
         'motivation' => 'Wat is de motivatie om aan de slag te gaan',
@@ -69,8 +69,8 @@ return [
                 'planned-year' => 'Jaar gepland',
                 'measure' => 'Maatregel',
                 'costs' => 'Kosten (€)',
-                'savings' => 'Besparing (€/jaar)'
-            ]
+                'savings' => 'Besparing (€/jaar)',
+            ],
         ],
 
         'comment-action-plan' => 'Toelichting op het stappenplan',
@@ -92,14 +92,14 @@ return [
             'title' => 'Bijlage 1: overzicht maatregelen',
             'lead' => 'U hebt aangegeven interesse te hebben in de volgende maatregelen:',
 
-            'text' => 'Op de volgende bladzijden ziet u per maatregel een samenvatting van de ingevoerde gegevens en berekeningen voor de hierboven genoemde maatregelen. Meer informatie over de maatregelen kunt u ook vinden op de maatregelbladen in het Hoomdossier of op <a href="www.milieucentraal.nl">www.milieucentraal.nl</a>.'
+            'text' => 'Op de volgende bladzijden ziet u per maatregel een samenvatting van de ingevoerde gegevens en berekeningen voor de hierboven genoemde maatregelen. Meer informatie over de maatregelen kunt u ook vinden op de maatregelbladen in het Hoomdossier of op <a href="www.milieucentraal.nl">www.milieucentraal.nl</a>.',
         ],
     ],
 
     'roof-insulation' => [
         'indicative-costs-and-benefits-for-measure' => [
             'flat' => 'Indicatie voor kosten en baten voor het platte dak',
-            'pitched' => 'Indicatie voor kosten en baten voor het hellende dak'
+            'pitched' => 'Indicatie voor kosten en baten voor het hellende dak',
         ],
     ],
     'measure-pages' => [
@@ -110,23 +110,22 @@ return [
             'maintenance' => [
                 'title' => 'Onderhoudsmaatregelen',
                 'costs' => 'Kosten',
-                'year' => 'Uitvoering'
+                'year' => 'Uitvoering',
             ],
         ],
         'comments' => [
             'title' => 'Toelichting op de maatregel',
             'short-translations' => [
                 'service' => 'Instalaties',
-                'element' => 'Isolatie'
+                'element' => 'Isolatie',
             ],
         ],
-
     ],
 
     'outro' => [
         'way-to-energy-neutral' => [
             'title' => 'Bijlage 2: Op weg naar energieneutraal wonen',
-            'text' => 'In dit rapport ziet u een eerste aanzet welke energiebesparende maatregelen voor u op dit moment interessant kunnen zijn. Maar als u wilt, kunt u ook een stap verder gaan met als doel: een energieneutrale woning. Voor iedereen die nul op de meter wil, geven we hieronder tips voor aanvullende maatregelen.<br><br>In Nederland zijn we op weg naar energieneutraal wonen. Energieneutraal betekent dat er voor een woning per saldo geen energie van buitenaf nodig is om er te wonen en te leven. Er wordt net zoveel energie opgewekt als wat we zelf gebruiken. De aansluiting op het gasnetwerk is bij een energieneutrale woning niet langer nodig. En de aansluiting op het elektriciteitsnetwerk dient alleen om onbalans in de stroomvoorziening op te vangen. Want soms wekken we meer op dan we gebruiken en moeten we terugleveren. En soms is het precies andersom, dan gebruiken we meer dan we opwekken en moeten we wat extra elektriciteit afnemen. Maar per saldo staat aan het einde van het jaar nul op de meter. '
+            'text' => 'In dit rapport ziet u een eerste aanzet welke energiebesparende maatregelen voor u op dit moment interessant kunnen zijn. Maar als u wilt, kunt u ook een stap verder gaan met als doel: een energieneutrale woning. Voor iedereen die nul op de meter wil, geven we hieronder tips voor aanvullende maatregelen.<br><br>In Nederland zijn we op weg naar energieneutraal wonen. Energieneutraal betekent dat er voor een woning per saldo geen energie van buitenaf nodig is om er te wonen en te leven. Er wordt net zoveel energie opgewekt als wat we zelf gebruiken. De aansluiting op het gasnetwerk is bij een energieneutrale woning niet langer nodig. En de aansluiting op het elektriciteitsnetwerk dient alleen om onbalans in de stroomvoorziening op te vangen. Want soms wekken we meer op dan we gebruiken en moeten we terugleveren. En soms is het precies andersom, dan gebruiken we meer dan we opwekken en moeten we wat extra elektriciteit afnemen. Maar per saldo staat aan het einde van het jaar nul op de meter. ',
         ],
 
         'limit-energy-usage' => [
@@ -146,7 +145,6 @@ return [
                         <p class="sub-lead">Bewust energiegebruik</p> 
                         <p>Tot slot, maar zeker niet in de laatste plaats, kunt u door bewust gedrag veel energie besparen. Denk dan aan: ’s avonds gordijnen dicht bij koud weer, adapters niet ongebruikt in het stopcontact laten zitten en apparatuur uitzetten in plaats van in de slaapstand laten staan. Op www.milieucentraal.nl  kunt u tal van energiebesparingstips vinden.</p>
                         ',
-
         ],
 
         'generate-energy' => [
@@ -162,7 +160,7 @@ return [
                         <p class="sub-lead">Energie uit bodem en buitenlucht</p>
                         <p>Een alternatief voor een cv-ketel zou ook een warmtepomp kunnen zijn. Een warmtepomp benut de vrij beschikbare energie uit de buitenlucht of de bodem en is een goed alternatief voor de conventionele wijze van verwarmen. De warmtepomp is met name geschikt in combinatie met vloer- of wandverwarming. In de praktijk is een warmtepomp met name het overwegen waard bij nieuwbouwhuizen of als een bestaande woning rigoureus wordt verbouwd. Raadpleeg een specialist voor het bepalen van het juiste type warmtepomp in uw situatie.</p>
 
-            '
+            ',
         ],
         'sustainable-generation' => [
             'title' => 'Collectieve duurzame opwekking',
@@ -170,7 +168,7 @@ return [
         ],
         'more-information' => [
             'title' => 'Meer informatie',
-            'text' => 'Veel mensen zijn u al voorgegaan op weg naar een energieneutrale woning. Op www.urgenda.nl/themas/bouw/energieneutraal/ vindt u handige informatie en inspirerende voorbeelden. Een echte aanrader!'
-        ]
+            'text' => 'Veel mensen zijn u al voorgegaan op weg naar een energieneutrale woning. Op www.urgenda.nl/themas/bouw/energieneutraal/ vindt u handige informatie en inspirerende voorbeelden. Een echte aanrader!',
+        ],
     ],
 ];

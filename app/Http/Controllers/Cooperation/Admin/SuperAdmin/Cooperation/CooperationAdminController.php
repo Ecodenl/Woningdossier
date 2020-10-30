@@ -10,9 +10,6 @@ class CooperationAdminController extends Controller
     /**
      * Show the cooperation admins of the cooperation that the user is managing.
      *
-     * @param Cooperation $currentCooperation
-     * @param Cooperation $cooperationToManage
-     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Cooperation $currentCooperation, Cooperation $cooperationToManage)

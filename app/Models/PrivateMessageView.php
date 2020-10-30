@@ -52,11 +52,7 @@ class PrivateMessageView extends Model
     /**
      * Get the total unread messages for a user within its given cooperation and after a specific date.
      *
-     * @param User        $user
-     * @param Cooperation $cooperation
      * @param  $specificDate
-     *
-     * @return int
      */
     public static function getTotalUnreadMessagesForUserAndCooperationAfterSpecificDate(User $user, Cooperation $cooperation, $specificDate): int
     {
@@ -103,9 +99,6 @@ class PrivateMessageView extends Model
     /**
      * Get the total unread messages for a user, this also counts the unread messages from the admin side.
      *
-     * @param User        $user
-     * @param Cooperation $cooperation
-     *
      * @return int
      */
     public static function getTotalUnreadMessagesForUser(User $user, Cooperation $cooperation)
@@ -132,8 +125,6 @@ class PrivateMessageView extends Model
 
     /**
      * Get the total unread messages from a auth user.
-     *
-     * @return int
      */
     public static function getTotalUnreadMessagesForCurrentRole(): int
     {
@@ -150,8 +141,6 @@ class PrivateMessageView extends Model
      * Get the number messages that have been sent to the cooperation.
      *
      * @param int $cooperationId
-     *
-     * @return int
      */
     public static function getTotalUnreadMessagesForCooperation($cooperationId): int
     {
@@ -174,10 +163,6 @@ class PrivateMessageView extends Model
 
     /**
      * Get the unread messages count for a given building. The count will be determined on the auth user his role and user id.
-     *
-     * @param Building $building
-     *
-     * @return int
      */
     public static function getTotalUnreadMessagesCountByBuildingForAuthUser(Building $building): int
     {
@@ -205,8 +190,6 @@ class PrivateMessageView extends Model
      * Check if a private message is left unread.
      *
      * @param $privateMessage
-     *
-     * @return bool
      */
     public static function isMessageUnread($privateMessage): bool
     {

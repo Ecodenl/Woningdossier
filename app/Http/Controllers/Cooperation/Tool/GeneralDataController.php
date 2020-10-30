@@ -30,6 +30,7 @@ class GeneralDataController extends Controller
         if (Step::onlySubSteps()->count() == $completedSubStepsOfGeneralData->count()) {
             return redirect()->route('cooperation.tool.general-data.interest.index');
         }
+
         return redirect()->route('cooperation.tool.general-data.building-characteristics.index');
     }
 }

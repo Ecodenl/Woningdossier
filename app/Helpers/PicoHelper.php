@@ -38,11 +38,9 @@ class PicoHelper
     /**
      * Returns the address data from pico in a more usable form.
      *
-     * @param string $postalCode
-     * @param string|int $number
+     * @param string      $postalCode
+     * @param string|int  $number
      * @param string|null $houseNumberExtension Default: null
-     *
-     * @return array
      */
     public static function getAddressData($postalCode, $number, $houseNumberExtension = null): array
     {
@@ -50,7 +48,7 @@ class PicoHelper
         $result = [];
         if ($options->isNotEmpty()) {
             // get the best address option for the result.
-            if (empty($houseNumberExtension) || !isset($options[$houseNumberExtension])) {
+            if (empty($houseNumberExtension) || ! isset($options[$houseNumberExtension])) {
                 $best = 'None';
             } else {
                 $best = $houseNumberExtension;

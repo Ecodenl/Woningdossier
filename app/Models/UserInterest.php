@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -41,7 +40,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserInterest extends Model
 {
-    use GetValueTrait, GetMyValuesTrait, ToolSettingTrait;
+    use GetValueTrait;
+    use GetMyValuesTrait;
+    use ToolSettingTrait;
 
     protected $fillable = [
         'user_id', 'interested_in_type', 'interested_in_id', 'interest_id', 'input_source_id',
@@ -136,9 +137,6 @@ class UserInterest extends Model
 
     /**
      * Function to update or create the user interests.
-     *
-     * @param array $interests
-     * @param User  $user
      */
     public static function saveUserInterests(User $user, array $interests)
     {

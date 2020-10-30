@@ -13,7 +13,7 @@ class UserObserver
     {
         // we create for every notification type a setting with daily interval and set the last_notified_at to now
         $notificationTypes = NotificationType::all();
-        $interval          = NotificationInterval::where('short',
+        $interval = NotificationInterval::where('short',
             'daily')->first();
 
         foreach ($notificationTypes as $notificationType) {

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class DropCooperationIdOnTablePrivateMessages extends Migration
 {
@@ -33,7 +33,7 @@ class DropCooperationIdOnTablePrivateMessages extends Migration
 
         foreach (DB::table('private_messages')->get() as $privateMessage) {
             DB::table('private_messages')->where('id', $privateMessage->id)->update([
-                'cooperation_id' => $privateMessage->to_cooperation_id
+                'cooperation_id' => $privateMessage->to_cooperation_id,
             ]);
         }
     }

@@ -43,9 +43,6 @@ class MessagesController extends Controller
     /**
      * Method that handles sending messages for the /admin section.
      *
-     * @param Cooperation    $cooperation
-     * @param MessageRequest $request
-     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function sendMessage(Cooperation $cooperation, MessageRequest $request)

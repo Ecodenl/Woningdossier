@@ -6,45 +6,44 @@ return [
 
         'edit' => [
             'label' => 'Gegevens bewerken',
-            'button' => '<i class="glyphicon glyphicon-pencil"></i>'
+            'button' => '<i class="glyphicon glyphicon-pencil"></i>',
         ],
         'fill-for-user' => [
             'label' => 'Woning als coach bewerken',
-            'button' => '<i class="glyphicon glyphicon-edit"></i>'
+            'button' => '<i class="glyphicon glyphicon-edit"></i>',
         ],
-
 
         'header' => 'Detail overzicht :name, :street-and-number, :zipcode-and-city, :email, :phone-number',
 
         'observe-building' => [
             'label' => 'Woning bekijken',
-            'button' => '<i class="glyphicon glyphicon-eye-open"></i>'
+            'button' => '<i class="glyphicon glyphicon-eye-open"></i>',
         ],
         'delete-account' => [
             'label' => 'Account verwijderen',
-            'button' => '<i class="glyphicon glyphicon-trash"></i>'
+            'button' => '<i class="glyphicon glyphicon-trash"></i>',
         ],
         'role' => [
             'label' => 'Rol',
-            'button' => 'Bijwerken'
+            'button' => 'Bijwerken',
         ],
         'status' => [
             'current' => 'Huidige status: ',
             'label' => 'Status: ',
-            'button' => 'Kies status'
+            'button' => 'Kies status',
         ],
         'associated-coach' => [
             'label' => 'Gekoppelde coaches',
-            'button' => 'Kies coach'
+            'button' => 'Kies coach',
         ],
         'appointment-date' => [
             'label' => 'Datum afspraak',
-            'button' => 'Kies datum'
+            'button' => 'Kies datum',
         ],
 
         'has-building-access' => [
             'no' => 'Geen toegang tot woning',
-            'yes' => 'Toegang tot woning'
+            'yes' => 'Toegang tot woning',
         ],
 
         'delete-user' => 'Weet u zeker dat u deze gebruiker wilt verwijderen, deze actie kan niet ongedaan worden gemaakt',
@@ -55,22 +54,21 @@ return [
         'set-appointment-date' => 'Weet u zeker dat u deze datum wilt zetten voor het huidige gebouw?',
         'set-empty-appointment-date' => 'Weet u zeker dat u de afspraak wilt verwijderen?',
 
-
         'tabs' => [
             'messages-public' => [
                 'user-notification' => [
                     'yes' => 'Gebruiker heeft notificaties aanstaan, hij zal op de hoogte worden gesteld van de verstuurde berichten.',
-                    'no' => 'Gebruiker ontvangt hier geen melding van.'
+                    'no' => 'Gebruiker ontvangt hier geen melding van.',
                 ],
-                'title' => 'Berichten bewoner'
+                'title' => 'Berichten bewoner',
             ],
             'messages-intern' => [
-                'title' => 'Berichten intern'
+                'title' => 'Berichten intern',
             ],
             'comments-on-building' => [
                 'title' => 'Opmerkingen bij woning',
                 'note' => 'Opmerking over de woning.',
-                'save' => 'Opmerking opslaan'
+                'save' => 'Opmerking opslaan',
             ],
             'fill-in-history' => [
                 'title' => 'Invulhistorie',
@@ -80,13 +78,13 @@ return [
                         'building' => 'Actie voor woning',
                         'for-user' => 'Actie op gebruiker',
                         'message' => 'Bericht',
-                        'happened-on' => 'Gebeurt op'
-                    ]
-                ]
-            ]
+                        'happened-on' => 'Gebeurt op',
+                    ],
+                ],
+            ],
         ],
         'next' => 'Volgende',
-        'previous' => 'Vorige'
+        'previous' => 'Vorige',
     ],
     'edit' => [
         'account-user-info-title' => 'Gebruiker gegevens',

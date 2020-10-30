@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\TranslatableTrait;
-use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -65,8 +64,6 @@ class Question extends Model
 
     /**
      * Check if a question is required.
-     *
-     * @return bool
      */
     public function isRequired(): bool
     {
@@ -79,8 +76,6 @@ class Question extends Model
 
     /**
      * Check if a question has validation.
-     *
-     * @return bool
      */
     public function hasValidation(): bool
     {
@@ -93,8 +88,6 @@ class Question extends Model
 
     /**
      * Check if a question has validation.
-     *
-     * @return bool
      */
     public function hasNoValidation(): bool
     {

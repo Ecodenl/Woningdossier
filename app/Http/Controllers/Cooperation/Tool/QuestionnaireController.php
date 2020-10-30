@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
@@ -15,9 +14,6 @@ class QuestionnaireController extends Controller
 {
     /**
      * Save or update the user his answers for the custom questionnaire.
-     *
-     * @param Cooperation          $cooperation
-     * @param QuestionnaireRequest $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */

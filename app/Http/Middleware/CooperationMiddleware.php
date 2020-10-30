@@ -13,7 +13,6 @@ class CooperationMiddleware
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
      *
      * @return mixed
      */
@@ -26,7 +25,7 @@ class CooperationMiddleware
 
             return redirect()->route('index');
         }
-        if ($cooperation->slug == 'vrijstadenergie'){
+        if ('vrijstadenergie' == $cooperation->slug) {
             return redirect()->route('cooperation.welcome', ['cooperation' => 'energieloketrivierenland']);
         }
 

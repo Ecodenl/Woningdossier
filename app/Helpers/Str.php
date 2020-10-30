@@ -12,8 +12,6 @@ class Str
     /**
      * Uuid generation wrapping. Laravel < 5.6 uses Ramsey\Uuid. From 5.6 it is
      * put in the \Illuminate\Support\Str helper.
-     *
-     * @return string
      */
     public static function uuid(): string
     {
@@ -33,8 +31,6 @@ class Str
      * Check if a given string is a valid UUID.
      *
      * @param string $uuid The string to check
-     *
-     * @return bool
      */
     public static function isValidUuid($uuid): bool
     {
@@ -51,8 +47,6 @@ class Str
      * https://stackoverflow.com/questions/1253373/php-check-for-valid-guid/#answer-1515456
      *
      * @param $guid
-     *
-     * @return bool
      */
     public static function isValidGuid($guid): bool
     {
@@ -67,8 +61,6 @@ class Str
      * Check if a string contains a pipe.
      *
      * @param $string
-     *
-     * @return bool
      */
     public static function isPiped($string): bool
     {
@@ -98,8 +90,6 @@ class Str
 
     /**
      * Generate a random password.
-     *
-     * @return string
      */
     public static function randomPassword(): string
     {
@@ -118,8 +108,6 @@ class Str
      * Check if the given answer is a empty answer, its considered empty when its in the array.
      *
      * @param $answer
-     *
-     * @return bool
      */
     public static function isConsideredEmptyAnswer($answer): bool
     {

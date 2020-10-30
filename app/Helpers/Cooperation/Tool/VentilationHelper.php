@@ -2,12 +2,10 @@
 
 namespace App\Helpers\Cooperation\Tool;
 
-class VentilationHelper {
-
+class VentilationHelper
+{
     /**
      * Method to return the answer options of the how question.
-     *
-     * @return array
      */
     public static function getHowValues(): array
     {
@@ -23,8 +21,6 @@ class VentilationHelper {
 
     /**
      * Method to return the answer options of the living situation question.
-     *
-     * @return array
      */
     public static function getLivingSituationValues(): array
     {
@@ -34,13 +30,10 @@ class VentilationHelper {
             'combustion-device' => 'Ik heb een open verbrandingstoestel',
             'moisture'          => 'Ik heb last van schimmel op de muren',
         ];
-
     }
 
     /**
      * Method to return the answer options of the usage question.
-     *
-     * @return array
      */
     public static function getUsageValues(): array
     {
@@ -77,14 +70,10 @@ class VentilationHelper {
         return  [
             'none' => 'Er is op dit moment mogelijkerwijs onvoldoende ventilatie, het kan zinvol zijn om dit door een specialist te laten beoordelen.',
         ];
-
     }
 
     /**
-     *
      * Method to return the warnings for the selected living situations.
-     *
-     * @return array
      */
     public static function getLivingSituationWarnings(): array
     {
@@ -100,6 +89,7 @@ class VentilationHelper {
      * Method to return a warning for the selected value / option.
      *
      * @param $value
+     *
      * @return mixed
      */
     public static function getWarningForValues($value = null)
@@ -108,7 +98,7 @@ class VentilationHelper {
 
         $allWarnings = array_merge($allWarnings, self::getHowWarnings(), self::getUsageWarnings(), self::getLivingSituationWarnings());
 
-        if (!is_null($value)) {
+        if (! is_null($value)) {
             return $allWarnings[$value];
         }
 

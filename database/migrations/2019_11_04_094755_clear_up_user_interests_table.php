@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class ClearUpUserInterestsTable extends Migration
@@ -28,7 +26,6 @@ class ClearUpUserInterestsTable extends Migration
             ->groupBy('user_id', 'input_source_id', 'interested_in_id', 'interested_in_type')
             ->having('count(interested_in_id)', '>', 1)
             ->get();
-
 
         foreach ($userInterestsWithDuplicates as $userInterestsWithDuplicate) {
             $this->line('-------------------------------------------------');
@@ -69,6 +66,5 @@ class ClearUpUserInterestsTable extends Migration
      */
     public function down()
     {
-        //
     }
 }

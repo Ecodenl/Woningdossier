@@ -10,5 +10,5 @@ U heeft al een Hoomdossier account bij :cooperation_names. In alle omgevingen va
 Bent u uw wachtwoord vergeten, dan kunt u met uw e-mailadres via onderstaande link een nieuw wachtwoord aanvragen: :hoomdossier_reset_href
 <br><br>
 Als u hierover vragen hebt, kunt u contact opnemen met :cooperation_name - :cooperation_href',
-    'kind_regards' => 'Met vriendelijke groet, <br>:app_name support'
+    'kind_regards' => 'Met vriendelijke groet, <br>:app_name support',
 ];

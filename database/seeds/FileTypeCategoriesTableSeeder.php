@@ -15,12 +15,11 @@ class FileTypeCategoriesTableSeeder extends Seeder
             [
                 'names' => [
                     'nl' => 'Rapportages',
-                    'en' => 'Report'
+                    'en' => 'Report',
                 ],
                 'content_type' => 'text/csv',
-                'short' => 'report'
+                'short' => 'report',
             ],
-
         ];
 
         foreach ($fileTypeCategories as $fileTypeCategory) {
@@ -37,7 +36,7 @@ class FileTypeCategoriesTableSeeder extends Seeder
             // create the file type itself
             DB::table('file_type_categories')->insert([
                 'name' => $uuid,
-                'short' => $fileTypeCategory['short']
+                'short' => $fileTypeCategory['short'],
             ]);
         }
     }

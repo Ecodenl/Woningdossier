@@ -6,7 +6,6 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\MyPlanHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyPlanRequest;
-use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
@@ -57,8 +56,6 @@ class MyPlanController extends Controller
 
     /**
      * Store a comment for the my plan page for the current inputsource on the owner of the building.
-     *
-     * @param MyPlanRequest $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */

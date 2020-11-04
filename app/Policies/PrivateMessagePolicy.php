@@ -22,7 +22,7 @@ class PrivateMessagePolicy
     {
     }
 
-    public function show(User $user)
+    public function viewAny(User $user)
     {
         // When a user is a resident and admin, we want to deny them.
         // this is because: a resident could be sending a message to the cooperation

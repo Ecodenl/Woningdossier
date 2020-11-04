@@ -246,7 +246,7 @@
                                         "</a>" +
                                         "</td>" +
                                         "<td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + savingMoney + "</td><td>" +
-                                        "<a href='" + conversationRequestRoute.replace('action', MEASURE).replace('measure_application_short', stepData.measure_short) + "' class='take-action btn btn-default' type='button'>@lang('my-plan.columns.take-action.title')</a></td></tr>";
+                                        "@can('view-any', \App\Models\PrivateMessage::class) <a href='" + conversationRequestRoute.replace('action', MEASURE).replace('measure_application_short', stepData.measure_short) + "' class='take-action btn btn-default' type='button'>@lang('my-plan.columns.take-action.title')</a> @endcan </td></tr>";
                                     table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "' > <td colspan='1'></td><td colspan=''> <strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-gas.title') }}:</strong> <br><strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-electricity.title') }}:</strong> </td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup> <br>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh </td><td colspan='1'></td></tr>";
                                 });
 

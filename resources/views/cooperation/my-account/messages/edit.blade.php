@@ -1,7 +1,7 @@
 @extends('cooperation.my-account.layouts.app')
 
 @section('my_account_content')
-    @if(!\App\Helpers\Hoomdossier::user()->hasMultipleRoles())
+    @can('view-any', \App\Models\PrivateMessage::class)
         <div class="panel panel-default">
             <div class="panel-heading">
                 @include('cooperation.messages.parts.group-participants', ['groupParticipants' => $groupParticipants, 'buildingId' => $buildingId])

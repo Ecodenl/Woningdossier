@@ -4,7 +4,11 @@ $boilerCount = 0;
 @foreach($services as $i => $service)
     <input type="hidden" name="services[{{$service->short}}][service_id]" value="{{$service->id}}">
     <?php
-    $iconName = array_key_exists($service->short, \App\Helpers\StepHelper::SERVICE_TO_SHORT) ? \App\Helpers\StepHelper::SERVICE_TO_SHORT[$service->short] : $service->short;
+        $iconName = array_key_exists($service->short, \App\Helpers\StepHelper::SERVICE_TO_SHORT) ? \App\Helpers\StepHelper::SERVICE_TO_SHORT[$service->short] : $service->short;
+
+        $buildingServicesOrderedOnCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+            $building->buildingservices()->where('service_id', $service->id)
+        )->get();
     ?>
 
 
@@ -24,7 +28,7 @@ $boilerCount = 0;
                                     name="services[{{ $service->short }}][service_value_id]">
                                 {{--5 is the "vraaggestuurd" value, we need this for a checkbox--}}
                                 @foreach($service->values as $serviceValue)
-                                    <option @if(old('services.' . $service->short.'.service_value_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingservices()->where('service_id', $service->id), 'service_value_id')) == $serviceValue->id) selected="selected"
+                                    <option @if(old('services.' . $service->short.'.service_value_id', Hoomdossier::getMostCredibleValueFromCollection($buildingServicesOrderedOnCredibility, 'service_value_id')) == $serviceValue->id) selected="selected"
                                             @endif value="{{ $serviceValue->id }}">{{ $serviceValue->value }}</option>
                                 @endforeach
                             </select>

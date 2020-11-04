@@ -34,7 +34,8 @@ class ToolComposer
         // which meens we hef to refaktor.
         $excludedViews = ['cooperation.tool.components.alert'];
 
-        if (! in_array($view->getName(), $excludedViews)) {
+        if (!in_array($view->getName(), $excludedViews)) {
+
             $user = Hoomdossier::user();
 
             $view->with('user', $user);
@@ -47,9 +48,6 @@ class ToolComposer
                 $this->currentUser = Hoomdossier::user();
             }
 
-//            if (is_null($this->unreadMessageCount)) {
-//                $this->unreadMessageCount = PrivateMessageView::getTotalUnreadMessagesForCurrentRole();
-//            }
 
             if (is_null($this->currentStep)) {
                 $toolUrl = explode('/', request()->getRequestUri());
@@ -59,7 +57,16 @@ class ToolComposer
 
                     $this->currentStep = Step::where('slug', $toolUrl[2])
                         ->with(['questionnaires' => function ($query) {
-                            $query->orderBy('order');
+                            $query
+                                ->orderBy('order')
+                                ->with(['questions' => function ($query) {
+                                    $query
+                                        ->orderBy('order')
+                                        ->with(['questionAnswers' => function ($query) {
+                                            $query->where('building_id', \App\Helpers\HoomdossierSession::getBuilding());
+                                        }])
+                                        ->with('questionAnswersForMe');
+                                }]);
                         }])->first();
                     $this->currentSubStep = $currentSubStep;
                 }

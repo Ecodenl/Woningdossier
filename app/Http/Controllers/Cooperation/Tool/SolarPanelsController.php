@@ -47,15 +47,19 @@ class SolarPanelsController extends Controller
         $buildingOwner = $building->user;
 
         $pvPanelOrientations = PvPanelOrientation::orderBy('order')->get();
-        $buildingPvPanels = $building->pvPanels;
-        $buildingPvPanelsForMe = $building->pvPanels()->forMe()->get();
-        $energyHabitsForMe = UserEnergyHabit::forMe()->get();
+
+        $energyHabitsOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+            $buildingOwner->energyHabit()
+        )->get();
+
+        $pvPanelsOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+            $building->pvPanels()
+        )->get();
 
         return view('cooperation.tool.solar-panels.index',
             compact(
-                'building', 'pvPanelOrientations', 'buildingOwner',
-                'energyHabitsForMe', 'buildingPvPanels', 'typeIds',
-                'buildingPvPanelsForMe'
+                'building', 'pvPanelOrientations', 'buildingOwner', 'typeIds',
+                'energyHabitsOrderedOnInputSourceCredibility', 'pvPanelsOrderedOnInputSourceCredibility'
             )
         );
     }

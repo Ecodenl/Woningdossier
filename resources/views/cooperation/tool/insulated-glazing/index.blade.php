@@ -29,6 +29,9 @@
                 } else {
                     $currentMeasureBuildingInsulatedGlazingForMe = [];
                 }
+                    $buildingInsulatedGlazingsOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+                        $building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id)
+                    )->get();
                 ?>
 
                 <div class="row">
@@ -86,7 +89,7 @@
                                     <select class="form-control"
                                             name="building_insulated_glazings[{{ $measureApplication->id }}][insulated_glazing_id]">
                                         @foreach($insulatedGlazings as $insulateGlazing)
-                                            <option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id), 'insulating_glazing_id'))) selected
+                                            <option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id', Hoomdossier::getMostCredibleValueFromCollection($buildingInsulatedGlazingsOrderedOnInputSourceCredibility, 'insulating_glazing_id'))) selected
                                                     @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>
                                             {{--<option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->insulating_glazing_id == $insulateGlazing->id)) selected @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>--}}
                                         @endforeach
@@ -105,7 +108,7 @@
                                     <select class="form-control"
                                             name="building_insulated_glazings[{{ $measureApplication->id }}][building_heating_id]">
                                         @foreach($heatings as $heating)
-                                            <option @if($heating->id == old('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id), 'building_heating_id'))) selected
+                                            <option @if($heating->id == old('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id', Hoomdossier::getMostCredibleValueFromCollection($buildingInsulatedGlazingsOrderedOnInputSourceCredibility, 'building_heating_id'))) selected
                                                     @endif value="{{ $heating->id }}">{{ $heating->name }}</option>
                                             {{--<option @if($heating->id == old('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->building_heating_id == $heating->id)) selected="selected" @endif value="{{ $heating->id }}">{{ $heating->name }}</option>--}}
                                         @endforeach
@@ -127,7 +130,7 @@
                                 ['inputType' => 'input', 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'm2'])
                                     <input type="text"
                                            name="building_insulated_glazings[{{ $measureApplication->id }}][m2]"
-                                           value="{{ old('building_insulated_glazings.'.$measureApplication->id.'.m2', \App\Helpers\Hoomdossier::getMostCredibleValue($building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id), 'm2')) }}"
+                                           value="{{ old('building_insulated_glazings.'.$measureApplication->id.'.m2', Hoomdossier::getMostCredibleValueFromCollection($buildingInsulatedGlazingsOrderedOnInputSourceCredibility, 'm2')) }}"
                                            class="form-control">
                                     {{--<input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][m2]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.m2', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->m2 : '') }}" class="form-control">--}}
                                 @endcomponent
@@ -149,7 +152,7 @@
                                 ['inputType' => 'input', 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'windows'])
                                     <input type="text"
                                            name="building_insulated_glazings[{{ $measureApplication->id }}][windows]"
-                                           value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.windows', \App\Helpers\Hoomdossier::getMostCredibleValue($building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id), 'windows')) }}"
+                                           value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.windows', Hoomdossier::getMostCredibleValueFromCollection($buildingInsulatedGlazingsOrderedOnInputSourceCredibility, 'windows')) }}"
                                            class="form-control">
                                     {{--<input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][windows]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.windows', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->windows : '') }}" class="form-control">--}}
                                 @endcomponent
@@ -278,12 +281,11 @@
                 ['id' => 'building_paintwork_statuses.last_painted_year', 'translation' => 'insulated-glazing.paint-work.last-paintjob', 'required' => false])
 
                     @component('cooperation.tool.components.input-group',
-                           ['inputType' => 'input', 'userInputValues' => $building->currentPaintworkStatus()->forMe()->get() ,'userInputColumn' => 'last_painted_year'])
+                           ['inputType' => 'input', 'userInputValues' => $buildingPaintworkStatusesOrderedOnInputSourceCredibility ,'userInputColumn' => 'last_painted_year'])
                         <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                         <input type="text" name="building_paintwork_statuses[last_painted_year]"
                                class="form-control"
-                               value="{{ old('building_paintwork_statuses.last_painted_year', \App\Helpers\Hoomdossier::getMostCredibleValue($building->currentPaintworkStatus(), 'last_painted_year')) }}">
-                        {{--<input type="text" name="building_paintwork_statuses[last_painted_year]" class="form-control" value="{{ old('building_paintwork_statuses.last_painted_year', $building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus ? $building->currentPaintworkStatus->last_painted_year : '') }}">--}}
+                               value="{{ old('building_paintwork_statuses.last_painted_year', Hoomdossier::getMostCredibleValueFromCollection($buildingPaintworkStatusesOrderedOnInputSourceCredibility, 'last_painted_year')) }}">
                     @endcomponent
                 @endcomponent
 
@@ -293,12 +295,11 @@
                 ['id' => 'building_paintwork_statuses.paintwork_status_id', 'translation' => 'insulated-glazing.paint-work.paint-damage-visible', 'required' => false])
 
                     @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'select', 'inputValues' => $paintworkStatuses, 'userInputValues' => $building->currentPaintworkStatus()->forMe()->get(), 'userInputColumn' => 'paintwork_status_id'])
+                    ['inputType' => 'select', 'inputValues' => $paintworkStatuses, 'userInputValues' => $buildingPaintworkStatusesOrderedOnInputSourceCredibility, 'userInputColumn' => 'paintwork_status_id'])
                         <select class="form-control" name="building_paintwork_statuses[paintwork_status_id]">
                             @foreach($paintworkStatuses as $paintworkStatus)
-                                <option @if($paintworkStatus->id == old('building_paintwork_statuses.paintwork_status_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->currentPaintworkStatus(), 'paintwork_status_id'))) selected
+                                <option @if($paintworkStatus->id == old('building_paintwork_statuses.paintwork_status_id', Hoomdossier::getMostCredibleValueFromCollection($buildingPaintworkStatusesOrderedOnInputSourceCredibility, 'paintwork_status_id'))) selected
                                         @endif value="{{ $paintworkStatus->id }}">{{ $paintworkStatus->name }}</option>
-                                {{--<option @if($paintworkStatus->id == old('building_paintwork_statuses.paintwork_status_id') || ($building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus && $building->currentPaintworkStatus->paintwork_status_id == $paintworkStatus->id) ) selected @endif value="{{ $paintworkStatus->id }}">{{ $paintworkStatus->name }}</option>--}}
                             @endforeach
                         </select>
                     @endcomponent
@@ -313,10 +314,10 @@
                 @component('cooperation.tool.components.step-question', ['id' => 'building_paintwork_statuses.wood_rot_status_id', 'translation' => 'insulated-glazing.paint-work.wood-rot-visible', 'required' => false])
 
                     @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'select', 'inputValues' => $woodRotStatuses, 'userInputValues' => $building->currentPaintworkStatus()->forMe()->get(), 'userInputColumn' => 'wood_rot_status_id'])
+                    ['inputType' => 'select', 'inputValues' => $woodRotStatuses, 'userInputValues' => $buildingPaintworkStatusesOrderedOnInputSourceCredibility, 'userInputColumn' => 'wood_rot_status_id'])
                         <select class="form-control" name="building_paintwork_statuses[wood_rot_status_id]">
                             @foreach($woodRotStatuses as $woodRotStatus)
-                                <option @if($woodRotStatus->id == old('building_paintwork_statuses.wood_rot_status_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->currentPaintworkStatus(), 'wood_rot_status_id'))) selected
+                                <option @if($woodRotStatus->id == old('building_paintwork_statuses.wood_rot_status_id', Hoomdossier::getMostCredibleValueFromCollection($buildingPaintworkStatusesOrderedOnInputSourceCredibility, 'wood_rot_status_id'))) selected
                                         @endif value="{{ $woodRotStatus->id }}">{{ $woodRotStatus->name }}</option>
                                 {{--<option @if($woodRotStatus->id == old('building_paintwork_statuses.wood_rot_status_id') || ($building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus && $building->currentPaintworkStatus->wood_rot_status_id == $woodRotStatus->id) ) selected @endif value="{{ $woodRotStatus->id }}">{{ $woodRotStatus->name }}</option>--}}
                             @endforeach

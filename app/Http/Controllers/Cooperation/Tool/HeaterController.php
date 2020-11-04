@@ -49,19 +49,21 @@ class HeaterController extends Controller
 
         $comfortLevels = ComfortLevelTapWater::orderBy('order')->get();
         $collectorOrientations = PvPanelOrientation::orderBy('order')->get();
-        /** @var UserEnergyHabit|null $habits */
-        $habits = $buildingOwner->energyHabit;
-        $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
-        $currentComfort = null;
-        if ($habits instanceof UserEnergyHabit) {
-            $currentComfort = $habits->comfortLevelTapWater;
-        }
-        $currentHeater = $building->heater;
-        $currentHeatersForMe = $building->heater()->forMe()->get();
+
+
+        $energyHabitsOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+            $buildingOwner->energyHabit()
+        )->get();
+
+
+        $heatersOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+            $building->heater()
+        )->get();
+
 
         return view('cooperation.tool.heater.index', compact('building', 'buildingOwner',
-            'comfortLevels', 'collectorOrientations', 'typeIds', 'userEnergyHabitsForMe',
-            'currentComfort', 'currentHeater', 'habits', 'currentHeatersForMe'
+            'collectorOrientations', 'typeIds', 'energyHabitsOrderedOnInputSourceCredibility', 'comfortLevels',
+        'heatersOrderedOnInputSourceCredibility'
         ));
     }
 

@@ -45,21 +45,26 @@ class HighEfficiencyBoilerController extends Controller
 
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
-        $habit = $buildingOwner->energyHabit;
-        $energyHabitsForMe = UserEnergyHabit::forMe()->get();
 
         // NOTE: building element hr-boiler tells us if it's there
         $boiler = Service::where('short', 'boiler')->first();
         $boilerTypes = $boiler->values()->orderBy('order')->get();
 
         $installedBoiler = $building->buildingServices()->where('service_id', $boiler->id)->first();
-        /** @var Collection $installedBoilerForMe */
-        $installedBoilerForMe = $building->buildingServices()->forMe()->where('service_id', $boiler->id)->get();
+
+        $userEnergyHabitsOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+            $buildingOwner->energyHabit()
+        )->get();
+
+        $buildingServicesOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+            $building->buildingServices()->where('service_id', $boiler->id)
+        )->get();
 
         return view('cooperation.tool.hr-boiler.index', compact('building',
-            'habit', 'boiler', 'boilerTypes', 'installedBoiler',
-            'typeIds', 'installedBoilerForMe', 'energyHabitsForMe',
-            'steps', 'buildingOwner'));
+            'boiler', 'boilerTypes', 'installedBoiler',
+            'typeIds', 'energyHabitsForMe', 'userEnergyHabitsOrderedOnInputSourceCredibility',
+            'steps', 'buildingOwner', 'buildingServicesOrderedOnInputSourceCredibility'
+        ));
     }
 
     public function calculate(Request $request, User $buildingOwner)
@@ -107,8 +112,8 @@ class HighEfficiencyBoilerController extends Controller
         $nextStep = StepHelper::getNextStep($building, $inputSource, $this->step);
         $url = $nextStep['url'];
 
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
+        if (!empty($nextStep['tab_id'])) {
+            $url .= '#' . $nextStep['tab_id'];
         }
 
         return redirect($url);

@@ -3,7 +3,7 @@
 @section('step_title', \App\Helpers\Translation::translate('roof-insulation.title.title'))
 
 @section('step_content')
-    <form  method="POST"
+    <form method="POST"
           action="{{ route('cooperation.tool.roof-insulation.store', ['cooperation' => $cooperation]) }}">
 
         {{csrf_field()}}
@@ -27,16 +27,6 @@
                             ['inputType' => 'checkbox', 'inputValues' => $roofTypes, 'userInputValues' => $currentRoofTypesForMe, 'userInputColumn' => 'roof_type_id'])
 
                                 @foreach($roofTypes as $roofType)
-{{--                                    {{--}}
-                                    {{--dd(--}}
-                                        {{--old('building_roof_types'),--}}
-                                        {{--old('building_roof_types.id',[--}}
-                                            {{--\App\Helpers\Hoomdossier::getMostCredibleValue(--}}
-                                                {{--$building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->roofTypes()))--}}
-                                            {{--]--}}
-                                        {{--)--}}
-                                    {{--)--}}
-                                    {{--}}--}}
                                     <label class="checkbox-inline">
                                         <input data-calculate-value="{{$roofType->calculate_value}}"
                                                type="checkbox" name="building_roof_types[id][]"
@@ -44,9 +34,6 @@
                                                @if(in_array($roofType->id, old('building_roof_types.id',[ \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_type_id', null, \App\Helpers\Hoomdossier::getMostCredibleInputSource($building->roofTypes())) ])))
                                                checked="checked"
                                                 @endif
-                                                {{--@if((is_array(old('building_roof_types')) && in_array($roofType->id, old('building_roof_types'))) ||
-                                                ($currentRoofTypes->contains('roof_type_id', $roofType->id)) ||
-                                                ($features->roofType->id == $roofType->id)) checked @endif--}}
                                         >
                                         {{ $roofType->name }}
                                     </label>
@@ -70,26 +57,32 @@
                     <div class="row">
                         <div class="col-md-12">
 
-                                @component('cooperation.tool.components.step-question', ['id' => 'building_features.roof_type_id', 'translation' => 'roof-insulation.current-situation.main-roof', 'required' => false])
+                            @component('cooperation.tool.components.step-question', ['id' => 'building_features.roof_type_id', 'translation' => 'roof-insulation.current-situation.main-roof', 'required' => false])
 
-                                    @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'roof_type_id'])
-                                        <select id="main_roof" class="form-control"
-                                                name="building_features[roof_type_id]">
-                                            @foreach($roofTypes as $roofType)
-                                                <option @if(old('building_features.roof_type_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'roof_type_id')) == $roofType->id) selected="selected"
-                                                            @endif value="{{ $roofType->id }}">{{ $roofType->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    @endcomponent
-
+                                @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $roofTypes, 'userInputValues' => $building->buildingFeatures()->forMe()->get(), 'userInputModel' => 'roofType', 'userInputColumn' => 'roof_type_id'])
+                                    <select id="main_roof" class="form-control"
+                                            name="building_features[roof_type_id]">
+                                        @foreach($roofTypes as $roofType)
+                                            <option @if(old('building_features.roof_type_id', Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'roof_type_id')) == $roofType->id) selected="selected"
+                                                    @endif value="{{ $roofType->id }}">{{ $roofType->name }}</option>
+                                        @endforeach
+                                    </select>
                                 @endcomponent
+
+                            @endcomponent
                         </div>
                     </div>
 
                     {{--@foreach(['flat', 'pitched'] as $roofCat)--}}
                     @foreach($roofTypes->where('calculate_value', '<', 5) as $roofType)
 
-                        <?php $roofCat = $roofType->short; ?>
+                        <?php
+                        $roofCat = $roofType->short;
+
+                        $buildingRoofTypesOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+                            $building->roofTypes()->where('roof_type_id', $roofType->id)
+                        )->get();
+                        ?>
 
                         <div class="{{ $roofCat }}-roof">
 
@@ -100,16 +93,15 @@
                             <div class="row">
                             <!-- is the {{ $roofCat }} roof insulated? -->
                                 <div class="col-sm-12 col-md-12">
-
                                     @component('cooperation.tool.components.step-question', ['id' => $roofCat .'_roof_insulation', 'name' => 'building_roof_types.' . $roofCat . '.element_value_id', 'translation' => 'roof-insulation.current-situation.is-'.$roofCat.'-roof-insulated'])
 
-                                        @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $roofInsulation->values, 'userInputValues' => $building->roofTypes()->where('roof_type_id', $roofType->id)->forMe()->get(), 'userInputColumn' => 'element_value_id'])
+                                        @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $roofInsulation->values, 'userInputValues' => $buildingRoofTypesOrderedOnInputSourceCredibility, 'userInputColumn' => 'element_value_id'])
                                             <select id="{{ $roofCat }}_roof_insulation" class="form-control"
                                                     name="building_roof_types[{{ $roofCat }}][element_value_id]">
                                                 @foreach($roofInsulation->values as $insulation)
                                                     @if($insulation->calculate_value < 6)
                                                         <option data-calculate-value="{{$insulation->calculate_value}}"
-                                                                @if($insulation->id == old('building_roof_types.' . $roofCat . '.element_value_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'element_value_id'))) selected="selected"
+                                                                @if($insulation->id == old('building_roof_types.' . $roofCat . '.element_value_id', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'element_value_id'))) selected="selected"
                                                                 @endif value="{{ $insulation->id }}">{{ $insulation->value }}</option>
                                                         {{--<option data-calculate-value="{{$insulation->calculate_value}}" @if($insulation->id == old('building_roof_types.' . $roofCat . '.element_value_id') || (isset($currentCategorizedRoofTypes[$roofCat]['element_value_id']) && $currentCategorizedRoofTypes[$roofCat]['element_value_id'] == $insulation->id)) selected @endif value="{{ $insulation->id }}">{{ $insulation->value }}</option>--}}
                                                     @endif
@@ -131,7 +123,7 @@
                                             <span class="input-group-addon">@lang('general.unit.square-meters.title')</span>
                                             <input type="text" class="form-control" required="required"
                                                    name="building_roof_types[{{ $roofCat }}][roof_surface]"
-                                                   value="{{ old('building_roof_types.' . $roofCat . '.roof_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'roof_surface')) }}">
+                                                   value="{{ old('building_roof_types.' . $roofCat . '.roof_surface', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'roof_surface')) }}">
                                             {{--<input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['roof_surface'] : old('building_roof_types.' . $roofCat . '.roof_surface')}}">--}}
                                         @endcomponent
 
@@ -145,7 +137,9 @@
                                         @component('cooperation.tool.components.input-group',
                                     ['inputType' => 'input', 'userInputValues' => $currentCategorizedRoofTypesForMe[$roofCat], 'userInputColumn' => 'insulation_roof_surface'])
                                             <span class="input-group-addon">@lang('general.unit.square-meters.title')</span>
-                                            <input type="text" required="required" class="form-control" name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]" value="{{ old('building_roof_types.' . $roofCat . '.insulation_roof_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'insulation_roof_surface')) }}">
+                                            <input type="text" required="required" class="form-control"
+                                                   name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]"
+                                                   value="{{ old('building_roof_types.' . $roofCat . '.insulation_roof_surface', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'insulation_roof_surface')) }}">
                                             {{--<input type="text"  class="form-control" name="building_roof_types[{{ $roofCat }}][insulation_roof_surface]" value="{{isset($currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface']) ? $currentCategorizedRoofTypes[$roofCat]['insulation_roof_surface'] : old('building_roof_types.' . $roofCat . '.insulation_roof_surface')}}">--}}
                                         @endcomponent
                                     @endcomponent
@@ -161,7 +155,7 @@
                                             <span class="input-group-addon">@lang('general.unit.year.title')</span>
                                             <input type="text" class="form-control"
                                                    name="building_roof_types[{{ $roofCat }}][extra][zinc_replaced_date]"
-                                                   value="{{ old('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'extra.zinc_replaced_date')) }}">
+                                                   value="{{ old('building_roof_types.' . $roofCat . '.extra.zinc_replaced_date', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'extra.zinc_replaced_date')) }}">
                                         @endcomponent
                                     @endcomponent
 
@@ -176,7 +170,7 @@
                                             <span class="input-group-addon">@lang('general.unit.year.title')</span>
                                             <input type="text" class="form-control"
                                                    name="building_roof_types[{{ $roofCat }}][extra][bitumen_replaced_date]"
-                                                   value="{{ old('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'extra.bitumen_replaced_date')) }}">
+                                                   value="{{ old('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'extra.bitumen_replaced_date')) }}">
                                             {{--<input type="text" class="form-control" name="building_roof_types[{{ $roofCat }}][extra][bitumen_replaced_date]" value="{{ old('building_roof_types.' . $roofCat . '.extra.bitumen_replaced_date', $default) }}">--}}
                                         @endcomponent
 
@@ -196,7 +190,7 @@
                                                 <select id="tiles_condition" class="form-control"
                                                         name="building_roof_types[{{ $roofCat }}][extra][tiles_condition]">
                                                     @foreach($roofTileStatuses as $roofTileStatus)
-                                                        <option @if($roofTileStatus->id == old('building_roof_types.' . $roofCat . '.extra.tiles_condition', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'extra.tiles_condition'))) selected="selected"
+                                                        <option @if($roofTileStatus->id == old('building_roof_types.' . $roofCat . '.extra.tiles_condition', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'extra.tiles_condition'))) selected="selected"
                                                                 @endif value="{{ $roofTileStatus->id }}">{{ $roofTileStatus->name }}</option>
                                                         {{--<option @if($roofTileStatus->id == old('building_roof_types.' . $roofCat . '.extra.tiles_condition', $default)) selected  @endif value="{{ $roofTileStatus->id }}">{{ $roofTileStatus->name }}</option>--}}
                                                     @endforeach
@@ -229,7 +223,7 @@
                                                         {{\App\Helpers\Translation::translate('roof-insulation.measure-application.no.title')}}
                                                     </option>
                                                     @foreach($measureApplications[$roofCat] as $measureApplication)
-                                                        <option @if($measureApplication->id == old('building_roof_types.' . $roofCat . '.extra.measure_application_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'extra.measure_application_id'))) selected="selected"
+                                                        <option @if($measureApplication->id == old('building_roof_types.' . $roofCat . '.extra.measure_application_id', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'extra.measure_application_id'))) selected="selected"
                                                                 @endif value="{{ $measureApplication->id }}">{{ $measureApplication->measure_name }}</option>
                                                         {{--<option @if($measureApplication->id == old('building_roof_types.' . $roofCat . '.extra.measure_application_id', $default)) selected @endif value="{{ $measureApplication->id }}">{{ $measureApplication->measure_name }}</option>--}}
                                                     @endforeach
@@ -248,7 +242,7 @@
                                                         name="building_roof_types[{{ $roofCat }}][building_heating_id]">
                                                     @foreach($heatings as $heating)
                                                         @if($heating->calculate_value < 5)
-                                                            <option @if($heating->id == old('building_roof_types.' . $roofCat . '.building_heating_id', \App\Helpers\Hoomdossier::getMostCredibleValue($building->roofTypes()->where('roof_type_id', $roofType->id), 'building_heating_id'))) selected="selected"
+                                                            <option @if($heating->id == old('building_roof_types.' . $roofCat . '.building_heating_id', Hoomdossier::getMostCredibleValueFromCollection($buildingRoofTypesOrderedOnInputSourceCredibility, 'building_heating_id'))) selected="selected"
                                                                     @endif value="{{ $heating->id }}">{{ $heating->name }}</option>
                                                             {{--<option @if($heating->id == old('building_roof_types.' . $roofCat . '.building_heating_id', $default)) selected @endif value="{{ $heating->id }}">{{ $heating->name }}</option>--}}
                                                         @endif
@@ -480,7 +474,8 @@
         });*/
 
         $('select[name*=element_value_id]').on('change', function () {
-            @if(App::environment('local')) console.log("element_value_id change"); @endif
+            @if(App::environment('local')) console.log("element_value_id change");
+                    @endif
             var interestedCalculateValue = $('#interest_element_{{$roofInsulation->id}} option:selected').data('calculate-value');
             var elementCalculateValue = $(this).find(':selected').data('calculate-value');
 

@@ -91,7 +91,7 @@ class UserReportController extends Controller
 
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'measuresToCheckForCorrespondingPlannedYear',
+            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
             'buildingFeatures', 'measures', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
         ));
@@ -99,9 +99,9 @@ class UserReportController extends Controller
         return $pdf->stream();
 
         return view('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'userCooperation', 'stepSlugs', 'inputSource',
-            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices',
-            'buildingFeatures', 'advices', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings'
+            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource',
+            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
+            'buildingFeatures', 'measures', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
         ));
     }
 }

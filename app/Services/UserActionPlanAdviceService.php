@@ -19,6 +19,22 @@ use Carbon\Carbon;
 class UserActionPlanAdviceService
 {
     /**
+     * Method to delete the user action plan advices for a given user, input source and step.
+     *
+     * @param User $user
+     * @param InputSource $inputSource
+     * @param Step $step
+     * @throws \Exception
+     */
+    public static function clearForStep(User $user, InputSource $inputSource, Step $step)
+    {
+        UserActionPlanAdvice::forMe($user)
+            ->forInputSource($inputSource)
+            ->forStep($step)
+            ->delete();
+    }
+
+    /**
      * Method to retrieve the advice year based on the step or when available measure interest level.
      *
      * @return int|null

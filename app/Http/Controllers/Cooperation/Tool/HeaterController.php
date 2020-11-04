@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\Heater;
 use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Cooperation\Tool\HeaterHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
@@ -49,19 +50,21 @@ class HeaterController extends Controller
 
         $comfortLevels = ComfortLevelTapWater::orderBy('order')->get();
         $collectorOrientations = PvPanelOrientation::orderBy('order')->get();
-        /** @var UserEnergyHabit|null $habits */
-        $habits = $buildingOwner->energyHabit;
-        $userEnergyHabitsForMe = UserEnergyHabit::forMe()->get();
-        $currentComfort = null;
-        if ($habits instanceof UserEnergyHabit) {
-            $currentComfort = $habits->comfortLevelTapWater;
-        }
-        $currentHeater = $building->heater;
-        $currentHeatersForMe = $building->heater()->forMe()->get();
+
+
+        $energyHabitsOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+            $buildingOwner->energyHabit()
+        )->get();
+
+
+        $heatersOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+            $building->heater()
+        )->get();
+
 
         return view('cooperation.tool.heater.index', compact('building', 'buildingOwner',
-            'comfortLevels', 'collectorOrientations', 'typeIds', 'userEnergyHabitsForMe',
-            'currentComfort', 'currentHeater', 'habits', 'currentHeatersForMe'
+            'collectorOrientations', 'typeIds', 'energyHabitsOrderedOnInputSourceCredibility', 'comfortLevels',
+        'heatersOrderedOnInputSourceCredibility'
         ));
     }
 
@@ -84,9 +87,7 @@ class HeaterController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
-        $buildingId = $building->id;
         $inputSource = HoomdossierSession::getInputSource(true);
-        $inputSourceId = $inputSource->id;
 
         $userInterests = $request->input('user_interests');
         UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
@@ -94,30 +95,13 @@ class HeaterController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        // Store the building heater part
-        $buildingHeaters = $request->input('building_heaters', '');
-        $pvPanelOrientation = isset($buildingHeaters['pv_panel_orientation_id']) ? $buildingHeaters['pv_panel_orientation_id'] : '';
-        $angle = isset($buildingHeaters['angle']) ? $buildingHeaters['angle'] : '';
+        $saveData = $request->only('user_interests', 'building_heaters', 'user_energy_habits');
+//        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
+            HeaterHelper::save($building, $inputSource, $saveData);
+//        } else {
+//            HeaterHelper::clear($building, $inputSource);
+//        }
 
-        BuildingHeater::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
-            ],
-            [
-                'pv_panel_orientation_id' => $pvPanelOrientation,
-                'angle' => $angle,
-            ]
-        );
-
-        // Update the habit
-        $habits = $request->input('user_energy_habits', '');
-        $waterComFortId = isset($habits['water_comfort_id']) ? $habits['water_comfort_id'] : '';
-
-        $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->update(['water_comfort_id' => $waterComFortId]);
-
-        // Save progress
-        $this->saveAdvices($request);
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
@@ -129,30 +113,5 @@ class HeaterController extends Controller
         }
 
         return redirect($url);
-    }
-
-    protected function saveAdvices(Request $request)
-    {
-        $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
-
-        /** @var JsonResponse $results */
-        $results = $this->calculate($request);
-        $results = $results->getData(true);
-
-        // Remove old results
-        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
-
-        if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
-            $measureApplication = MeasureApplication::where('short', 'heater-place-replace')->first();
-            if ($measureApplication instanceof MeasureApplication) {
-                $actionPlanAdvice = new UserActionPlanAdvice($results);
-                $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
-                $actionPlanAdvice->user()->associate($user);
-                $actionPlanAdvice->measureApplication()->associate($measureApplication);
-                $actionPlanAdvice->step()->associate($this->step);
-                $actionPlanAdvice->save();
-            }
-        }
     }
 }

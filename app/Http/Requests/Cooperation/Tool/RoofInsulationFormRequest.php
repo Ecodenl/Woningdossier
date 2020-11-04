@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 class RoofInsulationFormRequest extends FormRequest
@@ -56,11 +57,10 @@ class RoofInsulationFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'building_roof_types.id' => 'bail|required|exists:roof_types,id',
+            'building_roof_type_ids' => 'bail|required|exists:roof_types,id',
             'building_roof_types.*.element_value_id' => 'exists:element_values,id',
             'building_roof_types.*.building_heating_id' => 'exists:building_heatings,id',
             'building_roof_types.*.extra.tiles_condition' => 'numeric|exists:roof_tile_statuses,id',
-            'building_roof_types.*.extra.measure_application_id' => 'exists:measure_applications,id',
             'building_roof_types.roof_type_id' => 'exists:roof_types,id',
         ];
     }
@@ -82,7 +82,7 @@ class RoofInsulationFormRequest extends FormRequest
         $max = Carbon::now()->year;
 
         // retrieve the selected roof type ids
-        $roofTypeIds = $this->input('building_roof_types.id', []);
+        $roofTypeIds = $this->input('building_roof_type_ids', []);
 
         $brt = 'building_roof_types';
         // loop through them, and validate it
@@ -90,7 +90,6 @@ class RoofInsulationFormRequest extends FormRequest
             $roofType = RoofType::find($roofTypeId);
 
             $roofTypeCategory = $this->getRoofTypeCategory($roofType);
-
             // when the roof type category exists add validation
             if (! empty($roofTypeCategory)) {
                 $validator->addRules([
@@ -103,6 +102,14 @@ class RoofInsulationFormRequest extends FormRequest
                 if ('flat' === $roofTypeCategory) {
                     $validator->addRules([
                         $brt.'.'.$roofTypeCategory.'.extra.bitumen_replaced_date' => 'nullable|numeric|between:1970,'.$max,
+                    ]);
+                }
+
+                // there is a extra default option that is not a  measure application, "niet".
+                // the value is 0, when thats selected do not validate
+                if ($this->input($brt.'.'.$roofTypeCategory.'.extra.measure_application_id') !== "0") {
+                    $validator->addRules([
+                        $brt.'.'.$roofTypeCategory.'.extra.measure_application_id' => ['required', 'exists:measure_applications,id'],
                     ]);
                 }
             }

@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class MigrateDemandDrivenServiceValueToExtraColumnOnBuildingServicesTable extends Migration
@@ -22,8 +20,6 @@ class MigrateDemandDrivenServiceValueToExtraColumnOnBuildingServicesTable extend
             ->get();
 
         if ($ventilationServiceValues->count() > 0) {
-
-
             $demandDrivenServiceValue = $ventilationServiceValues->where('calculate_value', 5)->first();
             $mechanicalExtractionServiceValue = $ventilationServiceValues->where('calculate_value', 2)->first();
 
@@ -52,6 +48,5 @@ class MigrateDemandDrivenServiceValueToExtraColumnOnBuildingServicesTable extend
      */
     public function down()
     {
-        //
     }
 }

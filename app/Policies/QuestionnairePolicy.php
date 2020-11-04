@@ -25,9 +25,6 @@ class QuestionnairePolicy
     /**
      * Check if the user is permitted to edit the questionnaire.
      *
-     * @param User          $user
-     * @param Questionnaire $questionnaire
-     *
      * @return bool
      */
     public function edit(User $user, Questionnaire $questionnaire)
@@ -42,9 +39,6 @@ class QuestionnairePolicy
     /**
      * Check if the user is permitted to set the active status of a questionnaire.
      *
-     * @param User          $user
-     * @param Questionnaire $questionnaire
-     *
      * @return bool
      */
     public function setActiveStatus(User $user, Questionnaire $questionnaire)
@@ -55,8 +49,6 @@ class QuestionnairePolicy
 
     /**
      * Check if the user is permitted to create a new questionnaire.
-     *
-     * @param User $user
      *
      * @return bool
      */

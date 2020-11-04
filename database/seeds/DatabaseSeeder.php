@@ -105,7 +105,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(StatusesTableSeeder::class);
 
-        if (app()->environment() !== 'testing') {
+        if ('testing' !== app()->environment()) {
             $this->call(SqlDumpSeeder::class);
         }
     }

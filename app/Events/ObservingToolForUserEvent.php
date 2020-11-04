@@ -20,9 +20,6 @@ class ObservingToolForUserEvent
 
     /**
      * create new event instantionnn.
-     *
-     * @param Building $building
-     * @param User     $userThatIsObservingTool
      */
     public function __construct(Building $building, User $userThatIsObservingTool)
     {

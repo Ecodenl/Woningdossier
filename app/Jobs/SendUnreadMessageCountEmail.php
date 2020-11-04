@@ -27,13 +27,6 @@ class SendUnreadMessageCountEmail implements ShouldQueue
     protected $notificationSetting;
     protected $unreadMessageCount;
 
-    /**
-     * @param Cooperation         $cooperation
-     * @param User                $user
-     * @param Building            $building
-     * @param NotificationSetting $notificationSetting
-     * @param int                 $unreadMessageCount
-     */
     public function __construct(Cooperation $cooperation, User $user, Building $building, NotificationSetting $notificationSetting, int $unreadMessageCount)
     {
         $this->notificationSetting = $notificationSetting;

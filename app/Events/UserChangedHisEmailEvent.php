@@ -25,8 +25,6 @@ class UserChangedHisEmailEvent
     /**
      * UserChangedHisEmailEvent constructor.
      *
-     * @param User    $user
-     * @param Account $account
      * @param $oldEmail
      * @param $newEmail
      */

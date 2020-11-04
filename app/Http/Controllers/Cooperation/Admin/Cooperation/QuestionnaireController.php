@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
-use App\Helpers\HoomdossierSession;
-use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\QuestionnaireRequest;
 use App\Models\Cooperation;
@@ -11,10 +9,8 @@ use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\QuestionOption;
 use App\Models\Step;
-use App\Models\Translation;
 use App\Services\QuestionnaireService;
 use Illuminate\Http\Request;
-use Ramsey\Uuid\Uuid;
 
 class QuestionnaireController extends Controller
 {
@@ -34,7 +30,6 @@ class QuestionnaireController extends Controller
 
     public function edit(Cooperation $cooperation, Questionnaire $questionnaire)
     {
-
         $this->authorize('edit', $questionnaire);
 
         $steps = Step::withoutSubSteps()->orderBy('order')->get();
@@ -48,8 +43,6 @@ class QuestionnaireController extends Controller
 
         return view('cooperation.admin.cooperation.questionnaires.create', compact('steps'));
     }
-
-
 
     /**
      * Update the questionnaire and questions
@@ -108,7 +101,6 @@ class QuestionnaireController extends Controller
 
         QuestionnaireService::createQuestionnaire($cooperation, $step, $questionnaireNameTranslations);
 
-
         return redirect()->route('cooperation.admin.cooperation.questionnaires.index');
     }
 
@@ -140,7 +132,6 @@ class QuestionnaireController extends Controller
     /**
      * Delete a question option.
      *
-     * @param Cooperation $cooperation
      * @param $questionId
      * @param $questionOptionId
      *
@@ -172,8 +163,6 @@ class QuestionnaireController extends Controller
      * Check if the translations from the request are empty.
      *
      * @param $translations
-     *
-     * @return bool
      */
     protected function isEmptyTranslation(array $translations): bool
     {
@@ -193,8 +182,6 @@ class QuestionnaireController extends Controller
 
     /**
      * Set the active status from a questionnaire.
-     *
-     * @param Request $request
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      *

@@ -27,5 +27,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CompletedQuestionnaire extends Model
 {
-    use GetMyValuesTrait, GetValueTrait;
+    use GetMyValuesTrait;
+    use GetValueTrait;
 }

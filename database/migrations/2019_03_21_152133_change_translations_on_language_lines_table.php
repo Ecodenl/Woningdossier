@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class ChangeTranslationsOnLanguageLinesTable extends Migration
@@ -13,25 +11,24 @@ class ChangeTranslationsOnLanguageLinesTable extends Migration
      */
     public function up()
     {
-
         // no fancy arrays..
-	    $step = DB::table('steps')->where('slug', 'insulated-glazing')->first();
-	    if ($step instanceof stdClass) {
-		    \App\Models\LanguageLine::where( 'group', 'general' )->where( 'key',
-			    'costs.cost-and-benefits.title' )->update( [
-			    'group' => 'insulated-glazing',
-			    'step_id' => $step->id
-		    ] );
-	    }
+        $step = DB::table('steps')->where('slug', 'insulated-glazing')->first();
+        if ($step instanceof stdClass) {
+            \App\Models\LanguageLine::where('group', 'general')->where('key',
+                'costs.cost-and-benefits.title')->update([
+                'group' => 'insulated-glazing',
+                'step_id' => $step->id,
+            ]);
+        }
 
-	    $step = DB::table('steps')->where('slug', 'insulated-glazing')->first();
-	    if ($step instanceof stdClass) {
-		    \App\Models\LanguageLine::where( 'group', 'general' )->where( 'key',
-			    'costs.cost-and-benefits.help' )->update( [
-			    'group' => 'insulated-glazing',
-			    'step_id' => $step->id
-		    ] );
-	    }
+        $step = DB::table('steps')->where('slug', 'insulated-glazing')->first();
+        if ($step instanceof stdClass) {
+            \App\Models\LanguageLine::where('group', 'general')->where('key',
+                'costs.cost-and-benefits.help')->update([
+                'group' => 'insulated-glazing',
+                'step_id' => $step->id,
+            ]);
+        }
     }
 
     /**
@@ -41,6 +38,5 @@ class ChangeTranslationsOnLanguageLinesTable extends Migration
      */
     public function down()
     {
-        //
     }
 }

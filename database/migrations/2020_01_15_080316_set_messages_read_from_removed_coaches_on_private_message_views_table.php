@@ -4,10 +4,7 @@ use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\PrivateMessage;
-use App\Models\PrivateMessageView;
 use App\Models\User;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class SetMessagesReadFromRemovedCoachesOnPrivateMessageViewsTable extends Migration
@@ -15,7 +12,7 @@ class SetMessagesReadFromRemovedCoachesOnPrivateMessageViewsTable extends Migrat
     use \App\Traits\DebugableMigrationTrait;
 
     /**
-     * Get the building coach statuses where a user is removed from
+     * Get the building coach statuses where a user is removed from.
      */
     public function getRemovedBcsFromUser($user)
     {
@@ -24,16 +21,15 @@ class SetMessagesReadFromRemovedCoachesOnPrivateMessageViewsTable extends Migrat
         $pendingCount = \DB::raw('(
                 SELECT coach_id, building_id, count(`status`) AS count_added
 	            FROM building_coach_statuses
-	            WHERE coach_id = ' . $userId . ' AND `status` = \'' . BuildingCoachStatus::STATUS_ADDED . ' \'
+	            WHERE coach_id = '.$userId.' AND `status` = \''.BuildingCoachStatus::STATUS_ADDED.' \'
 	            group by coach_id, building_id
             )  AS bcs2');
         $removedCount = \DB::raw('(
                 SELECT building_id, coach_id, count(`status`) AS count_removed
 	            FROM building_coach_statuses
-	            WHERE coach_id = ' . $userId . ' AND `status` = \'' . BuildingCoachStatus::STATUS_REMOVED . ' \'
+	            WHERE coach_id = '.$userId.' AND `status` = \''.BuildingCoachStatus::STATUS_REMOVED.' \'
 	            group by coach_id, building_id
             ) AS bcs3');
-
 
         // query to get the buildings a user is connected to
         return \DB::query()->select('bcs2.coach_id', 'bcs2.building_id', 'bcs2.count_added AS count_added',
@@ -51,8 +47,6 @@ class SetMessagesReadFromRemovedCoachesOnPrivateMessageViewsTable extends Migrat
             // accept from the cooperation-building-link
             ->groupBy('building_id', 'coach_id', 'count_removed', 'count_added')
             ->get();
-
-
     }
 
     /**
@@ -69,7 +63,6 @@ class SetMessagesReadFromRemovedCoachesOnPrivateMessageViewsTable extends Migrat
                 $privateMessages = PrivateMessage::where('building_id', $buildingCoachStatus->building_id)->get();
 
                 foreach ($privateMessages as $privateMessage) {
-
                     $unreadMessagesForRemovedCoach = DB::table('private_message_views')
                         ->where('private_message_id', $privateMessage->id)
                         ->where('user_id', $user->id)
@@ -77,14 +70,12 @@ class SetMessagesReadFromRemovedCoachesOnPrivateMessageViewsTable extends Migrat
                         ->where('read_at', null)->count();
 
                     if ($unreadMessagesForRemovedCoach > 0) {
-
-
                         DB::table('private_message_views')->where('private_message_id', $privateMessage->id)
                             ->where('user_id', $user->id)
                             ->where('input_source_id', InputSource::findByShort('coach')->id)
                             ->where('read_at', null)
                             ->update([
-                                'read_at' => \Carbon\Carbon::now()
+                                'read_at' => \Carbon\Carbon::now(),
                             ]);
                         $this->line("coach_id: {$user->id}");
                         $this->line("private_message_id: {$privateMessage->id}");

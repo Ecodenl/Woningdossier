@@ -8,11 +8,11 @@ return [
             'label' => 'Standaard waarde',
             'options' => [
                 0 => 'Nee',
-                1 => 'Ja'
-            ]
+                1 => 'Ja',
+            ],
         ],
         'contents' => [
-            'title' => 'Bouw jaren'
+            'title' => 'Bouw jaren',
         ],
     ],
     'index' => [
@@ -26,18 +26,18 @@ return [
         ],
     ],
     'edit' => [
-        'title' => 'Aan het bewerken: :name'
+        'title' => 'Aan het bewerken: :name',
     ],
     'form' => [
         'build-year' => 'Bouwjaar',
         'field-name' => 'Veldnaam',
         'field-value' => 'Waarde',
-        'update' => 'Opslaan'
+        'update' => 'Opslaan',
     ],
     'store' => [
-        'success' => 'Voorbeeld woning toegevoegd'
+        'success' => 'Voorbeeld woning toegevoegd',
     ],
     'update' => [
-        'success' => 'Voorbeeld woning bijgewerkt'
-    ]
+        'success' => 'Voorbeeld woning bijgewerkt',
+    ],
 ];

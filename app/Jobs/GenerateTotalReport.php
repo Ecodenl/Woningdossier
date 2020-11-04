@@ -27,12 +27,6 @@ class GenerateTotalReport implements ShouldQueue
     protected $fileType;
     protected $fileStorage;
 
-    /**
-     * @param Cooperation $cooperation
-     * @param FileStorage $fileStorage
-     * @param FileType    $fileType
-     * @param bool        $anonymizeData
-     */
     public function __construct(Cooperation $cooperation, FileType $fileType, FileStorage $fileStorage, bool $anonymizeData = false)
     {
         $this->fileType = $fileType;

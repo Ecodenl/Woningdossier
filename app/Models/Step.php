@@ -36,14 +36,16 @@ class Step extends Model
 {
     protected $fillable = ['slug', 'name', 'order'];
 
-    use TranslatableTrait, HasShortTrait;
+    use TranslatableTrait;
+    use HasShortTrait;
 
     public function getRouteKeyName()
     {
         return 'slug';
     }
+
     /**
-     * Return the children or so called "sub steps" of a step
+     * Return the children or so called "sub steps" of a step.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -53,7 +55,7 @@ class Step extends Model
     }
 
     /**
-     * Return the parent of the step
+     * Return the parent of the step.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -63,7 +65,7 @@ class Step extends Model
     }
 
     /**
-     * Check whether a step has substeps
+     * Check whether a step has substeps.
      *
      * @return bool
      */
@@ -75,7 +77,6 @@ class Step extends Model
     /**
      * Method to scope the active steps in a ordered order.
      *
-     * @param Builder $query
      * @return Builder
      */
     public function scopeActiveOrderedSteps(Builder $query)
@@ -96,9 +97,8 @@ class Step extends Model
     }
 
     /**
-     * Method to leave out the sub steps
+     * Method to leave out the sub steps.
      *
-     * @param Builder $query
      * @return Builder
      */
     public function scopeWithoutSubSteps(Builder $query)
@@ -107,14 +107,12 @@ class Step extends Model
     }
 
     /**
-     * Check whether a step is a sub step
-     *
-     * @return bool
+     * Check whether a step is a sub step.
      */
     public function isSubStep(): bool
     {
         // when the parent id is null, its a parent else its a sub step / child.
-        return !is_null($this->parent_id);
+        return ! is_null($this->parent_id);
     }
 
     public function questionnaires()

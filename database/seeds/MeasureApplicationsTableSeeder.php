@@ -358,7 +358,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'application' => 'place',
                 'costs' => 0,
                 'cost_unit' => [
-                    'nl' => 'per stuk'
+                    'nl' => 'per stuk',
                 ],
                 'minimal_costs' => 0,
                 'maintenance_interval' => 0,
@@ -376,7 +376,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'application' => 'place',
                 'costs' => 0,
                 'cost_unit' => [
-                    'nl' => 'per stuk'
+                    'nl' => 'per stuk',
                 ],
                 'minimal_costs' => 0,
                 'maintenance_interval' => 0,
@@ -394,7 +394,7 @@ class MeasureApplicationsTableSeeder extends Seeder
                 'application' => 'place',
                 'costs' => 0,
                 'cost_unit' => [
-                    'nl' => 'per stuk'
+                    'nl' => 'per stuk',
                 ],
                 'minimal_costs' => 0,
                 'maintenance_interval' => 0,

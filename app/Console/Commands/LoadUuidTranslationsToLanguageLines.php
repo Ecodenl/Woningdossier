@@ -53,8 +53,6 @@ class LoadUuidTranslationsToLanguageLines extends Command
     /**
      * If a given questions array contains a title key, it has sub questions.
      *
-     * @param array $questions
-     *
      * @return bool
      */
     public function hasSubQuestions(array $questions)

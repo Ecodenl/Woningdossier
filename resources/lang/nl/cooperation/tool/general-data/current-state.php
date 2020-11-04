@@ -17,7 +17,7 @@ return [
         ],
         'installed-power' => [
             'title' => 'Geinstalleerd vermogen (totaal)',
-            'help' => 'Geinstalleerd vermogen (totaal)'
+            'help' => 'Geinstalleerd vermogen (totaal)',
         ],
 
         'building-heating-applications' => [
@@ -27,22 +27,22 @@ return [
         'service' => [
             'heat-pump' => [
                 'title' => 'Warmtepomp',
-                'help' => 'Hier kunt u aangeven of u in de huidige situatie in plaats van een cv-ketel een warmtepomp als enige warmteopwekker in huis hebt. U hebt de keuze uit een warmtepomp met buitenlucht of bodemenergie als warmtebron.'
+                'help' => 'Hier kunt u aangeven of u in de huidige situatie in plaats van een cv-ketel een warmtepomp als enige warmteopwekker in huis hebt. U hebt de keuze uit een warmtepomp met buitenlucht of bodemenergie als warmtebron.',
             ],
 
             'sun-boiler' => [
                 'title' => 'Zonneboiler',
-                'help' => 'Hier kunt u aangeven of u in de huidige situatie een zonneboiler hebt en waarvoor u de warmte gebruikt.'
+                'help' => 'Hier kunt u aangeven of u in de huidige situatie een zonneboiler hebt en waarvoor u de warmte gebruikt.',
             ],
 
             'hr-boiler' => [
                 'title' => 'HR CV ketel',
-                'help' => 'Hier kunt u aangeven of er in de huidige situatie een cv ketel aanwezig is en hoe oud deze ongeveer is.'
+                'help' => 'Hier kunt u aangeven of er in de huidige situatie een cv ketel aanwezig is en hoe oud deze ongeveer is.',
             ],
 
             'boiler' => [
                 'title' => 'Type ketel',
-                'help' => 'Hier kunt u aangeven welk type ketel u heeft. Als u het niet weet kies dan HR107 ketel.'
+                'help' => 'Hier kunt u aangeven welk type ketel u heeft. Als u het niet weet kies dan HR107 ketel.',
             ],
             'total-sun-panels' => [
                 'title' => 'Hoeveel zonnepanelen zijn er aanwezig',
@@ -65,16 +65,15 @@ return [
                     'help' => 'helptext Met warmte terugwinning',
                 ],
             ],
-
         ],
         'element' => [
             'living-rooms-windows' => [
                 'title' => 'Ramen in de leefruimtes',
-                'help' => '<p>Als er meerdere soorten glas voorkomen, kies dan hier de soort met de grootste oppervlakte.</p><p><strong><span style="font-family: helvetica, arial, sans-serif;">Herkennen van de glassoort:</span></strong></p><p><span style="font-family: helvetica, arial, sans-serif;">In veel gevallen staat er in de spouw van dubbel glas een code geprint waar ook de glastype wordt genoemd, bijvoorbeeld HR of HR++. Soms staat er alleen een code in de spouw, is dit het geval dan kunt u aan de hand van de code bij de glasfabrikant navraag doen. De fabrikant kan u precies vertellen welk type glas er is geleverd.</span></p>'
+                'help' => '<p>Als er meerdere soorten glas voorkomen, kies dan hier de soort met de grootste oppervlakte.</p><p><strong><span style="font-family: helvetica, arial, sans-serif;">Herkennen van de glassoort:</span></strong></p><p><span style="font-family: helvetica, arial, sans-serif;">In veel gevallen staat er in de spouw van dubbel glas een code geprint waar ook de glastype wordt genoemd, bijvoorbeeld HR of HR++. Soms staat er alleen een code in de spouw, is dit het geval dan kunt u aan de hand van de code bij de glasfabrikant navraag doen. De fabrikant kan u precies vertellen welk type glas er is geleverd.</span></p>',
             ],
             'sleeping-rooms-windows' => [
                 'title' => 'Ramen in de slaapruimtes',
-                'help' => '<p>Als er meerdere soorten glas voorkomen, kies dan hier de soort met de grootste oppervlakte.</p><p><strong><span style="font-family: helvetica, arial, sans-serif;">Herkennen van de glassoort:</span></strong></p><p><span style="font-family: helvetica, arial, sans-serif;">In veel gevallen staat er in de spouw van dubbel glas een code geprint waar ook de glastype wordt genoemd, bijvoorbeeld HR of HR++. Soms staat er alleen een code in de spouw, is dit het geval dan kunt u aan de hand van de code bij de glasfabrikant navraag doen. De fabrikant kan u precies vertellen welk type glas er is geleverd.</span></p>'
+                'help' => '<p>Als er meerdere soorten glas voorkomen, kies dan hier de soort met de grootste oppervlakte.</p><p><strong><span style="font-family: helvetica, arial, sans-serif;">Herkennen van de glassoort:</span></strong></p><p><span style="font-family: helvetica, arial, sans-serif;">In veel gevallen staat er in de spouw van dubbel glas een code geprint waar ook de glastype wordt genoemd, bijvoorbeeld HR of HR++. Soms staat er alleen een code in de spouw, is dit het geval dan kunt u aan de hand van de code bij de glasfabrikant navraag doen. De fabrikant kan u precies vertellen welk type glas er is geleverd.</span></p>',
             ],
             'wall-insulation' => [
                 'title' => 'Gevelisolatie',
@@ -84,7 +83,7 @@ return [
 <p><strong>Matige isolatie</strong> = gevels met een Rc-waarde van minder dan 2,58 m<sup>2 </sup>K/W</p>
 <p><strong>Goede isolatie</strong> = gevels met een Rc-waarde tussen 2,58 m<sup>2 </sup>K/W en 3,99 m<sup>2 </sup>K/W</p>
 <p><strong>Zeer goede isolatie</strong> = gevels met een Rc-waarde van 4,00 m<sup>2 </sup>K/W of hoger</p>
-<p>Als er meerdere gevels met verschillende isolatiediktes aanwezig zijn, kies dan voor de isolatiedikte die het meeste voorkomt of maak er een gemiddelde van.</p>'
+<p>Als er meerdere gevels met verschillende isolatiediktes aanwezig zijn, kies dan voor de isolatiedikte die het meeste voorkomt of maak er een gemiddelde van.</p>',
             ],
             'floor-insulation' => [
                 'title' => 'Vloerisolatie',
@@ -94,7 +93,7 @@ return [
 <p><strong>Matige isolatie</strong> = vloeren met een Rc-waarde van minder dan 2,37 m<sup>2 </sup>K/W</p>
 <p><strong>Goede isolatie</strong> = vloeren met een Rc-waarde tussen 2,37 m<sup>2 </sup>K/W en 3,49 m<sup>2 </sup>K/W</p>
 <p><strong>Zeer goede isolatie</strong> = vloeren met een Rc-waarde van 3,50 m<sup>2 </sup>K/W of hoger</p>
-<p>Als er meerdere vloeren met verschillende isolatiediktes aanwezig zijn, kies dan voor de isolatiedikte die het meeste voorkomt of maak er een gemiddelde van.</p>'
+<p>Als er meerdere vloeren met verschillende isolatiediktes aanwezig zijn, kies dan voor de isolatiedikte die het meeste voorkomt of maak er een gemiddelde van.</p>',
             ],
             'roof-insulation' => [
                 'title' => 'Dakisolatie',
@@ -104,11 +103,11 @@ return [
 <p><strong>Matige isolatie</strong> = daken met een Rc-waarde van minder dan 2,44 m<sup>2 </sup>K/W</p>
 <p><strong>Goede isolatie</strong> = daken met een Rc-waarde tussen 2,44 m<sup>2 </sup>K/W en 3,99 m<sup>2 </sup>K/W</p>
 <p><strong>Zeer goede isolatie</strong> = daken met een Rc-waarde van 4,00 m<sup>2 </sup>K/W of hoger</p>
-<p>Als er meerdere daken met verschillende isolatiediktes aanwezig zijn, kies dan voor de isolatiedikte die het meeste voorkomt of maak er een gemiddelde van.</p>'
+<p>Als er meerdere daken met verschillende isolatiediktes aanwezig zijn, kies dan voor de isolatiedikte die het meeste voorkomt of maak er een gemiddelde van.</p>',
             ],
             'crack-sealing' => [
                 'title' => 'Zijn de ramen en deuren voorzien van kierdichting?',
-                'help' => 'Kierdichting'
+                'help' => 'Kierdichting',
             ],
         ],
     ],

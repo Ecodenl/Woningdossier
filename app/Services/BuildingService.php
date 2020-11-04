@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Models\Building;
 
-class BuildingService {
-
+class BuildingService
+{
     public static function deleteBuilding(Building $building)
     {
         $building->completedSteps()->withoutGlobalScopes()->delete();
@@ -13,7 +13,7 @@ class BuildingService {
         $building->privateMessages()->withoutGlobalScopes()->delete();
 
         $building->stepComments()->withoutGlobalScopes()->delete();
-        
+
         // table will be removed anyways.
         \DB::table('building_appliances')->whereBuildingId($building->id)->delete();
 

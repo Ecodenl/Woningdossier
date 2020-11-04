@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     'index' => [
         'intro' => [
             'natuurlijke-ventilatie' => 'U heeft aangegeven dat er in de woning natuurlijke ventilatie aanwezig is. In een huis met natuurlijke ventilatie zit geen mechanisch ventilatiesysteem, dat betekent dat er alleen via natuurlijke weg geventileerd kan worden door ventilatieroosters en bijvoorbeeld ramen of deuren open te zetten. Meestal is er bij oude huizen sprake van een bepaalde basisventilatie door naden, kieren. Het verbeteren van de kierdichtheid vermindert de natuurlijke ventilatie in huis. Bewust of vraag gestuurd ventileren wordt dan de beste weg om zo zuinig mogelijk een gezonde leefomgeving te houden.',
@@ -17,19 +16,19 @@ return [
             'co2' => [
                 'title' => 'CO2 Besparing',
                 'help' => '<p>Gerekend wordt met 1,88 kg/m3 gas (bron: Milieucentraal)</p>',
-            ]
+            ],
         ],
         'savings-in-euro' => [
             'title' => 'Besparing in €',
-            'help' => 'Indicatieve besparing in € per jaar. De gebruikte energietarieven voor gas en elektra worden jaarlijks aan de marktomstandigheden aangepast.'
+            'help' => 'Indicatieve besparing in € per jaar. De gebruikte energietarieven voor gas en elektra worden jaarlijks aan de marktomstandigheden aangepast.',
         ],
         'comparable-rent' => [
             'title' => 'Vergelijkbare rente',
-            'help' => '<p>Meer informatie over de vergelijkbare rente kunt u vinden bij Milieucentraal: <a title="Link Milieucentraal" href="https://www.milieucentraal.nl/energie-besparen/energiezuinig-huis/financiering-energie-besparen/rendement-energiebesparing/" target="_blank" rel="noopener">https://www.milieucentraal.nl/energie-besparen/energiezuinig-huis/financiering-energie-besparen/rendement-energiebesparing/</a></p>'
+            'help' => '<p>Meer informatie over de vergelijkbare rente kunt u vinden bij Milieucentraal: <a title="Link Milieucentraal" href="https://www.milieucentraal.nl/energie-besparen/energiezuinig-huis/financiering-energie-besparen/rendement-energiebesparing/" target="_blank" rel="noopener">https://www.milieucentraal.nl/energie-besparen/energiezuinig-huis/financiering-energie-besparen/rendement-energiebesparing/</a></p>',
         ],
         'indicative-costs' => [
             'title' => 'Indicatieve kosten',
-            'help' => 'Hier kunt u zien wat de indicatieve kosten voor deze maatregel zijn.'
+            'help' => 'Hier kunt u zien wat de indicatieve kosten voor deze maatregel zijn.',
         ],
 
         'how'              => [
@@ -51,14 +50,14 @@ return [
 
         'specific-situation' => [
             'title' => 'Toelichting op de specifieke situatie',
-            'help' => 'Hier kunt u opmerkingen over uw specifieke situatie vastleggen, bijvoorbeeld voor een gesprek met een energiecoach of een uitvoerend bedrijf.'
+            'help' => 'Hier kunt u opmerkingen over uw specifieke situatie vastleggen, bijvoorbeeld voor een gesprek met een energiecoach of een uitvoerend bedrijf.',
         ],
 
         'living-situation-warnings' => [
             'dry-laundry' => 'Ventileer extra als de was te drogen hangt, door indien aanwezig de ventilator op de hoogste stand te zetten of een raam open te doen. Hang de was zoveel mogelijk buiten te drogen.',
             'fireplace' => 'Zorg voor extra ventilatie tijdens het stoken van open haard of houtkachel, zowel voor de aanvoer van zuurstof als de afvoer van schadelijke stoffen. Zet bijvoorbeeld een (klep)raam open.',
             'combustion-device' => 'Zorg bij een open verbrandingstoestel in ieder geval dat er altijd voldoende luchttoevoer is. Anders kan onvolledige verbranding optreden waarbij het gevaarlijke koolmonoxide kan ontstaan.',
-            'moisture' => 'Wanneer u last heeft van schimmel of vocht in huis dan wordt geadviseerd om dit door een specialist te laten beoordelen.'
+            'moisture' => 'Wanneer u last heeft van schimmel of vocht in huis dan wordt geadviseerd om dit door een specialist te laten beoordelen.',
         ],
 
         'usage-warnings' => [

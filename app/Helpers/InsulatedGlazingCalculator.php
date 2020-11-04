@@ -44,9 +44,6 @@ class InsulatedGlazingCalculator
      * be done later (via the calculateNetGasSavings).
      *
      * @param $m2
-     * @param MeasureApplication     $measureApplication
-     * @param BuildingHeating        $heating
-     * @param InsulatingGlazing|null $glazing
      *
      * @return float|int
      */

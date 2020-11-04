@@ -13,9 +13,7 @@ class ToolSettingService
     /**
      * Set the changed status.
      *
-     * @param int  $buildingId
-     * @param int  $changedInputSourceId | The input source id that changed something
-     * @param bool $hasChanged
+     * @param int $changedInputSourceId | The input source id that changed something
      */
     public static function setChanged(
         int $buildingId,
@@ -60,8 +58,6 @@ class ToolSettingService
 
     /**
      * Clear all changed notifications for a building.
-     *
-     * @param Building $building
      */
     public static function clearChanged(Building $building)
     {

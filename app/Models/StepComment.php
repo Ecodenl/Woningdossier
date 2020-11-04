@@ -8,14 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class StepComment extends Model
 {
-    use GetValueTrait, GetMyValuesTrait;
+    use GetValueTrait;
+    use GetMyValuesTrait;
 
     protected $fillable = [
-        'comment', 'input_source_id', 'building_id', 'short', 'step_id'
+        'comment', 'input_source_id', 'building_id', 'short', 'step_id',
     ];
 
     /**
-     * Return the step of a comment
+     * Return the step of a comment.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

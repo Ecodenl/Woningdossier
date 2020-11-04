@@ -43,16 +43,15 @@ class ExportCustomQuestionnaireToCsv extends Command
      */
     public function handle()
     {
-
         $questionnaire = Questionnaire::find(
             $this->argument('questionnaireId')
         );
 
         if ($questionnaire instanceof Questionnaire) {
-            $debugTxt = "with address info";
+            $debugTxt = 'with address info';
             $isAnonymized = 'met-adresgegevens';
-            if ($this->argument('anonymize') == true) {
-                $debugTxt = "without address info";
+            if (true == $this->argument('anonymize')) {
+                $debugTxt = 'without address info';
                 $isAnonymized = 'zonder-adresgegevens';
             }
             $this->alert("Starting export {$questionnaire->name} {$debugTxt}");

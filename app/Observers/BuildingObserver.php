@@ -7,7 +7,6 @@ use App\Scopes\GetValueScope;
 
 class BuildingObserver
 {
-
     public function saved(Building $building)
     {
         \App\Helpers\Cache\Building::wipe($building->id);
@@ -15,15 +14,13 @@ class BuildingObserver
 
     /**
      * Deleting event.
-     *
-     * @param  Building  $building
      */
     public function deleting(Building $building)
     {
-        $building->user_id             = null;
-        $building->country_code        = 'nl';
+        $building->user_id = null;
+        $building->country_code = 'nl';
         $building->example_building_id = null;
-        $building->primary             = false;
+        $building->primary = false;
         $building->save();
 
         // delete the privatemessages from the building

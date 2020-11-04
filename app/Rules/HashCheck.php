@@ -17,8 +17,6 @@ class HashCheck implements Rule
     /**
      * Create a new rule instance.
      *
-     * @param string $hashToCheck
-     *
      * @return void
      */
     public function __construct(string $hashToCheck)

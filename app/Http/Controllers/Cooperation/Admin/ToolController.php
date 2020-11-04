@@ -15,7 +15,6 @@ class ToolController extends Controller
     /**
      * Set the sessions and after that redirect them to the tool.
      *
-     * @param Cooperation $cooperation
      * @param $buildingId
      *
      * @return \Illuminate\Http\RedirectResponse
@@ -25,6 +24,8 @@ class ToolController extends Controller
         // The building the coach wants to edit
         $building = Building::find($buildingId)->load('user');
 
+        $this->authorize('access-building', $building);
+
         FillingToolForUserEvent::dispatch($building, Hoomdossier::user());
 
         return redirect()->route('cooperation.tool.index');
@@ -33,7 +34,6 @@ class ToolController extends Controller
     /**
      * Sessions that need to be set so we can let a user observe a building / tool.
      *
-     * @param Cooperation $cooperation
      * @param $buildingId
      *
      * @return \Illuminate\Http\RedirectResponse
@@ -42,6 +42,8 @@ class ToolController extends Controller
     {
         // The building the user wants to observe
         $building = Building::find($buildingId)->load('user');
+
+        $this->authorize('access-building', $building);
 
         ObservingToolForUserEvent::dispatch($building, Hoomdossier::user());
 

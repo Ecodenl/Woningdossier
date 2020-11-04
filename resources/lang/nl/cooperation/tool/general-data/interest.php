@@ -4,51 +4,51 @@ return [
     'index' => [
         'comment' => [
             'title' => 'Toelichting op interesse en motivatie',
-            'help' => 'Geef toelichting op interesse en motivatie'
+            'help' => 'Geef toelichting op interesse en motivatie',
         ],
         'steps' => [
             'ventilation' => [
                 'title' => 'Ventilatie',
-                'help' => ''
+                'help' => '',
             ],
             'wall-insulation' => [
                 'title' => 'Gevelisolatie',
-                'help' => ''
+                'help' => '',
             ],
             'insulated-glazing' => [
                 'title' => 'Isolerende beglazing',
-                'help' => ''
+                'help' => '',
             ],
             'floor-insulation' => [
                 'title' => 'Vloerisolatie',
-                'help' => ''
+                'help' => '',
             ],
             'roof-insulation' => [
                 'title' => 'Dakisolatie',
-                'help' => ''
+                'help' => '',
             ],
             'high-efficiency-boiler' => [
                 'title' => 'HR CV-Ketel',
-                'help' => ''
+                'help' => '',
             ],
             'heat-pump' => [
                 'title' => 'Warmtepomp',
-                'help' => ''
+                'help' => '',
             ],
             'solar-panels' => [
                 'title' => 'Zonnepanelen',
-                'help' => ''
+                'help' => '',
             ],
             'heater' => [
                 'title' => 'Zonneboiler',
-                'help' => ''
+                'help' => '',
             ],
         ],
 
         'motivation' => [
             'title' => [
                 'title' => 'Motivatie',
-                'help' => 'Wat is de motivatie om aan de slag te gaan?'
+                'help' => 'Wat is de motivatie om aan de slag te gaan?',
             ],
 
             'renovation-plans' => [
@@ -65,6 +65,6 @@ return [
                 'title' => 'Zijn er klachten en/of problemen met uw woning',
                 'help' => 'Zijn er klachten en/of problemen met uw woning',
             ],
-        ]
+        ],
     ],
 ];

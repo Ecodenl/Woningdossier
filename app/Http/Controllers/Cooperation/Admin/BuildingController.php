@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
-use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Cooperation\Admin\BuildingFormRequest;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
@@ -18,7 +18,6 @@ class BuildingController extends Controller
     /**
      * Handles the data for the show user for a coach, coordinator and cooperation-admin.
      *
-     * @param Cooperation $cooperation
      * @param $buildingId
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
@@ -44,9 +43,9 @@ class BuildingController extends Controller
         $buildingId = $building->id;
 
         $roles = Role::where('name', '!=', 'superuser')
-                     ->where('name', '!=', 'super-admin')
-                     ->where('name', '!=', 'cooperation-admin')
-                     ->get();
+            ->where('name', '!=', 'super-admin')
+            ->where('name', '!=', 'cooperation-admin')
+            ->get();
 
         $coaches = $cooperation->getCoaches()->get();
 
@@ -70,5 +69,28 @@ class BuildingController extends Controller
                 'publicMessages', 'buildingNotes', 'statuses', 'logs'
             )
         );
+    }
+
+    public function edit(Cooperation $cooperation, Building $building)
+    {
+        $user = $building->user()->with('account')->first();
+        $account = $user->account;
+
+        return view('cooperation.admin.buildings.edit', compact('building', 'user', 'account'));
+    }
+
+    public function update(BuildingFormRequest $request, Cooperation $cooperation, Building $building)
+    {
+        $validatedData = $request->validated();
+
+        // cant be null in the table.
+        $validatedData['buildings']['extension'] = $validatedData['buildings']['extension'] ?? '';
+        $validatedData['users']['phone_number'] = $validatedData['users']['phone_number'] ?? '';
+
+        $building->update($validatedData['buildings']);
+        $building->user->update($validatedData['users']);
+        $building->user->account->update($validatedData['accounts']);
+
+        return redirect()->route('cooperation.admin.buildings.edit', compact('building'))->with('success', __('cooperation/admin/buildings.update.success'));
     }
 }

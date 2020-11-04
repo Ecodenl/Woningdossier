@@ -12,7 +12,9 @@ use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\User;
 use App\Models\UserEnergyHabit;
+use App\Services\DumpService;
 use Carbon\Carbon;
 
 class WallInsulation
@@ -20,17 +22,16 @@ class WallInsulation
     /**
      * Calculate the wall insulation costs and savings etc.
      *
-     * @param Building             $building
      * @param UserEnergyHabit|null $energyHabit
-     * @param array                $calculateData
      *
      * @return array;
      */
     public static function calculate(Building $building, InputSource $inputSource, $energyHabit, array $calculateData): array
     {
-        $cavityWall = $calculateData['cavity_wall'] ?? -1;
+        $buildingFeatureData = $calculateData['building_features'];
+        $cavityWall = $buildingFeatureData['cavity_wall'] ?? -1;
         $elements = $calculateData['element'] ?? [];
-        $facadeSurface = $calculateData['insulation_wall_surface'] ?? 0;
+        $facadeSurface = $buildingFeatureData['insulation_wall_surface'] ?? 0;
 
         $result = [
             'savings_gas' => 0,
@@ -70,7 +71,7 @@ class WallInsulation
 
         $measureApplication = MeasureApplication::where('short', '=', 'repair-joint')->first();
         //$measureApplication = MeasureApplication::translated('measure_name', 'Reparatie voegwerk', 'nl')->first(['measure_applications.*']);
-        $surfaceId = $calculateData['wall_joints'] ?? 1;
+        $surfaceId = $buildingFeatureData['wall_joints'] ?? 1;
         $wallJointsSurface = FacadeSurface::find($surfaceId);
         $number = 0;
         $year = null;
@@ -83,7 +84,7 @@ class WallInsulation
 
         $measureApplication = MeasureApplication::where('short', '=', 'clean-brickwork')->first();
         //$measureApplication = MeasureApplication::translated('measure_name', 'Reinigen metselwerk', 'nl')->first(['measure_applications.*']);
-        $surfaceId = $calculateData['contaminated_wall_joints'] ?? 1;
+        $surfaceId = $buildingFeatureData['contaminated_wall_joints'] ?? 1;
         $wallJointsSurface = FacadeSurface::find($surfaceId);
         $number = 0;
         $year = null;
@@ -96,7 +97,7 @@ class WallInsulation
 
         $measureApplication = MeasureApplication::where('short', '=', 'impregnate-wall')->first();
         //$measureApplication = MeasureApplication::translated('measure_name', 'Impregneren gevel', 'nl')->first(['measure_applications.*']);
-        $surfaceId = $calculateData['contaminated_wall_joints'] ?? 1;
+        $surfaceId = $buildingFeatureData['contaminated_wall_joints'] ?? 1;
         $wallJointsSurface = FacadeSurface::find($surfaceId);
         $number = 0;
         $year = null;
@@ -108,14 +109,14 @@ class WallInsulation
         $result['impregnate_wall'] = compact('costs', 'year');
 
         // Note: these answer options are hardcoded in template
-        $isPlastered = 2 != (int) ($calculateData['facade_plastered_painted'] ?? 2);
+        $isPlastered = 2 != (int) ($buildingFeatureData['facade_plastered_painted'] ?? 2);
 
         if ($isPlastered) {
             $measureApplication = MeasureApplication::where('short', '=', 'paint-wall')->first();
             //$measureApplication = MeasureApplication::translated('measure_name', 'Gevelschilderwerk op stuk- of metselwerk', 'nl')->first(['measure_applications.*']);
-            $surfaceId = $calculateData['facade_plastered_surface_id'];
+            $surfaceId = $buildingFeatureData['facade_plastered_surface_id'];
             $facadePlasteredSurface = FacadePlasteredSurface::find($surfaceId);
-            $damageId = $calculateData['facade_damaged_paintwork_id'];
+            $damageId = $buildingFeatureData['facade_damaged_paintwork_id'];
             $facadeDamagedPaintwork = FacadeDamagedPaintwork::find($damageId);
             $number = 0;
             $year = null;
@@ -129,7 +130,6 @@ class WallInsulation
                 $year, false);
             $result['paint_wall'] = compact('costs', 'year');
         }
-
 
         return $result;
     }

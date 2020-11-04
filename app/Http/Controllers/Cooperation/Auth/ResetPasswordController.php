@@ -50,8 +50,6 @@ class ResetPasswordController extends Controller
     /**
      * Reset the given user's password.
      *
-     * @param \Illuminate\Http\Request $request
-     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function update(Request $request)
@@ -131,8 +129,6 @@ class ResetPasswordController extends Controller
     /**
      * Display the password reset view for the given token.
      *
-     * @param Request     $request
-     * @param Cooperation $cooperation
      * @param $token
      * @param $email
      *
@@ -151,7 +147,6 @@ class ResetPasswordController extends Controller
     /**
      * Method to display the reset form.
      *
-     * @param Request $request
      * @param $token
      * @param $email
      *

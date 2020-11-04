@@ -36,7 +36,6 @@ class FileTypeCategory extends Model
     /**
      * Scope on the short column.
      *
-     * @param Builder $query
      * @param $short
      *
      * @return Builder
@@ -48,8 +47,6 @@ class FileTypeCategory extends Model
 
     /**
      * Return the hasMany relationship on the filetypes.
-     *
-     * @return HasMany
      */
     public function fileTypes(): HasMany
     {

@@ -9,6 +9,7 @@ use App\Models\Cooperation;
 use App\Models\Role;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Spatie\Permission\Exceptions\UnauthorizedException as SpatieUnauthorizedException;
@@ -36,8 +37,7 @@ class Handler extends ExceptionHandler
     /**
      * Convert an authentication exception into an unauthenticated response.
      *
-     * @param \Illuminate\Http\Request                 $request
-     * @param \Illuminate\Auth\AuthenticationException $exception
+     * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      */
@@ -68,8 +68,6 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param \Exception $exception
-     *
      * @return void
      */
     public function report(Exception $exception)
@@ -85,7 +83,6 @@ class Handler extends ExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param \Illuminate\Http\Request $request
-     * @param Exception                $exception
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Symfony\Component\HttpFoundation\Response
      */
@@ -120,6 +117,14 @@ class Handler extends ExceptionHandler
         // The user is not authorized at all.
         if ($exception instanceof UnauthorizedException) {
             return redirect()->route('cooperation.home');
+        }
+
+        if ($exception instanceof ModelNotFoundException) {
+            // vrijstadenergie is an old cooperation, the users are migrated to hnwr / rivierenland.
+            // so redirect them.
+            if (in_array($request->route('cooperation'), ['vrijstadenergie', 'hnwr'])) {
+                return redirect()->route('cooperation.welcome', ['cooperation' => 'energieloketrivierenland']);
+            }
         }
 
         return parent::render($request, $exception);

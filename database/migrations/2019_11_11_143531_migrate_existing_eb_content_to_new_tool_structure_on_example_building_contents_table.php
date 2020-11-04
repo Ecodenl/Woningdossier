@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable extends Migration
@@ -23,13 +21,12 @@ class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable e
      */
     public function up()
     {
-
         $exampleBuildingContents = \DB::table('example_building_contents')->get();
 
         $boiler = \DB::table('services')->where('short', 'boiler')->first();
         $elementsThatBelongOnCurrentStatePage = \DB::table('elements')->whereIn('short', [
             'sleeping-rooms-windows', 'living-rooms-windows', 'crack-sealing',
-            'wall-insulation', 'floor-insulation', 'roof-insulation'
+            'wall-insulation', 'floor-insulation', 'roof-insulation',
         ])->get()->pluck('id')->toArray();
 
         foreach ($exampleBuildingContents as $exampleBuildingContent) {
@@ -40,7 +37,7 @@ class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable e
 
             // handle the elements and services.
             foreach ($content as $stepSlug => $stepData) {
-                if ($stepSlug == "general-data") {
+                if ('general-data' == $stepSlug) {
                     $generalDataElementData = $content['general-data']['element'] ?? [];
                     $generalDataServiceData = $content['general-data']['service'] ?? [];
                 } else {
@@ -63,8 +60,7 @@ class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable e
                         unset($content[$stepSlug]['element']);
                     }
                     if (array_key_exists('service', $stepData)) {
-                        if ($stepSlug == 'high-efficiency-boiler') {
-
+                        if ('high-efficiency-boiler' == $stepSlug) {
                             // can be a deeper array or the year itself.
                             $boilerExtra = $stepData['service'][$boiler->id]['extra'];
 
@@ -76,12 +72,10 @@ class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable e
                                 unset($content[$stepSlug]['service'][$boiler->id]['extra']);
                                 $content[$stepSlug]['service'][$boiler->id]['extra']['date'] = $boilerExtra;
                             }
-
-                        } else if ($stepSlug == 'heater') {
+                        } elseif ('heater' == $stepSlug) {
                             $generalDataServiceData = $generalDataServiceData + $stepData['service'];
                             unset($content[$stepSlug]['service']);
                         }
-
                     }
 
                     // remove it, wont be possible to store anyways.
@@ -110,10 +104,9 @@ class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable e
             \DB::table('example_building_contents')
                 ->where('id', $exampleBuildingContent->id)
                 ->update([
-                    'content' => json_encode($content)
+                    'content' => json_encode($content),
                 ]);
         }
-
     }
 
     /**
@@ -123,6 +116,5 @@ class MigrateExistingEbContentToNewToolStructureOnExampleBuildingContentsTable e
      */
     public function down()
     {
-        //
     }
 }

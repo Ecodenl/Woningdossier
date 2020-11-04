@@ -55,8 +55,6 @@ class FileType extends Model
 
     /**
      * Return the belongsto relationship on a categort.
-     *
-     * @return BelongsTo
      */
     public function category(): BelongsTo
     {
@@ -65,8 +63,6 @@ class FileType extends Model
 
     /**
      * Return the hasMany relationship on the file storage.
-     *
-     * @return HasMany
      */
     public function files(): HasMany
     {
@@ -75,8 +71,6 @@ class FileType extends Model
 
     /**
      * Check if the filetype has a file that is being processed.
-     *
-     * @return bool
      */
     public function isBeingProcessed(): bool
     {
@@ -86,14 +80,11 @@ class FileType extends Model
     }
 
     /**
-     * Check if a questionnaire is being processed
-     *
-     * @param Questionnaire $questionnaire
-     * @return bool
+     * Check if a questionnaire is being processed.
      */
     public function isQuestionnaireBeingProcessed(Questionnaire $questionnaire): bool
     {
-        return FileType::whereHas('files', function ($q) use ($questionnaire){
+        return FileType::whereHas('files', function ($q) use ($questionnaire) {
             return $q->withExpired()->beingProcessed()->where('questionnaire_id', $questionnaire->id);
         })->where('id', $this->id)->first() instanceof FileType;
     }

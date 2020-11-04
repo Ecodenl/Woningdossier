@@ -12,8 +12,11 @@ class HouseNumberExtensionTest extends TestCase
         return [
             ['nl', 'a', true],
             ['nl', 'bis', true],
-            ['nl', '11', false],
+            ['nl', '11', true],
             ['nl', 'boven', true],
+            ['nl', 'a1', true],
+            ['nl', '1c', true],
+            ['nl', 'b1ba', false],
         ];
     }
 

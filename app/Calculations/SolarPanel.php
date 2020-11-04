@@ -19,9 +19,7 @@ class SolarPanel
     /**
      * Calculate the savings for the solar panel.
      *
-     * @param Building $building
-     * @param User     $user
-     * @param array    $calculateData
+     * @param User $user
      *
      * @return array
      */

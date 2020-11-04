@@ -3,17 +3,12 @@
 namespace App\Http\Controllers\Cooperation\Auth;
 
 use App\Events\Registered;
+use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
-use App\Helpers\HoomdossierSession;
-use App\Helpers\PicoHelper;
-use App\Helpers\RegistrationHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterFormRequest;
 use App\Models\Account;
-use App\Models\Building;
-use App\Models\BuildingFeature;
 use App\Models\Cooperation;
-use App\Models\Role;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -65,8 +60,6 @@ class RegisterController extends Controller
     /**
      * Handle a registration request for the application.
      *
-     * @param RegisterFormRequest $request
-     * @param Cooperation $cooperation
      * @return \Illuminate\Http\RedirectResponse
      */
     public function register(RegisterFormRequest $request, Cooperation $cooperation)
@@ -82,16 +75,14 @@ class RegisterController extends Controller
             UserAssociatedWithOtherCooperation::dispatch($cooperation, $user);
         }
 
+        // at this point, a user cant register without accepting the privacy terms.
+        UserAllowedAccessToHisBuilding::dispatch($user->building);
+
         return redirect($this->redirectPath())->with('success', $successMessage);
     }
 
-
-
     /**
      * Check if a email already exists in the user table, and if it exist check if the user is registering on the wrong cooperation.
-     *
-     * @param Cooperation $cooperation
-     * @param Request $request
      *
      * @return \Illuminate\Http\JsonResponse
      */

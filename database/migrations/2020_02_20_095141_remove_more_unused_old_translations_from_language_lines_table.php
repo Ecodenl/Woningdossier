@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class RemoveMoreUnusedOldTranslationsFromLanguageLinesTable extends Migration
@@ -41,7 +39,6 @@ class RemoveMoreUnusedOldTranslationsFromLanguageLinesTable extends Migration
             ->orWhere('key', 'pitched.costs.gas.title')
             ->orWhere('key', 'pitched.costs.gas.help')
             ->delete();
-
     }
 
     /**
@@ -51,6 +48,5 @@ class RemoveMoreUnusedOldTranslationsFromLanguageLinesTable extends Migration
      */
     public function down()
     {
-        //
     }
 }

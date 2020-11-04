@@ -6,18 +6,17 @@ use Illuminate\Support\Collection;
 
 class Translation extends BaseCache
 {
-
     const CACHE_KEY_GET_TRANSLATION = 'Translation_getTranslation_%s';
 
     public static function getTranslationInLanguage($key, $language)
     {
-
         /** @var Collection $translations */
         $translations = static::getTranslations($key);
 
-        if ($translations->isEmpty()){
+        if ($translations->isEmpty()) {
             return null;
         }
+
         return $translations->where('language', '=', $language)->first();
 
         /*
@@ -40,7 +39,6 @@ class Translation extends BaseCache
             }
         );
     }
-
 
     public static function wipe(\App\Models\Translation $translation)
     {

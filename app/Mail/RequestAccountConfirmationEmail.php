@@ -26,9 +26,6 @@ class RequestAccountConfirmationEmail extends Mailable
     /**
      * Create a new message instance.
      *
-     * @param User        $user
-     * @param Cooperation $cooperation
-     *
      * @return void
      */
     public function __construct(User $user, Cooperation $cooperation)

@@ -167,9 +167,7 @@ class PrivateMessageView extends Model
     public static function getTotalUnreadMessagesCountByBuildingForAuthUser(Building $building): int
     {
         // get all the private message id's for a building
-        $privateMessageIdsForBuilding = $building->privateMessages()
-                                                 ->select('id')
-                                                 ->get()
+        $privateMessageIdsForBuilding = $building->privateMessages
                                                  ->pluck('id')
                                                  ->all();
 

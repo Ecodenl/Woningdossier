@@ -145,7 +145,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
             });
 
             // conversation requests
-            Route::group(['prefix' => 'conversation-request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
+            Route::group(['prefix' => 'conversation-request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest', 'middleware' => 'can:view-any,App\Models\PrivateMessage'], function () {
                 Route::get('{requestType?}/{measureApplicationShort?}', 'ConversationRequestController@index')->name('index');
                 Route::post('', 'ConversationRequestController@store')->name('store');
             });

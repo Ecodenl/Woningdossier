@@ -25,9 +25,6 @@ class CooperationMiddleware
 
             return redirect()->route('index');
         }
-        if ('vrijstadenergie' == $cooperation->slug) {
-            return redirect()->route('cooperation.welcome', ['cooperation' => 'energieloketrivierenland']);
-        }
 
         HoomdossierSession::setCooperation($cooperation);
 

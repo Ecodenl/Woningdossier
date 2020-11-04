@@ -307,7 +307,6 @@
 
             function crawlspaceOptions() {
                 if ($("#has_crawlspace").val() === "no") {
-                    console.log('weird');
                     $(".crawlspace-accessible").hide();
                     $("#no-crawlspace-error").show();
                 } else {

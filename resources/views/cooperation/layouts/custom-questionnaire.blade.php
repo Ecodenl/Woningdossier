@@ -20,7 +20,7 @@
                         {{csrf_field()}}
                         <input type="hidden" name="tab_id" value="#questionnaire-{{$questionnaire->id}}">
                         <input type="hidden" name="questionnaire_id" value="{{$questionnaire->id}}">
-                        @foreach($questionnaire->questions()->orderBy('order')->get() as $question)
+                        @foreach($questionnaire->questions as $question)
                             @switch($question->type)
                                 @case('text')
                                     @include('cooperation.tool.questionnaires.text', ['question' => $question])

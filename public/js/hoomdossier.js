@@ -1,1 +1,68 @@
-function updateTotalUnreadMessageCount(){$.ajax({url:window.location.origin+"/messages/count",type:"GET",success:function(o){$("#total-unread-message-count").html(o.count)},statusCode:{401:function(){window.location.href="/login"}}})}function pollForMessageCount(){var o=0;beenPolled&&(o=1e4),setTimeout(function(){beenPolled=!0,updateTotalUnreadMessageCount(),pollForMessageCount()},o)}function hoomdossierRound(o,n){return null!==o?(void 0===n&&(n=5),Math.round(o/n)*n):0}function hoomdossierNumberFormat(o,n,e){return null!==o?("string"==typeof o&&(o=parseFloat(o)),o.toLocaleString(n,{minimumFractionDigits:e})):0}var beenPolled=!1;
+// to determine if a poll has been done
+var beenPolled = false;
+
+// function to update the total unread message badge
+function updateTotalUnreadMessageCount()
+{
+    $.ajax({
+        url: window.location.origin + '/messages/count',
+        type: "GET",
+        success: function (response) {
+            if (response.showCount) {
+
+                if (response.count === 0) {
+                    $('#total-unread-message-count').removeClass('badge-primary')
+                } else {
+                    $('#total-unread-message-count').addClass('badge-primary')
+                }
+                $('#total-unread-message-count').html(response.count);
+            } else {
+                $('#total-unread-message-count').html('<i class="glyphicon glyphicon-remove"></i>')
+            }
+        },
+        statusCode: {
+            401: function(){
+                // Redirec the to the login page.
+                window.location.href = '/login';
+            }
+        }
+    });
+}
+
+// poll for the message count
+function pollForMessageCount() {
+
+    var timeout = 0;
+
+    if (beenPolled) {
+        // 10 seconds
+        timeout = 10000;
+    }
+    setTimeout(function () {
+        beenPolled = true;
+        updateTotalUnreadMessageCount();
+        pollForMessageCount();
+    }, timeout);
+};
+
+function hoomdossierRound(value, bucket) {
+
+    if (value !== null) {
+        if (typeof bucket === "undefined") {
+            bucket = 5;
+        }
+
+        return Math.round(value / bucket) * bucket;
+    }
+    return 0;
+};
+
+function hoomdossierNumberFormat(value, locale, decimals){
+    if (value !== null) {
+        if (typeof value === "string") {
+            value = parseFloat(value);
+        }
+        return value.toLocaleString(locale, {minimumFractionDigits: decimals});
+    }
+    return 0;
+};

@@ -41,28 +41,27 @@ class FloorInsulation
 
         $surface = array_key_exists('insulation_surface', $buildingFeatures) ? $buildingFeatures['insulation_surface'] : 0;
 
+
+        // check if there is any crawlspace
         if (array_key_exists('has_crawlspace', $buildingElements['extra'])) {
-            // Check if crawlspace is accessible. If not: show warning!
             if (in_array($buildingElements['extra']['has_crawlspace'], ['unknown'])) {
                 $result['crawlspace'] = 'warning';
             }
         }
+        // now check if its accessible
+        if (array_key_exists('access', $buildingElements['extra'])) {
+            if (in_array($buildingElements['extra']['access'], ['no', 'unknown'])) {
+                $result['crawlspace_access'] = 'warning';
+            }
+        }
 
+        // get the height of the crawlspace
         $crawlspaceValue = null;
-        if (array_key_exists($crawlspace->id, $buildingElements)) {
-            if (array_key_exists('element_value_id', $buildingElements[$crawlspace->id])) {
-                $crawlspaceValue = ElementValue::where('element_id', $crawlspace->id)
-                                               ->where('id', $buildingElements[$crawlspace->id]['element_value_id'])
-                                               ->first();
-            }
-            if (array_key_exists('extra', $buildingElements[$crawlspace->id])) {
-                // Check if crawlspace is accessible. If not: show warning!
-                if (in_array($buildingElements[$crawlspace->id]['extra'], ['no', 'unknown'])) {
-                    $result['crawlspace_access'] = 'warning';
-                }
-            }
+        if (array_key_exists('element_value_id', $buildingElements)) {
+            $crawlspaceValue = ElementValue::where('element_id', $crawlspace->id)
+                ->where('id', $buildingElements['element_value_id'])
+                ->first();
         } else {
-            // first page request
             $crawlspaceValue = $crawlspace->values()->orderBy('order')->first();
         }
 

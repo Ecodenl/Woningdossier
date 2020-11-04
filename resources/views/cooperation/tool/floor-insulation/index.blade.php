@@ -44,14 +44,14 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div id="has-no-crawlspace">
-                            @component('cooperation.tool.components.step-question', ['id' => 'building_elements.crawlspace', 'translation' => 'floor-insulation.has-crawlspace', 'required' => false])
+                            @component('cooperation.tool.components.step-question', ['id' => 'building_elements.extra.crawlspace', 'translation' => 'floor-insulation.has-crawlspace', 'required' => false])
 
                                 @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsOrderedOnInputSourceCredibility ,'userInputColumn' => 'extra.has_crawlspace'])
                                     <select id="has_crawlspace" class="form-control"
-                                            name="building_elements[crawlspace]">
+                                            name="building_elements[extra][has_crawlspace]">
                                         @foreach(__('woningdossier.cooperation.option') as $i => $option)
-                                            <option @if(old('building_elements.crawlspace', Hoomdossier::getMostCredibleValueFromCollection($buildingElementsOrderedOnInputSourceCredibility, 'extra.has_crawlspace')) == $i) selected="selected"
+                                            <option @if(old('building_elements.extra.has_crawlspace', Hoomdossier::getMostCredibleValueFromCollection($buildingElementsOrderedOnInputSourceCredibility, 'extra.has_crawlspace')) == $i) selected="selected"
                                                     @endif value="{{ $i }}">{{ $option }}</option>
                                         @endforeach
                                     </select>@endcomponent
@@ -74,14 +74,14 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-6">
                             <div id="has-crawlspace-access">
-                                @component('cooperation.tool.components.step-question', ['id' => 'building_elements.' . $crawlspace->id .'.extra', 'translation' => 'floor-insulation.crawlspace-access', 'required' => false])
+                                @component('cooperation.tool.components.step-question', ['id' => 'building_elements.extra.access', 'translation' => 'floor-insulation.crawlspace-access', 'required' => false])
 
                                     @component('cooperation.tool.components.input-group',
                                     ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsOrderedOnInputSourceCredibility ,'userInputColumn' => 'extra.access'])
                                         <select id="crawlspace_access" class="form-control"
-                                                name="building_elements[{{ $crawlspace->id }}][extra]">
+                                                name="building_elements[extra][access]">
                                             @foreach(__('woningdossier.cooperation.option') as $i => $option)
-                                                <option @if(old('building_elements.crawlspace_access', Hoomdossier::getMostCredibleValueFromCollection($buildingElementsOrderedOnInputSourceCredibility, 'extra.access')) == $i) selected="selected"
+                                                <option @if(old('building_elements.extra.access', Hoomdossier::getMostCredibleValueFromCollection($buildingElementsOrderedOnInputSourceCredibility, 'extra.access')) == $i) selected="selected"
                                                         @endif value="{{ $i }}">{{ $option }}</option>
                                             @endforeach
                                         </select>@endcomponent
@@ -99,12 +99,12 @@
 
                         <div class="col-sm-12 col-md-6">
                             @component('cooperation.tool.components.step-question',
-                             ['id' => 'building_elements.' . $crawlspace->id .'.element_value_id', 'translation' => 'floor-insulation.crawlspace-height', 'required' => false])
+                             ['id' => 'building_elements.element_value_id', 'translation' => 'floor-insulation.crawlspace-height', 'required' => false])
 
                                 @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => $crawlspace->values, 'userInputValues' => $buildingElementsOrderedOnInputSourceCredibility ,'userInputColumn' => 'element_value_id'])
                                     <select id="crawlspace_height" class="form-control"
-                                            name="building_elements[{{ $crawlspace->id }}][element_value_id]">
+                                            name="building_elements[element_value_id]">
                                         @foreach($crawlspace->values as $crawlHeight)
                                             <option @if(old('crawlspace_height', Hoomdossier::getMostCredibleValueFromCollection($buildingElementsOrderedOnInputSourceCredibility, 'element_value_id')) == $crawlHeight->id) selected="selected"
                                                     @endif value="{{ $crawlHeight->id }}">{{ $crawlHeight->value }}</option>
@@ -307,7 +307,6 @@
 
             function crawlspaceOptions() {
                 if ($("#has_crawlspace").val() === "no") {
-                    console.log('weird');
                     $(".crawlspace-accessible").hide();
                     $("#no-crawlspace-error").show();
                 } else {

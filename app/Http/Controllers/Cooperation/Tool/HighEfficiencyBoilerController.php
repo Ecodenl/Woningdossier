@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\HighEfficiencyBoiler;
 use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Cooperation\Tool\HighEfficiencyBoilerHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
@@ -87,25 +88,19 @@ class HighEfficiencyBoilerController extends Controller
 
         // Save the building service
         $userInterests = $request->input('user_interests');
-        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+        UserInterestService::save($user, $inputSource, Step::class, $this->step->id, $userInterests['interest_id']);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        $serviceValueId = $request->input('building_services.boiler.service_value_id');
-        $date = $request->input('building_services.boiler.extra');
+        $saveData = $request->only('user_energy_habits', 'building_services');
 
-        $service = Service::findByShort('boiler');
 
-        $building->buildingServices()->updateOrCreate(
-            ['input_source_id' => $inputSource->id, 'service_id' => $service->id],
-            ['service_value_id' => $serviceValueId, 'extra' => ['date' => $date]]
-        );
+//        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
+            HighEfficiencyBoilerHelper::save($building, $inputSource, $saveData);
+//        }
+        // no clear method yet ?
 
-        $user->energyHabit()->updateOrCreate(['input_source_id' => $inputSource->id], $request->input('user_energy_habits'));
-
-        // Save progress
-        $this->saveAdvices($request);
         StepHelper::complete($this->step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
@@ -117,31 +112,5 @@ class HighEfficiencyBoilerController extends Controller
         }
 
         return redirect($url);
-    }
-
-    protected function saveAdvices(Request $request)
-    {
-        $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
-
-        /** @var JsonResponse $results */
-        $results = $this->calculate($request, $user);
-        $results = $results->getData(true);
-
-        // Remove old results
-        $user->actionPlanAdvices()->forStep($this->step)->delete();
-
-        if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
-            $measureApplication = MeasureApplication::where('short', 'high-efficiency-boiler-replace')->first();
-            if ($measureApplication instanceof MeasureApplication) {
-                $actionPlanAdvice = new UserActionPlanAdvice($results);
-                $actionPlanAdvice->costs = $results['cost_indication'];
-                $actionPlanAdvice->year = $results['replace_year'];
-                $actionPlanAdvice->user()->associate($user);
-                $actionPlanAdvice->measureApplication()->associate($measureApplication);
-                $actionPlanAdvice->step()->associate($this->step);
-                $actionPlanAdvice->save();
-            }
-        }
     }
 }

@@ -179,7 +179,7 @@
                     @component('cooperation.tool.components.step-question', ['id' => 'building_features.window_surface', 'translation' => 'insulated-glazing.windows-surface', 'required' => false])
 
                         @component('cooperation.tool.components.input-group',
-                       ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'building_features.window_surface'])
+                       ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'window_surface'])
                             <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
                             <input type="text" name="building_features[window_surface]"
                                    value="{{ old('building_features.window_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'window_surface')) }}"
@@ -192,13 +192,13 @@
         </div>
         <div class="row">
             <div class="col-sm-12">
-                @component('cooperation.tool.components.step-question', ['id' => 'building_elements.'.$frames->id.'.frames', 'translation' => 'insulated-glazing.paint-work.which-frames', 'required' => false])
+                @component('cooperation.tool.components.step-question', ['id' => 'building_elements.'.$frames->id, 'translation' => 'insulated-glazing.paint-work.which-frames', 'required' => false])
 
                     @component('cooperation.tool.components.input-group',
                     ['inputType' => 'select', 'inputValues' => $frames->values()->orderBy('order')->get(), 'userInputValues' => $building->getBuildingElementsForMe('frames'), 'userInputColumn' => 'element_value_id'])
-                        <select class="form-control" name="building_elements[{{$frames->id}}][frames]">
+                        <select class="form-control" name="building_elements[{{$frames->id}}]">
                             @foreach($frames->values()->orderBy('order')->get() as $frameValue)
-                                <option @if(old('building_elements.frames', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $frames->id), 'element_value_id')) == $frameValue->id) selected="selected"
+                                <option @if(old('building_elements.'.$frames->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $frames->id), 'element_value_id')) == $frameValue->id) selected="selected"
                                         @endif value="{{ $frameValue->id }}">{{ $frameValue->value }}</option>
                                 {{--<option @if($frameValue->id == old('building_elements.frames')  || ($building->getBuildingElement('frames') instanceof \App\Models\BuildingElement && $building->getBuildingElement('frames')->element_value_id == $frameValue->id)) selected @endif value="{{ $frameValue->id }}">{{ $frameValue->value }}</option>--}}
                             @endforeach
@@ -216,22 +216,21 @@
 
 
 
-
                     <?php
                     // TODO: should do something with a component
                     // the current problem is there are only 2 places where checkboxes are used and those are used in a different way
                     ?>
                     <div class="input-group input-source-group">
                         @foreach($woodElements->values()->orderBy('order')->get() as $woodElement)
-                            <label for="building_elements.wood-elements.{{ $woodElement->id }}"
+                            <label for="building_elements.{{ $woodElement->id }}"
                                    class="checkbox-inline">
                                 <input
-                                        @if(old('building_elements.wood-elements.' . $woodElements->id . '.' . $woodElement->id,\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id), 'element_value_id')))
+                                        @if(old('building_elements.' . $woodElements->id . '.' . $woodElement->id,\App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $woodElements->id)->where('element_value_id', $woodElement->id), 'element_value_id')))
                                         checked="checked"
                                         @endif
-                                        type="checkbox" id="building_elements.wood-elements.{{ $woodElement->id }}"
+                                        type="checkbox" id="building_elements.{{ $woodElement->id }}"
                                         value="{{$woodElement->id}}"
-                                        name="building_elements[wood-elements][{{ $woodElements->id }}][{{$woodElement->id}}]">
+                                        name="building_elements[{{ $woodElements->id }}][{{$woodElement->id}}]">
                                 {{ $woodElement->value }}
                             </label>
                         @endforeach

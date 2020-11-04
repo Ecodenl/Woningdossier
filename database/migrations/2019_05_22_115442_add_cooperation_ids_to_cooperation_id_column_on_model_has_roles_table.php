@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Collection;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
-use \App\Models\User;
+use Illuminate\Support\Collection;
 
 class AddCooperationIdsToCooperationIdColumnOnModelHasRolesTable extends Migration
 {
@@ -16,17 +16,14 @@ class AddCooperationIdsToCooperationIdColumnOnModelHasRolesTable extends Migrati
         $users = DB::table('users')->get();
 
         foreach ($users as $user) {
-
             /** @var Collection $userCooperations */
             $userCooperations = DB::table('cooperation_user')->where('user_id', '=', $user->id)->get();
 
             // get the cooperation hoom
             $cooperationHoom = DB::table('cooperations')->where('slug', 'hoom')->first();
 
-
             // you know, just in case.
             if ($cooperationHoom instanceof stdClass) {
-
                 // just get the first available cooperation id.
                 $cooperationId = $userCooperations->first()->id;
 
@@ -43,9 +40,7 @@ class AddCooperationIdsToCooperationIdColumnOnModelHasRolesTable extends Migrati
                    ->where('model_type', get_class($user))
                    ->update(['cooperation_id' => $cooperationId]);
             }
-
         }
-
     }
 
     /**

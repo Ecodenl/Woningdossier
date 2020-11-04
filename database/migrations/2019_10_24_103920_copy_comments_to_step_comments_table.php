@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class CopyCommentsToStepCommentsTable extends Migration
@@ -37,13 +35,12 @@ class CopyCommentsToStepCommentsTable extends Migration
     {
         $building = $user->building;
 
-        if (!$building instanceof \App\Models\Building) {
+        if (! $building instanceof \App\Models\Building) {
             return [];
         }
 
         $allInputForMe = collect();
         $commentsByStep = [];
-
 
         /* General-data */
         $userEnergyHabitForMe = \App\Models\UserEnergyHabit::forMe($user)->with('inputSource')->get();
@@ -120,6 +117,5 @@ class CopyCommentsToStepCommentsTable extends Migration
      */
     public function down()
     {
-        //
     }
 }

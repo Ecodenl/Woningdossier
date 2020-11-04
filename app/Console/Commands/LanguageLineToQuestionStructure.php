@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\LanguageLine;
-use function Couchbase\defaultDecoder;
 use Illuminate\Console\Command;
 
 class LanguageLineToQuestionStructure extends Command
@@ -39,7 +38,6 @@ class LanguageLineToQuestionStructure extends Command
      */
     public function handle()
     {
-
         // temporary command to convert normal translations to question like structure
         // this will be removed in the near future as refactor is needed
         $groupsToConvert = explode(',', $this->option('groups-to-convert'));
@@ -52,7 +50,7 @@ class LanguageLineToQuestionStructure extends Command
             foreach ($translations as $translation) {
                 // determine if its a title
                 $translationKeys = explode('.', $translation->key);
-                if (in_array('title', $translationKeys) && !in_array('help', $translationKeys)) {
+                if (in_array('title', $translationKeys) && ! in_array('help', $translationKeys)) {
                     $this->line("The translation with id: {$translation->id} is a title");
                     // now we have to find the corresponding helptext
                     // pop of the title key
@@ -70,6 +68,5 @@ class LanguageLineToQuestionStructure extends Command
                 }
             }
         }
-
     }
 }

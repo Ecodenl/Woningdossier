@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\SolarPanel;
 use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Cooperation\Tool\SolarPanelHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
@@ -15,7 +16,6 @@ use App\Models\PvPanelOrientation;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
-use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
@@ -48,15 +48,19 @@ class SolarPanelsController extends Controller
         $buildingOwner = $building->user;
 
         $pvPanelOrientations = PvPanelOrientation::orderBy('order')->get();
-        $buildingPvPanels = $building->pvPanels;
-        $buildingPvPanelsForMe = $building->pvPanels()->forMe()->get();
-        $energyHabitsForMe = UserEnergyHabit::forMe()->get();
+
+        $energyHabitsOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+            $buildingOwner->energyHabit()
+        )->get();
+
+        $pvPanelsOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
+            $building->pvPanels()
+        )->get();
 
         return view('cooperation.tool.solar-panels.index',
             compact(
-                'building', 'pvPanelOrientations', 'buildingOwner',
-                'energyHabitsForMe', 'buildingPvPanels', 'typeIds',
-                'buildingPvPanelsForMe'
+                'building', 'pvPanelOrientations', 'buildingOwner', 'typeIds',
+                'energyHabitsOrderedOnInputSourceCredibility', 'pvPanelsOrderedOnInputSourceCredibility'
             )
         );
     }
@@ -72,20 +76,13 @@ class SolarPanelsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param SolarPanelFormRequest $request
-     *
      * @return \Illuminate\Http\Response
      */
     public function store(SolarPanelFormRequest $request)
     {
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
-        $buildingId = $building->id;
         $inputSource = HoomdossierSession::getInputSource(true);
-        $inputSourceId = $inputSource->id;
-
-        $habit = $request->input('user_energy_habits', '');
-        $habitAmountElectricity = isset($habit['amount_electricity']) ? $habit['amount_electricity'] : '0';
 
         $userInterests = $request->input('user_interests');
         UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
@@ -93,29 +90,15 @@ class SolarPanelsController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        $user->energyHabit()->withoutGlobalScope(GetValueScope::class)->update(['amount_electricity' => $habitAmountElectricity]);
+        $saveData = $request->only('building_pv_panels', 'user_energy_habits', 'user_interests');
 
-        $pvPanels = $request->input('building_pv_panels', '');
-        $peakPower = isset($pvPanels['peak_power']) ? $pvPanels['peak_power'] : '';
-        $number = isset($pvPanels['number']) ? $pvPanels['number'] : '';
-        $angle = isset($pvPanels['angle']) ? $pvPanels['angle'] : '';
-        $orientation = isset($pvPanels['pv_panel_orientation_id']) ? $pvPanels['pv_panel_orientation_id'] : '';
-
-        BuildingPvPanel::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
-            [
-                'building_id' => $buildingId,
-                'input_source_id' => $inputSourceId,
-            ],
-            [
-                'peak_power' => $peakPower,
-                'number' => $number,
-                'pv_panel_orientation_id' => $orientation,
-                'angle' => $angle,
-            ]
-        );
+//        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
+            SolarPanelHelper::save($building, $inputSource, $saveData);
+//        } else {
+//            SolarPanelHelper::clear($building, $inputSource);
+//        }
 
         // Save progress
-        $this->saveAdvices($request);
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
@@ -127,31 +110,5 @@ class SolarPanelsController extends Controller
         }
 
         return redirect($url);
-    }
-
-    protected function saveAdvices(Request $request)
-    {
-        $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
-
-        /** @var JsonResponse $results */
-        $results = $this->calculate($request);
-        $results = $results->getData(true);
-
-        // Remove old results
-        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
-
-        if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
-            $measureApplication = MeasureApplication::where('short', 'solar-panels-place-replace')->first();
-            if ($measureApplication instanceof MeasureApplication) {
-                $actionPlanAdvice = new UserActionPlanAdvice($results);
-                $actionPlanAdvice->costs = $results['cost_indication'];
-                $actionPlanAdvice->savings_electricity = $results['yield_electricity'];
-                $actionPlanAdvice->user()->associate($user);
-                $actionPlanAdvice->measureApplication()->associate($measureApplication);
-                $actionPlanAdvice->step()->associate($this->step);
-                $actionPlanAdvice->save();
-            }
-        }
     }
 }

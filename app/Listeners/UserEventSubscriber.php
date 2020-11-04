@@ -27,8 +27,6 @@ class UserEventSubscriber
     /**
      * Handle the event.
      *
-     * @param Registered $event
-     *
      * @return void
      */
     public function onUserRegistration(Registered $event)

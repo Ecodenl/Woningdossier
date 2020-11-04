@@ -9,8 +9,7 @@ class RoleHelper
     /**
      * Get the right route / url by a role name.
      *
-     * @param string $roleName
-     * @param bool   $checkUser whether or not to check the user's role against the role name. Defaults to true.
+     * @param bool $checkUser whether or not to check the user's role against the role name. Defaults to true.
      *
      * @return string The target url
      */
@@ -48,7 +47,6 @@ class RoleHelper
     /**
      * Get the right route / url by a role.
      *
-     * @param Role $role
      * @param bool Whether or not to check the user's role against the role name. Defaults to true.
      *
      * @return string

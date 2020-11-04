@@ -3,7 +3,6 @@
 namespace App\Policies;
 
 use App\Helpers\HoomdossierSession;
-use App\Helpers\RoleHelper;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
@@ -23,7 +22,6 @@ class BuildingPolicy
      */
     public function __construct()
     {
-
     }
 
     public function edit(User $user, Building $building)
@@ -33,10 +31,6 @@ class BuildingPolicy
 
     /**
      * Determine if a user is allowed to see a building overview.
-     *
-     *
-     * @param User     $user
-     * @param Building $building
      *
      * @return bool
      */
@@ -62,9 +56,6 @@ class BuildingPolicy
      *
      * Its possible when there is 1 public message from the resident itself.
      *
-     * @param User     $user
-     * @param Building $building
-     *
      * @return bool
      */
     public function talkToResident(User $user, Building $building, Cooperation $cooperation)
@@ -84,11 +75,6 @@ class BuildingPolicy
      * Determine if a user can access his building.
      *
      * With access we mean observing / filling the tool.
-     *
-     * @param User     $user
-     * @param Building $building
-     *
-     * @return bool
      */
     public function accessBuilding(User $user, Building $building): bool
     {
@@ -113,11 +99,6 @@ class BuildingPolicy
 
     /**
      * Check whether its allowed to set an appointment on a building.
-     *
-     * @param User     $user
-     * @param Building $building
-     *
-     * @return bool
      */
     public function setAppointment(User $user, Building $building): bool
     {
@@ -127,11 +108,6 @@ class BuildingPolicy
 
     /**
      * Check whether its allowed to set an status on a building.
-     *
-     * @param User     $user
-     * @param Building $building
-     *
-     * @return bool
      */
     public function setStatus(User $user, Building $building): bool
     {

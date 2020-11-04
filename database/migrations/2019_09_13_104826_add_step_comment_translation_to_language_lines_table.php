@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class AddStepCommentTranslationToLanguageLinesTable extends Migration
@@ -21,7 +19,7 @@ class AddStepCommentTranslationToLanguageLinesTable extends Migration
                 'text' => json_encode([
                     'nl' => 'Toelichting op '.DB::table('translations')->where('key', $step->name)->where('language', 'nl')->first()->translation,
                 ]),
-                'step_id' => $step->id
+                'step_id' => $step->id,
             ]);
         }
     }

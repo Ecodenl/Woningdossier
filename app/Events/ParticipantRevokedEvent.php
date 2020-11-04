@@ -22,9 +22,6 @@ class ParticipantRevokedEvent
      * Event to be triggered when a participant gets revoked from a group message / building.
      *
      * ParticipantRevokedEvent constructor.
-     *
-     * @param User     $revokedParticipant
-     * @param Building $building
      */
     public function __construct(User $revokedParticipant, Building $building)
     {

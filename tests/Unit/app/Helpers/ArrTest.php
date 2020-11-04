@@ -36,19 +36,19 @@ class ArrTest extends TestCase
                         'service' => '',
                     ],
                 ],
-                false
+                false,
             ],
             [
                 [
                     'Bewoner' => [
-                        'element' => null
+                        'element' => null,
                     ],
                     'Coach' => [
-                        'service' => ''
+                        'service' => '',
                     ],
                 ],
-                true
-            ]
+                true,
+            ],
         ];
     }
 

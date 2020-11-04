@@ -4,9 +4,7 @@ namespace App\Calculations;
 
 use App\Helpers\Calculation\BankInterestCalculator;
 use App\Helpers\Calculator;
-use App\Helpers\HighEfficiencyBoilerCalculator;
 use App\Helpers\InsulatedGlazingCalculator;
-use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
 use App\Models\Building;
 use App\Models\BuildingHeating;
@@ -17,7 +15,6 @@ use App\Models\InsulatingGlazing;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
-use App\Models\UserEnergyHabit;
 use App\Models\WoodRotStatus;
 
 class InsulatedGlazing
@@ -25,12 +22,8 @@ class InsulatedGlazing
     /**
      * Return the calculate results for the insulated glazings.
      *
-     * @param Building    $building
-     * @param InputSource $inputSource
      * @param $energyHabit
      * @param $calculateData
-     *
-     * @return array
      */
     public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData): array
     {
@@ -56,10 +49,9 @@ class InsulatedGlazing
             $interest = Interest::find($interestId);
 
             if ($measureApplication instanceof MeasureApplication && $buildingHeating instanceof BuildingHeating && $interest instanceof Interest && $interest->calculate_value <= 3) {
-
                 $m2 = NumberFormatter::reverseFormat($buildingInsulatedGlazingsData['m2']);
                 $gasSavings = 0;
-                if(is_numeric($m2)) {
+                if (is_numeric($m2)) {
                     $gasSavings = InsulatedGlazingCalculator::calculateRawGasSavings(
                         $m2,
                         $measureApplication,
@@ -126,38 +118,38 @@ class InsulatedGlazing
         ];
 
         $frames = Element::where('short', 'frames')->first();
+        $woodElements = Element::where('short', 'wood-elements')->first();
         $buildingElements = $calculateData['building_elements'] ?? [];
         $framesValueId = 0;
-        if (array_key_exists($frames->id, $buildingElements) && array_key_exists('frames', $buildingElements[$frames->id])) {
-            $framesValueId = (int) $buildingElements[$frames->id]['frames'];
+
+        if (array_key_exists($frames->id, $buildingElements)) {
+            $framesValueId = (int) $buildingElements[$frames->id];
         }
         $frameElementValue = ElementValue::find($framesValueId);
 
         // only applies for wooden frames
-        if ($frameElementValue instanceof ElementValue && 'frames' == $frameElementValue->element->short/* && $frameElementValue->calculate_value > 0*/) {
+        if ($frameElementValue instanceof ElementValue && 'frames' == $frameElementValue->element->short) {
             $windowSurface = 0;
 
-            $windowSurfaceFormatted = NumberFormatter::reverseFormat($calculateData['window_surface'] ?? 0);
+            $windowSurfaceFormatted = NumberFormatter::reverseFormat($calculateData['building_features']['window_surface'] ?? 0);
             if (is_numeric($windowSurfaceFormatted)) {
                 $windowSurface = $windowSurfaceFormatted;
             }
             // frame type use used as ratio (e.g. wood + some others -> use 70% of surface)
             $woodElementValues = [];
 
-            foreach ($buildingElements as $short => $serviceIds) {
-                if ('wood-elements' == $short) {
-                    foreach ($serviceIds as $serviceId => $ids) {
-                        foreach (array_keys($ids) as $id) {
-                            $woodElementValue = ElementValue::where('id', $id)->where('element_id',
-                                $serviceId)->first();
-
-                            if ($woodElementValue instanceof ElementValue && $woodElementValue->element->short == $short) {
-                                $woodElementValues[] = $woodElementValue;
-                            }
-                        }
+            // wood element values to array, from the checkbox.
+            if (array_key_exists($woodElements->id, $buildingElements)) {
+                foreach ($buildingElements[$woodElements->id] as $woodElementValueId) {
+                    $woodElementValue = ElementValue::where('id', $woodElementValueId)
+                        ->where('element_id', $woodElements->id)
+                        ->first();
+                    if ($woodElementValue instanceof ElementValue) {
+                        $woodElementValues[] = $woodElementValue;
                     }
                 }
             }
+
 
             $measureApplication = MeasureApplication::where('short', 'paint-wood-elements')->first();
 

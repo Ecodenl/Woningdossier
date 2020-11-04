@@ -2,8 +2,6 @@
 
 use App\Models\MeasureApplication;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class UpdateKeyFigures extends Migration
@@ -52,6 +50,5 @@ class UpdateKeyFigures extends Migration
      */
     public function down()
     {
-        //
     }
 }

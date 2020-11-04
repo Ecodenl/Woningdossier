@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class CompleteGeneralDataSubStepsOnCompletedStepsTable extends Migration
@@ -15,14 +13,11 @@ class CompleteGeneralDataSubStepsOnCompletedStepsTable extends Migration
      */
     public function up()
     {
-
         $counter = 0;
 
         $generalData = DB::table('steps')->where('short', 'general-data')->first();
 
         if ($generalData instanceof stdClass) {
-
-
             $generalDataSubSteps = DB::table('steps')->where('parent_id', $generalData->id)->get();
 
             $completedGeneralDataSteps = DB::table('completed_steps')
@@ -30,9 +25,8 @@ class CompleteGeneralDataSubStepsOnCompletedStepsTable extends Migration
                 ->get();
 
             foreach ($completedGeneralDataSteps as $completedGeneralDataStep) {
-
                 foreach ($generalDataSubSteps as $subStep) {
-                    $counter++;
+                    ++$counter;
 
                     DB::table('completed_steps')->insert([
                         'step_id' => $subStep->id,

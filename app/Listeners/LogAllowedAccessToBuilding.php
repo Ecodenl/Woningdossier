@@ -2,8 +2,6 @@
 
 namespace App\Listeners;
 
-use App\Helpers\Hoomdossier;
-use App\Helpers\HoomdossierSession;
 use App\Models\Log;
 use App\Models\User;
 

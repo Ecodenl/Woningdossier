@@ -136,6 +136,17 @@ class Question extends Model
     }
 
     /**
+     * Return the question answers for all input sources.
+     *
+     * @return mixed
+     */
+    public function questionAnswersForMe()
+    {
+        // only there for eager loading, user in the App\Http\ViewComposers\ToolCompsoser
+        return $this->questionAnswers()->forMe();
+    }
+
+    /**
      * Return the answer on a question for a building and input source.
      *
      * @return Model|\Illuminate\Database\Eloquent\Relations\HasMany|object|null

@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class AddIntervalsToNotificationIntervalsTable extends Migration
@@ -49,7 +47,7 @@ class AddIntervalsToNotificationIntervalsTable extends Migration
 
             DB::table('notification_intervals')->insert([
                 'name'  => $uuid,
-                'short' => $notificationInterval['short']
+                'short' => $notificationInterval['short'],
             ]);
         }
     }
@@ -78,6 +76,5 @@ class AddIntervalsToNotificationIntervalsTable extends Migration
           ->delete();
 
         DB::table('notification_intervals')->where('short', 'no-interest')->delete();
-
     }
 }

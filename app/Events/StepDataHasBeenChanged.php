@@ -32,10 +32,6 @@ class StepDataHasBeenChanged
     /**
      * Create a new event instance.
      *
-     * @param Step     $step
-     * @param Building $building
-     * @param User     $user
-     *
      * @return void
      */
     public function __construct(Step $step, Building $building, User $user)

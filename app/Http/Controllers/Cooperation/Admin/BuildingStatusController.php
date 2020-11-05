@@ -14,9 +14,6 @@ class BuildingStatusController extends Controller
 {
     /**
      * Set an status for an building.
-     *
-     * @param Cooperation                $cooperation
-     * @param BuildingCoachStatusRequest $request
      */
     public function setStatus(Cooperation $cooperation, BuildingCoachStatusRequest $request)
     {
@@ -34,10 +31,6 @@ class BuildingStatusController extends Controller
 
     /**
      * Set an appointment date for a building.
-     *
-     *
-     * @param Cooperation $cooperation
-     * @param Request     $request
      */
     public function setAppointmentDate(Cooperation $cooperation, Request $request)
     {

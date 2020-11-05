@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class RemoveCrackSealingMeasureFromUserActionPlanAdvicesTableOnStep4 extends Migration
@@ -20,15 +18,14 @@ class RemoveCrackSealingMeasureFromUserActionPlanAdvicesTableOnStep4 extends Mig
 
         $crackSealing = DB::table('measure_applications')->where('short', 'crack-sealing')->first();
 
-        if ($insulatedGlazing instanceOf stdClass && $crackSealing instanceof stdClass) {
+        if ($insulatedGlazing instanceof stdClass && $crackSealing instanceof stdClass) {
             $userActionPlanAdvices = DB::table('user_action_plan_advices')
                 ->where('step_id', $insulatedGlazing->id)
                 ->where('measure_application_id', $crackSealing->id)
                 ->get();
 
             foreach ($userActionPlanAdvices as $actionPlanAdvice) {
-
-                $this->line("-------------");
+                $this->line('-------------');
                 $this->line("migrating: action plan advice: {$actionPlanAdvice->id}");
                 $this->line("migrating: user_id: {$actionPlanAdvice->user_id}");
 
@@ -41,19 +38,18 @@ class RemoveCrackSealingMeasureFromUserActionPlanAdvicesTableOnStep4 extends Mig
                 // if so, delete the crack sealing from the insulated glazing
                 // else, update it to the ventilation step id
                 if ($crackSealingFinishedOnVentilation) {
-                    $this->line("migrating: user already finished crack sealing on ventilation");
-                    $this->line("migrating: deleting the old action plan advice");
+                    $this->line('migrating: user already finished crack sealing on ventilation');
+                    $this->line('migrating: deleting the old action plan advice');
                     DB::table('user_action_plan_advices')
                         ->where('id', $actionPlanAdvice->id)
                         ->delete();
                 } else {
-                    $this->line("migrating: user did not finish it, update with new step");
+                    $this->line('migrating: user did not finish it, update with new step');
                     DB::table('user_action_plan_advices')
                         ->where('id', $actionPlanAdvice->id)
                         ->update([
-                            'step_id' => $ventilation->id
+                            'step_id' => $ventilation->id,
                         ]);
-
                 }
             }
         }
@@ -66,6 +62,5 @@ class RemoveCrackSealingMeasureFromUserActionPlanAdvicesTableOnStep4 extends Mig
      */
     public function down()
     {
-        //
     }
 }

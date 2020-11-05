@@ -36,12 +36,12 @@ class RegisterFormRequest extends FormRequest
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'postal_code' => ['required', new PostalCode('nl')],
-            'number' => ['required', new HouseNumber('nl')],
+            'number' => ['required', 'integer', new HouseNumber('nl')],
             'house_number_extension' => [new HouseNumberExtension('nl')],
             'street' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'phone_number' => ['nullable', new PhoneNumber('nl')],
-            'allow_access' => 'required|accepted'
+            'allow_access' => 'required|accepted',
         ];
 
         // try to get the account
@@ -58,7 +58,7 @@ class RegisterFormRequest extends FormRequest
     public function messages()
     {
         return [
-            'allow_access.required' => __('auth.register.validation.allow_access')
+            'allow_access.required' => __('auth.register.validation.allow_access'),
         ];
     }
 

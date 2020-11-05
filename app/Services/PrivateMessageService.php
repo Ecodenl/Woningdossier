@@ -17,8 +17,6 @@ class PrivateMessageService
     /**
      * Create a new message between a user and user.
      *
-     * @param Request $request
-     *
      * @return bool
      */
     public static function create(Request $request)
@@ -64,10 +62,6 @@ class PrivateMessageService
 
     /**
      * Method to create a conversation request for a building on a user.
-     *
-     * @param Building $building
-     * @param User     $user
-     * @param Request  $request
      */
     public static function createConversationRequest(Building $building, User $user, Request $request)
     {

@@ -8,8 +8,6 @@ class CooperationObserver
 {
     /**
      * For every cooperation that is created, we attach all the steps to it.
-     *
-     * @param Cooperation $cooperation
      */
     public function created(Cooperation $cooperation)
     {

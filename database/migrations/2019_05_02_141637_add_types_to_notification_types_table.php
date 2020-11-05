@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class AddTypesToNotificationTypesTable extends Migration
@@ -35,7 +33,7 @@ class AddTypesToNotificationTypesTable extends Migration
 
             DB::table('notification_types')->insert([
                 'name' => $uuid,
-                'short' => $notificationType['short']
+                'short' => $notificationType['short'],
             ]);
         }
     }
@@ -52,6 +50,5 @@ class AddTypesToNotificationTypesTable extends Migration
           ->delete();
 
         DB::table('notification_types')->where('short', 'private-message')->delete();
-
     }
 }

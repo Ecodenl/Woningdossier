@@ -12,7 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
 
-class SendRequestAccountConfirmationEmail implements ShouldQueue
+class SendRequestAccountConfirmationEmail
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -31,9 +31,6 @@ class SendRequestAccountConfirmationEmail implements ShouldQueue
 
     /**
      * Create a new job instance.
-     *
-     * @param User        $user
-     * @param Cooperation $cooperation
      *
      * @return void
      */

@@ -11,8 +11,6 @@ class CsvHelper
      * @param string $file
      * @param string $delimiter
      * @param bool   $csvHeaderAsArrayKeys
-     *
-     * @return array
      */
     public static function toArray(
         $file,

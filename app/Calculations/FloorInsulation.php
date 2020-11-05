@@ -12,22 +12,19 @@ use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserEnergyHabit;
-use function Couchbase\defaultDecoder;
+use App\Services\DumpService;
 
 class FloorInsulation
 {
     /**
      * Method to calculate the floor insulation savings and such.
      *
-     * @param Building $building
      * @param $energyHabit
-     * @param InputSource $inputSource
      * @param $calculateData
-     *
-     * @return array
      */
     public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData): array
     {
+
         $result = [
             'savings_gas' => 0,
             'savings_co2' => 0,
@@ -44,28 +41,29 @@ class FloorInsulation
 
         $surface = array_key_exists('insulation_surface', $buildingFeatures) ? $buildingFeatures['insulation_surface'] : 0;
 
-        if (array_key_exists('crawlspace', $buildingElements)) {
-            // Check if crawlspace is accessible. If not: show warning!
-            if (in_array($buildingElements['crawlspace'], ['unknown'])) {
-                $result['crawlspace'] = 'warning';
-            }
-        }
 
-        $crawlspaceValue = null;
-        if (array_key_exists($crawlspace->id, $buildingElements)) {
-            if (array_key_exists('element_value_id', $buildingElements[$crawlspace->id])) {
-                $crawlspaceValue = ElementValue::where('element_id', $crawlspace->id)
-                                               ->where('id', $buildingElements[$crawlspace->id]['element_value_id'])
-                                               ->first();
+        if (array_key_exists('extra', $buildingElements)) {
+            // check if there is any crawlspace
+            if (array_key_exists('has_crawlspace', $buildingElements['extra'])) {
+                if (in_array($buildingElements['extra']['has_crawlspace'], ['unknown'])) {
+                    $result['crawlspace'] = 'warning';
+                }
             }
-            if (array_key_exists('extra', $buildingElements[$crawlspace->id])) {
-                // Check if crawlspace is accessible. If not: show warning!
-                if (in_array($buildingElements[$crawlspace->id]['extra'], ['no', 'unknown'])) {
+            // now check if its accessible
+            if (array_key_exists('access', $buildingElements['extra'])) {
+                if (in_array($buildingElements['extra']['access'], ['no', 'unknown'])) {
                     $result['crawlspace_access'] = 'warning';
                 }
             }
+        }
+
+        // get the height of the crawlspace
+        $crawlspaceValue = null;
+        if (array_key_exists('element_value_id', $buildingElements)) {
+            $crawlspaceValue = ElementValue::where('element_id', $crawlspace->id)
+                ->where('id', $buildingElements['element_value_id'])
+                ->first();
         } else {
-            // first page request
             $crawlspaceValue = $crawlspace->values()->orderBy('order')->first();
         }
 

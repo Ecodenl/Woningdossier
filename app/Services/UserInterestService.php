@@ -3,23 +3,23 @@
 namespace App\Services;
 
 use App\Models\InputSource;
+use App\Models\Interest;
+use App\Models\Step;
 use App\Models\User;
 use App\Models\UserInterest;
 use Illuminate\Support\Facades\Log;
 
-class UserInterestService {
-
+class UserInterestService
+{
     /**
      * Method to save a interest for a specific type and id.
      *
-     * @param User $user
      * @param $interestedInType
-     * @param int $interestedInId
-     * @param int $interestId
      */
     public static function save(User $user, InputSource $inputSource, $interestedInType, int $interestedInId, int $interestId)
     {
-        Log::debug("Saving the user interest on the");
+
+        Log::debug('Saving the user interest on the');
         Log::debug("interest_in_id {$interestedInId}");
         Log::debug("interest_in_type {$interestedInType}");
         Log::debug("interest_id {$interestId}");

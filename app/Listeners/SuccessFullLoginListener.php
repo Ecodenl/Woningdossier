@@ -3,8 +3,6 @@
 namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
-use App\Models\Account;
-use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Log;
@@ -33,7 +31,6 @@ class SuccessFullLoginListener
     {
         $account = $event->user;
 
-        // ensure the cooperation is set in the session
         $this->ensureCooperationIsSet();
 
         /** @var User $user */
@@ -91,6 +88,14 @@ class SuccessFullLoginListener
             $cooperation = Cooperation::where('slug', $cooperation)->first();
         }
 
-        HoomdossierSession::setCooperation($cooperation);
+        if ($cooperation instanceof Cooperation) {
+            HoomdossierSession::setCooperation($cooperation);
+        }
+
+        // this boots before the router, so we check if the request contains deleted cooperations
+        // and log them out and forget the remember me cookie
+        if (in_array(request()->route('cooperation'), ['vrijstadenergie', 'hnwr'])) {
+            \Auth::logout();
+        }
     }
 }

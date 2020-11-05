@@ -23,10 +23,6 @@ class Arr
 
     /**
      * Check if a whole array is empty.
-     *
-     * @param array $array
-     *
-     * @return bool
      */
     public static function isWholeArrayEmpty(array $array): bool
     {
@@ -34,7 +30,7 @@ class Arr
         $array = \Illuminate\Support\Arr::dot($array);
 
         foreach ($array as $key => $value) {
-            if (!Str::isConsideredEmptyAnswer($value)) {
+            if (! Str::isConsideredEmptyAnswer($value)) {
                 return false;
             }
         }

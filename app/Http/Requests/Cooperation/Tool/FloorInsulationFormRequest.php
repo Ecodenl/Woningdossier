@@ -3,8 +3,10 @@
 namespace App\Http\Requests\Cooperation\Tool;
 
 use App\Http\Requests\DecimalReplacementTrait;
+use App\Rules\ValidateElementKey;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class FloorInsulationFormRequest extends FormRequest
 {
@@ -34,12 +36,12 @@ class FloorInsulationFormRequest extends FormRequest
      */
     public function rules()
     {
+        $noDatabaseSelectOptions = ['yes', 'no', 'unknown'];
         return [
-            'element.*' => 'exists:element_values,id',
-            'element.*.extra' => 'nullable|alpha',
-            'element.*.element_value_id' => 'exists:element_values,id',
-            'element.crawlspace' => 'nullable|alpha',
-            'building_features.*' => 'nullable|numeric',
+            'element' => ['exists:element_values,id', new ValidateElementKey('floor-insulation')],
+            'building_elements.extra.access' => ['nullable', 'alpha', Rule::in($noDatabaseSelectOptions)],
+            'building_elements.extra.has_crawlspace' => ['nullable', 'alpha', Rule::in($noDatabaseSelectOptions)],
+            'building_elements.element_value_id' => 'exists:element_values,id',
             'building_features.floor_surface' => 'required|numeric|min:1|max:100000',
             'building_features.insulation_surface' => 'required|numeric|min:0|needs_to_be_lower_or_same_as:building_features.floor_surface',
         ];

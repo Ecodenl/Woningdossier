@@ -8,11 +8,6 @@ class MyPlanHelper
 {
     /**
      * Save a user's interests from the my plan page.
-     *
-     * @param UserActionPlanAdvice $advice
-     * @param array                $newAdviceSaveData
-     *
-     * @return array
      */
     public static function saveUserInterests(UserActionPlanAdvice $advice, array $newAdviceSaveData): array
     {

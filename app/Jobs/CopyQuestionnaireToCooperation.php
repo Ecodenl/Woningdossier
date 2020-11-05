@@ -3,40 +3,37 @@
 namespace App\Jobs;
 
 use App\Models\Cooperation;
-use App\Models\Question;
 use App\Models\Questionnaire;
-use App\Models\QuestionOption;
 use App\Services\QuestionnaireService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class CopyQuestionnaireToCooperation implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * The cooperation where the questionnaire needs to be copied to.
      *
-     * @var Cooperation $cooperation
+     * @var Cooperation
      */
     public $cooperation;
 
     /**
      * The questionnaire to copy.
      *
-     * @var Questionnaire $questionnaire
+     * @var Questionnaire
      */
     public $questionnaire;
 
     /**
      * Create a new job instance.
-     *
-     * @param Cooperation $cooperation
-     * @param Questionnaire $questionnaire
      *
      * @return void
      */

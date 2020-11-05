@@ -57,7 +57,6 @@ class KeyFigures implements KeyFiguresInterface
     }
 
     /**
-     * @param PvPanelOrientation $orientation
      * @param $angle
      *
      * @return PvPanelYield|null

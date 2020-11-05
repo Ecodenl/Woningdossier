@@ -3,18 +3,14 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Events\ParticipantAddedEvent;
-use App\Events\Registered;
 use App\Events\UserAssociatedWithOtherCooperation;
 use App\Helpers\Hoomdossier;
-use App\Helpers\PicoHelper;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\UserFormRequest;
-use App\Mail\UserAssociatedWithCooperation;
 use App\Mail\UserCreatedEmail;
 use App\Models\Account;
 use App\Models\Building;
-use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\User;
@@ -61,7 +57,6 @@ class UserController extends Controller
 
     public function store(UserFormRequest $request, Cooperation $cooperation)
     {
-
         // give the user his role
         $roleIds = $request->get('roles', '');
 
@@ -81,7 +76,6 @@ class UserController extends Controller
         $account = $user->account;
         $building = $user->building;
 
-
         // we always have to set the access to true when a user is created through the admin environment
         PrivateMessage::create(
             [
@@ -97,10 +91,8 @@ class UserController extends Controller
             ]
         );
 
-
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.
         if ($request->has('coach_id')) {
-
             // find the coach to give permissions
             $coach = User::find($request->get('coach_id'));
 
@@ -111,7 +103,6 @@ class UserController extends Controller
             // dispatch an event so the user is notified
             ParticipantAddedEvent::dispatch($coach, $building);
         }
-
 
         // if the account is recently created we have to send a confirmation mail
         // else we send a notification to the user he is associated with a new cooperation
@@ -131,8 +122,7 @@ class UserController extends Controller
     /**
      * Send the mail to the created user.
      *
-     * @param Cooperation $cooperation
-     * @param Request     $request
+     * @param Request $request
      */
     public function sendAccountConfirmationMail(Cooperation $cooperation, Account $account)
     {
@@ -144,9 +134,6 @@ class UserController extends Controller
 
     /**
      * Destroy a user.
-     *
-     * @param Cooperation $cooperation
-     * @param Request     $request
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */

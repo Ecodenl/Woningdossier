@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class ChangeOrderOnElementsTable extends Migration
@@ -18,6 +16,7 @@ class ChangeOrderOnElementsTable extends Migration
         DB::table('elements')->where('short', 'floor-insulation')->update(['order' => 4]);
         DB::table('elements')->where('short', 'roof-insulation')->update(['order' => 5]);
     }
+
     /**
      * Reverse the migrations.
      *

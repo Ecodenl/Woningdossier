@@ -6,9 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\LanguageLine;
 use App\Models\Step;
-use App\Models\Translation;
 use Illuminate\Http\Request;
-use WeDesignIt\LaravelTranslationsImport\Helpers\LangDirectory;
 
 class TranslationController extends Controller
 {
@@ -27,7 +25,7 @@ class TranslationController extends Controller
             'cooperation/mail/changed-email' => '(mail) | Email aangepast',
             'cooperation/mail/confirm-account' => '(mail) | Bevestig account',
             'cooperation/mail/reset-password' => '(mail) | Reset wachtwoord',
-            'cooperation/mail/unread-message-count' => '(mail) | Ongelezen berichten'
+            'cooperation/mail/unread-message-count' => '(mail) | Ongelezen berichten',
         ];
 
         return view('cooperation.admin.super-admin.translations.index', compact('steps', 'mailLangFiles'));
@@ -45,8 +43,6 @@ class TranslationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -54,14 +50,12 @@ class TranslationController extends Controller
     }
 
     /**
-     * @param Cooperation $cooperation
      * @param string $group |   So we can get the translations / questions from language_line table for the step
      *
      * @return \Illuminate\Http\Response
      */
     public function edit(Cooperation $cooperation, $group)
     {
-
         // see the index file, we change the "/" to "_" otherwise it wont be picked up by routing
 
         $group = str_replace('_', '/', $group);
@@ -71,18 +65,18 @@ class TranslationController extends Controller
         if ($step instanceof Step && $step->isSubStep()) {
             $group = "cooperation/tool/general-data/{$group}";
         }
-        if ($group == 'ventilation') {
+        if ('ventilation' == $group) {
             $group = "cooperation/tool/{$group}";
         }
 
-        if ($group == 'pdf-user-report') {
-            $group = "pdf/user-report";
+        if ('pdf-user-report' == $group) {
+            $group = 'pdf/user-report';
         }
 
         $translations = LanguageLine::with([
             'subQuestions' => function ($query) {
                 return $query->with('helpText');
-            }, 'helpText'])
+            }, 'helpText', ])
             ->forGroup($group)
             ->mainQuestions()
             ->get();
@@ -93,8 +87,6 @@ class TranslationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param Cooperation $cooperation
      * @param string $stepId
      *
      * @return \Illuminate\Http\Response

@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class MigrateInterestedInTypesToModelNamesOnUserInterestsTable extends Migration
@@ -17,7 +15,6 @@ class MigrateInterestedInTypesToModelNamesOnUserInterestsTable extends Migration
      */
     public function up()
     {
-
         $userInterests = DB::table('user_interests')->get();
 
         foreach ($userInterests as $userInterest) {
@@ -28,10 +25,9 @@ class MigrateInterestedInTypesToModelNamesOnUserInterestsTable extends Migration
             $this->line('old interested_in_id: '.$userInterest->interested_in_id);
             $newInterestedInType = $this->determineInterestedInType($userInterest);
 
-
             $updateData = ['interested_in_type' => $newInterestedInType];
 
-            if ($userInterest->interested_in_type != 'measure_application') {
+            if ('measure_application' != $userInterest->interested_in_type) {
                 $newInterestedInId = $this->getInterestedInIdForCurrentInterest($userInterest);
                 $this->line('new interested_in_id: '.$newInterestedInId);
 
@@ -42,7 +38,6 @@ class MigrateInterestedInTypesToModelNamesOnUserInterestsTable extends Migration
                 ->update($updateData);
         }
     }
-
 
     private function determineInterestedInType($userInterest)
     {
@@ -57,7 +52,7 @@ class MigrateInterestedInTypesToModelNamesOnUserInterestsTable extends Migration
                 2 => 'insulated-glazing',
                 3 => 'wall-insulation',
                 4 => 'floor-insulation',
-                5 => 'roof-insulation'
+                5 => 'roof-insulation',
             ],
             'service' => [
                 3 => 'heater',
@@ -68,12 +63,12 @@ class MigrateInterestedInTypesToModelNamesOnUserInterestsTable extends Migration
             ],
         ];
 
-        if ($userInterest->interested_in_type == 'service' & in_array($userInterest->interested_in_id, [1,2])){
+        if ('service' == $userInterest->interested_in_type & in_array($userInterest->interested_in_id, [1, 2])) {
             $userInterest->interested_in_id = 8;
         }
 
         $stepShort = $elementAndServiceIdToStepShort[$userInterest->interested_in_type][$userInterest->interested_in_id];
-        $this->line('step for the interested_in_id: '.$stepShort. ' based on (old) interested_in_id: '.$userInterest->interested_in_id);
+        $this->line('step for the interested_in_id: '.$stepShort.' based on (old) interested_in_id: '.$userInterest->interested_in_id);
 
         $step = DB::table('steps')->where('short', $stepShort)->first();
 
@@ -87,6 +82,5 @@ class MigrateInterestedInTypesToModelNamesOnUserInterestsTable extends Migration
      */
     public function down()
     {
-        //
     }
 }

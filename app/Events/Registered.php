@@ -26,9 +26,6 @@ class Registered
 
     /**
      * Registered constructor.
-     *
-     * @param Cooperation $cooperation
-     * @param User        $user
      */
     public function __construct(Cooperation $cooperation, User $user)
     {

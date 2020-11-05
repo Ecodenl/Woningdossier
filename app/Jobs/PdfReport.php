@@ -10,7 +10,6 @@ use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\User;
 use App\Models\UserActionPlanAdviceComments;
-use App\Scopes\GetValueScope;
 use App\Services\DumpService;
 use App\Services\UserActionPlanAdviceService;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -35,11 +34,6 @@ class PdfReport implements ShouldQueue
 
     /**
      * PdfReport constructor.
-     *
-     * @param User $user
-     * @param InputSource $inputSource
-     * @param FileType $fileType
-     * @param FileStorage $fileStorage
      */
     public function __construct(User $user, InputSource $inputSource, FileType $fileType, FileStorage $fileStorage)
     {
@@ -57,7 +51,7 @@ class PdfReport implements ShouldQueue
     public function handle()
     {
         if (\App::runningInConsole()) {
-            \Log::debug(__CLASS__ . ' Is running in the console with a maximum execution time of: ' . ini_get('max_execution_time'));
+            \Log::debug(__CLASS__.' Is running in the console with a maximum execution time of: '.ini_get('max_execution_time'));
         }
 
         $user = $this->user;
@@ -112,7 +106,7 @@ class PdfReport implements ShouldQueue
                 $tableData = array_splice($keys, 2);
 
                 // we dont want the calculations in the report data, we need them separate
-                if (!in_array('calculation', $tableData)) {
+                if (! in_array('calculation', $tableData)) {
                     $reportData[$keys[0]][$keys[1]][implode('.', $tableData)] = $value;
                 }
             }

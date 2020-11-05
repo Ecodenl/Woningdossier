@@ -136,8 +136,6 @@ class SendNotifications extends Command
      * On local / test environments the diff for one day is set to one hour
      * (Hoom logic)
      *
-     * @param \DateInterval $diff
-     *
      * @return bool
      */
     protected function almostMoreThanOneDayAgo(\DateInterval $diff)
@@ -158,8 +156,6 @@ class SendNotifications extends Command
      *
      * On local / test environments the diff for one week is set to 4 hours
      * (Hoom logic)
-     *
-     * @param \DateInterval $diff
      *
      * @return bool
      */

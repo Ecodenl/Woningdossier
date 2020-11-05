@@ -16,6 +16,7 @@ use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\UserEnergyHabit;
+use App\Services\DumpService;
 use Carbon\Carbon;
 
 class RoofInsulation
@@ -25,7 +26,8 @@ class RoofInsulation
         // \Log::debug(__METHOD__);
         $result = [];
 
-        $roofTypeIds = $calculateData['building_roof_types']['id'] ?? [];
+        $roofTypeIds = $calculateData['building_roof_type_ids'] ?? [];
+
         foreach ($roofTypeIds as $roofTypeId) {
             $roofType = RoofType::findOrFail($roofTypeId);
             if ($roofType instanceof RoofType) {
@@ -90,7 +92,7 @@ class RoofInsulation
             if ($isBitumenRoof) {
                 // \Log::debug('The roof is a bitumen roof');
                 $year = isset($roofTypes[$cat]['extra']['bitumen_replaced_date']) ? (int) $roofTypes[$cat]['extra']['bitumen_replaced_date'] : Carbon::now()->year - 10;
-                // \Log::debug('Bitumen last replacement was set to '.$year);
+            // \Log::debug('Bitumen last replacement was set to '.$year);
             } else {
                 $year = Carbon::now()->year;
             }
@@ -104,10 +106,10 @@ class RoofInsulation
             if (isset($roofTypes[$cat]['building_heating_id'])) {
                 $heating = BuildingHeating::find($roofTypes[$cat]['building_heating_id']);
             }
-            if (isset($roofTypes[$cat]['measure_application_id'])) {
+            if (isset($roofTypes[$cat]['extra']['measure_application_id'])) {
                 $measureAdvices = $adviceMap[$cat];
                 foreach ($measureAdvices as $strAdvice => $measureAdvice) {
-                    if ($roofTypes[$cat]['measure_application_id'] == $measureAdvice->id) {
+                    if ($roofTypes[$cat]['extra']['measure_application_id'] == $measureAdvice->id) {
                         $advice = $strAdvice;
                         // we do this as we don't want the advice to be in
                         // $result['insulation_advice'] as in other calculating

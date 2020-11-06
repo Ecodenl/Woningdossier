@@ -39,7 +39,11 @@ class SuccessFullLoginListener
         // than it will find a account (user) and log hin in, but the account has no user for "this" cooperation so it will fail
         // and thus we will check if the account has an user, and if not we will log him out and the cookie with its session are gone foreeveeerrr
         if (!$account->user() instanceof User) {
+            \Illuminate\Support\Facades\Log::debug('Account has no user, logging out and exiting.');
             \Auth::logout();
+            $account->setRememberToken(null);
+            $account->save();
+            header('Location: '.route('cooperation.welcome'));
             exit;
         }
 

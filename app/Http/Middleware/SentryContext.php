@@ -32,12 +32,12 @@ class SentryContext
 
             $u = [
                 'account' => $account->id,
-                'id' => $user->id,
+                'id' => $user->id ?? 'none',
                 'role' => HoomdossierSession::currentRole(),
                 'is_observing' => HoomdossierSession::isUserObserving() ? 'yes' : 'no',
                 'is_comparing' => HoomdossierSession::isUserComparingInputSources() ? 'yes' : 'no',
                 'input_source' => $inputSource->short,
-                'operating_on_own_building' => optional($building)->user_id == $user->id ? 'yes' : 'no',
+                'operating_on_own_building' => optional($building)->user_id == ($user->id ?? 0) ? 'yes' : 'no',
                 'operating_as' => $inputSourceValue->short,
                 'all_session_data' => \App\Helpers\HoomdossierSession::all(),
             ];

@@ -12,14 +12,35 @@ use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Step;
+use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
 use App\Services\UserActionPlanAdviceService;
+use Illuminate\Support\Facades\Input;
 use phpDocumentor\Reflection\Types\Self_;
 
-class FloorInsulationHelper
+class FloorInsulationHelperv2
 {
-    public static function buildRequestData(Building $building)
+    /** @var User $user */
+    public $user;
+
+    /** @var InputSource $inputSource */
+    public $inputSource;
+
+    /** @var array */
+    public $values;
+
+    public function __construct(User $user, InputSource $inputSource)
+    {
+
+    }
+
+    public function setValues(array $values)
+    {
+        $this->values = $values;
+    }
+
+    public static function buildRequestValues(Building $building, InputSource $inputSource)
     {
         $floorInsulationElement = Element::findByShort('floor-insulation');
         $crawlspaceElement = Element::findByShort('crawlspace');

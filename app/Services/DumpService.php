@@ -692,8 +692,8 @@ class DumpService
         $wallInsulationElement = Element::findByShort('wall-insulation');
         $woodElements = Element::findByShort('wood-elements');
         $frames = Element::findByShort('frames');
-
-
+        $floorInsulationElement = Element::findByShort('floor-insulation');
+        $crawlspaceElement = Element::findByShort('crawlspace');
 
         $boilerService = Service::findByShort('boiler');
 
@@ -741,6 +741,22 @@ class DumpService
         ];
 
 
+        // handle the stuff for the floor insulation.
+        $floorInsulationElementValueId = $buildingElements->where('element_id', $floorInsulationElement->id)->first()->element_value_id ?? null;
+        $buildingCrawlspaceElement = $buildingElements->where('element_id', $crawlspaceElement->id)->first();
+
+        $floorInsulationBuildingElements = [
+            'element_value_id' => $buildingCrawlspaceElement->element_value_id ?? null,
+            'extra' => [
+                'has_crawlspace' => $buildingCrawlspaceElement->extra['has_crawlspace'] ?? null,
+                'access' => $buildingCrawlspaceElement->extra['access'] ?? null,
+            ],
+        ];
+
+        $floorBuildingFeatures = [
+            'floor_surface' => $buildingFeature->floor_surface ?? null,
+            'insulation_surface' => $buildingFeature->insulation_surface ?? null,
+        ];
 
 
         // now lets handle the roof insulation stuff.

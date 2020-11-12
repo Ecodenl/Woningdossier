@@ -79,6 +79,11 @@ class FloorInsulationController extends Controller
             $building->buildingFeatures()
         )->get();
 
+        $x = new FloorInsulationHelperv2($building->user, HoomdossierSession::getInputSource(true));
+
+        $x->createValues();
+        dd('bier', $x->values, $x->getValues('element'), $x->saveAdvices());
+
 
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation', 'buildingInsulationForMe', 'buildingElementsOrderedOnInputSourceCredibility',

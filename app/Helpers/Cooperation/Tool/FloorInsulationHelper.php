@@ -19,30 +19,6 @@ use phpDocumentor\Reflection\Types\Self_;
 
 class FloorInsulationHelper
 {
-    public static function buildRequestData(Building $building)
-    {
-        $floorInsulationElement = Element::findByShort('floor-insulation');
-        $crawlspaceElement = Element::findByShort('crawlspace');
-
-        $buildingElements = $building->buildingElements()->forInputSource($inputSource)->get();
-
-        // handle the stuff for the floor insulation.
-        $floorInsulationElementValueId = $buildingElements->where('element_id', $floorInsulationElement->id)->first()->element_value_id ?? null;
-        $buildingCrawlspaceElement = $buildingElements->where('element_id', $crawlspaceElement->id)->first();
-
-        $floorInsulationBuildingElements = [
-            'element_value_id' => $buildingCrawlspaceElement->element_value_id ?? null,
-            'extra' => [
-                'has_crawlspace' => $buildingCrawlspaceElement->extra['has_crawlspace'] ?? null,
-                'access' => $buildingCrawlspaceElement->extra['access'] ?? null,
-            ],
-        ];
-
-        $floorBuildingFeatures = [
-            'floor_surface' => $buildingFeature->floor_surface ?? null,
-            'insulation_surface' => $buildingFeature->insulation_surface ?? null,
-        ];
-    }
 
     /**
      * Method to clear all the saved data for the step, except for the comments.

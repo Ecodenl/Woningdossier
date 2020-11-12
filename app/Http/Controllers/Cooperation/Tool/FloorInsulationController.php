@@ -79,12 +79,6 @@ class FloorInsulationController extends Controller
             $building->buildingFeatures()
         )->get();
 
-        $x = new FloorInsulationHelperv2($building->user, HoomdossierSession::getInputSource(true));
-
-        $x->createValues();
-        dd('bier', $x->values, $x->getValues('element'), $x->saveAdvices());
-
-
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation', 'buildingInsulationForMe', 'buildingElementsOrderedOnInputSourceCredibility',
             'crawlspace', 'buildingCrawlspace', 'typeIds', 'buildingFeaturesOrderedOnInputSourceCredibility',
@@ -123,29 +117,13 @@ class FloorInsulationController extends Controller
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
 
-        $floorInsulationHelper = new FloorInsulationHelperv2($user, $inputSource);
+        $floorInsulationHelper = new FloorInsulationHelper($user, $inputSource);
 
         $floorInsulationHelper
             ->setValues($request->validated())
             ->save()
             ->createAdvices();
 
-
-
-        $floorInsulationHelper = new FloorInsulationHelperv2($user, $inputSource);
-
-        $floorInsulationHelper
-            ->mockRequestValues()
-            ->save()
-            ->createAdvices();
-
-        // when its a step, and a user has no interest in it we will clear the data for that step
-        // a user may had interest in the step and later on decided he has no interest, so we clear the data to prevent weird data in the dumps.
-//        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
-            FloorInsulationHelper::save($building, $inputSource, $request->validated());
-//        } else {
-//            FloorInsulationHelper::clear($building, $inputSource);
-//        }
 
         StepHelper::complete($this->step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());

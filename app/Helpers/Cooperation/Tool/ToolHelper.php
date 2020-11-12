@@ -34,6 +34,8 @@ abstract class ToolHelper
     public function setValues(array $values)
     {
         $this->values = $values;
+
+        return $this;
     }
 
     /**
@@ -53,15 +55,15 @@ abstract class ToolHelper
     /**
      * Must set the values, according to the given user and InputSource.
      */
-    abstract public function createValues();
+    abstract public function createValues(): ToolHelper;
 
     /**
      * Must save the step data.
      */
-    abstract public function save();
+    abstract public function save(): ToolHelper;
 
     /**
      * Must clear and create the user action plan advices.
      */
-    abstract public function saveAdvices();
+    abstract public function createAdvices(): ToolHelper;
 }

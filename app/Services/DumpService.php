@@ -527,7 +527,7 @@ class DumpService
 
                     if ($buildingInsulatedGlazing instanceof BuildingInsulatedGlazing) {
                         switch ($column) {
-                            case 'insulated_glazing_id':
+                            case 'insulating_glazing_id':
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingInsulatedGlazing->insulatedGlazing->name ?? '';
                                 break;
                             case 'building_heating_id':

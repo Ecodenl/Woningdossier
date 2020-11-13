@@ -7,7 +7,6 @@ use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\User;
 use App\Services\DumpService;
-use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {

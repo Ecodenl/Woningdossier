@@ -97,7 +97,7 @@ class WallInsulationController extends Controller
 
         (new WallInsulationHelper($user, $inputSource))
             ->setValues($request->validated())
-            ->save()
+            ->saveValues()
             ->createAdvices();
 
 

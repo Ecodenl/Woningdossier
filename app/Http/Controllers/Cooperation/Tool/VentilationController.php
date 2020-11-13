@@ -93,7 +93,7 @@ class VentilationController extends Controller
 
         (new VentilationHelper($buildingOwner, $inputSource))
             ->setValues($request->only('building_ventilations', 'user_interests'))
-            ->save()
+            ->saveValues()
             ->createAdvices();
 
         StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));

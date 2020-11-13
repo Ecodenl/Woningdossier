@@ -27,7 +27,7 @@ use Illuminate\Support\Collection;
 class InsulatedGlazingHelper extends ToolHelper
 {
 
-    public function save(): ToolHelper
+    public function saveValues(): ToolHelper
     {
         $buildingFeatureData = $this->getValues('building_features');
         $buildingInsulatedGlazingData = $this->getValues('building_insulated_glazings');

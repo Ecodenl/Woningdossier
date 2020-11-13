@@ -59,7 +59,7 @@ class FloorInsulationHelper extends ToolHelper
         return $this;
     }
 
-    public function save(): ToolHelper
+    public function saveValues(): ToolHelper
     {
         $floorInsulationElement = Element::findByShort('floor-insulation');
 

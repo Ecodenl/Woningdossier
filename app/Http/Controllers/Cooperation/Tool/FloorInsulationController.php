@@ -121,7 +121,7 @@ class FloorInsulationController extends Controller
 
         $floorInsulationHelper
             ->setValues($request->validated())
-            ->save()
+            ->saveValues()
             ->createAdvices();
 
 

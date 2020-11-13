@@ -168,7 +168,7 @@ class InsulatedGlazingController extends Controller
 
         (new InsulatedGlazingHelper($user, $inputSource))
             ->setValues($saveData)
-            ->save()
+            ->saveValues()
             ->createAdvices();
 
         // Save progress

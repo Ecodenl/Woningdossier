@@ -13,7 +13,7 @@ use App\Services\UserActionPlanAdviceService;
 class VentilationHelper extends ToolHelper
 {
 
-    public function save(): ToolHelper
+    public function saveValues(): ToolHelper
     {
         // Save ventilation data
         BuildingVentilation::updateOrCreate(

@@ -45,7 +45,7 @@ class WallInsulationHelper extends ToolHelper
         return $this;
     }
 
-    public function save(): ToolHelper
+    public function saveValues(): ToolHelper
     {
         $wallInsulationElement = Element::findByShort('wall-insulation');
 

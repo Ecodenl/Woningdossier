@@ -60,7 +60,7 @@ abstract class ToolHelper
     /**
      * Must save the step data.
      */
-    abstract public function save(): ToolHelper;
+    abstract public function saveValues(): ToolHelper;
 
     /**
      * Must clear and create the user action plan advices.

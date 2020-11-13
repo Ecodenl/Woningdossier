@@ -221,8 +221,6 @@ class InsulatedGlazingHelper extends ToolHelper
             'building_paintwork_statuses' => $buildingPaintworkStatusesArray,
         ]);
 
-
-        dd(InsulatedGlazing::calculate($this->building, $this->inputSource, $this->user->energyHabit, $this->getValues()));
         return $this;
     }
 

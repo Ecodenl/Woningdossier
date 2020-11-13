@@ -2,8 +2,71 @@
 
 namespace App\Helpers\Cooperation\Tool;
 
-class VentilationHelper
+use App\Calculations\Ventilation;
+use App\Models\MeasureApplication;
+use App\Models\Step;
+use App\Models\UserActionPlanAdvice;
+use App\Services\UserActionPlanAdviceService;
+
+class VentilationHelper extends ToolHelper
 {
+
+    public function save(): ToolHelper
+    {
+        // Save ventilation data
+        $this->building
+            ->buildingVentilations()
+            ->updateOrCreate(
+                [
+                    'input_source_id' => $this->inputSource->id,
+                ],
+                [
+                    'how' => $this->getValues('building_ventilations.how'),
+                    'usage' => $this->getValues('building_ventilations.usage') ?? [],
+                    'living_situation' => $this->getValues('building_ventilations.living_situation')
+                ]
+            );
+        return $this;
+    }
+
+    public function createAdvices(): ToolHelper
+    {
+        $step = Step::findByShort('ventilation');
+
+        $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
+
+        $results = Ventilation::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
+
+        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+
+        $interestsInMeasureApplications = $this->getValues('user_interests');
+        $relevantAdvices = collect($results['advices'])->whereIn('id', $interestsInMeasureApplications);
+
+        foreach ($relevantAdvices as $advice) {
+            $measureApplication = MeasureApplication::find($advice['id']);
+            if ($measureApplication instanceof MeasureApplication) {
+                if ('crack-sealing' == $measureApplication->short) {
+                    $actionPlanAdvice = new UserActionPlanAdvice($results['result']['crack_sealing'] ?? []);
+                    $actionPlanAdvice->costs = $results['result']['crack_sealing']['cost_indication'] ?? null; // only outlier
+                } else {
+                    $actionPlanAdvice = new UserActionPlanAdvice();
+                }
+
+                $actionPlanAdvice->planned = true;
+                $actionPlanAdvice->user()->associate($this->user);
+                $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                $actionPlanAdvice->step()->associate($step);
+                $actionPlanAdvice->save();
+            }
+        }
+        return $this;
+    }
+
+    public function createValues(): ToolHelper
+    {
+        return $this;
+    }
+
     /**
      * Method to return the answer options of the how question.
      */

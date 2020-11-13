@@ -16,39 +16,110 @@ use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
 use App\Services\UserActionPlanAdviceService;
 
-class WallInsulationHelper
+class WallInsulationHelper extends ToolHelper
 {
+    public function createValues(): ToolHelper
+    {
+        $buildingFeature = $this->building->buildingFeatures()->forInputSource($this->inputSource)->first();
+        $wallInsulationElement = Element::findByShort('wall-insulation');
 
-    /**
-     * Method to clear all the saved data for the step, except for the comments.
-     *
-     * @param Building $building
-     * @param InputSource $inputSource
-     * @param array $saveData
-     */
-    public static function save(Building $building, InputSource $inputSource, array $saveData)
+        $wallInsulationBuildingElement = $this->building
+            ->buildingElements()
+            ->where('element_id', $wallInsulationElement->id)
+            ->forInputSource($this->inputSource)
+            ->first();
+
+        $this->setValues([
+            'element' => [$wallInsulationElement->id => $wallInsulationBuildingElement->element_value_id ?? null],
+            'building_features' => [
+                'cavity_wall' => $buildingFeature->cavity_wall ?? null,
+                'insulation_wall_surface' => $buildingFeature->insulation_wall_surface ?? null,
+                'wall_joints' => $buildingFeature->wall_joints ?? null,
+                'contaminated_wall_joints' => $buildingFeature->contaminated_wall_joints ?? null,
+                'facade_plastered_painted' => $buildingFeature->facade_plastered_painted ?? null,
+                'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id ?? null,
+                'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
+            ]
+        ]);
+
+        return $this;
+    }
+
+    public function save(): ToolHelper
     {
         $wallInsulationElement = Element::findByShort('wall-insulation');
 
         // Save the wall insulation
         BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'building_id' => $building->id,
-                'input_source_id' => $inputSource->id,
+                'building_id' => $this->building->id,
+                'input_source_id' => $this->inputSource->id,
                 'element_id' => $wallInsulationElement->id,
             ],
             [
-                'element_value_id' => $saveData['element'][$wallInsulationElement->id]
+                'element_value_id' => $this->getValues('element')[$wallInsulationElement->id]
             ]
         );
         BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'building_id' => $building->id,
-                'input_source_id' => $inputSource->id,
+                'building_id' => $this->building->id,
+                'input_source_id' => $this->inputSource->id,
             ],
-            $saveData['building_features']
+            $this->getValues('building_features')
         );
-        self::saveAdvices($building, $inputSource, $saveData);
+
+        return $this;
+    }
+
+    /**
+     * Save the advices for the wall insulation page
+     *
+     * @param Building $building
+     * @param InputSource $inputSource
+     * @param array $saveData
+     * @throws \Exception
+     */
+    public function createAdvices(): ToolHelper
+    {
+        $results = WallInsulation::calculate($this->building, $this->inputSource, $this->user->energyHabit, $this->getValues());
+
+        $step = Step::findByShort('wall-insulation');
+
+        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+
+        if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
+            $measureApplication = MeasureApplication::translated('measure_name', $results['insulation_advice'], 'nl')->first(['measure_applications.*']);
+            if ($measureApplication instanceof MeasureApplication) {
+                $actionPlanAdvice = new UserActionPlanAdvice($results);
+                $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
+                $actionPlanAdvice->user()->associate($this->user);
+                $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                $actionPlanAdvice->step()->associate($step);
+                $actionPlanAdvice->save();
+            }
+        }
+
+        $keysToMeasure = [
+            'paint_wall' => 'paint-wall',
+            'repair_joint' => 'repair-joint',
+            'clean_brickwork' => 'clean-brickwork',
+            'impregnate_wall' => 'impregnate-wall',
+        ];
+
+        foreach ($keysToMeasure as $key => $measureShort) {
+            if (isset($results[$key]['costs']) && $results[$key]['costs'] > 0) {
+                $measureApplication = MeasureApplication::where('short', $measureShort)->first();
+                if ($measureApplication instanceof MeasureApplication) {
+                    $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
+                    $actionPlanAdvice->user()->associate($this->user);
+                    $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                    $actionPlanAdvice->step()->associate($step);
+                    $actionPlanAdvice->save();
+                }
+            }
+        }
+
+        return $this;
     }
 
     /**
@@ -77,55 +148,5 @@ class WallInsulationHelper
         );
 
         StepCleared::dispatch($building->user, $inputSource, Step::findByShort('wall-insulation'));
-    }
-
-    /**
-     * Save the advices for the wall insulation page
-     *
-     * @param Building $building
-     * @param InputSource $inputSource
-     * @param array $saveData
-     * @throws \Exception
-     */
-    public static function saveAdvices(Building $building, InputSource $inputSource, array $saveData)
-    {
-        $user = $building->user;
-        $results = WallInsulation::calculate($building, $inputSource, $user->energyHabit, $saveData);
-
-        $step = Step::findByShort('wall-insulation');
-
-        UserActionPlanAdviceService::clearForStep($user, $inputSource, $step);
-
-        if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
-            $measureApplication = MeasureApplication::translated('measure_name', $results['insulation_advice'], 'nl')->first(['measure_applications.*']);
-            if ($measureApplication instanceof MeasureApplication) {
-                $actionPlanAdvice = new UserActionPlanAdvice($results);
-                $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
-                $actionPlanAdvice->user()->associate($user);
-                $actionPlanAdvice->measureApplication()->associate($measureApplication);
-                $actionPlanAdvice->step()->associate($step);
-                $actionPlanAdvice->save();
-            }
-        }
-
-        $keysToMeasure = [
-            'paint_wall' => 'paint-wall',
-            'repair_joint' => 'repair-joint',
-            'clean_brickwork' => 'clean-brickwork',
-            'impregnate_wall' => 'impregnate-wall',
-        ];
-
-        foreach ($keysToMeasure as $key => $measureShort) {
-            if (isset($results[$key]['costs']) && $results[$key]['costs'] > 0) {
-                $measureApplication = MeasureApplication::where('short', $measureShort)->first();
-                if ($measureApplication instanceof MeasureApplication) {
-                    $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
-                    $actionPlanAdvice->user()->associate($user);
-                    $actionPlanAdvice->measureApplication()->associate($measureApplication);
-                    $actionPlanAdvice->step()->associate($step);
-                    $actionPlanAdvice->save();
-                }
-            }
-        }
     }
 }

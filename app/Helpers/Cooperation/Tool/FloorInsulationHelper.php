@@ -12,17 +12,14 @@ use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Step;
-use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
 use App\Services\UserActionPlanAdviceService;
-use Illuminate\Support\Facades\Input;
-use phpDocumentor\Reflection\Types\Self_;
 
 class FloorInsulationHelper extends ToolHelper
 {
 
-    public function createValues()
+    public function createValues(): ToolHelper
     {
         $floorInsulationElement = Element::findByShort('floor-insulation');
         $crawlspaceElement = Element::findByShort('crawlspace');
@@ -58,10 +55,11 @@ class FloorInsulationHelper extends ToolHelper
             'building_elements' => $floorInsulationBuildingElements,
             'building_features' => $floorBuildingFeatures,
         ]);
+
+        return $this;
     }
 
-
-    public function save()
+    public function save(): ToolHelper
     {
         $floorInsulationElement = Element::findByShort('floor-insulation');
 
@@ -97,7 +95,7 @@ class FloorInsulationHelper extends ToolHelper
         return $this;
     }
 
-    public function createAdvices()
+    public function createAdvices(): ToolHelper
     {
         $floorInsulationElement = Element::findByShort('floor-insulation');
         $step = Step::findByShort('floor-insulation');

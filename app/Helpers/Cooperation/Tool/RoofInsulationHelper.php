@@ -173,6 +173,7 @@ class RoofInsulationHelper extends ToolHelper
             }
         }
 
+        return $this;
     }
 
     public function saveValues(): ToolHelper

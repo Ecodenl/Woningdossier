@@ -134,11 +134,6 @@ class RoofInsulationController extends Controller
             ->setValues($request->all())
             ->saveValues()
             ->createAdvices();
-//        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
-            RoofInsulationHelper::save($building, $inputSource, $request->all());
-//        } else {
-//            RoofInsulationHelper::clear($building, $inputSource);
-//        }
 
         StepHelper::complete($this->step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());

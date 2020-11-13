@@ -23,31 +23,22 @@ use App\Services\ModelService;
 use App\Services\UserActionPlanAdviceService;
 use Carbon\Carbon;
 
-class RoofInsulationHelper
+class RoofInsulationHelper extends ToolHelper
 {
-    /**
-     * Save the advices from the save data to the user action plan advices
-     *
-     * @param Building $building
-     * @param InputSource $inputSource
-     * @param array $saveData
-     * @throws \Exception
-     */
-    public static function saveAdvices(Building $building, InputSource $inputSource, array $saveData)
+    public function createAdvices(): ToolHelper
     {
-        $results = RoofInsulationCalculate::calculate($building, $inputSource, $building->user->energyHabit, $saveData);
+        $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
+        $results = RoofInsulationCalculate::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
 
         $result = [];
 
-        $user = $building->user;
-        
         $step = Step::findByShort('roof-insulation');
 
-        $buildingRoofTypeData = $saveData['building_roof_types'];
+        $buildingRoofTypeData = $this->getValues('building_roof_types');
         // Remove old results
-        UserActionPlanAdviceService::clearForStep($user, $inputSource, $step);
+        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
-        $roofTypeIds = $saveData['building_roof_type_ids'];
+        $roofTypeIds = $this->getValues('building_roof_type_ids');
         foreach ($roofTypeIds as $roofTypeId) {
             $roofType = RoofType::findOrFail($roofTypeId);
             if ($roofType instanceof RoofType) {
@@ -71,7 +62,7 @@ class RoofInsulationHelper
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = null;
 
-                    $interest = Interest::find($saveData['user_interests']['interest_id']);
+                    $interest = Interest::find($this->getValues('user_interests.interest_id'));
 
                     if (1 == $interest->calculate_value) {
                         // on short term: this year
@@ -91,7 +82,7 @@ class RoofInsulationHelper
                     }
 
                     if ($actionPlanAdvice instanceof UserActionPlanAdvice) {
-                        $actionPlanAdvice->user()->associate($user);
+                        $actionPlanAdvice->user()->associate($this->user);
                         $actionPlanAdvice->measureApplication()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($step);
                         $actionPlanAdvice->save();
@@ -109,7 +100,7 @@ class RoofInsulationHelper
 
                 $zincSurface = 0;
                 if ($roofType instanceof RoofType) {
-                    $buildingRoofType = $building->roofTypes()->where('roof_type_id', '=', $roofType->id)->first();
+                    $buildingRoofType = $this->building->roofTypes()->forInputSource($this->inputSource)->where('roof_type_id', '=', $roofType->id)->first();
                     if ($buildingRoofType instanceof BuildingRoofType) {
                         $zincSurface = $buildingRoofType->zinc_surface;
                     }
@@ -126,7 +117,7 @@ class RoofInsulationHelper
                     $costs = Calculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $zincSurface, $year, false);
 
                     $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
-                    $actionPlanAdvice->user()->associate($user);
+                    $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->measureApplication()->associate($zincReplaceMeasure);
                     $actionPlanAdvice->step()->associate($step);
                     $actionPlanAdvice->save();
@@ -149,7 +140,7 @@ class RoofInsulationHelper
                         $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
 
                         $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
-                        $actionPlanAdvice->user()->associate($user);
+                        $actionPlanAdvice->user()->associate($this->user);
                         $actionPlanAdvice->measureApplication()->associate($replaceMeasure);
                         $actionPlanAdvice->step()->associate($step);
                         $actionPlanAdvice->save();
@@ -174,7 +165,7 @@ class RoofInsulationHelper
                     $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
 
                     $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
-                    $actionPlanAdvice->user()->associate($user);
+                    $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->measureApplication()->associate($replaceMeasure);
                     $actionPlanAdvice->step()->associate($step);
                     $actionPlanAdvice->save();
@@ -184,21 +175,13 @@ class RoofInsulationHelper
 
     }
 
-    /**
-     * Method to save the roof insulation data
-     *
-     * @param Building $building
-     * @param InputSource $inputSource
-     * @param array $saveData
-     * @throws \Exception
-     */
-    public static function save(Building $building, InputSource $inputSource, array $saveData)
+    public function saveValues(): ToolHelper
     {
-        $buildingFeatureData = $saveData['building_features'];
+        $buildingFeatureData = $this->getValues('building_features');
         // the selected roof types for the current situation
         // get the selected roof type ids
-        $roofTypeIds = $saveData['building_roof_type_ids'];
-        $buildingRoofTypeData = $saveData['building_roof_types'];
+        $roofTypeIds = $this->getValues('building_roof_type_ids');
+        $buildingRoofTypeData = $this->getValues('building_roof_types');
 
         // here we will store the data that we will need to create.
         // the building roof type data will always be filled, even though the roof type ids are not selected.
@@ -210,7 +193,7 @@ class RoofInsulationHelper
             $roofType = RoofType::findOrFail($roofTypeId);
             if ($roofType instanceof RoofType) {
 
-                $buildingRoofType = $building->roofTypes()->where('roof_type_id', '=', $roofType->id)->first();
+                $buildingRoofType = $this->building->roofTypes()->forInputSource($this->inputSource)->where('roof_type_id', '=', $roofType->id)->first();
                 $zincSurface = $buildingRoofType instanceof BuildingRoofType ? $buildingRoofType->zinc_surface : 0;
 
                 // Note there's no such request input just yet. We're not sure this will be available for the user
@@ -224,8 +207,8 @@ class RoofInsulationHelper
 
         BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'building_id' => $building->id,
-                'input_source_id' => $inputSource->id,
+                'building_id' => $this->building->id,
+                'input_source_id' => $this->inputSource->id,
             ],
             $buildingFeatureData
         );
@@ -233,13 +216,18 @@ class RoofInsulationHelper
         // we dont know which roof_type_id we will get, so we delete all the rows and create new ones.
         ModelService::deleteAndCreate(BuildingRoofType::class,
             [
-                'building_id' => $building->id,
-                'input_source_id' => $inputSource->id,
+                'building_id' => $this->building->id,
+                'input_source_id' => $this->inputSource->id,
             ],
             $buildingRoofTypeCreateData
         );
 
-        self::saveAdvices($building, $inputSource, $saveData);
+        return $this;
+    }
+
+    public function createValues(): ToolHelper
+    {
+        return $this;
     }
 
     /**

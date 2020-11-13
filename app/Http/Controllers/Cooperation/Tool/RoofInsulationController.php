@@ -129,6 +129,11 @@ class RoofInsulationController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
+
+        (new RoofInsulationHelper($user, $inputSource))
+            ->setValues($request->all())
+            ->saveValues()
+            ->createAdvices();
 //        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
             RoofInsulationHelper::save($building, $inputSource, $request->all());
 //        } else {

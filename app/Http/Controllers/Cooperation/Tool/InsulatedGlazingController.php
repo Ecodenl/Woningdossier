@@ -12,26 +12,18 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\InsulatedGlazingFormRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
-use App\Models\BuildingFeature;
 use App\Models\BuildingHeating;
 use App\Models\BuildingInsulatedGlazing;
-use App\Models\BuildingPaintworkStatus;
 use App\Models\Element;
-use App\Models\ElementValue;
 use App\Models\InsulatingGlazing;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
 use App\Models\Step;
-use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
-use App\Scopes\GetValueScope;
-use App\Services\DumpService;
-use App\Services\ModelService;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class InsulatedGlazingController extends Controller
@@ -80,6 +72,7 @@ class InsulatedGlazingController extends Controller
             'hr3p-frames',
             'glass-in-lead',
         ];
+
 
         $buildingInsulatedGlazings = [];
         $buildingInsulatedGlazingsForMe = [];
@@ -172,7 +165,11 @@ class InsulatedGlazingController extends Controller
 
         // save the step data
         $saveData = $request->only('user_interests', 'building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses');
-        InsulatedGlazingHelper::save($building, $inputSource, $saveData);
+
+        (new InsulatedGlazingHelper($user, $inputSource))
+            ->setValues($saveData)
+            ->save()
+            ->createAdvices();
 
         // Save progress
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));

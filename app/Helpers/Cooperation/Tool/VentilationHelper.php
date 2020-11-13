@@ -16,18 +16,18 @@ class VentilationHelper extends ToolHelper
     public function save(): ToolHelper
     {
         // Save ventilation data
-        $this->building
-            ->buildingVentilations()
-            ->updateOrCreate(
-                [
-                    'input_source_id' => $this->inputSource->id,
-                ],
-                [
-                    'how' => $this->getValues('building_ventilations.how'),
-                    'usage' => $this->getValues('building_ventilations.usage') ?? [],
-                    'living_situation' => $this->getValues('building_ventilations.living_situation')
-                ]
-            );
+        BuildingVentilation::updateOrCreate(
+            [
+                'building_id' => $this->building->id,
+                'input_source_id' => $this->inputSource->id,
+            ],
+            [
+                'how' => $this->getValues('building_ventilations.how'),
+                'usage' => $this->getValues('building_ventilations.usage') ?? [],
+                'living_situation' => $this->getValues('building_ventilations.living_situation')
+            ]
+        );
+
         return $this;
     }
 

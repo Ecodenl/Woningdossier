@@ -833,6 +833,7 @@ class DumpService
             'building_roof_types' => $buildingRoofTypesArray,
             'building_roof_type_ids' => $buildingRoofTypeIds
         ]);
+        dd($roofInsulationSavings);
 
         $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($userEnergyHabit, [
             'building_services' => $buildingBoilerArray,

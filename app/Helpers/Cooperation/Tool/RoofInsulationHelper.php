@@ -228,6 +228,39 @@ class RoofInsulationHelper extends ToolHelper
 
     public function createValues(): ToolHelper
     {
+        $buildingRoofTypes = $this->building->roofTypes()->forInputSource($this->inputSource)->get();
+
+        // now lets handle the roof insulation stuff.
+        $buildingRoofTypesArray = [];
+        $buildingRoofTypeIds = [];
+
+        /** @var BuildingRoofType $buildingRoofType */
+        foreach ($buildingRoofTypes as $buildingRoofType) {
+            $short = $buildingRoofType->roofType->short;
+            $buildingRoofTypesArray[$short] = [
+                'element_value_id' => $buildingRoofType->element_value_id,
+                'roof_surface' => $buildingRoofType->roof_surface,
+                'insulation_roof_surface' => $buildingRoofType->insulation_roof_surface,
+                'extra' => $buildingRoofType->extra,
+                'measure_application_id' => $buildingRoofType->extra['measure_application_id'] ?? null,
+                'building_heating_id' => $buildingRoofType->building_heating_id,
+            ];
+            $buildingRoofTypeIds[] = $buildingRoofType->roofType->id;
+
+            // if the roof is a flat roof OR the tiles_condition is empty: remove it!!
+            // this is needed as the tiles condition has a different type of calculation
+            // than bitumen has
+            if (array_key_exists('tiles_condition', $buildingRoofTypesArray[$short]['extra'])) {
+                if ('flat' == $short || empty($buildingRoofTypesArray[$short]['extra']['tiles_condition'])) {
+                    unset($buildingRoofTypesArray[$short]['extra']['tiles_condition']);
+                }
+            }
+        }
+
+        $this->setValues([
+            'building_roof_types' => $buildingRoofTypesArray,
+            'building_roof_type_ids' => $buildingRoofTypeIds
+        ]);
         return $this;
     }
 

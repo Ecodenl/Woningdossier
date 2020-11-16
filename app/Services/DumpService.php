@@ -779,7 +779,7 @@ class DumpService
             // if the roof is a flat roof OR the tiles_condition is empty: remove it!!
             // this is needed as the tiles condition has a different type of calculation
             // than bitumen has
-            if (array_key_exists('tiles_condition', $buildingRoofTypesArray[$short]['extra'])) {
+            if (isset($buildingRoofTypesArray[$short]['extra']) && array_key_exists('tiles_condition', $buildingRoofTypesArray[$short]['extra'])) {
                 if ('flat' == $short || empty($buildingRoofTypesArray[$short]['extra']['tiles_condition'])) {
                     unset($buildingRoofTypesArray[$short]['extra']['tiles_condition']);
                 }
@@ -833,7 +833,6 @@ class DumpService
             'building_roof_types' => $buildingRoofTypesArray,
             'building_roof_type_ids' => $buildingRoofTypeIds
         ]);
-        dd($roofInsulationSavings);
 
         $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($userEnergyHabit, [
             'building_services' => $buildingBoilerArray,

@@ -68,9 +68,9 @@ class HighEfficiencyBoilerController extends Controller
         ));
     }
 
-    public function calculate(Request $request, User $buildingOwner)
+    public function calculate(Request $request)
     {
-        $result = HighEfficiencyBoiler::calculate($buildingOwner->energyHabit, $request->all());
+        $result = HighEfficiencyBoiler::calculate(HoomdossierSession::getBuilding(true)->user->energyHabit, $request->all());
 
         return response()->json($result);
     }
@@ -95,11 +95,10 @@ class HighEfficiencyBoilerController extends Controller
 
         $saveData = $request->only('user_energy_habits', 'building_services');
 
-
-//        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
-            HighEfficiencyBoilerHelper::save($building, $inputSource, $saveData);
-//        }
-        // no clear method yet ?
+        (new HighEfficiencyBoilerHelper($user, $inputSource))
+            ->setValues($saveData)
+            ->saveValues()
+            ->createAdvices();
 
         StepHelper::complete($this->step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());

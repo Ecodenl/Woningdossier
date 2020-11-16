@@ -864,6 +864,7 @@ class DumpService
                 'interest_id' => optional($userInterestsForHeater)->interest_id,
             ],
         ]);
+        dd($heaterSavings);
 
         $ventilationSavings = Ventilation::calculate($building, $inputSource, $userEnergyHabit, [
             'building_ventilations' => [

@@ -2,68 +2,47 @@
 
 namespace App\Helpers\Cooperation\Tool;
 
-use App\Calculations\HighEfficiencyBoiler;
 use App\Calculations\SolarPanel;
 use App\Events\StepCleared;
-use App\Helpers\HoomdossierSession;
 use App\Models\Building;
-use App\Models\BuildingElement;
-use App\Models\BuildingFeature;
 use App\Models\BuildingPvPanel;
-use App\Models\Element;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserEnergyHabit;
 use App\Scopes\GetValueScope;
 use App\Services\UserActionPlanAdviceService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
-class SolarPanelHelper
+class SolarPanelHelper extends ToolHelper
 {
 
-    /**
-     * Method to save the data from the solar panel step
-     *
-     * @param Building $building
-     * @param InputSource $inputSource
-     * @param array $buildingFeatureData
-     * @param array $buildingElementData
-     */
-    public static function save(Building $building, InputSource $inputSource, array $saveData)
+    public function saveValues(): ToolHelper
     {
         BuildingPvPanel::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'building_id' => $building->id,
-                'input_source_id' => $inputSource->id,
+                'building_id' => $this->building->id,
+                'input_source_id' => $this->inputSource->id,
             ],
-            $saveData['building_pv_panels']
+            $this->getValues('building_pv_panels')
         );
 
-        $building->user->energyHabit()->withoutGlobalScope(GetValueScope::class)->update($saveData['user_energy_habits']);
+        $this
+            ->user
+            ->energyHabit()
+            ->forInputSource($this->inputSource)
+            ->update($this->getValues('user_energy_habits'));
 
-        self::saveAdvices($building, $inputSource, $saveData);
+        return $this;
     }
 
-    /**
-     * Save the advices for the solar panels
-     *
-     * @param Building $building
-     * @param InputSource $inputSource
-     * @param array $saveData
-     * @throws \Exception
-     */
-    public static function saveAdvices(Building $building, InputSource $inputSource, array $saveData)
+    public function createAdvices(): ToolHelper
     {
-        $user = $building->user;
         $step = Step::findByShort('solar-panels');
 
-        $results = SolarPanel::calculate($building, $saveData);
+        $results = SolarPanel::calculate($this->building, $this->getValues());
 
         // remove old results
-        UserActionPlanAdviceService::clearForStep($user, $inputSource, $step);
+        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'solar-panels-place-replace')->first();
@@ -71,12 +50,37 @@ class SolarPanelHelper
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->costs = $results['cost_indication'];
                 $actionPlanAdvice->savings_electricity = $results['yield_electricity'];
-                $actionPlanAdvice->user()->associate($user);
+                $actionPlanAdvice->user()->associate($this->user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
                 $actionPlanAdvice->save();
             }
         }
+        return $this;
+    }
+
+    public function createValues(): ToolHelper
+    {
+        $buildingPvPanels = $this->building->pvPanels()->forInputSource($this->inputSource)->first();
+        $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
+
+
+        $userInterestsForSolarPanels = $this
+            ->user
+            ->userInterestsForSpecificType(Step::class, Step::findByShort('solar-panels')->id, $this->inputSource)
+            ->first();
+
+        $this->setValues([
+            'building_pv_panels' => $buildingPvPanels instanceof BuildingPvPanel ? $buildingPvPanels->toArray() : [],
+            'user_energy_habits' => [
+                'amount_electricity' => $userEnergyHabit->amount_electricity ?? null,
+            ],
+            'user_interests' => [
+                'interested_in_id' => optional($userInterestsForSolarPanels)->interested_in_id,
+                'interest_id' => optional($userInterestsForSolarPanels)->interest_id,
+            ],
+        ]);
+        return $this;
     }
 
     /**

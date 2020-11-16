@@ -17,18 +17,17 @@ class HomeController extends Controller
      */
     public function index(Cooperation $cooperation)
     {
-        $users = User::forAllCooperations()->findMany([1, 2, 5, 9, 12]);
-        foreach ($users as $user) {
-            $t = [];
-            $calculateDataByStep = DumpService::getCalculateData($user, InputSource::findByShort('resident'));
-            foreach ($calculateDataByStep as $step => $calculateDataBySubStep) {
-//                $t[] = Str::studly($step.'Helper');
-                foreach ($calculateDataBySubStep as $subStep => $calculateData) {
-
-                }
-            }
-        }
-        dd($t);
+//        $users = User::forAllCooperations()->findMany([1, 2, 5, 9, 12]);
+//        foreach ($users as $user) {
+//            $t = [];
+//            $calculateDataByStep = DumpService::getCalculateData($user, InputSource::findByShort('resident'));
+//            foreach ($calculateDataByStep as $step => $calculateDataBySubStep) {
+////                $t[] = Str::studly($step.'Helper');
+//                foreach ($calculateDataBySubStep as $subStep => $calculateData) {
+//
+//                }
+//            }
+//        }
 
         return view('cooperation.home.index');
     }

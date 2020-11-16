@@ -686,8 +686,8 @@ class DumpService
 
         $wallInsulationSavings = WallInsulation::calculate($building, $inputSource, $userEnergyHabit,
             (new WallInsulationHelper($user, $inputSource))
-            ->createValues()
-            ->getValues()
+                ->createValues()
+                ->getValues()
         );
 
         $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit,

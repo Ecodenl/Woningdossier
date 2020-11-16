@@ -19,13 +19,12 @@ class HomeController extends Controller
     public function index(Cooperation $cooperation)
     {
         $user = Hoomdossier::user();
-        $calculateDataByStep = DumpService::getCalculateData($user, InputSource::findByShort('resident'));
-        dd($calculateDataByStep);
 //        $users = User::forAllCooperations()->findMany([1, 2, 5, 9, 12]);
 //        foreach ($users as $user) {
 //            $t = [];
 //            foreach ($calculateDataByStep as $step => $calculateDataBySubStep) {
 ////                $t[] = Str::studly($step.'Helper');
+//            $calculateDataByStep = DumpService::getCalculateData($user, InputSource::findByShort('resident'));
 //                foreach ($calculateDataBySubStep as $subStep => $calculateData) {
 //
 //                }

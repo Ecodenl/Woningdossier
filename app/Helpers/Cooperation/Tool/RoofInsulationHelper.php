@@ -50,12 +50,14 @@ class RoofInsulationHelper extends ToolHelper
             }
         }
 
+
         foreach (array_keys($result) as $roofCat) {
             $isBitumenOnPitchedRoof = 'pitched' == $roofCat && 'bitumen' == $results['pitched']['type'];
             // It's a bitumen roof is the category is not pitched or none (so currently only: flat)
             $isBitumenRoof = ! in_array($roofCat, ['none', 'pitched']) || $isBitumenOnPitchedRoof;
 
-            $measureApplicationId = $buildingRoofTypeData[$roofCat]['extra']['measure_application_id'];
+            // when "no roof" is selected there will still be a result, so extra ?? 0
+            $measureApplicationId = $buildingRoofTypeData[$roofCat]['extra']['measure_application_id'] ?? 0;
             if ($measureApplicationId > 0) {
                 // results in an advice
                 $measureApplication = MeasureApplication::find($measureApplicationId);

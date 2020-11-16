@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation;
 
+use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\InputSource;
@@ -17,10 +18,12 @@ class HomeController extends Controller
      */
     public function index(Cooperation $cooperation)
     {
+        $user = Hoomdossier::user();
+        $calculateDataByStep = DumpService::getCalculateData($user, InputSource::findByShort('resident'));
+        dd($calculateDataByStep);
 //        $users = User::forAllCooperations()->findMany([1, 2, 5, 9, 12]);
 //        foreach ($users as $user) {
 //            $t = [];
-//            $calculateDataByStep = DumpService::getCalculateData($user, InputSource::findByShort('resident'));
 //            foreach ($calculateDataByStep as $step => $calculateDataBySubStep) {
 ////                $t[] = Str::studly($step.'Helper');
 //                foreach ($calculateDataBySubStep as $subStep => $calculateData) {

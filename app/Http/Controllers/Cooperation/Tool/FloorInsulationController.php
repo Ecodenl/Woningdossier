@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 use App\Calculations\FloorInsulation;
 use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
+use App\Helpers\Cooperation\Tool\FloorInsulationHelperv2;
 use App\Helpers\Cooperation\Tool\WallInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -78,7 +79,6 @@ class FloorInsulationController extends Controller
             $building->buildingFeatures()
         )->get();
 
-
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation', 'buildingInsulationForMe', 'buildingElementsOrderedOnInputSourceCredibility',
             'crawlspace', 'buildingCrawlspace', 'typeIds', 'buildingFeaturesOrderedOnInputSourceCredibility',
@@ -116,13 +116,14 @@ class FloorInsulationController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        // when its a step, and a user has no interest in it we will clear the data for that step
-        // a user may had interest in the step and later on decided he has no interest, so we clear the data to prevent weird data in the dumps.
-//        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
-            FloorInsulationHelper::save($building, $inputSource, $request->validated());
-//        } else {
-//            FloorInsulationHelper::clear($building, $inputSource);
-//        }
+
+        $floorInsulationHelper = new FloorInsulationHelper($user, $inputSource);
+
+        $floorInsulationHelper
+            ->setValues($request->validated())
+            ->saveValues()
+            ->createAdvices();
+
 
         StepHelper::complete($this->step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());

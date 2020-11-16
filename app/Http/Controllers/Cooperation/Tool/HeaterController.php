@@ -61,7 +61,6 @@ class HeaterController extends Controller
             $building->heater()
         )->get();
 
-
         return view('cooperation.tool.heater.index', compact('building', 'buildingOwner',
             'collectorOrientations', 'typeIds', 'energyHabitsOrderedOnInputSourceCredibility', 'comfortLevels',
         'heatersOrderedOnInputSourceCredibility'
@@ -96,11 +95,10 @@ class HeaterController extends Controller
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         $saveData = $request->only('user_interests', 'building_heaters', 'user_energy_habits');
-//        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
-            HeaterHelper::save($building, $inputSource, $saveData);
-//        } else {
-//            HeaterHelper::clear($building, $inputSource);
-//        }
+        (new HeaterHelper($user, $inputSource))
+            ->setValues($saveData)
+            ->saveValues()
+            ->createAdvices();
 
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());

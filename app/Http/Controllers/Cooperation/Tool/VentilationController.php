@@ -91,22 +91,11 @@ class VentilationController extends Controller
             UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationWithNoInterest->id, $noInterest->id);
         }
 
-        $houseVentilationData = $request->input('building_ventilations');
+        (new VentilationHelper($buildingOwner, $inputSource))
+            ->setValues($request->only('building_ventilations', 'user_interests'))
+            ->saveValues()
+            ->createAdvices();
 
-        // Save ventilation data
-        $building->buildingVentilations()
-            ->updateOrCreate(
-                [
-                    'input_source_id' => $inputSource->id,
-                ],
-                [
-                    'how' => $houseVentilationData['how'] ?? [],
-                    'usage' => $houseVentilationData['usage'] ?? [],
-                    'living_situation' => $houseVentilationData['living_situation'] ?? [],
-                ]
-            );
-
-        $this->saveAdvices($request);
         StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
         StepHelper::complete($step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
@@ -128,37 +117,5 @@ class VentilationController extends Controller
         $result = Ventilation::calculate($building, HoomdossierSession::getInputSource(true), $userEnergyHabit, $request->all());
 
         return response()->json($result);
-    }
-
-    protected function saveAdvices(Request $request)
-    {
-        $buildingOwner = HoomdossierSession::getBuilding(true)->user;
-        /** @var JsonResponse $results */
-        $results = $this->calculate($request);
-        $results = $results->getData(true);
-
-        // Remove old results
-        UserActionPlanAdvice::forMe()->where('input_source_id', HoomdossierSession::getInputSource())->forStep($this->step)->delete();
-
-        $interestsInMeasureApplications = $request->input('user_interests', []);
-        $relevantAdvices = collect($results['advices'])->whereIn('id', $interestsInMeasureApplications);
-
-        foreach ($relevantAdvices as $advice) {
-            $measureApplication = MeasureApplication::find($advice['id']);
-            if ($measureApplication instanceof MeasureApplication) {
-                if ('crack-sealing' == $measureApplication->short) {
-                    $actionPlanAdvice = new UserActionPlanAdvice($results['result']['crack_sealing'] ?? []);
-                    $actionPlanAdvice->costs = $results['result']['crack_sealing']['cost_indication'] ?? null; // only outlier
-                } else {
-                    $actionPlanAdvice = new UserActionPlanAdvice();
-                }
-
-                $actionPlanAdvice->planned = true;
-                $actionPlanAdvice->user()->associate($buildingOwner);
-                $actionPlanAdvice->measureApplication()->associate($measureApplication);
-                $actionPlanAdvice->step()->associate($this->step);
-                $actionPlanAdvice->save();
-            }
-        }
     }
 }

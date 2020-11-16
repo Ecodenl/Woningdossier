@@ -738,7 +738,7 @@ class ToolHelper
                     'type' => 'select',
                     'options' => $interestOptions,
                 ];
-                $structure['insulated-glazing']['-']['building_insulated_glazings.'.$measureApplication->id.'.insulated_glazing_id'] = [
+                $structure['insulated-glazing']['-']['building_insulated_glazings.'.$measureApplication->id.'.insulating_glazing_id'] = [
                     'label' => $measureApplication->measure_name.': '.__('insulated-glazing.'.$measureApplication->short.'.current-glass.title'),
                     'type' => 'select',
                     'options' => static::createOptions($insulatedGlazings),

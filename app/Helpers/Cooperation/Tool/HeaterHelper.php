@@ -21,63 +21,78 @@ use App\Services\UserActionPlanAdviceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class HeaterHelper
+class HeaterHelper extends ToolHelper
 {
-
-    /**
-     * Method to clear all the saved data for the step, except for the comments.
-     *
-     * @param Building $building
-     * @param InputSource $inputSource
-     * @param array $buildingFeatureData
-     * @param array $buildingElementData
-     */
-    public static function save(Building $building, InputSource $inputSource, array $saveData)
+    public function saveValues(): ToolHelper
     {
         BuildingHeater::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'building_id' => $building->id,
-                'input_source_id' => $inputSource->id
+                'building_id' => $this->building->id,
+                'input_source_id' => $this->inputSource->id
             ],
-            $saveData['building_heaters']
+            $this->getValues('building_heaters')
         );
 
-        $building
+        $this->building
             ->user
             ->energyHabit()
-            ->withoutGlobalScope(GetValueScope::class)
-            ->update($saveData['user_energy_habits']);
+            ->forInputSource($this->inputSource)
+            ->update($this->getValues('user_energy_habits'));
 
-        self::saveAdvices($building, $inputSource, $saveData);
+        return $this;
     }
 
-    public static function saveAdvices(Building $building, InputSource $inputSource, array $saveData)
+    public function createValues(): ToolHelper
     {
-        $user = $building->user;
+        $buildingHeater = $this->building->heater()->forInputSource($this->inputSource)->first();
+        $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
+        $userInterestsForHeater = $this
+            ->user
+            ->userInterestsForSpecificType(Step::class, Step::findByShort('heater')->id, $this->inputSource)
+            ->first();
+
+        $this->setValues([
+            'building_heaters' => [
+                $buildingHeater instanceof BuildingHeater ? $buildingHeater->toArray() : [],
+            ],
+            'user_energy_habits' => [
+                'water_comfort_id' => $userEnergyHabit->water_comfort_id ?? null,
+            ],
+            'user_interests' => [
+                'interested_in_id' => optional($userInterestsForHeater)->interested_in_id,
+                'interest_id' => optional($userInterestsForHeater)->interest_id,
+            ],
+        ]);
+        return $this;
+    }
+
+    public function createAdvices(): ToolHelper
+    {
         $step = Step::findByShort('heater');
 
-        $results = Heater::calculate($building, $user->energyHabit, $saveData);
+        $results = Heater::calculate($this->building, $this->user->energyHabit, $this->getValues());
 
         // remove old results
-        UserActionPlanAdviceService::clearForStep($user, $inputSource, $step);
+        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'heater-place-replace')->first();
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
-                $actionPlanAdvice->user()->associate($user);
+                $actionPlanAdvice->user()->associate($this->user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
                 $actionPlanAdvice->save();
             }
         }
+        return $this;
     }
 
     /**
      * Method to clear the building feature data for wall insulation step.
      *
-     * @param Building $building
+     * @param Building $tbuilding
      * @param InputSource $inputSource
      */
     public static function clear(Building $building, InputSource $inputSource)

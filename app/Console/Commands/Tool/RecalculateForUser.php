@@ -38,9 +38,24 @@ class RecalculateForUser extends Command
      */
     public function handle()
     {
-        $users = User::findMany($this->argument('user'));
-        foreach ($users as $user) {
 
-        }
+        //        $user = Hoomdossier::user();
+//        $users = User::forAllCooperations()->findMany([1, 2, 5, 9, 12]);
+//        foreach ($users as $user) {
+//            $t = [];
+//            foreach ($calculateDataByStep as $step => $calculateDataBySubStep) {
+////                $t[] = Str::studly($step.'Helper');
+//            $calculateDataByStep = DumpService::getCalculateData($user, InputSource::findByShort('resident'));
+//                foreach ($calculateDataBySubStep as $subStep => $calculateData) {
+//
+//                }
+//            }
+//        }
+
+
+//        $users = User::findMany($this->argument('user'));
+//        foreach ($users as $user) {
+//
+//        }
     }
 }

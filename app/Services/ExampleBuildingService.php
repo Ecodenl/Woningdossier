@@ -204,7 +204,7 @@ class ExampleBuildingService
                             $glazingData['measure_application_id'] = $measureApplicationId;
 
                             //todo: so the insulated_glazing_id is non existent in the table, this is a typo and should be fixed in the tool structure
-                            $glazingData['insulating_glazing_id'] = $glazingData['insulated_glazing_id'];
+                            $glazingData['insulating_glazing_id'] = $glazingData['insulating_glazing_id'] ?? $glazingData['insulated_glazing_id'];
 
                             $building->currentInsulatedGlazing()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $glazingData);
 

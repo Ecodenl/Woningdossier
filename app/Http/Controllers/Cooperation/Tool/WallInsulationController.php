@@ -17,13 +17,10 @@ use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
 use App\Models\Interest;
-use App\Models\MeasureApplication;
 use App\Models\Step;
-use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class WallInsulationController extends Controller

@@ -63,6 +63,7 @@ class RoofInsulationHelper extends ToolHelper
                 $measureApplication = MeasureApplication::find($measureApplicationId);
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = null;
+                    dd($this->getValues());
 
                     $interest = Interest::find($this->getValues('user_interests.interest_id'));
 

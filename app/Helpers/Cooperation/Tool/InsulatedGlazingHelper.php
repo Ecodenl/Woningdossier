@@ -24,7 +24,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-class InsulatingGlazingHelper extends ToolHelper
+class InsulatedGlazingHelper extends ToolHelper
 {
 
     public function saveValues(): ToolHelper

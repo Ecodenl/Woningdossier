@@ -84,6 +84,7 @@ class RoofInsulationHelper extends ToolHelper
                     }
 
                     if ($actionPlanAdvice instanceof UserActionPlanAdvice) {
+                        $actionPlanAdvice->input_source_id = $this->inputSource->id;
                         $actionPlanAdvice->user()->associate($this->user);
                         $actionPlanAdvice->measureApplication()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($step);

@@ -52,14 +52,13 @@ class HeaterHelper extends ToolHelper
             ->first();
 
         $this->setValues([
-            'building_heaters' => [
-                $buildingHeater instanceof BuildingHeater ? $buildingHeater->toArray() : [],
-            ],
+            'building_heaters' => $buildingHeater instanceof BuildingHeater ? $buildingHeater->toArray() : [],
             'user_energy_habits' => [
                 'water_comfort_id' => $userEnergyHabit->water_comfort_id ?? null,
             ],
             'user_interests' => [
                 'interested_in_id' => optional($userInterestsForHeater)->interested_in_id,
+                'interested_in_type' => Step::class,
                 'interest_id' => optional($userInterestsForHeater)->interest_id,
             ],
         ]);

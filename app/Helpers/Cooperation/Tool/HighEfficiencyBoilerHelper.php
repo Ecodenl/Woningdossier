@@ -84,6 +84,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
             'building_services' => $buildingBoilerArray,
             'user_energy_habits' => [
                 'amount_gas' => $userEnergyHabit->amount_gas ?? null,
+                'resident_count' => $userEnergyHabit->resident_count ?? null,
             ],
         ]);
 

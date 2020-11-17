@@ -28,7 +28,7 @@ class Ventilation
      */
     public static function calculate(Building $building, InputSource $inputSource, $energyHabit, array $calculateData): array
     {
-        $step = Step::where('slug', '=', 'ventilation')->first();
+        $step = Step::findByShort('ventilation');
 
         /** @var BuildingService $buildingVentilationService */
         $buildingVentilationService = $building->getBuildingService('house-ventilation', $inputSource);

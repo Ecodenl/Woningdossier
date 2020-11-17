@@ -163,11 +163,8 @@ class InsulatedGlazingController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        // save the step data
-        $saveData = $request->only('user_interests', 'building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses');
-
         (new InsulatingGlazingHelper($user, $inputSource))
-            ->setValues($saveData)
+            ->setValues($request->only('user_interests', 'building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses'))
             ->saveValues()
             ->createAdvices();
 

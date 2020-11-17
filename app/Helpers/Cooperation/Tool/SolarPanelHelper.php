@@ -77,6 +77,7 @@ class SolarPanelHelper extends ToolHelper
             ],
             'user_interests' => [
                 'interested_in_id' => optional($userInterestsForSolarPanels)->interested_in_id,
+                'interested_in_type' => Step::class,
                 'interest_id' => optional($userInterestsForSolarPanels)->interest_id,
             ],
         ]);

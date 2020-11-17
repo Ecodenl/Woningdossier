@@ -33,6 +33,7 @@ class WallInsulationHelper extends ToolHelper
             'element' => [$wallInsulationElement->id => $wallInsulationBuildingElement->element_value_id ?? null],
             'building_features' => [
                 'cavity_wall' => $buildingFeature->cavity_wall ?? null,
+                'wall_surface' => $buildingFeature->wall_surface ?? null,
                 'insulation_wall_surface' => $buildingFeature->insulation_wall_surface ?? null,
                 'wall_joints' => $buildingFeature->wall_joints ?? null,
                 'contaminated_wall_joints' => $buildingFeature->contaminated_wall_joints ?? null,

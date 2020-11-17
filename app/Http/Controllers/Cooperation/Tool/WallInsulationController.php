@@ -99,6 +99,7 @@ class WallInsulationController extends Controller
             ->setValues($request->validated())
             ->saveValues()
             ->createAdvices();
+        dd($request->validated(), (new WallInsulationHelper($user, $inputSource))->createValues()->getValues());
 
 
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));

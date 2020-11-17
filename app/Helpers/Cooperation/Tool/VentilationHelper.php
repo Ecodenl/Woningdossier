@@ -73,7 +73,34 @@ class VentilationHelper extends ToolHelper
             ->forInputSource($this->inputSource)
             ->first();
 
+        // this is all necessary to build the interest array..
+        $measures = [
+            'ventilation-balanced-wtw',
+            'ventilation-decentral-wtw',
+            'ventilation-demand-driven',
+            'crack-sealing',
+        ];
+
+        $measures = array_flip($measures);
+
+        $step = Step::findByShort('ventilation');
+        $advices = MeasureApplication::where('step_id', '=', $step->id)
+            ->whereIn('short', array_keys($measures))->get();
+
+        $advices->each(function ($advice) {
+            $advice->name = $advice->measure_name;
+
+        });
+        foreach ($advices as $advice) {
+            // exception for this page..
+            // 3 so the options "meer informatie" is also interested
+            if ($this->user->hasInterestIn($advice, $this->inputSource, 3)) {
+                $advice->interest = true;
+            }
+        }
+
         $this->setValues([
+            'user_interests' => $advices->where('interest', true)->pluck('id')->toArray(),
             'building_ventilations' => [
                 'how' => optional($buildingVentilation)->how,
                 'living_situation' => optional($buildingVentilation)->living_situation,

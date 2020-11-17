@@ -63,7 +63,6 @@ class RoofInsulationHelper extends ToolHelper
                 $measureApplication = MeasureApplication::find($measureApplicationId);
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = null;
-                    dd($this->getValues());
 
                     $interest = Interest::find($this->getValues('user_interests.interest_id'));
 
@@ -233,7 +232,6 @@ class RoofInsulationHelper extends ToolHelper
     {
         $buildingRoofTypes = $this->building->roofTypes()->forInputSource($this->inputSource)->get();
 
-//        dd($buildingRoofTypes);
         // now lets handle the roof insulation stuff.
         $buildingRoofTypesArray = [];
         $buildingRoofTypeIds = [];

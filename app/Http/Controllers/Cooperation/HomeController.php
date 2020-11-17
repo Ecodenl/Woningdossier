@@ -11,6 +11,7 @@ use App\Models\CompletedStep;
 use App\Models\Cooperation;
 use App\Models\Step;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 class HomeController extends Controller
@@ -30,8 +31,8 @@ class HomeController extends Controller
             // get the completed steps for a user.
             $completedSteps = $user->building
                 ->completedSteps()
-                ->whereHas('step', function ($query) {
-                    $query->where('steps.short', '!=', 'general-data')
+                ->whereHas('step', function (Builder $query) {
+                    $query->whereNotIn('steps.short', ['general-data', 'heat-pump'])
                         ->whereNull('parent_id');
                 })->with(['inputSource', 'step'])
                 ->forMe()

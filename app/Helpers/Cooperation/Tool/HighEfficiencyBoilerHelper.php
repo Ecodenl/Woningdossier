@@ -21,7 +21,7 @@ use App\Services\UserActionPlanAdviceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class HighEfficiencyBoilerHelper
+class HighEfficiencyBoilerHelper extends ToolHelper
 {
 
     /**
@@ -32,48 +32,73 @@ class HighEfficiencyBoilerHelper
      * @param array $buildingFeatureData
      * @param array $buildingElementData
      */
-    public static function save(Building $building, InputSource $inputSource, array $saveData)
+    public function saveValues(): ToolHelper
     {
         $service = Service::findByShort('boiler');
 
         BuildingService::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'building_id' => $building->id,
-                'input_source_id' => $inputSource->id,
+                'building_id' => $this->building->id,
+                'input_source_id' => $this->inputSource->id,
                 'service_id' => $service->id,
             ],
-            $saveData['building_services']
+            $this->getValues('building_services')
         );
 
         UserEnergyHabit::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'user_id' => $building->user_id,
-                'input_source_id' => $inputSource->id,
+                'user_id' => $this->user->id,
+                'input_source_id' => $this->inputSource->id,
             ],
-            $saveData['user_energy_habits']
+            $this->getValues('user_energy_habits')
         );
 
-        self::saveAdvices($building, $inputSource, $saveData);
+        return $this;
     }
 
-    /**
-     * Save the advices for the step
-     *
-     * @param Building $building
-     * @param InputSource $inputSource
-     * @param array $saveData
-     * @throws \Exception
-     */
-    public static function saveAdvices(Building $building, InputSource $inputSource, array $saveData)
+    public function createValues(): ToolHelper
     {
-        $user = $building->user;
+        $boilerService = Service::findByShort('boiler');
 
-        $results = HighEfficiencyBoiler::calculate($user->energyHabit, $saveData);
+        $userEnergyHabit = $this
+            ->user
+            ->energyHabit()
+            ->forInputSource($this->inputSource)
+            ->first();
+
+        $buildingBoilerService = $this
+            ->building
+            ->buildingServices()
+            ->where('service_id', $boilerService->id)
+            ->forInputSource($this->inputSource)
+            ->first();
+
+        $buildingBoilerArray = [
+            'service_value_id' => $buildingBoilerService->service_value_id ?? null,
+            'extra' => [
+                'date' => $buildingBoilerService->extra['date'] ?? null
+            ],
+        ];
+
+        $this->setValues([
+            'building_services' => $buildingBoilerArray,
+            'user_energy_habits' => [
+                'amount_gas' => $userEnergyHabit->amount_gas ?? null,
+            ],
+        ]);
+
+        return $this;
+    }
+
+    public function createAdvices(): ToolHelper
+    {
+        $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
+        $results = HighEfficiencyBoiler::calculate($userEnergyHabit, $this->getValues());
 
         $step = Step::findByShort('high-efficiency-boiler');
 
         // remove old results
-        UserActionPlanAdviceService::clearForStep($user, $inputSource, $step);
+        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'high-efficiency-boiler-replace')->first();
@@ -81,11 +106,12 @@ class HighEfficiencyBoilerHelper
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->costs = $results['cost_indication'];
                 $actionPlanAdvice->year = $results['replace_year'];
-                $actionPlanAdvice->user()->associate($user);
+                $actionPlanAdvice->user()->associate($this->user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
                 $actionPlanAdvice->save();
             }
         }
+        return $this;
     }
 }

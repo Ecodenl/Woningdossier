@@ -10,6 +10,14 @@ use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
 use App\Calculations\Ventilation;
 use App\Calculations\WallInsulation;
+use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
+use App\Helpers\Cooperation\Tool\HeaterHelper;
+use App\Helpers\Cooperation\Tool\HighEfficiencyBoilerHelper;
+use App\Helpers\Cooperation\Tool\InsulatingGlazingHelper;
+use App\Helpers\Cooperation\Tool\RoofInsulationHelper;
+use App\Helpers\Cooperation\Tool\SolarPanelHelper;
+use App\Helpers\Cooperation\Tool\VentilationHelper;
+use App\Helpers\Cooperation\Tool\WallInsulationHelper;
 use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\NumberFormatter;
 use App\Helpers\ToolHelper;
@@ -130,7 +138,7 @@ class DumpService
                             // we will dot the array, map it so we can add the step name to it
                             $deeperContents = array_map(function ($content) use ($step, $subStep) {
                                 return self::makeHeaderText($step->name, $subStep, $content);
-                            }, Arr::dot($contents, $stepShort.'.'.$subStep.'.calculation.'));
+                            }, Arr::dot($contents, $stepShort . '.' . $subStep . '.calculation.'));
                         } else {
                             $deeperContents = Arr::dot($contents, $stepShort . '.' . $subStep . '.calculation.');
                         }
@@ -142,9 +150,9 @@ class DumpService
                         if ($prefixValuesWithStep) {
                             $subStepName = optional(Step::findByShort($subStep))->name;
 
-                            $headers[$stepShort . '.' . $subStep .'.'.$tableWithColumnOrAndId] = self::makeHeaderText($step->name, $subStepName, $labelWithEuroNormalization);
+                            $headers[$stepShort . '.' . $subStep . '.' . $tableWithColumnOrAndId] = self::makeHeaderText($step->name, $subStepName, $labelWithEuroNormalization);
                         } else {
-                            $headers[$stepShort . '.' . $subStep .'.'.$tableWithColumnOrAndId] = $labelWithEuroNormalization;
+                            $headers[$stepShort . '.' . $subStep . '.' . $tableWithColumnOrAndId] = $labelWithEuroNormalization;
                         }
                     }
                 }
@@ -162,9 +170,9 @@ class DumpService
      * Method to generate a total dump from a user for a specific input source.
      * This dump collects all possible data for a given user for the tool and returns it in an array.
      *
-     * @param array       $structureForTotalDump | we need the headers to get table and row data, provide from the self::getStructureForTotalDumpService
-     * @param Cooperation $cooperation,
-     * @param bool        $withConditionalLogic  | when true, it will return the data as happens in the dump. So if a input gets hidden it wont be put in the dump
+     * @param array $structureForTotalDump | we need the headers to get table and row data, provide from the self::getStructureForTotalDumpService
+     * @param Cooperation $cooperation ,
+     * @param bool $withConditionalLogic | when true, it will return the data as happens in the dump. So if a input gets hidden it wont be put in the dump
      */
     public static function totalDump(array $structureForTotalDump, Cooperation $cooperation, User $user, InputSource $inputSource, bool $anonymized, bool $withTranslationsForColumns = true, bool $withConditionalLogic = false): array
     {
@@ -421,13 +429,13 @@ class DumpService
                                     if (in_array($extraKey, ['tiles_condition', 'measure_application_id'])) {
                                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->extra[$extraKey] ?? '';
 
-                                        if (! empty($buildingRoofType->extra[$extraKey]) && 'tiles_condition' == $extraKey) {
-                                            $status = RoofTileStatus::find((int) $row[$buildingId][$tableWithColumnOrAndIdKey]);
+                                        if (!empty($buildingRoofType->extra[$extraKey]) && 'tiles_condition' == $extraKey) {
+                                            $status = RoofTileStatus::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
                                             $row[$buildingId][$tableWithColumnOrAndIdKey] = ($status instanceof RoofTileStatus) ? $status->name : '';
                                         }
                                         // The measure application id, in this case. can be 0, this means the option: "niet" has been chosen the option is not saved as a measure application
                                         if ('measure_application_id' == $extraKey) {
-                                            $measureApplication = MeasureApplication::find((int) $row[$buildingId][$tableWithColumnOrAndIdKey]);
+                                            $measureApplication = MeasureApplication::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
                                             $row[$buildingId][$tableWithColumnOrAndIdKey] = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : __('roof-insulation.measure-application.no.title');
                                         }
                                     } else {
@@ -527,7 +535,7 @@ class DumpService
 
                     if ($buildingInsulatedGlazing instanceof BuildingInsulatedGlazing) {
                         switch ($column) {
-                            case 'insulated_glazing_id':
+                            case 'insulating_glazing_id':
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingInsulatedGlazing->insulatedGlazing->name ?? '';
                                 break;
                             case 'building_heating_id':
@@ -674,204 +682,58 @@ class DumpService
         // collect some info about their building
         $building = $user->building;
 
-        /** @var BuildingFeature $buildingFeature */
-        $buildingFeature = $building->buildingFeatures()->forInputSource($inputSource)->first();
-        $buildingElements = $building->buildingElements()->forInputSource($inputSource)->get();
-        $buildingPaintworkStatus = $building->currentPaintworkStatus()->forInputSource($inputSource)->first();
-        $buildingRoofTypes = $building->roofTypes()->forInputSource($inputSource)->get();
-        $buildingServices = $building->buildingServices()->forInputSource($inputSource)->get();
-        $buildingPvPanels = $building->pvPanels()->forInputSource($inputSource)->first();
-        /** @var BuildingVentilation $buildingVentilation */
-        $buildingVentilation = $building->buildingVentilations()->forInputSource($inputSource)->first();
-
-        $buildingHeater = $building->heater()->forInputSource($inputSource)->first();
-
         $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
-//
-//
-        $wallInsulationElement = Element::findByShort('wall-insulation');
-        $woodElements = Element::findByShort('wood-elements');
-        $frames = Element::findByShort('frames');
-        $floorInsulationElement = Element::findByShort('floor-insulation');
-        $crawlspaceElement = Element::findByShort('crawlspace');
 
-        $boilerService = Service::findByShort('boiler');
+        $wallInsulationSavings = WallInsulation::calculate($building, $inputSource, $userEnergyHabit,
+            (new WallInsulationHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
 
-        // handle stuff for the wall insulation
-        $wallInsulationBuildingElement = $buildingElements->where('element_id', $wallInsulationElement->id)->first();
+        $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit,
+            (new InsulatingGlazingHelper($user, $inputSource))
+                ->createValues()
+                ->getValues());
 
-        $userInterestsForInsulatedGlazing = $user
-            ->userInterests()
-            ->select('interest_id', 'interested_in_id')
-            ->forInputSource($inputSource)
-            ->where('interested_in_type', MeasureApplication::class)
-            ->get()->keyBy('interested_in_id')->toArray();
+        $floorInsulationSavings = FloorInsulation::calculate($building, $inputSource, $userEnergyHabit,
+            (new FloorInsulationHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
 
-        /** @var Collection $buildingInsulatedGlazings */
-        $buildingInsulatedGlazings = $building
-            ->currentInsulatedGlazing()
-            ->forInputSource($inputSource)
-            ->select('measure_application_id', 'insulating_glazing_id', 'building_heating_id', 'm2', 'windows')
-            ->get();
+        $roofInsulationSavings = RoofInsulation::calculate(
+            $building,
+            $inputSource,
+            $userEnergyHabit,
+            (new RoofInsulationHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
 
-        // build the right structure for the calculation
-        $buildingInsulatedGlazingArray = [];
-        foreach ($buildingInsulatedGlazings as $buildingInsulatedGlazing) {
-            $buildingInsulatedGlazingArray[$buildingInsulatedGlazing->measure_application_id] = [
-                'insulating_glazing_id' => $buildingInsulatedGlazing->insulating_glazing_id,
-                'building_heating_id' => $buildingInsulatedGlazing->building_heating_id,
-                'm2' => $buildingInsulatedGlazing->m2,
-                'windows' => $buildingInsulatedGlazing->windows,
-            ];
-        }
+        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate(
+            $userEnergyHabit,
+            (new HighEfficiencyBoilerHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
 
-        // handle the wood / frame / crack sealing elements for the insulated glazing
-        $buildingElementsArray = [];
+        $solarPanelSavings = SolarPanel::calculate(
+            $building,
+            (new SolarPanelHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
 
-        $buildingWoodElement = $buildingElements->where('element_id', $woodElements->id)->pluck('element_value_id')->toArray();
-        $buildingElementsArray[$woodElements->id] = array_combine($buildingWoodElement, $buildingWoodElement) ?? null;
+        $heaterSavings = Heater::calculate($building, $userEnergyHabit,
+            (new HeaterHelper($user, $inputSource))
+                ->createValues()
+                ->getValues());
 
-        $buildingFrameElement = $buildingElements->where('element_id', $frames->id)->first();
-        $buildingElementsArray[$frames->id] = $buildingFrameElement->element_value_id ?? null;
-
-        $buildingPaintworkStatusesArray = [
-            'last_painted_year' => $buildingPaintworkStatus->last_painted_year ?? null,
-            'paintwork_status_id' => $buildingPaintworkStatus->paintwork_status_id ?? null,
-            'wood_rot_status_id' => $buildingPaintworkStatus->wood_rot_status_id ?? null,
-        ];
-
-
-        // handle the stuff for the floor insulation.
-        $floorInsulationElementValueId = $buildingElements->where('element_id', $floorInsulationElement->id)->first()->element_value_id ?? null;
-        $buildingCrawlspaceElement = $buildingElements->where('element_id', $crawlspaceElement->id)->first();
-
-        $floorInsulationBuildingElements = [
-            'element_value_id' => $buildingCrawlspaceElement->element_value_id ?? null,
-            'extra' => [
-                'has_crawlspace' => $buildingCrawlspaceElement->extra['has_crawlspace'] ?? null,
-                'access' => $buildingCrawlspaceElement->extra['access'] ?? null,
-            ],
-        ];
-
-        $floorBuildingFeatures = [
-            'floor_surface' => $buildingFeature->floor_surface ?? null,
-            'insulation_surface' => $buildingFeature->insulation_surface ?? null,
-        ];
-
-
-        // now lets handle the roof insulation stuff.
-        $buildingRoofTypesArray = [];
-        $buildingRoofTypeIds = [];
-
-        /** @var BuildingRoofType $buildingRoofType */
-        foreach ($buildingRoofTypes as $buildingRoofType) {
-            $short = $buildingRoofType->roofType->short;
-            $buildingRoofTypesArray[$short] = [
-                'element_value_id' => $buildingRoofType->element_value_id,
-                'roof_surface' => $buildingRoofType->roof_surface,
-                'insulation_roof_surface' => $buildingRoofType->insulation_roof_surface,
-                'extra' => $buildingRoofType->extra,
-                'measure_application_id' => $buildingRoofType->extra['measure_application_id'] ?? null,
-                'building_heating_id' => $buildingRoofType->building_heating_id,
-            ];
-            $buildingRoofTypeIds[] = $buildingRoofType->roofType->id;
-
-            // if the roof is a flat roof OR the tiles_condition is empty: remove it!!
-            // this is needed as the tiles condition has a different type of calculation
-            // than bitumen has
-            if (array_key_exists('tiles_condition', $buildingRoofTypesArray[$short]['extra'])) {
-                if ('flat' == $short || empty($buildingRoofTypesArray[$short]['extra']['tiles_condition'])) {
-                    unset($buildingRoofTypesArray[$short]['extra']['tiles_condition']);
-                }
-            }
-        }
-
-        // now we handle the hr boiler stuff
-        $buildingBoilerService = $buildingServices->where('service_id', $boilerService->id)->first();
-
-        $buildingBoilerArray = [
-            'service_value_id' => $buildingBoilerService->service_value_id ?? null,
-            'extra' => [
-                'date' => $buildingBoilerService->extra['date'] ?? null
-            ],
-        ];
-
-        // get the interest for the solar panels and create the array to send
-        $userInterestsForSolarPanels = $user->userInterestsForSpecificType(Step::class, Step::findByShort('solar-panels')->id, $inputSource)->first();
-
-        // handle the heater stuff
-        $userInterestsForHeater = $user->userInterestsForSpecificType(Step::class, Step::findByShort('heater')->id, $inputSource)->first();
-
-        $wallInsulationSavings = WallInsulation::calculate($building, $inputSource, $userEnergyHabit, [
-            'element' => [$wallInsulationElement->id => $wallInsulationBuildingElement->element_value_id ?? null],
-            'building_features' => [
-                'cavity_wall' => $buildingFeature->cavity_wall ?? null,
-                'insulation_wall_surface' => $buildingFeature->insulation_wall_surface ?? null,
-                'wall_joints' => $buildingFeature->wall_joints ?? null,
-                'contaminated_wall_joints' => $buildingFeature->contaminated_wall_joints ?? null,
-                'facade_plastered_painted' => $buildingFeature->facade_plastered_painted ?? null,
-                'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id ?? null,
-                'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
-            ]
-        ]);
-
-        $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit, [
-            'user_interests' => $userInterestsForInsulatedGlazing,
-            'building_insulated_glazings' => $buildingInsulatedGlazingArray,
-            'building_elements' => $buildingElementsArray,
-            'building_features' => ['window_surface' => $buildingFeature->window_surface ?? null],
-            'building_paintwork_statuses' => $buildingPaintworkStatusesArray,
-        ]);
-
-        $floorInsulationSavings = FloorInsulation::calculate($building, $inputSource, $userEnergyHabit, [
-            'element' => [$floorInsulationElement->id => $floorInsulationElementValueId],
-            'building_elements' => $floorInsulationBuildingElements,
-            'building_features' => $floorBuildingFeatures,
-        ]);
-
-        $roofInsulationSavings = RoofInsulation::calculate($building, $inputSource, $userEnergyHabit, [
-            'building_roof_types' => $buildingRoofTypesArray,
-            'building_roof_type_ids' => $buildingRoofTypeIds
-        ]);
-
-        $highEfficiencyBoilerSavings = HighEfficiencyBoiler::calculate($userEnergyHabit, [
-            'building_services' => $buildingBoilerArray,
-            'user_energy_habits' => [
-                'amount_gas' => $userEnergyHabit->amount_gas ?? null,
-            ],
-        ]);
-
-        $solarPanelSavings = SolarPanel::calculate($building, [
-            'building_pv_panels' => $buildingPvPanels instanceof BuildingPvPanel ? $buildingPvPanels->toArray() : [],
-            'user_energy_habits' => [
-                'amount_electricity' => $userEnergyHabit->amount_electricity ?? null,
-            ],
-            'user_interests' => [
-                'interested_in_id' => optional($userInterestsForSolarPanels)->interested_in_id,
-                'interest_id' => optional($userInterestsForSolarPanels)->interest_id,
-            ],
-        ]);
-
-        $heaterSavings = Heater::calculate($building, $userEnergyHabit, [
-            'building_heaters' => [
-                $buildingHeater instanceof BuildingHeater ? $buildingHeater->toArray() : [],
-            ],
-            'user_energy_habits' => [
-                'water_comfort_id' => $userEnergyHabit->water_comfort_id ?? null,
-            ],
-            'user_interests' => [
-                'interested_in_id' => optional($userInterestsForHeater)->interested_in_id,
-                'interest_id' => optional($userInterestsForHeater)->interest_id,
-            ],
-        ]);
-
-        $ventilationSavings = Ventilation::calculate($building, $inputSource, $userEnergyHabit, [
-            'building_ventilations' => [
-                'how' => optional($buildingVentilation)->how,
-                'living_situation' => optional($buildingVentilation)->living_situation,
-                'usage' => optional($buildingVentilation)->usage,
-            ],
-        ]);
+        $ventilationSavings = Ventilation::calculate($building, $inputSource, $userEnergyHabit,
+            (new VentilationHelper($user, $inputSource))
+                ->createValues()
+                ->getValues()
+        );
 
         return [
             'ventilation' => [
@@ -912,7 +774,7 @@ class DumpService
             return $value;
         }
 
-        if (! is_numeric($value)) {
+        if (!is_numeric($value)) {
             return $value;
         }
 
@@ -934,9 +796,9 @@ class DumpService
      * Format the output of the given column and value.
      *
      * @param string $column
-     * @param mixed  $value
-     * @param int    $decimals
-     * @param bool   $shouldRound
+     * @param mixed $value
+     * @param int $decimals
+     * @param bool $shouldRound
      *
      * @return float|int|string
      */
@@ -976,7 +838,7 @@ class DumpService
      */
     protected static function isYear($column, $extraValue = '')
     {
-        if (! is_null($column)) {
+        if (!is_null($column)) {
             if (false !== stristr($column, 'year')) {
                 return true;
             }

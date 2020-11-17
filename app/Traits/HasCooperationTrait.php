@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Scopes\CooperationScope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\App;
 
 trait HasCooperationTrait
 {
@@ -13,7 +14,8 @@ trait HasCooperationTrait
     public static function bootHasCooperationTrait()
     {
         // only add the scope if the app is not running in the console.
-        if (! \App::runningInConsole()) {
+        if (!App::runningInConsole() ) {
+//        if (app()->environment() == 'accept' || app()->environment() == 'master') {
             static::addGlobalScope(new CooperationScope());
         }
     }

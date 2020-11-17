@@ -43,7 +43,7 @@ class InsulatedGlazing
             $measureApplication = MeasureApplication::find($measureApplicationId);
             $buildingHeatingId = array_key_exists('building_heating_id', $buildingInsulatedGlazingsData) ? $buildingInsulatedGlazingsData['building_heating_id'] : 0;
             $buildingHeating = BuildingHeating::find($buildingHeatingId);
-            $insulatedGlazingId = array_key_exists('insulated_glazing_id', $buildingInsulatedGlazingsData) ? $buildingInsulatedGlazingsData['insulated_glazing_id'] : 0;
+            $insulatedGlazingId = array_key_exists('insulating_glazing_id', $buildingInsulatedGlazingsData) ? $buildingInsulatedGlazingsData['insulating_glazing_id'] : 0;
             $insulatedGlazing = InsulatingGlazing::find($insulatedGlazingId);
             $interestId = $userInterests[$measureApplicationId]['interest_id'] ?? null;
             $interest = Interest::find($interestId);

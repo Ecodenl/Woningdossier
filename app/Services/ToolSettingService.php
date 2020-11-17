@@ -15,11 +15,7 @@ class ToolSettingService
      *
      * @param int $changedInputSourceId | The input source id that changed something
      */
-    public static function setChanged(
-        int $buildingId,
-        int $changedInputSourceId,
-        bool $hasChanged
-    ) {
+    public static function setChanged(int $buildingId, int $changedInputSourceId, bool $hasChanged) {
         // if a example building get applied the input source = example-building
         // If a user changes the example building we dont to notify the all the other input-sources / users from this
         // so we only set the changed for the current input source.

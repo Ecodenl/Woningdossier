@@ -126,6 +126,7 @@ class InsulatedGlazingHelper extends ToolHelper
 
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($data);
+                    $actionPlanAdvice->input_source_id = $this->inputSource->id;
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->measureApplication()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);

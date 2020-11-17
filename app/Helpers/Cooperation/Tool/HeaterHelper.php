@@ -92,7 +92,7 @@ class HeaterHelper extends ToolHelper
     /**
      * Method to clear the building feature data for wall insulation step.
      *
-     * @param Building $tbuilding
+     * @param Building $building
      * @param InputSource $inputSource
      */
     public static function clear(Building $building, InputSource $inputSource)

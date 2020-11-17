@@ -2,8 +2,13 @@
 
 namespace App\Console\Commands\Tool;
 
+use App\Helpers\StepHelper;
+use App\Models\CompletedStep;
+use App\Models\Step;
 use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class RecalculateForUser extends Command
 {
@@ -38,24 +43,33 @@ class RecalculateForUser extends Command
      */
     public function handle()
     {
+        $users = User::findMany($this->argument('user'))->load('building');
 
-        //        $user = Hoomdossier::user();
-//        $users = User::forAllCooperations()->findMany([1, 2, 5, 9, 12]);
-//        foreach ($users as $user) {
-//            $t = [];
-//            foreach ($calculateDataByStep as $step => $calculateDataBySubStep) {
-////                $t[] = Str::studly($step.'Helper');
-//            $calculateDataByStep = DumpService::getCalculateData($user, InputSource::findByShort('resident'));
-//                foreach ($calculateDataBySubStep as $subStep => $calculateData) {
-//
-//                }
-//            }
-//        }
+        $this->output->createProgressBar($users->count());
 
+        /** @var User $user */
+        foreach ($users as $user) {
+            // get the completed steps for a user.
+            $completedSteps = $user->building
+                ->completedSteps()
+                ->whereHas('step', function (Builder $query) {
+                    $query->whereNotIn('steps.short', ['general-data', 'heat-pump'])
+                        ->whereNull('parent_id');
+                })->with(['inputSource', 'step'])
+                ->forMe($user)
+                ->get();
 
-//        $users = User::findMany($this->argument('user'));
-//        foreach ($users as $user) {
-//
-//        }
+            /** @var CompletedStep $completedStep */
+            foreach ($completedSteps as $completedStep) {
+                // check if the user is interested in the step
+                if (StepHelper::hasInterestInStep($user, Step::class, $completedStep->step->id, $completedStep->inputSource)) {
+                    // user is interested, so recreate the advices for each step
+                    $stepClass = 'App\\Helpers\\Cooperation\Tool\\'.Str::singular(Str::studly($completedStep->step->short)).'Helper';
+                    $stepHelperClass = new $stepClass($user, $completedStep->inputSource);
+                    $stepHelperClass->createValues()->createAdvices();
+                }
+            }
+            $this->output->progressAdvance(1);
+        }
     }
 }

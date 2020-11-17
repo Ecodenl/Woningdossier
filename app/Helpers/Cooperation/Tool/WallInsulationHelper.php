@@ -92,6 +92,7 @@ class WallInsulationHelper extends ToolHelper
             $measureApplication = MeasureApplication::translated('measure_name', $results['insulation_advice'], 'nl')->first(['measure_applications.*']);
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
+                $actionPlanAdvice->input_source_id = $this->inputSource->id;
                 $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
                 $actionPlanAdvice->user()->associate($this->user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);
@@ -112,6 +113,7 @@ class WallInsulationHelper extends ToolHelper
                 $measureApplication = MeasureApplication::where('short', $measureShort)->first();
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
+                    $actionPlanAdvice->input_source_id = $this->inputSource->id;
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->measureApplication()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);

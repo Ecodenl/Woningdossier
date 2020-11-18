@@ -101,7 +101,8 @@ trait ToolSettingTrait
             $changedInputSourceId = self::getChangedInputSourceId($model);
 
             if (!is_null($changedInputSourceId)) {
-                ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $changedInputSourceId, $hasChanged);
+
+                ToolSettingService::setChanged(self::resolveBuildingId($model), $changedInputSourceId, $hasChanged);
             }
         });
 
@@ -125,8 +126,24 @@ trait ToolSettingTrait
             $changedInputSourceId = self::getChangedInputSourceId($model);
 
             if (!is_null($changedInputSourceId)) {
-                ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $changedInputSourceId, $hasChanged);
+                ToolSettingService::setChanged(self::resolveBuildingId($model), $changedInputSourceId, $hasChanged);
             }
         });
+    }
+
+    public static function resolveBuildingId(Model $model): int
+    {
+        $building = HoomdossierSession::getBuilding(true);
+
+        // this can also be ran in the cli, where no session is set
+        // so we first try to obtain the building directly from the model, if that isnt available try to obtain it from the user.
+        if (!$building instanceof Building) {
+            $building = $model->building;
+            if (!$building instanceof Building) {
+                $building = $model->user->building;
+            }
+        }
+
+        return $building->id;
     }
 }

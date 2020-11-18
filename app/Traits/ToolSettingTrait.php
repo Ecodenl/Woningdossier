@@ -63,7 +63,7 @@ trait ToolSettingTrait
         $hasChanged = false;
 
         // if there are specific columns to check we will check the property for a change.
-        if (! empty($columnsToCheckForChanges)) {
+        if (!empty($columnsToCheckForChanges)) {
             // walk through it.
             foreach ($columnsToCheckForChanges as $column) {
                 // check if it is dirty, if so we will set the bool to true,
@@ -100,7 +100,7 @@ trait ToolSettingTrait
 
             $changedInputSourceId = self::getChangedInputSourceId($model);
 
-            if (! is_null($changedInputSourceId)) {
+            if (!is_null($changedInputSourceId)) {
                 ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $changedInputSourceId, $hasChanged);
             }
         });
@@ -124,7 +124,7 @@ trait ToolSettingTrait
 
             $changedInputSourceId = self::getChangedInputSourceId($model);
 
-            if (! is_null($changedInputSourceId)) {
+            if (!is_null($changedInputSourceId)) {
                 ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $changedInputSourceId, $hasChanged);
             }
         });

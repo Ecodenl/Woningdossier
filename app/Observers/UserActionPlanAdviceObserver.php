@@ -33,6 +33,9 @@ class UserActionPlanAdviceObserver
             $userInterest = $userInterestOnMeasureApplication;
         }
 
+        if (!$userInterest instanceof UserInterest) {
+            dd($userInterest, $userActionPlanAdvice->user_id);
+        }
         // Ja op korte termijn, ja op termijn and more informatie
         if ($userInterest->interest->calculate_value <= 3) {
             $planned = true;

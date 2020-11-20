@@ -38,6 +38,8 @@ class SuccessFullLoginListener
         // so laravel will try to login the user, because of the cookie / session
         // than it will find a account (user) and log hin in, but the account has no user for "this" cooperation so it will fail
         // and thus we will check if the account has an user, and if not we will log him out and the cookie with its session are gone foreeveeerrr
+        $this->ensureCooperationIsSet();
+
         if (!$account->user() instanceof User) {
             \Illuminate\Support\Facades\Log::debug('Account has no user, logging out and exiting.');
             \Auth::logout();
@@ -47,7 +49,6 @@ class SuccessFullLoginListener
             exit;
         }
 
-        $this->ensureCooperationIsSet();
         // cooperation is set, so we can safely retrieve the user from the account.
         $user = $account->user();
         // get the first building from the user

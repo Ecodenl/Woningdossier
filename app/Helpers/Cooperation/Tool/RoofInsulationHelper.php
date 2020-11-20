@@ -263,7 +263,7 @@ class RoofInsulationHelper extends ToolHelper
         $step = Step::findByShort('roof-insulation');
         $this->setValues([
             'user_interests' => [
-                'interest_id' => $this->user->userInterestsForSpecificType(Step::class, $step->id, $this->inputSource)->first()->interest_id,
+                'interest_id' => optional($this->user->userInterestsForSpecificType(Step::class, $step->id, $this->inputSource)->first())->interest_id,
                 'interested_in_type' => Step::class,
                 'interested_in_id' => $step->id,
             ],

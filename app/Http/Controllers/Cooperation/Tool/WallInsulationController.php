@@ -100,7 +100,6 @@ class WallInsulationController extends Controller
             ->saveValues()
             ->createAdvices();
 
-
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 

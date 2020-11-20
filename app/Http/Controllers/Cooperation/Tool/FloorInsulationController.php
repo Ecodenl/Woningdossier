@@ -105,14 +105,10 @@ class FloorInsulationController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-
-        $floorInsulationHelper = new FloorInsulationHelper($user, $inputSource);
-
-        $floorInsulationHelper
+        (new FloorInsulationHelper($user, $inputSource))
             ->setValues($request->validated())
             ->saveValues()
             ->createAdvices();
-
 
         StepHelper::complete($this->step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());

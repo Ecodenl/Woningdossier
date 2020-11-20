@@ -28,14 +28,17 @@ class UserActionPlanAdviceObserver
             ->with('interest')
             ->first();
 
+
+        if (!$userInterest instanceof UserInterest) {
+            dd($buildingOwner->id, $buildingOwner->building->id, $inputSource->id);
+        }
+
         // when thats available use that.
         if ($userInterestOnMeasureApplication instanceof UserInterest) {
             $userInterest = $userInterestOnMeasureApplication;
         }
 
-        if (!$userInterest instanceof UserInterest) {
-            dd($userInterest, $userActionPlanAdvice->user_id);
-        }
+
         // Ja op korte termijn, ja op termijn and more informatie
         if ($userInterest->interest->calculate_value <= 3) {
             $planned = true;

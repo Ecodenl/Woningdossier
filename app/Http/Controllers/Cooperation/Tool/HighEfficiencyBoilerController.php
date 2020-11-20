@@ -93,10 +93,8 @@ class HighEfficiencyBoilerController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        $saveData = $request->only('user_energy_habits', 'building_services');
-
         (new HighEfficiencyBoilerHelper($user, $inputSource))
-            ->setValues($saveData)
+            ->setValues($request->only('user_energy_habits', 'building_services'))
             ->saveValues()
             ->createAdvices();
 

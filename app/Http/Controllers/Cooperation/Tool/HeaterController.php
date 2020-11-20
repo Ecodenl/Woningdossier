@@ -94,9 +94,8 @@ class HeaterController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        $saveData = $request->only('user_interests', 'building_heaters', 'user_energy_habits');
         (new HeaterHelper($user, $inputSource))
-            ->setValues($saveData)
+            ->setValues($request->only('user_interests', 'building_heaters', 'user_energy_habits'))
             ->saveValues()
             ->createAdvices();
 

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\InsulatedGlazing;
 use App\Events\StepDataHasBeenChanged;
-use App\Helpers\Cooperation\Tool\InsulatedGlazingHelper;
+use App\Helpers\Cooperation\Tool\InsulatingGlazingHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
@@ -163,11 +163,8 @@ class InsulatedGlazingController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        // save the step data
-        $saveData = $request->only('user_interests', 'building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses');
-
-        (new InsulatedGlazingHelper($user, $inputSource))
-            ->setValues($saveData)
+        (new InsulatingGlazingHelper($user, $inputSource))
+            ->setValues($request->only('user_interests', 'building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses'))
             ->saveValues()
             ->createAdvices();
 

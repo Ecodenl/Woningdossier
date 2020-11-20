@@ -59,6 +59,13 @@ class HighEfficiencyBoilerHelper extends ToolHelper
     public function createValues(): ToolHelper
     {
         $boilerService = Service::findByShort('boiler');
+
+        $userEnergyHabit = $this
+            ->user
+            ->energyHabit()
+            ->forInputSource($this->inputSource)
+            ->first();
+
         $buildingBoilerService = $this
             ->building
             ->buildingServices()
@@ -77,6 +84,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
             'building_services' => $buildingBoilerArray,
             'user_energy_habits' => [
                 'amount_gas' => $userEnergyHabit->amount_gas ?? null,
+                'resident_count' => $userEnergyHabit->resident_count ?? null,
             ],
         ]);
 

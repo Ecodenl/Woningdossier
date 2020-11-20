@@ -5,28 +5,17 @@ namespace App\Http\Controllers\Cooperation\Tool;
 use App\Calculations\FloorInsulation;
 use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
-use App\Helpers\Cooperation\Tool\FloorInsulationHelperv2;
-use App\Helpers\Cooperation\Tool\WallInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\FloorInsulationFormRequest;
 use App\Models\Building;
-use App\Models\BuildingElement;
-use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\Element;
-use App\Models\ElementValue;
-use App\Models\MeasureApplication;
 use App\Models\Step;
-use App\Models\UserActionPlanAdvice;
-use App\Scopes\GetValueScope;
-use App\Services\CsvService;
-use App\Services\DumpService;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class FloorInsulationController extends Controller
@@ -116,14 +105,10 @@ class FloorInsulationController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-
-        $floorInsulationHelper = new FloorInsulationHelper($user, $inputSource);
-
-        $floorInsulationHelper
+        (new FloorInsulationHelper($user, $inputSource))
             ->setValues($request->validated())
             ->saveValues()
             ->createAdvices();
-
 
         StepHelper::complete($this->step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());

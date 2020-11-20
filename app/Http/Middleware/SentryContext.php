@@ -22,7 +22,7 @@ class SentryContext
     {
         // If logged in and sentry is found, add extra contextual information
         // which helps debugging exceptions
-        if (auth()->check() && app()->bound('sentry')) {
+        if (\Auth::account() instanceOf Account && \Auth::account()->user() instanceOf User && app()->bound('sentry')) {
             /** @var Account $account */
             $account = Hoomdossier::account();
             $user = Hoomdossier::user();
@@ -55,6 +55,9 @@ class SentryContext
                 $scope->setUser($u);
                 $scope->setExtras($tags);
             });
+        } else {
+            // either the user is not set or sentry is not bound.
+            \Auth::logout();
         }
 
         return $next($request);

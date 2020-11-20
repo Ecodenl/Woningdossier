@@ -271,9 +271,11 @@ class RoofInsulationHelper extends ToolHelper
             ],
             'building_roof_types' => $buildingRoofTypesArray,
             'building_roof_type_ids' => $buildingRoofTypeIds,
-            'building_features' => optional(
-                $this->building->buildingFeatures()->forInputSource($this->inputSource)->select('roof_type_id')->first()
-            )->toArray(),
+            'building_features' => [
+                'roof_type_id' => optional(
+                    $this->building->buildingFeatures()->forInputSource($this->inputSource)->select('roof_type_id')->first()
+                )->roof_type_id,
+            ],
         ]);
         return $this;
     }

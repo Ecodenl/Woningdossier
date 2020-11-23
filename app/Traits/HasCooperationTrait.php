@@ -14,10 +14,10 @@ trait HasCooperationTrait
     public static function bootHasCooperationTrait()
     {
         // only add the scope if the app is not running in the console.
-        if (!App::runningInConsole() ) {
+//        if (!App::runningInConsole() ) {
 //        if (app()->environment() == 'accept' || app()->environment() == 'master') {
-            static::addGlobalScope(new CooperationScope());
-        }
+//            static::addGlobalScope(new CooperationScope());
+//        }
     }
 
     public function scopeForMyCooperation(Builder $builder, $cooperationId)

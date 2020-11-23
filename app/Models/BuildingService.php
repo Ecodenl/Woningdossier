@@ -8,36 +8,35 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingService.
+ * App\Models\BuildingService
  *
- * @property int                             $id
- * @property int|null                        $building_id
- * @property int|null                        $input_source_id
- * @property int                             $service_id
- * @property int|null                        $service_value_id
- * @property array|null                      $extra
+ * @property int $id
+ * @property int|null $building_id
+ * @property int|null $input_source_id
+ * @property int $service_id
+ * @property int|null $service_value_id
+ * @property array|null $extra
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\Building|null       $building
- * @property \App\Models\InputSource|null    $inputSource
- * @property \App\Models\Service             $service
- * @property \App\Models\ServiceType         $serviceType
- * @property \App\Models\ServiceValue|null   $serviceValue
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService forMe(\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereExtra($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereServiceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereServiceValueId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingService whereUpdatedAt($value)
+ * @property-read \App\Models\Building|null $building
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\Service $service
+ * @property-read \App\Models\ServiceType $serviceType
+ * @property-read \App\Models\ServiceValue|null $serviceValue
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService query()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService whereExtra($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService whereServiceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService whereServiceValueId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingService whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class BuildingService extends Model

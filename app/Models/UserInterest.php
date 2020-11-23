@@ -8,34 +8,33 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UserInterest.
+ * App\Models\UserInterest
  *
- * @property int                             $id
- * @property int                             $user_id
- * @property int|null                        $input_source_id
- * @property string                          $interested_in_type
- * @property int                             $interested_in_id
- * @property int                             $interest_id
+ * @property int $id
+ * @property int $user_id
+ * @property int|null $input_source_id
+ * @property string $interested_in_type
+ * @property int $interested_in_id
+ * @property int $interest_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\InputSource|null    $inputSource
- * @property \App\Models\Interest            $interest
- * @property \App\Models\User                $user
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest forMe(\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereInterestId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereInterestedInId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereInterestedInType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserInterest whereUserId($value)
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\Interest $interest
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInterest newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInterest newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInterest query()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInterest residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInterest whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInterest whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInterest whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInterest whereInterestId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInterest whereInterestedInId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInterest whereInterestedInType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInterest whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInterest whereUserId($value)
  * @mixin \Eloquent
  */
 class UserInterest extends Model

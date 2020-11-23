@@ -5,26 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UserMotivation.
+ * App\Models\UserMotivation
  *
- * @property int                             $id
- * @property int                             $user_id
- * @property int                             $motivation_id
- * @property int                             $order
+ * @property int $id
+ * @property int $user_id
+ * @property int $motivation_id
+ * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\Motivation          $motivation
- * @property \App\Models\User                $user
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserMotivation newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserMotivation newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserMotivation query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserMotivation whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserMotivation whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserMotivation whereMotivationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserMotivation whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserMotivation whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserMotivation whereUserId($value)
+ * @property-read \App\Models\Motivation $motivation
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation query()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation whereMotivationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserMotivation whereUserId($value)
  * @mixin \Eloquent
  */
 class UserMotivation extends Model

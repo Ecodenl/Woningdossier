@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "08d8acbebf0bfe1467f8e6bcdf3acdb2",
+    "content-hash": "73c791a4d22f09692733984d9b23ca9c",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -5645,16 +5645,16 @@
         },
         {
             "name": "wedesignit/laravel-translations-import",
-            "version": "v0.1.9",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/WeDesignIt/laravel-translations-import.git",
-                "reference": "cd57c979a6a43264bac64e44ba4f18de4a167e26"
+                "reference": "39fe9886ce992904761179f265ae7873da9d20c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WeDesignIt/laravel-translations-import/zipball/cd57c979a6a43264bac64e44ba4f18de4a167e26",
-                "reference": "cd57c979a6a43264bac64e44ba4f18de4a167e26",
+                "url": "https://api.github.com/repos/WeDesignIt/laravel-translations-import/zipball/39fe9886ce992904761179f265ae7873da9d20c2",
+                "reference": "39fe9886ce992904761179f265ae7873da9d20c2",
                 "shasum": ""
             },
             "require": {
@@ -5692,6 +5692,10 @@
                 {
                     "name": "Patrick van Kouteren",
                     "email": "info@wedesignit.nl"
+                },
+                {
+                    "name": "Yannick Schrijvers",
+                    "email": "yincimaster@gmail.com"
                 }
             ],
             "description": "Import translations from your Laravel translation files to your database.",
@@ -5700,7 +5704,7 @@
                 "laravel",
                 "translations"
             ],
-            "time": "2020-02-03T14:08:53+00:00"
+            "time": "2020-11-04T11:56:26+00:00"
         }
     ],
     "packages-dev": [

@@ -52,22 +52,25 @@ class AddUserInterestsForCompletedSteps extends Command
             ->get();
 
         $defaultInterest = \App\Models\Interest::where('calculate_value', 1)->first();
-        $this->info('Adding user interests for steps...');
-        $bar = $this->output->createProgressBar($completedStepsWithoutInterest->count());
-        $bar->start();
-        foreach ($completedStepsWithoutInterest as $completedStepWithoutInterest) {
-            $bar->advance();
-            \DB::table('user_interests')
-                ->insert([
-                    'user_id' => $completedStepWithoutInterest->user_id,
-                    'input_source_id' => $completedStepWithoutInterest->input_source_id,
-                    'interested_in_id' => $completedStepWithoutInterest->step_id,
-                    'interested_in_type' => \App\Models\Step::class,
-                    'interest_id' => $defaultInterest->id,
-                    'created_at' => \Carbon\Carbon::now(),
-                    'updated_at' => \Carbon\Carbon::now()
-                ]);
+        if ($this->confirm("{$completedStepsWithoutInterest->count()} steps found without interest, proceed ?")) {
+
+            $this->info('Adding user interests for steps...');
+            $bar = $this->output->createProgressBar($completedStepsWithoutInterest->count());
+            $bar->start();
+            foreach ($completedStepsWithoutInterest as $completedStepWithoutInterest) {
+                $bar->advance();
+                \DB::table('user_interests')
+                    ->insert([
+                        'user_id' => $completedStepWithoutInterest->user_id,
+                        'input_source_id' => $completedStepWithoutInterest->input_source_id,
+                        'interested_in_id' => $completedStepWithoutInterest->step_id,
+                        'interested_in_type' => \App\Models\Step::class,
+                        'interest_id' => $defaultInterest->id,
+                        'created_at' => \Carbon\Carbon::now(),
+                        'updated_at' => \Carbon\Carbon::now()
+                    ]);
+            }
+            $bar->finish();
         }
-        $bar->finish();
     }
 }

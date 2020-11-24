@@ -97,13 +97,6 @@ class BuildingDataCopyService
                             ->where($buildingOrUserColumn, $buildingOrUserId)
                             ->where($whereColumn, $fromValue->$whereColumn);
 
-                        // count the rows
-                        $toValueCount = \DB::table($table)
-                            ->where('input_source_id', $to->id)
-                            ->where($buildingOrUserColumn, $buildingOrUserId)
-                            ->where($whereColumn, $fromValue->$whereColumn)
-                            ->count();
-
                         // if there are multiple, then we need to add another where to the query.
                         // else, we dont need to query further an can get the first result and use that to update it.
                         if (isset($tableOrWhereColumns['additional_where_column'])) {

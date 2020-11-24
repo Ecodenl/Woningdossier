@@ -60,7 +60,6 @@ class RecalculateForUser extends Command
 
         /** @var User $user */
         foreach ($users as $user) {
-            if (!in_array($user->id, [504, 854, 1036])) {
                 // get the completed steps for a user.
                 $completedSteps = $user->building
                     ->completedSteps()
@@ -81,7 +80,6 @@ class RecalculateForUser extends Command
                         $stepHelperClass->createValues()->createAdvices();
                     }
                 }
-            }
             $this->output->progressAdvance(1);
         }
         $this->output->progressFinish();

@@ -14,20 +14,7 @@ class BuildingDataCopyService
      */
     public static function copy(Building $building, InputSource $from, InputSource $to)
     {
-        // take note: the where_column and additional_where values need to be placed in a logical order:
 
-        /*
-         * This will work
-            'user_interests' => [
-                'where_column' => 'interested_in_id',
-                'additional_where_column' => 'interested_in_type',
-            ],
-        * While this wont wont, this will cause the same row to be updated every time and not create new rows.
-            'user_interests' => [
-                'where_column' => 'interested_in_type',
-                'additional_where_column' => 'interested_in_id',
-            ],
-        */
         // the tables that have a the where_column is used to query on the resident his answers.
         $tables = [
             'user_interests' => [
@@ -101,7 +88,8 @@ class BuildingDataCopyService
                 $whereColumn = $tableOrWhereColumns['where_column'];
 
                 // loop through the answers from the desired input source
-                foreach ($fromValues as $fromValue) {
+                foreach ($fromValues as $index =>  $fromValue) {
+
                     if ($fromValue instanceof \stdClass && isset($fromValue->$whereColumn)) {
                         // now build the query to get the resident his answers
                         $toValueQuery = \DB::table($table)
@@ -118,7 +106,7 @@ class BuildingDataCopyService
 
                         // if there are multiple, then we need to add another where to the query.
                         // else, we dont need to query further an can get the first result and use that to update it.
-                        if ($toValueCount > 1) {
+                        if (isset($tableOrWhereColumns['additional_where_column'])) {
                             $additionalWhereColumn = $tableOrWhereColumns['additional_where_column'];
                             // add the where to the query
                             $toValueQuery = $toValueQuery->where($additionalWhereColumn, $fromValue->$additionalWhereColumn);
@@ -143,6 +131,7 @@ class BuildingDataCopyService
                             }
                         } else {
                             $toValue = $toValueQuery->first();
+
 
                             // cast the results to a array
                             $toValue = (array) $toValue;

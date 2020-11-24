@@ -30,7 +30,7 @@ class UserActionPlanAdviceObserver
 
 
         if (!$userInterest instanceof UserInterest) {
-            dd($buildingOwner->id, $buildingOwner->building->id, $inputSource->id);
+            dd($step->id, $buildingOwner->id, $buildingOwner->building->id, $inputSource->id);
         }
 
         // when thats available use that.

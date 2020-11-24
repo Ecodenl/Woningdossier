@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
+use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Log;
@@ -29,11 +30,25 @@ class SuccessFullLoginListener
      */
     public function handle($event)
     {
+        /** @var Account $account */
         $account = $event->user;
 
+        // you may ask yourself "But John Doe, why would you check if the user isset when this is a SuccessFullLoginListener"
+        // This can happen in the case where a user gets deleted by a cooperation (and is attached to multiple cooperations)
+        // so laravel will try to login the user, because of the cookie / session
+        // than it will find a account (user) and log hin in, but the account has no user for "this" cooperation so it will fail
+        // and thus we will check if the account has an user, and if not we will log him out and the cookie with its session are gone foreeveeerrr
         $this->ensureCooperationIsSet();
 
-        /** @var User $user */
+        if (!$account->user() instanceof User) {
+            \Illuminate\Support\Facades\Log::debug('Account has no user, logging out and exiting.');
+            \Auth::logout();
+            $account->setRememberToken(null);
+            $account->save();
+            header('Location: '.route('cooperation.welcome'));
+            exit;
+        }
+
         // cooperation is set, so we can safely retrieve the user from the account.
         $user = $account->user();
         // get the first building from the user
@@ -96,6 +111,7 @@ class SuccessFullLoginListener
         // and log them out and forget the remember me cookie
         if (in_array(request()->route('cooperation'), ['vrijstadenergie', 'hnwr'])) {
             \Auth::logout();
+            exit;
         }
     }
 }

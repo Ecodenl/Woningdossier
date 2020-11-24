@@ -88,7 +88,7 @@ class BuildingDataCopyService
                 $whereColumn = $tableOrWhereColumns['where_column'];
 
                 // loop through the answers from the desired input source
-                foreach ($fromValues as $index =>  $fromValue) {
+                foreach ($fromValues as $fromValue) {
 
                     if ($fromValue instanceof \stdClass && isset($fromValue->$whereColumn)) {
                         // now build the query to get the resident his answers

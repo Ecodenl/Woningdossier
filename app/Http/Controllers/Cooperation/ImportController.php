@@ -30,7 +30,7 @@ class ImportController extends Controller
         BuildingDataCopyService::copy($building, $desiredInputSource, $targetInputSource);
         Log::debug('Copy: end');
 
-//        ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $desiredInputSource->id, false);
+        ToolSettingService::setChanged(HoomdossierSession::getBuilding(), $desiredInputSource->id, false);
         HoomdossierSession::stopUserComparingInputSources();
 
         return redirect()->back();

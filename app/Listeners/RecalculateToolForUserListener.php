@@ -25,6 +25,18 @@ class RecalculateToolForUserListener
      */
     public function handle($event)
     {
-        \Artisan::call('tool:recalculate');
+        $stepsWhichNeedRecalculation = [
+            'building-characteristics',
+            'current-state',
+            'usage',
+            'interest',
+            'high-efficiency-boiler'
+        ];
+
+        if (in_array($event->step->short, $stepsWhichNeedRecalculation)) {
+            // recalculate the tool for the given user
+            $userId = $event->building->user->id;
+            \Artisan::call('tool:recalculate', ['--user' => [$userId]]);
+        }
     }
 }

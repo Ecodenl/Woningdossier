@@ -3,6 +3,8 @@
 namespace App\Console\Commands\Tool;
 
 use App\Helpers\StepHelper;
+use App\Jobs\ProcessRecalculate;
+use App\Jobs\RecalculateStepForUser;
 use App\Models\CompletedStep;
 use App\Models\Cooperation;
 use App\Models\Step;
@@ -60,26 +62,31 @@ class RecalculateForUser extends Command
 
         /** @var User $user */
         foreach ($users as $user) {
-                // get the completed steps for a user.
-                $completedSteps = $user->building
-                    ->completedSteps()
-                    ->whereHas('step', function (Builder $query) {
-                        $query->whereNotIn('steps.short', ['general-data', 'heat-pump'])
-                            ->whereNull('parent_id');
-                    })->with(['inputSource', 'step'])
-                    ->forMe($user)
-                    ->get();
 
-                /** @var CompletedStep $completedStep */
-                foreach ($completedSteps as $completedStep) {
-                    // check if the user is interested in the step
-                    if (StepHelper::hasInterestInStep($user, Step::class, $completedStep->step->id, $completedStep->inputSource)) {
-                        // user is interested, so recreate the advices for each step
-                        $stepClass = 'App\\Helpers\\Cooperation\Tool\\' . Str::singular(Str::studly($completedStep->step->short)) . 'Helper';
-                        $stepHelperClass = new $stepClass($user, $completedStep->inputSource);
-                        $stepHelperClass->createValues()->createAdvices();
-                    }
+            // get the completed steps for a user.
+            $completedSteps = $user->building
+                ->completedSteps()
+                ->whereHas('step', function (Builder $query) {
+                    $query->whereNotIn('steps.short', ['general-data', 'heat-pump'])
+                        ->whereNull('parent_id');
+                })->with(['inputSource', 'step'])
+                ->forMe($user)
+                ->get();
+
+
+            $stepsToRecalculateChain = [];
+
+            /** @var CompletedStep $completedStep */
+            foreach ($completedSteps as $completedStep) {
+                // check if the user is interested in the step
+                if (StepHelper::hasInterestInStep($user, Step::class, $completedStep->step->id, $completedStep->inputSource)) {
+                    // user is interested, so recreate the advices for each step
+                    $stepsToRecalculateChain[] = new RecalculateStepForUser($user, $completedStep->inputSource, $completedStep->step);
                 }
+            }
+
+            ProcessRecalculate::withChain($stepsToRecalculateChain);
+
             $this->output->progressAdvance(1);
         }
         $this->output->progressFinish();

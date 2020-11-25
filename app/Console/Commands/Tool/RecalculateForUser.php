@@ -11,7 +11,6 @@ use App\Models\Step;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Str;
 
 class RecalculateForUser extends Command
 {
@@ -58,11 +57,14 @@ class RecalculateForUser extends Command
             $users = User::findMany($this->option('user'))->load('building');
         }
 
-        $this->output->progressStart($users->count());
+        $bar = $this->output->createProgressBar($users->count());
+
+        $bar->setFormat("%message%\n %current%/%max% [%bar%] %percent:3s%%");
+        $bar->setMessage("Queuing up the recalculate..");
 
         /** @var User $user */
         foreach ($users as $user) {
-
+            $bar->advance(1);
             // get the completed steps for a user.
             $completedSteps = $user->building
                 ->completedSteps()
@@ -85,10 +87,11 @@ class RecalculateForUser extends Command
                 }
             }
 
-            ProcessRecalculate::withChain($stepsToRecalculateChain);
+            if (!empty($stepsToRecalculateChain)) {
+                ProcessRecalculate::withChain($stepsToRecalculateChain)->dispatch();
+            }
 
-            $this->output->progressAdvance(1);
         }
-        $this->output->progressFinish();
+        $bar->finish();
     }
 }

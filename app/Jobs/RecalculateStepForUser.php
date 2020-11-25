@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class RecalculateStepForUser implements ShouldQueue
@@ -34,6 +35,7 @@ class RecalculateStepForUser implements ShouldQueue
      */
     public function handle()
     {
+        Log::debug("Recalculating step: ".$this->step->name);
         $stepClass = 'App\\Helpers\\Cooperation\Tool\\' . Str::singular(Str::studly($this->step->short)) . 'Helper';
         $stepHelperClass = new $stepClass($this->user, $this->inputSource);
         $stepHelperClass->createValues()->createAdvices();

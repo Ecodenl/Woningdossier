@@ -64,35 +64,32 @@ class RecalculateForUser extends Command
 
         /** @var User $user */
         foreach ($users as $user) {
-            $generalDataStep = Step::findByShort('general-data');
             $bar->advance(1);
-            // Only queue it up when the general data is completed (base step).
-            if ($user->building->hasCompleted($generalDataStep)) {
-                // get the completed steps for a user.
-                $completedSteps = $user->building
-                    ->completedSteps()
-                    ->whereHas('step', function (Builder $query) {
-                        $query->whereNotIn('steps.short', ['general-data', 'heat-pump'])
-                            ->whereNull('parent_id');
-                    })->with(['inputSource', 'step'])
-                    ->forMe($user)
-                    ->get();
+
+            // get the completed steps for a user.
+            $completedSteps = $user->building
+                ->completedSteps()
+                ->whereHas('step', function (Builder $query) {
+                    $query->whereNotIn('steps.short', ['general-data', 'heat-pump'])
+                        ->whereNull('parent_id');
+                })->with(['inputSource', 'step'])
+                ->forMe($user)
+                ->get();
 
 
-                $stepsToRecalculateChain = [];
+            $stepsToRecalculateChain = [];
 
-                /** @var CompletedStep $completedStep */
-                foreach ($completedSteps as $completedStep) {
-                    // check if the user is interested in the step
-                    if (StepHelper::hasInterestInStep($user, Step::class, $completedStep->step->id, $completedStep->inputSource)) {
-                        // user is interested, so recreate the advices for each step
-                        $stepsToRecalculateChain[] = new RecalculateStepForUser($user, $completedStep->inputSource, $completedStep->step);
-                    }
+            /** @var CompletedStep $completedStep */
+            foreach ($completedSteps as $completedStep) {
+                // check if the user is interested in the step
+                if (StepHelper::hasInterestInStep($user, Step::class, $completedStep->step->id, $completedStep->inputSource)) {
+                    // user is interested, so recreate the advices for each step
+                    $stepsToRecalculateChain[] = new RecalculateStepForUser($user, $completedStep->inputSource, $completedStep->step);
                 }
+            }
 
-                if (!empty($stepsToRecalculateChain)) {
-                    ProcessRecalculate::withChain($stepsToRecalculateChain)->dispatch();
-                }
+            if (!empty($stepsToRecalculateChain)) {
+                ProcessRecalculate::withChain($stepsToRecalculateChain)->dispatch();
             }
         }
         $bar->finish();

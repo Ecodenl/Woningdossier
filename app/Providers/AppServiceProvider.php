@@ -2,11 +2,14 @@
 
 namespace App\Providers;
 
+use App\Listeners\RecalculateToolForUserListener;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 
 //use Laravel\Dusk\DuskServiceProvider;
 
@@ -42,11 +45,6 @@ class AppServiceProvider extends ServiceProvider
             return $this->where($attribute, 'LIKE', "%{$searchTerm}%");
         });
 
-        Queue::after(function (JobProcessed $event) {
-            $payload = $event->job->payload();
-            $command = unserialize($payload['data']['command']);
-            // todo: do something with the data
-        });
     }
 
     /**

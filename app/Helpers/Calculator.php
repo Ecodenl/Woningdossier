@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Helpers\Calculation\RoomTemperatureCalculator;
 use App\Helpers\KeyFigures\WallInsulation\Temperature;
 use App\Models\Building;
+use App\Models\BuildingType;
 use App\Models\BuildingTypeElementMaxSaving;
 use App\Models\Element;
 use App\Models\ElementValue;
@@ -209,19 +210,21 @@ class Calculator
 
         if ($boiler instanceof ServiceValue) {
             $buildingType = $building->getBuildingType($inputSource);
-            $usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler, $energyHabit);
-            $usage = $usages['heating']['bruto'];
-            $saving = 0;
-            $maxSaving = BuildingTypeElementMaxSaving::where('building_type_id', $buildingType->id)
-                ->where('element_id', $element->id)
-                ->first();
+            if ($buildingType instanceof BuildingType) {
+                $usages = HighEfficiencyBoilerCalculator::calculateGasUsage($boiler, $energyHabit);
+                $usage = $usages['heating']['bruto'];
+                $saving = 0;
+                $maxSaving = BuildingTypeElementMaxSaving::where('building_type_id', $buildingType->id)
+                    ->where('element_id', $element->id)
+                    ->first();
 
-            if ($maxSaving instanceof BuildingTypeElementMaxSaving) {
-                $saving = $maxSaving->max_saving;
+                if ($maxSaving instanceof BuildingTypeElementMaxSaving) {
+                    $saving = $maxSaving->max_saving;
+                }
+                self::debug(__METHOD__.' Max saving for building_type '.$buildingType->id.' + element '.$element->id.' ('.$element->short.') = '.$saving.'%');
+                $result = $usage * ($saving / 100);
+                self::debug(__METHOD__.' '.$result.' = '.$usage.' * '.($saving / 100));
             }
-            self::debug(__METHOD__.' Max saving for building_type '.$buildingType->id.' + element '.$element->id.' ('.$element->short.') = '.$saving.'%');
-            $result = $usage * ($saving / 100);
-            self::debug(__METHOD__.' '.$result.' = '.$usage.' * '.($saving / 100));
         }
         // when someone fills in a way to low non realistic gas usage it will be below 0
         // if so we display 0.

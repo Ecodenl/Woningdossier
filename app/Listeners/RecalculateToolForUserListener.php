@@ -30,7 +30,10 @@ class RecalculateToolForUserListener
             'current-state',
             'usage',
             'interest',
-            'high-efficiency-boiler'
+
+            'high-efficiency-boiler',
+            'solar-panels',
+            'heater',
         ];
 
         if (in_array($event->step->short, $stepsWhichNeedRecalculation)) {

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Cooperation\Tool\ToolHelper;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\User;
@@ -37,6 +38,7 @@ class RecalculateStepForUser implements ShouldQueue
     {
         Log::debug("Recalculating step: ".$this->step->name);
         $stepClass = 'App\\Helpers\\Cooperation\Tool\\' . Str::singular(Str::studly($this->step->short)) . 'Helper';
+        /** @var ToolHelper $stepHelperClass */
         $stepHelperClass = new $stepClass($this->user, $this->inputSource);
         $stepHelperClass->createValues()->createAdvices();
     }

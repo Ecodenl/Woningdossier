@@ -34,7 +34,8 @@ class UserAssociatedWithCooperation extends Mailable
     {
         return $this
             ->subject(strip_tags(__('cooperation/mail/account-associated-with-cooperation.subject', ['cooperation_name' => $this->cooperation->name])))
-            ->markdown('cooperation.mail.user.associated')
+//            ->view('cooperation.mail.user.associated.view')
+            ->view('cooperation.mail.user.associated.text')
             ->with('userCooperation', $this->cooperation)
             ->with('associatedUser', $this->associatedUser)
             ->with('cooperations', $this->associatedUser->account->cooperations());

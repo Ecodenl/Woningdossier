@@ -7,10 +7,12 @@ use App\Jobs\ProcessRecalculate;
 use App\Jobs\RecalculateStepForUser;
 use App\Models\CompletedStep;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Input;
 
 class RecalculateForUser extends Command
 {
@@ -20,7 +22,8 @@ class RecalculateForUser extends Command
      * @var string
      */
     protected $signature = 'tool:recalculate 
-                                            {--user=* : The ID\'s of the users } 
+                                            {--user=* : The ID\'s of the users }
+                                            {--input-source=* : Input source shorts, will only use the given input sources. When left empty all input sources will be used.} 
                                             {--cooperation= : Cooperation ID, use full to recalculate all users for a specific cooperation}';
 
     /**
@@ -62,6 +65,17 @@ class RecalculateForUser extends Command
         $bar->setFormat("%message%\n %current%/%max% [%bar%] %percent:3s%%");
         $bar->setMessage("Queuing up the recalculate..");
 
+        // default
+        $inputSourcesToRecalculate = ['resident', 'coach'];
+
+        if (!is_null($this->option('input-source'))) {
+            $inputSourcesToRecalculate = $this->option('input-source');
+        }
+
+        $inputSources = InputSource::whereIn('short', $inputSourcesToRecalculate)
+            ->pluck('id')
+            ->toArray();
+
         /** @var User $user */
         foreach ($users as $user) {
             $bar->advance(1);
@@ -73,9 +87,9 @@ class RecalculateForUser extends Command
                     $query->whereNotIn('steps.short', ['general-data', 'heat-pump'])
                         ->whereNull('parent_id');
                 })->with(['inputSource', 'step'])
+                ->whereIn('input_source_id', $inputSources)
                 ->forMe($user)
                 ->get();
-
 
             $stepsToRecalculateChain = [];
 

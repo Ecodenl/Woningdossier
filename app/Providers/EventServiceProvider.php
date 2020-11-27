@@ -79,8 +79,8 @@ class EventServiceProvider extends ServiceProvider
             LogObservingToolForUserListener::class,
         ],
         StepDataHasBeenChanged::class => [
-            StepDataHasBeenChangedListener::class,
-            RecalculateToolForUserListener::class
+            RecalculateToolForUserListener::class,
+//            StepDataHasBeenChangedListener::class,
         ],
         UserChangedHisEmailEvent::class => [
             SetOldEmailListener::class,

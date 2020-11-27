@@ -101,6 +101,7 @@ class HighEfficiencyBoilerController extends Controller
         StepHelper::complete($this->step, $building, $inputSource);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
+        dd('jo');
         $nextStep = StepHelper::getNextStep($building, $inputSource, $this->step);
         $url = $nextStep['url'];
 

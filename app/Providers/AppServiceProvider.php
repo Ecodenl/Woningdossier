@@ -2,14 +2,16 @@
 
 namespace App\Providers;
 
+use App\Jobs\RecalculateStepForUser;
 use App\Listeners\RecalculateToolForUserListener;
+use App\Models\Log;
+use App\Models\Notification;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Events\CallQueuedListener;
 use Illuminate\Queue\Events\JobProcessed;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Queue;
+use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 
 //use Laravel\Dusk\DuskServiceProvider;
 
@@ -45,6 +47,23 @@ class AppServiceProvider extends ServiceProvider
             return $this->where($attribute, 'LIKE', "%{$searchTerm}%");
         });
 
+        \Queue::before(function (JobProcessing $event) {
+
+        });
+
+        \Queue::after(function (JobProcessed $event) {
+            $payload = $event->job->payload();
+            /** @var CallQueuedListener $command */
+            $command = unserialize($payload['data']['command']);
+//
+            \Illuminate\Support\Facades\Log::debug(get_class($command));
+            if(get_class($command) == RecalculateStepForUser::class) {
+                dd($command);
+                exit();
+                die();
+//                Notification::updateOrCreate(['type' => 'recalculate', 'building_id' =>]);
+            }
+        });
     }
 
     /**

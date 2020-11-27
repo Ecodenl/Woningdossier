@@ -18,9 +18,9 @@ class RecalculateStepForUser implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $user;
-    protected $inputSource;
-    protected $step;
+    public $user;
+    public $inputSource;
+    public $step;
 
     public function __construct(User $user, InputSource $inputSource, Step $step)
     {

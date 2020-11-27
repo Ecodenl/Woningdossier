@@ -95,11 +95,8 @@ class RecalculateForUser extends Command
 
             /** @var CompletedStep $completedStep */
             foreach ($completedSteps as $completedStep) {
-                // check if the user is interested in the step
-                if (StepHelper::hasInterestInStep($user, Step::class, $completedStep->step->id, $completedStep->inputSource)) {
-                    // user is interested, so recreate the advices for each step
-                    $stepsToRecalculateChain[] = new RecalculateStepForUser($user, $completedStep->inputSource, $completedStep->step);
-                }
+                // user is interested, so recreate the advices for each step
+                $stepsToRecalculateChain[] = new RecalculateStepForUser($user, $completedStep->inputSource, $completedStep->step);
             }
 
             if (!empty($stepsToRecalculateChain)) {

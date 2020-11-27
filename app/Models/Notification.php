@@ -13,6 +13,8 @@ class Notification extends Model
 
     protected $fillable = [
         'type',
+        'building_id',
+        'input_source_id',
         'is_active',
     ];
 

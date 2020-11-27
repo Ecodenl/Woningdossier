@@ -48,20 +48,32 @@ class AppServiceProvider extends ServiceProvider
         });
 
         \Queue::before(function (JobProcessing $event) {
+            $payload = $event->job->payload();
+            /** @var RecalculateStepForUser $command */
+            $command = unserialize($payload['data']['command']);
 
+            if(get_class($command) == RecalculateStepForUser::class) {
+                Notification::forMe($command->user)->updateOrCreate([
+                    'input_source_id' => $command->inputSource->id,
+                    'type' => 'recalculate',
+                    // the building owner is always passed to the job.
+                    'building_id' => $command->user->building->id
+                ], ['is_active' => true]);
+            }
         });
 
         \Queue::after(function (JobProcessed $event) {
             $payload = $event->job->payload();
-            /** @var CallQueuedListener $command */
+            /** @var RecalculateStepForUser $command */
             $command = unserialize($payload['data']['command']);
-//
-            \Illuminate\Support\Facades\Log::debug(get_class($command));
+
             if(get_class($command) == RecalculateStepForUser::class) {
-                dd($command);
-                exit();
-                die();
-//                Notification::updateOrCreate(['type' => 'recalculate', 'building_id' =>]);
+                Notification::forMe($command->user)->updateOrCreate([
+                    'input_source_id' => $command->inputSource->id,
+                    'type' => 'recalculate',
+                    // the building owner is always passed to the job.
+                    'building_id' => $command->user->building->id
+                ], ['is_active' => false]);
             }
         });
     }

@@ -3,7 +3,7 @@
 @section('step_title', \App\Helpers\Translation::translate('my-plan.title.title'))
 
 @push('css')
-    <link rel="stylesheet" href="{{asset('css/bootoast.css')}}">
+    <link rel="stylesheet" href="{{asset('css/jquery.toast.min.css')}}">
 @endpush
 @section('page_class', 'page-my-plan')
 
@@ -123,7 +123,7 @@
 
 
 @push('js')
-    <script src="{{asset('js/bootoast.js')}}"></script>
+    <script src="{{asset('js/jquery.toast.min.js')}}"></script>
     <script>
 
 

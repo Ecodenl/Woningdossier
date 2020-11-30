@@ -35,26 +35,36 @@ function pollForMessageCount() {
 };
 
 
+// default set to false, will be set to true once polled
+// so if we get no notification response back and the var is set to true we now the recalc is done.
+var wasRecalculating = false;
 function updateNotifications() {
     $.ajax({
         url: window.location.origin + '/notifications',
         type: "GET",
         success: function (response) {
-            console.log(response)
+            $.toast().reset('all');
+
             // for now the first one is ok, we will upgrade to livewire in near future anyway
-            if (response.notifications[0].type === 'recalculate') {
+            if (typeof response.notifications[0] !== "undefined") {
+                wasRecalculating = true;
+                $.toast({
+                    text: "Actieplan word herberekent.", // Text that is to be shown in the toast
 
-                bootoast.r
-                bootoast.toast({
-                    "message": "<p>Uw adviezen worden momenteel berekend</p>",
-                    "type": "info",
-                    "position": "rightBottom",
-                    "icon": "",
-                    "timeout": false,
-                    "animationDuration": "300",
-                    "dismissable": false
-                })
+                    icon: 'info', // Type of toast icon
+                    showHideTransition: 'fade', // fade, slide or plain
+                    allowToastClose: false, // Boolean value true or false
+                    hideAfter: false, // false to make it sticky or number representing the miliseconds as time after which toast needs to be hidden
+                    stack: 5, // false if there should be only one toast at a time or a number representing the maximum number of toasts to be shown at a time
+                    position: 'bottom-right', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
 
+                    textAlign: 'left',  // Text alignment i.e. left, right or center
+                    loader: true,  // Whether to show loader or not. True by default
+                    loaderBg: '#31708f',  // Background color of the toast loader
+                });
+            }
+            if (wasRecalculating && typeof response.notifications[0] === "undefined") {
+                window.location.reload()
             }
         },
         statusCode: {
@@ -69,6 +79,7 @@ function updateNotifications() {
 notificationBeenPolled = false;
 
 function pollForNotifications() {
+
     var timeout = 0;
     if (notificationBeenPolled) {
         timeout = 5000;
@@ -76,7 +87,7 @@ function pollForNotifications() {
     setTimeout(function () {
         notificationBeenPolled = true;
 
-        updateNotifications;
+        updateNotifications()
 
         pollForMessageCount()
     }, timeout);

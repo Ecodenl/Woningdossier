@@ -34,7 +34,6 @@ function pollForMessageCount() {
     }, timeout);
 };
 
-
 // default set to false, will be set to true once polled
 // so if we get no notification response back and the var is set to true we now the recalc is done.
 var wasRecalculating = false;
@@ -65,13 +64,14 @@ function updateNotifications() {
             }
             if (wasRecalculating && typeof response.notifications[0] === "undefined") {
                 $.toast({
-                    heading: 'Success',
                     text: 'Actieplan is herberekend.',
                     showHideTransition: 'slide',
                     icon: 'success',
                     position: 'bottom-right',
                     beforeHide: function () {
-                        window.location.reload();
+                        if (window.location.pathname === '/tool/my-plan') {
+                            window.location.reload();
+                        }
                     }
                 })
             }

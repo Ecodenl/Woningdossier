@@ -34,7 +34,6 @@ function pollForMessageCount() {
     }, timeout);
 };
 
-
 // default set to false, will be set to true once polled
 // so if we get no notification response back and the var is set to true we now the recalc is done.
 var wasRecalculating = false;
@@ -55,7 +54,7 @@ function updateNotifications() {
                     showHideTransition: 'fade', // fade, slide or plain
                     allowToastClose: false, // Boolean value true or false
                     hideAfter: false, // false to make it sticky or number representing the miliseconds as time after which toast needs to be hidden
-                    stack: 5, // false if there should be only one toast at a time or a number representing the maximum number of toasts to be shown at a time
+                    stack: 2, // false if there should be only one toast at a time or a number representing the maximum number of toasts to be shown at a time
                     position: 'bottom-right', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
 
                     textAlign: 'left',  // Text alignment i.e. left, right or center
@@ -64,7 +63,17 @@ function updateNotifications() {
                 });
             }
             if (wasRecalculating && typeof response.notifications[0] === "undefined") {
-                window.location.reload()
+                $.toast({
+                    text: 'Actieplan is herberekend.',
+                    showHideTransition: 'slide',
+                    icon: 'success',
+                    position: 'bottom-right',
+                    beforeHide: function () {
+                        if (window.location.pathname === '/tool/my-plan') {
+                            window.location.reload();
+                        }
+                    }
+                })
             }
         },
         statusCode: {

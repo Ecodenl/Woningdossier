@@ -182,6 +182,8 @@
 
             compareInputSourceValues();
             whenObservingDisableInputs();
+
+            pollForNotifications();
         });
 
         function whenObservingDisableInputs()

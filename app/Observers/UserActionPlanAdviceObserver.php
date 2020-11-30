@@ -29,9 +29,6 @@ class UserActionPlanAdviceObserver
             ->first();
 
 
-        if (!$userInterest instanceof UserInterest) {
-            dd($step->id, $buildingOwner->id, $buildingOwner->building->id, $inputSource->id);
-        }
 
         // when thats available use that.
         if ($userInterestOnMeasureApplication instanceof UserInterest) {

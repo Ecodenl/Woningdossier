@@ -98,7 +98,7 @@ function pollForNotifications() {
 
         updateNotifications()
 
-        pollForMessageCount()
+        pollForNotifications()
     }, timeout);
 }
 

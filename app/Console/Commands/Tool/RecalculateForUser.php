@@ -68,7 +68,7 @@ class RecalculateForUser extends Command
         // default
         $inputSourcesToRecalculate = ['resident', 'coach'];
 
-        if (!is_null($this->option('input-source'))) {
+        if (!empty($this->option('input-source'))) {
             $inputSourcesToRecalculate = $this->option('input-source');
         }
 

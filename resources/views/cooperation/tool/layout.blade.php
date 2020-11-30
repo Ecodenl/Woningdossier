@@ -283,7 +283,6 @@
                 })
             }
         }
-
     </script>
     <script src="{{ asset('js/are-you-sure.js') }}"></script>
 

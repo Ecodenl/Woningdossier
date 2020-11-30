@@ -183,16 +183,6 @@
 
         $(document).ready(function () {
 
-            bootoast.toast({
-                "message": "<p>Uw adviezen worden momenteel berekend</p>",
-                "type": "info",
-                "position": "rightBottom",
-                "icon": "",
-                "timeout": false,
-                "animationDuration": "300",
-                "dismissable": false
-            });
-
             var pageHasAlreadyBeenScrolledToDownloadSection = false;
 
             const MEASURE = '{{\App\Models\PrivateMessage::REQUEST_TYPE_MEASURE}}';

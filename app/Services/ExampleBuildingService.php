@@ -204,7 +204,13 @@ class ExampleBuildingService
                             $glazingData['measure_application_id'] = $measureApplicationId;
 
                             //todo: so the insulated_glazing_id is non existent in the table, this is a typo and should be fixed in the tool structure
-                            $glazingData['insulating_glazing_id'] = $glazingData['insulating_glazing_id'] ?? $glazingData['insulated_glazing_id'];
+
+                            // the value was stored inside the insulated_glazing_id key, however this changed to insulating_glazing_id.
+                            // recent updated example buildings will have the new key, old ones wont.
+                            // so if the insulating_glazing_id does not exist, we will set the old one.
+                            if (!array_key_exists('insulating_glazing_id', $glazingData)) {
+                                $glazingData['insulating_glazing_id'] = $glazingData['insulated_glazing_id'];
+                            }
 
                             $building->currentInsulatedGlazing()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $glazingData);
 

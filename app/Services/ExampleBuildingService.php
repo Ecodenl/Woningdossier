@@ -203,8 +203,6 @@ class ExampleBuildingService
                         foreach ($values as $measureApplicationId => $glazingData) {
                             $glazingData['measure_application_id'] = $measureApplicationId;
 
-                            //todo: so the insulated_glazing_id is non existent in the table, this is a typo and should be fixed in the tool structure
-
                             // the value was stored inside the insulated_glazing_id key, however this changed to insulating_glazing_id.
                             // recent updated example buildings will have the new key, old ones wont.
                             // so if the insulating_glazing_id does not exist, we will set the old one.

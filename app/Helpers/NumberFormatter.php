@@ -83,6 +83,15 @@ class NumberFormatter
         }
     }
 
+    public static function mathableFormat($number, $decimals = 0)
+    {
+        if (is_numeric ($number)) {
+            return number_format($number, $decimals, '.', '');
+        } else {
+            return $number;
+        }
+    }
+
     public static function reverseFormat($number)
     {
         $locale = app()->getLocale();

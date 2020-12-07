@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\NumberFormatter;
 use App\Helpers\ToolHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\ExampleBuildingRequest;
@@ -329,7 +330,7 @@ class ExampleBuildingController extends Controller
                 // If it's not null, the form request will have validated the surface to be numeric
                 if (!is_null($value)) {
                     // Not using the NumberFormatter because we don't want thousand separators
-                    $value = number_format($value, 2, '.', '');
+                    $value = NumberFormatter::mathableFormat($value, 2);
                 }
             }
         }

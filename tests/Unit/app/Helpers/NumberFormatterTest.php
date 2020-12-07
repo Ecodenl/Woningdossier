@@ -58,6 +58,34 @@ class NumberFormatterTest extends TestCase
         $this->assertEquals($expected, NumberFormatter::reverseFormat($number));
     }
 
+    public static function mathableFormatterProvider()
+    {
+        return [
+            ['123.456', '2', '123.46'],
+            ['123456.789', '3', '123456.789'],
+            ['20.6', '0', '21'],
+            ['0', '2', '0.00'],
+            ['16.482.0', '3', '16.482.0'],
+            ['0', '0', '0'],
+            ['16482.00', '0', '16482'],
+            ['123.456', '1', '123.5'],
+            ['123.456.789', '3', '123.456.789'],
+            ['49', '2', '49.00'],
+            ['63.419', '2', '63.42'],
+            ['300.5', '3', '300.500'],
+            ['425986.123', '2', '425986.12'],
+        ];
+    }
+
+    /**
+     * @dataProvider mathableFormatterProvider
+     */
+    public function testMathableFormat($number, $decimals, $expected)
+    {
+        $this->assertEquals($expected, NumberFormatter::mathableFormat($number, $decimals));
+    }
+
+
     public static function roundProvider()
     {
         return [

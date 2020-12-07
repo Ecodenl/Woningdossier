@@ -88,6 +88,14 @@ class ExampleBuildingController extends Controller
 
         foreach ($contents as $cid => $data) {
             $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
+
+            $surface = $data['content']['general-data']['building-characteristics']['building_features']['surface'] ?? null;
+            // If it's not null, the form request will have validated the surface to be numeric
+            if (!is_null($surface)) {
+                // Not using the NumberFormatter because we don't want thousand seperators
+                $data['content']['general-data']['building-characteristics']['building_features']['surface'] = number_format($surface, 2, '.', '');
+            }
+
             if (! is_numeric($cid) && 'new' == $cid) {
                 if (1 == $request->get('new', 0)) {
                     // addition
@@ -218,6 +226,13 @@ class ExampleBuildingController extends Controller
 
         foreach ($contents as $cid => $data) {
             $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
+
+            $surface = $data['content']['general-data']['building-characteristics']['building_features']['surface'] ?? null;
+            // If it's not null, the form request will have validated the surface to be numeric
+            if (!is_null($surface)) {
+                // Not using the NumberFormatter because we don't want thousand seperators
+                $data['content']['general-data']['building-characteristics']['building_features']['surface'] = number_format($surface, 2, '.', '');
+            }
 
             $content = null;
             if (! is_numeric($cid) && 'new' == $cid) {

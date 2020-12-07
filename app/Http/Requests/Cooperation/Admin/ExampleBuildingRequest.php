@@ -62,6 +62,27 @@ class ExampleBuildingRequest extends FormRequest
         ];
     }
 
+    public function withValidator($validator)
+    {
+        $validator->after(function($validator) {
+            $options = $this->input('content');
+            $values = [];
+
+            foreach ($options as $id => $dispose) {
+                $values[$id] = $this->input("content.{$id}.content.general-data.building-characteristics");
+            }
+
+            foreach ($values as $id => $array){
+                $surface = $array['building_features.surface'] ?? null;
+                // If surface is not null and surface is not numeric
+                if (!is_null($surface) && !is_numeric($surface)) {
+                    $validator->errors()->add("content.{$id}.content.general-data.building-characteristics.building_features.surface",
+                        'Gebruiksoppervlakte moet een nummer zijn (punt (.) gebruiken voor komma)');
+                }
+            }
+        });
+    }
+
     protected function array_undot($content)
     {
         $array = [];

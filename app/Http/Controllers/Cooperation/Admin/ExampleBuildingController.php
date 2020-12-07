@@ -14,6 +14,7 @@ use App\Models\Service;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 
+
 class ExampleBuildingController extends Controller
 {
     /**
@@ -89,12 +90,7 @@ class ExampleBuildingController extends Controller
         foreach ($contents as $cid => $data) {
             $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
 
-            $surface = $data['content']['general-data']['building-characteristics']['building_features']['surface'] ?? null;
-            // If it's not null, the form request will have validated the surface to be numeric
-            if (!is_null($surface)) {
-                // Not using the NumberFormatter because we don't want thousand seperators
-                $data['content']['general-data']['building-characteristics']['building_features']['surface'] = number_format($surface, 2, '.', '');
-            }
+            $data['content'] = $this->formatContent($data['content']);
 
             if (! is_numeric($cid) && 'new' == $cid) {
                 if (1 == $request->get('new', 0)) {
@@ -227,12 +223,7 @@ class ExampleBuildingController extends Controller
         foreach ($contents as $cid => $data) {
             $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
 
-            $surface = $data['content']['general-data']['building-characteristics']['building_features']['surface'] ?? null;
-            // If it's not null, the form request will have validated the surface to be numeric
-            if (!is_null($surface)) {
-                // Not using the NumberFormatter because we don't want thousand seperators
-                $data['content']['general-data']['building-characteristics']['building_features']['surface'] = number_format($surface, 2, '.', '');
-            }
+            $data['content'] = $this->formatContent($data['content']);
 
             $content = null;
             if (! is_numeric($cid) && 'new' == $cid) {
@@ -321,5 +312,28 @@ class ExampleBuildingController extends Controller
         }
 
         return redirect()->route('cooperation.admin.example-buildings.index')->with('success', 'Example building copied');
+    }
+
+    /**
+     * Formats the content (currently just numbers to 2 decimal places)
+     *
+     * @param $content
+     * @return array
+     */
+    public function formatContent($content)
+    {
+        $dotted = Arr::dot($content);
+
+        foreach ($dotted as $name => &$value){
+            if (\Illuminate\Support\Str::endsWith($name, ['surface', 'm2'])) {
+                // If it's not null, the form request will have validated the surface to be numeric
+                if (!is_null($value)) {
+                    // Not using the NumberFormatter because we don't want thousand separators
+                    $value = number_format($value, 2, '.', '');
+                }
+            }
+        }
+
+        return \App\Helpers\Arr::arrayUndot($dotted);
     }
 }

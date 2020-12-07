@@ -66,18 +66,15 @@ class ExampleBuildingRequest extends FormRequest
     {
         $validator->after(function($validator) {
             $options = $this->input('content');
-            $values = [];
+            $values = \Illuminate\Support\Arr::dot($options, 'content.');
 
-            foreach ($options as $cid => $dispose) {
-                $values[$cid] = $this->input("content.{$cid}.content.general-data.building-characteristics");
-            }
-
-            foreach ($values as $cid => $array){
-                $surface = $array['building_features.surface'] ?? null;
-                // If surface is not null and surface is not numeric
-                if (!is_null($surface) && !is_numeric($surface)) {
-                    $validator->errors()->add("content.{$cid}.content.general-data.building-characteristics.building_features.surface",
-                        'Gebruiksoppervlakte moet een nummer zijn (punt (.) gebruiken voor komma)');
+            foreach ($values as $name => $value){
+                if (\Illuminate\Support\Str::endsWith($name, ['surface', 'm2'])) {
+                    // If surface is not null and surface is not numeric
+                    if (!is_null($value) && !is_numeric($value)) {
+                        $validator->errors()->add($name,
+                            'Oppervlakte moet een nummer zijn (punt (.) gebruiken voor komma)');
+                    }
                 }
             }
         });

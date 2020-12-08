@@ -6,7 +6,7 @@ $fkey = $content instanceof \App\Models\ExampleBuildingContent ? $content->id : 
 // build year only
 // full html array
 $fname = 'content['.$fkey.'][build_year]';
-$fvalKey = str_replace('[', '.', $fname);
+$fvalKey = str_replace(['[', ']'], ['.', ''], $fname);
 // fallback value for old functions
 $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->build_year : '';
 
@@ -16,7 +16,7 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
 
 
     <input id="build_year" type="number" min="0" name="content[{{ $fkey }}][build_year]"
-           class="form-control" value="{{ App\Helpers\Old::get($fvalKey, $fallback) }}" />
+           class="form-control" value="{{ old($fvalKey, $fallback) }}" />
     @if ($errors->has('content.'.$fkey.'.build_year'))
         <span class="help-block">
             <strong>{{ $errors->first('content.'.$fkey.'.build_year') }}</strong>

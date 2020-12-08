@@ -49,13 +49,21 @@ class NumberFormatter
      */
     public static function round($number, $bucket = 5)
     {
-        if (! is_numeric($number)) {
+        if (!is_numeric($number)) {
             $number = static::reverseFormat($number);
         }
 
         return round($number / $bucket) * $bucket;
     }
 
+    /**
+     * Used to format the given number in a human readable format, mainly used for frontend display.
+     *
+     * @param $number
+     * @param int $decimals
+     * @param false $shouldRoundNumber
+     * @return int|string
+     */
     public static function format($number, $decimals = 0, $shouldRoundNumber = false)
     {
         $locale = app()->getLocale();
@@ -83,13 +91,22 @@ class NumberFormatter
         }
     }
 
+    /**
+     *
+     *
+     * @param $number
+     * @param int $decimals
+     * @return string
+     */
     public static function mathableFormat($number, $decimals = 0)
     {
-        if (is_numeric ($number)) {
-            return number_format($number, $decimals, '.', '');
-        } else {
-            return $number;
+        $number = str_replace(',', '.', $number);
+
+        if (is_numeric($number)) {
+            $number = number_format($number, $decimals, '.', '');
         }
+
+        return $number;
     }
 
     public static function reverseFormat($number)

@@ -61,6 +61,10 @@ class NumberFormatterTest extends TestCase
     public static function mathableFormatterProvider()
     {
         return [
+            ['125.400', 2, 125.40],
+            ['12500,45', 2, 12500.45],
+            ['13,45', 2, 13.45],
+            ['11,69', 1, 11.7],
             ['123.456', '2', '123.46'],
             ['123456.789', '3', '123456.789'],
             ['20.6', '0', '21'],

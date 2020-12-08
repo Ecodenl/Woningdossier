@@ -34,15 +34,7 @@ class ExampleBuildingRequest extends FormRequest
         }
 
         // modify the request.
-        $this->replace(array_replace($this->all(), $undotedContents));
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        // use the old helper since we have modified the request.
-        Old::put($this->all());
-
-        parent::failedValidation($validator);
+//        $this->replace(array_replace($this->all(), $undotedContents));
     }
 
     /**
@@ -72,8 +64,7 @@ class ExampleBuildingRequest extends FormRequest
                 if (\Illuminate\Support\Str::endsWith($name, ['surface', 'm2'])) {
                     // If surface is not null and surface is not numeric
                     if (!is_null($value) && !is_numeric($value)) {
-                        $validator->errors()->add($name,
-                            'Oppervlakte moet een nummer zijn (punt (.) gebruiken voor komma)');
+                        $validator->errors()->add($name, 'Oppervlakte moet een nummer zijn (punt (.) gebruiken voor komma)');
                     }
                 }
             }

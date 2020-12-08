@@ -14,6 +14,7 @@ use App\Models\ExampleBuildingContent;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 
 class ExampleBuildingController extends Controller
@@ -325,12 +326,12 @@ class ExampleBuildingController extends Controller
     {
         $dotted = Arr::dot($content);
 
-        foreach ($dotted as $name => &$value){
-            if (\Illuminate\Support\Str::endsWith($name, ['surface', 'm2'])) {
+        foreach ($dotted as $name => $value){
+            if (Str::endsWith($name, ['surface', 'm2'])) {
                 // If it's not null, the form request will have validated the surface to be numeric
                 if (!is_null($value)) {
                     // Not using the NumberFormatter because we don't want thousand separators
-                    $value = NumberFormatter::mathableFormat($value, 2);
+                    $dotted[$name] = NumberFormatter::mathableFormat($value, 2);
                 }
             }
         }

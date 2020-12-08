@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Cooperation\Admin;
 
 use App\Helpers\Hoomdossier;
-use App\Helpers\Old;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;

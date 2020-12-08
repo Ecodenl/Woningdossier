@@ -2,7 +2,14 @@
 
 namespace App\Providers;
 
+use App\Jobs\RecalculateStepForUser;
+use App\Listeners\RecalculateToolForUserListener;
+use App\Models\Log;
+use App\Models\Notification;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Events\CallQueuedListener;
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -38,6 +45,36 @@ class AppServiceProvider extends ServiceProvider
 
         Builder::macro('whereLike', function (string $attribute, string $searchTerm) {
             return $this->where($attribute, 'LIKE', "%{$searchTerm}%");
+        });
+
+        \Queue::before(function (JobProcessing $event) {
+            $payload = $event->job->payload();
+            /** @var RecalculateStepForUser $command */
+            $command = unserialize($payload['data']['command']);
+
+            if(get_class($command) == RecalculateStepForUser::class) {
+                Notification::forMe($command->user)->updateOrCreate([
+                    'input_source_id' => $command->inputSource->id,
+                    'type' => 'recalculate',
+                    // the building owner is always passed to the job.
+                    'building_id' => $command->user->building->id
+                ], ['is_active' => true]);
+            }
+        });
+
+        \Queue::after(function (JobProcessed $event) {
+            $payload = $event->job->payload();
+            /** @var RecalculateStepForUser $command */
+            $command = unserialize($payload['data']['command']);
+
+            if(get_class($command) == RecalculateStepForUser::class) {
+                Notification::forMe($command->user)->updateOrCreate([
+                    'input_source_id' => $command->inputSource->id,
+                    'type' => 'recalculate',
+                    // the building owner is always passed to the job.
+                    'building_id' => $command->user->building->id
+                ], ['is_active' => false]);
+            }
         });
     }
 

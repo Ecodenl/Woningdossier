@@ -49,6 +49,7 @@ class SolarPanelHelper extends ToolHelper
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->costs = $results['cost_indication'];
+                $actionPlanAdvice->input_source_id = $this->inputSource->id;
                 $actionPlanAdvice->savings_electricity = $results['yield_electricity'];
                 $actionPlanAdvice->user()->associate($this->user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);

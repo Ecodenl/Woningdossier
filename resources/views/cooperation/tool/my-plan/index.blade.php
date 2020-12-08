@@ -2,6 +2,9 @@
 
 @section('step_title', \App\Helpers\Translation::translate('my-plan.title.title'))
 
+@push('css')
+    <link rel="stylesheet" href="{{asset('css/jquery.toast.min.css')}}">
+@endpush
 @section('page_class', 'page-my-plan')
 
 @section('step_content')
@@ -120,6 +123,7 @@
 
 
 @push('js')
+    <script src="{{asset('js/jquery.toast.min.js')}}"></script>
     <script>
 
 
@@ -178,6 +182,7 @@
         });
 
         $(document).ready(function () {
+
             var pageHasAlreadyBeenScrolledToDownloadSection = false;
 
             const MEASURE = '{{\App\Models\PrivateMessage::REQUEST_TYPE_MEASURE}}';

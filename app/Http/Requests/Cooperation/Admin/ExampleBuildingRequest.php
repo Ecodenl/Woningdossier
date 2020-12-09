@@ -3,9 +3,9 @@
 namespace App\Http\Requests\Cooperation\Admin;
 
 use App\Helpers\Hoomdossier;
-use App\Helpers\Old;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class ExampleBuildingRequest extends FormRequest
 {
@@ -17,32 +17,6 @@ class ExampleBuildingRequest extends FormRequest
     public function authorize()
     {
         return Hoomdossier::user()->hasRoleAndIsCurrentRole(['super-admin', 'coordinator', 'cooperation-admin']);
-    }
-
-    public function prepareForValidation()
-    {
-        // get the contents
-        $contents = $this->input('content', []);
-        $undotedContents = [];
-
-        foreach ($contents as $cid => $data) {
-            // undot the array and set it.
-            if (array_key_exists('content', $data)) {
-                $undotedContents['content'][$cid]['content'] = $this->array_undot($data['content']);
-                $undotedContents['content'][$cid]['build_year'] = $data['build_year'];
-            }
-        }
-
-        // modify the request.
-        $this->replace(array_replace($this->all(), $undotedContents));
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        // use the old helper since we have modified the request.
-        Old::put($this->all());
-
-        parent::failedValidation($validator);
     }
 
     /**
@@ -62,16 +36,20 @@ class ExampleBuildingRequest extends FormRequest
         ];
     }
 
-    protected function array_undot($content)
+    public function withValidator($validator)
     {
-        $array = [];
+        $validator->after(function($validator) {
+            $options = $this->input('content');
+            $values = Arr::dot($options, 'content.');
 
-        foreach ($content as $key => $values) {
-            foreach ($values as $dottedKey => $value) {
-                array_set($array, $key.'.'.$dottedKey, $value);
+            foreach ($values as $name => $value){
+                if (Str::endsWith($name, ['surface', 'm2'])) {
+                    // If surface is not null and surface is not numeric
+                    if (!is_null($value) && !is_numeric($value)) {
+                        $validator->errors()->add($name, 'Oppervlakte moet een nummer zijn (punt (.) gebruiken voor komma)');
+                    }
+                }
             }
-        }
-
-        return $array;
+        });
     }
 }

@@ -6,25 +6,24 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Motivation.
+ * App\Models\Motivation
  *
- * @property int                             $id
- * @property string                          $name
- * @property int|null                        $calculate_value
- * @property int                             $order
+ * @property int $id
+ * @property string $name
+ * @property int|null $calculate_value
+ * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Motivation newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Motivation newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Motivation query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Motivation translated($attribute, $name, $locale = 'nl')
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Motivation whereCalculateValue($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Motivation whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Motivation whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Motivation whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Motivation whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Motivation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Motivation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Motivation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Motivation query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Motivation translated($attribute, $name, $locale = 'nl')
+ * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereCalculateValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Motivation whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Motivation extends Model

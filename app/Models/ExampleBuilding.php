@@ -8,35 +8,35 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\ExampleBuilding.
+ * App\Models\ExampleBuilding
  *
- * @property int                                                                           $id
- * @property string                                                                        $name
- * @property int|null                                                                      $building_type_id
- * @property int|null                                                                      $cooperation_id
- * @property int|null                                                                      $order
- * @property bool                                                                          $is_default
- * @property \Illuminate\Support\Carbon|null                                               $created_at
- * @property \Illuminate\Support\Carbon|null                                               $updated_at
- * @property \App\Models\BuildingType|null                                                 $buildingType
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuildingContent[] $contents
- * @property \App\Models\Cooperation|null                                                  $cooperation
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding forAnyOrMyCooperation()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding forMyCooperation()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding generic()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding translated($attribute, $name, $locale = 'nl')
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereBuildingTypeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereCooperationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereIsDefault($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ExampleBuilding whereUpdatedAt($value)
+ * @property int $id
+ * @property string $name
+ * @property int|null $building_type_id
+ * @property int|null $cooperation_id
+ * @property int|null $order
+ * @property bool $is_default
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\BuildingType|null $buildingType
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuildingContent[] $contents
+ * @property-read int|null $contents_count
+ * @property-read \App\Models\Cooperation|null $cooperation
+ * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding forAnyOrMyCooperation()
+ * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding forMyCooperation()
+ * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding generic()
+ * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding translated($attribute, $name, $locale = 'nl')
+ * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereBuildingTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereCooperationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereIsDefault($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ExampleBuilding extends Model

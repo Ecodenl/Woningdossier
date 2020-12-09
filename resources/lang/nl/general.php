@@ -1,61 +1,68 @@
 <?php
 
 return [
-    'need-advice-from-specialist-alert' => 'Hoeveel u met deze maatregel kunt besparen hangt ervan wat de isolatiewaarde van de huidige isolatielaag is. Voor het uitrekenen van de daadwerkelijke besparing bij het na- isoleren van een reeds geïsoleerde gevel/vloer/dak is aanvullend en gespecialiseerd advies nodig.',
-    'input-group-addon'                 => [
-        'no-answer' => 'Geen gegevens bekend',
+    'change-interested' => [
+        'help' => '<p>Hier ziet u wat u bij &ldquo;Algemene gegevens&rdquo; over uw interesse voor :item hebt aangegeven.&nbsp;Mocht u dit willen veranderen, dan kunt u dat in dit veld doen.&nbsp;Let wel: Aanpassingen die u hier doet zullen ook op de pagina &ldquo;Algemene gegevens&rdquo; mee veranderen.</p>',
+        'title' => 'Uw interesse in deze maatregel',
     ],
-    'unit'                              => [
-        'year'          => [
-            'help'  => '',
-            'title' => 'jaar',
-        ],
-        'wp' => [
-            'title' => 'Wp',
-        ],
-        'liter'         => [
-            'help'  => '',
-            'title' => 'liter',
-        ],
-        'day'           => [
-            'help'  => '',
-            'title' => 'dag',
-        ],
-        'pieces'        => [
-            'help'  => '',
-            'title' => 'stuks',
-        ],
-        'meters'        => [
-            'help'  => '',
-            'title' => 'm',
-        ],
-        'square-meters' => [
-            'help'  => '',
-            'title' => 'm<sup>2</sup>',
-        ],
-        'cubic-meters'  => [
-            'help'  => '',
-            'title' => 'm<sup>3</sup>',
-        ],
-        'co2'           => [
-            'help'  => '',
-            'title' => 'CO<sub>2</sub>',
-        ],
-        'kilograms'     => [
-            'help'  => '',
-            'title' => 'kg',
-        ],
-        'degrees'       => [
-            'help'  => '',
+    'download' => [
+        'help' => '<p>Hier kunt u maatregelbladen met algemene informatie over deze maatregel als pdf downloaden.</p>',
+        'title' => 'Download document',
+    ],
+    'unit' => [
+        'degrees' => [
+            'help' => '<p>Geen helptext</p>',
             'title' => 'graden',
         ],
-        'kwh'           => [
-            'help'  => '',
-            'title' => 'kWh',
+        'square-meters' => [
+            'help' => '<p>Geen helptext</p>',
+            'title' => 'm²',
         ],
-        'hours'         => [
-            'help'  => '',
-            'title' => 'uren',
+        'cubic-meters' => [
+            'help' => '<p>Geen helptext</p>',
+            'title' => 'm3',
+        ],
+        'day' => [
+            'help' => '<p>Geen helptext</p>',
+            'title' => 'dag',
+        ],
+        'liter' => [
+            'help' => '<p>Geen helptext</p>',
+            'title' => 'liter',
+        ],
+        'pieces' => [
+            'help' => '<p>Geen helptext</p>',
+            'title' => 'stuks',
+        ],
+        'kg' => [
+            'help' => '<p>Geen helptext</p>',
+            'title' => 'kg',
+        ],
+        'year' => [
+            'help' => '<p>Geen helptext</p>',
+            'title' => 'jaar',
+        ],
+        'meters' => [
+            'help' => '<p>Geen helptext</p>',
+            'title' => 'm',
+        ],
+    ],
+    'options' => [
+        'yes' => [
+            'help' => '<p>geen helptext</p>',
+            'title' => 'Ja',
+        ],
+        'no' => [
+            'help' => '<p>geen helptext</p>',
+            'title' => 'Nee',
+        ],
+        'unknown' => [
+            'help' => '<p>geen helptext</p>',
+            'title' => 'Onbekend',
+        ],
+        'not-important' => [
+            'help' => '<p>geen helptext</p>',
+            'title' => 'Niet van toepassing',
         ],
     ],
 ];

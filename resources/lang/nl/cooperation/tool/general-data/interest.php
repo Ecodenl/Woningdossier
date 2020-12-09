@@ -4,66 +4,54 @@ return [
     'index' => [
         'comment' => [
             'title' => 'Toelichting op interesse en motivatie',
-            'help' => 'Geef toelichting op interesse en motivatie',
+            'help' => '<p>Hier kunnen aanvullende opmerkingen worden gemaakt over uw interesse en motivatie m.b.t. het nemen van energiebesparende maatregelen.</p>',
         ],
         'steps' => [
             'ventilation' => [
                 'title' => 'Ventilatie',
-                'help' => '',
             ],
             'wall-insulation' => [
                 'title' => 'Gevelisolatie',
-                'help' => '',
             ],
             'insulated-glazing' => [
                 'title' => 'Isolerende beglazing',
-                'help' => '',
             ],
             'floor-insulation' => [
                 'title' => 'Vloerisolatie',
-                'help' => '',
             ],
             'roof-insulation' => [
                 'title' => 'Dakisolatie',
-                'help' => '',
             ],
             'high-efficiency-boiler' => [
                 'title' => 'HR CV-Ketel',
-                'help' => '',
             ],
             'heat-pump' => [
                 'title' => 'Warmtepomp',
-                'help' => '',
             ],
             'solar-panels' => [
                 'title' => 'Zonnepanelen',
-                'help' => '',
             ],
             'heater' => [
                 'title' => 'Zonneboiler',
-                'help' => '',
             ],
         ],
-
         'motivation' => [
             'title' => [
                 'title' => 'Motivatie',
-                'help' => 'Wat is de motivatie om aan de slag te gaan?',
+                'help' => '',
             ],
-
             'renovation-plans' => [
                 'title' => 'Heeft u verbouwingsplannen?',
-                'help' => 'Vul in of er verbouwingsplannen zijn',
+                'help' => '<p>Hier kunt u aangeven of er in de nabije toekomst verbouwingsplannen zijn. Deze kunt u in het toelichtingenveld verder omschrijven.</p>',
                 'options' => [
                     'none' => 'Geen',
                     'yes-within-2-year' => 'Ja, binnen nu en twee jaar',
                     'yes-within-5-year' => 'Ja, binnen nu en vijf jaar',
                 ],
             ],
-
             'building-complaints' => [
-                'title' => 'Zijn er klachten en/of problemen met uw woning',
-                'help' => 'Zijn er klachten en/of problemen met uw woning',
+                'title' => 'Zijn er klachten en/of problemen met uw woning?',
+                'help' => '<p>Hier kunt u in het kort aangeven of er klachten of problemen zijn m.b.t. de woning die u met een energiecoach zou willen bespreken. Deze kunt u in het toelichtingenveld eventueel uitgebreider omschrijven.</p>',
             ],
         ],
     ],

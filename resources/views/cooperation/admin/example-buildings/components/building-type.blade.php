@@ -1,6 +1,6 @@
 <div class="form-group {{ $errors->has('building_type_id') ? ' has-error' : '' }}">
     <?php
-        $selected = old('building_type_id', isset($exampleBuilding) ? $exampleBuilding->buidling_type_id : null)
+        $selected = old('building_type_id', isset($exampleBuilding) ? $exampleBuilding->building_type_id : null);
     ?>
 
     <label for="building_type_id">{{\App\Helpers\Translation::translate('building-detail.building-type.what-type.title')}}</label>

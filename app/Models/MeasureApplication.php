@@ -8,39 +8,40 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\MeasureApplication.
+ * App\Models\MeasureApplication
  *
- * @property int                             $id
- * @property string                          $measure_type
- * @property string                          $measure_name
- * @property string                          $short
- * @property string                          $application
- * @property float                           $costs
- * @property string                          $cost_unit
- * @property float                           $minimal_costs
- * @property int                             $maintenance_interval
- * @property string                          $maintenance_unit
- * @property int                             $step_id
+ * @property int $id
+ * @property string $measure_type
+ * @property string $measure_name
+ * @property string $short
+ * @property string $application
+ * @property float $costs
+ * @property string $cost_unit
+ * @property float $minimal_costs
+ * @property int $maintenance_interval
+ * @property string $maintenance_unit
+ * @property int $step_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication translated($attribute, $name, $locale = 'nl')
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication whereApplication($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication whereCostUnit($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication whereCosts($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication whereMaintenanceInterval($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication whereMaintenanceUnit($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication whereMeasureName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication whereMeasureType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication whereMinimalCosts($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication whereStepId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureApplication whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Interest[] $interests
+ * @property-read int|null $interests_count
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication query()
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication translated($attribute, $name, $locale = 'nl')
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereApplication($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCostUnit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCosts($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMaintenanceInterval($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMaintenanceUnit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMeasureName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMeasureType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereMinimalCosts($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereStepId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class MeasureApplication extends Model

@@ -8,61 +8,61 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UserEnergyHabit.
+ * App\Models\UserEnergyHabit
  *
- * @property int                                   $id
- * @property int|null                              $user_id
- * @property int|null                              $input_source_id
- * @property int|null                              $resident_count
- * @property float|null                            $thermostat_high
- * @property float|null                            $thermostat_low
- * @property int|null                              $hours_high
- * @property int|null                              $heating_first_floor
- * @property int|null                              $heating_second_floor
- * @property int|null                              $heated_space_outside
- * @property int                                   $cook_gas
- * @property int|null                              $water_comfort_id
- * @property int|null                              $amount_electricity
- * @property int|null                              $amount_gas
- * @property int|null                              $amount_water
- * @property string|null                           $living_situation_extra
- * @property string|null                           $start_date
- * @property string|null                           $end_date
- * @property \Illuminate\Support\Carbon|null       $created_at
- * @property \Illuminate\Support\Carbon|null       $updated_at
- * @property \App\Models\ComfortLevelTapWater|null $comfortLevelTapWater
- * @property \App\Models\BuildingHeating|null      $heatingFirstFloor
- * @property \App\Models\BuildingHeating|null      $heatingSecondFloor
- * @property \App\Models\InputSource|null          $inputSource
- * @property \App\Models\User|null                 $user
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit forMe(\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountElectricity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountGas($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereAmountWater($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereCookGas($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereEndDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereHeatedSpaceOutside($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereHeatingFirstFloor($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereHeatingSecondFloor($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereHoursHigh($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereLivingSituationExtra($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereMotivationExtra($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereResidentCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereStartDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereThermostatHigh($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereThermostatLow($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserEnergyHabit whereWaterComfortId($value)
+ * @property int $id
+ * @property int|null $user_id
+ * @property int|null $input_source_id
+ * @property int|null $resident_count
+ * @property string|null $thermostat_high
+ * @property string|null $thermostat_low
+ * @property int|null $hours_high
+ * @property int|null $heating_first_floor
+ * @property int|null $heating_second_floor
+ * @property int|null $heated_space_outside
+ * @property int $cook_gas
+ * @property int|null $water_comfort_id
+ * @property int|null $amount_electricity
+ * @property int|null $amount_gas
+ * @property int|null $amount_water
+ * @property int|null $renovation_plans
+ * @property string|null $building_complaints
+ * @property string|null $start_date
+ * @property string|null $end_date
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\ComfortLevelTapWater|null $comfortLevelTapWater
+ * @property-read \App\Models\BuildingHeating|null $heatingFirstFloor
+ * @property-read \App\Models\BuildingHeating|null $heatingSecondFloor
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit query()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereAmountElectricity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereAmountGas($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereAmountWater($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereBuildingComplaints($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereCookGas($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereEndDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereHeatedSpaceOutside($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereHeatingFirstFloor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereHeatingSecondFloor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereHoursHigh($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereRenovationPlans($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereResidentCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereStartDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereThermostatHigh($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereThermostatLow($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit whereWaterComfortId($value)
  * @mixin \Eloquent
  */
 class UserEnergyHabit extends Model

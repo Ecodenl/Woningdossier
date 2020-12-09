@@ -5,33 +5,34 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * App\Models\LanguageLine.
+ * App\Models\LanguageLine
  *
- * @property int                                                                 $id
- * @property string                                                              $group
- * @property string                                                              $key
- * @property array                                                               $text
- * @property int|null                                                            $step_id
- * @property int|null                                                            $main_language_line_id
- * @property int|null                                                            $help_language_line_id
- * @property \Illuminate\Support\Carbon|null                                     $created_at
- * @property \Illuminate\Support\Carbon|null                                     $updated_at
- * @property \App\Models\LanguageLine                                            $helpText
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\LanguageLine[] $subQuestions
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine mainQuestions()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereGroup($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereHelpLanguageLineId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereKey($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereMainLanguageLineId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereStepId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereText($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\LanguageLine whereUpdatedAt($value)
+ * @property int $id
+ * @property string $group
+ * @property string $key
+ * @property array $text
+ * @property int|null $step_id
+ * @property int|null $main_language_line_id
+ * @property int|null $help_language_line_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read LanguageLine|null $helpText
+ * @property-read \Illuminate\Database\Eloquent\Collection|LanguageLine[] $subQuestions
+ * @property-read int|null $sub_questions_count
+ * @method static Builder|LanguageLine forGroup($group)
+ * @method static Builder|LanguageLine mainQuestions()
+ * @method static Builder|LanguageLine newModelQuery()
+ * @method static Builder|LanguageLine newQuery()
+ * @method static Builder|LanguageLine query()
+ * @method static Builder|LanguageLine whereCreatedAt($value)
+ * @method static Builder|LanguageLine whereGroup($value)
+ * @method static Builder|LanguageLine whereHelpLanguageLineId($value)
+ * @method static Builder|LanguageLine whereId($value)
+ * @method static Builder|LanguageLine whereKey($value)
+ * @method static Builder|LanguageLine whereMainLanguageLineId($value)
+ * @method static Builder|LanguageLine whereStepId($value)
+ * @method static Builder|LanguageLine whereText($value)
+ * @method static Builder|LanguageLine whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class LanguageLine extends \Spatie\TranslationLoader\LanguageLine

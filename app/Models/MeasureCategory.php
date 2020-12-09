@@ -6,22 +6,22 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\MeasureCategory.
+ * App\Models\MeasureCategory
  *
- * @property int                                                            $id
- * @property string                                                         $name
- * @property \Illuminate\Support\Carbon|null                                $created_at
- * @property \Illuminate\Support\Carbon|null                                $updated_at
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Measure[] $categories
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureCategory newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureCategory newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureCategory query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureCategory translated($attribute, $name, $locale = 'nl')
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureCategory whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureCategory whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureCategory whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MeasureCategory whereUpdatedAt($value)
+ * @property int $id
+ * @property string $name
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Measure[] $categories
+ * @property-read int|null $categories_count
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory query()
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory translated($attribute, $name, $locale = 'nl')
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class MeasureCategory extends Model

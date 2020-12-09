@@ -6,26 +6,28 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\ServiceType.
+ * App\Models\ServiceType
  *
- * @property int                                                                    $id
- * @property string                                                                 $name
- * @property string                                                                 $iso
- * @property \Illuminate\Support\Carbon|null                                        $created_at
- * @property \Illuminate\Support\Carbon|null                                        $updated_at
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Element[]         $elements
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Measure[]         $measures
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType translated($attribute, $name, $locale = 'nl')
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType whereIso($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ServiceType whereUpdatedAt($value)
+ * @property int $id
+ * @property string $name
+ * @property string $iso
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property-read int|null $building_services_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Element[] $elements
+ * @property-read int|null $elements_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Measure[] $measures
+ * @property-read int|null $measures_count
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceType query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceType translated($attribute, $name, $locale = 'nl')
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceType whereIso($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceType whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceType whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ServiceType extends Model

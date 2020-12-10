@@ -42,12 +42,7 @@ class RecalculateToolForUserListener
 
             // currently this listener will only be triggered on a event thats dispatched while NOT running in the cli
             // so we can safely access the input source from the session
-            Notification::updateOrCreate([
-                'input_source_id' => HoomdossierSession::getInputSource(),
-                'type' => 'recalculate',
-                // the building owner is always passed to the job.
-                'building_id' => $event->building->user->id,
-            ], ['is_active' => true]);
+            Notification::setActive($event->building, HoomdossierSession::getInputSource(true), true);
 
             // recalculate the tool for the given user
             $userId = $event->building->user->id;

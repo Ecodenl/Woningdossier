@@ -24,7 +24,6 @@ class FloorInsulation
      */
     public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData): array
     {
-
         $result = [
             'savings_gas' => 0,
             'savings_co2' => 0,
@@ -42,16 +41,18 @@ class FloorInsulation
         $surface = array_key_exists('insulation_surface', $buildingFeatures) ? $buildingFeatures['insulation_surface'] : 0;
 
 
-        // check if there is any crawlspace
-        if (array_key_exists('has_crawlspace', $buildingElements['extra'])) {
-            if (in_array($buildingElements['extra']['has_crawlspace'], ['unknown'])) {
-                $result['crawlspace'] = 'warning';
+        if (array_key_exists('extra', $buildingElements)) {
+            // check if there is any crawlspace
+            if (array_key_exists('has_crawlspace', $buildingElements['extra'])) {
+                if (in_array($buildingElements['extra']['has_crawlspace'], ['unknown'])) {
+                    $result['crawlspace'] = 'warning';
+                }
             }
-        }
-        // now check if its accessible
-        if (array_key_exists('access', $buildingElements['extra'])) {
-            if (in_array($buildingElements['extra']['access'], ['no', 'unknown'])) {
-                $result['crawlspace_access'] = 'warning';
+            // now check if its accessible
+            if (array_key_exists('access', $buildingElements['extra'])) {
+                if (in_array($buildingElements['extra']['access'], ['no', 'unknown'])) {
+                    $result['crawlspace_access'] = 'warning';
+                }
             }
         }
 

@@ -83,13 +83,13 @@
 
 
                         <div class="col-sm-3">
-                            @component('cooperation.tool.components.step-question', ['id' => 'building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id', 'translation' => 'insulated-glazing.'.$measureApplication->short.'.current-glass', 'required' => false])
+                            @component('cooperation.tool.components.step-question', ['id' => 'building_insulated_glazings.' . $measureApplication->id . '.insulating_glazing_id', 'translation' => 'insulated-glazing.'.$measureApplication->short.'.current-glass', 'required' => false])
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'select', 'inputValues' => $insulatedGlazings, 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'insulating_glazing_id'])
                                     <select class="form-control"
-                                            name="building_insulated_glazings[{{ $measureApplication->id }}][insulated_glazing_id]">
+                                            name="building_insulated_glazings[{{ $measureApplication->id }}][insulating_glazing_id]">
                                         @foreach($insulatedGlazings as $insulateGlazing)
-                                            <option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id', Hoomdossier::getMostCredibleValueFromCollection($buildingInsulatedGlazingsOrderedOnInputSourceCredibility, 'insulating_glazing_id'))) selected
+                                            <option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulating_glazing_id', Hoomdossier::getMostCredibleValueFromCollection($buildingInsulatedGlazingsOrderedOnInputSourceCredibility, 'insulating_glazing_id'))) selected
                                                     @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>
                                             {{--<option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->insulating_glazing_id == $insulateGlazing->id)) selected @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>--}}
                                         @endforeach

@@ -58,7 +58,7 @@ function updateNotifications() {
             if (typeof response.notifications[0] !== "undefined") {
                 wasRecalculating = true;
                 $.toast({
-                    text: "Actieplan word herberekent.", // Text that is to be shown in the toast
+                    text: "Actieplan word herberekend.", // Text that is to be shown in the toast
 
                     icon: 'info', // Type of toast icon
                     showHideTransition: 'fade', // fade, slide or plain

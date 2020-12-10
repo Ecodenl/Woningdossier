@@ -39,8 +39,8 @@ class AppServiceProvider extends ServiceProvider
             $compareFieldName = $parameters[0];
 
             return __('validation.custom')[$attribute][$rule] ?? __('validation.custom.needs_to_be_lower_or_same_as', [
-                'attribute' => __('validation.attributes')[$compareFieldName],
-            ]);
+                    'attribute' => __('validation.attributes')[$compareFieldName],
+                ]);
         });
 
         Builder::macro('whereLike', function (string $attribute, string $searchTerm) {
@@ -52,13 +52,8 @@ class AppServiceProvider extends ServiceProvider
             /** @var RecalculateStepForUser $command */
             $command = unserialize($payload['data']['command']);
 
-            if(get_class($command) == RecalculateStepForUser::class) {
-                Notification::forMe($command->user)->updateOrCreate([
-                    'input_source_id' => $command->inputSource->id,
-                    'type' => 'recalculate',
-                    // the building owner is always passed to the job.
-                    'building_id' => $command->user->building->id
-                ], ['is_active' => true]);
+            if (get_class($command) == RecalculateStepForUser::class) {
+                Notification::setActive($command->user->building, $command->inputSource, true);
             }
         });
 
@@ -67,13 +62,8 @@ class AppServiceProvider extends ServiceProvider
             /** @var RecalculateStepForUser $command */
             $command = unserialize($payload['data']['command']);
 
-            if(get_class($command) == RecalculateStepForUser::class) {
-                Notification::forMe($command->user)->updateOrCreate([
-                    'input_source_id' => $command->inputSource->id,
-                    'type' => 'recalculate',
-                    // the building owner is always passed to the job.
-                    'building_id' => $command->user->building->id
-                ], ['is_active' => false]);
+            if (get_class($command) == RecalculateStepForUser::class) {
+                Notification::setActive($command->user->building, $command->inputSource, false);
             }
         });
     }

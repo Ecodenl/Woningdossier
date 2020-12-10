@@ -31,6 +31,16 @@ trait GetMyValuesTrait
                      ->select([$this->getTable().'.*']);
     }
 
+    public function scopeForBuilding(Builder $query, Building $building)
+    {
+        return $query->where('building_id', $building->id);
+    }
+
+    public function scopeAllInputSources(Builder $query)
+    {
+        return $query->withoutGlobalScope(GetValueScope::class);
+    }
+
     /**
      * Get the input source.
      *

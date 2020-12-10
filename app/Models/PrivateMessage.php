@@ -52,16 +52,9 @@ use Illuminate\Support\Collection;
  */
 class PrivateMessage extends Model
 {
-    const REQUEST_TYPE_USER_CREATED_BY_COOPERATION = 'user-created-by-cooperation';
-    const REQUEST_TYPE_COACH_CONVERSATION = 'coach-conversation';
-    const REQUEST_TYPE_MORE_INFORMATION = 'more-information';
-    const REQUEST_TYPE_OTHER = 'other';
-    // only used when a user comes from the my-plan page and clicks the "actie ondernemen" button.
-    const REQUEST_TYPE_MEASURE = 'measure';
-
     protected $fillable = [
         'message', 'from_user_id', 'cooperation_id', 'from_cooperation_id', 'to_cooperation_id',
-        'request_type', 'allow_access', 'building_id', 'from_user', 'is_public',
+         'allow_access', 'building_id', 'from_user', 'is_public',
     ];
 
     /**
@@ -290,23 +283,5 @@ class PrivateMessage extends Model
     public function privateMessageViews(): HasMany
     {
         return $this->hasMany(PrivateMessageView::class);
-    }
-
-    /**
-     * Method to return the translation of a request type.
-     *
-     * @param $requestType
-     *
-     * @return string|null
-     */
-    public static function getTranslationForRequestType($requestType)
-    {
-        $requestTypesThatAreTranslatable = array_flip([
-            self::REQUEST_TYPE_COACH_CONVERSATION,
-            self::REQUEST_TYPE_MORE_INFORMATION,
-            self::REQUEST_TYPE_OTHER,
-        ]);
-
-        return isset($requestTypesThatAreTranslatable[$requestType]) ? __('conversation-requests.request-types.'.$requestType) : null;
     }
 }

@@ -743,11 +743,6 @@ return [
             ],
 
             'my-plan' => [
-                'options' => [
-                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...',
-                ],
                 'warnings' => [
                     'title' => 'Let op!',
                 ],

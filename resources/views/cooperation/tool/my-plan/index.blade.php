@@ -180,9 +180,9 @@
         $(document).ready(function () {
             var pageHasAlreadyBeenScrolledToDownloadSection = false;
 
-            const MEASURE = '{{\App\Models\PrivateMessage::REQUEST_TYPE_MEASURE}}';
+            const MEASURE = '{{\App\Services\PrivateMessageService::REQUEST_TYPE_MEASURE}}';
             // build the base route, we can replace te params later on.
-            var conversationRequestRoute = '{{route('cooperation.conversation-requests.index', ['action' => 'action', 'measureApplicationShort' => 'measure_application_short'])}}';
+            var conversationRequestRoute = '{{route('cooperation.conversation-requests.index', ['requestType' => 'measure', 'measureApplicationShort' => 'measure_application_short'])}}';
 
             if (window.location.hash !== "") {
                 pollForFileProcessing();
@@ -281,10 +281,6 @@
                         @if(App::environment('local'))
                         console.log(data);
                         @endif
-
-                        $('.take-action').click(function () {
-                            window.location.href = '{{route('cooperation.conversation-requests.index', ['cooperation' => $cooperation])}}'
-                        });
 
                         // checkCoupledMeasuresAndMaintenance();
 

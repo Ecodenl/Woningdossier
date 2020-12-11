@@ -62,9 +62,7 @@ class ParticipantController extends Controller
         if ($user instanceof User) {
             $residentBuilding = Building::find($buildingId);
 
-            $privateMessage = PrivateMessage::public()->conversation($buildingId)->first();
-
-            if ($privateMessage->allow_access) {
+            if ($user->allowedAccess()) {
                 // give the coach permission to the resident his building
                 BuildingPermissionService::givePermission($user, $residentBuilding);
             }

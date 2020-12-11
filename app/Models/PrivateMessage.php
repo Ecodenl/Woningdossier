@@ -20,13 +20,11 @@ use Illuminate\Support\Collection;
  * @property int|null                                                                  $from_user_id
  * @property int|null                                                                  $from_cooperation_id
  * @property int|null                                                                  $to_cooperation_id
- * @property bool                                                                      $allow_access
  * @property \Illuminate\Support\Carbon|null                                           $created_at
  * @property \Illuminate\Support\Carbon|null                                           $updated_at
  * @property \App\Models\Building|null                                                 $building
  * @property \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessageView[] $privateMessageViews
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage accessAllowed()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversation($buildingId)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversationRequest()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage forMyCooperation()
@@ -36,7 +34,6 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage private()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage public()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereAllowAccess($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereBuildingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereFromCooperationId($value)
@@ -54,7 +51,7 @@ class PrivateMessage extends Model
 {
     protected $fillable = [
         'message', 'from_user_id', 'cooperation_id', 'from_cooperation_id', 'to_cooperation_id',
-         'allow_access', 'building_id', 'from_user', 'is_public',
+        'building_id', 'from_user', 'is_public',
     ];
 
     /**
@@ -63,7 +60,6 @@ class PrivateMessage extends Model
      * @var array
      */
     protected $casts = [
-        'allow_access' => 'boolean',
         'is_public'    => 'boolean',
     ];
 
@@ -253,18 +249,6 @@ class PrivateMessage extends Model
     public function building()
     {
         return $this->belongsTo(Building::class);
-    }
-
-    /**
-     * Scope a query to returned the messages where building access is allowed.
-     *
-     * @param $query
-     *
-     * @return mixed
-     */
-    public function scopeAccessAllowed($query)
-    {
-        return $query->where('allow_access', true);
     }
 
     /**

@@ -31,12 +31,15 @@ class GiveCoachesBuildingPermission
     {
         $building = $event->building;
 
+        // the coaches can only get building permission when the user allowed it.
+        $building->user()->update([
+            'allow_access' => true,
+        ]);
+
         // first we check if a public conversation exists, if so we need to set the allowed access to true
         // and we need to check if there were "connected" coaches, if so we have to give them building permissions
         if (PrivateMessage::public()->conversation($building->id)->exists()) {
-            // update all messages with allow_access to true.
-            PrivateMessage::public()->conversation($building->id)
-                ->update(['allow_access' => true]);
+
 
             // get all the coaches that are currently connected to the building
             $coachesWithAccessToResidentBuildingStatuses = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
@@ -49,6 +52,8 @@ class GiveCoachesBuildingPermission
                 ]);
             }
         } else {
+
+
             $cooperation = HoomdossierSession::getCooperation(true);
 
             // withoutEvents is added in laravel 7, for now this will do.
@@ -57,31 +62,26 @@ class GiveCoachesBuildingPermission
             $privateMessage = PrivateMessage::class;
             $privateMessage::unsetEventDispatcher();
 
-            // only send the welcome message when there are no messages
-            if (PrivateMessage::public()->conversation($building->id)->exists()) {
-                PrivateMessage::public()->conversation($building->id)->update(['allow_access' => true]);
-            } else {
-                // create the initial message
-                $privateMessage = $privateMessage::create([
-                    'is_public' => true,
-                    'from_cooperation_id' => $cooperation->id,
-                    'to_cooperation_id' => $cooperation->id,
-                    'from_user' => $cooperation->name,
-                    'message' => 'Welkom bij het Hoomdossier, hier kunt u chatten met de coöperatie.',
-                    'building_id' => $building->id,
-                    'allow_access' => true,
-                ]);
+            // this will be triggerd upon register.
+            // create the initial message
+            $privateMessage = $privateMessage::create([
+                'is_public' => true,
+                'from_cooperation_id' => $cooperation->id,
+                'to_cooperation_id' => $cooperation->id,
+                'from_user' => $cooperation->name,
+                'message' => 'Welkom bij het Hoomdossier, hier kunt u chatten met de coöperatie.',
+                'building_id' => $building->id,
+            ]);
 
-                // what should we set the building status to ?
-                $building->setStatus('pending');
+            // what should we set the building status to ?
+            $building->setStatus('pending');
 
-                // give the user a unread message.
-                PrivateMessageView::create([
-                    'input_source_id' => InputSource::findByShort(InputSource::RESIDENT_SHORT)->id,
-                    'private_message_id' => $privateMessage->id,
-                    'user_id' => $building->user->id,
-                ]);
-            }
+            // give the user a unread message.
+            PrivateMessageView::create([
+                'input_source_id' => InputSource::findByShort(InputSource::RESIDENT_SHORT)->id,
+                'private_message_id' => $privateMessage->id,
+                'user_id' => $building->user->id,
+            ]);
         }
     }
 }

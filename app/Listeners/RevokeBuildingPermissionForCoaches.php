@@ -31,7 +31,9 @@ class RevokeBuildingPermissionForCoaches
     {
         $building = $event->building;
 
-        PrivateMessage::public()->conversation($building->id)->update(['allow_access' => false]);
+        $building->user()->update([
+            'allow_access' => false,
+        ]);
 
         // get all the connected coaches to the building
         $connectedCoachesToBuilding = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);

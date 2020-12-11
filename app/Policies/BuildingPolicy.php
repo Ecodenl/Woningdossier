@@ -90,11 +90,11 @@ class BuildingPolicy
                     ->buildingPermissions()
                     ->where('user_id', $user->id)->first() instanceof BuildingPermission;
 
-            return PrivateMessage::allowedAccess($building) && $coachHasBuildingPermission;
+            return $building->user->allowedAccess() && $coachHasBuildingPermission;
         }
 
         // they can always access a building (if the user / resident gave access)
-        return PrivateMessage::allowedAccess($building) && $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
+        return $building->user->allowedAccess() && $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
     }
 
     /**

@@ -268,16 +268,6 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Check if its allowed to access a building by its given building id.
-     *
-     * @return bool
-     */
-    public static function allowedAccess(Building $building)
-    {
-        return static::conversation($building->id)->accessAllowed()->first() instanceof PrivateMessage;
-    }
-
-    /**
      * Get the private message views.
      */
     public function privateMessageViews(): HasMany

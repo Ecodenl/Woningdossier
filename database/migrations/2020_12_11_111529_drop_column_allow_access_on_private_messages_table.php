@@ -20,8 +20,15 @@ class DropColumnAllowAccessOnPrivateMessagesTable extends Migration
         // first migrate the allow access to the users table.
         $buildings = Building::all();
         foreach ($buildings as $building) {
+
+            $pm = DB::table('private_messages')
+                ->where('building_id', $building->id)
+                ->orderBy('created_at')
+                ->where('allow_access', true)
+                ->first() instanceof stdClass;
+
             $building->user()->update([
-                'allow_access' => PrivateMessage::allowedAccess($building)
+                'allow_access' => $pm
             ]);
         }
 

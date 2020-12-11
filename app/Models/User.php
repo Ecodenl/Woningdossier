@@ -81,6 +81,11 @@ class User extends Model implements AuthorizableContract
         'allow_access' => 'boolean'
     ];
 
+
+    public function allowedAccess(): bool
+    {
+        return $this->allow_access;
+    }
     /**
      * Return the intermediary table of the interests.
      *

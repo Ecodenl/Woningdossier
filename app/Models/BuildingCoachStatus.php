@@ -144,25 +144,17 @@ class BuildingCoachStatus extends Model
 	            WHERE coach_id = '.$userId.' AND `status` = \''.BuildingCoachStatus::STATUS_REMOVED.' \'
 	            group by coach_id, building_id
             ) AS bcs3');
-        $buildingPermissionCount = \DB::raw('(
-                SELECT user_id, count(`building_id`) as count_building_permission
-	            FROM building_permissions
-	            WHERE user_id = '.$userId.'
-	            GROUP BY user_id
-            ) as bp');
 
         // query to get the buildings a user is connected to
         $buildingsTheCoachIsConnectedTo =
-            \DB::query()->select('bcs2.coach_id', 'bcs2.building_id', 'bcs2.count_pending AS count_pending',
-                'bcs3.count_removed AS count_removed', 'bp.count_building_permission as count_building_permission',
+            \DB::query()->select(['bcs2.coach_id', 'bcs2.building_id', 'bcs2.count_pending AS count_pending',
+                'bcs3.count_removed AS count_removed',
                 // accept from the cooperation-building-link
-                'users.cooperation_id')
+                'users.cooperation_id'])
                 // count the pending statuses
                 ->from($pendingCount)
                 // count the removed count
                 ->leftJoin($removedCount, 'bcs2.building_id', '=', 'bcs3.building_id')
-                // check the building permissions
-                ->leftJoin($buildingPermissionCount, 'bcs2.coach_id', '=', 'bp.user_id')
                 // get the buildings
                 ->leftJoin('buildings', 'bcs2.building_id', '=', 'buildings.id')
                 // check if the building its user / resident is associated with the given cooperation
@@ -176,7 +168,7 @@ class BuildingCoachStatus extends Model
                 ->whereRaw('(count_pending > count_removed) OR count_removed IS NULL')
                 ->where('buildings.deleted_at', '=', null)
                 // accept from the cooperation-building-link
-                ->groupBy('building_id', 'users.cooperation_id', 'coach_id', 'count_removed', 'count_pending', 'count_building_permission')
+                ->groupBy(['building_id', 'users.cooperation_id', 'coach_id', 'count_removed', 'count_pending'])
                 ->get();
 
         return $buildingsTheCoachIsConnectedTo;

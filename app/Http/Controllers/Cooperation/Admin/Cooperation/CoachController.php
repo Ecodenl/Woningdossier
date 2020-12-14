@@ -44,11 +44,11 @@ class CoachController extends Controller
 
         // now we got the connected buildings of the user, get the models.
         $buildings = Building::findMany($connectedBuildingsForUser)
-            ->load([
-                    'user',
+            ->load(['user',
                     'buildingStatuses' => function ($q) {
                         $q->with('status')->mostRecent();
-                    }, ]
+                    }
+                ]
             );
 
         $roles = $userToShow->roles->pluck('human_readable_name')->toArray();

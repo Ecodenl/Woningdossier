@@ -3,9 +3,7 @@
 namespace App\Listeners;
 
 use App\Models\Building;
-use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
-use App\Models\PrivateMessage;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 
@@ -36,7 +34,7 @@ class RevokeBuildingPermissionForCoaches
         ]);
 
         // get all the connected coaches to the building
-        $connectedCoachesToBuilding = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
+        $connectedCoachesToBuilding = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
 
         // and revoke them the access to the building
         foreach ($connectedCoachesToBuilding as $connectedCoachToBuilding) {

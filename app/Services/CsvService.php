@@ -107,7 +107,7 @@ class CsvService
             //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
             $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
             $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
-            $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
+            $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
             $connectedCoachNames = [];
             // get the names from the coaches and add them to a array
             foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
@@ -271,7 +271,7 @@ class CsvService
                 $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
                 $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
 
-                $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
+                $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
                 $connectedCoachNames = [];
                 // get the names from the coaches and add them to a array
                 foreach ($connectedCoaches->pluck('coach_id') as $coachId) {

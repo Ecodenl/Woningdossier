@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Services\BuildingCoachStatusService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
@@ -192,7 +193,7 @@ class PrivateMessage extends Model
 
         if ($building instanceof Building) {
             // get the coaches with access to the building
-            $coachesWithAccess = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
+            $coachesWithAccess = BuildingCoachStatusService::getConnectedCoachesByBuildingId($buildingId);
 
             // if its a public conversation we push the building owner in it
             if ($publicConversation) {

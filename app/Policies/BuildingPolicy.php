@@ -9,6 +9,7 @@ use App\Models\BuildingPermission;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\User;
+use App\Services\BuildingCoachStatusService;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class BuildingPolicy
@@ -41,7 +42,7 @@ class BuildingPolicy
         }
         if ($user->hasRoleAndIsCurrentRole('coach')) {
             // get the buildings the user is connected to.
-            $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser($user);
+            $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($user);
 
             // check if the current building is in that collection.
             return  $connectedBuildingsForUser->contains('building_id', $building->id);
@@ -62,7 +63,7 @@ class BuildingPolicy
     {
         if ($user->hasRoleAndIsCurrentRole('coach')) {
             // get the buildings the user is connected to.
-            $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser($user);
+            $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($user);
 
             // check if the current building is in that collection and if there are public messages.
             return  $connectedBuildingsForUser->contains('building_id', $building->id) && $building->privateMessages()->public()->first() instanceof PrivateMessage;

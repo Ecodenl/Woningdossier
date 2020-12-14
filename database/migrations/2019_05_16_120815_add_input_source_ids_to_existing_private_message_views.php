@@ -25,7 +25,7 @@ class AddInputSourceIdsToExistingPrivateMessageViews extends Migration
             foreach ($groupParticipants as $groupParticipant) {
                 if ($groupParticipant instanceof \App\Models\User) {
                     // get the connected coaches for the current building
-                    $connectedCoachesForBuilding = BuildingCoachStatus::getConnectedCoachesByBuildingId($privateMessage->building_id);
+                    $connectedCoachesForBuilding = \App\Services\BuildingCoachStatusService::getConnectedCoachesByBuildingId($privateMessage->building_id);
 
                     // check if the current group participant id added to the buildingCoachStatus
                     // if so the $inputSourceId will be the coach input source id

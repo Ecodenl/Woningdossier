@@ -8,6 +8,7 @@ use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\BuildingCoachStatusService;
 
 class CoachController extends Controller
 {
@@ -40,7 +41,7 @@ class CoachController extends Controller
         $userToShow = User::findOrFail($userId);
         $buildingFromUser = $userToShow->building;
 
-        $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser($userToShow)->pluck('building_id');
+        $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($userToShow)->pluck('building_id');
 
         // now we got the connected buildings of the user, get the models.
         $buildings = Building::findMany($connectedBuildingsForUser)

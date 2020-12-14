@@ -9,6 +9,7 @@ use App\Models\InputSource;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
 use App\Models\User;
+use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 
 class GiveCoachesBuildingPermission
@@ -44,7 +45,7 @@ class GiveCoachesBuildingPermission
 
 
             // get all the coaches that are currently connected to the building
-            $coachesWithAccessToResidentBuildingStatuses = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
+            $coachesWithAccessToResidentBuildingStatuses = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
 
             // we give the coaches that have "permission" to talk to a resident the permissions to access the building from the resident.
             foreach ($coachesWithAccessToResidentBuildingStatuses as $coachWithAccessToResidentBuildingStatus) {

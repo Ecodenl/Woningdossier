@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use App\Helpers\ContentHelper;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\NumberFormatter;
 use App\Helpers\ToolHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\ExampleBuildingRequest;
@@ -92,7 +92,7 @@ class ExampleBuildingController extends Controller
         foreach ($contents as $cid => $data) {
             $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
 
-            $data['content'] = $this->formatContent($data['content']);
+            $data['content'] = ContentHelper::formatContent($data['content']);
 
             if (! is_numeric($cid) && 'new' == $cid) {
                 if (1 == $request->get('new', 0)) {
@@ -225,7 +225,7 @@ class ExampleBuildingController extends Controller
         foreach ($contents as $cid => $data) {
             $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
 
-            $data['content'] = $this->formatContent($data['content']);
+            $data['content'] = ContentHelper::formatContent($data['content']);
 
             $content = null;
             if (! is_numeric($cid) && 'new' == $cid) {
@@ -314,28 +314,5 @@ class ExampleBuildingController extends Controller
         }
 
         return redirect()->route('cooperation.admin.example-buildings.index')->with('success', 'Example building copied');
-    }
-
-    /**
-     * Formats the content (currently just numbers to 2 decimal places)
-     *
-     * @param $content
-     * @return array
-     */
-    public function formatContent($content)
-    {
-        $dotted = Arr::dot($content);
-
-        foreach ($dotted as $name => $value){
-            if (Str::endsWith($name, ['surface', 'm2'])) {
-                // If it's not null, the form request will have validated the surface to be numeric
-                if (!is_null($value)) {
-                    // Not using the NumberFormatter because we don't want thousand separators
-                    $dotted[$name] = NumberFormatter::mathableFormat($value, 2);
-                }
-            }
-        }
-
-        return \App\Helpers\Arr::arrayUndot($dotted);
     }
 }

@@ -7,18 +7,21 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class BuildingCoachStatusServiceTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function setUp()
     {
         parent::setUp();
+        $this->seed(\StatusesTableSeeder::class);
     }
 
     public function testGetConnectedBuildingsByUser()
     {
-        (new \StatusesTableSeeder())->run();
         $cooperation = factory(Cooperation::class)->create();
 
         $accounts = factory(Account::class, 5)->create()->each(function (Account $account) use ($cooperation) {
@@ -57,6 +60,45 @@ class BuildingCoachStatusServiceTest extends TestCase
         }
 
         $connectedBuildingsForCoach = BuildingCoachStatusService::getConnectedBuildingsByUser($coachUser);
+
         $this->assertCount(3, $connectedBuildingsForCoach);
+    }
+
+    public function testGetConnectedCoachesByBuildingId()
+    {
+        $cooperation = factory(Cooperation::class)->create();
+        $account = factory(Account::class)->create();
+        $residentUser = factory(User::class)->create([
+            'cooperation_id' => $cooperation->id,
+            'account_id' => $account->id,
+        ]);
+        factory(Building::class)->create(['user_id' => $residentUser->id]);
+
+        $i = 0;
+        factory(Account::class, 5)->create()->each(function (Account $account) use ($cooperation, $residentUser, &$i) {
+            $coachUser = factory(User::class)->create([
+                'cooperation_id' => $cooperation->id,
+                'account_id' => $account->id,
+            ]);
+            factory(Building::class)->create(['user_id' => $coachUser->id]);
+
+            // give the coach access to the resident his building
+            BuildingCoachStatusService::giveAccess($coachUser, $residentUser->building);
+
+            // now revoke the coach access
+            BuildingCoachStatusService::revokeAccess($coachUser, $residentUser->building);
+
+            // and only give access for 3 users.
+            if ($i < 3) {
+                // give the coach access to the resident his building
+                BuildingCoachStatusService::giveAccess($coachUser, $residentUser->building);
+            }
+
+            $i++;
+        });
+
+        $connectedCoachesForBuilding = BuildingCoachStatusService::getConnectedCoachesByBuildingId($residentUser->building->id);
+
+        $this->assertCount(3, $connectedCoachesForBuilding);
     }
 }

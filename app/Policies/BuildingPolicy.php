@@ -41,7 +41,7 @@ class BuildingPolicy
         }
         if ($user->hasRoleAndIsCurrentRole('coach')) {
             // get the buildings the user is connected to.
-            $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser($user, $cooperation);
+            $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser($user);
 
             // check if the current building is in that collection.
             return  $connectedBuildingsForUser->contains('building_id', $building->id);
@@ -58,11 +58,11 @@ class BuildingPolicy
      *
      * @return bool
      */
-    public function talkToResident(User $user, Building $building, Cooperation $cooperation)
+    public function talkToResident(User $user, Building $building)
     {
         if ($user->hasRoleAndIsCurrentRole('coach')) {
             // get the buildings the user is connected to.
-            $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser($user, $cooperation);
+            $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser($user);
 
             // check if the current building is in that collection and if there are public messages.
             return  $connectedBuildingsForUser->contains('building_id', $building->id) && $building->privateMessages()->public()->first() instanceof PrivateMessage;

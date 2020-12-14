@@ -12,7 +12,7 @@ class BuildingController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user(), $cooperation)->pluck('building_id');
+        $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user())->pluck('building_id');
 
         // we do the sort on the collection, this would be another "complicated" query.
         // for now this will do.

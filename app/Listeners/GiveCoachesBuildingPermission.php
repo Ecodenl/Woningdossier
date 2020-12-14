@@ -3,11 +3,13 @@
 namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
+use App\Models\Building;
 use App\Models\BuildingCoachStatus;
-use App\Models\BuildingPermission;
 use App\Models\InputSource;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
+use App\Models\User;
+use App\Services\BuildingPermissionService;
 
 class GiveCoachesBuildingPermission
 {
@@ -46,10 +48,10 @@ class GiveCoachesBuildingPermission
 
             // we give the coaches that have "permission" to talk to a resident the permissions to access the building from the resident.
             foreach ($coachesWithAccessToResidentBuildingStatuses as $coachWithAccessToResidentBuildingStatus) {
-                BuildingPermission::create([
-                    'user_id' => $coachWithAccessToResidentBuildingStatus->coach_id,
-                    'building_id' => $coachWithAccessToResidentBuildingStatus->building_id,
-                ]);
+                BuildingPermissionService::givePermission(
+                    User::find($coachWithAccessToResidentBuildingStatus->coach_id),
+                    Building::find($coachWithAccessToResidentBuildingStatus->building_id)
+                );
             }
         } else {
 

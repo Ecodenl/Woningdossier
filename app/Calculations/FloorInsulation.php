@@ -24,7 +24,6 @@ class FloorInsulation
      */
     public static function calculate(Building $building, InputSource $inputSource, $energyHabit, $calculateData): array
     {
-
         $result = [
             'savings_gas' => 0,
             'savings_co2' => 0,

@@ -95,13 +95,10 @@ class WallInsulationController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        // when its a step, and a user has no interest in it we will clear the data for that step
-        // a user may had interest in the step and later on decided he has no interest, so we clear the data to prevent weird data in the dumps.
-//        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
-            WallInsulationHelper::save($building, $inputSource, $request->validated());
-//        } else {
-//            WallInsulationHelper::clear($building, $inputSource);
-//        }
+        (new WallInsulationHelper($user, $inputSource))
+            ->setValues($request->validated())
+            ->saveValues()
+            ->createAdvices();
 
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());

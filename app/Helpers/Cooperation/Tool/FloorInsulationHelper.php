@@ -15,70 +15,94 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
 use App\Services\UserActionPlanAdviceService;
-use phpDocumentor\Reflection\Types\Self_;
 
-class FloorInsulationHelper
+class FloorInsulationHelper extends ToolHelper
 {
 
-    /**
-     * Method to clear all the saved data for the step, except for the comments.
-     *
-     * @param Building $building
-     * @param InputSource $inputSource
-     * @param array $buildingFeatureData
-     * @param array $buildingElementData
-     */
-    public static function save(Building $building, InputSource $inputSource, array $saveData)
+    public function createValues(): ToolHelper
+    {
+        $floorInsulationElement = Element::findByShort('floor-insulation');
+        $crawlspaceElement = Element::findByShort('crawlspace');
+
+        $buildingFeature = $this->building
+            ->buildingFeatures()
+            ->forInputSource($this->inputSource)
+            ->first();
+
+        $buildingElements = $this->building
+            ->buildingElements()
+            ->forInputSource($this->inputSource)
+            ->get();
+
+        $floorInsulationElementValueId = $buildingElements->where('element_id', $floorInsulationElement->id)->first()->element_value_id ?? null;
+        $buildingCrawlspaceElement = $buildingElements->where('element_id', $crawlspaceElement->id)->first();
+
+        $floorInsulationBuildingElements = [
+            'element_value_id' => $buildingCrawlspaceElement->element_value_id ?? null,
+            'extra' => [
+                'has_crawlspace' => $buildingCrawlspaceElement->extra['has_crawlspace'] ?? null,
+                'access' => $buildingCrawlspaceElement->extra['access'] ?? null,
+            ],
+        ];
+
+        $floorBuildingFeatures = [
+            'floor_surface' => $buildingFeature->floor_surface ?? null,
+            'insulation_surface' => $buildingFeature->insulation_surface ?? null,
+        ];
+
+        $this->setValues([
+            'element' => [$floorInsulationElement->id => $floorInsulationElementValueId],
+            'building_elements' => $floorInsulationBuildingElements,
+            'building_features' => $floorBuildingFeatures,
+        ]);
+
+        return $this;
+    }
+
+    public function saveValues(): ToolHelper
     {
         $floorInsulationElement = Element::findByShort('floor-insulation');
 
         BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'building_id' => $building->id,
-                'input_source_id' => $inputSource->id,
+                'building_id' => $this->building->id,
+                'input_source_id' => $this->inputSource->id,
                 'element_id' => $floorInsulationElement->id,
             ],
             [
-                'element_value_id' => $saveData['element'][$floorInsulationElement->id]
+                'element_value_id' => $this->getValues('element')[$floorInsulationElement->id]
             ]
         );
 
         BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'building_id' => $building->id,
-                'input_source_id' => $inputSource->id,
+                'building_id' => $this->building->id,
+                'input_source_id' => $this->inputSource->id,
             ],
-            $saveData['building_features']
+            $this->getValues('building_features')
         );
 
         $crawlspaceElement = Element::findByShort('crawlspace');
         BuildingElement::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
-                'building_id' => $building->id,
-                'input_source_id' => $inputSource->id,
+                'building_id' => $this->building->id,
+                'input_source_id' => $this->inputSource->id,
                 'element_id' => $crawlspaceElement->id,
             ],
-            $saveData['building_elements']
+            $this->getValues('building_elements')
         );
 
-        self::saveAdvices($building, $inputSource, $saveData);
+        return $this;
     }
 
-    /**
-     * @param Building $building
-     * @param InputSource $inputSource
-     * @param array $saveData
-     * @throws \Exception
-     */
-    public static function saveAdvices(Building $building, InputSource $inputSource, array $saveData)
+    public function createAdvices(): ToolHelper
     {
-        $user = $building->user;
         $floorInsulationElement = Element::findByShort('floor-insulation');
         $step = Step::findByShort('floor-insulation');
 
-        UserActionPlanAdviceService::clearForStep($user, $inputSource, $step);
+        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
-        $elementData = $saveData['element'];
+        $elementData = $this->getValues('element');
 
         if (array_key_exists($floorInsulationElement->id, $elementData)) {
 
@@ -89,7 +113,8 @@ class FloorInsulationHelper
             // don't save if not applicable
             if ($floorInsulationValue instanceof ElementValue && $floorInsulationValue->calculate_value < 5) {
 
-                $results = FloorInsulation::calculate($building, $inputSource, $user->energyHabit, $saveData);
+                $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
+                $results = FloorInsulation::calculate($this->building, $this->inputSource, $userEnergyHabit, $this->getValues());
 
                 if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
 
@@ -98,7 +123,7 @@ class FloorInsulationHelper
                     if ($measureApplication instanceof MeasureApplication) {
                         $actionPlanAdvice = new UserActionPlanAdvice($results);
                         $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
-                        $actionPlanAdvice->user()->associate($user);
+                        $actionPlanAdvice->user()->associate($this->user);
                         $actionPlanAdvice->measureApplication()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($step);
                         $actionPlanAdvice->save();
@@ -106,6 +131,7 @@ class FloorInsulationHelper
                 }
             }
         }
+        return $this;
     }
 
     /**

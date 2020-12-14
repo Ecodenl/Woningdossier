@@ -90,13 +90,10 @@ class SolarPanelsController extends Controller
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
-        $saveData = $request->only('building_pv_panels', 'user_energy_habits', 'user_interests');
-
-//        if (StepHelper::hasInterestInStep($user, Step::class, $this->step->id)) {
-            SolarPanelHelper::save($building, $inputSource, $saveData);
-//        } else {
-//            SolarPanelHelper::clear($building, $inputSource);
-//        }
+        (new SolarPanelHelper($user, $inputSource))
+            ->setValues($request->only('building_pv_panels', 'user_energy_habits', 'user_interests'))
+            ->saveValues()
+            ->createAdvices();
 
         // Save progress
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));

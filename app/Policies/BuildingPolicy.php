@@ -34,7 +34,7 @@ class BuildingPolicy
      *
      * @return bool
      */
-    public function show(User $user, Building $building, Cooperation $cooperation)
+    public function show(User $user, Building $building)
     {
         if ($building->id === HoomdossierSession::getBuilding(true)->id) {
             return false;

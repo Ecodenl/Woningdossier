@@ -14,7 +14,6 @@ use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\PrivateMessageViewService;
-use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
 
 class ParticipantController extends Controller
@@ -56,9 +55,6 @@ class ParticipantController extends Controller
     {
         $userId = $request->get('user_id', '');
         $buildingId = $request->get('building_id', '');
-
-        $building = Building::findOrFail($buildingId);
-        $this->authorize('talk-to-residents', $building);
 
         // the receiver of the message
         $user = $cooperation->users()->find($userId);

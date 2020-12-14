@@ -1,10 +1,5 @@
 @extends('cooperation.admin.layouts.app')
 
-<?php $canAddCoaches = false; ?>
-@can('talk-to-resident', [$building])
-    <?php $canAddCoaches = true; ?>
-@endcan
-
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -95,20 +90,16 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="associated-coaches">@lang('cooperation/admin/buildings.show.associated-coach.label')</label>
-                            <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach') || $canAddCoaches === false) disabled @endif
-                                    name="user[associated_coaches]" id="associated-coaches" class="form-control"
-                                    multiple="multiple">
-                                @if($canAddCoaches === true)
-                                    @foreach($coaches as $coach)
-                                        <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
-                                        <option
-                                                @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id))
-                                                    selected="selected"
-                                                @endif
-                                                value="{{$coach->id}}">{{$coach->getFullName()}}
-                                        </option>
-                                    @endforeach
-                                @endcan
+                            <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif name="user[associated_coaches]" id="associated-coaches" class="form-control" multiple="multiple">
+                                @foreach($coaches as $coach)
+                                    <?php $coachBuildingStatus = $coachesWithActiveBuildingCoachStatus->where('coach_id', $coach->id) instanceof stdClass ?>
+                                    <option
+                                            @if($coachesWithActiveBuildingCoachStatus->contains('coach_id', $coach->id))
+                                                selected="selected"
+                                            @endif
+                                            value="{{$coach->id}}">{{$coach->getFullName()}}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -340,11 +331,7 @@
                     return false;
                 }
             });
-
             $('#associated-coaches').select2({
-                @if($canAddCoaches === false)
-                    placeholder: "@lang('cooperation/admin/buildings.show.coach-denied')",
-                @endif
                 templateSelection: function (tag, container) {
                     var option = $('#associated-coaches option[value="' + tag.id + '"]');
                     if (option.attr('locked')) {
@@ -410,46 +397,48 @@
 
                     return tag.text;
                 }
-            }).on('select2:selecting', function (event) {
-                var roleToSelect = $(event.params.args.data.element);
+            })
+                .on('select2:selecting', function (event) {
+                    var roleToSelect = $(event.params.args.data.element);
 
-                if (confirm('@lang('cooperation/admin/buildings.show.give-role')')) {
-                    $.ajax({
-                        url: '{{route('cooperation.admin.roles.assign-role')}}',
-                        method: 'POST',
-                        data: {
-                            role_id: roleToSelect.val(),
-                            user_id: userId,
-                            cooperation_id: cooperationId
-                        }
-                    }).done(function () {
-                        // just reload the page
-                        location.reload();
-                    });
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
-            }).on('select2:unselecting', function (event) {
-                var roleToUnselect = $(event.params.args.data.element);
+                    if (confirm('@lang('cooperation/admin/buildings.show.give-role')')) {
+                        $.ajax({
+                            url: '{{route('cooperation.admin.roles.assign-role')}}',
+                            method: 'POST',
+                            data: {
+                                role_id: roleToSelect.val(),
+                                user_id: userId,
+                                cooperation_id: cooperationId
+                            }
+                        }).done(function () {
+                            // just reload the page
+                            location.reload();
+                        });
+                    } else {
+                        event.preventDefault();
+                        return false;
+                    }
+                })
+                .on('select2:unselecting', function (event) {
+                    var roleToUnselect = $(event.params.args.data.element);
 
-                if (confirm('@lang('cooperation/admin/buildings.show.remove-role')')) {
-                    $.ajax({
-                        url: '{{route('cooperation.admin.roles.remove-role')}}',
-                        method: 'POST',
-                        data: {
-                            role_id: roleToUnselect.val(),
-                            user_id: userId
-                        }
-                    }).done(function () {
-                        // just reload the page
-                        location.reload();
-                    });
-                } else {
-                    event.preventDefault();
-                    return false;
-                }
-            });
+                    if (confirm('@lang('cooperation/admin/buildings.show.remove-role')')) {
+                        $.ajax({
+                            url: '{{route('cooperation.admin.roles.remove-role')}}',
+                            method: 'POST',
+                            data: {
+                                role_id: roleToUnselect.val(),
+                                user_id: userId
+                            }
+                        }).done(function () {
+                            // just reload the page
+                            location.reload();
+                        });
+                    } else {
+                        event.preventDefault();
+                        return false;
+                    }
+                });
         });
 
 

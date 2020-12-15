@@ -202,12 +202,11 @@ class DumpService
 
         $allowAccess = $allowedAccess ? 'Ja' : 'Nee';
         $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
-        $connectedCoachNames = [];
+        $connectedCoachNames = User::findMany($connectedCoaches->pluck('coach_id'))
+            ->map(function ($user) {
+                return $user->getFullName();
+            })->toArray();
 
-        // get the names from the coaches and add them to a array
-        foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
-            array_push($connectedCoachNames, User::find($coachId)->getFullName());
-        }
         // implode it.
         $connectedCoachNames = implode($connectedCoachNames, ', ');
 

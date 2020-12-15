@@ -75,7 +75,7 @@ class BuildingCoachStatus extends Model
 
     /**
      * Returns the 'connected' coaches from a given building id.
-     * A coach is considered to be connected when he has more pending statuses then removed statuses.
+     * A coach is considered to be connected when he has more pending statuses than removed statuses.
      */
     public static function getConnectedCoachesByBuildingId(int $buildingId): Collection
     {

@@ -257,6 +257,7 @@ class ExampleBuildingController extends Controller
                 }
             }
         }
+//        dd($array, \App\Helpers\Arr::arrayUndot($content));
 
         return $array;
     }

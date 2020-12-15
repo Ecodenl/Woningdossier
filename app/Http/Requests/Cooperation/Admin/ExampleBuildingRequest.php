@@ -43,8 +43,7 @@ class ExampleBuildingRequest extends FormRequest
 
             $options = $this->input('content');
             $values = Arr::dot($options, 'content.');
-            // also used for the error message
-            $buildYear = Arr::first($values);
+
             foreach ($values as $name => $value){
                 if (!is_null($value) && ContentHelper::isNumeric($name)) {
                     $value = str_replace(',', '.', $value);
@@ -52,8 +51,13 @@ class ExampleBuildingRequest extends FormRequest
                     // If surface is not null and surface is not numeric
                     if (!is_null($value) && !is_numeric($value)) {
 
-                        $contentStructureKey = last(explode('content.', $name));
+                        $keys = explode('content.', $name);
 
+                        // remove the . from the cid.
+                        $cid = substr($keys[1], 0 ,-1);
+                        $contentStructureKey = last($keys);
+
+                        $buildYear = $values["content.{$cid}.build_year"];
                         $label = $contentStructure[$contentStructureKey.".label"];
 
                         $validator->errors()->add($name, "{$label} ({$buildYear}) Moet een nummer zijn");

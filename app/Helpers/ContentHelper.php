@@ -70,7 +70,7 @@ class ContentHelper
         }
 
 
-        dd(\App\Helpers\Arr::arrayUndot($dotted));
+        return \App\Helpers\Arr::arrayUndot($dotted);
     }
 
     /**

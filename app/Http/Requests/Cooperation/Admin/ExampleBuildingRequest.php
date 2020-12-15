@@ -6,7 +6,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\ToolHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
-use App\Helpers\ContentHelper;
+use App\Helpers\ExampleBuildingHelper;
 
 class ExampleBuildingRequest extends FormRequest
 {
@@ -45,7 +45,7 @@ class ExampleBuildingRequest extends FormRequest
             $values = Arr::dot($options, 'content.');
 
             foreach ($values as $name => $value){
-                if (!is_null($value) && ContentHelper::isNumeric($name)) {
+                if (!is_null($value) && ExampleBuildingHelper::isNumeric($name)) {
                     $value = str_replace(',', '.', $value);
 
                     // If surface is not null and surface is not numeric

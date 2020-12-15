@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
-use App\Helpers\ContentHelper;
+use App\Helpers\ExampleBuildingHelper;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolHelper;
 use App\Http\Controllers\Controller;
@@ -11,10 +11,8 @@ use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
-use App\Models\Service;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 
 
 class ExampleBuildingController extends Controller
@@ -213,7 +211,7 @@ class ExampleBuildingController extends Controller
         foreach ($contents as $cid => $data) {
             $data['content'] = array_key_exists('content', $data) ? $data['content'] : [];
 
-            $data['content'] = ContentHelper::formatContent($data['content']);
+            $data['content'] = ExampleBuildingHelper::formatContent($data['content']);
 
             $content = null;
             if (! is_numeric($cid) && 'new' == $cid) {

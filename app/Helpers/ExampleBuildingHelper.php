@@ -1,12 +1,14 @@
 <?php
 
-
 namespace App\Helpers;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
-class ContentHelper
+/**
+ * Class designed to help with the examlple building content.
+ */
+class ExampleBuildingHelper
 {
 
     const DECIMALS_BY_NAME = [
@@ -48,6 +50,11 @@ class ContentHelper
         ],
     ];
 
+    public static function old($key, $default)
+    {
+        return Arr::dot(old())[$key] ?? $default;
+    }
+
     /**
      * Formats the content (currently just numbers to 2 decimal places)
      *
@@ -58,7 +65,7 @@ class ContentHelper
     {
         $dotted = Arr::dot($content);
 
-        foreach ($dotted as $name => $value){
+        foreach ($dotted as $name => $value) {
 
             if (static::isNumeric($name)) {
                 // If it's not null, the form request will have validated the value to be numeric
@@ -96,8 +103,7 @@ class ContentHelper
     {
         $decimalsByName = self::DECIMALS_BY_NAME;
 
-        foreach ($decimalsByName as $decimal => $decimalNames)
-        {
+        foreach ($decimalsByName as $decimal => $decimalNames) {
             if (Str::endsWith($name, $decimalNames)) {
                 return $decimal;
             }

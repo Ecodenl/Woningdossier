@@ -33,10 +33,8 @@ class ContentHelper
 
     /**
      * Check if a name is part of the content that needs to be evaluated as numeric
-     * @param $name
-     * @return bool
      */
-    public static function isNumeric($name)
+    public static function isNumeric(string $name): bool
     {
         $numbers = [
             // Surfaces

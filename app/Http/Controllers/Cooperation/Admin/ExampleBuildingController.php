@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use App\Helpers\ExampleBuildingHelper;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\NumberFormatter;
 use App\Helpers\ToolHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\ExampleBuildingRequest;
@@ -11,10 +11,8 @@ use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
-use App\Models\Service;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 
 
 class ExampleBuildingController extends Controller
@@ -87,27 +85,7 @@ class ExampleBuildingController extends Controller
         $exampleBuilding->order = $request->get('order', null);
         $exampleBuilding->save();
 
-        $contents = $request->input('content', []);
-
-        foreach ($contents as $cid => $data) {
-            $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
-
-            $data['content'] = $this->formatContent($data['content']);
-
-            if (! is_numeric($cid) && 'new' == $cid) {
-                if (1 == $request->get('new', 0)) {
-                    // addition
-                    $content = new ExampleBuildingContent($data);
-                }
-            } else {
-                $content = $exampleBuilding->contents()->where('id', $cid)->first();
-                $content->fill($data);
-            }
-            if (isset($content) && $content instanceof ExampleBuildingContent) {
-                $content->exampleBuilding()->associate($exampleBuilding);
-                $content->save();
-            }
-        }
+        $this->updateOrCreateContent($exampleBuilding, $request->get('new', 0), $request->input('content', []));
 
         return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $exampleBuilding])->with('success', __('cooperation/admin/example-buildings.store.success'));
     }
@@ -220,16 +198,24 @@ class ExampleBuildingController extends Controller
         $exampleBuilding->is_default = $request->get('is_default', false);
         $exampleBuilding->order = $request->get('order', null);
 
-        $contents = $request->input('content', []);
 
+        $this->updateOrCreateContent($exampleBuilding, $request->get('new', 0), $request->input('content', []));
+
+        $exampleBuilding->save();
+
+        return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $id])->with('success', __('cooperation/admin/example-buildings.update.success'));
+    }
+
+    private function updateOrCreateContent(ExampleBuilding $exampleBuilding, $new, $contents)
+    {
         foreach ($contents as $cid => $data) {
-            $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
+            $data['content'] = array_key_exists('content', $data) ? $data['content'] : [];
 
-            $data['content'] = $this->formatContent($data['content']);
+            $data['content'] = ExampleBuildingHelper::formatContent($data['content']);
 
             $content = null;
             if (! is_numeric($cid) && 'new' == $cid) {
-                if (1 == $request->get('new', 0)) {
+                if (1 == $new) {
                     // addition
                     $content = new ExampleBuildingContent($data);
                 }
@@ -242,23 +228,6 @@ class ExampleBuildingController extends Controller
                 $content->save();
             }
         }
-        $exampleBuilding->save();
-
-        return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $id])->with('success', __('cooperation/admin/example-buildings.update.success'));
-    }
-
-    protected function array_undot($content)
-    {
-        $array = [];
-        foreach ($content as $step => $values) {
-            foreach ($values as $subStep => $subStepValues) {
-                foreach ($subStepValues as $tableColumn => $value) {
-                    array_set($array, $step.'.'.$subStep.'.'.$tableColumn, $value);
-                }
-            }
-        }
-
-        return $array;
     }
 
     /**
@@ -314,28 +283,5 @@ class ExampleBuildingController extends Controller
         }
 
         return redirect()->route('cooperation.admin.example-buildings.index')->with('success', 'Example building copied');
-    }
-
-    /**
-     * Formats the content (currently just numbers to 2 decimal places)
-     *
-     * @param $content
-     * @return array
-     */
-    public function formatContent($content)
-    {
-        $dotted = Arr::dot($content);
-
-        foreach ($dotted as $name => $value){
-            if (Str::endsWith($name, ['surface', 'm2'])) {
-                // If it's not null, the form request will have validated the surface to be numeric
-                if (!is_null($value)) {
-                    // Not using the NumberFormatter because we don't want thousand separators
-                    $dotted[$name] = NumberFormatter::mathableFormat($value, 2);
-                }
-            }
-        }
-
-        return \App\Helpers\Arr::arrayUndot($dotted);
     }
 }

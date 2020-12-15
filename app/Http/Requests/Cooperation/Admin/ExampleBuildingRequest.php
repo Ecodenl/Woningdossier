@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Cooperation\Admin;
 
 use App\Helpers\Hoomdossier;
+use App\Helpers\ToolHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
 use App\Helpers\ContentHelper;
@@ -37,16 +38,25 @@ class ExampleBuildingRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function($validator) {
+            // we can use this for the translations of the errors.
+            $contentStructure = Arr::dot(ToolHelper::getContentStructure());
+
             $options = $this->input('content');
             $values = Arr::dot($options, 'content.');
-
+            // also used for the error message
+            $buildYear = Arr::first($values);
             foreach ($values as $name => $value){
                 if (!is_null($value) && ContentHelper::isNumeric($name)) {
                     $value = str_replace(',', '.', $value);
 
                     // If surface is not null and surface is not numeric
                     if (!is_null($value) && !is_numeric($value)) {
-                        $validator->errors()->add($name, 'Item moet een nummer zijn');
+
+                        $contentStructureKey = last(explode('content.', $name));
+
+                        $label = $contentStructure[$contentStructureKey.".label"];
+
+                        $validator->errors()->add($name, "{$label} ({$buildYear}) Moet een nummer zijn");
                     }
                 }
             }

@@ -384,6 +384,8 @@ class CsvService
      */
     public static function totalReport(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
     {
+        // TODO: Remove this when done
+        \DB::enableQueryLog();
         $users = $cooperation->users()->whereHas('buildings')->get();
 
         $rows = [];
@@ -404,7 +406,7 @@ class CsvService
             // for each user reset the input source back to the base input source.
             $inputSourceForDump = $inputSource;
 
-            // well in every case there is a uitzondering op de regel
+            // well in every case there is an exception on the rule
             // normally we would pick the given input source
             // but when coach input is available we use the coach input source for that particular user
             // coach input is available when he has completed the general data step
@@ -413,6 +415,8 @@ class CsvService
             }
 
             $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSourceForDump, $anonymized, false)['user-data'];
+            // TODO: Remove this when done
+            dd($rows[$user->building->id], \DB::getQueryLog());
         }
 
         return $rows;

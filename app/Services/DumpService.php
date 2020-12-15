@@ -190,14 +190,16 @@ class DumpService
         $building = $user->building;
         $buildingId = $building->id;
 
-        // normally we could use the PrivateMessage::allowedAccess, but we need to qeury on the to_cooperation_id.
+        // normally we could use the PrivateMessage::allowedAccess, but we need to query on the to_cooperation_id.
         $allowedAccess = PrivateMessage::conversation($building->id)
                 ->accessAllowed()
                 ->where('to_cooperation_id', $cooperation->id)
                 ->first() instanceof PrivateMessage;
 
         $createdAt = optional($user->created_at)->format('Y-m-d');
-        $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
+        $mostRecentStatus = $building->getMostRecentBuildingStatus();
+        $buildingStatus = $mostRecentStatus->status->name;
+
         $allowAccess = $allowedAccess ? 'Ja' : 'Nee';
         $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
         $connectedCoachNames = [];
@@ -230,7 +232,6 @@ class DumpService
         $buildYear = $buildingFeature->build_year ?? '';
         $exampleBuilding = optional($building->exampleBuilding)->isSpecific() ? $building->exampleBuilding->name : '';
 
-        $mostRecentStatus = $building->getMostRecentBuildingStatus();
         $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
 
         // set the personal userinfo

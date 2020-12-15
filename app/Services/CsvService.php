@@ -91,7 +91,7 @@ class CsvService
             // for each user reset the input source back to the base input source.
             $inputSourceForDump = $inputSource;
 
-            // well in every case there is a uitzondering op de regel
+            // well in every case there is an exception on the rule
             // normally we would pick the given input source
             // but when coach input is available we use the coach input source for that particular user
             // coach input is available when he has completed the general data step

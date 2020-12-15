@@ -110,14 +110,15 @@ class CsvService
 
             $createdAt = optional($user->created_at)->format('Y-m-d');
             //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
-            $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
+            $mostRecentStatus = $building->getMostRecentBuildingStatus();
+            $buildingStatus = $mostRecentStatus->status->name;
             $allowAccess = $allowedAccess ? 'Ja' : 'Nee';
             $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
-            $connectedCoachNames = [];
-            // get the names from the coaches and add them to a array
-            foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
-                array_push($connectedCoachNames, User::find($coachId)->getFullName());
-            }
+            $connectedCoachNames = User::findMany($connectedCoaches->pluck('coach_id'))
+                ->map(function ($user) {
+                    return $user->getFullName();
+                })->toArray();
+
             // implode it.
             $connectedCoachNames = implode($connectedCoachNames, ', ');
 
@@ -141,7 +142,6 @@ class CsvService
             $buildYear = $buildingFeatures->build_year ?? '';
             $exampleBuilding = optional($building->exampleBuilding)->isSpecific() ? $building->exampleBuilding->name : '';
 
-            $mostRecentStatus = $building->getMostRecentBuildingStatus();
             $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
 
             if ($anonymize) {

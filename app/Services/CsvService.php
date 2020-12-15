@@ -388,6 +388,32 @@ class CsvService
         \DB::enableQueryLog();
         $users = $cooperation->users()->whereHas('buildings')->get();
 
+        /*
+        this cant be used currently because every user may need a different input source
+        but we still got to find a way how we can use this
+        this dramatically decreases the queries.
+        $users = $cooperation
+            ->users()
+            ->whereHas('building')
+            ->with(
+                ['building' => function ($query) use ($inputSource) {
+                    $query->with(
+                        [
+                            'buildingFeatures' => function ($query) use ($inputSource) {
+                                $query->forInputSource($inputSource)
+                                    ->with([
+                                        'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
+                                        'contaminatedWallJoints', 'wallJoints'
+                                    ]);
+                            },
+                            'buildingVentilations' => function ($query) use ($inputSource) {
+                                $query->forInputSource($inputSource);
+                            }
+                        ]
+                    );
+                }])
+            ->get();
+*/
         $rows = [];
 
         $headers = DumpService::getStructureForTotalDumpService($anonymized);

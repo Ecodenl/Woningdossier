@@ -46,6 +46,7 @@ function updateNotifications() {
 
             // for now the first one is ok, we will upgrade to livewire in near future anyway
             if (typeof response.notifications[0] !== "undefined") {
+                $('.pdf-report').prop('disabled', 'disabled').addClass('disabled')
                 wasRecalculating = true;
                 $.toast({
                     text: "Actieplan word herberekend.", // Text that is to be shown in the toast
@@ -63,6 +64,7 @@ function updateNotifications() {
                 });
             }
             if (wasRecalculating && typeof response.notifications[0] === "undefined") {
+                $('.pdf-report').prop('disabled', 'disabled').addClass('disabled')
                 $.toast({
                     text: 'Actieplan is herberekend.',
                     showHideTransition: 'slide',

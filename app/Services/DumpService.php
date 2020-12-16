@@ -221,12 +221,19 @@ class DumpService
         $postalCode = $building->postal_code;
 
         // get the building features from the resident
-        $buildingFeature = $building
-            ->buildingFeatures()
-            ->forInputSource($inputSource)
-            ->first();
+        // UNCOMMENT FOR OLD, TODO: REMOVE THIS WHEN DONE
+//        $buildingFeature = $building
+//            ->buildingFeatures()
+//            ->forInputSource($inputSource)
+//            ->first();
+//
+//        $buildingVentilation = $building->buildingVentilations()->forInputSource($inputSource)->first();
 
-        $buildingVentilation = $building->buildingVentilations()->forInputSource($inputSource)->first();
+        // COMMENT FOR OLD, TODO: REMOVE THIS COMMENT WHEN DONE
+        $buildingFeature = $building->buildingFeatures;
+
+        $buildingVentilation = $building->buildingVentilations;
+
         $buildingType = $buildingFeature->buildingType->name ?? '';
         $buildYear = $buildingFeature->build_year ?? '';
         $exampleBuilding = optional($building->exampleBuilding)->isSpecific() ? $building->exampleBuilding->name : '';

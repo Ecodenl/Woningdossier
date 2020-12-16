@@ -386,34 +386,47 @@ class CsvService
     {
         // TODO: Remove this when done
         \DB::enableQueryLog();
-        $users = $cooperation->users()->whereHas('buildings')->get();
+        $start = microtime(true);
 
-        /*
-        this cant be used currently because every user may need a different input source
-        but we still got to find a way how we can use this
-        this dramatically decreases the queries.
-        $users = $cooperation
-            ->users()
-            ->whereHas('building')
-            ->with(
-                ['building' => function ($query) use ($inputSource) {
-                    $query->with(
-                        [
-                            'buildingFeatures' => function ($query) use ($inputSource) {
-                                $query->forInputSource($inputSource)
-                                    ->with([
-                                        'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
-                                        'contaminatedWallJoints', 'wallJoints'
-                                    ]);
-                            },
-                            'buildingVentilations' => function ($query) use ($inputSource) {
-                                $query->forInputSource($inputSource);
-                            }
-                        ]
-                    );
-                }])
-            ->get();
-*/
+        $generalDataStep = Step::findByShort('general-data');
+        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+        $users = $cooperation->users()
+            ->has('buildings')
+            ->limit(3) // TODO: Remove this when done
+            ->get() // PLACE ';' HERE, COMMENT THE MAP FOR OLD, TODO: REMOVE COMMENT WHEN DONE
+            ->map(function($user) use ($generalDataStep, $coachInputSource, $inputSource) {
+                // for each user reset the input source back to the base input source.
+                $inputSourceForDump = $inputSource;
+
+                // well in every case there is an exception on the rule
+                // normally we would pick the given input source
+                // but when coach input is available we use the coach input source for that particular user
+                // coach input is available when he has completed the general data step
+                if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
+                    $inputSourceForDump = $coachInputSource;
+                }
+
+                $user->load(
+                    ['building' => function ($query) use ($inputSourceForDump) {
+                        $query->with(
+                            [
+                                'buildingFeatures' => function ($query) use ($inputSourceForDump) {
+                                    $query->forInputSource($inputSourceForDump)
+                                        ->with([
+                                            'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
+                                            'contaminatedWallJoints', 'wallJoints'
+                                        ])->first();
+                                },
+                                'buildingVentilations' => function ($query) use ($inputSourceForDump) {
+                                    $query->forInputSource($inputSourceForDump)->first();
+                                }
+                            ]
+                        );
+                    }]);
+
+                $user->inputSource = $inputSourceForDump;
+                return $user;
+            });
         $rows = [];
 
         $headers = DumpService::getStructureForTotalDumpService($anonymized);
@@ -425,25 +438,22 @@ class CsvService
          *
          * @var User $user
          */
-        $generalDataStep = Step::findByShort('general-data');
-        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+
 
         foreach ($users as $user) {
-            // for each user reset the input source back to the base input source.
-            $inputSourceForDump = $inputSource;
+            // UNCOMMENT THIS FOR OLD, TODO: REMOVE WHEN DONE
+//            $inputSourceForDump = $inputSource;
+//
+//            if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
+//                $inputSourceForDump = $coachInputSource;
+//            }
+//            $user->inputSource = $inputSourceForDump;
 
-            // well in every case there is an exception on the rule
-            // normally we would pick the given input source
-            // but when coach input is available we use the coach input source for that particular user
-            // coach input is available when he has completed the general data step
-            if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
-                $inputSourceForDump = $coachInputSource;
-            }
-
-            $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSourceForDump, $anonymized, false)['user-data'];
-            // TODO: Remove this when done
-            dd($rows[$user->building->id], \DB::getQueryLog());
+            $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $user->inputSource, $anonymized, false)['user-data'];
         }
+            // TODO: Remove this when done
+            $stop = microtime(true);
+        dd($stop - $start, $rows[$users->first()->building->id], \DB::getQueryLog());
 
         return $rows;
     }

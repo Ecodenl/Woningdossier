@@ -6,6 +6,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\ToolHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use App\Helpers\ExampleBuildingHelper;
 
 class ExampleBuildingRequest extends FormRequest
@@ -44,6 +45,7 @@ class ExampleBuildingRequest extends FormRequest
             $options = $this->input('content');
             $values = Arr::dot($options, 'content.');
 
+            // Validate numeric fields of the content
             foreach ($values as $name => $value){
                 if (!is_null($value) && ExampleBuildingHelper::isNumeric($name)) {
                     $value = str_replace(',', '.', $value);
@@ -64,6 +66,40 @@ class ExampleBuildingRequest extends FormRequest
                     }
                 }
             }
+
+            // Get all build years
+            $buildYears = Arr::where($values, function ($value, $key) {
+                return Str::endsWith($key,'build_year');
+            });
+
+            // Check each
+            foreach ($buildYears as $name => $value) {
+                // Get cid
+                $cid = explode('.', $name)[1];
+                // If it's new, it requires different rules
+                if ($cid == 'new') {
+                    // Check if there's new values
+                    $newValues = Arr::where($values, function ($value, $key) {
+                        $internalCid = explode('.', $key)[1];
+
+                        if ($internalCid == 'new' && !is_null($value)) {
+                            return $this;
+                        }
+                    });
+
+                    // There is 9 values with predefined functions that cannot be set to null
+                    // This means, if there's more than 9, something has been filled.
+                    // This is when the build year will get an error.
+                    if (count($newValues) > 9 && empty($value)) {
+                        $validator->errors()->add($name, 'Bouwjaar voor nieuwe content kan niet leeg zijn');
+                    }
+                }
+                else if (empty($value)) {
+                    $validator->errors()->add($name, 'Bouwjaar kan niet leeg zijn');
+                }
+            }
         });
     }
 }
+
+//'content.*.build_year' => 'required',

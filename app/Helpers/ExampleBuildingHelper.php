@@ -6,7 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 /**
- * Class designed to help with the examlple building content.
+ * Class designed to help with the example building content.
  */
 class ExampleBuildingHelper
 {

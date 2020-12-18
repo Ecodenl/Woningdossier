@@ -148,7 +148,10 @@ class DumpService
                         $labelWithEuroNormalization = str_replace(['&euro;', '€'], ['euro', 'euro'], $contents['label']);
 
                         if ($prefixValuesWithStep) {
-                            $subStepName = optional(Step::findByShort($subStep))->name;
+                            $subStepName = null;
+                            if ($subStep !== "-") {
+                                $subStepName = optional(Step::findByShort($subStep))->name;
+                            }
 
                             $headers[$stepShort . '.' . $subStep . '.' . $tableWithColumnOrAndId] = self::makeHeaderText($step->name, $subStepName, $labelWithEuroNormalization);
                         } else {

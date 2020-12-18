@@ -104,9 +104,9 @@ class CsvService
 
             // normally we could use the PrivateMessage::allowedAccess, but we need to qeury on the to_cooperation_id.
             $allowedAccess = PrivateMessage::conversation($building->id)
-                ->accessAllowed()
-                ->where('to_cooperation_id', $cooperation->id)
-                ->first() instanceof PrivateMessage;
+                    ->accessAllowed()
+                    ->where('to_cooperation_id', $cooperation->id)
+                    ->first() instanceof PrivateMessage;
 
             $createdAt = optional($user->created_at)->format('Y-m-d');
             //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
@@ -327,7 +327,7 @@ class CsvService
                         ->where('questionnaires.id', $questionnaire->id)
                         ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
                         // this may cause weird results, but meh
-                         ->whereNull('questions.deleted_at')
+                        ->whereNull('questions.deleted_at')
                         ->leftJoin('translations', function ($leftJoin) {
                             $leftJoin->on('questions.name', '=', 'translations.key')
                                 ->where('language', '=', app()->getLocale());
@@ -349,7 +349,7 @@ class CsvService
                     if ($currentQuestion instanceof Question) {
                         // when the question has options, the answer is imploded.
                         if ($currentQuestion->hasQuestionOptions()) {
-                            if (! empty($answer)) {
+                            if (!empty($answer)) {
                                 // this will contain the question option ids
                                 // and filter out the empty answers.
                                 $answers = array_filter(explode('|', $answer));
@@ -393,100 +393,67 @@ class CsvService
         $users = $cooperation->users()
             ->has('buildings')
             ->skip(20)
-            ->limit(10) // TODO: Remove this when done
-            ->get(); // PLACE ';' HERE, COMMENT THE MAP FOR OLD, TODO: REMOVE COMMENT WHEN DONE
-//            ->map(function($user) use ($generalDataStep, $coachInputSource, $inputSource) {
-//                // for each user reset the input source back to the base input source.
-//                $inputSourceForDump = $inputSource;
-//
-//                // well in every case there is an exception on the rule
-//                // normally we would pick the given input source
-//                // but when coach input is available we use the coach input source for that particular user
-//                // coach input is available when he has completed the general data step
-//                if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
-//                    $inputSourceForDump = $coachInputSource;
-//                }
-//
-//                $user->load(
-//                    ['building' => function ($query) use ($inputSourceForDump) {
-//                        $query->with(
-//                            [
-//                                'buildingFeatures' => function ($query) use ($inputSourceForDump) {
-//                                    $query->forInputSource($inputSourceForDump)
-//                                        ->with([
-//                                            'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
-//                                            'contaminatedWallJoints', 'wallJoints'
-//                                        ])->first();
-//                                },
-//                                'buildingVentilations' => function ($query) use ($inputSourceForDump) {
-//                                    $query->forInputSource($inputSourceForDump)->first();
-//                                }
-//                            ]
-//                        );
-//                    }]
-//                );
-//
-//                $user->inputSource = $inputSourceForDump;
-//                return $user;
-//            });
+            ->limit(20) // TODO: Remove this when done
+            ->get();
 
 
         $coachIds = [];
         $userIds = [];
         // We first check each user
-        foreach ($users as $user)
-        {
+        foreach ($users as $user) {
             if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
                 $coachIds[$user->id] = $coachInputSource;
-            }
-            else {
+            } else {
                 $userIds[$user->id] = $inputSource;
             }
         }
 
+        \DB::enableQueryLog();
         // We separate users based on ID
         $coaches = $users->whereIn('id', array_keys($coachIds));
         $newUsers = $users->whereIn('id', array_keys($userIds));
 
         // Then we lazy eagerload all the data with the right input source in one go
         $coaches->load(
-                ['building' => function ($query) use ($coachInputSource) {
-                    $query->with(
-                        [
-                            'buildingFeatures' => function ($query) use ($coachInputSource) {
-                                $query->forInputSource($coachInputSource)
-                                    ->with([
-                                        'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
-                                        'contaminatedWallJoints', 'wallJoints'
-                                    ])->first();
-                            },
-                            'buildingVentilations' => function ($query) use ($coachInputSource) {
-                                $query->forInputSource($coachInputSource)->first();
-                            }
-                        ]
-                    );
-                }]
-            );
+            ['building' => function ($query) use ($coachInputSource) {
+                $query->with(
+                    [
+                        'buildingFeatures' => function ($query) use ($coachInputSource) {
+                            $query->forInputSource($coachInputSource)
+                                ->with([
+                                    'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
+                                    'contaminatedWallJoints', 'wallJoints'
+                                ]);
+                        },
+                        'buildingVentilations' => function ($query) use ($coachInputSource) {
+                            $query->forInputSource($coachInputSource);
+                        }
+                    ]
+                );
+            }]
+        );
 
         $newUsers->load(
-                ['building' => function ($query) use ($inputSource) {
-                    $query->with(
-                        [
-                            'buildingFeatures' => function ($query) use ($inputSource) {
-                                $query->forInputSource($inputSource)
-                                    ->with([
-                                        'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
-                                        'contaminatedWallJoints', 'wallJoints'
-                                    ])->first();
-                            },
-                            'buildingVentilations' => function ($query) use ($inputSource) {
-                                $query->forInputSource($inputSource)->first();
-                            }
-                        ]
-                    );
-                }]
-            );
+            ['building' => function ($query) use ($inputSource) {
+                $query->with(
+                    [
+                        'buildingFeatures' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource)
+                                ->with([
+                                    'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
+                                    'contaminatedWallJoints', 'wallJoints'
+                                ]);
+                        },
+                        'buildingVentilations' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource);
+                        }
+                    ]
+                );
+            }]
+        );
 
+
+        dd(\DB::getQueryLog());
         // Then we merge
         $users = $newUsers->merge($coaches);
         $userIds = array_replace($userIds, $coachIds);
@@ -505,21 +472,112 @@ class CsvService
 
 
         foreach ($users as $user) {
-            // UNCOMMENT THIS FOR OLD, TODO: REMOVE WHEN DONE
-//            $inputSourceForDump = $inputSource;
-//
-//            if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
-//                $inputSourceForDump = $coachInputSource;
-//            }
-//            $user->inputSource = $inputSourceForDump;
-
-            // We get the input source from the array
             $user->inputSource = $userIds[$user->id];
 
             $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $user->inputSource, $anonymized, false)['user-data'];
         }
-            // TODO: Remove this when done
-            $stop = microtime(true);
+        // TODO: Remove this when done
+        $stop = microtime(true);
+        dd($stop - $start, $rows[$users->first()->building->id], \DB::getQueryLog());
+
+        return $rows;
+    }
+
+
+    public static function totalReport2(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
+    {
+
+        $start = microtime(true);
+
+        $generalDataStep = Step::findByShort('general-data');
+        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+        $users = $cooperation->users()
+            ->with(['building' => function ($query) use ($coachInputSource, $generalDataStep) {
+                $query->with(['completedSteps' => function ($query) use ($coachInputSource, $generalDataStep) {
+                    $query->forInputSource($coachInputSource)->where('step_id', $generalDataStep->id);
+                }]);
+            }])
+            ->skip(20)
+            ->limit(20) // TODO: Remove this when done
+            ->get();
+
+        $coachIds = [];
+        $userIds = [];
+// We first check each user
+        foreach ($users as $user) {
+            // we only eager loaded the coach input source general data completed step; if its not empty we need to use the coach input source
+            if ($user->building->completedSteps->isNotEmpty()) {
+                $coachIds[] = [$user->id];
+            } else {
+                $userIds[] = [$user->id];
+            }
+        }
+
+
+        \DB::enableQueryLog();
+// We separate users based on ID
+        $coaches = User::whereIn('id', $coachIds)->with(
+            ['building' => function ($query) use ($coachInputSource) {
+                $query->with(
+                    [
+                        'buildingFeatures' => function ($query) use ($coachInputSource) {
+                            $query->forInputSource($coachInputSource)
+                                ->with([
+                                    'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
+                                    'contaminatedWallJoints', 'wallJoints'
+                                ]);
+                        },
+                        'buildingVentilations' => function ($query) use ($coachInputSource) {
+                            $query->forInputSource($coachInputSource);
+                        }
+                    ]
+                );
+            }]
+        )->get();
+
+        $newUsers = User::whereIn('id', $userIds)->with(
+            ['building' => function ($query) use ($inputSource) {
+                $query->with(
+                    [
+                        'buildingFeatures' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource)
+                                ->with([
+                                    'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
+                                    'contaminatedWallJoints', 'wallJoints'
+                                ]);
+                        },
+                        'buildingVentilations' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource);
+                        }
+                    ]
+                );
+            }]
+        )->get();
+
+        dd(\DB::getQueryLog());
+//         Then we merge
+        $users = $newUsers->merge($coaches);
+//        $userIds = array_replace($userIds, $coachIds);
+
+        $rows = [];
+
+        $headers = DumpService::getStructureForTotalDumpService($anonymized);
+
+        $rows[] = $headers;
+
+        /**
+         * Get the data for every user.
+         *
+         * @var User $user
+         */
+
+
+        foreach ($users as $user) {
+            $inputSource = $user->building->buildingFeatures->inputSource;
+
+            $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
+        }
+        $stop = microtime(true);
         dd($stop - $start, $rows[$users->first()->building->id], \DB::getQueryLog());
 
         return $rows;
@@ -534,7 +592,7 @@ class CsvService
             return $value;
         }
 
-        if (! is_numeric($value)) {
+        if (!is_numeric($value)) {
             return $value;
         }
 
@@ -556,9 +614,9 @@ class CsvService
      * Format the output of the given column and value.
      *
      * @param string $column
-     * @param mixed  $value
-     * @param int    $decimals
-     * @param bool   $shouldRound
+     * @param mixed $value
+     * @param int $decimals
+     * @param bool $shouldRound
      *
      * @return float|int|string
      */
@@ -596,7 +654,7 @@ class CsvService
      */
     protected static function isYear($column, $extraValue = '')
     {
-        if (! is_null($column)) {
+        if (!is_null($column)) {
             if (false !== stristr($column, 'year')) {
                 return true;
             }

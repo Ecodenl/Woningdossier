@@ -19,6 +19,7 @@ use App\Models\InputSource;
 use App\Models\Questionnaire;
 use App\Models\User;
 use App\Services\FileStorageService;
+use App\Services\NotificationService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -87,6 +88,10 @@ class FileStorageController extends Controller
         if ($fileType->isBeingProcessed()) {
             return redirect()->back();
         }
+        if (NotificationService::getActiveNotifications()->contains('type', 'recalculate')) {
+            return redirect()->back();
+        }
+
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);

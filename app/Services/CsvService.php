@@ -433,7 +433,6 @@ class CsvService
 
         $coachIds = [];
         $userIds = [];
-
         // We first check each user
         foreach ($users as $user)
         {
@@ -445,9 +444,12 @@ class CsvService
             }
         }
 
-        // Then we get both user types separately, so we can eagerload all the data with the right input source in one go
-        $coaches = $cooperation->users()->whereIn('id', array_keys($coachIds))
-            ->with(
+        // We separate users based on ID
+        $coaches = $users->whereIn('id', array_keys($coachIds));
+        $newUsers = $users->whereIn('id', array_keys($userIds));
+
+        // Then we lazy eagerload all the data with the right input source in one go
+        $coaches->load(
                 ['building' => function ($query) use ($coachInputSource) {
                     $query->with(
                         [
@@ -464,9 +466,9 @@ class CsvService
                         ]
                     );
                 }]
-            )->get();
-        $users = $cooperation->users()->whereIn('id', array_keys($userIds))
-            ->with(
+            );
+
+        $newUsers->load(
                 ['building' => function ($query) use ($inputSource) {
                     $query->with(
                         [
@@ -483,10 +485,10 @@ class CsvService
                         ]
                     );
                 }]
-            )->get();
+            );
 
         // Then we merge
-        $users = $users->merge($coaches);
+        $users = $newUsers->merge($coaches);
         $userIds = array_replace($userIds, $coachIds);
 
         $rows = [];

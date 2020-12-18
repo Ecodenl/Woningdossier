@@ -82,7 +82,8 @@ class WallInsulationHelper extends ToolHelper
      */
     public function createAdvices(): ToolHelper
     {
-        $results = WallInsulation::calculate($this->building, $this->inputSource, $this->user->energyHabit, $this->getValues());
+        $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
+        $results = WallInsulation::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
 
         $step = Step::findByShort('wall-insulation');
 

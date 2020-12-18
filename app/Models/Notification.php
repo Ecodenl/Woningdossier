@@ -6,6 +6,7 @@ use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Input;
 
 class Notification extends Model
 {
@@ -26,6 +27,14 @@ class Notification extends Model
     public function scopeActive(Builder $query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function scopeActiveNotifications(Builder $query, Building $building, InputSource $inputSource)
+    {
+        return $query
+            ->active()
+            ->forBuilding($building)
+            ->forInputSource($inputSource);
     }
 
     public static function setActive(Building $building, InputSource $inputSource, bool $active = false)

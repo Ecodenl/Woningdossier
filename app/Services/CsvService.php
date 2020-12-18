@@ -392,41 +392,103 @@ class CsvService
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
         $users = $cooperation->users()
             ->has('buildings')
-            ->limit(3) // TODO: Remove this when done
-            ->get() // PLACE ';' HERE, COMMENT THE MAP FOR OLD, TODO: REMOVE COMMENT WHEN DONE
-            ->map(function($user) use ($generalDataStep, $coachInputSource, $inputSource) {
-                // for each user reset the input source back to the base input source.
-                $inputSourceForDump = $inputSource;
+            ->skip(20)
+            ->limit(10) // TODO: Remove this when done
+            ->get(); // PLACE ';' HERE, COMMENT THE MAP FOR OLD, TODO: REMOVE COMMENT WHEN DONE
+//            ->map(function($user) use ($generalDataStep, $coachInputSource, $inputSource) {
+//                // for each user reset the input source back to the base input source.
+//                $inputSourceForDump = $inputSource;
+//
+//                // well in every case there is an exception on the rule
+//                // normally we would pick the given input source
+//                // but when coach input is available we use the coach input source for that particular user
+//                // coach input is available when he has completed the general data step
+//                if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
+//                    $inputSourceForDump = $coachInputSource;
+//                }
+//
+//                $user->load(
+//                    ['building' => function ($query) use ($inputSourceForDump) {
+//                        $query->with(
+//                            [
+//                                'buildingFeatures' => function ($query) use ($inputSourceForDump) {
+//                                    $query->forInputSource($inputSourceForDump)
+//                                        ->with([
+//                                            'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
+//                                            'contaminatedWallJoints', 'wallJoints'
+//                                        ])->first();
+//                                },
+//                                'buildingVentilations' => function ($query) use ($inputSourceForDump) {
+//                                    $query->forInputSource($inputSourceForDump)->first();
+//                                }
+//                            ]
+//                        );
+//                    }]
+//                );
+//
+//                $user->inputSource = $inputSourceForDump;
+//                return $user;
+//            });
 
-                // well in every case there is an exception on the rule
-                // normally we would pick the given input source
-                // but when coach input is available we use the coach input source for that particular user
-                // coach input is available when he has completed the general data step
-                if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
-                    $inputSourceForDump = $coachInputSource;
-                }
 
-                $user->load(
-                    ['building' => function ($query) use ($inputSourceForDump) {
-                        $query->with(
-                            [
-                                'buildingFeatures' => function ($query) use ($inputSourceForDump) {
-                                    $query->forInputSource($inputSourceForDump)
-                                        ->with([
-                                            'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
-                                            'contaminatedWallJoints', 'wallJoints'
-                                        ])->first();
-                                },
-                                'buildingVentilations' => function ($query) use ($inputSourceForDump) {
-                                    $query->forInputSource($inputSourceForDump)->first();
-                                }
-                            ]
-                        );
-                    }]);
+        $coachIds = [];
+        $userIds = [];
 
-                $user->inputSource = $inputSourceForDump;
-                return $user;
-            });
+        // We first check each user
+        foreach ($users as $user)
+        {
+            if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
+                $coachIds[$user->id] = $coachInputSource;
+            }
+            else {
+                $userIds[$user->id] = $inputSource;
+            }
+        }
+
+        // Then we get both user types separately, so we can eagerload all the data with the right input source in one go
+        $coaches = $cooperation->users()->whereIn('id', array_keys($coachIds))
+            ->with(
+                ['building' => function ($query) use ($coachInputSource) {
+                    $query->with(
+                        [
+                            'buildingFeatures' => function ($query) use ($coachInputSource) {
+                                $query->forInputSource($coachInputSource)
+                                    ->with([
+                                        'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
+                                        'contaminatedWallJoints', 'wallJoints'
+                                    ])->first();
+                            },
+                            'buildingVentilations' => function ($query) use ($coachInputSource) {
+                                $query->forInputSource($coachInputSource)->first();
+                            }
+                        ]
+                    );
+                }]
+            )->get();
+        $users = $cooperation->users()->whereIn('id', array_keys($userIds))
+            ->with(
+                ['building' => function ($query) use ($inputSource) {
+                    $query->with(
+                        [
+                            'buildingFeatures' => function ($query) use ($inputSource) {
+                                $query->forInputSource($inputSource)
+                                    ->with([
+                                        'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
+                                        'contaminatedWallJoints', 'wallJoints'
+                                    ])->first();
+                            },
+                            'buildingVentilations' => function ($query) use ($inputSource) {
+                                $query->forInputSource($inputSource)->first();
+                            }
+                        ]
+                    );
+                }]
+            )->get();
+
+        // Then we merge
+        $users = $users->merge($coaches);
+        $userIds = array_replace($userIds, $coachIds);
+
         $rows = [];
 
         $headers = DumpService::getStructureForTotalDumpService($anonymized);
@@ -448,6 +510,9 @@ class CsvService
 //                $inputSourceForDump = $coachInputSource;
 //            }
 //            $user->inputSource = $inputSourceForDump;
+
+            // We get the input source from the array
+            $user->inputSource = $userIds[$user->id];
 
             $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $user->inputSource, $anonymized, false)['user-data'];
         }

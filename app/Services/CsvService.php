@@ -397,27 +397,26 @@ class CsvService
             }])
             ->has('buildings')
             ->skip(20)
-            ->limit(20) // TODO: Remove this when done
+            ->limit(10) // TODO: Remove this when done
             ->get();
 
 
         $coachIds = [];
-        $userIds = [];
+        $residentIds = [];
         // We first check each user
         foreach ($users as $user) {
             // we eager loaded the completed steps from the coach, so if its not empty we use that
             if ($user->building->completedSteps->isNotEmpty()) {
-                $coachIds[$user->id] = $coachInputSource;
+                $coachIds[] = $user->id;
             } else {
-                $userIds[$user->id] = $inputSource;
+                $residentIds[] = $user->id;
             }
         }
 
         // We separate users based on ID
-        $coaches = $users->whereIn('id', array_keys($coachIds));
-        $newUsers = $users->whereIn('id', array_keys($userIds));
+        $coaches = $users->whereIn('id', $coachIds);
+        $residents = $users->whereIn('id', $residentIds);
 
-        \DB::enableQueryLog();
         // Then we lazy eagerload all the data with the right input source in one go
         $coaches->load(['building' => function ($query) use ($coachInputSource) {
             $query->with([
@@ -435,8 +434,9 @@ class CsvService
             }]
         );
 
-        $newUsers->load(
-            ['building' => function ($query) use ($inputSource) {$query->with(
+        $residents->load(
+            ['building' => function ($query) use ($inputSource) {
+                $query->with(
                     [
                         'buildingFeatures' => function ($query) use ($inputSource) {
                             $query->forInputSource($inputSource)
@@ -452,12 +452,8 @@ class CsvService
                 );
             }]
         );
-        dd(\DB::getQueryLog());
-
-
         // Then we merge
-        $users = $newUsers->merge($coaches);
-        $userIds = array_replace($userIds, $coachIds);
+        $users = $residents->merge($coaches);
 
         $rows = [];
 
@@ -473,9 +469,9 @@ class CsvService
 
 
         foreach ($users as $user) {
-            $user->inputSource = $userIds[$user->id];
+            $inputSource = $user->building->buildingFeatures->inputSource;
 
-            $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $user->inputSource, $anonymized, false)['user-data'];
+            $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
         }
         // TODO: Remove this when done
         $stop = microtime(true);

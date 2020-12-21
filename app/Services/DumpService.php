@@ -611,9 +611,13 @@ class DumpService
                     $column = $columnOrId;
 
                     /** @var UserEnergyHabit $userEnergyHabit */
-                    $userEnergyHabit = UserEnergyHabit::where($whereUserOrBuildingId)
-                        ->forInputSource($inputSource)
-                        ->first();
+                    $userEnergyHabit = $user->energyHabit;
+
+                    if ($whereUserOrBuildingId[0][0] ?? '' == 'building_id') {
+                        $userEnergyHabit = UserEnergyHabit::where($whereUserOrBuildingId)
+                            ->forInputSource($inputSource)
+                            ->first();
+                    }
 
                     if ($userEnergyHabit instanceof UserEnergyHabit) {
                         switch ($column) {
@@ -692,7 +696,7 @@ class DumpService
         // collect some info about their building
         $building = $user->building;
 
-        $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
+        $userEnergyHabit = $user->energyHabit;
 
         $wallInsulationSavings = WallInsulation::calculate($building, $inputSource, $userEnergyHabit,
             (new WallInsulationHelper($user, $inputSource))

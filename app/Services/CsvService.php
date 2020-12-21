@@ -388,6 +388,7 @@ class CsvService
         ini_set('max_execution_time', 0);
         // TODO: Remove this when done
         $start = microtime(true);
+        \DB::enableQueryLog();
 
         $generalDataStep = Step::findByShort('general-data');
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
@@ -399,7 +400,7 @@ class CsvService
             }])
             ->has('buildings')
             ->skip(20)
-            ->limit(50) // TODO: Remove this when done
+            ->limit(10) // TODO: Remove this when done
             ->get();
 
 
@@ -433,6 +434,8 @@ class CsvService
                     $query->forInputSource($coachInputSource);
                 }
                 ]);
+            }, 'energyHabit' => function ($query) use ($coachInputSource) {
+                $query->forInputSource($coachInputSource);
             }]
         );
 
@@ -452,6 +455,8 @@ class CsvService
                         }
                     ]
                 );
+            }, 'energyHabit' => function ($query) use ($inputSource) {
+                $query->forInputSource($inputSource);
             }]
         );
         // Then we merge

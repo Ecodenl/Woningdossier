@@ -6,6 +6,7 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\ToolHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use App\Helpers\ExampleBuildingHelper;
 
 class ExampleBuildingRequest extends FormRequest
@@ -44,6 +45,7 @@ class ExampleBuildingRequest extends FormRequest
             $options = $this->input('content');
             $values = Arr::dot($options, 'content.');
 
+            // Validate numeric fields of the content
             foreach ($values as $name => $value){
                 if (!is_null($value) && ExampleBuildingHelper::isNumeric($name)) {
                     $value = str_replace(',', '.', $value);
@@ -64,6 +66,43 @@ class ExampleBuildingRequest extends FormRequest
                     }
                 }
             }
+
+            // Get all build years
+            $buildYears = Arr::where($values, function ($value, $key) {
+                return Str::endsWith($key,'build_year');
+            });
+
+            // Check each
+            foreach ($buildYears as $name => $buildYear) {
+                // Get cid
+                $cid = explode('.', $name)[1];
+                // If it's new, it requires different rules
+                if ($cid == 'new') {
+                    // Check if there's new values
+                    $newValues = Arr::where($values, function ($value, $key) {
+                        $internalCid = explode('.', $key)[1];
+
+                        if ($internalCid == 'new' && !is_null($value)) {
+                            return $this;
+                        }
+                    });
+
+                    // the form has selects, checkboxes, radios etc with a default value
+                    // these differ per route.
+                    $defaultValuesForRoute = [
+                        "cooperation.admin.example-buildings.update" => 9,
+                        "cooperation.admin.example-buildings.store" => 31
+                    ];
+
+                    if (is_null($buildYear) && count($newValues) > $defaultValuesForRoute[$this->route()->getName()]) {
+                        $validator->errors()->add($name, __('validation.admin.example-buildings.new.build_year'));
+                    }
+                }
+                else if (is_null($buildYear)) {
+                    $validator->errors()->add($name, 'Bouwjaar kan niet leeg zijn');
+                }
+            }
         });
     }
 }
+

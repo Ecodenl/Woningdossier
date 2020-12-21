@@ -17,6 +17,7 @@ use App\Models\QuestionOption;
 use App\Models\Role;
 use App\Models\Step;
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 class CsvService
@@ -420,9 +421,26 @@ class CsvService
         $coaches = $users->whereIn('id', $coachIds);
         $residents = $users->whereIn('id', $residentIds);
 
+        $headers = DumpService::getStructureForTotalDumpService($anonymized);
+        $structuredHeaders = DumpService::dissectHeaders($headers);
+//dd($headers);
+
+        // Data for eager loading
+        $services = Arr::pluck(Arr::where($structuredHeaders, function ($value, $key) {
+            return ($value['table'] ?? '') === 'service';
+        }), 'columnOrId');
+
+        $roofTypes = Arr::pluck(Arr::where($structuredHeaders, function ($value, $key) {
+            return ($value['table'] ?? '') === 'building_roof_types';
+        }), 'columnOrId');
+
+        $buildingElements = Arr::pluck(Arr::where($structuredHeaders, function ($value, $key) {
+            return ($value['table'] ?? '') === 'element';
+        }), 'columnOrId');
+
         // Then we lazy eagerload all the data with the right input source in one go
         $coaches->load(
-            ['building' => function ($query) use ($coachInputSource) {
+            ['building' => function ($query) use ($coachInputSource, $services, $roofTypes, $buildingElements) {
                 $query->with(
                     [
                         'buildingFeatures' => function ($query) use ($coachInputSource) {
@@ -435,8 +453,17 @@ class CsvService
                         'buildingVentilations' => function ($query) use ($coachInputSource) {
                             $query->forInputSource($coachInputSource);
                         },
-                        'buildingServices' => function ($query) use ($coachInputSource) {
-                            $query->forInputSource($coachInputSource);
+                        'buildingServices' => function ($query) use ($coachInputSource, $services) {
+                            $query->forInputSource($coachInputSource)
+                                ->whereIn('service_id', $services);
+                        },
+                        'roofTypes' => function ($query) use ($coachInputSource, $roofTypes) {
+                            $query->forInputSource($coachInputSource)
+                                ->whereIn('roof_type_id', $roofTypes);
+                        },
+                        'buildingElements' => function ($query) use ($coachInputSource, $buildingElements) {
+                            $query->forInputSource($coachInputSource)
+                                ->whereIn('element_id', $buildingElements);
                         }
                     ]
                 );
@@ -446,7 +473,7 @@ class CsvService
         );
 
         $residents->load(
-            ['building' => function ($query) use ($inputSource) {
+            ['building' => function ($query) use ($inputSource, $services, $roofTypes, $buildingElements) {
                 $query->with(
                     [
                         'buildingFeatures' => function ($query) use ($inputSource) {
@@ -459,8 +486,17 @@ class CsvService
                         'buildingVentilations' => function ($query) use ($inputSource) {
                             $query->forInputSource($inputSource);
                         },
-                        'buildingServices' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
+                        'buildingServices' => function ($query) use ($inputSource, $services) {
+                            $query->forInputSource($inputSource)
+                                ->whereIn('service_id', $services);
+                        },
+                        'roofTypes' => function ($query) use ($inputSource, $roofTypes) {
+                            $query->forInputSource($inputSource)
+                                ->whereIn('roof_type_id', $roofTypes);
+                        },
+                        'buildingElements' => function ($query) use ($inputSource, $buildingElements) {
+                            $query->forInputSource($inputSource)
+                                ->whereIn('element_id', $buildingElements);
                         }
                     ]
                 );
@@ -470,11 +506,8 @@ class CsvService
         );
         // Then we merge
         $users = $residents->merge($coaches);
-
+//dd($users->first()->building->buildingServices);
         $rows = [];
-
-        $headers = DumpService::getStructureForTotalDumpService($anonymized);
-        $newHeaders = DumpService::dissectHeaders($headers);
 
         $rows[] = $headers;
 
@@ -488,7 +521,7 @@ class CsvService
         foreach ($users as $user) {
             $inputSource = $user->building->buildingFeatures->inputSource;
 
-            $rows[$user->building->id] = DumpService::totalDump($newHeaders, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
+            $rows[$user->building->id] = DumpService::totalDump($structuredHeaders, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
         }
         // TODO: Remove this when done
         $stop = microtime(true);

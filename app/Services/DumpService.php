@@ -441,9 +441,8 @@ class DumpService
                         //$column     = $columnOrId;
                         $column = $maybe1;
 
-                        $buildingRoofType = BuildingRoofType::where('roof_type_id', $roofTypeId)
-                            ->where($whereUserOrBuildingId)
-                            ->forInputSource($inputSource)
+                        $buildingRoofType = $building->roofTypes
+                            ->where('roof_type_id', $roofTypeId)
                             ->first();
 
                         if ($buildingRoofType instanceof BuildingRoofType) {
@@ -496,12 +495,11 @@ class DumpService
 
                     // handle the element table.
                     case 'element':
-                        $whereUserOrBuildingId = [['building_id', '=', $buildingId]];
                         $elementOrServiceId = $columnOrId;
+
                         /** @var BuildingElement $element */
-                        $buildingElement = BuildingElement::where($whereUserOrBuildingId)
+                        $buildingElement = $building->buildingElements
                             ->where('element_id', $elementOrServiceId)
-                            ->forInputSource($inputSource)
                             ->first();
 
                         if ($buildingElement instanceof BuildingElement) {
@@ -634,12 +632,6 @@ class DumpService
 
                         /** @var UserEnergyHabit $userEnergyHabit */
                         $userEnergyHabit = $user->energyHabit;
-
-                        if ($whereUserOrBuildingId[0][0] ?? '' == 'building_id') {
-                            $userEnergyHabit = UserEnergyHabit::where($whereUserOrBuildingId)
-                                ->forInputSource($inputSource)
-                                ->first();
-                        }
 
                         if ($userEnergyHabit instanceof UserEnergyHabit) {
                             switch ($column) {

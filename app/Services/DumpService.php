@@ -203,9 +203,9 @@ class DumpService
      * Method to generate a total dump from a user for a specific input source.
      * This dump collects all possible data for a given user for the tool and returns it in an array.
      *
-     * @param array $structureForTotalDump | we need the headers to get table and row data, provide from the self::getStructureForTotalDumpService
+     * @param array $structureForTotalDump | we need the headers to get table and row data, provided from the self::dissectHeaders, using self::getStructureForTotalDumpService
      * @param Cooperation $cooperation ,
-     * @param bool $withConditionalLogic | when true, it will return the data as happens in the dump. So if a input gets hidden it wont be put in the dump
+     * @param bool $withConditionalLogic | when true, it will return the data as happens in the dump. So if an input gets hidden it wont be put in the dump
      */
     public static function totalDump(array $structureForTotalDump, Cooperation $cooperation, User $user, InputSource $inputSource, bool $anonymized, bool $withTranslationsForColumns = true, bool $withConditionalLogic = false): array
     {

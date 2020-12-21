@@ -433,9 +433,9 @@ class CsvService
 
         // Data for eager loading
         foreach ($extraData as $type => $table) {
-            $extraData[$type] = Arr::pluck(Arr::where($structuredHeaders, function ($value, $key) use ($table) {
+            $extraData[$type] = array_unique(Arr::pluck(Arr::where($structuredHeaders, function ($value, $key) use ($table) {
                 return ($value['table'] ?? '') === $table;
-            }), 'columnOrId');
+            }), 'columnOrId'));
         }
 
         $loop = 0;

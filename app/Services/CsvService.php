@@ -384,6 +384,8 @@ class CsvService
      */
     public static function totalReport(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
     {
+        set_time_limit(0);
+        ini_set('max_execution_time', 0);
         // TODO: Remove this when done
         $start = microtime(true);
 
@@ -397,7 +399,7 @@ class CsvService
             }])
             ->has('buildings')
             ->skip(20)
-            ->limit(10) // TODO: Remove this when done
+            ->limit(50) // TODO: Remove this when done
             ->get();
 
 
@@ -479,7 +481,6 @@ class CsvService
 
         return $rows;
     }
-
 
 
     protected static function formatFieldOutput($column, $value, $maybe1, $maybe2)

@@ -300,14 +300,6 @@ class DumpService
                 $maybe2 = $headerStructure['maybe2'];
                 //dump("Step: " . $step . " | table: " . $table . " | column or ID: " . $columnOrId . " | column: " . $maybe1 . " | costs or year: " . $maybe2);
 
-                // determine what column we need to query on to get the results for the user.
-                /* @note this will work in most cases, if not the variable will be set again in a specific case. */
-                if (\Schema::hasColumn($table, 'building_id')) {
-                    $whereUserOrBuildingId = [['building_id', '=', $buildingId]];
-                } else {
-                    $whereUserOrBuildingId = [['user_id', '=', $user->id]];
-                }
-
                 switch ($table)
                 {
                     case 'building_ventilations':

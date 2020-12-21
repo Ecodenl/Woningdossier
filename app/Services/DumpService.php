@@ -492,11 +492,10 @@ class DumpService
 
                     // handle the service table.
                     case 'service':
-                        $whereUserOrBuildingId = [['building_id', '=', $buildingId]];
                         $elementOrServiceId = $columnOrId;
-                        $buildingService = BuildingService::where($whereUserOrBuildingId)
+
+                        $buildingService = $building->buildingServices
                             ->where('service_id', $elementOrServiceId)
-                            ->forInputSource($inputSource)
                             ->first();
 
                         if ($buildingService instanceof BuildingService) {

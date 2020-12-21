@@ -421,19 +421,25 @@ class CsvService
         $residents = $users->whereIn('id', $residentIds);
 
         // Then we lazy eagerload all the data with the right input source in one go
-        $coaches->load(['building' => function ($query) use ($coachInputSource) {
-            $query->with([
-                'buildingFeatures' => function ($query) use ($coachInputSource) {
-                    $query->forInputSource($coachInputSource)
-                    ->with([
-                        'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
-                        'contaminatedWallJoints', 'wallJoints'
-                    ]);
-                },
-                'buildingVentilations' => function ($query) use ($coachInputSource) {
-                    $query->forInputSource($coachInputSource);
-                }
-                ]);
+        $coaches->load(
+            ['building' => function ($query) use ($coachInputSource) {
+                $query->with(
+                    [
+                        'buildingFeatures' => function ($query) use ($coachInputSource) {
+                            $query->forInputSource($coachInputSource)
+                            ->with([
+                                'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
+                                'contaminatedWallJoints', 'wallJoints'
+                            ]);
+                        },
+                        'buildingVentilations' => function ($query) use ($coachInputSource) {
+                            $query->forInputSource($coachInputSource);
+                        },
+                        'buildingServices' => function ($query) use ($coachInputSource) {
+                            $query->forInputSource($coachInputSource);
+                        }
+                    ]
+                );
             }, 'energyHabit' => function ($query) use ($coachInputSource) {
                 $query->forInputSource($coachInputSource);
             }]
@@ -451,6 +457,9 @@ class CsvService
                                 ]);
                         },
                         'buildingVentilations' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource);
+                        },
+                        'buildingServices' => function ($query) use ($inputSource) {
                             $query->forInputSource($inputSource);
                         }
                     ]

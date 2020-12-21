@@ -424,22 +424,19 @@ class CsvService
         $headers = DumpService::getStructureForTotalDumpService($anonymized);
         $structuredHeaders = DumpService::dissectHeaders($headers);
 
+        $extraData = [
+            'services' => 'service',
+            'roofTypes' => 'building_roof_types',
+            'buildingElements' => 'element',
+            'buildingInsulatedGlazing' => 'building_insulated_glazings',
+        ];
+
         // Data for eager loading
-        $services = Arr::pluck(Arr::where($structuredHeaders, function ($value, $key) {
-            return ($value['table'] ?? '') === 'service';
-        }), 'columnOrId');
-
-        $roofTypes = Arr::pluck(Arr::where($structuredHeaders, function ($value, $key) {
-            return ($value['table'] ?? '') === 'building_roof_types';
-        }), 'columnOrId');
-
-        $buildingElements = Arr::pluck(Arr::where($structuredHeaders, function ($value, $key) {
-            return ($value['table'] ?? '') === 'element';
-        }), 'columnOrId');
-
-        $buildingInsulatedGlazing = Arr::pluck(Arr::where($structuredHeaders, function ($value, $key) {
-            return ($value['table'] ?? '') === 'building_insulated_glazings';
-        }), 'columnOrId');
+        foreach ($extraData as $type => $table) {
+            $extraData[$type] = Arr::pluck(Arr::where($structuredHeaders, function ($value, $key) use ($table) {
+                return ($value['table'] ?? '') === $table;
+            }), 'columnOrId');
+        }
 
         $loop = 0;
         // We loop by reference (&), to modify the original residents and coaches, but we do it in a loop to not have
@@ -453,7 +450,7 @@ class CsvService
 
             // Then we lazy eagerload all the data with the right input source in one go
             $eagerLoading->load(
-                ['building' => function ($query) use ($inputSourceForEagerLoad, $services, $roofTypes, $buildingElements, $buildingInsulatedGlazing) {
+                ['building' => function ($query) use ($inputSourceForEagerLoad, $extraData) {
                     $query->with(
                         [
                             'buildingFeatures' => function ($query) use ($inputSourceForEagerLoad) {
@@ -475,21 +472,21 @@ class CsvService
                             'pvPanels' => function ($query) use ($inputSourceForEagerLoad) {
                                 $query->forInputSource($inputSourceForEagerLoad);
                             },
-                            'buildingServices' => function ($query) use ($inputSourceForEagerLoad, $services) {
+                            'buildingServices' => function ($query) use ($inputSourceForEagerLoad, $extraData) {
                                 $query->forInputSource($inputSourceForEagerLoad)
-                                    ->whereIn('service_id', $services);
+                                    ->whereIn('service_id', $extraData['services']);
                             },
-                            'roofTypes' => function ($query) use ($inputSourceForEagerLoad, $roofTypes) {
+                            'roofTypes' => function ($query) use ($inputSourceForEagerLoad, $extraData) {
                                 $query->forInputSource($inputSourceForEagerLoad)
-                                    ->whereIn('roof_type_id', $roofTypes);
+                                    ->whereIn('roof_type_id', $extraData['roofTypes']);
                             },
-                            'buildingElements' => function ($query) use ($inputSourceForEagerLoad, $buildingElements) {
+                            'buildingElements' => function ($query) use ($inputSourceForEagerLoad, $extraData) {
                                 $query->forInputSource($inputSourceForEagerLoad)
-                                    ->whereIn('element_id', $buildingElements);
+                                    ->whereIn('element_id', $extraData['buildingElements']);
                             },
-                            'currentInsulatedGlazing' => function ($query) use ($inputSourceForEagerLoad, $buildingElements) {
+                            'currentInsulatedGlazing' => function ($query) use ($inputSourceForEagerLoad, $extraData) {
                                 $query->forInputSource($inputSourceForEagerLoad)
-                                    ->whereIn('measure_application_id', $buildingElements);
+                                    ->whereIn('measure_application_id', $extraData['buildingInsulatedGlazing']);
                             }
                         ]
                     );

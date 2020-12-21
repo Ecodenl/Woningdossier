@@ -385,12 +385,16 @@ class CsvService
     public static function totalReport(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
     {
         // TODO: Remove this when done
-        \DB::enableQueryLog();
         $start = microtime(true);
 
         $generalDataStep = Step::findByShort('general-data');
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
         $users = $cooperation->users()
+            ->with(['building' => function ($query) use ($coachInputSource, $generalDataStep) {
+                $query->with(['completedSteps' => function ($query) use ($coachInputSource, $generalDataStep) {
+                    $query->forInputSource($coachInputSource)->where('step_id', $generalDataStep->id);
+                }]);
+            }])
             ->has('buildings')
             ->skip(20)
             ->limit(20) // TODO: Remove this when done
@@ -401,41 +405,38 @@ class CsvService
         $userIds = [];
         // We first check each user
         foreach ($users as $user) {
-            if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
+            // we eager loaded the completed steps from the coach, so if its not empty we use that
+            if ($user->building->completedSteps->isNotEmpty()) {
                 $coachIds[$user->id] = $coachInputSource;
             } else {
                 $userIds[$user->id] = $inputSource;
             }
         }
 
-        \DB::enableQueryLog();
         // We separate users based on ID
         $coaches = $users->whereIn('id', array_keys($coachIds));
         $newUsers = $users->whereIn('id', array_keys($userIds));
 
+        \DB::enableQueryLog();
         // Then we lazy eagerload all the data with the right input source in one go
-        $coaches->load(
-            ['building' => function ($query) use ($coachInputSource) {
-                $query->with(
-                    [
-                        'buildingFeatures' => function ($query) use ($coachInputSource) {
-                            $query->forInputSource($coachInputSource)
-                                ->with([
-                                    'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
-                                    'contaminatedWallJoints', 'wallJoints'
-                                ]);
-                        },
-                        'buildingVentilations' => function ($query) use ($coachInputSource) {
-                            $query->forInputSource($coachInputSource);
-                        }
-                    ]
-                );
+        $coaches->load(['building' => function ($query) use ($coachInputSource) {
+            $query->with([
+                'buildingFeatures' => function ($query) use ($coachInputSource) {
+                    $query->forInputSource($coachInputSource)
+                    ->with([
+                        'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
+                        'contaminatedWallJoints', 'wallJoints'
+                    ]);
+                },
+                'buildingVentilations' => function ($query) use ($coachInputSource) {
+                    $query->forInputSource($coachInputSource);
+                }
+                ]);
             }]
         );
 
         $newUsers->load(
-            ['building' => function ($query) use ($inputSource) {
-                $query->with(
+            ['building' => function ($query) use ($inputSource) {$query->with(
                     [
                         'buildingFeatures' => function ($query) use ($inputSource) {
                             $query->forInputSource($inputSource)
@@ -451,9 +452,9 @@ class CsvService
                 );
             }]
         );
-
-
         dd(\DB::getQueryLog());
+
+
         // Then we merge
         $users = $newUsers->merge($coaches);
         $userIds = array_replace($userIds, $coachIds);
@@ -484,104 +485,6 @@ class CsvService
     }
 
 
-    public static function totalReport2(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
-    {
-
-        $start = microtime(true);
-
-        $generalDataStep = Step::findByShort('general-data');
-        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
-        $users = $cooperation->users()
-            ->with(['building' => function ($query) use ($coachInputSource, $generalDataStep) {
-                $query->with(['completedSteps' => function ($query) use ($coachInputSource, $generalDataStep) {
-                    $query->forInputSource($coachInputSource)->where('step_id', $generalDataStep->id);
-                }]);
-            }])
-            ->skip(20)
-            ->limit(20) // TODO: Remove this when done
-            ->get();
-
-        $coachIds = [];
-        $userIds = [];
-// We first check each user
-        foreach ($users as $user) {
-            // we only eager loaded the coach input source general data completed step; if its not empty we need to use the coach input source
-            if ($user->building->completedSteps->isNotEmpty()) {
-                $coachIds[] = [$user->id];
-            } else {
-                $userIds[] = [$user->id];
-            }
-        }
-
-
-        \DB::enableQueryLog();
-// We separate users based on ID
-        $coaches = User::whereIn('id', $coachIds)->with(
-            ['building' => function ($query) use ($coachInputSource) {
-                $query->with(
-                    [
-                        'buildingFeatures' => function ($query) use ($coachInputSource) {
-                            $query->forInputSource($coachInputSource)
-                                ->with([
-                                    'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
-                                    'contaminatedWallJoints', 'wallJoints'
-                                ]);
-                        },
-                        'buildingVentilations' => function ($query) use ($coachInputSource) {
-                            $query->forInputSource($coachInputSource);
-                        }
-                    ]
-                );
-            }]
-        )->get();
-
-        $newUsers = User::whereIn('id', $userIds)->with(
-            ['building' => function ($query) use ($inputSource) {
-                $query->with(
-                    [
-                        'buildingFeatures' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource)
-                                ->with([
-                                    'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
-                                    'contaminatedWallJoints', 'wallJoints'
-                                ]);
-                        },
-                        'buildingVentilations' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        }
-                    ]
-                );
-            }]
-        )->get();
-
-        dd(\DB::getQueryLog());
-//         Then we merge
-        $users = $newUsers->merge($coaches);
-//        $userIds = array_replace($userIds, $coachIds);
-
-        $rows = [];
-
-        $headers = DumpService::getStructureForTotalDumpService($anonymized);
-
-        $rows[] = $headers;
-
-        /**
-         * Get the data for every user.
-         *
-         * @var User $user
-         */
-
-
-        foreach ($users as $user) {
-            $inputSource = $user->building->buildingFeatures->inputSource;
-
-            $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
-        }
-        $stop = microtime(true);
-        dd($stop - $start, $rows[$users->first()->building->id], \DB::getQueryLog());
-
-        return $rows;
-    }
 
     protected static function formatFieldOutput($column, $value, $maybe1, $maybe2)
     {

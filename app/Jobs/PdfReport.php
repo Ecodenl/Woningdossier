@@ -58,6 +58,63 @@ class PdfReport implements ShouldQueue
         $userCooperation = $this->user->cooperation;
         $inputSource = $this->inputSource;
 
+        // TODO: TEST THIS
+        $headers = DumpService::getStructureForTotalDumpService(false, false);
+        $structuredHeaders = DumpService::dissectHeaders($headers);
+
+        $extraData = [
+            'services' => 'service',
+            'roofTypes' => 'building_roof_types',
+            'buildingElements' => 'element',
+            'buildingInsulatedGlazing' => 'building_insulated_glazings',
+        ];
+
+        $user->load(
+            ['building' => function ($query) use ($inputSource, $extraData) {
+                $query->with(
+                    [
+                        'buildingFeatures' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource)
+                                ->with([
+                                    'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
+                                    'contaminatedWallJoints', 'wallJoints'
+                                ]);
+                        },
+                        'buildingVentilations' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource);
+                        },
+                        'currentPaintworkStatus' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource);
+                        },
+                        'heater' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource);
+                        },
+                        'pvPanels' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource);
+                        },
+                        'buildingServices' => function ($query) use ($inputSource, $extraData) {
+                            $query->forInputSource($inputSource)
+                                ->whereIn('service_id', $extraData['services']);
+                        },
+                        'roofTypes' => function ($query) use ($inputSource, $extraData) {
+                            $query->forInputSource($inputSource)
+                                ->whereIn('roof_type_id', $extraData['roofTypes']);
+                        },
+                        'buildingElements' => function ($query) use ($inputSource, $extraData) {
+                            $query->forInputSource($inputSource)
+                                ->whereIn('element_id', $extraData['buildingElements']);
+                        },
+                        'currentInsulatedGlazing' => function ($query) use ($inputSource, $extraData) {
+                            $query->forInputSource($inputSource)
+                                ->whereIn('measure_application_id', $extraData['buildingInsulatedGlazing']);
+                        }
+                    ]
+                );
+            }, 'energyHabit' => function ($query) use ($inputSource) {
+                $query->forInputSource($inputSource);
+            }]
+        );
+        
         // load the buildingFeatures
         $building = $user->building()->with(['buildingFeatures' => function ($query) use ($inputSource) {
             $query->forInputSource($inputSource)->with('roofType', 'buildingType', 'energyLabel');
@@ -87,10 +144,8 @@ class PdfReport implements ShouldQueue
         // we dont wat the actual advices, we have to show them in a different way
         $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
-        $structure = DumpService::getStructureForTotalDumpService(false, false);
-
         // full report for a user
-        $reportForUser = DumpService::totalDump($structure, $userCooperation, $user, $inputSource, false, true, true);
+        $reportForUser = DumpService::totalDump($structuredHeaders, $userCooperation, $user, $inputSource, false, true, true);
 
         // the translations for the columns / tables in the user data
         $reportTranslations = $reportForUser['translations-for-columns'];

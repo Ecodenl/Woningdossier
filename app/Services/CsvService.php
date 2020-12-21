@@ -490,8 +490,8 @@ class CsvService
                             }
                         ]
                     );
-                }, 'energyHabit' => function ($query) use ($coachInputSource) {
-                    $query->forInputSource($coachInputSource);
+                }, 'energyHabit' => function ($query) use ($inputSourceForEagerLoad) {
+                    $query->forInputSource($inputSourceForEagerLoad);
                 }]
             );
 

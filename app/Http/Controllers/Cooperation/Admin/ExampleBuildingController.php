@@ -209,23 +209,25 @@ class ExampleBuildingController extends Controller
     private function updateOrCreateContent(ExampleBuilding $exampleBuilding, $new, $contents)
     {
         foreach ($contents as $cid => $data) {
-            $data['content'] = array_key_exists('content', $data) ? $data['content'] : [];
+            if (!is_null($data['build_year'])) {
+                $data['content'] = array_key_exists('content', $data) ? $data['content'] : [];
 
-            $data['content'] = ExampleBuildingHelper::formatContent($data['content']);
+                $data['content'] = ExampleBuildingHelper::formatContent($data['content']);
 
-            $content = null;
-            if (! is_numeric($cid) && 'new' == $cid) {
-                if (1 == $new) {
-                    // addition
-                    $content = new ExampleBuildingContent($data);
+                $content = null;
+                if (!is_numeric($cid) && 'new' == $cid) {
+                    if (1 == $new) {
+                        // addition
+                        $content = new ExampleBuildingContent($data);
+                    }
+                } else {
+                    $content = $exampleBuilding->contents()->where('id', $cid)->first();
+                    $content->fill($data);
                 }
-            } else {
-                $content = $exampleBuilding->contents()->where('id', $cid)->first();
-                $content->fill($data);
-            }
-            if ($content instanceof ExampleBuildingContent) {
-                $content->exampleBuilding()->associate($exampleBuilding);
-                $content->save();
+                if ($content instanceof ExampleBuildingContent) {
+                    $content->exampleBuilding()->associate($exampleBuilding);
+                    $content->save();
+                }
             }
         }
     }

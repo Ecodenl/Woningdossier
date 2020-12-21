@@ -142,7 +142,13 @@ return [
     | of "email". This simply helps us make messages a little cleaner.
     |
     */
-
+    'admin' => [
+        'example-buildings' => [
+            'new' => [
+                'build_year' => 'Bouwjaar voor nieuwe content kan niet leeg zijn'
+            ],
+        ],
+    ],
     // note, when a key needs a wildcard add it to the custom array.
     // A wildcard wont work in the attributes array but will in the custom array, needs more work but at least we dont need to hardcode the * numbers.
     'attributes' => [

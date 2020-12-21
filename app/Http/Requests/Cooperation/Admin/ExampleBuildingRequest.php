@@ -73,7 +73,7 @@ class ExampleBuildingRequest extends FormRequest
             });
 
             // Check each
-            foreach ($buildYears as $name => $value) {
+            foreach ($buildYears as $name => $buildYear) {
                 // Get cid
                 $cid = explode('.', $name)[1];
                 // If it's new, it requires different rules
@@ -87,14 +87,18 @@ class ExampleBuildingRequest extends FormRequest
                         }
                     });
 
-                    // There is 9 values with predefined functions that cannot be set to null
-                    // This means, if there's more than 9, something has been filled.
-                    // This is when the build year will get an error.
-                    if (count($newValues) > 9 && empty($value)) {
-                        $validator->errors()->add($name, 'Bouwjaar voor nieuwe content kan niet leeg zijn');
+                    // the form has selects, checkboxes, radios etc with a default value
+                    // these differ per route.
+                    $defaultValuesForRoute = [
+                        "cooperation.admin.example-buildings.update" => 9,
+                        "cooperation.admin.example-buildings.store" => 31
+                    ];
+
+                    if (is_null($buildYear) && count($newValues) > $defaultValuesForRoute[$this->route()->getName()]) {
+                        $validator->errors()->add($name, __('validation.admin.example-buildings.new.build_year'));
                     }
                 }
-                else if (empty($value)) {
+                else if (is_null($buildYear)) {
                     $validator->errors()->add($name, 'Bouwjaar kan niet leeg zijn');
                 }
             }
@@ -102,4 +106,3 @@ class ExampleBuildingRequest extends FormRequest
     }
 }
 
-//'content.*.build_year' => 'required',

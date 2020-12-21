@@ -474,6 +474,7 @@ class CsvService
         $rows = [];
 
         $headers = DumpService::getStructureForTotalDumpService($anonymized);
+        $newHeaders = DumpService::dissectHeaders($headers);
 
         $rows[] = $headers;
 
@@ -487,7 +488,7 @@ class CsvService
         foreach ($users as $user) {
             $inputSource = $user->building->buildingFeatures->inputSource;
 
-            $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
+            $rows[$user->building->id] = DumpService::totalDump($newHeaders, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
         }
         // TODO: Remove this when done
         $stop = microtime(true);

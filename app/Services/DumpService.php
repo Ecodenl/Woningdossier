@@ -558,9 +558,8 @@ class DumpService
                         $column = $maybe1;
 
                         /** @var BuildingInsulatedGlazing $buildingInsulatedGlazing */
-                        $buildingInsulatedGlazing = BuildingInsulatedGlazing::where($whereUserOrBuildingId)
+                        $buildingInsulatedGlazing = $building->currentInsulatedGlazing
                             ->where('measure_application_id', $measureApplicationId)
-                            ->forInputSource($inputSource)
                             ->first();
 
                         if ($buildingInsulatedGlazing instanceof BuildingInsulatedGlazing) {
@@ -585,9 +584,7 @@ class DumpService
                         $column = $columnOrId;
 
                         /** @var BuildingPvPanel $buildingPvPanel */
-                        $buildingPvPanel = BuildingPvPanel::where($whereUserOrBuildingId)
-                            ->forInputSource($inputSource)
-                            ->first();
+                        $buildingPvPanel = $building->pvPanels;
 
                         if ($buildingPvPanel instanceof BuildingPvPanel) {
                             switch ($column) {
@@ -608,9 +605,7 @@ class DumpService
                         $column = $columnOrId;
 
                         /** @var buildingHeater $buildingHeater */
-                        $buildingHeater = BuildingHeater::where($whereUserOrBuildingId)
-                            ->forInputSource($inputSource)
-                            ->first();
+                        $buildingHeater = $building->heater;
 
                         if ($buildingHeater instanceof BuildingHeater) {
                             switch ($column) {
@@ -673,9 +668,7 @@ class DumpService
                         $column = $columnOrId;
 
                         /** @var BuildingPaintworkStatus $buildingPaintworkStatus */
-                        $buildingPaintworkStatus = BuildingPaintworkStatus::where($whereUserOrBuildingId)
-                            ->forInputSource($inputSource)
-                            ->first();
+                        $buildingPaintworkStatus = $building->currentPaintworkStatus;
 
                         if ($buildingPaintworkStatus instanceof BuildingPaintworkStatus) {
                             switch ($column) {

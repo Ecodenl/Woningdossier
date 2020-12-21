@@ -423,7 +423,6 @@ class CsvService
 
         $headers = DumpService::getStructureForTotalDumpService($anonymized);
         $structuredHeaders = DumpService::dissectHeaders($headers);
-//dd($headers);
 
         // Data for eager loading
         $services = Arr::pluck(Arr::where($structuredHeaders, function ($value, $key) {
@@ -438,75 +437,75 @@ class CsvService
             return ($value['table'] ?? '') === 'element';
         }), 'columnOrId');
 
-        // Then we lazy eagerload all the data with the right input source in one go
-        $coaches->load(
-            ['building' => function ($query) use ($coachInputSource, $services, $roofTypes, $buildingElements) {
-                $query->with(
-                    [
-                        'buildingFeatures' => function ($query) use ($coachInputSource) {
-                            $query->forInputSource($coachInputSource)
-                            ->with([
-                                'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
-                                'contaminatedWallJoints', 'wallJoints'
-                            ]);
-                        },
-                        'buildingVentilations' => function ($query) use ($coachInputSource) {
-                            $query->forInputSource($coachInputSource);
-                        },
-                        'buildingServices' => function ($query) use ($coachInputSource, $services) {
-                            $query->forInputSource($coachInputSource)
-                                ->whereIn('service_id', $services);
-                        },
-                        'roofTypes' => function ($query) use ($coachInputSource, $roofTypes) {
-                            $query->forInputSource($coachInputSource)
-                                ->whereIn('roof_type_id', $roofTypes);
-                        },
-                        'buildingElements' => function ($query) use ($coachInputSource, $buildingElements) {
-                            $query->forInputSource($coachInputSource)
-                                ->whereIn('element_id', $buildingElements);
-                        }
-                    ]
-                );
-            }, 'energyHabit' => function ($query) use ($coachInputSource) {
-                $query->forInputSource($coachInputSource);
-            }]
-        );
+        $buildingInsulatedGlazing = Arr::pluck(Arr::where($structuredHeaders, function ($value, $key) {
+            return ($value['table'] ?? '') === 'building_insulated_glazings';
+        }), 'columnOrId');
 
-        $residents->load(
-            ['building' => function ($query) use ($inputSource, $services, $roofTypes, $buildingElements) {
-                $query->with(
-                    [
-                        'buildingFeatures' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource)
-                                ->with([
-                                    'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
-                                    'contaminatedWallJoints', 'wallJoints'
-                                ]);
-                        },
-                        'buildingVentilations' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'buildingServices' => function ($query) use ($inputSource, $services) {
-                            $query->forInputSource($inputSource)
-                                ->whereIn('service_id', $services);
-                        },
-                        'roofTypes' => function ($query) use ($inputSource, $roofTypes) {
-                            $query->forInputSource($inputSource)
-                                ->whereIn('roof_type_id', $roofTypes);
-                        },
-                        'buildingElements' => function ($query) use ($inputSource, $buildingElements) {
-                            $query->forInputSource($inputSource)
-                                ->whereIn('element_id', $buildingElements);
-                        }
-                    ]
-                );
-            }, 'energyHabit' => function ($query) use ($inputSource) {
-                $query->forInputSource($inputSource);
-            }]
-        );
+        $loop = 0;
+        // We loop by reference (&), to modify the original residents and coaches, but we do it in a loop to not have
+        // 2 massive chunks of code doing the same thing
+        foreach ([$residents,$coaches] as &$eagerLoading)
+        {
+            $inputSourceForEagerLoad = $inputSource;
+            if ($loop == 1) {
+                $inputSourceForEagerLoad = $coachInputSource;
+            }
+
+            // Then we lazy eagerload all the data with the right input source in one go
+            $eagerLoading->load(
+                ['building' => function ($query) use ($inputSourceForEagerLoad, $services, $roofTypes, $buildingElements, $buildingInsulatedGlazing) {
+                    $query->with(
+                        [
+                            'buildingFeatures' => function ($query) use ($inputSourceForEagerLoad) {
+                                $query->forInputSource($inputSourceForEagerLoad)
+                                    ->with([
+                                        'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
+                                        'contaminatedWallJoints', 'wallJoints'
+                                    ]);
+                            },
+                            'buildingVentilations' => function ($query) use ($inputSourceForEagerLoad) {
+                                $query->forInputSource($inputSourceForEagerLoad);
+                            },
+                            'currentPaintworkStatus' => function ($query) use ($inputSourceForEagerLoad) {
+                                $query->forInputSource($inputSourceForEagerLoad);
+                            },
+                            'heater' => function ($query) use ($inputSourceForEagerLoad) {
+                                $query->forInputSource($inputSourceForEagerLoad);
+                            },
+                            'pvPanels' => function ($query) use ($inputSourceForEagerLoad) {
+                                $query->forInputSource($inputSourceForEagerLoad);
+                            },
+                            'buildingServices' => function ($query) use ($inputSourceForEagerLoad, $services) {
+                                $query->forInputSource($inputSourceForEagerLoad)
+                                    ->whereIn('service_id', $services);
+                            },
+                            'roofTypes' => function ($query) use ($inputSourceForEagerLoad, $roofTypes) {
+                                $query->forInputSource($inputSourceForEagerLoad)
+                                    ->whereIn('roof_type_id', $roofTypes);
+                            },
+                            'buildingElements' => function ($query) use ($inputSourceForEagerLoad, $buildingElements) {
+                                $query->forInputSource($inputSourceForEagerLoad)
+                                    ->whereIn('element_id', $buildingElements);
+                            },
+                            'currentInsulatedGlazing' => function ($query) use ($inputSourceForEagerLoad, $buildingElements) {
+                                $query->forInputSource($inputSourceForEagerLoad)
+                                    ->whereIn('measure_application_id', $buildingElements);
+                            }
+                        ]
+                    );
+                }, 'energyHabit' => function ($query) use ($coachInputSource) {
+                    $query->forInputSource($coachInputSource);
+                }]
+            );
+
+            $loop++;
+        }
+        // Unset to not interfere with potential future variables
+        unset($eagerLoading);
+
+
         // Then we merge
         $users = $residents->merge($coaches);
-//dd($users->first()->building->buildingServices);
         $rows = [];
 
         $rows[] = $headers;

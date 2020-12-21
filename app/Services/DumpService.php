@@ -224,15 +224,6 @@ class DumpService
         $postalCode = $building->postal_code;
 
         // get the building features from the resident
-        // UNCOMMENT FOR OLD, TODO: REMOVE THIS WHEN DONE
-//        $buildingFeature = $building
-//            ->buildingFeatures()
-//            ->forInputSource($inputSource)
-//            ->first();
-//
-//        $buildingVentilation = $building->buildingVentilations()->forInputSource($inputSource)->first();
-
-        // COMMENT FOR OLD, TODO: REMOVE THIS COMMENT WHEN DONE
         $buildingFeature = $building->buildingFeatures;
 
         $buildingVentilation = $building->buildingVentilations;
@@ -474,64 +465,64 @@ class DumpService
                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $userInterest->interest->name ?? '';
                         break;
 
-                    // handle the element and service tables.
+                    // handle the element table.
                     case 'element':
+                        $whereUserOrBuildingId = [['building_id', '=', $buildingId]];
+                        $elementOrServiceId = $columnOrId;
+                        /** @var BuildingElement $element */
+                        $buildingElement = BuildingElement::where($whereUserOrBuildingId)
+                            ->where('element_id', $elementOrServiceId)
+                            ->forInputSource($inputSource)
+                            ->first();
+
+                        if ($buildingElement instanceof BuildingElement) {
+                            // check if we need to get data from the extra column
+                            if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
+                                $extraKey = explode('extra.', $tableWithColumnOrAndIdKey)[1];
+
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = is_array($buildingElement->extra) ? self::translateExtraValueIfNeeded($buildingElement->extra[$extraKey]) ?? '' : '';
+                            } else {
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingElement->elementValue->value ?? '';
+                            }
+                        } else {
+                            // always set defaults
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
+                        }
+                        break;
+
+                    // handle the service table.
                     case 'service':
                         $whereUserOrBuildingId = [['building_id', '=', $buildingId]];
                         $elementOrServiceId = $columnOrId;
-                        switch ($table) {
-                            case 'element':
-                                /** @var BuildingElement $element */
-                                $buildingElement = BuildingElement::where($whereUserOrBuildingId)
-                                    ->where('element_id', $elementOrServiceId)
-                                    ->forInputSource($inputSource)
-                                    ->first();
+                        $buildingService = BuildingService::where($whereUserOrBuildingId)
+                            ->where('service_id', $elementOrServiceId)
+                            ->forInputSource($inputSource)
+                            ->first();
 
-                                if ($buildingElement instanceof BuildingElement) {
-                                    // check if we need to get data from the extra column
-                                    if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
-                                        $extraKey = explode('extra.', $tableWithColumnOrAndIdKey)[1];
+                        if ($buildingService instanceof BuildingService) {
+                            // check if we need to get data from the extra column
+                            if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
+                                $extraKey = explode('extra.', $tableWithColumnOrAndIdKey)[1];
+                                $extraIsArray = is_array($buildingService->extra);
 
-                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = is_array($buildingElement->extra) ? self::translateExtraValueIfNeeded($buildingElement->extra[$extraKey]) ?? '' : '';
-                                    } else {
-                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingElement->elementValue->value ?? '';
-                                    }
-                                } else {
-                                    // always set defaults
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
+                                // if is array, try to get the answer from the extra column, does the key not exist set a default value.
+                                $answer = $extraIsArray ? optional($buildingService->extra)[$extraKey] : null;
+
+                                // when the answer is a bool / true its checked, so instead of showing true we show ja.
+                                // total sun panels is stored in same column, but need to be treated as a number
+                                if ('true' == $answer && 'total-sun-panels' !== $buildingService->service->short) {
+                                    $answer = 'Ja';
+                                } else if ($buildingService->service->short !== 'total-sun-panels') {
+                                    $answer = 'Nee';
                                 }
-                                break;
-                            case 'service':
-                                $buildingService = BuildingService::where($whereUserOrBuildingId)
-                                    ->where('service_id', $elementOrServiceId)
-                                    ->forInputSource($inputSource)
-                                    ->first();
 
-                                if ($buildingService instanceof BuildingService) {
-                                    // check if we need to get data from the extra column
-                                    if (stristr($tableWithColumnOrAndIdKey, 'extra')) {
-                                        $extraKey = explode('extra.', $tableWithColumnOrAndIdKey)[1];
-                                        $extraIsArray = is_array($buildingService->extra);
-
-                                        // if is array, try to get the answer from the extra column, does the key not exist set a default value.
-                                        $answer = $extraIsArray ? optional($buildingService->extra)[$extraKey] : null;
-
-                                        // when the answer is a bool / true its checked, so instead of showing true we show ja.
-                                        // total sun panels is stored in same column, but need to be treated as a number
-                                        if ('true' == $answer && 'total-sun-panels' !== $buildingService->service->short) {
-                                            $answer = 'Ja';
-                                        } else if ($buildingService->service->short !== 'total-sun-panels') {
-                                            $answer = 'Nee';
-                                        }
-
-                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer;
-                                    } else {
-                                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingService->serviceValue->value ?? '';
-                                    }
-                                } else {
-                                    // always set defaults
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
-                                }
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer;
+                            } else {
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingService->serviceValue->value ?? '';
+                            }
+                        } else {
+                            // always set defaults
+                            $row[$buildingId][$tableWithColumnOrAndIdKey] = '';
                         }
                         break;
 

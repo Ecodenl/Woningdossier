@@ -272,7 +272,8 @@ class DumpService
         // get the building features from the resident
         $buildingFeature = $building->buildingFeatures;
 
-        $buildingVentilation = $building->buildingVentilations;
+        /** @var BuildingVentilation $buildingVentilation */
+        $buildingVentilation = $building->buildingVentilations->first();
 
         $buildingType = $buildingFeature->buildingType->name ?? '';
         $buildYear = $buildingFeature->build_year ?? '';
@@ -353,7 +354,12 @@ class DumpService
                                 $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$subStep][$roofCategory][$column] ?? '' : $calculateData[$step][$subStep][$roofCategory][$column][$costsOrYear] ?? '';
                                 break;
                             default:
+                                // costOrYear contains "" instead of null.
                                 $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$subStep][$column] : $calculateData[$step][$subStep][$column][$costsOrYear] ?? '';
+                                if ($step == 'ventilation') {
+                                    //
+                                    dd($calculationResult, $subStep, $column, $calculateData[$step][$subStep][$column], is_null($costsOrYear));
+                                }
                                 break;
                         }
 

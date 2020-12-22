@@ -8,6 +8,7 @@ use App\Models\BuildingCoachStatus;
 use App\Models\BuildingPermission;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
+use App\Models\Role;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -61,15 +62,24 @@ class BuildingPolicy
      */
     public function talkToResident(User $user, Building $building)
     {
-        if ($user->hasRoleAndIsCurrentRole('coach')) {
-            // get the buildings the user is connected to.
-            $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($user);
+        $residentRole = Role::findByName('resident');
+        $roles = $building->user->roles;
 
-            // check if the current building is in that collection and if there are public messages.
-            return  $connectedBuildingsForUser->contains('building_id', $building->id) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
+        // We can only talk to a resident if the building's user is an actual resident
+        // and doesn't have more than one user
+        if ($roles->contains('id', $residentRole->id) && count($roles) === 1) {
+            if ($user->hasRoleAndIsCurrentRole('coach')) {
+                // get the buildings the user is connected to.
+                $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($user);
+
+                // check if the current building is in that collection and if there are public messages.
+                return  $connectedBuildingsForUser->contains('building_id', $building->id) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
+            }
+
+            return $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
         }
 
-        return $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
+        return false;
     }
 
     /**

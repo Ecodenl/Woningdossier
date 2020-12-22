@@ -49,6 +49,7 @@ return [
             'yes' => 'Toegang tot woning',
         ],
 
+        'coach-denied' => 'De bewoners rol is er niet, of er zijn meer rollen. Hierdoor kunnen er geen coaches gekoppeld worden.',
         'delete-user' => 'Weet u zeker dat u deze gebruiker wilt verwijderen, deze actie kan niet ongedaan worden gemaakt',
         'revoke-access' => 'Weet u zeker dat u deze gebruiker van de van groeps-chat wilt verwijderen, de gebruiker heeft hierna geen toegang meer tot de woning.',
         'add-with-building-access' => 'Weet u zeker dat u deze gebruiker aan de groeps-chat toegang wilt geven ? De gebruiker heeft hierna ook toegang tot de woning',

@@ -393,7 +393,10 @@ class CsvService
 
         $generalDataStep = Step::findByShort('general-data');
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
-        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+//        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $residentInputSource = $inputSource;
+
+
         $users = $cooperation->users()
             ->with(['building' => function ($query) use ($coachInputSource, $generalDataStep) {
                 $query->with(['completedSteps' => function ($query) use ($coachInputSource, $generalDataStep) {

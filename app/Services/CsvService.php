@@ -385,12 +385,6 @@ class CsvService
      */
     public static function totalReport(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
     {
-        set_time_limit(0);
-        ini_set('max_execution_time', 0);
-        // TODO: Remove this when done
-        $start = microtime(true);
-        \DB::enableQueryLog();
-
         $generalDataStep = Step::findByShort('general-data');
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 //        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
@@ -442,9 +436,6 @@ class CsvService
 
             $rows[$user->building->id] = DumpService::totalDump($structuredHeaders, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
         }
-        // TODO: Remove this when done
-        $stop = microtime(true);
-        dd($stop - $start, $rows[$users->first()->building->id], \DB::getQueryLog());
 
         return $rows;
     }

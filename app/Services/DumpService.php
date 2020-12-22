@@ -169,7 +169,8 @@ class DumpService
         return $headers;
     }
 
-    public static function dissectHeaders($headers) {
+    public static function dissectHeaders($headers)
+    {
         $newHeaders = [];
 
         foreach ($headers as $tableWithColumnOrAndIdKey => $translatedInputName) {
@@ -190,8 +191,7 @@ class DumpService
                 $temp['maybe2'] = isset($tableWithColumnOrAndId[5]) ? $tableWithColumnOrAndId[5] : '';
 
                 $newHeaders[] = $temp;
-            }
-            else {
+            } else {
                 $newHeaders[] = $translatedInputName;
             }
         }
@@ -300,8 +300,7 @@ class DumpService
                 $maybe2 = $headerStructure['maybe2'];
                 //dump("Step: " . $step . " | table: " . $table . " | column or ID: " . $columnOrId . " | column: " . $maybe1 . " | costs or year: " . $maybe2);
 
-                switch ($table)
-                {
+                switch ($table) {
                     case 'building_ventilations':
                         $column = $columnOrId;
                         switch ($columnOrId) {

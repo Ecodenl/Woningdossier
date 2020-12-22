@@ -428,7 +428,7 @@ class CsvService
 
         // Then we merge
         $users = $residents->merge($coaches);
-        $rows[] =  $headers;
+        $rows[] = $headers;
 
         /**
          * Get the data for every user.
@@ -436,7 +436,7 @@ class CsvService
          * @var User $user
          */
         foreach ($users as $user) {
-            $inputSource = $user->building->buildingFeatures->inputSource;
+            $inputSource= $user->building->buildingFeatures->inputSource;
 
             $rows[$user->building->id] = DumpService::totalDump($structuredHeaders, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
         }

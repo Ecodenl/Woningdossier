@@ -44,7 +44,7 @@ class LegacySetReadStatus extends Command
         $residentRole = Role::findByName('resident');
 
         // we will use this as reference in case stuff goes south
-        $timestamp = "21-12-2020 00:00:00";
+        $timestamp = Carbon::createFromFormat('Y-m-d h:i:s', '2020-12-21 00:00:00');
 
         $residentsWithMoreRoles = User::whereHas('roles', function ($q) use ($residentRole) {
             $q->where('role_id', $residentRole->id);
@@ -58,6 +58,8 @@ class LegacySetReadStatus extends Command
         foreach ($residentsWithMoreRoles as $user) {
             $privateMessages = $user->building->privateMessages;
             foreach ($privateMessages as $privateMessage) {
+                $this->info("b_id: {$user->building->id} pm_id: {$privateMessage->id} to read. .");
+
                 $privateMessage
                     ->privateMessageViews()
                     ->whereNull('read_at')

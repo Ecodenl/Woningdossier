@@ -7,14 +7,14 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
-class FixReadStatus extends Command
+class LegacySetReadStatus extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'hoomdossier:fix-read-status';
+    protected $signature = 'legacy:set-read';
 
     /**
      * The console command description.
@@ -33,6 +33,7 @@ class FixReadStatus extends Command
         parent::__construct();
     }
 
+
     /**
      * Execute the console command.
      *
@@ -42,21 +43,27 @@ class FixReadStatus extends Command
     {
         $residentRole = Role::findByName('resident');
 
-        $residentsWithMoreRoles = User::whereHas('roles', function($q) use ($residentRole) {
-                $q->where('role_id', $residentRole->id);
-            })->has('roles', '>', 1)
-            ->with(['building' => function($query) {
+        // we will use this as reference in case stuff goes south
+        $timestamp = "21-12-2020 00:00:00";
+
+        $residentsWithMoreRoles = User::whereHas('roles', function ($q) use ($residentRole) {
+            $q->where('role_id', $residentRole->id);
+        })->has('roles', '>', 1)
+            ->with(['building' => function ($query) {
                 $query->with('privateMessages');
             }])
             ->get();
 
+
         foreach ($residentsWithMoreRoles as $user) {
             $privateMessages = $user->building->privateMessages;
-
             foreach ($privateMessages as $privateMessage) {
-                $privateMessage->privateMessageViews()->update([
-                    'read_at' => Carbon::now()
-                ]);
+                $privateMessage
+                    ->privateMessageViews()
+                    ->whereNull('read_at')
+                    ->update([
+                        'read_at' => $timestamp,
+                    ]);
             }
         }
 

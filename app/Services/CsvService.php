@@ -398,8 +398,6 @@ class CsvService
                 }]);
             }])
             ->has('buildings')
-            ->skip(20)
-            ->limit(10) // TODO: Remove this when done
             ->get();
 
 

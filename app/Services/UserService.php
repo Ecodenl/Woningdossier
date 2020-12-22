@@ -10,11 +10,59 @@ use App\Models\CompletedQuestionnaire;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class UserService
 {
+    /**
+     * Method to eager load most of the relationships the model has.
+     */
+    public static function eagerLoadCollection(Collection $userCollection, InputSource $inputSource): Collection
+    {
+        return $userCollection->load(
+            ['building' => function ($query) use ($inputSource) {
+                $query->with(
+                    [
+                        'buildingFeatures' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource)
+                                ->with([
+                                    'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
+                                    'contaminatedWallJoints', 'wallJoints'
+                                ]);
+                        },
+                        'buildingVentilations' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource);
+                        },
+                        'currentPaintworkStatus' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource);
+                        },
+                        'heater' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource);
+                        },
+                        'pvPanels' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource);
+                        },
+                        'buildingServices' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource);
+                        },
+                        'roofTypes' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource);
+                        },
+                        'buildingElements' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource);
+                        },
+                        'currentInsulatedGlazing' => function ($query) use ($inputSource) {
+                            $query->forInputSource($inputSource);
+                        }
+                    ]
+                );
+            }, 'energyHabit' => function ($query) use ($inputSource) {
+                $query->forInputSource($inputSource);
+            }]
+        );
+    }
     /**
      * Method to reset a user his file for a specific input source.
      */

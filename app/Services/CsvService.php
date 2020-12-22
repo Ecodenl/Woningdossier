@@ -393,6 +393,7 @@ class CsvService
 
         $generalDataStep = Step::findByShort('general-data');
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
         $users = $cooperation->users()
             ->with(['building' => function ($query) use ($coachInputSource, $generalDataStep) {
                 $query->with(['completedSteps' => function ($query) use ($coachInputSource, $generalDataStep) {
@@ -417,103 +418,23 @@ class CsvService
             }
         }
 
-        // We separate users based on ID
-        $coaches = $users->whereIn('id', $coachIds);
-        $residents = $users->whereIn('id', $residentIds);
+        // We separate users based on ID and eager load the collection with most relations;
+        $residents = UserService::eagerLoadCollection($users->whereIn('id', $residentIds), $residentInputSource);
+        $coaches = UserService::eagerLoadCollection($users->whereIn('id', $coachIds),  $coachInputSource);
 
         $headers = DumpService::getStructureForTotalDumpService($anonymized);
         $structuredHeaders = DumpService::dissectHeaders($headers);
 
-        $extraData = [
-            'services' => 'service',
-            'roofTypes' => 'building_roof_types',
-            'buildingElements' => 'element',
-            'buildingInsulatedGlazing' => 'building_insulated_glazings',
-        ];
-
-        // Data for eager loading
-        foreach ($extraData as $type => $table) {
-            $extraData[$type] = array_unique(Arr::pluck(Arr::where($structuredHeaders, function ($value, $key) use ($table) {
-                return ($value['table'] ?? '') === $table;
-            }), 'columnOrId'));
-        }
-
-        $loop = 0;
-        // We loop by reference (&), to modify the original residents and coaches, but we do it in a loop to not have
-        // 2 massive chunks of code doing the same thing
-        foreach ([$residents,$coaches] as &$eagerLoading)
-        {
-            $inputSourceForEagerLoad = $inputSource;
-            if ($loop == 1) {
-                $inputSourceForEagerLoad = $coachInputSource;
-            }
-
-            // Then we lazy eagerload all the data with the right input source in one go
-            $eagerLoading->load(
-                ['building' => function ($query) use ($inputSourceForEagerLoad, $extraData) {
-                    $query->with(
-                        [
-                            'buildingFeatures' => function ($query) use ($inputSourceForEagerLoad) {
-                                $query->forInputSource($inputSourceForEagerLoad)
-                                    ->with([
-                                        'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
-                                        'contaminatedWallJoints', 'wallJoints'
-                                    ]);
-                            },
-                            'buildingVentilations' => function ($query) use ($inputSourceForEagerLoad) {
-                                $query->forInputSource($inputSourceForEagerLoad);
-                            },
-                            'currentPaintworkStatus' => function ($query) use ($inputSourceForEagerLoad) {
-                                $query->forInputSource($inputSourceForEagerLoad);
-                            },
-                            'heater' => function ($query) use ($inputSourceForEagerLoad) {
-                                $query->forInputSource($inputSourceForEagerLoad);
-                            },
-                            'pvPanels' => function ($query) use ($inputSourceForEagerLoad) {
-                                $query->forInputSource($inputSourceForEagerLoad);
-                            },
-                            'buildingServices' => function ($query) use ($inputSourceForEagerLoad, $extraData) {
-                                $query->forInputSource($inputSourceForEagerLoad)
-                                    ->whereIn('service_id', $extraData['services']);
-                            },
-                            'roofTypes' => function ($query) use ($inputSourceForEagerLoad, $extraData) {
-                                $query->forInputSource($inputSourceForEagerLoad)
-                                    ->whereIn('roof_type_id', $extraData['roofTypes']);
-                            },
-                            'buildingElements' => function ($query) use ($inputSourceForEagerLoad, $extraData) {
-                                $query->forInputSource($inputSourceForEagerLoad)
-                                    ->whereIn('element_id', $extraData['buildingElements']);
-                            },
-                            'currentInsulatedGlazing' => function ($query) use ($inputSourceForEagerLoad, $extraData) {
-                                $query->forInputSource($inputSourceForEagerLoad)
-                                    ->whereIn('measure_application_id', $extraData['buildingInsulatedGlazing']);
-                            }
-                        ]
-                    );
-                }, 'energyHabit' => function ($query) use ($inputSourceForEagerLoad) {
-                    $query->forInputSource($inputSourceForEagerLoad);
-                }]
-            );
-
-            $loop++;
-        }
-        // Unset to not interfere with potential future variables
-        unset($eagerLoading);
-
 
         // Then we merge
         $users = $residents->merge($coaches);
-        $rows = [];
-
-        $rows[] = $headers;
+        $rows[] =  $headers;
 
         /**
          * Get the data for every user.
          *
          * @var User $user
          */
-
-
         foreach ($users as $user) {
             $inputSource = $user->building->buildingFeatures->inputSource;
 

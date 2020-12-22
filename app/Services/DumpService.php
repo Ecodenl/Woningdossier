@@ -180,7 +180,6 @@ class DumpService
 
                 // collect some basic info
                 // which will apply to (most) cases.
-                $temp['tableWithColumnOrAndIdKey'] = $tableWithColumnOrAndIdKey;
 
                 $temp['step'] = $tableWithColumnOrAndId[0];
                 $temp['subStep'] = $tableWithColumnOrAndId[1];
@@ -190,13 +189,30 @@ class DumpService
                 $temp['maybe1'] = isset($tableWithColumnOrAndId[4]) ? $tableWithColumnOrAndId[4] : '';
                 $temp['maybe2'] = isset($tableWithColumnOrAndId[5]) ? $tableWithColumnOrAndId[5] : '';
 
-                $newHeaders[] = $temp;
+                $temp['translation'] = $translatedInputName;
+
+                $newHeaders[$tableWithColumnOrAndIdKey] = $temp;
             } else {
                 $newHeaders[] = $translatedInputName;
             }
         }
 
         return $newHeaders;
+    }
+
+    public static function getTranslationHeaders($headerStructure)
+    {
+        $translationHeaders = [];
+
+        foreach ($headerStructure as $tableWithColumnOrAndIdKey => $headerParts) {
+            if (is_array($headerParts)) {
+                $translationHeaders[$tableWithColumnOrAndIdKey] = $headerParts['translation'];
+            } else {
+                $translationHeaders[] = $headerParts;
+            }
+        }
+
+        return $translationHeaders;
     }
 
     /**
@@ -285,9 +301,8 @@ class DumpService
         $calculateData = static::getCalculateData($user, $inputSource);
 
         // loop through the headers
-        foreach ($headers as $headerStructure) {
+        foreach ($headers as $tableWithColumnOrAndIdKey => $headerStructure) {
             if (is_array($headerStructure)) {
-                $tableWithColumnOrAndIdKey = $headerStructure['tableWithColumnOrAndIdKey'];
 
                 // collect some basic info
                 // which will apply to (most) cases.

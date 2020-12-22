@@ -422,12 +422,11 @@ class CsvService
         }
 
         // We separate users based on ID and eager load the collection with most relations;
-        $residents = UserService::eagerLoadCollection($users->whereIn('id', $residentIds), $residentInputSource);
-        $coaches = UserService::eagerLoadCollection($users->whereIn('id', $coachIds),  $coachInputSource);
+        $residents = UserService::eagerLoadUserData($users->whereIn('id', $residentIds), $residentInputSource);
+        $coaches = UserService::eagerLoadUserData($users->whereIn('id', $coachIds),  $coachInputSource);
 
         $headers = DumpService::getStructureForTotalDumpService($anonymized);
         $structuredHeaders = DumpService::dissectHeaders($headers);
-
 
         // Then we merge
         $users = $residents->merge($coaches);

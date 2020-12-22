@@ -11,6 +11,7 @@ use App\Models\Interest;
 use App\Models\UserActionPlanAdviceComments;
 use App\Services\DumpService;
 use App\Services\UserActionPlanAdviceService;
+use App\Services\UserService;
 use Barryvdh\DomPDF\Facade as PDF;
 
 class UserReportController extends Controller
@@ -24,28 +25,39 @@ class UserReportController extends Controller
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
 
-        $buildingFeatures = $building->buildingFeatures()->forInputSource($inputSource)->first();
+        $headers = DumpService::getStructureForTotalDumpService(false, false);
+        $structuredHeaders = DumpService::dissectHeaders($headers);
+
+        $user = UserService::eagerLoadUserData($user,  $inputSource);
+
+        $building = $user->building;
+
+        $buildingFeatures = $building->buildingFeatures;
 
         $GLOBALS['_cooperation'] = $userCooperation;
         $GLOBALS['_inputSource'] = $inputSource;
 
-        $buildingInsulatedGlazings = BuildingInsulatedGlazing::where('building_id', $building->id)
-            ->forInputSource($inputSource)
-            ->with('measureApplication', 'insulatedGlazing', 'buildingHeating')
-            ->get();
+        $buildingInsulatedGlazings = $building->currentInsulatedGlazing->load('measureApplication', 'insulatedGlazing', 'buildingHeating');
+
+        // the comments that have been made on the action plan
+        $userActionPlanAdviceComments = UserActionPlanAdviceComments::forMe($user)
+            ->with('inputSource')
+            ->get()
+            ->pluck('comment', 'inputSource.name')
+            ->toArray();
 
         $steps = $userCooperation->getActiveOrderedSteps();
 
         $userActionPlanAdvices = UserActionPlanAdviceService::getPersonalPlan($user, $inputSource);
 
-        // we don't want the advices, we need to show them in a different way.
+        // we dont wat the actual advices, we have to show them in a different way
         $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
         // full report for a user
-        $reportForUser = DumpService::totalDump(DumpService::getStructureForTotalDumpService(false, false), $userCooperation, $user, $inputSource, false, true, true);
+        $reportForUser = DumpService::totalDump($structuredHeaders, $userCooperation, $user, $inputSource, false, true, true);
 
         // the translations for the columns / tables in the user data
-        $reportTranslations = $reportForUser['translations-for-columns'];
+        $reportTranslations = DumpService::getTranslationHeaders($reportForUser['translations-for-columns']);
 
         $calculations = $reportForUser['calculations'];
         $reportData = [];

@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Helpers\StepHelper;
-use App\Models\BuildingInsulatedGlazing;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
@@ -12,6 +11,7 @@ use App\Models\User;
 use App\Models\UserActionPlanAdviceComments;
 use App\Services\DumpService;
 use App\Services\UserActionPlanAdviceService;
+use App\Services\UserService;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -58,77 +58,19 @@ class PdfReport implements ShouldQueue
         $userCooperation = $this->user->cooperation;
         $inputSource = $this->inputSource;
 
-        // TODO: TEST THIS
         $headers = DumpService::getStructureForTotalDumpService(false, false);
         $structuredHeaders = DumpService::dissectHeaders($headers);
 
-        $extraData = [
-            'services' => 'service',
-            'roofTypes' => 'building_roof_types',
-            'buildingElements' => 'element',
-            'buildingInsulatedGlazing' => 'building_insulated_glazings',
-        ];
+        $user = UserService::eagerLoadUserData($user,  $inputSource);
 
-        $user->load(
-            ['building' => function ($query) use ($inputSource, $extraData) {
-                $query->with(
-                    [
-                        'buildingFeatures' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource)
-                                ->with([
-                                    'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
-                                    'contaminatedWallJoints', 'wallJoints'
-                                ]);
-                        },
-                        'buildingVentilations' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'currentPaintworkStatus' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'heater' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'pvPanels' => function ($query) use ($inputSource) {
-                            $query->forInputSource($inputSource);
-                        },
-                        'buildingServices' => function ($query) use ($inputSource, $extraData) {
-                            $query->forInputSource($inputSource)
-                                ->whereIn('service_id', $extraData['services']);
-                        },
-                        'roofTypes' => function ($query) use ($inputSource, $extraData) {
-                            $query->forInputSource($inputSource)
-                                ->whereIn('roof_type_id', $extraData['roofTypes']);
-                        },
-                        'buildingElements' => function ($query) use ($inputSource, $extraData) {
-                            $query->forInputSource($inputSource)
-                                ->whereIn('element_id', $extraData['buildingElements']);
-                        },
-                        'currentInsulatedGlazing' => function ($query) use ($inputSource, $extraData) {
-                            $query->forInputSource($inputSource)
-                                ->whereIn('measure_application_id', $extraData['buildingInsulatedGlazing']);
-                        }
-                    ]
-                );
-            }, 'energyHabit' => function ($query) use ($inputSource) {
-                $query->forInputSource($inputSource);
-            }]
-        );
-        
-        // load the buildingFeatures
-        $building = $user->building()->with(['buildingFeatures' => function ($query) use ($inputSource) {
-            $query->forInputSource($inputSource)->with('roofType', 'buildingType', 'energyLabel');
-        }])->first();
+        $building = $user->building;
 
         $buildingFeatures = $building->buildingFeatures;
 
         $GLOBALS['_cooperation'] = $userCooperation;
         $GLOBALS['_inputSource'] = $inputSource;
 
-        $buildingInsulatedGlazings = BuildingInsulatedGlazing::where('building_id', $building->id)
-            ->forInputSource($inputSource)
-            ->with('measureApplication', 'insulatedGlazing', 'buildingHeating')
-            ->get();
+        $buildingInsulatedGlazings = $building->currentInsulatedGlazing->load('measureApplication', 'insulatedGlazing', 'buildingHeating');
 
         // the comments that have been made on the action plan
         $userActionPlanAdviceComments = UserActionPlanAdviceComments::forMe($user)
@@ -148,7 +90,7 @@ class PdfReport implements ShouldQueue
         $reportForUser = DumpService::totalDump($structuredHeaders, $userCooperation, $user, $inputSource, false, true, true);
 
         // the translations for the columns / tables in the user data
-        $reportTranslations = $reportForUser['translations-for-columns'];
+        $reportTranslations = DumpService::getTranslationHeaders($reportForUser['translations-for-columns']);
 
         $calculations = $reportForUser['calculations'];
         $reportData = [];

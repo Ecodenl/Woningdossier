@@ -418,7 +418,6 @@ class CsvService
         $coaches = UserService::eagerLoadUserData($users->whereIn('id', $coachIds),  $coachInputSource);
 
         $headers = DumpService::getStructureForTotalDumpService($anonymized);
-        $structuredHeaders = DumpService::dissectHeaders($headers);
 
         // Then we merge
         $users = $residents->merge($coaches);
@@ -432,7 +431,7 @@ class CsvService
         foreach ($users as $user) {
             $inputSource= $user->building->buildingFeatures->inputSource;
 
-            $rows[$user->building->id] = DumpService::totalDump($structuredHeaders, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
+            $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
         }
 
         return $rows;

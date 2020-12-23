@@ -59,7 +59,6 @@ class PdfReport implements ShouldQueue
         $inputSource = $this->inputSource;
 
         $headers = DumpService::getStructureForTotalDumpService(false, false);
-        $structuredHeaders = DumpService::dissectHeaders($headers);
 
         $user = UserService::eagerLoadUserData($user,  $inputSource);
 
@@ -87,10 +86,10 @@ class PdfReport implements ShouldQueue
         $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
         // full report for a user
-        $reportForUser = DumpService::totalDump($structuredHeaders, $userCooperation, $user, $inputSource, false, true, true);
+        $reportForUser = DumpService::totalDump($headers, $userCooperation, $user, $inputSource, false, true, true);
 
         // the translations for the columns / tables in the user data
-        $reportTranslations = DumpService::getTranslationHeaders($reportForUser['translations-for-columns']);
+        $reportTranslations = $reportForUser['translations-for-columns'];
 
         $calculations = $reportForUser['calculations'];
         $reportData = [];

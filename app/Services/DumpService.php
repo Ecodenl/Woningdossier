@@ -169,52 +169,6 @@ class DumpService
         return $headers;
     }
 
-    public static function dissectHeaders($headers)
-    {
-        $newHeaders = [];
-//dd($headers);
-        foreach ($headers as $tableWithColumnOrAndIdKey => $translatedInputName) {
-            if (is_string($tableWithColumnOrAndIdKey)) {
-                // explode it so we can do stuff with it.
-                $tableWithColumnOrAndId = explode('.', $tableWithColumnOrAndIdKey);
-
-                // collect some basic info
-                // which will apply to (most) cases.
-
-                $temp['step'] = $tableWithColumnOrAndId[0];
-                $temp['subStep'] = $tableWithColumnOrAndId[1];
-                $temp['table'] = $tableWithColumnOrAndId[2];
-                $temp['columnOrId'] = $tableWithColumnOrAndId[3];
-
-                $temp['maybe1'] = isset($tableWithColumnOrAndId[4]) ? $tableWithColumnOrAndId[4] : '';
-                $temp['maybe2'] = isset($tableWithColumnOrAndId[5]) ? $tableWithColumnOrAndId[5] : '';
-
-                $temp['translation'] = $translatedInputName;
-
-                $newHeaders[$tableWithColumnOrAndIdKey] = $temp;
-            } else {
-                $newHeaders[] = $translatedInputName;
-            }
-        }
-
-        return $newHeaders;
-    }
-
-    public static function getTranslationHeaders($headerStructure)
-    {
-        $translationHeaders = [];
-
-        foreach ($headerStructure as $tableWithColumnOrAndIdKey => $headerParts) {
-            if (is_array($headerParts)) {
-                $translationHeaders[$tableWithColumnOrAndIdKey] = $headerParts['translation'];
-            } else {
-                $translationHeaders[] = $headerParts;
-            }
-        }
-
-        return $translationHeaders;
-    }
-
     /**
      * Method to generate a total dump from a user for a specific input source.
      * This dump collects all possible data for a given user for the tool and returns it in an array.
@@ -302,18 +256,20 @@ class DumpService
         $calculateData = static::getCalculateData($user, $inputSource);
 
         // loop through the headers
-        foreach ($headers as $tableWithColumnOrAndIdKey => $headerStructure) {
-            if (is_array($headerStructure)) {
+        foreach ($headers as $tableWithColumnOrAndIdKey => $translatedInputName) {
+            if (is_string($tableWithColumnOrAndIdKey)) {
+                // explode it so we can do stuff with it.
+                $tableWithColumnOrAndId = explode('.', $tableWithColumnOrAndIdKey);
 
                 // collect some basic info
                 // which will apply to (most) cases.
-                $step = $headerStructure['step'];
-                $subStep = $headerStructure['subStep'];
-                $table = $headerStructure['table'];
-                $columnOrId = $headerStructure['columnOrId'];
+                $step = $tableWithColumnOrAndId[0];
+                $subStep = $tableWithColumnOrAndId[1];
+                $table = $tableWithColumnOrAndId[2];
+                $columnOrId = $tableWithColumnOrAndId[3];
 
-                $maybe1 = $headerStructure['maybe1'];
-                $maybe2 = $headerStructure['maybe2'];
+                $maybe1 = isset($tableWithColumnOrAndId[4]) ? $tableWithColumnOrAndId[4] : '';
+                $maybe2 = isset($tableWithColumnOrAndId[5]) ? $tableWithColumnOrAndId[5] : '';
                 //dump("Step: " . $step . " | table: " . $table . " | column or ID: " . $columnOrId . " | column: " . $maybe1 . " | costs or year: " . $maybe2);
 
                 switch ($table) {
@@ -343,23 +299,18 @@ class DumpService
                     case 'calculation':
                         // works in most cases, otherwise they will be renamed etc.
                         $column = $columnOrId;
-                        $costsOrYear = $maybe1;
+                        $costsOrYear = $tableWithColumnOrAndId[4] ?? null;
 
                         switch ($step) {
                             case 'roof-insulation':
-                                $roofCategory = $columnOrId;
-                                $column = $maybe1;
-                                $costsOrYear = $maybe2;
+                                $roofCategory = $tableWithColumnOrAndId[3];
+                                $column = $tableWithColumnOrAndId[4];
+                                $costsOrYear = $tableWithColumnOrAndId[5] ?? null;
 
                                 $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$subStep][$roofCategory][$column] ?? '' : $calculateData[$step][$subStep][$roofCategory][$column][$costsOrYear] ?? '';
                                 break;
                             default:
-                                // costOrYear contains "" instead of null.
                                 $calculationResult = is_null($costsOrYear) ? $calculateData[$step][$subStep][$column] : $calculateData[$step][$subStep][$column][$costsOrYear] ?? '';
-                                if ($step == 'ventilation') {
-                                    //
-                                    dd($calculationResult, $subStep, $column, $calculateData[$step][$subStep][$column], is_null($costsOrYear));
-                                }
                                 break;
                         }
 
@@ -450,7 +401,7 @@ class DumpService
                     // handle the building_roof_types table and its columns.
                     case 'building_roof_types':
                         $roofTypeId = $columnOrId;
-                        //$column     = $columnOrId;
+                        //$column     = $tableWithColumnOrAndId[3];
                         $column = $maybe1;
 
                         $buildingRoofType = $building->roofTypes
@@ -497,8 +448,8 @@ class DumpService
 
                     // handle the user_interest table and its columns.
                     case 'user_interests':
-                        $interestInType = $columnOrId;
-                        $interestInId = $maybe1;
+                        $interestInType = $tableWithColumnOrAndId[3];
+                        $interestInId = $tableWithColumnOrAndId[4];
 
                         $userInterest = $user->userInterestsForSpecificType($interestInType, $interestInId, $inputSource)->first();
 
@@ -567,7 +518,7 @@ class DumpService
                     // handle the building_insulated_glazing table and its columns.
                     case 'building_insulated_glazings':
                         $measureApplicationId = $columnOrId;
-                        $column = $maybe1;
+                        $column = $tableWithColumnOrAndId[4];
 
                         /** @var BuildingInsulatedGlazing $buildingInsulatedGlazing */
                         $buildingInsulatedGlazing = $building->currentInsulatedGlazing

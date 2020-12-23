@@ -36,7 +36,7 @@ class ReportController extends Controller
 
         $headers = DumpService::getStructureForTotalDumpService(false);
         $inputSourceForDump = InputSource::findByShort('resident');
-        $user = User::find([1]);
+        $user = User::find(1);
         $user = UserService::eagerLoadUserData($user, $inputSourceForDump)->first();
 
         $dump = DumpService::totalDump($headers, $cooperation, $user, $inputSourceForDump, false, false)['user-data'];

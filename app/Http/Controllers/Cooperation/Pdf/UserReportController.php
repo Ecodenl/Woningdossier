@@ -100,22 +100,6 @@ class UserReportController extends Controller
 
         $noInterest = Interest::where('calculate_value', 4)->first();
 
-        $dump = compact(
-            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource',
-            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
-            'buildingFeatures', 'measures', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
-        );
-
-        //        \Cache::forever('develop_pdf', $dump);
-
-        dd(
-            array_diff(
-                \Cache::get('develop_pdf'),
-                $dump
-            )
-        );
-
-
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
             'user', 'building', 'userCooperation', 'stepShorts', 'inputSource',

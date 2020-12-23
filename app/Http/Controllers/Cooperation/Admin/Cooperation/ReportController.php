@@ -32,20 +32,21 @@ class ReportController extends Controller
         // Is there any file being processed for my cooperation
         $anyFilesBeingProcessed = FileStorage::leaveOutPersonalFiles()->withExpired()->beingProcessed()->count();
 
-        $structuredHeaders = DumpService::getStructureForTotalDumpService(false);
-        $inputSourceForDump = InputSource::findByShort('resident');
-        $user = User::findMany([4416]);
-        $user = UserService::eagerLoadUserData($user, $inputSourceForDump)->first();
-//        dd($user->building->buildingVentilations);
-        Cache::forever('develop_total_dump', DumpService::totalDump($structuredHeaders, $cooperation, $user, $inputSourceForDump, false, false)['user-data']);
-
-        dd(
-            DumpService::totalDump($structuredHeaders, $cooperation, $user, $inputSourceForDump, false, false)['user-data'],
-            array_diff(
-                Cache::get('develop_total_dump'),
-                DumpService::totalDump($structuredHeaders, $cooperation, $user, $inputSourceForDump, false, false)['user-data']
-            )
-        );
+//        $structuredHeaders = DumpService::getStructureForTotalDumpService(false);
+//        $inputSourceForDump = InputSource::findByShort('resident');
+//        $user = User::findMany([4416]);
+//        $user = UserService::eagerLoadUserData($user, $inputSourceForDump)->first();
+////        dd($user->building->buildingVentilations);
+////        Cache::forever('develop_total_dump', DumpService::totalDump($structuredHeaders, $cooperation, $user, $inputSourceForDump, false, false)['user-data']);
+//
+//        dd(
+//
+//            DumpService::totalDump($structuredHeaders, $cooperation, $user, $inputSourceForDump, false, false)['user-data'],
+//            array_diff(
+//                Cache::get('develop_total_dump'),
+//                DumpService::totalDump($structuredHeaders, $cooperation, $user, $inputSourceForDump, false, false)['user-data']
+//            )
+//        );
 
         return view('cooperation.admin.cooperation.reports.index', compact('questionnaires', 'reportFileTypeCategory', 'anyFilesBeingProcessed'));
     }

@@ -62,7 +62,7 @@ class ExampleBuildingRequest extends FormRequest
                         $buildYear = $values["content.{$cid}.build_year"];
                         $label = $contentStructure[$contentStructureKey.".label"];
 
-                        $validator->errors()->add($name, "{$label} ({$buildYear}) Moet een nummer zijn");
+                        $validator->errors()->add($name, "{$label} (jaar {$buildYear}) Moet een nummer zijn");
                     }
                 }
             }

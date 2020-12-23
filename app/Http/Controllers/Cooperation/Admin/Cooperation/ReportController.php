@@ -37,8 +37,7 @@ class ReportController extends Controller
         $headers = DumpService::getStructureForTotalDumpService(false);
         $structuredHeaders = DumpService::dissectHeaders($headers);
         $inputSourceForDump = InputSource::findByShort('resident');
-//        $user = User::findMany([4416]);
-        $user = $cooperation->users()->first();
+        $user = User::find([1]);
         $user = UserService::eagerLoadUserData($user, $inputSourceForDump)->first();
 
         $dump = DumpService::totalDump($structuredHeaders, $cooperation, $user, $inputSourceForDump, false, false)['user-data'];

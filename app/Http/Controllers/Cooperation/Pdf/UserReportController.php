@@ -26,7 +26,6 @@ class UserReportController extends Controller
         $inputSource = HoomdossierSession::getInputSource(true);
 
         $headers = DumpService::getStructureForTotalDumpService(false, false);
-        $structuredHeaders = DumpService::dissectHeaders($headers);
 
         $user = UserService::eagerLoadUserData($user,  $inputSource);
 
@@ -54,10 +53,10 @@ class UserReportController extends Controller
         $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
         // full report for a user
-        $reportForUser = DumpService::totalDump($structuredHeaders, $userCooperation, $user, $inputSource, false, true, true);
+        $reportForUser = DumpService::totalDump($headers, $userCooperation, $user, $inputSource, false, true, true);
 
         // the translations for the columns / tables in the user data
-        $reportTranslations = DumpService::getTranslationHeaders($reportForUser['translations-for-columns']);
+        $reportTranslations = $reportForUser['translations-for-columns'];
 
         $calculations = $reportForUser['calculations'];
         $reportData = [];
@@ -100,6 +99,22 @@ class UserReportController extends Controller
             ->toArray();
 
         $noInterest = Interest::where('calculate_value', 4)->first();
+
+        $dump = compact(
+            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource',
+            'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
+            'buildingFeatures', 'measures', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
+        );
+
+        //        \Cache::forever('develop_pdf', $dump);
+
+        dd(
+            array_diff(
+                \Cache::get('develop_pdf'),
+                $dump
+            )
+        );
+
 
         /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(

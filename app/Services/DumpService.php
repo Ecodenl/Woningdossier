@@ -172,7 +172,7 @@ class DumpService
     public static function dissectHeaders($headers)
     {
         $newHeaders = [];
-
+//dd($headers);
         foreach ($headers as $tableWithColumnOrAndIdKey => $translatedInputName) {
             if (is_string($tableWithColumnOrAndIdKey)) {
                 // explode it so we can do stuff with it.

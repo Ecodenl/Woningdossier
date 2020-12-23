@@ -20,6 +20,7 @@ class UserService
      * Method to eager load most of the relationships the model has.
      * We either expect a user collection or a user model.
      */
+    // public static function eagerLoadCollection(Collection $userCollection, InputSource $inputSource): Collection
     public static function eagerLoadUserData($userObject, InputSource $inputSource)
     {
         return $userObject->load(

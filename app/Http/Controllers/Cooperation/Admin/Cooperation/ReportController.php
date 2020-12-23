@@ -32,26 +32,6 @@ class ReportController extends Controller
         // Is there any file being processed for my cooperation
         $anyFilesBeingProcessed = FileStorage::leaveOutPersonalFiles()->withExpired()->beingProcessed()->count();
 
-
-
-        $headers = DumpService::getStructureForTotalDumpService(true);
-        $inputSourceForDump = InputSource::findByShort('resident');
-        $user = User::find(1);
-        $user = UserService::eagerLoadUserData($user, $inputSourceForDump);
-        $dump = DumpService::totalDump($headers, $cooperation, $user, $inputSourceForDump, true, false)['user-data'];
-//dd($dump);
-//        dd($user->building->buildingVentilations);
-//        Cache::forever('develop_total_dump', DumpService::totalDump($headers, $cooperation, $user, $inputSourceForDump, false, false)['user-data']);
-
-        dd(
-            $dump,
-            Cache::get('develop_total_dump'),
-            array_diff(
-                Cache::get('develop_total_dump'),
-                $dump
-            )
-        );
-
         return view('cooperation.admin.cooperation.reports.index', compact('questionnaires', 'reportFileTypeCategory', 'anyFilesBeingProcessed'));
     }
 }

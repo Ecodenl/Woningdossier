@@ -37,18 +37,18 @@ class ReportController extends Controller
         $headers = DumpService::getStructureForTotalDumpService(false);
         $inputSourceForDump = InputSource::findByShort('resident');
         $user = User::find(1);
-        $user = UserService::eagerLoadUserData($user, $inputSourceForDump)->first();
-
+        $user = UserService::eagerLoadUserData($user, $inputSourceForDump);
         $dump = DumpService::totalDump($headers, $cooperation, $user, $inputSourceForDump, false, false)['user-data'];
-dd($dump);
+//dd($dump);
 //        dd($user->building->buildingVentilations);
 //        Cache::forever('develop_total_dump', DumpService::totalDump($headers, $cooperation, $user, $inputSourceForDump, false, false)['user-data']);
 
         dd(
-            DumpService::totalDump($headers, $cooperation, $user, $inputSourceForDump, false, false)['user-data'],
+            $dump,
+            Cache::get('develop_total_dump'),
             array_diff(
                 Cache::get('develop_total_dump'),
-                DumpService::totalDump($headers, $cooperation, $user, $inputSourceForDump, false, false)['user-data']
+                $dump
             )
         );
 

@@ -8,6 +8,7 @@ use App\Http\Requests\Cooperation\Admin\MessageRequest;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
+use App\Services\BuildingCoachStatusService;
 use App\Services\PrivateMessageService;
 use \Illuminate\Database\Query\Builder;
 
@@ -16,7 +17,7 @@ class MessagesController extends Controller
     public function index(Cooperation $cooperation)
     {
         if (Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) {
-            $connectedBuildingsByUserId = BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user(), $cooperation);
+            $connectedBuildingsByUserId = BuildingCoachStatusService::getConnectedBuildingsByUser(Hoomdossier::user());
 
             $buildings = Building::whereHas('privateMessages')->findMany(
                 $connectedBuildingsByUserId->pluck('building_id')->all()

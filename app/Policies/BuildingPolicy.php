@@ -9,6 +9,7 @@ use App\Models\BuildingPermission;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\User;
+use App\Services\BuildingCoachStatusService;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class BuildingPolicy
@@ -26,6 +27,11 @@ class BuildingPolicy
 
     public function edit(User $user, Building $building)
     {
+        // While a user is allowed to see his own stuff, he is not allowed to do anything in it.
+        if ($user->id === $building->user_id) {
+            return false;
+        }
+
         return $user->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']);
     }
 
@@ -34,14 +40,11 @@ class BuildingPolicy
      *
      * @return bool
      */
-    public function show(User $user, Building $building, Cooperation $cooperation)
+    public function show(User $user, Building $building)
     {
-        if ($building->id === HoomdossierSession::getBuilding(true)->id) {
-            return false;
-        }
         if ($user->hasRoleAndIsCurrentRole('coach')) {
             // get the buildings the user is connected to.
-            $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser($user, $cooperation);
+            $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($user);
 
             // check if the current building is in that collection.
             return  $connectedBuildingsForUser->contains('building_id', $building->id);
@@ -58,11 +61,11 @@ class BuildingPolicy
      *
      * @return bool
      */
-    public function talkToResident(User $user, Building $building, Cooperation $cooperation)
+    public function talkToResident(User $user, Building $building)
     {
         if ($user->hasRoleAndIsCurrentRole('coach')) {
             // get the buildings the user is connected to.
-            $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser($user, $cooperation);
+            $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($user);
 
             // check if the current building is in that collection and if there are public messages.
             return  $connectedBuildingsForUser->contains('building_id', $building->id) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
@@ -90,11 +93,11 @@ class BuildingPolicy
                     ->buildingPermissions()
                     ->where('user_id', $user->id)->first() instanceof BuildingPermission;
 
-            return PrivateMessage::allowedAccess($building) && $coachHasBuildingPermission;
+            return $building->user->allowedAccess() && $coachHasBuildingPermission;
         }
 
         // they can always access a building (if the user / resident gave access)
-        return PrivateMessage::allowedAccess($building) && $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
+        return $building->user->allowedAccess() && $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
     }
 
     /**

@@ -73,9 +73,7 @@
                     </tbody>
                 </table>
                 @if(!\App\Helpers\HoomdossierSession::isUserObserving())
-                    @can('view-any', \App\Models\PrivateMessage::class)
-                    <a href="{{route('cooperation.conversation-requests.index',  ['cooperation' => $cooperation, 'action' => \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.request')</a>
-                    @endcan
+                    <a href="{{route('cooperation.conversation-requests.index',  ['cooperation' => $cooperation, 'requestType' => \App\Services\PrivateMessageService::REQUEST_TYPE_COACH_CONVERSATION])}}" class="btn btn-primary">@lang('woningdossier.cooperation.tool.my-plan.conversation-requests.request')</a>
                 @endif
             </div>
 

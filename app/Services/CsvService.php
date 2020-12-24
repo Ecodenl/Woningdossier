@@ -102,17 +102,12 @@ class CsvService
             /** @var Building $building */
             $building = $user->building;
 
-            // normally we could use the PrivateMessage::allowedAccess, but we need to qeury on the to_cooperation_id.
-            $allowedAccess = PrivateMessage::conversation($building->id)
-                ->accessAllowed()
-                ->where('to_cooperation_id', $cooperation->id)
-                ->first() instanceof PrivateMessage;
 
             $createdAt = optional($user->created_at)->format('Y-m-d');
             //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
             $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
-            $allowAccess = $allowedAccess ? 'Ja' : 'Nee';
-            $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
+            $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
+            $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
             $connectedCoachNames = [];
             // get the names from the coaches and add them to a array
             foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
@@ -274,9 +269,9 @@ class CsvService
                 /** @var Collection $conversationRequestsForBuilding */
                 $createdAt = optional($user->created_at)->format('Y-m-d');
                 $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
-                $allowAccess = PrivateMessage::allowedAccess($building) ? 'Ja' : 'Nee';
+                $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
 
-                $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
+                $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
                 $connectedCoachNames = [];
                 // get the names from the coaches and add them to a array
                 foreach ($connectedCoaches->pluck('coach_id') as $coachId) {

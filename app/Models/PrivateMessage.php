@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Services\BuildingCoachStatusService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
@@ -11,57 +12,47 @@ use Illuminate\Support\Collection;
 /**
  * App\Models\PrivateMessage
  *
- * @property int $id
- * @property int|null $building_id
- * @property bool|null $is_public
- * @property string $from_user
- * @property string|null $request_type
- * @property string $message
- * @property int|null $from_user_id
- * @property int|null $from_cooperation_id
- * @property int|null $to_cooperation_id
- * @property bool $allow_access
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building|null $building
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessageView[] $privateMessageViews
- * @property-read int|null $private_message_views_count
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage accessAllowed()
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage conversation($buildingId)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage conversationRequest()
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage forMyCooperation()
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage myPrivateMessages()
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage private()
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage public()
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage query()
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereAllowAccess($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereFromCooperationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereFromUser($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereFromUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereIsPublic($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereMessage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereRequestType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereToCooperationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereUpdatedAt($value)
+ * @property int                                                                       $id
+ * @property int|null                                                                  $building_id
+ * @property bool|null                                                                 $is_public
+ * @property string                                                                    $from_user
+ * @property string|null                                                               $request_type
+ * @property string                                                                    $message
+ * @property int|null                                                                  $from_user_id
+ * @property int|null                                                                  $from_cooperation_id
+ * @property int|null                                                                  $to_cooperation_id
+ * @property \Illuminate\Support\Carbon|null                                           $created_at
+ * @property \Illuminate\Support\Carbon|null                                           $updated_at
+ * @property \App\Models\Building|null                                                 $building
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessageView[] $privateMessageViews
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversation($buildingId)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversationRequest()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage forMyCooperation()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage myPrivateMessages()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage private()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage public()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereFromCooperationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereFromUser($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereFromUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereIsPublic($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereMessage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereRequestType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereToCooperationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class PrivateMessage extends Model
 {
-    const REQUEST_TYPE_USER_CREATED_BY_COOPERATION = 'user-created-by-cooperation';
-    const REQUEST_TYPE_COACH_CONVERSATION = 'coach-conversation';
-    const REQUEST_TYPE_MORE_INFORMATION = 'more-information';
-    const REQUEST_TYPE_OTHER = 'other';
-    // only used when a user comes from the my-plan page and clicks the "actie ondernemen" button.
-    const REQUEST_TYPE_MEASURE = 'measure';
-
     protected $fillable = [
         'message', 'from_user_id', 'cooperation_id', 'from_cooperation_id', 'to_cooperation_id',
-        'request_type', 'allow_access', 'building_id', 'from_user', 'is_public',
+        'building_id', 'from_user', 'is_public',
     ];
 
     /**
@@ -70,7 +61,6 @@ class PrivateMessage extends Model
      * @var array
      */
     protected $casts = [
-        'allow_access' => 'boolean',
         'is_public'    => 'boolean',
     ];
 
@@ -203,7 +193,7 @@ class PrivateMessage extends Model
 
         if ($building instanceof Building) {
             // get the coaches with access to the building
-            $coachesWithAccess = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
+            $coachesWithAccess = BuildingCoachStatusService::getConnectedCoachesByBuildingId($buildingId);
 
             // if its a public conversation we push the building owner in it
             if ($publicConversation) {
@@ -263,50 +253,10 @@ class PrivateMessage extends Model
     }
 
     /**
-     * Scope a query to returned the messages where building access is allowed.
-     *
-     * @param $query
-     *
-     * @return mixed
-     */
-    public function scopeAccessAllowed($query)
-    {
-        return $query->where('allow_access', true);
-    }
-
-    /**
-     * Check if its allowed to access a building by its given building id.
-     *
-     * @return bool
-     */
-    public static function allowedAccess(Building $building)
-    {
-        return static::conversation($building->id)->accessAllowed()->first() instanceof PrivateMessage;
-    }
-
-    /**
      * Get the private message views.
      */
     public function privateMessageViews(): HasMany
     {
         return $this->hasMany(PrivateMessageView::class);
-    }
-
-    /**
-     * Method to return the translation of a request type.
-     *
-     * @param $requestType
-     *
-     * @return string|null
-     */
-    public static function getTranslationForRequestType($requestType)
-    {
-        $requestTypesThatAreTranslatable = array_flip([
-            self::REQUEST_TYPE_COACH_CONVERSATION,
-            self::REQUEST_TYPE_MORE_INFORMATION,
-            self::REQUEST_TYPE_OTHER,
-        ]);
-
-        return isset($requestTypesThatAreTranslatable[$requestType]) ? __('conversation-requests.request-types.'.$requestType) : null;
     }
 }

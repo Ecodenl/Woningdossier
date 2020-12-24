@@ -89,18 +89,20 @@ function updateNotifications() {
 notificationBeenPolled = false;
 
 function pollForNotifications() {
+    // only need this on the my plan page.
+    if (window.location.pathname.indexOf('tool/my-plan') !== -1) {
+        var timeout = 0;
+        if (notificationBeenPolled) {
+            timeout = 5000;
+        }
+        setTimeout(function () {
+            notificationBeenPolled = true;
 
-    var timeout = 0;
-    if (notificationBeenPolled) {
-        timeout = 5000;
+            updateNotifications()
+
+            pollForNotifications()
+        }, timeout);
     }
-    setTimeout(function () {
-        notificationBeenPolled = true;
-
-        updateNotifications()
-
-        pollForNotifications()
-    }, timeout);
 }
 
 function hoomdossierRound(value, bucket) {

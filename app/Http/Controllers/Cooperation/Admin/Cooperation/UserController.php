@@ -18,7 +18,7 @@ use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
-use App\Models\Role;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -60,16 +60,6 @@ class UserController extends Controller
         // give the user his role
         $roleIds = $request->get('roles', '');
 
-        // Get resident role
-        $residentRole = Role::findByName('resident');
-
-        // Check if the role is in the array
-        $sendMessage = in_array($residentRole->id, $roleIds);
-        // If so, ensure it's the only role
-        if ($sendMessage === true) {
-            $sendMessage = count($roleIds) === 1;
-        }
-
         $roles = [];
         foreach ($roleIds as $roleId) {
             $role = Role::find($roleId);
@@ -86,22 +76,19 @@ class UserController extends Controller
         $account = $user->account;
         $building = $user->building;
 
-        // Only send a message if there's 1 role and it's the resident's role
-        if ($sendMessage === true) {
-            // we always have to set the access to true when a user is created through the admin environment
-            PrivateMessage::create(
-                [
-                    // we get the selected option from the language file, we can do this cause the submitted value = key from localization
-                    'is_public' => true,
-                    'message' => __('woningdossier.cooperation.admin.cooperation.users.store.private-message-allowed-access'),
-                    'from_user_id' => $user->id,
-                    'from_user' => $user->getFullName(),
-                    'to_cooperation_id' => $cooperation->id,
-                    'building_id' => $building->id,
-                    'allow_access' => true,
-                ]
-            );
-        }
+        // we always have to set the access to true when a user is created through the admin environment
+        PrivateMessage::create(
+            [
+                // we get the selected option from the language file, we can do this cause the submitted value = key from localization
+                'is_public' => true,
+                'message' => __('woningdossier.cooperation.admin.cooperation.users.store.private-message-allowed-access'),
+                'from_user_id' => $user->id,
+                'from_user' => $user->getFullName(),
+                'to_cooperation_id' => $cooperation->id,
+                'building_id' => $building->id,
+                'allow_access' => true,
+            ]
+        );
 
         // if the created user is a resident, then we connect the selected coach to the building, else we dont.
         if ($request->has('coach_id')) {

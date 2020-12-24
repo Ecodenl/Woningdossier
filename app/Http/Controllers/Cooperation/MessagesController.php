@@ -16,8 +16,6 @@ class MessagesController extends Controller
      */
     public function getTotalUnreadMessageCount()
     {
-        $showCount = Hoomdossier::user()->can('view-any', PrivateMessage::class);
-
-        return response()->json(['count' => PrivateMessageView::getTotalUnreadMessagesForCurrentRole(), 'showCount' => $showCount]);
+        return response()->json(['count' => PrivateMessageView::getTotalUnreadMessagesForCurrentRole()]);
     }
 }

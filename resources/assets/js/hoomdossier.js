@@ -37,20 +37,18 @@ function pollForMessageCount() {
 // default set to false, will be set to true once polled
 // so if we get no notification response back and the var is set to true we now the recalc is done.
 var wasRecalculating = false;
+var recalculatingToast = null;
 function updateNotifications() {
     $.ajax({
         url: window.location.origin + '/notifications',
         type: "GET",
         success: function (response) {
-            $.toast().reset('all');
-
-            // for now the first one is ok, we will upgrade to livewire in near future anyway
-            if (typeof response.notifications[0] !== "undefined") {
+            // for now this will do, this will be changed, hopefully, to livewire in the near future
+            if (typeof response.notifications[0] !== "undefined" && recalculatingToast === null) {
                 $('.pdf-report').prop('disabled', 'disabled').addClass('disabled')
                 wasRecalculating = true;
-                $.toast({
-                    text: "Actieplan word herberekend.", // Text that is to be shown in the toast
-
+                recalculatingToast = $.toast({
+                    text: "Actieplan word herberekend. <span class='glyphicon-spin glyphicon glyphicon-refresh '></span>", // Text that is to be shown in the toast
                     icon: 'info', // Type of toast icon
                     showHideTransition: 'fade', // fade, slide or plain
                     allowToastClose: false, // Boolean value true or false
@@ -59,16 +57,17 @@ function updateNotifications() {
                     position: 'bottom-right', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
 
                     textAlign: 'left',  // Text alignment i.e. left, right or center
-                    loader: true,  // Whether to show loader or not. True by default
+                    loader: false,  // Whether to show loader or not. True by default
                     loaderBg: '#31708f',  // Background color of the toast loader
                 });
             }
             if (wasRecalculating && typeof response.notifications[0] === "undefined") {
-                $('.pdf-report').prop('disabled', 'disabled').addClass('disabled')
+                $.toast().reset('all');
                 $.toast({
                     text: 'Actieplan is herberekend.',
                     showHideTransition: 'slide',
                     icon: 'success',
+                    hideAfter: 2000,
                     position: 'bottom-right',
                     beforeHide: function () {
                         if (window.location.pathname === '/tool/my-plan') {

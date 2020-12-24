@@ -11,6 +11,13 @@ $fvalKey = str_replace(['[', ']'], ['.', ''], $fname);
 $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->build_year : '';
 
 ?>
+
+@if(Route::currentRouteName() === "cooperation.admin.example-buildings.edit" && $fkey == 'new')
+    <div class="alert alert-danger mt-3">
+        @lang('cooperation/admin/example-buildings.edit.new-warning')
+    </div>
+@endif
+
 <div class="form-group {{ $errors->has('content.'.$fkey.'.build_year') ? ' has-error' : '' }}">
     <label for="build_year">@lang('cooperation/admin/example-buildings.form.build-year')</label>
 

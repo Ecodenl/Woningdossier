@@ -62,7 +62,7 @@ class ExampleBuildingRequest extends FormRequest
                         $buildYear = $values["content.{$cid}.build_year"];
                         $label = $contentStructure[$contentStructureKey.".label"];
 
-                        $validator->errors()->add($name, "{$label} ({$buildYear}) Moet een nummer zijn");
+                        $validator->errors()->add($name, "{$label} (jaar {$buildYear}) Moet een nummer zijn");
                     }
                 }
             }
@@ -78,28 +78,14 @@ class ExampleBuildingRequest extends FormRequest
                 $cid = explode('.', $name)[1];
                 // If it's new, it requires different rules
                 if ($cid == 'new') {
-                    // Check if there's new values
-                    $newValues = Arr::where($values, function ($value, $key) {
-                        $internalCid = explode('.', $key)[1];
-
-                        if ($internalCid == 'new' && !is_null($value)) {
-                            return $this;
-                        }
-                    });
-
-                    // the form has selects, checkboxes, radios etc with a default value
-                    // these differ per route.
-                    $defaultValuesForRoute = [
-                        "cooperation.admin.example-buildings.update" => 9,
-                        "cooperation.admin.example-buildings.store" => 31
-                    ];
-
-                    if (is_null($buildYear) && count($newValues) > $defaultValuesForRoute[$this->route()->getName()]) {
+                    $new = $this->get('new');
+                    // We only need to validate this whenever the new tab is open
+                    if (is_null($buildYear) && $new == 1) {
                         $validator->errors()->add($name, __('validation.admin.example-buildings.new.build_year'));
                     }
                 }
                 else if (is_null($buildYear)) {
-                    $validator->errors()->add($name, 'Bouwjaar kan niet leeg zijn');
+                    $validator->errors()->add($name, __('validation.admin.example-buildings.existing.build_year'));
                 }
             }
         });

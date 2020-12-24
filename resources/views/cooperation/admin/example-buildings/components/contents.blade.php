@@ -12,7 +12,10 @@
         @endforeach
     @endif
     <li class="@if(Route::currentRouteName() === "cooperation.admin.example-buildings.create") active @endif">
-        <a href="#new" aria-controls="new" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-plus"></i></a>
+        <a href="#new" aria-controls="new" role="tab" data-toggle="tab"
+           @if(count($errors->get("content.new.*")) > 0) style="border: 1px solid #a94442" @endif>
+            <i class="glyphicon glyphicon-plus"></i>
+        </a>
     </li>
 </ul>
 <div class="tab-content">

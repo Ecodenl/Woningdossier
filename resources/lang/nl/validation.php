@@ -145,7 +145,10 @@ return [
     'admin' => [
         'example-buildings' => [
             'new' => [
-                'build_year' => 'Bouwjaar voor nieuwe content kan niet leeg zijn'
+                'build_year' => 'Bouwjaar voor nieuwe content kan niet leeg zijn',
+            ],
+            'existing' => [
+                'build_year' => 'Bouwjaar kan niet leeg zijn',
             ],
         ],
     ],

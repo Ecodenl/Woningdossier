@@ -107,7 +107,7 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="role-select">@lang('cooperation/admin/buildings.show.role.label')</label>
-                        <select @cannot('update-roles', $building) disabled @endcannot
+                        <select @if($building->id == \App\Helpers\HoomdossierSession::getBuilding()) disabled @endif
                                 class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                             @foreach($roles as $role)
                                 <option @if($user->hasNotMultipleRoles()) locked="locked"

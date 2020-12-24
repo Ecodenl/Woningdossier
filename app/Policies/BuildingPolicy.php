@@ -58,23 +58,6 @@ class BuildingPolicy
     }
 
     /**
-     * Determine if the user can add roles to the building's user
-     *
-     * @param User $user
-     * @param Building $building
-     *
-     * @return bool
-     */
-    public function updateRoles(User $user, Building $building)
-    {
-        if ($user->id == $building->user_id || $user->hasRoleAndIsCurrentRole('coach')) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Determine if its possible / authorized to talk to a resident.
      *
      * Its possible when there is 1 public message from the resident itself.

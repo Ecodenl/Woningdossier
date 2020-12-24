@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation;
 
-use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
-use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
 
 class MessagesController extends Controller

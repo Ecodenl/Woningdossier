@@ -27,6 +27,11 @@ class BuildingPolicy
 
     public function edit(User $user, Building $building)
     {
+        // While a user is allowed to see his own stuff, he is not allowed to do anything in it.
+        if ($user->id === $building->user_id) {
+            return false;
+        }
+
         return $user->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']);
     }
 

@@ -107,8 +107,8 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="role-select">@lang('cooperation/admin/buildings.show.role.label')</label>
-                        <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled
-                                @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
+                        <select @cannot('update-roles', $building) disabled @endcannot
+                                class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                             @foreach($roles as $role)
                                 <option @if($user->hasNotMultipleRoles()) locked="locked"
                                         @endif @if($user->hasRole($role)) selected="selected"

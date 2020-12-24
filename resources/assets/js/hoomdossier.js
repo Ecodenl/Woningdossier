@@ -2,26 +2,20 @@
 var beenPolled = false;
 
 // function to update the total unread message badge
-function updateTotalUnreadMessageCount()
-{
+function updateTotalUnreadMessageCount() {
     $.ajax({
         url: window.location.origin + '/messages/count',
         type: "GET",
         success: function (response) {
-            if (response.showCount) {
-
-                if (response.count === 0) {
-                    $('#total-unread-message-count').removeClass('badge-primary')
-                } else {
-                    $('#total-unread-message-count').addClass('badge-primary')
-                }
-                $('#total-unread-message-count').html(response.count);
+            if (response.count === 0) {
+                $('#total-unread-message-count').removeClass('badge-primary')
             } else {
-                $('#total-unread-message-count').html('<i class="glyphicon glyphicon-remove"></i>')
+                $('#total-unread-message-count').addClass('badge-primary')
             }
+            $('#total-unread-message-count').html(response.count);
         },
         statusCode: {
-            401: function(){
+            401: function () {
                 // Redirec the to the login page.
                 window.location.href = '/login';
             }
@@ -57,7 +51,7 @@ function hoomdossierRound(value, bucket) {
     return 0;
 };
 
-function hoomdossierNumberFormat(value, locale, decimals){
+function hoomdossierNumberFormat(value, locale, decimals) {
     if (value !== null) {
         if (typeof value === "string") {
             value = parseFloat(value);

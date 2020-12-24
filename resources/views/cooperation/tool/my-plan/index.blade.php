@@ -297,9 +297,7 @@
                         // only when its not done yet, otherwise on every change it will scroll to the download section
                         if (!pageHasAlreadyBeenScrolledToDownloadSection && window.location.hash.length > 0) {
                             // we will have to do this after the change, otherwise it will be scrolled to the download section. And then the personal plan appends and poof its gone.
-                            $('html, body').animate({
-                                scrollTop: $(window.location.hash).offset().top
-                            }, 'slow');
+                            $("html, body").animate({ scrollTop: $(document).height() }, "slow");
                         }
 
                         pageHasAlreadyBeenScrolledToDownloadSection = true;

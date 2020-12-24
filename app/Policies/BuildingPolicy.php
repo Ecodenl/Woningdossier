@@ -37,9 +37,9 @@ class BuildingPolicy
      */
     public function show(User $user, Building $building)
     {
-        if ($building->id === HoomdossierSession::getBuilding(true)->id) {
-            return false;
-        }
+//        if ($building->id === HoomdossierSession::getBuilding(true)->id) {
+//            return false;
+//        }
         if ($user->hasRoleAndIsCurrentRole('coach')) {
             // get the buildings the user is connected to.
             $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($user);

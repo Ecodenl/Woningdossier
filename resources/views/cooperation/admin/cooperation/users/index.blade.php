@@ -35,8 +35,6 @@
 
                                 $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
                                 $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);
-
-                                $userIsAuthUser = $user->id == \App\Helpers\Hoomdossier::user()->id;
                             ?>
                             <tr>
                                 <td data-sort="{{$userCreatedAtStrotime}}">
@@ -44,13 +42,9 @@
                                     </td>
                                     <td>{{$user->getFullName()}}</td>
                                     <td>
-                                        @if($userIsAuthUser)
-                                            <p>{{$building->street}} {{$building->number}} {{$building->extension}}</p>
-                                        @else
-                                            <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
-                                                {{$building->street}} {{$building->number}} {{$building->extension}}
-                                            </a>
-                                        @endif
+                                        <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
+                                            {{$building->street}} {{$building->number}} {{$building->extension}}
+                                        </a>
                                     </td>
                                     <td>{{$building->postal_code}}</td>
                                     <td>

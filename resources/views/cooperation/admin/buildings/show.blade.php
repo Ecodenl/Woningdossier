@@ -124,13 +124,13 @@
 
         <ul class="nav nav-tabs">
 
-            @can('talk-to-resident', [$building])
-                <li @if(session('fragment') == 'messages-intern') class="active" @endif>
-                    <a data-toggle="tab" href="#messages-intern">
-                        @lang('cooperation/admin/buildings.show.tabs.messages-intern.title')
-                    </a>
-                </li>
+            <li @if(session('fragment') == 'messages-intern') class="active" @endif>
+                <a data-toggle="tab" href="#messages-intern">
+                    @lang('cooperation/admin/buildings.show.tabs.messages-intern.title')
+                </a>
+            </li>
 
+            @can('talk-to-resident', [$building])
                 <li @if(session('fragment') == 'messages-public' || empty(session('fragment'))) class="active" @endif>
                     <a data-toggle="tab" href="#messages-public">
                         @if($user->retrievesNotifications(\App\Models\NotificationType::PRIVATE_MESSAGE))

@@ -27,9 +27,11 @@ class PrivateMessagePolicy
         // When a user is a resident and admin, we want to deny them.
         // this is because: a resident could be sending a message to the cooperation
         // he switches to coordinator, sees an unread message, but cant open it because a coordinator cant edit his own building.
-        if ($user->hasRoleAndIsCurrentRole('resident') && $user->hasMultipleRoles()) {
-            return false;
-        }
+
+        // Currently not the wanted behaviour
+//        if ($user->hasRoleAndIsCurrentRole('resident') && $user->hasMultipleRoles()) {
+//            return false;
+//        }
         return true;
     }
 

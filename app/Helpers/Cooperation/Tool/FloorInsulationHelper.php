@@ -104,7 +104,7 @@ class FloorInsulationHelper extends ToolHelper
 
         $elementData = $this->getValues('element');
 
-        if (array_key_exists($floorInsulationElement->id, $elementData)) {
+        if (array_key_exists($floorInsulationElement->id, $elementData) && $this->getValues('building_elements.extra.has_crawlspace') !== "no") {
 
             $floorInsulationValue = ElementValue::where('element_id', $floorInsulationElement->id)
                 ->where('id', $elementData[$floorInsulationElement->id])

@@ -80,7 +80,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         StepDataHasBeenChanged::class => [
             RecalculateToolForUserListener::class,
-//            StepDataHasBeenChangedListener::class,
+            StepDataHasBeenChangedListener::class,
         ],
         UserChangedHisEmailEvent::class => [
             SetOldEmailListener::class,

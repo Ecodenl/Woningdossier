@@ -2147,6 +2147,10 @@ table thead.lead {
   font-size: 16px;
 }
 
+table thead th {
+  text-align: left;
+}
+
 table tbody {
   background-color: #ffffff;
 }

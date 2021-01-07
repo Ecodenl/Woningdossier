@@ -49,7 +49,7 @@ class UserReportController extends Controller
 
         $userActionPlanAdvices = UserActionPlanAdviceService::getPersonalPlan($user, $inputSource);
 
-        // we dont wat the actual advices, we have to show them in a different way
+        // we don't want the actual advices, we have to show them in a different way
         $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
         // full report for a user

@@ -61,6 +61,10 @@
         $(document).ready(function () {
             $('table').DataTable({
                 order: [[ 0, "desc" ]],
+                columnDefs: [
+                    { responsivePriority: 1, targets: 1 },
+                    { responsivePriority: 2, targets: 5 }
+                ]
             });
         })
     </script>

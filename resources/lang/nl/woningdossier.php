@@ -357,12 +357,12 @@ return [
 
                         'table' => [
                             'columns' => [
-                                'most-recent-message-date' => 'Meest recente ontvangst datum',
+                                'most-recent-message-date' => 'Ontvangst datum',
                                 'sender-name' => 'Verzender',
                                 'street-house-number' => 'Straat en huisnummer',
                                 'zip-code' => 'Postcode',
                                 'city' => 'Stad',
-                                'unread-messages' => 'Aantal ongelezen berichten',
+                                'unread-messages' => 'Ongelezen',
                             ],
                         ],
                     ],

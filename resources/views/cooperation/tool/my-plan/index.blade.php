@@ -163,7 +163,7 @@
             )
         }
 
-        // enable it, remove the disable srtuff
+        // enable it, remove the disable stuff
         function enableGenerateReportButton() {
             pdfReportButton.removeAttr('disabled').removeAttr('title').prop('type', 'submit').addClass('btn-primary').removeClass('btn-warning');
             pdfReportButton.find('span').remove();

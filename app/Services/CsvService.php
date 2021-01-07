@@ -17,6 +17,7 @@ use App\Models\QuestionOption;
 use App\Models\Role;
 use App\Models\Step;
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 class CsvService
@@ -91,7 +92,7 @@ class CsvService
             // for each user reset the input source back to the base input source.
             $inputSourceForDump = $inputSource;
 
-            // well in every case there is a uitzondering op de regel
+            // well in every case there is an exception on the rule
             // normally we would pick the given input source
             // but when coach input is available we use the coach input source for that particular user
             // coach input is available when he has completed the general data step
@@ -102,17 +103,16 @@ class CsvService
             /** @var Building $building */
             $building = $user->building;
 
-
             $createdAt = optional($user->created_at)->format('Y-m-d');
             //$buildingStatus      = BuildingCoachStatus::getCurrentStatusForBuildingId($building->id);
-            $buildingStatus = $building->getMostRecentBuildingStatus()->status->name;
+            $mostRecentStatus = $building->getMostRecentBuildingStatus();
+            $buildingStatus = $mostRecentStatus->status->name;
             $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
             $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
-            $connectedCoachNames = [];
-            // get the names from the coaches and add them to a array
-            foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
-                array_push($connectedCoachNames, User::find($coachId)->getFullName());
-            }
+            $connectedCoachNames = User::findMany($connectedCoaches->pluck('coach_id'))
+                ->map(function ($user) {
+                    return $user->getFullName();
+                })->toArray();
             // implode it.
             $connectedCoachNames = implode($connectedCoachNames, ', ');
 
@@ -136,7 +136,6 @@ class CsvService
             $buildYear = $buildingFeatures->build_year ?? '';
             $exampleBuilding = optional($building->exampleBuilding)->isSpecific() ? $building->exampleBuilding->name : '';
 
-            $mostRecentStatus = $building->getMostRecentBuildingStatus();
             $appointmentDate = optional($mostRecentStatus->appointment_date)->format('Y-m-d');
 
             if ($anonymize) {
@@ -322,7 +321,7 @@ class CsvService
                         ->where('questionnaires.id', $questionnaire->id)
                         ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
                         // this may cause weird results, but meh
-                         ->whereNull('questions.deleted_at')
+                        ->whereNull('questions.deleted_at')
                         ->leftJoin('translations', function ($leftJoin) {
                             $leftJoin->on('questions.name', '=', 'translations.key')
                                 ->where('language', '=', app()->getLocale());
@@ -344,7 +343,7 @@ class CsvService
                     if ($currentQuestion instanceof Question) {
                         // when the question has options, the answer is imploded.
                         if ($currentQuestion->hasQuestionOptions()) {
-                            if (! empty($answer)) {
+                            if (!empty($answer)) {
                                 // this will contain the question option ids
                                 // and filter out the empty answers.
                                 $answers = array_filter(explode('|', $answer));
@@ -379,12 +378,42 @@ class CsvService
      */
     public static function totalReport(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
     {
-        $users = $cooperation->users()->whereHas('buildings')->get();
+        $generalDataStep = Step::findByShort('general-data');
+        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+//        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $residentInputSource = $inputSource;
 
-        $rows = [];
+
+        $users = $cooperation->users()
+            ->with(['building' => function ($query) use ($coachInputSource, $generalDataStep) {
+                $query->with(['completedSteps' => function ($query) use ($coachInputSource, $generalDataStep) {
+                    $query->forInputSource($coachInputSource)->where('step_id', $generalDataStep->id);
+                }]);
+            }])
+            ->has('buildings')
+            ->get();
+
+
+        $coachIds = [];
+        $residentIds = [];
+        // We first check each user
+        foreach ($users as $user) {
+            // we eager loaded the completed steps from the coach, so if its not empty we use that
+            if ($user->building->completedSteps->isNotEmpty()) {
+                $coachIds[] = $user->id;
+            } else {
+                $residentIds[] = $user->id;
+            }
+        }
+
+        // We separate users based on ID and eager load the collection with most relations;
+        $residents = UserService::eagerLoadUserData($users->whereIn('id', $residentIds), $residentInputSource);
+        $coaches = UserService::eagerLoadUserData($users->whereIn('id', $coachIds),  $coachInputSource);
 
         $headers = DumpService::getStructureForTotalDumpService($anonymized);
 
+        // Then we merge
+        $users = $residents->merge($coaches);
         $rows[] = $headers;
 
         /**
@@ -392,26 +421,15 @@ class CsvService
          *
          * @var User $user
          */
-        $generalDataStep = Step::findByShort('general-data');
-        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
-
         foreach ($users as $user) {
-            // for each user reset the input source back to the base input source.
-            $inputSourceForDump = $inputSource;
+            $inputSource= $user->building->buildingFeatures->inputSource;
 
-            // well in every case there is a uitzondering op de regel
-            // normally we would pick the given input source
-            // but when coach input is available we use the coach input source for that particular user
-            // coach input is available when he has completed the general data step
-            if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
-                $inputSourceForDump = $coachInputSource;
-            }
-
-            $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSourceForDump, $anonymized, false)['user-data'];
+            $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
         }
 
         return $rows;
     }
+
 
     protected static function formatFieldOutput($column, $value, $maybe1, $maybe2)
     {
@@ -422,7 +440,7 @@ class CsvService
             return $value;
         }
 
-        if (! is_numeric($value)) {
+        if (!is_numeric($value)) {
             return $value;
         }
 
@@ -444,9 +462,9 @@ class CsvService
      * Format the output of the given column and value.
      *
      * @param string $column
-     * @param mixed  $value
-     * @param int    $decimals
-     * @param bool   $shouldRound
+     * @param mixed $value
+     * @param int $decimals
+     * @param bool $shouldRound
      *
      * @return float|int|string
      */
@@ -484,7 +502,7 @@ class CsvService
      */
     protected static function isYear($column, $extraValue = '')
     {
-        if (! is_null($column)) {
+        if (!is_null($column)) {
             if (false !== stristr($column, 'year')) {
                 return true;
             }

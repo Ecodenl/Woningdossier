@@ -92,7 +92,7 @@ $(document).ready(function () {
 
 });
 
-$(".has-address-data, #postal_code #number, #house_number_extension").focusout(function () {
+$("#postal_code, #number, #house_number_extension").focusout(function () {
     var postalCode = $(".has-address-data #postal_code");
     var number = $(".has-address-data #number");
     var houseNumberExtension = $(".has-address-data #house_number_extension");
@@ -128,8 +128,9 @@ $(".has-address-data, #postal_code #number, #house_number_extension").focusout(f
                 possibleWrongPostalCode.hide();
             }
 
-            street.val(address.street);
+            // this way the user can fill in the street and will only be forced with api data if it actually returns something
             if (address.street !== "") {
+                street.val(address.street);
                 number.val(address.number);
                 houseNumberExtension.val(address.house_number_extension);
             }

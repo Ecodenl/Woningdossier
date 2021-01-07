@@ -25,7 +25,7 @@ class PrivateMessageService
      */
     public static function create(Request $request)
     {
-        $message = $request->get('message', '');
+        $message = strip_tags($request->get('message', ''));
 
         $isPublic = $request->get('is_public', true);
         $buildingId = $request->get('building_id', '');

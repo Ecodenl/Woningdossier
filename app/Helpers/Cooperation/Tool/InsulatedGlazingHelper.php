@@ -25,7 +25,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-class InsulatingGlazingHelper extends ToolHelper
+class InsulatedGlazingHelper extends ToolHelper
 {
 
     public function saveValues(): ToolHelper
@@ -127,6 +127,7 @@ class InsulatingGlazingHelper extends ToolHelper
 
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($data);
+                    $actionPlanAdvice->input_source_id = $this->inputSource->id;
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->measureApplication()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);
@@ -145,6 +146,7 @@ class InsulatingGlazingHelper extends ToolHelper
                 $measureApplication = MeasureApplication::where('short', $measureShort)->first();
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
+                    $actionPlanAdvice->input_source_id = $this->inputSource->id;
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->measureApplication()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);

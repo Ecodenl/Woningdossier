@@ -22,7 +22,6 @@
                         @foreach($buildings as $building)
                             <?php
                                $mostRecentMessage = $building->privateMessages->last();
-                               $userIsAuthUser = $building->user->id == \App\Helpers\Hoomdossier::user()->id;
                             ?>
                             <tr>
                                 <td data-sort="{{strtotime($mostRecentMessage->created_at->format('d-m-Y H:i'))}}">
@@ -30,13 +29,9 @@
                                 </td>
                                 <td>{{$mostRecentMessage->getSender()}}</td>
                                 <td>
-                                    @if($userIsAuthUser)
-                                        <p>{{$building->street}} {{$building->number}} {{$building->extension}}</p>
-                                    @else
                                     <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
                                         {{$building->street}} {{$building->number}} {{$building->extension}}
                                     </a>
-                                    @endif
                                 </td>
                                 <td>{{$building->postal_code}}</td>
                                 <td>
@@ -61,6 +56,10 @@
         $(document).ready(function () {
             $('table').DataTable({
                 order: [[ 0, "desc" ]],
+                columnDefs: [
+                    { responsivePriority: 1, targets: 1 },
+                    { responsivePriority: 2, targets: 5 }
+                ]
             });
         })
     </script>

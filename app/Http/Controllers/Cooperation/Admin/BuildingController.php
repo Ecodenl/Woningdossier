@@ -11,6 +11,7 @@ use App\Models\Log;
 use App\Models\PrivateMessage;
 use App\Models\Status;
 use App\Models\User;
+use App\Services\BuildingCoachStatusService;
 use Spatie\Permission\Models\Role;
 
 class BuildingController extends Controller
@@ -38,7 +39,7 @@ class BuildingController extends Controller
         }
 
         $building = $user->building;
-        $this->authorize('show', [$building, $cooperation]);
+        $this->authorize('show', [$building]);
 
         $buildingId = $building->id;
 
@@ -51,7 +52,7 @@ class BuildingController extends Controller
 
         $statuses = Status::ordered()->get();
 
-        $coachesWithActiveBuildingCoachStatus = BuildingCoachStatus::getConnectedCoachesByBuildingId($buildingId);
+        $coachesWithActiveBuildingCoachStatus = BuildingCoachStatusService::getConnectedCoachesByBuildingId($buildingId);
 
         $mostRecentStatus = $building->getMostRecentBuildingStatus();
 

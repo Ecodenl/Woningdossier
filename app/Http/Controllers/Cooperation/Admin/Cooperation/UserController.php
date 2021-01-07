@@ -86,7 +86,6 @@ class UserController extends Controller
                 'from_user' => $user->getFullName(),
                 'to_cooperation_id' => $cooperation->id,
                 'building_id' => $building->id,
-                'request_type' => 'user-created-by-cooperation',
                 'allow_access' => true,
             ]
         );

@@ -14,6 +14,10 @@ use Illuminate\Http\Request;
 
 class PrivateMessageService
 {
+    // This will be used to determine the prefixes on the messages;
+    const REQUEST_TYPE_COACH_CONVERSATION = 'coach-conversation';
+    const REQUEST_TYPE_MEASURE = 'other';
+
     /**
      * Create a new message between a user and user.
      *
@@ -42,7 +46,7 @@ class PrivateMessageService
                 'to_cooperation_id' => HoomdossierSession::getCooperation(),
                 'from_user' => Hoomdossier::user()->getFullName(),
                 'from_user_id' => Hoomdossier::user()->id,
-                'message' => $message,
+                'message' => strip_tags($message),
                 'building_id' => $buildingId,
             ];
 
@@ -60,17 +64,27 @@ class PrivateMessageService
         return true;
     }
 
+
+    public static function getMessagePrefix(string $requestType)
+    {
+        $requestTypesThatAreTranslatable = array_flip([
+            self::REQUEST_TYPE_COACH_CONVERSATION,
+            self::REQUEST_TYPE_MEASURE,
+        ]);
+
+        return isset($requestTypesThatAreTranslatable[$requestType]) ? __('conversation-requests.request-types.'.$requestType) : null;
+    }
+
     /**
      * Method to create a conversation request for a building on a user.
      */
     public static function createConversationRequest(Building $building, User $user, Request $request)
     {
-        $action = $request->get('action', '');
+
         $message = strip_tags($request->get('message', ''));
         $measureApplicationName = $request->get('measure_application_name', null);
-        $allowAccess = 'on' == $request->get('allow_access', '');
-        $requestType = PrivateMessage::getTranslationForRequestType($action);
-        $message = is_null($measureApplicationName) ? "<b>{$requestType}: </b>$message" : "<b>{$measureApplicationName}: </b>{$message}";
+        $messagePrefix = self::getMessagePrefix($request->get('request_type', ''));
+        $message = is_null($measureApplicationName) ? "<b>{$messagePrefix}: </b>$message" : "<b>{$measureApplicationName}: </b>{$message}";
 
         PrivateMessage::create(
             [
@@ -81,14 +95,7 @@ class PrivateMessageService
                 'message'           => $message,
                 'to_cooperation_id' => $user->cooperation->id,
                 'building_id'       => $building->id,
-                'request_type'      => $action,
-                'allow_access'      => $allowAccess,
             ]
         );
-
-        // if the user allows access to his building on the request, log the activity.
-        if ($allowAccess) {
-            UserAllowedAccessToHisBuilding::dispatch($user->building);
-        }
     }
 }

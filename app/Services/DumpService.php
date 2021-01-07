@@ -13,7 +13,7 @@ use App\Calculations\WallInsulation;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Cooperation\Tool\HeaterHelper;
 use App\Helpers\Cooperation\Tool\HighEfficiencyBoilerHelper;
-use App\Helpers\Cooperation\Tool\InsulatingGlazingHelper;
+use App\Helpers\Cooperation\Tool\InsulatedGlazingHelper;
 use App\Helpers\Cooperation\Tool\RoofInsulationHelper;
 use App\Helpers\Cooperation\Tool\SolarPanelHelper;
 use App\Helpers\Cooperation\Tool\VentilationHelper;
@@ -193,18 +193,13 @@ class DumpService
         $building = $user->building;
         $buildingId = $building->id;
 
-        // normally we could use the PrivateMessage::allowedAccess, but we need to query on the to_cooperation_id.
-        $allowedAccess = PrivateMessage::conversation($building->id)
-                ->accessAllowed()
-                ->where('to_cooperation_id', $cooperation->id)
-                ->first() instanceof PrivateMessage;
 
         $createdAt = optional($user->created_at)->format('Y-m-d');
         $mostRecentStatus = $building->getMostRecentBuildingStatus();
         $buildingStatus = $mostRecentStatus->status->name;
 
-        $allowAccess = $allowedAccess ? 'Ja' : 'Nee';
-        $connectedCoaches = BuildingCoachStatus::getConnectedCoachesByBuildingId($building->id);
+        $allowAccess = $user->allowedAccess() ? 'Ja' : 'Nee';
+        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
         $connectedCoachNames = User::findMany($connectedCoaches->pluck('coach_id'))
             ->map(function ($user) {
                 return $user->getFullName();
@@ -501,7 +496,7 @@ class DumpService
                                 // total sun panels is stored in same column, but need to be treated as a number
                                 if ('true' == $answer && 'total-sun-panels' !== $buildingService->service->short) {
                                     $answer = 'Ja';
-                                } else if ($buildingService->service->short !== 'total-sun-panels') {
+                                } else if ($buildingService->service->short !== 'total-sun-panels' && 'false' == $answer ) {
                                     $answer = 'Nee';
                                 }
 
@@ -676,7 +671,7 @@ class DumpService
         );
 
         $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit,
-            (new InsulatingGlazingHelper($user, $inputSource))
+            (new InsulatedGlazingHelper($user, $inputSource))
                 ->createValues()
                 ->getValues());
 

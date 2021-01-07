@@ -2,6 +2,9 @@
 
 @section('step_title', \App\Helpers\Translation::translate('my-plan.title.title'))
 
+@push('css')
+    <link rel="stylesheet" href="{{asset('css/jquery.toast.min.css')}}">
+@endpush
 @section('page_class', 'page-my-plan')
 
 @section('step_content')
@@ -120,6 +123,7 @@
 
 
 @push('js')
+    <script src="{{asset('js/jquery.toast.min.js')}}"></script>
     <script>
 
 
@@ -178,11 +182,12 @@
         });
 
         $(document).ready(function () {
+
             var pageHasAlreadyBeenScrolledToDownloadSection = false;
 
-            const MEASURE = '{{\App\Models\PrivateMessage::REQUEST_TYPE_MEASURE}}';
+            const MEASURE = '{{\App\Services\PrivateMessageService::REQUEST_TYPE_MEASURE}}';
             // build the base route, we can replace te params later on.
-            var conversationRequestRoute = '{{route('cooperation.conversation-requests.index', ['action' => 'action', 'measureApplicationShort' => 'measure_application_short'])}}';
+            var conversationRequestRoute = '{{route('cooperation.conversation-requests.index', ['requestType' => 'measure', 'measureApplicationShort' => 'measure_application_short'])}}';
 
             if (window.location.hash !== "") {
                 pollForFileProcessing();
@@ -246,7 +251,7 @@
                                         "</a>" +
                                         "</td>" +
                                         "<td>" + stepData.measure + "</td><td>&euro; " + Math.round(stepData.costs).toLocaleString('{{ app()->getLocale() }}') + "</td><td>&euro; " + savingMoney + "</td><td>" +
-                                        "<a href='" + conversationRequestRoute.replace('action', MEASURE).replace('measure_application_short', stepData.measure_short) + "' class='take-action btn btn-default' type='button'>@lang('my-plan.columns.take-action.title')</a></td></tr>";
+                                        "<a href='" + conversationRequestRoute.replace('action', MEASURE).replace('measure_application_short', stepData.measure_short) + "' class='take-action btn btn-default' type='button'>@lang('my-plan.columns.take-action.title')</a> </td></tr>";
                                     table += " <tr class='collapse' id='more-personal-plan-info-" + slug + "-" + i + "-" + slugYear + "' > <td colspan='1'></td><td colspan=''> <strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-gas.title') }}:</strong> <br><strong>{{ \App\Helpers\Translation::translate('my-plan.columns.savings-electricity.title') }}:</strong> </td><td>" + Math.round(stepData.savings_gas).toLocaleString('{{ app()->getLocale() }}') + " m<sup>3</sup> <br>" + Math.round(stepData.savings_electricity).toLocaleString('{{ app()->getLocale() }}') + " kWh </td><td colspan='1'></td></tr>";
                                 });
 
@@ -282,19 +287,13 @@
                         console.log(data);
                         @endif
 
-                        $('.take-action').click(function () {
-                            window.location.href = '{{route('cooperation.conversation-requests.index', ['cooperation' => $cooperation])}}'
-                        });
-
                         // checkCoupledMeasuresAndMaintenance();
 
 
                         // only when its not done yet, otherwise on every change it will scroll to the download section
                         if (!pageHasAlreadyBeenScrolledToDownloadSection && window.location.hash.length > 0) {
                             // we will have to do this after the change, otherwise it will be scrolled to the download section. And then the personal plan appends and poof its gone.
-                            $('html, body').animate({
-                                scrollTop: $(window.location.hash).offset().top
-                            }, 'slow');
+                            $("html, body").animate({ scrollTop: $(document).height() }, "slow");
                         }
 
                         pageHasAlreadyBeenScrolledToDownloadSection = true;

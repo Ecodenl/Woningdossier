@@ -54,7 +54,7 @@
     @endif
 @endforeach
 
-{{--@include('cooperation.pdf.user-report.parts.outro')--}}
+@include('cooperation.pdf.user-report.parts.outro')
 
 
 </html>

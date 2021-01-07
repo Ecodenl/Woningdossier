@@ -1,3 +1,4 @@
+@component('cooperation.pdf.components.new-page')
 <div class="container">
 
     @include('cooperation.pdf.user-report.parts.measure-page.step-intro')
@@ -9,7 +10,8 @@
             <?php
             $element = \App\Models\Element::findByShort('crawlspace');
             // best bool comparison ever
-            $hasNoCrawlspace = $dataForSubStep["element.{$element->id}.extra.has_crawlspace"] === "Nee"
+            $hasNoCrawlspace = $dataForSubStep["element.{$element->id}.extra.has_crawlspace"] === "Nee";
+            $hasNoCrawlspaceAccess = $dataForSubStep["element.{$element->id}.extra.access"] === "Nee";
             ?>
             @foreach ($dataForSubStep as $translationKey => $value)
                 <?php
@@ -37,6 +39,10 @@
         @if($hasNoCrawlspace)
             <p style="color: darkgray">{{ \App\Helpers\Translation::translate('floor-insulation.has-crawlspace.no-crawlspace.title') }}</p>
         @endif
+        {{-- this messages is only shown when crawlspace is present but not accessible  --}}
+        @if($hasNoCrawlspaceAccess && !$hasNoCrawlspace)
+            <p style="color: darkgray">{{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.no-access.title')}}</p>
+        @endif
     </div>
 
     @include('cooperation.pdf.user-report.parts.measure-page.insulation-advice')
@@ -51,3 +57,4 @@
         ])
     @endif
 </div>
+@endcomponent

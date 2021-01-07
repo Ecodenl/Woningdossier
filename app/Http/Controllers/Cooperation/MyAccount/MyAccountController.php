@@ -25,11 +25,9 @@ class MyAccountController extends Controller
 
         // for the access parts
         $buildingPermissions = BuildingPermission::where('building_id', $building->id)->get();
-        /* @var Collection $messages */
-        $messages = PrivateMessage::public()->conversation($building->id)->get();
 
         return view('cooperation.my-account.index', compact(
-            'user', 'account', 'building', 'notificationIntervals', 'notificationSettings', 'buildingPermissions', 'messages'
+            'user', 'account', 'building', 'notificationIntervals', 'notificationSettings', 'buildingPermissions'
         ));
     }
 }

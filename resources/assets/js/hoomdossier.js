@@ -7,6 +7,11 @@ function updateTotalUnreadMessageCount() {
         url: window.location.origin + '/messages/count',
         type: "GET",
         success: function (response) {
+            if (response.count === 0) {
+                $('#total-unread-message-count').removeClass('badge-primary')
+            } else {
+                $('#total-unread-message-count').addClass('badge-primary')
+            }
             $('#total-unread-message-count').html(response.count);
         },
         statusCode: {

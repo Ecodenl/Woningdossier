@@ -28,6 +28,8 @@ class MessagesController extends Controller
             ->get();
 
         // if no private message exist redirect them to the conversation request create
+        // currently (as of 30-10-2020), this shouldnt be needed anymore.
+        // this is on register a private message will be created.
         if (! $privateMessages->first() instanceof PrivateMessage) {
             return redirect()->route('cooperation.conversation-requests.index');
         }
@@ -38,7 +40,6 @@ class MessagesController extends Controller
         // Only residents read this box
         $resident = InputSource::findByShort(InputSource::RESIDENT_SHORT);
         PrivateMessageViewService::markAsReadByUser($privateMessages, Hoomdossier::user(), $resident);
-
         //PrivateMessageViewService::setRead($privateMessages);
 
         return view('cooperation.my-account.messages.edit', compact('privateMessages', 'buildingId', 'groupParticipants'));

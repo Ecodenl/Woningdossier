@@ -5,11 +5,10 @@ namespace App\Listeners;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
-use App\Models\BuildingCoachStatus;
-use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
+use App\Services\BuildingCoachStatusService;
 
 class PrivateMessageReceiverListener
 {
@@ -36,7 +35,7 @@ class PrivateMessageReceiverListener
         $buildingFromOwner = Building::find($event->privateMessage->building_id);
         $privateMessage = PrivateMessage::find($event->privateMessage->id);
 
-        $connectedCoachesForBuilding = BuildingCoachStatus::getConnectedCoachesByBuildingId($event->privateMessage->building_id);
+        $connectedCoachesForBuilding = BuildingCoachStatusService::getConnectedCoachesByBuildingId($event->privateMessage->building_id);
 
         // now we create for every group participant a privatemessageview
         foreach ($groupParticipants as $groupParticipant) {

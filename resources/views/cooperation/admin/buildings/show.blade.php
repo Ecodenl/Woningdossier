@@ -107,8 +107,8 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="role-select">@lang('cooperation/admin/buildings.show.role.label')</label>
-                        <select @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled
-                                @endif class="form-control" name="user[roles]" id="role-select" multiple="multiple">
+                        <select @if($building->id == \App\Helpers\HoomdossierSession::getBuilding() || Hoomdossier::user()->hasRoleAndIsCurrentRole('coach')) disabled @endif
+                                class="form-control" name="user[roles]" id="role-select" multiple="multiple">
                             @foreach($roles as $role)
                                 <option @if($user->hasNotMultipleRoles()) locked="locked"
                                         @endif @if($user->hasRole($role)) selected="selected"
@@ -130,7 +130,7 @@
                 </a>
             </li>
 
-            @can('talk-to-resident', [$building, $cooperation])
+            @can('talk-to-resident', [$building])
                 <li @if(session('fragment') == 'messages-public' || empty(session('fragment'))) class="active" @endif>
                     <a data-toggle="tab" href="#messages-public">
                         @if($user->retrievesNotifications(\App\Models\NotificationType::PRIVATE_MESSAGE))
@@ -161,7 +161,7 @@
             <div id="messages-intern" class="tab-pane fade @if(session('fragment') == 'messages-intern' ) in active @endif">
                 @include('cooperation.admin.buildings.parts.message-box', ['messages' => $privateMessages, 'building' => $building, 'isPublic' => false])
             </div>
-            @can('talk-to-resident', [$building, $cooperation])
+            @can('talk-to-resident', [$building])
                 {{--public messages / between the resident and cooperation--}}
                 <div id="messages-public" class="tab-pane fade @if(session('fragment') == 'messages-public' || empty(session('fragment'))) in active @endif">
                     @include('cooperation.admin.buildings.parts.message-box', ['messages' => $publicMessages, 'building' => $building, 'isPublic' => true])

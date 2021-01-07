@@ -1,11 +1,6 @@
 @extends('cooperation.layouts.app')
 
-@push('css')
-    <link rel="stylesheet" href="{{asset('css/select2/select2.min.css')}}">
-@endpush
 @section('content')
-    <input type="hidden" id="user-did-not-allow-access-to-his-building" value="{{$userDidNotAllowAccessToBuilding}}">
-    <input type="hidden" value="{{$userAlreadyHadContactWithCooperation}}" id="user-already-had-contact-with-cooperation">
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
@@ -15,30 +10,11 @@
                             {{ csrf_field() }}
 
                             <h2>{{$title}}</h2>
+                            @isset($measureApplicationName)
                             <input type="hidden" value="{{ $measureApplicationName }}" name="measure_application_name">
+                            @endisset
+                            <input type="hidden" name="request_type" value="{{$requestType}}">
 
-                            @if($shouldShowOptionList)
-                            <div class="form-group {{ $errors->has('action') ? ' has-error' : '' }}">
-                                <div class="col-sm-12">
-                                    <select name="action" id="take-action" class="form-control">
-                                        {{--A empty option is needed to allow the placeholder to be shown, as long as the value is empty select2 will not display it. --}}
-                                        <option value="">-</option>
-                                        @foreach(__('conversation-requests.request-types') as $requestType => $requestTypeTranslation)
-                                            <option @if(old('action', $requestType) == $selectedOption) selected="selected" @endif value="{{ $requestType }}">
-                                                {{$requestTypeTranslation}}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @if ($errors->has('action'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('action') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-                            @else
-                                <input type="hidden" name="action" value="{{$selectedOption}}">
-                            @endif
 
                             <div class="form-group{{ $errors->has('message') ? ' has-error' : '' }}">
                                 <div class="col-sm-12">
@@ -52,22 +28,7 @@
                                     @endif
                                 </div>
                             </div>
-                            @if($userDidNotAllowAccessToBuilding || !$userAlreadyHadContactWithCooperation)
-                            <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
-                                <div class="col-sm-12">
-                                    <label for="allow_access">
-                                        <input id="allow_access" name="allow_access" type="checkbox" @if(old('allow_access') && old('allow_access') == 'on')checked="checked"@endif>
-                                        @lang('conversation-requests.index.form.allow_access', ['cooperation' => \App\Models\Cooperation::find(\App\Helpers\HoomdossierSession::getCooperation())->name])
-                                    </label>
-                                    @if ($errors->has('allow_access'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('allow_access') }}</strong>
-                                        </span>
-                                    @endif
-                                    <p>@lang('conversation-requests.index.text')</p>
-                                </div>
-                            </div>
-                            @endif
+
 
                             <div class="form-group">
                                 <div class="col-md-12 ">
@@ -88,31 +49,3 @@
 
     </div>
 @endsection
-
-@push('js')
-    <script src="{{asset('js/select2.js')}}"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var helpPlaceholderText = '@lang('conversation-requests.index.form.selected-option')';
-            console.log(helpPlaceholderText);
-            $('#take-action').select2({
-                allowClear: true,
-                placeholder: helpPlaceholderText
-            });
-
-            // when the form gets submited check if the user agreed with the allow_access
-            // if so submit, else do nothing
-            $('form').on('submit', function (event) {
-                if (!$('input[name=allow_access]').is(':checked') && $('#user-did-not-allow-access-to-his-building').val() && !$('#user-already-had-contact-with-cooperation').val()) {
-
-                    if (!confirm('@lang('conversation-requests.index.form.are-you-sure')')) {
-                        event.preventDefault();
-                        return false;
-                    }
-                }
-            });
-        });
-    </script>
-
-@endpush

@@ -14,19 +14,11 @@
             @endif
         </div>
         <p>
-            <?php
-                $messagesThatMayContainHtml = [
-                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION,
-                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION,
-                    \App\Models\PrivateMessage::REQUEST_TYPE_OTHER,
-                    \App\Models\PrivateMessage::REQUEST_TYPE_MEASURE,
-                ];
-            ?>
-            @if(in_array($privateMessage->request_type, $messagesThatMayContainHtml))
-                {!! $privateMessage->message !!}
-            @else
-                {{ $privateMessage->message }}
-            @endif
+            {{--
+                This may seems to be dangerous (which it somewhat is). But strip_tags is used on the message, without the second param
+                Sometimes a prefix is added which contains html, so we still need to {!!  !!}
+            --}}
+            {!! $privateMessage->message !!}
         </p>
     </div>
 </li>

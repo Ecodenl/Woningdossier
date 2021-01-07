@@ -66,7 +66,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\User::class,
+            'model' => App\Models\Account::class,
         ],
 
         // 'users' => [
@@ -94,7 +94,7 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',
-            'expire' => 60,
+            'expire' => env('AUTH_PASSWORD_RESET_EXPIRE', 43200),
         ],
     ],
 ];

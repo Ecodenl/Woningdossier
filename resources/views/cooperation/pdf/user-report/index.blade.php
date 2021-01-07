@@ -16,11 +16,9 @@
     @include('cooperation.pdf.user-report.parts.front-page')
 </body>
 
-{{--
-    General data is not structured like $reportData
-    So have to create our own order.
---}}
 
+{{--    General data is not structured like $reportData--}}
+{{--    So have to create our own order.--}}
 
 @include('cooperation.pdf.user-report.steps.general-data-page-1', [
     'stepShort' => 'general-data'
@@ -56,7 +54,7 @@
     @endif
 @endforeach
 
-@include('cooperation.pdf.user-report.parts.outro')
+{{--@include('cooperation.pdf.user-report.parts.outro')--}}
 
 
 </html>

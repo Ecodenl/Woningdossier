@@ -49,8 +49,9 @@ class ExampleBuildingContent extends Model
 
     public function getValue($key)
     {
-        // for some weird reason the array get does not work, while it should do the same thing
-        return Arr::dot($this->content)[$key] ?? '';
+        return Arr::get($this->content, $key);
+//        // for some weird reason the array get does not work, while it should do the same thing
+//        return Arr::dot($this->content)[$key] ?? '';
 //        return array_get($this->content, $key);
     }
 }

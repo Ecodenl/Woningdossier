@@ -27,6 +27,7 @@ return [
     ],
     'edit' => [
         'title' => 'Aan het bewerken: :name',
+        'new-warning' => 'Deze data wordt alleen opgeslagen als dit tabblad open is wanneer op "opslaan" geklikt wordt.',
     ],
     'form' => [
         'build-year' => 'Bouwjaar',

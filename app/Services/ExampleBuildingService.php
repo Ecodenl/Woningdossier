@@ -125,6 +125,14 @@ class ExampleBuildingService
                             }
                         }
                     }
+
+                    if ('building_ventilations' == $columnOrTable) {
+                        $building
+                            ->buildingVentilations()
+                            ->forInputSource($inputSource)
+                            ->updateOrCreate(['input_source_id' => $inputSource->id], $values);
+                    }
+
                     if ('service' == $columnOrTable) {
                         // process elements
                         if (is_array($values)) {

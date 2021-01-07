@@ -2,7 +2,6 @@
 
 namespace App\Observers;
 
-use App\Helpers\HoomdossierSession;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Services\UserActionPlanAdviceService;
@@ -28,13 +27,10 @@ class UserActionPlanAdviceObserver
             ->with('interest')
             ->first();
 
-
-
         // when thats available use that.
         if ($userInterestOnMeasureApplication instanceof UserInterest) {
             $userInterest = $userInterestOnMeasureApplication;
         }
-
 
         // Ja op korte termijn, ja op termijn and more informatie
         if ($userInterest->interest->calculate_value <= 3) {

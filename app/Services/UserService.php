@@ -31,7 +31,7 @@ class UserService
                             $query->forInputSource($inputSource)
                                 ->with([
                                     'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
-                                    'contaminatedWallJoints', 'wallJoints'
+                                    'contaminatedWallJoints', 'wallJoints',
                                 ]);
                         },
                         'buildingVentilations' => function ($query) use ($inputSource) {
@@ -57,7 +57,7 @@ class UserService
                         },
                         'currentInsulatedGlazing' => function ($query) use ($inputSource) {
                             $query->forInputSource($inputSource);
-                        }
+                        },
                     ]
                 );
             }, 'energyHabit' => function ($query) use ($inputSource) {
@@ -65,6 +65,7 @@ class UserService
             }]
         );
     }
+
     /**
      * Method to reset a user his file for a specific input source.
      */

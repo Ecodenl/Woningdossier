@@ -49,7 +49,7 @@ class NumberFormatter
      */
     public static function round($number, $bucket = 5)
     {
-        if (!is_numeric($number)) {
+        if (! is_numeric($number)) {
             $number = static::reverseFormat($number);
         }
 
@@ -60,8 +60,9 @@ class NumberFormatter
      * Used to format the given number in a human readable format, mainly used for frontend display.
      *
      * @param $number
-     * @param int $decimals
+     * @param int   $decimals
      * @param false $shouldRoundNumber
+     *
      * @return int|string
      */
     public static function format($number, $decimals = 0, $shouldRoundNumber = false)
@@ -92,10 +93,9 @@ class NumberFormatter
     }
 
     /**
-     *
-     *
      * @param $number
      * @param int $decimals
+     *
      * @return string
      */
     public static function mathableFormat($number, $decimals = 0)

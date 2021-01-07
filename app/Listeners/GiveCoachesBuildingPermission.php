@@ -4,7 +4,6 @@ namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
-use App\Models\BuildingCoachStatus;
 use App\Models\InputSource;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
@@ -42,8 +41,6 @@ class GiveCoachesBuildingPermission
         // first we check if a public conversation exists, if so we need to set the allowed access to true
         // and we need to check if there were "connected" coaches, if so we have to give them building permissions
         if (PrivateMessage::public()->conversation($building->id)->exists()) {
-
-
             // get all the coaches that are currently connected to the building
             $coachesWithAccessToResidentBuildingStatuses = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
 
@@ -55,8 +52,6 @@ class GiveCoachesBuildingPermission
                 );
             }
         } else {
-
-
             $cooperation = HoomdossierSession::getCooperation(true);
 
             // withoutEvents is added in laravel 7, for now this will do.

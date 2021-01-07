@@ -1,11 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
 use App\Models\Building;
-use App\Models\PrivateMessage;
-
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class DropColumnAllowAccessOnPrivateMessagesTable extends Migration
 {
@@ -16,11 +14,9 @@ class DropColumnAllowAccessOnPrivateMessagesTable extends Migration
      */
     public function up()
     {
-
         // first migrate the allow access to the users table.
         $buildings = Building::all();
         foreach ($buildings as $building) {
-
             $pm = DB::table('private_messages')
                 ->where('building_id', $building->id)
                 ->orderBy('created_at')
@@ -28,7 +24,7 @@ class DropColumnAllowAccessOnPrivateMessagesTable extends Migration
                 ->first() instanceof stdClass;
 
             $building->user()->update([
-                'allow_access' => $pm
+                'allow_access' => $pm,
             ]);
         }
 

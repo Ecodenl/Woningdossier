@@ -4,8 +4,6 @@ namespace App\Listeners;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Notification;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class RecalculateToolForUserListener
 {
@@ -16,13 +14,13 @@ class RecalculateToolForUserListener
      */
     public function __construct()
     {
-        //
     }
 
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param object $event
+     *
      * @return void
      */
     public function handle($event)
@@ -39,7 +37,6 @@ class RecalculateToolForUserListener
         ];
 
         if (in_array($event->step->short, $stepsWhichNeedRecalculation)) {
-
             // currently this listener will only be triggered on a event thats dispatched while NOT running in the cli
             // so we can safely access the input source from the session
             Notification::setActive($event->building, HoomdossierSession::getInputSource(true), true);

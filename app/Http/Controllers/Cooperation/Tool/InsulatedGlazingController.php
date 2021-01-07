@@ -73,7 +73,6 @@ class InsulatedGlazingController extends Controller
             'glass-in-lead',
         ];
 
-
         $buildingInsulatedGlazings = [];
         $buildingInsulatedGlazingsForMe = [];
 
@@ -88,13 +87,12 @@ class InsulatedGlazingController extends Controller
                 $currentInsulatedGlazing = $building->currentInsulatedGlazing()->where('measure_application_id', $measureApplication->id)->first();
                 $currentInsulatedGlazingInputs = BuildingInsulatedGlazing::where('measure_application_id', $measureApplication->id)->forMe()->get();
 
-                if (!$currentInsulatedGlazingInputs->isEmpty()) {
+                if (! $currentInsulatedGlazingInputs->isEmpty()) {
                     $buildingInsulatedGlazingsForMe[$measureApplication->id] = $currentInsulatedGlazingInputs;
                 }
                 if ($currentInsulatedGlazing instanceof BuildingInsulatedGlazing) {
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
                 }
-
 
                 // get interests for the measure
                 $measureInterestId = Hoomdossier::getMostCredibleValue(
@@ -124,7 +122,6 @@ class InsulatedGlazingController extends Controller
             'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe', 'buildingPaintworkStatusesOrderedOnInputSourceCredibility'
         ));
     }
-
 
     public function calculate(Request $request)
     {
@@ -175,8 +172,8 @@ class InsulatedGlazingController extends Controller
         $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
         $url = $nextStep['url'];
 
-        if (!empty($nextStep['tab_id'])) {
-            $url .= '#' . $nextStep['tab_id'];
+        if (! empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
         }
 
         return redirect($url);

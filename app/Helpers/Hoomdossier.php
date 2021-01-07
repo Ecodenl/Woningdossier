@@ -71,11 +71,11 @@ class Hoomdossier
     }
 
     /**
-     * Return the most credible value from a given collection
+     * Return the most credible value from a given collection.
      *
-     * @param Collection $results
      * @param string $column
-     * @param null $default
+     * @param null   $default
+     *
      * @return mixed|null
      */
     public static function getMostCredibleValueFromCollection(Collection $results, $column, $default = null)
@@ -156,9 +156,6 @@ class Hoomdossier
 
     /**
      * Will return a collection ordered on the input source credibility.
-     *
-     * @param Relation $relation
-     * @return Relation
      */
     public static function orderRelationShipOnInputSourceCredibility(Relation $relation): Relation
     {
@@ -173,10 +170,10 @@ class Hoomdossier
     /**
      * Will return the most credible value from a given relationship.
      *
-     * @param Relation $relation
      * @param null $column
      * @param null $default
      * @param null $onlyReturnForInputSource
+     *
      * @return \Illuminate\Database\Eloquent\Collection|mixed|null
      */
     public static function getMostCredibleValue(Relation $relation, $column = null, $default = null, $onlyReturnForInputSource = null)
@@ -192,7 +189,7 @@ class Hoomdossier
             $found = $baseQuery->get([$relation->getRelated()->getTable().'.*', 'input_sources.short']);
         }
 
-        return self::getMostCredibleValueFromCollection($found,  $column, $default);
+        return self::getMostCredibleValueFromCollection($found, $column, $default);
     }
 
     /**

@@ -74,18 +74,18 @@ class User extends Model implements AuthorizableContract
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'phone_number', 'account_id', 'allow_access'
+        'first_name', 'last_name', 'phone_number', 'account_id', 'allow_access',
     ];
 
     protected $casts = [
-        'allow_access' => 'boolean'
+        'allow_access' => 'boolean',
     ];
-
 
     public function allowedAccess(): bool
     {
         return $this->allow_access;
     }
+
     /**
      * Return the intermediary table of the interests.
      *
@@ -168,8 +168,6 @@ class User extends Model implements AuthorizableContract
             ->where('user_interests.input_source_id', HoomdossierSession::getInputSourceValue())
             ->withPivot('interest_id', 'input_source_id');
     }
-
-
 
     // ------ User -> Account table / model migration stuff -------
 

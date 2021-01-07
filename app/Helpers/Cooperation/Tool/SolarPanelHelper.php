@@ -15,7 +15,6 @@ use App\Services\UserActionPlanAdviceService;
 
 class SolarPanelHelper extends ToolHelper
 {
-
     public function saveValues(): ToolHelper
     {
         BuildingPvPanel::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
@@ -57,6 +56,7 @@ class SolarPanelHelper extends ToolHelper
                 $actionPlanAdvice->save();
             }
         }
+
         return $this;
     }
 
@@ -64,7 +64,6 @@ class SolarPanelHelper extends ToolHelper
     {
         $buildingPvPanels = $this->building->pvPanels()->forInputSource($this->inputSource)->first();
         $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
-
 
         $userInterestsForSolarPanels = $this
             ->user
@@ -82,14 +81,12 @@ class SolarPanelHelper extends ToolHelper
                 'interest_id' => optional($userInterestsForSolarPanels)->interest_id,
             ],
         ]);
+
         return $this;
     }
 
     /**
-     * Method to clear the pv panels
-     *
-     * @param Building $building
-     * @param InputSource $inputSource
+     * Method to clear the pv panels.
      */
     public static function clear(Building $building, InputSource $inputSource)
     {

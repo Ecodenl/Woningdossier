@@ -59,7 +59,6 @@ class FloorInsulationController extends Controller
             $crawlspacePresent = 1; // now
         }
 
-
         $buildingElementsOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
             $building->buildingElements()->where('element_id', $crawlspace->id)
         )->get();
@@ -116,11 +115,10 @@ class FloorInsulationController extends Controller
         $nextStep = StepHelper::getNextStep($building, $inputSource, $this->step);
         $url = $nextStep['url'];
 
-        if (!empty($nextStep['tab_id'])) {
-            $url .= '#' . $nextStep['tab_id'];
+        if (! empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
         }
 
         return redirect($url);
     }
-
 }

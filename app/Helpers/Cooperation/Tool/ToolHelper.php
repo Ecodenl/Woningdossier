@@ -3,24 +3,24 @@
 namespace App\Helpers\Cooperation\Tool;
 
 use App\Models\InputSource;
-use Illuminate\Support\Arr;
 use App\Models\User;
+use Illuminate\Support\Arr;
 
 abstract class ToolHelper
 {
-    /** @var User $user */
+    /** @var User */
     public $user;
 
-    /** @var InputSource $inputSource */
+    /** @var InputSource */
     public $inputSource;
 
-    /** @var \App\Models\Building $building */
+    /** @var \App\Models\Building */
     public $building;
 
     /**
-     * What values the controller expects
+     * What values the controller expects.
      *
-     * @var array $values
+     * @var array
      */
     public $values;
 
@@ -42,6 +42,7 @@ abstract class ToolHelper
      * Get the values or a direct value from the value array.
      *
      * @param null $key
+     *
      * @return array|\ArrayAccess|mixed
      */
     public function getValues($key = null)
@@ -49,6 +50,7 @@ abstract class ToolHelper
         if (is_null($key)) {
             return $this->values;
         }
+
         return Arr::get($this->values, $key);
     }
 

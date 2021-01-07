@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Cooperation\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\BuildingFormRequest;
 use App\Models\Building;
-use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\Log;
 use App\Models\PrivateMessage;

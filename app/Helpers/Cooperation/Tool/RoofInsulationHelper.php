@@ -5,7 +5,6 @@ namespace App\Helpers\Cooperation\Tool;
 use App\Calculations\RoofInsulation as RoofInsulationCalculate;
 use App\Events\StepCleared;
 use App\Helpers\Calculator;
-use App\Helpers\HoomdossierSession;
 use App\Helpers\RoofInsulation;
 use App\Helpers\RoofInsulationCalculator;
 use App\Models\Building;
@@ -49,7 +48,6 @@ class RoofInsulationHelper extends ToolHelper
                 ];
             }
         }
-
 
         foreach (array_keys($result) as $roofCat) {
             $isBitumenOnPitchedRoof = 'pitched' == $roofCat && 'bitumen' == $results['pitched']['type'];
@@ -194,12 +192,10 @@ class RoofInsulationHelper extends ToolHelper
         // the building roof type data will always be filled, even though the roof type ids are not selected.
         $buildingRoofTypeCreateData = [];
 
-
         // so now we loop through the selected roof types so we can determine which $buildingRoofTypeData we will put in the $buildingRoofTypeCreateData.
         foreach ($roofTypeIds as $roofTypeId) {
             $roofType = RoofType::findOrFail($roofTypeId);
             if ($roofType instanceof RoofType) {
-
                 $buildingRoofType = $this->building->roofTypes()->forInputSource($this->inputSource)->where('roof_type_id', '=', $roofType->id)->first();
                 $zincSurface = $buildingRoofType instanceof BuildingRoofType ? $buildingRoofType->zinc_surface : 0;
 
@@ -280,14 +276,12 @@ class RoofInsulationHelper extends ToolHelper
                 )->roof_type_id,
             ],
         ]);
+
         return $this;
     }
 
     /**
      * Method to clear the building feature data for wall insulation step.
-     *
-     * @param Building $building
-     * @param InputSource $inputSource
      */
     public static function clear(Building $building, InputSource $inputSource)
     {
@@ -297,7 +291,7 @@ class RoofInsulationHelper extends ToolHelper
                 'input_source_id' => $inputSource->id,
             ],
             [
-                'roof_type_id' => null
+                'roof_type_id' => null,
             ]
         );
 

@@ -69,7 +69,7 @@ class BuildingCoachStatusService
                 'bcs2.coach_id',
                 'bcs2.building_id',
                 'bcs2.count_pending AS count_pending',
-                'bcs3.count_removed AS count_removed'
+                'bcs3.count_removed AS count_removed',
             ])
                 // count the pending statuses
                 ->from($pendingCount)
@@ -86,7 +86,6 @@ class BuildingCoachStatusService
 
         return $buildingsTheCoachIsConnectedTo;
     }
-
 
     /**
      * Returns the 'connected' coaches from a given building id.
@@ -135,7 +134,4 @@ class BuildingCoachStatusService
 
         return $coachesWithPendingBuildingCoachStatus;
     }
-
-
-
 }

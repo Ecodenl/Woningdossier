@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Events\StepDataHasBeenChanged;
-use App\Helpers\Calculator;
 use App\Helpers\Cooperation\Tool\RoofInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoofInsulation;
-use App\Helpers\RoofInsulationCalculator;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\RoofInsulationFormRequest;
@@ -16,15 +14,11 @@ use App\Models\Building;
 use App\Models\BuildingHeating;
 use App\Models\BuildingRoofType;
 use App\Models\Element;
-use App\Models\Interest;
-use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Step;
-use App\Models\UserActionPlanAdvice;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -100,7 +94,6 @@ class RoofInsulationController extends Controller
              'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
              'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe'));
     }
-
 
     public function calculate(Request $request)
     {

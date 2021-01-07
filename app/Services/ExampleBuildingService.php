@@ -214,7 +214,7 @@ class ExampleBuildingService
                             // the value was stored inside the insulated_glazing_id key, however this changed to insulating_glazing_id.
                             // recent updated example buildings will have the new key, old ones wont.
                             // so if the insulating_glazing_id does not exist, we will set the old one.
-                            if (!array_key_exists('insulating_glazing_id', $glazingData)) {
+                            if (! array_key_exists('insulating_glazing_id', $glazingData)) {
                                 $glazingData['insulating_glazing_id'] = $glazingData['insulated_glazing_id'];
                             }
 

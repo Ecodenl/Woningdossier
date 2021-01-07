@@ -63,7 +63,7 @@ trait ToolSettingTrait
         $hasChanged = false;
 
         // if there are specific columns to check we will check the property for a change.
-        if (!empty($columnsToCheckForChanges)) {
+        if (! empty($columnsToCheckForChanges)) {
             // walk through it.
             foreach ($columnsToCheckForChanges as $column) {
                 // check if it is dirty, if so we will set the bool to true,
@@ -100,8 +100,7 @@ trait ToolSettingTrait
 
             $changedInputSourceId = self::getChangedInputSourceId($model);
 
-            if (!is_null($changedInputSourceId)) {
-
+            if (! is_null($changedInputSourceId)) {
                 ToolSettingService::setChanged(self::resolveBuildingId($model), $changedInputSourceId, $hasChanged);
             }
         });
@@ -125,7 +124,7 @@ trait ToolSettingTrait
 
             $changedInputSourceId = self::getChangedInputSourceId($model);
 
-            if (!is_null($changedInputSourceId)) {
+            if (! is_null($changedInputSourceId)) {
                 ToolSettingService::setChanged(self::resolveBuildingId($model), $changedInputSourceId, $hasChanged);
             }
         });
@@ -137,9 +136,9 @@ trait ToolSettingTrait
 
         // this can also be ran in the cli, where no session is set
         // so we first try to obtain the building directly from the model, if that isnt available try to obtain it from the user.
-        if (!$building instanceof Building) {
+        if (! $building instanceof Building) {
             $building = $model->building;
-            if (!$building instanceof Building) {
+            if (! $building instanceof Building) {
                 $building = $model->user->building;
             }
         }

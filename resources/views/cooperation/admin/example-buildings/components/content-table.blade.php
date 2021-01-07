@@ -6,17 +6,24 @@ $fkey = $content instanceof \App\Models\ExampleBuildingContent ? $content->id : 
 // build year only
 // full html array
 $fname = 'content['.$fkey.'][build_year]';
-$fvalKey = str_replace('[', '.', $fname);
+$fvalKey = str_replace(['[', ']'], ['.', ''], $fname);
 // fallback value for old functions
 $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->build_year : '';
 
 ?>
+
+@if(Route::currentRouteName() === "cooperation.admin.example-buildings.edit" && $fkey == 'new')
+    <div class="alert alert-danger mt-3">
+        @lang('cooperation/admin/example-buildings.edit.new-warning')
+    </div>
+@endif
+
 <div class="form-group {{ $errors->has('content.'.$fkey.'.build_year') ? ' has-error' : '' }}">
     <label for="build_year">@lang('cooperation/admin/example-buildings.form.build-year')</label>
 
 
     <input id="build_year" type="number" min="0" name="content[{{ $fkey }}][build_year]"
-           class="form-control" value="{{ App\Helpers\Old::get($fvalKey, $fallback) }}" />
+           class="form-control" value="{{ old($fvalKey, $fallback) }}" />
     @if ($errors->has('content.'.$fkey.'.build_year'))
         <span class="help-block">
             <strong>{{ $errors->first('content.'.$fkey.'.build_year') }}</strong>

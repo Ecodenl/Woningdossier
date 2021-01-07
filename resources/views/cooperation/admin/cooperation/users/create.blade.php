@@ -80,7 +80,7 @@
 
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <div class="form-group" {{ $errors->has('roles') ? ' has-error' : '' }}>
+                                    <div class="form-group {{ $errors->has('roles') ? ' has-error' : '' }}">
                                         <label for="roles">@lang('woningdossier.cooperation.admin.cooperation.users.create.form.roles')</label>
                                         <select name="roles[]" class="roles form-control" id="roles"
                                                 multiple="multiple">

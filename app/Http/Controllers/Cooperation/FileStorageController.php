@@ -16,9 +16,11 @@ use App\Models\Cooperation;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
+use App\Models\Notification;
 use App\Models\Questionnaire;
 use App\Models\User;
 use App\Services\FileStorageService;
+use App\Services\NotificationService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -84,9 +86,15 @@ class FileStorageController extends Controller
 
     public function store(Cooperation $cooperation, FileType $fileType, FileStorageFormRequest $request)
     {
-        if ($fileType->isBeingProcessed()) {
+        $activeNotification = Notification::activeNotifications(
+            HoomdossierSession::getBuilding(true),
+            HoomdossierSession::getInputSource(true)
+        )->exists();
+
+        if ($fileType->isBeingProcessed() || $activeNotification) {
             return redirect()->back();
         }
+
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);

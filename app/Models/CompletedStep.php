@@ -43,6 +43,12 @@ class CompletedStep extends Model
 
     public function steps()
     {
+        // not sure if this is used, this cant work
         return $this->hasMany(Step::class);
+    }
+
+    public function step()
+    {
+        return $this->belongsTo(Step::class);
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Helpers\StepHelper;
-use App\Models\BuildingInsulatedGlazing;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
@@ -12,6 +11,7 @@ use App\Models\User;
 use App\Models\UserActionPlanAdviceComments;
 use App\Services\DumpService;
 use App\Services\UserActionPlanAdviceService;
+use App\Services\UserService;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -58,20 +58,18 @@ class PdfReport implements ShouldQueue
         $userCooperation = $this->user->cooperation;
         $inputSource = $this->inputSource;
 
-        // load the buildingFeatures
-        $building = $user->building()->with(['buildingFeatures' => function ($query) use ($inputSource) {
-            $query->forInputSource($inputSource)->with('roofType', 'buildingType', 'energyLabel');
-        }])->first();
+        $headers = DumpService::getStructureForTotalDumpService(false, false);
+
+        $user = UserService::eagerLoadUserData($user,  $inputSource);
+
+        $building = $user->building;
 
         $buildingFeatures = $building->buildingFeatures;
 
         $GLOBALS['_cooperation'] = $userCooperation;
         $GLOBALS['_inputSource'] = $inputSource;
 
-        $buildingInsulatedGlazings = BuildingInsulatedGlazing::where('building_id', $building->id)
-            ->forInputSource($inputSource)
-            ->with('measureApplication', 'insulatedGlazing', 'buildingHeating')
-            ->get();
+        $buildingInsulatedGlazings = $building->currentInsulatedGlazing->load('measureApplication', 'insulatedGlazing', 'buildingHeating');
 
         // the comments that have been made on the action plan
         $userActionPlanAdviceComments = UserActionPlanAdviceComments::forMe($user)
@@ -87,10 +85,8 @@ class PdfReport implements ShouldQueue
         // we dont wat the actual advices, we have to show them in a different way
         $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
 
-        $structure = DumpService::getStructureForTotalDumpService(false, false);
-
         // full report for a user
-        $reportForUser = DumpService::totalDump($structure, $userCooperation, $user, $inputSource, false, true, true);
+        $reportForUser = DumpService::totalDump($headers, $userCooperation, $user, $inputSource, false, true, true);
 
         // the translations for the columns / tables in the user data
         $reportTranslations = $reportForUser['translations-for-columns'];

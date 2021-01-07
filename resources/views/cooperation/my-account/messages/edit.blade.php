@@ -24,8 +24,6 @@
             @endcomponent
         </div>
     </div>
-
-
 @endsection
 
 @push('js')

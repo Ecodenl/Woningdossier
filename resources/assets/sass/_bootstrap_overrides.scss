@@ -44,3 +44,9 @@
   right: 0;
   left: unset;
 }
+
+.badge {
+  &.badge-primary {
+    background-color: $brand-primary;
+  }
+}

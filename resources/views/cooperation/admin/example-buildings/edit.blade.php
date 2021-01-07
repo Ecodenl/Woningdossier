@@ -36,8 +36,6 @@
 
 @push('js')
     <script>
-
-
         $("form").on('submit', function (e) {
             var openTabId = $(".tab-content .tab-pane.active").attr('id');
             if (openTabId === 'new') {

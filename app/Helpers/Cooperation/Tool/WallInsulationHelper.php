@@ -82,7 +82,8 @@ class WallInsulationHelper extends ToolHelper
      */
     public function createAdvices(): ToolHelper
     {
-        $results = WallInsulation::calculate($this->building, $this->inputSource, $this->user->energyHabit, $this->getValues());
+        $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
+        $results = WallInsulation::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
 
         $step = Step::findByShort('wall-insulation');
 
@@ -92,6 +93,7 @@ class WallInsulationHelper extends ToolHelper
             $measureApplication = MeasureApplication::translated('measure_name', $results['insulation_advice'], 'nl')->first(['measure_applications.*']);
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
+                $actionPlanAdvice->input_source_id = $this->inputSource->id;
                 $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
                 $actionPlanAdvice->user()->associate($this->user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);
@@ -112,6 +114,7 @@ class WallInsulationHelper extends ToolHelper
                 $measureApplication = MeasureApplication::where('short', $measureShort)->first();
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
+                    $actionPlanAdvice->input_source_id = $this->inputSource->id;
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->measureApplication()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);

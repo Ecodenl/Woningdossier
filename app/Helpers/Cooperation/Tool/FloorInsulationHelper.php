@@ -104,7 +104,7 @@ class FloorInsulationHelper extends ToolHelper
 
         $elementData = $this->getValues('element');
 
-        if (array_key_exists($floorInsulationElement->id, $elementData)) {
+        if (array_key_exists($floorInsulationElement->id, $elementData) && $this->getValues('building_elements.extra.has_crawlspace') !== "no") {
 
             $floorInsulationValue = ElementValue::where('element_id', $floorInsulationElement->id)
                 ->where('id', $elementData[$floorInsulationElement->id])
@@ -122,6 +122,7 @@ class FloorInsulationHelper extends ToolHelper
                         ->first(['measure_applications.*']);
                     if ($measureApplication instanceof MeasureApplication) {
                         $actionPlanAdvice = new UserActionPlanAdvice($results);
+                        $actionPlanAdvice->input_source_id = $this->inputSource->id;
                         $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
                         $actionPlanAdvice->user()->associate($this->user);
                         $actionPlanAdvice->measureApplication()->associate($measureApplication);

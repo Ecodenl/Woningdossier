@@ -1,13 +1,6 @@
 <div class="form-group {{ $errors->has('building_type_id') ? ' has-error' : '' }}">
     <?php
-        $selected = old('building_type_id');
-        if (is_null($selected)) {
-            if (isset($exampleBuilding) && $exampleBuilding->buildingType instanceof \App\Models\BuildingType) {
-                $selected = $exampleBuilding->buildingType->id;
-            } else {
-                $selected = '';
-            }
-        }
+        $selected = old('building_type_id', isset($exampleBuilding) ? $exampleBuilding->building_type_id : null);
     ?>
 
     <label for="building_type_id">{{\App\Helpers\Translation::translate('building-detail.building-type.what-type.title')}}</label>

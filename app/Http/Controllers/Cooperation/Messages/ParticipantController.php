@@ -25,7 +25,7 @@ class ParticipantController extends Controller
      */
     public function revokeAccess(Cooperation $cooperation, Request $request)
     {
-        // get the group participant user id which is only a coach, but still
+        // get the group participant user id (which is only a coach, but still)
         $groupParticipantUserId = $request->get('user_id');
         // get the building owner id
         $buildingOwnerId = $request->get('building_owner_id');
@@ -62,9 +62,7 @@ class ParticipantController extends Controller
         if ($user instanceof User) {
             $residentBuilding = Building::find($buildingId);
 
-            $privateMessage = PrivateMessage::public()->conversation($buildingId)->first();
-
-            if ($privateMessage->allow_access) {
+            if ($user->allowedAccess()) {
                 // give the coach permission to the resident his building
                 BuildingPermissionService::givePermission($user, $residentBuilding);
             }

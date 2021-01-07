@@ -31,6 +31,7 @@ use App\Listeners\ParticipantAddedListener;
 use App\Listeners\ParticipantRevokedListener;
 use App\Listeners\PreventChangeNotificationWhenStarting;
 use App\Listeners\PrivateMessageReceiverListener;
+use App\Listeners\RecalculateToolForUserListener;
 use App\Listeners\RevokeBuildingPermissionForCoaches;
 use App\Listeners\SendUserAssociatedWithCooperationMail;
 use App\Listeners\SetMessagesReadForBuilding;
@@ -78,6 +79,7 @@ class EventServiceProvider extends ServiceProvider
             LogObservingToolForUserListener::class,
         ],
         StepDataHasBeenChanged::class => [
+            RecalculateToolForUserListener::class,
             StepDataHasBeenChangedListener::class,
         ],
         UserChangedHisEmailEvent::class => [

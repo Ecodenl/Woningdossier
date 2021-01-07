@@ -27,6 +27,12 @@ $calculationsForStep = $calculations[$stepShort][$subStepShort] ?? [];
         ])
     @break
 
+    @case('floor-insulation')
+        @include('cooperation.pdf.user-report.steps.floor-insulation', [
+            'dataForSubStep' =>$dataForSubStep
+        ])
+    @break
+
     @default
     @component('cooperation.pdf.components.new-page')
         <div class="container">
@@ -35,7 +41,7 @@ $calculationsForStep = $calculations[$stepShort][$subStepShort] ?? [];
 
             @include('cooperation.pdf.user-report.parts.measure-page.filled-in-data')
 
-            {{--since no calculations are done here--}}
+            {{-- since no calculations are done here --}}
             @if($stepShort != 'general-data')
                 @include('cooperation.pdf.user-report.parts.measure-page.insulation-advice')
 

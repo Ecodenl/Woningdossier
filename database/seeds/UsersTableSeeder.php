@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
 
 class UsersTableSeeder extends Seeder
@@ -14,7 +15,7 @@ class UsersTableSeeder extends Seeder
         $accounts = [
             [
                 'email'    => 'demo@example.org',
-                'password' => bcrypt('secret'),
+                'password' => Hash::make('secret'),
                 'is_admin' => true,
 
                 'users' => [

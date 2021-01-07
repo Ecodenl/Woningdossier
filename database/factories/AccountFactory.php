@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Hash;
 use Faker\Generator as Faker;
 
 $factory->define(\App\Models\Account::class, function (Faker $faker) {
@@ -7,7 +8,7 @@ $factory->define(\App\Models\Account::class, function (Faker $faker) {
 
     return [
         'email' => $faker->email,
-        'password' => $password ?: bcrypt('secret'),
+        'password' => $password ?: Hash::make('secret'),
         'active' => true,
     ];
 });

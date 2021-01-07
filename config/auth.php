@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults
@@ -66,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Account::class,
+            'model' => App\User::class,
         ],
 
         // 'users' => [
@@ -94,7 +95,8 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',
-            'expire' => 43200, // 30 days * 24 hrs * 60 mins. This is done *60 in Illuminate\Auth\Passwords\DatabaseTokenRepository
+            'expire' => 60,
         ],
     ],
+
 ];

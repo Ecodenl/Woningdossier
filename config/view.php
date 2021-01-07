@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | View Storage Paths
@@ -28,4 +29,5 @@ return [
     */
 
     'compiled' => realpath(storage_path('framework/views')),
+
 ];

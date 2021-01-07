@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Mail Driver
@@ -55,9 +56,8 @@ return [
     */
 
     'from' => [
-        'noreply' => env('MAIL_FROM_ADDRESS_NOREPLY', 'noreply@hoomdossier.nl'),
-        'address' => env('MAIL_FROM_ADDRESS', 'noreply@hoomdossier.nl'),
-        'name' => env('MAIL_FROM_NAME', 'Hoomdossier'),
+        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
     /*
@@ -119,4 +119,5 @@ return [
             resource_path('views/vendor/mail'),
         ],
     ],
+
 ];

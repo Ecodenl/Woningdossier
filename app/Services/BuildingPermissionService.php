@@ -8,13 +8,8 @@ use App\Models\User;
 
 class BuildingPermissionService
 {
-    /** @noinspection PhpDocMissingThrowsInspection */
-
     /**
      * Delete the building permission for a coach and specific building.
-     *
-     * @param $userId
-     * @param $buildingId
      */
     public static function revokePermission(User $user, Building $building): bool
     {

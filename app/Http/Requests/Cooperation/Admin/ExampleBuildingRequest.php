@@ -3,9 +3,11 @@
 namespace App\Http\Requests\Cooperation\Admin;
 
 use App\Helpers\Hoomdossier;
-use App\Helpers\Old;
-use Illuminate\Contracts\Validation\Validator;
+use App\Helpers\ToolHelper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use App\Helpers\ExampleBuildingHelper;
 
 class ExampleBuildingRequest extends FormRequest
 {
@@ -19,32 +21,6 @@ class ExampleBuildingRequest extends FormRequest
         return Hoomdossier::user()->hasRoleAndIsCurrentRole(['super-admin', 'coordinator', 'cooperation-admin']);
     }
 
-    public function prepareForValidation()
-    {
-        // get the contents
-        $contents = $this->input('content', []);
-        $undotedContents = [];
-
-        foreach ($contents as $cid => $data) {
-            // undot the array and set it.
-            if (array_key_exists('content', $data)) {
-                $undotedContents['content'][$cid]['content'] = $this->array_undot($data['content']);
-                $undotedContents['content'][$cid]['build_year'] = $data['build_year'];
-            }
-        }
-
-        // modify the request.
-        $this->replace(array_replace($this->all(), $undotedContents));
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        // use the old helper since we have modified the request.
-        Old::put($this->all());
-
-        parent::failedValidation($validator);
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -53,8 +29,6 @@ class ExampleBuildingRequest extends FormRequest
     public function rules()
     {
         return [
-            'content.*.content.roof-insulation.building_roof_types.*.roof_surface' => 'nullable|numeric',
-            'content.*.content.roof-insulation.building_roof_types.*.insulation_roof_surface' => 'nullable|numeric',
             'building_type_id' => 'required|exists:building_types,id',
             'cooperation_id' => 'nullable|exists:cooperations,id',
             'is_default' => 'required|boolean',
@@ -62,16 +36,59 @@ class ExampleBuildingRequest extends FormRequest
         ];
     }
 
-    protected function array_undot($content)
+    public function withValidator($validator)
     {
-        $array = [];
+        $validator->after(function($validator) {
+            // we can use this for the translations of the errors.
+            $contentStructure = Arr::dot(ToolHelper::getContentStructure());
 
-        foreach ($content as $key => $values) {
-            foreach ($values as $dottedKey => $value) {
-                array_set($array, $key.'.'.$dottedKey, $value);
+            $options = $this->input('content');
+            $values = Arr::dot($options, 'content.');
+
+            // Validate numeric fields of the content
+            foreach ($values as $name => $value){
+                if (!is_null($value) && ExampleBuildingHelper::isNumeric($name)) {
+                    $value = str_replace(',', '.', $value);
+
+                    // If surface is not null and surface is not numeric
+                    if (!is_null($value) && !is_numeric($value)) {
+
+                        $keys = explode('content.', $name);
+
+                        // remove the . from the cid.
+                        $cid = substr($keys[1], 0 ,-1);
+                        $contentStructureKey = last($keys);
+
+                        $buildYear = $values["content.{$cid}.build_year"];
+                        $label = $contentStructure[$contentStructureKey.".label"];
+
+                        $validator->errors()->add($name, "{$label} (jaar {$buildYear}) Moet een nummer zijn");
+                    }
+                }
             }
-        }
 
-        return $array;
+            // Get all build years
+            $buildYears = Arr::where($values, function ($value, $key) {
+                return Str::endsWith($key,'build_year');
+            });
+
+            // Check each
+            foreach ($buildYears as $name => $buildYear) {
+                // Get cid
+                $cid = explode('.', $name)[1];
+                // If it's new, it requires different rules
+                if ($cid == 'new') {
+                    $new = $this->get('new');
+                    // We only need to validate this whenever the new tab is open
+                    if (is_null($buildYear) && $new == 1) {
+                        $validator->errors()->add($name, __('validation.admin.example-buildings.new.build_year'));
+                    }
+                }
+                else if (is_null($buildYear)) {
+                    $validator->errors()->add($name, __('validation.admin.example-buildings.existing.build_year'));
+                }
+            }
+        });
     }
 }
+

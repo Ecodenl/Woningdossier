@@ -348,7 +348,7 @@
 
             //$('select[name*=element_value_id]').trigger('change');
 
-            $("select, input[type=radio], input[type=text], input[type=number], input[type=checkbox]").change(formChange);
+            $('#main-tab form input, select').change(formChange)
 
             function formChange() {
 

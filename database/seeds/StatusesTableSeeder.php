@@ -72,7 +72,5 @@ class StatusesTableSeeder extends Seeder
                 'short' => $status['short'],
             ]);
         }
-
-        $this->command->info('StatusesTableSeeder: done');
     }
 }

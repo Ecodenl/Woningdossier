@@ -84,6 +84,7 @@ class RoofInsulationHelper extends ToolHelper
                     }
 
                     if ($actionPlanAdvice instanceof UserActionPlanAdvice) {
+                        $actionPlanAdvice->input_source_id = $this->inputSource->id;
                         $actionPlanAdvice->user()->associate($this->user);
                         $actionPlanAdvice->measureApplication()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($step);
@@ -119,6 +120,7 @@ class RoofInsulationHelper extends ToolHelper
                     $costs = Calculator::calculateMeasureApplicationCosts($zincReplaceMeasure, $zincSurface, $year, false);
 
                     $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
+                    $actionPlanAdvice->input_source_id = $this->inputSource->id;
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->measureApplication()->associate($zincReplaceMeasure);
                     $actionPlanAdvice->step()->associate($step);
@@ -142,6 +144,7 @@ class RoofInsulationHelper extends ToolHelper
                         $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
 
                         $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
+                        $actionPlanAdvice->input_source_id = $this->inputSource->id;
                         $actionPlanAdvice->user()->associate($this->user);
                         $actionPlanAdvice->measureApplication()->associate($replaceMeasure);
                         $actionPlanAdvice->step()->associate($step);
@@ -167,6 +170,7 @@ class RoofInsulationHelper extends ToolHelper
                     $costs = Calculator::calculateMeasureApplicationCosts($replaceMeasure, $surface, $year, false);
 
                     $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
+                    $actionPlanAdvice->input_source_id = $this->inputSource->id;
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->measureApplication()->associate($replaceMeasure);
                     $actionPlanAdvice->step()->associate($step);
@@ -232,7 +236,6 @@ class RoofInsulationHelper extends ToolHelper
     {
         $buildingRoofTypes = $this->building->roofTypes()->forInputSource($this->inputSource)->get();
 
-//        dd($buildingRoofTypes);
         // now lets handle the roof insulation stuff.
         $buildingRoofTypesArray = [];
         $buildingRoofTypeIds = [];

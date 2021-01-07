@@ -78,6 +78,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
         // group can be accessed by everyone that's authorized and has a role in its session
         Route::group(['middleware' => ['auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser']], function () {
             Route::get('messages/count', 'MessagesController@getTotalUnreadMessageCount')->name('message.get-total-unread-message-count');
+            Route::get('notifications', 'NotificationController@index')->name('notifications.index');
 
             if ('local' == app()->environment()) {
                 // debug purpose only
@@ -145,8 +146,8 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
             });
 
             // conversation requests
-            Route::group(['prefix' => 'conversation-request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
-                Route::get('{requestType?}/{measureApplicationShort?}', 'ConversationRequestController@index')->name('index');
+            Route::group(['prefix' => 'conversation-request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest', 'middleware' => 'can:view-any,App\Models\PrivateMessage'], function () {
+                Route::get('{requestType}/{measureApplicationShort?}', 'ConversationRequestController@index')->name('index');
                 Route::post('', 'ConversationRequestController@store')->name('store');
             });
 

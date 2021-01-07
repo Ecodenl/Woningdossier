@@ -7,12 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
+use App\Services\BuildingCoachStatusService;
 
 class BuildingController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        $connectedBuildingsForUser = BuildingCoachStatus::getConnectedBuildingsByUser(Hoomdossier::user(), $cooperation)->pluck('building_id');
+        $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser(Hoomdossier::user())->pluck('building_id');
 
         // we do the sort on the collection, this would be another "complicated" query.
         // for now this will do.

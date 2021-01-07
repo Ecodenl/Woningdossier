@@ -357,12 +357,12 @@ return [
 
                         'table' => [
                             'columns' => [
-                                'most-recent-message-date' => 'Meest recente ontvangst datum',
+                                'most-recent-message-date' => 'Ontvangst datum',
                                 'sender-name' => 'Verzender',
                                 'street-house-number' => 'Straat en huisnummer',
                                 'zip-code' => 'Postcode',
                                 'city' => 'Stad',
-                                'unread-messages' => 'Aantal ongelezen berichten',
+                                'unread-messages' => 'Ongelezen',
                             ],
                         ],
                     ],
@@ -743,11 +743,6 @@ return [
             ],
 
             'my-plan' => [
-                'options' => [
-                    \App\Models\PrivateMessage::REQUEST_TYPE_COACH_CONVERSATION => 'Ondersteuning door een energiecoach',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_MORE_INFORMATION => 'Meer informatie gewenst',
-                    \App\Models\PrivateMessage::REQUEST_TYPE_OTHER => 'Anders...',
-                ],
                 'warnings' => [
                     'title' => 'Let op!',
                 ],

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin;
 
+use App\Helpers\ExampleBuildingHelper;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolHelper;
 use App\Http\Controllers\Controller;
@@ -10,9 +11,9 @@ use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
-use App\Models\Service;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
+
 
 class ExampleBuildingController extends Controller
 {
@@ -84,24 +85,7 @@ class ExampleBuildingController extends Controller
         $exampleBuilding->order = $request->get('order', null);
         $exampleBuilding->save();
 
-        $contents = $request->input('content', []);
-
-        foreach ($contents as $cid => $data) {
-            $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
-            if (! is_numeric($cid) && 'new' == $cid) {
-                if (1 == $request->get('new', 0)) {
-                    // addition
-                    $content = new ExampleBuildingContent($data);
-                }
-            } else {
-                $content = $exampleBuilding->contents()->where('id', $cid)->first();
-                $content->fill($data);
-            }
-            if (isset($content) && $content instanceof ExampleBuildingContent) {
-                $content->exampleBuilding()->associate($exampleBuilding);
-                $content->save();
-            }
-        }
+        $this->updateOrCreateContent($exampleBuilding, $request->get('new', 0), $request->input('content', []));
 
         return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $exampleBuilding])->with('success', __('cooperation/admin/example-buildings.store.success'));
     }
@@ -214,43 +198,38 @@ class ExampleBuildingController extends Controller
         $exampleBuilding->is_default = $request->get('is_default', false);
         $exampleBuilding->order = $request->get('order', null);
 
-        $contents = $request->input('content', []);
 
-        foreach ($contents as $cid => $data) {
-            $data['content'] = array_key_exists('content', $data) ? $this->array_undot($data['content']) : [];
+        $this->updateOrCreateContent($exampleBuilding, $request->get('new', 0), $request->input('content', []));
 
-            $content = null;
-            if (! is_numeric($cid) && 'new' == $cid) {
-                if (1 == $request->get('new', 0)) {
-                    // addition
-                    $content = new ExampleBuildingContent($data);
-                }
-            } else {
-                $content = $exampleBuilding->contents()->where('id', $cid)->first();
-                $content->fill($data);
-            }
-            if ($content instanceof ExampleBuildingContent) {
-                $content->exampleBuilding()->associate($exampleBuilding);
-                $content->save();
-            }
-        }
         $exampleBuilding->save();
 
         return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $id])->with('success', __('cooperation/admin/example-buildings.update.success'));
     }
 
-    protected function array_undot($content)
+    private function updateOrCreateContent(ExampleBuilding $exampleBuilding, $new, $contents)
     {
-        $array = [];
-        foreach ($content as $step => $values) {
-            foreach ($values as $subStep => $subStepValues) {
-                foreach ($subStepValues as $tableColumn => $value) {
-                    array_set($array, $step.'.'.$subStep.'.'.$tableColumn, $value);
+        foreach ($contents as $cid => $data) {
+            if (!is_null($data['build_year'])) {
+                $data['content'] = array_key_exists('content', $data) ? $data['content'] : [];
+
+                $data['content'] = ExampleBuildingHelper::formatContent($data['content']);
+
+                $content = null;
+                if (!is_numeric($cid) && 'new' == $cid) {
+                    if (1 == $new) {
+                        // addition
+                        $content = new ExampleBuildingContent($data);
+                    }
+                } else {
+                    $content = $exampleBuilding->contents()->where('id', $cid)->first();
+                    $content->fill($data);
+                }
+                if ($content instanceof ExampleBuildingContent) {
+                    $content->exampleBuilding()->associate($exampleBuilding);
+                    $content->save();
                 }
             }
         }
-
-        return $array;
     }
 
     /**

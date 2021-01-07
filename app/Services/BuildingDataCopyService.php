@@ -43,6 +43,7 @@ class BuildingDataCopyService
             'questions_answers' => [
                 'where_column' => 'question_id',
             ],
+            'building_ventilations',
             'building_features',
             'building_pv_panels',
             'building_heaters',

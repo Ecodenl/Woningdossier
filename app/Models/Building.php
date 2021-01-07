@@ -10,65 +10,76 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Input;
 
 /**
- * App\Models\Building.
+ * App\Models\Building
  *
- * @property int                                                                             $id
- * @property int|null                                                                        $user_id
- * @property string                                                                          $street
- * @property string                                                                          $number
- * @property string                                                                          $extension
- * @property string                                                                          $city
- * @property string                                                                          $postal_code
- * @property string                                                                          $country_code
- * @property int|null                                                                        $owner
- * @property int                                                                             $primary
- * @property string                                                                          $bag_addressid
- * @property int|null                                                                        $example_building_id
- * @property \Illuminate\Support\Carbon|null                                                 $created_at
- * @property \Illuminate\Support\Carbon|null                                                 $updated_at
- * @property \Illuminate\Support\Carbon|null                                                 $deleted_at
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingCoachStatus[]      $buildingCoachStatuses
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[]          $buildingElements
- * @property \App\Models\BuildingFeature                                                     $buildingFeatures
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[]            $buildingNotes
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[]       $buildingPermissions
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[]          $buildingServices
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingStatus[]           $buildingStatuses
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[]            $completedSteps
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
- * @property \App\Models\BuildingPaintworkStatus                                             $currentPaintworkStatus
- * @property \App\Models\ExampleBuilding|null                                                $exampleBuilding
- * @property \App\Models\BuildingHeater                                                      $heater
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[]           $privateMessages
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[]            $progress
- * @property \App\Models\BuildingPvPanel                                                     $pvPanels
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[]          $questionAnswers
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[]         $roofTypes
- * @property \App\Models\User|null                                                           $user
- *
- * @method static bool|null forceDelete()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building newQuery()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Building onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building query()
- * @method static bool|null restore()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereBagAddressid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereCity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereCountryCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereExampleBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereExtension($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereOwner($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building wherePostalCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building wherePrimary($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereStreet($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Building whereUserId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Building withTrashed()
- * @method static \Illuminate\Database\Query\Builder|\App\Models\Building withoutTrashed()
+ * @property int $id
+ * @property int|null $user_id
+ * @property string $street
+ * @property string $number
+ * @property string $extension
+ * @property string $city
+ * @property string $postal_code
+ * @property string $country_code
+ * @property int|null $owner
+ * @property int $primary
+ * @property string $bag_addressid
+ * @property int|null $example_building_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingCoachStatus[] $buildingCoachStatuses
+ * @property-read int|null $building_coach_statuses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingElement[] $buildingElements
+ * @property-read int|null $building_elements_count
+ * @property-read \App\Models\BuildingFeature|null $buildingFeatures
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
+ * @property-read int|null $building_notes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
+ * @property-read int|null $building_permissions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property-read int|null $building_services_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingStatus[] $buildingStatuses
+ * @property-read int|null $building_statuses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingVentilation[] $buildingVentilations
+ * @property-read int|null $building_ventilations_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\CompletedStep[] $completedSteps
+ * @property-read int|null $completed_steps_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingInsulatedGlazing[] $currentInsulatedGlazing
+ * @property-read int|null $current_insulated_glazing_count
+ * @property-read \App\Models\BuildingPaintworkStatus|null $currentPaintworkStatus
+ * @property-read \App\Models\ExampleBuilding|null $exampleBuilding
+ * @property-read \App\Models\BuildingHeater|null $heater
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessage[] $privateMessages
+ * @property-read int|null $private_messages_count
+ * @property-read \App\Models\BuildingPvPanel|null $pvPanels
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[] $questionAnswers
+ * @property-read int|null $question_answers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingRoofType[] $roofTypes
+ * @property-read int|null $roof_types_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\StepComment[] $stepComments
+ * @property-read int|null $step_comments_count
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder|Building newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Building newQuery()
+ * @method static \Illuminate\Database\Query\Builder|Building onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Building query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Building whereBagAddressid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Building whereCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Building whereCountryCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Building whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Building whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Building whereExampleBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Building whereExtension($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Building whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Building whereNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Building whereOwner($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Building wherePostalCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Building wherePrimary($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Building whereStreet($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Building whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Building whereUserId($value)
+ * @method static \Illuminate\Database\Query\Builder|Building withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Building withoutTrashed()
  * @mixin \Eloquent
  */
 class Building extends Model

@@ -8,31 +8,32 @@ use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\ToolSetting.
+ * App\Models\ToolSetting
  *
- * @property int                             $id
- * @property int                             $changed_input_source_id
- * @property int|null                        $input_source_id
- * @property int                             $building_id
- * @property bool                            $has_changed
+ * @property int $id
+ * @property int $changed_input_source_id
+ * @property int|null $input_source_id
+ * @property int $building_id
+ * @property bool $has_changed
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\InputSource         $changedInputSource
- * @property \App\Models\InputSource|null    $inputSource
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting forMe(\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereChangedInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereHasChanged($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ToolSetting whereUpdatedAt($value)
+ * @property-read \App\Models\InputSource $changedInputSource
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting forBuilding(\App\Models\Building $building)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting whereChangedInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting whereHasChanged($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ToolSetting extends Model

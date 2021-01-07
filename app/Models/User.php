@@ -13,51 +13,69 @@ use Illuminate\Validation\Rules\In;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
- * App\Models\User.
+ * App\Models\User
  *
- * @property int                                                                                 $id
- * @property int|null                                                                            $account_id
- * @property int|null                                                                            $cooperation_id
- * @property string                                                                              $first_name
- * @property string                                                                              $last_name
- * @property string                                                                              $phone_number
- * @property \Illuminate\Support\Carbon|null                                                     $created_at
- * @property \Illuminate\Support\Carbon|null                                                     $updated_at
- * @property \App\Models\Account|null                                                            $account
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[]         $actionPlanAdvices
- * @property \App\Models\Building                                                                $building
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[]                $buildingNotes
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[]           $buildingPermissions
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Building[]                     $buildings
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[]                $completedQuestionnaires
- * @property \App\Models\Cooperation|null                                                        $cooperation
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[]                  $cooperations
- * @property \App\Models\UserEnergyHabit                                                         $energyHabit
- * @property mixed                                                                               $email
- * @property mixed                                                                               $is_admin
- * @property mixed                                                                               $old_email_token
- * @property mixed                                                                               $oldemail
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[]                 $interests
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[]               $motivations
- * @property \Illuminate\Database\Eloquent\Collection|\App\NotificationSetting[]                 $notificationSettings
- * @property \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[]     $permissions
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Role[]                         $roles
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdviceComments[] $userActionPlanAdviceComments
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User forMyCooperation($cooperationId)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User permission($permissions)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User role($roles, $guard = null)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereAccountId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereCooperationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereFirstName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereLastName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User wherePhoneNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
+ * @property int $id
+ * @property int|null $account_id
+ * @property int|null $cooperation_id
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $phone_number
+ * @property bool $allow_access
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Account|null $account
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdvice[] $actionPlanAdvices
+ * @property-read int|null $action_plan_advices_count
+ * @property-read \App\Models\Building|null $building
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingNotes[] $buildingNotes
+ * @property-read int|null $building_notes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingPermission[] $buildingPermissions
+ * @property-read int|null $building_permissions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
+ * @property-read int|null $buildings_count
+ * @property-read \App\Models\Cooperation|null $cooperation
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
+ * @property-read int|null $cooperations_count
+ * @property-read \App\Models\UserEnergyHabit|null $energyHabit
+ * @property-read mixed $email
+ * @property-read mixed $is_admin
+ * @property-read mixed $old_email_token
+ * @property-read mixed $oldemail
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Interest[] $interests
+ * @property-read int|null $interests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureApplication[] $measureApplicationInterest
+ * @property-read int|null $measure_application_interest_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
+ * @property-read int|null $motivations_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|NotificationSetting[] $notificationSettings
+ * @property-read int|null $notification_settings_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
+ * @property-read int|null $permissions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
+ * @property-read int|null $roles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $stepInterests
+ * @property-read int|null $step_interests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserActionPlanAdviceComments[] $userActionPlanAdviceComments
+ * @property-read int|null $user_action_plan_advice_comments_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserInterest[] $userInterests
+ * @property-read int|null $user_interests_count
+ * @method static \Illuminate\Database\Eloquent\Builder|User forAllCooperations()
+ * @method static \Illuminate\Database\Eloquent\Builder|User forMyCooperation($cooperationId)
+ * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|User permission($permissions)
+ * @method static \Illuminate\Database\Eloquent\Builder|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder|User role($roles, $guard = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereAllowAccess($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereCooperationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereFirstName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereLastName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePhoneNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class User extends Model implements AuthorizableContract

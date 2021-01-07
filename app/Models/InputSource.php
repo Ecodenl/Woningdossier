@@ -6,24 +6,23 @@ use App\Traits\HasShortTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\InputSource.
+ * App\Models\InputSource
  *
- * @property int                             $id
- * @property string                          $name
- * @property string                          $short
- * @property int                             $order
+ * @property int $id
+ * @property string $name
+ * @property string $short
+ * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource whereShort($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\InputSource whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InputSource newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InputSource newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|InputSource query()
+ * @method static \Illuminate\Database\Eloquent\Builder|InputSource whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InputSource whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InputSource whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InputSource whereOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InputSource whereShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InputSource whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class InputSource extends Model

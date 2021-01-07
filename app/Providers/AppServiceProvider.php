@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Jobs\RecalculateStepForUser;
 use App\Models\Notification;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Facades\Schema;
@@ -63,6 +64,8 @@ class AppServiceProvider extends ServiceProvider
                 Notification::setActive($command->user->building, $command->inputSource, false);
             }
         });
+
+        Paginator::useBootstrapThree();
     }
 
     /**

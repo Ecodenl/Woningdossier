@@ -8,28 +8,40 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Step.
+ * App\Models\Step
  *
- * @property int                                                                       $id
- * @property string                                                                    $slug
- * @property string                                                                    $name
- * @property int                                                                       $order
- * @property \Illuminate\Support\Carbon|null                                           $created_at
- * @property \Illuminate\Support\Carbon|null                                           $updated_at
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureApplication[] $measureApplications
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[]      $questionnaires
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step ordered()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step translated($attribute, $name, $locale = 'nl')
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step whereOrder($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step whereSlug($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Step whereUpdatedAt($value)
+ * @property int $id
+ * @property int|null $parent_id
+ * @property string $slug
+ * @property string $short
+ * @property string $name
+ * @property int $order
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureApplication[] $measureApplications
+ * @property-read int|null $measure_applications_count
+ * @property-read Step|null $parentStep
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
+ * @property-read int|null $questionnaires_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Step[] $subSteps
+ * @property-read int|null $sub_steps_count
+ * @method static Builder|Step activeOrderedSteps()
+ * @method static Builder|Step newModelQuery()
+ * @method static Builder|Step newQuery()
+ * @method static Builder|Step onlySubSteps()
+ * @method static Builder|Step ordered()
+ * @method static Builder|Step query()
+ * @method static Builder|Step subStepsForStep(\App\Models\Step $step)
+ * @method static Builder|Step translated($attribute, $name, $locale = 'nl')
+ * @method static Builder|Step whereCreatedAt($value)
+ * @method static Builder|Step whereId($value)
+ * @method static Builder|Step whereName($value)
+ * @method static Builder|Step whereOrder($value)
+ * @method static Builder|Step whereParentId($value)
+ * @method static Builder|Step whereShort($value)
+ * @method static Builder|Step whereSlug($value)
+ * @method static Builder|Step whereUpdatedAt($value)
+ * @method static Builder|Step withoutSubSteps()
  * @mixin \Eloquent
  */
 class Step extends Model

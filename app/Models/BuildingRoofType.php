@@ -8,45 +8,48 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingRoofType.
+ * App\Models\BuildingRoofType
  *
- * @property int                              $id
- * @property int                              $building_id
- * @property int|null                         $input_source_id
- * @property int                              $roof_type_id
- * @property int|null                         $element_value_id
- * @property int|null                         $roof_surface
- * @property int|null                         $insulation_roof_surface
- * @property int|null                         $building_heating_id
- * @property array|null                       $extra
- * @property \Illuminate\Support\Carbon|null  $created_at
- * @property \Illuminate\Support\Carbon|null  $updated_at
- * @property \App\Models\Building             $building
- * @property \App\Models\BuildingHeating|null $buildingHeating
- * @property \App\Models\ElementValue|null    $elementValue
- * @property \App\Models\BuildingHeating|null $heating
- * @property \App\Models\InputSource|null     $inputSource
- * @property \App\Models\ElementValue|null    $insulation
- * @property \App\Models\MeasureApplication   $measureApplication
- * @property \App\Models\RoofType             $roofType
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType forMe(\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereBuildingHeatingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereElementValueId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereExtra($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereInsulationRoofSurface($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereRoofSurface($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereRoofTypeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingRoofType whereUpdatedAt($value)
+ * @property int $id
+ * @property int $building_id
+ * @property int|null $input_source_id
+ * @property int $roof_type_id
+ * @property int|null $element_value_id
+ * @property int|null $roof_surface
+ * @property int|null $insulation_roof_surface
+ * @property int|null $zinc_surface
+ * @property int|null $building_heating_id
+ * @property array|null $extra
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Building $building
+ * @property-read \App\Models\BuildingHeating|null $buildingHeating
+ * @property-read \App\Models\ElementValue|null $elementValue
+ * @property-read \App\Models\BuildingHeating|null $heating
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\ElementValue|null $insulation
+ * @property-read \App\Models\MeasureApplication $measureApplication
+ * @property-read \App\Models\RoofType $roofType
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forBuilding(\App\Models\Building $building)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType query()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereBuildingHeatingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereElementValueId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereExtra($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereInsulationRoofSurface($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereRoofSurface($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereRoofTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType whereZincSurface($value)
  * @mixin \Eloquent
  */
 class BuildingRoofType extends Model

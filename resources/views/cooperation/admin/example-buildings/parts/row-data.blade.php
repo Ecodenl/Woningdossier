@@ -25,13 +25,13 @@
                     @endif
 
                     @if($rowData['type'] == 'text')
-                        <input type="text" class="form-control" name="{{ $fname }}" value="{{ App\Helpers\Old::get($fvalKey, $fallback) }}">
+                        <input type="text" class="form-control" name="{{ $fname }}" value="{{ App\Helpers\ExampleBuildingHelper::old($fvalKey, $fallback) }}">
                         {{--<input type="text" class="form-control" name="content[@if($content instanceof \App\Models\ExampleBuildingContent){{ $content->id }}@endif][content][{{ $step }}][{{ $formFieldName }}]" value="@if($content instanceof \App\Models\ExampleBuildingContent){{ $content->getValue($step . '.'. $formFieldName) }}@endif">--}}
                     @elseif($rowData['type'] == 'select')
 
                         <select class="form-control" name="{{ $fname }}">
                             @foreach($rowData['options'] as $value => $label)
-                                <option value="{{ $value }}" @if(App\Helpers\Old::get($fvalKey, $fallback) == $value)selected="selected"@endif>
+                                <option value="{{ $value }}" @if(App\Helpers\ExampleBuildingHelper::old($fvalKey, $fallback) == $value)selected="selected"@endif>
                                     {{ $label }}
                                 </option>
                             @endforeach
@@ -47,7 +47,7 @@
                         ?>
                         <select class="form-control" name="{{ $fname }}[]" multiple>
                             @foreach($rowData['options'] as $value => $label)
-                                <option value="{{ $value }}" @if(in_array($value, App\Helpers\Old::get($fvalKey, $fallback)))selected="selected"@endif>
+                                <option value="{{ $value }}" @if(in_array($value, App\Helpers\ExampleBuildingHelper::old($fvalKey, $fallback)))selected="selected"@endif>
                                     {{ $label }}
                                 </option>
                             @endforeach

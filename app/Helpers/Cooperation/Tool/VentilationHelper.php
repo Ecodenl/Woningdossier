@@ -54,6 +54,7 @@ class VentilationHelper extends ToolHelper
                     $actionPlanAdvice = new UserActionPlanAdvice();
                 }
 
+                $actionPlanAdvice->input_source_id = $this->inputSource->id;
                 $actionPlanAdvice->planned = true;
                 $actionPlanAdvice->user()->associate($this->user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);

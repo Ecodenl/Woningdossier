@@ -47,6 +47,7 @@ class RequestAccountConfirmationEmail extends Mailable
     {
         return $this
             ->subject(strip_tags(__('cooperation/mail/confirm-account.subject')))
-            ->view('cooperation.mail.user.confirm_account');
+            ->view('cooperation.mail.user.confirm-account.view')
+            ->text('cooperation.mail.user.confirm-account.text');
     }
 }

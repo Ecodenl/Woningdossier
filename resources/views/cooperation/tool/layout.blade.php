@@ -182,6 +182,8 @@
 
             compareInputSourceValues();
             whenObservingDisableInputs();
+
+            pollForNotifications();
         });
 
         function whenObservingDisableInputs()
@@ -283,7 +285,6 @@
                 })
             }
         }
-
     </script>
     <script src="{{ asset('js/are-you-sure.js') }}"></script>
 

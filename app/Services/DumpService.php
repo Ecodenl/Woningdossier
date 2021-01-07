@@ -13,7 +13,7 @@ use App\Calculations\WallInsulation;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Cooperation\Tool\HeaterHelper;
 use App\Helpers\Cooperation\Tool\HighEfficiencyBoilerHelper;
-use App\Helpers\Cooperation\Tool\InsulatingGlazingHelper;
+use App\Helpers\Cooperation\Tool\InsulatedGlazingHelper;
 use App\Helpers\Cooperation\Tool\RoofInsulationHelper;
 use App\Helpers\Cooperation\Tool\SolarPanelHelper;
 use App\Helpers\Cooperation\Tool\VentilationHelper;
@@ -502,7 +502,7 @@ class DumpService
                                     // total sun panels is stored in same column, but need to be treated as a number
                                     if ('true' == $answer && 'total-sun-panels' !== $buildingService->service->short) {
                                         $answer = 'Ja';
-                                    } else if ($buildingService->service->short !== 'total-sun-panels') {
+                                    } else if ($buildingService->service->short !== 'total-sun-panels' && 'false' == $answer ) {
                                         $answer = 'Nee';
                                     }
 
@@ -686,7 +686,7 @@ class DumpService
         );
 
         $insulatedGlazingSavings = InsulatedGlazing::calculate($building, $inputSource, $userEnergyHabit,
-            (new InsulatingGlazingHelper($user, $inputSource))
+            (new InsulatedGlazingHelper($user, $inputSource))
                 ->createValues()
                 ->getValues());
 

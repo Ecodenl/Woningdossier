@@ -69,7 +69,8 @@ class HeaterHelper extends ToolHelper
     {
         $step = Step::findByShort('heater');
 
-        $results = Heater::calculate($this->building, $this->user->energyHabit, $this->getValues());
+        $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
+        $results = Heater::calculate($this->building, $userEnergyHabit, $this->getValues());
 
         // remove old results
         UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
@@ -79,6 +80,7 @@ class HeaterHelper extends ToolHelper
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
+                $actionPlanAdvice->input_source_id = $this->inputSource->id;
                 $actionPlanAdvice->user()->associate($this->user);
                 $actionPlanAdvice->measureApplication()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);

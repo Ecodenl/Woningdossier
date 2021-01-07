@@ -28,9 +28,8 @@ class RoleController extends Controller
         }
         $this->authorize('assign-role', $role);
 
-        if ($user->id === Hoomdossier::user()->id) {
-            return 403;
-        }
+        abort_if($user->id === Hoomdossier::user()->id, 403);
+
         $user->assignRole($role);
 
         return redirect()->back();

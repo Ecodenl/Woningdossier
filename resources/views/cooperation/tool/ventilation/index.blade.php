@@ -45,7 +45,7 @@
                                             <input type="checkbox"
                                                    name="building_ventilations[how][]"
                                                    value="{{ $howKey }}"
-                                                   @if(in_array($howKey, old('building_ventilations.how', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'how', []))))
+                                                   @if(in_array($howKey, old('building_ventilations.how', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'how', []) ?? [])))
                                                    checked="checked"
                                                     @endif
                                             >
@@ -101,7 +101,7 @@
                                 <?php
                                 Log::debug(
 
-                                    is_array(old('building_ventilations.living_situation', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'living_situation', [])))
+                                    is_array(old('building_ventilations.living_situation', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'living_situation', []) ?? []))
                                         ? 'de living_situation van building ventilations is wel een array'
                                         : 'de living_situation van building ventilations is geen array'
                                 )
@@ -177,7 +177,7 @@
                                             <input type="checkbox"
                                                    name="building_ventilations[usage][]"
                                                    value="{{ $uKey }}"
-                                                   @if(in_array($uKey, old('building_ventilations.usage', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'usage',[]))))
+                                                   @if(in_array($uKey, old('building_ventilations.usage', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'usage',[]) ?? [])))
                                                    checked="checked"
                                                     @endif
                                             >

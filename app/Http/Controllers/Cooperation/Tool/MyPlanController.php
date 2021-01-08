@@ -7,6 +7,7 @@ use App\Helpers\MyPlanHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MyPlanRequest;
 use App\Models\FileType;
+use App\Models\Notification;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
@@ -48,9 +49,16 @@ class MyPlanController extends Controller
             $personalPlanForVariousInputSources[$inputSource->name] = UserActionPlanAdviceService::getPersonalPlan($buildingOwner, $inputSource);
         }
 
+        $notification = Notification::activeNotifications(
+            HoomdossierSession::getBuilding(true),
+            HoomdossierSession::getInputSource(true)
+        )->forType('recalculate')->first();
+
+        $isRecalculating = $notification instanceof Notification ? $notification->is_active : false;
+
         return view('cooperation.tool.my-plan.index', compact(
             'actionPlanComments', 'pdfReportFileType', 'file', 'inputSourcesForPersonalPlanModal', 'advices',
-            'reportFileTypeCategory', 'buildingHasCompletedGeneralData', 'personalPlanForVariousInputSources'
+            'reportFileTypeCategory', 'buildingHasCompletedGeneralData', 'personalPlanForVariousInputSources', 'isRecalculating'
         ));
     }
 

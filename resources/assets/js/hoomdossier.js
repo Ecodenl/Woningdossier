@@ -51,7 +51,6 @@ function updateNotifications() {
         success: function (response) {
             // for now this will do, this will be changed, hopefully, to livewire in the near future
             if (typeof response.notifications[0] !== "undefined") {
-                $('.pdf-report').prop('disabled', 'disabled').addClass('disabled')
                 wasRecalculating = true;
             }
             if (wasRecalculating && typeof response.notifications[0] === "undefined") {

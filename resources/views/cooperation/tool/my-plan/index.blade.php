@@ -193,7 +193,8 @@
                 pollForFileProcessing();
             }
 
-            @if($isRecalculating === true)
+            @if($isRecalculating)
+            $('.pdf-report').prop('disabled', 'disabled').addClass('disabled')
             // have to do this for now.
             $.toast({
                 text: "Actieplan word herberekend. <span class='glyphicon-spin glyphicon glyphicon-refresh '></span>", // Text that is to be shown in the toast

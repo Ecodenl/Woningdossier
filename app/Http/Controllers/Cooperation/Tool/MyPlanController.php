@@ -49,11 +49,12 @@ class MyPlanController extends Controller
             $personalPlanForVariousInputSources[$inputSource->name] = UserActionPlanAdviceService::getPersonalPlan($buildingOwner, $inputSource);
         }
 
-        $isRecalculating = optional(Notification::activeNotifications(
+        $notification = Notification::activeNotifications(
             HoomdossierSession::getBuilding(true),
             HoomdossierSession::getInputSource(true)
-        )->forType('recalculate')->first())->is_active;
+        )->forType('recalculate')->first();
 
+        $isRecalculating = $notification instanceof Notification ? $notification->is_active : false;
 
         return view('cooperation.tool.my-plan.index', compact(
             'actionPlanComments', 'pdfReportFileType', 'file', 'inputSourcesForPersonalPlanModal', 'advices',

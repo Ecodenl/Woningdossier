@@ -48,6 +48,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\FacadePlasteredSurface|null $plasteredSurface
  * @property-read \App\Models\RoofType|null $roofType
  * @property-read \App\Models\FacadeSurface|null $wallJoints
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature newModelQuery()

@@ -2,39 +2,31 @@
 
 namespace App\Helpers\Cooperation\Tool;
 
-use App\Calculations\Heater;
 use App\Calculations\InsulatedGlazing;
 use App\Events\StepCleared;
-use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\BuildingInsulatedGlazing;
 use App\Models\BuildingPaintworkStatus;
 use App\Models\Element;
-use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Services\ModelService;
 use App\Services\UserActionPlanAdviceService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 class InsulatedGlazingHelper extends ToolHelper
 {
-
     public function saveValues(): ToolHelper
     {
         $buildingFeatureData = $this->getValues('building_features');
         $buildingInsulatedGlazingData = $this->getValues('building_insulated_glazings');
         $buildingElementData = $this->getValues('building_elements');
         $buildingPaintworkStatusData = $this->getValues('building_paintwork_statuses');
-
 
         foreach ($buildingInsulatedGlazingData as $measureApplicationId => $buildingInsulatedGlazing) {
             // update or Create the buildingInsulatedGlazing
@@ -48,7 +40,6 @@ class InsulatedGlazingHelper extends ToolHelper
             );
         }
 
-
         $frames = Element::where('short', 'frames')->first();
         $woodElements = Element::where('short', 'wood-elements')->first();
 
@@ -57,13 +48,12 @@ class InsulatedGlazingHelper extends ToolHelper
             [
                 'building_id' => $this->building->id,
                 'input_source_id' => $this->inputSource->id,
-                'element_id' => $frames->id
+                'element_id' => $frames->id,
             ],
             [
-                'element_value_id' => $buildingElementData[$frames->id]
+                'element_value_id' => $buildingElementData[$frames->id],
             ]
         );
-
 
         // collect the wood element create data
         // after that we can delete the old records and create the new ones
@@ -71,7 +61,7 @@ class InsulatedGlazingHelper extends ToolHelper
         if (array_key_exists($woodElements->id, $buildingElementData)) {
             foreach ($buildingElementData[$woodElements->id] as $woodElementValueId) {
                 $woodElementCreateData[] = [
-                    'element_value_id' => $woodElementValueId
+                    'element_value_id' => $woodElementValueId,
                 ];
             }
         }
@@ -84,7 +74,6 @@ class InsulatedGlazingHelper extends ToolHelper
             $woodElementCreateData
         );
 
-
         BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
             [
                 'building_id' => $this->building->id,
@@ -95,7 +84,7 @@ class InsulatedGlazingHelper extends ToolHelper
 
         $lastPaintedYear = null;
         if (array_key_exists('last_painted_year', $buildingPaintworkStatusData)) {
-            $year = (int)$buildingPaintworkStatusData['last_painted_year'];
+            $year = (int) $buildingPaintworkStatusData['last_painted_year'];
             if ($year > 1950) {
                 $buildingPaintworkStatusData['last_painted_year'] = $year;
             }
@@ -107,6 +96,7 @@ class InsulatedGlazingHelper extends ToolHelper
             ],
             $buildingPaintworkStatusData
         );
+
         return $this;
     }
 
@@ -154,6 +144,7 @@ class InsulatedGlazingHelper extends ToolHelper
                 }
             }
         }
+
         return $this;
     }
 
@@ -177,8 +168,7 @@ class InsulatedGlazingHelper extends ToolHelper
             'wood_rot_status_id' => $buildingPaintworkStatus->wood_rot_status_id ?? null,
         ];
 
-
-        $measureApplicationIds = MeasureApplication::whereIn('short',   [
+        $measureApplicationIds = MeasureApplication::whereIn('short', [
             'hrpp-glass-only',
             'hrpp-glass-frames',
             'hr3p-frames',
@@ -211,7 +201,6 @@ class InsulatedGlazingHelper extends ToolHelper
                 'windows' => $buildingInsulatedGlazing->windows,
             ];
         }
-
 
         $woodElements = Element::findByShort('wood-elements');
         $frames = Element::findByShort('frames');

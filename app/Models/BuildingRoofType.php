@@ -30,6 +30,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\ElementValue|null $insulation
  * @property-read \App\Models\MeasureApplication $measureApplication
  * @property-read \App\Models\RoofType $roofType
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType newModelQuery()

@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Building $building
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\PvPanelOrientation|null $orientation
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater newModelQuery()

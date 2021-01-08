@@ -36,6 +36,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\BuildingHeating|null $heatingSecondFloor
  * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|UserEnergyHabit newModelQuery()

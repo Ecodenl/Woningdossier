@@ -23,7 +23,6 @@ use App\Helpers\NumberFormatter;
 use App\Helpers\ToolHelper;
 use App\Helpers\Translation;
 use App\Models\Building;
-use App\Models\BuildingCoachStatus;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\buildingHeater;
@@ -43,7 +42,6 @@ use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
-use App\Models\PrivateMessage;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
@@ -51,7 +49,6 @@ use App\Models\Step;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 
 class DumpService
 {
@@ -137,10 +134,10 @@ class DumpService
                             // If you want to go ahead and translate in a different namespace, do it here
                             // we will dot the array, map it so we can add the step name to it
                             $deeperContents = array_map(function ($content) use ($step, $subStep) {
-                                return self::makeHeaderText($step->name,  $subStep , $content);
-                            }, Arr::dot($contents, $stepShort . '.' . $subStep . '.calculation.'));
+                                return self::makeHeaderText($step->name, $subStep, $content);
+                            }, Arr::dot($contents, $stepShort.'.'.$subStep.'.calculation.'));
                         } else {
-                            $deeperContents = Arr::dot($contents, $stepShort . '.' . $subStep . '.calculation.');
+                            $deeperContents = Arr::dot($contents, $stepShort.'.'.$subStep.'.calculation.');
                         }
 
                         $headers = array_merge($headers, $deeperContents);
@@ -149,13 +146,13 @@ class DumpService
 
                         if ($prefixValuesWithStep) {
                             $subStepName = null;
-                            if ($subStep !== "-") {
+                            if ('-' !== $subStep) {
                                 $subStepName = optional(Step::findByShort($subStep))->name;
                             }
 
-                            $headers[$stepShort . '.' . $subStep . '.' . $tableWithColumnOrAndId] = self::makeHeaderText($step->name, $subStepName, $labelWithEuroNormalization);
+                            $headers[$stepShort.'.'.$subStep.'.'.$tableWithColumnOrAndId] = self::makeHeaderText($step->name, $subStepName, $labelWithEuroNormalization);
                         } else {
-                            $headers[$stepShort . '.' . $subStep . '.' . $tableWithColumnOrAndId] = $labelWithEuroNormalization;
+                            $headers[$stepShort.'.'.$subStep.'.'.$tableWithColumnOrAndId] = $labelWithEuroNormalization;
                         }
                     }
                 }
@@ -173,9 +170,9 @@ class DumpService
      * Method to generate a total dump from a user for a specific input source.
      * This dump collects all possible data for a given user for the tool and returns it in an array.
      *
-     * @param array $structureForTotalDump | we need the headers to get table and row data, provided from the self::dissectHeaders, using self::getStructureForTotalDumpService
-     * @param Cooperation $cooperation ,
-     * @param bool $withConditionalLogic | when true, it will return the data as happens in the dump. So if an input gets hidden it wont be put in the dump
+     * @param array       $structureForTotalDump | we need the headers to get table and row data, provided from the self::dissectHeaders, using self::getStructureForTotalDumpService
+     * @param Cooperation $cooperation           ,
+     * @param bool        $withConditionalLogic  | when true, it will return the data as happens in the dump. So if an input gets hidden it wont be put in the dump
      */
     public static function totalDump(array $structureForTotalDump, Cooperation $cooperation, User $user, InputSource $inputSource, bool $anonymized, bool $withTranslationsForColumns = true, bool $withConditionalLogic = false): array
     {
@@ -192,7 +189,6 @@ class DumpService
         // collect basic info from a user.
         $building = $user->building;
         $buildingId = $building->id;
-
 
         $createdAt = optional($user->created_at)->format('Y-m-d');
         $mostRecentStatus = $building->getMostRecentBuildingStatus();
@@ -418,13 +414,13 @@ class DumpService
                                         if (in_array($extraKey, ['tiles_condition', 'measure_application_id'])) {
                                             $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->extra[$extraKey] ?? '';
 
-                                            if (!empty($buildingRoofType->extra[$extraKey]) && 'tiles_condition' == $extraKey) {
-                                                $status = RoofTileStatus::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
+                                            if (! empty($buildingRoofType->extra[$extraKey]) && 'tiles_condition' == $extraKey) {
+                                                $status = RoofTileStatus::find((int) $row[$buildingId][$tableWithColumnOrAndIdKey]);
                                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = ($status instanceof RoofTileStatus) ? $status->name : '';
                                             }
                                             // The measure application id, in this case. can be 0, this means the option: "niet" has been chosen the option is not saved as a measure application
                                             if ('measure_application_id' == $extraKey) {
-                                                $measureApplication = MeasureApplication::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
+                                                $measureApplication = MeasureApplication::find((int) $row[$buildingId][$tableWithColumnOrAndIdKey]);
                                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : __('roof-insulation.measure-application.no.title');
                                             }
                                         } else {
@@ -496,7 +492,7 @@ class DumpService
                                 // total sun panels is stored in same column, but need to be treated as a number
                                 if ('true' == $answer && 'total-sun-panels' !== $buildingService->service->short) {
                                     $answer = 'Ja';
-                                } else if ($buildingService->service->short !== 'total-sun-panels' && 'false' == $answer ) {
+                                } elseif ('total-sun-panels' !== $buildingService->service->short && 'false' == $answer) {
                                     $answer = 'Nee';
                                 }
 
@@ -754,7 +750,7 @@ class DumpService
             return $value;
         }
 
-        if (!is_numeric($value)) {
+        if (! is_numeric($value)) {
             return $value;
         }
 
@@ -776,9 +772,9 @@ class DumpService
      * Format the output of the given column and value.
      *
      * @param string $column
-     * @param mixed $value
-     * @param int $decimals
-     * @param bool $shouldRound
+     * @param mixed  $value
+     * @param int    $decimals
+     * @param bool   $shouldRound
      *
      * @return float|int|string
      */
@@ -818,7 +814,7 @@ class DumpService
      */
     protected static function isYear($column, $extraValue = '')
     {
-        if (!is_null($column)) {
+        if (! is_null($column)) {
             if (false !== stristr($column, 'year')) {
                 return true;
             }

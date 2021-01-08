@@ -7,7 +7,6 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\InputSource;
-use App\Models\PrivateMessageView;
 use App\Models\Step;
 use App\Models\ToolSetting;
 use Illuminate\View\View;
@@ -34,7 +33,7 @@ class ToolComposer
         // which meens we hef to refaktor.
         $excludedViews = ['cooperation.tool.components.alert'];
 
-        if (!in_array($view->getName(), $excludedViews)) {
+        if (! in_array($view->getName(), $excludedViews)) {
             $user = Hoomdossier::user();
 
             $view->with('user', $user);
@@ -46,7 +45,6 @@ class ToolComposer
             if (is_null($this->currentUser)) {
                 $this->currentUser = Hoomdossier::user();
             }
-
 
             if (is_null($this->currentStep)) {
                 $toolUrl = explode('/', request()->getRequestUri());

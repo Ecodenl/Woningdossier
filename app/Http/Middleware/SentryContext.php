@@ -22,7 +22,7 @@ class SentryContext
     {
         // If logged in and sentry is found, add extra contextual information
         // which helps debugging exceptions
-        if (\Auth::account() instanceOf Account && \Auth::account()->user() instanceOf User && app()->bound('sentry')) {
+        if (\Auth::account() instanceof Account && \Auth::account()->user() instanceof User && app()->bound('sentry')) {
             /** @var Account $account */
             $account = Hoomdossier::account();
             $user = Hoomdossier::user();

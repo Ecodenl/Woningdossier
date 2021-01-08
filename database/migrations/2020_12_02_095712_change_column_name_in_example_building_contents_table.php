@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class ChangeColumnNameInExampleBuildingContentsTable extends Migration
@@ -13,7 +11,6 @@ class ChangeColumnNameInExampleBuildingContentsTable extends Migration
      */
     public function up()
     {
-
         // previous the insulated_glazing_id was used in the example building content
         // however, this did not match the column name in the table
         // so this migration will rename it from insulated_glazing_id to insulating_glazing_id;
@@ -36,7 +33,6 @@ class ChangeColumnNameInExampleBuildingContentsTable extends Migration
             $baseContent = json_decode($exampleBuildingContent->content, true);
             $buildingInsulatedGlazingContent = $baseContent['insulated-glazing']['-']['building_insulated_glazings'];
             foreach ($measureApplications as $measureApplicationId) {
-
                 if (array_key_exists('insulated_glazing_id', $buildingInsulatedGlazingContent[$measureApplicationId])) {
                     $baseContent['insulated-glazing']['-']['building_insulated_glazings'][$measureApplicationId]['insulating_glazing_id']
                         = $buildingInsulatedGlazingContent[$measureApplicationId]['insulated_glazing_id'];
@@ -49,7 +45,7 @@ class ChangeColumnNameInExampleBuildingContentsTable extends Migration
             DB::table('example_building_contents')
                 ->where('id', $exampleBuildingContent->id)
                 ->update([
-                    'content' => json_encode($baseContent)
+                    'content' => json_encode($baseContent),
                 ]);
         }
     }
@@ -61,6 +57,5 @@ class ChangeColumnNameInExampleBuildingContentsTable extends Migration
      */
     public function down()
     {
-        //
     }
 }

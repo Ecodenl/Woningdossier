@@ -36,8 +36,8 @@ class ReportController extends Controller
 //        $inputSourceForDump = InputSource::findByShort('resident');
 //        $user = User::findMany([4416]);
 //        $user = UserService::eagerLoadUserData($user, $inputSourceForDump)->first();
-////        dd($user->building->buildingVentilations);
-////        Cache::forever('develop_total_dump', DumpService::totalDump($structuredHeaders, $cooperation, $user, $inputSourceForDump, false, false)['user-data']);
+        ////        dd($user->building->buildingVentilations);
+        ////        Cache::forever('develop_total_dump', DumpService::totalDump($structuredHeaders, $cooperation, $user, $inputSourceForDump, false, false)['user-data']);
 //
 //        dd(
 //

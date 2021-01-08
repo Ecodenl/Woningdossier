@@ -12,7 +12,6 @@ use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserEnergyHabit;
-use App\Services\DumpService;
 
 class FloorInsulation
 {
@@ -34,14 +33,13 @@ class FloorInsulation
 
         $crawlspace = Element::where('short', 'crawlspace')->first();
 
-        if ($calculateData['building_elements']['extra']['has_crawlspace'] !== "no") {
+        if ('no' !== $calculateData['building_elements']['extra']['has_crawlspace']) {
             $elements = $calculateData['element'] ?? [];
 
             $buildingElements = $calculateData['building_elements'] ?? [];
             $buildingFeatures = $calculateData['building_features'] ?? [];
 
             $surface = array_key_exists('insulation_surface', $buildingFeatures) ? $buildingFeatures['insulation_surface'] : 0;
-
 
             if (array_key_exists('extra', $buildingElements)) {
                 // check if there is any crawlspace

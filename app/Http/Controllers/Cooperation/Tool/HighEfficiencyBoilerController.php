@@ -10,17 +10,11 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\HighEfficiencyBoilerFormRequest;
-use App\Models\MeasureApplication;
 use App\Models\Service;
 use App\Models\Step;
-use App\Models\User;
-use App\Models\UserActionPlanAdvice;
-use App\Models\UserEnergyHabit;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 
 class HighEfficiencyBoilerController extends Controller
 {
@@ -104,8 +98,8 @@ class HighEfficiencyBoilerController extends Controller
         $nextStep = StepHelper::getNextStep($building, $inputSource, $this->step);
         $url = $nextStep['url'];
 
-        if (!empty($nextStep['tab_id'])) {
-            $url .= '#' . $nextStep['tab_id'];
+        if (! empty($nextStep['tab_id'])) {
+            $url .= '#'.$nextStep['tab_id'];
         }
 
         return redirect($url);

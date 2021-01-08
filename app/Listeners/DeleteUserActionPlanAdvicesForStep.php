@@ -14,13 +14,13 @@ class DeleteUserActionPlanAdvicesForStep
      */
     public function __construct()
     {
-        //
     }
 
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param object $event
+     *
      * @return void
      */
     public function handle(StepCleared $event)

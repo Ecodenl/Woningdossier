@@ -15,11 +15,9 @@ use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\Step;
-use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class VentilationController extends Controller

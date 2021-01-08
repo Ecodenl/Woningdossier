@@ -16,8 +16,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\Step $step
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
  * @property-read int|null $steps_count
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedStep newModelQuery()

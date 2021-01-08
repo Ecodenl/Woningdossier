@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource|null $inputSource
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView forCurrentInputSource()
  * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView forMe(\App\Models\User $user = null)

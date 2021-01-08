@@ -14,7 +14,6 @@ class BuildingDataCopyService
      */
     public static function copy(Building $building, InputSource $from, InputSource $to)
     {
-
         // the tables that have a the where_column is used to query on the resident his answers.
         $tables = [
             'user_interests' => [
@@ -90,7 +89,6 @@ class BuildingDataCopyService
 
                 // loop through the answers from the desired input source
                 foreach ($fromValues as $fromValue) {
-
                     if ($fromValue instanceof \stdClass && isset($fromValue->$whereColumn)) {
                         // now build the query to get the resident his answers
                         $toValueQuery = \DB::table($table)
@@ -125,7 +123,6 @@ class BuildingDataCopyService
                             }
                         } else {
                             $toValue = $toValueQuery->first();
-
 
                             // cast the results to a array
                             $toValue = (array) $toValue;

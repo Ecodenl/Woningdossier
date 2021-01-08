@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\Appliance|null $appliance
  * @property-read \App\Models\Building|null $building
  * @property-read \App\Models\InputSource|null $inputSource
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingAppliance newModelQuery()

@@ -12,40 +12,37 @@ use Illuminate\Support\Collection;
 /**
  * App\Models\PrivateMessage
  *
- * @property int                                                                       $id
- * @property int|null                                                                  $building_id
- * @property bool|null                                                                 $is_public
- * @property string                                                                    $from_user
- * @property string|null                                                               $request_type
- * @property string                                                                    $message
- * @property int|null                                                                  $from_user_id
- * @property int|null                                                                  $from_cooperation_id
- * @property int|null                                                                  $to_cooperation_id
- * @property \Illuminate\Support\Carbon|null                                           $created_at
- * @property \Illuminate\Support\Carbon|null                                           $updated_at
- * @property \App\Models\Building|null                                                 $building
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessageView[] $privateMessageViews
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversation($buildingId)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage conversationRequest()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage forMyCooperation()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage myPrivateMessages()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage private()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage public()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereFromCooperationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereFromUser($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereFromUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereIsPublic($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereMessage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereRequestType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereToCooperationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessage whereUpdatedAt($value)
+ * @property int $id
+ * @property int|null $building_id
+ * @property bool|null $is_public
+ * @property string $from_user
+ * @property string $message
+ * @property int|null $from_user_id
+ * @property int|null $from_cooperation_id
+ * @property int|null $to_cooperation_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Building|null $building
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessageView[] $privateMessageViews
+ * @property-read int|null $private_message_views_count
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage conversation($buildingId)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage forMyCooperation()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage myPrivateMessages()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage private()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage public()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereFromCooperationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereFromUser($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereFromUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereIsPublic($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereMessage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereToCooperationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class PrivateMessage extends Model

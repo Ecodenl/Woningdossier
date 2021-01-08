@@ -81,7 +81,8 @@ class StepHelper
      * @param $interestedInType
      * @param $interestedInId
      */
-    public static function hasInterestInStep(User $user, $interestedInType, $interestedInId, $inputSource = null): bool {
+    public static function hasInterestInStep(User $user, $interestedInType, $interestedInId, $inputSource = null): bool
+    {
         $noInterestIds = Interest::whereIn('calculate_value', [4, 5])->select('id')->get()->pluck('id')->toArray();
 
         $userSelectedInterestedId = null;

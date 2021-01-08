@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\InputSource $inputSource
  * @property-read \App\Models\Step $step
+ * @method static \Illuminate\Database\Eloquent\Builder|StepComment allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder|StepComment forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment newModelQuery()

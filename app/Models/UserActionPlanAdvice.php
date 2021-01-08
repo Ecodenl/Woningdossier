@@ -28,6 +28,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\MeasureApplication $measureApplication
  * @property-read \App\Models\Step $step
  * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forMe(\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forStep(\App\Models\Step $step)

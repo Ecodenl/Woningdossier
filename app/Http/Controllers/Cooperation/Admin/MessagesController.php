@@ -6,11 +6,10 @@ use App\Helpers\Hoomdossier;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\MessageRequest;
 use App\Models\Building;
-use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Services\BuildingCoachStatusService;
 use App\Services\PrivateMessageService;
-use \Illuminate\Database\Query\Builder;
+use Illuminate\Database\Query\Builder;
 
 class MessagesController extends Controller
 {
@@ -35,7 +34,6 @@ class MessagesController extends Controller
                         ->whereRaw('buildings.id = private_messages.building_id');
                 })->get()->toArray()
             )->load(['privateMessages', 'user']);
-
         }
 
         return view('cooperation.admin.messages.index', compact('buildings'));

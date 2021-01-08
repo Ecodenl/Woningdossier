@@ -10,17 +10,11 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\HeaterFormRequest;
-use App\Models\BuildingHeater;
 use App\Models\ComfortLevelTapWater;
-use App\Models\MeasureApplication;
 use App\Models\PvPanelOrientation;
 use App\Models\Step;
-use App\Models\UserActionPlanAdvice;
-use App\Models\UserEnergyHabit;
-use App\Scopes\GetValueScope;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class HeaterController extends Controller
@@ -51,11 +45,9 @@ class HeaterController extends Controller
         $comfortLevels = ComfortLevelTapWater::orderBy('order')->get();
         $collectorOrientations = PvPanelOrientation::orderBy('order')->get();
 
-
         $energyHabitsOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
             $buildingOwner->energyHabit()
         )->get();
-
 
         $heatersOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
             $building->heater()

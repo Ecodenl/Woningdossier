@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands\Tool;
 
-use App\Helpers\StepHelper;
 use App\Jobs\ProcessRecalculate;
 use App\Jobs\RecalculateStepForUser;
 use App\Models\CompletedStep;
@@ -12,7 +11,6 @@ use App\Models\Step;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Input;
 
 class RecalculateForUser extends Command
 {
@@ -50,9 +48,10 @@ class RecalculateForUser extends Command
      */
     public function handle()
     {
-        if (!is_null($this->option('cooperation'))) {
-            if (!Cooperation::find($this->option('cooperation'))) {
+        if (! is_null($this->option('cooperation'))) {
+            if (! Cooperation::find($this->option('cooperation'))) {
                 $this->error('Cooperation not found!');
+
                 return;
             }
             $users = User::forMyCooperation($this->option('cooperation'))->with('building')->get();
@@ -63,12 +62,12 @@ class RecalculateForUser extends Command
         $bar = $this->output->createProgressBar($users->count());
 
         $bar->setFormat("%message%\n %current%/%max% [%bar%] %percent:3s%%");
-        $bar->setMessage("Queuing up the recalculate..");
+        $bar->setMessage('Queuing up the recalculate..');
 
         // default
         $inputSourcesToRecalculate = ['resident', 'coach'];
 
-        if (!empty($this->option('input-source'))) {
+        if (! empty($this->option('input-source'))) {
             $inputSourcesToRecalculate = $this->option('input-source');
         }
 
@@ -99,7 +98,7 @@ class RecalculateForUser extends Command
                 $stepsToRecalculateChain[] = new RecalculateStepForUser($user, $completedStep->inputSource, $completedStep->step);
             }
 
-            if (!empty($stepsToRecalculateChain)) {
+            if (! empty($stepsToRecalculateChain)) {
                 ProcessRecalculate::withChain($stepsToRecalculateChain)->dispatch();
             }
         }

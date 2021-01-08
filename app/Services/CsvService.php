@@ -10,14 +10,12 @@ use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
-use App\Models\PrivateMessage;
 use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\QuestionOption;
 use App\Models\Role;
 use App\Models\Step;
 use App\Models\User;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 class CsvService
@@ -343,7 +341,7 @@ class CsvService
                     if ($currentQuestion instanceof Question) {
                         // when the question has options, the answer is imploded.
                         if ($currentQuestion->hasQuestionOptions()) {
-                            if (!empty($answer)) {
+                            if (! empty($answer)) {
                                 // this will contain the question option ids
                                 // and filter out the empty answers.
                                 $answers = array_filter(explode('|', $answer));
@@ -383,7 +381,6 @@ class CsvService
 //        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
         $residentInputSource = $inputSource;
 
-
         $users = $cooperation->users()
             ->with(['building' => function ($query) use ($coachInputSource, $generalDataStep) {
                 $query->with(['completedSteps' => function ($query) use ($coachInputSource, $generalDataStep) {
@@ -392,7 +389,6 @@ class CsvService
             }])
             ->has('buildings')
             ->get();
-
 
         $coachIds = [];
         $residentIds = [];
@@ -408,7 +404,7 @@ class CsvService
 
         // We separate users based on ID and eager load the collection with most relations;
         $residents = UserService::eagerLoadUserData($users->whereIn('id', $residentIds), $residentInputSource);
-        $coaches = UserService::eagerLoadUserData($users->whereIn('id', $coachIds),  $coachInputSource);
+        $coaches = UserService::eagerLoadUserData($users->whereIn('id', $coachIds), $coachInputSource);
 
         $headers = DumpService::getStructureForTotalDumpService($anonymized);
 
@@ -422,14 +418,13 @@ class CsvService
          * @var User $user
          */
         foreach ($users as $user) {
-            $inputSource= $user->building->buildingFeatures->inputSource;
+            $inputSource = $user->building->buildingFeatures->inputSource;
 
             $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
         }
 
         return $rows;
     }
-
 
     protected static function formatFieldOutput($column, $value, $maybe1, $maybe2)
     {
@@ -440,7 +435,7 @@ class CsvService
             return $value;
         }
 
-        if (!is_numeric($value)) {
+        if (! is_numeric($value)) {
             return $value;
         }
 
@@ -462,9 +457,9 @@ class CsvService
      * Format the output of the given column and value.
      *
      * @param string $column
-     * @param mixed $value
-     * @param int $decimals
-     * @param bool $shouldRound
+     * @param mixed  $value
+     * @param int    $decimals
+     * @param bool   $shouldRound
      *
      * @return float|int|string
      */
@@ -502,7 +497,7 @@ class CsvService
      */
     protected static function isYear($column, $extraValue = '')
     {
-        if (!is_null($column)) {
+        if (! is_null($column)) {
             if (false !== stristr($column, 'year')) {
                 return true;
             }

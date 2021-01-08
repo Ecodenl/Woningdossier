@@ -24,8 +24,9 @@ class ValidateElementKey implements Rule
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
+     * @param string $attribute
+     * @param mixed  $value
+     *
      * @return bool
      */
     public function passes($attribute, $value)
@@ -33,12 +34,14 @@ class ValidateElementKey implements Rule
         $element = Element::findByShort($this->elementShort);
 
         // when this does not exist the user is messing around, return back with no msg.
-        if (!array_key_exists($element->id, $value)) {
+        if (! array_key_exists($element->id, $value)) {
             $building = HoomdossierSession::getBuilding(true);
             $inputSource = HoomdossierSession::getInputSource(true);
             Log::debug(__METHOD__."user is messing around. user_id {$building->user_id} input_source_id: {$inputSource->id}");
+
             return false;
         }
+
         return  true;
     }
 

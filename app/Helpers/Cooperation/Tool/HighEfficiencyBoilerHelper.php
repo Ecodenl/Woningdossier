@@ -3,13 +3,8 @@
 namespace App\Helpers\Cooperation\Tool;
 
 use App\Calculations\HighEfficiencyBoiler;
-use App\Events\StepCleared;
-use App\Helpers\HoomdossierSession;
 use App\Models\Building;
-use App\Models\BuildingElement;
-use App\Models\BuildingFeature;
 use App\Models\BuildingService;
-use App\Models\Element;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Service;
@@ -18,19 +13,16 @@ use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Scopes\GetValueScope;
 use App\Services\UserActionPlanAdviceService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class HighEfficiencyBoilerHelper extends ToolHelper
 {
-
     /**
      * Method to clear all the saved data for the step, except for the comments.
      *
-     * @param Building $building
+     * @param Building    $building
      * @param InputSource $inputSource
-     * @param array $buildingFeatureData
-     * @param array $buildingElementData
+     * @param array       $buildingFeatureData
+     * @param array       $buildingElementData
      */
     public function saveValues(): ToolHelper
     {
@@ -76,7 +68,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
         $buildingBoilerArray = [
             'service_value_id' => $buildingBoilerService->service_value_id ?? null,
             'extra' => [
-                'date' => $buildingBoilerService->extra['date'] ?? null
+                'date' => $buildingBoilerService->extra['date'] ?? null,
             ],
         ];
 
@@ -114,6 +106,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
                 $actionPlanAdvice->save();
             }
         }
+
         return $this;
     }
 }

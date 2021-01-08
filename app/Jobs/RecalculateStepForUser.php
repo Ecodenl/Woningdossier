@@ -7,16 +7,19 @@ use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class RecalculateStepForUser implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public $user;
     public $inputSource;
@@ -36,8 +39,8 @@ class RecalculateStepForUser implements ShouldQueue
      */
     public function handle()
     {
-        Log::debug("Recalculating step: ".$this->step->name);
-        $stepClass = 'App\\Helpers\\Cooperation\Tool\\' . Str::singular(Str::studly($this->step->short)) . 'Helper';
+        Log::debug('Recalculating step: '.$this->step->name);
+        $stepClass = 'App\\Helpers\\Cooperation\Tool\\'.Str::singular(Str::studly($this->step->short)).'Helper';
         /** @var ToolHelper $stepHelperClass */
         $stepHelperClass = new $stepClass($this->user, $this->inputSource);
         $stepHelperClass->createValues()->createAdvices();

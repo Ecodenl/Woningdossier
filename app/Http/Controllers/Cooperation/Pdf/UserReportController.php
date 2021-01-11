@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Cooperation\Pdf;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
-use App\Models\BuildingInsulatedGlazing;
 use App\Models\Cooperation;
 use App\Models\Interest;
 use App\Models\UserActionPlanAdviceComments;
@@ -27,7 +26,7 @@ class UserReportController extends Controller
 
         $headers = DumpService::getStructureForTotalDumpService(false, false);
 
-        $user = UserService::eagerLoadUserData($user,  $inputSource);
+        $user = UserService::eagerLoadUserData($user, $inputSource);
 
         $building = $user->building;
 

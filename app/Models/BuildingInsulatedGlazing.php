@@ -8,42 +8,43 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingInsulatedGlazing.
+ * App\Models\BuildingInsulatedGlazing
  *
- * @property int                                $id
- * @property int                                $building_id
- * @property int|null                           $input_source_id
- * @property int                                $measure_application_id
- * @property int|null                           $insulating_glazing_id
- * @property int|null                           $building_heating_id
- * @property float|null                         $m2
- * @property int|null                           $windows
- * @property array|null                         $extra
- * @property \Illuminate\Support\Carbon|null    $created_at
- * @property \Illuminate\Support\Carbon|null    $updated_at
- * @property \App\Models\Building               $building
- * @property \App\Models\BuildingHeating|null   $buildingHeating
- * @property \App\Models\InputSource|null       $inputSource
- * @property \App\Models\InsulatingGlazing|null $insulatedGlazing
- * @property \App\Models\MeasureApplication     $measureApplication
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing forMe(\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing whereBuildingHeatingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing whereExtra($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing whereInsulatingGlazingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing whereM2($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing whereMeasureApplicationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingInsulatedGlazing whereWindows($value)
+ * @property int $id
+ * @property int $building_id
+ * @property int|null $input_source_id
+ * @property int $measure_application_id
+ * @property int|null $insulating_glazing_id
+ * @property int|null $building_heating_id
+ * @property string|null $m2
+ * @property int|null $windows
+ * @property array|null $extra
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Building $building
+ * @property-read \App\Models\BuildingHeating|null $buildingHeating
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\InsulatingGlazing|null $insulatedGlazing
+ * @property-read \App\Models\MeasureApplication $measureApplication
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing forBuilding(\App\Models\Building $building)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing query()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing whereBuildingHeatingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing whereExtra($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing whereInsulatingGlazingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing whereM2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing whereMeasureApplicationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingInsulatedGlazing whereWindows($value)
  * @mixin \Eloquent
  */
 class BuildingInsulatedGlazing extends Model

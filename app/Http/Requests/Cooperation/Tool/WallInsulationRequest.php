@@ -2,14 +2,9 @@
 
 namespace App\Http\Requests\Cooperation\Tool;
 
-use App\Helpers\HoomdossierSession;
 use App\Http\Requests\DecimalReplacementTrait;
-use App\Models\Element;
-use App\Models\InputSource;
 use App\Rules\ValidateElementKey;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Validator;
 
 class WallInsulationRequest extends FormRequest
 {

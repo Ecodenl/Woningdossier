@@ -45,7 +45,7 @@ class FixExampleBuildings extends Command
             $content = $ebContent->content;
             $dot = Arr::dot($content);
             foreach ($dot as $key => $value) {
-                if (Str::endsWith($key, ['surface', 'm2']) && !is_null($value)) {
+                if (Str::endsWith($key, ['surface', 'm2']) && ! is_null($value)) {
                     $newValue = NumberFormatter::mathableFormat($value, 2);
                     $this->info("Formatting: {$value} => {$newValue}");
                     Arr::set($content, $key, $newValue);
@@ -55,5 +55,4 @@ class FixExampleBuildings extends Command
             $ebContent->save();
         }
     }
-
 }

@@ -8,36 +8,37 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\Account.
+ * App\Models\Account
  *
- * @property int                                                                                                       $id
- * @property string                                                                                                    $email
- * @property string                                                                                                    $password
- * @property string|null                                                                                               $remember_token
- * @property string|null                                                                                               $confirm_token
- * @property string|null                                                                                               $old_email
- * @property string|null                                                                                               $old_email_token
- * @property int                                                                                                       $active
- * @property bool                                                                                                      $is_admin
- * @property \Illuminate\Support\Carbon|null                                                                           $created_at
- * @property \Illuminate\Support\Carbon|null                                                                           $updated_at
- * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\User[]                                               $users
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Account newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Account newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Account query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Account whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Account whereConfirmToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Account whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Account whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Account whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Account whereIsAdmin($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Account whereOldEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Account whereOldEmailToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Account wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Account whereRememberToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Account whereUpdatedAt($value)
+ * @property int $id
+ * @property string $email
+ * @property string $password
+ * @property string|null $remember_token
+ * @property string|null $confirm_token
+ * @property string|null $old_email
+ * @property string|null $old_email_token
+ * @property int $active
+ * @property bool $is_admin
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read int|null $users_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Account newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Account newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Account query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereConfirmToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereIsAdmin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereOldEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereOldEmailToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Account extends Authenticatable

@@ -4,7 +4,6 @@ namespace App\Helpers\Cooperation\Tool;
 
 use App\Calculations\WallInsulation;
 use App\Events\StepCleared;
-use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
@@ -40,7 +39,7 @@ class WallInsulationHelper extends ToolHelper
                 'facade_plastered_painted' => $buildingFeature->facade_plastered_painted ?? null,
                 'facade_plastered_surface_id' => $buildingFeature->facade_plastered_surface_id ?? null,
                 'facade_damaged_paintwork_id' => $buildingFeature->facade_damaged_paintwork_id ?? null,
-            ]
+            ],
         ]);
 
         return $this;
@@ -58,7 +57,7 @@ class WallInsulationHelper extends ToolHelper
                 'element_id' => $wallInsulationElement->id,
             ],
             [
-                'element_value_id' => $this->getValues('element')[$wallInsulationElement->id]
+                'element_value_id' => $this->getValues('element')[$wallInsulationElement->id],
             ]
         );
         BuildingFeature::withoutGlobalScope(GetValueScope::class)->updateOrCreate(
@@ -73,11 +72,12 @@ class WallInsulationHelper extends ToolHelper
     }
 
     /**
-     * Save the advices for the wall insulation page
+     * Save the advices for the wall insulation page.
      *
-     * @param Building $building
+     * @param Building    $building
      * @param InputSource $inputSource
-     * @param array $saveData
+     * @param array       $saveData
+     *
      * @throws \Exception
      */
     public function createAdvices(): ToolHelper
@@ -128,9 +128,6 @@ class WallInsulationHelper extends ToolHelper
 
     /**
      * Method to clear the building feature data for wall insulation step.
-     *
-     * @param Building $building
-     * @param InputSource $inputSource
      */
     public static function clear(Building $building, InputSource $inputSource)
     {
@@ -147,7 +144,7 @@ class WallInsulationHelper extends ToolHelper
                 'wall_surface' => null,
                 'insulation_wall_surface' => null,
                 'facade_damaged_paintwork_id' => null,
-                'facade_plastered_painted' => null
+                'facade_plastered_painted' => null,
             ]
         );
 

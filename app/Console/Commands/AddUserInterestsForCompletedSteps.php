@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\MeasureApplication;
 use Illuminate\Console\Command;
 
 class AddUserInterestsForCompletedSteps extends Command
@@ -53,7 +52,6 @@ class AddUserInterestsForCompletedSteps extends Command
 
         $defaultInterest = \App\Models\Interest::where('calculate_value', 1)->first();
         if ($this->confirm("{$completedStepsWithoutInterest->count()} steps found without interest, proceed ?")) {
-
             $this->info('Adding user interests for steps...');
             $bar = $this->output->createProgressBar($completedStepsWithoutInterest->count());
             $bar->start();
@@ -67,7 +65,7 @@ class AddUserInterestsForCompletedSteps extends Command
                         'interested_in_type' => \App\Models\Step::class,
                         'interest_id' => $defaultInterest->id,
                         'created_at' => \Carbon\Carbon::now(),
-                        'updated_at' => \Carbon\Carbon::now()
+                        'updated_at' => \Carbon\Carbon::now(),
                     ]);
             }
             $bar->finish();

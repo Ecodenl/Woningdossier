@@ -60,7 +60,7 @@ class PdfReport implements ShouldQueue
 
         $headers = DumpService::getStructureForTotalDumpService(false, false);
 
-        $user = UserService::eagerLoadUserData($user,  $inputSource);
+        $user = UserService::eagerLoadUserData($user, $inputSource);
 
         $building = $user->building;
 

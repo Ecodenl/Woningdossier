@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Events\UserAllowedAccessToHisBuilding;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
@@ -64,7 +63,6 @@ class PrivateMessageService
         return true;
     }
 
-
     public static function getMessagePrefix(string $requestType)
     {
         $requestTypesThatAreTranslatable = array_flip([
@@ -80,7 +78,6 @@ class PrivateMessageService
      */
     public static function createConversationRequest(Building $building, User $user, Request $request)
     {
-
         $message = strip_tags($request->get('message', ''));
         $measureApplicationName = $request->get('measure_application_name', null);
         $messagePrefix = self::getMessagePrefix($request->get('request_type', ''));

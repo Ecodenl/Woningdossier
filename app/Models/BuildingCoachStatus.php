@@ -3,30 +3,28 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 
 /**
- * App\Models\BuildingCoachStatus.
+ * App\Models\BuildingCoachStatus
  *
- * @property int                             $id
- * @property int|null                        $coach_id
- * @property int|null                        $building_id
- * @property string                          $status
+ * @property int $id
+ * @property int|null $coach_id
+ * @property int|null $building_id
+ * @property string $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\Building|null       $building
- * @property \App\Models\User|null           $coach
- * @property \App\Models\User|null           $user
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus whereCoachId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BuildingCoachStatus whereUpdatedAt($value)
+ * @property-read \App\Models\Building|null $building
+ * @property-read \App\Models\User|null $coach
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus query()
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus whereBuildingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus whereCoachId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class BuildingCoachStatus extends Model

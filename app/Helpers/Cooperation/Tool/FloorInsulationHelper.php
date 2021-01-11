@@ -18,7 +18,6 @@ use App\Services\UserActionPlanAdviceService;
 
 class FloorInsulationHelper extends ToolHelper
 {
-
     public function createValues(): ToolHelper
     {
         $floorInsulationElement = Element::findByShort('floor-insulation');
@@ -70,7 +69,7 @@ class FloorInsulationHelper extends ToolHelper
                 'element_id' => $floorInsulationElement->id,
             ],
             [
-                'element_value_id' => $this->getValues('element')[$floorInsulationElement->id]
+                'element_value_id' => $this->getValues('element')[$floorInsulationElement->id],
             ]
         );
 
@@ -104,20 +103,17 @@ class FloorInsulationHelper extends ToolHelper
 
         $elementData = $this->getValues('element');
 
-        if (array_key_exists($floorInsulationElement->id, $elementData) && $this->getValues('building_elements.extra.has_crawlspace') !== "no") {
-
+        if (array_key_exists($floorInsulationElement->id, $elementData) && 'no' !== $this->getValues('building_elements.extra.has_crawlspace')) {
             $floorInsulationValue = ElementValue::where('element_id', $floorInsulationElement->id)
                 ->where('id', $elementData[$floorInsulationElement->id])
                 ->first();
 
             // don't save if not applicable
             if ($floorInsulationValue instanceof ElementValue && $floorInsulationValue->calculate_value < 5) {
-
                 $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
                 $results = FloorInsulation::calculate($this->building, $this->inputSource, $userEnergyHabit, $this->getValues());
 
                 if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
-
                     $measureApplication = MeasureApplication::translated('measure_name', $results['insulation_advice'], 'nl')
                         ->first(['measure_applications.*']);
                     if ($measureApplication instanceof MeasureApplication) {
@@ -132,14 +128,12 @@ class FloorInsulationHelper extends ToolHelper
                 }
             }
         }
+
         return $this;
     }
 
     /**
      * Method to clear the building feature data for wall insulation step.
-     *
-     * @param Building $building
-     * @param InputSource $inputSource
      */
     public static function clear(Building $building, InputSource $inputSource)
     {
@@ -150,7 +144,7 @@ class FloorInsulationHelper extends ToolHelper
             ],
             [
                 'floor_surface' => null,
-                'insulation_surface' => null
+                'insulation_surface' => null,
             ]
         );
 

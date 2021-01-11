@@ -40,7 +40,7 @@ class SuccessFullLoginListener
         // and thus we will check if the account has an user, and if not we will log him out and the cookie with its session are gone foreeveeerrr
         $this->ensureCooperationIsSet();
 
-        if (!$account->user() instanceof User) {
+        if (! $account->user() instanceof User) {
             \Illuminate\Support\Facades\Log::debug('Account has no user, logging out and exiting.');
             \Auth::logout();
             $account->setRememberToken(null);

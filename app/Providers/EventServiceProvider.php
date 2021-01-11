@@ -102,7 +102,7 @@ class EventServiceProvider extends ServiceProvider
             SetMessagesReadForBuilding::class,
         ],
         StepCleared::class => [
-            DeleteUserActionPlanAdvicesForStep::class
+            DeleteUserActionPlanAdvicesForStep::class,
         ],
     ];
 

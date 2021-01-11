@@ -14,7 +14,6 @@ use App\Models\ExampleBuildingContent;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 
-
 class ExampleBuildingController extends Controller
 {
     /**
@@ -198,7 +197,6 @@ class ExampleBuildingController extends Controller
         $exampleBuilding->is_default = $request->get('is_default', false);
         $exampleBuilding->order = $request->get('order', null);
 
-
         $this->updateOrCreateContent($exampleBuilding, $request->get('new', 0), $request->input('content', []));
 
         $exampleBuilding->save();
@@ -209,13 +207,13 @@ class ExampleBuildingController extends Controller
     private function updateOrCreateContent(ExampleBuilding $exampleBuilding, $new, $contents)
     {
         foreach ($contents as $cid => $data) {
-            if (!is_null($data['build_year'])) {
+            if (! is_null($data['build_year'])) {
                 $data['content'] = array_key_exists('content', $data) ? $data['content'] : [];
 
                 $data['content'] = ExampleBuildingHelper::formatContent($data['content']);
 
                 $content = null;
-                if (!is_numeric($cid) && 'new' == $cid) {
+                if (! is_numeric($cid) && 'new' == $cid) {
                     if (1 == $new) {
                         // addition
                         $content = new ExampleBuildingContent($data);

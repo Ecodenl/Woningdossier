@@ -150,7 +150,6 @@ class InsulatedGlazing
                 }
             }
 
-
             $measureApplication = MeasureApplication::where('short', 'paint-wood-elements')->first();
 
             $number = InsulatedGlazingCalculator::calculatePaintworkSurface($frameElementValue, $woodElementValues, NumberFormatter::reverseFormat($windowSurface));

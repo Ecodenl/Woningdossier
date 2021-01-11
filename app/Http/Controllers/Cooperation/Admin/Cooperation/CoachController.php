@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation;
 
 use App\Http\Controllers\Controller;
 use App\Models\Building;
-use App\Models\BuildingCoachStatus;
 use App\Models\Cooperation;
 use App\Models\Role;
 use App\Models\User;
@@ -48,7 +47,7 @@ class CoachController extends Controller
             ->load(['user',
                     'buildingStatuses' => function ($q) {
                         $q->with('status')->mostRecent();
-                    }
+                    },
                 ]
             );
 

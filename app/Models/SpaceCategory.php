@@ -6,23 +6,22 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\SpaceCategory.
+ * App\Models\SpaceCategory
  *
- * @property int                             $id
- * @property string                          $type
- * @property string                          $name
+ * @property int $id
+ * @property string $type
+ * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory translated($attribute, $name, $locale = 'nl')
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SpaceCategory whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SpaceCategory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SpaceCategory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|SpaceCategory query()
+ * @method static \Illuminate\Database\Eloquent\Builder|SpaceCategory translated($attribute, $name, $locale = 'nl')
+ * @method static \Illuminate\Database\Eloquent\Builder|SpaceCategory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SpaceCategory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SpaceCategory whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SpaceCategory whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SpaceCategory whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class SpaceCategory extends Model

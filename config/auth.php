@@ -94,7 +94,7 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',
-            'expire' => 43200, // 30 days * 24 hrs * 60 mins. This is done *60 in Illuminate\Auth\Passwords\DatabaseTokenRepository
+            'expire' => env('AUTH_PASSWORD_RESET_EXPIRE', 43200),
         ],
     ],
 ];

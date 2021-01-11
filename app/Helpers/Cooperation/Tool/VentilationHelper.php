@@ -3,7 +3,6 @@
 namespace App\Helpers\Cooperation\Tool;
 
 use App\Calculations\Ventilation;
-use Illuminate\Support\Arr;
 use App\Models\BuildingVentilation;
 use App\Models\MeasureApplication;
 use App\Models\Step;
@@ -12,7 +11,6 @@ use App\Services\UserActionPlanAdviceService;
 
 class VentilationHelper extends ToolHelper
 {
-
     public function saveValues(): ToolHelper
     {
         // Save ventilation data
@@ -24,7 +22,7 @@ class VentilationHelper extends ToolHelper
             [
                 'how' => $this->getValues('building_ventilations.how'),
                 'usage' => $this->getValues('building_ventilations.usage') ?? [],
-                'living_situation' => $this->getValues('building_ventilations.living_situation')
+                'living_situation' => $this->getValues('building_ventilations.living_situation'),
             ]
         );
 
@@ -62,6 +60,7 @@ class VentilationHelper extends ToolHelper
                 $actionPlanAdvice->save();
             }
         }
+
         return $this;
     }
 
@@ -90,7 +89,6 @@ class VentilationHelper extends ToolHelper
 
         $advices->each(function ($advice) {
             $advice->name = $advice->measure_name;
-
         });
         foreach ($advices as $advice) {
             // exception for this page..
@@ -106,8 +104,9 @@ class VentilationHelper extends ToolHelper
                 'how' => optional($buildingVentilation)->how,
                 'living_situation' => optional($buildingVentilation)->living_situation,
                 'usage' => optional($buildingVentilation)->usage,
-            ]
+            ],
         ]);
+
         return $this;
     }
 
@@ -205,7 +204,7 @@ class VentilationHelper extends ToolHelper
 
         $allWarnings = array_merge($allWarnings, self::getHowWarnings(), self::getUsageWarnings(), self::getLivingSituationWarnings());
 
-        if (!is_null($value)) {
+        if (! is_null($value)) {
             return $allWarnings[$value];
         }
 

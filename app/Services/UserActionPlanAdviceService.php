@@ -21,9 +21,6 @@ class UserActionPlanAdviceService
     /**
      * Method to delete the user action plan advices for a given user, input source and step.
      *
-     * @param User $user
-     * @param InputSource $inputSource
-     * @param Step $step
      * @throws \Exception
      */
     public static function clearForStep(User $user, InputSource $inputSource, Step $step)

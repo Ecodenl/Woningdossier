@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Models\BuildingPermission;
 use App\Models\Cooperation;
 use App\Models\NotificationInterval;
-use App\Models\PrivateMessage;
 
 class MyAccountController extends Controller
 {

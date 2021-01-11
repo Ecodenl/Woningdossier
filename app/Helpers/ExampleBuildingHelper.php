@@ -10,7 +10,6 @@ use Illuminate\Support\Str;
  */
 class ExampleBuildingHelper
 {
-
     const DECIMALS_BY_NAME = [
         2 => [
             // Surfaces
@@ -56,9 +55,10 @@ class ExampleBuildingHelper
     }
 
     /**
-     * Formats the content (currently just numbers to 2 decimal places)
+     * Formats the content (currently just numbers to 2 decimal places).
      *
      * @param $content
+     *
      * @return array
      */
     public static function formatContent($content)
@@ -66,22 +66,20 @@ class ExampleBuildingHelper
         $dotted = Arr::dot($content);
 
         foreach ($dotted as $name => $value) {
-
             if (static::isNumeric($name)) {
                 // If it's not null, the form request will have validated the value to be numeric
-                if (!is_null($value)) {
+                if (! is_null($value)) {
                     // Format to not use thousand separators
                     $dotted[$name] = NumberFormatter::mathableFormat($value, static::getDecimals($name));
                 }
             }
         }
 
-
         return \App\Helpers\Arr::arrayUndot($dotted);
     }
 
     /**
-     * Check if a name is part of the content that needs to be evaluated as numeric
+     * Check if a name is part of the content that needs to be evaluated as numeric.
      */
     public static function isNumeric(string $name): bool
     {
@@ -95,8 +93,10 @@ class ExampleBuildingHelper
     }
 
     /**
-     * Gets the amount of decimals per name (e.g. a year has no decimals)
+     * Gets the amount of decimals per name (e.g. a year has no decimals).
+     *
      * @param $name
+     *
      * @return int
      */
     public static function getDecimals($name)

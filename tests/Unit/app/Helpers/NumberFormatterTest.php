@@ -89,7 +89,6 @@ class NumberFormatterTest extends TestCase
         $this->assertEquals($expected, NumberFormatter::mathableFormat($number, $decimals));
     }
 
-
     public static function roundProvider()
     {
         return [

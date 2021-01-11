@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Cooperation;
 
 use App\Helpers\HoomdossierSession;
-use App\Models\Notification;
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 
 class NotificationController extends Controller
 {

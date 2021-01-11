@@ -8,33 +8,34 @@ use App\Traits\GetMyValuesTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\PrivateMessageView.
+ * App\Models\PrivateMessageView
  *
- * @property int                             $id
- * @property int                             $private_message_id
- * @property int|null                        $user_id
- * @property int|null                        $input_source_id
- * @property int|null                        $to_cooperation_id
+ * @property int $id
+ * @property int $private_message_id
+ * @property int|null $user_id
+ * @property int|null $input_source_id
+ * @property int|null $to_cooperation_id
  * @property \Illuminate\Support\Carbon|null $read_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\InputSource|null    $inputSource
- *
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView forCurrentInputSource()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView forMe(\App\Models\User $user = null)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView residentInput()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereInputSourceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView wherePrivateMessageId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereReadAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereToCooperationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PrivateMessageView whereUserId($value)
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView allInputSources()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView forBuilding(\App\Models\Building $building)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView forCurrentInputSource()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView forInputSource(\App\Models\InputSource $inputSource)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView wherePrivateMessageId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView whereReadAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView whereToCooperationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView whereUserId($value)
  * @mixin \Eloquent
  */
 class PrivateMessageView extends Model

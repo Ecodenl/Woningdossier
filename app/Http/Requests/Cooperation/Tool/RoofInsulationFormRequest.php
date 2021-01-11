@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 class RoofInsulationFormRequest extends FormRequest
@@ -107,7 +106,7 @@ class RoofInsulationFormRequest extends FormRequest
 
                 // there is a extra default option that is not a  measure application, "niet".
                 // the value is 0, when thats selected do not validate
-                if ($this->input($brt.'.'.$roofTypeCategory.'.extra.measure_application_id') !== "0") {
+                if ('0' !== $this->input($brt.'.'.$roofTypeCategory.'.extra.measure_application_id')) {
                     $validator->addRules([
                         $brt.'.'.$roofTypeCategory.'.extra.measure_application_id' => ['required', 'exists:measure_applications,id'],
                     ]);

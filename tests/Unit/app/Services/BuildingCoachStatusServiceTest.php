@@ -32,7 +32,6 @@ class BuildingCoachStatusServiceTest extends TestCase
             factory(Building::class)->create(['user_id' => $residentUser->id]);
         });
 
-
         $cooperation = factory(Cooperation::class)->create();
         $account = factory(Account::class)->create();
         $coachUser = factory(User::class)->create([
@@ -94,7 +93,7 @@ class BuildingCoachStatusServiceTest extends TestCase
                 BuildingCoachStatusService::giveAccess($coachUser, $residentUser->building);
             }
 
-            $i++;
+            ++$i;
         });
 
         $connectedCoachesForBuilding = BuildingCoachStatusService::getConnectedCoachesByBuildingId($residentUser->building->id);

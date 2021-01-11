@@ -66,6 +66,11 @@ class Notification extends Model
             ->forInputSource($inputSource);
     }
 
+    public function scopeForType(Builder $query, string $type)
+    {
+        return $query->where('type', $type);
+    }
+
     public static function setActive(Building $building, InputSource $inputSource, bool $active = false)
     {
         Notification::allInputSources()->updateOrCreate([

@@ -129,13 +129,13 @@ $("#postal_code, #number, #house_number_extension").focusout(function () {
             }
 
             // this way the user can fill in the street and will only be forced with api data if it actually returns something
-            if (address.street !== "") {
+            if (address.id !== "") {
                 street.val(address.street);
                 number.val(address.number);
                 houseNumberExtension.val(address.house_number_extension);
+                addressId.val(address.id);
+                city.val(address.city);
             }
-            addressId.val(address.id);
-            city.val(address.city);
         },
         error: function (request, status, error) {
 

@@ -8,23 +8,24 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Step
+ * App\Models\Step.
  *
- * @property int $id
- * @property int|null $parent_id
- * @property string $slug
- * @property string $short
- * @property string $name
- * @property int $order
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureApplication[] $measureApplications
- * @property-read int|null $measure_applications_count
- * @property-read Step|null $parentStep
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
- * @property-read int|null $questionnaires_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Step[] $subSteps
- * @property-read int|null $sub_steps_count
+ * @property int                                                                       $id
+ * @property int|null                                                                  $parent_id
+ * @property string                                                                    $slug
+ * @property string                                                                    $short
+ * @property string                                                                    $name
+ * @property int                                                                       $order
+ * @property \Illuminate\Support\Carbon|null                                           $created_at
+ * @property \Illuminate\Support\Carbon|null                                           $updated_at
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureApplication[] $measureApplications
+ * @property int|null                                                                  $measure_applications_count
+ * @property Step|null                                                                 $parentStep
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[]      $questionnaires
+ * @property int|null                                                                  $questionnaires_count
+ * @property \Illuminate\Database\Eloquent\Collection|Step[]                           $subSteps
+ * @property int|null                                                                  $sub_steps_count
+ *
  * @method static Builder|Step activeOrderedSteps()
  * @method static Builder|Step newModelQuery()
  * @method static Builder|Step newQuery()

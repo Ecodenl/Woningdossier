@@ -3,21 +3,22 @@
 namespace App\Models;
 
 /**
- * App\Models\Role
+ * App\Models\Role.
  *
- * @property int $id
- * @property string $name
- * @property string $human_readable_name
- * @property string $guard_name
- * @property int|null $input_source_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int $level
- * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
- * @property-read int|null $permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Account[] $users
- * @property-read int|null $users_count
+ * @property int                                                                             $id
+ * @property string                                                                          $name
+ * @property string                                                                          $human_readable_name
+ * @property string                                                                          $guard_name
+ * @property int|null                                                                        $input_source_id
+ * @property \Illuminate\Support\Carbon|null                                                 $created_at
+ * @property \Illuminate\Support\Carbon|null                                                 $updated_at
+ * @property int                                                                             $level
+ * @property \App\Models\InputSource|null                                                    $inputSource
+ * @property \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
+ * @property int|null                                                                        $permissions_count
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Account[]                  $users
+ * @property int|null                                                                        $users_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Role newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Role newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Role permission($permissions)

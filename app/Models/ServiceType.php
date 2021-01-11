@@ -6,19 +6,20 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\ServiceType
+ * App\Models\ServiceType.
  *
- * @property int $id
- * @property string $name
- * @property string $iso
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
- * @property-read int|null $building_services_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Element[] $elements
- * @property-read int|null $elements_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Measure[] $measures
- * @property-read int|null $measures_count
+ * @property int                                                                    $id
+ * @property string                                                                 $name
+ * @property string                                                                 $iso
+ * @property \Illuminate\Support\Carbon|null                                        $created_at
+ * @property \Illuminate\Support\Carbon|null                                        $updated_at
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property int|null                                                               $building_services_count
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Element[]         $elements
+ * @property int|null                                                               $elements_count
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Measure[]         $measures
+ * @property int|null                                                               $measures_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceType query()

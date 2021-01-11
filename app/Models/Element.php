@@ -7,19 +7,20 @@ use App\Traits\HasShortTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Element
+ * App\Models\Element.
  *
- * @property int $id
- * @property string $name
- * @property string $short
- * @property int $service_type_id
- * @property int $order
- * @property string $info
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\ServiceType $serviceType
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ElementValue[] $values
- * @property-read int|null $values_count
+ * @property int                                                                 $id
+ * @property string                                                              $name
+ * @property string                                                              $short
+ * @property int                                                                 $service_type_id
+ * @property int                                                                 $order
+ * @property string                                                              $info
+ * @property \Illuminate\Support\Carbon|null                                     $created_at
+ * @property \Illuminate\Support\Carbon|null                                     $updated_at
+ * @property \App\Models\ServiceType                                             $serviceType
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\ElementValue[] $values
+ * @property int|null                                                            $values_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Element newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Element newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Element query()

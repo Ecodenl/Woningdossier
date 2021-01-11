@@ -5,15 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\PvPanelYield
+ * App\Models\PvPanelYield.
  *
- * @property int $id
- * @property int $angle
- * @property int $pv_panel_orientation_id
- * @property string $yield
+ * @property int                             $id
+ * @property int                             $angle
+ * @property int                             $pv_panel_orientation_id
+ * @property string                          $yield
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\PvPanelOrientation $orientation
+ * @property \App\Models\PvPanelOrientation  $orientation
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PvPanelYield query()

@@ -8,19 +8,20 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UserInterest
+ * App\Models\UserInterest.
  *
- * @property int $id
- * @property int $user_id
- * @property int|null $input_source_id
- * @property string $interested_in_type
- * @property int $interested_in_id
- * @property int $interest_id
+ * @property int                             $id
+ * @property int                             $user_id
+ * @property int|null                        $input_source_id
+ * @property string                          $interested_in_type
+ * @property int                             $interested_in_id
+ * @property int                             $interest_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \App\Models\Interest $interest
- * @property-read \App\Models\User $user
+ * @property \App\Models\InputSource|null    $inputSource
+ * @property \App\Models\Interest            $interest
+ * @property \App\Models\User                $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forInputSource(\App\Models\InputSource $inputSource)

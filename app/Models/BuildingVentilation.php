@@ -7,18 +7,19 @@ use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingVentilation
+ * App\Models\BuildingVentilation.
  *
- * @property int $id
- * @property int|null $input_source_id
- * @property int $building_id
- * @property array|null $how
- * @property array|null $living_situation
- * @property array|null $usage
+ * @property int                             $id
+ * @property int|null                        $input_source_id
+ * @property int                             $building_id
+ * @property array|null                      $how
+ * @property array|null                      $living_situation
+ * @property array|null                      $usage
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building $building
- * @property-read \App\Models\InputSource|null $inputSource
+ * @property \App\Models\Building            $building
+ * @property \App\Models\InputSource|null    $inputSource
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingVentilation forInputSource(\App\Models\InputSource $inputSource)

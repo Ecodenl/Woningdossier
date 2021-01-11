@@ -195,7 +195,7 @@
                     </div>
                 </div>
             </div>
-            {{-- Fill in history or the log --}}
+            {{-- Fill in history ?? the log --}}
             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
                 <div id="fill-in-history" class="tab-pane fade">
                     <div class="panel">

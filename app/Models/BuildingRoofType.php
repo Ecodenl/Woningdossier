@@ -8,29 +8,28 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingRoofType.
+ * App\Models\BuildingRoofType
  *
- * @property int                              $id
- * @property int                              $building_id
- * @property int|null                         $input_source_id
- * @property int                              $roof_type_id
- * @property int|null                         $element_value_id
- * @property int|null                         $roof_surface
- * @property int|null                         $insulation_roof_surface
- * @property int|null                         $zinc_surface
- * @property int|null                         $building_heating_id
- * @property array|null                       $extra
- * @property \Illuminate\Support\Carbon|null  $created_at
- * @property \Illuminate\Support\Carbon|null  $updated_at
- * @property \App\Models\Building             $building
- * @property \App\Models\BuildingHeating|null $buildingHeating
- * @property \App\Models\ElementValue|null    $elementValue
- * @property \App\Models\BuildingHeating|null $heating
- * @property \App\Models\InputSource|null     $inputSource
- * @property \App\Models\ElementValue|null    $insulation
- * @property \App\Models\MeasureApplication   $measureApplication
- * @property \App\Models\RoofType             $roofType
- *
+ * @property int $id
+ * @property int $building_id
+ * @property int|null $input_source_id
+ * @property int $roof_type_id
+ * @property int|null $element_value_id
+ * @property int|null $roof_surface
+ * @property int|null $insulation_roof_surface
+ * @property int|null $zinc_surface
+ * @property int|null $building_heating_id
+ * @property array|null $extra
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Building $building
+ * @property-read \App\Models\BuildingHeating|null $buildingHeating
+ * @property-read \App\Models\ElementValue|null $elementValue
+ * @property-read \App\Models\BuildingHeating|null $heating
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\ElementValue|null $insulation
+ * @property-read \App\Models\MeasureApplication $measureApplication
+ * @property-read \App\Models\RoofType $roofType
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingRoofType forInputSource(\App\Models\InputSource $inputSource)

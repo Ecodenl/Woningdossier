@@ -7,21 +7,20 @@ use App\Traits\HasCooperationTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Questionnaire.
+ * App\Models\Questionnaire
  *
- * @property int                                                             $id
- * @property string                                                          $name
- * @property int|null                                                        $step_id
- * @property int                                                             $cooperation_id
- * @property int                                                             $order
- * @property bool                                                            $is_active
- * @property \Illuminate\Support\Carbon|null                                 $created_at
- * @property \Illuminate\Support\Carbon|null                                 $updated_at
- * @property \App\Models\Cooperation                                         $cooperation
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Question[] $questions
- * @property int|null                                                        $questions_count
- * @property \App\Models\Step|null                                           $step
- *
+ * @property int $id
+ * @property string $name
+ * @property int|null $step_id
+ * @property int $cooperation_id
+ * @property int $order
+ * @property bool $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Cooperation $cooperation
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Question[] $questions
+ * @property-read int|null $questions_count
+ * @property-read \App\Models\Step|null $step
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire active()
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire forAllCooperations()
  * @method static \Illuminate\Database\Eloquent\Builder|Questionnaire forMyCooperation($cooperationId)

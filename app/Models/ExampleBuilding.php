@@ -8,21 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\ExampleBuilding.
+ * App\Models\ExampleBuilding
  *
- * @property int                                                                           $id
- * @property string                                                                        $name
- * @property int|null                                                                      $building_type_id
- * @property int|null                                                                      $cooperation_id
- * @property int|null                                                                      $order
- * @property bool                                                                          $is_default
- * @property \Illuminate\Support\Carbon|null                                               $created_at
- * @property \Illuminate\Support\Carbon|null                                               $updated_at
- * @property \App\Models\BuildingType|null                                                 $buildingType
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuildingContent[] $contents
- * @property int|null                                                                      $contents_count
- * @property \App\Models\Cooperation|null                                                  $cooperation
- *
+ * @property int $id
+ * @property string $name
+ * @property int|null $building_type_id
+ * @property int|null $cooperation_id
+ * @property int|null $order
+ * @property bool $is_default
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\BuildingType|null $buildingType
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuildingContent[] $contents
+ * @property-read int|null $contents_count
+ * @property-read \App\Models\Cooperation|null $cooperation
  * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding forAnyOrMyCooperation()
  * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding forMyCooperation()
  * @method static \Illuminate\Database\Eloquent\Builder|ExampleBuilding generic()

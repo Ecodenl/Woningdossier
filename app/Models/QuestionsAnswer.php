@@ -8,18 +8,17 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\QuestionsAnswer.
+ * App\Models\QuestionsAnswer
  *
- * @property int                             $id
- * @property int                             $question_id
- * @property int|null                        $building_id
- * @property int                             $input_source_id
- * @property string                          $answer
+ * @property int $id
+ * @property int $question_id
+ * @property int|null $building_id
+ * @property int $input_source_id
+ * @property string $answer
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\InputSource         $inputSource
- * @property \App\Models\Question            $question
- *
+ * @property-read \App\Models\InputSource $inputSource
+ * @property-read \App\Models\Question $question
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer forInputSource(\App\Models\InputSource $inputSource)

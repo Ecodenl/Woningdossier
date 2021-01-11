@@ -8,47 +8,46 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingFeature.
+ * App\Models\BuildingFeature
  *
- * @property int                                         $id
- * @property int|null                                    $building_id
- * @property int|null                                    $input_source_id
- * @property int|null                                    $building_heating_application_id
- * @property int|null                                    $building_category_id
- * @property int|null                                    $building_type_id
- * @property int|null                                    $roof_type_id
- * @property int|null                                    $energy_label_id
- * @property int|null                                    $cavity_wall
- * @property string|null                                 $wall_surface
- * @property string|null                                 $insulation_wall_surface
- * @property int|null                                    $facade_plastered_painted
- * @property int|null                                    $wall_joints
- * @property int|null                                    $contaminated_wall_joints
- * @property int|null                                    $element_values
- * @property int|null                                    $facade_plastered_surface_id
- * @property int|null                                    $facade_damaged_paintwork_id
- * @property string|null                                 $surface
- * @property string|null                                 $floor_surface
- * @property string|null                                 $insulation_surface
- * @property string|null                                 $window_surface
- * @property int|null                                    $volume
- * @property int|null                                    $build_year
- * @property int|null                                    $building_layers
- * @property int|null                                    $monument
- * @property \Illuminate\Support\Carbon|null             $created_at
- * @property \Illuminate\Support\Carbon|null             $updated_at
- * @property \App\Models\Building|null                   $building
- * @property \App\Models\BuildingCategory|null           $buildingCategory
- * @property \App\Models\BuildingHeatingApplication|null $buildingHeatingApplication
- * @property \App\Models\BuildingType|null               $buildingType
- * @property \App\Models\FacadeSurface|null              $contaminatedWallJoints
- * @property \App\Models\FacadeDamagedPaintwork|null     $damagedPaintwork
- * @property \App\Models\EnergyLabel|null                $energyLabel
- * @property \App\Models\InputSource|null                $inputSource
- * @property \App\Models\FacadePlasteredSurface|null     $plasteredSurface
- * @property \App\Models\RoofType|null                   $roofType
- * @property \App\Models\FacadeSurface|null              $wallJoints
- *
+ * @property int $id
+ * @property int|null $building_id
+ * @property int|null $input_source_id
+ * @property int|null $building_heating_application_id
+ * @property int|null $building_category_id
+ * @property int|null $building_type_id
+ * @property int|null $roof_type_id
+ * @property int|null $energy_label_id
+ * @property int|null $cavity_wall
+ * @property string|null $wall_surface
+ * @property string|null $insulation_wall_surface
+ * @property int|null $facade_plastered_painted
+ * @property int|null $wall_joints
+ * @property int|null $contaminated_wall_joints
+ * @property int|null $element_values
+ * @property int|null $facade_plastered_surface_id
+ * @property int|null $facade_damaged_paintwork_id
+ * @property string|null $surface
+ * @property string|null $floor_surface
+ * @property string|null $insulation_surface
+ * @property string|null $window_surface
+ * @property int|null $volume
+ * @property int|null $build_year
+ * @property int|null $building_layers
+ * @property int|null $monument
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Building|null $building
+ * @property-read \App\Models\BuildingCategory|null $buildingCategory
+ * @property-read \App\Models\BuildingHeatingApplication|null $buildingHeatingApplication
+ * @property-read \App\Models\BuildingType|null $buildingType
+ * @property-read \App\Models\FacadeSurface|null $contaminatedWallJoints
+ * @property-read \App\Models\FacadeDamagedPaintwork|null $damagedPaintwork
+ * @property-read \App\Models\EnergyLabel|null $energyLabel
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\FacadePlasteredSurface|null $plasteredSurface
+ * @property-read \App\Models\RoofType|null $roofType
+ * @property-read \App\Models\FacadeSurface|null $wallJoints
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forInputSource(\App\Models\InputSource $inputSource)

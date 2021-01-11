@@ -5,17 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingTypeElementMaxSaving.
+ * App\Models\BuildingTypeElementMaxSaving
  *
- * @property int                             $id
- * @property int                             $building_type_id
- * @property int                             $element_id
- * @property int                             $max_saving
+ * @property int $id
+ * @property int $building_type_id
+ * @property int $element_id
+ * @property int $max_saving
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\BuildingType        $buildingType
- * @property \App\Models\Element             $element
- *
+ * @property-read \App\Models\BuildingType $buildingType
+ * @property-read \App\Models\Element $element
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeElementMaxSaving newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeElementMaxSaving newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingTypeElementMaxSaving query()

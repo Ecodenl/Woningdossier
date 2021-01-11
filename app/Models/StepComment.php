@@ -7,19 +7,18 @@ use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\StepComment.
+ * App\Models\StepComment
  *
- * @property int                             $id
- * @property int                             $building_id
- * @property int                             $input_source_id
- * @property string|null                     $short
- * @property int                             $step_id
- * @property string                          $comment
+ * @property int $id
+ * @property int $building_id
+ * @property int $input_source_id
+ * @property string|null $short
+ * @property int $step_id
+ * @property string $comment
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\InputSource         $inputSource
- * @property \App\Models\Step                $step
- *
+ * @property-read \App\Models\InputSource $inputSource
+ * @property-read \App\Models\Step $step
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment forInputSource(\App\Models\InputSource $inputSource)

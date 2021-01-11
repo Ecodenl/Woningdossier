@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults
@@ -66,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Account::class,
+            'model' => App\User::class,
         ],
 
         // 'users' => [
@@ -94,7 +95,8 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',
-            'expire' => env('AUTH_PASSWORD_RESET_EXPIRE', 43200),
+            'expire' => 60,
         ],
     ],
+
 ];

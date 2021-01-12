@@ -130,6 +130,12 @@ return [
         'accounts.email' => [
             'unique' => 'Dit e-mailadres is al geregistreerd.',
         ],
+
+
+        'questionnaires' => [
+            'not_enough_options' => 'Er moet minstens 1 optie zijn voor de vraag ":attribute".',
+            'empty_option' => 'Optie voor de vraag ":attribute" (:locale) mag niet leeg zijn.'
+        ],
     ],
 
     /*
@@ -137,7 +143,7 @@ return [
     | Custom Validation Attributes
     |--------------------------------------------------------------------------
     |
-    | De following language lines are used to swap attribute place-holders
+    | The following language lines are used to swap attribute place-holders
     | with something more reader friendly such as E-Mail Address instead
     | of "email". This simply helps us make messages a little cleaner.
     |

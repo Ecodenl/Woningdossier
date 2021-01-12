@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Models\Account;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
@@ -16,7 +15,6 @@ use App\Policies\PrivateMessagePolicy;
 use App\Policies\QuestionnairePolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
@@ -44,14 +42,6 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        \Auth::userResolver(function ($x) {
-            dd($x);
-        });
-//        \Auth::viaRequest('session', function (Request $request) {
-//            $request->user();
-//            return \Auth::guard()->user() instanceof Account ? \Auth::guard()->user()->user() : null;
-//        });
-
         Gate::define('talk-to-resident', BuildingPolicy::class.'@talkToResident');
         Gate::define('access-building', BuildingPolicy::class.'@accessBuilding');
         Gate::define('set-appointment', BuildingPolicy::class.'@setAppointment');
@@ -62,13 +52,5 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('access-admin', UserPolicy::class.'@accessAdmin');
         Gate::define('delete-user', UserPolicy::class.'@deleteUser');
         Gate::define('remove-participant-from-chat', UserPolicy::class.'@removeParticipantFromChat');
-    }
-
-    public function register()
-    {
-        // custom user resolver via account
-        \Auth::resolveUsersUsing(function ($guard = null) {
-            return \Auth::guard($guard)->user() instanceof Account ? \Auth::guard()->user()->user() : null;
-        });
     }
 }

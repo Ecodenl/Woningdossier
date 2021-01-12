@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingPermission;
 use App\Models\PrivateMessage;
@@ -22,8 +23,9 @@ class BuildingPolicy
     {
     }
 
-    public function edit(User $user, Building $building)
+    public function edit(Account $account, Building $building)
     {
+        $user = $account->user();
         // While a user is allowed to see his own stuff, he is not allowed to do anything in it.
         if ($user->id === $building->user_id) {
             return false;
@@ -37,14 +39,15 @@ class BuildingPolicy
      *
      * @return bool
      */
-    public function show(User $user, Building $building)
+    public function show(Account $account, Building $building)
     {
+        $user = $account->user();
         if ($user->hasRoleAndIsCurrentRole('coach')) {
             // get the buildings the user is connected to.
             $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($user);
 
             // check if the current building is in that collection.
-            return  $connectedBuildingsForUser->contains('building_id', $building->id);
+            return $connectedBuildingsForUser->contains('building_id', $building->id);
         }
 
         // they can always view a building.
@@ -58,14 +61,15 @@ class BuildingPolicy
      *
      * @return bool
      */
-    public function talkToResident(User $user, Building $building)
+    public function talkToResident(Account $account, Building $building)
     {
+        $user = $account->user();
         if ($user->hasRoleAndIsCurrentRole('coach')) {
             // get the buildings the user is connected to.
             $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($user);
 
             // check if the current building is in that collection and if there are public messages.
-            return  $connectedBuildingsForUser->contains('building_id', $building->id) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
+            return $connectedBuildingsForUser->contains('building_id', $building->id) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
         }
 
         return $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']) && $building->privateMessages()->public()->first() instanceof PrivateMessage;
@@ -76,8 +80,10 @@ class BuildingPolicy
      *
      * With access we mean observing / filling the tool.
      */
-    public function accessBuilding(User $user, Building $building): bool
+    public function accessBuilding(Account $account, Building $building): bool
     {
+        $user = $account->user();
+
         // While a user is allowed to see his own stuff, he is not allowed to do anything in it.
         if ($user->id === $building->user_id) {
             return false;
@@ -100,18 +106,18 @@ class BuildingPolicy
     /**
      * Check whether its allowed to set an appointment on a building.
      */
-    public function setAppointment(User $user, Building $building): bool
+    public function setAppointment(Account $account, Building $building): bool
     {
         // a user cant set an appointment on its own building
-        return $user->id != $building->user_id;
+        return $account->user()->id != $building->user_id;
     }
 
     /**
      * Check whether its allowed to set an status on a building.
      */
-    public function setStatus(User $user, Building $building): bool
+    public function setStatus(Account $account, Building $building): bool
     {
         // a user cant set the building status on its own building
-        return $user->id != $building->user_id;
+        return $account->user()->id != $building->user_id;
     }
 }

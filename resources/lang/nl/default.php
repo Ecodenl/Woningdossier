@@ -32,4 +32,6 @@ return [
         ],
     ],
     'new-message' => 'Nieuwe berichten',
+
+    'save' => 'Opslaan',
 ];

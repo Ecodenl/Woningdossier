@@ -17,7 +17,7 @@
                     </div>
                     <div class="col-sm-6">
                         <button type="submit" href="{{route('cooperation.admin.cooperation.questionnaires.index')}}" class="btn btn-primary pull-right">
-                            Opslaan
+                            @lang('default.save')
                         </button>
                     </div>
                 </div>

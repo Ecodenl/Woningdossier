@@ -45,7 +45,7 @@ class QuestionnairePolicy
     public function setActiveStatus(Account $account, Questionnaire $questionnaire)
     {
         // same logic (for now)
-        return $this->edit($account->user(), $questionnaire);
+        return $this->edit($account, $questionnaire);
     }
 
     /**
@@ -61,11 +61,12 @@ class QuestionnairePolicy
 
     public function update(Account $account, Questionnaire $questionnaire)
     {
-        return $this->edit($account->user(), $questionnaire);
+        return $this->edit($account, $questionnaire);
     }
 
     public function delete(Account $account, Questionnaire $questionnaire)
     {
+        $user = $account->user();
         $currentCooperation = HoomdossierSession::getCooperation(true);
 
         // and check if the questionnaire from the question has a relation with the cooperation

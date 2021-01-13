@@ -54,6 +54,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'verified' =>  \App\Http\Middleware\EnsureEmailIsVerified::class,
         'cooperation' => \App\Http\Middleware\CooperationMiddleware::class,
         'auth' => \App\Http\Middleware\Authenticate::class,

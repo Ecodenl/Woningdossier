@@ -100,9 +100,9 @@ class LoginController extends Controller
     /**
      * Handle a login request to the application.
      *
+     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
      * @throws ValidationException
      *
-     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
      */
     public function login(Request $request, Cooperation $cooperation)
     {
@@ -123,20 +123,15 @@ class LoginController extends Controller
             /** @var Account $account */
             $account = $this->guard()->getLastAttempted();
 
-            if (! $account->isAssociatedWith($cooperation)) {
+            if (!$account->isAssociatedWith($cooperation)) {
                 throw ValidationException::withMessages(['cooperation' => [trans('auth.cooperation')]]);
             }
 
-            if (! $account->user()->building instanceof Building) {
-                Log::error('no building attached for user id: '.$account->user()->id.' account id:'.$account->id);
+            if (!$account->user()->building instanceof Building) {
+                Log::error('no building attached for user id: ' . $account->user()->id . ' account id:' . $account->id);
 
                 return redirect(route('cooperation.create-building.index'))->with('warning', __('auth.login.warning'));
             }
-        }
-
-        // check if the account is confirmed.
-        if ($this->accountIsNotConfirmed($request->get('email'))) {
-            $this->sendAccountNotConfirmedResponse();
         }
 
         // everything is ok with the user at this point, now we log him in.
@@ -157,27 +152,5 @@ class LoginController extends Controller
         $this->incrementLoginAttempts($request);
 
         return $this->sendFailedLoginResponse($request);
-    }
-
-    /**
-     * Check if a account is confirmed based on its email address.
-     *
-     * @param $email
-     */
-    private function accountIsNotConfirmed($email): bool
-    {
-        // So it wasn't alright. Check if it was because of the confirm_token
-        $isPending = Account::where('email', '=', $email)->whereNotNull('confirm_token')->count() > 0;
-
-        return $isPending;
-    }
-
-    /**
-     * Send account not confirmed response.
-     */
-    private function sendAccountNotConfirmedResponse()
-    {
-        // throw validation exception, with a confirmation resend link.
-        throw ValidationException::withMessages(['confirm_token' => [__('auth.inactive', ['resend-link' => route('cooperation.auth.confirm.resend.show')])]]);
     }
 }

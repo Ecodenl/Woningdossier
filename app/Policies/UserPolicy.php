@@ -55,7 +55,7 @@ class UserPolicy
      */
     public function deleteOwnAccount(Account $account)
     {
-        return $account->user()->hasRole(['cooperation-admin']);
+        return !$account->user()->hasRole(['cooperation-admin']);
     }
 
     /**

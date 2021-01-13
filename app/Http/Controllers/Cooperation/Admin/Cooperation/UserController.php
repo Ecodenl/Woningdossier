@@ -45,7 +45,7 @@ class UserController extends Controller
         $possibleRoles = Role::all();
         $roles = [];
         foreach ($possibleRoles as $possibleRole) {
-            if (Hoomdossier::user()->can('assign-role', $possibleRole)) {
+            if (Hoomdossier::account()->can('assign-role', $possibleRole)) {
                 $roles[] = $possibleRole;
             }
         }

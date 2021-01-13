@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Notifications\ResetPasswordNotification;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
@@ -41,7 +42,7 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|Account whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Account extends Authenticatable
+class Account extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
 

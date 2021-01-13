@@ -31,7 +31,7 @@ class MessagesController extends Controller
         // currently (as of 30-10-2020), this shouldnt be needed anymore.
         // this is on register a private message will be created.
         if (! $privateMessages->first() instanceof PrivateMessage) {
-            return redirect()->route('cooperation.conversation-requests.index');
+            return redirect()->route('cooperation.conversation-requests.index', ['requestType' => PrivateMessageService::REQUEST_TYPE_COACH_CONVERSATION]);
         }
         $this->authorize('edit', $privateMessages->first());
 

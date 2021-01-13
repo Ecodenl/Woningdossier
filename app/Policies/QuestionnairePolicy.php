@@ -53,10 +53,10 @@ class QuestionnairePolicy
      *
      * @return bool
      */
-    public function store(User $user)
+    public function store(Account $account)
     {
         // if the user has the right roles
-        return $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
+        return $account->user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
     }
 
     public function update(Account $account, Questionnaire $questionnaire)

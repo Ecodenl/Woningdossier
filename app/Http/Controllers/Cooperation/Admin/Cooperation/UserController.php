@@ -63,7 +63,7 @@ class UserController extends Controller
         $roles = [];
         foreach ($roleIds as $roleId) {
             $role = Role::find($roleId);
-            if (Hoomdossier::user()->can('assign-role', $role)) {
+            if (Hoomdossier::account()->can('assign-role', $role)) {
                 \Log::debug('User can assign role '.$role->name);
                 array_push($roles, $role->name);
             }

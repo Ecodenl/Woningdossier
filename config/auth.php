@@ -96,7 +96,7 @@ return [
     */
 
     'passwords' => [
-        'accounts' => [
+        'users' => [
             'provider' => 'accounts',
             'table' => 'password_resets',
             'expire' => env('AUTH_PASSWORD_RESET_EXPIRE', 720),

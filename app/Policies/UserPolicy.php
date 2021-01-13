@@ -107,11 +107,7 @@ class UserPolicy
     {
         // a coordinator and resident can remove a coach from a conversation
         // also check if the current building id is from the $groupParticipant, cause ifso we cant remove him because he is the building owner
-        if ($user->hasRoleAndIsCurrentRole(['resident', 'coordinator', 'cooperation-admin']) && $groupParticipant->hasRole(['coach'])) {
-            return true;
-        }
-
-        return false;
+        return $account->user()->hasRoleAndIsCurrentRole(['resident', 'coordinator', 'cooperation-admin']) && $groupParticipant->hasRole(['coach']);
     }
 
     /**
@@ -124,6 +120,7 @@ class UserPolicy
      */
     public function assignRole(Account $account, Role $role)
     {
+        $user = $account->user();
         if ($user->hasRoleAndIsCurrentRole('super-admin')) {
             return true;
         }

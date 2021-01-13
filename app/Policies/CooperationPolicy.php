@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Helpers\HoomdossierSession;
+use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -14,7 +15,7 @@ class CooperationPolicy
     /**
      * Determine whether the user can view the cooperation.
      */
-    public function edit(User $user, Cooperation $cooperation): bool
+    public function edit(Account $account, Cooperation $cooperation): bool
     {
         return 'super-admin' == (bool) HoomdossierSession::currentRole();
     }
@@ -24,7 +25,7 @@ class CooperationPolicy
      *
      * @return mixed
      */
-    public function create(User $user)
+    public function create(Account $account)
     {
         return 'super-admin' == (bool) HoomdossierSession::currentRole();
     }
@@ -34,7 +35,7 @@ class CooperationPolicy
      *
      * @return mixed
      */
-    public function update(User $user, Cooperation $cooperation)
+    public function update(Account $account, Cooperation $cooperation)
     {
         return 'super-admin' == (bool) HoomdossierSession::currentRole();
     }
@@ -44,7 +45,7 @@ class CooperationPolicy
      *
      * @return mixed
      */
-    public function delete(User $user, Cooperation $cooperation)
+    public function delete(Account $account, Cooperation $cooperation)
     {
         // hoom mag niet.
         if ('hoom' !== $cooperation->slug) {

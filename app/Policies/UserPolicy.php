@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Models\Account;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Spatie\Permission\Models\Role;
@@ -26,18 +27,15 @@ class UserPolicy
      */
     public function accessAdmin(User $user): bool
     {
-        if ($user->hasAnyRole(['coordinator', 'superuser', 'super-admin', 'coach', 'cooperation-admin'])) {
-            return true;
-        }
-
-        return false;
+        return $user->hasAnyRole(['coordinator', 'superuser', 'super-admin', 'coach', 'cooperation-admin']);
     }
 
     /**
      * Check if a user is authorized to delete a user.
      */
-    public function deleteUser(User $user, User $userToDelete): bool
+    public function deleteUser(Account $account, User $userToDelete): bool
     {
+        $user = $account->user();
         // While a user is allowed to see his own stuff, he is not allowed to do anything in it.
         if ($userToDelete->id == Hoomdossier::user()->id) {
             return false;
@@ -69,8 +67,9 @@ class UserPolicy
      *
      * @return bool
      */
-    public function destroy(User $user, User $userToDestroy)
+    public function destroy(Account $account, User $userToDestroy)
     {
+        $user = $account->user();
         // check if the user can delete a user, and if the user to be destroyed is a member of the user his cooperation
         // remove the cooperations stuff
         if ($user->can('delete-user', $userToDestroy) && $userToDestroy->cooperation->id == HoomdossierSession::getCooperation()) {
@@ -85,8 +84,9 @@ class UserPolicy
      *
      * @param $buildingId
      */
-    public function participateInGroupChat(User $user, $buildingId): bool
+    public function participateInGroupChat(Account $account, $buildingId): bool
     {
+        $user = $account->user();
         // if the user is a coach and has a active building coach status, return true
         if ($user->hasRole('coach') && $user->isNotRemovedFromBuildingCoachStatus($buildingId)) {
             return true;
@@ -103,7 +103,7 @@ class UserPolicy
      * @param User $user             | Auth user
      * @param User $groupParticipant | Participant from the group chat
      */
-    public function removeParticipantFromChat(User $user, User $groupParticipant): bool
+    public function removeParticipantFromChat(Account $account, User $groupParticipant): bool
     {
         // a coordinator and resident can remove a coach from a conversation
         // also check if the current building id is from the $groupParticipant, cause ifso we cant remove him because he is the building owner
@@ -122,7 +122,7 @@ class UserPolicy
      *
      * @return bool
      */
-    public function assignRole(User $user, Role $role)
+    public function assignRole(Account $account, Role $role)
     {
         if ($user->hasRoleAndIsCurrentRole('super-admin')) {
             return true;

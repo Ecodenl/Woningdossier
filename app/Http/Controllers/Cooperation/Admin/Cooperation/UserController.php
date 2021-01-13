@@ -13,7 +13,6 @@ use App\Mail\UserCreatedEmail;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\Cooperation;
-use App\Models\PrivateMessage;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;

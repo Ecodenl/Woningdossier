@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Helpers\HoomdossierSession;
+use App\Models\Account;
 use App\Models\Cooperation;
 use App\Models\Question;
 use App\Models\Questionnaire;
@@ -27,7 +28,7 @@ class QuestionnairePolicy
      *
      * @return bool
      */
-    public function edit(User $user, Questionnaire $questionnaire)
+    public function edit(Account $account, Questionnaire $questionnaire)
     {
         // get the current cooperation
         $currentCooperation = HoomdossierSession::getCooperation(true);
@@ -41,10 +42,10 @@ class QuestionnairePolicy
      *
      * @return bool
      */
-    public function setActiveStatus(User $user, Questionnaire $questionnaire)
+    public function setActiveStatus(Account $account, Questionnaire $questionnaire)
     {
         // same logic (for now)
-        return $this->edit($user, $questionnaire);
+        return $this->edit($account, $questionnaire);
     }
 
     /**
@@ -58,13 +59,14 @@ class QuestionnairePolicy
         return $user->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin']);
     }
 
-    public function update(User $user, Questionnaire $questionnaire)
+    public function update(Account $account, Questionnaire $questionnaire)
     {
-        return $this->edit($user, $questionnaire);
+        return $this->edit($account, $questionnaire);
     }
 
-    public function delete(User $user, Questionnaire $questionnaire)
+    public function delete(Account $account, Questionnaire $questionnaire)
     {
+        $user = $account->user();
         $currentCooperation = HoomdossierSession::getCooperation(true);
 
         // and check if the questionnaire from the question has a relation with the cooperation

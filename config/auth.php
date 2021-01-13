@@ -37,7 +37,7 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'accounts',
         ],
 
         'api' => [
@@ -66,8 +66,13 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Account::class,
+            'model' => App\Models\User::class,
         ],
+
+        'accounts' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Account::class,
+        ]
 
         // 'users' => [
         //     'driver' => 'database',
@@ -91,10 +96,10 @@ return [
     */
 
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
+        'accounts' => [
+            'provider' => 'accounts',
             'table' => 'password_resets',
-            'expire' => env('AUTH_PASSWORD_RESET_EXPIRE', 43200),
+            'expire' => env('AUTH_PASSWORD_RESET_EXPIRE', 720),
         ],
     ],
 ];

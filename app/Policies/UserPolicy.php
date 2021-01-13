@@ -69,14 +69,9 @@ class UserPolicy
      */
     public function destroy(Account $account, User $userToDestroy)
     {
-        $user = $account->user();
         // check if the user can delete a user, and if the user to be destroyed is a member of the user his cooperation
         // remove the cooperations stuff
-        if ($user->can('delete-user', $userToDestroy) && $userToDestroy->cooperation->id == HoomdossierSession::getCooperation()) {
-            return true;
-        }
-
-        return false;
+        return $this->deleteUser($account, $userToDestroy) && $userToDestroy->cooperation->id == HoomdossierSession::getCooperation();
     }
 
     /**

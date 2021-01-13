@@ -46,5 +46,7 @@ class PrivateMessagePolicy
                 return true;
             }
         }
+
+        return false;
     }
 }

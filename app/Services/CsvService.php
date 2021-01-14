@@ -16,6 +16,8 @@ use App\Models\QuestionOption;
 use App\Models\Role;
 use App\Models\Step;
 use App\Models\User;
+use App\Scopes\GetValueScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class CsvService
@@ -341,7 +343,7 @@ class CsvService
                     if ($currentQuestion instanceof Question) {
                         // when the question has options, the answer is imploded.
                         if ($currentQuestion->hasQuestionOptions()) {
-                            if (! empty($answer)) {
+                            if (!empty($answer)) {
                                 // this will contain the question option ids
                                 // and filter out the empty answers.
                                 $answers = array_filter(explode('|', $answer));
@@ -374,20 +376,30 @@ class CsvService
     /**
      * Get the total report for all users by the cooperation.
      */
-    public static function totalReport(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
+    public static function totalReport(Cooperation $cooperation, bool $anonymized): array
     {
         $generalDataStep = Step::findByShort('general-data');
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
-//        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
-        $residentInputSource = $inputSource;
 
+        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+
+
+        // Get all users with a building and the general data completed step
         $users = $cooperation->users()
-            ->with(['building' => function ($query) use ($coachInputSource, $generalDataStep) {
-                $query->with(['completedSteps' => function ($query) use ($coachInputSource, $generalDataStep) {
-                    $query->forInputSource($coachInputSource)->where('step_id', $generalDataStep->id);
-                }]);
+            ->whereHas('building', function ($query) use ($generalDataStep) {
+                $query->withoutGlobalScope(GetValueScope::class)
+                    ->whereHas('completedSteps', function ($query) use ($generalDataStep) {
+                        $query->withoutGlobalScope(GetValueScope::class)
+                            ->where('step_id', $generalDataStep->id);
+                    });
+            })
+            ->with(['building' => function ($query) use ($generalDataStep) {
+                $query->withoutGlobalScope(GetValueScope::class)
+                    ->with(['completedSteps' => function ($query) use ($generalDataStep) {
+                        $query->withoutGlobalScope(GetValueScope::class)
+                            ->where('step_id', $generalDataStep->id);
+                    }]);
             }])
-            ->has('buildings')
             ->get();
 
         $coachIds = [];
@@ -395,7 +407,7 @@ class CsvService
         // We first check each user
         foreach ($users as $user) {
             // we eager loaded the completed steps from the coach, so if its not empty we use that
-            if ($user->building->completedSteps->isNotEmpty()) {
+            if ($user->building->completedSteps->contains('input_source_id', $coachInputSource->id)) {
                 $coachIds[] = $user->id;
             } else {
                 $residentIds[] = $user->id;
@@ -435,7 +447,7 @@ class CsvService
             return $value;
         }
 
-        if (! is_numeric($value)) {
+        if (!is_numeric($value)) {
             return $value;
         }
 
@@ -457,9 +469,9 @@ class CsvService
      * Format the output of the given column and value.
      *
      * @param string $column
-     * @param mixed  $value
-     * @param int    $decimals
-     * @param bool   $shouldRound
+     * @param mixed $value
+     * @param int $decimals
+     * @param bool $shouldRound
      *
      * @return float|int|string
      */
@@ -497,7 +509,7 @@ class CsvService
      */
     protected static function isYear($column, $extraValue = '')
     {
-        if (! is_null($column)) {
+        if (!is_null($column)) {
             if (false !== stristr($column, 'year')) {
                 return true;
             }

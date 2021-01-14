@@ -49,7 +49,7 @@ class GenerateTotalReport implements ShouldQueue
         // temporary session to get the right data for the dumb.
         $residentInputSource = InputSource::findByShort('resident');
 
-        $rows = CsvService::totalReport($this->cooperation, $residentInputSource, $this->anonymizeData);
+        $rows = CsvService::totalReport($this->cooperation, $this->anonymizeData);
 
         // export the csv file
         Excel::store(new CsvExport($rows), $this->fileStorage->filename, 'downloads', \Maatwebsite\Excel\Excel::CSV);

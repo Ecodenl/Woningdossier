@@ -2,6 +2,7 @@
 
 return [
     'components' => [
+        'name' => 'Naam',
         'cooperation' => 'Coöperatie',
         'order' => 'Volgorde',
         'is-default' => [

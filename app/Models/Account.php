@@ -49,7 +49,7 @@ class Account extends Authenticatable implements MustVerifyEmail
 
     protected $fillable = [
         'first_name', 'last_name', 'email', 'password', 'phone_number',
-        'confirm_token', 'old_email', 'old_email_token',
+        'email_verified_at', 'old_email', 'old_email_token',
     ];
 
     /**
@@ -69,15 +69,6 @@ class Account extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'is_admin' => 'boolean',
     ];
-
-    /**
-     * Confirm a account.
-     */
-    public function confirm()
-    {
-        $this->confirm_token = null;
-        $this->save();
-    }
 
     /**
      * Send the password reset notification.

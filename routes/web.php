@@ -40,6 +40,11 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
             Route::post('register', 'RegisterController@register');
 
             Route::group(['as' => 'auth.'], function () {
+
+                Route::get('email/verify', 'VerificationController@show')->name('verification.notice');
+                Route::get('email/verify/{id}', 'VerificationController@verify')->name('verification.verify');
+                Route::get('email/resend', 'VerificationController@resend')->name('verification.resend');
+
                 Route::get('login', 'LoginController@showLoginForm')->name('login');
                 Route::post('login', 'LoginController@login');
 
@@ -74,7 +79,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
         });
 
         // group can be accessed by everyone that's authorized and has a role in its session
-        Route::group(['middleware' => ['auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser']], function () {
+        Route::group(['middleware' => ['auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser', 'verified']], function () {
             Route::get('messages/count', 'MessagesController@getTotalUnreadMessageCount')->name('message.get-total-unread-message-count');
             Route::get('notifications', 'NotificationController@index')->name('notifications.index');
 
@@ -405,3 +410,15 @@ Route::get('/', function () {
 
     return view('welcome');
 })->name('index');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

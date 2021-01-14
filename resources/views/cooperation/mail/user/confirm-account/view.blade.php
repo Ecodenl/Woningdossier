@@ -8,8 +8,6 @@
     <?php
     $cooperationHoomdossierHref = View::make('cooperation.mail.parts.ahref', ['href' => route('cooperation.home', ['cooperation' => $userCooperation])]);
 
-    $confirmHref = route('cooperation.auth.confirm.store', ['cooperation' => $userCooperation, 'u' => $user->account->email, 't' => $user->account->confirm_token]);
-
     $cooperationWebsiteHref = View::make('cooperation.mail.parts.ahref', [
         'href' => is_null($userCooperation->cooperation_email) ? $userCooperation->website_url : "mailto:" . $userCooperation->cooperation_email,
     ]);
@@ -21,13 +19,13 @@
     @endcomponent
 
 
-    @component('cooperation.mail.parts.centered-button', ['href' => $confirmHref, 'width' => '200'])
+    @component('cooperation.mail.parts.centered-button', ['href' => $verifyUrl, 'width' => '200'])
         @lang('cooperation/mail/confirm-account.button')
     @endcomponent
 
     @component('cooperation.mail.components.text')
         @lang('cooperation/mail/changed-email.button-does-not-work')
-        @include('cooperation.mail.parts.long-ahref', ['href' => $confirmHref])
+        @include('cooperation.mail.parts.long-ahref', ['href' => $verifyUrl])
     @endcomponent
 
     @component('cooperation.mail.components.text')

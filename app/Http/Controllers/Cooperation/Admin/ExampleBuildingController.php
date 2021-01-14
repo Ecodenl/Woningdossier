@@ -7,6 +7,7 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\ExampleBuildingRequest;
+use App\Jobs\ApplyExampleBuilding;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingType;
@@ -205,7 +206,7 @@ class ExampleBuildingController extends Controller
 
         $exampleBuilding->save();
 
-        $this->reApplyExampleBuilding($exampleBuilding);
+        ApplyExampleBuilding::dispatch($exampleBuilding);
 
         return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $id])->with('success', __('cooperation/admin/example-buildings.update.success'));
     }
@@ -289,21 +290,5 @@ class ExampleBuildingController extends Controller
         }
 
         return redirect()->route('cooperation.admin.example-buildings.index')->with('success', 'Example building copied');
-    }
-
-    protected function reApplyExampleBuilding(ExampleBuilding $exampleBuilding)
-    {
-        $buildings = Building::where('example_building_id', $exampleBuilding->id)
-            ->with(['buildingFeatures' => function($query) {
-                $query->allInputSources();
-            }])
-            ->get();
-
-        foreach($buildings as $building)
-        {
-            if ($building instanceof Building && $building->buildingFeatures instanceof BuildingFeature) {
-                ExampleBuildingService::apply($exampleBuilding, $building->buildingFeatures->build_year, $building);
-            }
-        }
     }
 }

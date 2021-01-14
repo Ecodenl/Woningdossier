@@ -78,6 +78,8 @@ class RegisterController extends Controller
         // at this point, a user cant register without accepting the privacy terms.
         UserAllowedAccessToHisBuilding::dispatch($user->building);
 
+        $account->sendEmailVerificationNotification();
+
         return redirect($this->redirectPath())->with('success', $successMessage);
     }
 

@@ -68,13 +68,13 @@ class ResetPasswordController extends Controller
         // Sorry.. creating a complete custom password broker service provider
         // (https://stackoverflow.com/questions/40532296/laravel-5-3-password-broker-customization)
         // seems a LOT more overkill than this..
-        $userEmail = $request->get('email');
 
-        $isPending = Account::where('email', '=', $userEmail)->whereNotNull('confirm_token')->count() > 0;
-        if ($isPending) {
-            \Log::debug('The user has resetted his password, but has not confirmed his account. Redirecting to login page with a message..');
+        $account = Account::where('email', '=', $request->get('email'))->first();
 
-            return redirect(route('cooperation.auth.login'))->with('warning', __('auth.reset.inactive'));
+        if (!$account->hasVerifiedEmail()) {
+            return redirect()
+                ->route('cooperation.auth.login')
+                ->with('warning', __('auth.reset.inactive'));
         }
 
         // If the password was successfully reset, we will redirect the user back to

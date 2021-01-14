@@ -12,7 +12,6 @@ class AccountService
         return Account::create([
             'email' => $email,
             'password' => \Hash::make($password),
-            'confirm_token' => RegistrationHelper::generateConfirmToken(),
         ]);
     }
 }

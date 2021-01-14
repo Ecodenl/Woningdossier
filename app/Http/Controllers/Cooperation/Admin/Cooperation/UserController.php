@@ -97,7 +97,7 @@ class UserController extends Controller
         if ($account->wasRecentlyCreated) {
             // and send the account confirmation mail.
             $this->sendAccountConfirmationMail($cooperation, $account);
-            $account->confirm();
+            $account->markEmailAsVerified();
         } else {
             UserAssociatedWithOtherCooperation::dispatch($cooperation, $user);
         }

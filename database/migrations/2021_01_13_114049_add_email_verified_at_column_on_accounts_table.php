@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Account;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -16,6 +18,9 @@ class AddEmailVerifiedAtColumnOnAccountsTable extends Migration
         Schema::table('accounts', function (Blueprint $table) {
             $table->timestamp('email_verified_at')->nullable()->after('confirm_token');
         });
+
+        // people who confirmed their accounts will get the verified at.
+        Account::whereNull('confirm_token')->update(['email_verified_at' => Carbon::now()]);
     }
 
     /**

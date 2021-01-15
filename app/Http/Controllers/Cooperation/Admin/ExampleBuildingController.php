@@ -7,18 +7,13 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\ExampleBuildingRequest;
-use App\Jobs\ApplyExampleBuilding;
-use App\Models\Building;
-use App\Models\BuildingFeature;
+use App\Jobs\ProcessApplyExampleBuilding;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
-use App\Models\InputSource;
-use App\Services\ExampleBuildingService;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Bus;
 
 class ExampleBuildingController extends Controller
 {
@@ -93,17 +88,6 @@ class ExampleBuildingController extends Controller
         $this->updateOrCreateContent($exampleBuilding, $request->get('new', 0), $request->input('content', []));
 
         return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $exampleBuilding])->with('success', __('cooperation/admin/example-buildings.store.success'));
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
     }
 
     /**
@@ -207,7 +191,7 @@ class ExampleBuildingController extends Controller
 
         $exampleBuilding->save();
 
-        $this->applyExampleBuilding($exampleBuilding);
+        ProcessApplyExampleBuilding::dispatch($exampleBuilding);
 
         return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $id])->with('success', __('cooperation/admin/example-buildings.update.success'));
     }
@@ -291,20 +275,5 @@ class ExampleBuildingController extends Controller
         }
 
         return redirect()->route('cooperation.admin.example-buildings.index')->with('success', 'Example building copied');
-    }
-
-    public function applyExampleBuilding(ExampleBuilding $exampleBuilding)
-    {
-        // Get buildings with this example building, with building features
-        $buildings = Building::where('example_building_id', $exampleBuilding->id)
-            ->get();
-
-        foreach($buildings as $building)
-        {
-            // If building and building feature are valid, apply the example building via the job
-            if ($building instanceof Building && $building->buildingFeatures instanceof BuildingFeature) {
-                ApplyExampleBuilding::dispatch($exampleBuilding, $building, $building->buildingFeatures);
-            }
-        }
     }
 }

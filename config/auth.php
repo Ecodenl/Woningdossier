@@ -99,7 +99,7 @@ return [
         'users' => [
             'provider' => 'accounts',
             'table' => 'password_resets',
-            'expire' => env('AUTH_PASSWORD_RESET_EXPIRE', 720),
+            'expire' => env('AUTH_PASSWORD_RESET_EXPIRE', 43200),
         ],
     ],
 ];

@@ -70,7 +70,6 @@ class VerificationController extends Controller
         // this method can be and should be adjusted in the next shift
         // the next version will have a extra hash in the url, we can use this to compare the email.
 
-        dd($acc)
         if ($account->hasVerifiedEmail()) {
             return redirect($this->redirectPath());
         }

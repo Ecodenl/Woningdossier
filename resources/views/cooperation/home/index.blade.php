@@ -4,6 +4,11 @@
     <div class="container" id="home">
         <div class="row">
             <div class="col-md-12">
+                @if(!session('verified'))
+                    @component('cooperation.tool.components.alert')
+                        @lang('cooperation/auth/verify.success')
+                    @endcomponent
+                @endif
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="row">

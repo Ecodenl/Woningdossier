@@ -18,6 +18,7 @@ use App\Models\InputSource;
 use App\Services\ExampleBuildingService;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Bus;
 
 class ExampleBuildingController extends Controller
 {
@@ -206,7 +207,7 @@ class ExampleBuildingController extends Controller
 
         $exampleBuilding->save();
 
-        ApplyExampleBuilding::dispatch($exampleBuilding);
+        $this->applyExampleBuilding($exampleBuilding);
 
         return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $id])->with('success', __('cooperation/admin/example-buildings.update.success'));
     }
@@ -290,5 +291,20 @@ class ExampleBuildingController extends Controller
         }
 
         return redirect()->route('cooperation.admin.example-buildings.index')->with('success', 'Example building copied');
+    }
+
+    public function applyExampleBuilding(ExampleBuilding $exampleBuilding)
+    {
+        // Get buildings with this example building, with building features
+        $buildings = Building::where('example_building_id', $exampleBuilding->id)
+            ->get();
+
+        foreach($buildings as $building)
+        {
+            // If building and building feature are valid, apply the example building via the job
+            if ($building instanceof Building && $building->buildingFeatures instanceof BuildingFeature) {
+                ApplyExampleBuilding::dispatch($exampleBuilding, $building, $building->buildingFeatures);
+            }
+        }
     }
 }

@@ -17,15 +17,19 @@ class ApplyExampleBuilding implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $exampleBuilding;
+    protected $building;
+    protected $buildingFeature;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(ExampleBuilding $exampleBuilding)
+    public function __construct(ExampleBuilding $exampleBuilding, Building $building, BuildingFeature $buildingFeature)
     {
         $this->exampleBuilding = $exampleBuilding;
+        $this->building = $building;
+        $this->buildingFeature = $buildingFeature;
     }
 
     /**
@@ -35,21 +39,7 @@ class ApplyExampleBuilding implements ShouldQueue
      */
     public function handle()
     {
-        $exampleBuilding = $this->exampleBuilding;
-
-        // Get buildings with this example building, with building features
-        $buildings = Building::where('example_building_id', $exampleBuilding->id)
-            ->with(['buildingFeatures' => function($query) {
-                $query->allInputSources();
-            }])
-            ->get();
-
-        foreach($buildings as $building)
-        {
-            // If building and building feature are valid, apply the example building
-            if ($building instanceof Building && $building->buildingFeatures instanceof BuildingFeature) {
-                ExampleBuildingService::apply($exampleBuilding, $building->buildingFeatures->build_year, $building);
-            }
-        }
+        // We apply the example building with the given data
+        ExampleBuildingService::apply($this->exampleBuilding, $this->buildingFeature->build_year, $this->building);
     }
 }

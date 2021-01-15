@@ -4,7 +4,7 @@
     <div class="container" id="home">
         <div class="row">
             <div class="col-md-12">
-                @if(!session('verified'))
+                @if(session('verified'))
                     @component('cooperation.tool.components.alert')
                         @lang('cooperation/auth/verify.success')
                     @endcomponent

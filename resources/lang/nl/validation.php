@@ -210,5 +210,8 @@ return [
         // solar panels
         'building_pv_panels.number' => __('solar-panels.number.title'),
         'building_pv_panels.peak_power' => __('solar-panels.peak-power.title'),
+
+        // Example buildings
+        'building_type_id' => __('cooperation/admin/example-buildings.components.building-type'),
     ],
 ];

@@ -35,9 +35,9 @@ class ApplyExampleBuilding implements ShouldQueue
      */
     public function handle()
     {
-        \Log::debug('dispatched');
         $exampleBuilding = $this->exampleBuilding;
 
+        // Get buildings with this example building, with building features
         $buildings = Building::where('example_building_id', $exampleBuilding->id)
             ->with(['buildingFeatures' => function($query) {
                 $query->allInputSources();
@@ -46,6 +46,7 @@ class ApplyExampleBuilding implements ShouldQueue
 
         foreach($buildings as $building)
         {
+            // If building and building feature are valid, apply the example building
             if ($building instanceof Building && $building->buildingFeatures instanceof BuildingFeature) {
                 ExampleBuildingService::apply($exampleBuilding, $building->buildingFeatures->build_year, $building);
             }

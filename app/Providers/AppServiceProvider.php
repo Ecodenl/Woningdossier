@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Jobs\RecalculateStepForUser;
 use App\Models\Notification;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Queue\Events\JobProcessed;
@@ -76,6 +77,8 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         Schema::defaultStringLength(191);
+
+        Carbon::setLocale(config('app.locale'));
 
         if ($this->app->environment('local', 'testing')) {
             //$this->app->register(DuskServiceProvider::class);

@@ -57,15 +57,6 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
                     Route::get('reset/{token}/{email}', 'ResetPasswordController@show')->name('reset.show');
                     Route::post('reset', 'ResetPasswordController@update')->name('reset.update');
                 });
-
-                Route::group(['prefix' => 'confirm', 'as' => 'confirm.'], function () {
-                    Route::get('', 'ConfirmAccountController@store')->name('store');
-
-                    Route::group(['prefix' => 'resend', 'as' => 'resend.'], function () {
-                        Route::get('', 'ResendConfirmAccountController@show')->name('show');
-                        Route::post('', 'ResendConfirmAccountController@store')->name('store');
-                    });
-                });
             });
         });
 

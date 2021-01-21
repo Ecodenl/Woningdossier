@@ -15,6 +15,9 @@
                         @endif
 
                         @lang('cooperation/auth/verify.body', ['link' => route('cooperation.auth.verification.resend')])
+                        @lang('cooperation/auth/verify.already-verified')
+                        <br>
+                        <button class="btn btn-default" onclick="location.reload()">@lang('cooperation/auth/verify.reload-page')</button>
                     </div>
                 </div>
             </div>

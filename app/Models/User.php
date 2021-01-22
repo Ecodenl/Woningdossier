@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
-use App\NotificationSetting;
+use App\Models\NotificationSetting;
 use App\Traits\HasCooperationTrait;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Database\Eloquent\Model;

@@ -6,24 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\Cooperation
+ * App\Models\Cooperation.
  *
- * @property int $id
- * @property string $name
- * @property string $slug
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $website_url
- * @property string|null $cooperation_email
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuilding[] $exampleBuildings
- * @property-read int|null $example_buildings_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
- * @property-read int|null $questionnaires_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
- * @property-read int|null $steps_count
- * @property-read \App\Models\CooperationStyle|null $style
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
- * @property-read int|null $users_count
+ * @property int                                                                    $id
+ * @property string                                                                 $name
+ * @property string                                                                 $slug
+ * @property \Illuminate\Support\Carbon|null                                        $created_at
+ * @property \Illuminate\Support\Carbon|null                                        $updated_at
+ * @property string|null                                                            $website_url
+ * @property string|null                                                            $cooperation_email
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuilding[] $exampleBuildings
+ * @property int|null                                                               $example_buildings_count
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[]   $questionnaires
+ * @property int|null                                                               $questionnaires_count
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Step[]            $steps
+ * @property int|null                                                               $steps_count
+ * @property \App\Models\CooperationStyle|null                                      $style
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\User[]            $users
+ * @property int|null                                                               $users_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation query()

@@ -8,23 +8,24 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * App\Models\Question
+ * App\Models\Question.
  *
- * @property int $id
- * @property string $name
- * @property string $type
- * @property int $order
- * @property bool $required
- * @property array|null $validation
- * @property int $questionnaire_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[] $questionAnswers
- * @property-read int|null $question_answers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionOption[] $questionOptions
- * @property-read int|null $question_options_count
- * @property-read \App\Models\Questionnaire $questionnaire
+ * @property int                                                                    $id
+ * @property string                                                                 $name
+ * @property string                                                                 $type
+ * @property int                                                                    $order
+ * @property bool                                                                   $required
+ * @property array|null                                                             $validation
+ * @property int                                                                    $questionnaire_id
+ * @property \Illuminate\Support\Carbon|null                                        $created_at
+ * @property \Illuminate\Support\Carbon|null                                        $updated_at
+ * @property \Illuminate\Support\Carbon|null                                        $deleted_at
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionsAnswer[] $questionAnswers
+ * @property int|null                                                               $question_answers_count
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\QuestionOption[]  $questionOptions
+ * @property int|null                                                               $question_options_count
+ * @property \App\Models\Questionnaire                                              $questionnaire
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Question newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Question newQuery()
  * @method static \Illuminate\Database\Query\Builder|Question onlyTrashed()

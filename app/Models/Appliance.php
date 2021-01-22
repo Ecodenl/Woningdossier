@@ -5,16 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Appliance
+ * App\Models\Appliance.
  *
- * @property int $id
- * @property string $name
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
- * @property-read int|null $building_services_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ApplianceProperty[] $properties
- * @property-read int|null $properties_count
+ * @property int                                                                      $id
+ * @property string                                                                   $name
+ * @property \Illuminate\Support\Carbon|null                                          $created_at
+ * @property \Illuminate\Support\Carbon|null                                          $updated_at
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[]   $buildingServices
+ * @property int|null                                                                 $building_services_count
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\ApplianceProperty[] $properties
+ * @property int|null                                                                 $properties_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Appliance newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Appliance newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Appliance query()

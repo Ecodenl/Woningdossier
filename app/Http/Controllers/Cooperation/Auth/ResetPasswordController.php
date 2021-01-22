@@ -70,7 +70,6 @@ class ResetPasswordController extends Controller
         // (https://stackoverflow.com/questions/40532296/laravel-5-3-password-broker-customization)
         // seems a LOT more overkill than this..
 
-
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.

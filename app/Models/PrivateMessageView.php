@@ -8,17 +8,18 @@ use App\Traits\GetMyValuesTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\PrivateMessageView
+ * App\Models\PrivateMessageView.
  *
- * @property int $id
- * @property int $private_message_id
- * @property int|null $user_id
- * @property int|null $input_source_id
- * @property int|null $to_cooperation_id
+ * @property int                             $id
+ * @property int                             $private_message_id
+ * @property int|null                        $user_id
+ * @property int|null                        $input_source_id
+ * @property int|null                        $to_cooperation_id
  * @property \Illuminate\Support\Carbon|null $read_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\InputSource|null $inputSource
+ * @property \App\Models\InputSource|null    $inputSource
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessageView forCurrentInputSource()

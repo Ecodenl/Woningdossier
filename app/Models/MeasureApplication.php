@@ -8,23 +8,24 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\MeasureApplication
+ * App\Models\MeasureApplication.
  *
- * @property int $id
- * @property string $measure_type
- * @property string $measure_name
- * @property string $short
- * @property string $application
- * @property float $costs
- * @property string $cost_unit
- * @property float $minimal_costs
- * @property int $maintenance_interval
- * @property string $maintenance_unit
- * @property int $step_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Interest[] $interests
- * @property-read int|null $interests_count
+ * @property int                                                             $id
+ * @property string                                                          $measure_type
+ * @property string                                                          $measure_name
+ * @property string                                                          $short
+ * @property string                                                          $application
+ * @property float                                                           $costs
+ * @property string                                                          $cost_unit
+ * @property float                                                           $minimal_costs
+ * @property int                                                             $maintenance_interval
+ * @property string                                                          $maintenance_unit
+ * @property int                                                             $step_id
+ * @property \Illuminate\Support\Carbon|null                                 $created_at
+ * @property \Illuminate\Support\Carbon|null                                 $updated_at
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Interest[] $interests
+ * @property int|null                                                        $interests_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureApplication query()

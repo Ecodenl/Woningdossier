@@ -5,15 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\HeaterSpecification
+ * App\Models\HeaterSpecification.
  *
- * @property int $id
- * @property int $liters
- * @property int $savings
- * @property int $boiler
- * @property string $collector
+ * @property int                             $id
+ * @property int                             $liters
+ * @property int                             $savings
+ * @property int                             $boiler
+ * @property string                          $collector
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|HeaterSpecification newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|HeaterSpecification newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|HeaterSpecification query()

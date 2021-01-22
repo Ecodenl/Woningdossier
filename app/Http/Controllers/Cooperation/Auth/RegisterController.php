@@ -89,6 +89,7 @@ class RegisterController extends Controller
             return redirect(RoleHelper::getUrlByRole($this->guard()->user()->user()->roles()->first()))
                 ->with('success', __('auth.register.form.message.account-connected'));
         }
+
         return redirect()
             ->route('cooperation.auth.verification.notice');
     }

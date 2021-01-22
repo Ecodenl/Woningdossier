@@ -8,26 +8,27 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UserActionPlanAdvice
+ * App\Models\UserActionPlanAdvice.
  *
- * @property int $id
- * @property int $user_id
- * @property int|null $input_source_id
- * @property int $measure_application_id
- * @property string|null $costs
- * @property string|null $savings_gas
- * @property string|null $savings_electricity
- * @property string|null $savings_money
- * @property int|null $year
- * @property bool $planned
- * @property int|null $planned_year
- * @property int $step_id
+ * @property int                             $id
+ * @property int                             $user_id
+ * @property int|null                        $input_source_id
+ * @property int                             $measure_application_id
+ * @property string|null                     $costs
+ * @property string|null                     $savings_gas
+ * @property string|null                     $savings_electricity
+ * @property string|null                     $savings_money
+ * @property int|null                        $year
+ * @property bool                            $planned
+ * @property int|null                        $planned_year
+ * @property int                             $step_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\InputSource|null $inputSource
- * @property-read \App\Models\MeasureApplication $measureApplication
- * @property-read \App\Models\Step $step
- * @property-read \App\Models\User $user
+ * @property \App\Models\InputSource|null    $inputSource
+ * @property \App\Models\MeasureApplication  $measureApplication
+ * @property \App\Models\Step                $step
+ * @property \App\Models\User                $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)

@@ -6,14 +6,15 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\MeasureCategory
+ * App\Models\MeasureCategory.
  *
- * @property int $id
- * @property string $name
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Measure[] $categories
- * @property-read int|null $categories_count
+ * @property int                                                            $id
+ * @property string                                                         $name
+ * @property \Illuminate\Support\Carbon|null                                $created_at
+ * @property \Illuminate\Support\Carbon|null                                $updated_at
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Measure[] $categories
+ * @property int|null                                                       $categories_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|MeasureCategory query()

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Arr;
 use App\Jobs\RecalculateStepForUser;
 use App\Models\Notification;
 use Carbon\Carbon;
@@ -24,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         \Validator::extend('needs_to_be_lower_or_same_as', function ($attribute, $value, $parameters, $validator) {
-            $formData = array_dot($validator->getData());
+            $formData = Arr::dot($validator->getData());
             $compareFieldValue = $formData[$parameters[0]];
 
             if ($value > $compareFieldValue) {

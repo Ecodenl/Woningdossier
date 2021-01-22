@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Helpers;
+use Illuminate\Support\Arr;
 
 class Arr
 {
@@ -15,7 +16,7 @@ class Arr
     {
         $array = [];
         foreach ($content as $key => $value) {
-            array_set($array, $key, $value);
+            Arr::set($array, $key, $value);
         }
 
         return $array;

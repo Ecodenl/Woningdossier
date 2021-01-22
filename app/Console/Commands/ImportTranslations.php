@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\Str;
 use App\Models\Translation;
@@ -220,7 +222,7 @@ class ImportTranslations extends Command
         $translationFileArray = [];
         foreach ($translationDottedFileArray as $values) {
             foreach ($values as $key => $value) {
-                array_set($translationFileArray, trim($key), "'".$value."',");
+                Arr::set($translationFileArray, trim($key), "'".$value."',");
             }
         }
 
@@ -239,7 +241,7 @@ class ImportTranslations extends Command
         $translationFileContent = str_replace('array', '', $translationFileContent);
         $translationFileContent = str_replace('(', '[', $translationFileContent);
         $translationFileContent = str_replace(')', '],', $translationFileContent);
-        $translationFileContent = str_replace_last(',', ';', $translationFileContent);
+        $translationFileContent = Str::replaceLast(',', ';', $translationFileContent);
 
         // write and close the file
         fwrite($translationFile, $translationFileContent);

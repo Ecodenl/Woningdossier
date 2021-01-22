@@ -12,7 +12,7 @@ $userInputValues = $userInputValues->sortBy(function ($a) {
         <?php
             // simple check if the user input column has dots, if it does it means we have to get a array from the row so we use the array_get method
             if (false !== strpos($userInputColumn, '.')) {
-                $value = array_get($userInputValue, $userInputColumn);
+                $value = Arr::get($userInputValue, $userInputColumn);
             } else {
                 $value = $userInputValue->$userInputColumn;
             }

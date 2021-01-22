@@ -73,7 +73,7 @@ class ExampleBuildingController extends Controller
         $exampleBuilding = new ExampleBuilding();
 
         $translations = $request->input('name', []);
-        $translations = array_only($translations, config('hoomdossier.supported_locales'));
+        $translations = Arr::only($translations, config('hoomdossier.supported_locales'));
         $exampleBuilding->createTranslations('name', $translations);
 
         $exampleBuilding->buildingType()->associate($buildingType);

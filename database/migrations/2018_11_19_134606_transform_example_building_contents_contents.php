@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Arr;
 use Illuminate\Database\Migrations\Migration;
 
 class TransformExampleBuildingContentsContents extends Migration
@@ -54,14 +55,14 @@ class TransformExampleBuildingContentsContents extends Migration
                             $crawlspaceElement = \App\Models\Element::where('short',
                                 'crawlspace')->first();
                             if ($crawlspaceElement instanceof \App\Models\Element) {
-                                $extra = array_get($content,
+                                $extra = Arr::get($content,
                                     $section.'.building_elements.'.$crawlspaceElement->id.'.extra',
                                     []);
                                 if (! is_array($extra)) {
                                     // only accessibility in there now
                                     $extra = ['access' => $extra];
                                 }
-                                $extra['has_crawlspace'] = array_get($content,
+                                $extra['has_crawlspace'] = Arr::get($content,
                                     $section.'.building_elements.crawlspace',
                                     'unknown');
                                 $content[$section]['building_elements'][$crawlspaceElement->id]['extra'] = $extra;

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Arr;
 use App\Helpers\PicoHelper;
 use App\Models\Account;
 use App\Models\Building;
@@ -127,7 +128,7 @@ class UserService
             $account = AccountService::create($email, $registerData['password']);
         }
 
-        $user = self::create($cooperation, $roles, $account, array_except($registerData, ['email', 'password']));
+        $user = self::create($cooperation, $roles, $account, Arr::except($registerData, ['email', 'password']));
 
         // associate it with the user
         $user->account()->associate(

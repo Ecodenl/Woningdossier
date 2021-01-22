@@ -2,6 +2,8 @@
 
 return [
     'components' => [
+        'name' => 'Naam Voorbeeldwoning',
+        'building-type' => 'Woningtype',
         'cooperation' => 'Coöperatie',
         'order' => 'Volgorde',
         'is-default' => [

@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Mail Driver
@@ -11,7 +12,7 @@ return [
     | your application here. By default, Laravel is setup for SMTP mail.
     |
     | Supported: "smtp", "sendmail", "mailgun", "mandrill", "ses",
-    |            "sparkpost", "log", "array"
+    |            "sparkpost", "postmark", "log", "array"
     |
     */
 
@@ -55,9 +56,8 @@ return [
     */
 
     'from' => [
-        'noreply' => env('MAIL_FROM_ADDRESS_NOREPLY', 'noreply@hoomdossier.nl'),
-        'address' => env('MAIL_FROM_ADDRESS', 'noreply@hoomdossier.nl'),
-        'name' => env('MAIL_FROM_NAME', 'Hoomdossier'),
+        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
     /*
@@ -132,4 +132,5 @@ return [
     */
 
     'log_channel' => env('MAIL_LOG_CHANNEL'),
+
 ];

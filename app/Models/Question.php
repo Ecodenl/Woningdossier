@@ -55,7 +55,7 @@ class Question extends Model
     ];
 
     protected $dates = [
-        'deleted_at',
+        
     ];
     protected $casts = [
         'required' => 'bool',

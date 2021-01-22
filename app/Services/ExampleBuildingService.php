@@ -12,9 +12,8 @@ use App\Models\ElementValue;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
-use App\Models\Log;
+use App\Models\User;
 use App\Models\Service;
-use App\Scopes\GetValueScope;
 
 class ExampleBuildingService
 {
@@ -155,10 +154,10 @@ class ExampleBuildingService
                                 $service = Service::find($serviceId);
                                 if ($service instanceof Service) {
                                     // try to obtain a existing service
-                                    $existingBuildingService = BuildingService::withoutGlobalScope(GetValueScope::class)
-                                        ->forMe()
-                                        ->where('input_source_id', $inputSource->id)
-                                        ->where('service_id', $serviceId)->first();
+                                    $existingBuildingService = $building->buildingServices()
+                                        ->forInputSource($inputSource)
+                                        ->where('service_id', $serviceId)
+                                        ->first();
 
                                     // see if it already exists, if so we need to add data to that service
 

@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Arr;
 use App\Jobs\RecalculateStepForUser;
 use App\Models\Notification;
 use Carbon\Carbon;
@@ -10,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 

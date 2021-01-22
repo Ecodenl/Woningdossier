@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Arr;
 use App\Events\ExampleBuildingChanged;
 use App\Models\Building;
 use App\Models\BuildingElement;
@@ -16,6 +15,7 @@ use App\Models\InputSource;
 use App\Models\Log;
 use App\Models\Service;
 use App\Scopes\GetValueScope;
+use Illuminate\Support\Arr;
 
 class ExampleBuildingService
 {

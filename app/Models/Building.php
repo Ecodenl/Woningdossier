@@ -89,7 +89,6 @@ class Building extends Model
     use ToolSettingTrait;
 
     protected $dates = [
-        
     ];
 
     protected $casts = [

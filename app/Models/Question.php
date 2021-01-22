@@ -55,7 +55,6 @@ class Question extends Model
     ];
 
     protected $dates = [
-        
     ];
     protected $casts = [
         'required' => 'bool',

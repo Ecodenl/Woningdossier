@@ -21,8 +21,9 @@ class RedirectIfIsFillingForOtherBuilding
             return $next($request);
         }
 
-        if ($request->user()->isFillingToolForOtherBuilding()) {
-            \Log::debug('Wow, user id '.Hoomdossier::user()->id.' tried to do something fishy!');
+        $user = Hoomdossier::user();
+        if ($user->isFillingToolForOtherBuilding()) {
+            \Log::debug('Wow, user id '.$user->id.' tried to do something fishy!');
 
             return redirect()->route('cooperation.tool.general-data.index');
         }

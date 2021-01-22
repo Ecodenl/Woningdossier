@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|Notification forBuilding(\App\Models\Building $building)
  * @method static Builder|Notification forInputSource(\App\Models\InputSource $inputSource)
  * @method static Builder|Notification forMe(\App\Models\User $user = null)
+ * @method static Builder|Notification forType($type)
  * @method static Builder|Notification newModelQuery()
  * @method static Builder|Notification newQuery()
  * @method static Builder|Notification query()

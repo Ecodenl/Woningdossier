@@ -10,6 +10,12 @@
                     {{session('account_connected')}}
                 @endcomponent
             @endif
+
+            @if(session('verified'))
+                @component('cooperation.tool.components.alert')
+                    @lang('cooperation/auth/verify.success-log-in')
+                @endcomponent
+            @endif
             <div class="panel panel-default">
                 <div class="panel-heading">@lang('auth.login.form.header')</div>
 

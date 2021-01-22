@@ -8,7 +8,7 @@ use App\Models\Cooperation;
 use App\Models\NotificationType;
 use App\Models\PrivateMessageView;
 use App\Models\User;
-use App\NotificationSetting;
+use App\Models\NotificationSetting;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 

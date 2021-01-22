@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Helpers\HoomdossierSession;
+use App\Models\Account;
 use App\Models\PrivateMessage;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -25,8 +26,9 @@ class PrivateMessagePolicy
      *
      * @return bool
      */
-    public function edit(User $user, PrivateMessage $message)
+    public function edit(Account $account, PrivateMessage $message)
     {
+        $user = $account->user();
         // get the building id from the message
         $buildingId = $message->building_id;
 
@@ -44,5 +46,7 @@ class PrivateMessagePolicy
                 return true;
             }
         }
+
+        return false;
     }
 }

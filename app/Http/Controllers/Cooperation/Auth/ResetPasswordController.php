@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Auth;
 
+use App\Helpers\Hoomdossier;
 use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
@@ -68,14 +69,7 @@ class ResetPasswordController extends Controller
         // Sorry.. creating a complete custom password broker service provider
         // (https://stackoverflow.com/questions/40532296/laravel-5-3-password-broker-customization)
         // seems a LOT more overkill than this..
-        $userEmail = $request->get('email');
 
-        $isPending = Account::where('email', '=', $userEmail)->whereNotNull('confirm_token')->count() > 0;
-        if ($isPending) {
-            \Log::debug('The user has resetted his password, but has not confirmed his account. Redirecting to login page with a message..');
-
-            return redirect(route('cooperation.auth.login'))->with('warning', __('auth.reset.inactive'));
-        }
 
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
@@ -104,7 +98,7 @@ class ResetPasswordController extends Controller
         // same as for login controller: redirect to appropriate page
         // the guard()->user() will return the auth model, in our case this is the Account model
         // but we want the user from the account, so thats why we do ->user()->user();
-        $user = $this->guard()->user()->user();
+        $user = Hoomdossier::user();
 
         $role = Role::findByName($user->roles()->first()->name);
 

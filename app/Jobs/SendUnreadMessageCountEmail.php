@@ -6,7 +6,7 @@ use App\Mail\UnreadMessagesEmail;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\User;
-use App\NotificationSetting;
+use App\Models\NotificationSetting;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

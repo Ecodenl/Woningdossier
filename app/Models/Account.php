@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Notifications\ResetPasswordNotification;
+use App\Notifications\VerifyEmailNotification;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
@@ -41,13 +43,13 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|Account whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Account extends Authenticatable
+class Account extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
 
     protected $fillable = [
         'first_name', 'last_name', 'email', 'password', 'phone_number',
-        'confirm_token', 'old_email', 'old_email_token',
+        'email_verified_at', 'old_email', 'old_email_token',
     ];
 
     /**
@@ -69,15 +71,6 @@ class Account extends Authenticatable
     ];
 
     /**
-     * Confirm a account.
-     */
-    public function confirm()
-    {
-        $this->confirm_token = null;
-        $this->save();
-    }
-
-    /**
      * Send the password reset notification.
      *
      * @param string $token
@@ -87,6 +80,16 @@ class Account extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token, $this, $this->user()->cooperation));
+    }
+
+    /**
+     * Send the email verification notification.
+     *
+     * @return void
+     */
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmailNotification($this->user()));
     }
 
     /**

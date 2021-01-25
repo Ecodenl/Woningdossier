@@ -7,7 +7,6 @@ use App\Helpers\Str;
 use App\Models\Translation;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
-use Ramsey\Uuid\Uuid;
 
 class ImportTranslations extends Command
 {

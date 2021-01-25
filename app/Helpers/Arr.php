@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-class Arr
+class Arr extends \Illuminate\Support\Arr
 {
     /**
      * The inverse of array_dot.

@@ -32,7 +32,7 @@ class RegisterFormRequest extends FormRequest
     {
         $rules = [
             'email' => 'required|string|email|max:255|unique:accounts',
-            'password' => 'required|string|confirmed|min:6',
+            'password' => 'required|string|confirmed|min:8',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'postal_code' => ['required', new PostalCode('nl')],

@@ -43,7 +43,7 @@ class WallInsulationRequest extends FormRequest
             // heeft deze woning een spouwmuur
             'building_features.cavity_wall' => 'required|between:0,2',
             // inputs
-            'building_features.damage_paintwork' => 'exists:facade_damaged_paintworks,id',
+            'building_features.facade_damaged_paintwork_id' => 'exists:facade_damaged_paintworks,id',
             'building_features.facade_plastered_surface_id' => 'exists:facade_plastered_surfaces,id',
             'building_features.wall_joints' => 'exists:facade_surfaces,id',
             'building_features.contaminated_wall_joints' => 'exists:facade_surfaces,id',

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Cooperation\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Account;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\Request;
@@ -46,7 +45,6 @@ class VerificationController extends Controller
     /**
      * Show the email verification notice.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request)
@@ -59,9 +57,9 @@ class VerificationController extends Controller
     /**
      * Mark the authenticated user's email address as verified.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @return \Illuminate\Http\Response
      */
     public function verify(Request $request)
     {
@@ -86,6 +84,7 @@ class VerificationController extends Controller
         if (Auth::check()) {
             return $this->redirectTo;
         }
+
         return route('cooperation.auth.login');
     }
 }

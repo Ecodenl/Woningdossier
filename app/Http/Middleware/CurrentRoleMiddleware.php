@@ -46,7 +46,7 @@ class CurrentRoleMiddleware
         }
 
         // check if the user has the role and if it is his current role.
-        if (!Hoomdossier::user()->hasRoleAndIsCurrentRole($roles)) {
+        if (! Hoomdossier::user()->hasRoleAndIsCurrentRole($roles)) {
             throw UnauthorizedException::forRoles($roles);
         }
 

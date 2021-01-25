@@ -11,7 +11,6 @@ return [
     | as the size rules. Feel free to tweak each of these messages here.
     |
     */
-
     'accepted'             => 'De :attribute moeten geaccepteerd worden.',
     'active_url'           => 'De :attribute is geen geldige URL.',
     'after'                => 'De :attribute moet een datum zijn na :date.',
@@ -42,6 +41,18 @@ return [
     'exists'               => 'De geselecteerde waarde is ongeldig.',
     'file'                 => 'De :attribute moet een bestand zijn.',
     'filled'               => ':attribute veld moet ingevuld zijn.',
+    'gt'                   => [
+        'numeric' => 'De :attribute moet groter zijn dan :value.',
+        'file'    => 'De :attribute moet groter zijn dan :value kilobytes.',
+        'string'  => 'De :attribute moet meer dan :value tekens bevatten.',
+        'array'   => 'De :attribute moet meer dan :value waardes bevatten.',
+    ],
+    'gte'                  => [
+        'numeric' => 'De :attribute moet groter of gelijk zijn aan :value.',
+        'file'    => 'De :attribute moet groter of gelijk zijn aan :value kilobytes.',
+        'string'  => 'De :attribute moet minimaal :value tekens bevatten.',
+        'array'   => 'De :attribute moet :value waardes of meer bevatten.',
+    ],
     'image'                => 'De :attribute moet een image zijn.',
     'in'                   => 'De geselecteerde :attribute is ongeldig.',
     'in_array'             => ':attribute veld is geen optie in :other.',
@@ -64,7 +75,21 @@ return [
         'string'  => 'De :attribute moet tenminste :min karakters bevatten.',
         'array'   => 'De :attribute moet tenminste :min items bevatten.',
     ],
-    'not_in'               => 'De geselecteerde :attribute is ongeldig.',
+    'lt'                   => [
+        'numeric' => 'De :attribute moet kleiner zijn dan :value.',
+        'file'    => 'De :attribute moet kleiner zijn dan :value kilobytes.',
+        'string'  => 'De :attribute moet minder dan :value tekens bevatten.',
+        'array'   => 'De :attribute moet minder dan :value waardes bevatten.',
+    ],
+    'lte'                  => [
+        'numeric' => 'De :attribute moet kleiner of gelijk zijn aan :value.',
+        'file'    => 'De :attribute moet kleiner of gelijk zijn aan :value kilobytes.',
+        'string'  => 'De :attribute moet maximaal :value tekens bevatten.',
+        'array'   => 'De :attribute moet :value waardes of minder bevatten.',
+    ],
+    'multiple_of'          => ':Attribute moet een veelvoud van :value zijn.',
+    'not_in'               => 'Het formaat van :attribute is ongeldig.',
+    'not_regex'            => 'De :attribute formaat is ongeldig.',
     'numeric'              => ':attribute moet een getal bevatten',
     'present'              => 'De :attribute moet gevuld zijn.',
     'phone_number'         => 'Telefoonnummer bevat geen geldig telefoonnummer.',
@@ -85,11 +110,13 @@ return [
         'string'  => 'De :attribute moet :size karakters zijn.',
         'array'   => 'De :attribute moet :size items bevatten.',
     ],
+    'starts_with'          => ':Attribute moet starten met een van de volgende: :values.',
     'string'               => 'De :attribute moet een tekst zijn.',
     'timezone'             => 'De :attribute moet een geldig tijdzone zijn.',
     'unique'               => 'De :attribute is al geregistreerd.',
     'uploaded'             => 'is mislukt om :attribute failed to upload.',
     'url'                  => 'De :attribute formaat is ongeldig.',
+    'uuid'                 => ':Attribute moet een geldig UUID zijn.',
 
     /*
     |--------------------------------------------------------------------------
@@ -129,6 +156,11 @@ return [
         ],
         'accounts.email' => [
             'unique' => 'Dit e-mailadres is al geregistreerd.',
+        ],
+
+        'password' => [
+            'min' => 'Het wachtwoord moet minmaal '.Hoomdossier::PASSWORD_LENGTH.' karakters bevatten.',
+            'confirmed' => 'Wachtwoord bevestiging komt niet overheen.'
         ],
     ],
 

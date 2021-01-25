@@ -88,7 +88,6 @@ class Building extends Model
     use ToolSettingTrait;
 
     protected $dates = [
-        'deleted_at',
     ];
 
     protected $casts = [

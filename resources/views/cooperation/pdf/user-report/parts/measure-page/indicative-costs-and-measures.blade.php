@@ -7,7 +7,7 @@
             @if(in_array($stepShort, ['heater', 'solar-panels']))
                 <?php
                 // remove some results that are irrelevant to this section
-                $calculationsForStep = array_except($calculationsForStep, [
+                $calculationsForStep = Arr::except($calculationsForStep, [
                     'year', 'total_power',
                 ]);
                 ?>

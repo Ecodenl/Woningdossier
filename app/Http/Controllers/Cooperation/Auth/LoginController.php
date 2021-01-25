@@ -100,9 +100,9 @@ class LoginController extends Controller
     /**
      * Handle a login request to the application.
      *
-     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
      * @throws ValidationException
      *
+     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
      */
     public function login(Request $request, Cooperation $cooperation)
     {
@@ -123,12 +123,12 @@ class LoginController extends Controller
             /** @var Account $account */
             $account = $this->guard()->getLastAttempted();
 
-            if (!$account->isAssociatedWith($cooperation)) {
+            if (! $account->isAssociatedWith($cooperation)) {
                 throw ValidationException::withMessages(['cooperation' => [trans('auth.cooperation')]]);
             }
 
-            if (!$account->user()->building instanceof Building) {
-                Log::error('no building attached for user id: ' . $account->user()->id . ' account id:' . $account->id);
+            if (! $account->user()->building instanceof Building) {
+                Log::error('no building attached for user id: '.$account->user()->id.' account id:'.$account->id);
 
                 return redirect(route('cooperation.create-building.index'))->with('warning', __('auth.login.warning'));
             }

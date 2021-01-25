@@ -2,12 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\NotificationInterval;
-use App\Models\NotificationType;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\NotificationSetting
+ * App\Models\NotificationSetting
  *
  * @property int $id
  * @property int $user_id
@@ -16,8 +14,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property \Illuminate\Support\Carbon|null $last_notified_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read NotificationInterval $interval
- * @property-read NotificationType $type
+ * @property-read \App\Models\NotificationInterval $interval
+ * @property-read \App\Models\NotificationType $type
  * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|NotificationSetting query()

@@ -31,6 +31,8 @@ class UserActionPlanAdvice extends Model
     use GetMyValuesTrait;
     use ToolSettingTrait;
 
+    protected $table = 'user_action_plan_advices';
+
     public $fillable = [
         'user_id', 'measure_application_id', // old
         'costs', 'savings_gas', 'savings_electricity', 'savings_money',

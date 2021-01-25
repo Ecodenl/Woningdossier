@@ -388,6 +388,9 @@ class CsvService
         $users = $cooperation->users()
             ->whereHas('building', function ($query) use ($generalDataStep) {
                 $query->withoutGlobalScope(GetValueScope::class)
+                    ->whereHas('buildingFeatures', function ($query) {
+                        $query->withoutGlobalScope(GetValueScope::class);
+                    })
                     ->whereHas('completedSteps', function ($query) use ($generalDataStep) {
                         $query->withoutGlobalScope(GetValueScope::class)
                             ->where('step_id', $generalDataStep->id);
@@ -398,6 +401,9 @@ class CsvService
                     ->with(['completedSteps' => function ($query) use ($generalDataStep) {
                         $query->withoutGlobalScope(GetValueScope::class)
                             ->where('step_id', $generalDataStep->id);
+                    }])
+                    ->with(['buildingFeatures' => function ($query) {
+                        $query->withoutGlobalScope(GetValueScope::class);
                     }]);
             }])
             ->get();

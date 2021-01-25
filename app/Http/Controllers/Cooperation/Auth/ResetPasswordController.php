@@ -151,7 +151,7 @@ class ResetPasswordController extends Controller
 
         // here we will make up the credentials, the broker needs credentials to return a proper response.
         // we only need the broker for the validateReset method, but its protected and creating a custom broker seems overkill to me.
-        $password = Str::random(8);
+        $password = Str::random(Hoomdossier::PASSWORD_LENGTH);
         $credentials = [
             'token' => $token,
             'email' => $email,

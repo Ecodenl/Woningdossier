@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Helpers\Hoomdossier;
 use App\Models\Account;
 use App\Models\User;
 use App\Rules\HouseNumber;
@@ -32,7 +33,7 @@ class RegisterFormRequest extends FormRequest
     {
         $rules = [
             'email' => 'required|string|email|max:255|unique:accounts',
-            'password' => 'required|string|confirmed|min:8',
+            'password' => 'required|string|confirmed|min:'.Hoomdossier::PASSWORD_LENGTH,
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'postal_code' => ['required', new PostalCode('nl')],

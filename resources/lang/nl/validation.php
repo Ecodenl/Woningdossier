@@ -159,7 +159,7 @@ return [
         ],
 
         'password' => [
-            'min' => 'Het wachtwoord moet minmaal 8 karakters bevatten.',
+            'min' => 'Het wachtwoord moet minmaal '.Hoomdossier::PASSWORD_LENGTH.' karakters bevatten.',
             'confirmed' => 'Wachtwoord bevestiging komt niet overheen.'
         ],
     ],

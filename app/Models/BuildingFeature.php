@@ -102,7 +102,6 @@ class BuildingFeature extends Model
         'contaminated_wall_joints',
         'wall_surface',
         'insulation_wall_surface',
-        'damage_paintwork',
         'building_layers',
         'surface',
         'floor_surface',

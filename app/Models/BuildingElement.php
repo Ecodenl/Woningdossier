@@ -8,21 +8,20 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingElement.
+ * App\Models\BuildingElement
  *
- * @property int                             $id
- * @property int|null                        $building_id
- * @property int|null                        $input_source_id
- * @property int                             $element_id
- * @property int|null                        $element_value_id
- * @property array|null                      $extra
+ * @property int $id
+ * @property int|null $building_id
+ * @property int|null $input_source_id
+ * @property int $element_id
+ * @property int|null $element_value_id
+ * @property array|null $extra
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\Building|null       $building
- * @property \App\Models\Element             $element
- * @property \App\Models\ElementValue|null   $elementValue
- * @property \App\Models\InputSource|null    $inputSource
- *
+ * @property-read \App\Models\Building|null $building
+ * @property-read \App\Models\Element $element
+ * @property-read \App\Models\ElementValue|null $elementValue
+ * @property-read \App\Models\InputSource|null $inputSource
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingElement forInputSource(\App\Models\InputSource $inputSource)

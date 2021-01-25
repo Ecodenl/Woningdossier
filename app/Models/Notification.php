@@ -8,17 +8,16 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Notification.
+ * App\Models\Notification
  *
- * @property int                             $id
- * @property int                             $building_id
- * @property int|null                        $input_source_id
- * @property string                          $type
- * @property bool                            $is_active
+ * @property int $id
+ * @property int $building_id
+ * @property int|null $input_source_id
+ * @property string $type
+ * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\InputSource|null    $inputSource
- *
+ * @property-read \App\Models\InputSource|null $inputSource
  * @method static Builder|Notification active()
  * @method static Builder|Notification activeNotifications(\App\Models\Building $building, \App\Models\InputSource $inputSource)
  * @method static Builder|Notification allInputSources()

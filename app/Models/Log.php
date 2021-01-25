@@ -5,19 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Log.
+ * App\Models\Log
  *
- * @property int                             $id
- * @property int|null                        $user_id
- * @property int|null                        $building_id
- * @property int|null                        $for_user_id
- * @property string                          $message
+ * @property int $id
+ * @property int|null $user_id
+ * @property int|null $building_id
+ * @property int|null $for_user_id
+ * @property string $message
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\Building|null       $building
- * @property \App\Models\User|null           $forUser
- * @property \App\Models\User|null           $user
- *
+ * @property-read \App\Models\Building|null $building
+ * @property-read \App\Models\User|null $forUser
+ * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|Log forBuildingId($buildingId)
  * @method static \Illuminate\Database\Eloquent\Builder|Log newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Log newQuery()

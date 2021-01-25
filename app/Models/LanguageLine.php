@@ -5,21 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * App\Models\LanguageLine.
+ * App\Models\LanguageLine
  *
- * @property int                                                     $id
- * @property string                                                  $group
- * @property string                                                  $key
- * @property array                                                   $text
- * @property int|null                                                $step_id
- * @property int|null                                                $main_language_line_id
- * @property int|null                                                $help_language_line_id
- * @property \Illuminate\Support\Carbon|null                         $created_at
- * @property \Illuminate\Support\Carbon|null                         $updated_at
- * @property LanguageLine|null                                       $helpText
- * @property \Illuminate\Database\Eloquent\Collection|LanguageLine[] $subQuestions
- * @property int|null                                                $sub_questions_count
- *
+ * @property int $id
+ * @property string $group
+ * @property string $key
+ * @property array $text
+ * @property int|null $step_id
+ * @property int|null $main_language_line_id
+ * @property int|null $help_language_line_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read LanguageLine|null $helpText
+ * @property-read \Illuminate\Database\Eloquent\Collection|LanguageLine[] $subQuestions
+ * @property-read int|null $sub_questions_count
  * @method static Builder|LanguageLine forGroup($group)
  * @method static Builder|LanguageLine mainQuestions()
  * @method static Builder|LanguageLine newModelQuery()

@@ -6,15 +6,14 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\WoodRotStatus.
+ * App\Models\WoodRotStatus
  *
- * @property int                             $id
- * @property string                          $name
- * @property int|null                        $calculate_value
- * @property int                             $order
+ * @property int $id
+ * @property string $name
+ * @property int|null $calculate_value
+ * @property int $order
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- *
  * @method static \Illuminate\Database\Eloquent\Builder|WoodRotStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|WoodRotStatus newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|WoodRotStatus query()

@@ -6,19 +6,18 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Interest.
+ * App\Models\Interest
  *
- * @property int                                                         $id
- * @property string                                                      $name
- * @property int                                                         $calculate_value
- * @property int                                                         $order
- * @property \Illuminate\Support\Carbon|null                             $created_at
- * @property \Illuminate\Support\Carbon|null                             $updated_at
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
- * @property int|null                                                    $steps_count
- * @property \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
- * @property int|null                                                    $users_count
- *
+ * @property int $id
+ * @property string $name
+ * @property int $calculate_value
+ * @property int $order
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
+ * @property-read int|null $steps_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read int|null $users_count
  * @method static \Illuminate\Database\Eloquent\Builder|Interest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Interest newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Interest query()

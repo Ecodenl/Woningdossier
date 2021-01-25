@@ -27,7 +27,6 @@ class WallInsulation
     public static function calculate(Building $building, InputSource $inputSource, $energyHabit, array $calculateData): array
     {
         $buildingFeatureData = $calculateData['building_features'];
-        dd($buildingFeatureData);
         $cavityWall = $buildingFeatureData['cavity_wall'] ?? -1;
         $elements = $calculateData['element'] ?? [];
         $facadeSurface = $buildingFeatureData['insulation_wall_surface'] ?? 0;
@@ -110,7 +109,6 @@ class WallInsulation
         // Note: these answer options are hardcoded in template
         $isPlastered = 2 != (int) ($buildingFeatureData['facade_plastered_painted'] ?? 2);
 
-        dd($buildingFeatureData);
         if ($isPlastered) {
             $measureApplication = MeasureApplication::where('short', '=', 'paint-wall')->first();
             //$measureApplication = MeasureApplication::translated('measure_name', 'Gevelschilderwerk op stuk- of metselwerk', 'nl')->first(['measure_applications.*']);

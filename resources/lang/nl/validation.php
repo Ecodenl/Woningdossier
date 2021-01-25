@@ -157,6 +157,11 @@ return [
         'accounts.email' => [
             'unique' => 'Dit e-mailadres is al geregistreerd.',
         ],
+
+        'password' => [
+            'min' => 'Het wachtwoord moet minmaal 8 karakters bevatten.',
+            'confirmed' => 'Wachtwoord bevestiging komt niet overheen.'
+        ],
     ],
 
     /*

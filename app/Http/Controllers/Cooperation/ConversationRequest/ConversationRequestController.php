@@ -30,6 +30,7 @@ class ConversationRequestController extends Controller
 
         $title = __('conversation-requests.index.request-coach-conversation');
 
+        $measureApplicationName = null;
         if (! is_null($measureApplicationShort)) {
             $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->firstOrFail();
             // set the measure application name if there is a measure application
@@ -37,7 +38,7 @@ class ConversationRequestController extends Controller
             $title = __('conversation-requests.index.form.title', ['measure_application_name' => $measureApplicationName]);
         }
 
-        return view('cooperation.conversation-requests.index', compact('selectedOption', 'requestType', 'measureApplicationName', 'title'));
+        return view('cooperation.conversation-requests.index', compact( 'requestType', 'measureApplicationName', 'title'));
     }
 
     /**

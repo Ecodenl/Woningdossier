@@ -10,21 +10,22 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 /**
- * App\Models\PrivateMessage
+ * App\Models\PrivateMessage.
  *
- * @property int $id
- * @property int|null $building_id
- * @property bool|null $is_public
- * @property string $from_user
- * @property string $message
- * @property int|null $from_user_id
- * @property int|null $from_cooperation_id
- * @property int|null $to_cooperation_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building|null $building
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessageView[] $privateMessageViews
- * @property-read int|null $private_message_views_count
+ * @property int                                                                       $id
+ * @property int|null                                                                  $building_id
+ * @property bool|null                                                                 $is_public
+ * @property string                                                                    $from_user
+ * @property string                                                                    $message
+ * @property int|null                                                                  $from_user_id
+ * @property int|null                                                                  $from_cooperation_id
+ * @property int|null                                                                  $to_cooperation_id
+ * @property \Illuminate\Support\Carbon|null                                           $created_at
+ * @property \Illuminate\Support\Carbon|null                                           $updated_at
+ * @property \App\Models\Building|null                                                 $building
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\PrivateMessageView[] $privateMessageViews
+ * @property int|null                                                                  $private_message_views_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage conversation($buildingId)
  * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage forMyCooperation()
  * @method static \Illuminate\Database\Eloquent\Builder|PrivateMessage myPrivateMessages()

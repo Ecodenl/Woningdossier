@@ -8,12 +8,13 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UserActionPlanAdvice
+ * App\Models\UserActionPlanAdvice.
  *
- * @property-read \App\Models\InputSource $inputSource
- * @property-read \App\Models\MeasureApplication $measureApplication
- * @property-read \App\Models\Step $step
- * @property-read \App\Models\User $user
+ * @property \App\Models\InputSource        $inputSource
+ * @property \App\Models\MeasureApplication $measureApplication
+ * @property \App\Models\Step               $step
+ * @property \App\Models\User               $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)

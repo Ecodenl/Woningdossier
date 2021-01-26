@@ -5,17 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingCoachStatus
+ * App\Models\BuildingCoachStatus.
  *
- * @property int $id
- * @property int|null $coach_id
- * @property int|null $building_id
- * @property string $status
+ * @property int                             $id
+ * @property int|null                        $coach_id
+ * @property int|null                        $building_id
+ * @property string                          $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Building|null $building
- * @property-read \App\Models\User|null $coach
- * @property-read \App\Models\User|null $user
+ * @property \App\Models\Building|null       $building
+ * @property \App\Models\User|null           $coach
+ * @property \App\Models\User|null           $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingCoachStatus query()

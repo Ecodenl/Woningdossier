@@ -5,15 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingStatus
+ * App\Models\BuildingStatus.
  *
- * @property int $id
- * @property int $building_id
- * @property int $status_id
+ * @property int                             $id
+ * @property int                             $building_id
+ * @property int                             $status_id
  * @property \Illuminate\Support\Carbon|null $appointment_date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Status $status
+ * @property \App\Models\Status              $status
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingStatus mostRecent()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingStatus newQuery()

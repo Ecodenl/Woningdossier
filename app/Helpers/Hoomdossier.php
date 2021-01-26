@@ -10,7 +10,6 @@ use Illuminate\Support\Collection;
 
 class Hoomdossier
 {
-
     /** @var int the length the password should be */
     const PASSWORD_LENGTH = 8;
 

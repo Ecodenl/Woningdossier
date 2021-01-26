@@ -7,15 +7,16 @@ use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\CompletedQuestionnaire
+ * App\Models\CompletedQuestionnaire.
  *
- * @property int $id
- * @property int $user_id
- * @property int|null $input_source_id
- * @property int $questionnaire_id
+ * @property int                             $id
+ * @property int                             $user_id
+ * @property int|null                        $input_source_id
+ * @property int                             $questionnaire_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\InputSource|null $inputSource
+ * @property \App\Models\InputSource|null    $inputSource
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire forInputSource(\App\Models\InputSource $inputSource)

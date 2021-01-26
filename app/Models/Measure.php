@@ -6,20 +6,21 @@ use App\Helpers\TranslatableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\Measure
+ * App\Models\Measure.
  *
- * @property int $id
- * @property string $name
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\BuildingElement $buildingElements
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
- * @property-read int|null $building_services_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureCategory[] $categories
- * @property-read int|null $categories_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureProperty[] $properties
- * @property-read int|null $properties_count
- * @property-read \App\Models\ServiceType $serviceType
+ * @property int                                                                    $id
+ * @property string                                                                 $name
+ * @property \Illuminate\Support\Carbon|null                                        $created_at
+ * @property \Illuminate\Support\Carbon|null                                        $updated_at
+ * @property \App\Models\BuildingElement                                            $buildingElements
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\BuildingService[] $buildingServices
+ * @property int|null                                                               $building_services_count
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureCategory[] $categories
+ * @property int|null                                                               $categories_count
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\MeasureProperty[] $properties
+ * @property int|null                                                               $properties_count
+ * @property \App\Models\ServiceType                                                $serviceType
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|Measure newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Measure newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Measure query()

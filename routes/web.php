@@ -41,7 +41,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
 
             Route::group(['as' => 'auth.'], function () {
                 Route::get('email/verify', 'VerificationController@show')->name('verification.notice');
-                Route::get('email/verify/{id}', 'VerificationController@verify')->name('verification.verify');
+                Route::get('email/verify/{id}/{hash}', 'VerificationController@verify')->name('verification.verify');
                 Route::post('email/resend', 'VerificationController@resend')->name('verification.resend');
 
                 Route::get('login', 'LoginController@showLoginForm')->name('login');

@@ -58,7 +58,7 @@ class MyPlanController extends Controller
 
         return view('cooperation.tool.my-plan.index', compact(
             'actionPlanComments', 'pdfReportFileType', 'file', 'inputSourcesForPersonalPlanModal', 'advices',
-            'reportFileTypeCategory', 'buildingHasCompletedGeneralData', 'personalPlanForVariousInputSources', 'isRecalculating'
+             'buildingHasCompletedGeneralData', 'personalPlanForVariousInputSources', 'isRecalculating'
         ));
     }
 

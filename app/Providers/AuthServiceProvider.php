@@ -14,7 +14,6 @@ use App\Policies\FileStoragePolicy;
 use App\Policies\PrivateMessagePolicy;
 use App\Policies\QuestionnairePolicy;
 use App\Policies\UserPolicy;
-use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 

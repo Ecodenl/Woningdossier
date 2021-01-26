@@ -16,7 +16,7 @@ use Illuminate\Support\Collection;
  * @property string $email
  * @property string $password
  * @property string|null $remember_token
- * @property string|null $confirm_token
+ * @property string|null $email_verified_at
  * @property string|null $old_email
  * @property string|null $old_email_token
  * @property int $active
@@ -31,9 +31,9 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|Account newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Account query()
  * @method static \Illuminate\Database\Eloquent\Builder|Account whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereConfirmToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Account whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Account whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereEmailVerifiedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Account whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Account whereIsAdmin($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Account whereOldEmail($value)

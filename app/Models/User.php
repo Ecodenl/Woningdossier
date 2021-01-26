@@ -46,7 +46,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $measure_application_interest_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
  * @property-read int|null $motivations_count
- * @property-read \Illuminate\Database\Eloquent\Collection|NotificationSetting[] $notificationSettings
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NotificationSetting[] $notificationSettings
  * @property-read int|null $notification_settings_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
  * @property-read int|null $permissions_count

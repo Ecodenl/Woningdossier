@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Helpers\RegistrationHelper;
 use App\Models\Account;
 
 class AccountService

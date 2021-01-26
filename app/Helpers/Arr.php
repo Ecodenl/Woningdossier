@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-class Arr
+class Arr extends \Illuminate\Support\Arr
 {
     /**
      * The inverse of array_dot.
@@ -15,7 +15,7 @@ class Arr
     {
         $array = [];
         foreach ($content as $key => $value) {
-            array_set($array, $key, $value);
+            Arr::set($array, $key, $value);
         }
 
         return $array;

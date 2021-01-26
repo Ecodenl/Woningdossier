@@ -15,6 +15,7 @@ use App\Models\InputSource;
 use App\Models\Log;
 use App\Models\Service;
 use App\Scopes\GetValueScope;
+use Illuminate\Support\Arr;
 
 class ExampleBuildingService
 {
@@ -196,8 +197,8 @@ class ExampleBuildingService
                         $features = array_replace_recursive($features, $values);
                     }
                     if ('building_paintwork_statuses' == $columnOrTable) {
-                        $statusId = array_get($values, 'paintwork_status_id');
-                        $woodRotStatusId = array_get($values, 'wood_rot_status_id');
+                        $statusId = Arr::get($values, 'paintwork_status_id');
+                        $woodRotStatusId = Arr::get($values, 'wood_rot_status_id');
 
                         if (empty($statusId) || empty($woodRotStatusId)) {
                             self::log('Skipping paintwork status as the paint or wood rot (or both) status is empty');

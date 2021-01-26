@@ -17,7 +17,6 @@ use App\Models\Role;
 use App\Models\Step;
 use App\Models\User;
 use App\Scopes\GetValueScope;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class CsvService
@@ -343,7 +342,7 @@ class CsvService
                     if ($currentQuestion instanceof Question) {
                         // when the question has options, the answer is imploded.
                         if ($currentQuestion->hasQuestionOptions()) {
-                            if (!empty($answer)) {
+                            if (! empty($answer)) {
                                 // this will contain the question option ids
                                 // and filter out the empty answers.
                                 $answers = array_filter(explode('|', $answer));
@@ -382,7 +381,6 @@ class CsvService
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
         $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
-
 
         // Get all users with a building and the general data completed step
         $users = $cooperation->users()
@@ -447,7 +445,7 @@ class CsvService
             return $value;
         }
 
-        if (!is_numeric($value)) {
+        if (! is_numeric($value)) {
             return $value;
         }
 
@@ -469,9 +467,9 @@ class CsvService
      * Format the output of the given column and value.
      *
      * @param string $column
-     * @param mixed $value
-     * @param int $decimals
-     * @param bool $shouldRound
+     * @param mixed  $value
+     * @param int    $decimals
+     * @param bool   $shouldRound
      *
      * @return float|int|string
      */
@@ -509,7 +507,7 @@ class CsvService
      */
     protected static function isYear($column, $extraValue = '')
     {
-        if (!is_null($column)) {
+        if (! is_null($column)) {
             if (false !== stristr($column, 'year')) {
                 return true;
             }

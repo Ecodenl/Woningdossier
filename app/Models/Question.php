@@ -53,8 +53,6 @@ class Question extends Model
         'name', 'type', 'order', 'required', 'questionnaire_id', 'validation',
     ];
 
-    protected $dates = [
-    ];
     protected $casts = [
         'required' => 'bool',
         'validation' => 'array',

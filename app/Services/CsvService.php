@@ -111,9 +111,7 @@ class CsvService
             $connectedCoachNames = User::findMany($connectedCoaches->pluck('coach_id'))
                 ->map(function ($user) {
                     return $user->getFullName();
-                })->toArray();
-            // implode it.
-            $connectedCoachNames = implode($connectedCoachNames, ', ');
+                })->implode(', ');
 
             $firstName = $user->first_name;
             $lastName = $user->last_name;
@@ -276,7 +274,7 @@ class CsvService
                     array_push($connectedCoachNames, User::forMyCooperation($cooperation->id)->find($coachId)->getFullName());
                 }
                 // implode it.
-                $connectedCoachNames = implode($connectedCoachNames, ', ');
+                $connectedCoachNames = implode(', ', $connectedCoachNames);
 
                 $firstName = $user->first_name;
                 $lastName = $user->last_name;

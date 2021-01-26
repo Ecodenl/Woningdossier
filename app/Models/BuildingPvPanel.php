@@ -8,26 +8,25 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingPvPanel.
+ * App\Models\BuildingPvPanel
  *
- * @property int                                 $id
- * @property int                                 $building_id
- * @property int|null                            $input_source_id
- * @property int|null                            $total_installed_power
- * @property int|null                            $peak_power
- * @property int                                 $number
- * @property int|null                            $pv_panel_orientation_id
- * @property int|null                            $angle
- * @property \Illuminate\Support\Carbon|null     $created_at
- * @property \Illuminate\Support\Carbon|null     $updated_at
- * @property \App\Models\Building                $building
- * @property \App\Models\InputSource|null        $inputSource
- * @property \App\Models\PvPanelOrientation|null $orientation
- *
+ * @property int $id
+ * @property int $building_id
+ * @property int|null $input_source_id
+ * @property int|null $total_installed_power
+ * @property int|null $peak_power
+ * @property int $number
+ * @property int|null $pv_panel_orientation_id
+ * @property int|null $angle
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Building $building
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\PvPanelOrientation|null $orientation
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel forMe(?\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPvPanel query()

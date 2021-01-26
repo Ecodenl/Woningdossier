@@ -8,22 +8,21 @@ use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\ToolSetting.
+ * App\Models\ToolSetting
  *
- * @property int                             $id
- * @property int                             $changed_input_source_id
- * @property int|null                        $input_source_id
- * @property int                             $building_id
- * @property bool                            $has_changed
+ * @property int $id
+ * @property int $changed_input_source_id
+ * @property int|null $input_source_id
+ * @property int $building_id
+ * @property bool $has_changed
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\InputSource         $changedInputSource
- * @property \App\Models\InputSource|null    $inputSource
- *
+ * @property-read \App\Models\InputSource $changedInputSource
+ * @property-read \App\Models\InputSource|null $inputSource
  * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting forMe(?\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ToolSetting query()

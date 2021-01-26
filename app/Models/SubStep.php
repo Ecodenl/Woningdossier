@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\SubStep.
+ * App\Models\SubStep
  *
  * @method static \Illuminate\Database\Eloquent\Builder|SubStep newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|SubStep newQuery()

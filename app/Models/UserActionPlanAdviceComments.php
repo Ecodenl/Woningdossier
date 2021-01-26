@@ -7,20 +7,19 @@ use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\UserActionPlanAdviceComments.
+ * App\Models\UserActionPlanAdviceComments
  *
- * @property int                             $id
- * @property int                             $user_id
- * @property int                             $input_source_id
- * @property string                          $comment
+ * @property int $id
+ * @property int $user_id
+ * @property int $input_source_id
+ * @property string $comment
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\InputSource         $inputSource
- *
+ * @property-read \App\Models\InputSource $inputSource
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments forMe(?\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments query()

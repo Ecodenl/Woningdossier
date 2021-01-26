@@ -11,31 +11,30 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * App\Models\FileStorage.
+ * App\Models\FileStorage
  *
- * @property int                             $id
- * @property int|null                        $cooperation_id
- * @property int|null                        $building_id
- * @property int|null                        $questionnaire_id
- * @property int|null                        $input_source_id
- * @property int                             $file_type_id
- * @property string                          $filename
+ * @property int $id
+ * @property int|null $cooperation_id
+ * @property int|null $building_id
+ * @property int|null $questionnaire_id
+ * @property int|null $input_source_id
+ * @property int $file_type_id
+ * @property string $filename
  * @property \Illuminate\Support\Carbon|null $available_until
- * @property bool                            $is_being_processed
+ * @property bool $is_being_processed
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\Cooperation|null    $cooperation
- * @property \App\Models\FileType            $fileType
- * @property \App\Models\InputSource|null    $inputSource
- * @property \App\Models\User                $user
- *
+ * @property-read \App\Models\Cooperation|null $cooperation
+ * @property-read \App\Models\FileType $fileType
+ * @property-read \App\Models\InputSource|null $inputSource
+ * @property-read \App\Models\User $user
  * @method static Builder|FileStorage allInputSources()
  * @method static Builder|FileStorage beingProcessed()
  * @method static Builder|FileStorage forBuilding(\App\Models\Building $building)
  * @method static Builder|FileStorage forInputSource(\App\Models\InputSource $inputSource)
- * @method static Builder|FileStorage forMe(\App\Models\User $user = null)
+ * @method static Builder|FileStorage forMe(?\App\Models\User $user = null)
  * @method static Builder|FileStorage leaveOutPersonalFiles()
- * @method static Builder|FileStorage mostRecent(\App\Models\Questionnaire $questionnaire = null)
+ * @method static Builder|FileStorage mostRecent(?\App\Models\Questionnaire $questionnaire = null)
  * @method static Builder|FileStorage newModelQuery()
  * @method static Builder|FileStorage newQuery()
  * @method static Builder|FileStorage query()

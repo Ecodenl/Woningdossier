@@ -5,17 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * App\Models\BuildingPermission.
+ * App\Models\BuildingPermission
  *
- * @property int                             $id
- * @property int                             $user_id
- * @property int                             $building_id
+ * @property int $id
+ * @property int $user_id
+ * @property int $building_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Models\Building            $building
- * @property \App\Models\BuildingCoachStatus $buildingCoachStatus
- * @property \App\Models\User                $user
- *
+ * @property-read \App\Models\Building $building
+ * @property-read \App\Models\BuildingCoachStatus $buildingCoachStatus
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPermission newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPermission newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingPermission query()

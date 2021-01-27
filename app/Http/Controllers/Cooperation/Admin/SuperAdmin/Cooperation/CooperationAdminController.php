@@ -19,16 +19,12 @@ class CooperationAdminController extends Controller
         $breadcrumbs = [
             [
                 'route' => 'cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index',
-                'url' => route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index', [
-                    'cooperation-to-manage' => $cooperationToManage,
-                ]),
+                'url' => route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index', compact('cooperationToManage')),
                 'name' => $cooperationToManage->name,
             ],
             [
                 'route' => 'cooperation.admin.super-admin.cooperations.cooperation-to-manage.cooperation-admin.index',
-                'url' => route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.cooperation-admin.index', [
-                    'cooperation-to-manage' => $cooperationToManage,
-                ]),
+                'url' => route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.cooperation-admin.index', compact('cooperationToManage')),
                 'name' => __('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.side-nav.cooperation-admin'),
             ],
         ];

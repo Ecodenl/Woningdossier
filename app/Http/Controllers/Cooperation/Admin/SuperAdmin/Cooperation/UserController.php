@@ -45,7 +45,7 @@ class UserController extends Controller
             ->where('name', '!=', 'super-admin')->get();
 
         return view('cooperation.admin.super-admin.cooperations.users.show',
-            compact('user', 'breadcrumbs', 'cooperationToManage', 'roles'));
+            compact('user', 'cooperationToManage', 'roles'));
     }
 
     public function confirm(Cooperation $currentCooperation, Cooperation $cooperationToManage, $accountId)

@@ -224,10 +224,12 @@
                                     </div>
                                 </div>
 
+                                <?php $allowAccessChecked = old('allow_access') == 'on'; ?>
+
                                 <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
                                     <div class="col-md-push-4 col-md-8">
                                         <label for="allow_access">
-                                            <input id="allow_access" name="allow_access" type="checkbox" @if(old('allow_access') && old('allow_access') == 'on')checked="checked"@endif>
+                                            <input id="allow_access" name="allow_access" type="checkbox" @if($allowAccessChecked)checked="checked"@endif>
                                             @lang('conversation-requests.index.form.allow_access', ['cooperation' => \App\Helpers\HoomdossierSession::getCooperation(true)->name])
                                         </label>
                                         @if ($errors->has('allow_access'))
@@ -241,7 +243,8 @@
 
                                 <div class="form-group">
                                     <div class="col-md-8 col-md-offset-4">
-                                        <button data-toggle="tooltip" type="submit" class="btn btn-primary disabled" disabled="disabled" title="@lang('auth.register.form.allow-access')">
+                                        <button data-toggle="tooltip" type="submit" class="btn btn-primary @if(!$allowAccessChecked) disabled @endif"
+                                                @if(!$allowAccessChecked) disabled="disabled" @endif title="@lang('auth.register.form.allow-access')">
                                             @lang('auth.register.form.button')
                                         </button>
                                     </div>

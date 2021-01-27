@@ -45,12 +45,12 @@
                                     <td>
                                         {{$fileType->name}}
                                         <ul>
-                                            <?php $file = $fileType->files()->mostRecent()->first();?>
-                                            @if($file instanceof \App\Models\FileStorage)
+                                            <?php $fileStorage = $fileType->files()->mostRecent()->first();?>
+                                            @if($fileStorage instanceof \App\Models\FileStorage)
                                                 <li>
                                                     <a @if(!$fileType->isBeingProcessed() )
-                                                       href="{{route('cooperation.file-storage.download', compact('file'))}}" @endif>
-                                                        {{$fileType->name}} ({{$file->created_at->format('Y-m-d H:i')}})
+                                                       href="{{route('cooperation.file-storage.download', compact('fileStorage'))}}" @endif>
+                                                        {{$fileType->name}} ({{$fileStorage->created_at->format('Y-m-d H:i')}})
                                                     </a>
                                                 </li>
                                             @endif

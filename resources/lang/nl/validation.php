@@ -160,11 +160,11 @@ return [
 
         'password' => [
             'min' => 'Het wachtwoord moet minmaal '.Hoomdossier::PASSWORD_LENGTH.' karakters bevatten.',
-            'confirmed' => 'Wachtwoord bevestiging komt niet overheen.'
+            'confirmed' => 'Wachtwoord bevestiging komt niet overheen.',
         ],
         'account.password' => [
             'min' => 'Het wachtwoord moet minmaal '.Hoomdossier::PASSWORD_LENGTH.' karakters bevatten.',
-            'confirmed' => 'Wachtwoord bevestiging komt niet overheen.'
+            'confirmed' => 'Wachtwoord bevestiging komt niet overheen.',
         ],
     ],
 

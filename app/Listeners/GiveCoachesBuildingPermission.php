@@ -34,7 +34,7 @@ class GiveCoachesBuildingPermission
         $building = $event->building;
 
         // the coaches can only get building permission when the user allowed it.
-        $building->user()->update([
+        $building->user->update([
             'allow_access' => true,
         ]);
 

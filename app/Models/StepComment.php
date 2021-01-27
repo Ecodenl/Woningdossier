@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|StepComment forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|StepComment forMe(?\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|StepComment query()

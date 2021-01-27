@@ -1,11 +1,11 @@
 ---
-- stat: path=/etc/php7.2/apache2/php.ini
+- stat: path=/etc/php7.4/apache2/php.ini
   register: modphp
 
-- stat: path=/etc/php7.2/fpm/php.ini
+- stat: path=/etc/php7.4/fpm/php.ini
   register: phpfpm
 
-- stat: path=/etc/php7.2/cli/php.ini
+- stat: path=/etc/php7.4/cli/php.ini
   register: phpcli
 
 - include: php-fpm.yml
@@ -16,4 +16,3 @@
 
 - include: mod-php.yml
   when: modphp.stat.exists
-

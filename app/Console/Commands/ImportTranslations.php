@@ -98,12 +98,12 @@ class ImportTranslations extends Command
 
                 // update for the translatable uuid.php file
                 $uuidTranslatableData[] = [
-                    $short . '.help' => [
+                    $short.'.help' => [
                         'key' => $translationUuidHelpKey,
                         'language' => 'nl',
                         'translation' => $csvRow[2],
                     ],
-                    $short . '.title' => [
+                    $short.'.title' => [
                         'language' => 'nl',
                         'key' => $translationUuidTitleKey,
                         'translation' => $csvRow[1],
@@ -220,7 +220,7 @@ class ImportTranslations extends Command
         $translationFileArray = [];
         foreach ($translationDottedFileArray as $values) {
             foreach ($values as $key => $value) {
-                Arr::set($translationFileArray, trim($key), "'" . $value . "',");
+                Arr::set($translationFileArray, trim($key), "'".$value."',");
             }
         }
 
@@ -230,7 +230,7 @@ class ImportTranslations extends Command
         $translationFile = fopen($translationPath, 'w');
 
         // array to string
-        $translationFileContent = '<?php return ' . print_r($translationFileArray, true);
+        $translationFileContent = '<?php return '.print_r($translationFileArray, true);
         // strip, replace and lower the necessary things to get valid php
         $translationFileContent = str_replace(']', '"', $translationFileContent);
         $translationFileContent = str_replace('[', '"', $translationFileContent);
@@ -245,7 +245,7 @@ class ImportTranslations extends Command
         fwrite($translationFile, $translationFileContent);
         fclose($translationFile);
 
-        $this->line($createCounter . ' translations have been created and ' . $updateCounter . ' have been updated.');
+        $this->line($createCounter.' translations have been created and '.$updateCounter.' have been updated.');
         $this->line('Done!', 'fg=green');
     }
 }

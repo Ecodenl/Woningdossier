@@ -12,12 +12,12 @@
 - name: Install php7
   become: yes
   become_user: root
-  apt: pkg=php7.2 state=latest
+  apt: pkg=php7.4 state=latest
 
 - name: Install php7-fpm
   become: yes
   become_user: root
-  apt: pkg=php7.2-fpm state=latest
+  apt: pkg=php7.4-fpm state=latest
 
 - name: Install PHP Packages
   become: yes

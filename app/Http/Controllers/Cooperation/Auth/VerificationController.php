@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cooperation\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\Request;
@@ -65,8 +66,13 @@ class VerificationController extends Controller
     {
         $account = Account::find($request->route('id'));
 
-        // this method can be and should be adjusted in the next shift
-        // the next version will have a extra hash in the url, we can use this to compare the email.
+        if (! hash_equals((string) $request->route('id'), (string) $account->getKey())) {
+            throw new AuthorizationException;
+        }
+
+        if (! hash_equals((string) $request->route('hash'), sha1($account->getEmailForVerification()))) {
+            throw new AuthorizationException;
+        }
 
         if ($account->hasVerifiedEmail()) {
             return redirect($this->redirectPath());

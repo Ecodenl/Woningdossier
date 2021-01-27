@@ -41,8 +41,8 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
 
             Route::group(['as' => 'auth.'], function () {
                 Route::get('email/verify', 'VerificationController@show')->name('verification.notice');
-                Route::get('email/verify/{id}', 'VerificationController@verify')->name('verification.verify');
-                Route::get('email/resend', 'VerificationController@resend')->name('verification.resend');
+                Route::get('email/verify/{id}/{hash}', 'VerificationController@verify')->name('verification.verify');
+                Route::post('email/resend', 'VerificationController@resend')->name('verification.resend');
 
                 Route::get('login', 'LoginController@showLoginForm')->name('login');
                 Route::post('login', 'LoginController@login');
@@ -249,8 +249,8 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
                 });
 
                 Route::group(['middleware' => ['current-role:cooperation-admin|super-admin']], function () {
-                    Route::resource('example-buildings', 'ExampleBuildingController');
-                    Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+                    Route::resource('example-buildings', 'ExampleBuildingController')->parameter('example-buildings', 'exampleBuilding');
+                    Route::get('example-buildings/{exampleBuilding}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
                 });
 
                 /* Section that a coach, coordinator and cooperation-admin can access */
@@ -258,8 +258,8 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
                     Route::resource('messages', 'MessagesController')->only('index');
 
                     Route::group(['prefix' => 'tool', 'as' => 'tool.'], function () {
-                        Route::get('fill-for-user/{id}', 'ToolController@fillForUser')->name('fill-for-user');
-                        Route::get('observe-tool-for-user/{id}', 'ToolController@observeToolForUser')
+                        Route::get('fill-for-user/{building}', 'ToolController@fillForUser')->name('fill-for-user');
+                        Route::get('observe-tool-for-user/{building}', 'ToolController@observeToolForUser')
                             ->name('observe-tool-for-user');
                     });
 
@@ -297,7 +297,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
                         });
                     });
 
-                    Route::resource('coaches', 'CoachController')->only(['index', 'show']);
+                    Route::resource('coaches', 'CoachController')->only(['index', 'show'])->parameter('coaches', 'user');
 
                     Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
                         Route::get('', 'ReportController@index')->name('index');
@@ -348,7 +348,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
 //                    });
 
                     Route::resource('key-figures', 'KeyFiguresController')->only('index');
-                    Route::resource('translations', 'TranslationController')->except(['show'])->parameters(['id' => 'group']);
+                    Route::resource('translations', 'TranslationController')->except(['show'])->parameter('translations', 'group');
 
                     /* Section for the cooperations */
                     Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.', 'namespace' => 'Cooperation'], function () {

@@ -55,6 +55,11 @@ class VerificationController extends Controller
             : view('cooperation.auth.verify');
     }
 
+    public function oldVerifyUrl()
+    {
+        return redirect()->route('cooperation.auth.login')->with('warning', __('cooperation/auth/verify.old-url'));
+    }
+
     /**
      * Mark the authenticated user's email address as verified.
      *

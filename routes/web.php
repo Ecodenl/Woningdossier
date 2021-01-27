@@ -41,6 +41,8 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
 
             Route::group(['as' => 'auth.'], function () {
                 Route::get('email/verify', 'VerificationController@show')->name('verification.notice');
+                // for users that have some old verification url.
+                Route::get('email/verify/{id}', 'VerificationController@oldVerifyUrl');
                 Route::get('email/verify/{id}/{hash}', 'VerificationController@verify')->name('verification.verify');
                 Route::post('email/resend', 'VerificationController@resend')->name('verification.resend');
 

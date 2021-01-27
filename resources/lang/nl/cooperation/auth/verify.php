@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'old-url' => 'Deze bevestigings link is verlopen, u kunt inloggen om een nieuwe aan te vragen',
+    'old-url' => 'Deze bevestigingslink is verlopen. Wanneer u hieronder inlogt kunt u een nieuwe bevestigingslink aanvragen.',
     'heading' => 'Bevestig uw e-mailadres',
     'body' => "Voordat u gebruik kunt maken van het Hoomdossier moet u de verificatielink in uw mail bevestigen. Als u de e-mail niet heeft ontvangen,",
     'do-it' => 'klik dan hier om een nieuwe aan te vragen.',

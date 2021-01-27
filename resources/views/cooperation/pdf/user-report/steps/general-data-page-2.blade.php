@@ -5,8 +5,8 @@
         <tr>
             <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.planned-year')}}</th>
             <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.measure')}}</th>
-            <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.costs')}}</th>
-            <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.savings')}}</th>
+            <th>{!! __('pdf/user-report.general-data.resume-energy-saving-measures.table.costs') !!}</th>
+            <th>{!! __('pdf/user-report.general-data.resume-energy-saving-measures.table.savings') !!}</th>
         </tr>
         </thead>
         <tbody>

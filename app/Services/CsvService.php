@@ -7,6 +7,7 @@ use App\Helpers\NumberFormatter;
 use App\Helpers\Translation;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
+use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
@@ -385,11 +386,7 @@ class CsvService
         // Get all users with a building and the general data completed step
         $users = $cooperation->users()
             ->whereHas('building', function ($query) use ($generalDataStep) {
-                $query->withoutGlobalScope(GetValueScope::class)
-                    ->whereHas('completedSteps', function ($query) use ($generalDataStep) {
-                        $query->withoutGlobalScope(GetValueScope::class)
-                            ->where('step_id', $generalDataStep->id);
-                    });
+                $query->withoutGlobalScope(GetValueScope::class);
             })
             ->with(['building' => function ($query) use ($generalDataStep) {
                 $query->withoutGlobalScope(GetValueScope::class)
@@ -397,8 +394,7 @@ class CsvService
                         $query->withoutGlobalScope(GetValueScope::class)
                             ->where('step_id', $generalDataStep->id);
                     }]);
-            }])
-            ->get();
+            }])->get();
 
         $coachIds = [];
         $residentIds = [];
@@ -428,7 +424,9 @@ class CsvService
          * @var User $user
          */
         foreach ($users as $user) {
-            $inputSource = $user->building->buildingFeatures->inputSource;
+            // A user that's within this dump will always have a building, a user without a building within this application is like a fish without its water.
+            // but sometimes a building does not have any building features, so in that case we will default to the resident its input source
+            $inputSource = $user->building->buildingFeatures->inputSource ?? $residentInputSource;
 
             $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
         }

@@ -202,7 +202,7 @@ class DumpService
             })->toArray();
 
         // implode it.
-        $connectedCoachNames = implode($connectedCoachNames, ', ');
+        $connectedCoachNames = implode(', ', $connectedCoachNames);
 
         $firstName = $user->first_name;
         $lastName = $user->last_name;
@@ -275,9 +275,9 @@ class DumpService
                                     if (is_array($buildingVentilation->$column)) {
                                         $givenAnswers = array_flip($buildingVentilation->$column);
 
-                                        $answer = implode(array_intersect_key(
+                                        $answer = implode(', ', array_intersect_key(
                                             $optionsForQuestion, $givenAnswers
-                                        ), ', ');
+                                        ));
                                     }
                                 }
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer;

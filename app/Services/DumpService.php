@@ -199,10 +199,8 @@ class DumpService
         $connectedCoachNames = User::findMany($connectedCoaches->pluck('coach_id'))
             ->map(function ($user) {
                 return $user->getFullName();
-            })->toArray();
+            })->implode(', ');
 
-        // implode it.
-        $connectedCoachNames = implode(', ', $connectedCoachNames);
 
         $firstName = $user->first_name;
         $lastName = $user->last_name;
@@ -275,9 +273,10 @@ class DumpService
                                     if (is_array($buildingVentilation->$column)) {
                                         $givenAnswers = array_flip($buildingVentilation->$column);
 
-                                        $answer = implode(', ', array_intersect_key(
-                                            $optionsForQuestion, $givenAnswers
-                                        ));
+                                        $answer = implode(
+                                            ', ',
+                                            array_intersect_key($optionsForQuestion, $givenAnswers)
+                                        );
                                     }
                                 }
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer;

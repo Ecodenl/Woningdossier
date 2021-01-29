@@ -54,29 +54,29 @@ class FileStorageController extends Controller
 
         if ($user->hasRoleAndIsCurrentRole(['cooperation-admin', 'coordinator']) && 'pdf-report' != $fileType->short) {
             $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForCooperation($fileType, $cooperation);
-            $file = $fileType->files()->first();
-            $downloadLinkForFileType = route('cooperation.file-storage.download', compact('file'));
+            $fileStorage = $fileType->files()->first();
+            $downloadLinkForFileType = route('cooperation.file-storage.download', compact('fileStorage'));
 
-            if ($file instanceof FileStorage) {
-                $this->authorize('download', $file);
+            if ($fileStorage instanceof FileStorage) {
+                $this->authorize('download', $fileStorage);
             }
         } else {
             $building = HoomdossierSession::getBuilding(true);
             $buildingOwner = $building->user;
 
             $isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForUser($fileType, $buildingOwner, $inputSource);
-            $file = $fileType->files()->forMe($buildingOwner)->forInputSource($inputSource)->first();
-            $downloadLinkForFileType = $file instanceof FileStorage ? route('cooperation.file-storage.download', compact('file')) : null;
+            $fileStorage = $fileType->files()->forMe($buildingOwner)->forInputSource($inputSource)->first();
+            $downloadLinkForFileType = $fileStorage instanceof FileStorage ? route('cooperation.file-storage.download', compact('fileStorage')) : null;
 
             // as this checks for file processing, there's a chance it isn't picked up by the queue
             // so we check if it actually exisits
-            if ($file instanceof FileStorage) {
-                $this->authorize('download', [$file, $building]);
+            if ($fileStorage instanceof FileStorage) {
+                $this->authorize('download', [$fileStorage, $building]);
             }
         }
 
         return response()->json([
-            'file_created_at' => $file instanceof FileStorage ? $file->created_at->format('Y-m-d H:i') : null,
+            'file_created_at' => $fileStorage instanceof FileStorage ? $fileStorage->created_at->format('Y-m-d H:i') : null,
             'file_type_name' => $fileType->name,
             'is_file_being_processed' => $isFileBeingProcessed,
             'file_download_link' => $downloadLinkForFileType,

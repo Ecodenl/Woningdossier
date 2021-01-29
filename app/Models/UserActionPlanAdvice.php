@@ -10,19 +10,47 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\UserActionPlanAdvice
  *
- * @property-read \App\Models\InputSource $inputSource
+ * @property int $id
+ * @property int $user_id
+ * @property int|null $input_source_id
+ * @property int $measure_application_id
+ * @property string|null $costs
+ * @property string|null $savings_gas
+ * @property string|null $savings_electricity
+ * @property string|null $savings_money
+ * @property int|null $year
+ * @property bool $planned
+ * @property int|null $planned_year
+ * @property int $step_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\InputSource|null $inputSource
  * @property-read \App\Models\MeasureApplication $measureApplication
  * @property-read \App\Models\Step $step
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forMe(?\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forStep(\App\Models\Step $step)
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice query()
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice residentInput()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice whereCosts($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice whereInputSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice whereMeasureApplicationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice wherePlanned($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice wherePlannedYear($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice whereSavingsElectricity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice whereSavingsGas($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice whereSavingsMoney($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice whereStepId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice whereYear($value)
  * @mixin \Eloquent
  */
 class UserActionPlanAdvice extends Model

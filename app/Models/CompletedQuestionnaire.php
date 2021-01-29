@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire forMe(?\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CompletedQuestionnaire query()

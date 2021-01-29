@@ -55,7 +55,7 @@
                                     @if($userIsAuthUser)
                                         <p>{{$building->street}} {{$building->number}} {{$building->extension}}</p>
                                     @else
-                                    <a href="{{route('cooperation.admin.buildings.show', ['id' => $building->id])}}">
+                                    <a href="{{route('cooperation.admin.buildings.show', ['buildingId' => $building->id])}}">
                                         {{$building->street}} {{$building->number}} {{$building->extension}}
                                     </a>
                                     @endif

@@ -71,7 +71,7 @@ class InterestController extends Controller
         $filteredSteps = $steps;
 
         return view('cooperation.tool.general-data.interest.index', compact(
-            'interests', 'services', 'elements', 'motivations', 'userMotivations', 'userEnergyHabitsForMe',
+            'interests', 'services', 'motivations', 'userMotivations', 'userEnergyHabitsForMe',
             'buildingOwner', 'stepCount', 'servicesStepShorts', 'elementsStepShorts', 'filteredSteps'
         ));
     }

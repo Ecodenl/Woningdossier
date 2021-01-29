@@ -166,7 +166,7 @@ class ResetPasswordController extends Controller
             $request->session()->flash('token_invalid', __($validationResponse, ['password_request_link' => route('cooperation.auth.password.request.index')]));
         }
 
-        return view('cooperation.auth.passwords.reset.show', compact('token', 'email', 'response'));
+        return view('cooperation.auth.passwords.reset.show', compact('token', 'email'));
     }
 
     /**

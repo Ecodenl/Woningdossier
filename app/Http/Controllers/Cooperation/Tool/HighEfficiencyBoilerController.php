@@ -57,8 +57,8 @@ class HighEfficiencyBoilerController extends Controller
 
         return view('cooperation.tool.hr-boiler.index', compact('building',
             'boiler', 'boilerTypes', 'installedBoiler',
-            'typeIds', 'energyHabitsForMe', 'userEnergyHabitsOrderedOnInputSourceCredibility',
-            'steps', 'buildingOwner', 'buildingServicesOrderedOnInputSourceCredibility'
+            'typeIds', 'userEnergyHabitsOrderedOnInputSourceCredibility',
+             'buildingOwner', 'buildingServicesOrderedOnInputSourceCredibility'
         ));
     }
 

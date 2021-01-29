@@ -26,10 +26,7 @@
                                 <td>{{$user->getFullName()}}</td>
                                 <td>{{$user->account->email}}</td>
                                 <td>
-                                    <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.show', [
-                                        'cooperationToManage' => $cooperationToManage,
-                                        'user' => $user->id
-                                    ])}}">
+                                    <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.show', compact('cooperationToManage', 'user'))}}">
                                         <span class="glyphicon glyphicon-th"></span>
                                     </a>
                                 </td>

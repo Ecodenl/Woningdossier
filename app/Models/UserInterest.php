@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserInterest forMe(?\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserInterest query()

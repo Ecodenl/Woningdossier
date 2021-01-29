@@ -43,7 +43,7 @@ class BuildingCharacteristicsController extends Controller
 
         return view('cooperation.tool.general-data.building-characteristics.index', compact(
             'building', 'buildingOwner', 'buildingTypes', 'energyLabels', 'roofTypes', 'exampleBuildings', 'myBuildingFeatures',
-            'prevBt', 'prevBy', 'buildingFeaturesOrderedOnCredibility'
+            'buildingFeaturesOrderedOnCredibility'
         ));
     }
 

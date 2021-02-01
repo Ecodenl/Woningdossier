@@ -17,6 +17,11 @@ use Illuminate\Http\Request;
 //    return $request->user();
 //});
 
+Route::middleware('auth:sanctum')->get('user', function (Request  $request) {
+    dd($request->user());
+});
+
 Route::group(['namespace' => 'Api'], function () {
     Route::get('address-data', 'GeoController@getAddressData');
 });
+

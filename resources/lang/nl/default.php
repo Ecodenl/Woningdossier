@@ -19,6 +19,7 @@ return [
 
     'yes' => 'Ja',
     'no' => 'Nee',
+    'required' => 'Verplicht',
 
     'progress' => [
         'not-completed' => ':step - deze stap is nog niet afgerond',

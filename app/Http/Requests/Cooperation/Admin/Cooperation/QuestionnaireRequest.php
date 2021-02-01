@@ -40,32 +40,35 @@ class QuestionnaireRequest extends FormRequest
         $validator->after(function ($validator) {
             $questions = $this->request->get('questions');
 
-            foreach ($questions as $id => $question)
+            if (!empty($questions))
             {
-                // We check if the question can have options
-                if (QuestionnaireService::hasQuestionOptions($question['type']))
+                foreach ($questions as $id => $question)
                 {
-                    // We get the locales for the question
-                    $locales = array_keys($question['question']);
-
-                    foreach ($locales as $locale)
+                    // We check if the question can have options
+                    if (QuestionnaireService::hasQuestionOptions($question['type']))
                     {
-                        // We set the field of the question
-                        $field = "questions.{$id}.question.{$locale}";
-                        // If the option is empty, we error, because at least one question is required
-                        if (empty($question['options'])) {
-                            $validator->errors()->add($field, __('validation.custom.questionnaires.not_enough_options',
-                                ['attribute' => $question['question'][$locale]]));
-                        }
-                        else
+                        // We get the locales for the question
+                        $locales = array_keys($question['question']);
+
+                        foreach ($locales as $locale)
                         {
-                            // If the options are set, we check to ensure they are not empty for each locale
-                            foreach ($question['options'] as $uuid => $localeOption)
+                            // We set the field of the question
+                            $field = "questions.{$id}.question.{$locale}";
+                            // If the option is empty, we error, because at least one question is required
+                            if (empty($question['options'])) {
+                                $validator->errors()->add($field, __('validation.custom.questionnaires.not_enough_options',
+                                    ['attribute' => $question['question'][$locale]]));
+                            }
+                            else
                             {
-                                $field = "questions.{$id}.options.{$uuid}.{$locale}";
-                                if (empty ($localeOption[$locale])) {
-                                    $validator->errors()->add($field, __('validation.custom.questionnaires.empty_option',
-                                        ['attribute' => $question['question'][$locale], 'locale' => $locale]));
+                                // If the options are set, we check to ensure they are not empty for each locale
+                                foreach ($question['options'] as $uuid => $localeOption)
+                                {
+                                    $field = "questions.{$id}.options.{$uuid}.{$locale}";
+                                    if (empty ($localeOption[$locale])) {
+                                        $validator->errors()->add($field, __('validation.custom.questionnaires.empty_option',
+                                            ['attribute' => $question['question'][$locale], 'locale' => $locale]));
+                                    }
                                 }
                             }
                         }

@@ -12,7 +12,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <a id="leave-creation-tool" href="{{route('cooperation.admin.cooperation.questionnaires.index')}}" class="btn btn-warning">
-                            @lang('woningdossier.cooperation.admin.cooperation.questionnaires.create.leave-creation-tool')
+                            @lang('cooperation/admin/cooperation/questionnaires.shared.leave-creation-tool')
                         </a>
                     </div>
                     <div class="col-sm-6">
@@ -21,27 +21,26 @@
                         </button>
                     </div>
                 </div>
-                <!-- comment -->
                 <div class="row alert-top-space">
                     <div class="col-md-3">
                         <div id="tool-box" class="list-group">
                             <a href="#" id="short-answer" class="list-group-item"><i class="glyphicon glyphicon-align-left"></i>
-                                @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.types.text')
+                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.text')
                             </a>
                             <a href="#" id="long-answer" class="list-group-item"><i class="glyphicon glyphicon-align-justify"></i>
-                                @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.types.textarea')
+                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.textarea')
                             </a>
                             <a href="#" id="radio-button" class="list-group-item"><i class="glyphicon glyphicon-record"></i> 
-                                @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.types.radio')
+                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.radio')
                             </a>
                             <a href="#" id="checkbox" class="list-group-item"><i class="glyphicon glyphicon-unchecked"></i> 
-                                @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.types.checkbox')
+                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.checkbox')
                             </a>
                             <a href="#" id="dropdown" class="list-group-item"><i class="glyphicon glyphicon-collapse-down"></i> 
-                                @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.types.select')
+                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.select')
                             </a>
                             <a href="#" id="date" class="list-group-item"><i class="glyphicon glyphicon-calendar"></i>
-                                @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.types.date')
+                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.date')
                             </a>
                         </div>
                     </div>
@@ -52,18 +51,22 @@
                                     <div class="col-xs-12">
                                         @foreach(config('hoomdossier.supported_locales') as $locale)
                                             <div class="form-group {{ $errors->has('questionnaire.name.*') ? ' has-error' : '' }}">
-                                                <label for="name">Naam:</label>
+                                                <label for="name">@lang('cooperation/admin/cooperation/questionnaires.shared.column-translations.name.label')</label>
                                                 <div class="input-group">
                                                     <span class="input-group-addon">{{$locale}}</span>
-                                                    <input type="text" class="form-control" name="questionnaire[name][{{$locale}}]" value="{{$questionnaire->getTranslation('name', $locale) instanceof \App\Models\Translation ? $questionnaire->getTranslation('name', $locale)->translation : "" }}" placeholder="Nieuwe vragenlijst">
+                                                    <input id="name" type="text" class="form-control" name="questionnaire[name][{{$locale}}]"
+                                                           value="{{$questionnaire->getTranslation('name', $locale) instanceof \App\Models\Translation ? $questionnaire->getTranslation('name', $locale)->translation : "" }}"
+                                                           placeholder="@lang('cooperation/admin/cooperation/questionnaires.shared.column-translations.name.placeholder')">
                                                 </div>
                                             </div>
                                         @endforeach
                                         <div class="form-group">
-                                            <label for="step_id">Na stap:</label>
-                                            <select name="questionnaire[step_id]" class="form-control">
+                                            <label for="step_id">@lang('cooperation/admin/cooperation/questionnaires.shared.column-translations.after-step.label')</label>
+                                            <select id="step_id" name="questionnaire[step_id]" class="form-control">
                                                 @foreach($steps as $i => $step)
-                                                    <option value="{{ $step->id }}" @if($questionnaire->step_id == $step->id) selected="selected" @endif >{{ $i+1 }}: {{ $step->name }}</option>
+                                                    <option value="{{ $step->id }}" @if($questionnaire->step_id == $step->id) selected="selected" @endif >
+                                                        {{ $i+1 }}: {{ $step->name }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -567,7 +570,7 @@
         {
             if (question.find('input.question_id').length > 0) {
                 return true;
-            } 
+            }
             return false
         }
 
@@ -673,7 +676,7 @@
         });
 
         $('#leave-creation-tool').on('click', function (event) {
-           if (confirm('@lang('woningdossier.cooperation.admin.cooperation.questionnaires.create.leave-creation-tool-warning')')) {
+           if (confirm('@lang('cooperation/admin/cooperation/questionnaires.shared.leave-creation-tool-warning')')) {
 
            } else {
                event.preventDefault();

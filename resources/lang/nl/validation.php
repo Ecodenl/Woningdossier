@@ -161,7 +161,7 @@ return [
 
         'questionnaires' => [
             'not_enough_options' => 'Er moet minstens 1 optie zijn voor de vraag ":attribute".',
-            'empty_option' => 'Optie voor de vraag ":attribute" (:locale) mag niet leeg zijn.'
+            'empty_option' => 'Optie voor de vraag ":attribute" (:locale) mag niet leeg zijn.',
         ],
 
         'password' => [
@@ -172,6 +172,10 @@ return [
             'min' => 'Het wachtwoord moet minmaal '.Hoomdossier::PASSWORD_LENGTH.' karakters bevatten.',
             'confirmed' => 'Wachtwoord bevestiging komt niet overheen.',
         ],
+    ],
+
+    'custom-rules' => [
+        'language-required' => 'Er moet op het minst 1 vertaling zijn in :locale voor :attribute',
     ],
 
     /*
@@ -252,5 +256,8 @@ return [
         // solar panels
         'building_pv_panels.number' => __('solar-panels.number.title'),
         'building_pv_panels.peak_power' => __('solar-panels.peak-power.title'),
+
+        // Questionnaires
+        'questionnaire.name' => 'Naam',
     ],
 ];

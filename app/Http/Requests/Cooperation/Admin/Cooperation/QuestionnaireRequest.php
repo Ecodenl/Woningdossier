@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Cooperation\Admin\Cooperation;
 
+use App\Rules\LanguageRequired;
 use App\Services\QuestionnaireService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
@@ -28,7 +29,7 @@ class QuestionnaireRequest extends FormRequest
     {
         return [
             'questionnaire.step_id' => ['required', Rule::exists('steps', 'id')],
-            'questionnaire.name.*' => 'required',
+            'questionnaire.name' => [new LanguageRequired('nl')],
             'validation.*.main-rule' => 'required',
             'validation.*.sub-rule' => 'required',
             'validation.*.sub-rule-check-value.*' => 'required',

@@ -29,7 +29,7 @@
                            class="form-control">
                     <span class="input-group-addon">
                           <a href="" class="text-danger">
-                              <i class="glyphicon glyphicon-remove"></i>
+                              <i class="glyphicon glyphicon-remove remove-option"></i>
                           </a>
                     </span>
                 </div>

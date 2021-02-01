@@ -291,6 +291,7 @@
         var guid = getQuestionId(question);
 
         addValidationInputs(question, guid);
+        $(this).hide();
     });
 
     /**
@@ -346,7 +347,6 @@
      */
     $('body').on('click', '.remove-question', function (event) {
         event.preventDefault();
-
 
         var deleteQuestionRoute = '{{route('cooperation.admin.cooperation.questionnaires.delete', ['questionId' => ':question_id'])}}';
         if (confirm('Dit verwijderd de vraag, u kunt deze actie NIET terugdraaien. Weet u zeker dat u wilt verdergaan ?')) {

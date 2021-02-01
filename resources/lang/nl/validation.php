@@ -259,5 +259,6 @@ return [
 
         // Questionnaires
         'questionnaire.name' => 'Naam',
+        'validation.*.sub-rule-check-value.*' => 'Validatie',
     ],
 ];

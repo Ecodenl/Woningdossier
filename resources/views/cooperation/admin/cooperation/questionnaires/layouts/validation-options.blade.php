@@ -8,26 +8,31 @@
     }
 ?>
 @if($question->hasValidation())
-<div class="col-sm-4">
-    <div class="form-group">
-        <select class="form-control validation" name="validation[{{$question->id}}][main-rule]" id="">
-            @foreach(__('woningdossier.cooperation.admin.custom-fields.index.rules') as $rule => $translation)
-                <option @if($mainValidationRule == $rule) selected @endif value="{{$rule}}">{{$translation}}</option>
-            @endforeach
-        </select>
+    <div class="col-sm-1">
+        <a class="text-danger">
+            <i class="glyphicon glyphicon-remove remove-validation" style="margin-top: 25%; margin-left: 50%"></i>
+        </a>
     </div>
-</div>
-<div class="col-sm-4">
-    <div class="form-group">
-        @foreach(__('woningdossier.cooperation.admin.custom-fields.index.rules') as $rule => $translation)
-            <select class="form-control sub-rule" data-sub-rule="{{$rule}}" name="validation[{{$question->id}}][sub-rule]" @if($rule != $mainValidationRule) disabled="disabled" style="display: none;" @endif>
-                @foreach(__('woningdossier.cooperation.admin.custom-fields.index.optional-rules.'.$rule) as $optionalRule => $optionalRuleTranslation)
-                    <option @if($optionalValidationRule == $optionalRule) selected @endif value="{{$optionalRule}}">{{$optionalRuleTranslation}}</option>
+    <div class="col-sm-3">
+        <div class="form-group">
+            <select class="form-control validation" name="validation[{{$question->id}}][main-rule]" id="">
+                @foreach(__('woningdossier.cooperation.admin.custom-fields.index.rules') as $rule => $translation)
+                    <option @if($mainValidationRule == $rule) selected @endif value="{{$rule}}">{{$translation}}</option>
                 @endforeach
             </select>
-        @endforeach
+        </div>
     </div>
-</div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            @foreach(__('woningdossier.cooperation.admin.custom-fields.index.rules') as $rule => $translation)
+                <select class="form-control sub-rule" data-sub-rule="{{$rule}}" name="validation[{{$question->id}}][sub-rule]" @if($rule != $mainValidationRule) disabled="disabled" style="display: none;" @endif>
+                    @foreach(__('woningdossier.cooperation.admin.custom-fields.index.optional-rules.'.$rule) as $optionalRule => $optionalRuleTranslation)
+                        <option @if($optionalValidationRule == $optionalRule) selected @endif value="{{$optionalRule}}">{{$optionalRuleTranslation}}</option>
+                    @endforeach
+                </select>
+            @endforeach
+        </div>
+    </div>
 
     @foreach($question->validation[$mainValidationRule] as $subRule => $subRuleCheckValues)
         @foreach($subRuleCheckValues as $subRuleCheckValue)

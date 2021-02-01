@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forMe(?\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice forStep(\App\Models\Step $step)
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdvice newQuery()
@@ -58,6 +58,8 @@ class UserActionPlanAdvice extends Model
     use GetValueTrait;
     use GetMyValuesTrait;
     use ToolSettingTrait;
+
+    protected $table = 'user_action_plan_advices';
 
     public $fillable = [
         'user_id', 'measure_application_id', // old

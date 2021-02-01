@@ -13,7 +13,6 @@ use App\Mail\UserCreatedEmail;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\Cooperation;
-use App\Models\PrivateMessage;
 use App\Models\User;
 use App\Services\BuildingCoachStatusService;
 use App\Services\BuildingPermissionService;
@@ -46,7 +45,7 @@ class UserController extends Controller
         $possibleRoles = Role::all();
         $roles = [];
         foreach ($possibleRoles as $possibleRole) {
-            if (Hoomdossier::user()->can('assign-role', $possibleRole)) {
+            if (Hoomdossier::account()->can('assign-role', $possibleRole)) {
                 $roles[] = $possibleRole;
             }
         }
@@ -64,7 +63,7 @@ class UserController extends Controller
         $roles = [];
         foreach ($roleIds as $roleId) {
             $role = Role::find($roleId);
-            if (Hoomdossier::user()->can('assign-role', $role)) {
+            if (Hoomdossier::account()->can('assign-role', $role)) {
                 \Log::debug('User can assign role '.$role->name);
                 array_push($roles, $role->name);
             }
@@ -98,7 +97,7 @@ class UserController extends Controller
         if ($account->wasRecentlyCreated) {
             // and send the account confirmation mail.
             $this->sendAccountConfirmationMail($cooperation, $account);
-            $account->confirm();
+            $account->markEmailAsVerified();
         } else {
             UserAssociatedWithOtherCooperation::dispatch($cooperation, $user);
         }

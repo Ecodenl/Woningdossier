@@ -51,7 +51,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature forMe(?\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingFeature query()
@@ -102,7 +102,6 @@ class BuildingFeature extends Model
         'contaminated_wall_joints',
         'wall_surface',
         'insulation_wall_surface',
-        'damage_paintwork',
         'building_layers',
         'surface',
         'floor_surface',

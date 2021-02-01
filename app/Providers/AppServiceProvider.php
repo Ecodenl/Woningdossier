@@ -4,10 +4,12 @@ namespace App\Providers;
 
 use App\Jobs\RecalculateStepForUser;
 use App\Models\Notification;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         \Validator::extend('needs_to_be_lower_or_same_as', function ($attribute, $value, $parameters, $validator) {
-            $formData = array_dot($validator->getData());
+            $formData = Arr::dot($validator->getData());
             $compareFieldValue = $formData[$parameters[0]];
 
             if ($value > $compareFieldValue) {
@@ -76,6 +78,8 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         Schema::defaultStringLength(191);
+
+        Carbon::setLocale(config('app.locale'));
 
         if ($this->app->environment('local', 'testing')) {
             //$this->app->register(DuskServiceProvider::class);

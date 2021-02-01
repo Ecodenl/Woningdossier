@@ -10,6 +10,9 @@ use Illuminate\Support\Collection;
 
 class Hoomdossier
 {
+    /** @var int the length the password should be */
+    const PASSWORD_LENGTH = 8;
+
     public static function convertDecimal($input)
     {
         return str_replace(',', '.', $input);

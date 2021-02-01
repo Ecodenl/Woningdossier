@@ -15,7 +15,7 @@
             // check if the input column has dots, ifso we need to use the array get function
             // else its a property that we can access
             if (false !== strpos($userInputColumn, '.')) {
-                $compareValue = array_get($userInputValue, $userInputColumn);
+                $compareValue = Arr::get($userInputValue, $userInputColumn);
             } else {
                 $compareValue = $userInputValue->$userInputColumn;
             }
@@ -37,7 +37,7 @@
                 }
             } else {
                 if (false !== strpos($userInputColumn, '.')) {
-                    $value = array_get($userInputValue, $userInputColumn);
+                    $value = Arr::get($userInputValue, $userInputColumn);
                 } else {
                     $value = $userInputValue->$userInputColumn;
                 }

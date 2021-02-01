@@ -35,9 +35,9 @@ class CoachController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show(Cooperation $cooperation, $userId)
+    public function show(Cooperation $cooperation, User $user)
     {
-        $userToShow = User::findOrFail($userId);
+        $userToShow = $user;
         $buildingFromUser = $userToShow->building;
 
         $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($userToShow)->pluck('building_id');

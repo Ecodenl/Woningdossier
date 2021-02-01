@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Auth;
 use App\Events\Registered;
 use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
+use App\Helpers\RoleHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterFormRequest;
 use App\Models\Account;
@@ -68,17 +69,29 @@ class RegisterController extends Controller
         $account = $user->account;
 
         if ($account->wasRecentlyCreated) {
-            $successMessage = __('auth.register.form.message.success');
+            $account->sendEmailVerificationNotification();
             \Event::dispatch(new Registered($cooperation, $user));
         } else {
-            $successMessage = __('auth.register.form.message.account-connected');
             UserAssociatedWithOtherCooperation::dispatch($cooperation, $user);
         }
-
         // at this point, a user cant register without accepting the privacy terms.
         UserAllowedAccessToHisBuilding::dispatch($user->building);
 
-        return redirect($this->redirectPath())->with('success', $successMessage);
+        $this->guard()->login($account);
+
+        return $this->sendRegisteredResponse();
+    }
+
+    private function sendRegisteredResponse()
+    {
+        // the case for a user that connect itself to a other cooperation
+        if ($this->guard()->user()->hasVerifiedEmail()) {
+            return redirect(RoleHelper::getUrlByRole($this->guard()->user()->user()->roles()->first()))
+                ->with('success', __('auth.register.form.message.account-connected'));
+        }
+
+        return redirect()
+            ->route('cooperation.auth.verification.notice');
     }
 
     /**

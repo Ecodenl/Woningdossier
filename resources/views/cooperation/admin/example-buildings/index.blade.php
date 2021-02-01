@@ -31,11 +31,11 @@
                                 <td>@if($exampleBuilding->cooperation instanceof \App\Models\Cooperation){{ $exampleBuilding->cooperation->name }}@else - @endif</td>
                                 <td>@if($exampleBuilding->is_default)<i class="glyphicon glyphicon-check"></i>@endif</td>
                                 <td>
-                                    <a data-toggle="tooltip" title="Kopiëren" href="{{ route('cooperation.admin.example-buildings.copy', ['id' => $exampleBuilding->id]) }}" class="btn btn-info">
+                                    <a data-toggle="tooltip" title="Kopiëren" href="{{ route('cooperation.admin.example-buildings.copy', compact('exampleBuilding')) }}" class="btn btn-info">
                                         <i class="glyphicon glyphicon-copy"></i>
                                     </a>
-                                    <a data-toggle="tooltip" title="Bewerken" href="{{ route('cooperation.admin.example-buildings.edit', ['id' => $exampleBuilding->id]) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
-                                    <form style="display:inline;" action="{{ route('cooperation.admin.example-buildings.destroy', ['id' => $exampleBuilding->id]) }}" method="post">
+                                    <a data-toggle="tooltip" title="Bewerken" href="{{ route('cooperation.admin.example-buildings.edit', compact('exampleBuilding')) }}" class="btn btn-warning"><i class="glyphicon glyphicon-edit"></i></a>
+                                    <form style="display:inline;" action="{{ route('cooperation.admin.example-buildings.destroy', compact('exampleBuilding')) }}" method="post">
                                         {{ method_field("DELETE") }}
                                         {{ csrf_field() }}
                                         <button data-toggle="tooltip" title="Verwijderen" button type="submit" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>

@@ -16,7 +16,7 @@ class QuestionnaireServiceTest extends TestCase
     use CreatesApplication;
     use DatabaseTransactions;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
     }

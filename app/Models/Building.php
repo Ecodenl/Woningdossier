@@ -87,10 +87,6 @@ class Building extends Model
     use SoftDeletes;
     use ToolSettingTrait;
 
-    protected $dates = [
-        'deleted_at',
-    ];
-
     protected $casts = [
         'is_active' => 'boolean',
     ];

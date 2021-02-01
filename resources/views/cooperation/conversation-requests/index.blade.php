@@ -10,9 +10,9 @@
                             {{ csrf_field() }}
 
                             <h2>{{$title}}</h2>
-                            @isset($measureApplicationName)
+                            @if(!is_null($measureApplicationName))
                             <input type="hidden" value="{{ $measureApplicationName }}" name="measure_application_name">
-                            @endisset
+                            @endif
                             <input type="hidden" name="request_type" value="{{$requestType}}">
 
 
@@ -33,11 +33,7 @@
                             <div class="form-group">
                                 <div class="col-md-12 ">
                                     <button type="submit" class="btn btn-primary">
-                                        @if(isset($privateMessage))
-                                            @lang('conversation-requests.index.form.update')
-                                        @else
-                                            @lang('conversation-requests.index.form.submit')
-                                        @endif
+                                        @lang('conversation-requests.index.form.submit')
                                     </button>
                                 </div>
                             </div>

@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Models\Account;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\FileStorage;
@@ -53,13 +52,5 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('access-admin', UserPolicy::class.'@accessAdmin');
         Gate::define('delete-user', UserPolicy::class.'@deleteUser');
         Gate::define('remove-participant-from-chat', UserPolicy::class.'@removeParticipantFromChat');
-    }
-
-    public function register()
-    {
-        // custom user resolver via account
-        \Auth::resolveUsersUsing(function ($guard = null) {
-            return \Auth::guard($guard)->user() instanceof Account ? \Auth::guard()->user()->user() : null;
-        });
     }
 }

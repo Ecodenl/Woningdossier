@@ -73,7 +73,7 @@ class ExampleBuildingController extends Controller
         $exampleBuilding = new ExampleBuilding();
 
         $translations = $request->input('name', []);
-        $translations = array_only($translations, config('hoomdossier.supported_locales'));
+        $translations = Arr::only($translations, config('hoomdossier.supported_locales'));
         $exampleBuilding->createTranslations('name', $translations);
 
         $exampleBuilding->buildingType()->associate($buildingType);
@@ -86,7 +86,7 @@ class ExampleBuildingController extends Controller
 
         $this->updateOrCreateContent($exampleBuilding, $request->get('new', 0), $request->input('content', []));
 
-        return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $exampleBuilding])->with('success', __('cooperation/admin/example-buildings.store.success'));
+        return redirect()->route('cooperation.admin.example-buildings.edit', compact('exampleBuilding'))->with('success', __('cooperation/admin/example-buildings.store.success'));
     }
 
     /**
@@ -108,13 +108,13 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function edit(Cooperation $cooperation, $id)
+    public function edit(Cooperation $cooperation, $exampleBuilding)
     {
         /** @var ExampleBuilding $exampleBuilding */
         $exampleBuilding = ExampleBuilding::with([
             'contents' => function (Relation $query) {
                 $query->orderBy('build_year');
-            }, ])->findOrFail($id);
+            }, ])->findOrFail($exampleBuilding);
         $buildingTypes = BuildingType::all();
         $cooperations = Cooperation::all();
 
@@ -175,11 +175,8 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function update(ExampleBuildingRequest $request, Cooperation $cooperation, $id)
+    public function update(ExampleBuildingRequest $request, Cooperation $cooperation, ExampleBuilding $exampleBuilding)
     {
-        /** @var ExampleBuilding $exampleBuilding */
-        $exampleBuilding = ExampleBuilding::findOrFail($id);
-
         $buildingType = BuildingType::findOrFail($request->get('building_type_id'));
         $cooperation = Cooperation::find($request->get('cooperation_id'));
 
@@ -201,7 +198,7 @@ class ExampleBuildingController extends Controller
 
         $exampleBuilding->save();
 
-        return redirect()->route('cooperation.admin.example-buildings.edit', ['id' => $id])->with('success', __('cooperation/admin/example-buildings.update.success'));
+        return redirect()->route('cooperation.admin.example-buildings.edit', compact('exampleBuilding'))->with('success', __('cooperation/admin/example-buildings.update.success'));
     }
 
     private function updateOrCreateContent(ExampleBuilding $exampleBuilding, $new, $contents)
@@ -238,15 +235,9 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function destroy(Cooperation $cooperation, $id)
+    public function destroy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
     {
-        /** @var ExampleBuilding $exampleBuilding */
-        $exampleBuilding = ExampleBuilding::findOrFail($id);
-        try {
-            $exampleBuilding->delete();
-        } catch (\Exception $e) {
-            // do nothing
-        }
+        $exampleBuilding->delete();
 
         return redirect()->route('cooperation.admin.example-buildings.index')->with('success', 'Example building deleted');
     }
@@ -258,10 +249,9 @@ class ExampleBuildingController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function copy(Cooperation $cooperation, $id)
+    public function copy(Cooperation $cooperation, ExampleBuilding $exampleBuilding)
     {
         /** @var ExampleBuilding $exampleBuilding */
-        $exampleBuilding = ExampleBuilding::findOrFail($id);
         $exampleBuildingContents = $exampleBuilding->contents;
         $translations = $exampleBuilding->getTranslations('name');
         $names = [];

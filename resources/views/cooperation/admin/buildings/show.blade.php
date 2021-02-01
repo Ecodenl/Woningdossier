@@ -28,12 +28,12 @@
                             </button>
                         @endcan
                         @can('access-building', $building)
-                            <a href="{{route('cooperation.admin.tool.observe-tool-for-user', ['buildingId' => $building->id])}}" id="observe-building" class="btn btn-primary">
+                            <a href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building'))}}" id="observe-building" class="btn btn-primary">
                                 @lang('cooperation/admin/buildings.show.observe-building.label')
                                 @lang('cooperation/admin/buildings.show.observe-building.button')
                             </a>
                             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
-                                <a href="{{route('cooperation.admin.tool.fill-for-user', ['buildingId' => $building->id])}}"
+                                <a href="{{route('cooperation.admin.tool.fill-for-user', compact('building'))}}"
                                    id="edit-building" class="btn btn-warning">
                                     @lang('cooperation/admin/buildings.show.fill-for-user.label')
                                     @lang('cooperation/admin/buildings.show.fill-for-user.button')
@@ -195,7 +195,7 @@
                     </div>
                 </div>
             </div>
-            {{-- Fill in history or the log --}}
+            {{-- Fill in history ?? the log --}}
             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
                 <div id="fill-in-history" class="tab-pane fade">
                     <div class="panel">

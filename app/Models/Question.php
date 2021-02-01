@@ -53,9 +53,6 @@ class Question extends Model
         'name', 'type', 'order', 'required', 'questionnaire_id', 'validation',
     ];
 
-    protected $dates = [
-        'deleted_at',
-    ];
     protected $casts = [
         'required' => 'bool',
         'validation' => 'array',

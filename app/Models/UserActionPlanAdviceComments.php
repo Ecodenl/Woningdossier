@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments forMe(?\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserActionPlanAdviceComments query()

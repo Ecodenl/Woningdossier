@@ -11,6 +11,7 @@ use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -127,7 +128,7 @@ class UserService
             $account = AccountService::create($email, $registerData['password']);
         }
 
-        $user = self::create($cooperation, $roles, $account, array_except($registerData, ['email', 'password']));
+        $user = self::create($cooperation, $roles, $account, Arr::except($registerData, ['email', 'password']));
 
         // associate it with the user
         $user->account()->associate(

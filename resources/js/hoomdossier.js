@@ -50,10 +50,11 @@ function updateNotifications() {
         type: "GET",
         success: function (response) {
             // for now this will do, this will be changed, hopefully, to livewire in the near future
-            if (typeof response.notifications[0] !== "undefined") {
+            if (typeof response.notifications[0] === "undefined") {
                 wasRecalculating = true;
             }
-            if (wasRecalculating && typeof response.notifications[0] === "undefined") {
+
+            if (wasRecalculating && $('.jq-toast-wrap').length > 0) {
                 $.toast().reset('all');
                 $.toast({
                     text: 'Actieplan is herberekend.',

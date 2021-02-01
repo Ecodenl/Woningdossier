@@ -7,6 +7,7 @@ use App\Helpers\NumberFormatter;
 use App\Helpers\Translation;
 use App\Models\Building;
 use App\Models\BuildingCoachStatus;
+use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
@@ -16,6 +17,7 @@ use App\Models\QuestionOption;
 use App\Models\Role;
 use App\Models\Step;
 use App\Models\User;
+use App\Scopes\GetValueScope;
 use Illuminate\Support\Collection;
 
 class CsvService
@@ -110,9 +112,7 @@ class CsvService
             $connectedCoachNames = User::findMany($connectedCoaches->pluck('coach_id'))
                 ->map(function ($user) {
                     return $user->getFullName();
-                })->toArray();
-            // implode it.
-            $connectedCoachNames = implode($connectedCoachNames, ', ');
+                })->implode(', ');
 
             $firstName = $user->first_name;
             $lastName = $user->last_name;
@@ -275,7 +275,7 @@ class CsvService
                     array_push($connectedCoachNames, User::forMyCooperation($cooperation->id)->find($coachId)->getFullName());
                 }
                 // implode it.
-                $connectedCoachNames = implode($connectedCoachNames, ', ');
+                $connectedCoachNames = implode(', ', $connectedCoachNames);
 
                 $firstName = $user->first_name;
                 $lastName = $user->last_name;
@@ -374,28 +374,32 @@ class CsvService
     /**
      * Get the total report for all users by the cooperation.
      */
-    public static function totalReport(Cooperation $cooperation, InputSource $inputSource, bool $anonymized): array
+    public static function totalReport(Cooperation $cooperation, bool $anonymized): array
     {
         $generalDataStep = Step::findByShort('general-data');
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
-//        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
-        $residentInputSource = $inputSource;
 
+        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+
+        // Get all users with a building and the general data completed step
         $users = $cooperation->users()
-            ->with(['building' => function ($query) use ($coachInputSource, $generalDataStep) {
-                $query->with(['completedSteps' => function ($query) use ($coachInputSource, $generalDataStep) {
-                    $query->forInputSource($coachInputSource)->where('step_id', $generalDataStep->id);
-                }]);
-            }])
-            ->has('buildings')
-            ->get();
+            ->whereHas('building', function ($query) use ($generalDataStep) {
+                $query->withoutGlobalScope(GetValueScope::class);
+            })
+            ->with(['building' => function ($query) use ($generalDataStep) {
+                $query->withoutGlobalScope(GetValueScope::class)
+                    ->with(['completedSteps' => function ($query) use ($generalDataStep) {
+                        $query->withoutGlobalScope(GetValueScope::class)
+                            ->where('step_id', $generalDataStep->id);
+                    }]);
+            }])->get();
 
         $coachIds = [];
         $residentIds = [];
         // We first check each user
         foreach ($users as $user) {
             // we eager loaded the completed steps from the coach, so if its not empty we use that
-            if ($user->building->completedSteps->isNotEmpty()) {
+            if ($user->building->completedSteps->contains('input_source_id', $coachInputSource->id)) {
                 $coachIds[] = $user->id;
             } else {
                 $residentIds[] = $user->id;
@@ -418,7 +422,9 @@ class CsvService
          * @var User $user
          */
         foreach ($users as $user) {
-            $inputSource = $user->building->buildingFeatures->inputSource;
+            // A user that's within this dump will always have a building, a user without a building within this application is like a fish without its water.
+            // but sometimes a building does not have any building features, so in that case we will default to the resident its input source
+            $inputSource = $user->building->buildingFeatures->inputSource ?? $residentInputSource;
 
             $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
         }

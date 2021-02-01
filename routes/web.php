@@ -40,6 +40,12 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
             Route::post('register', 'RegisterController@register');
 
             Route::group(['as' => 'auth.'], function () {
+                Route::get('email/verify', 'VerificationController@show')->name('verification.notice');
+                // for users that have some old verification url.
+                Route::get('email/verify/{id}', 'VerificationController@oldVerifyUrl');
+                Route::get('email/verify/{id}/{hash}', 'VerificationController@verify')->name('verification.verify');
+                Route::post('email/resend', 'VerificationController@resend')->name('verification.resend');
+
                 Route::get('login', 'LoginController@showLoginForm')->name('login');
                 Route::post('login', 'LoginController@login');
 
@@ -51,15 +57,6 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
 
                     Route::get('reset/{token}/{email}', 'ResetPasswordController@show')->name('reset.show');
                     Route::post('reset', 'ResetPasswordController@update')->name('reset.update');
-                });
-
-                Route::group(['prefix' => 'confirm', 'as' => 'confirm.'], function () {
-                    Route::get('', 'ConfirmAccountController@store')->name('store');
-
-                    Route::group(['prefix' => 'resend', 'as' => 'resend.'], function () {
-                        Route::get('', 'ResendConfirmAccountController@show')->name('show');
-                        Route::post('', 'ResendConfirmAccountController@store')->name('store');
-                    });
                 });
             });
         });
@@ -74,7 +71,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
         });
 
         // group can be accessed by everyone that's authorized and has a role in its session
-        Route::group(['middleware' => ['auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser']], function () {
+        Route::group(['middleware' => ['auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser', 'verified']], function () {
             Route::get('messages/count', 'MessagesController@getTotalUnreadMessageCount')->name('message.get-total-unread-message-count');
             Route::get('notifications', 'NotificationController@index')->name('notifications.index');
 
@@ -144,7 +141,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
             });
 
             // conversation requests
-            Route::group(['prefix' => 'conversation-request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest', 'middleware' => 'can:view-any,App\Models\PrivateMessage'], function () {
+            Route::group(['prefix' => 'conversation-request', 'as' => 'conversation-requests.', 'namespace' => 'ConversationRequest'], function () {
                 Route::get('{requestType}/{measureApplicationShort?}', 'ConversationRequestController@index')->name('index');
                 Route::post('', 'ConversationRequestController@store')->name('store');
             });
@@ -254,8 +251,8 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
                 });
 
                 Route::group(['middleware' => ['current-role:cooperation-admin|super-admin']], function () {
-                    Route::resource('example-buildings', 'ExampleBuildingController');
-                    Route::get('example-buildings/{id}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
+                    Route::resource('example-buildings', 'ExampleBuildingController')->parameter('example-buildings', 'exampleBuilding');
+                    Route::get('example-buildings/{exampleBuilding}/copy', 'ExampleBuildingController@copy')->name('example-buildings.copy');
                 });
 
                 /* Section that a coach, coordinator and cooperation-admin can access */
@@ -263,8 +260,8 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
                     Route::resource('messages', 'MessagesController')->only('index');
 
                     Route::group(['prefix' => 'tool', 'as' => 'tool.'], function () {
-                        Route::get('fill-for-user/{id}', 'ToolController@fillForUser')->name('fill-for-user');
-                        Route::get('observe-tool-for-user/{id}', 'ToolController@observeToolForUser')
+                        Route::get('fill-for-user/{building}', 'ToolController@fillForUser')->name('fill-for-user');
+                        Route::get('observe-tool-for-user/{building}', 'ToolController@observeToolForUser')
                             ->name('observe-tool-for-user');
                     });
 
@@ -302,7 +299,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
                         });
                     });
 
-                    Route::resource('coaches', 'CoachController')->only(['index', 'show']);
+                    Route::resource('coaches', 'CoachController')->only(['index', 'show'])->parameter('coaches', 'user');
 
                     Route::group(['prefix' => 'reports', 'as' => 'reports.'], function () {
                         Route::get('', 'ReportController@index')->name('index');
@@ -353,7 +350,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
 //                    });
 
                     Route::resource('key-figures', 'KeyFiguresController')->only('index');
-                    Route::resource('translations', 'TranslationController')->except(['show'])->parameters(['id' => 'group']);
+                    Route::resource('translations', 'TranslationController')->except(['show'])->parameter('translations', 'group');
 
                     /* Section for the cooperations */
                     Route::group(['prefix' => 'cooperations', 'as' => 'cooperations.', 'namespace' => 'Cooperation'], function () {
@@ -405,3 +402,15 @@ Route::get('/', function () {
 
     return view('welcome');
 })->name('index');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

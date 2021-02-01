@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater forMe(?\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BuildingHeater query()

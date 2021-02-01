@@ -3,13 +3,11 @@
 namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
-use App\NotificationSetting;
 use App\Traits\HasCooperationTrait;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Collection;
-use Illuminate\Validation\Rules\In;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -48,7 +46,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $measure_application_interest_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserMotivation[] $motivations
  * @property-read int|null $motivations_count
- * @property-read \Illuminate\Database\Eloquent\Collection|NotificationSetting[] $notificationSettings
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NotificationSetting[] $notificationSettings
  * @property-read int|null $notification_settings_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
  * @property-read int|null $permissions_count

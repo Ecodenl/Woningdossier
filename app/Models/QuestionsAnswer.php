@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer allInputSources()
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer forBuilding(\App\Models\Building $building)
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer forInputSource(\App\Models\InputSource $inputSource)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer forMe(\App\Models\User $user = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer forMe(?\App\Models\User $user = null)
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionsAnswer query()

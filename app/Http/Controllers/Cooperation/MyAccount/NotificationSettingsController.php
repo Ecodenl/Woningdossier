@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Cooperation\MyAccount;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\MyAccount\NotificationSettingsFormRequest;
 use App\Models\Cooperation;
-use App\NotificationSetting;
+use App\Models\NotificationSetting;
 
 class NotificationSettingsController extends Controller
 {

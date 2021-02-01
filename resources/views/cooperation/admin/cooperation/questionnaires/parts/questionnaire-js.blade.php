@@ -61,7 +61,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="pull-left">
-                            <a><i class="glyphicon glyphicon-trash"></i></a>
+                            <a><i class="glyphicon glyphicon-trash remove-question" style="margin-top: 25%;"></i></a>
                         </div>
                         <div class="pull-right">
                             :requiredCheckbox
@@ -73,7 +73,12 @@
 
     var formBuildValidation =
         `<div class="row validation-inputs">
-            <div class="col-sm-4">
+            <div class="col-sm-1">
+                <a class="text-danger">
+                    <i class="glyphicon glyphicon-remove remove-validation" style="margin-top: 25%; margin-left: 50%"></i>
+                </a>
+            </div>
+            <div class="col-sm-3">
                 <div class="form-group">
                     <select class="validation form-control">
                         @foreach(__("woningdossier.cooperation.admin.custom-fields.index.rules") as $rule => $translation)
@@ -120,7 +125,7 @@
                     <input class="form-control option-text" placeholder="@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-option-placeholder')"
                         name="questions[:guid][options][:optionGuid][:locale]" type="text" autofocus="autofocus">
                     <span class="input-group-addon">
-                        <a class="text-danger"><i class="glyphicon glyphicon-remove"></i></a>
+                        <a class="text-danger"><i class="glyphicon glyphicon-remove remove-option"></i></a>
                     </span>
                 </div>
             </div>
@@ -232,80 +237,17 @@
         return append;
     }
 
-
+    // Body related
     /**
-     * function to add the validation inputs
+     * Function to add the validation inputs
      */
     function addValidationInputs(question, guid) {
-
         // add the validation options to the form
         question.append(formBuildValidation);
         // after that we add the name attribute
         question.find('.validation').attr('name', 'validation['+guid+'][main-rule]').trigger('change');
         question.find('.sub-rule').attr('name', 'validation['+guid+'][sub-rule]');
-
     }
-
-
-
-
-    // add the validation to a question
-    $(document).on('click', '.add-validation', function (event) {
-        event.preventDefault();
-        var question = $(this).parent().parent().parent().find('.question');
-        var guid = getQuestionId(question);
-
-        addValidationInputs(question, guid);
-
-        return false;
-    });
-
-    $(document).on('focusout', 'input.option-text', function (event) {
-        if($(this).val() === "") {
-            $(this).val('Optie...')
-        }
-    });
-
-    $(document).on('focus', 'input.option-text', function (event) {
-
-        // we need to check if all the language inputs are filled
-        // so we get the option group
-        var optionGroup = $(this).parent().parent().parent();
-
-        var lastInputFromOptionGroup = optionGroup.find('input:last');
-
-        // check if the last input from the option group is empty
-        // and if the current focussed input is equal to the last input from the option group
-        // because if so, we need to add a new option group
-
-        if (lastInputFromOptionGroup.val() === "" && $(this)[0] === lastInputFromOptionGroup[0]) {
-
-            var question = $(this).parent().parent().parent().parent().parent().find('.question');
-            var guid = getQuestionId(question);
-
-            addAdditionalQuestionOptions(question, guid);
-        }
-    });
-
-    $('body').on('change', 'select.validation', function () {
-        var selectedMainRule = $(this);
-
-        var validationRuleRow = selectedMainRule.parent().parent().parent();
-
-        // get the select sub-rule that we dont want to show
-        var subRuleNotSelected = validationRuleRow.find('select[data-sub-rule!='+selectedMainRule.val()+'].sub-rule');
-
-        // after that we hide & disable the input. No need to remove the name, see:
-        // https://www.w3.org/TR/html5/forms.html#constructing-the-form-data-set
-        subRuleNotSelected.hide();
-        subRuleNotSelected.attr('disabled', true);
-
-        var subRule = validationRuleRow.find('select[data-sub-rule='+selectedMainRule.val()+'].sub-rule');
-        subRule.removeAttr('disabled');
-        subRule.show();
-        subRule.trigger('change');
-    });
-
 
     /**
      * Remove the rule inputs from a question
@@ -341,37 +283,41 @@
     }
 
     /**
-     * Check if a question has a question id.
-     * The question will have a question id if its a existing question
-     * The question wont have it if its a new question, in that case it wil have a guid
-     *
+     * Add validation to a question
      */
-    function hasQuestionQuestionId(question)
-    {
-        if (question.find('input.question_id').length > 0) {
-            return true;
-        }
-        return false
-    }
+    $(document).on('click', '.add-validation', function (event) {
+        event.preventDefault();
+        var question = $(this).parent().parent().parent().find('.question');
+        var guid = getQuestionId(question);
 
+        addValidationInputs(question, guid);
+    });
 
     /**
-     * This returns the question id from a existing question or if it is a new question we return the guid.
-     * @param question
-     * @returns {*}
+     * Changes the sub-rule select
      */
-    function getQuestionId(question)
-    {
-        if (hasQuestionQuestionId(question)) {
-            return question.find('input.question_id').val();
-        }
+    $('body').on('change', 'select.validation', function () {
+        var selectedMainRule = $(this);
 
-        return question.find('input.guid').val();
-    }
+        var validationRuleRow = selectedMainRule.parent().parent().parent();
 
+        // get the select sub-rule that we dont want to show
+        var subRuleNotSelected = validationRuleRow.find('select[data-sub-rule!='+selectedMainRule.val()+'].sub-rule');
 
+        // after that we hide & disable the input. No need to remove the name, see:
+        // https://www.w3.org/TR/html5/forms.html#constructing-the-form-data-set
+        subRuleNotSelected.hide();
+        subRuleNotSelected.attr('disabled', true);
 
-    // add the validation inputs if needed
+        var subRule = validationRuleRow.find('select[data-sub-rule='+selectedMainRule.val()+'].sub-rule');
+        subRule.removeAttr('disabled');
+        subRule.show();
+        subRule.trigger('change');
+    });
+
+    /**
+     * Changes the rule input, adds validation inputs if needed
+     */
     $('body').on('change', 'select.sub-rule', function (event) {
         var selectedValidationOption = $(this);
         var question = selectedValidationOption.parent().parent().parent().parent();
@@ -398,7 +344,7 @@
     /**
      * Remove a whole question
      */
-    $('body').on('click', '.glyphicon-trash', function (event) {
+    $('body').on('click', '.remove-question', function (event) {
         event.preventDefault();
 
 
@@ -427,7 +373,7 @@
     /**
      * Remove a option from a question
      */
-    $('body').on('click', '.glyphicon-remove', function (event) {
+    $('body').on('click', '.remove-option', function (event) {
         event.preventDefault();
         var deleteOptionRoute = '{{route('cooperation.admin.cooperation.questionnaires.delete-question-option', ['questionId' => ':question_id', 'optionId' => ':option_id'])}}';
         var currentOptionGroup = $(this).parent().parent().parent().parent().parent();
@@ -455,6 +401,31 @@
         return false;
     });
 
+    // Miscellaneous
+    /**
+     * Check if a question has a question id.
+     * The question will have a question id if its a existing question
+     * The question wont have it if its a new question, in that case it wil have a guid
+     */
+    function hasQuestionQuestionId(question)
+    {
+        return question.find('input.question_id').length > 0
+    }
+
+    /**
+     * This returns the question id from a existing question or if it is a new question we return the guid.
+     * @param question
+     * @returns {*}
+     */
+    function getQuestionId(question)
+    {
+        if (hasQuestionQuestionId(question)) {
+            return question.find('input.question_id').val();
+        }
+
+        return question.find('input.guid').val();
+    }
+
     $('#leave-creation-tool').on('click', function (event) {
         if (confirm('@lang('cooperation/admin/cooperation/questionnaires.shared.leave-creation-tool-warning')')) {
 
@@ -464,8 +435,7 @@
         }
     });
 
-
-
+    // On load
     $(document).ready(function () {
         var blocks = [];
         var master = $('#sortable');

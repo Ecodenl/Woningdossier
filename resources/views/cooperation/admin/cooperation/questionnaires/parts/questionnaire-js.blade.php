@@ -1,192 +1,242 @@
 <script>
+    // Config for the different types
+    let config = {
+        text: {
+            validation: true,
+            placeholder: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-placeholder')',
+            hasOption: false,
+        },
+        textarea: {
+            validation: true,
+            placeholder: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.textarea.placeholder')',
+            hasOption: false,
+        },
+        radio: {
+            validation: false,
+            placeholder: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-placeholder')',
+            hasOption: true,
+        },
+        checkbox: {
+            validation: false,
+            placeholder: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-placeholder')',
+            hasOption: true,
+        },
+        select: {
+            validation: false,
+            placeholder: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-placeholder')',
+            hasOption: true,
+        },
+        date: {
+            validation: false,
+            placeholder: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-placeholder')',
+            hasOption: false,
+        },
+    };
+
+    // HTML components
     var formBuildPanel =
-        '<div class="form-builder panel panel-default">' +
-        '<div class="panel-heading">' +
+        `<div class="form-builder panel panel-default">
+            <div class="panel-heading">
+                :heading
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-12 question">
+                        <input name="questions[:guid][type]" type="hidden" value=":type">
+                        <input name="questions[:guid][guid]" type="hidden" value=":guid" class="guid">
+                        :question
+                        :option
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        :validationButton
+                    </div>
+                </div>
+                <div class="row validation-rules">
 
-        '</div>'+
-        '<div class="panel-body">' +
-        '<div class="row">' +
-        '<div class="col-sm-12 question">' +
-        // '<div class="form-group">' +
-
-        // '</div>' +
-        '</div>' +
-        '</div>' +
-        '<div class="row">' +
-        '<div class="col-sm-12">' +
-        '<a class="btn btn-primary add-validation">@lang('cooperation/admin/cooperation/questionnaires.edit.add-validation')</a>'+
-        '</div>' +
-        '</div>'+
-        '<div class="row validation-rules">' +
-
-        '</div>' +
-        '</div>' +
-        '<div class="panel-footer">' +
-        '<div class="row">' +
-        '<div class="col-sm-12">' +
-        '<div class="pull-left">' +
-        '<a><i class="glyphicon glyphicon-trash"></i></a>' +
-        '</div>' +
-        '<div class="pull-right">' +
-
-        '</div>' +
-        '</div>' +
-        '</div>' +
-        '</div>' +
-        '</div>';
+                </div>
+            </div>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="pull-left">
+                            <a><i class="glyphicon glyphicon-trash"></i></a>
+                        </div>
+                        <div class="pull-right">
+                            :requiredCheckbox
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
 
     var formBuildValidation =
-        '<div class="row validation-inputs">' +
-        '<div class="col-sm-4">' +
-        '<div class="form-group">' +
-        '<select class="validation form-control">' +
-        '@foreach(__("woningdossier.cooperation.admin.custom-fields.index.rules") as $rule => $translation)' +
-        '<option value="{{$rule}}">{{$translation}}</option>' +
-        '@endforeach' +
-        '</select>' +
-        '</div>' +
-        '</div>' +
-        '<div class="col-sm-4">' +
-        '<div class="form-group">' +
-        '@foreach(__("woningdossier.cooperation.admin.custom-fields.index.rules") as $rule => $translation)' +
-        '<select disabled="true" class="sub-rule form-control" data-sub-rule="{{$rule}}" style="display: none;">' +
-        '@foreach(__("woningdossier.cooperation.admin.custom-fields.index.optional-rules.".$rule) as $optionalRule => $optionalRuleTranslation)' +
-        '<option value="{{$optionalRule}}">{{$optionalRuleTranslation}}</option>' +
-        '@endforeach' +
-        '</select>' +
-        '@endforeach' +
-        '</div>' +
-        '</div>' +
-        '</div>';
+        `<div class="row validation-inputs">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <select class="validation form-control">
+                        @foreach(__("woningdossier.cooperation.admin.custom-fields.index.rules") as $rule => $translation)
+                            <option value="{{$rule}}">{{$translation}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    @foreach(__("woningdossier.cooperation.admin.custom-fields.index.rules") as $rule => $translation)
+                        <select disabled="true" class="sub-rule form-control" data-sub-rule="{{$rule}}" style="display: none;">
+                            @foreach(__("woningdossier.cooperation.admin.custom-fields.index.optional-rules.".$rule) as $optionalRule => $optionalRuleTranslation)
+                                <option value="{{$optionalRule}}">{{$optionalRuleTranslation}}</option>
+                            @endforeach
+                        </select>
+                    @endforeach
+                </div>
+            </div>
+        </div>`;
 
+    let validationButton = '<a class="btn btn-primary add-validation">@lang('cooperation/admin/cooperation/questionnaires.edit.add-validation')</a>';
+
+    let requiredCheckboxLabel =
+        `<label class="control-label" for="required-:guid">
+            @lang('default.required')
+            <input id="required-:guid" type="checkbox" name="questions[:guid][required]">
+        </label>`;
+
+    let questionPanel =
+        `<div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon">:locale</span>
+                <input class="form-control" placeholder=":placeholder" name="questions[:guid][question][:locale]" type="text">
+            </div>
+        </div>`;
+
+    let optionPanel =
+        `<div class="option-group">
+            <label>@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-option-label') </label>
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">:locale</span>
+                    <input class="form-control option-text" placeholder="@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-option-placeholder')"
+                        name="questions[:guid][options][:optionGuid][:locale]" type="text" autofocus="autofocus">
+                    <span class="input-group-addon">
+                        <a class="text-danger"><i class="glyphicon glyphicon-remove"></i></a>
+                    </span>
+                </div>
+            </div>
+        </div>`;
 
     // in the comments you may see "options"
     // these will be the inputs that hold the name off the option that the user can choose from
     // a question could have options, those options are the "option" inputs.
 
-    // preset variables we need in almost in every function
+    // Preset variables that are used often
     var sortable = $('#sortable');
     var toolBox = $('#tool-box');
-    var formGroupElement = '<div class="form-group"></div>';
-    var inputGroupElement = '<div class="input-group"></div>';
-    var inputGroupAddon = '<span class="input-group-addon"></span>';
-    var optionGroupElement = '<div class="option-group"></div>';
-
-    var requiredCheckboxLabel = $('<label>').addClass('control-label').text('Verplicht ');
 
     var supportedLocales = [];
 
     // creates two pushes, but it works.
     @foreach(config('hoomdossier.supported_locales') as $locale)
-    supportedLocales.push('{{$locale}}');
+        supportedLocales.push('{{$locale}}');
     @endforeach
 
     // create guid
-    function createGuid()
-    {
+    function createGuid() {
         return "ss-s-s-s-sss".replace(/s/g, s4());
     }
     // some quick maths
-    function s4()
-    {
+    function s4() {
         return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     }
 
-
+    // Toolbox related
     toolBox.find('a').on('click', function (event) {
-        // always add the empty form build panel
-        // we add the input types after that
-        sortable.prepend(formBuildPanel);
         event.preventDefault();
+        // Get type and config
+        let type = $(this).data('type');
+        let configData = config[type];
 
-        // add the text from the toolbox to the panel-heading
-        var questionPanel = sortable.find('.panel').first();
-        questionPanel.find('.panel-heading').text($(this).text().trim())
+        // Generate a guid
+        let guid = createGuid();
+
+        // We build off from the template. Less changes to the DOM is always better
+        let temp = formBuildPanel;
+
+        // Add the text from the toolbox to the panel-heading
+        temp = temp.replace(':heading', $(this).text().trim());
+
+        // Add the type
+        temp = temp.replace(':type', type);
+
+        // Add checkbox to template
+        temp = temp.replace(':requiredCheckbox', requiredCheckboxLabel);
+
+        // Add validation button if needed, else replace with nothing
+        let validationReplace = '';
+        if (configData.validation === true) {
+            validationReplace = validationButton;
+        }
+        temp = temp.replace(':validationButton', validationReplace);
+
+        // Add question
+        temp = temp.replace(':question', getInputQuestion(guid, configData.placeholder));
+
+        // Same as with validation, but for option
+        let optionReplace = '';
+        if (configData.hasOption === true) {
+            optionReplace = getAdditionalQuestionOptions();
+        }
+
+        temp = temp.replace(':option', optionReplace);
+
+        // As last step, replace all :guid with the created guid
+        temp = temp.replaceAll(':guid', guid);
+        sortable.prepend(temp);
+        sortable.sortable('refresh');
     });
 
-
-
     /**
-     * function to add a hidden input with the type the question should be
+     * Returns a new option.
      */
-    function addHiddenInputWithInputType(question, guid, type)
-    {
-        var hiddenInputWithInputTypeName = 'questions['+guid+'][type]';
-        var hiddenInputWithInputType = $('<input>').attr({
-            name: hiddenInputWithInputTypeName,
-            type: 'hidden',
-            value: type
-        });
-        question.append(hiddenInputWithInputType);
-    }
-
-
-
-    function addAdditionalQuestionOptions(question, guid)
-    {
+    function getAdditionalQuestionOptions(){
         // we need to create this for every new option
         // so we can make a difference between the multiple options
-        var additionalQuestionOptionGuid = createGuid();
+        let additionalQuestionOptionGuid = createGuid();
 
-        // we append a option-group for every new added option
-        question.append(optionGroupElement);
+        let append = '';
 
-        // we add "option" inputs for each supported language
         $(supportedLocales).each(function (index, locale) {
-            var fullQuestionName = 'questions['+guid+'][options]['+additionalQuestionOptionGuid+']['+locale+']';
-
-            var formGroup = $($(formGroupElement).append(inputGroupElement));
-            // raging because i dont know why $(optionGroup).append(formGroup) does not work.
-            $(question).find('.option-group').last().append(formGroup);
-
-            var totalOptions = question.find('.option-group').length;
-
-            $(question).find('.option-group').last().prepend('<label> Optie '+totalOptions +'</label>');
-
-
-            var additionalTextInput = $('<input>').addClass('form-control option-text').attr({
-                placeholder: 'Optie toevoegen',
-                name: fullQuestionName,
-                type: 'text'
-            });
-
-            // the remove cross that we will append next to the option
-            var removeOptionButton = $('<a>').addClass('text-danger');
-            var removeGlyphicon = $('<i>').addClass('glyphicon glyphicon-remove');
-
-            formGroup.find('.input-group').append($(inputGroupAddon).append(locale));
-            formGroup.find('.input-group').append(additionalTextInput);
-            formGroup.find('.input-group').append($(inputGroupAddon).append(removeOptionButton.append(removeGlyphicon)));
+            let temp = optionPanel;
+            temp = temp.replaceAll(':locale', locale);
+            temp = temp.replace(':optionGuid', additionalQuestionOptionGuid);
+            append += temp;
         });
+
+        return append;
     }
 
     /**
-     * the input where the user can fill in the main question
+     * Returns the input where the user can fill in the main question.
      */
-    function addInputQuestion(question, guid, placeholder)
-    {
+    function getInputQuestion(guid, placeholder) {
+        let append = '';
+
         $(supportedLocales).each(function (index, locale) {
-            var fullQuestionName = 'questions['+guid+'][question]['+locale+']';
-            var formGroup = $($(formGroupElement).append(inputGroupElement)).appendTo(question);
-
-            var textInput = $('<input>').addClass('form-control').attr({
-                placeholder: placeholder,
-                name: fullQuestionName,
-                type: 'text'
-            });
-
-            formGroup.find('.input-group').append($(inputGroupAddon).append(locale));
-            formGroup.find('.input-group').append(textInput);
-
+            let temp = questionPanel;
+            temp = temp.replaceAll(':locale', locale);
+            temp = temp.replace(':placeholder', placeholder);
+            append += temp;
         });
+
+        return append;
     }
 
 
     /**
      * function to add the validation inputs
      */
-    function addValidationInputs(question, guid)
-    {
+    function addValidationInputs(question, guid) {
 
         // add the validation options to the form
         question.append(formBuildValidation);
@@ -197,173 +247,7 @@
     }
 
 
-    /**
-     * Add a hidden input with a guid
-     */
-    function addHiddenGuidInput(question, guid)
-    {
-        var guidHiddenInput = $('<input>').attr({
-            name: 'questions['+guid+'][guid]',
-            type: 'hidden',
-            value: guid,
-        }).addClass('guid');
 
-        question.append(guidHiddenInput);
-    }
-
-    /**
-     * function to add a required checkbox to the footer off the panel
-     *
-     * @param panelFooter
-     * @param guid
-     */
-    function addRequiredCheckbox(panelFooter, guid)
-    {
-
-        var rbl = requiredCheckboxLabel.clone().attr({
-            for: 'required-'+guid
-        });
-        var requiredCheckbox = $('<input>').addClass('control-label').attr({
-            id: 'required-'+guid+'',
-            type: 'checkbox',
-            name: 'questions['+guid+'][required]'
-        });
-
-        panelFooter.find('.pull-right').html(rbl);
-        requiredCheckbox.appendTo(panelFooter.find('.pull-right > label'));
-    }
-
-
-    toolBox.find('#short-answer').on('click', function () {
-        var questionPanel = sortable.find('.panel').first();
-        var question = questionPanel.find('.question');
-        var panelFooter = questionPanel.find('.panel-footer');
-        var guid = createGuid();
-
-        addInputQuestion(question, guid, 'Vraag');
-
-        addHiddenInputWithInputType(question, guid, 'text');
-
-        addHiddenGuidInput(question, guid);
-
-        addRequiredCheckbox(panelFooter, guid);
-
-        sortable.sortable('refresh');
-
-    });
-
-    toolBox.find('#date').on('click', function () {
-        var questionPanel = sortable.find('.panel').first();
-        var question = questionPanel.find('.question');
-        var panelFooter = questionPanel.find('.panel-footer');
-        var guid = createGuid();
-        // no validation needed here
-        questionPanel.find('.add-validation').remove();
-
-        addInputQuestion(question, guid, 'Vraag');
-
-        addHiddenInputWithInputType(question, guid, 'date');
-
-        addHiddenGuidInput(question, guid);
-
-        addRequiredCheckbox(panelFooter, guid);
-
-        sortable.sortable('refresh');
-    });
-
-
-    toolBox.find('#long-answer').on('click', function () {
-        var questionPanel = sortable.find('.panel').first();
-        var question = questionPanel.find('.question');
-        var panelFooter = questionPanel.find('.panel-footer');
-        var guid = createGuid();
-
-        addInputQuestion(question, guid, 'Stel uw vraag waar een langer antwoord voor nodig is...');
-
-        addHiddenInputWithInputType(question, guid, 'textarea');
-
-        addHiddenGuidInput(question, guid);
-
-        addRequiredCheckbox(panelFooter, guid);
-
-
-        sortable.sortable('refresh');
-    });
-
-    toolBox.find('#radio-button').on('click', function () {
-        var questionPanel = sortable.find('.panel').first();
-        var question = questionPanel.find('.question');
-        var panelFooter = questionPanel.find('.panel-footer');
-        var guid = createGuid();
-
-        // no validation needed here
-        questionPanel.find('.add-validation').remove();
-
-        addHiddenInputWithInputType(question, guid, 'radio');
-
-        addHiddenGuidInput(question, guid);
-
-        addInputQuestion(question, guid, 'Vraag');
-
-        addAdditionalQuestionOptions(question, guid);
-
-        addRequiredCheckbox(panelFooter, guid);
-
-        // now let it autofocus to the first option input
-        question.find('.option-text').first().attr('autofocus', true);
-
-        sortable.sortable('refresh')
-    });
-
-    toolBox.find('#checkbox').on('click', function () {
-        var questionPanel = sortable.find('.panel').first();
-        var question = questionPanel.find('.question');
-        var panelFooter = questionPanel.find('.panel-footer');
-        var guid = createGuid();
-
-        // no validation needed here
-        questionPanel.find('.add-validation').remove();
-
-        addHiddenInputWithInputType(question, guid, 'checkbox');
-
-        addHiddenGuidInput(question, guid);
-
-        addInputQuestion(question, guid, 'Vraag');
-
-        addAdditionalQuestionOptions(question, guid);
-
-        addRequiredCheckbox(panelFooter, guid);
-
-        // now let it autofocus to the first option input
-        question.find('.option-text').first().attr('autofocus', true);
-
-        sortable.sortable('refresh')
-    });
-
-    toolBox.find('#dropdown').on('click', function () {
-        var questionPanel = sortable.find('.panel').first();
-        var question = questionPanel.find('.question');
-        var panelFooter = questionPanel.find('.panel-footer');
-        var guid = createGuid();
-
-        // no validation needed here
-        questionPanel.find('.add-validation').remove();
-
-        addHiddenInputWithInputType(question, guid, 'select');
-
-        addHiddenGuidInput(question, guid);
-
-        addInputQuestion(question, guid, 'Vraag');
-
-        addAdditionalQuestionOptions(question, guid);
-
-        addRequiredCheckbox(panelFooter, guid);
-
-        // now let it autofocus to the first option input
-        question.find('.option-text').first().attr('autofocus', true);
-
-        sortable.sortable('refresh')
-    });
 
     // add the validation to a question
     $(document).on('click', '.add-validation', function (event) {
@@ -610,6 +494,4 @@
             }
         });
     });
-
-    // $('input, select').trigger('change');
 </script>

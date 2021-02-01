@@ -15,7 +15,7 @@
 <?php $questionOptionCount = 0; ?>
 @foreach($question->questionOptions as $questionOption)
     <?php $questionOptionCount++; ?>
-    <label for="">@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-option') {{$questionOptionCount}}</label>
+    <label for="">@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-option-label') {{$questionOptionCount}}</label>
     <div class="option-group">
         @foreach(config('hoomdossier.supported_locales') as $locale)
             <?php $translation = $questionOption->getTranslation('name', $locale) instanceof \App\Models\Translation ? $questionOption->getTranslation('name', $locale)->translation : ''; ?>
@@ -35,7 +35,7 @@
 {{-- For every existing question, we want to add a new option group field --}}
 
 {{-- quick maths--}}
-<label for="">@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-option') {{$questionOptionCount + 1}} @lang('cooperation/admin/cooperation/questionnaires.shared.add')</label>
+<label for="">@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-option-label') {{$questionOptionCount + 1}} @lang('cooperation/admin/cooperation/questionnaires.shared.add')</label>
 <?php $uuid = \Ramsey\Uuid\Uuid::uuid4(); ?>
 @foreach(config('hoomdossier.supported_locales') as $locale)
     <div class="form-group">

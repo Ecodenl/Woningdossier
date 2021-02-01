@@ -1,7 +1,7 @@
 <?php $questionsApplicableForValidation = ['text', 'textarea']; ?>
 <div class="form-builder ui-sortable-handle panel panel-default" @isset($id) id="{{$id}}" @endisset>
     <div class="panel-heading">
-        @lang('cooperation/admin/cooperation/questionnaires.shared.types.'.$question->type)
+        @lang('cooperation/admin/cooperation/questionnaires.shared.types.'.$question->type.'.label')
     </div>
     <div class="panel-body">
         <div class="row">

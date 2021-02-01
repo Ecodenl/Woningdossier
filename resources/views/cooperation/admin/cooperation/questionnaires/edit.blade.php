@@ -24,23 +24,23 @@
                 <div class="row alert-top-space">
                     <div class="col-md-3">
                         <div id="tool-box" class="list-group">
-                            <a href="#" id="short-answer" class="list-group-item"><i class="glyphicon glyphicon-align-left"></i>
-                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.text')
+                            <a href="#" id="short-answer" data-type="text" class="list-group-item"><i class="glyphicon glyphicon-align-left"></i>
+                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.text.label')
                             </a>
-                            <a href="#" id="long-answer" class="list-group-item"><i class="glyphicon glyphicon-align-justify"></i>
-                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.textarea')
+                            <a href="#" id="long-answer" data-type="textarea" class="list-group-item"><i class="glyphicon glyphicon-align-justify"></i>
+                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.textarea.label')
                             </a>
-                            <a href="#" id="radio-button" class="list-group-item"><i class="glyphicon glyphicon-record"></i> 
-                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.radio')
+                            <a href="#" id="radio-button" data-type="radio" class="list-group-item"><i class="glyphicon glyphicon-record"></i> 
+                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.radio.label')
                             </a>
-                            <a href="#" id="checkbox" class="list-group-item"><i class="glyphicon glyphicon-unchecked"></i> 
-                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.checkbox')
+                            <a href="#" id="checkbox" data-type="checkbox" class="list-group-item"><i class="glyphicon glyphicon-unchecked"></i> 
+                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.checkbox.label')
                             </a>
-                            <a href="#" id="dropdown" class="list-group-item"><i class="glyphicon glyphicon-collapse-down"></i> 
-                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.select')
+                            <a href="#" id="dropdown" data-type="select" class="list-group-item"><i class="glyphicon glyphicon-collapse-down"></i> 
+                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.select.label')
                             </a>
-                            <a href="#" id="date" class="list-group-item"><i class="glyphicon glyphicon-calendar"></i>
-                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.date')
+                            <a href="#" id="date" data-type="date" class="list-group-item"><i class="glyphicon glyphicon-calendar"></i>
+                                @lang('cooperation/admin/cooperation/questionnaires.shared.types.date.label')
                             </a>
                         </div>
                     </div>
@@ -97,7 +97,6 @@
     <link href="{{asset('css/bootstrap-toggle.min.css')}}" rel="stylesheet">
 @endpush
 @push('js')
-
 
     <script src="{{asset('js/bootstrap-toggle.min.js')}}"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>

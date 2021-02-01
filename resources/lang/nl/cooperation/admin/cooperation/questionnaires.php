@@ -39,16 +39,30 @@ return [
             ],
         ],
         'types' => [
-            'text' => 'Kort antwoord',
-            'textarea' => 'Alinea',
-            'select' => 'Dropdownmenu',
-            'radio' => 'Selectievakjes',
-            'date' => 'Datum',
-            'checkbox' => 'Meerkeuze',
+            'text' => [
+                'label' => 'Kort antwoord',
+            ],
+            'textarea' => [
+                'label' => 'Alinea',
+                'placeholder' => 'Stel uw vraag waar een langer antwoord voor nodig is...',
+            ],
+            'select' => [
+                'label' => 'Dropdownmenu',
+            ],
+            'radio' => [
+                'label' => 'Selectievakjes',
+            ],
+            'date' => [
+                'label' => 'Datum',
+            ],
+            'checkbox' => [
+                'label' => 'Meerkeuze',
+            ],
 
             'default-label' => 'Vraag',
-            'default-option' => 'Optie',
             'default-placeholder' => 'Vraag',
+            'default-option-label' => 'Optie',
+            'default-option-placeholder' => 'Optie toevoegen',
             'add' => '(toevoegen)',
         ],
 

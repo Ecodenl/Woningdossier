@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\app\Http\Controllers\Api;
 
-use App\Models\Account;
 use App\Models\Client;
 use App\Models\Cooperation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -56,8 +55,6 @@ class RegisterControllerTest extends TestCase
 
     public function test_existing_account_will_register_user_on_other_cooperation()
     {
-        /** @var Cooperation $cooperation */
-        $cooperation = factory(Cooperation::class)->create();
         /** @var Client $client */
         $client = factory(Client::class)->create();
         $client->createToken($client->name.'-token');
@@ -78,26 +75,24 @@ class RegisterControllerTest extends TestCase
         ];
 
         // first create the initial account and user on the first cooperation.
+        $cooperation = factory(Cooperation::class)->create(['slug' => 'groen-is-gras']);
         $response = $this->post(route('api.cooperation.register.store', compact('cooperation')), $data);
-//        dd(Account::where('email', $data['email'])->first()
-//            ->users);
+        $response->assertStatus(200);
 
-        if ($response->isOk()) {
-            // now we do it again, this time it should create another user for the existing account. But for another cooperation.
-            $cooperation = factory(Cooperation::class)->create();
-            $response = $this->post(route('api.cooperation.register.store', compact('cooperation')), $data);
-            dd($response, $data['email']);
-            $response->assertStatus(200);
-        }
+        // now we do it again, this time it should create another user for the existing account. But for another cooperation.
+        $cooperation = factory(Cooperation::class)->create(['slug' => 'meteropnull']);
+        $response = $this->post(route('api.cooperation.register.store', compact('cooperation')), $data);
+        $response->assertStatus(200);
 
 
         // there should be 1 account for this email, with 2 users.
         $accounts = DB::table('accounts')->where('email', $data['email'])->get();
-        // we already asserted there is only 1 account, so we can safely retrieve the first one.
         $this->assertTrue($accounts->count() === 1);
+
+        // we already asserted there is only 1 account, so we can safely retrieve the first one.
+        // now make sure there are 2 users for 1 account.
         $account = $accounts->first();
         $this->assertCount(2, DB::table('users')->where('account_id', $account->id)->get());
-
         $this->assertDatabaseHas('accounts', ['email' => $data['email']]);
 
     }

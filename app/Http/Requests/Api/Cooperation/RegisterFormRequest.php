@@ -44,9 +44,6 @@ class RegisterFormRequest extends ApiRequest
 
         // try to get the account
         $account = Account::where('email', $this->get('email'))->first();
-        if ($account !== null) {
-            dump(!$account->isAssociatedWith($this->route('cooperation')), $account->users, Cooperation::all());
-        }
         // if the account exists but the user is not associated with the current cooperation
         // then we unset the email and password rule because we dont need to validate them, we handle them in the controller
         if ($account instanceof Account && ! $account->isAssociatedWith($this->route('cooperation'))) {

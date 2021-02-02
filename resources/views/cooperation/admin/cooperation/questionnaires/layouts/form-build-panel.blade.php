@@ -26,12 +26,10 @@
                         @include('cooperation.admin.cooperation.questionnaires.layouts.inputs.select', ['question' => $question])
                         @break
                     @case('radio')
-                        {{--@include('cooperation.admin.cooperation.questionnaires.layouts.inputs.radio', ['question' => $question])--}}
                         @include('cooperation.admin.cooperation.questionnaires.layouts.inputs.select', ['question' => $question])
                         @break
                     @case('checkbox')
                         @include('cooperation.admin.cooperation.questionnaires.layouts.inputs.select', ['question' => $question])
-                        {{--@include('cooperation.admin.cooperation.questionnaires.layouts.inputs.checkbox', ['question' => $question])--}}
                         @break
 
                 @endswitch
@@ -45,13 +43,17 @@
             @endif
         </div>
 
-        @if($question->hasNoValidation() && in_array($question->type, $questionsApplicableForValidation))
-            <div class="row">
-                <div class="col-sm-12">
+        <div class="row">
+            <div class="col-sm-12">
+                @if($question->hasNoValidation() && in_array($question->type, $questionsApplicableForValidation))
                     <a class="btn btn-primary add-validation">@lang('cooperation/admin/cooperation/questionnaires.edit.add-validation')</a>
-                </div>
+                @endif
+                @if(\App\Services\QuestionnaireService::hasQuestionOptions($question->type))
+                    <a class="btn btn-primary add-option" data-id="{{$question->id}}">@lang('cooperation/admin/cooperation/questionnaires.edit.add-option')</a>
+                @endif
             </div>
-        @endif
+        </div>
+
     </div>
     <div class="panel-footer">
         @include('cooperation.admin.cooperation.questionnaires.layouts.form-build-panel-footer', ['question' => $question])

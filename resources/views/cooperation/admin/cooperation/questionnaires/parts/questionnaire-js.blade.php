@@ -51,6 +51,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         :validationButton
+                        :addOptionButton
                     </div>
                 </div>
                 <div class="row validation-rules">
@@ -101,6 +102,7 @@
         </div>`;
 
     let validationButton = '<a class="btn btn-primary add-validation">@lang('cooperation/admin/cooperation/questionnaires.edit.add-validation')</a>';
+    let addOptionButton = '<a class="btn btn-primary add-option" data-id=":guid">@lang('cooperation/admin/cooperation/questionnaires.edit.add-option')</a>';
 
     let requiredCheckboxLabel =
         `<label class="control-label" for="required-:guid">
@@ -118,7 +120,7 @@
 
     let optionPanel =
         `<div class="option-group">
-            <label>@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-option-label') :index</label>
+            <label data-index=":index">@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-option-label') :index</label>
             <div class="form-group">
                 <div class="input-group">
                     <span class="input-group-addon">:locale</span>
@@ -160,12 +162,11 @@
     toolBox.find('a').on('click', function (event) {
         event.preventDefault();
         // Get type and config
-        let type = $(this).data('type');
+        let type = $(this).attr('data-type');
         let configData = config[type];
 
         // Generate a guid
         let guid = createGuid();
-        guid = '66396639-6639-6639-6639-663966396639';
 
         // We build off from the template. Less changes to the DOM is always better
         let temp = formBuildPanel;
@@ -191,12 +192,14 @@
 
         // Same as with validation, but for option
         let optionReplace = '';
+        let optionButtonReplace = '';
         if (configData.hasOption === true) {
             // We can pass 1, as this will always be the first option
             optionReplace = getAdditionalQuestionOptions(1);
+            optionButtonReplace = addOptionButton;
         }
-
         temp = temp.replace(':option', optionReplace);
+        temp = temp.replace(':addOptionButton', optionButtonReplace);
 
         // As last step, replace all :guid with the created guid
         temp = temp.replaceAll(':guid', guid);
@@ -221,9 +224,9 @@
 
         let append = '';
 
-        $(supportedLocales).each(function (index, locale) {
+        $(supportedLocales).each(function (i, locale) {
             let temp = optionPanel;
-            temp = temp.replace(':index', index);
+            temp = temp.replaceAll(':index', index);
             temp = temp.replaceAll(':locale', locale);
             temp = temp.replace(':optionGuid', additionalQuestionOptionGuid);
             append += temp;
@@ -304,6 +307,17 @@
         addValidationInputs(question, guid);
         $(this).hide();
     });
+
+    $(document).on('click', '.add-option', function(event) {
+        event.preventDefault();
+        let guidOrId = $(this).attr('data-id');
+        // The question is always the parent of the hidden input that has the guid or id as value
+        let question = $('input[value="' + guidOrId + '"]').parent();
+
+        let option = getAdditionalQuestionOptions(getOptionIndex(guidOrId));
+        option = option.replace(':guid', guidOrId);
+        question.append(option);
+    })
 
     /**
      * Changes the sub-rule select
@@ -387,7 +401,7 @@
     body.on('click', '.remove-option', function (event) {
         event.preventDefault();
         var deleteOptionRoute = '{{route('cooperation.admin.cooperation.questionnaires.delete-question-option', ['questionId' => ':question_id', 'optionId' => ':option_id'])}}';
-        var currentOptionGroup = $(this).parent().parent().parent().parent().parent();
+        var currentOptionGroup = $(this).parents('.option-group').first()
         var question = currentOptionGroup.parent();
         var questionId = question.find('.question_id').val();
         var questionOptionId = currentOptionGroup.find('.question_option_id').val();
@@ -405,6 +419,18 @@
                     method: 'delete'
                 });
             }
+
+            // Get index
+            let index = currentOptionGroup.find('label').attr('data-index');
+            // Update siblings with higher index value (e.g. from "option 3" to "option 2")
+            currentOptionGroup.siblings('.option-group').each(function(i, element) {
+                let label = $(element).find('label');
+                if (label.attr('data-index') > index) {
+                    let newIndex = label.attr('data-index') - 1;
+                    label.text('@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-option-label') ' + newIndex);
+                    label.attr('data-index', newIndex);
+                }
+            });
 
             currentOptionGroup.remove();
         }

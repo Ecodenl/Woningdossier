@@ -22,6 +22,7 @@ return [
     ],
     'edit' => [
         'add-validation' => 'Voeg validatie toe',
+        'add-option' => 'Voeg optie toe',
         'success' => 'Vragenlijst is bijgewerkt',
     ],
     'destroy' => [

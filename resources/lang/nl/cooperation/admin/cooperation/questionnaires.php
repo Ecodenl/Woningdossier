@@ -27,6 +27,7 @@ return [
     ],
     'destroy' => [
         'are-you-sure' => 'Dit verwijderd de vragenlijst, vragen en de gegeven antwoorden. Weet u zeker dat u wilt doorgaan?',
+        'question-are-you-sure' => 'Dit verwijderd de vraag, u kunt deze actie NIET terugdraaien. Weet u zeker dat u wilt verdergaan?',
         'option-are-you-sure' => 'Dit verwijderd de optie van deze vraag, u kunt deze actie NIET terugdraaien. Weet u zeker dat u wilt verdergaan?',
 //        'success' => 'Vragenlijst verwijderd',
     ],

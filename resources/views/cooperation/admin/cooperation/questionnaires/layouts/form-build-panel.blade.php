@@ -45,8 +45,8 @@
 
         <div class="row">
             <div class="col-sm-12">
-                @if($question->hasNoValidation() && in_array($question->type, $questionsApplicableForValidation))
-                    <a class="btn btn-primary add-validation">@lang('cooperation/admin/cooperation/questionnaires.edit.add-validation')</a>
+                @if(in_array($question->type, $questionsApplicableForValidation))
+                    <a class="btn btn-primary add-validation" @if($question->hasValidation()) style="display: none" @endif>@lang('cooperation/admin/cooperation/questionnaires.edit.add-validation')</a>
                 @endif
                 @if(\App\Services\QuestionnaireService::hasQuestionOptions($question->type))
                     <a class="btn btn-primary add-option" data-id="{{$question->id}}">@lang('cooperation/admin/cooperation/questionnaires.edit.add-option')</a>

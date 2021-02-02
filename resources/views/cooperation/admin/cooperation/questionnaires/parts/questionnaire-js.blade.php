@@ -308,6 +308,9 @@
         $(this).hide();
     });
 
+    /**
+     * Adds new option
+     */
     $(document).on('click', '.add-option', function(event) {
         event.preventDefault();
         let guidOrId = $(this).attr('data-id');
@@ -317,7 +320,15 @@
         let option = getAdditionalQuestionOptions(getOptionIndex(guidOrId));
         option = option.replace(':guid', guidOrId);
         question.append(option);
-    })
+    });
+
+    /**
+     * Removes validation
+     */
+    $(document).on('click', '.remove-validation', function(event) {
+        $(this).parents('.panel-body').first().find('.add-validation').show();
+        $(this).parents('.validation-inputs').first().remove();
+    });
 
     /**
      * Changes the sub-rule select
@@ -374,7 +385,7 @@
         event.preventDefault();
 
         var deleteQuestionRoute = '{{route('cooperation.admin.cooperation.questionnaires.delete', ['questionId' => ':question_id'])}}';
-        if (confirm('@lang('cooperation/admin/cooperation/questionnaires.destroy.are-you-sure')')) {
+        if (confirm('@lang('cooperation/admin/cooperation/questionnaires.destroy.question-are-you-sure')')) {
 
             var questionId = $(this).parent().parent().parent().parent().parent().parent().find('.question_id').val();
             if (typeof questionId === "undefined") {

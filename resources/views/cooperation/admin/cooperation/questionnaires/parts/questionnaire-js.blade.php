@@ -118,7 +118,7 @@
 
     let optionPanel =
         `<div class="option-group">
-            <label>@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-option-label') </label>
+            <label>@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-option-label') :index</label>
             <div class="form-group">
                 <div class="input-group">
                     <span class="input-group-addon">:locale</span>
@@ -136,10 +136,11 @@
     // a question could have options, those options are the "option" inputs.
 
     // Preset variables that are used often
-    var sortable = $('#sortable');
-    var toolBox = $('#tool-box');
+    let sortable = $('#sortable');
+    let toolBox = $('#tool-box');
+    let body = $('body');
 
-    var supportedLocales = [];
+    let supportedLocales = [];
 
     // creates two pushes, but it works.
     @foreach(config('hoomdossier.supported_locales') as $locale)
@@ -164,6 +165,7 @@
 
         // Generate a guid
         let guid = createGuid();
+        guid = '66396639-6639-6639-6639-663966396639';
 
         // We build off from the template. Less changes to the DOM is always better
         let temp = formBuildPanel;
@@ -190,7 +192,8 @@
         // Same as with validation, but for option
         let optionReplace = '';
         if (configData.hasOption === true) {
-            optionReplace = getAdditionalQuestionOptions();
+            // We can pass 1, as this will always be the first option
+            optionReplace = getAdditionalQuestionOptions(1);
         }
 
         temp = temp.replace(':option', optionReplace);
@@ -202,9 +205,16 @@
     });
 
     /**
+     * Returns the option index for a given question
+     */
+    function getOptionIndex(guidOrId) {
+        return $('.option-group input[name^="questions[' + guidOrId + '][options]"]').length + 1;
+    }
+
+    /**
      * Returns a new option.
      */
-    function getAdditionalQuestionOptions(){
+    function getAdditionalQuestionOptions(index){
         // we need to create this for every new option
         // so we can make a difference between the multiple options
         let additionalQuestionOptionGuid = createGuid();
@@ -213,6 +223,7 @@
 
         $(supportedLocales).each(function (index, locale) {
             let temp = optionPanel;
+            temp = temp.replace(':index', index);
             temp = temp.replaceAll(':locale', locale);
             temp = temp.replace(':optionGuid', additionalQuestionOptionGuid);
             append += temp;
@@ -297,7 +308,7 @@
     /**
      * Changes the sub-rule select
      */
-    $('body').on('change', 'select.validation', function () {
+    body.on('change', 'select.validation', function () {
         var selectedMainRule = $(this);
 
         var validationRuleRow = selectedMainRule.parent().parent().parent();
@@ -319,7 +330,7 @@
     /**
      * Changes the rule input, adds validation inputs if needed
      */
-    $('body').on('change', 'select.sub-rule', function (event) {
+    body.on('change', 'select.sub-rule', function (event) {
         var selectedValidationOption = $(this);
         var question = selectedValidationOption.parent().parent().parent().parent();
         var selectedValidationValue = $(this).val();
@@ -345,11 +356,11 @@
     /**
      * Remove a whole question
      */
-    $('body').on('click', '.remove-question', function (event) {
+    body.on('click', '.remove-question', function (event) {
         event.preventDefault();
 
         var deleteQuestionRoute = '{{route('cooperation.admin.cooperation.questionnaires.delete', ['questionId' => ':question_id'])}}';
-        if (confirm('Dit verwijderd de vraag, u kunt deze actie NIET terugdraaien. Weet u zeker dat u wilt verdergaan ?')) {
+        if (confirm('@lang('cooperation/admin/cooperation/questionnaires.destroy.are-you-sure')')) {
 
             var questionId = $(this).parent().parent().parent().parent().parent().parent().find('.question_id').val();
             if (typeof questionId === "undefined") {
@@ -373,7 +384,7 @@
     /**
      * Remove a option from a question
      */
-    $('body').on('click', '.remove-option', function (event) {
+    body.on('click', '.remove-option', function (event) {
         event.preventDefault();
         var deleteOptionRoute = '{{route('cooperation.admin.cooperation.questionnaires.delete-question-option', ['questionId' => ':question_id', 'optionId' => ':option_id'])}}';
         var currentOptionGroup = $(this).parent().parent().parent().parent().parent();
@@ -381,7 +392,7 @@
         var questionId = question.find('.question_id').val();
         var questionOptionId = currentOptionGroup.find('.question_option_id').val();
 
-        if (confirm('Dit verwijderd de optie van deze vraag, u kunt deze actie NIET terugdraaien. Weet u zeker dat u wilt verdergaan ?')) {
+        if (confirm('@lang('cooperation/admin/cooperation/questionnaires.destroy.option-are-you-sure')')) {
 
             if (typeof questionId !== "undefined" || typeof questionOptionId !== "undefined") {
                 $.ajax({

@@ -52,7 +52,7 @@ class RegisterControllerTest extends TestCase
         $this->assertCount(1, $cooperation->users);
     }
 
-    public function test_it_will_403_if_token_cannot_access_cooperation()
+    public function test_restricted_client_cannot_acess_cooperation()
     {
         /** @var Cooperation $cooperation */
         factory(Cooperation::class)->create(['slug' => 'groen-is-gras']);

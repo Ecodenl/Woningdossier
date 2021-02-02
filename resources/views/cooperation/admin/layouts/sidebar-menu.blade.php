@@ -133,7 +133,6 @@
                                     <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index'])) active @endif">
                                         <a href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.home.index', ['cooperation' => $cooperation, 'cooperationToManage' => $cooperationToManage])}}">@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.side-nav.home')</a>
                                     </li>
-
                                     <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.show', 'cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.index'])) active @endif">
                                         <a href="{{route('cooperation.admin.super-admin.cooperations.cooperation-to-manage.users.index', ['cooperation' => $cooperation, 'cooperationToManage' => $cooperationToManage])}}">@lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.side-nav.users')</a>
                                     </li>
@@ -170,6 +169,9 @@
                                 aria-expanded="true">
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.index'])) active @endif">
                                     <a href="{{route('cooperation.admin.super-admin.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.home')</a>
+                                </li>
+                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.clients.index'])) active @endif">
+                                    <a href="{{route('cooperation.admin.super-admin.clients.index', compact('cooperation'))}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.clients')</a>
                                 </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.cooperations.index'])) active @endif">
                                     <a href="{{route('cooperation.admin.super-admin.cooperations.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.cooperations')</a>

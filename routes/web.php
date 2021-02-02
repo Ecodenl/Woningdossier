@@ -12,7 +12,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () {
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
         if ('local' == app()->environment()) {
@@ -48,7 +47,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
 
                 Route::get('login', 'LoginController@showLoginForm')->name('login');
                 Route::post('login', 'LoginController@login');
-
+//
                 Route::post('logout', 'LoginController@logout')->name('logout');
 
                 Route::group(['prefix' => 'password', 'as' => 'password.'], function () {
@@ -335,6 +334,17 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
 
                 /* Section for the super admin */
                 Route::group(['prefix' => 'super-admin', 'as' => 'super-admin.', 'namespace' => 'SuperAdmin', 'middleware' => ['current-role:super-admin']], function () {
+
+                    Route::resource('clients', 'ClientController');
+
+
+                    Route::prefix('{client}/api')->namespace('Client')->as('clients.personal-access-tokens.')->group(function () {
+                        Route::get('', 'PersonalAccessTokenController@index')->name('index');
+                        Route::post('', 'PersonalAccessTokenController@store')->name('store');
+                        Route::get('create', 'PersonalAccessTokenController@create')->name('create');
+                        Route::delete('destroy/{personalAccessToken}', 'PersonalAccessTokenController@destroy')->name('destroy');
+                    });
+
                     Route::get('home', 'SuperAdminController@index')->name('index');
 
                     Route::group(['as' => 'users.', 'prefix' => 'users'], function () {
@@ -402,15 +412,3 @@ Route::get('/', function () {
 
     return view('welcome');
 })->name('index');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');

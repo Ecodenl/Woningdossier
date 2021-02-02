@@ -27,9 +27,8 @@ class RegisterControllerTest extends TestCase
         $cooperation = factory(Cooperation::class)->create();
         /** @var Client $client */
         $client = factory(Client::class)->create();
-        $client->createToken($client->name.'-token');
 
-        Sanctum::actingAs($client);
+        Sanctum::actingAs($client, ['*']);
 
         $data = [
             "email" => $this->faker->email,
@@ -53,13 +52,49 @@ class RegisterControllerTest extends TestCase
         $this->assertCount(1, $cooperation->users);
     }
 
+    public function test_it_will_403_if_token_cannot_access_cooperation()
+    {
+        /** @var Cooperation $cooperation */
+        factory(Cooperation::class)->create(['slug' => 'groen-is-gras']);
+
+        $client = factory(Client::class)->create();
+        // now create a token for the client with a cooperation that exists, but the client has no access to
+        $client->createToken($client->name.'-token', ['access:groen-is-gras']);
+
+        /** @var Client $client */
+        Sanctum::actingAs($client);
+
+        // now do a post request to the cooperation, the client should have no access to this cooperation.
+        $cooperation = factory(Cooperation::class)->create(['slug' => 'co2-neutraal']);
+        $response = $this->post(route('api.cooperation.register.store', compact('cooperation')));
+        $response->assertForbidden();
+
+    }
+
+    public function test_restricted_client_can_access_cooperation()
+    {
+        /** @var Cooperation $cooperation */
+        factory(Cooperation::class)->create(['slug' => 'groen-is-gras']);
+        $cooperation = factory(Cooperation::class)->create(['slug' => 'co2-neutraal']);
+
+        // now create a token for the client with a cooperation that exists, but the client has no access to
+        /** @var Client $client */
+        $client = factory(Client::class)->create();
+        Sanctum::actingAs($client, ['access:co2-neutraal']);
+
+        // now do a post request to the cooperation, the client should have no access to this cooperation.
+        $response = $this->get(route('api.cooperation.index', compact('cooperation')));
+
+        $response->assertOk();
+
+    }
+
     public function test_existing_account_will_register_user_on_other_cooperation()
     {
         /** @var Client $client */
         $client = factory(Client::class)->create();
-        $client->createToken($client->name.'-token');
 
-        Sanctum::actingAs($client);
+        Sanctum::actingAs($client, ['*']);
 
         $data = [
             "email" => $this->faker->email,
@@ -103,9 +138,7 @@ class RegisterControllerTest extends TestCase
         $cooperation = factory(Cooperation::class)->create();
         /** @var Client $client */
         $client = factory(Client::class)->create();
-        $client->createToken($client->name.'-token');
-
-        Sanctum::actingAs($client);
+        Sanctum::actingAs($client, ['*']);
 
         $data = [
             "email" => $this->faker->email,

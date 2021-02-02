@@ -10,11 +10,20 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Cooperation\RegisterFormRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Account;
+use App\Models\Client;
 use App\Models\Cooperation;
 use App\Services\UserService;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
+    public function index(Request $request)
+    {
+        /** @var Client $x */
+        $x  =$request->user();
+        dd($x);
+    }
+
     public function store(RegisterFormRequest $request, Cooperation $cooperation)
     {
         $requestData = $request->all();

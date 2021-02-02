@@ -15,9 +15,12 @@ use App\Http\Controllers\Api\RegisterController;
 */
 
 Route::domain('{cooperation}.' . config('hoomdossier.domain'))
-    ->middleware(['auth:sanctum', 'cooperation'])->as('api.cooperation.')
+    ->middleware(['auth:sanctum', 'cooperation', 'access.cooperation'])
+    ->as('api.cooperation.')
     ->namespace('Cooperation')
     ->group(function () {
+
+        Route::get('', fn () => response([], 200))->name('index');
 
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('register', [RegisterController::class, 'store'])->name('register.store');

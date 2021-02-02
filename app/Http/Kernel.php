@@ -73,6 +73,9 @@ class Kernel extends HttpKernel
         'deny-if-observing-building' => \App\Http\Middleware\RedirectIfIsObservingBuilding::class,
         'step-disabled' => \App\Http\Middleware\RedirectIfStepDisabled::class,
         'restore-building-session-if-filling-for-other-building' => \App\Http\Middleware\RestoreBuildingSessionIfFillingForOtherBuilding::class,
+
+        // api
+        'access.cooperation' => \App\Http\Middleware\Api\AllowIfTokenCanAccessCooperation::class,
     ];
     /**
      * The priority-sorted list of middleware.

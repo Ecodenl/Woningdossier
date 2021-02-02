@@ -10,4 +10,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Client extends Authenticatable
 {
     use HasApiTokens, HasShortTrait;
+
+    public function tokenCannot(string $ability): bool
+    {
+        return !$this->tokenCan($ability);
+    }
 }

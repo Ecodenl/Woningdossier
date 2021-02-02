@@ -3,7 +3,7 @@
 @foreach($question->questionOptions as $questionOption)
     <div class="option-group">
         <label data-index="{{$loop->iteration}}">@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-option-label') {{$loop->iteration}}</label>
-        <input type="hidden" name="questions[{{$question->id}}][option][id]" class="question_option_id" value="{{$questionOption->id}}">
+        <input type="hidden" name="questions[{{$question->id}}][option_ids][]" class="question_option_id" value="{{$questionOption->id}}">
         @foreach(config('hoomdossier.supported_locales') as $locale)
             <?php $translation = $questionOption->getTranslation('name', $locale) instanceof \App\Models\Translation ? $questionOption->getTranslation('name', $locale)->translation : ''; ?>
             <div class="form-group">

@@ -5,31 +5,37 @@
             validation: true,
             placeholder: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-placeholder')',
             hasOption: false,
+            header: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.text.label')',
         },
         textarea: {
             validation: true,
             placeholder: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.textarea.placeholder')',
             hasOption: false,
+            header: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.textarea.label')',
         },
         radio: {
             validation: false,
             placeholder: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-placeholder')',
             hasOption: true,
+            header: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.radio.label')',
         },
         checkbox: {
             validation: false,
             placeholder: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-placeholder')',
             hasOption: true,
+            header: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.checkbox.label')',
         },
         select: {
             validation: false,
             placeholder: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-placeholder')',
             hasOption: true,
+            header: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.select.label')',
         },
         date: {
             validation: false,
             placeholder: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.default-placeholder')',
             hasOption: false,
+            header: '@lang('cooperation/admin/cooperation/questionnaires.shared.types.date.label')',
         },
     };
 
@@ -159,20 +165,20 @@
     }
 
     // Toolbox related
-    toolBox.find('a').on('click', function (event) {
-        event.preventDefault();
-        // Get type and config
-        let type = $(this).attr('data-type');
+    function createComponent(type, guid = null) {
+        // Get config from type
         let configData = config[type];
 
         // Generate a guid
-        let guid = createGuid();
+        if (guid === null) {
+            guid = createGuid();
+        }
 
         // We build off from the template. Less changes to the DOM is always better
         let temp = formBuildPanel;
 
         // Add the text from the toolbox to the panel-heading
-        temp = temp.replace(':heading', $(this).text().trim());
+        temp = temp.replace(':heading', configData.header);
 
         // Add the type
         temp = temp.replace(':type', type);
@@ -205,6 +211,14 @@
         temp = temp.replaceAll(':guid', guid);
         sortable.prepend(temp);
         sortable.sortable('refresh');
+    }
+
+    toolBox.find('a').on('click', function (event) {
+        event.preventDefault();
+        // Get type
+        let type = $(this).attr('data-type');
+
+        createComponent(type);
     });
 
     /**
@@ -510,6 +524,22 @@
                 });
 
             }
+        });
+
+        // Deal with old values
+        let oldQuestions = {!! json_encode(old('questions')) !!};
+
+        $.each(oldQuestions, function(id, question) {
+            // If it has an ID, this will return false and a new component won't be created
+            if (question.guid) {
+                createComponent(question.type, id);
+                // Set the value for each locale (we don't have to do this for ID, as that gets handled by php)
+                $.each(question.question, function(locale, value) {
+                    $('input[name="questions['+ id +'][question]['+ locale +']"]').val(value);
+                });
+            }
+
+
         });
     });
 </script>

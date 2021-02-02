@@ -136,6 +136,20 @@ class QuestionnaireService
     }
 
     /**
+     * Determine whether a question has validation based on the type.
+     *
+     * @param $questionType
+     *
+     * @return bool
+     */
+    public static function hasQuestionValidation($questionType)
+    {
+        $questionsApplicableForValidation = ['text', 'textarea'];
+
+        return in_array($questionType, $questionsApplicableForValidation);
+    }
+
+    /**
      * Update a questionnaire itself, its name and step.
      *
      * @param $questionnaireNameTranslations

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Cooperation\Admin\SuperAdmin\ClientFormRequest;
 use App\Models\Client;
 use App\Models\Cooperation;
 use Illuminate\Http\Request;
@@ -61,7 +62,7 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Cooperation $cooperation, Client $client)
+    public function update(ClientFormRequest $request, Cooperation $cooperation, Client $client)
     {
         $name = $request->input('clients.name');
         $short = Str::slug($name);
@@ -80,7 +81,7 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ClientFormRequest $request)
     {
         $name = $request->input('clients.name');
         $short = Str::slug($name);

@@ -14,7 +14,7 @@
                         @method('PUT')
                         @component('layouts.parts.components.form-group', ['input_name' => 'personal_access_tokens.name'])
                             <label for="">@lang('cooperation/admin/super-admin/clients.column-translations.name')</label>
-                            <input type="text" name="clients[name]" value="{{old('clients.name', $client->name)}}" class="form-control">
+                            <input required="required" type="text" name="clients[name]" value="{{old('clients.name', $client->name)}}" class="form-control">
                         @endcomponent
 
                         <button class="btn btn-primary">

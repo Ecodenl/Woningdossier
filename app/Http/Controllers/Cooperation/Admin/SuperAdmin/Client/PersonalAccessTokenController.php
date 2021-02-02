@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin\Client;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Cooperation\Admin\SuperAdmin\PersonalAccessTokenFormRequest;
 use App\Models\Client;
 use App\Models\Cooperation;
 use App\Models\PersonalAccessToken;
@@ -37,7 +38,7 @@ class PersonalAccessTokenController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Cooperation $cooperation, Client $client)
+    public function store(PersonalAccessTokenFormRequest $request, Cooperation $cooperation, Client $client)
     {
         $newAccessToken = $client->createToken($request->input('personal_access_tokens.name'));
 

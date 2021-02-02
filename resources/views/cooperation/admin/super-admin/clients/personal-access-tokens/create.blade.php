@@ -14,7 +14,7 @@
 
                         @component('layouts.parts.components.form-group', ['input_name' => 'personal_access_tokens.name'])
                             <label for="">@lang('cooperation/admin/super-admin/clients/personal-access-tokens.column-translations.name')</label>
-                            <input type="text" name="personal_access_tokens[name]" class="form-control">
+                            <input type="text" name="personal_access_tokens[name]" value="{{old('personal_access_tokens.name')}}" class="form-control">
                         @endcomponent
 
                         <button class="btn btn-primary">

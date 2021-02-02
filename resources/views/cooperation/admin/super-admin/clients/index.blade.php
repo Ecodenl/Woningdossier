@@ -4,6 +4,10 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('cooperation/admin/super-admin/clients.index.header')
+            <a href="{{ route('cooperation.admin.super-admin.clients.create') }}"
+               class="btn btn-success">
+                @lang('cooperation/admin/super-admin/clients.index.header-button')
+            </a>
         </div>
 
         <div class="panel-body">

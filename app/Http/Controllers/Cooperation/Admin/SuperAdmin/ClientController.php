@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Cooperation\Admin\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Client;
+use App\Models\Cooperation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ClientController extends Controller
 {
@@ -27,18 +29,7 @@ class ClientController extends Controller
      */
     public function create()
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+        return view('cooperation.admin.super-admin.clients.create');
     }
 
     /**
@@ -58,9 +49,9 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Cooperation $cooperation, Client $client)
     {
-        //
+        return view('cooperation.admin.super-admin.clients.edit', compact('client'));
     }
 
     /**
@@ -70,9 +61,34 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Cooperation $cooperation, Client $client)
     {
-        //
+        $name = $request->input('clients.name');
+        $short = Str::slug($name);
+        $client->update(compact('name', 'short'));
+
+
+        return redirect()
+            ->route('cooperation.admin.super-admin.clients.index', compact('client'))
+            ->with('success', __('cooperation/admin/super-admin/clients.update.success'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $name = $request->input('clients.name');
+        $short = Str::slug($name);
+        $client = Client::create(compact('name', 'short'));
+
+        return redirect()
+            ->route('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('client'))
+            ->with('success', __('cooperation/admin/super-admin/clients.store.success'));
     }
 
     /**

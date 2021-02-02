@@ -11,6 +11,9 @@ class Client extends Authenticatable
 {
     use HasApiTokens, HasShortTrait;
 
+
+    protected $fillable = ['name', 'short'];
+
     public function tokenCannot(string $ability): bool
     {
         return !$this->tokenCan($ability);

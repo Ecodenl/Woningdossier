@@ -21,10 +21,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))
     ->group(function () {
 
         Route::get('', fn () => response([], 200))->name('index');
-
-        Route::middleware('auth:sanctum')->group(function () {
-            Route::post('register', [RegisterController::class, 'store'])->name('register.store');
-        });
+        Route::post('register', [RegisterController::class, 'store'])->name('register.store');
     });
 
 Route::group(['namespace' => 'Api'], function () {

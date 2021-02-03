@@ -588,10 +588,11 @@
 
         $.each(oldValidation, function(guidOrId, validation) {
             let questionDiv = getQuestionByGuidOrId(guidOrId);
-            // We fetch the inputs of the validation. If length == 0, then we create the field first
+            // We fetch the inputs of the validation. If length == 0, then we create the field first (and hide the button)
             let fields = $('.validation-inputs').find('input[name="validation['+ guidOrId +'][sub-rule-check-value][]"]')
             if (fields.length === 0) {
                 addValidationInputs(questionDiv, guidOrId);
+                questionDiv.parents('.panel-body').first().find('.add-validation').hide();
             }
             // Then we set the values (php doesn't handle this one)
             let mainRule = $('select[name="validation['+ guidOrId + '][main-rule]"]');

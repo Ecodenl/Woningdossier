@@ -19,9 +19,7 @@ class RegisterController extends Controller
 {
     public function index(Request $request)
     {
-        /** @var Client $x */
-        $x  =$request->user();
-        dd($x);
+        return response([], 200);
     }
 
     public function store(RegisterFormRequest $request, Cooperation $cooperation)
@@ -48,7 +46,7 @@ class RegisterController extends Controller
         // at this point, a user cant register without accepting the privacy terms.
         UserAllowedAccessToHisBuilding::dispatch($user->building);
 
-        return response([], 200);
+        return response(['account_id' => $account->id, 'user_id' => $user->id], 201);
     }
 
     private function sendAccountConfirmationMail(Cooperation $cooperation, Account $account)

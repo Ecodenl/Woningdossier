@@ -51,7 +51,7 @@ class RegisterControllerTest extends TestCase
 
         $response = $this->post(route('api.cooperation.register.store', compact('cooperation')), $this->formData);
 
-        $response->assertStatus(200);
+        $response->assertStatus(201);
 
         $this->assertDatabaseHas('accounts', ['email' => $this->formData['email']]);
 
@@ -105,12 +105,12 @@ class RegisterControllerTest extends TestCase
         // first create the initial account and user on the first cooperation.
         $cooperation = factory(Cooperation::class)->create(['slug' => 'groen-is-gras']);
         $response = $this->post(route('api.cooperation.register.store', compact('cooperation')), $this->formData);
-        $response->assertStatus(200);
+        $response->assertStatus(201);
 
         // now we do it again, this time it should create another user for the existing account. But for another cooperation.
         $cooperation = factory(Cooperation::class)->create(['slug' => 'meteropnull']);
         $response = $this->post(route('api.cooperation.register.store', compact('cooperation')), $this->formData);
-        $response->assertStatus(200);
+        $response->assertStatus(201);
 
 
         // there should be 1 account for this email, with 2 users.

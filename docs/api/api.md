@@ -59,6 +59,4 @@
     
   * **Code:** 422 UNPROCESSABLE ENTRY <br />
     **Content:** `{ error : "Email Invalid" }`
-  
-
 

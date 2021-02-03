@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\RegisterController;
+use App\Http\Controllers\Api\v1\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,10 +16,10 @@ use App\Http\Controllers\Api\RegisterController;
 
 Route::domain('{cooperation}.' . config('hoomdossier.domain'))
     ->middleware(['auth:sanctum', 'cooperation', 'access.cooperation'])
-    ->as('api.cooperation.')
+    ->as('api.v1.cooperation.')
+    ->prefix('v1')
     ->namespace('Cooperation')
     ->group(function () {
-
         Route::get('', fn () => response([], 200))->name('index');
         Route::post('register', [RegisterController::class, 'store'])->name('register.store');
     });

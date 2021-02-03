@@ -51,7 +51,7 @@ class UserController extends Controller
             });
         }
 
-        // wherelike since the postal code can be typed like: 3248xc 3248XC 3248 xc 3248 XC
+        // wherelike since the postal code can be typed like: 1234xc 1234XC 1234 xc 1234 XC
         if (! is_null($buildingData['postal_code'])) {
             $user->whereHas('building', function ($query) use ($buildingData) {
                 $query->whereLike('postal_code', $buildingData['postal_code']);

@@ -90,11 +90,12 @@ class User extends Model implements AuthorizableContract
      * @var array
      */
     protected $fillable = [
-        'first_name', 'last_name', 'phone_number', 'account_id', 'allow_access',
+      'extra', 'first_name', 'last_name', 'phone_number', 'account_id', 'allow_access',
     ];
 
     protected $casts = [
         'allow_access' => 'boolean',
+        'extra' => 'array'
     ];
 
     public function allowedAccess(): bool

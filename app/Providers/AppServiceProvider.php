@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Jobs\RecalculateStepForUser;
 use App\Models\Notification;
+use App\Models\PersonalAccessToken;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\Paginator;
@@ -12,6 +13,7 @@ use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\Sanctum;
 
 //use Laravel\Dusk\DuskServiceProvider;
 
@@ -68,6 +70,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Paginator::useBootstrapThree();
+        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
     }
 
     /**

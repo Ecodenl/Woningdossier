@@ -78,6 +78,7 @@ return [
                 'side-nav' => [
                     'label' => 'Super admin menu',
                     'home' => 'Home',
+                    'clients' => 'Koppelingen',
                     'cooperations' => 'Cooperaties',
                     'users' => 'Gebruikers filteren',
                     'questionnaires' => 'Vragenlijsten',

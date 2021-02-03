@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Api\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,10 +14,20 @@ use Illuminate\Http\Request;
 |
 */
 
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
+Route::domain('{cooperation}.' . config('hoomdossier.domain'))
+    ->middleware(['auth:sanctum', 'cooperation', 'access.cooperation'])
+    ->as('api.cooperation.')
+    ->namespace('Cooperation')
+    ->group(function () {
+
+        Route::get('', fn () => response([], 200))->name('index');
+
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::post('register', [RegisterController::class, 'store'])->name('register.store');
+        });
+    });
 
 Route::group(['namespace' => 'Api'], function () {
     Route::get('address-data', 'GeoController@getAddressData');
 });
+

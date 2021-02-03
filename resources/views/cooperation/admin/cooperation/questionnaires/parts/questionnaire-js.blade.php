@@ -231,10 +231,12 @@
     /**
      * Returns a new option.
      */
-    function getAdditionalQuestionOptions(index){
+    function getAdditionalQuestionOptions(index, additionalQuestionOptionGuid = null){
         // we need to create this for every new option
         // so we can make a difference between the multiple options
-        let additionalQuestionOptionGuid = createGuid();
+        if (additionalQuestionOptionGuid === null) {
+            additionalQuestionOptionGuid = createGuid();
+        }
 
         let append = '';
 
@@ -528,18 +530,49 @@
 
         // Deal with old values
         let oldQuestions = {!! json_encode(old('questions')) !!};
+        let oldValidation = {!! json_encode(old('validation')) !!};
 
-        $.each(oldQuestions, function(id, question) {
+        $.each(oldQuestions, function(guidOrId, question) {
+            let guid = false;
             // If it has an ID, this will return false and a new component won't be created
             if (question.guid) {
-                createComponent(question.type, id);
+                guid = true;
+                createComponent(question.type, guidOrId);
                 // Set the value for each locale (we don't have to do this for ID, as that gets handled by php)
                 $.each(question.question, function(locale, value) {
-                    $('input[name="questions['+ id +'][question]['+ locale +']"]').val(value);
+                    $('input[name="questions['+ guidOrId +'][question]['+ locale +']"]').val(value);
                 });
             }
 
+            let selector = guid ? 'guid' : 'question_id';
+            // The hidden input always is the first descendant of the question div, where we need to
+            // append the options too
+            let questionDiv = $('input[name="questions['+ guidOrId +']['+ selector +']"]').parent();
 
+            // If question has options
+            if (question.options) {
+                let savedIds = question.option_ids === null ? [] : question.option_ids;
+                $.each(question.options, function(optionGuidOrId, option) {
+                    // If the value is not in the array, then we will append it (saved options also get handled by php)
+                    if ($.inArray(optionGuidOrId, savedIds) === -1) {
+                        let optionPanel = getAdditionalQuestionOptions(getOptionIndex(guidOrId), optionGuidOrId);
+                        optionPanel = optionPanel.replaceAll(':guid', guidOrId);
+                        questionDiv.append(optionPanel);
+
+                        $.each(option, function(locale, value) {
+                            $('input[name="questions['+ guidOrId +'][options]['+ optionGuidOrId +']['+ locale +']"]').val(value);
+                        });
+                    }
+                });
+            }
+
+            // Last step is validation. Unlike options, validation has no guid or ID, so we just have to check
+            // if a validation field already exists or not.
+
+            // Also check how to implement old value into php (else also do here)
+
+            // WIP:
+            // Loop oldValidation, get validation field, if length === 0, add field, set value
         });
     });
 </script>

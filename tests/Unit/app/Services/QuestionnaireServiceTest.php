@@ -80,16 +80,18 @@ class QuestionnaireServiceTest extends TestCase
 
     public function testCreateQuestionnaire()
     {
+        $oldCount = Questionnaire::count();
+
         $cooperation = Cooperation::find(1);
         $step = Step::find(1);
         QuestionnaireService::createQuestionnaire(
             $cooperation, $step, ['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling']
         );
 
-        $this->assertEquals(1, Questionnaire::count());
+        $this->assertEquals($oldCount + 1, Questionnaire::count());
     }
 
-    public function testCreateQuestionProvider()
+    public function CreateQuestionProvider()
     {
         return [
             [[
@@ -102,7 +104,7 @@ class QuestionnaireServiceTest extends TestCase
     }
 
     /**
-     * @dataProvider testCreateQuestionProvider
+     * @dataProvider CreateQuestionProvider
      */
     public function testCreateQuestion($questionData)
     {
@@ -126,7 +128,9 @@ class QuestionnaireServiceTest extends TestCase
             );
         }
         // where we will copy the questionnaire to.
-        $cooperation = Cooperation::whereSlug('hnwr')->first();
+        $cooperation = Cooperation::find(1);
+
+        $oldCount = Questionnaire::forMyCooperation($cooperation->id)->count();
 
         // copy the questionnaire
         QuestionnaireService::copyQuestionnaireToCooperation($cooperation, $questionnaire);
@@ -135,10 +139,10 @@ class QuestionnaireServiceTest extends TestCase
         $this->assertDatabaseHas('questionnaires', [
             'cooperation_id' => $cooperation->id,
         ]);
-        $this->assertCount(1, Questionnaire::forMyCooperation($cooperation->id)->get());
+        $this->assertEquals($oldCount + 1, Questionnaire::forMyCooperation($cooperation->id)->count());
 
         // check if questions have been copied
-        $copiedQuestionnaire = Questionnaire::forMyCooperation($cooperation->id)->first();
+        $copiedQuestionnaire = Questionnaire::forMyCooperation($cooperation->id)->find($questionnaire->id);
 
         // check if the translations are the same
         $this->assertSame($copiedQuestionnaire->name, $questionnaire->name);

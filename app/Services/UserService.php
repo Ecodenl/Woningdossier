@@ -125,7 +125,7 @@ class UserService
 
         // if its not found we will create a new one.
         if (! $account instanceof Account) {
-            $account = AccountService::create($email, $registerData['password'], $registerData['extra'] ?? []);
+            $account = AccountService::create($email, $registerData['password']);
         }
 
         $user = self::create($cooperation, $roles, $account, Arr::except($registerData, ['email', 'password']));
@@ -156,6 +156,7 @@ class UserService
         // Create the user for an account
         $user = User::create(
             [
+                'extra' => $data['extra'],
                 'account_id' => $account->id,
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],

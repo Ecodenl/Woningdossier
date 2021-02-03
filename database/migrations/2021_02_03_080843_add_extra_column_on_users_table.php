@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddExtraColumnOnAccountsTable extends Migration
+class AddExtraColumnOnUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddExtraColumnOnAccountsTable extends Migration
      */
     public function up()
     {
-        Schema::table('accounts', function (Blueprint $table) {
-            $table->json('extra')->after('id')->nullable()->default(null);
+        Schema::table('users', function (Blueprint $table) {
+            $table->json('extra')->after('phone_number')->nullable()->default(null);
         });
     }
 
@@ -25,7 +25,7 @@ class AddExtraColumnOnAccountsTable extends Migration
      */
     public function down()
     {
-        Schema::table('accounts', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('extra');
         });
     }

@@ -47,8 +47,7 @@ class Account extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
 
-    protected $fillable = [
-        'extra', 'email', 'password', 'email_verified_at', 'old_email', 'old_email_token',
+    protected $fillable = ['email', 'password', 'email_verified_at', 'old_email', 'old_email_token',
     ];
 
     /**
@@ -67,7 +66,6 @@ class Account extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'is_admin' => 'boolean',
-        'extra' => 'array'
     ];
 
     /**

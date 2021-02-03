@@ -156,7 +156,7 @@ class UserService
         // Create the user for an account
         $user = User::create(
             [
-                'extra' => $data['extra'],
+                'extra' => $data['extra'] ?? null,
                 'account_id' => $account->id,
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],

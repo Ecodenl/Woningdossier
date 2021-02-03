@@ -33,12 +33,12 @@
 
                 @endswitch
 
+                @if($question->hasValidation())
+                    <div class="row validation-inputs">
+                        @include('cooperation.admin.cooperation.questionnaires.layouts.validation-options')
+                    </div>
+                @endif
             </div>
-        </div>
-        <div class="row validation-inputs">
-            @if(\App\Services\QuestionnaireService::hasQuestionValidation($question->type))
-                @include('cooperation.admin.cooperation.questionnaires.layouts.validation-options')
-            @endif
         </div>
 
         <div class="row">

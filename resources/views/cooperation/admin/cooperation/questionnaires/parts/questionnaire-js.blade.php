@@ -350,49 +350,64 @@
      * Changes the sub-rule select
      */
     body.on('change', 'select.validation', function () {
-        var selectedMainRule = $(this);
+        let selectedMainRule = $(this);
 
-        var validationRuleRow = selectedMainRule.parent().parent().parent();
+        let validationRuleRow = selectedMainRule.parents('.validation-inputs').first();
 
+        let subRule = setSubRule(validationRuleRow, selectedMainRule.val());
+        // We set the first option value
+        subRule.val(subRule.find('option').first().val());
+        subRule.trigger('change');
+    });
+
+    function setSubRule(validationRuleRow, selectedMainRuleValue) {
         // get the select sub-rule that we dont want to show
-        var subRuleNotSelected = validationRuleRow.find('select[data-sub-rule!='+selectedMainRule.val()+'].sub-rule');
+        let subRuleNotSelected = validationRuleRow.find('select[data-sub-rule!='+ selectedMainRuleValue +'].sub-rule');
 
         // after that we hide & disable the input. No need to remove the name, see:
         // https://www.w3.org/TR/html5/forms.html#constructing-the-form-data-set
         subRuleNotSelected.hide();
         subRuleNotSelected.attr('disabled', true);
 
-        var subRule = validationRuleRow.find('select[data-sub-rule='+selectedMainRule.val()+'].sub-rule');
-        subRule.removeAttr('disabled');
+        // We then get the select sub-rule that we do want to show
+        let subRule = validationRuleRow.find('select[data-sub-rule='+ selectedMainRuleValue +'].sub-rule');
+        // Show and enable
+        subRule.attr('disabled', false);
         subRule.show();
-        subRule.trigger('change');
-    });
+        // We return the subRule, because if it doesn't get changed programmatically, we want to be able to trigger a
+        // change event.
+        return subRule;
+    }
 
     /**
      * Changes the rule input, adds validation inputs if needed
      */
     body.on('change', 'select.sub-rule', function (event) {
-        var selectedValidationOption = $(this);
-        var question = selectedValidationOption.parent().parent().parent().parent();
-        var selectedValidationValue = $(this).val();
-        var guid = getQuestionId(question);
+        let selectedValidationOption = $(this);
+        let question = selectedValidationOption.parents('.question').first();
+        let selectedValidationValue = $(this).val();
+        let guid = getQuestionId(question);
 
+        setSubRuleValueInputs(question, guid, selectedValidationValue);
+
+    });
+
+    function setSubRuleValueInputs(question, guidOrId, selectedValidationValue) {
         switch (selectedValidationValue) {
             case 'between':
-                addSubRuleCheckValueInput(question, guid, ['Min..', 'Max..']);
+                addSubRuleCheckValueInput(question, guidOrId, ['Min..', 'Max..']);
                 break;
             case 'min':
-                addSubRuleCheckValueInput(question, guid, ['Min..']);
+                addSubRuleCheckValueInput(question, guidOrId, ['Min..']);
                 break;
             case 'max':
-                addSubRuleCheckValueInput(question, guid, ['Max..']);
+                addSubRuleCheckValueInput(question, guidOrId, ['Max..']);
                 break;
             case 'email':
                 removeRuleInput(question);
                 break;
         }
-
-    });
+    }
 
     /**
      * Remove a whole question
@@ -499,6 +514,12 @@
         }
     });
 
+    function getQuestionByGuidOrId(guidOrId) {
+        // The hidden input always is the first descendant of the question div, where we need to
+        // append the options too
+        return $('input[name^="questions['+ guidOrId +']"]').first().parent();
+    }
+
     // On load
     $(document).ready(function () {
         var blocks = [];
@@ -530,13 +551,10 @@
 
         // Deal with old values
         let oldQuestions = {!! json_encode(old('questions')) !!};
-        let oldValidation = {!! json_encode(old('validation')) !!};
 
         $.each(oldQuestions, function(guidOrId, question) {
-            let guid = false;
             // If it has an ID, this will return false and a new component won't be created
             if (question.guid) {
-                guid = true;
                 createComponent(question.type, guidOrId);
                 // Set the value for each locale (we don't have to do this for ID, as that gets handled by php)
                 $.each(question.question, function(locale, value) {
@@ -544,10 +562,7 @@
                 });
             }
 
-            let selector = guid ? 'guid' : 'question_id';
-            // The hidden input always is the first descendant of the question div, where we need to
-            // append the options too
-            let questionDiv = $('input[name="questions['+ guidOrId +']['+ selector +']"]').parent();
+            let questionDiv = getQuestionByGuidOrId(guidOrId);
 
             // If question has options
             if (question.options) {
@@ -565,14 +580,31 @@
                     }
                 });
             }
+        });
 
-            // Last step is validation. Unlike options, validation has no guid or ID, so we just have to check
-            // if a validation field already exists or not.
+        let oldValidation = {!! json_encode(old('validation')) !!};
+        // Last step is validation. Unlike options, validation has no guid or ID, so we just have to check
+        // if a validation field already exists or not.
 
-            // Also check how to implement old value into php (else also do here)
+        $.each(oldValidation, function(guidOrId, validation) {
+            let questionDiv = getQuestionByGuidOrId(guidOrId);
+            // We fetch the inputs of the validation. If length == 0, then we create the field first
+            let fields = $('.validation-inputs').find('input[name="validation['+ guidOrId +'][sub-rule-check-value][]"]')
+            if (fields.length === 0) {
+                addValidationInputs(questionDiv, guidOrId);
+            }
+            // Then we set the values (php doesn't handle this one)
+            let mainRule = $('select[name="validation['+ guidOrId + '][main-rule]"]');
+            mainRule.val(validation['main-rule']);
+            setSubRule(mainRule.parents('.validation-inputs').first(), validation['main-rule']);
+            $('select[name="validation['+ guidOrId + '][sub-rule]"]').val(validation['sub-rule']);
+            setSubRuleValueInputs(questionDiv, guidOrId, validation['sub-rule']);
 
-            // WIP:
-            // Loop oldValidation, get validation field, if length === 0, add field, set value
+            $('input[name="validation['+ guidOrId + '][sub-rule-check-value][]"]').each(function(index, element) {
+                let val = validation['sub-rule-check-value'][index] == null ? '' : validation['sub-rule-check-value'][index];
+
+                $(element).val(val);
+            });
         });
     });
 </script>

@@ -38,7 +38,8 @@
         @foreach($subRuleCheckValues as $subRuleCheckValue)
             <div class="col-sm-2">
                 <div class="form-group">
-                    <input type="text" name="validation[{{$question->id}}][sub-rule-check-value][]" class="form-control" value="{{$subRuleCheckValue}}">
+                    <input type="text" name="validation[{{$question->id}}][sub-rule-check-value][]" class="form-control"
+                           value="{{$subRuleCheckValue}}" placeholder="@if($loop->first){{ 'Min..' }}@else{{ 'Max..' }}@endif">
                 </div>
             </div>
         @endforeach

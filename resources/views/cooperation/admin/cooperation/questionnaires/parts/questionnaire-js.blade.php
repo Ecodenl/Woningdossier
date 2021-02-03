@@ -165,7 +165,7 @@
     }
 
     // Toolbox related
-    function createComponent(type, guid = null) {
+    function createComponent(type, guid = null, withOption = true) {
         // Get config from type
         let configData = config[type];
 
@@ -199,7 +199,7 @@
         // Same as with validation, but for option
         let optionReplace = '';
         let optionButtonReplace = '';
-        if (configData.hasOption === true) {
+        if (configData.hasOption === true && withOption === true) {
             // We can pass 1, as this will always be the first option
             optionReplace = getAdditionalQuestionOptions(1);
             optionButtonReplace = addOptionButton;
@@ -555,7 +555,7 @@
         $.each(oldQuestions, function(guidOrId, question) {
             // If it has an ID, this will return false and a new component won't be created
             if (question.guid) {
-                createComponent(question.type, guidOrId);
+                createComponent(question.type, guidOrId, false);
                 // Set the value for each locale (we don't have to do this for ID, as that gets handled by php)
                 $.each(question.question, function(locale, value) {
                     $('input[name="questions['+ guidOrId +'][question]['+ locale +']"]').val(value);

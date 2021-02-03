@@ -17,11 +17,6 @@ use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
-    public function index(Request $request)
-    {
-        return response([], 200);
-    }
-
     public function store(RegisterFormRequest $request, Cooperation $cooperation)
     {
         $requestData = $request->all();

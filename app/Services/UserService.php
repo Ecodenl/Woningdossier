@@ -124,7 +124,7 @@ class UserService
         $account = Account::where('email', $email)->first();
 
         // if its not found we will create a new one.
-        if (! $account instanceof Account) {
+        if (!$account instanceof Account) {
             $account = AccountService::create($email, $registerData['password']);
         }
 
@@ -146,13 +146,9 @@ class UserService
      *
      * @return User|\Illuminate\Database\Eloquent\Model
      */
-    public static function create(
-        Cooperation $cooperation,
-        array $roles,
-        $account,
-        $data
-    ) {
-        Log::debug('account id for registration: '.$account->id);
+    public static function create(Cooperation $cooperation, array $roles, $account, $data)
+    {
+        Log::debug('account id for registration: ' . $account->id);
         // Create the user for an account
         $user = User::create(
             [
@@ -211,7 +207,8 @@ class UserService
     public static function deleteUser(
         User $user,
         $shouldForceDeleteBuilding = false
-    ) {
+    )
+    {
         $accountId = $user->account_id;
         $building = $user->building;
 
@@ -256,9 +253,9 @@ class UserService
      * input sources will be combined. If not possible, the data of $user1 will be
      * leading and the data of user2 will be deleted.
      *
+     * @return User
      * @throws \Exception
      *
-     * @return User
      */
     public static function merge(User $user1, User $user2)
     {
@@ -288,7 +285,7 @@ class UserService
 
         foreach ($tables as $column => $tablesWithColumn) {
             foreach ($tablesWithColumn as $tableWithColumn) {
-                Log::debug('UPDATE '.$tableWithColumn.' SET '.$column.' = '.$user1->id.' WHERE '.$column.' = '.$user2->id.';');
+                Log::debug('UPDATE ' . $tableWithColumn . ' SET ' . $column . ' = ' . $user1->id . ' WHERE ' . $column . ' = ' . $user2->id . ';');
                 DB::table($tableWithColumn)
                     ->where($column, '=', $user2->id)
                     ->update([$column => $user1->id]);
@@ -310,7 +307,7 @@ class UserService
 
         foreach ($tables as $column => $tablesWithColumn) {
             foreach ($tablesWithColumn as $tableWithColumn) {
-                Log::debug('Checking input sources for '.$tableWithColumn);
+                Log::debug('Checking input sources for ' . $tableWithColumn);
                 $inputSources = DB::table($tableWithColumn)
                     ->where($column, '=', $user1->id)
                     ->select('input_source_id')
@@ -318,7 +315,7 @@ class UserService
                     ->pluck('input_source_id')
                     ->toArray();
 
-                Log::debug('UPDATE '.$tableWithColumn.' SET '.$column.' = '.$user1->id.' WHERE '.$column.' = '.$user2->id.' AND WHERE input_source NOT IN ('.implode(',', $inputSources).');');
+                Log::debug('UPDATE ' . $tableWithColumn . ' SET ' . $column . ' = ' . $user1->id . ' WHERE ' . $column . ' = ' . $user2->id . ' AND WHERE input_source NOT IN (' . implode(',', $inputSources) . ');');
                 DB::table($tableWithColumn)
                     ->where($column, '=', $user2->id)
                     ->whereNotIn('input_source_id', $inputSources)

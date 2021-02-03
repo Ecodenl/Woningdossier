@@ -118,6 +118,46 @@ class QuestionnaireServiceTest extends TestCase
         ]);
     }
 
+    public function CreateQuestionWithOptionProvider()
+    {
+        $uuid = (string) \Ramsey\Uuid\Uuid::uuid4();
+
+        return [
+            [[
+                'question' => [
+                    'nl' => 'Test questionnaire',
+                ],
+                'required' => true,
+                'options' => [
+                    $uuid => [
+                        'nl' => 'Test option',
+                    ],
+                ],
+            ]],
+        ];
+    }
+
+    /**
+     * @dataProvider CreateQuestionWithOptionProvider
+     */
+    public function testCreateQuestionWithOption($questionData)
+    {
+        // first we need to create a questionnaire with a question
+        $questionnaire = factory(Questionnaire::class)->create();
+
+        QuestionnaireService::createQuestion($questionnaire, $questionData, 'select', [], 0);
+
+        $this->assertDatabaseHas('questions', [
+            'questionnaire_id' => $questionnaire->id,
+        ]);
+
+        $question = Question::where('questionnaire_id', $questionnaire->id)->latest()->first();
+
+        $this->assertDatabaseHas('question_options', [
+            'question_id' => $question->id,
+        ]);
+    }
+
     public function testCopyQuestionnaireToCooperation()
     {
         // first we need to create a questionnaire with a question

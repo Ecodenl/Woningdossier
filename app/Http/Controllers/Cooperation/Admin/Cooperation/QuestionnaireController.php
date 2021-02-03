@@ -72,6 +72,7 @@ class QuestionnaireController extends Controller
 
         if ($request->has('questions')) {
             foreach ($request->get('questions') as $questionIdOrUuid => $questionData) {
+                if (isset($questionData['options'])) {dd($questionData);}
                 ++$order;
                 QuestionnaireService::createOrUpdateQuestion($questionnaire, $questionIdOrUuid, $questionData, $validation, $order);
             }

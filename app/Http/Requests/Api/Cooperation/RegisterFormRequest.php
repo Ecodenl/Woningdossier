@@ -33,6 +33,7 @@ class RegisterFormRequest extends ApiRequest
             'email' => 'required|string|email|max:255|unique:accounts',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
+            'extra.contact_id' => 'required',
             'postal_code' => ['required', new PostalCode('nl')],
             'number' => ['required', 'integer', new HouseNumber('nl')],
             'house_number_extension' => [new HouseNumberExtension('nl')],

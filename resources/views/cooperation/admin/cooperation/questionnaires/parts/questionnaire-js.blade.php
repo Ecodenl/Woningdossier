@@ -606,5 +606,45 @@
                 $(element).val(val);
             });
         });
+
+        // We get the error field keys
+        let validationErrors = {!! json_encode($errors->keys()) !!};
+
+        $.each(validationErrors, function(index, key) {
+            // To construct the name, we split by '.'
+            let parts = key.split('.');
+            let name = '';
+            $.each(parts, function(index, value) {
+                // Add parts based on each index
+                switch (index) {
+                    case 0:
+                        name += value;
+                        break;
+
+                    case 1:
+                        name += '[' + value;
+                        break;
+
+                    default:
+                        name += '][' + value;
+                }
+            });
+
+            // Now we need to check whether the last char is numeric or not. If it's numeric, we need to remove it and
+            // replace it with a ']' (since then it's an array). Otherwise we just add a ']'.
+            let lastPart = name.substring(name.lastIndexOf('[') + 1);
+            if (! isNaN(parseInt(lastPart))) {
+                name = name.substring(0, name.length - lastPart.length);
+            }
+            name += ']';
+
+            // We now have the name. For most cases, we can just add 'has-error' to the parent form group
+            // However, for arrays, we will manually add a border, else it doesn't display quite right
+            if (name.substring(name.length-2) === '[]') {
+                $('[name="'+ name +'"]').eq(lastPart).css('border-color', '#a94442');
+            } else {
+                $('[name="'+ name +'"]').parents('.form-group').first().addClass('has-error');
+            }
+        });
     });
 </script>

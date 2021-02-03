@@ -1,19 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\v1;
 
-use App\Events\Registered;
 use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Cooperation\RegisterFormRequest;
+use App\Http\Requests\Api\V1\Cooperation\RegisterFormRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Account;
-use App\Models\Client;
 use App\Models\Cooperation;
 use App\Services\UserService;
-use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {

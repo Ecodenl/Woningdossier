@@ -26,7 +26,7 @@ $content = $response->getBody()->getContents();
 
   
 
-#### Register a user
+## Register a user
 
 **Url:**  /api/v1/register  
 **Method:** `POST`  

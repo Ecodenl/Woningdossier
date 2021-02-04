@@ -36,7 +36,6 @@ class RegisterControllerTest extends TestCase
             "street" => "Teststreet",
             "city" => "Zerocity",
             "phone_number" => null,
-            "allow_access" => "on",
         ];
     }
 
@@ -56,6 +55,8 @@ class RegisterControllerTest extends TestCase
         $this->assertDatabaseHas('accounts', ['email' => $this->formData['email']]);
 
         $this->assertCount(1, $cooperation->users);
+
+        $this->assertDatabaseHas('users', ['allow_access' => 1]);
     }
 
     public function test_restricted_client_cannot_access_cooperation()

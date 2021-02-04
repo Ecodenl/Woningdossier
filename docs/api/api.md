@@ -45,7 +45,6 @@ $content = $response->getBody()->getContents();
   "street": "Teststreet",
   "city": "Nonexistantcity",
   "phone_number": null,
-  "allow_access": 1
 }
 ```
 
@@ -69,8 +68,6 @@ $content = $response->getBody()->getContents();
 ``city=[required|string]``
   
 ``phone_number=[optional]``
-  
-``allow_access=[required| Must be either "yes", "on", 1, or true.]``
 
 **Success Response:**
   * **Code:** 201  

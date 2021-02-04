@@ -38,12 +38,14 @@ class FixDuplicates extends Command
      */
     public function handle()
     {
-        $this->info("Correcting building elements..");
+        $this->info("Correcting building elements....");
         $this->correctBuildingElementsExceptWoodElements();
-        $this->info("Correcting building services..");
+        $this->info("Correcting building services...");
         $this->correctBuildingServices();
-        $this->info("Correcting user interests");
+        $this->info("Correcting user interests..");
         $this->correctUserInterests();
+        $this->info("Correcting user action plan advices.");
+        $this->correctUserActionPlanAdvices();
         $this->info('Done!');
     }
 
@@ -76,6 +78,40 @@ class FixDuplicates extends Command
                 ->where('input_source_id', $duplicate->input_source_id)
                 ->where('interested_in_id', $duplicate->interested_in_id)
                 ->where('interested_in_type', $duplicate->interested_in_type)
+                ->where('id', '!=', $mostRecentDuplicateId)
+                ->delete();
+        }
+    }
+    
+    private function correctUserActionPlanAdvices()
+    {
+        $duplicates = DB::table('user_action_plan_advices')
+            ->selectRaw('user_id, input_source_id, measure_application_id, step_id, count(*)')
+            ->groupBy([
+                'user_id',
+                'input_source_id',
+                'measure_application_id',
+                'step_id',
+            ])
+            ->having('count(*)', '>', 1)
+            ->get();
+
+
+        foreach ($duplicates as $duplicate) {
+            // this way we can get the most recent duplicate row
+            // we will keep this one as this is the most recent created row and probably wat the user actually wanted.
+            $mostRecentDuplicateId = DB::table('user_action_plan_advices')
+                ->where('user_id', $duplicate->user_id)
+                ->where('input_source_id', $duplicate->input_source_id)
+                ->where('step_id', $duplicate->step_id)
+                ->where('measure_application_id', $duplicate->measure_application_id)
+                ->max('id');
+
+            DB::table('user_action_plan_advices')
+                ->where('user_id', $duplicate->user_id)
+                ->where('input_source_id', $duplicate->input_source_id)
+                ->where('step_id', $duplicate->step_id)
+                ->where('measure_application_id', $duplicate->measure_application_id)
                 ->where('id', '!=', $mostRecentDuplicateId)
                 ->delete();
         }

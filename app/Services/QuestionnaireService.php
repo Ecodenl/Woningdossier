@@ -9,6 +9,7 @@ use App\Models\Questionnaire;
 use App\Models\QuestionOption;
 use App\Models\Step;
 use App\Models\Translation;
+use Illuminate\Support\Arr;
 use Ramsey\Uuid\Uuid;
 
 class QuestionnaireService
@@ -76,7 +77,7 @@ class QuestionnaireService
 
                 // create the "sub rule"
                 foreach ($rules as $subRule => $subRuleCheckValues) {
-                    $subRuleProperties = implode($subRuleCheckValues, ',');
+                    $subRuleProperties = implode(',', $subRuleCheckValues);
                     $subRule = "{$subRule}:$subRuleProperties";
                     array_push($rule, $subRule);
                 }

@@ -7,6 +7,7 @@ An API token will be issued by Hoomdossier itself, contact https://hoom.nl/ for 
 ### Authorization
 Make sure to set the Bearer token in the Authorization header
 ```php
+// Test the connection. If we get an HTTP 200 back, it's successful
 $client = new \GuzzleHttp\Client();
 
 $token = 'YOUR-API-TOKEN';
@@ -25,6 +26,22 @@ $content = $response->getBody()->getContents();
 ```
 
   
+
+## API Test call  
+Has no functionality besides testing the API authorization.  
+**Url:**  /api/v1/  
+**Method:** `GET`  
+
+**Success Response:**
+  * **Code:** 200  
+    
+**Error Response:**
+  * **Code:** 401 UNAUTHORIZED <br />
+    **Content:** `{ error : "Unauthenticated." }`
+    
+  * **Code:** 403 Forbidden <br />
+    **Content:** `{ error : "Unauthorized for current cooperation." }`
+
 
 ## Register a user
 

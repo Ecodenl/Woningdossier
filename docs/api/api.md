@@ -55,7 +55,7 @@ $content = $response->getBody()->getContents();
   
 ``last_name=[required|string]``
   
-``extra.contact_id=[required]``
+``extra.contact_id=[optional]``
    
 ``postal_code=[required|eg; 1234AB, 1234 AB]``
   

@@ -78,7 +78,10 @@ class QuestionnaireService
                 // create the "sub rule"
                 foreach ($rules as $subRule => $subRuleCheckValues) {
                     $subRuleProperties = implode(',', $subRuleCheckValues);
-                    $subRule = "{$subRule}:$subRuleProperties";
+                    // ex; max:200, min:100.
+                    if (!empty($subRuleProperties)) {
+                        $subRule = "{$subRule}:$subRuleProperties";
+                    }
                     array_push($rule, $subRule);
                 }
             }

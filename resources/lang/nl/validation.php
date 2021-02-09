@@ -162,6 +162,7 @@ return [
         'questionnaires' => [
             'not_enough_options' => 'Er moet minstens 1 optie zijn voor de vraag ":attribute".',
             'empty_option' => 'Optie voor de vraag ":attribute" (:locale) mag niet leeg zijn.',
+            'empty_question' => 'Opgegeven vraag (:locale) mag niet leeg zijn.',
         ],
 
         'password' => [

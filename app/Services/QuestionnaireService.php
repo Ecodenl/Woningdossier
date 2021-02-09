@@ -9,6 +9,7 @@ use App\Models\Questionnaire;
 use App\Models\QuestionOption;
 use App\Models\Step;
 use App\Models\Translation;
+use Illuminate\Support\Arr;
 use Ramsey\Uuid\Uuid;
 
 class QuestionnaireService
@@ -136,6 +137,20 @@ class QuestionnaireService
         $questionTypeThatHaveOptions = ['select', 'radio', 'checkbox'];
 
         return in_array($questionType, $questionTypeThatHaveOptions);
+    }
+
+    /**
+     * Determine whether a question has validation based on the type.
+     *
+     * @param $questionType
+     *
+     * @return bool
+     */
+    public static function hasQuestionValidation($questionType)
+    {
+        $questionsApplicableForValidation = ['text', 'textarea'];
+
+        return in_array($questionType, $questionsApplicableForValidation);
     }
 
     /**

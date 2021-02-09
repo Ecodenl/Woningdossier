@@ -34,7 +34,7 @@ class QuestionnaireController extends Controller
 
         $steps = Step::withoutSubSteps()->orderBy('order')->get();
 
-        return view('cooperation.admin.cooperation.questionnaires.questionnaire-editor', compact('questionnaire', 'steps'));
+        return view('cooperation.admin.cooperation.questionnaires.edit', compact('questionnaire', 'steps'));
     }
 
     public function create()
@@ -78,7 +78,7 @@ class QuestionnaireController extends Controller
         }
 
         return redirect(route('cooperation.admin.cooperation.questionnaires.edit', compact('questionnaire')))
-            ->with('success', __('woningdossier.cooperation.admin.cooperation.questionnaires.edit.success'));
+            ->with('success', __('cooperation/admin/cooperation/questionnaires.edit.success'));
     }
 
     /**
@@ -101,11 +101,12 @@ class QuestionnaireController extends Controller
 
         QuestionnaireService::createQuestionnaire($cooperation, $step, $questionnaireNameTranslations);
 
-        return redirect()->route('cooperation.admin.cooperation.questionnaires.index');
+        return redirect()->route('cooperation.admin.cooperation.questionnaires.index')
+            ->with('success', __('cooperation/admin/cooperation/questionnaires.create.success'));
     }
 
     /**
-     * Detele a question (softdelete).
+     * Softdelete a question.
      *
      * @param Request $request
      *
@@ -117,7 +118,8 @@ class QuestionnaireController extends Controller
     {
         $question = Question::find($questionId);
 
-        // since a newly added question that is not saved yet, can still be deleted. If that happens we would get an exception which we dont want
+        // Since a newly added question that is not saved yet, can still be deleted. If that happens we would
+        // get an exception which we don't want
         if ($question instanceof Question) {
             $questionnaire = $question->questionnaire;
             $this->authorize('delete', $questionnaire);

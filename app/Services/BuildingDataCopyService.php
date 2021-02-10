@@ -15,6 +15,14 @@ class BuildingDataCopyService
     public static function copy(Building $building, InputSource $from, InputSource $to)
     {
         // the tables that have a where_column is used to query on the resident his answers.
+
+        // structure:
+        // 'table name' for generic table copy
+        // 'table name' => [ ] for table with where column
+        // [ where_column => 'column name' ] to specify a column that needs to be the same on both inputs
+        // [ additional_where_column => 'column name' ] same as where_column
+        // [ additional_where_condition => [ 'column', 'value ] to specify what value needs to be equal to add the additional column
+
         $tables = [
             'user_interests' => [
                 'where_column' => 'interested_in_id',
@@ -24,6 +32,10 @@ class BuildingDataCopyService
             'building_elements' => [
                 'where_column' => 'element_id',
                 'additional_where_column' => 'element_value_id',
+                'additional_where_condition' => [
+                    'element_id',
+                    8
+                ],
             ],
             'building_services' => [
                 'where_column' => 'service_id',
@@ -99,50 +111,34 @@ class BuildingDataCopyService
                         // if there are multiple values to copy from we (probably) need to query further
                         // we also check if the additional_where_column is actually set, this way we can narrow the result down to 1 row.
                         if (isset($tableOrWhereColumns['additional_where_column']) && $fromValues->count() > 1) {
+                            if (!isset($tableOrWhereColumns['additional_where_condition']) ||
+                                $fromValue->{$tableOrWhereColumns['additional_where_condition'][0]} == $tableOrWhereColumns['additional_where_condition'][1]) {
+                                $additionalWhereColumn = $tableOrWhereColumns['additional_where_column'];
+                                // add the where to the query
+                                $toValueQuery = $toValueQuery->where($additionalWhereColumn, $fromValue->$additionalWhereColumn);
+                            }
+                        }
 
-                            $additionalWhereColumn = $tableOrWhereColumns['additional_where_column'];
-                            // add the where to the query
-                            $toValueQuery = $toValueQuery->where($additionalWhereColumn, $fromValue->$additionalWhereColumn);
+                        // get the result
+                        $toValue = $toValueQuery->first();
 
-                            // get the result
-                            $toValue = $toValueQuery->first();
+                        // cast the results to a array
+                        $toValue = (array) $toValue;
+                        $fromValue = (array) $fromValue;
 
-                            // cast the results to a array
-                            $toValue = (array) $toValue;
-                            $fromValue = (array) $fromValue;
-
-                            // if it exists, we need to update it. Else we need to insert a new row.
-                            if (! empty($toValue)) {
-                                $toValueQuery->update(static::createUpdateArray($toValue, $fromValue));
-                            } else {
-                                $fromValue = static::createUpdateArray((array) $toValue, (array) $fromValue);
-                                // change the input source id to the 'to' id
-                                $fromValue['input_source_id'] = $to->id;
-                                $fromValue[$buildingOrUserColumn] = $buildingOrUserId;
-                                // and insert a new row!
-                                \DB::table($table)->insert($fromValue);
+                        // YAY! data has been copied so update or create the target input source his records.
+                        if ($toValueQuery->first() instanceof \stdClass) {
+                            // check if its empty ornot.
+                            if (! empty($updateData = static::createUpdateArray((array) $toValue, (array) $fromValue))) {
+                                $toValueQuery->update($updateData);
                             }
                         } else {
-                            $toValue = $toValueQuery->first();
-
-                            // cast the results to a array
-                            $toValue = (array) $toValue;
-                            $fromValue = (array) $fromValue;
-
-                            // YAY! data has been copied so update or create the target input source his records.
-                            if ($toValueQuery->first() instanceof \stdClass) {
-                                // check if its empty ornot.
-                                if (! empty($updateData = static::createUpdateArray((array) $toValue, (array) $fromValue))) {
-                                    $toValueQuery->update($updateData);
-                                }
-                            } else {
-                                $fromValue = static::createUpdateArray((array) $toValue, (array) $fromValue);
-                                // change the input source id to the 'to' id
-                                $fromValue['input_source_id'] = $to->id;
-                                $fromValue[$buildingOrUserColumn] = $buildingOrUserId;
-                                // and insert a new row!
-                                \DB::table($table)->insert($fromValue);
-                            }
+                            $fromValue = static::createUpdateArray((array) $toValue, (array) $fromValue);
+                            // change the input source id to the 'to' id
+                            $fromValue['input_source_id'] = $to->id;
+                            $fromValue[$buildingOrUserColumn] = $buildingOrUserId;
+                            // and insert a new row!
+                            \DB::table($table)->insert($fromValue);
                         }
                     }
                 }

@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\Log;
 class BuildingDataCopyService
 {
     /**
-     * Method to copy data from a building and input source to a other input source on the same building.
+     * Method to copy data from a building and input source to another input source on the same building.
      */
     public static function copy(Building $building, InputSource $from, InputSource $to)
     {
-        // the tables that have a the where_column is used to query on the resident his answers.
+        // the tables that have a where_column is used to query on the resident his answers.
         $tables = [
             'user_interests' => [
                 'where_column' => 'interested_in_id',
@@ -27,7 +27,7 @@ class BuildingDataCopyService
             ],
             'building_services' => [
                 'where_column' => 'service_id',
-                'additional_where_column' => 'service_value_id',
+//                'additional_where_column' => 'service_value_id', -> One can only have 1 service value
             ],
             'building_roof_types' => [
                 'where_column' => 'roof_type_id',

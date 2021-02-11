@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\InputSource;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 
 class BuildingDataCopyService
@@ -194,6 +195,8 @@ class BuildingDataCopyService
                 }
             }
         }
+
+        Artisan::call('fix:duplicates');
     }
 
     /**

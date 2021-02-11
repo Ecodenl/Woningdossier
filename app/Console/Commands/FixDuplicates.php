@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class FixDuplicates extends Command
 {
@@ -61,7 +62,7 @@ class FixDuplicates extends Command
             ])
             ->having('count(*)', '>', 1)
             ->get();
-
+        Log::debug("DUPLICATES | USER_INTERESTS | {$duplicates->count()}");
 
         foreach ($duplicates as $duplicate) {
             // this way we can get the most recent duplicate row
@@ -96,6 +97,7 @@ class FixDuplicates extends Command
             ->having('count(*)', '>', 1)
             ->get();
 
+        Log::debug("DUPLICATES | USER_ACTION_PLAN_ADVICES | {$duplicates->count()}");
 
         foreach ($duplicates as $duplicate) {
             // this way we can get the most recent duplicate row
@@ -129,6 +131,7 @@ class FixDuplicates extends Command
             ->having('count(*)', '>', 1)
             ->get();
 
+        Log::debug("DUPLICATES | BUILDING_SERVICES | {$duplicates->count()}");
 
         foreach ($duplicates as $duplicate) {
             // get the duplicates for the specific building its inputsource and service
@@ -163,6 +166,7 @@ class FixDuplicates extends Command
             ->having('count(*)', '>', 1)
             ->get();
 
+        Log::debug("DUPLICATES | BUILDING_ELEMENTS (WOOD_ELEMENTS) | {$duplicates->count()}");
 
         foreach ($duplicates as $duplicate) {
             // this way we can get the most recent duplicate row

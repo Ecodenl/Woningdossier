@@ -166,7 +166,7 @@ class FixDuplicates extends Command
             ->having('count(*)', '>', 1)
             ->get();
 
-        Log::debug("DUPLICATES | BUILDING_ELEMENTS (WOOD_ELEMENTS) | {$duplicates->count()}");
+        Log::debug("DUPLICATES | BUILDING_ELEMENTS | {$duplicates->count()}");
 
         foreach ($duplicates as $duplicate) {
             // this way we can get the most recent duplicate row

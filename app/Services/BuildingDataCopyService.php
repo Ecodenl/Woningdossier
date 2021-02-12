@@ -217,11 +217,13 @@ class BuildingDataCopyService
      */
     public static function copy(Building $building, InputSource $from, InputSource $to)
     {
+        $userId = \Auth::id();
+
+        Log::debug("BUILDING_ID: {$building->id}");
+        Log::debug("AUTH_USER_ID: {$userId}");
+
         static::hardCopy($building, $from, $to);
         static::deleteCopy($building, $from, $to);
-
-        dd('bubbke');
-//        Artisan::call('fix:duplicates');
     }
 
     /**

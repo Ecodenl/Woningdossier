@@ -6,7 +6,7 @@ use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\V1\Cooperation\RegisterFormRequest;
+use App\Http\Requests\Api\v1\Cooperation\RegisterFormRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Account;
 use App\Models\Cooperation;

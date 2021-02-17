@@ -74,6 +74,7 @@ return [
         ],
 
         'comment-action-plan' => 'Toelichting op het stappenplan',
+        'comment-action-plan-by' => 'Toelichting door: :name',
 
         'calculations-are-indicative' => [
             'title' => 'Berekeningen zijn indicatief',

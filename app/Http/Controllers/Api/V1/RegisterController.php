@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Events\UserAllowedAccessToHisBuilding;
 use App\Events\UserAssociatedWithOtherCooperation;
 use App\Helpers\Str;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\v1\Cooperation\RegisterFormRequest;
+use App\Http\Requests\Api\V1\Cooperation\RegisterFormRequest;
 use App\Mail\UserCreatedEmail;
 use App\Models\Account;
 use App\Models\Cooperation;
@@ -14,6 +14,37 @@ use App\Services\UserService;
 
 class RegisterController extends Controller
 {
+    /**
+     * @OA\Post(
+     *      path="/v1/register",
+     *      operationId="storeProject",
+     *      tags={"Register"},
+     *      summary="Register a new user.",
+     *      description="Returns a user and account id.",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/StoreRegisterRequest")
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=201,
+     *          description="Created",
+     *          @OA\JsonContent(ref="#/components/schemas/RegisterStored")
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Unauthorized for current cooperation"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="{ email: 'Email Invalid' }"
+     *      )
+     * )
+     */
     public function store(RegisterFormRequest $request, Cooperation $cooperation)
     {
         $requestData = $request->all();

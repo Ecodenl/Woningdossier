@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Api\v1\Cooperation;
+namespace App\Http\Requests\Api\V1\Cooperation;
 
 use App\Http\Requests\Api\ApiRequest;
 use App\Models\Account;

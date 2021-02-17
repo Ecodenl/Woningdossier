@@ -1,0 +1,189 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Hoomdossier API documentation",
+        "description": "Bliep",
+        "contact": {
+            "email": "info@wedesignit.nl"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://woondossier.vm/api/",
+            "description": "Demo API Server"
+        }
+    ],
+    "paths": {
+        "/v1/": {
+            "get": {
+                "tags": [
+                    "Ping"
+                ],
+                "summary": "API Endpoint voor connectie check",
+                "description": "Simple ping to check if its a proper request.",
+                "operationId": "App\\Http\\Controllers\\Api\\V1\\Controller::index",
+                "responses": {
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized for current cooperation"
+                    }
+                }
+            }
+        },
+        "/v1/register": {
+            "post": {
+                "tags": [
+                    "Register"
+                ],
+                "summary": "Register a new user.",
+                "description": "Returns a user and account id.",
+                "operationId": "storeProject",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreRegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RegisterStored"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized for current cooperation"
+                    },
+                    "422": {
+                        "description": "{ email: 'Email Invalid' }"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "RegisterStored": {
+                "title": "RegisterStored",
+                "description": "",
+                "properties": {
+                    "user_id": {
+                        "title": "User id",
+                        "description": "The id of the created user.",
+                        "type": "integer",
+                        "example": "8542"
+                    },
+                    "account_id": {
+                        "title": "Account id",
+                        "description": "The id of the account",
+                        "type": "integer"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "ApiStatus"
+                }
+            },
+            "StoreRegisterRequest": {
+                "title": "Store Register request",
+                "description": "Register request body data",
+                "required": [
+                    "email",
+                    "first_name",
+                    "last_name",
+                    "postal_code",
+                    "number",
+                    "street",
+                    "city",
+                    "contact_id"
+                ],
+                "properties": {
+                    "email": {
+                        "title": "email",
+                        "description": "The email of the account",
+                        "type": "string",
+                        "example": "demo@example.org"
+                    },
+                    "first_name": {
+                        "title": "first_name",
+                        "description": "The first_name of the user",
+                        "type": "string",
+                        "example": "Erica"
+                    },
+                    "last_name": {
+                        "title": "last_name",
+                        "description": "The last_name of the user",
+                        "type": "string",
+                        "example": "Bubba"
+                    },
+                    "postal_code": {
+                        "title": "Postal code",
+                        "description": "The postal code of the user",
+                        "type": "string",
+                        "example": "1234AB"
+                    },
+                    "number": {
+                        "title": "number",
+                        "description": "The house number of the user",
+                        "type": "string",
+                        "example": "10"
+                    },
+                    "house_number_extension": {
+                        "title": "House number extension",
+                        "description": "The extension of the house number",
+                        "type": "string",
+                        "example": "10"
+                    },
+                    "street": {
+                        "title": "Street",
+                        "description": "The street of the user",
+                        "type": "string",
+                        "example": "Streetsway"
+                    },
+                    "city": {
+                        "title": "City",
+                        "description": "The city of the user",
+                        "type": "string",
+                        "example": "Citystadt"
+                    },
+                    "phone_number": {
+                        "title": "phone_number",
+                        "description": "The phone_number of the user",
+                        "type": "string",
+                        "example": "0612345678"
+                    },
+                    "extra": {
+                        "title": "extra",
+                        "description": "Extra data that may be picked up",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": {
+                                "contact_id": "1"
+                            }
+                        }
+                    }
+                },
+                "type": "object"
+            }
+        }
+    }
+}

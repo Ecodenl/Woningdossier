@@ -48,7 +48,7 @@ class RegisterControllerTest extends TestCase
 
         Sanctum::actingAs($client, ['*']);
 
-        $response = $this->post(route('api.v1.cooperation.register.store', compact('cooperation')), $this->formData);
+        $response = $this->post(route('api.V1.cooperation.register.store', compact('cooperation')), $this->formData);
 
         $response->assertStatus(201);
 
@@ -73,7 +73,7 @@ class RegisterControllerTest extends TestCase
 
         // now do a post request to the cooperation, the client should have no access to this cooperation.
         $cooperation = factory(Cooperation::class)->create(['slug' => 'co2-neutraal']);
-        $response = $this->post(route('api.v1.cooperation.register.store', compact('cooperation')));
+        $response = $this->post(route('api.V1.cooperation.register.store', compact('cooperation')));
         $response->assertForbidden();
 
     }
@@ -90,7 +90,7 @@ class RegisterControllerTest extends TestCase
         Sanctum::actingAs($client, ['access:co2-neutraal']);
 
         // now do a post request to the cooperation, the client should have no access to this cooperation.
-        $response = $this->get(route('api.v1.cooperation.index', compact('cooperation')));
+        $response = $this->get(route('api.V1.cooperation.index', compact('cooperation')));
 
         $response->assertOk();
 
@@ -105,12 +105,12 @@ class RegisterControllerTest extends TestCase
 
         // first create the initial account and user on the first cooperation.
         $cooperation = factory(Cooperation::class)->create(['slug' => 'groen-is-gras']);
-        $response = $this->post(route('api.v1.cooperation.register.store', compact('cooperation')), $this->formData);
+        $response = $this->post(route('api.V1.cooperation.register.store', compact('cooperation')), $this->formData);
         $response->assertStatus(201);
 
         // now we do it again, this time it should create another user for the existing account. But for another cooperation.
         $cooperation = factory(Cooperation::class)->create(['slug' => 'meteropnull']);
-        $response = $this->post(route('api.v1.cooperation.register.store', compact('cooperation')), $this->formData);
+        $response = $this->post(route('api.V1.cooperation.register.store', compact('cooperation')), $this->formData);
         $response->assertStatus(201);
 
 
@@ -134,7 +134,7 @@ class RegisterControllerTest extends TestCase
         $client = factory(Client::class)->create();
         Sanctum::actingAs($client, ['*']);
 
-        $response = $this->post(route('api.v1.cooperation.register.store', compact('cooperation')), Arr::except($this->formData, ['first_name']));
+        $response = $this->post(route('api.V1.cooperation.register.store', compact('cooperation')), Arr::except($this->formData, ['first_name']));
 
         $response->assertStatus(422);
 

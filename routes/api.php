@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\v1\RegisterController;
+use App\Http\Controllers\Api\V1\RegisterController;
+use App\Http\Controllers\Api\V1\Controller;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +21,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))
     ->prefix('v1')
     ->namespace('Cooperation')
     ->group(function () {
-        Route::get('', fn () => response([], 200))->name('index');
+        Route::get('', [Controller::class, 'index'])->name('index');
         Route::post('register', [RegisterController::class, 'store'])->name('register.store');
     });
 

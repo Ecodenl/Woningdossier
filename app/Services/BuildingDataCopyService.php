@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\InputSource;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 
 class BuildingDataCopyService
@@ -51,8 +52,9 @@ class BuildingDataCopyService
             'user_action_plan_advices' => [
                 'where_column' => 'measure_application_id',
                 // could be added but doesnt need to be
-                 'additional_where_column' => 'step_id',
+                'additional_where_column' => 'step_id',
             ],
+
             'user_energy_habits',
         ];
 
@@ -96,10 +98,31 @@ class BuildingDataCopyService
                             ->where($buildingOrUserColumn, $buildingOrUserId)
                             ->where($whereColumn, $fromValue->$whereColumn);
 
-                        // if there are multiple, then we need to add another where to the query.
-                        // else, we dont need to query further an can get the first result and use that to update it.
+
+                        $hasMultipleValues = false;
+                        $additionalWhereColumn = null;
+
+                        // if there are multiple values to copy from we (probably) need to query further
+                        // we also check if the additional_where_column is actually set, this way we can narrow the result down to 1 row.
+
+                        // check if there is an additional column to query on
                         if (isset($tableOrWhereColumns['additional_where_column'])) {
+
+                            // if so, we need to check if there are multiple values
+                            // fi there is a case where the from OR to has multiple values we need to add the additional column to the update thing
                             $additionalWhereColumn = $tableOrWhereColumns['additional_where_column'];
+                            $hasMultipleValues = $toValueQuery->count() > 1;
+
+                            if ($hasMultipleValues === false) {
+                                $hasMultipleValues = \DB::table($table)
+                                    ->where('input_source_id', $from->id)
+                                    ->where($buildingOrUserColumn, $buildingOrUserId)
+                                    ->where($whereColumn, $fromValue->$whereColumn)
+                                    ->count() > 1;
+                            }
+
+                        }
+                        if ($hasMultipleValues) {
                             // add the where to the query
                             $toValueQuery = $toValueQuery->where($additionalWhereColumn, $fromValue->$additionalWhereColumn);
 
@@ -172,6 +195,8 @@ class BuildingDataCopyService
                 }
             }
         }
+
+        Artisan::call('fix:duplicates');
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Helpers\Cooperation\Tool\ToolHelper;
 use App\Models\InputSource;
+use App\Models\Notification;
 use App\Models\Step;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -44,5 +45,11 @@ class RecalculateStepForUser implements ShouldQueue
         /** @var ToolHelper $stepHelperClass */
         $stepHelperClass = new $stepClass($this->user, $this->inputSource);
         $stepHelperClass->createValues()->createAdvices();
+    }
+
+
+    public function failed(\Exception $exception)
+    {
+        Notification::setActive($this->user->building, $this->inputSource, false);
     }
 }

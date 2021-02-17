@@ -23,13 +23,30 @@ class Controller extends BaseController
      *
      * @OA\Server(
      *      url=L5_SWAGGER_CONST_HOST,
-     *      description="Demo API Server"
+     *      description="API v1"
+     * )
+     *
+     * @OAS\SecurityScheme(
+     *      securityScheme="bearer_token",
+     *      type="http",
+     *      scheme="bearer"
+     * )
+     *
+     * @OA\Tag(
+     *     name="Ping",
+     *     description="Endpoints for connection checks"
+     * )
+     *
+     * @OA\Tag(
+     *     name="Register",
+     *     description="Endpoint to register a new user "
      * )
      */
 
 
     /**
      * @OA\Get(
+     *      security={{"bearer_token":{}}},
      *      path="/v1/",
      *      tags={"Ping"},
      *      summary="API Endpoint voor connectie check",

@@ -14,8 +14,8 @@
     },
     "servers": [
         {
-            "url": "http://woondossier.vm/api/",
-            "description": "Demo API Server"
+            "url": "http://hoom.woondossier.vm/api/",
+            "description": "API v1"
         }
     ],
     "paths": {
@@ -34,7 +34,12 @@
                     "403": {
                         "description": "Unauthorized for current cooperation"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
             }
         },
         "/v1/register": {
@@ -184,6 +189,24 @@
                 },
                 "type": "object"
             }
+        },
+        "securitySchemes": {
+            "bearer_token": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "Ping",
+            "description": "Endpoints for connection checks"
+        },
+        {
+            "name": "Register",
+            "description": "Endpoint to register a new user "
+        }
+    ]
 }

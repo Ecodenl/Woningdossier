@@ -109,13 +109,6 @@ class BuildingDataCopyService
         }
     }
 
-    private static function toRawSql($query)
-    {
-        return array_reduce($query->getBindings(), function ($sql, $binding) {
-            return preg_replace('/\?/', is_numeric($binding) ? $binding : "'" . $binding . "'", $sql, 1);
-        }, $query->toSql());
-    }
-
     /**
      * This methods copies the data using an actual update, it does not delete the destination its input.
      *

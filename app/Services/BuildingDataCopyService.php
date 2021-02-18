@@ -51,12 +51,20 @@ class BuildingDataCopyService
                 ->where($buildingOrUserColumn, $buildingOrUserId)
                 ->get()->map(fn($from, $key) => static::createInsertFromSourceArray((array)$from, $to))->toArray();
 
+
+            $toValuesWhichWillBeDeleted = DB::table($table)
+                ->where('input_source_id', $to->id)
+                ->where($buildingOrUserColumn, $buildingOrUserId)->get()->toArray();
+
+            // log the deleted data, this way we can easily go back if stuff goes south
+            Log::debug("DELETED DATA");
+            Log::debug(json_encode($toValuesWhichWillBeDeleted));
+
             // now delete the target its input
             DB::table($table)
                 ->where('input_source_id', $to->id)
                 ->where($buildingOrUserColumn, $buildingOrUserId)
                 ->delete();
-
 
             // and insert the data we want to copy
             DB::table($table)
@@ -65,6 +73,13 @@ class BuildingDataCopyService
                 ->insert($fromValues);
 
         }
+    }
+
+    private static function toRawSql($query)
+    {
+        return array_reduce($query->getBindings(), function ($sql, $binding) {
+            return preg_replace('/\?/', is_numeric($binding) ? $binding : "'" . $binding . "'", $sql, 1);
+        }, $query->toSql());
     }
 
     /**
@@ -158,6 +173,13 @@ class BuildingDataCopyService
         }
     }
 
+    /**
+     * Method which will return insertable data, it updates/deletes a few params.
+     *
+     * @param array $fromData
+     * @param InputSource $to
+     * @return array
+     */
     public static function createInsertFromSourceArray(array $fromData, InputSource $to): array
     {
         unset($fromData['id']);
@@ -219,8 +241,8 @@ class BuildingDataCopyService
     {
         $userId = \Auth::id();
 
-        Log::debug("BUILDING_ID: {$building->id}");
-        Log::debug("AUTH_USER_ID: {$userId}");
+        Log::debug("BUILDING_ID FOR COPY: {$building->id}");
+        Log::debug("AUTH_USER_ID WHICH IS COPYING: {$userId}");
 
         static::hardCopy($building, $from, $to);
         static::deleteCopy($building, $from, $to);

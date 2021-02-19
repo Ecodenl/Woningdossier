@@ -48,7 +48,7 @@
         @foreach($userActionPlanAdviceComments as $inputSourceName => $comment)
             {{-- The column can be a category, this will be the case when the comment is stored under a catergory--}}
             <p class="sub-lead" style="margin-top: 25px">@lang('pdf/user-report.general-data.comment-action-plan-by', ['name' => $inputSourceName])</p>
-            <p>{!!  nl2br($comment, '<br>')!!}</p>
+            <p style="word-wrap: break-word !important;">{!!  nl2br($comment, '<br>')!!}</p>
         @endforeach
     </div>
 @endif

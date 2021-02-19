@@ -62,7 +62,7 @@ class ParticipantController extends Controller
         if ($user instanceof User) {
             $residentBuilding = Building::find($buildingId);
 
-            if ($user->allowedAccess()) {
+            if ($residentBuilding->user->allowedAccess()) {
                 // give the coach permission to the resident his building
                 BuildingPermissionService::givePermission($user, $residentBuilding);
             }

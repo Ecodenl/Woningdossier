@@ -11,7 +11,7 @@
         </thead>
         <tbody>
         <?php
-            $shownWarnings = [];
+        $shownWarnings = [];
         ?>
         @foreach($userActionPlanAdvices as $year => $advices)
             @foreach($advices as $adviceData)
@@ -43,24 +43,14 @@
 
 
 @if(!\App\Helpers\Arr::isWholeArrayEmpty($userActionPlanAdviceComments))
-    @include('cooperation.pdf.user-report.parts.measure-page.comments', [
-        'comments' => $userActionPlanAdviceComments,
-        'title' => __('pdf/user-report.general-data.comment-action-plan')
-    ])
-@endif
-
-<?php
-// if the total comment count exceeds a specific amount, we will create a new page otherwise it will overflow the footer..
-// map the array to count the total comments, and then sum it.
-$totalCommentCount = array_sum(
-    array_map(function ($comment) {
-        return strlen($comment);
-    }, $userActionPlanAdviceComments)
-);
-?>
-
-@if($totalCommentCount >= 2700)
-    <div class="page-break"></div>
+    <div class="question-answer-section">
+        <p class="lead">@lang('pdf/user-report.general-data.comment-action-plan')</p>
+        @foreach($userActionPlanAdviceComments as $inputSourceName => $comment)
+            {{-- The column can be a category, this will be the case when the comment is stored under a catergory--}}
+            <p class="sub-lead" style="margin-top: 25px">@lang('pdf/user-report.general-data.comment-action-plan-by', ['name' => $inputSourceName])</p>
+            <p style="word-wrap: break-word !important;">{!!  nl2br($comment, '<br>')!!}</p>
+        @endforeach
+    </div>
 @endif
 
 <div class="question-answer-section">

@@ -46,12 +46,24 @@ class Controller extends BaseController
 
     /**
      * @OA\Get(
-     *      security={{"bearer_token":{}}},
      *      path="/v1/",
      *      tags={"Ping"},
      *      summary="API Endpoint voor connectie check",
      *      description="Simple ping to check if its a proper request.",
      *      @OA\Response(
+     *          response=200,
+     *          description="Unauthenticated",
+     *          @OA\JsonContent(
+     *              @OA\Schema(
+     *                  title="ApiStatus",
+     *                  description="",
+     *                  @OA\Xml(
+     *                      name="ApiStatus"
+     *                  )
+     *              )
+     *          ),
+     *     ),
+     *     @OA\Response(
      *          response=401,
      *          description="Unauthenticated",
      *      ),

@@ -16,6 +16,7 @@ class RegisterController extends Controller
 {
     /**
      * @OA\Post(
+     *      security={{"Token":{}, "X-Cooperation-Slug":{}}},
      *      path="/v1/register",
      *      operationId="storeProject",
      *      tags={"Register"},
@@ -29,7 +30,16 @@ class RegisterController extends Controller
      *      @OA\Response(
      *          response=201,
      *          description="Created",
-     *          @OA\JsonContent(ref="#/components/schemas/RegisterStored")
+     *          @OA\JsonContent(
+     *              ref="#/components/schemas/RegisterStored",
+     *              @OA\Schema(
+     *                  title="RegisterStored",
+     *                  description="",
+     *                  @OA\Xml(
+     *                      name="RegisterStored"
+     *                  )
+     *              )
+     *          ),
      *      ),
      *      @OA\Response(
      *          response=401,

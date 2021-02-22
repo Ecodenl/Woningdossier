@@ -89,7 +89,13 @@
                     "422": {
                         "description": "{ email: 'Email Invalid' }"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "Token": [],
+                        "X-Cooperation-Slug": []
+                    }
+                ]
             }
         }
     },

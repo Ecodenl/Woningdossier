@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Http\Controllers\Api\v1\Resources\Schemas;
+
 /**
  * @OA\Schema(
  *      title="Store Register request",

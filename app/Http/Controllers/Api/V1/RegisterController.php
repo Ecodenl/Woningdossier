@@ -51,8 +51,8 @@ class RegisterController extends Controller
      *      ),
      *      @OA\Response(
      *          response=422,
-     *          description="{ email: 'Email Invalid' }"
-     *      )
+     *          description="Error: Unprocessable Entity"
+     *      ),
      * )
      */
     public function store(RegisterFormRequest $request, Cooperation $cooperation)

@@ -3,13 +3,8 @@
 /**
  * @OA\Schema(
  *     title="RegisterStored",
- *     description="",
- *     @OA\Xml(
- *         name="ApiStatus"
- *     )
  * )
  */
-
 
 class RegisterStored
 {
@@ -28,7 +23,8 @@ class RegisterStored
     /**
      * @OA\Property(
      *     title="Account id",
-     *     description="The id of the account"
+     *     description="The id of the account",
+     *      example="4515"
      * )
      *
      * @var int

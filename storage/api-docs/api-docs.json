@@ -87,7 +87,7 @@
                         "description": "Unauthorized for current cooperation"
                     },
                     "422": {
-                        "description": "{ email: 'Email Invalid' }"
+                        "description": "Error: Unprocessable Entity"
                     }
                 },
                 "security": [
@@ -103,7 +103,6 @@
         "schemas": {
             "RegisterStored": {
                 "title": "RegisterStored",
-                "description": "",
                 "properties": {
                     "user_id": {
                         "title": "User id",
@@ -114,13 +113,11 @@
                     "account_id": {
                         "title": "Account id",
                         "description": "The id of the account",
-                        "type": "integer"
+                        "type": "integer",
+                        "example": "4515"
                     }
                 },
-                "type": "object",
-                "xml": {
-                    "name": "ApiStatus"
-                }
+                "type": "object"
             },
             "StoreRegisterRequest": {
                 "title": "Store Register request",

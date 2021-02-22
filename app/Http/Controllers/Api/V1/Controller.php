@@ -75,8 +75,8 @@ class Controller extends BaseController
      *      )
      * )
      */
-    public function index(Request $request, Cooperation $cooperation)
+    public function index(Request $request)
     {
-        return response(json_encode($cooperation->toArray()), 200);
+        return response([],200);
     }
 }

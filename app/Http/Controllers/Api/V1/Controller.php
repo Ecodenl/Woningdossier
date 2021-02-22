@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller as BaseController;
+use App\Models\Cooperation;
 use Illuminate\Http\Request;
 
 class Controller extends BaseController
@@ -74,8 +75,8 @@ class Controller extends BaseController
      *      )
      * )
      */
-    public function index(Request $request)
+    public function index(Request $request, Cooperation $cooperation)
     {
-        return response($request->headers, 200);
+        return response(json_encode($cooperation->toArray()), 200);
     }
 }

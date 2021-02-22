@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http://woondossier.vm/api/",
+            "url": "http://hoom.woondossier.vm/api/",
             "description": "API v1"
         }
     ],

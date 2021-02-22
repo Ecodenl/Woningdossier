@@ -61,7 +61,7 @@ Has no functionality besides testing the API authorization.
   "house_number_extension": "A",
   "street": "Teststreet",
   "city": "Nonexistantcity",
-  "phone_number": null,
+  "phone_number": null
 }
 ```
 

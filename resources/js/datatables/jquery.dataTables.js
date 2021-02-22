@@ -108,7 +108,7 @@
          *    'current' and filter is 'applied', regardless of what they might be given as.
          *  @returns {object} jQuery object, filtered by the given selector.
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -158,7 +158,7 @@
          *    selector, were not TR, TD or TH elements in the DataTable, they will have a null
          *    entry in the array.
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -225,7 +225,7 @@
          *    <i>aoData</i> ({@link DataTable.models.oSettings}) that have been added to
          *    the table.
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    // Global var for counter
@@ -270,7 +270,7 @@
          * parent element changes (for example a window resize).
          *  @param {boolean} [bRedraw=true] Redraw the table or not, you will typically want to
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -304,7 +304,7 @@
          * Quickly and simply clear a table
          *  @param {bool} [bRedraw=true] redraw the table or not
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -330,7 +330,7 @@
          *  @param {node} nTr the table row to 'close'
          *  @returns {int} 0 on success, or 1 if failed (can't find the row)
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -362,7 +362,7 @@
          *  @param {bool} [redraw=true] Redraw the table or not
          *  @returns {array} The row that was deleted
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -398,7 +398,7 @@
          * enhancements, alterations to the DOM structure of the table and event listeners.
          *  @param {boolean} [remove=false] Completely remove the table from the DOM
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -417,7 +417,7 @@
          * Redraw the table
          *  @param {bool} [complete=true] Re-filter and resort (if enabled) the table before the draw.
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -444,7 +444,7 @@
          *  @param {bool} [bShowGlobal=true] Show the input global filter in it's input box(es)
          *  @param {bool} [bCaseInsensitive=true] Do case-insensitive matching (true) or not (false)
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -482,7 +482,7 @@
          *    returned. If mRow is defined, just data for that row, and is iCol is
          *    defined, only data for the designated cell is returned.
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    // Row data
@@ -530,7 +530,7 @@
          *  @returns {array|node} If iRow is undefined, returns an array of all TR elements
          *    in the table's body, or iRow is defined, just the TR element requested.
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -558,7 +558,7 @@
          *    if given as a cell, an array of [row index, column index (visible),
          *    column index (all)] is given.
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -604,7 +604,7 @@
          *  @param {node} nTr the table row to check
          *  @returns {boolean} true if the row is currently open, false otherwise
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -640,7 +640,7 @@
          *    first parameter, is not found in the table, this method will silently
          *    return.
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -676,7 +676,7 @@
          *    or page number to jump to (integer), note that page 0 is the first page.
          *  @param {bool} [bRedraw=true] Redraw the table or not
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -700,7 +700,7 @@
          *  @param {bool} bShow Show (true) or hide (false) the column
          *  @param {bool} [bRedraw=true] Redraw the table or not
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -725,7 +725,7 @@
          *  @returns {object} DataTables settings object. See
          *    {@link DataTable.models.oSettings}
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -747,7 +747,7 @@
          *  @param {int} iCol the data index to sort on. Note that this will not match the
          *    'display index' if you have hidden data entries
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -769,7 +769,7 @@
          *  @param {int} iColumn the column that a click on this node will sort on
          *  @param {function} [fnCallback] callback function when sort is run
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -798,7 +798,7 @@
          *  @param {bool} [bAction=true] Perform pre-draw actions or not
          *  @returns {int} 0 on success, 1 on error
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -838,7 +838,7 @@
          *    version, or false if this version of DataTales is not suitable
          *  @method
          *  @dtopt API
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          *
          *  @example
          *    $(document).ready(function() {
@@ -2880,7 +2880,7 @@
      *     row will be invalidated
      * @memberof DataTable#oApi
      *
-     * @todo For the modularisation of v1.11 this will need to become a callback, so
+     * @todo For the modularisation of V1.11 this will need to become a callback, so
      *   the sort and filter methods can subscribe to it. That will required
      *   initialisation options for sorting, which is why it is not already baked in
      */
@@ -4100,7 +4100,7 @@
      */
     function _fnAjaxUpdateDraw ( settings, json )
     {
-        // v1.10 uses camelCase variables, while 1.9 uses Hungarian notation.
+        // V1.10 uses camelCase variables, while 1.9 uses Hungarian notation.
         // Support both
         var compat = function ( old, modern ) {
             return json[old] !== undefined ? json[old] : json[modern];
@@ -9876,8 +9876,8 @@
 
     /*
 	 * Developer note: The properties of the object below are given in Hungarian
-	 * notation, that was used as the interface for DataTables prior to v1.10, however
-	 * from v1.10 onwards the primary interface is camel case. In order to avoid
+	 * notation, that was used as the interface for DataTables prior to V1.10, however
+	 * from V1.10 onwards the primary interface is camel case. In order to avoid
 	 * breaking backwards compatibility utterly with this change, the Hungarian
 	 * version is still, internally the primary interface, but is is not documented
 	 * - hence the @name tags in each doc comment. This allows a Javascript function
@@ -14094,7 +14094,7 @@
          * * `{array}` - A nested array containing the above elements to add a
          *   containing 'DIV' element (might be useful for styling).
          *
-         * Note that DataTables v1.9- used this object slightly differently whereby
+         * Note that DataTables V1.9- used this object slightly differently whereby
          * an object with two functions would be defined for each plug-in. That
          * ability is still supported by DataTables 1.10+ to provide backwards
          * compatibility, but this option of use is now decremented and no longer
@@ -14348,7 +14348,7 @@
         /**
          * Index for what 'this' index API functions should use
          *  @type int
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          */
         iApiIndex: 0,
 
@@ -14356,7 +14356,7 @@
         /**
          * jQuery UI class container
          *  @type object
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          */
         oJUIClasses: {},
 
@@ -14364,7 +14364,7 @@
         /**
          * Software version
          *  @type string
-         *  @deprecated Since v1.10
+         *  @deprecated Since V1.10
          */
         sVersion: DataTable.version
     };

@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http://hoom.woondossier.vm/api/",
+            "url": "http://woondossier.vm/api/",
             "description": "API v1"
         }
     ],
@@ -42,7 +42,13 @@
                     "403": {
                         "description": "Unauthorized for current cooperation"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "Token": [],
+                        "X-Cooperation-Slug": []
+                    }
+                ]
             }
         },
         "/v1/register": {
@@ -194,10 +200,17 @@
             }
         },
         "securitySchemes": {
-            "bearer_token": {
+            "Token": {
+                "type": "http",
+                "description": "Sanctum API",
+                "scheme": "bearer",
+                "name": "bearerAuth",
+                "in": "header"
+            },
+            "X-Cooperation-Slug": {
                 "type": "apiKey",
-                "description": "Enter token in format (Bearer <token>)",
-                "name": "Authorization",
+                "description": "The Cooperation Slug you are representing",
+                "name": "X-Cooperation-Slug",
                 "in": "header"
             }
         }

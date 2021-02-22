@@ -20,10 +20,13 @@ class CooperationMiddleware
     {
         $cooperation = $request->route()->parameter('cooperation');
 
-        if (! $cooperation instanceof Cooperation) {
-            // No valid cooperation subdomain. Return to global index.
-
-            return redirect()->route('index');
+        // No valid cooperation subdomain. try to obtain it from the header.
+        if (!$cooperation instanceof Cooperation) {
+            $cooperation = Cooperation::whereSlug($request->header('X-Cooperation-Slug'))->first();
+            // no cooperation in header, return to index.
+            if (!$cooperation instanceof Cooperation) {
+                return redirect()->route('index');
+            }
         }
 
         HoomdossierSession::setCooperation($cooperation);

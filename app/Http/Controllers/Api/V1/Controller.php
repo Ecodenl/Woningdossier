@@ -46,6 +46,7 @@ class Controller extends BaseController
 
     /**
      * @OA\Get(
+     *      security={{"Token":{}, "X-Cooperation-Slug":{}}},
      *      path="/v1/",
      *      tags={"Ping"},
      *      summary="API Endpoint voor connectie check",
@@ -73,8 +74,8 @@ class Controller extends BaseController
      *      )
      * )
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response([], 200);
+        return response($request->headers, 200);
     }
 }

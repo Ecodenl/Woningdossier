@@ -36,13 +36,17 @@
                                 <td>{{$personalAccessToken->name}}</td>
                                 <td>{{$personalAccessToken->last_used_at}}</td>
                                 <td>
-                                    <form method="post" action="{{route('cooperation.admin.super-admin.clients.personal-access-tokens.destroy', compact('client', 'personalAccessToken'))}}">
+                                    <form method="post" action="{{route('cooperation.admin.super-admin.clients.personal-access-tokens.destroy', compact('client', 'personalAccessToken'))}}" style="display: inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger">
                                             @lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.table.delete')
                                         </button>
                                     </form>
+
+                                    <a class="btn btn-default" href="{{route('cooperation.admin.super-admin.clients.personal-access-tokens.edit', compact('client', 'personalAccessToken'))}}">
+                                        @lang('cooperation/admin/super-admin/clients/personal-access-tokens.index.table.edit')
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach

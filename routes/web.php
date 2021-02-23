@@ -343,6 +343,8 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
                         Route::post('', 'PersonalAccessTokenController@store')->name('store');
                         Route::get('create', 'PersonalAccessTokenController@create')->name('create');
                         Route::delete('destroy/{personalAccessToken}', 'PersonalAccessTokenController@destroy')->name('destroy');
+                        Route::get('{personalAccessToken}/edit', 'PersonalAccessTokenController@edit')->name('edit');
+                        Route::put('{personalAccessToken}', 'PersonalAccessTokenController@update')->name('update');
                     });
 
                     Route::get('home', 'SuperAdminController@index')->name('index');

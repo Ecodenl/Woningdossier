@@ -19,6 +19,7 @@ class PersonalAccessTokenController extends Controller
     public function index(Cooperation $cooperation, Client $client)
     {
         $client->load('tokens');
+
         return view('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('cooperation', 'client'));
     }
 
@@ -29,7 +30,14 @@ class PersonalAccessTokenController extends Controller
      */
     public function create(Cooperation $cooperation, Client $client)
     {
-        return view('cooperation.admin.super-admin.clients.personal-access-tokens.create', compact('cooperation', 'client'));
+        $cooperations = Cooperation::all();
+        return view('cooperation.admin.super-admin.clients.personal-access-tokens.create', compact('cooperation', 'client', 'cooperations'));
+    }
+
+    public function edit(Cooperation $cooperation, Client $client, PersonalAccessToken $personalAccessToken)
+    {
+        $cooperations = Cooperation::all();
+        return view('cooperation.admin.super-admin.clients.personal-access-tokens.edit', compact('cooperation', 'client', 'cooperations', 'personalAccessToken'));
     }
 
     /**
@@ -40,34 +48,13 @@ class PersonalAccessTokenController extends Controller
      */
     public function store(PersonalAccessTokenFormRequest $request, Cooperation $cooperation, Client $client)
     {
-        $newAccessToken = $client->createToken($request->input('personal_access_tokens.name'));
+        $newAccessToken = $client->createToken($request->input('personal_access_tokens.name'), $request->input('personal_access_tokens.abilities'));
 
         return redirect()
             ->route('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('client'))
             ->with('token', $newAccessToken);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -76,9 +63,13 @@ class PersonalAccessTokenController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(PersonalAccessTokenFormRequest $request, Cooperation $cooperation, Client $client, PersonalAccessToken $personalAccessToken)
     {
-        //
+        $personalAccessToken->update($request->input('personal_access_tokens'));
+
+        return redirect()
+            ->route('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('client'))
+            ->with('success', __('cooperation/admin/super-admin/clients/personal-access-tokens.update.success'));
     }
 
     /**

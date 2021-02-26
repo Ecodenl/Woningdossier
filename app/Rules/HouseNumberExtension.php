@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Rule;
 class HouseNumberExtension extends LocaleBasedRule implements Rule
 {
     protected $countryRegexes = [
-        'nl' => '/^(boven|beneden|onder|hs|bis|zw|rd|[\d]{,2}|[0-9]|[\da-z][\da-z]?)$/',
+        'nl' => '/^(boven|beneden|onder|hs|bis|zw|rd|[\w]{0,10}|[0-9]|[\da-z][\da-z]?)$/',
     ];
 
     /**

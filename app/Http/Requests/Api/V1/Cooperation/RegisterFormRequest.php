@@ -6,7 +6,7 @@ use App\Http\Requests\Api\ApiRequest;
 use App\Models\Account;
 use App\Models\Cooperation;
 use App\Rules\HouseNumber;
-use App\Rules\HouseNumberExtension;
+use App\Rules\Api\V1\HouseNumberExtension;
 use App\Rules\PhoneNumber;
 use App\Rules\PostalCode;
 

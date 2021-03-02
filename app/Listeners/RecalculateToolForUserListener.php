@@ -39,17 +39,15 @@ class RecalculateToolForUserListener
         ];
 
         if (in_array($event->step->short, $stepsWhichNeedRecalculation)) {
-            $inputSource = HoomdossierSession::getInputSource(true);
-
             // currently this listener will only be triggered on a event thats dispatched while NOT running in the cli
             // so we can safely access the input source from the session
+            $inputSource = HoomdossierSession::getInputSource(true);
 
-            if ($event->building->hasCompleted(Step::findByShort('general-data')))
-            Notification::setActive($event->building, $inputSource, true);
-
-            // recalculate the tool for the given user
-            $userId = $event->building->user->id;
-            Artisan::call('tool:recalculate', ['--user' => [$userId], '--input-source' => [$inputSource->short]]);
+            // Theres nothing to recalculate if the user did not complete the main step.
+            if ($event->building->hasCompleted(Step::findByShort('general-data'))) {
+                $userId = $event->building->user->id;
+                Artisan::call('tool:recalculate', ['--user' => [$userId], '--input-source' => [$inputSource->short]]);
+            }
         }
     }
 }

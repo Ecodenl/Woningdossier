@@ -5,8 +5,12 @@ namespace App\Jobs;
 use App\Mail\UnreadMessagesEmail;
 use App\Models\Building;
 use App\Models\Cooperation;
+use App\Models\InputSource;
+use App\Models\Notification;
 use App\Models\NotificationSetting;
+use App\Models\PrivateMessage;
 use App\Models\User;
+use App\Services\PrivateMessageViewService;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -53,5 +57,19 @@ class SendUnreadMessageCountEmail implements ShouldQueue
         } else {
             \Log::debug('it seems like user id '.$this->user->id.' has no building!');
         }
+    }
+
+    public function failed(\Exception $exception)
+    {
+        // this functionality is here for people which mistyped they're email address
+        // this will set the messages to read for the user in its resident its input source.
+        // this way we prevent the mail for being sent over and over again.
+        $messagesToSetRead = PrivateMessage::forMyCooperation()
+            ->conversation($this->building->id);
+
+        $messagesToSetRead = $messagesToSetRead->get();
+
+        $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        PrivateMessageViewService::markAsReadByUser($messagesToSetRead, $this->user, $inputSource);
     }
 }

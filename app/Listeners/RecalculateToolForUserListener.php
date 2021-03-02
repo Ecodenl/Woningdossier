@@ -43,8 +43,8 @@ class RecalculateToolForUserListener
             // so we can safely access the input source from the session
             $inputSource = HoomdossierSession::getInputSource(true);
 
+            // Theres nothing to recalculate if the user did not complete the main step.
             if ($event->building->hasCompleted(Step::findByShort('general-data'))) {
-                // recalculate the tool for the given user
                 $userId = $event->building->user->id;
                 Artisan::call('tool:recalculate', ['--user' => [$userId], '--input-source' => [$inputSource->short]]);
             }

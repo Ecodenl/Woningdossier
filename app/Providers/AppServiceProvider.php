@@ -10,6 +10,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -53,6 +54,7 @@ class AppServiceProvider extends ServiceProvider
             $command = unserialize($payload['data']['command']);
 
             if (RecalculateStepForUser::class == get_class($command)) {
+                Log::debug("JOB RecalculateStepForUser started | b_id: {$command->user->building->id} | input_source_id: {$command->inputSource->id}");
                 Notification::setActive($command->user->building, $command->inputSource, true);
             }
         });
@@ -63,6 +65,7 @@ class AppServiceProvider extends ServiceProvider
             $command = unserialize($payload['data']['command']);
 
             if (RecalculateStepForUser::class == get_class($command)) {
+                Log::debug("JOB RecalculateStepForUser ended | b_id: {$command->user->building->id} | input_source_id: {$command->inputSource->id}");
                 Notification::setActive($command->user->building, $command->inputSource, false);
             }
         });

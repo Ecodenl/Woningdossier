@@ -32,7 +32,7 @@ class PrivateMessageViewHelper
      */
     public static function getTotalUnreadMessagesForCooperation($cooperationId): int
     {
-        return static::where('to_cooperation_id', $cooperationId)
+        return PrivateMessageView::where('to_cooperation_id', $cooperationId)
             ->whereNull('input_source_id')
             ->where('read_at', null)
             ->count();
@@ -40,7 +40,7 @@ class PrivateMessageViewHelper
 
     public static function getTotalUnreadMessagesForUserWithInputSource($userId, $inputSourceId): int
     {
-        return static::select('private_messages.*')
+        return PrivateMessageView::select('private_messages.*')
             ->where('private_message_views.user_id', '=', $userId)
             ->where('input_source_id', '=', $inputSourceId)
             ->where('read_at', null)
@@ -60,14 +60,14 @@ class PrivateMessageViewHelper
 
         // if the user has the role coordinator or cooperation-admin get them as well
         if ($user->hasRole(['coordinator', 'cooperation-admin'])) {
-            $cooperationUnreadMessagesCount = self::where('to_cooperation_id', $cooperation->id)
+            $cooperationUnreadMessagesCount = PrivateMessageView::where('to_cooperation_id', $cooperation->id)
                 ->where('created_at', '>=', $specificDate)
                 ->where('read_at', null)
                 ->count();
         }
 
         // get the unread messages for the user itself within its given cooperation after a given date.
-        $userUnreadMessages = static::select('private_messages.*')
+        $userUnreadMessages = PrivateMessageView::select('private_messages.*')
             ->where('private_message_views.user_id', $user->id)
             ->where('read_at', null)
             ->where('private_message_views.created_at', '>=', $specificDate)
@@ -91,13 +91,13 @@ class PrivateMessageViewHelper
 
         // if the user has the role coordinator or cooperation-admin get them as well
         if ($user->hasRole(['coordinator', 'cooperation-admin'])) {
-            $cooperationUnreadMessagesCount = static::where('to_cooperation_id', $cooperation->id)
+            $cooperationUnreadMessagesCount = PrivateMessageView::where('to_cooperation_id', $cooperation->id)
                 ->where('read_at', null)
                 ->count();
         }
 
         // get the unread messages for the user itsel.
-        $userUnreadMessages = static::where('user_id', $user->id)
+        $userUnreadMessages = PrivateMessageView::where('user_id', $user->id)
             ->forCurrentInputSource()
             ->where('read_at', null)
             ->count();
@@ -119,12 +119,12 @@ class PrivateMessageViewHelper
 
         // get the unread messages for the cooperation
         if (\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'cooperation-admin'])) {
-            return static::where('to_cooperation_id', HoomdossierSession::getCooperation())
+            return PrivateMessageView::where('to_cooperation_id', HoomdossierSession::getCooperation())
                 ->whereIn('private_message_id', $privateMessageIdsForBuilding)
                 ->whereNull('read_at')
                 ->count();
         } else {
-            return static::where('user_id', Hoomdossier::user()->id)
+            return PrivateMessageView::where('user_id', Hoomdossier::user()->id)
                 ->forCurrentInputSource()
                 ->whereIn('private_message_id', $privateMessageIdsForBuilding)
                 ->whereNull('read_at')

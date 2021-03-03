@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\Models\PrivateMessageViewHelper;
 use App\Jobs\SendUnreadMessageCountEmail;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\NotificationSetting;
 use App\Models\NotificationType;
-use App\Models\PrivateMessageView;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -74,7 +74,7 @@ class SendNotifications extends Command
                             $notifiedDiff = $now->diff($lastNotifiedAt);
 
                             // get the total unread messages for a user within its given cooperation, after the last notified at. We dont want to spam users.
-                            $unreadMessageCount = PrivateMessageView::getTotalUnreadMessagesForUserAndCooperationAfterSpecificDate(
+                            $unreadMessageCount = PrivateMessageViewHelper::getTotalUnreadMessagesForUserAndCooperationAfterSpecificDate(
                                 $user,
                                 $cooperation,
                                 $lastNotifiedAt
@@ -113,7 +113,7 @@ class SendNotifications extends Command
                             }
                         } else {
                             // the user has never been notified, so we set subtract one year from the current one.
-                            $notificationSetting->last_notified_at = Carbon::now()->subYear(1);
+                            $notificationSetting->last_notified_at = Carbon::now()->subYear();
                             $notificationSetting->save();
                         }
                     }

@@ -2,13 +2,13 @@
 
 namespace App\Http\ViewComposers;
 
-use App\Models\PrivateMessageView;
+use App\Helpers\Models\PrivateMessageViewHelper;
 use Illuminate\View\View;
 
 class AdminComposer
 {
     public function create(View $view)
     {
-        $view->with('myUnreadMessagesCount', PrivateMessageView::getTotalUnreadMessagesForCurrentRole());
+        $view->with('myUnreadMessagesCount', PrivateMessageViewHelper::getTotalUnreadMessagesForCurrentRole());
     }
 }

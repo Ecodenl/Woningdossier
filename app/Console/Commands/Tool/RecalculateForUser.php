@@ -93,10 +93,10 @@ class RecalculateForUser extends Command
                     ->get();
 
                 if ($completedSteps->isNotEmpty()) {
-                    Log::debug("Notification turned on for | b_id: {$user->building} | input_source_id: {$inputSource->id}");
+                    Log::debug("Notification turned on for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
                     Notification::setActive($user->building, $inputSource, true);
                 } else {
-                    Log::debug("No completed steps, no notification for | b_id: {$user->building} | input_source_id: {$inputSource->id}");
+                    Log::debug("No completed steps, no notification for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
                 }
 
                 $stepsToRecalculateChain = [];
@@ -108,7 +108,7 @@ class RecalculateForUser extends Command
                 }
 
                 if (! empty($stepsToRecalculateChain)) {
-                    Log::debug("Dispatching recalculate chain for | b_id: {$user->building} | input_source_id: {$inputSource->id}");
+                    Log::debug("Dispatching recalculate chain for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
                     ProcessRecalculate::withChain($stepsToRecalculateChain)->dispatch();
                 }
             }

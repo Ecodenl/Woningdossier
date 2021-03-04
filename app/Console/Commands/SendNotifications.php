@@ -76,7 +76,6 @@ class SendNotifications extends Command
                             // get the total unread messages for a user within its given cooperation, after the last notified at. We dont want to spam users.
                             $unreadMessageCount = PrivateMessageViewHelper::getTotalUnreadMessagesForUserAndCooperationAfterSpecificDate(
                                 $user,
-                                $cooperation,
                                 $lastNotifiedAt
                             );
 

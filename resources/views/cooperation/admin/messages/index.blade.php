@@ -38,7 +38,7 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    {{\App\Helpers\Models\PrivateMessageViewHelper::getTotalUnreadMessagesCountByBuildingForAuthUser($building)}}
+                                    {{\App\Helpers\Models\PrivateMessageViewHelper::getTotalUnreadMessagesCountByBuilding($building)}}
                                 </td>
                             </tr>
                         @endforeach

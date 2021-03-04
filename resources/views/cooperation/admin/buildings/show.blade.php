@@ -241,7 +241,6 @@
 
             var appointmentDate = $('#appointment-date');
 
-
             $('table').DataTable({
                 'order': [[0, 'desc']]
             });
@@ -269,6 +268,8 @@
                 format: 'L',
                 showClear: true,
             }).on('dp.hide', function (event) {
+                appointmentDate.find('input').blur();
+
                 var date = appointmentDate.find('input').val();
 
                 if (date !== originalAppointmentDate) {
@@ -483,7 +484,6 @@
                 }));
             });
         }
-        
 
     </script>
 @endpush

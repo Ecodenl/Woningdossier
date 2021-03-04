@@ -50,7 +50,7 @@ class BuildingDataCopyService
                 ->where('input_source_id', $from->id)
                 ->where($buildingOrUserColumn, $buildingOrUserId)
                 ->get()->map(fn($from, $key) => static::createInsertFromSourceArray((array)$from, $to))->toArray();
-
+            Log::debug('Values to be inserted:' . json_encode($fromValues));
             
             $valuesWhichWillBeDeleted = DB::table($table)
                 ->where('input_source_id', $to->id)

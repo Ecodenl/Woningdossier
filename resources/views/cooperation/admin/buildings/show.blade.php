@@ -229,6 +229,9 @@
 
 @push('js')
     <script>
+        // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.
+        let originalAppointmentDate = @if($mostRecentStatus instanceof \App\Models\BuildingStatus && $mostRecentStatus->hasAppointmentDate()) '{{$mostRecentStatus->appointment_date->format('d-m-Y')}}' @else '' @endif;
+
         $(document).ready(function () {
 
             // get some basic information
@@ -250,9 +253,6 @@
 
             $('[data-toggle="tooltip"]').tooltip();
 
-            // so when a user changed the appointment date and does not want to save it, we change it back to the value we got onload.
-            var originalAppointmentDate = appointmentDate.find('input').val();
-
             scrollChatToMostRecentMessage();
             onFormSubmitAddFragmentToRequest();
 
@@ -270,28 +270,30 @@
                 showClear: true,
             }).on('dp.hide', function (event) {
                 var date = appointmentDate.find('input').val();
-                var confirmMessage = "@lang('cooperation/admin/buildings.show.set-empty-appointment-date')";
 
-                if (date.length > 0) {
-                    confirmMessage = "@lang('cooperation/admin/buildings.show.set-appointment-date')"
-                }
+                if (date !== originalAppointmentDate) {
+                    var confirmMessage = "@lang('cooperation/admin/buildings.show.set-empty-appointment-date')";
 
-                if (confirm(confirmMessage)) {
-                    $.ajax({
-                        method: 'POST',
-                        url: '{{route('cooperation.admin.building-status.set-appointment-date')}}',
-                        data: {
-                            building_id: buildingOwnerId,
-                            appointment_date: date
-                        },
-                    }).done(function () {
-                        location.reload();
-                    })
-                } else {
-                    var formattedDate = originalAppointmentDate;
-                    // if the user does not want to set / change the appointment date
-                    // we set the date back to the one we got onload.
-                    appointmentDate.find('input').val(formattedDate);
+                    if (date.length > 0) {
+                        confirmMessage = "@lang('cooperation/admin/buildings.show.set-appointment-date')"
+                    }
+
+                    if (confirm(confirmMessage)) {
+                        $.ajax({
+                            method: 'POST',
+                            url: '{{route('cooperation.admin.building-status.set-appointment-date')}}',
+                            data: {
+                                building_id: buildingOwnerId,
+                                appointment_date: date
+                            },
+                        }).done(function () {
+                            location.reload();
+                        })
+                    } else {
+                        // if the user does not want to set / change the appointment date
+                        // we set the date back to the one we got onload.
+                        appointmentDate.find('input').val(originalAppointmentDate);
+                    }
                 }
             });
 

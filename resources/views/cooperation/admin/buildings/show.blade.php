@@ -268,6 +268,7 @@
                 format: 'L',
                 showClear: true,
             }).on('dp.hide', function (event) {
+                // this way the right events get triggerd so we will always get a nice formatted date
                 appointmentDate.find('input').blur();
 
                 var date = appointmentDate.find('input').val();

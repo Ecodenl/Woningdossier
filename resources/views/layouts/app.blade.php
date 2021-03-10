@@ -56,7 +56,7 @@
 
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href=""
+                                        <a href="{{ route('cooperation.auth.logout') }}"
                                             onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                             Logout

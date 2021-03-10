@@ -48,7 +48,10 @@ class PersonalAccessTokenController extends Controller
      */
     public function store(PersonalAccessTokenFormRequest $request, Cooperation $cooperation, Client $client)
     {
-        $newAccessToken = $client->createToken($request->input('personal_access_tokens.name'), $request->input('personal_access_tokens.abilities'));
+        $newAccessToken = $client->createToken(
+            $request->input('personal_access_tokens.name'),
+            $request->input('personal_access_tokens.abilities', ['*'])
+        );
 
         return redirect()
             ->route('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('client'))
@@ -65,7 +68,10 @@ class PersonalAccessTokenController extends Controller
      */
     public function update(PersonalAccessTokenFormRequest $request, Cooperation $cooperation, Client $client, PersonalAccessToken $personalAccessToken)
     {
-        $personalAccessToken->update($request->input('personal_access_tokens'));
+        $personalAccessToken->update([
+            'name' => $request->input('personal_access_tokens.name'),
+            'abilities' => $request->input('personal_access_tokens.abilities', ['*'])
+        ]);
 
         return redirect()
             ->route('cooperation.admin.super-admin.clients.personal-access-tokens.index', compact('client'))

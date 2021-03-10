@@ -20,7 +20,7 @@
 
                         <h2>Bevoegdheden</h2>
                         @component('layouts.parts.components.form-group', ['input_name' => 'personal_access_tokens.abilities.access'])
-                            <label for="">@lang('cooperation/admin/super-admin/clients/personal-access-tokens.edit.cooperations')</label>
+                            <label for="">@lang('cooperation/admin/super-admin/clients/personal-access-tokens.create.cooperations')</label>
                             <select class="select2 form-control" name="personal_access_tokens[abilities][]" id="access" multiple="multiple">
                                 @foreach($cooperations as $cooperation)
                                     <option value="{{"access:{$cooperation->slug}"}}">{{$cooperation->name}}</option>

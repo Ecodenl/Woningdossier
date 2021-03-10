@@ -17,6 +17,7 @@ return [
         ],
     ],
     'create' => [
+        'cooperations' => 'Tot welke Coöperaties heeft dit token toegang ? (Wanneer dit veld word leeg gelaten kan het API token bij elke coöperatie.)',
         'header' => 'API Token aanmaken voor :client_name',
         'submit' => 'Token aanmaken'
     ],

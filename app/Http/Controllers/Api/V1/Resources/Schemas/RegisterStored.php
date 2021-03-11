@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1\Resources\Schemas;
+namespace App\Http\Controllers\Api\V1\Resources\Schemas;
 /**
  * @OA\Schema(
  *     title="RegisterStored",

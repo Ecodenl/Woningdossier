@@ -47,9 +47,7 @@ class Account extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
 
-    protected $fillable = [
-        'first_name', 'last_name', 'email', 'password', 'phone_number',
-        'email_verified_at', 'old_email', 'old_email_token',
+    protected $fillable = ['email', 'password', 'email_verified_at', 'old_email', 'old_email_token',
     ];
 
     /**

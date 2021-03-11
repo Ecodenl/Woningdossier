@@ -16,6 +16,7 @@ class Authenticate extends Middleware
     protected function redirectTo($request)
     {
         if (! $request->expectsJson()) {
+            // apparently the route binding has not happened yet.
             return route('cooperation.auth.login', ['cooperation' => $request->route('cooperation')]);
         }
     }

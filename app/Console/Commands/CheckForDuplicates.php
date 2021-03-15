@@ -46,19 +46,19 @@ class CheckForDuplicates extends Command
         $userInterestsDuplicates = $this->userInterestsDuplicate();
         $userActionPlanAdvicesDuplicates = $this->userActionPlanAdvicesDuplicate();
 
-//        if ($buildingServiceDuplicates->isNotEmpty()) {
-//            $this->notifyDiscord($client, "**{$buildingServiceDuplicates->count()} duplicates found in building_services** \n reproducible data:");
-//            foreach ($buildingServiceDuplicates as $buildingServiceDuplicate) {
-//                $content = DB::table('building_services')
-//                    ->where('building_id', $buildingServiceDuplicate->building_id)
-//                    ->get()
-//                    ->toArray();
-//
-//                $this->sendDebuggableDataToDiscord($client, $content);
-//            }
-//        }
+        if ($buildingServiceDuplicates->isNotEmpty()) {
+            $this->notifyDiscord($client, "**{$buildingServiceDuplicates->count()} duplicates found in building_services** \n reproducible data:");
+            foreach ($buildingServiceDuplicates as $buildingServiceDuplicate) {
+                $content = DB::table('building_services')
+                    ->where('building_id', $buildingServiceDuplicate->building_id)
+                    ->get()
+                    ->toArray();
 
-//        sleep(10);
+                $this->sendDebuggableDataToDiscord($client, $content);
+            }
+        }
+
+        sleep(5);
         if ($buildingElementsExceptWoodElementsDuplicates->isNotEmpty()) {
             $this->notifyDiscord($client, "**{$buildingElementsExceptWoodElementsDuplicates->count()} duplicates found in building_elements** \n reproducible data:");
             foreach ($buildingElementsExceptWoodElementsDuplicates as $buildingElementsExceptWoodElementsDuplicate) {
@@ -66,14 +66,12 @@ class CheckForDuplicates extends Command
                     ->where('building_id', $buildingElementsExceptWoodElementsDuplicate->building_id)
                     ->get()
                     ->toArray();
-//                dd(json_encode($content));
 
                 $this->sendDebuggableDataToDiscord($client, $content);
             }
         }
 
-        dd('bier');
-        sleep(10);
+        sleep(5);
         if ($userInterestsDuplicates->isNotEmpty()) {
             $this->notifyDiscord($client, "**{$userInterestsDuplicates->count()} duplicates found in user_interests** \n reproducible data:");
             foreach ($userInterestsDuplicates as $userInterestsDuplicate) {
@@ -85,7 +83,7 @@ class CheckForDuplicates extends Command
             }
         }
 
-        sleep(10);
+        sleep(5);
         if ($userActionPlanAdvicesDuplicates->isNotEmpty()) {
             $this->notifyDiscord($client, "**{$userActionPlanAdvicesDuplicates->count()} duplicates found in user_action_plan_advices** \n reproducible data:");
             foreach ($userActionPlanAdvicesDuplicates as $userActionPlanAdvicesDuplicate) {

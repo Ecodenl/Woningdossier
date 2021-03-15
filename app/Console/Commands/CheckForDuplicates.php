@@ -39,8 +39,6 @@ class CheckForDuplicates extends Command
      */
     public function handle()
     {
-
-
         $client = new Client();
 
         $buildingServiceDuplicates = $this->buildingServicesDuplicate();
@@ -48,51 +46,54 @@ class CheckForDuplicates extends Command
         $userInterestsDuplicates = $this->userInterestsDuplicate();
         $userActionPlanAdvicesDuplicates = $this->userActionPlanAdvicesDuplicate();
 
-        if($buildingServiceDuplicates->isNotEmpty()) {
-            $this->notifyDiscord($client, "**{$buildingServiceDuplicates->count()} duplicates found in building_services** \n reproducible data:");
-            foreach ($buildingServiceDuplicates as $buildingServiceDuplicate) {
-                $content = DB::table('building_services')
-                    ->where('building_id', $buildingServiceDuplicate->building_id)
-                    ->get()->toArray();
+//        if ($buildingServiceDuplicates->isNotEmpty()) {
+//            $this->notifyDiscord($client, "**{$buildingServiceDuplicates->count()} duplicates found in building_services** \n reproducible data:");
+//            foreach ($buildingServiceDuplicates as $buildingServiceDuplicate) {
+//                $content = DB::table('building_services')
+//                    ->where('building_id', $buildingServiceDuplicate->building_id)
+//                    ->get()
+//                    ->toArray();
+//
+//                $this->sendDebuggableDataToDiscord($client, $content);
+//            }
+//        }
 
-                $content = json_encode($content);
-                $this->notifyDiscord($client, "```$content```");
-            }
-        }
-
-        if($buildingElementsExceptWoodElementsDuplicates->isNotEmpty()) {
+//        sleep(10);
+        if ($buildingElementsExceptWoodElementsDuplicates->isNotEmpty()) {
             $this->notifyDiscord($client, "**{$buildingElementsExceptWoodElementsDuplicates->count()} duplicates found in building_elements** \n reproducible data:");
             foreach ($buildingElementsExceptWoodElementsDuplicates as $buildingElementsExceptWoodElementsDuplicate) {
                 $content = DB::table('building_elements')
                     ->where('building_id', $buildingElementsExceptWoodElementsDuplicate->building_id)
-                    ->get()->toArray();
+                    ->get()
+                    ->toArray();
+//                dd(json_encode($content));
 
-                $content = json_encode($content);
-                $this->notifyDiscord($client, "```$content```");
+                $this->sendDebuggableDataToDiscord($client, $content);
             }
         }
 
-        if($userInterestsDuplicates->isNotEmpty()) {
+        dd('bier');
+        sleep(10);
+        if ($userInterestsDuplicates->isNotEmpty()) {
             $this->notifyDiscord($client, "**{$userInterestsDuplicates->count()} duplicates found in user_interests** \n reproducible data:");
             foreach ($userInterestsDuplicates as $userInterestsDuplicate) {
                 $content = DB::table('user_interests')
                     ->where('user_id', $userInterestsDuplicate->user_id)
                     ->get()->toArray();
 
-                $content = json_encode($content);
-                $this->notifyDiscord($client, "```$content```");
+                $this->sendDebuggableDataToDiscord($client, $content);
             }
         }
 
-        if($userActionPlanAdvicesDuplicates->isNotEmpty()) {
+        sleep(10);
+        if ($userActionPlanAdvicesDuplicates->isNotEmpty()) {
             $this->notifyDiscord($client, "**{$userActionPlanAdvicesDuplicates->count()} duplicates found in user_action_plan_advices** \n reproducible data:");
             foreach ($userActionPlanAdvicesDuplicates as $userActionPlanAdvicesDuplicate) {
                 $content = DB::table('user_action_plan_advices')
                     ->where('user_id', $userActionPlanAdvicesDuplicate->user_id)
                     ->get()->toArray();
 
-                $content = json_encode($content);
-                $this->notifyDiscord($client, "```$content```");
+                $this->sendDebuggableDataToDiscord($client, $content);
             }
         }
 
@@ -102,12 +103,37 @@ class CheckForDuplicates extends Command
 
     }
 
+    private function sendDebuggableDataToDiscord($client, array $content)
+    {
+        // method to work around the max message length of discord
+        $start = 0;
+        $content = json_encode($content);
+        $len = strlen($content);
+        $maxDiscordMessageLength = 1950;
+
+        while ($len > $maxDiscordMessageLength) {
+            $str = substr($content, $start, $maxDiscordMessageLength);
+
+            $len = $len - $maxDiscordMessageLength;
+            $start = $start + $maxDiscordMessageLength;
+
+            $this->notifyDiscord($client, "```$str```");
+        }
+
+        if($len < $maxDiscordMessageLength) {
+            $content = substr($content, $start, $maxDiscordMessageLength);
+            $this->notifyDiscord($client, "```$content```");
+        }
+    }
+
     private function notifyDiscord(Client $client, $message)
     {
-        $client->post(config('hoomdossier.webhooks.discord'), [
-            'form_params' => [
-                'content' => $message
-            ]]);
+//        if (config('app.env') === 'production') {
+            $client->post(config('hoomdossier.webhooks.discord'), [
+                'form_params' => [
+                    'content' => $message
+                ]]);
+//        }
     }
 
 

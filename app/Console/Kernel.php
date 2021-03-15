@@ -26,6 +26,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('send:notifications --type=private-message')->everyFifteenMinutes();
 
+
+        $schedule->command('check:duplicates')->daily();
         // $schedule->command('inspire')
         //          ->hourly();
     }

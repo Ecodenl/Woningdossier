@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
+use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -40,15 +40,78 @@ class CheckForDuplicates extends Command
     public function handle()
     {
 
-        $this->table(
-            ['building_services', 'building_elements', 'user_interests', 'user_action_plan_advices'],
-            [
-                [$this->buildingServicesDuplicateCount(), $this->buildingElementsExceptWoodElementsDuplicateCount(), $this->userInterestsDuplicateCount(), $this->userActionPlanAdvicesDuplicateCount()]
-            ]
-        );
+
+        $client = new Client();
+
+        $buildingServiceDuplicates = $this->buildingServicesDuplicate();
+        $buildingElementsExceptWoodElementsDuplicates = $this->buildingElementsExceptWoodElementsDuplicate();
+        $userInterestsDuplicates = $this->userInterestsDuplicate();
+        $userActionPlanAdvicesDuplicates = $this->userActionPlanAdvicesDuplicate();
+
+        if($buildingServiceDuplicates->isNotEmpty()) {
+            $this->notifyDiscord($client, "**{$buildingServiceDuplicates->count()} duplicates found in building_services** \n reproducible data:");
+            foreach ($buildingServiceDuplicates as $buildingServiceDuplicate) {
+                $content = DB::table('building_services')
+                    ->where('building_id', $buildingServiceDuplicate->building_id)
+                    ->get()->toArray();
+
+                $content = json_encode($content);
+                $this->notifyDiscord($client, "```$content```");
+            }
+        }
+
+        if($buildingElementsExceptWoodElementsDuplicates->isNotEmpty()) {
+            $this->notifyDiscord($client, "**{$buildingElementsExceptWoodElementsDuplicates->count()} duplicates found in building_elements** \n reproducible data:");
+            foreach ($buildingElementsExceptWoodElementsDuplicates as $buildingElementsExceptWoodElementsDuplicate) {
+                $content = DB::table('building_elements')
+                    ->where('building_id', $buildingElementsExceptWoodElementsDuplicate->building_id)
+                    ->get()->toArray();
+
+                $content = json_encode($content);
+                $this->notifyDiscord($client, "```$content```");
+            }
+        }
+
+        if($userInterestsDuplicates->isNotEmpty()) {
+            $this->notifyDiscord($client, "**{$userInterestsDuplicates->count()} duplicates found in user_interests** \n reproducible data:");
+            foreach ($userInterestsDuplicates as $userInterestsDuplicate) {
+                $content = DB::table('user_interests')
+                    ->where('user_id', $userInterestsDuplicate->user_id)
+                    ->get()->toArray();
+
+                $content = json_encode($content);
+                $this->notifyDiscord($client, "```$content```");
+            }
+        }
+
+        if($userActionPlanAdvicesDuplicates->isNotEmpty()) {
+            $this->notifyDiscord($client, "**{$userActionPlanAdvicesDuplicates->count()} duplicates found in user_action_plan_advices** \n reproducible data:");
+            foreach ($userActionPlanAdvicesDuplicates as $userActionPlanAdvicesDuplicate) {
+                $content = DB::table('user_action_plan_advices')
+                    ->where('user_id', $userActionPlanAdvicesDuplicate->user_id)
+                    ->get()->toArray();
+
+                $content = json_encode($content);
+                $this->notifyDiscord($client, "```$content```");
+            }
+        }
+
+        if (array_sum([$userInterestsDuplicates->count(), $userActionPlanAdvicesDuplicates->count(), $buildingElementsExceptWoodElementsDuplicates->count(), $buildingServiceDuplicates->count()]) === 0) {
+            $this->notifyDiscord($client, "No duplicates have been found today.");
+        }
+
     }
 
-    private function userInterestsDuplicateCount()
+    private function notifyDiscord(Client $client, $message)
+    {
+        $client->post(config('hoomdossier.webhooks.discord'), [
+            'form_params' => [
+                'content' => $message
+            ]]);
+    }
+
+
+    private function userInterestsDuplicate()
     {
         return DB::table('user_interests')
             ->selectRaw('user_id, input_source_id, interested_in_type, interested_in_id, count(*)')
@@ -59,11 +122,11 @@ class CheckForDuplicates extends Command
                 'interested_in_id',
             ])
             ->having('count(*)', '>', 1)
-            ->get()->count();
+            ->get();
 
     }
 
-    private function userActionPlanAdvicesDuplicateCount()
+    private function userActionPlanAdvicesDuplicate()
     {
         return DB::table('user_action_plan_advices')
             ->selectRaw('user_id, input_source_id, measure_application_id, step_id, count(*)')
@@ -74,11 +137,11 @@ class CheckForDuplicates extends Command
                 'step_id',
             ])
             ->having('count(*)', '>', 1)
-            ->get()->count();
+            ->get();
 
     }
 
-    private function buildingServicesDuplicateCount()
+    private function buildingServicesDuplicate()
     {
         return DB::table('building_services')
             ->selectRaw('building_id, input_source_id, service_id, count(*)')
@@ -88,11 +151,11 @@ class CheckForDuplicates extends Command
                 'service_id',
             ])
             ->having('count(*)', '>', 1)
-            ->get()->count();
+            ->get();
     }
 
     /** Wood elements are a different cup of tea, and currently has 0 duplicates */
-    private function buildingElementsExceptWoodElementsDuplicateCount()
+    private function buildingElementsExceptWoodElementsDuplicate()
     {
         // Get all the duplicate building elements, grouped on inputsource, elementid en building id
         return DB::table('building_elements')
@@ -104,6 +167,6 @@ class CheckForDuplicates extends Command
                 'element_id',
             ])
             ->having('count(*)', '>', 1)
-            ->get()->count();
+            ->get();
     }
 }

@@ -273,8 +273,6 @@ class BuildingDataCopyService
 
         static::hardCopy($building, $from, $to);
         static::deleteCopy($building, $from, $to);
-
-        Artisan::call('fix:duplicates');
     }
 
     /**

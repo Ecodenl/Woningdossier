@@ -58,7 +58,6 @@ class CheckForDuplicates extends Command
             }
         }
 
-        sleep(5);
         if ($buildingElementsExceptWoodElementsDuplicates->isNotEmpty()) {
             $this->notifyDiscord($client, "**{$buildingElementsExceptWoodElementsDuplicates->count()} duplicates found in building_elements** \n reproducible data:");
             foreach ($buildingElementsExceptWoodElementsDuplicates as $buildingElementsExceptWoodElementsDuplicate) {
@@ -71,7 +70,6 @@ class CheckForDuplicates extends Command
             }
         }
 
-        sleep(5);
         if ($userInterestsDuplicates->isNotEmpty()) {
             $this->notifyDiscord($client, "**{$userInterestsDuplicates->count()} duplicates found in user_interests** \n reproducible data:");
             foreach ($userInterestsDuplicates as $userInterestsDuplicate) {
@@ -83,7 +81,6 @@ class CheckForDuplicates extends Command
             }
         }
 
-        sleep(5);
         if ($userActionPlanAdvicesDuplicates->isNotEmpty()) {
             $this->notifyDiscord($client, "**{$userActionPlanAdvicesDuplicates->count()} duplicates found in user_action_plan_advices** \n reproducible data:");
             foreach ($userActionPlanAdvicesDuplicates as $userActionPlanAdvicesDuplicate) {
@@ -127,6 +124,7 @@ class CheckForDuplicates extends Command
     private function notifyDiscord(Client $client, $message)
     {
         if (config('app.env') === 'production') {
+            sleep(1);
             $client->post(config('hoomdossier.webhooks.discord'), [
                 'form_params' => [
                     'content' => $message

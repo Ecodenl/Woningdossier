@@ -29,4 +29,8 @@ return [
             'default' => 900, // ttl in seconds
         ],
     ],
+
+    'webhooks' => [
+        'discord' => env('DISCORD_WEBHOOK_URL')
+    ]
 ];

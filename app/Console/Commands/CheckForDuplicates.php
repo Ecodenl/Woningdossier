@@ -13,7 +13,7 @@ class CheckForDuplicates extends Command
      *
      * @var string
      */
-    protected $signature = 'check:duplicates';
+    protected $signature = 'check:duplicates ';
 
     /**
      * The console command description.
@@ -45,6 +45,15 @@ class CheckForDuplicates extends Command
         $buildingElementsExceptWoodElementsDuplicates = $this->buildingElementsExceptWoodElementsDuplicate();
         $userInterestsDuplicates = $this->userInterestsDuplicate();
         $userActionPlanAdvicesDuplicates = $this->userActionPlanAdvicesDuplicate();
+
+//        $this->table(
+//            [
+//                'building_service', 'building_elements', 'user_interests',' user_action_plan_advices',
+//            ],
+//            [
+//                [$buildingServiceDuplicates->count(), $buildingElementsExceptWoodElementsDuplicates->count(), $userInterestsDuplicates->count(), $userActionPlanAdvicesDuplicates->count()]
+//            ]
+//        );
 
         if ($buildingServiceDuplicates->isNotEmpty()) {
             $this->notifyDiscord($client, "**{$buildingServiceDuplicates->count()} duplicates found in building_services** \n reproducible data:");

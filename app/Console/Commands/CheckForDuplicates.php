@@ -132,13 +132,13 @@ class CheckForDuplicates extends Command
 
     private function notifyDiscord(Client $client, $message)
     {
-//        if (config('app.env') === 'production') {
+        if (config('app.env') === 'production') {
             sleep(1);
             $client->post(config('hoomdossier.webhooks.discord'), [
                 'form_params' => [
                     'content' => $message
                 ]]);
-//        }
+        }
     }
 
 

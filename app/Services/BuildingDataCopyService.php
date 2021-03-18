@@ -6,33 +6,53 @@ use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\InputSource;
 use Carbon\Carbon;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class BuildingDataCopyService
 {
+
     /**
-     * This methods copy data by deleting the destination its input, and inserting the source its data.
+     * This method copies using a delete method, it does not care about the target its data.
+     *
+     * If the source has data the target does not have, we copy it to the target
+     * if the source has the same data as the target, we replace the target its value
      *
      * @param Building $building
      * @param InputSource $from
      * @param InputSource $to
      */
-    public static function deleteCopy(Building $building, InputSource $from, InputSource $to)
+    public static function deleteCopy(Building $building, InputSource $source, InputSource $target)
     {
         $tables = [
-            'building_elements',
-            'building_services',
-            'user_interests',
-            'user_action_plan_advices',
+            'building_elements' => [
+                'where_column' => 'element_id',
+            ],
+            'building_services' => [
+                'where_column' => 'service_id',
+            ],
+            'user_interests' => [
+                'where_column' => 'interested_in_type',
+                'additional_where_column' => 'interested_in_id',
+            ],
+            'user_action_plan_advices' => [
+                'where_column' => 'step_id',
+                'additional_where_column' => 'measure_application_id',
+            ]
         ];
 
-        foreach ($tables as $table) {
+        // check if we need to update or insert
+        // this seems easy, however we have multiple things that we need to keep in mind.
+        // the source could have less data than the target, in that case we keep the target its data.
+        // the source could have the same data as the target, that case we will update the target its input.
+        // the source could have more data than the target, that case we will insert the missing data
+        // but we also need to keep in mind the way data is stored eg; element_id & element_value_id.
+        foreach ($tables as $table => $tableColumns) {
 
-            Log::debug("Delete copying: table {$table}");
-
+            $whereColumn = $tableColumns['where_column'];
+            $additionalWhereColumn = $tableColumns['additional_where_column'] ?? null;
             // building to copy data from
             $user = $building->user()->first();
 
@@ -45,78 +65,73 @@ class BuildingDataCopyService
                 $buildingOrUserColumn = 'building_id';
             }
 
-            // get the input from the desired input source
-            $fromValues = \DB::table($table)
-                ->where('input_source_id', $from->id)
+            $targetValues = DB::table($table)
+                ->where('input_source_id', $target->id)
                 ->where($buildingOrUserColumn, $buildingOrUserId)
-                ->get()->map(fn($from, $key) => static::createInsertFromSourceArray((array)$from, $to))->toArray();
-            Log::debug('Values to be inserted:' . json_encode($fromValues));
-            
-            $valuesWhichWillBeDeleted = DB::table($table)
-                ->where('input_source_id', $to->id)
+                ->get();
+
+
+            $sourceValues = DB::table($table)
+                ->where('input_source_id', $source->id)
                 ->where($buildingOrUserColumn, $buildingOrUserId)
-                ->get()->toArray();
+                ->get();
 
-            if (!empty($valuesWhichWillBeDeleted)) {
-                $columns = array_keys((array) $valuesWhichWillBeDeleted[0]);
-                unset($columns[0]);
-                $columns = '(' . implode(',', $columns) . ')';
+            // if the target has no values at all, we can just do a plain copy without any crap in between
+            if ($targetValues->isEmpty()) {
+                // transform the source values to a insertable format for the target.
+                $insertableTargetValues = $sourceValues
+                    ->map(fn($sourceValue, $key) => static::createInsertFromSourceArray((array)$sourceValue, $target))
+                    ->toArray();
 
-                $valuesWhichWillBeDeleted = array_map(function ($value) {
-                    $value = (array) $value;
-                    unset($value['id']);
-                    return '("' . implode('", "', $value) . '")';
-                }, $valuesWhichWillBeDeleted);
-
-                $insertData = implode(',', $valuesWhichWillBeDeleted) . ';';
-
-                $sqlInsert = str_replace(
-                    "\n",
-                    "",
-                    "
-                        INSERT into {$table} {$columns}
-                        values {$insertData}
-                        "
-                );
-
-                // because of decimal column
-                if ($table === 'user_action_plan_advices') {
-                    str_replace('"",', '"0",', $sqlInsert);
-                }
-
-                $sqlDelete = "DELETE from {$table} where input_source_id = {$to->id} and {$buildingOrUserColumn} = {$buildingOrUserId}";
-
-                // log the deleted data, this way we can easily go back if stuff goes south
-                Log::debug("REVERSE FOR THE DELETE FOR {$table}");
-                Log::debug($sqlDelete);
-                Log::debug($sqlInsert);
+                DB::table($table)->insert($insertableTargetValues);
             } else {
-                Log::debug("NO DATA TO DELETE FOR {$table}");
+
+                foreach ($sourceValues as $sourceValue) {
+                    // get the possible targets, we will remove them and insert the source values instead
+                    $possibleTargetValue = self::getPossibleTargetValues($sourceValue, $targetValues, $whereColumn, $additionalWhereColumn);
+
+                    if ($possibleTargetValue instanceof \stdClass) {
+                        DB::table($table)->where('id', $possibleTargetValue->id)->delete();
+                    }
+
+                    // and insert the source values.
+                    DB::table($table)->insert(static::createInsertFromSourceArray((array)$sourceValue, $target));
+                }
             }
-
-            // now delete the target its input
-            DB::table($table)
-                ->where('input_source_id', $to->id)
-                ->where($buildingOrUserColumn, $buildingOrUserId)
-                ->delete();
-
-            // and insert the data we want to copy
-            DB::table($table)
-                ->where('input_source_id', $to->id)
-                ->where($buildingOrUserColumn, $buildingOrUserId)
-                ->insert($fromValues);
-
         }
     }
 
     /**
-     * This methods copies the data using an actual update, it does not delete the destination its input.
+     * Returns the targets which should be delete copied
+     */
+    public static function getPossibleTargetValues($sourceValue, Collection $targetValues, $whereColumn, $additionalWhereColumn): ?\stdClass
+    {
+        // its a possible target, there is a chance the target has no input.
+        $possibleTargetValues = $targetValues->where($whereColumn, $sourceValue->{$whereColumn});
+        // we may need to narrow down more.
+        if ($additionalWhereColumn !== null) {
+            $possibleTargetValues = $possibleTargetValues->where($additionalWhereColumn, $sourceValue->{$additionalWhereColumn});
+        }
+
+        // this should only happen if the data is wrong in the first place
+        // if there are multiple found it would mean there is a duplicate
+        if ($possibleTargetValues->count() > 1) {
+            (new DiscordNotifier())->notify('Multiple target values found, first one is returned. Possible duplicate created.');
+            (new DiscordNotifier())->notify('Duplicate check is running to provide possible reproducible data....');
+            Artisan::call('check:duplicates');
+        }
+
+        return $possibleTargetValues->first();
+    }
+
+    /**
+     * Complicates copy because it updates data based on target and source data.
      *
      * @param Building $building
      * @param InputSource $from
      * @param InputSource $to
      */
-    public static function hardCopy(Building $building, InputSource $from, InputSource $to)
+    public static function complicatedCopy(Building $building, InputSource $from, InputSource $to)
     {
         // the tables that have a the where_column is used to query on the resident his answers.
         $tables = [
@@ -213,7 +228,7 @@ class BuildingDataCopyService
 
         // if its empty we set the dates to now.
         $fromData['created_at'] = $fromData['created_at'] ?? Carbon::now()->toDateTimeString();
-        $fromData['updated_at'] = $fromData['updated_at'] ?? Carbon::now()->toDateTimeString();
+        $fromData['updated_at'] = Carbon::now()->toDateTimeString();
         $fromData['input_source_id'] = $to->id;
 
         if (array_key_exists('extra', $fromData)) {
@@ -223,10 +238,16 @@ class BuildingDataCopyService
                 $fromData['extra'] = static::filterExtraColumn($extra);
             }
             // some extra column contain "null", we dont want that
-            if ($fromData['extra'] === "null") {
-                $fromData['extra'] = [];
+            if ($fromData['extra'] == "null") {
+                $fromData['extra'] = null;
             }
-            $fromData['extra'] = json_encode($fromData['extra']);
+            if (!empty($fromData['extra'])) {
+                $fromData['extra'] = json_encode($fromData['extra']);
+            }
+
+            if (empty($fromData['extra'])) {
+                $fromData['extra'] = null;
+            }
         }
 
         return $fromData;
@@ -271,7 +292,7 @@ class BuildingDataCopyService
         Log::debug("BUILDING_ID FOR COPY: {$building->id}");
         Log::debug("AUTH_USER_ID WHICH IS COPYING: {$userId}");
 
-        static::hardCopy($building, $from, $to);
+        static::complicatedCopy($building, $from, $to);
         static::deleteCopy($building, $from, $to);
     }
 

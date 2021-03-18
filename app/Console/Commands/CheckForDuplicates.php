@@ -45,7 +45,7 @@ class CheckForDuplicates extends Command
         $buildingElementsExceptWoodElementsDuplicates = $this->buildingElementsExceptWoodElementsDuplicate();
         $userInterestsDuplicates = $this->userInterestsDuplicate();
         $userActionPlanAdvicesDuplicates = $this->userActionPlanAdvicesDuplicate();
-
+//
 //        $this->table(
 //            [
 //                'building_service', 'building_elements', 'user_interests',' user_action_plan_advices',
@@ -132,13 +132,13 @@ class CheckForDuplicates extends Command
 
     private function notifyDiscord(Client $client, $message)
     {
-        if (config('app.env') === 'production') {
+//        if (config('app.env') === 'production') {
             sleep(1);
             $client->post(config('hoomdossier.webhooks.discord'), [
                 'form_params' => [
                     'content' => $message
                 ]]);
-        }
+//        }
     }
 
 

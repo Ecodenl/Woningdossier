@@ -5,32 +5,33 @@ namespace App\Services;
 use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\InputSource;
-use App\Models\MeasureApplication;
 use Carbon\Carbon;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class BuildingDataCopyService
 {
+
     /**
-     * Easy copy because it just literally copies the data from a to b.
+     * This method copies using a delete method, it does not care about the target its data.
+     *
+     * If the source has data the target does not have, we copy it to the target
+     * if the source has the same data as the target, we replace the target its value
      *
      * @param Building $building
      * @param InputSource $from
      * @param InputSource $to
      */
-    public static function easyCopy(Building $building, InputSource $source, InputSource $target)
+    public static function deleteCopy(Building $building, InputSource $source, InputSource $target)
     {
         $tables = [
             'building_elements' => [
                 'where_column' => 'element_id',
-                'additional_where_column' => 'element_value_id'
             ],
             'building_services' => [
                 'where_column' => 'service_id',
-                'additional_where_column' => 'service_value_id',
             ],
             'user_interests' => [
                 'where_column' => 'interested_in_type',
@@ -50,6 +51,8 @@ class BuildingDataCopyService
         // but we also need to keep in mind the way data is stored eg; element_id & element_value_id.
         foreach ($tables as $table => $tableColumns) {
 
+            $whereColumn = $tableColumns['where_column'];
+            $additionalWhereColumn = $tableColumns['additional_where_column'] ?? null;
             // building to copy data from
             $user = $building->user()->first();
 
@@ -62,36 +65,63 @@ class BuildingDataCopyService
                 $buildingOrUserColumn = 'building_id';
             }
 
-            // get the input from the desired input source
-            // get the source its data, this will be transformed to a insertable format
-            $sourceValues = \DB::table($table)
+            $targetValues = DB::table($table)
+                ->where('input_source_id', $target->id)
+                ->where($buildingOrUserColumn, $buildingOrUserId)
+                ->get();
+
+
+            $sourceValues = DB::table($table)
                 ->where('input_source_id', $source->id)
                 ->where($buildingOrUserColumn, $buildingOrUserId)
-                ->get()->map(fn($source, $key) => static::createInsertFromSourceArray((array)$source, $target))->toArray();
+                ->get();
 
+            // if the target has no values at all, we can just do a plain copy without any crap in between
+            if ($targetValues->isEmpty()) {
+                // transform the source values to a insertable format for the target.
+                $insertableTargetValues = $sourceValues
+                    ->map(fn($sourceValue, $key) => static::createInsertFromSourceArray((array)$sourceValue, $target))
+                    ->toArray();
 
-            foreach ($sourceValues as $sourceValue) {
-                // therese are the default attributes we should always check upoin update.
-                // we add the additional where column if multiple rows are found the base query.
-                $attributes = [$buildingOrUserColumn, 'input_source_id', $tableColumns['where_column']];
+                DB::table($table)->insert($insertableTargetValues);
+            } else {
 
+                foreach ($sourceValues as $sourceValue) {
+                    // get the possible targets, we will remove them and insert the source values instead
+                    $possibleTargetValue = self::getPossibleTargetValues($sourceValue, $targetValues, $whereColumn, $additionalWhereColumn);
 
-                // check if the target has multiple rows, if so we need to narrow the update or insert down.
-                if (DB::table($table)
-                        ->where($buildingOrUserColumn, $buildingOrUserId)
-                        ->where('input_source_id', $target->id)
-                        ->where($tableColumns['where_column'], $sourceValue[$tableColumns['where_column']])->count() > 1) {
-                    $attributes[] = $tableColumns['additional_where_column'];
+                    if ($possibleTargetValue instanceof \stdClass) {
+                        DB::table($table)->where('id', $possibleTargetValue->id)->delete();
+                    }
+
+                    // and insert the source values.
+                    DB::table($table)->insert(static::createInsertFromSourceArray((array)$sourceValue, $target));
                 }
-
-
-                // now update or insert the target its data.
-                DB::table($table)->updateOrInsert(
-                    Arr::only($sourceValue, $attributes),
-                    $sourceValue
-                );
             }
         }
+    }
+
+    /**
+     * Returns the targets which should be delete copied
+     */
+    public static function getPossibleTargetValues($sourceValue, Collection $targetValues, $whereColumn, $additionalWhereColumn): ?\stdClass
+    {
+        // its a possible target, there is a chance the target has no input.
+        $possibleTargetValues = $targetValues->where($whereColumn, $sourceValue->{$whereColumn});
+        // we may need to narrow down more.
+        if ($additionalWhereColumn !== null) {
+            $possibleTargetValues = $possibleTargetValues->where($additionalWhereColumn, $sourceValue->{$additionalWhereColumn});
+        }
+
+        // this should only happen if the data is wrong in the first place
+        // if there are multiple found it would mean there is a duplicate
+        if ($possibleTargetValues->count() > 1) {
+            (new DiscordNotifier())->notify('Multiple target values found, first one is returned. Possible duplicate created.');
+            (new DiscordNotifier())->notify('Duplicate check is running to provide possible reproducible data....');
+            Artisan::call('check:duplicates');
+        }
+
+        return $possibleTargetValues->first();
     }
 
     /**
@@ -208,10 +238,16 @@ class BuildingDataCopyService
                 $fromData['extra'] = static::filterExtraColumn($extra);
             }
             // some extra column contain "null", we dont want that
-            if ($fromData['extra'] === "null") {
-                $fromData['extra'] = [];
+            if ($fromData['extra'] == "null") {
+                $fromData['extra'] = null;
             }
-            $fromData['extra'] = json_encode($fromData['extra']);
+            if (!empty($fromData['extra'])) {
+                $fromData['extra'] = json_encode($fromData['extra']);
+            }
+
+            if (empty($fromData['extra'])) {
+                $fromData['extra'] = null;
+            }
         }
 
         return $fromData;
@@ -257,7 +293,7 @@ class BuildingDataCopyService
         Log::debug("AUTH_USER_ID WHICH IS COPYING: {$userId}");
 
         static::complicatedCopy($building, $from, $to);
-        static::easyCopy($building, $from, $to);
+        static::deleteCopy($building, $from, $to);
     }
 
     /**

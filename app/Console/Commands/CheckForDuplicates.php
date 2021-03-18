@@ -13,7 +13,7 @@ class CheckForDuplicates extends Command
      *
      * @var string
      */
-    protected $signature = 'check:duplicates ';
+    protected $signature = 'check:duplicates';
 
     /**
      * The console command description.

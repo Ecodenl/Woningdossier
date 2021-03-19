@@ -108,10 +108,16 @@ class BuildingDataCopyService
     {
         // its a possible target, there is a chance the target has no input.
         $possibleTargetValues = $targetValues->where($whereColumn, $sourceValue->{$whereColumn});
+
         // we may need to narrow down more.
         if ($additionalWhereColumn !== null) {
             $possibleTargetValues = $possibleTargetValues->where($additionalWhereColumn, $sourceValue->{$additionalWhereColumn});
         }
+
+        Log::debug("SOURCE VALUE");
+        Log::debug(json_encode($sourceValue));
+        Log::debug("TARGET VALUES");
+        Log::debug(json_encode($possibleTargetValues->toArray()));
 
         return $possibleTargetValues;
     }

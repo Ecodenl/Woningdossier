@@ -88,9 +88,9 @@ class BuildingDataCopyService
 
                 foreach ($sourceValues as $sourceValue) {
                     // get the possible targets, we will remove them and insert the source values instead
-                    $possibleTargetValue = self::getPossibleTargetValues($sourceValue, $targetValues, $whereColumn, $additionalWhereColumn);
+                    $possibleTargetValues = self::getPossibleTargetValues($sourceValue, $targetValues, $whereColumn, $additionalWhereColumn);
 
-                    if ($possibleTargetValue instanceof \stdClass) {
+                    foreach ($possibleTargetValues as $possibleTargetValue) {
                         DB::table($table)->where('id', $possibleTargetValue->id)->delete();
                     }
 
@@ -104,7 +104,7 @@ class BuildingDataCopyService
     /**
      * Returns the targets which should be delete copied
      */
-    public static function getPossibleTargetValues($sourceValue, Collection $targetValues, $whereColumn, $additionalWhereColumn): ?\stdClass
+    public static function getPossibleTargetValues(\stdClass $sourceValue, Collection $targetValues, string $whereColumn, ?string $additionalWhereColumn): ?Collection
     {
         // its a possible target, there is a chance the target has no input.
         $possibleTargetValues = $targetValues->where($whereColumn, $sourceValue->{$whereColumn});
@@ -113,15 +113,7 @@ class BuildingDataCopyService
             $possibleTargetValues = $possibleTargetValues->where($additionalWhereColumn, $sourceValue->{$additionalWhereColumn});
         }
 
-        // this should only happen if the data is wrong in the first place
-        // if there are multiple found it would mean there is a duplicate
-        if ($possibleTargetValues->count() > 1) {
-            (new DiscordNotifier())->notify('Multiple target values found, first one is returned. Possible duplicate created.');
-            (new DiscordNotifier())->notify('Duplicate check is running to provide possible reproducible data....');
-            Artisan::call('check:duplicates');
-        }
-
-        return $possibleTargetValues->first();
+        return $possibleTargetValues;
     }
 
     /**
@@ -174,8 +166,8 @@ class BuildingDataCopyService
                 $buildingOrUserId = $building->id;
                 $buildingOrUserColumn = 'building_id';
             }
-
             // now we get all the answers from the desired input source
+
             $fromValues = \DB::table($table)
                 ->where('input_source_id', $from->id)
                 ->where($buildingOrUserColumn, $buildingOrUserId)

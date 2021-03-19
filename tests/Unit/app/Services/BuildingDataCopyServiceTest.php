@@ -28,7 +28,7 @@ class BuildingDataCopyServiceTest extends TestCase
                 ],
                 'interested_in_type',
                 'interested_in_id',
-                (object)['interested_in_type' => Step::class, 'interested_in_id' => 5, 'interest_id' => 2],
+                [(object)['interested_in_type' => Step::class, 'interested_in_id' => 5, 'interest_id' => 2],]
             ],
             [
                 (object)['service_id' => 3, 'service_value_id' => 24, 'extra' => ['year' => 2008]],
@@ -38,7 +38,7 @@ class BuildingDataCopyServiceTest extends TestCase
                 ],
                 'service_id',
                 'service_value_id',
-                null
+                []
             ],
             [
                 (object)['step_id' => 3, 'measure_application_id' => 4, 'costs' => 750, 'savings_gas' => 0.0],
@@ -52,7 +52,7 @@ class BuildingDataCopyServiceTest extends TestCase
                 ],
                 'step_id',
                 'measure_application_id',
-                (object)['step_id' => 3, 'measure_application_id' => 4, 'costs' => 2190, 'savings_gas' => 23]
+                [(object)['step_id' => 3, 'measure_application_id' => 4, 'costs' => 2190, 'savings_gas' => 23]]
             ],
             [
                 (object)['step_id' => 5, 'measure_application_id' => 1, 'costs' => 610, 'savings_gas' => 0.0],
@@ -60,7 +60,7 @@ class BuildingDataCopyServiceTest extends TestCase
                 ],
                 'step_id',
                 'measure_application_id',
-                null
+                []
             ],
             [
                 (object)['interested_in_type' => MeasureApplication::class, 'interested_in_id' => 5, 'interest_id' => 3],
@@ -70,7 +70,7 @@ class BuildingDataCopyServiceTest extends TestCase
                 ],
                 'interested_in_type',
                 'interested_in_id',
-                (object)['interested_in_type' => MeasureApplication::class, 'interested_in_id' => 5, 'interest_id' => 2],
+               [ (object)['interested_in_type' => MeasureApplication::class, 'interested_in_id' => 5, 'interest_id' => 2],]
             ],
             [
                 (object)['interested_in_type' => MeasureApplication::class, 'interested_in_id' => 5, 'interest_id' => 3],
@@ -80,7 +80,7 @@ class BuildingDataCopyServiceTest extends TestCase
                 ],
                 'interested_in_type',
                 'interested_in_id',
-                (object)['interested_in_type' => MeasureApplication::class, 'interested_in_id' => 5, 'interest_id' => 2],
+                [(object)['interested_in_type' => MeasureApplication::class, 'interested_in_id' => 5, 'interest_id' => 2],]
             ],
             [
                 (object)['element_id' => 3, 'element_value_id' => 36],
@@ -92,7 +92,7 @@ class BuildingDataCopyServiceTest extends TestCase
                 ],
                 'element_id',
                 'element_value_id',
-                null
+                []
             ],
             [
                 (object)['element_id' => 8, 'element_value_id' => 36, 'extra' => ['content' => 'Which does not exists']],
@@ -102,7 +102,7 @@ class BuildingDataCopyServiceTest extends TestCase
                 ],
                 'element_id',
                 'element_value_id',
-                (object)['element_id' => 8, 'element_value_id' => 36],
+                [(object)['element_id' => 8, 'element_value_id' => 36]],
             ],
             [
                 (object)['element_id' => 8, 'element_value_id' => 36],
@@ -112,7 +112,7 @@ class BuildingDataCopyServiceTest extends TestCase
                 ],
                 'element_id',
                 'element_value_id',
-                null
+                []
             ],
             [
                 (object)['element_id' => 8, 'element_value_id' => 37, 'extra' => ['year' => 2019]],
@@ -121,7 +121,7 @@ class BuildingDataCopyServiceTest extends TestCase
                 ],
                 'element_id',
                 'element_value_id',
-                (object)['element_id' => 8, 'element_value_id' => 37],
+                [(object)['element_id' => 8, 'element_value_id' => 37]],
             ],
         ];
     }
@@ -131,14 +131,14 @@ class BuildingDataCopyServiceTest extends TestCase
      */
     public function testMakeTargetValues($sourceValue, $targetValues, $whereColumn, $additionalWhereColumn, $expected)
     {
-        $possibleTargetValue = BuildingDataCopyService::getPossibleTargetValues(
+        $possibleTargetValues = BuildingDataCopyService::getPossibleTargetValues(
             $sourceValue,
             collect($targetValues),
             $whereColumn,
             $additionalWhereColumn
         );
 
-        $this->assertEquals($expected, $possibleTargetValue);
+        $this->assertEquals($expected, $possibleTargetValues->values()->toArray());
     }
 
 

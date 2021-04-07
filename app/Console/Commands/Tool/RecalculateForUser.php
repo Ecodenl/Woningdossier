@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Tool;
 
+use App\Helpers\Queue;
 use App\Jobs\ProcessRecalculate;
 use App\Jobs\RecalculateStepForUser;
 use App\Models\CompletedStep;
@@ -104,12 +105,15 @@ class RecalculateForUser extends Command
                 /** @var CompletedStep $completedStep */
                 foreach ($completedSteps as $completedStep) {
                     // user is interested, so recreate the advices for each step
-                    $stepsToRecalculateChain[] = new RecalculateStepForUser($user, $inputSource, $completedStep->step);
+                    $stepsToRecalculateChain[] = (new RecalculateStepForUser($user, $inputSource, $completedStep->step))
+                        ->onQueue(Queue::ASYNC);
                 }
 
                 if (! empty($stepsToRecalculateChain)) {
                     Log::debug("Dispatching recalculate chain for | b_id: {$user->building->id} | input_source_id: {$inputSource->id}");
-                    ProcessRecalculate::withChain($stepsToRecalculateChain)->dispatch();
+                    ProcessRecalculate::withChain($stepsToRecalculateChain)
+                        ->dispatch()
+                        ->onQueue(Queue::ASYNC);
                 }
             }
         }

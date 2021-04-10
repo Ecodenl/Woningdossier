@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Requests\Cooperation\Tool;
+namespace App\Http\Requests;
 
-use App\Http\Requests\DecimalReplacementTrait;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class GeneralDataFormRequest extends FormRequest
 {
@@ -17,7 +16,7 @@ class GeneralDataFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::check();
+        return Auth::check();
     }
 
     public function getValidatorInstance()

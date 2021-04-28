@@ -16,7 +16,7 @@ return [
             'are-you-sure' => 'Weet u zeker dat u de Coöperatie geen toegang wilt geven tot uw dossier?',
             'message' => 'Nadere toelichting op uw vraag',
             'submit' => 'Opsturen <span class="glyphicon glyphicon-envelope"></span>',
-            'allow_access' => 'Ik geef toesteming aan :cooperation om de gegevens uit mijn Hoomdossier in te zien en in overleg met mij deze gegevens aan te passen.',
+            'allow_access' => 'Ik geef toestemming aan :cooperation om de gegevens uit mijn Hoomdossier in te zien en in overleg met mij deze gegevens aan te passen.',
 
             'selected-option' => 'Waar kunnen we u bij helpen?:',
         ],

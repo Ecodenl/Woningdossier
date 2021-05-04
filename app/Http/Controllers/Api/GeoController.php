@@ -16,6 +16,10 @@ class GeoController extends Controller
 
         $address = PicoHelper::getAddressData($postalCode, $number, $houseNumberExtension);
 
+        if (empty($address)) {
+            $address = $request->all();
+        }
+
         return response()->json($address);
     }
 }

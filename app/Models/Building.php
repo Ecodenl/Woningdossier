@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Scopes\GetValueScope;
 use App\Traits\ToolSettingTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -140,7 +141,7 @@ class Building extends Model
      */
     public function hasNotCompleted(Step $step)
     {
-        return ! $this->hasCompleted($step);
+        return !$this->hasCompleted($step);
     }
 
     /**
@@ -223,10 +224,10 @@ class Building extends Model
     {
         // determine fitting example building based on year + house type
         $features = $this->buildingFeatures;
-        if (! $features instanceof BuildingFeature) {
+        if (!$features instanceof BuildingFeature) {
             return null;
         }
-        if (! $features->buildingType instanceof BuildingType) {
+        if (!$features->buildingType instanceof BuildingType) {
             return null;
         }
         $example = ExampleBuilding::whereNull('cooperation_id')
@@ -238,13 +239,13 @@ class Building extends Model
 
     public function getExampleValueForStep(Step $step, $formKey)
     {
-        return $this->getExampleValue($step->slug.'.'.$formKey);
+        return $this->getExampleValue($step->slug . '.' . $formKey);
     }
 
     public function getExampleValue($key)
     {
         $example = $this->getExampleBuilding();
-        if (! $example instanceof ExampleBuilding) {
+        if (!$example instanceof ExampleBuilding) {
             return null;
         }
 
@@ -253,7 +254,7 @@ class Building extends Model
 
     public function getBuildYear()
     {
-        if (! $this->buildingFeatures instanceof BuildingFeature) {
+        if (!$this->buildingFeatures instanceof BuildingFeature) {
             return null;
         }
 
@@ -432,6 +433,22 @@ class Building extends Model
     public function buildingStatuses(): HasMany
     {
         return $this->hasMany(BuildingStatus::class);
+    }
+
+    public function scopeWithMostRecentBuildingStatus(Builder $query)
+    {
+        return $query->select(['buildings.*', 'translations.translation'])
+            ->leftJoin(
+                'building_statuses',
+                'buildings.id',
+                '=',
+                'building_statuses.building_id'
+            )
+            ->leftJoin('statuses', 'building_statuses.status_id', '=', 'statuses.id')
+            ->leftJoin('translations', 'statuses.name', '=', 'translations.key')
+            ->where('translations.language', '=', 'nl')
+            ->orderByRaw('building_statuses.created_at DESC, building_statuses.id DESC');
+
     }
 
     /**

@@ -16,16 +16,17 @@ class BuildingController extends Controller
 
         // we do the sort on the collection, this would be another "complicated" query.
         // for now this will do.
-        $buildings = Building::findMany($connectedBuildingsForUser)
-            ->load([
-                    'user',
-                    'buildingStatuses' => function ($q) {
-                        $q->with('status')->mostRecent();
-                    }, ]
-            )->sortByDesc(function (Building $building) {
-                return $building->buildingStatuses->first()->appointment_date;
-            });
+        $buildings = Building::whereIn('buildings.id', $connectedBuildingsForUser)
+            ->with(['user'])
+            ->withMostRecentBuildingStatus()
+            ->get();
+
+//            ->sortByDesc(function (Building $building) {
+//                return $building->buildingStatuses->first()->appointment_date;
+//            });
 
         return view('cooperation.admin.coach.buildings.index', compact('buildings', 'buildings'));
     }
 }
+
+

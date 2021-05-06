@@ -459,22 +459,6 @@ class Building extends Model
         return $this->hasMany(BuildingStatus::class);
     }
 
-    public function scopeWithMostRecentBuildingStatus(Builder $query)
-    {
-        return $query->select(['buildings.*', 'translations.translation'])
-            ->leftJoin(
-                'building_statuses',
-                'buildings.id',
-                '=',
-                'building_statuses.building_id'
-            )
-            ->leftJoin('statuses', 'building_statuses.status_id', '=', 'statuses.id')
-            ->leftJoin('translations', 'statuses.name', '=', 'translations.key')
-            ->where('translations.language', '=', 'nl')
-            ->orderByRaw('building_statuses.created_at DESC, building_statuses.id DESC');
-
-    }
-
     /**
      * Get the most recent BuildingStatus.
      *

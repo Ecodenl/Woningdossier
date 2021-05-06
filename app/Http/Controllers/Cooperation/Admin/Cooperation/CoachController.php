@@ -20,6 +20,7 @@ class CoachController extends Controller
     {
         $users = $cooperation
             ->users()
+            ->with('building', 'roles')
             ->role(['coach', 'coordinator'])
             ->get();
 

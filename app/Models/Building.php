@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 
 /**
@@ -110,6 +111,29 @@ class Building extends Model
     public static function toolSettingColumnsToCheck()
     {
         return ['example_building_id'];
+    }
+
+    /**
+     * Scope to return the buildings with most recent information from the building status.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeWithRecentBuildingStatusInformation(Builder $query): Builder
+    {
+        $recentBuildingStatuses = DB::table('building_statuses')
+            ->selectRaw('building_id, max(created_at) as max_created_at, max(id) AS max_id')
+            ->groupByRaw('building_id');
+
+        return $query->select([
+            'buildings.*',
+            'translations.translation as status_translation',
+            'appointment_date',
+        ])->leftJoin('building_statuses as bs', 'bs.building_id', '=', 'buildings.id')
+            ->rightJoinSub($recentBuildingStatuses, 'bs2', 'bs2.max_id', '=', 'bs.id')
+            ->leftJoin('statuses', 'bs.status_id', '=', 'statuses.id')
+            ->leftJoin('translations', 'statuses.name', '=', 'translations.key')
+            ->where('translations.language', '=', app()->getLocale());
     }
 
     public function stepComments()

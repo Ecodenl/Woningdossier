@@ -43,14 +43,19 @@ class CoachController extends Controller
 
         $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($userToShow)->pluck('building_id');
 
-        $buildings = Building::findMany($connectedBuildingsForUser)
-            ->load(['user',
-                    'buildingStatuses' => function ($q) {
-                        $q->with('status');
-                    },
-                ]
-            );
+//        $buildings = Building::findMany($connectedBuildingsForUser)
+//            ->load(['user',
+//                    'buildingStatuses' => function ($q) {
+//                        $q->with('status');
+//                    },
+//                ]
+//            );
 
+        $buildings = Building::withRecentBuildingStatusInformation()
+            ->whereIn('buildings.id', $connectedBuildingsForUser)
+            ->orderByDesc('appointment_date')
+            ->with('user')
+            ->get();
         $roles = $userToShow->roles->pluck('human_readable_name')->toArray();
 
         return view('cooperation.admin.cooperation.coaches.show', compact(

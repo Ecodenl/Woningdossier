@@ -42,11 +42,10 @@ class CoachController extends Controller
 
         $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($userToShow)->pluck('building_id');
 
-        // now we got the connected buildings of the user, get the models.
         $buildings = Building::findMany($connectedBuildingsForUser)
             ->load(['user',
                     'buildingStatuses' => function ($q) {
-                        $q->with('status')->mostRecent();
+                        $q->with('status');
                     },
                 ]
             );

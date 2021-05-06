@@ -209,6 +209,7 @@ class DumpService
 
         $street = $building->street;
         $number = $building->number;
+        $extension = $building->extension;
         $city = $building->city;
         $postalCode = $building->postal_code;
 
@@ -237,7 +238,7 @@ class DumpService
                 $inputSource->name,
                 $createdAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
                 $firstName, $lastName, $email, $phoneNumber,
-                $street, $number, $postalCode, $city,
+                $street, $number.' '.$extension , $postalCode, $city,
                 $buildingType, $buildYear, $exampleBuilding,
             ];
         }

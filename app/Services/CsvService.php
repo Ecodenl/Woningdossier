@@ -394,7 +394,7 @@ class CsvService
                         $query->withoutGlobalScope(GetValueScope::class)
                             ->where('step_id', $generalDataStep->id);
                     }]);
-            }])->get()->take(10);
+            }])->get();
 
         $coachIds = [];
         $residentIds = [];

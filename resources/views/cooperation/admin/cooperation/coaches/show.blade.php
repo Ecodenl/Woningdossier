@@ -44,7 +44,7 @@
                                 $appointmentDateFormatted = optional($building->getAppointmentDate())->format('d-m-Y');
                                 $appointmentDateStrotime = strtotime($appointmentDateFormatted);
 
-                                $userIsAuthUser = $user->id == \App\Helpers\Hoomdossier::user()->id;
+                                $userIsAuthUser = $user->id == Hoomdossier::user()->id;
                             ?>
                             <tr>
                                 <td data-sort="{{$userCreatedAtStrotime}}">

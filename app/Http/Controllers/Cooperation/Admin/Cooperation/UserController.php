@@ -30,7 +30,7 @@ class UserController extends Controller
             ->whereHas('building')
             ->with(['building' => function ($query) {
                 $query->with(['buildingStatuses' => function ($query) {
-                    $query->mostRecent()->with('status');
+                    $query->with('status');
                 }]);
             }])
             ->orderByDesc('created_at')

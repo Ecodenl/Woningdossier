@@ -14,16 +14,14 @@ class BuildingController extends Controller
     {
         $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser(Hoomdossier::user())->pluck('building_id');
 
-        // we do the sort on the collection, this would be another "complicated" query.
-        // for now this will do.
         $buildings = Building::whereIn('buildings.id', $connectedBuildingsForUser)
-            ->with(['user'])
-            ->withMostRecentBuildingStatus()
-            ->get();
+           ->with([
+               'user',
+               'buildingStatuses' => function ($query) {
+                   $query->with('status');
+               }]
+           )->get();
 
-//            ->sortByDesc(function (Building $building) {
-//                return $building->buildingStatuses->first()->appointment_date;
-//            });
 
         return view('cooperation.admin.coach.buildings.index', compact('buildings', 'buildings'));
     }

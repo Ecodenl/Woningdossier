@@ -26,7 +26,7 @@
                             <?php
                                 /** @var \App\Models\Building $building */
                                 $user = $building->user;
-                                $buildingStatus = $building->buildingStatuses->first();
+                                $buildingStatus = $building->buildingStatuses->last();
 
                                 $userCreatedAtFormatted = optional($user->created_at)->format('d-m-Y');
                                 $userCreatedAtStrotime = strtotime($userCreatedAtFormatted);

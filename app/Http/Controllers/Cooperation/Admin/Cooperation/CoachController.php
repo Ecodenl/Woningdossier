@@ -20,6 +20,7 @@ class CoachController extends Controller
     {
         $users = $cooperation
             ->users()
+            ->with('building', 'roles')
             ->role(['coach', 'coordinator'])
             ->get();
 
@@ -42,14 +43,11 @@ class CoachController extends Controller
 
         $connectedBuildingsForUser = BuildingCoachStatusService::getConnectedBuildingsByUser($userToShow)->pluck('building_id');
 
-        // now we got the connected buildings of the user, get the models.
-        $buildings = Building::findMany($connectedBuildingsForUser)
-            ->load(['user',
-                    'buildingStatuses' => function ($q) {
-                        $q->with('status')->mostRecent();
-                    },
-                ]
-            );
+        $buildings = Building::withRecentBuildingStatusInformation()
+            ->whereIn('buildings.id', $connectedBuildingsForUser)
+            ->orderByDesc('appointment_date')
+            ->with('user')
+            ->get();
 
         $roles = $userToShow->roles->pluck('human_readable_name')->toArray();
 

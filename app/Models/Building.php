@@ -4,9 +4,11 @@ namespace App\Models;
 
 use App\Scopes\GetValueScope;
 use App\Traits\ToolSettingTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 
 /**
@@ -111,6 +113,29 @@ class Building extends Model
         return ['example_building_id'];
     }
 
+    /**
+     * Scope to return the buildings with most recent information from the building status.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeWithRecentBuildingStatusInformation(Builder $query): Builder
+    {
+        $recentBuildingStatuses = DB::table('building_statuses')
+            ->selectRaw('building_id, max(created_at) as max_created_at, max(id) AS max_id')
+            ->groupByRaw('building_id');
+
+        return $query->select([
+            'buildings.*',
+            'translations.translation as status_translation',
+            'appointment_date',
+        ])->leftJoin('building_statuses as bs', 'bs.building_id', '=', 'buildings.id')
+            ->rightJoinSub($recentBuildingStatuses, 'bs2', 'bs2.max_id', '=', 'bs.id')
+            ->leftJoin('statuses', 'bs.status_id', '=', 'statuses.id')
+            ->leftJoin('translations', 'statuses.name', '=', 'translations.key')
+            ->where('translations.language', '=', app()->getLocale());
+    }
+
     public function stepComments()
     {
         return $this->hasMany(StepComment::class);
@@ -140,7 +165,7 @@ class Building extends Model
      */
     public function hasNotCompleted(Step $step)
     {
-        return ! $this->hasCompleted($step);
+        return !$this->hasCompleted($step);
     }
 
     /**
@@ -223,10 +248,10 @@ class Building extends Model
     {
         // determine fitting example building based on year + house type
         $features = $this->buildingFeatures;
-        if (! $features instanceof BuildingFeature) {
+        if (!$features instanceof BuildingFeature) {
             return null;
         }
-        if (! $features->buildingType instanceof BuildingType) {
+        if (!$features->buildingType instanceof BuildingType) {
             return null;
         }
         $example = ExampleBuilding::whereNull('cooperation_id')
@@ -238,13 +263,13 @@ class Building extends Model
 
     public function getExampleValueForStep(Step $step, $formKey)
     {
-        return $this->getExampleValue($step->slug.'.'.$formKey);
+        return $this->getExampleValue($step->slug . '.' . $formKey);
     }
 
     public function getExampleValue($key)
     {
         $example = $this->getExampleBuilding();
-        if (! $example instanceof ExampleBuilding) {
+        if (!$example instanceof ExampleBuilding) {
             return null;
         }
 
@@ -253,7 +278,7 @@ class Building extends Model
 
     public function getBuildYear()
     {
-        if (! $this->buildingFeatures instanceof BuildingFeature) {
+        if (!$this->buildingFeatures instanceof BuildingFeature) {
             return null;
         }
 

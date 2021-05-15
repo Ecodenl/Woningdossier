@@ -121,7 +121,7 @@ class CsvService
 
             $street = $building->street;
             $number = $building->number;
-            $extension = $building->extension;
+            $extension = $building->extension ?? '';
             $city = $building->city;
             $postalCode = $building->postal_code;
 
@@ -148,7 +148,7 @@ class CsvService
                 $row[$key] = [
                     $inputSourceForDump->name, $createdAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
                     $firstName, $lastName, $email, $phoneNumber,
-                    $street, $number.' '.$extension, $postalCode, $city,
+                    $street, trim($number.' '.$extension), $postalCode, $city,
                     $buildingType, $buildYear, $exampleBuilding,
                 ];
             }
@@ -285,7 +285,7 @@ class CsvService
 
                 $street = $building->street;
                 $number = $building->number;
-                $extension = $building->extension;
+                $extension = $building->extension ?? '';
                 $city = $building->city;
                 $postalCode = $building->postal_code;
 
@@ -308,7 +308,7 @@ class CsvService
                     $rows[$building->id] = [
                         $inputSource->name, $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
                         $firstName, $lastName, $email, $phoneNumber,
-                        $street, $number.' '.$extension, $postalCode, $city,
+                        $street, trim($number.' '.$extension), $postalCode, $city,
                         $buildingType, $buildYear,
                     ];
                 }

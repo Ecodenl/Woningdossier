@@ -5,6 +5,7 @@
     "/css/admin/datatables/responsive.bootstrap.min.css": "/css/admin/datatables/responsive.bootstrap.min.css",
     "/css/admin/datatables/responsive.dataTables.min.css": "/css/admin/datatables/responsive.dataTables.min.css",
     "/css/admin/datatables/dataTables.bootstrap.min.css": "/css/admin/datatables/dataTables.bootstrap.min.css",
+    "/css/frontend/app.css": "/css/frontend/app.css",
     "/js/are-you-sure.js": "/js/are-you-sure.js",
     "/js/datatables.js": "/js/datatables.js",
     "/js/select2.js": "/js/select2.js",

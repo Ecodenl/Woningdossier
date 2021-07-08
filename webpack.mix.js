@@ -49,6 +49,9 @@ mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/pdf.scss', 'public/css')
     .sass('resources/sass/admin/datatables/_responsive_bootstrap.scss', 'public/css/admin/datatables/responsive.bootstrap.min.css')
     .sass('resources/sass/admin/datatables/_responsive_datatables.scss', 'public/css/admin/datatables/responsive.dataTables.min.css')
-    .sass('resources/sass/admin/datatables/_dataTables_bootstrap.scss', 'public/css/admin/datatables/dataTables.bootstrap.min.css');
+    .sass('resources/sass/admin/datatables/_dataTables_bootstrap.scss', 'public/css/admin/datatables/dataTables.bootstrap.min.css')
+    .postCss("resources/css/frontend/app.css", "public/css/frontend", [
+        require("tailwindcss"),
+    ]);
 
 

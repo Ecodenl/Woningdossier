@@ -12,7 +12,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/admin/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/datepicker/datetimepicker.min.css') }}">
     @if(isset($cooperationStyle->css_url))
         <link href="{{ asset($cooperationStyle->css_url) }}" rel="stylesheet">

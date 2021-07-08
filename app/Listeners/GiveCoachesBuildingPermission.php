@@ -71,9 +71,6 @@ class GiveCoachesBuildingPermission
                 'building_id' => $building->id,
             ]);
 
-            // what should we set the building status to ?
-            $building->setStatus('pending');
-
             // give the user a unread message.
             PrivateMessageView::create([
                 'input_source_id' => InputSource::findByShort(InputSource::RESIDENT_SHORT)->id,

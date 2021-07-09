@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120px" height="86px" viewBox="0 0 120 86" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>2-onder-1-kap</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-284.000000, -2427.000000)">
+            <g id="2-onder-1-kap" transform="translate(286.000000, 2429.000000)">
+                <polygon id="Path" fill="#2CA982" fill-rule="nonzero" points="58 0 58 81.6 97.9 81.6 97.9 13 78 0"></polygon>
+                <line x1="116" y1="81.6" x2="0" y2="81.6" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round"></line>
+                <rect id="Rectangle" stroke="#394553" stroke-width="3" stroke-linecap="round" x="18.1" y="46.9" width="39.9" height="34.7"></rect>
+                <line x1="58" y1="46.9" x2="58" y2="1" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round"></line>
+                <path d="M45.5,58.8 L30.6,58.8 C30.4,58.8 30.2,59 30.2,59.2 L30.2,81.6 L46,81.6 L46,59.3 C46,59 45.8,58.8 45.5,58.8 C45.5,58.8 45.5,58.8 45.5,58.8 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round"></path>
+                <path d="M45.8,35 L30.4,35 L30.4,18 C30.4,17.8 30.6,17.6 30.8,17.6 L45.4,17.6 C45.6,17.6 45.8,17.8 45.8,18 L45.8,18 L45.8,35 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <rect id="Rectangle" stroke="#394553" stroke-width="3" stroke-linecap="round" x="58" y="46.9" width="39.9" height="34.7"></rect>
+                <polyline id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="97.9 46.9 97.9 12.9 78 0 38.1 0 18.1 12.9 18.1 46.9"></polyline>
+                <path d="M85.5,58.8 L70.6,58.8 C70.4,58.8 70.2,59 70.2,59.2 L70.2,81.6 L86,81.6 L86,59.3 C85.9,59 85.7,58.8 85.5,58.8 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round"></path>
+                <path d="M85.8,35 L70.3,35 L70.3,18 C70.3,17.8 70.5,17.6 70.7,17.6 L70.7,17.6 L85.3,17.6 C85.5,17.6 85.7,17.8 85.7,18 L85.7,18 L85.7,35 L85.8,35 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+            </g>
+        </g>
+    </g>
+</svg>

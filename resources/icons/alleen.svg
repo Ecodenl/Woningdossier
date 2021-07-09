@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="46px" height="62px" viewBox="0 0 46 62" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Alleen</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Styles" transform="translate(-151.000000, -3588.000000)" stroke="#394553" stroke-width="3">
+            <g id="enkel" transform="translate(153.000000, 3590.000000)">
+                <path d="M8.36999618,13.1300038 C8.36999618,20.3815026 14.2485012,26.2600038 21.5,26.2600038 C28.7514988,26.2600038 34.63,20.3815026 34.63,13.1300038 C34.63,5.87850505 28.7514988,0 21.5,0 C18.016894,-0.00265200029 14.6756838,1.37983044 12.2127552,3.84275904 C9.74982662,6.30568763 8.36734418,9.64689781 8.36999618,13.1300038 L8.36999618,13.1300038 Z" id="Path"></path>
+                <path d="M0,58.3400038 L0,47.0500038 C0,38.2134478 7.163444,31.0500038 16,31.0500038 L26,31.0500038 C34.836556,31.0500038 42,38.2134478 42,47.0500038 L42,58.3400038" id="Path"></path>
+            </g>
+        </g>
+    </g>
+</svg>

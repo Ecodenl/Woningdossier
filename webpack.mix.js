@@ -46,6 +46,7 @@ mix.js('resources/js/app.js', 'public/js')
         ], 'public/js/hoomdossier.js'
     )
     .copy('resources/images', 'public/images')
+    .copy('resources/icons', 'public/icons')
     .sass('resources/sass/admin/app.scss', 'public/css/admin')
     .sass('resources/sass/pdf.scss', 'public/css')
     .sass('resources/sass/admin/datatables/_responsive_bootstrap.scss', 'public/css/admin/datatables/responsive.bootstrap.min.css')

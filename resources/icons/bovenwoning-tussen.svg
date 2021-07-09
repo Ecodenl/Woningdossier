@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120px" height="98px" viewBox="0 0 120 98" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Bovenwoning tussen</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-886.000000, -2415.000000)">
+            <g id="bovenwoning-tussen" transform="translate(888.000000, 2417.000000)">
+                <rect id="Rectangle" fill="#2CA982" fill-rule="nonzero" x="44" y="6" width="28" height="35"></rect>
+                <path d="M39.5,77.2910256 L24.09,77.2910256 L24.09,60.2910256 C24.0730438,60.169404 24.1076837,60.04623 24.1855473,59.9512744 C24.2634109,59.8563187 24.3774132,59.7982218 24.5,59.7910256 L39.09,59.7910256 C39.3330053,59.7910256 39.53,59.9880203 39.53,60.2310256 L39.53,77.2310256 L39.5,77.2910256 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M91.91,77.4010256 L76.5,77.4010256 L76.5,60.4010256 C76.5,60.1580203 76.6969947,59.9610256 76.94,59.9610256 L91.5,59.9610256 C91.7430053,59.9610256 91.94,60.1580203 91.94,60.4010256 L91.94,77.4010256 L91.91,77.4010256 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M39.5,32.5310256 L24.09,32.5310256 L24.09,15.4810256 C24.09,15.2380203 24.2869947,15.0410256 24.53,15.0410256 L39.09,15.0410256 C39.3330053,15.0410256 39.53,15.2380203 39.53,15.4810256 L39.53,32.5310256 L39.5,32.5310256 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M65.72,32.5310256 L50.28,32.5310256 L50.28,15.4810256 C50.28,15.2380203 50.4769947,15.0410256 50.72,15.0410256 L65.28,15.0410256 C65.5230053,15.0410256 65.72,15.2380203 65.72,15.4810256 L65.72,32.5310256 L65.72,32.5310256 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M91.91,32.5310256 L76.5,32.5310256 L76.5,15.4810256 C76.5,15.2380203 76.6969947,15.0410256 76.94,15.0410256 L91.5,15.0410256 C91.7430053,15.0410256 91.94,15.2380203 91.94,15.4810256 L91.94,32.5310256 L91.91,32.5310256 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <line x1="15.6" y1="40.6710256" x2="15.6" y2="6.90102556" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <polyline id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="100.4 6.79102556 100.4 40.5210256 100.4 40.5210256"></polyline>
+                <path d="M103.67,6.00102556 L12.33,6.00102556 L12.33,0.171025564 C13.1875575,0.0172973867 14.0604531,-0.0330619757 14.93,0.021025564 L101.07,0.021025564 C101.939547,-0.0330619757 102.812442,0.0172973867 103.67,0.171025564 L103.67,6.00102556 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M103.67,47.9010256 L12.33,47.9010256 L12.33,42.0710256 C13.1875575,41.9172974 14.0604531,41.866938 14.93,41.9210256 L101.07,41.9210256 C101.939547,41.866938 102.812442,41.9172974 103.67,42.0710256 L103.67,47.9010256 L103.67,47.9010256 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <polyline id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="100.4 49.4310256 100.4 93.9010256 15.6 93.9010256 15.6 49.4310256"></polyline>
+                <path d="M69.99,87.3010256 L45.99,87.3010256 C45.6,87.3010256 45.28,87.3610256 45.28,87.4310256 L45.28,93.7910256 L70.7,93.7910256 L70.7,87.4410256 C70.7,87.3610256 70.38,87.3010256 69.99,87.3010256 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round"></path>
+                <path d="M65.44,67.4310256 L50.56,67.4310256 C50.4485424,67.4227785 50.3383943,67.4592946 50.2539368,67.5324911 C50.1694793,67.6056876 50.1176783,67.7095274 50.11,67.8210256 L50.11,87.3010256 L65.89,87.3010256 L65.89,67.7910256 C65.8589649,67.5708138 65.6616533,67.4129645 65.44,67.4310256 L65.44,67.4310256 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round"></path>
+                <circle id="Oval" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" cx="58" cy="57.5110256" r="4.21"></circle>
+                <line x1="116" y1="93.9010256" x2="0" y2="93.9010256" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round"></line>
+            </g>
+        </g>
+    </g>
+</svg>

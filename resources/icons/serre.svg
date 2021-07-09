@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="106px" height="95px" viewBox="0 0 106 95" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Serre</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-742.000000, -2708.000000)">
+            <g id="serre-icon" transform="translate(744.000000, 2710.000000)">
+                <rect id="Rectangle" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" x="27.3" y="32.7" width="17.2" height="17.2"></rect>
+                <rect id="Rectangle" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" x="27.3" y="64.5" width="17.2" height="26.1"></rect>
+                <rect id="Rectangle" fill="#2CA982" x="72" y="60" width="31" height="31"></rect>
+                <g id="Group" transform="translate(71.800000, 59.500000)" stroke="#394553" stroke-width="3">
+                    <line x1="0" y1="0.5" x2="3" y2="0.5" id="Path"></line>
+                    <line x1="7.9" y1="0.5" x2="25.1" y2="0.5" id="Path" stroke-dasharray="4.9148,4.9148"></line>
+                    <polyline id="Path" points="27.6 0.5 30.6 0.5 30.6 3.5"></polyline>
+                    <line x1="30.6" y1="8.4" x2="30.6" y2="25.6" id="Path" stroke-dasharray="4.9148,4.9148"></line>
+                    <polyline id="Path" points="30.6 28.1 30.6 31.1 27.6 31.1"></polyline>
+                    <line x1="22.7" y1="31.1" x2="5.5" y2="31.1" id="Path" stroke-dasharray="4.9148,4.9148"></line>
+                    <line x1="3" y1="31.1" x2="0" y2="31.1" id="Path"></line>
+                </g>
+                <polygon id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0 44 35.9 0 71.8 44 71.8 90.6 0 90.6"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

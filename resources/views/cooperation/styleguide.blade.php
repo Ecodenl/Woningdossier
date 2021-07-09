@@ -213,7 +213,7 @@
                 <div class="space-x-10">
                     <div class="space-y-3 inline-block">
                         <p>
-                            <a>This is a text link</a> <span class="font-bold not-italic">(P A, pre-styled)</span>
+                            <a>This is a text link <span class="font-bold text-blue-500">(P A, pre-styled)</span></a>
                         </p>
 
                         <div class="flex items-center space-x-3">
@@ -234,6 +234,58 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <!-- Buttons -->
+    <div class="w-full">
+        <div class="w-full border-b border-solid border-black border-opacity-25 py-2 mb-4">
+            <span class="pr-3 bg-white text-sm font-normal text-blue-500 uppercase">
+                Buttons
+            </span>
+        </div>
+        <div class="flex w-full">
+            <div class="w-3/12 space-y-8">
+                <div class="space-x-3">
+                    <button class="btn btn-purple inline-block">
+                        Sample text
+                    </button>
+                    <p class="font-bold inline-block">.btn.btn-purple</p>
+                </div>
+                <div class="space-x-3">
+                    <button class="btn btn-orange inline-block">
+                        Sample text
+                    </button>
+                    <p class="font-bold inline-block">.btn.btn-orange</p>
+                </div>
+            </div>
+
+            <div class="w-2/12"></div>
+
+            <div class="w-4/12 space-y-8">
+                <div class="space-x-3">
+                    <button class="btn btn-outline-purple inline-block">
+                        Sample text
+                    </button>
+                    <p class="font-bold inline-block">.btn.btn-outline-purple</p>
+                </div>
+                <div class="space-x-3">
+                    <button class="btn btn-outline-orange inline-block">
+                        Sample text
+                    </button>
+                    <p class="font-bold inline-block">.btn.btn-outline-orange</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Icons -->
+    <div class="w-full">
+        <div class="w-full border-b border-solid border-black border-opacity-25 py-2 mb-4">
+            <span class="pr-3 bg-white text-sm font-normal text-blue-500 uppercase">
+                Icons
+            </span>
+        </div>
+        <div class="flex w-full">
+
         </div>
     </div>
 </div>

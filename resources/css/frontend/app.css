@@ -17,26 +17,55 @@ Small example
 }
  */
 
-/* Normalize p tag */
-p {
-    @apply text-blue-500 text-sm font-light;
-}
+/* TYPOGRAPHY */
 
+/* Headings */
 .heading-1 {
-    @apply font-semibold text-blue text-5xl;
+    @apply font-semibold text-blue;
+    font-size: 48px;
+    line-height: 54px;
 }
 .heading-2 {
-    @apply font-semibold text-blue text-4xl;
+    @apply font-semibold text-blue;
+    font-size: 36px;
+    line-height: 42px;
 }
 .heading-3 {
-    @apply font-semibold text-blue text-3xl;
+    @apply font-semibold text-blue;
+    font-size: 32px;
+    line-height: 36px;
 }
 .heading-4 {
-    @apply font-semibold text-blue text-2xl;
+    @apply font-semibold text-blue;
+    font-size: 24px;
+    line-height: 28px;
 }
 .heading-5 {
-    @apply font-semibold text-blue text-xl;
+    @apply font-semibold text-blue;
+    font-size: 18px;
+    line-height: 24px;
 }
 .heading-6 {
     @apply font-semibold text-blue text-lg;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+/* Paragraph */
+p {
+    @apply text-blue-500 font-light;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+/* Hyperlink */
+a {
+    @apply text-blue-900 underline font-medium cursor-pointer;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+/* Hyperlink in paragraph */
+p a {
+    @apply text-purple no-underline font-medium;
 }

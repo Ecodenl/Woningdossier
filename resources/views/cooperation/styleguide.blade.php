@@ -117,73 +117,122 @@
                         Heading 1
                     </h1>
                     <p class="font-bold">.heading-1</p>
-                    <span class="flex align-center space-x-3">
-                        <div class="w-6 h-6 bg-blue rounded-full inline-block"></div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-5 h-5 bg-blue rounded-full"></div>
                         <p>System font Bold 48/54 pt</p>
-                    </span>
-                    <p class="font-bold">Pre-styled</p>
+                    </div>
+                    <p class="font-bold">P, Pre-styled</p>
                 </div>
                 <div class="space-y-3">
                     <h1 class="heading-2 block">
                         Heading 2
                     </h1>
                     <p class="font-bold">.heading-2</p>
-                    <span class="flex align-center space-x-3">
-                        <div class="w-6 h-6 bg-blue rounded-full inline-block"></div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-5 h-5 bg-blue rounded-full"></div>
                         <p>System font Bold 36/42 pt</p>
-                    </span>
-                    <p class="font-bold">Pre-styled</p>
+                    </div>
+                    <p class="font-bold no-underline">P, Pre-styled</p>
                 </div>
                 <div class="space-y-3">
                     <h1 class="heading-3 block">
                         Heading 3
                     </h1>
                     <p class="font-bold">.heading-3</p>
-                    <span class="flex align-center space-x-3">
-                        <div class="w-6 h-6 bg-blue rounded-full inline-block"></div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-5 h-5 bg-blue rounded-full"></div>
                         <p>System font Bold 32/36 pt</p>
-                    </span>
-                    <p class="font-bold">Pre-styled</p>
+                    </div>
+                    <p class="font-bold">P, Pre-styled</p>
                 </div>
                 <div class="space-y-3">
                     <h1 class="heading-4 block">
                         Heading 4
                     </h1>
                     <p class="font-bold">.heading-4</p>
-                    <span class="flex align-center space-x-3">
-                        <div class="w-6 h-6 bg-blue rounded-full inline-block"></div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-5 h-5 bg-blue rounded-full"></div>
                         <p>System font Bold 24/28 pt</p>
-                    </span>
-                    <p class="font-bold">Pre-styled</p>
+                    </div>
+                    <p class="font-bold">P, Pre-styled</p>
                 </div>
                 <div class="space-y-3">
                     <h1 class="heading-5 block">
                         Heading 5
                     </h1>
                     <p class="font-bold">.heading-5</p>
-                    <span class="flex align-center space-x-3">
-                        <div class="w-6 h-6 bg-blue rounded-full inline-block"></div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-5 h-5 bg-blue rounded-full"></div>
                         <p>System font Bold 18/24 pt</p>
-                    </span>
-                    <p class="font-bold">Pre-styled</p>
+                    </div>
+                    <p class="font-bold">P, Pre-styled</p>
                 </div>
                 <div class="space-y-3">
                     <h1 class="heading-6 block">
                         Heading 6
                     </h1>
                     <p class="font-bold">.heading-6</p>
-                    <span class="flex align-center space-x-3">
-                        <div class="w-6 h-6 bg-blue rounded-full inline-block"></div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-5 h-5 bg-blue rounded-full"></div>
                         <p>System font Bold 14/24 pt</p>
-                    </span>
-                     <p class="font-bold">Pre-styled</p>
+                    </div>
+                     <p class="font-bold">P, Pre-styled</p>
                 </div>
             </div>
 
             <div class="w-1/12"></div>
 
-            <div class="w-5/12">
+            <div class="w-6/12 space-y-8 mt-3">
+                <div class="w-11/12 space-y-3">
+                    <p>
+                        <span class="font-semibold">Body text</span> <span class="font-bold">(P.font-semibold)</span>
+                        <br>
+                        Hoom deelt kennis en ervaring over woningverduurzaming, we leiden de beste energiecoaches van
+                        Nederland op en ontwikkelen digitale tools om het werk van energiecoaches makkelijker te maken.
+                        We helpen gemeenten en bewonersinitiatieven met het opzetten en bemensen van een eigen
+                        coöperatief energieloket, en bieden ondersteuning in de uitvoering. <span class="font-bold">(P, Pre-styled)</span>
+                    </p>
 
+                    <div class="flex items-center space-x-3">
+                        <div class="w-5 h-5 bg-blue-500 rounded-full"></div>
+                        <p>System font Regular 14/24 pt</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <p class="italic">
+                        Caption for extra information or explanation. <span class="font-bold not-italic">(P.italic)</span>
+                    </p>
+
+                    <div class="flex items-center space-x-3">
+                        <div class="w-5 h-5 bg-blue-500 rounded-full"></div>
+                        <p>System font Italic 14/24 pt</p>
+                    </div>
+                </div>
+
+                <div class="space-x-10">
+                    <div class="space-y-3 inline-block">
+                        <p>
+                            <a>This is a text link</a> <span class="font-bold not-italic">(P A, pre-styled)</span>
+                        </p>
+
+                        <div class="flex items-center space-x-3">
+                            <div class="w-5 h-5 bg-purple rounded-full"></div>
+                            <p>System font Medium 14/24 pt</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 inline-block">
+                        <a>
+                            This is a hyperlink <span class="font-bold no-underline text-blue-500">(A, pre-styled)</span>
+                        </a>
+
+                        <div class="flex items-center space-x-3">
+                            <div class="w-5 h-5 bg-blue-900 rounded-full"></div>
+                            <p>System font Medium 14/24 pt</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -19809,54 +19809,48 @@ Small example
 }
  */
 
-/* Normalize p tag */
+/* TYPOGRAPHY */
 
-p {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  font-weight: 300;
-  --tw-text-opacity: 1;
-  color: rgba(100, 117, 133, var(--tw-text-opacity));
-}
+/* Headings */
 
 .heading-1 {
-  font-size: 3rem;
-  line-height: 1;
   font-weight: 600;
   --tw-text-opacity: 1;
   color: rgba(65, 76, 87, var(--tw-text-opacity));
+  font-size: 48px;
+  line-height: 54px;
 }
 
 .heading-2 {
-  font-size: 2.25rem;
-  line-height: 2.5rem;
   font-weight: 600;
   --tw-text-opacity: 1;
   color: rgba(65, 76, 87, var(--tw-text-opacity));
+  font-size: 36px;
+  line-height: 42px;
 }
 
 .heading-3 {
-  font-size: 1.875rem;
-  line-height: 2.25rem;
   font-weight: 600;
   --tw-text-opacity: 1;
   color: rgba(65, 76, 87, var(--tw-text-opacity));
+  font-size: 32px;
+  line-height: 36px;
 }
 
 .heading-4 {
-  font-size: 1.5rem;
-  line-height: 2rem;
   font-weight: 600;
   --tw-text-opacity: 1;
   color: rgba(65, 76, 87, var(--tw-text-opacity));
+  font-size: 24px;
+  line-height: 28px;
 }
 
 .heading-5 {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
   font-weight: 600;
   --tw-text-opacity: 1;
   color: rgba(65, 76, 87, var(--tw-text-opacity));
+  font-size: 18px;
+  line-height: 24px;
 }
 
 .heading-6 {
@@ -19865,6 +19859,39 @@ p {
   font-weight: 600;
   --tw-text-opacity: 1;
   color: rgba(65, 76, 87, var(--tw-text-opacity));
+  font-size: 14px;
+  line-height: 24px;
+}
+
+/* Paragraph */
+
+p {
+  font-weight: 300;
+  --tw-text-opacity: 1;
+  color: rgba(100, 117, 133, var(--tw-text-opacity));
+  font-size: 14px;
+  line-height: 24px;
+}
+
+/* Hyperlink */
+
+a {
+  cursor: pointer;
+  font-weight: 500;
+  --tw-text-opacity: 1;
+  color: rgba(17, 34, 200, var(--tw-text-opacity));
+  text-decoration: underline;
+  font-size: 14px;
+  line-height: 24px;
+}
+
+/* Hyperlink in paragraph */
+
+p a {
+  font-weight: 500;
+  --tw-text-opacity: 1;
+  color: rgba(98, 33, 145, var(--tw-text-opacity));
+  text-decoration: none;
 }
 
 @media (min-width: 640px) {

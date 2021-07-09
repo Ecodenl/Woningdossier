@@ -1,5 +1,6 @@
-let mix = require('laravel-mix');
+const mix = require('laravel-mix');
 
+const tailwindcss = require("tailwindcss");
 
 /*
  |--------------------------------------------------------------------------
@@ -51,7 +52,7 @@ mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/admin/datatables/_responsive_datatables.scss', 'public/css/admin/datatables/responsive.dataTables.min.css')
     .sass('resources/sass/admin/datatables/_dataTables_bootstrap.scss', 'public/css/admin/datatables/dataTables.bootstrap.min.css')
     .postCss("resources/css/frontend/app.css", "public/css/frontend", [
-        require("tailwindcss"),
+        tailwindcss,
     ]);
 
 

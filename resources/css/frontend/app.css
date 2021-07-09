@@ -16,3 +16,27 @@ Small example
     }
 }
  */
+
+/* Normalize p tag */
+p {
+    @apply text-blue-500 text-sm font-light;
+}
+
+.heading-1 {
+    @apply font-semibold text-blue text-5xl;
+}
+.heading-2 {
+    @apply font-semibold text-blue text-4xl;
+}
+.heading-3 {
+    @apply font-semibold text-blue text-3xl;
+}
+.heading-4 {
+    @apply font-semibold text-blue text-2xl;
+}
+.heading-5 {
+    @apply font-semibold text-blue text-xl;
+}
+.heading-6 {
+    @apply font-semibold text-blue text-lg;
+}

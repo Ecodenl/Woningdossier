@@ -76,13 +76,57 @@
         <div class="h-full bg-purple" style="width: 30%"></div>
     </div>
 </div>
-<div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-8 flex flex-wrap space-y-20">
-    <div class="w-full">
+<main>
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20">
+        <div class="w-full">
+            <h4 class="heading-4">
+                Welke woning past het beste bij uw situatie?
+            </h4>
+            <div class="form-group">
+                <div class="form-header">
+                    <label class="form-label">
+                        Voorbeeldwoning opties
+                    </label>
+                    <div class="form-input-source"></div>
+                    <div class="form-info">
+                        <i class="icon-md icon-info-light"></i>
+                    </div>
+                </div>
 
+                <div class="radio-wrapper pr-3">
+                    <input type="radio" id="example-building-1" name="example-building" value="1">
+                    <label for="example-building-1">
+                        <span class="checkmark"></span>
+                        <span>Een jaren vijftig woning</span>
+                    </label>
+                </div>
+                <div class="radio-wrapper pl-3">
+                    <input type="radio" id="example-building-2" name="example-building" value="2">
+                    <label for="example-building-2">
+                        <span class="checkmark"></span>
+                        <span>Een jaren zestig woning</span>
+                    </label>
+                </div>
+                <div class="radio-wrapper pr-3">
+                    <input type="radio" id="example-building-3" name="example-building" value="3">
+                    <label for="example-building-3">
+                        <span class="checkmark"></span>
+                        <span>Een rijtjeshuis</span>
+                    </label>
+                </div>
+                <div class="radio-wrapper pl-3">
+                    <input type="radio" id="example-building-4" name="example-building" value="4">
+                    <label for="example-building-4">
+                        <span class="checkmark"></span>
+                        <span>Een nieuwbouw woning</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        {{-- White space --}}
+        <div class="flex w-full h-10"></div>
     </div>
-
-    {{-- White space --}}
-    <div class="flex w-full h-10"></div>
-</div>
+</main>
 </body>
 </html>

@@ -1,0 +1,126 @@
+/* Form groups and its children */
+.form-group {
+    @apply mt-4 relative flex flex-wrap;
+}
+
+.form-header {
+    @apply flex items-center w-full mb-2;
+    top: 5%;
+}
+
+.form-header .form-label {
+    @apply flex text-blue-500 text-sm font-bold;
+    width: 75%
+}
+
+.form-header .form-input-source {
+    @apply flex justify-end rounded-lg text-sm;
+    width: 20%;
+}
+
+.form-header .form-info {
+    @apply flex justify-end cursor-pointer;
+    width: 5%;
+}
+
+/* Input styles */
+.form-input,
+.radio-wrapper label,
+.checkbox-wrapper label {
+    @apply flex items-center flex-grow cursor-pointer h-11 rounded-lg border border-blue-500 text-blue-500 border-opacity-50 text-sm outline-none;
+    min-width: 50%;
+    max-width: 100%;
+
+    @apply hover:border-green hover:border-opacity-100;
+    @apply focus:border-green focus:border-opacity-100;
+}
+
+.form-input:disabled {
+    @apply cursor-not-allowed;
+}
+
+.form-error-label {
+    @apply text-red hidden;
+}
+
+/* Form group required */
+.form-group.required .form-label:after {
+    @apply text-green;
+    content: '*';
+}
+
+/* Form group error */
+.form-error .form-label {
+    @apply text-red;
+}
+
+.form-error .form-error-label {
+    @apply block;
+}
+
+/* Styling for radio and checkbox */
+.radio-wrapper,
+.checkbox-wrapper {
+    @apply flex flex-grow;
+    min-width: 50%;
+    max-width: 100%;
+}
+
+.radio-wrapper label,
+.checkbox-wrapper label {
+    @apply px-3;
+}
+
+
+/* Hide ugly default input */
+.radio-wrapper input[type="radio"],
+.checkbox-wrapper input[type="checkbox"] {
+    @apply hidden;
+}
+
+/* Set label wrapper styling when input is checked */
+.radio-wrapper input[type="radio"]:checked + label,
+.checkbox-wrapper input[type="checkbox"]:checked + label  {
+    @apply shadow-center-green-50 border-green border-opacity-100;
+}
+
+/* Set checkmark to visible when input is checked */
+.radio-wrapper input[type="radio"]:checked + label .checkmark:after,
+.checkbox-wrapper input[type="checkbox"]:checked + label .checkmark:after  {
+    @apply block;
+}
+
+/* Style checkmark for both radio and checkbox */
+.checkmark {
+    @apply w-4 h-4 mr-1 border border-blue-500 border-opacity-50 relative;
+}
+
+.checkmark:after {
+    @apply absolute hidden bg-green;
+    content: '';
+}
+
+/* Round checkmark for radio */
+.radio-wrapper .checkmark {
+    @apply rounded-full;
+}
+
+.radio-wrapper .checkmark:after {
+    @apply w-7/10 h-7/10 rounded-full border border-white;
+    left: 15%;
+    top: 15%;
+}
+
+/* Tick for checkbox */
+.checkbox-wrapper .checkmark:after {
+    /* WIP */
+}
+
+/* Input groups */
+.input-group {
+    /* WIP */
+}
+
+.input-group .input-group-append {
+    /* WIP */
+}

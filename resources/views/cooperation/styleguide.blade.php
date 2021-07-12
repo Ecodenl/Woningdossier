@@ -40,30 +40,30 @@
 
                 <div class="space-y-4">
                     <div class="grid grid-cols-3 grid-rows-1 grid-flow-row gap-7">
-                        <div class="bg-green text-center p-4 text-sm text-white rounded-lg h-24 w-24 flex flex-col justify-between">
+                        <div class="bg-green text-center p-4 text-sm text-white font-light rounded-lg h-24 w-24 flex flex-col justify-between">
                             <span>.bg-green</span>
                             <span>#2CA982</span>
                         </div>
-                        <div class="bg-purple text-center p-4 text-sm text-white rounded-lg h-24 w-24 flex flex-col justify-between">
+                        <div class="bg-purple text-center p-4 text-sm text-white font-light rounded-lg h-24 w-24 flex flex-col justify-between">
                             <span>.bg-purple</span>
                             <span>#622181</span>
                         </div>
-                        <div class="bg-white text-center p-4 text-sm text-black rounded-lg h-24 w-24 flex flex-col justify-between border-2 border-solid border-blue-100">
+                        <div class="bg-white text-center p-4 text-sm text-blue-500 font-light rounded-lg h-24 w-24 flex flex-col justify-between border-2 border-solid border-blue-100">
                             <span>.bg-white</span>
                             <span>#FFFFFF</span>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-3 grid-rows-1 grid-flow-row gap-7">
-                        <div class="bg-blue text-center p-4 text-sm text-white rounded-lg h-24 w-24 flex flex-col justify-between">
+                        <div class="bg-blue text-center p-4 text-sm text-white font-light rounded-lg h-24 w-24 flex flex-col justify-between">
                             <span>.bg-blue</span>
                             <span>#414C57</span>
                         </div>
-                        <div class="bg-blue-500 text-center p-4 text-sm text-white rounded-lg h-24 w-24 flex flex-col justify-between">
+                        <div class="bg-blue-500 text-center p-4 text-sm text-white font-light rounded-lg h-24 w-24 flex flex-col justify-between">
                             <span>.bg-blue-500</span>
                             <span>#647585</span>
                         </div>
-                        <div class="bg-blue-100 text-center p-4 text-sm text-black rounded-lg h-24 w-24 flex flex-col justify-between">
+                        <div class="bg-blue-100 text-center p-4 text-sm text-blue-500 font-light rounded-lg h-24 w-24 flex flex-col justify-between">
                             <span>.bg-blue-100</span>
                             <span>#F0F1F2</span>
                         </div>
@@ -79,23 +79,23 @@
                 </span>
 
                 <div class="grid grid-cols-5 grid-rows-1 grid-flow-row gap-7">
-                    <div class="bg-orange text-center p-4 text-sm text-white rounded-lg h-24 w-24 flex flex-col justify-between">
+                    <div class="bg-orange text-center p-4 text-sm text-white font-light rounded-lg h-24 w-24 flex flex-col justify-between">
                         <span>.bg-orange</span>
                         <span>#FF7F4A</span>
                     </div>
-                    <div class="bg-yellow text-center p-4 text-sm text-white rounded-lg h-24 w-24 flex flex-col justify-between">
+                    <div class="bg-yellow text-center p-4 text-sm text-white font-light rounded-lg h-24 w-24 flex flex-col justify-between">
                         <span>.bg-yellow</span>
                         <span>#FFBD5A</span>
                     </div>
-                    <div class="bg-red text-center p-4 text-sm text-white rounded-lg h-24 w-24 flex flex-col justify-between">
+                    <div class="bg-red text-center p-4 text-sm text-white font-light rounded-lg h-24 w-24 flex flex-col justify-between">
                         <span>.bg-red</span>
                         <span>#E31440</span>
                     </div>
-                    <div class="bg-blue-800 text-center p-4 text-sm text-white rounded-lg h-24 w-24 flex flex-col justify-between">
+                    <div class="bg-blue-800 text-center p-4 text-sm text-white font-light rounded-lg h-24 w-24 flex flex-col justify-between">
                         <span>.bg-blue-800</span>
                         <span>#3781F0</span>
                     </div>
-                    <div class="bg-blue-900 text-center p-4 text-sm text-white rounded-lg h-24 w-24 flex flex-col justify-between">
+                    <div class="bg-blue-900 text-center p-4 text-sm text-white font-light rounded-lg h-24 w-24 flex flex-col justify-between">
                         <span>.bg-blue-900</span>
                         <span>#1122C8</span>
                     </div>

@@ -54,6 +54,10 @@ mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/admin/datatables/_dataTables_bootstrap.scss', 'public/css/admin/datatables/dataTables.bootstrap.min.css')
     .postCss("resources/css/frontend/app.css", "public/css/frontend", [
         tailwindcss,
-    ]);
+    ])
+    .options({
+        // Whether to re-write added URLs based on the new css file location
+        processCssUrls: false,
+    });
 
 

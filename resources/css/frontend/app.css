@@ -2,4 +2,5 @@
 
 @import 'components/typography.css';
 @import 'components/clickables.css';
+@import 'components/items.css';
 @import '../shared/components/icons.css';

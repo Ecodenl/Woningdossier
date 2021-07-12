@@ -124523,6 +124523,14 @@ p a {
   --tw-shadow: 0 15px 15px -10px rgba(255,127,74,0.5);
   -webkit-box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
           box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}.step-divider-line {
+  width: 100%;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgba(100, 117, 133, var(--tw-border-opacity));
+  --tw-border-opacity: 0.5;
+  min-width: 1px;
+  max-width: 50px;
 }/* Icons */
 
 .icon-xs {

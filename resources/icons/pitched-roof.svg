@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="117px" height="106px" viewBox="0 0 117 106" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Hellend dak</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-1039.000000, -2551.000000)">
+            <g id="hellenddak" transform="translate(1041.000000, 2553.000000)">
+                <line x1="106.87" y1="50.07" x2="106.87" y2="66" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <polygon id="Path" fill="#2CA982" fill-rule="nonzero" points="113.24 46.01 69.05 7.10542736e-15 0 39.77 44.19 85.78"></polygon>
+                <polyline id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="44.19 85.78 44.19 102.2 9.88 82.39 9.88 50.07"></polyline>
+                <line x1="44.19" y1="102.19" x2="106.87" y2="66" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <polygon id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="113.24 46.01 69.05 7.10542736e-15 0 39.77 44.19 85.78"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

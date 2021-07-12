@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120px" height="70px" viewBox="0 0 120 70" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>vrijstaand</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-133.000000, -2439.000000)">
+            <g id="vrijstaand" transform="translate(135.000000, 2440.000000)">
+                <polygon id="Path" fill="#2CA982" fill-rule="nonzero" points="12.9 67.6 46.5 67.6 46.5 35.4 29.7 1.5 12.7 37.8"></polygon>
+                <line x1="0" y1="67.3" x2="116" y2="67.3" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="47.1" y1="36.9" x2="103.1" y2="36.9" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <polyline id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="13 66.7 13 36.9 29.6 0.5 46.7 36.9 46.7 66.7"></polyline>
+                <polyline id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="86.1 0.5 103.1 36.9 103.1 66.7"></polyline>
+                <line x1="86" y1="0.5" x2="29.6" y2="0.5" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <polyline id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="23.9 67 23.9 48.2 34.6 48.2 34.6 67"></polyline>
+                <polyline id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="82.8 67 82.8 48.2 93.4 48.2 93.4 67"></polyline>
+                <path d="M72.2,58.2 L56.8,58.2 L56.8,46.6 C56.8,46.4 57,46.3 57.2,46.3 L71.8,46.3 C72,46.3 72.2,46.4 72.2,46.6 C72.2,46.6 72.2,58.2 72.2,58.2 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+            </g>
+        </g>
+    </g>
+</svg>

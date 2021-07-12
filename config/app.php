@@ -198,6 +198,7 @@ return [
     */
 
     'aliases' => [
+        'Media' => \App\Helpers\Media::class,
         'Hoomdossier' => \App\Helpers\Hoomdossier::class,
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,

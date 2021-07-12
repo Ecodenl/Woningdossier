@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Plank\Mediable\Mediable;
 
 /**
  * App\Models\Cooperation
@@ -38,6 +39,8 @@ use Illuminate\Support\Collection;
  */
 class Cooperation extends Model
 {
+    use Mediable;
+
     public $fillable = [
         'name', 'website_url', 'slug', 'cooperation_email',
     ];

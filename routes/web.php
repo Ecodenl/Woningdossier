@@ -333,6 +333,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
                         Route::get('home', 'CooperationAdminController@index')->name('index');
 
                         Route::get('settings', 'SettingsController@index')->name('settings.index');
+                        Route::post('cooperations', 'CooperationsController@store')->name('cooperations.store');
                     });
                 });
 

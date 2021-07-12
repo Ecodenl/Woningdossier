@@ -2,6 +2,8 @@
 
 return [
     'index' => [
-        'title' => 'Instellingen voor coöperatie'
+        'title' => 'Instellingen voor coöperatie',
+        'logo' => 'Selecteer hier een logo',
+        'background' => 'Selectier hier een achtergrond afbeelding'
     ],
 ];

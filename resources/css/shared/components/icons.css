@@ -236,6 +236,9 @@
 .icon-illumination {
     content: url('/icons/illumination.svg');
 }
+.icon-illumination-shine {
+    content: url('/icons/illumination-shine.svg');
+}
 .icon-induction {
     content: url('/icons/induction.svg');
 }
@@ -247,6 +250,9 @@
 }
 .icon-infrared {
     content: url('/icons/infrared.svg');
+}
+.icon-infrared-heater {
+    content: url('/icons/infrared-heater.svg');
 }
 .icon-kitchen {
     content: url('/icons/kitchen.svg');
@@ -374,6 +380,9 @@
 .icon-rounded-roof {
     content: url('/icons/rounded-roof.svg');
 }
+.icon-savings {
+    content: url('/icons/savings.svg');
+}
 .icon-show {
     content: url('/icons/show.svg');
 }
@@ -418,6 +427,9 @@
 }
 .icon-timer {
     content: url('/icons/timer.svg');
+}
+.icon-tools {
+    content: url('/icons/tools.svg');
 }
 .icon-two-under-one-roof {
     content: url('/icons/two-under-one-roof.svg');

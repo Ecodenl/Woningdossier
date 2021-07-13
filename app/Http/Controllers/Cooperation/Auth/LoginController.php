@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\Cooperation;
+use App\Models\ToolQuestion;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -55,6 +56,11 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
+        $toolQuestion = factory(ToolQuestion::class)->create();
+        dd($toolQuestion);
+
+        $toolQuestion = ToolQuestion::first();
+
         return view('cooperation.auth.login');
     }
 

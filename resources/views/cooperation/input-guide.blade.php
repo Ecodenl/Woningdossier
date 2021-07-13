@@ -8,11 +8,13 @@
 
     <link rel="stylesheet" href="{{asset('css/frontend/app.css')}}">
     <title>Hoomdossier input guide</title>
+
+    <script src="{{ mix('js/app.js') }}"></script>
 </head>
 <body>
 <div class="w-full">
     {{-- Nav bar --}}
-    <div class="grid grid-flow-row grid-cols-3 items-center w-full bg-white shadow-center-lg-purple-50 h-12 px-5 xl:px-20">
+    <div class="grid grid-flow-row grid-cols-3 items-center w-full bg-white h-12 px-5 xl:px-20 relative z-50 shadow-lg">
         <div>
             <i class="icon-hoomdossier"></i>
         </div>
@@ -39,7 +41,7 @@
         </div>
     </div>
     {{-- Step progress --}}
-    <div class="flex items-center justify-between w-full bg-blue-100 border-b-1 h-16 px-5 xl:px-20">
+    <div class="flex items-center justify-between w-full bg-blue-100 border-b-1 h-16 px-5 xl:px-20 relative z-40">
         <div class=" flex items-center h-full">
             <i class="icon-sm icon-check-circle-dark mr-1"></i>
             <span class="text-blue">Woninggegevens</span>
@@ -129,9 +131,11 @@
                     <input type="text" class="form-input" placeholder="Placeholder">
                 @endcomponent
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
-                    <select class="form-input">
-                        <option selected disabled>Dropdown</option>
-                    </select>
+                    @component('cooperation.components.alpine-dropdown')
+                        <select class="form-input">
+                            <option selected disabled>Dropdown</option>
+                        </select>
+                    @endcomponent
                 @endcomponent
             </div>
             <div class="flex flex-wrap">
@@ -226,5 +230,7 @@
         <div class="flex w-full h-10"></div>
     </div>
 </main>
+
+@yield('script')
 </body>
 </html>

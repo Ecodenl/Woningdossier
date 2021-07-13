@@ -40,7 +40,7 @@ class ToolQuestion extends Model
     }
 
     /**
-     * Method to return the question values (the options for the question)
+     * Method to return the question values  (morphed models / the options for the question)
      *
      * @return mixed
      */

@@ -1,0 +1,22 @@
+<div class="form-group {{ $class ?? '' }} @error(($inputName ?? '')) form-error @enderror">
+    <div class="form-header">
+        <label class="form-label" for="{{ $id ?? '' }}">
+            {{ $label ?? '' }}
+        </label>
+        <div class="form-input-source"></div>
+        <div class="form-info">
+            <i class="icon-md icon-info-light"></i>
+        </div>
+    </div>
+
+    <div class="input-group">
+        {{ $slot }}
+        <i class="icon-sm icon-error-cross form-error-cross"></i>
+    </div>
+
+    @error(($inputName ?? ''))
+    <p class="form-error-label">
+        {{ $message }}
+    </p>
+    @enderror
+</div>

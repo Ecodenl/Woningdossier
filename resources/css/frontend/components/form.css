@@ -1,8 +1,9 @@
 /* Form groups and its children */
 .form-group {
-    @apply mt-4 relative flex flex-wrap;
+    @apply mt-4 relative flex flex-wrap content-start;
 }
 
+/* Header row of the form group */
 .form-header {
     @apply flex items-center w-full mb-2;
     top: 5%;
@@ -27,43 +28,75 @@
 .form-input,
 .radio-wrapper label,
 .checkbox-wrapper label {
-    @apply flex items-center flex-grow cursor-pointer h-11 rounded-lg border border-blue-500 text-blue-500 border-opacity-50 text-sm outline-none;
-    min-width: 50%;
-    max-width: 100%;
+    @apply flex items-center w-full cursor-pointer h-11 rounded-lg border border-blue-500 text-blue-500 border-opacity-50 text-sm outline-none max-w-full bg-white;
+    line-height: 2.5rem;
 
     @apply hover:border-green hover:border-opacity-100;
     @apply focus:border-green focus:border-opacity-100;
 }
 
-.form-input:disabled {
-    @apply cursor-not-allowed;
+.form-input::placeholder {
+    @apply text-blue-500 text-opacity-50;
 }
 
+.radio-wrapper,
+.checkbox-wrapper {
+    @apply mb-6;
+}
+
+.form-input {
+    @apply pl-3 mb-3;
+}
+
+textarea.form-input {
+    @apply h-32;
+    min-height: 2.75rem; /* Height of h-11, base height of input */
+}
+
+.form-input:disabled {
+    @apply cursor-not-allowed bg-blue-100 bg-opacity-50;
+}
+
+/* Error label */
 .form-error-label {
-    @apply text-red hidden;
+    @apply text-red text-sm hidden -mt-3;
+}
+
+/* Cross icon */
+.form-error-cross {
+    @apply hidden absolute;
+    top: 22%;
+    right: 4%;
 }
 
 /* Form group required */
-.form-group.required .form-label:after {
-    @apply text-green;
+.form-group.required .form-label::after {
+    @apply text-green ml-1 font-light;
     content: '*';
 }
 
 /* Form group error */
-.form-error .form-label {
-    @apply text-red;
+.form-error .form-input {
+    @apply border-red text-red;
 }
 
-.form-error .form-error-label {
+.form-error .form-input::placeholder {
+    @apply text-red text-opacity-100;
+}
+
+.form-error .form-error-label,
+.form-error input[type="text"] ~ .form-error-cross {
     @apply block;
 }
 
 /* Styling for radio and checkbox */
 .radio-wrapper,
 .checkbox-wrapper {
-    @apply flex flex-grow;
+    @apply flex flex-grow max-w-full;
+}
+
+.radio-wrapper {
     min-width: 50%;
-    max-width: 100%;
 }
 
 .radio-wrapper label,
@@ -71,22 +104,26 @@
     @apply px-3;
 }
 
-
 /* Hide ugly default input */
 .radio-wrapper input[type="radio"],
 .checkbox-wrapper input[type="checkbox"] {
     @apply hidden;
 }
 
-/* Set label wrapper styling when input is checked */
+/* Set label wrapper & checkmark styling when input is checked */
 .radio-wrapper input[type="radio"]:checked + label,
-.checkbox-wrapper input[type="checkbox"]:checked + label  {
-    @apply shadow-center-green-50 border-green border-opacity-100;
+.checkbox-wrapper input[type="checkbox"]:checked + label {
+    @apply shadow-center-green-50 border-green border-opacity-100 bg-green bg-opacity-10 text-blue;
+}
+
+.radio-wrapper input[type="radio"]:checked + label .checkmark,
+.checkbox-wrapper input[type="checkbox"]:checked + label .checkmark {
+    @apply border-green border-opacity-100;
 }
 
 /* Set checkmark to visible when input is checked */
-.radio-wrapper input[type="radio"]:checked + label .checkmark:after,
-.checkbox-wrapper input[type="checkbox"]:checked + label .checkmark:after  {
+.radio-wrapper input[type="radio"]:checked + label .checkmark::after,
+.checkbox-wrapper input[type="checkbox"]:checked + label .checkmark::after {
     @apply block;
 }
 
@@ -106,21 +143,21 @@
 }
 
 .radio-wrapper .checkmark:after {
-    @apply w-7/10 h-7/10 rounded-full border border-white;
+    @apply w-7/10 h-7/10 rounded-full;
     left: 15%;
     top: 15%;
 }
 
 /* Tick for checkbox */
-.checkbox-wrapper .checkmark:after {
+.checkbox-wrapper .checkmark::after {
     /* WIP */
 }
 
 /* Input groups */
 .input-group {
-    /* WIP */
+    @apply relative w-full flex flex-wrap items-center;
 }
 
 .input-group .input-group-append {
-    /* WIP */
+    @apply bg-blue-500 bg-opacity-50 text-blue-500 w-8 overflow-hidden;
 }

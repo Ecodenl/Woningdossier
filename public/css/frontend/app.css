@@ -127163,6 +127163,8 @@ p a {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   font-weight: 700;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
   -webkit-transition-property: background-color, border-color, color, fill, stroke, opacity, -webkit-box-shadow, -webkit-transform, -webkit-filter, -webkit-backdrop-filter;
   transition-property: background-color, border-color, color, fill, stroke, opacity, -webkit-box-shadow, -webkit-transform, -webkit-filter, -webkit-backdrop-filter;
   transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
@@ -127345,7 +127347,11 @@ p a {
   display: flex;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
+  -ms-flex-line-pack: start;
+      align-content: flex-start;
 }
+
+/* Header row of the form group */
 
 .form-header {
   margin-bottom: 0.5rem;
@@ -127402,9 +127408,8 @@ p a {
   display: -ms-flexbox;
   display: flex;
   height: 2.75rem;
-  -webkit-box-flex: 1;
-      -ms-flex-positive: 1;
-          flex-grow: 1;
+  width: 100%;
+  max-width: 100%;
   cursor: pointer;
   -webkit-box-align: center;
       -ms-flex-align: center;
@@ -127414,6 +127419,8 @@ p a {
   --tw-border-opacity: 1;
   border-color: rgba(100, 117, 133, var(--tw-border-opacity));
   --tw-border-opacity: 0.5;
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
   font-size: 14px;
   line-height: 24px;
   --tw-text-opacity: 1;
@@ -127425,8 +127432,7 @@ p a {
 .form-input,
 .radio-wrapper label,
 .checkbox-wrapper label {
-  min-width: 50%;
-  max-width: 100%;
+  line-height: 2.5rem;
 }
 
 .form-input:hover, .radio-wrapper label:hover, .checkbox-wrapper label:hover {
@@ -127441,19 +127447,76 @@ p a {
   --tw-border-opacity: 1;
 }
 
-.form-input:disabled {
-  cursor: not-allowed;
+.form-input::-webkit-input-placeholder {
+  --tw-text-opacity: 1;
+  color: rgba(100, 117, 133, var(--tw-text-opacity));
+  --tw-text-opacity: 0.5;
 }
 
+.form-input::-moz-placeholder {
+  --tw-text-opacity: 1;
+  color: rgba(100, 117, 133, var(--tw-text-opacity));
+  --tw-text-opacity: 0.5;
+}
+
+.form-input::-ms-input-placeholder {
+  --tw-text-opacity: 1;
+  color: rgba(100, 117, 133, var(--tw-text-opacity));
+  --tw-text-opacity: 0.5;
+}
+
+.form-input::placeholder {
+  --tw-text-opacity: 1;
+  color: rgba(100, 117, 133, var(--tw-text-opacity));
+  --tw-text-opacity: 0.5;
+}
+
+.radio-wrapper, .checkbox-wrapper {
+  margin-bottom: 1.5rem;
+}
+
+.form-input {
+  margin-bottom: 0.75rem;
+  padding-left: 0.75rem;
+}
+
+textarea.form-input {
+  height: 8rem;
+  min-height: 2.75rem; /* Height of h-11, base height of input */
+}
+
+.form-input:disabled {
+  cursor: not-allowed;
+  --tw-bg-opacity: 1;
+  background-color: rgba(240, 241, 242, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.5;
+}
+
+/* Error label */
+
 .form-error-label {
+  margin-top: -0.75rem;
   display: none;
+  font-size: 14px;
+  line-height: 24px;
   --tw-text-opacity: 1;
   color: rgba(228, 20, 64, var(--tw-text-opacity));
 }
 
+/* Cross icon */
+
+.form-error-cross {
+  position: absolute;
+  display: none;
+  top: 22%;
+  right: 4%;
+}
+
 /* Form group required */
 
-.form-group.required .form-label:after {
+.form-group.required .form-label::after {
+  margin-left: 0.25rem;
+  font-weight: 300;
   --tw-text-opacity: 1;
   color: rgba(44, 169, 130, var(--tw-text-opacity));
   content: '*';
@@ -127461,12 +127524,38 @@ p a {
 
 /* Form group error */
 
-.form-error .form-label {
+.form-error .form-input {
+  --tw-border-opacity: 1;
+  border-color: rgba(228, 20, 64, var(--tw-border-opacity));
   --tw-text-opacity: 1;
   color: rgba(228, 20, 64, var(--tw-text-opacity));
 }
 
-.form-error .form-error-label {
+.form-error .form-input::-webkit-input-placeholder {
+  --tw-text-opacity: 1;
+  color: rgba(228, 20, 64, var(--tw-text-opacity));
+  --tw-text-opacity: 1;
+}
+
+.form-error .form-input::-moz-placeholder {
+  --tw-text-opacity: 1;
+  color: rgba(228, 20, 64, var(--tw-text-opacity));
+  --tw-text-opacity: 1;
+}
+
+.form-error .form-input::-ms-input-placeholder {
+  --tw-text-opacity: 1;
+  color: rgba(228, 20, 64, var(--tw-text-opacity));
+  --tw-text-opacity: 1;
+}
+
+.form-error .form-input::placeholder {
+  --tw-text-opacity: 1;
+  color: rgba(228, 20, 64, var(--tw-text-opacity));
+  --tw-text-opacity: 1;
+}
+
+.form-error .form-error-label, .form-error input[type="text"] ~ .form-error-cross {
   display: block;
 }
 
@@ -127476,15 +127565,14 @@ p a {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  max-width: 100%;
   -webkit-box-flex: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
 }
 
-.radio-wrapper,
-.checkbox-wrapper {
+.radio-wrapper {
   min-width: 50%;
-  max-width: 100%;
 }
 
 .radio-wrapper label, .checkbox-wrapper label {
@@ -127498,20 +127586,31 @@ p a {
   display: none;
 }
 
-/* Set label wrapper styling when input is checked */
+/* Set label wrapper & checkmark styling when input is checked */
 
 .radio-wrapper input[type="radio"]:checked + label, .checkbox-wrapper input[type="checkbox"]:checked + label {
   --tw-border-opacity: 1;
   border-color: rgba(44, 169, 130, var(--tw-border-opacity));
   --tw-border-opacity: 1;
+  --tw-bg-opacity: 1;
+  background-color: rgba(44, 169, 130, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.1;
+  --tw-text-opacity: 1;
+  color: rgba(65, 76, 87, var(--tw-text-opacity));
   --tw-shadow: 0 15px 15px -10px rgba(44,169,130,0.5);
   -webkit-box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
           box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+.radio-wrapper input[type="radio"]:checked + label .checkmark, .checkbox-wrapper input[type="checkbox"]:checked + label .checkmark {
+  --tw-border-opacity: 1;
+  border-color: rgba(44, 169, 130, var(--tw-border-opacity));
+  --tw-border-opacity: 1;
+}
+
 /* Set checkmark to visible when input is checked */
 
-.radio-wrapper input[type="radio"]:checked + label .checkmark:after, .checkbox-wrapper input[type="checkbox"]:checked + label .checkmark:after {
+.radio-wrapper input[type="radio"]:checked + label .checkmark::after, .checkbox-wrapper input[type="checkbox"]:checked + label .checkmark::after {
   display: block;
 }
 
@@ -127546,27 +127645,39 @@ p a {
   height: 70%;
   width: 70%;
   border-radius: 9999px;
-  border-width: 1px;
-  --tw-border-opacity: 1;
-  border-color: rgba(255, 255, 255, var(--tw-border-opacity));
   left: 15%;
   top: 15%;
 }
 
 /* Tick for checkbox */
 
-.checkbox-wrapper .checkmark:after {
+.checkbox-wrapper .checkmark::after {
   /* WIP */
 }
 
 /* Input groups */
 
 .input-group {
-  /* WIP */
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 .input-group .input-group-append {
-  /* WIP */
+  width: 2rem;
+  overflow: hidden;
+  --tw-bg-opacity: 1;
+  background-color: rgba(100, 117, 133, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.5;
+  --tw-text-opacity: 1;
+  color: rgba(100, 117, 133, var(--tw-text-opacity));
 }.step-divider-line {
   width: 100%;
   border-width: 1px;

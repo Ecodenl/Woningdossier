@@ -82,17 +82,7 @@
             <h4 class="heading-4">
                 Welke woning past het beste bij uw situatie?
             </h4>
-            <div class="form-group">
-                <div class="form-header">
-                    <label class="form-label">
-                        Voorbeeldwoning opties
-                    </label>
-                    <div class="form-input-source"></div>
-                    <div class="form-info">
-                        <i class="icon-md icon-info-light"></i>
-                    </div>
-                </div>
-
+            @component('cooperation.components.form-group', ['label' => 'Voorbeeldwoning opties'])
                 <div class="radio-wrapper pr-3">
                     <input type="radio" id="example-building-1" name="example-building" value="1">
                     <label for="example-building-1">
@@ -121,6 +111,85 @@
                         <span>Een nieuwbouw woning</span>
                     </label>
                 </div>
+            @endcomponent
+        </div>
+
+        <div class="w-full">
+            <div class="flex items-center justify-between w-full">
+                <h4 class="heading-4">
+                    Woninggegevens
+                </h4>
+                <button class="btn btn-purple">
+                    Opslaan
+                </button>
+            </div>
+
+            <div class="flex flex-wrap">
+                @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pr-3'])
+                    <input type="text" class="form-input" placeholder="Placeholder">
+                @endcomponent
+                @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
+                    {{-- WIP dropdown --}}
+                @endcomponent
+            </div>
+            <div class="flex flex-wrap">
+                @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pr-3'])
+                    <input type="text" class="form-input" placeholder="Placeholder">
+                @endcomponent
+                @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
+                    {{-- WIP dropdown --}}
+                @endcomponent
+            </div>
+            <div class="flex flex-wrap">
+                @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3 form-error required'])
+                    <input type="text" class="form-input" placeholder="Error">
+                    <p class="form-error-label">
+                        Vul de correcte gegevens in
+                    </p>
+                @endcomponent
+            </div>
+            <div class="flex flex-wrap">
+                @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3'])
+                    <input type="text" class="form-input" placeholder="Disabled" disabled>
+                @endcomponent
+            </div>
+            <div class="flex flex-wrap">
+                @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3 required'])
+                    <input type="text" class="form-input" placeholder="Verplicht">
+                @endcomponent
+            </div>
+
+            <div class="flex flex-wrap">
+                @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pr-3'])
+                    <textarea class="form-input" placeholder="Text area"></textarea>
+                @endcomponent
+                @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
+                    <input type="text" class="form-input" placeholder="Placeholder">
+                @endcomponent
+            </div>
+        </div>
+
+        <div class="w-full">
+            <div class="flex flex-wrap">
+                @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pr-3'])
+                    <input type="text" class="form-input" placeholder="Placeholder">
+                @endcomponent
+                @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
+                    {{-- WIP media dropdown --}}
+                @endcomponent
+            </div>
+            <div class="flex flex-wrap">
+                @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3'])
+                    <input type="text" class="form-input" placeholder="Placeholder">
+                @endcomponent
+            </div>
+        </div>
+
+        <div class="w-full">
+            <div class="flex flex-wrap">
+                @component('cooperation.components.form-group', ['label' => 'Onderwerp'])
+                    {{-- WIP checkboxes --}}
+                @endcomponent
             </div>
         </div>
 

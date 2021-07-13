@@ -15,7 +15,7 @@ p a {
 
 /* Buttons */
 .btn {
-    @apply px-6 py-2 rounded-lg font-bold cursor-pointer transition;
+    @apply px-6 py-2 rounded-lg font-bold cursor-pointer transition outline-none;
     line-height: 24px;
     font-size: 14px;
 }

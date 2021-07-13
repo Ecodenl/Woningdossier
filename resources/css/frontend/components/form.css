@@ -53,7 +53,9 @@ textarea.form-input {
     min-height: 2.75rem; /* Height of h-11, base height of input */
 }
 
-.form-input:disabled {
+.form-input:disabled,
+.radio-wrapper input[type="radio"]:disabled + label,
+.checkbox-wrapper input[type="checkbox"]:disabled + label {
     @apply cursor-not-allowed bg-blue-100 bg-opacity-50;
 }
 
@@ -92,11 +94,16 @@ textarea.form-input {
 /* Styling for radio and checkbox */
 .radio-wrapper,
 .checkbox-wrapper {
-    @apply flex flex-grow max-w-full;
+    @apply flex max-w-full;
 }
 
 .radio-wrapper {
+    @apply flex-grow;
     min-width: 50%;
+}
+
+.checkbox-wrapper {
+    min-width: 8rem;
 }
 
 .radio-wrapper label,
@@ -118,7 +125,7 @@ textarea.form-input {
 
 .radio-wrapper input[type="radio"]:checked + label .checkmark,
 .checkbox-wrapper input[type="checkbox"]:checked + label .checkmark {
-    @apply border-green border-opacity-100;
+    @apply border-green border-opacity-100 shadow-center-green-50;
 }
 
 /* Set checkmark to visible when input is checked */
@@ -127,13 +134,18 @@ textarea.form-input {
     @apply block;
 }
 
-/* Style checkmark for both radio and checkbox */
-.checkmark {
-    @apply w-4 h-4 mr-1 border border-blue-500 border-opacity-50 relative;
+/* Checkbox becomes green when selected */
+.checkbox-wrapper input[type="checkbox"]:checked + label .checkmark {
+    @apply bg-green;
 }
 
-.checkmark:after {
-    @apply absolute hidden bg-green;
+/* Style checkmark for both radio and checkbox */
+.checkmark {
+    @apply w-4 h-4 mr-2 border border-blue-500 border-opacity-50 relative bg-white;
+}
+
+.checkmark::after {
+    @apply absolute hidden;
     content: '';
 }
 
@@ -143,14 +155,21 @@ textarea.form-input {
 }
 
 .radio-wrapper .checkmark:after {
-    @apply w-7/10 h-7/10 rounded-full;
-    left: 15%;
+    @apply w-7/10 h-7/10 rounded-full bg-green;
+    left: 17%;
     top: 15%;
 }
 
 /* Tick for checkbox */
+.checkbox-wrapper .checkmark {
+    @apply rounded;
+}
+
 .checkbox-wrapper .checkmark::after {
-    /* WIP */
+    @apply w-3/10 h-5/10 border-solid border-white transform rotate-45;
+    border-width: 0 2px 2px 0;
+    left: 40%;
+    top: 20%;
 }
 
 /* Input groups */

@@ -187,8 +187,35 @@
 
         <div class="w-full">
             <div class="flex flex-wrap">
-                @component('cooperation.components.form-group', ['label' => 'Onderwerp'])
-                    {{-- WIP checkboxes --}}
+                @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full'])
+                    <div class="checkbox-wrapper pr-3">
+                        <input type="checkbox" id="subject-1" name="subject" value="1">
+                        <label for="subject-1">
+                            <span class="checkmark"></span>
+                            <span>Uitleg gegeven</span>
+                        </label>
+                    </div>
+                    <div class="checkbox-wrapper pr-3">
+                        <input type="checkbox" id="subject-2" name="subject" value="2">
+                        <label for="subject-2">
+                            <span class="checkmark"></span>
+                            <span>Interesse in maatregel</span>
+                        </label>
+                    </div>
+                    <div class="checkbox-wrapper pr-3">
+                        <input type="checkbox" id="subject-3" name="subject" value="3">
+                        <label for="subject-3">
+                            <span class="checkmark"></span>
+                            <span>Uitgevoerd</span>
+                        </label>
+                    </div>
+                    <div class="checkbox-wrapper pr-3">
+                        <input type="checkbox" id="subject-4" name="subject" value="4" disabled>
+                        <label for="subject-4">
+                            <span class="checkmark"></span>
+                            <span>Disabled</span>
+                        </label>
+                    </div>
                 @endcomponent
             </div>
         </div>

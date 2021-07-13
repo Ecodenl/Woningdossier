@@ -127485,7 +127485,7 @@ textarea.form-input {
   min-height: 2.75rem; /* Height of h-11, base height of input */
 }
 
-.form-input:disabled {
+.form-input:disabled, .radio-wrapper input[type="radio"]:disabled + label, .checkbox-wrapper input[type="checkbox"]:disabled + label {
   cursor: not-allowed;
   --tw-bg-opacity: 1;
   background-color: rgba(240, 241, 242, var(--tw-bg-opacity));
@@ -127566,13 +127566,17 @@ textarea.form-input {
   display: -ms-flexbox;
   display: flex;
   max-width: 100%;
-  -webkit-box-flex: 1;
-      -ms-flex-positive: 1;
-          flex-grow: 1;
 }
 
 .radio-wrapper {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
   min-width: 50%;
+}
+
+.checkbox-wrapper {
+  min-width: 8rem;
 }
 
 .radio-wrapper label, .checkbox-wrapper label {
@@ -127606,6 +127610,9 @@ textarea.form-input {
   --tw-border-opacity: 1;
   border-color: rgba(44, 169, 130, var(--tw-border-opacity));
   --tw-border-opacity: 1;
+  --tw-shadow: 0 15px 15px -10px rgba(44,169,130,0.5);
+  -webkit-box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+          box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
 /* Set checkmark to visible when input is checked */
@@ -127614,24 +127621,31 @@ textarea.form-input {
   display: block;
 }
 
+/* Checkbox becomes green when selected */
+
+.checkbox-wrapper input[type="checkbox"]:checked + label .checkmark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(44, 169, 130, var(--tw-bg-opacity));
+}
+
 /* Style checkmark for both radio and checkbox */
 
 .checkmark {
   position: relative;
-  margin-right: 0.25rem;
+  margin-right: 0.5rem;
   height: 1rem;
   width: 1rem;
   border-width: 1px;
   --tw-border-opacity: 1;
   border-color: rgba(100, 117, 133, var(--tw-border-opacity));
   --tw-border-opacity: 0.5;
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
 }
 
-.checkmark:after {
+.checkmark::after {
   position: absolute;
   display: none;
-  --tw-bg-opacity: 1;
-  background-color: rgba(44, 169, 130, var(--tw-bg-opacity));
   content: '';
 }
 
@@ -127645,14 +127659,37 @@ textarea.form-input {
   height: 70%;
   width: 70%;
   border-radius: 9999px;
-  left: 15%;
+  --tw-bg-opacity: 1;
+  background-color: rgba(44, 169, 130, var(--tw-bg-opacity));
+  left: 17%;
   top: 15%;
 }
 
 /* Tick for checkbox */
 
+.checkbox-wrapper .checkmark {
+  border-radius: 0.25rem;
+}
+
 .checkbox-wrapper .checkmark::after {
-  /* WIP */
+  height: 50%;
+  width: 30%;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  -webkit-transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+          transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  --tw-rotate: 45deg;
+  border-style: solid;
+  --tw-border-opacity: 1;
+  border-color: rgba(255, 255, 255, var(--tw-border-opacity));
+  border-width: 0 2px 2px 0;
+  left: 40%;
+  top: 20%;
 }
 
 /* Input groups */

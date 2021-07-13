@@ -64,13 +64,6 @@ textarea.form-input {
     @apply text-red text-sm hidden -mt-3;
 }
 
-/* Cross icon */
-.form-error-cross {
-    @apply hidden absolute;
-    top: 22%;
-    right: 4%;
-}
-
 /* Form group required */
 .form-group.required .form-label::after {
     @apply text-green ml-1 font-light;
@@ -78,7 +71,9 @@ textarea.form-input {
 }
 
 /* Form group error */
-.form-error .form-input {
+.form-error .form-input,
+.form-error .radio-wrapper label,
+.form-error .checkbox-wrapper label {
     @apply border-red text-red;
 }
 
@@ -86,9 +81,15 @@ textarea.form-input {
     @apply text-red text-opacity-100;
 }
 
-.form-error .form-error-label,
-.form-error input[type="text"] ~ .form-error-cross {
+.form-error .form-error-label {
     @apply block;
+}
+
+.form-error input[type="text"] ~ .form-error-label::before {
+    @apply absolute block transform scale-150;
+    content: url('/icons/error-cross.svg');
+    top: 15%;
+    right: 4%;
 }
 
 /* Styling for radio and checkbox */

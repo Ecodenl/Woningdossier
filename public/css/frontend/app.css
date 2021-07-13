@@ -16201,6 +16201,11 @@ video {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
+.text-xs {
+  font-size: 10px;
+  line-height: 10px;
+}
+
 .text-sm {
   font-size: 14px;
   line-height: 24px;
@@ -37394,6 +37399,11 @@ Small example
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   }
 
+  .sm\:text-xs {
+    font-size: 10px;
+    line-height: 10px;
+  }
+
   .sm\:text-sm {
     font-size: 14px;
     line-height: 24px;
@@ -58438,6 +58448,11 @@ Small example
 
   .md\:font-mono {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  }
+
+  .md\:text-xs {
+    font-size: 10px;
+    line-height: 10px;
   }
 
   .md\:text-sm {
@@ -79486,6 +79501,11 @@ Small example
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   }
 
+  .lg\:text-xs {
+    font-size: 10px;
+    line-height: 10px;
+  }
+
   .lg\:text-sm {
     font-size: 14px;
     line-height: 24px;
@@ -100530,6 +100550,11 @@ Small example
 
   .xl\:font-mono {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  }
+
+  .xl\:text-xs {
+    font-size: 10px;
+    line-height: 10px;
   }
 
   .xl\:text-sm {
@@ -121578,6 +121603,11 @@ Small example
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   }
 
+  .\32xl\:text-xs {
+    font-size: 10px;
+    line-height: 10px;
+  }
+
   .\32xl\:text-sm {
     font-size: 14px;
     line-height: 24px;
@@ -127503,15 +127533,6 @@ textarea.form-input {
   color: rgba(228, 20, 64, var(--tw-text-opacity));
 }
 
-/* Cross icon */
-
-.form-error-cross {
-  position: absolute;
-  display: none;
-  top: 22%;
-  right: 4%;
-}
-
 /* Form group required */
 
 .form-group.required .form-label::after {
@@ -127524,7 +127545,7 @@ textarea.form-input {
 
 /* Form group error */
 
-.form-error .form-input {
+.form-error .form-input, .form-error .radio-wrapper label, .form-error .checkbox-wrapper label {
   --tw-border-opacity: 1;
   border-color: rgba(228, 20, 64, var(--tw-border-opacity));
   --tw-text-opacity: 1;
@@ -127555,8 +127576,27 @@ textarea.form-input {
   --tw-text-opacity: 1;
 }
 
-.form-error .form-error-label, .form-error input[type="text"] ~ .form-error-cross {
+.form-error .form-error-label {
   display: block;
+}
+
+.form-error input[type="text"] ~ .form-error-label::before {
+  position: absolute;
+  display: block;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  -webkit-transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+          transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  --tw-scale-x: 1.5;
+  --tw-scale-y: 1.5;
+  content: url('/icons/error-cross.svg');
+  top: 15%;
+  right: 4%;
 }
 
 /* Styling for radio and checkbox */

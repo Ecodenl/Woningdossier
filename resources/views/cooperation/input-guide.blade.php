@@ -5,7 +5,15 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
+<style>
+    input[type="text"] +::before {
+        content: url('/icons/error-cross.svg');
+        display: block;
+        /*position: absolute;*/
+        /*top: 25%;*/
+        /*right: 4%;*/
+    }
+</style>
     <link rel="stylesheet" href="{{asset('css/frontend/app.css')}}">
     <title>Hoomdossier input guide</title>
 </head>

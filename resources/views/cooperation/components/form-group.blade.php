@@ -11,7 +11,6 @@
 
     <div class="input-group">
         {{ $slot }}
-        <i class="icon-sm icon-error-cross form-error-cross"></i>
     </div>
 
     @error(($inputName ?? ''))

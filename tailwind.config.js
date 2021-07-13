@@ -96,6 +96,7 @@ module.exports = {
             red: '#E41440',
         },
         fontSize: {
+            'xs': ['10px', '10px'],
             'sm': ['14px', '24px'],
             'base': ['18px', '24px'],
             'md': ['24px', '28px'],

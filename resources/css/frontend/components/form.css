@@ -48,6 +48,7 @@
     @apply pl-3 mb-3;
 }
 
+/* Element specific styles */
 textarea.form-input {
     @apply h-32;
     min-height: 2.75rem; /* Height of h-11, base height of input */

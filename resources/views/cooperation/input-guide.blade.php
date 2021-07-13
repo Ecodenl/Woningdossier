@@ -5,15 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<style>
-    input[type="text"] +::before {
-        content: url('/icons/error-cross.svg');
-        display: block;
-        /*position: absolute;*/
-        /*top: 25%;*/
-        /*right: 4%;*/
-    }
-</style>
+
     <link rel="stylesheet" href="{{asset('css/frontend/app.css')}}">
     <title>Hoomdossier input guide</title>
 </head>
@@ -137,7 +129,9 @@
                     <input type="text" class="form-input" placeholder="Placeholder">
                 @endcomponent
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
-                    {{-- WIP dropdown --}}
+                    <select class="form-input">
+                        <option selected disabled>Dropdown</option>
+                    </select>
                 @endcomponent
             </div>
             <div class="flex flex-wrap">

@@ -8,8 +8,13 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class ToolQuestionValueable extends Model
 {
-    protected $table = 'tool_question_valueables';
-
+    protected $fillable = [
+        'show',
+        'order',
+        'tool_question_id',
+        'tool_question_valueable_type',
+        'tool_question_valueable_id',
+    ];
 
     /**
      * Method retrieves the morphed models.

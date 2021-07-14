@@ -19,8 +19,8 @@ class CreateToolQuestionsTable extends Migration
             $table->json('help_text');
             $table->unsignedBigInteger('tool_question_type_id');
             $table->foreign('tool_question_type_id')->references('id')->on('tool_question_types')->onDelete('cascade');
-            $table->boolean('coach');
-            $table->boolean('resident');
+            $table->boolean('coach')->default(true);
+            $table->boolean('resident')->default(true);
             $table->json('save_in');
             $table->json('options')->nullable()->default(null);
             $table->json('validation')->nullable()->default(null);

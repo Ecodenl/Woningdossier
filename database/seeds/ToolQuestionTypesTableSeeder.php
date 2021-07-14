@@ -17,6 +17,14 @@ class ToolQuestionTypesTableSeeder extends Seeder
                 'short' => 'radio-icon'
             ],
             [
+                'name'  => ['nl' => 'Keuze veld'],
+                'short' => 'radio'
+            ],
+            [
+                'name'  => ['nl' => 'Slider'],
+                'short' => 'slider'
+            ],
+            [
                 'name'  => ['nl' => 'Invulveld'],
                 'short' => 'text'
             ],

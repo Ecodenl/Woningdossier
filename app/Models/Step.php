@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\TranslatableTrait;
 use App\Traits\HasShortTrait;
+use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -46,10 +47,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Step extends Model
 {
+    use HasShortTrait, HasTranslations;
+
     protected $fillable = ['slug', 'name', 'order'];
 
-    use TranslatableTrait;
-    use HasShortTrait;
+    protected $translatable = ['name'];
 
     public function getRouteKeyName()
     {

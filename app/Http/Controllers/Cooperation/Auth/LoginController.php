@@ -56,11 +56,6 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
-        $toolQuestion = factory(ToolQuestion::class)->create();
-        dd($toolQuestion);
-
-        $toolQuestion = ToolQuestion::first();
-
         return view('cooperation.auth.login');
     }
 

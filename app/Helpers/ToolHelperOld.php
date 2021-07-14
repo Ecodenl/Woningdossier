@@ -128,45 +128,6 @@ class ToolHelperOld
 
         $structure = [
             'general-data' => [
-                'building-characteristics' => [
-                    'building_features.building_type_id' => [
-                        'label' => __('cooperation/tool/general-data/building-characteristics.index.building-type.title'),
-                        'type' => 'select',
-                        'options' => static::createOptions($buildingTypes),
-                    ],
-                    'building_features.build_year' => [
-                        'label' => __('cooperation/tool/general-data/building-characteristics.index.build-year.title'),
-                        'type' => 'text',
-                    ],
-                    'building_features.surface' => [
-                        'label' => __('cooperation/tool/general-data/building-characteristics.index.surface.title'),
-                        'type' => 'text',
-                        'unit' => __('general.unit.square-meters.title'),
-                    ],
-                    'building_features.building_layers' => [
-                        'label' => __('cooperation/tool/general-data/building-characteristics.index.building-layers.title'),
-                        'type' => 'text',
-                    ],
-                    'building_features.roof_type_id' => [
-                        'label' => __('cooperation/tool/general-data/building-characteristics.index.roof-type.title'),
-                        'type' => 'select',
-                        'options' => static::createOptions($roofTypes),
-                    ],
-                    'building_features.energy_label_id' => [
-                        'label' => __('cooperation/tool/general-data/building-characteristics.index.energy-label.title'),
-                        'type' => 'select',
-                        'options' => static::createOptions($energyLabels),
-                    ],
-                    'building_features.monument' => [
-                        'label' => __('cooperation/tool/general-data/building-characteristics.index.monument.title'),
-                        'type' => 'select',
-                        'options' => [
-                            1 => __('woningdossier.cooperation.radiobutton.yes'),
-                            2 => __('woningdossier.cooperation.radiobutton.no'),
-                            0 => __('woningdossier.cooperation.radiobutton.unknown'),
-                        ],
-                    ],
-                ],
                 'current-state' => [
                     // elements and services
                     'element.'.$livingRoomsWindows->id => [
@@ -289,44 +250,6 @@ class ToolHelperOld
                             1 => __('woningdossier.cooperation.radiobutton.yes'),
                             2 => __('woningdossier.cooperation.radiobutton.no'),
                         ],
-                    ],
-                    'user_energy_habits.thermostat_high' => [
-                        'label' => __('cooperation/tool/general-data/usage.index.heating-habits.thermostat-high.title'),
-                        'type' => 'text',
-                        'unit' => __('general.unit.degrees.title'),
-                    ],
-
-                    'user_energy_habits.thermostat_low' => [
-                        'label' => __('cooperation/tool/general-data/usage.index.heating-habits.thermostat-low.title'),
-                        'type' => 'text',
-                        'unit' => __('general.unit.degrees.title'),
-                    ],
-                    'user_energy_habits.hours_high' => [
-                        'label' => __('cooperation/tool/general-data/usage.index.heating-habits.hours-high.title'),
-                        'type' => 'text',
-                        'unit' => __('general.unit.hours.title'),
-                    ],
-                    'user_energy_habits.heating_first_floor' => [
-                        'label' => __('cooperation/tool/general-data/usage.index.heating-habits.heating-first-floor.title'),
-                        'type' => 'select',
-                        'options' => static::createOptions($buildingHeatings),
-                    ],
-
-                    'user_energy_habits.heating_second_floor' => [
-                        'label' => __('cooperation/tool/general-data/usage.index.heating-habits.heating-second-floor.title'),
-                        'type' => 'select',
-                        'options' => self::createOptions($buildingHeatings),
-                    ],
-
-                    'user_energy_habits.amount_electricity' => [
-                        'label' => __('cooperation/tool/general-data/usage.index.energy-usage.amount-electricity.title'),
-                        'type' => 'text',
-                        'unit' => __('general.unit.cubic-meters.title'),
-                    ],
-                    'user_energy_habits.amount_gas' => [
-                        'label' => __('cooperation/tool/general-data/usage.index.energy-usage.gas-usage.title'),
-                        'type' => 'text',
-                        'unit' => __('general.unit.cubic-meters.title'),
                     ],
                 ],
                 // interests come later on

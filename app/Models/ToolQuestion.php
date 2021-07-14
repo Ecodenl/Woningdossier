@@ -29,6 +29,7 @@ class ToolQuestion extends Model
     ];
 
     protected $casts = [
+        'options' => 'array',
         'save_in' => 'array',
         'validation' => 'array',
         'coach' => 'boolean',

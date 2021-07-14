@@ -28,6 +28,10 @@ class ToolQuestionTypesTableSeeder extends Seeder
                 'name'  => ['nl' => 'Invulveld'],
                 'short' => 'text'
             ],
+            [
+                'name'  => ['nl' => 'Tekstvak'],
+                'short' => 'textarea'
+            ],
         ];
 
         foreach ($datas as $data) {

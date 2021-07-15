@@ -130,39 +130,10 @@ class ToolHelperOld
             'general-data' => [
                 'current-state' => [
                     // elements and services
-                    'element.'.$livingRoomsWindows->id => [
-                        //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $livingRoomsWindows->name,
-                        'type' => 'select',
-                        'options' => self::createOptions($livingRoomsWindows->values()->orderBy('order')->get(), 'value'),
-                    ],
-                    'element.'.$sleepingRoomsWindows->id => [
-                        //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $sleepingRoomsWindows->name,
-                        'type' => 'select',
-                        'options' => self::createOptions($sleepingRoomsWindows->values()->orderBy('order')->get(), 'value'),
-                    ],
                     'element.'.$crackSealing->id => [
                         'label' => $crackSealing->name,
                         'type' => 'select',
                         'options' => static::createOptions($crackSealing->values()->orderBy('order')->get(), 'value'),
-                    ],
-                    'element.'.$wallInsulation->id => [
-//                    'label'   => __('wall-insulation.intro.filled-insulation.title'),
-                        'label' => $wallInsulation->name,
-                        'type' => 'select',
-                        'options' => static::createOptions($wallInsulation->values()->orderBy('order')->get(), 'value'),
-                    ],
-                    'element.'.$floorInsulation->id => [
-//                    'label'   => __('floor-insulation.floor-insulation.title'),
-                        'label' => $floorInsulation->name,
-                        'type' => 'select',
-                        'options' => static::createOptions($floorInsulation->values()->orderBy('order')->get(), 'value'),
-                    ],
-                    'element.'.$roofInsulation->id => [
-                        'label' => $roofInsulation->name,
-                        'type' => 'select',
-                        'options' => static::createOptions($roofInsulation->values()->orderBy('order')->get(), 'value'),
                     ],
 
                     'service.'.$hrBoiler->id => [
@@ -170,11 +141,11 @@ class ToolHelperOld
                         'type' => 'select',
                         'options' => static::createOptions($hrBoiler->values()->orderBy('order')->get(), 'value'),
                     ],
-                    'service.'.$boiler->id.'.service_value_id' => [
-                        'label' => __('boiler.boiler-type.title'),
-                        'type' => 'select',
-                        'options' => static::createOptions($boiler->values()->orderBy('order')->get(), 'value'),
-                    ],
+//                    'service.'.$boiler->id.'.service_value_id' => [
+//                        'label' => __('boiler.boiler-type.title'),
+//                        'type' => 'select',
+//                        'options' => static::createOptions($boiler->values()->orderBy('order')->get(), 'value'),
+//                    ],
                     'building_features.building_heating_application_id' => [
                         'label' => __('cooperation/tool/general-data/current-state.index.building-heating-applications.title'),
                         'type' => 'select',

@@ -17,6 +17,7 @@ class ToolQuestion extends Model
     ];
 
     protected $fillable = [
+        'short',
         'name',
         'help_text',
         'tool_question_type_id',
@@ -44,6 +45,11 @@ class ToolQuestion extends Model
     public function toolQuestionValueables(): HasMany
     {
         return $this->hasMany(ToolQuestionValueable::class);
+    }
+
+    public function toolQuestionCustomValues()
+    {
+        return $this->hasMany(ToolQuestionCustomValue::class);
     }
 
     /**

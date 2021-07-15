@@ -18,6 +18,11 @@ class SubStepTemplatesTableSeeder extends Seeder
                 'view' => 'template-default'
             ],
             [
+                'name'  => ['nl' => 'Welke zaken zou je willen veranderen aan uw woning'],
+                'short' => 'template-custom-changes',
+                'view' => 'template-custom-changes'
+            ],
+            [
                 'name'  => ['nl' => '1 hoofdvraag 2 bijvragen'],
                 'short' => 'template-2-rows-1-top-2-bottom',
                 'view' => 'template-2-rows-1-top-2-bottom',

@@ -15,13 +15,14 @@ class CreateToolQuestionsTable extends Migration
     {
         Schema::create('tool_questions', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('short');
             $table->json('name');
             $table->json('help_text');
             $table->unsignedBigInteger('tool_question_type_id');
             $table->foreign('tool_question_type_id')->references('id')->on('tool_question_types')->onDelete('cascade');
             $table->boolean('coach')->default(true);
             $table->boolean('resident')->default(true);
-            $table->json('save_in');
+            $table->json('save_in')->nullable()->default(null);
             $table->json('options')->nullable()->default(null);
             $table->json('validation')->nullable()->default(null);
             $table->string('unit_of_measure')->nullable()->default(null);

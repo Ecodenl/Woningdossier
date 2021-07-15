@@ -2,17 +2,30 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
+use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Models\BuildingHeating;
+use App\Models\BuildingHeatingApplication;
 use App\Models\BuildingType;
+use App\Models\Element;
 use App\Models\EnergyLabel;
+use App\Models\FacadeDamagedPaintwork;
+use App\Models\FacadePlasteredSurface;
+use App\Models\FacadeSurface;
+use App\Models\InsulatingGlazing;
+use App\Models\PaintworkStatus;
+use App\Models\RoofTileStatus;
 use App\Models\RoofType;
+use App\Models\Service;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\SubStepTemplate;
 use App\Models\SubStepToolQuestion;
 use App\Models\ToolQuestion;
+use App\Models\ToolQuestionCustomValue;
 use App\Models\ToolQuestionType;
 use App\Models\ToolQuestionValueable;
+use App\Models\WoodRotStatus;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
@@ -51,8 +64,58 @@ class AddQuestionsToDatabase extends Command
     public function handle()
     {
 
+        \Schema::disableForeignKeyConstraints();
         ToolQuestionValueable::truncate();
+        ToolQuestion::truncate();
+        ToolQuestionCustomValue::truncate();
+        \Schema::enableForeignKeyConstraints();
+        // General data - Elements (that are not queried later on step basis)
+        $livingRoomsWindows = Element::findByShort('living-rooms-windows');
+        $sleepingRoomsWindows = Element::findByShort('sleeping-rooms-windows');
+        // General data - Services (that are not queried later on step basis)
+        $heatPump = Service::findByShort('heat-pump');
+        $ventilation = Service::findByShort('house-ventilation');
+        $buildingHeatingApplications = BuildingHeatingApplication::orderBy('order')->get();
 
+        // Wall insulation
+        $wallInsulation = Element::findByShort('wall-insulation');
+        $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
+        $surfaces = FacadeSurface::orderBy('order')->get();
+        $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
+        $energyLabels = EnergyLabel::all();
+
+        // Insulated glazing
+        $insulatedGlazings = InsulatingGlazing::all();
+        $heatings = BuildingHeating::where('calculate_value', '<', 5)->get(); // we don't want n.v.t.
+        $crackSealing = Element::findByShort('crack-sealing');
+        $frames = Element::findByShort('frames');
+        $woodElements = Element::findByShort('wood-elements');
+        $paintworkStatuses = PaintworkStatus::orderBy('order')->get();
+        $woodRotStatuses = WoodRotStatus::orderBy('order')->get();
+
+        // High efficiency boiler
+        // NOTE: building element hr-boiler tells us if it's there
+        $hrBoiler = Service::findByShort('hr-boiler');
+        $boiler = Service::findByShort('boiler');
+
+        // Solar panels
+        $solarPanels = Service::findByShort('total-sun-panels');
+        $solarPanelsOptionsPeakPower = ['' => '-'] + SolarPanelsKeyFigures::getPeakPowers();
+        $solarPanelsOptionsAngle = ['' => '-'] + SolarPanelsKeyFigures::getAngles();
+
+        $heater = Service::findByShort('sun-boiler');
+        $heaterOptionsAngle = ['' => '-'] + HeaterKeyFigures::getAngles();
+
+
+        // Floor insulation
+        /** @var Element $floorInsulation */
+        $floorInsulation = Element::findByShort('floor-insulation');
+        $crawlspace = Element::findByShort('crawlspace');
+
+        // Roof insulation
+        $roofInsulation = Element::findByShort('roof-insulation');
+        $roofTypes = RoofType::all();
+        $roofTileStatuses = RoofTileStatus::orderBy('order')->get();
         $buildingTypes = BuildingType::all();
         $radioIconType = ToolQuestionType::findByShort('radio-icon');
         $radioType = ToolQuestionType::findByShort('radio');
@@ -62,6 +125,8 @@ class AddQuestionsToDatabase extends Command
 
         $templateDefault = SubStepTemplate::findByShort('template-default');
         $template2rows1top2bottom = SubStepTemplate::findByShort('template-2-rows-1-top-2-bottom');
+        $template2rows2top1bottom = SubStepTemplate::findByShort('template-2-rows-1-top-2-bottom');
+        $templateCustomChanges = SubStepTemplate::findByShort('template-custom-changes');
 
         $structure = [
             'building-data' => [
@@ -93,7 +158,6 @@ class AddQuestionsToDatabase extends Command
                         ]
                     ]
                 ],
-                // wat voor type aappartament heeft u moet nog komen.
                 'Bouwjaar en oppervlak' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -113,7 +177,6 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // wat voor type aappartament heeft u moet nog komen.
                 'Monument en energielabel' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -122,12 +185,11 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => 'building_features.monument',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.monument',
                             'tool_question_type_id' => $radioType->id,
-                            // todo:work this out
-//                            'tool_question_values' => [
-//                                1 => __('woningdossier.cooperation.radiobutton.yes'),
-//                                2 => __('woningdossier.cooperation.radiobutton.no'),
-//                                0 => __('woningdossier.cooperation.radiobutton.unknown'),
-//                            ],
+                            'tool_question_custom_values' => [
+                                1 => __('woningdossier.cooperation.radiobutton.yes'),
+                                2 => __('woningdossier.cooperation.radiobutton.no'),
+                                0 => __('woningdossier.cooperation.radiobutton.unknown'),
+                            ],
                         ],
                         [
                             'validation' => ['numeric', 'exists:energy_labels,id'],
@@ -138,7 +200,6 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // wat voor type aappartament heeft u moet nog komen.
                 'Gebruikersoppervlak en bijzonderheden' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -149,8 +210,8 @@ class AddQuestionsToDatabase extends Command
                             'tool_question_type_id' => $textType->id,
                         ],
                         [
+                            // todo: find the right column to save this at, this is "zijn er nog bijzonderheden oevr de woning"
                             'validation' => ['numeric', 'min:20', 'max:999999'],
-                            // todo: find the right column to save this at
                             'save_in' => 'building_features.surface',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface',
                             'tool_question_type_id' => $textareaType->id,
@@ -179,7 +240,7 @@ class AddQuestionsToDatabase extends Command
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-high',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 10, 'max' => 30, 'value' => 22, 'step' => 1],
-                            'unit_of_measure' =>__('general.unit.degrees.title'),
+                            'unit_of_measure' => __('general.unit.degrees.title'),
                         ],
                         [
                             'validation' => ['required', 'numeric', 'min:10', 'max:30'],
@@ -187,7 +248,7 @@ class AddQuestionsToDatabase extends Command
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-low',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 10, 'max' => 30, 'value' => 12, 'step' => 1],
-                            'unit_of_measure' =>__('general.unit.degrees.title'),
+                            'unit_of_measure' => __('general.unit.degrees.title'),
                         ],
                         [
 
@@ -221,7 +282,7 @@ class AddQuestionsToDatabase extends Command
                 'Gas en elektra gebruik' => [
                     'sub_step_template_id' => $template2rows1top2bottom->id,
                     'questions' => [
-                        // hoe wordt er gekookt moet nog toegevoegd worden, dit is alleen een nieuwe vraag \-_-/
+                        // todo: hoe wordt er gekookt moet nog toegevoegd worden, dit is alleen een nieuwe vraag \-_-/
                         // die staat op slide 15
                         [
                             'validation' => ['required', 'numeric', 'min:0', 'max:10000'],
@@ -242,18 +303,137 @@ class AddQuestionsToDatabase extends Command
             ],
             'living-requirements' => [
                 'Hoelang blijven wonen' => [
-                    // todo new question
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
+                            // note: new question
+                            'short' => 'remaining-living-years',
                             'validation' => ['required', 'numeric', 'min:10', 'max:30'],
-                            'save_in' => 'user_energy_habits.thermostat_high',
-                            'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-high',
+                            'translation' => 'Hoeveel jaar denkt u hier nog te blijven wonen',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 1, 'max' => 10, 'value' => 5, 'step' => 1],
-                            'unit_of_measure' =>__('general.unit.degrees.title'),
                         ],
 
+                    ]
+                ],
+                'Prioriteiten' => [
+                    // todo: dit is de prio meter, zie slide 17
+                    'sub_step_template_id' => $templateDefault->id,
+//                    'questions' => [
+//                        [
+                    // note: new question
+//                            'short' => 'remaining-living-years',
+//                            'validation' => ['required', 'numeric', 'min:10', 'max:30'],
+//                            'translation' => 'Hoeveel jaar denkt u hier nog te blijven wonen',
+//                            'tool_question_type_id' => $sliderType->id,
+//                            'options' => ['min' => 1, 'max' => 10, 'value' => 5, 'step' => 1],
+//                        ],
+
+                ],
+                'Welke zaken vervangen' => [
+                    // note: dit is een custom vraag, zie slide 18
+                    'sub_step_template_id' => $templateCustomChanges->id,
+//                            'options' => ['min' => 1, 'max' => 10, 'value' => 5, 'step' => 1],
+                ],
+            ],
+            'residential-status' => [
+                'Muurisolatie' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:elements,id'],
+                            'save_in' => "building_elements.{$wallInsulation->id}.element_value_id",
+                            'translation' => "Wat is de staat van de muurisolatie",
+                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_values' => $wallInsulation->values()->orderBy('order')->get()
+                        ],
+                    ]
+                ],
+                'Vloerisolatie' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:elements,id'],
+                            'save_in' => "building_elements.{$floorInsulation->id}.element_value_id",
+                            'translation' => "Wat is de staat van de vloerisolatie",
+                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_values' => $floorInsulation->values()->orderBy('order')->get()
+                        ],
+                    ]
+                ],
+                'Dakisolatie' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:elements,id'],
+                            'save_in' => "building_elements.{$roofInsulation->id}.element_value_id",
+                            'translation' => "Wat is de staat van de dakisolatie",
+                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_values' => $roofInsulation->values()->orderBy('order')->get()
+                        ],
+                    ]
+                ],
+                'Glasisolatie eerste woonlaag' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:elements,id'],
+                            'save_in' => "building_elements.{$livingRoomsWindows->id}.element_value_id",
+                            'translation' => "Welke glasisolatie heeft u op de eerste woonlaag",
+                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_values' => $livingRoomsWindows->values()->orderBy('order')->get()
+                        ],
+                    ]
+                ],
+                'Glasisolatie tweede woonlaag' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:elements,id'],
+                            'save_in' => "building_elements.{$sleepingRoomsWindows->id}.element_value_id",
+                            'translation' => "Welke glasisolatie heeft u op de tweede woonlaag",
+                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_values' => $sliderType->values()->orderBy('order')->get()
+                        ],
+                    ]
+                ],
+                'Verwarming' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:services,id'],
+                            'save_in' => "building_services.{$boiler->id}.service_value_id",
+                            'short' => 'heat-source',
+                            'translation' => "Wat gebruikt u voor de verwarming en warm water?",
+                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_custom_values' => [
+                                'hr-boiler' => 'Gasketel',
+                                'heat-pump' => 'Warmtepomp',
+                                'infrared' => 'Infrarood',
+                                'district-heating' => 'Stadsverwarming',
+                            ],
+                        ],
+                    ]
+                ],
+                'Gasketel vragen' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:services,id'],
+                            'save_in' => "building_services.{$boiler->id}.service_value_id",
+                            'short' => 'boiler-type',
+                            // was hoe word de woning nu verwarmd
+                            'translation' => "Wat voor gasketel heeft u?",
+                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_values' => $boiler->values()->orderBy('order')->get(),
+                        ],
+                        [
+                            'validation' => ['nullable', 'numeric', 'between:1970,'.date('Y'),],
+                            'save_in' => "building_services.{$boiler->id}.extra.date",
+                            'short' => 'boiler-placed-date',
+                            'translation' => "Wanneer is de gasketel geplaatst",
+                            'tool_question_type_id' => $textType,
+                        ],
                     ]
                 ],
             ],
@@ -271,32 +451,53 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $subQuestionData['sub_step_template_id'],
                 ]);
 
-                foreach ($subQuestionData['questions'] as $questionData) {
-                    // create the question itself
-                    $questionData['name'] = [
-                        'nl' => __($questionData['translation'] . '.title'),
-                    ];
-                    $questionData['help_text'] = [
-                        'nl' => __($questionData['translation'] . '.help'),
-                    ];
+                if (isset($subQuestionData['questions'])) {
+                    foreach ($subQuestionData['questions'] as $questionData) {
+                        // create the question itself
+                        $questionData['name'] = [
+                            'nl' => __($questionData['translation'] . '.title'),
+                        ];
+                        $questionData['help_text'] = [
+                            'nl' => __($questionData['translation'] . '.help'),
+                        ];
 
-                    $toolQuestion = ToolQuestion::create(
-                        Arr::except($questionData, ['tool_question_values'])
-                    );
-
-                    $subStep->toolQuestions()->attach($toolQuestion, ['order' => $orderForSubQuestions]);
-
-                    if (isset($questionData['tool_question_values'])) {
-                        foreach ($questionData['tool_question_values'] as $toolQuestionValueOrder => $toolQuestionValue) {
-                            $toolQuestion->toolQuestionValueables()->create([
-                                'order' => $toolQuestionValueOrder,
-                                'show' => true,
-                                'tool_question_valueable_type' => get_class($toolQuestionValue),
-                                'tool_question_valueable_id' => $toolQuestionValue->id,
-                            ]);
+                        // when the short is not set, we will use the column name as this describes it clearly
+                        if (!isset($questionData['short'])) {
+                            $questionData['short'] = last(explode('.', $questionData['save_in']));
                         }
+                        /** @var ToolQuestion $toolQuestion */
+                        $toolQuestion = ToolQuestion::create(
+                            Arr::except($questionData, ['tool_question_values', 'tool_question_custom_values'])
+                        );
+
+                        $subStep->toolQuestions()->attach($toolQuestion, ['order' => $orderForSubQuestions]);
+
+                        if (isset($questionData['tool_question_custom_values'])) {
+                            $toolQuestionCustomValueOrder = 0;
+                            foreach ($questionData['tool_question_custom_values'] as $value => $name) {
+                                $toolQuestion->toolQuestionCustomValues()->create([
+                                    'order' => $toolQuestionCustomValueOrder,
+                                    'show' => true,
+                                    // so we will compare the short to determine what is what, but we will keep value for now
+                                    'short' => $value,
+                                    'value' => $value,
+                                    'name' => $name
+                                ]);
+                            }
+                        }
+
+                        if (isset($questionData['tool_question_values'])) {
+                            foreach ($questionData['tool_question_values'] as $toolQuestionValueOrder => $toolQuestionValue) {
+                                $toolQuestion->toolQuestionValueables()->create([
+                                    'order' => $toolQuestionValueOrder,
+                                    'show' => true,
+                                    'tool_question_valueable_type' => get_class($toolQuestionValue),
+                                    'tool_question_valueable_id' => $toolQuestionValue->id,
+                                ]);
+                            }
+                        }
+                        // now we have to create the morph relationship
                     }
-                    // now we have to create the morph relationship
                 }
 
                 $orderForSubQuestions++;

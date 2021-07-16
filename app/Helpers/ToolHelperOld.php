@@ -154,23 +154,8 @@ class ToolHelperOld
                         'unit' => __('general.unit.pieces.title'),
                     ],
 
-                    'building_pv_panels.total_installed_power' => [
-                        'label' => __('cooperation/tool/general-data/current-state.index.installed-power.title'),
-                        'type' => 'text',
-                        'unit' => __('general.unit.wp.title'),
-                    ],
-                    'service.'.$solarPanels->id.'.extra.year' => [
-                        'label' => __('cooperation/tool/general-data/current-state.index.service.total-sun-panels.year.title'),
-                        'type' => 'text',
-                        'unit' => __('general.unit.year.title'),
-                    ],
 
-                    // ventilation
-                    'service.'.$ventilation->id.'.service_value_id' => [
-                        'label' => $ventilation->name,
-                        'type' => 'select',
-                        'options' => static::createOptions($ventilation->values()->orderBy('order')->get(), 'value'),
-                    ],
+
                     'service.'.$ventilation->id.'.extra.demand_driven' => [
                         'label' => __('cooperation/tool/general-data/current-state.index.service.house-ventilation.demand-driven.title'),
                         'type' => 'select',

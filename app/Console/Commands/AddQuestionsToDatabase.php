@@ -545,7 +545,7 @@ class AddQuestionsToDatabase extends Command
                     ]
                 ],
                 'Zonnepanelen' => [
-                    'sub_step_template_id' => $template2rows2top1bottom,
+                    'sub_step_template_id' => $template2rows2top1bottom->id,
                     'questions' => [
                         [
                             'validation' => ['required', 'exists:services,id'],

@@ -13,11 +13,13 @@ class ToolQuestion extends Model
 
     protected $translatable = [
         'name',
+        'placeholder',
         'help_text'
     ];
 
     protected $fillable = [
         'short',
+        'placeholder',
         'name',
         'help_text',
         'tool_question_type_id',

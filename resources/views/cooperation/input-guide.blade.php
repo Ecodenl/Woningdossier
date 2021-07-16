@@ -131,8 +131,8 @@
                     <input type="text" class="form-input" placeholder="Placeholder">
                 @endcomponent
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
-                    @component('cooperation.components.alpine-dropdown')
-                        <select class="form-input">
+                    @component('cooperation.components.alpine-select')
+                        <select class="form-input" name="alpine[dropdown]">
                             <option selected disabled>Dropdown</option>
                         </select>
                     @endcomponent
@@ -143,7 +143,16 @@
                     <input type="text" class="form-input" placeholder="Placeholder">
                 @endcomponent
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
-                    {{-- WIP dropdown --}}
+                    @component('cooperation.components.alpine-select')
+                        <select class="form-input" name="alpine[dropdown_open]">
+                            <option selected disabled>Dropdown focus</option>
+                            <option>Eerste</option>
+                            <option selected>Tweede</option>
+                            <option>Derde</option>
+                            <option>Vierde</option>
+                            <option>Vijfde</option>
+                        </select>
+                    @endcomponent
                 @endcomponent
             </div>
             <div class="flex flex-wrap">
@@ -248,6 +257,6 @@
     </div>
 </main>
 
-@yield('js')
+@stack('js')
 </body>
 </html>

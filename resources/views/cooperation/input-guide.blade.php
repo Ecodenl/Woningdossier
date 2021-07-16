@@ -155,6 +155,17 @@
                 @endcomponent
             </div>
             <div class="flex flex-wrap">
+                @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3 form-error required'])
+                    <input type="text" class="form-input" placeholder="Error met waarde">
+                    <div class="input-group-append">
+                        m<sup>2</sup>
+                    </div>
+                    <p class="form-error-label">
+                        Waarde moet een nummer zijn
+                    </p>
+                @endcomponent
+            </div>
+            <div class="flex flex-wrap">
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3'])
                     <input type="text" class="form-input" placeholder="Disabled" disabled>
                 @endcomponent
@@ -179,6 +190,9 @@
             <div class="flex flex-wrap">
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pr-3'])
                     <input type="text" class="form-input" placeholder="Placeholder">
+                    <div class="input-group-append">
+                        m<sup>2</sup>
+                    </div>
                 @endcomponent
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
                     {{-- WIP media dropdown --}}
@@ -187,6 +201,9 @@
             <div class="flex flex-wrap">
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3'])
                     <input type="text" class="form-input" placeholder="Placeholder">
+                    <div class="input-group-append">
+                        kWh
+                    </div>
                 @endcomponent
             </div>
         </div>
@@ -231,6 +248,6 @@
     </div>
 </main>
 
-@yield('script')
+@yield('js')
 </body>
 </html>

@@ -122943,12 +122943,12 @@ p a {
 
 .form-header .form-label {
   display: flex;
+  width: 75%;
   font-size: 14px;
   line-height: 24px;
   font-weight: 700;
   --tw-text-opacity: 1;
   color: rgba(100, 117, 133, var(--tw-text-opacity));
-  width: 75%
 }
 
 .form-header .form-input-source {
@@ -123104,6 +123104,7 @@ textarea.form-input {
 
 .form-error input[type="text"] ~ .form-error-label::before {
   position: absolute;
+  right: 1.5rem;
   display: block;
   --tw-translate-x: 0;
   --tw-translate-y: 0;
@@ -123117,7 +123118,12 @@ textarea.form-input {
   --tw-scale-y: 1.5;
   content: url('/icons/error-cross.svg');
   top: 15%;
-  right: 4%;
+}
+
+/* Ensure we move the cross more to the left if an input group append is present */
+
+.form-error .input-group input[type="text"] ~ .input-group-append ~ .form-error-label::before {
+  right: 4rem;
 }
 
 /* Styling for radio and checkbox */
@@ -123128,8 +123134,7 @@ textarea.form-input {
 }
 
 .radio-wrapper {
-  flex-grow: 1;
-  min-width: 50%;
+  width: 50%;
 }
 
 .checkbox-wrapper {
@@ -123257,13 +123262,24 @@ textarea.form-input {
 }
 
 .input-group .input-group-append {
-  width: 2rem;
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  display: flex;
+  width: 2.75rem;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
   --tw-bg-opacity: 1;
-  background-color: rgba(100, 117, 133, var(--tw-bg-opacity));
+  background-color: rgba(240, 241, 242, var(--tw-bg-opacity));
   --tw-bg-opacity: 0.5;
+  font-size: 14px;
+  line-height: 24px;
   --tw-text-opacity: 1;
   color: rgba(100, 117, 133, var(--tw-text-opacity));
+  height: 2.64rem; /* Slightly smaller than h-11 to fit within the borders of the input */
 }.step-divider-line {
   width: 100%;
   border-width: 1px;

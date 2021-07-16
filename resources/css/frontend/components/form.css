@@ -10,8 +10,7 @@
 }
 
 .form-header .form-label {
-    @apply flex text-blue-500 text-sm font-bold;
-    width: 75%
+    @apply flex text-blue-500 text-sm font-bold w-3/4;
 }
 
 .form-header .form-input-source {
@@ -87,10 +86,14 @@ textarea.form-input {
 }
 
 .form-error input[type="text"] ~ .form-error-label::before {
-    @apply absolute block transform scale-150;
+    @apply absolute block transform scale-150 right-6;
     content: url('/icons/error-cross.svg');
     top: 15%;
-    right: 4%;
+}
+
+/* Ensure we move the cross more to the left if an input group append is present */
+.form-error .input-group input[type="text"] ~ .input-group-append ~ .form-error-label::before {
+    @apply right-16;
 }
 
 /* Styling for radio and checkbox */
@@ -100,8 +103,7 @@ textarea.form-input {
 }
 
 .radio-wrapper {
-    @apply flex-grow;
-    min-width: 50%;
+    @apply w-1/2;
 }
 
 .checkbox-wrapper {
@@ -180,5 +182,6 @@ textarea.form-input {
 }
 
 .input-group .input-group-append {
-    @apply bg-blue-500 bg-opacity-50 text-blue-500 w-8 overflow-hidden;
+    @apply flex justify-center items-center absolute top-px right-px bg-blue-100 bg-opacity-50 text-blue-500 w-11 overflow-hidden rounded-r-lg text-sm;
+    height: 2.64rem; /* Slightly smaller than h-11 to fit within the borders of the input */
 }

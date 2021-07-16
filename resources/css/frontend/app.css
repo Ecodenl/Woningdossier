@@ -1,5 +1,7 @@
 @import '../shared/components/tailwind.css';
 
+@import './base/normalize.css';
+
 @import 'components/typography.css';
 @import 'components/clickables.css';
 @import 'components/form.css';

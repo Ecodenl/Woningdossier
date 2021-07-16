@@ -5,8 +5,7 @@
 
 /* Header row of the form group */
 .form-header {
-    @apply flex items-center w-full mb-2;
-    top: 5%;
+    @apply flex items-center w-full mb-2 top-1/20;
 }
 
 .form-header .form-label {
@@ -14,8 +13,7 @@
 }
 
 .form-header .form-input-source {
-    @apply flex justify-end rounded-lg text-sm;
-    width: 20%;
+    @apply flex justify-end rounded-lg text-sm w-2/10;
 }
 
 .form-header .form-info {
@@ -26,7 +24,8 @@
 /* Input styles */
 .form-input,
 .radio-wrapper label,
-.checkbox-wrapper label {
+.checkbox-wrapper label,
+.select-wrapper .select-input {
     @apply flex items-center w-full cursor-pointer h-11 rounded-lg border border-blue-500 text-blue-500 border-opacity-50 text-sm outline-none max-w-full bg-white;
     line-height: 2.5rem;
 
@@ -55,7 +54,8 @@ textarea.form-input {
 
 .form-input:disabled,
 .radio-wrapper input[type="radio"]:disabled + label,
-.checkbox-wrapper input[type="checkbox"]:disabled + label {
+.checkbox-wrapper input[type="checkbox"]:disabled + label,
+.select-wrapper .select-input.disabled {
     @apply cursor-not-allowed bg-blue-100 bg-opacity-50;
 }
 
@@ -86,9 +86,8 @@ textarea.form-input {
 }
 
 .form-error input[type="text"] ~ .form-error-label::before {
-    @apply absolute block transform scale-150 right-6;
+    @apply absolute block transform scale-150 right-6 top-3/20;
     content: url('/icons/error-cross.svg');
-    top: 15%;
 }
 
 /* Ensure we move the cross more to the left if an input group append is present */
@@ -159,9 +158,8 @@ textarea.form-input {
 }
 
 .radio-wrapper .checkmark:after {
-    @apply w-7/10 h-7/10 rounded-full bg-green;
+    @apply w-7/10 h-7/10 rounded-full bg-green top-3/20;
     left: 17%;
-    top: 15%;
 }
 
 /* Tick for checkbox */
@@ -170,10 +168,8 @@ textarea.form-input {
 }
 
 .checkbox-wrapper .checkmark::after {
-    @apply w-3/10 h-5/10 border-solid border-white transform rotate-45;
+    @apply w-3/10 h-5/10 border-solid border-white transform rotate-45 left-8/20 top-4/20;
     border-width: 0 2px 2px 0;
-    left: 40%;
-    top: 20%;
 }
 
 /* Input groups */
@@ -184,4 +180,13 @@ textarea.form-input {
 .input-group .input-group-append {
     @apply flex justify-center items-center absolute top-px right-px bg-blue-100 bg-opacity-50 text-blue-500 w-11 overflow-hidden rounded-r-lg text-sm;
     height: 2.64rem; /* Slightly smaller than h-11 to fit within the borders of the input */
+}
+
+.select-wrapper .select-dropdown .select-option {
+    @apply w-full;
+    /* WIP */
+}
+
+.select-wrapper .select-dropdown .select-option.disabled {
+    @apply hidden;
 }

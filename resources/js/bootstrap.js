@@ -55,6 +55,9 @@ if (token) {
 // });
 
 import Alpine from 'alpinejs'
+import alpineSelect from './alpine-scripts/alpine-select.js';
+
+Alpine.data('alpineSelect', alpineSelect)
 
 window.Alpine = Alpine
 

@@ -1288,6 +1288,139 @@ video {
   left: -100%;
 }
 
+.inset-1\/20 {
+  top: 5%;
+  right: 5%;
+  bottom: 5%;
+  left: 5%;
+}
+
+.inset-2\/20 {
+  top: 10%;
+  right: 10%;
+  bottom: 10%;
+  left: 10%;
+}
+
+.inset-3\/20 {
+  top: 15%;
+  right: 15%;
+  bottom: 15%;
+  left: 15%;
+}
+
+.inset-4\/20 {
+  top: 20%;
+  right: 20%;
+  bottom: 20%;
+  left: 20%;
+}
+
+.inset-5\/20 {
+  top: 25%;
+  right: 25%;
+  bottom: 25%;
+  left: 25%;
+}
+
+.inset-6\/20 {
+  top: 30%;
+  right: 30%;
+  bottom: 30%;
+  left: 30%;
+}
+
+.inset-7\/20 {
+  top: 35%;
+  right: 35%;
+  bottom: 35%;
+  left: 35%;
+}
+
+.inset-8\/20 {
+  top: 40%;
+  right: 40%;
+  bottom: 40%;
+  left: 40%;
+}
+
+.inset-9\/20 {
+  top: 45%;
+  right: 45%;
+  bottom: 45%;
+  left: 45%;
+}
+
+.inset-10\/20 {
+  top: 50%;
+  right: 50%;
+  bottom: 50%;
+  left: 50%;
+}
+
+.inset-11\/20 {
+  top: 55%;
+  right: 55%;
+  bottom: 55%;
+  left: 55%;
+}
+
+.inset-12\/20 {
+  top: 60%;
+  right: 60%;
+  bottom: 60%;
+  left: 60%;
+}
+
+.inset-13\/20 {
+  top: 65%;
+  right: 65%;
+  bottom: 65%;
+  left: 65%;
+}
+
+.inset-14\/20 {
+  top: 70%;
+  right: 70%;
+  bottom: 70%;
+  left: 70%;
+}
+
+.inset-15\/20 {
+  top: 75%;
+  right: 75%;
+  bottom: 75%;
+  left: 75%;
+}
+
+.inset-16\/20 {
+  top: 80%;
+  right: 80%;
+  bottom: 80%;
+  left: 80%;
+}
+
+.inset-17\/20 {
+  top: 85%;
+  right: 85%;
+  bottom: 85%;
+  left: 85%;
+}
+
+.inset-18\/20 {
+  top: 90%;
+  right: 90%;
+  bottom: 90%;
+  left: 90%;
+}
+
+.inset-19\/20 {
+  top: 95%;
+  right: 95%;
+  bottom: 95%;
+  left: 95%;
+}
+
 .inset-x-0 {
   left: 0px;
   right: 0px;
@@ -1711,6 +1844,101 @@ video {
 .-inset-x-full {
   left: -100%;
   right: -100%;
+}
+
+.inset-x-1\/20 {
+  left: 5%;
+  right: 5%;
+}
+
+.inset-x-2\/20 {
+  left: 10%;
+  right: 10%;
+}
+
+.inset-x-3\/20 {
+  left: 15%;
+  right: 15%;
+}
+
+.inset-x-4\/20 {
+  left: 20%;
+  right: 20%;
+}
+
+.inset-x-5\/20 {
+  left: 25%;
+  right: 25%;
+}
+
+.inset-x-6\/20 {
+  left: 30%;
+  right: 30%;
+}
+
+.inset-x-7\/20 {
+  left: 35%;
+  right: 35%;
+}
+
+.inset-x-8\/20 {
+  left: 40%;
+  right: 40%;
+}
+
+.inset-x-9\/20 {
+  left: 45%;
+  right: 45%;
+}
+
+.inset-x-10\/20 {
+  left: 50%;
+  right: 50%;
+}
+
+.inset-x-11\/20 {
+  left: 55%;
+  right: 55%;
+}
+
+.inset-x-12\/20 {
+  left: 60%;
+  right: 60%;
+}
+
+.inset-x-13\/20 {
+  left: 65%;
+  right: 65%;
+}
+
+.inset-x-14\/20 {
+  left: 70%;
+  right: 70%;
+}
+
+.inset-x-15\/20 {
+  left: 75%;
+  right: 75%;
+}
+
+.inset-x-16\/20 {
+  left: 80%;
+  right: 80%;
+}
+
+.inset-x-17\/20 {
+  left: 85%;
+  right: 85%;
+}
+
+.inset-x-18\/20 {
+  left: 90%;
+  right: 90%;
+}
+
+.inset-x-19\/20 {
+  left: 95%;
+  right: 95%;
 }
 
 .inset-y-0 {
@@ -2138,6 +2366,101 @@ video {
   bottom: -100%;
 }
 
+.inset-y-1\/20 {
+  top: 5%;
+  bottom: 5%;
+}
+
+.inset-y-2\/20 {
+  top: 10%;
+  bottom: 10%;
+}
+
+.inset-y-3\/20 {
+  top: 15%;
+  bottom: 15%;
+}
+
+.inset-y-4\/20 {
+  top: 20%;
+  bottom: 20%;
+}
+
+.inset-y-5\/20 {
+  top: 25%;
+  bottom: 25%;
+}
+
+.inset-y-6\/20 {
+  top: 30%;
+  bottom: 30%;
+}
+
+.inset-y-7\/20 {
+  top: 35%;
+  bottom: 35%;
+}
+
+.inset-y-8\/20 {
+  top: 40%;
+  bottom: 40%;
+}
+
+.inset-y-9\/20 {
+  top: 45%;
+  bottom: 45%;
+}
+
+.inset-y-10\/20 {
+  top: 50%;
+  bottom: 50%;
+}
+
+.inset-y-11\/20 {
+  top: 55%;
+  bottom: 55%;
+}
+
+.inset-y-12\/20 {
+  top: 60%;
+  bottom: 60%;
+}
+
+.inset-y-13\/20 {
+  top: 65%;
+  bottom: 65%;
+}
+
+.inset-y-14\/20 {
+  top: 70%;
+  bottom: 70%;
+}
+
+.inset-y-15\/20 {
+  top: 75%;
+  bottom: 75%;
+}
+
+.inset-y-16\/20 {
+  top: 80%;
+  bottom: 80%;
+}
+
+.inset-y-17\/20 {
+  top: 85%;
+  bottom: 85%;
+}
+
+.inset-y-18\/20 {
+  top: 90%;
+  bottom: 90%;
+}
+
+.inset-y-19\/20 {
+  top: 95%;
+  bottom: 95%;
+}
+
 .top-0 {
   top: 0px;
 }
@@ -2476,6 +2799,82 @@ video {
 
 .-top-full {
   top: -100%;
+}
+
+.top-1\/20 {
+  top: 5%;
+}
+
+.top-2\/20 {
+  top: 10%;
+}
+
+.top-3\/20 {
+  top: 15%;
+}
+
+.top-4\/20 {
+  top: 20%;
+}
+
+.top-5\/20 {
+  top: 25%;
+}
+
+.top-6\/20 {
+  top: 30%;
+}
+
+.top-7\/20 {
+  top: 35%;
+}
+
+.top-8\/20 {
+  top: 40%;
+}
+
+.top-9\/20 {
+  top: 45%;
+}
+
+.top-10\/20 {
+  top: 50%;
+}
+
+.top-11\/20 {
+  top: 55%;
+}
+
+.top-12\/20 {
+  top: 60%;
+}
+
+.top-13\/20 {
+  top: 65%;
+}
+
+.top-14\/20 {
+  top: 70%;
+}
+
+.top-15\/20 {
+  top: 75%;
+}
+
+.top-16\/20 {
+  top: 80%;
+}
+
+.top-17\/20 {
+  top: 85%;
+}
+
+.top-18\/20 {
+  top: 90%;
+}
+
+.top-19\/20 {
+  top: 95%;
 }
 
 .right-0 {
@@ -2818,6 +3217,82 @@ video {
   right: -100%;
 }
 
+.right-1\/20 {
+  right: 5%;
+}
+
+.right-2\/20 {
+  right: 10%;
+}
+
+.right-3\/20 {
+  right: 15%;
+}
+
+.right-4\/20 {
+  right: 20%;
+}
+
+.right-5\/20 {
+  right: 25%;
+}
+
+.right-6\/20 {
+  right: 30%;
+}
+
+.right-7\/20 {
+  right: 35%;
+}
+
+.right-8\/20 {
+  right: 40%;
+}
+
+.right-9\/20 {
+  right: 45%;
+}
+
+.right-10\/20 {
+  right: 50%;
+}
+
+.right-11\/20 {
+  right: 55%;
+}
+
+.right-12\/20 {
+  right: 60%;
+}
+
+.right-13\/20 {
+  right: 65%;
+}
+
+.right-14\/20 {
+  right: 70%;
+}
+
+.right-15\/20 {
+  right: 75%;
+}
+
+.right-16\/20 {
+  right: 80%;
+}
+
+.right-17\/20 {
+  right: 85%;
+}
+
+.right-18\/20 {
+  right: 90%;
+}
+
+.right-19\/20 {
+  right: 95%;
+}
+
 .bottom-0 {
   bottom: 0px;
 }
@@ -3158,6 +3633,82 @@ video {
   bottom: -100%;
 }
 
+.bottom-1\/20 {
+  bottom: 5%;
+}
+
+.bottom-2\/20 {
+  bottom: 10%;
+}
+
+.bottom-3\/20 {
+  bottom: 15%;
+}
+
+.bottom-4\/20 {
+  bottom: 20%;
+}
+
+.bottom-5\/20 {
+  bottom: 25%;
+}
+
+.bottom-6\/20 {
+  bottom: 30%;
+}
+
+.bottom-7\/20 {
+  bottom: 35%;
+}
+
+.bottom-8\/20 {
+  bottom: 40%;
+}
+
+.bottom-9\/20 {
+  bottom: 45%;
+}
+
+.bottom-10\/20 {
+  bottom: 50%;
+}
+
+.bottom-11\/20 {
+  bottom: 55%;
+}
+
+.bottom-12\/20 {
+  bottom: 60%;
+}
+
+.bottom-13\/20 {
+  bottom: 65%;
+}
+
+.bottom-14\/20 {
+  bottom: 70%;
+}
+
+.bottom-15\/20 {
+  bottom: 75%;
+}
+
+.bottom-16\/20 {
+  bottom: 80%;
+}
+
+.bottom-17\/20 {
+  bottom: 85%;
+}
+
+.bottom-18\/20 {
+  bottom: 90%;
+}
+
+.bottom-19\/20 {
+  bottom: 95%;
+}
+
 .left-0 {
   left: 0px;
 }
@@ -3496,6 +4047,82 @@ video {
 
 .-left-full {
   left: -100%;
+}
+
+.left-1\/20 {
+  left: 5%;
+}
+
+.left-2\/20 {
+  left: 10%;
+}
+
+.left-3\/20 {
+  left: 15%;
+}
+
+.left-4\/20 {
+  left: 20%;
+}
+
+.left-5\/20 {
+  left: 25%;
+}
+
+.left-6\/20 {
+  left: 30%;
+}
+
+.left-7\/20 {
+  left: 35%;
+}
+
+.left-8\/20 {
+  left: 40%;
+}
+
+.left-9\/20 {
+  left: 45%;
+}
+
+.left-10\/20 {
+  left: 50%;
+}
+
+.left-11\/20 {
+  left: 55%;
+}
+
+.left-12\/20 {
+  left: 60%;
+}
+
+.left-13\/20 {
+  left: 65%;
+}
+
+.left-14\/20 {
+  left: 70%;
+}
+
+.left-15\/20 {
+  left: 75%;
+}
+
+.left-16\/20 {
+  left: 80%;
+}
+
+.left-17\/20 {
+  left: 85%;
+}
+
+.left-18\/20 {
+  left: 90%;
+}
+
+.left-19\/20 {
+  left: 95%;
 }
 
 .isolate {
@@ -6874,6 +7501,10 @@ video {
 
 .w-9\/10 {
   width: 90%;
+}
+
+.w-inherit {
+  width: inherit;
 }
 
 .min-w-0 {
@@ -21817,6 +22448,139 @@ Small example
     left: -100%;
   }
 
+  .sm\:inset-1\/20 {
+    top: 5%;
+    right: 5%;
+    bottom: 5%;
+    left: 5%;
+  }
+
+  .sm\:inset-2\/20 {
+    top: 10%;
+    right: 10%;
+    bottom: 10%;
+    left: 10%;
+  }
+
+  .sm\:inset-3\/20 {
+    top: 15%;
+    right: 15%;
+    bottom: 15%;
+    left: 15%;
+  }
+
+  .sm\:inset-4\/20 {
+    top: 20%;
+    right: 20%;
+    bottom: 20%;
+    left: 20%;
+  }
+
+  .sm\:inset-5\/20 {
+    top: 25%;
+    right: 25%;
+    bottom: 25%;
+    left: 25%;
+  }
+
+  .sm\:inset-6\/20 {
+    top: 30%;
+    right: 30%;
+    bottom: 30%;
+    left: 30%;
+  }
+
+  .sm\:inset-7\/20 {
+    top: 35%;
+    right: 35%;
+    bottom: 35%;
+    left: 35%;
+  }
+
+  .sm\:inset-8\/20 {
+    top: 40%;
+    right: 40%;
+    bottom: 40%;
+    left: 40%;
+  }
+
+  .sm\:inset-9\/20 {
+    top: 45%;
+    right: 45%;
+    bottom: 45%;
+    left: 45%;
+  }
+
+  .sm\:inset-10\/20 {
+    top: 50%;
+    right: 50%;
+    bottom: 50%;
+    left: 50%;
+  }
+
+  .sm\:inset-11\/20 {
+    top: 55%;
+    right: 55%;
+    bottom: 55%;
+    left: 55%;
+  }
+
+  .sm\:inset-12\/20 {
+    top: 60%;
+    right: 60%;
+    bottom: 60%;
+    left: 60%;
+  }
+
+  .sm\:inset-13\/20 {
+    top: 65%;
+    right: 65%;
+    bottom: 65%;
+    left: 65%;
+  }
+
+  .sm\:inset-14\/20 {
+    top: 70%;
+    right: 70%;
+    bottom: 70%;
+    left: 70%;
+  }
+
+  .sm\:inset-15\/20 {
+    top: 75%;
+    right: 75%;
+    bottom: 75%;
+    left: 75%;
+  }
+
+  .sm\:inset-16\/20 {
+    top: 80%;
+    right: 80%;
+    bottom: 80%;
+    left: 80%;
+  }
+
+  .sm\:inset-17\/20 {
+    top: 85%;
+    right: 85%;
+    bottom: 85%;
+    left: 85%;
+  }
+
+  .sm\:inset-18\/20 {
+    top: 90%;
+    right: 90%;
+    bottom: 90%;
+    left: 90%;
+  }
+
+  .sm\:inset-19\/20 {
+    top: 95%;
+    right: 95%;
+    bottom: 95%;
+    left: 95%;
+  }
+
   .sm\:inset-x-0 {
     left: 0px;
     right: 0px;
@@ -22240,6 +23004,101 @@ Small example
   .sm\:-inset-x-full {
     left: -100%;
     right: -100%;
+  }
+
+  .sm\:inset-x-1\/20 {
+    left: 5%;
+    right: 5%;
+  }
+
+  .sm\:inset-x-2\/20 {
+    left: 10%;
+    right: 10%;
+  }
+
+  .sm\:inset-x-3\/20 {
+    left: 15%;
+    right: 15%;
+  }
+
+  .sm\:inset-x-4\/20 {
+    left: 20%;
+    right: 20%;
+  }
+
+  .sm\:inset-x-5\/20 {
+    left: 25%;
+    right: 25%;
+  }
+
+  .sm\:inset-x-6\/20 {
+    left: 30%;
+    right: 30%;
+  }
+
+  .sm\:inset-x-7\/20 {
+    left: 35%;
+    right: 35%;
+  }
+
+  .sm\:inset-x-8\/20 {
+    left: 40%;
+    right: 40%;
+  }
+
+  .sm\:inset-x-9\/20 {
+    left: 45%;
+    right: 45%;
+  }
+
+  .sm\:inset-x-10\/20 {
+    left: 50%;
+    right: 50%;
+  }
+
+  .sm\:inset-x-11\/20 {
+    left: 55%;
+    right: 55%;
+  }
+
+  .sm\:inset-x-12\/20 {
+    left: 60%;
+    right: 60%;
+  }
+
+  .sm\:inset-x-13\/20 {
+    left: 65%;
+    right: 65%;
+  }
+
+  .sm\:inset-x-14\/20 {
+    left: 70%;
+    right: 70%;
+  }
+
+  .sm\:inset-x-15\/20 {
+    left: 75%;
+    right: 75%;
+  }
+
+  .sm\:inset-x-16\/20 {
+    left: 80%;
+    right: 80%;
+  }
+
+  .sm\:inset-x-17\/20 {
+    left: 85%;
+    right: 85%;
+  }
+
+  .sm\:inset-x-18\/20 {
+    left: 90%;
+    right: 90%;
+  }
+
+  .sm\:inset-x-19\/20 {
+    left: 95%;
+    right: 95%;
   }
 
   .sm\:inset-y-0 {
@@ -22667,6 +23526,101 @@ Small example
     bottom: -100%;
   }
 
+  .sm\:inset-y-1\/20 {
+    top: 5%;
+    bottom: 5%;
+  }
+
+  .sm\:inset-y-2\/20 {
+    top: 10%;
+    bottom: 10%;
+  }
+
+  .sm\:inset-y-3\/20 {
+    top: 15%;
+    bottom: 15%;
+  }
+
+  .sm\:inset-y-4\/20 {
+    top: 20%;
+    bottom: 20%;
+  }
+
+  .sm\:inset-y-5\/20 {
+    top: 25%;
+    bottom: 25%;
+  }
+
+  .sm\:inset-y-6\/20 {
+    top: 30%;
+    bottom: 30%;
+  }
+
+  .sm\:inset-y-7\/20 {
+    top: 35%;
+    bottom: 35%;
+  }
+
+  .sm\:inset-y-8\/20 {
+    top: 40%;
+    bottom: 40%;
+  }
+
+  .sm\:inset-y-9\/20 {
+    top: 45%;
+    bottom: 45%;
+  }
+
+  .sm\:inset-y-10\/20 {
+    top: 50%;
+    bottom: 50%;
+  }
+
+  .sm\:inset-y-11\/20 {
+    top: 55%;
+    bottom: 55%;
+  }
+
+  .sm\:inset-y-12\/20 {
+    top: 60%;
+    bottom: 60%;
+  }
+
+  .sm\:inset-y-13\/20 {
+    top: 65%;
+    bottom: 65%;
+  }
+
+  .sm\:inset-y-14\/20 {
+    top: 70%;
+    bottom: 70%;
+  }
+
+  .sm\:inset-y-15\/20 {
+    top: 75%;
+    bottom: 75%;
+  }
+
+  .sm\:inset-y-16\/20 {
+    top: 80%;
+    bottom: 80%;
+  }
+
+  .sm\:inset-y-17\/20 {
+    top: 85%;
+    bottom: 85%;
+  }
+
+  .sm\:inset-y-18\/20 {
+    top: 90%;
+    bottom: 90%;
+  }
+
+  .sm\:inset-y-19\/20 {
+    top: 95%;
+    bottom: 95%;
+  }
+
   .sm\:top-0 {
     top: 0px;
   }
@@ -23005,6 +23959,82 @@ Small example
 
   .sm\:-top-full {
     top: -100%;
+  }
+
+  .sm\:top-1\/20 {
+    top: 5%;
+  }
+
+  .sm\:top-2\/20 {
+    top: 10%;
+  }
+
+  .sm\:top-3\/20 {
+    top: 15%;
+  }
+
+  .sm\:top-4\/20 {
+    top: 20%;
+  }
+
+  .sm\:top-5\/20 {
+    top: 25%;
+  }
+
+  .sm\:top-6\/20 {
+    top: 30%;
+  }
+
+  .sm\:top-7\/20 {
+    top: 35%;
+  }
+
+  .sm\:top-8\/20 {
+    top: 40%;
+  }
+
+  .sm\:top-9\/20 {
+    top: 45%;
+  }
+
+  .sm\:top-10\/20 {
+    top: 50%;
+  }
+
+  .sm\:top-11\/20 {
+    top: 55%;
+  }
+
+  .sm\:top-12\/20 {
+    top: 60%;
+  }
+
+  .sm\:top-13\/20 {
+    top: 65%;
+  }
+
+  .sm\:top-14\/20 {
+    top: 70%;
+  }
+
+  .sm\:top-15\/20 {
+    top: 75%;
+  }
+
+  .sm\:top-16\/20 {
+    top: 80%;
+  }
+
+  .sm\:top-17\/20 {
+    top: 85%;
+  }
+
+  .sm\:top-18\/20 {
+    top: 90%;
+  }
+
+  .sm\:top-19\/20 {
+    top: 95%;
   }
 
   .sm\:right-0 {
@@ -23347,6 +24377,82 @@ Small example
     right: -100%;
   }
 
+  .sm\:right-1\/20 {
+    right: 5%;
+  }
+
+  .sm\:right-2\/20 {
+    right: 10%;
+  }
+
+  .sm\:right-3\/20 {
+    right: 15%;
+  }
+
+  .sm\:right-4\/20 {
+    right: 20%;
+  }
+
+  .sm\:right-5\/20 {
+    right: 25%;
+  }
+
+  .sm\:right-6\/20 {
+    right: 30%;
+  }
+
+  .sm\:right-7\/20 {
+    right: 35%;
+  }
+
+  .sm\:right-8\/20 {
+    right: 40%;
+  }
+
+  .sm\:right-9\/20 {
+    right: 45%;
+  }
+
+  .sm\:right-10\/20 {
+    right: 50%;
+  }
+
+  .sm\:right-11\/20 {
+    right: 55%;
+  }
+
+  .sm\:right-12\/20 {
+    right: 60%;
+  }
+
+  .sm\:right-13\/20 {
+    right: 65%;
+  }
+
+  .sm\:right-14\/20 {
+    right: 70%;
+  }
+
+  .sm\:right-15\/20 {
+    right: 75%;
+  }
+
+  .sm\:right-16\/20 {
+    right: 80%;
+  }
+
+  .sm\:right-17\/20 {
+    right: 85%;
+  }
+
+  .sm\:right-18\/20 {
+    right: 90%;
+  }
+
+  .sm\:right-19\/20 {
+    right: 95%;
+  }
+
   .sm\:bottom-0 {
     bottom: 0px;
   }
@@ -23687,6 +24793,82 @@ Small example
     bottom: -100%;
   }
 
+  .sm\:bottom-1\/20 {
+    bottom: 5%;
+  }
+
+  .sm\:bottom-2\/20 {
+    bottom: 10%;
+  }
+
+  .sm\:bottom-3\/20 {
+    bottom: 15%;
+  }
+
+  .sm\:bottom-4\/20 {
+    bottom: 20%;
+  }
+
+  .sm\:bottom-5\/20 {
+    bottom: 25%;
+  }
+
+  .sm\:bottom-6\/20 {
+    bottom: 30%;
+  }
+
+  .sm\:bottom-7\/20 {
+    bottom: 35%;
+  }
+
+  .sm\:bottom-8\/20 {
+    bottom: 40%;
+  }
+
+  .sm\:bottom-9\/20 {
+    bottom: 45%;
+  }
+
+  .sm\:bottom-10\/20 {
+    bottom: 50%;
+  }
+
+  .sm\:bottom-11\/20 {
+    bottom: 55%;
+  }
+
+  .sm\:bottom-12\/20 {
+    bottom: 60%;
+  }
+
+  .sm\:bottom-13\/20 {
+    bottom: 65%;
+  }
+
+  .sm\:bottom-14\/20 {
+    bottom: 70%;
+  }
+
+  .sm\:bottom-15\/20 {
+    bottom: 75%;
+  }
+
+  .sm\:bottom-16\/20 {
+    bottom: 80%;
+  }
+
+  .sm\:bottom-17\/20 {
+    bottom: 85%;
+  }
+
+  .sm\:bottom-18\/20 {
+    bottom: 90%;
+  }
+
+  .sm\:bottom-19\/20 {
+    bottom: 95%;
+  }
+
   .sm\:left-0 {
     left: 0px;
   }
@@ -24025,6 +25207,82 @@ Small example
 
   .sm\:-left-full {
     left: -100%;
+  }
+
+  .sm\:left-1\/20 {
+    left: 5%;
+  }
+
+  .sm\:left-2\/20 {
+    left: 10%;
+  }
+
+  .sm\:left-3\/20 {
+    left: 15%;
+  }
+
+  .sm\:left-4\/20 {
+    left: 20%;
+  }
+
+  .sm\:left-5\/20 {
+    left: 25%;
+  }
+
+  .sm\:left-6\/20 {
+    left: 30%;
+  }
+
+  .sm\:left-7\/20 {
+    left: 35%;
+  }
+
+  .sm\:left-8\/20 {
+    left: 40%;
+  }
+
+  .sm\:left-9\/20 {
+    left: 45%;
+  }
+
+  .sm\:left-10\/20 {
+    left: 50%;
+  }
+
+  .sm\:left-11\/20 {
+    left: 55%;
+  }
+
+  .sm\:left-12\/20 {
+    left: 60%;
+  }
+
+  .sm\:left-13\/20 {
+    left: 65%;
+  }
+
+  .sm\:left-14\/20 {
+    left: 70%;
+  }
+
+  .sm\:left-15\/20 {
+    left: 75%;
+  }
+
+  .sm\:left-16\/20 {
+    left: 80%;
+  }
+
+  .sm\:left-17\/20 {
+    left: 85%;
+  }
+
+  .sm\:left-18\/20 {
+    left: 90%;
+  }
+
+  .sm\:left-19\/20 {
+    left: 95%;
   }
 
   .sm\:isolate {
@@ -27403,6 +28661,10 @@ Small example
 
   .sm\:w-9\/10 {
     width: 90%;
+  }
+
+  .sm\:w-inherit {
+    width: inherit;
   }
 
   .sm\:min-w-0 {
@@ -42133,6 +43395,139 @@ Small example
     left: -100%;
   }
 
+  .md\:inset-1\/20 {
+    top: 5%;
+    right: 5%;
+    bottom: 5%;
+    left: 5%;
+  }
+
+  .md\:inset-2\/20 {
+    top: 10%;
+    right: 10%;
+    bottom: 10%;
+    left: 10%;
+  }
+
+  .md\:inset-3\/20 {
+    top: 15%;
+    right: 15%;
+    bottom: 15%;
+    left: 15%;
+  }
+
+  .md\:inset-4\/20 {
+    top: 20%;
+    right: 20%;
+    bottom: 20%;
+    left: 20%;
+  }
+
+  .md\:inset-5\/20 {
+    top: 25%;
+    right: 25%;
+    bottom: 25%;
+    left: 25%;
+  }
+
+  .md\:inset-6\/20 {
+    top: 30%;
+    right: 30%;
+    bottom: 30%;
+    left: 30%;
+  }
+
+  .md\:inset-7\/20 {
+    top: 35%;
+    right: 35%;
+    bottom: 35%;
+    left: 35%;
+  }
+
+  .md\:inset-8\/20 {
+    top: 40%;
+    right: 40%;
+    bottom: 40%;
+    left: 40%;
+  }
+
+  .md\:inset-9\/20 {
+    top: 45%;
+    right: 45%;
+    bottom: 45%;
+    left: 45%;
+  }
+
+  .md\:inset-10\/20 {
+    top: 50%;
+    right: 50%;
+    bottom: 50%;
+    left: 50%;
+  }
+
+  .md\:inset-11\/20 {
+    top: 55%;
+    right: 55%;
+    bottom: 55%;
+    left: 55%;
+  }
+
+  .md\:inset-12\/20 {
+    top: 60%;
+    right: 60%;
+    bottom: 60%;
+    left: 60%;
+  }
+
+  .md\:inset-13\/20 {
+    top: 65%;
+    right: 65%;
+    bottom: 65%;
+    left: 65%;
+  }
+
+  .md\:inset-14\/20 {
+    top: 70%;
+    right: 70%;
+    bottom: 70%;
+    left: 70%;
+  }
+
+  .md\:inset-15\/20 {
+    top: 75%;
+    right: 75%;
+    bottom: 75%;
+    left: 75%;
+  }
+
+  .md\:inset-16\/20 {
+    top: 80%;
+    right: 80%;
+    bottom: 80%;
+    left: 80%;
+  }
+
+  .md\:inset-17\/20 {
+    top: 85%;
+    right: 85%;
+    bottom: 85%;
+    left: 85%;
+  }
+
+  .md\:inset-18\/20 {
+    top: 90%;
+    right: 90%;
+    bottom: 90%;
+    left: 90%;
+  }
+
+  .md\:inset-19\/20 {
+    top: 95%;
+    right: 95%;
+    bottom: 95%;
+    left: 95%;
+  }
+
   .md\:inset-x-0 {
     left: 0px;
     right: 0px;
@@ -42556,6 +43951,101 @@ Small example
   .md\:-inset-x-full {
     left: -100%;
     right: -100%;
+  }
+
+  .md\:inset-x-1\/20 {
+    left: 5%;
+    right: 5%;
+  }
+
+  .md\:inset-x-2\/20 {
+    left: 10%;
+    right: 10%;
+  }
+
+  .md\:inset-x-3\/20 {
+    left: 15%;
+    right: 15%;
+  }
+
+  .md\:inset-x-4\/20 {
+    left: 20%;
+    right: 20%;
+  }
+
+  .md\:inset-x-5\/20 {
+    left: 25%;
+    right: 25%;
+  }
+
+  .md\:inset-x-6\/20 {
+    left: 30%;
+    right: 30%;
+  }
+
+  .md\:inset-x-7\/20 {
+    left: 35%;
+    right: 35%;
+  }
+
+  .md\:inset-x-8\/20 {
+    left: 40%;
+    right: 40%;
+  }
+
+  .md\:inset-x-9\/20 {
+    left: 45%;
+    right: 45%;
+  }
+
+  .md\:inset-x-10\/20 {
+    left: 50%;
+    right: 50%;
+  }
+
+  .md\:inset-x-11\/20 {
+    left: 55%;
+    right: 55%;
+  }
+
+  .md\:inset-x-12\/20 {
+    left: 60%;
+    right: 60%;
+  }
+
+  .md\:inset-x-13\/20 {
+    left: 65%;
+    right: 65%;
+  }
+
+  .md\:inset-x-14\/20 {
+    left: 70%;
+    right: 70%;
+  }
+
+  .md\:inset-x-15\/20 {
+    left: 75%;
+    right: 75%;
+  }
+
+  .md\:inset-x-16\/20 {
+    left: 80%;
+    right: 80%;
+  }
+
+  .md\:inset-x-17\/20 {
+    left: 85%;
+    right: 85%;
+  }
+
+  .md\:inset-x-18\/20 {
+    left: 90%;
+    right: 90%;
+  }
+
+  .md\:inset-x-19\/20 {
+    left: 95%;
+    right: 95%;
   }
 
   .md\:inset-y-0 {
@@ -42983,6 +44473,101 @@ Small example
     bottom: -100%;
   }
 
+  .md\:inset-y-1\/20 {
+    top: 5%;
+    bottom: 5%;
+  }
+
+  .md\:inset-y-2\/20 {
+    top: 10%;
+    bottom: 10%;
+  }
+
+  .md\:inset-y-3\/20 {
+    top: 15%;
+    bottom: 15%;
+  }
+
+  .md\:inset-y-4\/20 {
+    top: 20%;
+    bottom: 20%;
+  }
+
+  .md\:inset-y-5\/20 {
+    top: 25%;
+    bottom: 25%;
+  }
+
+  .md\:inset-y-6\/20 {
+    top: 30%;
+    bottom: 30%;
+  }
+
+  .md\:inset-y-7\/20 {
+    top: 35%;
+    bottom: 35%;
+  }
+
+  .md\:inset-y-8\/20 {
+    top: 40%;
+    bottom: 40%;
+  }
+
+  .md\:inset-y-9\/20 {
+    top: 45%;
+    bottom: 45%;
+  }
+
+  .md\:inset-y-10\/20 {
+    top: 50%;
+    bottom: 50%;
+  }
+
+  .md\:inset-y-11\/20 {
+    top: 55%;
+    bottom: 55%;
+  }
+
+  .md\:inset-y-12\/20 {
+    top: 60%;
+    bottom: 60%;
+  }
+
+  .md\:inset-y-13\/20 {
+    top: 65%;
+    bottom: 65%;
+  }
+
+  .md\:inset-y-14\/20 {
+    top: 70%;
+    bottom: 70%;
+  }
+
+  .md\:inset-y-15\/20 {
+    top: 75%;
+    bottom: 75%;
+  }
+
+  .md\:inset-y-16\/20 {
+    top: 80%;
+    bottom: 80%;
+  }
+
+  .md\:inset-y-17\/20 {
+    top: 85%;
+    bottom: 85%;
+  }
+
+  .md\:inset-y-18\/20 {
+    top: 90%;
+    bottom: 90%;
+  }
+
+  .md\:inset-y-19\/20 {
+    top: 95%;
+    bottom: 95%;
+  }
+
   .md\:top-0 {
     top: 0px;
   }
@@ -43321,6 +44906,82 @@ Small example
 
   .md\:-top-full {
     top: -100%;
+  }
+
+  .md\:top-1\/20 {
+    top: 5%;
+  }
+
+  .md\:top-2\/20 {
+    top: 10%;
+  }
+
+  .md\:top-3\/20 {
+    top: 15%;
+  }
+
+  .md\:top-4\/20 {
+    top: 20%;
+  }
+
+  .md\:top-5\/20 {
+    top: 25%;
+  }
+
+  .md\:top-6\/20 {
+    top: 30%;
+  }
+
+  .md\:top-7\/20 {
+    top: 35%;
+  }
+
+  .md\:top-8\/20 {
+    top: 40%;
+  }
+
+  .md\:top-9\/20 {
+    top: 45%;
+  }
+
+  .md\:top-10\/20 {
+    top: 50%;
+  }
+
+  .md\:top-11\/20 {
+    top: 55%;
+  }
+
+  .md\:top-12\/20 {
+    top: 60%;
+  }
+
+  .md\:top-13\/20 {
+    top: 65%;
+  }
+
+  .md\:top-14\/20 {
+    top: 70%;
+  }
+
+  .md\:top-15\/20 {
+    top: 75%;
+  }
+
+  .md\:top-16\/20 {
+    top: 80%;
+  }
+
+  .md\:top-17\/20 {
+    top: 85%;
+  }
+
+  .md\:top-18\/20 {
+    top: 90%;
+  }
+
+  .md\:top-19\/20 {
+    top: 95%;
   }
 
   .md\:right-0 {
@@ -43663,6 +45324,82 @@ Small example
     right: -100%;
   }
 
+  .md\:right-1\/20 {
+    right: 5%;
+  }
+
+  .md\:right-2\/20 {
+    right: 10%;
+  }
+
+  .md\:right-3\/20 {
+    right: 15%;
+  }
+
+  .md\:right-4\/20 {
+    right: 20%;
+  }
+
+  .md\:right-5\/20 {
+    right: 25%;
+  }
+
+  .md\:right-6\/20 {
+    right: 30%;
+  }
+
+  .md\:right-7\/20 {
+    right: 35%;
+  }
+
+  .md\:right-8\/20 {
+    right: 40%;
+  }
+
+  .md\:right-9\/20 {
+    right: 45%;
+  }
+
+  .md\:right-10\/20 {
+    right: 50%;
+  }
+
+  .md\:right-11\/20 {
+    right: 55%;
+  }
+
+  .md\:right-12\/20 {
+    right: 60%;
+  }
+
+  .md\:right-13\/20 {
+    right: 65%;
+  }
+
+  .md\:right-14\/20 {
+    right: 70%;
+  }
+
+  .md\:right-15\/20 {
+    right: 75%;
+  }
+
+  .md\:right-16\/20 {
+    right: 80%;
+  }
+
+  .md\:right-17\/20 {
+    right: 85%;
+  }
+
+  .md\:right-18\/20 {
+    right: 90%;
+  }
+
+  .md\:right-19\/20 {
+    right: 95%;
+  }
+
   .md\:bottom-0 {
     bottom: 0px;
   }
@@ -44003,6 +45740,82 @@ Small example
     bottom: -100%;
   }
 
+  .md\:bottom-1\/20 {
+    bottom: 5%;
+  }
+
+  .md\:bottom-2\/20 {
+    bottom: 10%;
+  }
+
+  .md\:bottom-3\/20 {
+    bottom: 15%;
+  }
+
+  .md\:bottom-4\/20 {
+    bottom: 20%;
+  }
+
+  .md\:bottom-5\/20 {
+    bottom: 25%;
+  }
+
+  .md\:bottom-6\/20 {
+    bottom: 30%;
+  }
+
+  .md\:bottom-7\/20 {
+    bottom: 35%;
+  }
+
+  .md\:bottom-8\/20 {
+    bottom: 40%;
+  }
+
+  .md\:bottom-9\/20 {
+    bottom: 45%;
+  }
+
+  .md\:bottom-10\/20 {
+    bottom: 50%;
+  }
+
+  .md\:bottom-11\/20 {
+    bottom: 55%;
+  }
+
+  .md\:bottom-12\/20 {
+    bottom: 60%;
+  }
+
+  .md\:bottom-13\/20 {
+    bottom: 65%;
+  }
+
+  .md\:bottom-14\/20 {
+    bottom: 70%;
+  }
+
+  .md\:bottom-15\/20 {
+    bottom: 75%;
+  }
+
+  .md\:bottom-16\/20 {
+    bottom: 80%;
+  }
+
+  .md\:bottom-17\/20 {
+    bottom: 85%;
+  }
+
+  .md\:bottom-18\/20 {
+    bottom: 90%;
+  }
+
+  .md\:bottom-19\/20 {
+    bottom: 95%;
+  }
+
   .md\:left-0 {
     left: 0px;
   }
@@ -44341,6 +46154,82 @@ Small example
 
   .md\:-left-full {
     left: -100%;
+  }
+
+  .md\:left-1\/20 {
+    left: 5%;
+  }
+
+  .md\:left-2\/20 {
+    left: 10%;
+  }
+
+  .md\:left-3\/20 {
+    left: 15%;
+  }
+
+  .md\:left-4\/20 {
+    left: 20%;
+  }
+
+  .md\:left-5\/20 {
+    left: 25%;
+  }
+
+  .md\:left-6\/20 {
+    left: 30%;
+  }
+
+  .md\:left-7\/20 {
+    left: 35%;
+  }
+
+  .md\:left-8\/20 {
+    left: 40%;
+  }
+
+  .md\:left-9\/20 {
+    left: 45%;
+  }
+
+  .md\:left-10\/20 {
+    left: 50%;
+  }
+
+  .md\:left-11\/20 {
+    left: 55%;
+  }
+
+  .md\:left-12\/20 {
+    left: 60%;
+  }
+
+  .md\:left-13\/20 {
+    left: 65%;
+  }
+
+  .md\:left-14\/20 {
+    left: 70%;
+  }
+
+  .md\:left-15\/20 {
+    left: 75%;
+  }
+
+  .md\:left-16\/20 {
+    left: 80%;
+  }
+
+  .md\:left-17\/20 {
+    left: 85%;
+  }
+
+  .md\:left-18\/20 {
+    left: 90%;
+  }
+
+  .md\:left-19\/20 {
+    left: 95%;
   }
 
   .md\:isolate {
@@ -47719,6 +49608,10 @@ Small example
 
   .md\:w-9\/10 {
     width: 90%;
+  }
+
+  .md\:w-inherit {
+    width: inherit;
   }
 
   .md\:min-w-0 {
@@ -62449,6 +64342,139 @@ Small example
     left: -100%;
   }
 
+  .lg\:inset-1\/20 {
+    top: 5%;
+    right: 5%;
+    bottom: 5%;
+    left: 5%;
+  }
+
+  .lg\:inset-2\/20 {
+    top: 10%;
+    right: 10%;
+    bottom: 10%;
+    left: 10%;
+  }
+
+  .lg\:inset-3\/20 {
+    top: 15%;
+    right: 15%;
+    bottom: 15%;
+    left: 15%;
+  }
+
+  .lg\:inset-4\/20 {
+    top: 20%;
+    right: 20%;
+    bottom: 20%;
+    left: 20%;
+  }
+
+  .lg\:inset-5\/20 {
+    top: 25%;
+    right: 25%;
+    bottom: 25%;
+    left: 25%;
+  }
+
+  .lg\:inset-6\/20 {
+    top: 30%;
+    right: 30%;
+    bottom: 30%;
+    left: 30%;
+  }
+
+  .lg\:inset-7\/20 {
+    top: 35%;
+    right: 35%;
+    bottom: 35%;
+    left: 35%;
+  }
+
+  .lg\:inset-8\/20 {
+    top: 40%;
+    right: 40%;
+    bottom: 40%;
+    left: 40%;
+  }
+
+  .lg\:inset-9\/20 {
+    top: 45%;
+    right: 45%;
+    bottom: 45%;
+    left: 45%;
+  }
+
+  .lg\:inset-10\/20 {
+    top: 50%;
+    right: 50%;
+    bottom: 50%;
+    left: 50%;
+  }
+
+  .lg\:inset-11\/20 {
+    top: 55%;
+    right: 55%;
+    bottom: 55%;
+    left: 55%;
+  }
+
+  .lg\:inset-12\/20 {
+    top: 60%;
+    right: 60%;
+    bottom: 60%;
+    left: 60%;
+  }
+
+  .lg\:inset-13\/20 {
+    top: 65%;
+    right: 65%;
+    bottom: 65%;
+    left: 65%;
+  }
+
+  .lg\:inset-14\/20 {
+    top: 70%;
+    right: 70%;
+    bottom: 70%;
+    left: 70%;
+  }
+
+  .lg\:inset-15\/20 {
+    top: 75%;
+    right: 75%;
+    bottom: 75%;
+    left: 75%;
+  }
+
+  .lg\:inset-16\/20 {
+    top: 80%;
+    right: 80%;
+    bottom: 80%;
+    left: 80%;
+  }
+
+  .lg\:inset-17\/20 {
+    top: 85%;
+    right: 85%;
+    bottom: 85%;
+    left: 85%;
+  }
+
+  .lg\:inset-18\/20 {
+    top: 90%;
+    right: 90%;
+    bottom: 90%;
+    left: 90%;
+  }
+
+  .lg\:inset-19\/20 {
+    top: 95%;
+    right: 95%;
+    bottom: 95%;
+    left: 95%;
+  }
+
   .lg\:inset-x-0 {
     left: 0px;
     right: 0px;
@@ -62872,6 +64898,101 @@ Small example
   .lg\:-inset-x-full {
     left: -100%;
     right: -100%;
+  }
+
+  .lg\:inset-x-1\/20 {
+    left: 5%;
+    right: 5%;
+  }
+
+  .lg\:inset-x-2\/20 {
+    left: 10%;
+    right: 10%;
+  }
+
+  .lg\:inset-x-3\/20 {
+    left: 15%;
+    right: 15%;
+  }
+
+  .lg\:inset-x-4\/20 {
+    left: 20%;
+    right: 20%;
+  }
+
+  .lg\:inset-x-5\/20 {
+    left: 25%;
+    right: 25%;
+  }
+
+  .lg\:inset-x-6\/20 {
+    left: 30%;
+    right: 30%;
+  }
+
+  .lg\:inset-x-7\/20 {
+    left: 35%;
+    right: 35%;
+  }
+
+  .lg\:inset-x-8\/20 {
+    left: 40%;
+    right: 40%;
+  }
+
+  .lg\:inset-x-9\/20 {
+    left: 45%;
+    right: 45%;
+  }
+
+  .lg\:inset-x-10\/20 {
+    left: 50%;
+    right: 50%;
+  }
+
+  .lg\:inset-x-11\/20 {
+    left: 55%;
+    right: 55%;
+  }
+
+  .lg\:inset-x-12\/20 {
+    left: 60%;
+    right: 60%;
+  }
+
+  .lg\:inset-x-13\/20 {
+    left: 65%;
+    right: 65%;
+  }
+
+  .lg\:inset-x-14\/20 {
+    left: 70%;
+    right: 70%;
+  }
+
+  .lg\:inset-x-15\/20 {
+    left: 75%;
+    right: 75%;
+  }
+
+  .lg\:inset-x-16\/20 {
+    left: 80%;
+    right: 80%;
+  }
+
+  .lg\:inset-x-17\/20 {
+    left: 85%;
+    right: 85%;
+  }
+
+  .lg\:inset-x-18\/20 {
+    left: 90%;
+    right: 90%;
+  }
+
+  .lg\:inset-x-19\/20 {
+    left: 95%;
+    right: 95%;
   }
 
   .lg\:inset-y-0 {
@@ -63299,6 +65420,101 @@ Small example
     bottom: -100%;
   }
 
+  .lg\:inset-y-1\/20 {
+    top: 5%;
+    bottom: 5%;
+  }
+
+  .lg\:inset-y-2\/20 {
+    top: 10%;
+    bottom: 10%;
+  }
+
+  .lg\:inset-y-3\/20 {
+    top: 15%;
+    bottom: 15%;
+  }
+
+  .lg\:inset-y-4\/20 {
+    top: 20%;
+    bottom: 20%;
+  }
+
+  .lg\:inset-y-5\/20 {
+    top: 25%;
+    bottom: 25%;
+  }
+
+  .lg\:inset-y-6\/20 {
+    top: 30%;
+    bottom: 30%;
+  }
+
+  .lg\:inset-y-7\/20 {
+    top: 35%;
+    bottom: 35%;
+  }
+
+  .lg\:inset-y-8\/20 {
+    top: 40%;
+    bottom: 40%;
+  }
+
+  .lg\:inset-y-9\/20 {
+    top: 45%;
+    bottom: 45%;
+  }
+
+  .lg\:inset-y-10\/20 {
+    top: 50%;
+    bottom: 50%;
+  }
+
+  .lg\:inset-y-11\/20 {
+    top: 55%;
+    bottom: 55%;
+  }
+
+  .lg\:inset-y-12\/20 {
+    top: 60%;
+    bottom: 60%;
+  }
+
+  .lg\:inset-y-13\/20 {
+    top: 65%;
+    bottom: 65%;
+  }
+
+  .lg\:inset-y-14\/20 {
+    top: 70%;
+    bottom: 70%;
+  }
+
+  .lg\:inset-y-15\/20 {
+    top: 75%;
+    bottom: 75%;
+  }
+
+  .lg\:inset-y-16\/20 {
+    top: 80%;
+    bottom: 80%;
+  }
+
+  .lg\:inset-y-17\/20 {
+    top: 85%;
+    bottom: 85%;
+  }
+
+  .lg\:inset-y-18\/20 {
+    top: 90%;
+    bottom: 90%;
+  }
+
+  .lg\:inset-y-19\/20 {
+    top: 95%;
+    bottom: 95%;
+  }
+
   .lg\:top-0 {
     top: 0px;
   }
@@ -63637,6 +65853,82 @@ Small example
 
   .lg\:-top-full {
     top: -100%;
+  }
+
+  .lg\:top-1\/20 {
+    top: 5%;
+  }
+
+  .lg\:top-2\/20 {
+    top: 10%;
+  }
+
+  .lg\:top-3\/20 {
+    top: 15%;
+  }
+
+  .lg\:top-4\/20 {
+    top: 20%;
+  }
+
+  .lg\:top-5\/20 {
+    top: 25%;
+  }
+
+  .lg\:top-6\/20 {
+    top: 30%;
+  }
+
+  .lg\:top-7\/20 {
+    top: 35%;
+  }
+
+  .lg\:top-8\/20 {
+    top: 40%;
+  }
+
+  .lg\:top-9\/20 {
+    top: 45%;
+  }
+
+  .lg\:top-10\/20 {
+    top: 50%;
+  }
+
+  .lg\:top-11\/20 {
+    top: 55%;
+  }
+
+  .lg\:top-12\/20 {
+    top: 60%;
+  }
+
+  .lg\:top-13\/20 {
+    top: 65%;
+  }
+
+  .lg\:top-14\/20 {
+    top: 70%;
+  }
+
+  .lg\:top-15\/20 {
+    top: 75%;
+  }
+
+  .lg\:top-16\/20 {
+    top: 80%;
+  }
+
+  .lg\:top-17\/20 {
+    top: 85%;
+  }
+
+  .lg\:top-18\/20 {
+    top: 90%;
+  }
+
+  .lg\:top-19\/20 {
+    top: 95%;
   }
 
   .lg\:right-0 {
@@ -63979,6 +66271,82 @@ Small example
     right: -100%;
   }
 
+  .lg\:right-1\/20 {
+    right: 5%;
+  }
+
+  .lg\:right-2\/20 {
+    right: 10%;
+  }
+
+  .lg\:right-3\/20 {
+    right: 15%;
+  }
+
+  .lg\:right-4\/20 {
+    right: 20%;
+  }
+
+  .lg\:right-5\/20 {
+    right: 25%;
+  }
+
+  .lg\:right-6\/20 {
+    right: 30%;
+  }
+
+  .lg\:right-7\/20 {
+    right: 35%;
+  }
+
+  .lg\:right-8\/20 {
+    right: 40%;
+  }
+
+  .lg\:right-9\/20 {
+    right: 45%;
+  }
+
+  .lg\:right-10\/20 {
+    right: 50%;
+  }
+
+  .lg\:right-11\/20 {
+    right: 55%;
+  }
+
+  .lg\:right-12\/20 {
+    right: 60%;
+  }
+
+  .lg\:right-13\/20 {
+    right: 65%;
+  }
+
+  .lg\:right-14\/20 {
+    right: 70%;
+  }
+
+  .lg\:right-15\/20 {
+    right: 75%;
+  }
+
+  .lg\:right-16\/20 {
+    right: 80%;
+  }
+
+  .lg\:right-17\/20 {
+    right: 85%;
+  }
+
+  .lg\:right-18\/20 {
+    right: 90%;
+  }
+
+  .lg\:right-19\/20 {
+    right: 95%;
+  }
+
   .lg\:bottom-0 {
     bottom: 0px;
   }
@@ -64319,6 +66687,82 @@ Small example
     bottom: -100%;
   }
 
+  .lg\:bottom-1\/20 {
+    bottom: 5%;
+  }
+
+  .lg\:bottom-2\/20 {
+    bottom: 10%;
+  }
+
+  .lg\:bottom-3\/20 {
+    bottom: 15%;
+  }
+
+  .lg\:bottom-4\/20 {
+    bottom: 20%;
+  }
+
+  .lg\:bottom-5\/20 {
+    bottom: 25%;
+  }
+
+  .lg\:bottom-6\/20 {
+    bottom: 30%;
+  }
+
+  .lg\:bottom-7\/20 {
+    bottom: 35%;
+  }
+
+  .lg\:bottom-8\/20 {
+    bottom: 40%;
+  }
+
+  .lg\:bottom-9\/20 {
+    bottom: 45%;
+  }
+
+  .lg\:bottom-10\/20 {
+    bottom: 50%;
+  }
+
+  .lg\:bottom-11\/20 {
+    bottom: 55%;
+  }
+
+  .lg\:bottom-12\/20 {
+    bottom: 60%;
+  }
+
+  .lg\:bottom-13\/20 {
+    bottom: 65%;
+  }
+
+  .lg\:bottom-14\/20 {
+    bottom: 70%;
+  }
+
+  .lg\:bottom-15\/20 {
+    bottom: 75%;
+  }
+
+  .lg\:bottom-16\/20 {
+    bottom: 80%;
+  }
+
+  .lg\:bottom-17\/20 {
+    bottom: 85%;
+  }
+
+  .lg\:bottom-18\/20 {
+    bottom: 90%;
+  }
+
+  .lg\:bottom-19\/20 {
+    bottom: 95%;
+  }
+
   .lg\:left-0 {
     left: 0px;
   }
@@ -64657,6 +67101,82 @@ Small example
 
   .lg\:-left-full {
     left: -100%;
+  }
+
+  .lg\:left-1\/20 {
+    left: 5%;
+  }
+
+  .lg\:left-2\/20 {
+    left: 10%;
+  }
+
+  .lg\:left-3\/20 {
+    left: 15%;
+  }
+
+  .lg\:left-4\/20 {
+    left: 20%;
+  }
+
+  .lg\:left-5\/20 {
+    left: 25%;
+  }
+
+  .lg\:left-6\/20 {
+    left: 30%;
+  }
+
+  .lg\:left-7\/20 {
+    left: 35%;
+  }
+
+  .lg\:left-8\/20 {
+    left: 40%;
+  }
+
+  .lg\:left-9\/20 {
+    left: 45%;
+  }
+
+  .lg\:left-10\/20 {
+    left: 50%;
+  }
+
+  .lg\:left-11\/20 {
+    left: 55%;
+  }
+
+  .lg\:left-12\/20 {
+    left: 60%;
+  }
+
+  .lg\:left-13\/20 {
+    left: 65%;
+  }
+
+  .lg\:left-14\/20 {
+    left: 70%;
+  }
+
+  .lg\:left-15\/20 {
+    left: 75%;
+  }
+
+  .lg\:left-16\/20 {
+    left: 80%;
+  }
+
+  .lg\:left-17\/20 {
+    left: 85%;
+  }
+
+  .lg\:left-18\/20 {
+    left: 90%;
+  }
+
+  .lg\:left-19\/20 {
+    left: 95%;
   }
 
   .lg\:isolate {
@@ -68035,6 +70555,10 @@ Small example
 
   .lg\:w-9\/10 {
     width: 90%;
+  }
+
+  .lg\:w-inherit {
+    width: inherit;
   }
 
   .lg\:min-w-0 {
@@ -82765,6 +85289,139 @@ Small example
     left: -100%;
   }
 
+  .xl\:inset-1\/20 {
+    top: 5%;
+    right: 5%;
+    bottom: 5%;
+    left: 5%;
+  }
+
+  .xl\:inset-2\/20 {
+    top: 10%;
+    right: 10%;
+    bottom: 10%;
+    left: 10%;
+  }
+
+  .xl\:inset-3\/20 {
+    top: 15%;
+    right: 15%;
+    bottom: 15%;
+    left: 15%;
+  }
+
+  .xl\:inset-4\/20 {
+    top: 20%;
+    right: 20%;
+    bottom: 20%;
+    left: 20%;
+  }
+
+  .xl\:inset-5\/20 {
+    top: 25%;
+    right: 25%;
+    bottom: 25%;
+    left: 25%;
+  }
+
+  .xl\:inset-6\/20 {
+    top: 30%;
+    right: 30%;
+    bottom: 30%;
+    left: 30%;
+  }
+
+  .xl\:inset-7\/20 {
+    top: 35%;
+    right: 35%;
+    bottom: 35%;
+    left: 35%;
+  }
+
+  .xl\:inset-8\/20 {
+    top: 40%;
+    right: 40%;
+    bottom: 40%;
+    left: 40%;
+  }
+
+  .xl\:inset-9\/20 {
+    top: 45%;
+    right: 45%;
+    bottom: 45%;
+    left: 45%;
+  }
+
+  .xl\:inset-10\/20 {
+    top: 50%;
+    right: 50%;
+    bottom: 50%;
+    left: 50%;
+  }
+
+  .xl\:inset-11\/20 {
+    top: 55%;
+    right: 55%;
+    bottom: 55%;
+    left: 55%;
+  }
+
+  .xl\:inset-12\/20 {
+    top: 60%;
+    right: 60%;
+    bottom: 60%;
+    left: 60%;
+  }
+
+  .xl\:inset-13\/20 {
+    top: 65%;
+    right: 65%;
+    bottom: 65%;
+    left: 65%;
+  }
+
+  .xl\:inset-14\/20 {
+    top: 70%;
+    right: 70%;
+    bottom: 70%;
+    left: 70%;
+  }
+
+  .xl\:inset-15\/20 {
+    top: 75%;
+    right: 75%;
+    bottom: 75%;
+    left: 75%;
+  }
+
+  .xl\:inset-16\/20 {
+    top: 80%;
+    right: 80%;
+    bottom: 80%;
+    left: 80%;
+  }
+
+  .xl\:inset-17\/20 {
+    top: 85%;
+    right: 85%;
+    bottom: 85%;
+    left: 85%;
+  }
+
+  .xl\:inset-18\/20 {
+    top: 90%;
+    right: 90%;
+    bottom: 90%;
+    left: 90%;
+  }
+
+  .xl\:inset-19\/20 {
+    top: 95%;
+    right: 95%;
+    bottom: 95%;
+    left: 95%;
+  }
+
   .xl\:inset-x-0 {
     left: 0px;
     right: 0px;
@@ -83188,6 +85845,101 @@ Small example
   .xl\:-inset-x-full {
     left: -100%;
     right: -100%;
+  }
+
+  .xl\:inset-x-1\/20 {
+    left: 5%;
+    right: 5%;
+  }
+
+  .xl\:inset-x-2\/20 {
+    left: 10%;
+    right: 10%;
+  }
+
+  .xl\:inset-x-3\/20 {
+    left: 15%;
+    right: 15%;
+  }
+
+  .xl\:inset-x-4\/20 {
+    left: 20%;
+    right: 20%;
+  }
+
+  .xl\:inset-x-5\/20 {
+    left: 25%;
+    right: 25%;
+  }
+
+  .xl\:inset-x-6\/20 {
+    left: 30%;
+    right: 30%;
+  }
+
+  .xl\:inset-x-7\/20 {
+    left: 35%;
+    right: 35%;
+  }
+
+  .xl\:inset-x-8\/20 {
+    left: 40%;
+    right: 40%;
+  }
+
+  .xl\:inset-x-9\/20 {
+    left: 45%;
+    right: 45%;
+  }
+
+  .xl\:inset-x-10\/20 {
+    left: 50%;
+    right: 50%;
+  }
+
+  .xl\:inset-x-11\/20 {
+    left: 55%;
+    right: 55%;
+  }
+
+  .xl\:inset-x-12\/20 {
+    left: 60%;
+    right: 60%;
+  }
+
+  .xl\:inset-x-13\/20 {
+    left: 65%;
+    right: 65%;
+  }
+
+  .xl\:inset-x-14\/20 {
+    left: 70%;
+    right: 70%;
+  }
+
+  .xl\:inset-x-15\/20 {
+    left: 75%;
+    right: 75%;
+  }
+
+  .xl\:inset-x-16\/20 {
+    left: 80%;
+    right: 80%;
+  }
+
+  .xl\:inset-x-17\/20 {
+    left: 85%;
+    right: 85%;
+  }
+
+  .xl\:inset-x-18\/20 {
+    left: 90%;
+    right: 90%;
+  }
+
+  .xl\:inset-x-19\/20 {
+    left: 95%;
+    right: 95%;
   }
 
   .xl\:inset-y-0 {
@@ -83615,6 +86367,101 @@ Small example
     bottom: -100%;
   }
 
+  .xl\:inset-y-1\/20 {
+    top: 5%;
+    bottom: 5%;
+  }
+
+  .xl\:inset-y-2\/20 {
+    top: 10%;
+    bottom: 10%;
+  }
+
+  .xl\:inset-y-3\/20 {
+    top: 15%;
+    bottom: 15%;
+  }
+
+  .xl\:inset-y-4\/20 {
+    top: 20%;
+    bottom: 20%;
+  }
+
+  .xl\:inset-y-5\/20 {
+    top: 25%;
+    bottom: 25%;
+  }
+
+  .xl\:inset-y-6\/20 {
+    top: 30%;
+    bottom: 30%;
+  }
+
+  .xl\:inset-y-7\/20 {
+    top: 35%;
+    bottom: 35%;
+  }
+
+  .xl\:inset-y-8\/20 {
+    top: 40%;
+    bottom: 40%;
+  }
+
+  .xl\:inset-y-9\/20 {
+    top: 45%;
+    bottom: 45%;
+  }
+
+  .xl\:inset-y-10\/20 {
+    top: 50%;
+    bottom: 50%;
+  }
+
+  .xl\:inset-y-11\/20 {
+    top: 55%;
+    bottom: 55%;
+  }
+
+  .xl\:inset-y-12\/20 {
+    top: 60%;
+    bottom: 60%;
+  }
+
+  .xl\:inset-y-13\/20 {
+    top: 65%;
+    bottom: 65%;
+  }
+
+  .xl\:inset-y-14\/20 {
+    top: 70%;
+    bottom: 70%;
+  }
+
+  .xl\:inset-y-15\/20 {
+    top: 75%;
+    bottom: 75%;
+  }
+
+  .xl\:inset-y-16\/20 {
+    top: 80%;
+    bottom: 80%;
+  }
+
+  .xl\:inset-y-17\/20 {
+    top: 85%;
+    bottom: 85%;
+  }
+
+  .xl\:inset-y-18\/20 {
+    top: 90%;
+    bottom: 90%;
+  }
+
+  .xl\:inset-y-19\/20 {
+    top: 95%;
+    bottom: 95%;
+  }
+
   .xl\:top-0 {
     top: 0px;
   }
@@ -83953,6 +86800,82 @@ Small example
 
   .xl\:-top-full {
     top: -100%;
+  }
+
+  .xl\:top-1\/20 {
+    top: 5%;
+  }
+
+  .xl\:top-2\/20 {
+    top: 10%;
+  }
+
+  .xl\:top-3\/20 {
+    top: 15%;
+  }
+
+  .xl\:top-4\/20 {
+    top: 20%;
+  }
+
+  .xl\:top-5\/20 {
+    top: 25%;
+  }
+
+  .xl\:top-6\/20 {
+    top: 30%;
+  }
+
+  .xl\:top-7\/20 {
+    top: 35%;
+  }
+
+  .xl\:top-8\/20 {
+    top: 40%;
+  }
+
+  .xl\:top-9\/20 {
+    top: 45%;
+  }
+
+  .xl\:top-10\/20 {
+    top: 50%;
+  }
+
+  .xl\:top-11\/20 {
+    top: 55%;
+  }
+
+  .xl\:top-12\/20 {
+    top: 60%;
+  }
+
+  .xl\:top-13\/20 {
+    top: 65%;
+  }
+
+  .xl\:top-14\/20 {
+    top: 70%;
+  }
+
+  .xl\:top-15\/20 {
+    top: 75%;
+  }
+
+  .xl\:top-16\/20 {
+    top: 80%;
+  }
+
+  .xl\:top-17\/20 {
+    top: 85%;
+  }
+
+  .xl\:top-18\/20 {
+    top: 90%;
+  }
+
+  .xl\:top-19\/20 {
+    top: 95%;
   }
 
   .xl\:right-0 {
@@ -84295,6 +87218,82 @@ Small example
     right: -100%;
   }
 
+  .xl\:right-1\/20 {
+    right: 5%;
+  }
+
+  .xl\:right-2\/20 {
+    right: 10%;
+  }
+
+  .xl\:right-3\/20 {
+    right: 15%;
+  }
+
+  .xl\:right-4\/20 {
+    right: 20%;
+  }
+
+  .xl\:right-5\/20 {
+    right: 25%;
+  }
+
+  .xl\:right-6\/20 {
+    right: 30%;
+  }
+
+  .xl\:right-7\/20 {
+    right: 35%;
+  }
+
+  .xl\:right-8\/20 {
+    right: 40%;
+  }
+
+  .xl\:right-9\/20 {
+    right: 45%;
+  }
+
+  .xl\:right-10\/20 {
+    right: 50%;
+  }
+
+  .xl\:right-11\/20 {
+    right: 55%;
+  }
+
+  .xl\:right-12\/20 {
+    right: 60%;
+  }
+
+  .xl\:right-13\/20 {
+    right: 65%;
+  }
+
+  .xl\:right-14\/20 {
+    right: 70%;
+  }
+
+  .xl\:right-15\/20 {
+    right: 75%;
+  }
+
+  .xl\:right-16\/20 {
+    right: 80%;
+  }
+
+  .xl\:right-17\/20 {
+    right: 85%;
+  }
+
+  .xl\:right-18\/20 {
+    right: 90%;
+  }
+
+  .xl\:right-19\/20 {
+    right: 95%;
+  }
+
   .xl\:bottom-0 {
     bottom: 0px;
   }
@@ -84635,6 +87634,82 @@ Small example
     bottom: -100%;
   }
 
+  .xl\:bottom-1\/20 {
+    bottom: 5%;
+  }
+
+  .xl\:bottom-2\/20 {
+    bottom: 10%;
+  }
+
+  .xl\:bottom-3\/20 {
+    bottom: 15%;
+  }
+
+  .xl\:bottom-4\/20 {
+    bottom: 20%;
+  }
+
+  .xl\:bottom-5\/20 {
+    bottom: 25%;
+  }
+
+  .xl\:bottom-6\/20 {
+    bottom: 30%;
+  }
+
+  .xl\:bottom-7\/20 {
+    bottom: 35%;
+  }
+
+  .xl\:bottom-8\/20 {
+    bottom: 40%;
+  }
+
+  .xl\:bottom-9\/20 {
+    bottom: 45%;
+  }
+
+  .xl\:bottom-10\/20 {
+    bottom: 50%;
+  }
+
+  .xl\:bottom-11\/20 {
+    bottom: 55%;
+  }
+
+  .xl\:bottom-12\/20 {
+    bottom: 60%;
+  }
+
+  .xl\:bottom-13\/20 {
+    bottom: 65%;
+  }
+
+  .xl\:bottom-14\/20 {
+    bottom: 70%;
+  }
+
+  .xl\:bottom-15\/20 {
+    bottom: 75%;
+  }
+
+  .xl\:bottom-16\/20 {
+    bottom: 80%;
+  }
+
+  .xl\:bottom-17\/20 {
+    bottom: 85%;
+  }
+
+  .xl\:bottom-18\/20 {
+    bottom: 90%;
+  }
+
+  .xl\:bottom-19\/20 {
+    bottom: 95%;
+  }
+
   .xl\:left-0 {
     left: 0px;
   }
@@ -84973,6 +88048,82 @@ Small example
 
   .xl\:-left-full {
     left: -100%;
+  }
+
+  .xl\:left-1\/20 {
+    left: 5%;
+  }
+
+  .xl\:left-2\/20 {
+    left: 10%;
+  }
+
+  .xl\:left-3\/20 {
+    left: 15%;
+  }
+
+  .xl\:left-4\/20 {
+    left: 20%;
+  }
+
+  .xl\:left-5\/20 {
+    left: 25%;
+  }
+
+  .xl\:left-6\/20 {
+    left: 30%;
+  }
+
+  .xl\:left-7\/20 {
+    left: 35%;
+  }
+
+  .xl\:left-8\/20 {
+    left: 40%;
+  }
+
+  .xl\:left-9\/20 {
+    left: 45%;
+  }
+
+  .xl\:left-10\/20 {
+    left: 50%;
+  }
+
+  .xl\:left-11\/20 {
+    left: 55%;
+  }
+
+  .xl\:left-12\/20 {
+    left: 60%;
+  }
+
+  .xl\:left-13\/20 {
+    left: 65%;
+  }
+
+  .xl\:left-14\/20 {
+    left: 70%;
+  }
+
+  .xl\:left-15\/20 {
+    left: 75%;
+  }
+
+  .xl\:left-16\/20 {
+    left: 80%;
+  }
+
+  .xl\:left-17\/20 {
+    left: 85%;
+  }
+
+  .xl\:left-18\/20 {
+    left: 90%;
+  }
+
+  .xl\:left-19\/20 {
+    left: 95%;
   }
 
   .xl\:isolate {
@@ -88351,6 +91502,10 @@ Small example
 
   .xl\:w-9\/10 {
     width: 90%;
+  }
+
+  .xl\:w-inherit {
+    width: inherit;
   }
 
   .xl\:min-w-0 {
@@ -103081,6 +106236,139 @@ Small example
     left: -100%;
   }
 
+  .\32xl\:inset-1\/20 {
+    top: 5%;
+    right: 5%;
+    bottom: 5%;
+    left: 5%;
+  }
+
+  .\32xl\:inset-2\/20 {
+    top: 10%;
+    right: 10%;
+    bottom: 10%;
+    left: 10%;
+  }
+
+  .\32xl\:inset-3\/20 {
+    top: 15%;
+    right: 15%;
+    bottom: 15%;
+    left: 15%;
+  }
+
+  .\32xl\:inset-4\/20 {
+    top: 20%;
+    right: 20%;
+    bottom: 20%;
+    left: 20%;
+  }
+
+  .\32xl\:inset-5\/20 {
+    top: 25%;
+    right: 25%;
+    bottom: 25%;
+    left: 25%;
+  }
+
+  .\32xl\:inset-6\/20 {
+    top: 30%;
+    right: 30%;
+    bottom: 30%;
+    left: 30%;
+  }
+
+  .\32xl\:inset-7\/20 {
+    top: 35%;
+    right: 35%;
+    bottom: 35%;
+    left: 35%;
+  }
+
+  .\32xl\:inset-8\/20 {
+    top: 40%;
+    right: 40%;
+    bottom: 40%;
+    left: 40%;
+  }
+
+  .\32xl\:inset-9\/20 {
+    top: 45%;
+    right: 45%;
+    bottom: 45%;
+    left: 45%;
+  }
+
+  .\32xl\:inset-10\/20 {
+    top: 50%;
+    right: 50%;
+    bottom: 50%;
+    left: 50%;
+  }
+
+  .\32xl\:inset-11\/20 {
+    top: 55%;
+    right: 55%;
+    bottom: 55%;
+    left: 55%;
+  }
+
+  .\32xl\:inset-12\/20 {
+    top: 60%;
+    right: 60%;
+    bottom: 60%;
+    left: 60%;
+  }
+
+  .\32xl\:inset-13\/20 {
+    top: 65%;
+    right: 65%;
+    bottom: 65%;
+    left: 65%;
+  }
+
+  .\32xl\:inset-14\/20 {
+    top: 70%;
+    right: 70%;
+    bottom: 70%;
+    left: 70%;
+  }
+
+  .\32xl\:inset-15\/20 {
+    top: 75%;
+    right: 75%;
+    bottom: 75%;
+    left: 75%;
+  }
+
+  .\32xl\:inset-16\/20 {
+    top: 80%;
+    right: 80%;
+    bottom: 80%;
+    left: 80%;
+  }
+
+  .\32xl\:inset-17\/20 {
+    top: 85%;
+    right: 85%;
+    bottom: 85%;
+    left: 85%;
+  }
+
+  .\32xl\:inset-18\/20 {
+    top: 90%;
+    right: 90%;
+    bottom: 90%;
+    left: 90%;
+  }
+
+  .\32xl\:inset-19\/20 {
+    top: 95%;
+    right: 95%;
+    bottom: 95%;
+    left: 95%;
+  }
+
   .\32xl\:inset-x-0 {
     left: 0px;
     right: 0px;
@@ -103504,6 +106792,101 @@ Small example
   .\32xl\:-inset-x-full {
     left: -100%;
     right: -100%;
+  }
+
+  .\32xl\:inset-x-1\/20 {
+    left: 5%;
+    right: 5%;
+  }
+
+  .\32xl\:inset-x-2\/20 {
+    left: 10%;
+    right: 10%;
+  }
+
+  .\32xl\:inset-x-3\/20 {
+    left: 15%;
+    right: 15%;
+  }
+
+  .\32xl\:inset-x-4\/20 {
+    left: 20%;
+    right: 20%;
+  }
+
+  .\32xl\:inset-x-5\/20 {
+    left: 25%;
+    right: 25%;
+  }
+
+  .\32xl\:inset-x-6\/20 {
+    left: 30%;
+    right: 30%;
+  }
+
+  .\32xl\:inset-x-7\/20 {
+    left: 35%;
+    right: 35%;
+  }
+
+  .\32xl\:inset-x-8\/20 {
+    left: 40%;
+    right: 40%;
+  }
+
+  .\32xl\:inset-x-9\/20 {
+    left: 45%;
+    right: 45%;
+  }
+
+  .\32xl\:inset-x-10\/20 {
+    left: 50%;
+    right: 50%;
+  }
+
+  .\32xl\:inset-x-11\/20 {
+    left: 55%;
+    right: 55%;
+  }
+
+  .\32xl\:inset-x-12\/20 {
+    left: 60%;
+    right: 60%;
+  }
+
+  .\32xl\:inset-x-13\/20 {
+    left: 65%;
+    right: 65%;
+  }
+
+  .\32xl\:inset-x-14\/20 {
+    left: 70%;
+    right: 70%;
+  }
+
+  .\32xl\:inset-x-15\/20 {
+    left: 75%;
+    right: 75%;
+  }
+
+  .\32xl\:inset-x-16\/20 {
+    left: 80%;
+    right: 80%;
+  }
+
+  .\32xl\:inset-x-17\/20 {
+    left: 85%;
+    right: 85%;
+  }
+
+  .\32xl\:inset-x-18\/20 {
+    left: 90%;
+    right: 90%;
+  }
+
+  .\32xl\:inset-x-19\/20 {
+    left: 95%;
+    right: 95%;
   }
 
   .\32xl\:inset-y-0 {
@@ -103931,6 +107314,101 @@ Small example
     bottom: -100%;
   }
 
+  .\32xl\:inset-y-1\/20 {
+    top: 5%;
+    bottom: 5%;
+  }
+
+  .\32xl\:inset-y-2\/20 {
+    top: 10%;
+    bottom: 10%;
+  }
+
+  .\32xl\:inset-y-3\/20 {
+    top: 15%;
+    bottom: 15%;
+  }
+
+  .\32xl\:inset-y-4\/20 {
+    top: 20%;
+    bottom: 20%;
+  }
+
+  .\32xl\:inset-y-5\/20 {
+    top: 25%;
+    bottom: 25%;
+  }
+
+  .\32xl\:inset-y-6\/20 {
+    top: 30%;
+    bottom: 30%;
+  }
+
+  .\32xl\:inset-y-7\/20 {
+    top: 35%;
+    bottom: 35%;
+  }
+
+  .\32xl\:inset-y-8\/20 {
+    top: 40%;
+    bottom: 40%;
+  }
+
+  .\32xl\:inset-y-9\/20 {
+    top: 45%;
+    bottom: 45%;
+  }
+
+  .\32xl\:inset-y-10\/20 {
+    top: 50%;
+    bottom: 50%;
+  }
+
+  .\32xl\:inset-y-11\/20 {
+    top: 55%;
+    bottom: 55%;
+  }
+
+  .\32xl\:inset-y-12\/20 {
+    top: 60%;
+    bottom: 60%;
+  }
+
+  .\32xl\:inset-y-13\/20 {
+    top: 65%;
+    bottom: 65%;
+  }
+
+  .\32xl\:inset-y-14\/20 {
+    top: 70%;
+    bottom: 70%;
+  }
+
+  .\32xl\:inset-y-15\/20 {
+    top: 75%;
+    bottom: 75%;
+  }
+
+  .\32xl\:inset-y-16\/20 {
+    top: 80%;
+    bottom: 80%;
+  }
+
+  .\32xl\:inset-y-17\/20 {
+    top: 85%;
+    bottom: 85%;
+  }
+
+  .\32xl\:inset-y-18\/20 {
+    top: 90%;
+    bottom: 90%;
+  }
+
+  .\32xl\:inset-y-19\/20 {
+    top: 95%;
+    bottom: 95%;
+  }
+
   .\32xl\:top-0 {
     top: 0px;
   }
@@ -104269,6 +107747,82 @@ Small example
 
   .\32xl\:-top-full {
     top: -100%;
+  }
+
+  .\32xl\:top-1\/20 {
+    top: 5%;
+  }
+
+  .\32xl\:top-2\/20 {
+    top: 10%;
+  }
+
+  .\32xl\:top-3\/20 {
+    top: 15%;
+  }
+
+  .\32xl\:top-4\/20 {
+    top: 20%;
+  }
+
+  .\32xl\:top-5\/20 {
+    top: 25%;
+  }
+
+  .\32xl\:top-6\/20 {
+    top: 30%;
+  }
+
+  .\32xl\:top-7\/20 {
+    top: 35%;
+  }
+
+  .\32xl\:top-8\/20 {
+    top: 40%;
+  }
+
+  .\32xl\:top-9\/20 {
+    top: 45%;
+  }
+
+  .\32xl\:top-10\/20 {
+    top: 50%;
+  }
+
+  .\32xl\:top-11\/20 {
+    top: 55%;
+  }
+
+  .\32xl\:top-12\/20 {
+    top: 60%;
+  }
+
+  .\32xl\:top-13\/20 {
+    top: 65%;
+  }
+
+  .\32xl\:top-14\/20 {
+    top: 70%;
+  }
+
+  .\32xl\:top-15\/20 {
+    top: 75%;
+  }
+
+  .\32xl\:top-16\/20 {
+    top: 80%;
+  }
+
+  .\32xl\:top-17\/20 {
+    top: 85%;
+  }
+
+  .\32xl\:top-18\/20 {
+    top: 90%;
+  }
+
+  .\32xl\:top-19\/20 {
+    top: 95%;
   }
 
   .\32xl\:right-0 {
@@ -104611,6 +108165,82 @@ Small example
     right: -100%;
   }
 
+  .\32xl\:right-1\/20 {
+    right: 5%;
+  }
+
+  .\32xl\:right-2\/20 {
+    right: 10%;
+  }
+
+  .\32xl\:right-3\/20 {
+    right: 15%;
+  }
+
+  .\32xl\:right-4\/20 {
+    right: 20%;
+  }
+
+  .\32xl\:right-5\/20 {
+    right: 25%;
+  }
+
+  .\32xl\:right-6\/20 {
+    right: 30%;
+  }
+
+  .\32xl\:right-7\/20 {
+    right: 35%;
+  }
+
+  .\32xl\:right-8\/20 {
+    right: 40%;
+  }
+
+  .\32xl\:right-9\/20 {
+    right: 45%;
+  }
+
+  .\32xl\:right-10\/20 {
+    right: 50%;
+  }
+
+  .\32xl\:right-11\/20 {
+    right: 55%;
+  }
+
+  .\32xl\:right-12\/20 {
+    right: 60%;
+  }
+
+  .\32xl\:right-13\/20 {
+    right: 65%;
+  }
+
+  .\32xl\:right-14\/20 {
+    right: 70%;
+  }
+
+  .\32xl\:right-15\/20 {
+    right: 75%;
+  }
+
+  .\32xl\:right-16\/20 {
+    right: 80%;
+  }
+
+  .\32xl\:right-17\/20 {
+    right: 85%;
+  }
+
+  .\32xl\:right-18\/20 {
+    right: 90%;
+  }
+
+  .\32xl\:right-19\/20 {
+    right: 95%;
+  }
+
   .\32xl\:bottom-0 {
     bottom: 0px;
   }
@@ -104951,6 +108581,82 @@ Small example
     bottom: -100%;
   }
 
+  .\32xl\:bottom-1\/20 {
+    bottom: 5%;
+  }
+
+  .\32xl\:bottom-2\/20 {
+    bottom: 10%;
+  }
+
+  .\32xl\:bottom-3\/20 {
+    bottom: 15%;
+  }
+
+  .\32xl\:bottom-4\/20 {
+    bottom: 20%;
+  }
+
+  .\32xl\:bottom-5\/20 {
+    bottom: 25%;
+  }
+
+  .\32xl\:bottom-6\/20 {
+    bottom: 30%;
+  }
+
+  .\32xl\:bottom-7\/20 {
+    bottom: 35%;
+  }
+
+  .\32xl\:bottom-8\/20 {
+    bottom: 40%;
+  }
+
+  .\32xl\:bottom-9\/20 {
+    bottom: 45%;
+  }
+
+  .\32xl\:bottom-10\/20 {
+    bottom: 50%;
+  }
+
+  .\32xl\:bottom-11\/20 {
+    bottom: 55%;
+  }
+
+  .\32xl\:bottom-12\/20 {
+    bottom: 60%;
+  }
+
+  .\32xl\:bottom-13\/20 {
+    bottom: 65%;
+  }
+
+  .\32xl\:bottom-14\/20 {
+    bottom: 70%;
+  }
+
+  .\32xl\:bottom-15\/20 {
+    bottom: 75%;
+  }
+
+  .\32xl\:bottom-16\/20 {
+    bottom: 80%;
+  }
+
+  .\32xl\:bottom-17\/20 {
+    bottom: 85%;
+  }
+
+  .\32xl\:bottom-18\/20 {
+    bottom: 90%;
+  }
+
+  .\32xl\:bottom-19\/20 {
+    bottom: 95%;
+  }
+
   .\32xl\:left-0 {
     left: 0px;
   }
@@ -105289,6 +108995,82 @@ Small example
 
   .\32xl\:-left-full {
     left: -100%;
+  }
+
+  .\32xl\:left-1\/20 {
+    left: 5%;
+  }
+
+  .\32xl\:left-2\/20 {
+    left: 10%;
+  }
+
+  .\32xl\:left-3\/20 {
+    left: 15%;
+  }
+
+  .\32xl\:left-4\/20 {
+    left: 20%;
+  }
+
+  .\32xl\:left-5\/20 {
+    left: 25%;
+  }
+
+  .\32xl\:left-6\/20 {
+    left: 30%;
+  }
+
+  .\32xl\:left-7\/20 {
+    left: 35%;
+  }
+
+  .\32xl\:left-8\/20 {
+    left: 40%;
+  }
+
+  .\32xl\:left-9\/20 {
+    left: 45%;
+  }
+
+  .\32xl\:left-10\/20 {
+    left: 50%;
+  }
+
+  .\32xl\:left-11\/20 {
+    left: 55%;
+  }
+
+  .\32xl\:left-12\/20 {
+    left: 60%;
+  }
+
+  .\32xl\:left-13\/20 {
+    left: 65%;
+  }
+
+  .\32xl\:left-14\/20 {
+    left: 70%;
+  }
+
+  .\32xl\:left-15\/20 {
+    left: 75%;
+  }
+
+  .\32xl\:left-16\/20 {
+    left: 80%;
+  }
+
+  .\32xl\:left-17\/20 {
+    left: 85%;
+  }
+
+  .\32xl\:left-18\/20 {
+    left: 90%;
+  }
+
+  .\32xl\:left-19\/20 {
+    left: 95%;
   }
 
   .\32xl\:isolate {
@@ -108667,6 +112449,10 @@ Small example
 
   .\32xl\:w-9\/10 {
     width: 90%;
+  }
+
+  .\32xl\:w-inherit {
+    width: inherit;
   }
 
   .\32xl\:min-w-0 {
@@ -122660,6 +126446,10 @@ Small example
   .\32xl\:ease-in-out {
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
+}select {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
 }/* Headings */
 
 .heading-1 {
@@ -122934,11 +126724,11 @@ p a {
 /* Header row of the form group */
 
 .form-header {
+  top: 5%;
   margin-bottom: 0.5rem;
   display: flex;
   width: 100%;
   align-items: center;
-  top: 5%;
 }
 
 .form-header .form-label {
@@ -122953,11 +126743,11 @@ p a {
 
 .form-header .form-input-source {
   display: flex;
+  width: 20%;
   justify-content: flex-end;
   border-radius: 0.5rem;
   font-size: 14px;
   line-height: 24px;
-  width: 20%;
 }
 
 .form-header .form-info {
@@ -122969,7 +126759,7 @@ p a {
 
 /* Input styles */
 
-.form-input, .radio-wrapper label, .checkbox-wrapper label {
+.form-input, .radio-wrapper label, .checkbox-wrapper label, .select-wrapper .select-input {
   display: flex;
   height: 2.75rem;
   width: 100%;
@@ -122993,17 +126783,18 @@ p a {
 
 .form-input,
 .radio-wrapper label,
-.checkbox-wrapper label {
+.checkbox-wrapper label,
+.select-wrapper .select-input {
   line-height: 2.5rem;
 }
 
-.form-input:hover, .radio-wrapper label:hover, .checkbox-wrapper label:hover {
+.form-input:hover, .radio-wrapper label:hover, .checkbox-wrapper label:hover, .select-wrapper .select-input:hover {
   --tw-border-opacity: 1;
   border-color: rgba(44, 169, 130, var(--tw-border-opacity));
   --tw-border-opacity: 1;
 }
 
-.form-input:focus, .radio-wrapper label:focus, .checkbox-wrapper label:focus {
+.form-input:focus, .radio-wrapper label:focus, .checkbox-wrapper label:focus, .select-wrapper .select-input:focus {
   --tw-border-opacity: 1;
   border-color: rgba(44, 169, 130, var(--tw-border-opacity));
   --tw-border-opacity: 1;
@@ -123043,7 +126834,7 @@ textarea.form-input {
   min-height: 2.75rem; /* Height of h-11, base height of input */
 }
 
-.form-input:disabled, .radio-wrapper input[type="radio"]:disabled + label, .checkbox-wrapper input[type="checkbox"]:disabled + label {
+.form-input:disabled, .radio-wrapper input[type="radio"]:disabled + label, .checkbox-wrapper input[type="checkbox"]:disabled + label, .select-wrapper .select-input.disabled {
   cursor: not-allowed;
   --tw-bg-opacity: 1;
   background-color: rgba(240, 241, 242, var(--tw-bg-opacity));
@@ -123104,6 +126895,7 @@ textarea.form-input {
 
 .form-error input[type="text"] ~ .form-error-label::before {
   position: absolute;
+  top: 15%;
   right: 1.5rem;
   display: block;
   --tw-translate-x: 0;
@@ -123117,7 +126909,6 @@ textarea.form-input {
   --tw-scale-x: 1.5;
   --tw-scale-y: 1.5;
   content: url('/icons/error-cross.svg');
-  top: 15%;
 }
 
 /* Ensure we move the cross more to the left if an input group append is present */
@@ -123216,13 +127007,13 @@ textarea.form-input {
 }
 
 .radio-wrapper .checkmark:after {
+  top: 15%;
   height: 70%;
   width: 70%;
   border-radius: 9999px;
   --tw-bg-opacity: 1;
   background-color: rgba(44, 169, 130, var(--tw-bg-opacity));
   left: 17%;
-  top: 15%;
 }
 
 /* Tick for checkbox */
@@ -123232,6 +127023,8 @@ textarea.form-input {
 }
 
 .checkbox-wrapper .checkmark::after {
+  top: 20%;
+  left: 40%;
   height: 50%;
   width: 30%;
   --tw-translate-x: 0;
@@ -123247,8 +127040,6 @@ textarea.form-input {
   --tw-border-opacity: 1;
   border-color: rgba(255, 255, 255, var(--tw-border-opacity));
   border-width: 0 2px 2px 0;
-  left: 40%;
-  top: 20%;
 }
 
 /* Input groups */
@@ -123280,6 +127071,15 @@ textarea.form-input {
   --tw-text-opacity: 1;
   color: rgba(100, 117, 133, var(--tw-text-opacity));
   height: 2.64rem; /* Slightly smaller than h-11 to fit within the borders of the input */
+}
+
+.select-wrapper .select-dropdown .select-option {
+  width: 100%;
+  /* WIP */
+}
+
+.select-wrapper .select-dropdown .select-option.disabled {
+  display: none;
 }.step-divider-line {
   width: 100%;
   border-width: 1px;

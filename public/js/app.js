@@ -33960,6 +33960,91 @@ module.exports = function(module) {
 
 /***/ }),
 
+/***/ "./resources/js/alpine-scripts/alpine-select.js":
+/*!******************************************************!*\
+  !*** ./resources/js/alpine-scripts/alpine-select.js ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  return {
+    // Select element
+    select: null,
+    // HTML options
+    options: null,
+    // Current value of the select
+    value: null,
+    // If the select is disabled
+    disabled: false,
+    // Is the dropdown open?
+    open: false,
+    init: function init() {
+      var wrapper = this.$refs['select-wrapper']; // Get the select element
+
+      this.select = wrapper.querySelector('select'); // Select is defined!
+
+      if (!(null === this.select)) {
+        // Get options
+        this.options = this.select.getElementsByTagName('option'); // There are options!
+
+        if (this.options.length > 0) {
+          // Get attributes
+          this.value = this.select.value;
+          this.disabled = this.select.hasAttribute('disabled'); // Add class if disabled, so css can do magic
+
+          if (this.disabled) {
+            this.$refs['select-input'].classList.add('disabled');
+          } // Build the alpine select
+
+
+          var optionDropdown = this.$refs['select-options']; // Loop options to build
+          // Note: we cannot use forEach, as options is a HTML collection, which is not an array
+
+          for (var i = 0; i < this.options.length; i++) {
+            this.buildOption(optionDropdown, this.options[i]);
+          } // Hide the original select
+
+
+          this.select.style.display = 'none'; // Show the new alpine select
+
+          this.$refs['select-input'].style.display = '';
+        }
+      }
+    },
+    toggle: function toggle() {
+      // If not disabled, we will handle the click
+      if (!this.disabled) {
+        this.open = !this.open;
+      }
+    },
+    changeOption: function changeOption(value) {
+      this.value = value;
+      this.select.value = value;
+    },
+    buildOption: function buildOption(parent, option) {
+      // Build a new alpine option
+      var newOption = document.createElement('span');
+      newOption.appendChild(document.createTextNode(option.text)); // Add alpine functions
+
+      newOption.setAttribute('x-bind:class', 'value == ' + option.value);
+      newOption.setAttribute('x-on:click', 'changeOption(' + option.value + ')');
+      newOption.classList.add('select-option');
+
+      if (option.hasAttribute('disabled')) {
+        newOption.classList.add('disabled');
+      } // Append to list
+
+
+      parent.appendChild(newOption);
+    }
+  };
+});
+
+/***/ }),
+
 /***/ "./resources/js/app.js":
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
@@ -34125,6 +34210,7 @@ function removeError(input) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/module.esm.js");
+/* harmony import */ var _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./alpine-scripts/alpine-select.js */ "./resources/js/alpine-scripts/alpine-select.js");
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -34179,6 +34265,8 @@ if (token) {
 
 
 
+
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('alpineSelect', _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 

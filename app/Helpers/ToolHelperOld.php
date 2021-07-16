@@ -130,30 +130,6 @@ class ToolHelperOld
             'general-data' => [
                 'current-state' => [
                     // elements and services
-                    'element.'.$crackSealing->id => [
-                        'label' => $crackSealing->name,
-                        'type' => 'select',
-                        'options' => static::createOptions($crackSealing->values()->orderBy('order')->get(), 'value'),
-                    ],
-
-                    'service.'.$hrBoiler->id => [
-                        'label' => $hrBoiler->name,
-                        'type' => 'select',
-                        'options' => static::createOptions($hrBoiler->values()->orderBy('order')->get(), 'value'),
-                    ],
-//                    'service.'.$boiler->id.'.service_value_id' => [
-//                        'label' => __('boiler.boiler-type.title'),
-//                        'type' => 'select',
-//                        'options' => static::createOptions($boiler->values()->orderBy('order')->get(), 'value'),
-//                    ],
-
-
-                    'service.'.$solarPanels->id.'.extra.value' => [
-                        'label' => $solarPanels->name,
-                        'type' => 'text',
-                        'unit' => __('general.unit.pieces.title'),
-                    ],
-
 
 
                     'service.'.$ventilation->id.'.extra.demand_driven' => [
@@ -174,10 +150,6 @@ class ToolHelperOld
                     ],
                 ],
                 'usage' => [
-                    'user_energy_habits.resident_count' => [
-                        'label' => __('cooperation/tool/general-data/usage.index.water-gas.resident-count.title'),
-                        'type' => 'text',
-                    ],
                     'user_energy_habits.water_comfort_id' => [
                         'label' => __('cooperation/tool/general-data/usage.index.water-gas.water-comfort.title'),
                         'type' => 'select',

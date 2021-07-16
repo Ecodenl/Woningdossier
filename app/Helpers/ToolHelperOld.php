@@ -146,17 +146,7 @@ class ToolHelperOld
 //                        'type' => 'select',
 //                        'options' => static::createOptions($boiler->values()->orderBy('order')->get(), 'value'),
 //                    ],
-                    'building_features.building_heating_application_id' => [
-                        'label' => __('cooperation/tool/general-data/current-state.index.building-heating-applications.title'),
-                        'type' => 'select',
-                        'options' => static::createOptions($buildingHeatingApplications),
-                    ],
 
-                    'service.'.$heatPump->id => [
-                        'label' => $heatPump->name,
-                        'type' => 'select',
-                        'options' => static::createOptions($heatPump->values()->orderBy('order')->get(), 'value'),
-                    ],
 
                     'service.'.$solarPanels->id.'.extra.value' => [
                         'label' => $solarPanels->name,
@@ -175,12 +165,6 @@ class ToolHelperOld
                         'unit' => __('general.unit.year.title'),
                     ],
 
-                    // services
-                    'service.'.$heater->id => [
-                        'label' => $heater->name,
-                        'type' => 'select',
-                        'options' => static::createOptions($heater->values()->orderBy('order')->get(), 'value'),
-                    ],
                     // ventilation
                     'service.'.$ventilation->id.'.service_value_id' => [
                         'label' => $ventilation->name,

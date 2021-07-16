@@ -224,10 +224,19 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:residents,id'],
+                            'validation' => ['required'],
                             'save_in' => 'user_energy_habits.resident_count',
-                            'translation' => 'cooperation/tool/general-data/usage.index.water-gas.resident-count',
+                            'translation' => 'Hoeveel mensen wonen er in de woning',
                             'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_custom_values' => [
+                                1 => 'Alleen',
+                                2 => 'Twee',
+                                3 => 'Vier',
+                                5 => 'Vijf',
+                                6 => 'Zes',
+                                7 => 'Zeven',
+                                0 => 'Meer dan zeven',
+                            ],
                         ],
                     ]
                 ],
@@ -393,7 +402,7 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => "building_elements.{$sleepingRoomsWindows->id}.element_value_id",
                             'translation' => "Welke glasisolatie heeft u op de tweede woonlaag",
                             'tool_question_type_id' => $radioIconType->id,
-                            'tool_question_values' => $sliderType->values()->orderBy('order')->get()
+                            'tool_question_values' => $sleepingRoomsWindows->values()->orderBy('order')->get()
                         ],
                     ]
                 ],
@@ -401,8 +410,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:services,id'],
-                            'save_in' => "building_services.{$boiler->id}.service_value_id",
+                            'validation' => ['required', 'exists:tool_question_custom_values,id'],
                             'short' => 'heat-source',
                             'translation' => "Wat gebruikt u voor de verwarming en warm water?",
                             'tool_question_type_id' => $radioIconType->id,
@@ -417,12 +425,13 @@ class AddQuestionsToDatabase extends Command
                 ],
                 'Gasketel vragen' => [
                     'sub_step_template_id' => $templateDefault->id,
+                    // todo: deze vraag mag alleen worden weergeven waneer de verwarming vraag gasketel is.
                     'questions' => [
                         [
                             'validation' => ['required', 'exists:services,id'],
                             'save_in' => "building_services.{$boiler->id}.service_value_id",
                             'short' => 'boiler-type',
-                            // was hoe word de woning nu verwarmd
+                            // was current-state -> type ketel
                             'translation' => "Wat voor gasketel heeft u?",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $boiler->values()->orderBy('order')->get(),
@@ -432,7 +441,155 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => "building_services.{$boiler->id}.extra.date",
                             'short' => 'boiler-placed-date',
                             'translation' => "Wanneer is de gasketel geplaatst",
-                            'tool_question_type_id' => $textType,
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                    ]
+                ],
+                'Hoe is de verwarming' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:services,id'],
+                            'save_in' => "building_features.building_heating_application_id",
+                            'short' => 'heat-source',
+                            // was current-state -> hoe word de woning nu verwarmd
+                            'translation' => "Hoe is de verwarming",
+                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_values' => $buildingHeatingApplications,
+                        ],
+                    ]
+                ],
+                'Zonnenboiler' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:services,id'],
+                            'save_in' => "building_services.{$heater->id}.service_value_id",
+                            'short' => 'heater-type',
+                            'translation' => "Heeft u een zonneboiler",
+                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_values' => $heater->values()->orderBy('order')->get(),
+                        ],
+                    ]
+                ],
+                'Warmtepomp' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:services,id'],
+                            'save_in' => "building_services.{$heatPump->id}.service_value_id",
+                            'short' => 'heat-pump-type',
+                            'translation' => "Heeft u een warmptepomp",
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_values' => $heater->values()->orderBy('order')->get(),
+                        ],
+                        [
+                            'validation' => [
+                                // required when the heat pump is available
+                                "required_if:building_services.{$heatPump->id}.service_value_id,!=,".$heater->values()->where('calculate_value', 1)->first()->id,
+                                'numeric',
+                                'between:1900,' . date('Y')
+                            ],
+                            'short' => 'heat-pump-placed-date',
+                            'translation' => "Wanneer is de warmtepomp geplaatst?",
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                    ]
+                ],
+                'Warmtepomp' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:services,id'],
+                            'save_in' => "building_services.{$heatPump->id}.service_value_id",
+                            'short' => 'heat-pump-type',
+                            'translation' => "Heeft u een warmptepomp",
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_values' => $heater->values()->orderBy('order')->get(),
+                        ],
+                        [
+                            'validation' => [
+                                // required when the heat pump is available
+                                "required_if:building_services.{$heatPump->id}.service_value_id,!=,".$heater->values()->where('calculate_value', 1)->first()->id,
+                                'numeric',
+                                'between:1900,' . date('Y')
+                            ],
+                            'short' => 'heat-pump-placed-date',
+                            'placeholder' => 'Voer een jaartal in',
+                            'translation' => "Wanneer is de warmtepomp geplaatst?",
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                    ]
+                ],
+                'Ventilatie' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:services,id'],
+                            'save_in' => "building_services.{$ventilation->id}.service_value_id",
+                            'short' => 'ventilation-type',
+                            // was current-state -> hoe word het huis geventileerd
+                            'translation' => "Heeft u ventilatie?",
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_values' => $ventilation->values()->orderBy('order')->get(),
+                        ],
+                        [
+                            'save_in' => "building_elements.{$crackSealing->id}.element_value_id",
+                            'validation' => ['required', "exists:elements,id",],
+                            'short' => 'crack-sealing-type',
+                            // was current-state -> zijn de ramen en deuren voorzien van kierdichting
+                            'translation' => "Heeft u kierdichting?",
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_values' => $crackSealing->values()->orderBy('order')->get(),
+                        ],
+                    ]
+                ],
+                'Zonnepanelen' => [
+                    'sub_step_template_id' => $template2rows2top1bottom,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:services,id'],
+                            'short' => 'has-solar-panels',
+                            // was current-state -> hoe word het huis geventileerd
+                            'translation' => "Heeft u zonnepanelen",
+                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_custom_values' => [
+                                'yes' => 'Ja',
+                                'no' => 'Nee'
+                            ],
+                        ],
+                        [
+                            'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'min:1', 'max:50'],
+                            'save_in' => "building_services.{$solarPanels->id}.service_value_id",
+                            // was current-state -> hoeveel zonnepanelen zijn er aanwezig
+                            'translation' => "Hoeveel zonnepanelen?",
+                            'tool_question_type_id' => $textType->id,
+                            'tool_question_custom_values' => [
+                                'yes' => 'Ja',
+                                'no' => 'Nee'
+                            ],
+                        ],
+                        [
+                            'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'min:1', 'max:50'],
+                            'save_in' => "building_pv_panels.total_installed_power",
+                            // was current-state -> Geinstalleerd vermogen (totaal)
+                            'translation' => "Piekvermogen per paneel",
+                            'unit_of_measure' => 'WP',
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                        [
+                            'validation' => [
+                                "required_if:has_solar_panels,yes",
+                                'numeric',
+                                'between:1900,' . date('Y')
+                            ],
+                            'save_in' => "building_services.{$solarPanels->id}.extra.year",
+                            'short' => 'solar-panels-placed-date',
+                            // was current-state -> Geinstalleerd vermogen (totaal)
+                            'translation' => "Wanneer zijn de zonnepanelen geplaatst",
+                            'placeholder' => 'Voer een jaartal in',
+                            'unit_of_measure' => 'WP',
+                            'tool_question_type_id' => $textType->id,
                         ],
                     ]
                 ],

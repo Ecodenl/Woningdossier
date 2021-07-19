@@ -3,11 +3,11 @@
         <label class="form-label" for="{{ $id ?? '' }}">
             {{ $label ?? '' }}
         </label>
-        <div class="form-input-source">
+        <div class="form-end">
             @include('cooperation.layouts.parts.source-select')
-        </div>
-        <div class="form-info">
-            <i class="icon-md icon-info-light"></i>
+            <div class="form-info">
+                <i class="icon-md icon-info-light"></i>
+            </div>
         </div>
     </div>
 

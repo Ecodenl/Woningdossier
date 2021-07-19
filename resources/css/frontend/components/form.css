@@ -5,20 +5,19 @@
 
 /* Header row of the form group */
 .form-header {
-    @apply flex items-center w-full mb-2 top-1/20;
+    @apply flex items-center w-full mb-2;
 }
 
 .form-header .form-label {
     @apply flex text-blue-500 text-sm font-bold w-3/4;
 }
 
-.form-header .form-input-source {
-    @apply flex justify-end rounded-lg text-sm w-2/10;
+.form-header .form-end {
+    @apply flex justify-end items-center w-1/4;
 }
 
 .form-header .form-info {
-    @apply flex justify-end cursor-pointer;
-    width: 5%;
+    @apply flex cursor-pointer pl-2;
 }
 
 /* Input styles */

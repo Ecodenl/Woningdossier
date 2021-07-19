@@ -127084,7 +127084,6 @@ p a {
 /* Header row of the form group */
 
 .form-header {
-  top: 5%;
   margin-bottom: 0.5rem;
   display: flex;
   width: 100%;
@@ -127101,20 +127100,17 @@ p a {
   color: rgba(100, 117, 133, var(--tw-text-opacity));
 }
 
-.form-header .form-input-source {
+.form-header .form-end {
   display: flex;
-  width: 20%;
+  width: 25%;
+  align-items: center;
   justify-content: flex-end;
-  border-radius: 0.5rem;
-  font-size: 14px;
-  line-height: 24px;
 }
 
 .form-header .form-info {
   display: flex;
   cursor: pointer;
-  justify-content: flex-end;
-  width: 5%;
+  padding-left: 0.5rem;
 }
 
 /* Input styles */

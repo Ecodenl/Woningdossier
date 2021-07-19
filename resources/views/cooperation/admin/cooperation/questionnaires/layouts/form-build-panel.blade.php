@@ -1,7 +1,6 @@
-<?php $questionsApplicableForValidation = ['text', 'textarea']; ?>
 <div class="form-builder ui-sortable-handle panel panel-default" @isset($id) id="{{$id}}" @endisset>
     <div class="panel-heading">
-        @lang('woningdossier.cooperation.admin.cooperation.questionnaires.edit.types.'.$question->type)
+        @lang('cooperation/admin/cooperation/questionnaires.shared.types.'.$question->type.'.label')
     </div>
     <div class="panel-body">
         <div class="row">
@@ -14,47 +13,48 @@
                 @switch($question->type)
 
                     @case('text')
-                        @include('cooperation.admin.cooperation.questionnaires.layouts.inputs.text', ['question' => $question])
+                        @include('cooperation.admin.cooperation.questionnaires.layouts.inputs.text')
                         @break
                     @case('textarea')
-                        @include('cooperation.admin.cooperation.questionnaires.layouts.inputs.text', ['question' => $question])
+                        @include('cooperation.admin.cooperation.questionnaires.layouts.inputs.text')
                         @break
                     @case('date')
-                        @include('cooperation.admin.cooperation.questionnaires.layouts.inputs.text', ['question' => $question])
+                        @include('cooperation.admin.cooperation.questionnaires.layouts.inputs.text')
                         @break
                     @case('select')
-                        @include('cooperation.admin.cooperation.questionnaires.layouts.inputs.select', ['question' => $question])
+                        @include('cooperation.admin.cooperation.questionnaires.layouts.inputs.select')
                         @break
                     @case('radio')
-                        {{--@include('cooperation.admin.cooperation.questionnaires.layouts.inputs.radio', ['question' => $question])--}}
-                        @include('cooperation.admin.cooperation.questionnaires.layouts.inputs.select', ['question' => $question])
+                        @include('cooperation.admin.cooperation.questionnaires.layouts.inputs.select')
                         @break
                     @case('checkbox')
-                        @include('cooperation.admin.cooperation.questionnaires.layouts.inputs.select', ['question' => $question])
-                        {{--@include('cooperation.admin.cooperation.questionnaires.layouts.inputs.checkbox', ['question' => $question])--}}
+                        @include('cooperation.admin.cooperation.questionnaires.layouts.inputs.select')
                         @break
 
                 @endswitch
 
-
+                @if($question->hasValidation())
+                    <div class="row validation-inputs">
+                        @include('cooperation.admin.cooperation.questionnaires.layouts.validation-options')
+                    </div>
+                @endif
             </div>
         </div>
-        <div class="row validation-inputs">
-            @if(in_array($question->type, $questionsApplicableForValidation))
-                @include('cooperation.admin.cooperation.questionnaires.layouts.validation-options', ['question' => $question])
-            @endif
-        </div>
 
-        @if($question->hasNoValidation() && in_array($question->type, $questionsApplicableForValidation))
         <div class="row">
             <div class="col-sm-12">
-                <a class="btn btn-primary add-validation">@lang('woningdossier.cooperation.admin.cooperation.questionnaires.edit.add-validation')</a>
+                @if(\App\Services\QuestionnaireService::hasQuestionValidation($question->type))
+                    <a class="btn btn-primary add-validation" @if($question->hasValidation()) style="display: none" @endif>@lang('cooperation/admin/cooperation/questionnaires.edit.add-validation')</a>
+                @endif
+                @if(\App\Services\QuestionnaireService::hasQuestionOptions($question->type))
+                    <a class="btn btn-primary add-option" data-id="{{$question->id}}">@lang('cooperation/admin/cooperation/questionnaires.edit.add-option')</a>
+                @endif
             </div>
         </div>
-        @endif
+
     </div>
     <div class="panel-footer">
-        @include('cooperation.admin.cooperation.questionnaires.layouts.form-build-panel-footer', ['question' => $question])
+        @include('cooperation.admin.cooperation.questionnaires.layouts.form-build-panel-footer')
     </div>
 </div>
 

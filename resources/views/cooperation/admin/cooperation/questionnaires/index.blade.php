@@ -3,9 +3,11 @@
 @section('content')
     <div class="panel panel-default">
         <div class="panel-heading">
-            @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.header')
+            @lang('cooperation/admin/cooperation/questionnaires.index.header')
             <a href="{{route('cooperation.admin.cooperation.questionnaires.create')}}"
-               class="btn btn-md btn-primary pull-right"><span class="glyphicon glyphicon-plus"></span></a>
+               class="btn btn-md btn-primary" style="position: absolute; right: 3rem; top: 0.4rem;">
+                <span class="glyphicon glyphicon-plus"></span>
+            </a>
         </div>
 
         <div class="panel-body">
@@ -14,10 +16,10 @@
                     <table class="table table-responsive ">
                         <thead>
                         <tr>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.table.columns.questionnaire-name')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.table.columns.step')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.table.columns.active')</th>
-                            <th>@lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.table.columns.actions')</th>
+                            <th>@lang('cooperation/admin/cooperation/questionnaires.index.table.columns.questionnaire-name')</th>
+                            <th>@lang('cooperation/admin/cooperation/questionnaires.index.table.columns.step')</th>
+                            <th>@lang('cooperation/admin/cooperation/questionnaires.index.table.columns.active')</th>
+                            <th>@lang('cooperation/admin/cooperation/questionnaires.index.table.columns.actions')</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -26,15 +28,18 @@
                                 <td>{{$questionnaire->name}}</td>
                                 <td>{{$questionnaire->step->name}}</td>
                                 <td>
-                                    <input data-active="{{$questionnaire->isActive() ? 'on' : 'off'}}" class="toggle-active" data-questionnaire-id="{{$questionnaire->id}}" type="checkbox" data-toggle="toggle" data-on="Actief" data-off="Niet actief">
+                                    <input data-active="{{$questionnaire->isActive() ? 'on' : 'off'}}" class="toggle-active"
+                                           data-questionnaire-id="{{$questionnaire->id}}" type="checkbox" data-toggle="toggle"
+                                           data-on="@lang('cooperation/admin/cooperation/questionnaires.index.table.columns.active-on')"
+                                           data-off="@lang('cooperation/admin/cooperation/questionnaires.index.table.columns.active-off')">
                                 </td>
                                 <td>
                                     <a class="btn btn-success" href="{{route('cooperation.admin.cooperation.questionnaires.edit', compact('questionnaire'))}}">
-                                        @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.table.columns.edit')
+                                        @lang('cooperation/admin/cooperation/questionnaires.index.table.columns.edit')
                                     </a>
 
                                     <button data-questionnaire-id="{{$questionnaire->id}}" type="button" class="destroy btn btn-danger">
-                                        @lang('woningdossier.cooperation.admin.cooperation.questionnaires.index.table.columns.destroy')
+                                        @lang('cooperation/admin/cooperation/questionnaires.index.table.columns.destroy')
                                     </button>
                                 </td>
                             </tr>
@@ -64,7 +69,7 @@
             var destroyQuestionnaireRoute = '{{route('cooperation.admin.cooperation.questionnaires.destroy', ['questionnaire' => ':questionnaire-id'])}}';
 
             $(document).on('click', '.destroy', function (event) {
-                if (confirm('@lang('woningdossier.cooperation.admin.cooperation.questionnaires.destroy.are-you-sure')')) {
+                if (confirm('@lang('cooperation/admin/cooperation/questionnaires.destroy.are-you-sure')')) {
                     $.ajax({
                         url: destroyQuestionnaireRoute.replace(':questionnaire-id', $(this).data('questionnaire-id')),
                         method: 'delete',

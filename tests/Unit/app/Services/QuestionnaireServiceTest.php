@@ -8,18 +8,13 @@ use App\Models\Questionnaire;
 use App\Models\Step;
 use App\Services\QuestionnaireService;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\CreatesApplication;
 use Tests\TestCase;
 
 class QuestionnaireServiceTest extends TestCase
 {
-    use CreatesApplication;
-    use DatabaseTransactions;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
+    use RefreshDatabase;
 
     public static function hasQuestionOptionsProvider()
     {
@@ -80,16 +75,21 @@ class QuestionnaireServiceTest extends TestCase
 
     public function testCreateQuestionnaire()
     {
-        $cooperation = Cooperation::find(1);
-        $step = Step::find(1);
+        $oldCount = Questionnaire::count();
+
+        $cooperation = factory(Cooperation::class)->create();
+        $this->seed(\StepsTableSeeder::class);
+
+        $step = Step::inRandomOrder()->first();
         QuestionnaireService::createQuestionnaire(
             $cooperation, $step, ['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling']
         );
 
-        $this->assertEquals(1, Questionnaire::count());
+
+        $this->assertEquals($oldCount + 1, Questionnaire::count());
     }
 
-    public function testCreateQuestionProvider()
+    public function CreateQuestionProvider()
     {
         return [
             [[
@@ -102,12 +102,13 @@ class QuestionnaireServiceTest extends TestCase
     }
 
     /**
-     * @dataProvider testCreateQuestionProvider
+     * @dataProvider CreateQuestionProvider
      */
     public function testCreateQuestion($questionData)
     {
         // first we need to create a questionnaire with a question
-        $questionnaire = factory(Questionnaire::class)->create();
+        $cooperation = factory(Cooperation::class)->create();
+        $questionnaire = factory(Questionnaire::class)->create(['cooperation_id' => $cooperation->id]);
 
         QuestionnaireService::createQuestion($questionnaire, $questionData, 'text', [], 0);
 
@@ -116,29 +117,76 @@ class QuestionnaireServiceTest extends TestCase
         ]);
     }
 
+    public function CreateQuestionWithOptionProvider()
+    {
+        $uuid = (string) \Ramsey\Uuid\Uuid::uuid4();
+
+        return [
+            [[
+                'question' => [
+                    'nl' => 'Test questionnaire',
+                ],
+                'required' => true,
+                'options' => [
+                    $uuid => [
+                        'nl' => 'Test option',
+                    ],
+                ],
+            ]],
+        ];
+    }
+
+    /**
+     * @dataProvider CreateQuestionWithOptionProvider
+     */
+    public function testCreateQuestionWithOption($questionData)
+    {
+        // first we need to create a questionnaire with a question
+        $cooperation = factory(Cooperation::class)->create();
+        $questionnaire = factory(Questionnaire::class)->create(['cooperation_id' => $cooperation->id]);
+
+        QuestionnaireService::createQuestion($questionnaire, $questionData, 'select', [], 0);
+
+        $this->assertDatabaseHas('questions', [
+            'questionnaire_id' => $questionnaire->id,
+        ]);
+
+        $question = Question::where('questionnaire_id', $questionnaire->id)->latest()->first();
+
+        $this->assertDatabaseHas('question_options', [
+            'question_id' => $question->id,
+        ]);
+    }
+
     public function testCopyQuestionnaireToCooperation()
     {
         // first we need to create a questionnaire with a question
-        $questionnaire = factory(Questionnaire::class)->create();
+        $cooperation = factory(Cooperation::class)->create();
+        $questionnaire = factory(Questionnaire::class)->create(['cooperation_id' => $cooperation->id]);
         for ($i = 0; $i < 10; ++$i) {
             $questionnaire->questions()->save(
                 factory(Question::class)->make(['order' => $i])
             );
         }
-        // where we will copy the questionnaire to.
-        $cooperation = Cooperation::whereSlug('hnwr')->first();
 
-        // copy the questionnaire
-        QuestionnaireService::copyQuestionnaireToCooperation($cooperation, $questionnaire);
-
-        // check if the questionnaire is copied
+        // test if the initial questionnaire has been created
         $this->assertDatabaseHas('questionnaires', [
             'cooperation_id' => $cooperation->id,
         ]);
-        $this->assertCount(1, Questionnaire::forMyCooperation($cooperation->id)->get());
 
-        // check if questions have been copied
-        $copiedQuestionnaire = Questionnaire::forMyCooperation($cooperation->id)->first();
+        $cooperationToCopyTo = factory(Cooperation::class)->create();
+        $this->assertDatabaseMissing('questionnaires', [
+            'cooperation_id' => $cooperationToCopyTo->id,
+        ]);
+
+        // copy the questionnaire
+        QuestionnaireService::copyQuestionnaireToCooperation($cooperationToCopyTo, $questionnaire);
+
+        $this->assertDatabaseHas('questionnaires', [
+            'cooperation_id' => $cooperationToCopyTo->id,
+        ]);
+
+        $copiedQuestionnaire = Questionnaire::forMyCooperation($cooperationToCopyTo->id)->first();
 
         // check if the translations are the same
         $this->assertSame($copiedQuestionnaire->name, $questionnaire->name);

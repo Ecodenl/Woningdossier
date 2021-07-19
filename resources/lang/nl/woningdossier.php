@@ -497,50 +497,6 @@ return [
                         'success' => 'Gebruiker is verwijderd',
                     ],
                 ],
-                'questionnaires' => [
-                    'index' => [
-                        'header' => 'Alle vragenlijsten voor uw coöperatie',
-                        'table' => [
-                            'columns' => [
-                                'questionnaire-name' => 'Vragenlijst naam',
-                                'step' => 'Komt na stap',
-                                'active' => 'Actief',
-                                'actions' => 'Acties',
-                                'see-results' => 'Bekijk resultaten',
-                                'edit' => 'Bewerk vragenlijst',
-                                'destroy' => 'Verwijder vragenlijst',
-                            ],
-                        ],
-                        'types' => [
-                            'text' => 'Kort antwoord',
-                            'textarea' => 'Alinea',
-                            'select' => 'Dropdownmenu',
-                            'radio' => 'Selectievakjes',
-                            'checkbox' => 'Meerkeuze',
-                            'date' => 'Datum',
-                        ],
-                    ],
-                    'destroy' => [
-                        'are-you-sure' => 'Dit verwijderd de vragenlijst, vragen en de gegeven antwoorden. Weet u zeker dat u wilt doorgaan ?',
-                        'success' => 'Vragenlijst verwijderd',
-                    ],
-                    'edit' => [
-                        'types' => [
-                            'text' => 'Kort antwoord',
-                            'textarea' => 'Alinea',
-                            'select' => 'Dropdownmenu',
-                            'radio' => 'Selectievakjes',
-                            'date' => 'Datum',
-                            'checkbox' => 'Meerkeuze',
-                        ],
-                        'add-validation' => 'Voeg validatie toe',
-                        'success' => 'Vragenlijst is bijgewerkt',
-                    ],
-                    'create' => [
-                        'leave-creation-tool' => 'Keer terug naar overzicht',
-                        'leave-creation-tool-warning' => 'Let op!, alle wijzigingen zullen verloren gaan. Uw hiervoor gemaakte formulier is dan niet meer terug te krijgen!',
-                    ],
-                ],
                 /* translations specific for the cooperation-admin */
                 'cooperation-admin' => [
                     'users' => [

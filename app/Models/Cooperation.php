@@ -42,6 +42,11 @@ class Cooperation extends Model
         'name', 'website_url', 'slug', 'cooperation_email',
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     /**
      * The users associated with this cooperation.
      */
@@ -119,11 +124,6 @@ class Cooperation extends Model
     public function getActiveOrderedSteps()
     {
         return \App\Helpers\Cache\Cooperation::getActiveOrderedSteps($this);
-    }
-
-    public function getRouteKeyName()
-    {
-        return 'slug';
     }
 
     /**

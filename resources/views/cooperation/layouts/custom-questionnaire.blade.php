@@ -49,7 +49,8 @@
                                 <div class="form-group add-space">
                                     <div class="">
                                         <button type="submit" class="pull-right btn btn-primary">
-                                            Opslaan                        </button>
+                                            @lang('default.save')
+                                        </button>
                                     </div>
                                 </div>
                             </div>

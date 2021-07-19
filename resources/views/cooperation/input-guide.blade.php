@@ -170,7 +170,7 @@
             <div class="flex flex-wrap">
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3 form-error required'])
                     <input id="error" type="text" class="form-input" placeholder="Error">
-                    <p class="form-error-label">
+                    <p class="form-error-label w-full">
                         Vul de correcte gegevens in
                     </p>
                     <p class="font-bold">Error styling handled by form group component</p>

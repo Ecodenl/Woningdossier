@@ -4,7 +4,7 @@
             {{ $label ?? '' }}
         </label>
         <div class="form-input-source">
-            @include('cooperation/parts/source-select')
+            @include('cooperation.layouts.parts.source-select')
         </div>
         <div class="form-info">
             <i class="icon-md icon-info-light"></i>

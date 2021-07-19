@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120px" height="98px" viewBox="0 0 120 98" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Beneden tussen</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-1036.000000, -2415.000000)">
+            <g id="hoek-appartement" transform="translate(1038.000000, 2417.000000)">
+                <line x1="116" y1="93.9010256" x2="0" y2="93.9010256" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round"></line>
+                <rect id="Rectangle" fill="#2CA982" fill-rule="nonzero" x="45" y="65" width="26" height="26" rx="3"></rect>
+                <path d="M91.0578098,13.4617738 L91.5433551,30.5 L74.5,30.5 L74.5,13.8905412 L91.0578098,13.4617738 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M91.0578098,41.4617738 L91.5433551,58.5 L74.5,58.5 L74.5,41.8905412 L91.0578098,41.4617738 Z" id="Path-Copy-3" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M66.0578098,13.4617738 L66.5433551,30.5 L49.5,30.5 L49.5,13.8905412 L66.0578098,13.4617738 Z" id="Path-Copy" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M66.0578098,41.4617738 L66.5433551,58.5 L49.5,58.5 L49.5,41.8905412 L66.0578098,41.4617738 Z" id="Path-Copy-4" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M66.0578098,69.4617738 L66.5433551,86.5 L49.5,86.5 L49.5,69.8905412 L66.0578098,69.4617738 Z" id="Path-Copy-6" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M41.0578098,13.4617738 L41.5433551,30.5 L24.5,30.5 L24.5,13.8905412 L41.0578098,13.4617738 Z" id="Path-Copy-2" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M41.0578098,41.4617738 L41.5433551,58.5 L24.5,58.5 L24.5,41.8905412 L41.0578098,41.4617738 Z" id="Path-Copy-5" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M41.0578098,69.4617738 L41.5433551,86.5 L24.5,86.5 L24.5,69.8905412 L41.0578098,69.4617738 Z" id="Path-Copy-7" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M103.67,6.00102556 L12.33,6.00102556 L12.33,0.171025564 C13.1875575,0.0172973867 14.0604531,-0.0330619757 14.93,0.021025564 L101.07,0.021025564 C101.939547,-0.0330619757 102.812442,0.0172973867 103.67,0.171025564 L103.67,6.00102556 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <polyline id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="100.4 6.19102556 100.4 93.9010256 15.6 93.9010256 15.6 6.19102556"></polyline>
+                <path d="M94.2,87.8810256 L94.2,67.7110256 C94.183942,67.4774027 93.9838943,67.2995825 93.75,67.3110256 L78.87,67.3110256 C78.6361057,67.2995825 78.436058,67.4774027 78.42,67.7110256 L78.42,87.8810256" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round"></path>
+                <rect id="Rectangle" stroke="#394553" stroke-width="3" stroke-linecap="round" x="73.07" y="87.9210256" width="27.33" height="5.91" rx="1"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

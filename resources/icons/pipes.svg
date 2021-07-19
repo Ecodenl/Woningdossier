@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="86px" height="89px" viewBox="0 0 86 89" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>leidingen</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Styles" transform="translate(-931.000000, -3279.000000)" stroke="#394553" stroke-width="3">
+            <g id="leidingen" transform="translate(933.000000, 3281.000000)">
+                <path d="M7.4,18.9907 L59.3,18.9907 C63.7,18.9907 67.2,22.5907 67.2,26.9907 C67.2,31.3907 63.6,34.9907 59.3,34.9907 L22.7,34.9907 C10.2,35.0907 0,45.2907 0,57.9907 C0,70.6907 10.2,80.8907 22.7,80.8907 L74.6,80.8907" id="Path"></path>
+                <path d="M7.4,4.0907 L59.3,4.0907 C71.8,4.0907 82,14.3907 82,26.9907 C82,39.5907 71.8,49.8907 59.3,49.8907 L22.7,49.8907 C18.3,49.8907 14.8,53.4907 14.8,57.8907 C14.8,62.2907 18.4,65.8907 22.7,65.8907 L74.6,65.8907" id="Path"></path>
+                <rect id="Rectangle" fill="#2CA982" fill-rule="nonzero" transform="translate(25.401200, 11.800000) rotate(-90.000000) translate(-25.401200, -11.800000) " x="13.6012" y="8.4" width="23.6" height="6.8"></rect>
+                <rect id="Rectangle" fill="#2CA982" fill-rule="nonzero" transform="translate(56.590700, 73.191900) rotate(90.000000) translate(-56.590700, -73.191900) " x="44.7907" y="69.7919" width="23.6" height="6.8"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

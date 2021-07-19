@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="80px" height="80px" viewBox="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>schakelaar</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-1070.000000, -3283.000000)">
+            <g id="schakelaar" transform="translate(1072.000000, 3285.000000)">
+                <path d="M45.8,59.9 L30.2,59.9 C28,59.9 26.2,58.1 26.2,55.9 L26.2,42.1 C26.2,39.9 28,38.1 30.2,38.1 L45.8,38.1 C48,38.1 49.8,39.9 49.8,42.1 L49.8,56 C49.8,58.1 48,59.9 45.8,59.9 Z" id="Path" fill="#2CA982" fill-rule="nonzero"></path>
+                <path d="M70,76 L6,76 C2.7,76 0,73.3 0,70 L0,6 C0,2.7 2.7,0 6,0 L70,0 C73.3,0 76,2.7 76,6 L76,70 C76,73.3 73.3,76 70,76 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M45.8,59.9 L30.2,59.9 C28,59.9 26.2,58.1 26.2,55.9 L26.2,20.3 C26.2,18.1 28,16.3 30.2,16.3 L45.8,16.3 C48,16.3 49.8,18.1 49.8,20.3 L49.8,55.9 C49.8,58.1 48,59.9 45.8,59.9 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <line x1="26.2" y1="38" x2="49.8" y2="38" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="26.2" y1="20" x2="49.8" y2="20" id="Path" stroke="#394553" stroke-linecap="round" stroke-linejoin="round"></line>
+                <circle id="Oval" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" cx="38" cy="49" r="3.5"></circle>
+                <line x1="38" y1="24.6" x2="38" y2="31.4" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="8" cy="38" r="3"></circle>
+                <circle id="Oval" fill="#394553" fill-rule="nonzero" cx="68" cy="38" r="3"></circle>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -15,6 +15,7 @@
 Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () {
 
     Route::view('styleguide', 'cooperation.styleguide');
+    Route::view('input-guide', 'cooperation.input-guide');
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
         if ('local' == app()->environment()) {
             Route::get('mail', function () {

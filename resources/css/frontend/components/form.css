@@ -3,6 +3,10 @@
     @apply mt-4 relative flex flex-wrap content-start;
 }
 
+.form-group.form-group-heading .form-label {
+    @apply font-semibold text-blue text-md mb-4;
+}
+
 /* Header row of the form group */
 .form-header {
     @apply flex items-center w-full mb-2;
@@ -25,7 +29,7 @@
 .radio-wrapper label,
 .checkbox-wrapper label,
 .select-wrapper .select-input {
-    @apply flex items-center w-full cursor-pointer h-11 rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm outline-none max-w-full bg-white leading-10;
+    @apply flex items-center w-full cursor-pointer h-11 rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm outline-none max-w-full bg-white leading-10 relative;
 
     @apply hover:border-green hover:border-opacity-100;
     @apply focus:border-green focus:border-opacity-100;
@@ -168,6 +172,31 @@ textarea.form-input {
 .checkbox-wrapper .checkmark::after {
     @apply w-3/10 h-5/10 border-solid border-white transform rotate-45 left-8/20 top-4/20;
     border-width: 0 2px 2px 0;
+}
+
+/* Wrapper for checkbox/radio if icon is present */
+.media-wrapper {
+    @apply h-40 w-40;
+}
+
+.media-wrapper label {
+    @apply w-full h-full p-0;
+}
+
+.media-wrapper label i {
+    @apply w-full h-8/10 p-4 absolute inset-0;
+}
+
+.media-wrapper label .checkmark {
+    @apply absolute m-0 top-2 right-2;
+}
+
+.media-wrapper label .checkmark ~ span {
+    @apply absolute bottom-2 inset-x-0 text-center;
+}
+
+.media-wrapper.media-wrapper-small {
+    /* WIP */
 }
 
 /* Input groups */

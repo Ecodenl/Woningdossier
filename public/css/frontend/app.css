@@ -127081,6 +127081,15 @@ p a {
   align-content: flex-start;
 }
 
+.form-group.form-group-heading .form-label {
+  margin-bottom: 1rem;
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 600;
+  --tw-text-opacity: 1;
+  color: rgba(65, 76, 87, var(--tw-text-opacity));
+}
+
 /* Header row of the form group */
 
 .form-header {
@@ -127116,6 +127125,7 @@ p a {
 /* Input styles */
 
 .form-input, .radio-wrapper label, .checkbox-wrapper label, .select-wrapper .select-input {
+  position: relative;
   display: flex;
   height: 2.75rem;
   width: 100%;
@@ -127390,6 +127400,49 @@ textarea.form-input {
   --tw-border-opacity: 1;
   border-color: rgba(255, 255, 255, var(--tw-border-opacity));
   border-width: 0 2px 2px 0;
+}
+
+/* Wrapper for checkbox/radio if icon is present */
+
+.media-wrapper {
+  height: 10rem;
+  width: 10rem;
+}
+
+.media-wrapper label {
+  height: 100%;
+  width: 100%;
+  padding: 0px;
+}
+
+.media-wrapper label i {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  height: 80%;
+  width: 100%;
+  padding: 1rem;
+}
+
+.media-wrapper label .checkmark {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  margin: 0px;
+}
+
+.media-wrapper label .checkmark ~ span {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0.5rem;
+  text-align: center;
+}
+
+.media-wrapper.media-wrapper-small {
+  /* WIP */
 }
 
 /* Input groups */

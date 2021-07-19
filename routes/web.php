@@ -14,8 +14,13 @@
 */
 Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () {
 
-    Route::view('styleguide', 'cooperation.styleguide');
-    Route::view('input-guide', 'cooperation.input-guide');
+    // TODO: Figure out how to handle these routes; Move to frontend.php?
+    Route::view('styleguide', 'cooperation.frontend.styleguide');
+    Route::view('input-guide', 'cooperation.frontend.input-guide');
+    Route::prefix('step')->group(function () {
+        Route::view('9', 'cooperation.frontend.templates.step-9');
+    });
+
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
         if ('local' == app()->environment()) {
             Route::get('mail', function () {

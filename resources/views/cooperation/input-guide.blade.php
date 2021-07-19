@@ -8,13 +8,11 @@
 
     <link rel="stylesheet" href="{{asset('css/frontend/app.css')}}">
     <title>Hoomdossier input guide</title>
-
-    <script src="{{ mix('js/app.js') }}"></script>
 </head>
 <body>
 <div class="w-full">
     {{-- Nav bar --}}
-    <div class="grid grid-flow-row grid-cols-3 items-center w-full bg-white h-12 px-5 xl:px-20 relative z-50 shadow-lg">
+    <div class="grid grid-flow-row grid-cols-3 items-center w-full bg-white h-12 px-5 xl:px-20 relative z-40 shadow-lg">
         <div>
             <i class="icon-hoomdossier"></i>
         </div>
@@ -41,7 +39,7 @@
         </div>
     </div>
     {{-- Step progress --}}
-    <div class="flex items-center justify-between w-full bg-blue-100 border-b-1 h-16 px-5 xl:px-20 relative z-40">
+    <div class="flex items-center justify-between w-full bg-blue-100 border-b-1 h-16 px-5 xl:px-20 relative z-30">
         <div class=" flex items-center h-full">
             <i class="icon-sm icon-check-circle-dark mr-1"></i>
             <span class="text-blue">Woninggegevens</span>
@@ -128,11 +126,11 @@
 
             <div class="flex flex-wrap">
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pr-3'])
-                    <input type="text" class="form-input" placeholder="Placeholder">
+                    <input id="default" type="text" class="form-input" placeholder="Placeholder">
                 @endcomponent
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
                     @component('cooperation.components.alpine-select')
-                        <select class="form-input" name="alpine[dropdown]">
+                        <select id="dropdown" class="form-input" name="alpine[dropdown]">
                             <option selected disabled>Dropdown</option>
                         </select>
                     @endcomponent
@@ -140,11 +138,11 @@
             </div>
             <div class="flex flex-wrap">
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pr-3'])
-                    <input type="text" class="form-input" placeholder="Placeholder">
+                    <input id="default-2" type="text" class="form-input" placeholder="Placeholder">
                 @endcomponent
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
-                    @component('cooperation.components.alpine-select')
-                        <select class="form-input" name="alpine[dropdown_open]">
+                    @component('cooperation.components.alpine-select', ['initiallyOpen' => true])
+                        <select id="dropdown-open" class="form-input" name="alpine[dropdown_open]">
                             <option selected disabled>Dropdown focus</option>
                             <option>Eerste</option>
                             <option selected>Tweede</option>
@@ -157,7 +155,7 @@
             </div>
             <div class="flex flex-wrap">
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3 form-error required'])
-                    <input type="text" class="form-input" placeholder="Error">
+                    <input id="error" type="text" class="form-input" placeholder="Error">
                     <p class="form-error-label">
                         Vul de correcte gegevens in
                     </p>
@@ -165,7 +163,7 @@
             </div>
             <div class="flex flex-wrap">
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3 form-error required'])
-                    <input type="text" class="form-input" placeholder="Error met waarde">
+                    <input id="input-group-error" type="text" class="form-input" placeholder="Error met waarde">
                     <div class="input-group-append">
                         m<sup>2</sup>
                     </div>
@@ -176,21 +174,21 @@
             </div>
             <div class="flex flex-wrap">
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3'])
-                    <input type="text" class="form-input" placeholder="Disabled" disabled>
+                    <input id="disabled" type="text" class="form-input" placeholder="Disabled" disabled>
                 @endcomponent
             </div>
             <div class="flex flex-wrap">
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3 required'])
-                    <input type="text" class="form-input" placeholder="Verplicht">
+                    <input id="required" type="text" class="form-input" placeholder="Verplicht">
                 @endcomponent
             </div>
 
             <div class="flex flex-wrap">
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pr-3'])
-                    <textarea class="form-input" placeholder="Text area"></textarea>
+                    <textarea id="text-area" class="form-input" placeholder="Text area"></textarea>
                 @endcomponent
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
-                    <input type="text" class="form-input" placeholder="Placeholder">
+                    <input id="placeholder" type="text" class="form-input" placeholder="Placeholder">
                 @endcomponent
             </div>
         </div>
@@ -256,6 +254,8 @@
         <div class="flex w-full h-10"></div>
     </div>
 </main>
+
+<script src="{{ mix('js/app.js') }}"></script>
 
 @stack('js')
 </body>

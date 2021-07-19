@@ -1,4 +1,4 @@
-export default () => ({
+export default (initiallyOpen = false) => ({
     // Select element
     select: null,
     // HTML options
@@ -11,6 +11,8 @@ export default () => ({
     open: false,
 
     init() {
+        this.open = initiallyOpen;
+
         let wrapper = this.$refs['select-wrapper'];
         // Get the select element
         this.select = wrapper.querySelector('select');
@@ -50,17 +52,23 @@ export default () => ({
             this.open = ! this.open
         }
     },
-    changeOption(value) {
+    changeOption(element) {
+        if (! element.classList.contains('disabled')) {
+            this.setValue(element.getAttribute('data-value'));
+        }
+    },
+    setValue(value) {
         this.value = value;
         this.select.value = value;
     },
     buildOption(parent, option) {
         // Build a new alpine option
         let newOption = document.createElement('span');
-        newOption.appendChild(document.createTextNode(option.text));
+        newOption.appendChild(document.createTextNode(option.textContent));
+        newOption.setAttribute("data-value", option.value);
         // Add alpine functions
-        newOption.setAttribute('x-bind:class', 'value == ' + option.value);
-        newOption.setAttribute('x-on:click', 'changeOption(' + option.value + ')');
+        newOption.setAttribute("x-bind:class", "value == '" + option.value + "' ? 'selected' : ''");
+        newOption.setAttribute("x-on:click", "changeOption($el)");
         newOption.classList.add('select-option');
 
         if (option.hasAttribute('disabled')) {

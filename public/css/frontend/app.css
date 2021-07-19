@@ -126775,17 +126775,11 @@ p a {
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
   font-size: 14px;
   line-height: 24px;
+  line-height: 2.5rem;
   --tw-text-opacity: 1;
   color: rgba(100, 117, 133, var(--tw-text-opacity));
   outline: 2px solid transparent;
   outline-offset: 2px;
-}
-
-.form-input,
-.radio-wrapper label,
-.checkbox-wrapper label,
-.select-wrapper .select-input {
-  line-height: 2.5rem;
 }
 
 .form-input:hover, .radio-wrapper label:hover, .checkbox-wrapper label:hover, .select-wrapper .select-input:hover {
@@ -127073,9 +127067,54 @@ textarea.form-input {
   height: 2.64rem; /* Slightly smaller than h-11 to fit within the borders of the input */
 }
 
-.select-wrapper .select-dropdown .select-option {
+.select-wrapper .select-dropdown {
+  position: absolute;
+  z-index: 50;
   width: 100%;
-  /* WIP */
+  border-radius: 0.5rem;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgba(100, 117, 133, var(--tw-border-opacity));
+  --tw-border-opacity: 0.5;
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+  top: 3.25rem; /* Exact height of form input, plus margin */
+  min-height: 3rem; /* h-12, height of 1 option. Displays better when no options are available */
+}
+
+.select-wrapper .select-dropdown .select-option {
+  display: flex;
+  height: 3rem;
+  width: 100%;
+  cursor: pointer;
+  align-items: center;
+  border-radius: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+  --tw-bg-opacity: 1;
+  padding-left: 0.75rem;
+  font-size: 14px;
+  line-height: 24px;
+  --tw-text-opacity: 1;
+  color: rgba(100, 117, 133, var(--tw-text-opacity));
+}
+
+.select-wrapper .select-dropdown .select-option:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(44, 169, 130, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.1;
+}
+
+.select-wrapper .select-dropdown .select-option:focus {
+  --tw-bg-opacity: 1;
+  background-color: rgba(44, 169, 130, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.1;
+}
+
+.select-wrapper .select-dropdown .select-option.selected {
+  --tw-bg-opacity: 1;
+  background-color: rgba(44, 169, 130, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.2;
 }
 
 .select-wrapper .select-dropdown .select-option.disabled {

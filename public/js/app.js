@@ -33970,6 +33970,7 @@ module.exports = function(module) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = (function () {
+  var initiallyOpen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
   return {
     // Select element
     select: null,
@@ -33982,6 +33983,7 @@ __webpack_require__.r(__webpack_exports__);
     // Is the dropdown open?
     open: false,
     init: function init() {
+      this.open = initiallyOpen;
       var wrapper = this.$refs['select-wrapper']; // Get the select element
 
       this.select = wrapper.querySelector('select'); // Select is defined!
@@ -34020,17 +34022,23 @@ __webpack_require__.r(__webpack_exports__);
         this.open = !this.open;
       }
     },
-    changeOption: function changeOption(value) {
+    changeOption: function changeOption(element) {
+      if (!element.classList.contains('disabled')) {
+        this.setValue(element.getAttribute('data-value'));
+      }
+    },
+    setValue: function setValue(value) {
       this.value = value;
       this.select.value = value;
     },
     buildOption: function buildOption(parent, option) {
       // Build a new alpine option
       var newOption = document.createElement('span');
-      newOption.appendChild(document.createTextNode(option.text)); // Add alpine functions
+      newOption.appendChild(document.createTextNode(option.textContent));
+      newOption.setAttribute("data-value", option.value); // Add alpine functions
 
-      newOption.setAttribute('x-bind:class', 'value == ' + option.value);
-      newOption.setAttribute('x-on:click', 'changeOption(' + option.value + ')');
+      newOption.setAttribute("x-bind:class", "value == '" + option.value + "' ? 'selected' : ''");
+      newOption.setAttribute("x-on:click", "changeOption($el)");
       newOption.classList.add('select-option');
 
       if (option.hasAttribute('disabled')) {

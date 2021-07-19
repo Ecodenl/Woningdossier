@@ -26,8 +26,7 @@
 .radio-wrapper label,
 .checkbox-wrapper label,
 .select-wrapper .select-input {
-    @apply flex items-center w-full cursor-pointer h-11 rounded-lg border border-blue-500 text-blue-500 border-opacity-50 text-sm outline-none max-w-full bg-white;
-    line-height: 2.5rem;
+    @apply flex items-center w-full cursor-pointer h-11 rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm outline-none max-w-full bg-white leading-10;
 
     @apply hover:border-green hover:border-opacity-100;
     @apply focus:border-green focus:border-opacity-100;
@@ -182,9 +181,21 @@ textarea.form-input {
     height: 2.64rem; /* Slightly smaller than h-11 to fit within the borders of the input */
 }
 
+.select-wrapper .select-dropdown {
+    @apply w-full absolute rounded-lg border border-blue-500 border-opacity-50 bg-white z-50;
+    top: 3.25rem; /* Exact height of form input, plus margin */
+    min-height: 3rem; /* h-12, height of 1 option. Displays better when no options are available */
+}
+
 .select-wrapper .select-dropdown .select-option {
-    @apply w-full;
-    /* WIP */
+    @apply w-full text-blue-500 text-sm bg-white bg-opacity-100 cursor-pointer h-12 flex items-center pl-3 rounded-lg;
+
+    @apply hover:bg-green hover:bg-opacity-10;
+    @apply focus:bg-green focus:bg-opacity-10;
+}
+
+.select-wrapper .select-dropdown .select-option.selected {
+    @apply bg-green bg-opacity-20;
 }
 
 .select-wrapper .select-dropdown .select-option.disabled {

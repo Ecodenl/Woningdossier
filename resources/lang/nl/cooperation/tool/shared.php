@@ -6,4 +6,7 @@ return [
         'coach' => 'Coach',
         'example-building' => 'Voorbeeldwoning',
     ],
+    'modals' => [
+        'info' => 'Informatie',
+    ],
 ];

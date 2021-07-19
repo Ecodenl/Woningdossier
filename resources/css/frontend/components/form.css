@@ -242,6 +242,7 @@ textarea.form-input {
     @apply w-24 h-5 rounded-lg flex items-center pl-1 mb-1 cursor-pointer;
 }
 
+/* Source colors - Naming is important, as these get used to define the color on the main 'button' too */
 .source-resident {
     @apply border border-opacity-0 border-green bg-green bg-opacity-10 text-green;
 

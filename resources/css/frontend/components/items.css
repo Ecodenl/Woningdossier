@@ -1,6 +1,28 @@
+/* Horizontal divider between steps in the header bar */
 .step-divider-line {
     @apply border border-blue-500 border-opacity-50 w-full;
 
     min-width: 1px;
     max-width: 50px;
+}
+
+/* Modals */
+.modal-container {
+    @apply fixed top-0 left-0 z-100 w-screen h-screen flex items-center justify-center bg-blue bg-opacity-90 cursor-default;
+}
+
+.modal-container .modal {
+    @apply rounded-lg filter drop-shadow-xl bg-white w-80 h-auto p-2;
+}
+
+.modal-container .modal .modal-header {
+    @apply relative h-10 flex items-center px-4 py-6;
+}
+
+.modal-container .modal .modal-header .modal-close {
+    @apply absolute top-0 right-0 cursor-pointer;
+}
+
+.modal-container .modal .modal-body {
+    @apply px-4 pb-6 break-words;
 }

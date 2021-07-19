@@ -127584,6 +127584,8 @@ textarea.form-input {
   padding-left: 0.25rem;
 }
 
+/* Source colors - Naming is important, as these get used to define the color on the main 'button' too */
+
 .source-resident {
   border-width: 1px;
   --tw-border-opacity: 1;
@@ -127642,7 +127644,9 @@ textarea.form-input {
 
 .source-example-building:focus {
   --tw-border-opacity: 1;
-}.step-divider-line {
+}/* Horizontal divider between steps in the header bar */
+
+.step-divider-line {
   width: 100%;
   border-width: 1px;
   --tw-border-opacity: 1;
@@ -127650,6 +127654,69 @@ textarea.form-input {
   --tw-border-opacity: 0.5;
   min-width: 1px;
   max-width: 50px;
+}
+
+/* Modals */
+
+.modal-container {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 100;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  cursor: default;
+  align-items: center;
+  justify-content: center;
+  --tw-bg-opacity: 1;
+  background-color: rgba(65, 76, 87, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.9;
+}
+
+.modal-container .modal {
+  height: auto;
+  width: 20rem;
+  border-radius: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+  padding: 0.5rem;
+  --tw-blur: var(--tw-empty,/*!*/ /*!*/);
+  --tw-brightness: var(--tw-empty,/*!*/ /*!*/);
+  --tw-contrast: var(--tw-empty,/*!*/ /*!*/);
+  --tw-grayscale: var(--tw-empty,/*!*/ /*!*/);
+  --tw-hue-rotate: var(--tw-empty,/*!*/ /*!*/);
+  --tw-invert: var(--tw-empty,/*!*/ /*!*/);
+  --tw-saturate: var(--tw-empty,/*!*/ /*!*/);
+  --tw-sepia: var(--tw-empty,/*!*/ /*!*/);
+  --tw-drop-shadow: var(--tw-empty,/*!*/ /*!*/);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+  --tw-drop-shadow: drop-shadow(0 20px 13px rgba(0, 0, 0, 0.03)) drop-shadow(0 8px 5px rgba(0, 0, 0, 0.08));
+}
+
+.modal-container .modal .modal-header {
+  position: relative;
+  display: flex;
+  height: 2.5rem;
+  align-items: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.modal-container .modal .modal-header .modal-close {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.modal-container .modal .modal-body {
+  overflow-wrap: break-word;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 1.5rem;
 }/* Icons */
 
 .icon-xs {

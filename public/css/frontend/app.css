@@ -127553,6 +127553,7 @@ textarea.form-input {
 /* Select with icon */
 
 .select-wrapper .select-icon {
+  z-index: 10;
   height: 3rem;
   width: 3rem;
 }

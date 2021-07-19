@@ -236,7 +236,7 @@ textarea.form-input {
 
 /* Select with icon */
 .select-wrapper .select-icon {
-    @apply h-12 w-12;
+    @apply h-12 w-12 z-10;
 }
 
 .select-wrapper .select-icon ~ input.form-input {

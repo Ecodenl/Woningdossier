@@ -4157,6 +4157,26 @@ video {
   z-index: 50;
 }
 
+.z-60 {
+  z-index: 60;
+}
+
+.z-70 {
+  z-index: 70;
+}
+
+.z-80 {
+  z-index: 80;
+}
+
+.z-90 {
+  z-index: 90;
+}
+
+.z-100 {
+  z-index: 100;
+}
+
 .z-auto {
   z-index: auto;
 }
@@ -4185,6 +4205,26 @@ video {
   z-index: 50;
 }
 
+.focus-within\:z-60:focus-within {
+  z-index: 60;
+}
+
+.focus-within\:z-70:focus-within {
+  z-index: 70;
+}
+
+.focus-within\:z-80:focus-within {
+  z-index: 80;
+}
+
+.focus-within\:z-90:focus-within {
+  z-index: 90;
+}
+
+.focus-within\:z-100:focus-within {
+  z-index: 100;
+}
+
 .focus-within\:z-auto:focus-within {
   z-index: auto;
 }
@@ -4211,6 +4251,26 @@ video {
 
 .focus\:z-50:focus {
   z-index: 50;
+}
+
+.focus\:z-60:focus {
+  z-index: 60;
+}
+
+.focus\:z-70:focus {
+  z-index: 70;
+}
+
+.focus\:z-80:focus {
+  z-index: 80;
+}
+
+.focus\:z-90:focus {
+  z-index: 90;
+}
+
+.focus\:z-100:focus {
+  z-index: 100;
 }
 
 .focus\:z-auto:focus {
@@ -25317,6 +25377,26 @@ Small example
     z-index: 50;
   }
 
+  .sm\:z-60 {
+    z-index: 60;
+  }
+
+  .sm\:z-70 {
+    z-index: 70;
+  }
+
+  .sm\:z-80 {
+    z-index: 80;
+  }
+
+  .sm\:z-90 {
+    z-index: 90;
+  }
+
+  .sm\:z-100 {
+    z-index: 100;
+  }
+
   .sm\:z-auto {
     z-index: auto;
   }
@@ -25345,6 +25425,26 @@ Small example
     z-index: 50;
   }
 
+  .sm\:focus-within\:z-60:focus-within {
+    z-index: 60;
+  }
+
+  .sm\:focus-within\:z-70:focus-within {
+    z-index: 70;
+  }
+
+  .sm\:focus-within\:z-80:focus-within {
+    z-index: 80;
+  }
+
+  .sm\:focus-within\:z-90:focus-within {
+    z-index: 90;
+  }
+
+  .sm\:focus-within\:z-100:focus-within {
+    z-index: 100;
+  }
+
   .sm\:focus-within\:z-auto:focus-within {
     z-index: auto;
   }
@@ -25371,6 +25471,26 @@ Small example
 
   .sm\:focus\:z-50:focus {
     z-index: 50;
+  }
+
+  .sm\:focus\:z-60:focus {
+    z-index: 60;
+  }
+
+  .sm\:focus\:z-70:focus {
+    z-index: 70;
+  }
+
+  .sm\:focus\:z-80:focus {
+    z-index: 80;
+  }
+
+  .sm\:focus\:z-90:focus {
+    z-index: 90;
+  }
+
+  .sm\:focus\:z-100:focus {
+    z-index: 100;
   }
 
   .sm\:focus\:z-auto:focus {
@@ -46264,6 +46384,26 @@ Small example
     z-index: 50;
   }
 
+  .md\:z-60 {
+    z-index: 60;
+  }
+
+  .md\:z-70 {
+    z-index: 70;
+  }
+
+  .md\:z-80 {
+    z-index: 80;
+  }
+
+  .md\:z-90 {
+    z-index: 90;
+  }
+
+  .md\:z-100 {
+    z-index: 100;
+  }
+
   .md\:z-auto {
     z-index: auto;
   }
@@ -46292,6 +46432,26 @@ Small example
     z-index: 50;
   }
 
+  .md\:focus-within\:z-60:focus-within {
+    z-index: 60;
+  }
+
+  .md\:focus-within\:z-70:focus-within {
+    z-index: 70;
+  }
+
+  .md\:focus-within\:z-80:focus-within {
+    z-index: 80;
+  }
+
+  .md\:focus-within\:z-90:focus-within {
+    z-index: 90;
+  }
+
+  .md\:focus-within\:z-100:focus-within {
+    z-index: 100;
+  }
+
   .md\:focus-within\:z-auto:focus-within {
     z-index: auto;
   }
@@ -46318,6 +46478,26 @@ Small example
 
   .md\:focus\:z-50:focus {
     z-index: 50;
+  }
+
+  .md\:focus\:z-60:focus {
+    z-index: 60;
+  }
+
+  .md\:focus\:z-70:focus {
+    z-index: 70;
+  }
+
+  .md\:focus\:z-80:focus {
+    z-index: 80;
+  }
+
+  .md\:focus\:z-90:focus {
+    z-index: 90;
+  }
+
+  .md\:focus\:z-100:focus {
+    z-index: 100;
   }
 
   .md\:focus\:z-auto:focus {
@@ -67211,6 +67391,26 @@ Small example
     z-index: 50;
   }
 
+  .lg\:z-60 {
+    z-index: 60;
+  }
+
+  .lg\:z-70 {
+    z-index: 70;
+  }
+
+  .lg\:z-80 {
+    z-index: 80;
+  }
+
+  .lg\:z-90 {
+    z-index: 90;
+  }
+
+  .lg\:z-100 {
+    z-index: 100;
+  }
+
   .lg\:z-auto {
     z-index: auto;
   }
@@ -67239,6 +67439,26 @@ Small example
     z-index: 50;
   }
 
+  .lg\:focus-within\:z-60:focus-within {
+    z-index: 60;
+  }
+
+  .lg\:focus-within\:z-70:focus-within {
+    z-index: 70;
+  }
+
+  .lg\:focus-within\:z-80:focus-within {
+    z-index: 80;
+  }
+
+  .lg\:focus-within\:z-90:focus-within {
+    z-index: 90;
+  }
+
+  .lg\:focus-within\:z-100:focus-within {
+    z-index: 100;
+  }
+
   .lg\:focus-within\:z-auto:focus-within {
     z-index: auto;
   }
@@ -67265,6 +67485,26 @@ Small example
 
   .lg\:focus\:z-50:focus {
     z-index: 50;
+  }
+
+  .lg\:focus\:z-60:focus {
+    z-index: 60;
+  }
+
+  .lg\:focus\:z-70:focus {
+    z-index: 70;
+  }
+
+  .lg\:focus\:z-80:focus {
+    z-index: 80;
+  }
+
+  .lg\:focus\:z-90:focus {
+    z-index: 90;
+  }
+
+  .lg\:focus\:z-100:focus {
+    z-index: 100;
   }
 
   .lg\:focus\:z-auto:focus {
@@ -88158,6 +88398,26 @@ Small example
     z-index: 50;
   }
 
+  .xl\:z-60 {
+    z-index: 60;
+  }
+
+  .xl\:z-70 {
+    z-index: 70;
+  }
+
+  .xl\:z-80 {
+    z-index: 80;
+  }
+
+  .xl\:z-90 {
+    z-index: 90;
+  }
+
+  .xl\:z-100 {
+    z-index: 100;
+  }
+
   .xl\:z-auto {
     z-index: auto;
   }
@@ -88186,6 +88446,26 @@ Small example
     z-index: 50;
   }
 
+  .xl\:focus-within\:z-60:focus-within {
+    z-index: 60;
+  }
+
+  .xl\:focus-within\:z-70:focus-within {
+    z-index: 70;
+  }
+
+  .xl\:focus-within\:z-80:focus-within {
+    z-index: 80;
+  }
+
+  .xl\:focus-within\:z-90:focus-within {
+    z-index: 90;
+  }
+
+  .xl\:focus-within\:z-100:focus-within {
+    z-index: 100;
+  }
+
   .xl\:focus-within\:z-auto:focus-within {
     z-index: auto;
   }
@@ -88212,6 +88492,26 @@ Small example
 
   .xl\:focus\:z-50:focus {
     z-index: 50;
+  }
+
+  .xl\:focus\:z-60:focus {
+    z-index: 60;
+  }
+
+  .xl\:focus\:z-70:focus {
+    z-index: 70;
+  }
+
+  .xl\:focus\:z-80:focus {
+    z-index: 80;
+  }
+
+  .xl\:focus\:z-90:focus {
+    z-index: 90;
+  }
+
+  .xl\:focus\:z-100:focus {
+    z-index: 100;
   }
 
   .xl\:focus\:z-auto:focus {
@@ -109105,6 +109405,26 @@ Small example
     z-index: 50;
   }
 
+  .\32xl\:z-60 {
+    z-index: 60;
+  }
+
+  .\32xl\:z-70 {
+    z-index: 70;
+  }
+
+  .\32xl\:z-80 {
+    z-index: 80;
+  }
+
+  .\32xl\:z-90 {
+    z-index: 90;
+  }
+
+  .\32xl\:z-100 {
+    z-index: 100;
+  }
+
   .\32xl\:z-auto {
     z-index: auto;
   }
@@ -109133,6 +109453,26 @@ Small example
     z-index: 50;
   }
 
+  .\32xl\:focus-within\:z-60:focus-within {
+    z-index: 60;
+  }
+
+  .\32xl\:focus-within\:z-70:focus-within {
+    z-index: 70;
+  }
+
+  .\32xl\:focus-within\:z-80:focus-within {
+    z-index: 80;
+  }
+
+  .\32xl\:focus-within\:z-90:focus-within {
+    z-index: 90;
+  }
+
+  .\32xl\:focus-within\:z-100:focus-within {
+    z-index: 100;
+  }
+
   .\32xl\:focus-within\:z-auto:focus-within {
     z-index: auto;
   }
@@ -109159,6 +109499,26 @@ Small example
 
   .\32xl\:focus\:z-50:focus {
     z-index: 50;
+  }
+
+  .\32xl\:focus\:z-60:focus {
+    z-index: 60;
+  }
+
+  .\32xl\:focus\:z-70:focus {
+    z-index: 70;
+  }
+
+  .\32xl\:focus\:z-80:focus {
+    z-index: 80;
+  }
+
+  .\32xl\:focus\:z-90:focus {
+    z-index: 90;
+  }
+
+  .\32xl\:focus\:z-100:focus {
+    z-index: 100;
   }
 
   .\32xl\:focus\:z-auto:focus {
@@ -127081,6 +127441,21 @@ textarea.form-input {
   --tw-border-opacity: 0.5;
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+  font-size: 14px;
+  line-height: 24px;
+  --tw-text-opacity: 1;
+  color: rgba(100, 117, 133, var(--tw-text-opacity));
+  --tw-blur: var(--tw-empty,/*!*/ /*!*/);
+  --tw-brightness: var(--tw-empty,/*!*/ /*!*/);
+  --tw-contrast: var(--tw-empty,/*!*/ /*!*/);
+  --tw-grayscale: var(--tw-empty,/*!*/ /*!*/);
+  --tw-hue-rotate: var(--tw-empty,/*!*/ /*!*/);
+  --tw-invert: var(--tw-empty,/*!*/ /*!*/);
+  --tw-saturate: var(--tw-empty,/*!*/ /*!*/);
+  --tw-sepia: var(--tw-empty,/*!*/ /*!*/);
+  --tw-drop-shadow: var(--tw-empty,/*!*/ /*!*/);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+  --tw-drop-shadow: drop-shadow(0 20px 13px rgba(0, 0, 0, 0.03)) drop-shadow(0 8px 5px rgba(0, 0, 0, 0.08));
   min-height: 3rem; /* h-12, height of 1 option. Displays better when no options are available */
 }
 
@@ -127095,10 +127470,6 @@ textarea.form-input {
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
   --tw-bg-opacity: 1;
   padding-left: 0.75rem;
-  font-size: 14px;
-  line-height: 24px;
-  --tw-text-opacity: 1;
-  color: rgba(100, 117, 133, var(--tw-text-opacity));
 }
 
 .select-wrapper .select-dropdown .select-option:hover {
@@ -127144,6 +127515,137 @@ textarea.form-input {
 
 .select-wrapper .select-icon ~ i:not(.select-icon) {
   top: 30%;
+}
+
+/* Input source dropdown */
+
+.source-select-wrapper {
+  position: relative;
+  height: 1rem;
+  width: auto;
+  border-radius: 0.5rem;
+  font-size: 10px;
+  line-height: 10px;
+  min-width: 4rem;
+}
+
+.source-select-wrapper .source-select-input {
+  display: flex;
+  height: 100%;
+  cursor: pointer;
+  align-items: center;
+  border-radius: 0.5rem;
+  padding-left: 0.5rem;
+  line-height: 1rem;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  max-width: 7rem;
+}
+
+.source-select-wrapper i {
+  position: absolute;
+  top: 25%;
+  right: 0.5rem;
+  cursor: pointer;
+}
+
+.source-select-wrapper .source-select-dropdown {
+  position: absolute;
+  top: 1.5rem;
+  right: 0px;
+  z-index: 60;
+  height: 5rem;
+  width: 7rem;
+  border-radius: 0.25rem;
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+  --tw-bg-opacity: 1;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  --tw-blur: var(--tw-empty,/*!*/ /*!*/);
+  --tw-brightness: var(--tw-empty,/*!*/ /*!*/);
+  --tw-contrast: var(--tw-empty,/*!*/ /*!*/);
+  --tw-grayscale: var(--tw-empty,/*!*/ /*!*/);
+  --tw-hue-rotate: var(--tw-empty,/*!*/ /*!*/);
+  --tw-invert: var(--tw-empty,/*!*/ /*!*/);
+  --tw-saturate: var(--tw-empty,/*!*/ /*!*/);
+  --tw-sepia: var(--tw-empty,/*!*/ /*!*/);
+  --tw-drop-shadow: var(--tw-empty,/*!*/ /*!*/);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+  --tw-drop-shadow: drop-shadow(0 20px 13px rgba(0, 0, 0, 0.03)) drop-shadow(0 8px 5px rgba(0, 0, 0, 0.08));
+}
+
+.source-select-wrapper .source-select-dropdown .source-select-option {
+  margin-bottom: 0.25rem;
+  display: flex;
+  height: 1.25rem;
+  width: 6rem;
+  cursor: pointer;
+  align-items: center;
+  border-radius: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+.source-resident {
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgba(44, 169, 130, var(--tw-border-opacity));
+  --tw-border-opacity: 0;
+  --tw-bg-opacity: 1;
+  background-color: rgba(44, 169, 130, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.1;
+  --tw-text-opacity: 1;
+  color: rgba(44, 169, 130, var(--tw-text-opacity));
+}
+
+.source-resident:hover {
+  --tw-border-opacity: 1;
+}
+
+.source-resident:focus {
+  --tw-border-opacity: 1;
+}
+
+.source-coach {
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgba(55, 129, 240, var(--tw-border-opacity));
+  --tw-border-opacity: 0;
+  --tw-bg-opacity: 1;
+  background-color: rgba(55, 129, 240, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.1;
+  --tw-text-opacity: 1;
+  color: rgba(55, 129, 240, var(--tw-text-opacity));
+}
+
+.source-coach:hover {
+  --tw-border-opacity: 1;
+}
+
+.source-coach:focus {
+  --tw-border-opacity: 1;
+}
+
+.source-example-building {
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgba(255, 127, 74, var(--tw-border-opacity));
+  --tw-border-opacity: 0;
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 127, 74, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.1;
+  --tw-text-opacity: 1;
+  color: rgba(255, 127, 74, var(--tw-text-opacity));
+}
+
+.source-example-building:hover {
+  --tw-border-opacity: 1;
+}
+
+.source-example-building:focus {
+  --tw-border-opacity: 1;
 }.step-divider-line {
   width: 100%;
   border-width: 1px;

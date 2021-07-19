@@ -56,8 +56,10 @@ if (token) {
 
 import Alpine from 'alpinejs'
 import alpineSelect from './alpine-scripts/alpine-select.js';
+import sourceSelect from './alpine-scripts/source-select.js';
 
 Alpine.data('alpineSelect', alpineSelect)
+Alpine.data('sourceSelect', sourceSelect)
 
 window.Alpine = Alpine
 

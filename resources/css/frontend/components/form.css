@@ -183,12 +183,12 @@ textarea.form-input {
 
 /* Custom Alpine select */
 .select-wrapper .select-dropdown {
-    @apply w-full absolute rounded-lg border border-blue-500 border-opacity-50 bg-white z-50 top-full;
+    @apply w-full absolute rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm bg-white z-50 top-full  filter drop-shadow-xl;
     min-height: 3rem; /* h-12, height of 1 option. Displays better when no options are available */
 }
 
 .select-wrapper .select-dropdown .select-option {
-    @apply w-full text-blue-500 text-sm bg-white bg-opacity-100 cursor-pointer h-12 flex items-center pl-3 rounded-lg;
+    @apply w-full bg-white bg-opacity-100 cursor-pointer h-12 flex items-center pl-3 rounded-lg;
 
     @apply hover:bg-green hover:bg-opacity-10;
     @apply focus:bg-green focus:bg-opacity-10;
@@ -218,4 +218,46 @@ textarea.form-input {
 
 .select-wrapper .select-icon ~ i:not(.select-icon) {
     @apply top-6/20;
+}
+
+/* Input source dropdown */
+.source-select-wrapper {
+    @apply w-auto h-4 rounded-lg text-xs relative;
+    min-width: 4rem;
+}
+
+.source-select-wrapper .source-select-input {
+    @apply flex items-center cursor-pointer h-full rounded-lg outline-none leading-4 pl-2;
+    max-width: 7rem;
+}
+
+.source-select-wrapper i {
+    @apply absolute right-2 top-5/20 cursor-pointer;
+}
+
+.source-select-wrapper .source-select-dropdown {
+    @apply w-28 bg-white bg-opacity-100 h-20 px-2 py-1 rounded absolute top-6 right-0 z-60 filter drop-shadow-xl;
+}
+
+.source-select-wrapper .source-select-dropdown .source-select-option {
+    @apply w-24 h-5 rounded-lg flex items-center pl-1 mb-1 cursor-pointer;
+}
+
+.source-resident {
+    @apply border border-opacity-0 border-green bg-green bg-opacity-10 text-green;
+
+    @apply hover:border-opacity-100;
+    @apply focus:border-opacity-100;
+}
+.source-coach {
+    @apply border border-opacity-0 border-blue-800 bg-blue-800 bg-opacity-10 text-blue-800;
+
+    @apply hover:border-opacity-100;
+    @apply focus:border-opacity-100;
+}
+.source-example-building {
+    @apply border border-opacity-0 border-orange bg-orange bg-opacity-10 text-orange;
+
+    @apply hover:border-opacity-100;
+    @apply focus:border-opacity-100;
 }

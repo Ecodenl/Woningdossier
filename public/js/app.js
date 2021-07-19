@@ -33976,6 +33976,8 @@ __webpack_require__.r(__webpack_exports__);
     select: null,
     // HTML options
     options: null,
+    // Text display
+    text: null,
     // Current value of the select
     value: null,
     // If the select is disabled
@@ -33995,10 +33997,12 @@ __webpack_require__.r(__webpack_exports__);
         if (this.options.length > 0) {
           // Get attributes
           this.value = this.select.value;
+          this.text = this.select.options[this.select.selectedIndex].textContent;
           this.disabled = this.select.hasAttribute('disabled'); // Add class if disabled, so css can do magic
 
           if (this.disabled) {
             this.$refs['select-input'].classList.add('disabled');
+            this.open = false;
           } // Build the alpine select
 
 
@@ -34024,12 +34028,15 @@ __webpack_require__.r(__webpack_exports__);
     },
     changeOption: function changeOption(element) {
       if (!element.classList.contains('disabled')) {
-        this.setValue(element.getAttribute('data-value'));
+        this.setValue(element.getAttribute('data-value'), element.textContent);
       }
     },
     setValue: function setValue(value) {
+      var text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       this.value = value;
       this.select.value = value;
+      this.text = null === text ? value : text;
+      this.text = this.text.trim();
     },
     buildOption: function buildOption(parent, option) {
       // Build a new alpine option
@@ -34047,6 +34054,65 @@ __webpack_require__.r(__webpack_exports__);
 
 
       parent.appendChild(newOption);
+    }
+  };
+});
+
+/***/ }),
+
+/***/ "./resources/js/alpine-scripts/source-select.js":
+/*!******************************************************!*\
+  !*** ./resources/js/alpine-scripts/source-select.js ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  var initiallyOpen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  return {
+    // Text display
+    text: null,
+    // Current value of the select
+    value: null,
+    // If the select is disabled
+    disabled: false,
+    // Is the dropdown open?
+    open: false,
+    init: function init() {
+      // This is almost the same as the default alpine select, but this dropdown will have pre-defined options.
+      // These will be the sources for each question.
+      this.open = initiallyOpen;
+      var select = this.$refs['source-select']; // Get attributes
+
+      this.value = select.value;
+      this.text = select.options[select.selectedIndex].textContent;
+      this.disabled = select.hasAttribute('disabled'); // Add class if disabled, so css can do magic
+
+      if (this.disabled) {
+        this.$refs['source-select-input'].classList.add('disabled');
+        this.open = false;
+      }
+    },
+    toggle: function toggle() {
+      // If not disabled, we will handle the click
+      if (!this.disabled) {
+        this.open = !this.open;
+      }
+    },
+    changeOption: function changeOption(element) {
+      if (!element.classList.contains('disabled')) {
+        this.setValue(element.getAttribute('data-value'), element.textContent);
+      }
+    },
+    setValue: function setValue(value) {
+      var text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      this.value = value;
+      this.$refs['source-select'].value = value;
+      this.text = null === text ? value : text;
+      this.text = this.text.trim();
+      this.open = false;
     }
   };
 });
@@ -34219,6 +34285,7 @@ function removeError(input) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/module.esm.js");
 /* harmony import */ var _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./alpine-scripts/alpine-select.js */ "./resources/js/alpine-scripts/alpine-select.js");
+/* harmony import */ var _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./alpine-scripts/source-select.js */ "./resources/js/alpine-scripts/source-select.js");
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -34274,7 +34341,9 @@ if (token) {
 
 
 
+
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('alpineSelect', _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('sourceSelect', _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_2__["default"]);
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 

@@ -3,6 +3,8 @@ export default (initiallyOpen = false) => ({
     select: null,
     // HTML options
     options: null,
+    // Text display
+    text: null,
     // Current value of the select
     value: null,
     // If the select is disabled
@@ -24,11 +26,13 @@ export default (initiallyOpen = false) => ({
             if (this.options.length > 0) {
                 // Get attributes
                 this.value = this.select.value;
+                this.text = this.select.options[this.select.selectedIndex].textContent;
                 this.disabled = this.select.hasAttribute('disabled');
 
                 // Add class if disabled, so css can do magic
                 if (this.disabled) {
                     this.$refs['select-input'].classList.add('disabled');
+                    this.open = false;
                 }
 
                 // Build the alpine select
@@ -54,12 +58,15 @@ export default (initiallyOpen = false) => ({
     },
     changeOption(element) {
         if (! element.classList.contains('disabled')) {
-            this.setValue(element.getAttribute('data-value'));
+            this.setValue(element.getAttribute('data-value'), element.textContent);
         }
     },
-    setValue(value) {
+    setValue(value, text = null) {
         this.value = value;
         this.select.value = value;
+
+        this.text = null === text ? value : text;
+        this.text = this.text.trim();
     },
     buildOption(parent, option) {
         // Build a new alpine option

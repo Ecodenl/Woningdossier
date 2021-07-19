@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -112,6 +112,13 @@
                     </label>
                 </div>
             @endcomponent
+            <p class="font-bold">div.radio-wrapper > input type="radio" ~ label > span.checkmark ~ span</p>
+
+            <p class="font-bold text-red">
+                Note: Each group of elements (e.g. radios, a text input) is wrapped in a form component:
+                <br>
+                @@component('cooperation.components.form-group')
+            </p>
         </div>
 
         <div class="w-full">
@@ -127,6 +134,7 @@
             <div class="flex flex-wrap">
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pr-3'])
                     <input id="default" type="text" class="form-input" placeholder="Placeholder">
+                    <p class="font-bold">input.form-input</p>
                 @endcomponent
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
                     @component('cooperation.components.alpine-select')
@@ -134,6 +142,12 @@
                             <option selected disabled>Dropdown</option>
                         </select>
                     @endcomponent
+                    <p class="font-bold">select.form-input (in case of error with Alpine)</p>
+                    <p class="font-bold text-red">
+                        Note: The select should be wrapped by the Alpine select:
+                        <br>
+                        @@component('cooperation.components.alpine-select')
+                    </p>
                 @endcomponent
             </div>
             <div class="flex flex-wrap">
@@ -159,6 +173,7 @@
                     <p class="form-error-label">
                         Vul de correcte gegevens in
                     </p>
+                    <p class="font-bold">Error styling handled by form group component</p>
                 @endcomponent
             </div>
             <div class="flex flex-wrap">
@@ -175,17 +190,24 @@
             <div class="flex flex-wrap">
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3'])
                     <input id="disabled" type="text" class="form-input" placeholder="Disabled" disabled>
+                    <p class="font-bold">input.form-input:disabled</p>
                 @endcomponent
             </div>
             <div class="flex flex-wrap">
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3 required'])
                     <input id="required" type="text" class="form-input" placeholder="Verplicht">
+                    <p class="font-bold text-red">
+                        Append .required to component:
+                        <br>
+                        @@component('cooperation.components.form-group', ['class' => 'required'])
+                    </p>
                 @endcomponent
             </div>
 
             <div class="flex flex-wrap">
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pr-3'])
                     <textarea id="text-area" class="form-input" placeholder="Text area"></textarea>
+                    <p class="font-bold">textarea.form-input</p>
                 @endcomponent
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
                     <input id="placeholder" type="text" class="form-input" placeholder="Placeholder">
@@ -200,6 +222,7 @@
                     <div class="input-group-append">
                         m<sup>2</sup>
                     </div>
+                    <p class="font-bold">input.form-input ~ div.input-group-append</p>
                 @endcomponent
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
                     @component('cooperation.components.alpine-select', ['icon' => 'icon-detached-house'])
@@ -207,6 +230,11 @@
                             <option selected disabled>Placeholder icon</option>
                         </select>
                     @endcomponent
+                    <p class="font-bold text-red">
+                        Append .icon to component:
+                        <br>
+                        @@component('cooperation.components.alpine-select', ['icon' => 'icon-detached-house'])
+                    </p>
                 @endcomponent
             </div>
             <div class="flex flex-wrap">
@@ -251,6 +279,7 @@
                         </label>
                     </div>
                 @endcomponent
+                <p class="font-bold">div.checkbox-wrapper > input type="checkbox" ~ label > span.checkmark ~ span</p>
             </div>
         </div>
 

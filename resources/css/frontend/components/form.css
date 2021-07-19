@@ -181,9 +181,9 @@ textarea.form-input {
     height: 2.64rem; /* Slightly smaller than h-11 to fit within the borders of the input */
 }
 
+/* Custom Alpine select */
 .select-wrapper .select-dropdown {
-    @apply w-full absolute rounded-lg border border-blue-500 border-opacity-50 bg-white z-50;
-    top: 3.25rem; /* Exact height of form input, plus margin */
+    @apply w-full absolute rounded-lg border border-blue-500 border-opacity-50 bg-white z-50 top-full;
     min-height: 3rem; /* h-12, height of 1 option. Displays better when no options are available */
 }
 
@@ -200,4 +200,22 @@ textarea.form-input {
 
 .select-wrapper .select-dropdown .select-option.disabled {
     @apply hidden;
+}
+
+.select-wrapper i:not(.select-icon) {
+    @apply absolute right-6 top-5/20 cursor-pointer;
+}
+
+/* Select with icon */
+.select-wrapper .select-icon {
+    @apply h-12 w-12;
+}
+
+.select-wrapper .select-icon ~ input.form-input {
+    @apply h-14;
+    padding-left: 5.5rem;
+}
+
+.select-wrapper .select-icon ~ i:not(.select-icon) {
+    @apply top-6/20;
 }

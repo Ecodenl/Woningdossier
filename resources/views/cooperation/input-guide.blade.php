@@ -91,7 +91,7 @@
                     </label>
                 </div>
                 <div class="radio-wrapper pl-3">
-                    <input type="radio" id="example-building-2" name="example-building" value="2">
+                    <input type="radio" id="example-building-2" name="example-building" value="2" checked>
                     <label for="example-building-2">
                         <span class="checkmark"></span>
                         <span>Een jaren zestig woning</span>
@@ -202,7 +202,11 @@
                     </div>
                 @endcomponent
                 @component('cooperation.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
-                    {{-- WIP media dropdown --}}
+                    @component('cooperation.components.alpine-select', ['icon' => 'icon-detached-house'])
+                        <select id="dropdown-icon" class="form-input" name="alpine[dropdown_icon]">
+                            <option selected disabled>Placeholder icon</option>
+                        </select>
+                    @endcomponent
                 @endcomponent
             </div>
             <div class="flex flex-wrap">
@@ -226,7 +230,7 @@
                         </label>
                     </div>
                     <div class="checkbox-wrapper pr-3">
-                        <input type="checkbox" id="subject-2" name="subject" value="2">
+                        <input type="checkbox" id="subject-2" name="subject" value="2" checked>
                         <label for="subject-2">
                             <span class="checkmark"></span>
                             <span>Interesse in maatregel</span>
@@ -247,6 +251,14 @@
                         </label>
                     </div>
                 @endcomponent
+            </div>
+        </div>
+
+        <div class="w-full">
+            <div class="flex items-center justify-end w-full">
+                <button class="btn btn-purple">
+                    Opslaan
+                </button>
             </div>
         </div>
 

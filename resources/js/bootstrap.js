@@ -62,10 +62,12 @@ import Alpine from 'alpinejs'
 import alpineSelect from './alpine-scripts/alpine-select.js';
 import sourceSelect from './alpine-scripts/source-select.js';
 import modal from './alpine-scripts/modal.js';
+import ratingSlider from './alpine-scripts/rating-slider.js';
 
 Alpine.data('alpineSelect', alpineSelect)
 Alpine.data('sourceSelect', sourceSelect)
 Alpine.data('modal', modal)
+Alpine.data('ratingSlider', ratingSlider)
 
 window.Alpine = Alpine
 

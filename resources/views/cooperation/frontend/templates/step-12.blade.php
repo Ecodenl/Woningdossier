@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-5">
-        <div class="w-full space-x-3">
+        <div class="w-full">
             @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'form-group-heading',
                 'label' => 'Welke zaken zou u willen veranderen aan uw woning?',

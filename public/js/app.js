@@ -34083,6 +34083,79 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/alpine-scripts/rating-slider.js":
+/*!******************************************************!*\
+  !*** ./resources/js/alpine-scripts/rating-slider.js ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  return {
+    index: -1,
+    value: 0,
+    inactiveClass: 'bg-gray',
+    activeClass: 'bg-green',
+    init: function init() {
+      var activeClass = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+      if (!(null === activeClass)) {
+        this.activeClass = activeClass;
+      }
+    },
+    mouseEnter: function mouseEnter(element) {
+      this.setChildrenGray(); // Set this and all previous as green
+
+      this.setActive(element);
+
+      while ((element = element.previousElementSibling) != null) {
+        this.setActive(element);
+      }
+    },
+    mouseLeave: function mouseLeave(element) {
+      var _this = this;
+
+      this.setChildrenGray();
+      var parent = this.$refs['rating-slider'];
+      var children = Array.from(parent.children);
+      children.forEach(function (element) {
+        if (children.indexOf(element) <= _this.index) {
+          _this.setActive(element);
+        } else {
+          _this.setInactive(element);
+        }
+      });
+    },
+    selectOption: function selectOption(element) {
+      var parent = this.$refs['rating-slider'];
+      this.index = Array.from(parent.children).indexOf(element);
+      this.value = element.getAttribute('data-value');
+    },
+    setChildrenGray: function setChildrenGray() {
+      var _this2 = this;
+
+      var parent = this.$refs['rating-slider'];
+      var children = Array.from(parent.children); // Set all elements as gray
+
+      children.forEach(function (element) {
+        return _this2.setInactive(element);
+      });
+    },
+    setInactive: function setInactive(element) {
+      element.classList.remove(this.activeClass);
+      element.classList.add(this.inactiveClass);
+    },
+    setActive: function setActive(element) {
+      element.classList.remove(this.inactiveClass);
+      element.classList.add(this.activeClass);
+    }
+  };
+});
+
+/***/ }),
+
 /***/ "./resources/js/alpine-scripts/source-select.js":
 /*!******************************************************!*\
   !*** ./resources/js/alpine-scripts/source-select.js ***!
@@ -34310,6 +34383,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./alpine-scripts/alpine-select.js */ "./resources/js/alpine-scripts/alpine-select.js");
 /* harmony import */ var _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./alpine-scripts/source-select.js */ "./resources/js/alpine-scripts/source-select.js");
 /* harmony import */ var _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./alpine-scripts/modal.js */ "./resources/js/alpine-scripts/modal.js");
+/* harmony import */ var _alpine_scripts_rating_slider_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./alpine-scripts/rating-slider.js */ "./resources/js/alpine-scripts/rating-slider.js");
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -34372,9 +34446,11 @@ if (token) {
 
 
 
+
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('alpineSelect', _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('sourceSelect', _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_2__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('modal', _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_3__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('ratingSlider', _alpine_scripts_rating_slider_js__WEBPACK_IMPORTED_MODULE_4__["default"]);
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 

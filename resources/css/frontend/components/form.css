@@ -18,6 +18,7 @@
 
 .form-header .form-label {
     @apply flex text-blue-500 text-sm font-bold w-3/4;
+    white-space: break-spaces;
 }
 
 .form-header .form-end {
@@ -65,6 +66,32 @@ textarea.form-input {
 .checkbox-wrapper input[type="checkbox"]:disabled + label,
 .select-wrapper .select-input.disabled {
     @apply cursor-not-allowed bg-blue-100 bg-opacity-50;
+}
+
+.slider {
+    @apply w-10/12 h-1 outline-none appearance-none bg-green;
+}
+
+/* Slider hands*/
+.slider::-webkit-slider-thumb,
+.slider::-moz-range-thumb {
+    @apply appearance-none relative cursor-pointer bg-green rounded-xl bg-no-repeat bg-center;
+    width: 42px;
+    height: 35px;
+    background-image: url('/icons/arrow-left-right.svg');
+}
+
+.slider-bubble {
+    @apply relative bg-white rounded-lg text-blue-500 font-light text-sm flex justify-center items-center border border-blue-500 border-solid;
+    width: 43px;
+    height: 33px;
+}
+
+.slider-bubble::after {
+    @apply absolute border-b border-r border-blue-500 border-solid bg-white transform rotate-45 h-2 w-2;
+    bottom: -4.5px;
+    left: 17px;
+    content: '';
 }
 
 /* Error label */

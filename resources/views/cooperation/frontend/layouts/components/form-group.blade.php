@@ -1,8 +1,8 @@
 <div class="form-group {{ $class ?? '' }} @error(($inputName ?? '')) form-error @enderror">
     <div class="form-header">
-        <label class="form-label" for="{{ $id ?? '' }}">
-            {{ $label ?? '' }}
-        </label>
+        {{-- NOTE: Keep on one line, else white-space: break-spaces will fuck up! This is needed, else
+        styling for e.g. inline spans becomes really ugly! --}}
+        <label class="form-label" for="{{ $id ?? '' }}">{!! $label ?? '' !!}</label>
         <div class="form-end">
             @include('cooperation.frontend.layouts.parts.source-select')
             {{-- No need to show the info icon if no info was given --}}

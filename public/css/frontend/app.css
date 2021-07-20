@@ -127082,12 +127082,15 @@ p a {
 }
 
 .form-group.form-group-heading .form-label {
-  margin-bottom: 1rem;
   font-size: 24px;
   line-height: 28px;
   font-weight: 600;
   --tw-text-opacity: 1;
   color: rgba(65, 76, 87, var(--tw-text-opacity));
+}
+
+.form-group.form-group-heading .form-header {
+  margin-bottom: 1rem;
 }
 
 /* Header row of the form group */

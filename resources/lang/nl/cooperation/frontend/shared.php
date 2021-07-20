@@ -9,4 +9,8 @@ return [
     'modals' => [
         'info' => 'Informatie',
     ],
+    'defaults' => [
+        'previous' => 'Vorige',
+        'next' => 'Volgende',
+    ],
 ];

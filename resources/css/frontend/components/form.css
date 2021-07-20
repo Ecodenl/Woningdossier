@@ -4,7 +4,11 @@
 }
 
 .form-group.form-group-heading .form-label {
-    @apply font-semibold text-blue text-md mb-4;
+    @apply font-semibold text-blue text-md;
+}
+
+.form-group.form-group-heading .form-header {
+    @apply mb-4;
 }
 
 /* Header row of the form group */

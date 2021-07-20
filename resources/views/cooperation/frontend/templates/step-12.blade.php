@@ -16,7 +16,9 @@
                     <div class="checkbox-wrapper media-wrapper">
                         <input type="checkbox" id="changes-kitchen" name="changes" value="kitchen">
                         <label for="changes-kitchen">
-                            <i class="icon-kitchen"></i>
+                            <span class="media-icon-wrapper">
+                                <i class="icon-kitchen"></i>
+                            </span>
                             <span class="checkmark"></span>
                             <span>Keuken</span>
                         </label>
@@ -24,7 +26,9 @@
                     <div class="checkbox-wrapper media-wrapper">
                         <input type="checkbox" id="changes-bathroom" name="changes" value="bathroom">
                         <label for="changes-bathroom">
-                            <i class="icon-bathroom"></i>
+                            <span class="media-icon-wrapper">
+                                <i class="icon-bathroom"></i>
+                            </span>
                             <span class="checkmark"></span>
                             <span>Badkamer</span>
                         </label>
@@ -32,7 +36,9 @@
                     <div class="checkbox-wrapper media-wrapper">
                         <input type="checkbox" id="changes-dormer" name="changes" value="dormer">
                         <label for="changes-dormer">
-                            <i class="icon-dormer"></i>
+                            <span class="media-icon-wrapper">
+                                <i class="icon-dormer"></i>
+                            </span>
                             <span class="checkmark"></span>
                             <span>Dakkapel</span>
                         </label>
@@ -40,7 +46,9 @@
                     <div class="checkbox-wrapper media-wrapper">
                         <input type="checkbox" id="changes-window-frame" name="changes" value="window-frame">
                         <label for="changes-window-frame">
-                            <i class="icon-window-frame"></i>
+                            <span class="media-icon-wrapper">
+                                <i class="icon-window-frame"></i>
+                            </span>
                             <span class="checkmark"></span>
                             <span>Kozijnen</span>
                         </label>
@@ -48,7 +56,9 @@
                     <div class="checkbox-wrapper media-wrapper">
                         <input type="checkbox" id="changes-paint-job" name="changes" value="paint-job">
                         <label for="changes-paint-job">
-                            <i class="icon-paint-job"></i>
+                            <span class="media-icon-wrapper">
+                                <i class="icon-paint-job"></i>
+                            </span>
                             <span class="checkmark"></span>
                             <span>Schilderwerk</span>
                         </label>
@@ -56,7 +66,9 @@
                     <div class="checkbox-wrapper media-wrapper">
                         <input type="checkbox" id="changes-sunroom" name="changes" value="sunroom">
                         <label for="changes-sunroom">
-                            <i class="icon-sunroom"></i>
+                            <span class="media-icon-wrapper">
+                                <i class="icon-sunroom"></i>
+                            </span>
                             <span class="checkmark"></span>
                             <span>Serre</span>
                         </label>
@@ -64,9 +76,19 @@
                     <div class="checkbox-wrapper media-wrapper">
                         <input type="checkbox" id="changes-attic-room" name="changes" value="attic-room">
                         <label for="changes-attic-room">
-                            <i class="icon-attic-room"></i>
+                            <span class="media-icon-wrapper">
+                                <i class="icon-attic-room"></i>
+                            </span>
                             <span class="checkmark"></span>
                             <span>Kamer op zolder</span>
+                        </label>
+                    </div>
+                    <div class="add-option-wrapper media-wrapper">
+                        <label for="add-option">
+                            <span class="media-icon-wrapper">
+                                <i class="icon-plus-circle"></i>
+                            </span>
+                            <span>@lang('cooperation/frontend/tool.form.add-option')</span>
                         </label>
                     </div>
                 </div>

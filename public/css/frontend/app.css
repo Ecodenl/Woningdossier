@@ -127127,7 +127127,7 @@ p a {
 
 /* Input styles */
 
-.form-input, .radio-wrapper label, .checkbox-wrapper label, .select-wrapper .select-input {
+.form-input, .radio-wrapper label, .checkbox-wrapper label, .add-option-wrapper label, .select-wrapper .select-input {
   position: relative;
   display: flex;
   height: 2.75rem;
@@ -127151,13 +127151,13 @@ p a {
   outline-offset: 2px;
 }
 
-.form-input:hover, .radio-wrapper label:hover, .checkbox-wrapper label:hover, .select-wrapper .select-input:hover {
+.form-input:hover, .radio-wrapper label:hover, .checkbox-wrapper label:hover, .add-option-wrapper label:hover, .select-wrapper .select-input:hover {
   --tw-border-opacity: 1;
   border-color: rgba(44, 169, 130, var(--tw-border-opacity));
   --tw-border-opacity: 1;
 }
 
-.form-input:focus, .radio-wrapper label:focus, .checkbox-wrapper label:focus, .select-wrapper .select-input:focus {
+.form-input:focus, .radio-wrapper label:focus, .checkbox-wrapper label:focus, .add-option-wrapper label:focus, .select-wrapper .select-input:focus {
   --tw-border-opacity: 1;
   border-color: rgba(44, 169, 130, var(--tw-border-opacity));
   --tw-border-opacity: 1;
@@ -127181,7 +127181,7 @@ p a {
   --tw-text-opacity: 0.5;
 }
 
-.radio-wrapper, .checkbox-wrapper {
+.radio-wrapper, .checkbox-wrapper, .add-option-wrapper {
   margin-bottom: 1.5rem;
 }
 
@@ -127405,6 +127405,29 @@ textarea.form-input {
   border-width: 0 2px 2px 0;
 }
 
+/* Custom style for radio/checkbox add option box */
+
+.add-option-wrapper label {
+  border-style: dashed;
+  --tw-bg-opacity: 1;
+  background-color: rgba(98, 33, 145, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.1;
+  --tw-text-opacity: 1;
+  color: rgba(98, 33, 145, var(--tw-text-opacity));
+}
+
+.add-option-wrapper label:hover {
+  --tw-border-opacity: 1;
+  border-color: rgba(98, 33, 145, var(--tw-border-opacity));
+  --tw-bg-opacity: 0.3;
+}
+
+.add-option-wrapper label:focus {
+  --tw-border-opacity: 1;
+  border-color: rgba(98, 33, 145, var(--tw-border-opacity));
+  --tw-bg-opacity: 0.3;
+}
+
 /* Wrapper for checkbox/radio if icon is present */
 
 .media-wrapper {
@@ -127418,15 +127441,29 @@ textarea.form-input {
   padding: 0px;
 }
 
-.media-wrapper label i {
+.media-wrapper label .media-icon-wrapper {
   position: absolute;
   top: 0px;
   right: 0px;
   bottom: 0px;
   left: 0px;
-  height: 80%;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-wrapper label .media-icon-wrapper i {
+  margin-top: -1rem;
+  height: 70%;
   width: 100%;
   padding: 1rem;
+}
+
+.add-option-wrapper.media-wrapper label .media-icon-wrapper i {
+  height: 50%;
+  width: 50%;
 }
 
 .media-wrapper label .checkmark {
@@ -127436,7 +127473,7 @@ textarea.form-input {
   margin: 0px;
 }
 
-.media-wrapper label .checkmark ~ span {
+.media-wrapper label span:not(.checkmark):not(.media-icon-wrapper) {
   position: absolute;
   left: 0px;
   right: 0px;

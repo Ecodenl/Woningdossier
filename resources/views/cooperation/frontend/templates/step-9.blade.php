@@ -16,7 +16,9 @@
                     <div class="radio-wrapper media-wrapper">
                         <input type="radio" id="cooking-type-gas" name="cooking_type" value="gas">
                         <label for="cooking-type-gas">
-                            <i class="icon-gas"></i>
+                            <span class="media-icon-wrapper">
+                                <i class="icon-gas"></i>
+                            </span>
                             <span class="checkmark"></span>
                             <span>Gas</span>
                         </label>
@@ -24,7 +26,9 @@
                     <div class="radio-wrapper media-wrapper">
                         <input type="radio" id="cooking-type-electric" name="cooking_type" value="electric">
                         <label for="cooking-type-electric">
-                            <i class="icon-electric"></i>
+                            <span class="media-icon-wrapper">
+                                <i class="icon-electric"></i>
+                            </span>
                             <span class="checkmark"></span>
                             <span>Elektrisch</span>
                         </label>
@@ -32,7 +36,9 @@
                     <div class="radio-wrapper media-wrapper">
                         <input type="radio" id="cooking-type-induction" name="cooking_type" value="induction">
                         <label for="cooking-type-induction">
-                            <i class="icon-induction"></i>
+                            <span class="media-icon-wrapper">
+                                <i class="icon-induction"></i>
+                            </span>
                             <span class="checkmark"></span>
                             <span>Inductie</span>
                         </label>

@@ -19,6 +19,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
     Route::view('input-guide', 'cooperation.frontend.input-guide');
     Route::prefix('step')->group(function () {
         Route::view('9', 'cooperation.frontend.templates.step-9');
+        Route::view('12', 'cooperation.frontend.templates.step-12');
     });
 
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {

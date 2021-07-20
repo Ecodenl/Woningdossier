@@ -12,7 +12,7 @@
                         Selecteer de wijze waarbij u thuis kookt.
                     </p>
                 @endslot
-                <div class="flex flex-wrap justify-between w-full">
+                <div class="w-full grid grid-rows-1 grid-cols-4 grid-flow-row justify-items-center">
                     <div class="radio-wrapper media-wrapper">
                         <input type="radio" id="cooking-type-gas" name="cooking_type" value="gas">
                         <label for="cooking-type-gas">
@@ -58,7 +58,7 @@
             @component('cooperation.frontend.layouts.components.form-group', [
                'class' => 'form-group-heading w-full lg:w-1/2 lg:pl-3',
                'label' => 'Wat is het elektragebruik?'
-            ])F
+            ])
                 @slot('modalBodySlot')
                     <p>
                         Vul (in kilowattuur) in hoeveel stroom u gebruikt per jaar.

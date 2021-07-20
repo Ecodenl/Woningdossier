@@ -5,6 +5,7 @@ return [
 
     'form' => [
         'subject' => 'Onderwerp',
+        'other' => 'Anders',
         'add-option' => 'Voeg onderdeel toe',
     ],
 ];

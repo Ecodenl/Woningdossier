@@ -127075,10 +127075,10 @@ p a {
 
 .form-group {
   position: relative;
-  margin-top: 1rem;
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
+  padding-top: 1rem;
 }
 
 .form-group.form-group-heading .form-label {
@@ -127419,13 +127419,13 @@ textarea.form-input {
 .add-option-wrapper label:hover {
   --tw-border-opacity: 1;
   border-color: rgba(98, 33, 145, var(--tw-border-opacity));
-  --tw-bg-opacity: 0.3;
+  --tw-bg-opacity: 0.2;
 }
 
 .add-option-wrapper label:focus {
   --tw-border-opacity: 1;
   border-color: rgba(98, 33, 145, var(--tw-border-opacity));
-  --tw-bg-opacity: 0.3;
+  --tw-bg-opacity: 0.2;
 }
 
 /* Wrapper for checkbox/radio if icon is present */
@@ -127770,7 +127770,7 @@ textarea.form-input {
 
 .modal-container .modal {
   height: auto;
-  width: 20rem;
+  width: 20%;
   border-radius: 0.5rem;
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity));

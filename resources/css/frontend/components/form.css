@@ -1,6 +1,6 @@
 /* Form groups and its children */
 .form-group {
-    @apply mt-4 relative flex flex-wrap content-start;
+    @apply pt-4 relative flex flex-wrap content-start;
 }
 
 .form-group.form-group-heading .form-label {

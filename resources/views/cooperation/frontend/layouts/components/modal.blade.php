@@ -3,7 +3,7 @@
         <div class="modal-header">
             <i class="icon-sm icon-info mr-3"></i>
             <h6 class="heading-6">
-                @lang('cooperation/frontend/shared.modals.info')
+                {{ $header ?? __('cooperation/frontend/shared.modals.info') }}
             </h6>
             <div class="modal-close" x-on:click="close()">
                 <i class="icon-md icon-close-circle-light"></i>

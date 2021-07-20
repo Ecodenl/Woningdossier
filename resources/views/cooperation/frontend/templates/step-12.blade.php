@@ -83,13 +83,42 @@
                             <span>Kamer op zolder</span>
                         </label>
                     </div>
-                    <div class="add-option-wrapper media-wrapper">
-                        <label for="add-option">
+                    <div class="add-option-wrapper media-wrapper" x-data="modal()" >
+                        <label for="add-option" x-on:click="toggle()">
                             <span class="media-icon-wrapper">
                                 <i class="icon-plus-circle"></i>
                             </span>
                             <span>@lang('cooperation/frontend/tool.form.add-option')</span>
                         </label>
+                        @component('cooperation.frontend.layouts.components.modal', ['header' => __('cooperation/frontend/tool.form.subject')])
+                            <div class="flex flex-wrap mb-5">
+                                <div class="form-group w-full -mt-4 mb-4">
+                                    <input class="form-input" name="new_option[subject]" id="new-option-subject"
+                                           placeholder="Placeholder">
+                                </div>
+                                <div class="w-full flex items-center">
+                                    <i class="icon-sm icon-info mr-3"></i>
+                                    <h6 class="heading-6">
+                                        Prijsindicatie in €
+                                    </h6>
+                                </div>
+                                <div class="form-group w-1/2 pr-1">
+                                    <input class="form-input" name="new_option[price][from" id="new-option-price-from"
+                                           placeholder="van">
+                                </div>
+                                <div class="form-group w-1/2 pl-1">
+                                    <input class="form-input" name="new_option[price][to" id="new-option-price-to"
+                                           placeholder="van">
+                                </div>
+                            </div>
+                            <div class="w-full border border-gray fixed left-0"></div>
+                            <div class="flex flex-wrap justify-center mt-14">
+                                <button class="btn btn-purple w-full">
+                                    <i class="icon-xs icon-plus-purple mr-3"></i>
+                                    Voeg maatregel toe
+                                </button>
+                            </div>
+                        @endcomponent
                     </div>
                 </div>
             @endcomponent

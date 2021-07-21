@@ -70,7 +70,7 @@
         </div>
         <div class="w-full pt-5">
             @component('cooperation.frontend.layouts.components.form-group', [
-                    'class' => 'form-group-heading w-full form-error',
+                    'class' => 'form-group-heading w-full',
                     'label' => 'Wanneer zijn de zonnepalen geplaats?',
                     'id' => 'solar-panel-date',
                     'inputName' => 'solar_panel_date',

@@ -1,4 +1,4 @@
-<div class="modal-container" x-show="open" x-on:keydown.escape.window="close()">
+<div class="modal-container" x-show="open" x-on:keydown.escape.window="close()" style="display: none;">
     <div class="modal" x-ref="modal" x-on:click.outside="close()">
         <div class="modal-header">
             <i class="icon-sm icon-info mr-3"></i>

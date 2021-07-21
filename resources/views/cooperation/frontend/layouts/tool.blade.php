@@ -1,0 +1,76 @@
+@extends('cooperation.frontend.layouts.app')
+
+@section('header')
+    <div class="w-full">
+        {{-- Nav bar --}}
+        <div class="grid grid-flow-row grid-cols-3 items-center w-full bg-white h-12 px-5 xl:px-20 relative z-40 shadow-lg">
+            <div>
+                <i class="icon-hoomdossier"></i>
+            </div>
+            <div>
+                {{-- White space --}}
+            </div>
+            <div class="flex flex-row justify-end space-x-4">
+                <p>
+                    <a>
+                        Start
+                    </a>
+                </p>
+                <p>
+                    <a class="text-blue">
+                        Basisadvies
+                    </a>
+                </p>
+                {{-- I assume this will be chat-alert only if there are actual messages --}}
+                <i class="icon-md icon-chat-alert"></i>
+                <div class="flex items-center">
+                    <i class="icon-md icon-account-circle mr-1"></i>
+                    <i class="icon-xs icon-arrow-down"></i>
+                </div>
+            </div>
+        </div>
+        {{-- Step progress --}}
+        <div class="flex items-center justify-between w-full bg-blue-100 border-b-1 h-16 px-5 xl:px-20 relative z-30">
+            <div class=" flex items-center h-full">
+                <i class="icon-sm icon-check-circle-dark mr-1"></i>
+                <span class="text-blue">Woninggegevens</span>
+            </div>
+            <div class="step-divider-line"></div>
+            <div class="flex items-center h-full">
+                <i class="icon-sm bg-purple bg-opacity-25 rounded-full border border-solid border-purple mr-1"></i>
+                <span class="text-purple">Gebruik</span>
+            </div>
+            <div class="step-divider-line"></div>
+            <div class="flex items-center h-full">
+                <i class="icon-sm bg-transparent rounded-full border border-solid border-blue mr-1"></i>
+                <span class="text-blue">Woonwensen</span>
+            </div>
+            <div class="step-divider-line"></div>
+            <div class="flex items-center h-full">
+                <i class="icon-sm bg-transparent rounded-full border border-solid border-blue mr-1"></i>
+                <span class="text-blue">Woonstatus</span>
+            </div>
+            <div class="step-divider-line"></div>
+            <div class="flex items-center h-full">
+                <i class="icon-sm bg-transparent rounded-full border border-solid border-blue mr-1"></i>
+                <span class="text-blue">Overige</span>
+            </div>
+            <div class="border border-blue-500 border-opacity-50 h-1/2"></div>
+            <div class="flex items-center justify-start h-full">
+                <i class="icon-sm icon-house-dark mr-1"></i>
+                <span class="text-blue">Woonplan</span>
+            </div>
+        </div>
+        {{-- Progress bar --}}
+        <div class="w-full bg-gray h-2">
+            {{-- Define style-width based on step progress divided by total steps --}}
+            <div class="h-full bg-purple" style="width: 30%"></div>
+        </div>
+    </div>
+@endsection
+
+@section('main')
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20">
+        @yield('content')
+    </div>
+@endsection

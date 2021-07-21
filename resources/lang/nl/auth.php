@@ -56,12 +56,14 @@ return [
     'login' => [
         'form' => [
             'header' => 'Inloggen',
-            'e-mail' => 'E-mailadres',
+            'email' => 'E-mailadres',
             'password' => 'Wachtwoord',
+            'enter-password' => 'Vul uw wachtwoord in',
             'remember_me' => 'Onthouden',
             'button' => 'Login',
-            'forgot_password' => 'Wachtwoord vergeten?',
+            'forgot-password' => 'Wachtwoord vergeten?',
         ],
+        'no-account' => 'Nog geen account?',
         'warning' => 'Er is geen woning gekoppeld aan uw account, om het Hoomdossier goed te gebruiken hebben wij uw adres nodig.',
     ],
 

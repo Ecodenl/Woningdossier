@@ -15,6 +15,7 @@
 Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () {
 
     // TODO: Figure out how to handle these routes; Move to frontend.php?
+    Route::view('login-new', 'cooperation.auth.new.login');
     Route::view('styleguide', 'cooperation.frontend.styleguide');
     Route::view('input-guide', 'cooperation.frontend.input-guide');
     Route::prefix('step')->group(function () {

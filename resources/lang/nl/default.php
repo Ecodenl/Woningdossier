@@ -32,4 +32,7 @@ return [
         ],
     ],
     'new-message' => 'Nieuwe berichten',
+
+    'privacy-policy' => 'Privacybeleid',
+    'terms-and-conditions' => 'Algemene voorwaarden',
 ];

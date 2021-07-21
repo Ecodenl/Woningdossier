@@ -1,4 +1,4 @@
-@extends('cooperation.frontend.layouts.app')
+@extends('cooperation.frontend.layouts.tool')
 
 @section('page_title', 'Hoomdossier input guide')
 

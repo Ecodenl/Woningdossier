@@ -12,7 +12,7 @@
     <p class="w-1/12 flex justify-end pr-5">{{$min}}{!! $unit !!}</p>
     <div class="w-10/12 relative flex justify-center items-center">
         <input type="range" min="{{$min}}" max="{{$max}}" step="{{$step}}" name="{{$inputName ?? ''}}" class="slider"
-               x-ref="slider" x-on:input="updateBubble()" x-model="value">
+               x-ref="slider" x-on:input="updateVisuals()" x-model="value">
         <div class="slider-bubble" x-show="initialized" x-ref="slider-bubble">
             <span x-text="value"></span>{!! $unit !!}
         </div>

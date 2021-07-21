@@ -127211,10 +127211,10 @@ textarea.form-input {
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
-  --tw-bg-opacity: 1;
-  background-color: rgba(44, 169, 130, var(--tw-bg-opacity));
   outline: 2px solid transparent;
   outline-offset: 2px;
+  --slider-before: #2CA982;
+  --slider-after: #CDD2D7;
 }
 
 /* Slider hands*/

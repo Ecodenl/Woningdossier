@@ -4,12 +4,13 @@ export default () => ({
 
     init() {
         this.value = this.$refs['slider'].value;
-        this.updateBubble();
+        this.updateVisuals();
         this.initialized = true;
     },
-    updateBubble() {
+    updateVisuals() {
         let currentPosition = this.getThumbPosition();
         this.$refs['slider-bubble'].style.left = currentPosition + 'px';
+        this.$refs['slider'].style.background = `linear-gradient(90deg, var(--slider-before) ${currentPosition}px, var(--slider-after) ${currentPosition}px)`;
     },
     getThumbPosition() {
         let slider = this.$refs['slider'];

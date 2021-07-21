@@ -34171,12 +34171,13 @@ __webpack_require__.r(__webpack_exports__);
     value: 0,
     init: function init() {
       this.value = this.$refs['slider'].value;
-      this.updateBubble();
+      this.updateVisuals();
       this.initialized = true;
     },
-    updateBubble: function updateBubble() {
+    updateVisuals: function updateVisuals() {
       var currentPosition = this.getThumbPosition();
       this.$refs['slider-bubble'].style.left = currentPosition + 'px';
+      this.$refs['slider'].style.background = "linear-gradient(90deg, var(--slider-before) ".concat(currentPosition, "px, var(--slider-after) ").concat(currentPosition, "px)");
     },
     getThumbPosition: function getThumbPosition() {
       var slider = this.$refs['slider']; // Get slider thumb CSS

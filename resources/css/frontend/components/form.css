@@ -69,7 +69,9 @@ textarea.form-input {
 }
 
 .slider {
-    @apply w-full h-1 outline-none appearance-none bg-green;
+    @apply w-full h-1 outline-none appearance-none;
+    --slider-before: theme('colors.green');
+    --slider-after: theme('colors.gray');
 }
 
 /* Slider hands*/

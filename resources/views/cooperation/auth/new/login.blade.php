@@ -13,9 +13,13 @@
                     <input class="form-input" type="text" name="email" placeholder="@lang('auth.login.form.email')">
                     <i class="icon-sm icon-mail-green absolute right-6 top-5/20"></i>
                 </div>
-                <div class="input-group">
-                    <input class="form-input" type="password" name="password" placeholder="@lang('auth.login.form.enter-password')">
-                    <i class="icon-sm icon-show absolute right-6 top-5/20"></i>
+                <div class="input-group" x-data="{showPass: false}">
+                    <input class="form-input" type="password" name="password"
+                           placeholder="@lang('auth.login.form.enter-password')" x-ref="password-input">
+                    <i class="icon-sm icon-show absolute right-6 top-5/20 cursor-pointer" x-show="showPass === false"
+                       x-on:click="showPass = true; $refs['password-input'].type = 'text'"></i>
+                    <i class="icon-sm icon-hide absolute right-6 top-5/20 cursor-pointer" x-show="showPass === true"
+                       x-on:click="showPass = false; $refs['password-input'].type = 'password'"></i>
                 </div>
                 <button class="btn btn-purple w-full mt-3">
                     Log in

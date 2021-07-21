@@ -5,7 +5,7 @@
     $min = $min < 0 ? 0 : $min;
     $max = $max <= $min ? $min + 10 : $max;
 
-    $step = $step ?? ($max / 10);
+    $step = $step ?? 1;
     $unit = $unit ?? '';
 @endphp
 <div class="flex flex-wrap items-center w-full mt-12" x-data="slider()">

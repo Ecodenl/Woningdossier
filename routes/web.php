@@ -18,8 +18,8 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
     Route::view('styleguide', 'cooperation.frontend.styleguide');
     Route::view('input-guide', 'cooperation.frontend.input-guide');
     Route::prefix('step')->group(function () {
+        Route::view('7', 'cooperation.frontend.templates.step-7');
         Route::view('9', 'cooperation.frontend.templates.step-9');
-        Route::view('10', 'cooperation.frontend.templates.step-10');
         Route::view('11', 'cooperation.frontend.templates.step-11');
         Route::view('12', 'cooperation.frontend.templates.step-12');
         Route::view('18', 'cooperation.frontend.templates.step-18');

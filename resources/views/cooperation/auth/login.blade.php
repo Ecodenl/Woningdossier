@@ -24,7 +24,7 @@
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">@lang('auth.login.form.e-mail')</label>
+                            <label for="email" class="col-md-4 control-label">@lang('auth.login.form.email')</label>
 
                             <div class="col-md-6">
                                 <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
@@ -64,11 +64,11 @@
                         <div class="form-group">
                             <div class="col-md-8 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
-                                    @lang('auth.login.form.button')
+                                    @lang('auth.login.form.submit')
                                 </button>
 
                                 <a class="btn btn-link" href="{{ route('cooperation.auth.password.request.index', ['cooperation' => $cooperation]) }}">
-                                    @lang('auth.login.form.forgot_password')
+                                    @lang('auth.login.form.forgot-password')
                                 </a>
                             </div>
                         </div>

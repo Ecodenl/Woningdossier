@@ -1,6 +1,14 @@
 /* Form groups and its children */
 .form-group {
-    @apply mt-4 relative flex flex-wrap content-start;
+    @apply pt-4 relative flex flex-wrap content-start;
+}
+
+.form-group.form-group-heading .form-label {
+    @apply font-semibold text-blue text-md;
+}
+
+.form-group.form-group-heading .form-header {
+    @apply mb-4;
 }
 
 /* Header row of the form group */
@@ -10,6 +18,7 @@
 
 .form-header .form-label {
     @apply flex text-blue-500 text-sm font-bold w-3/4;
+    white-space: break-spaces;
 }
 
 .form-header .form-end {
@@ -24,8 +33,9 @@
 .form-input,
 .radio-wrapper label,
 .checkbox-wrapper label,
+.add-option-wrapper label,
 .select-wrapper .select-input {
-    @apply flex items-center w-full cursor-pointer h-11 rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm outline-none max-w-full bg-white leading-10;
+    @apply flex items-center w-full cursor-pointer h-11 rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm outline-none max-w-full bg-white leading-10 relative;
 
     @apply hover:border-green hover:border-opacity-100;
     @apply focus:border-green focus:border-opacity-100;
@@ -36,7 +46,8 @@
 }
 
 .radio-wrapper,
-.checkbox-wrapper {
+.checkbox-wrapper,
+.add-option-wrapper {
     @apply mb-6;
 }
 
@@ -55,6 +66,34 @@ textarea.form-input {
 .checkbox-wrapper input[type="checkbox"]:disabled + label,
 .select-wrapper .select-input.disabled {
     @apply cursor-not-allowed bg-blue-100 bg-opacity-50;
+}
+
+.slider {
+    @apply w-full h-1 outline-none appearance-none;
+    --slider-before: theme('colors.green');
+    --slider-after: theme('colors.gray');
+}
+
+/* Slider hands*/
+.slider::-webkit-slider-thumb,
+.slider::-moz-range-thumb {
+    @apply appearance-none relative cursor-pointer bg-green rounded-xl bg-no-repeat bg-center;
+    width: 42px;
+    height: 35px;
+    background-image: url('/icons/arrow-left-right-white.svg');
+}
+
+.slider-bubble {
+    @apply absolute bg-white rounded-lg text-blue-500 font-light text-sm flex justify-center items-center border border-blue-500 border-solid bottom-8;
+    width: 43px;
+    height: 33px;
+}
+
+.slider-bubble::after {
+    @apply absolute border-b border-r border-blue-500 border-solid bg-white transform rotate-45 h-2 w-2;
+    bottom: -4.5px;
+    left: 17px;
+    content: '';
 }
 
 /* Error label */
@@ -170,6 +209,47 @@ textarea.form-input {
     border-width: 0 2px 2px 0;
 }
 
+/* Custom style for radio/checkbox add option box */
+.add-option-wrapper label {
+    @apply border-dashed bg-purple bg-opacity-10 text-purple;
+
+    @apply hover:bg-opacity-20 hover:border-purple;
+    @apply focus:bg-opacity-20 focus:border-purple;
+}
+
+/* Wrapper for checkbox/radio if icon is present */
+.media-wrapper {
+    @apply h-40 w-40;
+}
+
+.media-wrapper label {
+    @apply w-full h-full p-0;
+}
+
+.media-wrapper label .media-icon-wrapper {
+    @apply w-full h-full absolute inset-0 flex justify-center items-center;
+}
+
+.media-wrapper label .media-icon-wrapper i {
+    @apply w-full h-7/10 p-4 -mt-4;
+}
+
+.add-option-wrapper.media-wrapper label .media-icon-wrapper i {
+    @apply h-1/2 w-1/2;
+}
+
+.media-wrapper label .checkmark {
+    @apply absolute m-0 top-2 right-2;
+}
+
+.media-wrapper label span:not(.checkmark):not(.media-icon-wrapper) {
+    @apply absolute bottom-2 inset-x-0 text-center;
+}
+
+.media-wrapper.media-wrapper-small {
+    /* WIP */
+}
+
 /* Input groups */
 .input-group {
     @apply relative w-full flex flex-wrap items-center;
@@ -202,12 +282,12 @@ textarea.form-input {
 }
 
 .select-wrapper i:not(.select-icon) {
-    @apply absolute right-6 top-5/20 cursor-pointer;
+    @apply absolute right-6 top-5/20 pointer-events-none;
 }
 
 /* Select with icon */
 .select-wrapper .select-icon {
-    @apply h-12 w-12;
+    @apply h-12 w-12 z-10 absolute left-6 top-1/20 pointer-events-none;
 }
 
 .select-wrapper .select-icon ~ input.form-input {
@@ -231,7 +311,7 @@ textarea.form-input {
 }
 
 .source-select-wrapper i {
-    @apply absolute right-2 top-5/20 cursor-pointer;
+    @apply absolute right-2 top-5/20 pointer-events-none;
 }
 
 .source-select-wrapper .source-select-dropdown {

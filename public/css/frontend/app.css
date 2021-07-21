@@ -126923,6 +126923,15 @@ p a {
   font-size: 14px;
 }
 
+.btn:disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+  --tw-bg-opacity: 1;
+  background-color: rgba(205, 210, 215, var(--tw-bg-opacity));
+  --tw-text-opacity: 1;
+  color: rgba(255, 255, 255, var(--tw-text-opacity));
+}
+
 .btn-purple {
   --tw-bg-opacity: 1;
   background-color: rgba(225, 220, 242, var(--tw-bg-opacity));
@@ -127075,10 +127084,22 @@ p a {
 
 .form-group {
   position: relative;
-  margin-top: 1rem;
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
+  padding-top: 1rem;
+}
+
+.form-group.form-group-heading .form-label {
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 600;
+  --tw-text-opacity: 1;
+  color: rgba(65, 76, 87, var(--tw-text-opacity));
+}
+
+.form-group.form-group-heading .form-header {
+  margin-bottom: 1rem;
 }
 
 /* Header row of the form group */
@@ -127098,6 +127119,7 @@ p a {
   font-weight: 700;
   --tw-text-opacity: 1;
   color: rgba(100, 117, 133, var(--tw-text-opacity));
+  white-space: break-spaces;
 }
 
 .form-header .form-end {
@@ -127115,7 +127137,8 @@ p a {
 
 /* Input styles */
 
-.form-input, .radio-wrapper label, .checkbox-wrapper label, .select-wrapper .select-input {
+.form-input, .radio-wrapper label, .checkbox-wrapper label, .add-option-wrapper label, .select-wrapper .select-input {
+  position: relative;
   display: flex;
   height: 2.75rem;
   width: 100%;
@@ -127138,13 +127161,13 @@ p a {
   outline-offset: 2px;
 }
 
-.form-input:hover, .radio-wrapper label:hover, .checkbox-wrapper label:hover, .select-wrapper .select-input:hover {
+.form-input:hover, .radio-wrapper label:hover, .checkbox-wrapper label:hover, .add-option-wrapper label:hover, .select-wrapper .select-input:hover {
   --tw-border-opacity: 1;
   border-color: rgba(44, 169, 130, var(--tw-border-opacity));
   --tw-border-opacity: 1;
 }
 
-.form-input:focus, .radio-wrapper label:focus, .checkbox-wrapper label:focus, .select-wrapper .select-input:focus {
+.form-input:focus, .radio-wrapper label:focus, .checkbox-wrapper label:focus, .add-option-wrapper label:focus, .select-wrapper .select-input:focus {
   --tw-border-opacity: 1;
   border-color: rgba(44, 169, 130, var(--tw-border-opacity));
   --tw-border-opacity: 1;
@@ -127168,7 +127191,7 @@ p a {
   --tw-text-opacity: 0.5;
 }
 
-.radio-wrapper, .checkbox-wrapper {
+.radio-wrapper, .checkbox-wrapper, .add-option-wrapper {
   margin-bottom: 1.5rem;
 }
 
@@ -127189,6 +127212,86 @@ textarea.form-input {
   --tw-bg-opacity: 1;
   background-color: rgba(240, 241, 242, var(--tw-bg-opacity));
   --tw-bg-opacity: 0.5;
+}
+
+.slider {
+  height: 0.25rem;
+  width: 100%;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  --slider-before: #2CA982;
+  --slider-after: #CDD2D7;
+}
+
+/* Slider hands*/
+
+.slider::-webkit-slider-thumb, .slider::-moz-range-thumb {
+  position: relative;
+  cursor: pointer;
+  -webkit-appearance: none;
+          appearance: none;
+  border-radius: 0.75rem;
+  --tw-bg-opacity: 1;
+  background-color: rgba(44, 169, 130, var(--tw-bg-opacity));
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.slider::-webkit-slider-thumb,
+.slider::-moz-range-thumb {
+  width: 42px;
+  height: 35px;
+  background-image: url('/icons/arrow-left-right-white.svg');
+}
+
+.slider-bubble {
+  position: absolute;
+  bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border-width: 1px;
+  border-style: solid;
+  --tw-border-opacity: 1;
+  border-color: rgba(100, 117, 133, var(--tw-border-opacity));
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 300;
+  --tw-text-opacity: 1;
+  color: rgba(100, 117, 133, var(--tw-text-opacity));
+  width: 43px;
+  height: 33px;
+}
+
+.slider-bubble::after {
+  position: absolute;
+  height: 0.5rem;
+  width: 0.5rem;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  --tw-rotate: 45deg;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+  border-style: solid;
+  --tw-border-opacity: 1;
+  border-color: rgba(100, 117, 133, var(--tw-border-opacity));
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+  bottom: -4.5px;
+  left: 17px;
+  content: '';
 }
 
 /* Error label */
@@ -127392,6 +127495,86 @@ textarea.form-input {
   border-width: 0 2px 2px 0;
 }
 
+/* Custom style for radio/checkbox add option box */
+
+.add-option-wrapper label {
+  border-style: dashed;
+  --tw-bg-opacity: 1;
+  background-color: rgba(98, 33, 145, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.1;
+  --tw-text-opacity: 1;
+  color: rgba(98, 33, 145, var(--tw-text-opacity));
+}
+
+.add-option-wrapper label:hover {
+  --tw-border-opacity: 1;
+  border-color: rgba(98, 33, 145, var(--tw-border-opacity));
+  --tw-bg-opacity: 0.2;
+}
+
+.add-option-wrapper label:focus {
+  --tw-border-opacity: 1;
+  border-color: rgba(98, 33, 145, var(--tw-border-opacity));
+  --tw-bg-opacity: 0.2;
+}
+
+/* Wrapper for checkbox/radio if icon is present */
+
+.media-wrapper {
+  height: 10rem;
+  width: 10rem;
+}
+
+.media-wrapper label {
+  height: 100%;
+  width: 100%;
+  padding: 0px;
+}
+
+.media-wrapper label .media-icon-wrapper {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-wrapper label .media-icon-wrapper i {
+  margin-top: -1rem;
+  height: 70%;
+  width: 100%;
+  padding: 1rem;
+}
+
+.add-option-wrapper.media-wrapper label .media-icon-wrapper i {
+  height: 50%;
+  width: 50%;
+}
+
+.media-wrapper label .checkmark {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  margin: 0px;
+}
+
+.media-wrapper label span:not(.checkmark):not(.media-icon-wrapper) {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0.5rem;
+  text-align: center;
+}
+
+.media-wrapper.media-wrapper-small {
+  /* WIP */
+}
+
 /* Input groups */
 
 .input-group {
@@ -127491,15 +127674,20 @@ textarea.form-input {
 }
 
 .select-wrapper i:not(.select-icon) {
+  pointer-events: none;
   position: absolute;
   top: 25%;
   right: 1.5rem;
-  cursor: pointer;
 }
 
 /* Select with icon */
 
 .select-wrapper .select-icon {
+  pointer-events: none;
+  position: absolute;
+  top: 5%;
+  left: 1.5rem;
+  z-index: 10;
   height: 3rem;
   width: 3rem;
 }
@@ -127539,10 +127727,10 @@ textarea.form-input {
 }
 
 .source-select-wrapper i {
+  pointer-events: none;
   position: absolute;
   top: 25%;
   right: 0.5rem;
-  cursor: pointer;
 }
 
 .source-select-wrapper .source-select-dropdown {
@@ -127676,7 +127864,7 @@ textarea.form-input {
 
 .modal-container .modal {
   height: auto;
-  width: 20rem;
+  width: 20%;
   border-radius: 0.5rem;
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
@@ -127832,6 +128020,10 @@ textarea.form-input {
 
 .icon-arrow-left-right {
   content: url('/icons/arrow-left-right.svg');
+}
+
+.icon-arrow-left-right-white {
+  content: url('/icons/arrow-left-right-white.svg');
 }
 
 .icon-attic-room {

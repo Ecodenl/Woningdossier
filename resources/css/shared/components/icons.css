@@ -80,6 +80,9 @@
 .icon-arrow-left-right {
     content: url('/icons/arrow-left-right.svg');
 }
+.icon-arrow-left-right-white {
+    content: url('/icons/arrow-left-right-white.svg');
+}
 .icon-attic-room {
     content: url('/icons/attic-room.svg');
 }

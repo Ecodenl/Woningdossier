@@ -34083,6 +34083,154 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/alpine-scripts/rating-slider.js":
+/*!******************************************************!*\
+  !*** ./resources/js/alpine-scripts/rating-slider.js ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  return {
+    index: -1,
+    value: 0,
+    inactiveClass: 'bg-gray',
+    activeClass: 'bg-green',
+    init: function init() {
+      var activeClass = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+      if (!(null === activeClass)) {
+        this.activeClass = activeClass;
+      }
+    },
+    mouseEnter: function mouseEnter(element) {
+      this.setChildrenGray(); // Set this and all previous as green
+
+      this.setActive(element);
+
+      while ((element = element.previousElementSibling) != null) {
+        this.setActive(element);
+      }
+    },
+    mouseLeave: function mouseLeave(element) {
+      var _this = this;
+
+      this.setChildrenGray();
+      var parent = this.$refs['rating-slider'];
+      var children = Array.from(parent.children);
+      children.forEach(function (element) {
+        if (children.indexOf(element) <= _this.index) {
+          _this.setActive(element);
+        } else {
+          _this.setInactive(element);
+        }
+      });
+    },
+    selectOption: function selectOption(element) {
+      var parent = this.$refs['rating-slider'];
+      this.index = Array.from(parent.children).indexOf(element);
+      this.value = element.getAttribute('data-value');
+    },
+    setChildrenGray: function setChildrenGray() {
+      var _this2 = this;
+
+      var parent = this.$refs['rating-slider'];
+      var children = Array.from(parent.children); // Set all elements as gray
+
+      children.forEach(function (element) {
+        return _this2.setInactive(element);
+      });
+    },
+    setInactive: function setInactive(element) {
+      element.classList.remove(this.activeClass);
+      element.classList.add(this.inactiveClass);
+    },
+    setActive: function setActive(element) {
+      element.classList.remove(this.inactiveClass);
+      element.classList.add(this.activeClass);
+    }
+  };
+});
+
+/***/ }),
+
+/***/ "./resources/js/alpine-scripts/register.js":
+/*!*************************************************!*\
+  !*** ./resources/js/alpine-scripts/register.js ***!
+  \*************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  return {
+    allowAccess: false,
+    showEmailWarning: false,
+    checkEmail: function checkEmail(element) {
+      var goodDomains = new RegExp('\\b(nl|be|net|com|info|nu|de)\\b', 'i'); // If the email does not contain a good domain return a message
+
+      this.showEmailWarning = !goodDomains.test(element.value);
+    }
+  };
+});
+
+/***/ }),
+
+/***/ "./resources/js/alpine-scripts/slider.js":
+/*!***********************************************!*\
+  !*** ./resources/js/alpine-scripts/slider.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  return {
+    initialized: false,
+    value: 0,
+    init: function init() {
+      this.value = this.$refs['slider'].value;
+      this.updateVisuals();
+      this.initialized = true;
+    },
+    updateVisuals: function updateVisuals() {
+      var currentPosition = this.getThumbPosition();
+      this.$refs['slider-bubble'].style.left = currentPosition + 'px';
+      this.$refs['slider'].style.background = "linear-gradient(90deg, var(--slider-before) ".concat(currentPosition, "px, var(--slider-after) ").concat(currentPosition, "px)");
+    },
+    getThumbPosition: function getThumbPosition() {
+      var slider = this.$refs['slider']; // Get slider thumb CSS
+
+      var thumbStyle = window.getComputedStyle(slider, '::-moz-range-thumb');
+
+      if (thumbStyle.length === 0) {
+        thumbStyle = window.getComputedStyle(slider, '::-webkit-slider-thumb');
+      } // Slider width
+
+
+      var width = slider.offsetWidth; // Total amount of steps in the slider
+
+      var totalSteps = (slider.max - slider.min) / slider.step; // Offset per step of the thumb (this is applied to the thumb, otherwise it would go past the end of the slider
+      // when the end is reached. This is important because if we don't apply this to the bubble, it will not position
+      // correctly)
+
+      var offsetPerStep = parseInt(thumbStyle.width, 10) / totalSteps; // The step we're currently at
+
+      var currentStep = (slider.value - slider.min) / slider.step; // We calculate the left position per following logic: We calculate the width per step, then, we multiply
+      // that value by our current step to get the position of the thumb currently, and then we remove the offset
+      // of the thumb that is applied so we have the exact position of the thumb
+
+      return width / totalSteps * currentStep - offsetPerStep * currentStep;
+    }
+  };
+});
+
+/***/ }),
+
 /***/ "./resources/js/alpine-scripts/source-select.js":
 /*!******************************************************!*\
   !*** ./resources/js/alpine-scripts/source-select.js ***!
@@ -34310,6 +34458,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./alpine-scripts/alpine-select.js */ "./resources/js/alpine-scripts/alpine-select.js");
 /* harmony import */ var _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./alpine-scripts/source-select.js */ "./resources/js/alpine-scripts/source-select.js");
 /* harmony import */ var _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./alpine-scripts/modal.js */ "./resources/js/alpine-scripts/modal.js");
+/* harmony import */ var _alpine_scripts_rating_slider_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./alpine-scripts/rating-slider.js */ "./resources/js/alpine-scripts/rating-slider.js");
+/* harmony import */ var _alpine_scripts_slider_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./alpine-scripts/slider.js */ "./resources/js/alpine-scripts/slider.js");
+/* harmony import */ var _alpine_scripts_register_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./alpine-scripts/register.js */ "./resources/js/alpine-scripts/register.js");
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -34372,9 +34523,15 @@ if (token) {
 
 
 
+
+
+
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('alpineSelect', _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('sourceSelect', _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_2__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('modal', _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_3__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('ratingSlider', _alpine_scripts_rating_slider_js__WEBPACK_IMPORTED_MODULE_4__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('slider', _alpine_scripts_slider_js__WEBPACK_IMPORTED_MODULE_5__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('register', _alpine_scripts_register_js__WEBPACK_IMPORTED_MODULE_6__["default"]);
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 

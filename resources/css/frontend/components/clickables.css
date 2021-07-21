@@ -19,6 +19,9 @@ p a {
     line-height: 24px;
     font-size: 14px;
 }
+.btn:disabled {
+    @apply cursor-not-allowed bg-gray text-white pointer-events-none;
+}
 .btn-purple {
     @apply bg-purple-100 bg-opacity-100 text-purple;
 

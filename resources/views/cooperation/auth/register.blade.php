@@ -230,7 +230,7 @@
                                     <div class="col-md-push-4 col-md-8">
                                         <label for="allow_access">
                                             <input id="allow_access" name="allow_access" type="checkbox" @if($allowAccessChecked)checked="checked"@endif>
-                                            @lang('conversation-requests.index.form.allow_access', ['cooperation' => \App\Helpers\HoomdossierSession::getCooperation(true)->name])
+                                            @lang('conversation-requests.index.form.allow-access', ['cooperation' => \App\Helpers\HoomdossierSession::getCooperation(true)->name])
                                         </label>
                                         @if ($errors->has('allow_access'))
                                             <span class="help-block">

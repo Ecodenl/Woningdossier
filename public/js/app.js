@@ -34156,6 +34156,23 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/alpine-scripts/register.js":
+/*!*************************************************!*\
+  !*** ./resources/js/alpine-scripts/register.js ***!
+  \*************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  return {
+    allowAccess: false
+  };
+});
+
+/***/ }),
+
 /***/ "./resources/js/alpine-scripts/slider.js":
 /*!***********************************************!*\
   !*** ./resources/js/alpine-scripts/slider.js ***!
@@ -34437,6 +34454,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./alpine-scripts/modal.js */ "./resources/js/alpine-scripts/modal.js");
 /* harmony import */ var _alpine_scripts_rating_slider_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./alpine-scripts/rating-slider.js */ "./resources/js/alpine-scripts/rating-slider.js");
 /* harmony import */ var _alpine_scripts_slider_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./alpine-scripts/slider.js */ "./resources/js/alpine-scripts/slider.js");
+/* harmony import */ var _alpine_scripts_register_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./alpine-scripts/register.js */ "./resources/js/alpine-scripts/register.js");
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -34501,11 +34519,13 @@ if (token) {
 
 
 
+
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('alpineSelect', _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('sourceSelect', _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_2__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('modal', _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_3__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('ratingSlider', _alpine_scripts_rating_slider_js__WEBPACK_IMPORTED_MODULE_4__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('slider', _alpine_scripts_slider_js__WEBPACK_IMPORTED_MODULE_5__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('register', _alpine_scripts_register_js__WEBPACK_IMPORTED_MODULE_6__["default"]);
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 

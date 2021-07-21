@@ -126923,6 +126923,15 @@ p a {
   font-size: 14px;
 }
 
+.btn:disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+  --tw-bg-opacity: 1;
+  background-color: rgba(205, 210, 215, var(--tw-bg-opacity));
+  --tw-text-opacity: 1;
+  color: rgba(255, 255, 255, var(--tw-text-opacity));
+}
+
 .btn-purple {
   --tw-bg-opacity: 1;
   background-color: rgba(225, 220, 242, var(--tw-bg-opacity));
@@ -127665,15 +127674,19 @@ textarea.form-input {
 }
 
 .select-wrapper i:not(.select-icon) {
+  pointer-events: none;
   position: absolute;
   top: 25%;
   right: 1.5rem;
-  cursor: pointer;
 }
 
 /* Select with icon */
 
 .select-wrapper .select-icon {
+  pointer-events: none;
+  position: absolute;
+  top: 5%;
+  left: 1.5rem;
   z-index: 10;
   height: 3rem;
   width: 3rem;
@@ -127714,10 +127727,10 @@ textarea.form-input {
 }
 
 .source-select-wrapper i {
+  pointer-events: none;
   position: absolute;
   top: 25%;
   right: 0.5rem;
-  cursor: pointer;
 }
 
 .source-select-wrapper .source-select-dropdown {

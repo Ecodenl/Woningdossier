@@ -282,12 +282,12 @@ textarea.form-input {
 }
 
 .select-wrapper i:not(.select-icon) {
-    @apply absolute right-6 top-5/20 cursor-pointer;
+    @apply absolute right-6 top-5/20 pointer-events-none;
 }
 
 /* Select with icon */
 .select-wrapper .select-icon {
-    @apply h-12 w-12 z-10;
+    @apply h-12 w-12 z-10 absolute left-6 top-1/20 pointer-events-none;
 }
 
 .select-wrapper .select-icon ~ input.form-input {
@@ -311,7 +311,7 @@ textarea.form-input {
 }
 
 .source-select-wrapper i {
-    @apply absolute right-2 top-5/20 cursor-pointer;
+    @apply absolute right-2 top-5/20 pointer-events-none;
 }
 
 .source-select-wrapper .source-select-dropdown {

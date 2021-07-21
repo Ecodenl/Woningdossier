@@ -9,19 +9,29 @@
                 @lang('auth.login.form.header')
             </h1>
             <form class="w-full flex flex-wrap justify-center">
-                <div class="input-group">
+                @component('cooperation.frontend.layouts.components.form-group', [
+                    'withInputSource' => false,
+                    'class' => 'w-full',
+                    'inputName' => 'email',
+                ])
                     <input class="form-input" type="text" name="email" placeholder="@lang('auth.login.form.email')">
                     <i class="icon-sm icon-mail-green absolute right-6 top-5/20"></i>
-                </div>
-                <div class="input-group" x-data="{showPass: false}">
-                    <input class="form-input" type="password" name="password"
-                           placeholder="@lang('auth.login.form.enter-password')" x-ref="password-input">
-                    <i class="icon-sm icon-show absolute right-6 top-5/20 cursor-pointer" x-show="showPass === false"
-                       x-on:click="showPass = true; $refs['password-input'].type = 'text'"></i>
-                    <i class="icon-sm icon-hide absolute right-6 top-5/20 cursor-pointer" x-show="showPass === true"
-                       x-on:click="showPass = false; $refs['password-input'].type = 'password'"></i>
-                </div>
-                <button class="btn btn-purple w-full mt-3">
+                @endcomponent
+                @component('cooperation.frontend.layouts.components.form-group', [
+                    'withInputSource' => false,
+                    'class' => 'w-full -mt-5',
+                    'inputName' => 'password',
+                ])
+                    <div class="w-full" x-data="{showPass: false}">
+                        <input class="form-input" type="password" name="password"
+                               placeholder="@lang('auth.login.form.enter-password')" x-ref="password-input">
+                        <i class="icon-sm icon-show absolute right-6 top-5/20 cursor-pointer" x-show="showPass === false"
+                           x-on:click="showPass = true; $refs['password-input'].type = 'text'"></i>
+                        <i class="icon-sm icon-hide absolute right-6 top-5/20 cursor-pointer" x-show="showPass === true"
+                           x-on:click="showPass = false; $refs['password-input'].type = 'password'"></i>
+                    </div>
+                @endcomponent
+                <button class="btn btn-purple w-full mt-6">
                     @lang('auth.login.form.submit')
                 </button>
             </form>

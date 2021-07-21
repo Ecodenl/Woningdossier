@@ -16,7 +16,10 @@
                     'inputName' => 'email',
                 ])
                     <input class="form-input" type="text" name="email" value="{{ old('email') }}"
-                           placeholder="@lang('auth.register.form.email')">
+                           placeholder="@lang('auth.register.form.email')" x-on:change="checkEmail($el)">
+                    <p class="text-red -mt-2" x-show="showEmailWarning">
+                        @lang('auth.register.form.possible-wrong-email')
+                    </p>
                 @endcomponent
                 @component('cooperation.frontend.layouts.components.form-group', [
                     'withInputSource' => false,
@@ -125,7 +128,7 @@
                     <p class="text-left">@lang('conversation-requests.index.text')</p>
                 @endcomponent
 
-                <button class="btn btn-purple w-full mt-3" x-bind:disabled="! allowAccess">
+                <button class="btn btn-purple w-full mt-3" type="submit" x-bind:disabled="! allowAccess">
                     @lang('auth.register.form.submit')
                 </button>
             </form>

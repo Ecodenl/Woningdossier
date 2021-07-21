@@ -34167,7 +34167,13 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = (function () {
   return {
-    allowAccess: false
+    allowAccess: false,
+    showEmailWarning: false,
+    checkEmail: function checkEmail(element) {
+      var goodDomains = new RegExp('\\b(nl|be|net|com|info|nu|de)\\b', 'i'); // If the email does not contain a good domain return a message
+
+      this.showEmailWarning = !goodDomains.test(element.value);
+    }
   };
 });
 

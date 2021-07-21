@@ -75,8 +75,13 @@ textarea.form-input {
 }
 
 /* Slider hands*/
-.slider::-webkit-slider-thumb,
 .slider::-moz-range-thumb {
+    @apply appearance-none relative cursor-pointer bg-green rounded-xl bg-no-repeat bg-center;
+    width: 42px;
+    height: 35px;
+    background-image: url('/icons/arrow-left-right-white.svg');
+}
+.slider::-webkit-slider-thumb {
     @apply appearance-none relative cursor-pointer bg-green rounded-xl bg-no-repeat bg-center;
     width: 42px;
     height: 35px;

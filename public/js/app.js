@@ -34205,10 +34205,18 @@ __webpack_require__.r(__webpack_exports__);
     getThumbPosition: function getThumbPosition() {
       var slider = this.$refs['slider']; // Get slider thumb CSS
 
-      var thumbStyle = window.getComputedStyle(slider, '::-moz-range-thumb');
+      var thumbStyle = window.getComputedStyle(slider, '::-webkit-slider-thumb');
 
-      if (thumbStyle.length === 0) {
-        thumbStyle = window.getComputedStyle(slider, '::-webkit-slider-thumb');
+      if (thumbStyle.length === 0 || this.parsePixelWidth(thumbStyle.width) === slider.offsetWidth) {
+        thumbStyle = window.getComputedStyle(slider, '::-moz-range-thumb');
+      }
+
+      var thumbWidth = this.parsePixelWidth(thumbStyle.width);
+
+      if (thumbWidth === slider.offsetWidth) {
+        // Use fallback width (for now)
+        // TODO: Figure out how to get computed style of webkit thumb
+        thumbWidth = '42px'; // Defined in form.css
       } // Slider width
 
 
@@ -34218,13 +34226,16 @@ __webpack_require__.r(__webpack_exports__);
       // when the end is reached. This is important because if we don't apply this to the bubble, it will not position
       // correctly)
 
-      var offsetPerStep = parseInt(thumbStyle.width, 10) / totalSteps; // The step we're currently at
+      var offsetPerStep = this.parsePixelWidth(thumbWidth) / totalSteps; // The step we're currently at
 
       var currentStep = (slider.value - slider.min) / slider.step; // We calculate the left position per following logic: We calculate the width per step, then, we multiply
       // that value by our current step to get the position of the thumb currently, and then we remove the offset
       // of the thumb that is applied so we have the exact position of the thumb
 
       return width / totalSteps * currentStep - offsetPerStep * currentStep;
+    },
+    parsePixelWidth: function parsePixelWidth(value) {
+      return parseInt(value, 10);
     }
   };
 });

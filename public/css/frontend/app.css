@@ -127228,7 +127228,22 @@ textarea.form-input {
 
 /* Slider hands*/
 
-.slider::-webkit-slider-thumb, .slider::-moz-range-thumb {
+.slider::-moz-range-thumb {
+  position: relative;
+  cursor: pointer;
+  -moz-appearance: none;
+       appearance: none;
+  border-radius: 0.75rem;
+  --tw-bg-opacity: 1;
+  background-color: rgba(44, 169, 130, var(--tw-bg-opacity));
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 42px;
+  height: 35px;
+  background-image: url('/icons/arrow-left-right-white.svg');
+}
+
+.slider::-webkit-slider-thumb {
   position: relative;
   cursor: pointer;
   -webkit-appearance: none;
@@ -127238,10 +127253,6 @@ textarea.form-input {
   background-color: rgba(44, 169, 130, var(--tw-bg-opacity));
   background-position: center;
   background-repeat: no-repeat;
-}
-
-.slider::-webkit-slider-thumb,
-.slider::-moz-range-thumb {
   width: 42px;
   height: 35px;
   background-image: url('/icons/arrow-left-right-white.svg');

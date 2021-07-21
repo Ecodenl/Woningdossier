@@ -22,13 +22,13 @@ export default () => ({
         // Slider width
         let width = slider.offsetWidth;
         // Total amount of steps in the slider
-        let totalSteps = (slider.max - slider.min / slider.step);
+        let totalSteps = (slider.max - slider.min) / slider.step;
         // Offset per step of the thumb (this is applied to the thumb, otherwise it would go past the end of the slider
         // when the end is reached. This is important because if we don't apply this to the bubble, it will not position
         // correctly)
         let offsetPerStep = parseInt(thumbStyle.width, 10) / totalSteps;
         // The step we're currently at
-        let currentStep = slider.value / slider.step;
+        let currentStep = (slider.value - slider.min) / slider.step ;
 
         // We calculate the left position per following logic: We calculate the width per step, then, we multiply
         // that value by our current step to get the position of the thumb currently, and then we remove the offset

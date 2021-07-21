@@ -127235,7 +127235,7 @@ textarea.form-input {
 .slider::-moz-range-thumb {
   width: 42px;
   height: 35px;
-  background-image: url('/icons/arrow-left-right.svg');
+  background-image: url('/icons/arrow-left-right-white.svg');
 }
 
 .slider-bubble {
@@ -128007,6 +128007,10 @@ textarea.form-input {
 
 .icon-arrow-left-right {
   content: url('/icons/arrow-left-right.svg');
+}
+
+.icon-arrow-left-right-white {
+  content: url('/icons/arrow-left-right-white.svg');
 }
 
 .icon-attic-room {

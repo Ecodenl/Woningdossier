@@ -34156,6 +34156,57 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/alpine-scripts/slider.js":
+/*!***********************************************!*\
+  !*** ./resources/js/alpine-scripts/slider.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  return {
+    initialized: false,
+    value: 0,
+    init: function init() {
+      this.value = this.$refs['slider'].value;
+      this.updateBubble();
+      this.initialized = true;
+    },
+    updateBubble: function updateBubble() {
+      var currentPosition = this.getThumbPosition();
+      this.$refs['slider-bubble'].style.left = currentPosition + 'px';
+    },
+    getThumbPosition: function getThumbPosition() {
+      var slider = this.$refs['slider']; // Get slider thumb CSS
+
+      var thumbStyle = window.getComputedStyle(slider, '::-moz-range-thumb');
+
+      if (thumbStyle.length === 0) {
+        thumbStyle = window.getComputedStyle(slider, '::-webkit-slider-thumb');
+      } // Slider width
+
+
+      var width = slider.offsetWidth; // Total amount of steps in the slider
+
+      var totalSteps = slider.max - slider.min / slider.step; // Offset per step of the thumb (this is applied to the thumb, otherwise it would go past the end of the slider
+      // when the end is reached. This is important because if we don't apply this to the bubble, it will not position
+      // correctly)
+
+      var offsetPerStep = parseInt(thumbStyle.width, 10) / totalSteps; // The step we're currently at
+
+      var currentStep = slider.value / slider.step; // We calculate the left position per following logic: We calculate the width per step, then, we multiply
+      // that value by our current step to get the position of the thumb currently, and then we remove the offset
+      // of the thumb that is applied so we have the exact position of the thumb
+
+      return width / totalSteps * currentStep - offsetPerStep * currentStep;
+    }
+  };
+});
+
+/***/ }),
+
 /***/ "./resources/js/alpine-scripts/source-select.js":
 /*!******************************************************!*\
   !*** ./resources/js/alpine-scripts/source-select.js ***!
@@ -34384,6 +34435,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./alpine-scripts/source-select.js */ "./resources/js/alpine-scripts/source-select.js");
 /* harmony import */ var _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./alpine-scripts/modal.js */ "./resources/js/alpine-scripts/modal.js");
 /* harmony import */ var _alpine_scripts_rating_slider_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./alpine-scripts/rating-slider.js */ "./resources/js/alpine-scripts/rating-slider.js");
+/* harmony import */ var _alpine_scripts_slider_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./alpine-scripts/slider.js */ "./resources/js/alpine-scripts/slider.js");
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -34447,10 +34499,12 @@ if (token) {
 
 
 
+
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('alpineSelect', _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('sourceSelect', _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_2__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('modal', _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_3__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('ratingSlider', _alpine_scripts_rating_slider_js__WEBPACK_IMPORTED_MODULE_4__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('slider', _alpine_scripts_slider_js__WEBPACK_IMPORTED_MODULE_5__["default"]);
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 

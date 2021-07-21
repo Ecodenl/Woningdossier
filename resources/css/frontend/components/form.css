@@ -69,7 +69,7 @@ textarea.form-input {
 }
 
 .slider {
-    @apply w-10/12 h-1 outline-none appearance-none bg-green;
+    @apply w-full h-1 outline-none appearance-none bg-green;
 }
 
 /* Slider hands*/
@@ -82,7 +82,7 @@ textarea.form-input {
 }
 
 .slider-bubble {
-    @apply relative bg-white rounded-lg text-blue-500 font-light text-sm flex justify-center items-center border border-blue-500 border-solid;
+    @apply absolute bg-white rounded-lg text-blue-500 font-light text-sm flex justify-center items-center border border-blue-500 border-solid bottom-8;
     width: 43px;
     height: 33px;
 }

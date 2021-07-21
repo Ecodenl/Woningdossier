@@ -127207,7 +127207,7 @@ textarea.form-input {
 
 .slider {
   height: 0.25rem;
-  width: 83.333333%;
+  width: 100%;
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
@@ -127239,7 +127239,8 @@ textarea.form-input {
 }
 
 .slider-bubble {
-  position: relative;
+  position: absolute;
+  bottom: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;

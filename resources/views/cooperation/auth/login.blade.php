@@ -64,7 +64,7 @@
                         <div class="form-group">
                             <div class="col-md-8 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
-                                    @lang('auth.login.form.button')
+                                    @lang('auth.login.form.submit')
                                 </button>
 
                                 <a class="btn btn-link" href="{{ route('cooperation.auth.password.request.index', ['cooperation' => $cooperation]) }}">

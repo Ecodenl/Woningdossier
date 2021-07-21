@@ -4,7 +4,9 @@
         styling for e.g. inline spans becomes really ugly! --}}
         <label class="form-label" for="{{ $id ?? '' }}">{!! $label ?? '' !!}</label>
         <div class="form-end">
-            @include('cooperation.frontend.layouts.parts.source-select')
+            @if(($withInputSource ?? true))
+                @include('cooperation.frontend.layouts.parts.source-select')
+            @endif
             {{-- No need to show the info icon if no info was given --}}
             @if(! empty($modalBodySlot))
                 <div class="form-info" x-data="modal()">

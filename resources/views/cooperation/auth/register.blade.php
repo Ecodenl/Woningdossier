@@ -14,7 +14,7 @@
                             <input id="addressid" name="addressid" type="text" value="" style="display:none;">
 
                             <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
-                                <label for="email" class="col-md-4 control-label">@lang('auth.register.form.e-mail')
+                                <label for="email" class="col-md-4 control-label">@lang('auth.register.form.email')
                                     <span class="required">*</span></label>
 
                                 <div class="col-md-8">
@@ -36,7 +36,7 @@
                                             @lang('auth.register.form.already-member')
                                         </div>
                                         <div class="email-exist">
-                                            @lang('auth.register.form.e-mail-exists')
+                                            @lang('auth.register.form.email-exists')
                                         </div>
                                     @endcomponent
                                 </div>
@@ -44,7 +44,7 @@
                             <div class="user-info">
                                 <div class="form-group{{ $errors->has('first_name') ? ' has-error' : '' }}">
                                     <label for="first_name"
-                                           class="col-md-4 control-label">@lang('auth.register.form.first_name')<span
+                                           class="col-md-4 control-label">@lang('auth.register.form.first-name')<span
                                                 class="required">*</span></label>
 
                                     <div class="col-md-8">
@@ -61,7 +61,7 @@
 
                                 <div class="form-group{{ $errors->has('last_name') ? ' has-error' : '' }}">
                                     <label for="last_name"
-                                           class="col-md-4 control-label">@lang('auth.register.form.last_name')<span
+                                           class="col-md-4 control-label">@lang('auth.register.form.last-name')<span
                                                 class="required">*</span></label>
 
                                     <div class="col-md-8">
@@ -82,7 +82,7 @@
 
                                         <div class="form-group row {{ $errors->has('postal_code') ? ' has-error' : '' }}">
                                             <label for="postal_code"
-                                                   class="col-md-8 control-label">@lang('auth.register.form.postal_code')
+                                                   class="col-md-8 control-label">@lang('auth.register.form.postal-code')
                                                 <span class="required">*</span></label>
 
                                             <div class="col-md-4">
@@ -124,7 +124,7 @@
                                             <div class="col-sm-12">
                                                 <input id="house_number_extension" type="text" class="form-control"
                                                        name="house_number_extension"
-                                                       placeholder="@lang('auth.register.form.house_number_extension')"
+                                                       placeholder="@lang('auth.register.form.house-number-extension')"
                                                        value="{{ old('house_number_extension') }}">
                                             </div>
 
@@ -182,7 +182,7 @@
 
                                 <div class="form-group{{ $errors->has('phone_number') ? ' has-error' : '' }}">
                                     <label for="phone_number"
-                                           class="col-md-4 control-label">@lang('auth.register.form.phone_number')</label>
+                                           class="col-md-4 control-label">@lang('auth.register.form.phone-number')</label>
 
                                     <div class="col-md-8">
                                         <input id="phone_number" type="text" class="form-control" name="phone_number"
@@ -215,7 +215,7 @@
 
                                 <div class="form-group account-info">
                                     <label for="password-confirm"
-                                           class="col-md-4 control-label">@lang('auth.register.form.password_confirmation')
+                                           class="col-md-4 control-label">@lang('auth.register.form.password-confirmation')
                                         <span class="required">*</span></label>
 
                                     <div class="col-md-8">
@@ -245,7 +245,7 @@
                                     <div class="col-md-8 col-md-offset-4">
                                         <button data-toggle="tooltip" type="submit" class="btn btn-primary @if(!$allowAccessChecked) disabled @endif"
                                                 @if(!$allowAccessChecked) disabled="disabled" @endif title="@lang('auth.register.form.allow-access')">
-                                            @lang('auth.register.form.button')
+                                            @lang('auth.register.form.submit')
                                         </button>
                                     </div>
                                 </div>

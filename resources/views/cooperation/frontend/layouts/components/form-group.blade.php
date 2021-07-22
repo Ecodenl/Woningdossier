@@ -21,11 +21,11 @@
 
     <div class="input-group">
         {{ $slot }}
+        @error(($inputName ?? ''))
+        <p class="form-error-label">
+            {{ $message }}
+        </p>
+        @enderror
     </div>
 
-    @error(($inputName ?? ''))
-    <p class="form-error-label">
-        {{ $message }}
-    </p>
-    @enderror
 </div>

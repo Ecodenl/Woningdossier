@@ -65,6 +65,7 @@ import modal from './alpine-scripts/modal.js';
 import ratingSlider from './alpine-scripts/rating-slider.js';
 import slider from './alpine-scripts/slider.js';
 import register from './alpine-scripts/register.js';
+import picoAddress from './alpine-scripts/picoAddress.js';
 
 Alpine.data('alpineSelect', alpineSelect)
 Alpine.data('sourceSelect', sourceSelect)
@@ -72,6 +73,7 @@ Alpine.data('modal', modal)
 Alpine.data('ratingSlider', ratingSlider)
 Alpine.data('slider', slider)
 Alpine.data('register', register)
+Alpine.data('picoAddress', picoAddress)
 
 window.Alpine = Alpine
 

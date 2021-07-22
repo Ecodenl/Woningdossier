@@ -10,11 +10,9 @@ export default (initiallyOpen = false) => ({
     // If the select is disabled
     disabled: false,
     // Is the dropdown open?
-    open: false,
+    open: initiallyOpen,
 
     init() {
-        this.open = initiallyOpen;
-
         let wrapper = this.$refs['select-wrapper'];
         // Get the select element
         this.select = wrapper.querySelector('select');

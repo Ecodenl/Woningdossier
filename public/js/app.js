@@ -33983,9 +33983,8 @@ __webpack_require__.r(__webpack_exports__);
     // If the select is disabled
     disabled: false,
     // Is the dropdown open?
-    open: false,
+    open: initiallyOpen,
     init: function init() {
-      this.open = initiallyOpen;
       var wrapper = this.$refs['select-wrapper']; // Get the select element
 
       this.select = wrapper.querySelector('select'); // Select is defined!
@@ -34077,6 +34076,157 @@ __webpack_require__.r(__webpack_exports__);
     },
     close: function close() {
       this.open = false;
+    }
+  };
+});
+
+/***/ }),
+
+/***/ "./resources/js/alpine-scripts/picoAddress.js":
+/*!****************************************************!*\
+  !*** ./resources/js/alpine-scripts/picoAddress.js ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+/* harmony default export */ __webpack_exports__["default"] = (function (addressUrl) {
+  var _postcode, _houseNumber, _houseNumberExtension;
+
+  var tailwind = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+  return {
+    showPossibleError: false,
+    apiUrl: addressUrl,
+    postcode: (_postcode = {}, _defineProperty(_postcode, 'x-ref', 'postcode'), _defineProperty(_postcode, 'x-on:change', function xOnChange() {
+      this.getAddressData();
+    }), _postcode),
+    houseNumber: (_houseNumber = {}, _defineProperty(_houseNumber, 'x-ref', 'houseNumber'), _defineProperty(_houseNumber, 'x-on:change', function xOnChange() {
+      this.getAddressData();
+    }), _houseNumber),
+    houseNumberExtension: (_houseNumberExtension = {}, _defineProperty(_houseNumberExtension, 'x-ref', 'houseNumberExtension'), _defineProperty(_houseNumberExtension, 'x-on:change', function xOnChange() {
+      this.getAddressData();
+    }), _houseNumberExtension),
+    city: _defineProperty({}, 'x-ref', 'city'),
+    street: _defineProperty({}, 'x-ref', 'street'),
+    addressId: _defineProperty({}, 'x-ref', 'addressId'),
+    getAddressData: function getAddressData() {
+      // Get inputs from refs
+      var postcode = this.$refs['postcode'];
+      var houseNumber = this.$refs['houseNumber'];
+      var houseNumberExtension = this.$refs['houseNumberExtension'];
+      var city = this.$refs['city'];
+      var street = this.$refs['street'];
+      var addressId = this.$refs['addressId'];
+      var urlObject = null;
+
+      if (this.apiUrl) {
+        try {
+          urlObject = new URL(this.apiUrl);
+        } catch (e) {
+          this.apiUrl = null;
+        }
+      } // We can't do anything if we don't have these
+
+
+      if (typeof postcode !== 'undefined' && typeof houseNumber !== 'undefined') {
+        // We need these to make ajax calls
+        if ((window.XMLHttpRequest || window.ActiveXObject) && urlObject) {
+          var request = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP"); // We need to be able to access this context
+
+          var context = this;
+
+          request.onreadystatechange = function () {
+            // Ajax finished and ready
+            if (request.readyState == window.XMLHttpRequest.DONE) {
+              context.removeError(postcode);
+              context.removeError(houseNumber);
+              context.removeError(city);
+              context.removeError(street);
+              context.showPossibleError = false;
+              var response = request.response; // If the request was successful, we fill the data in the field
+
+              if (request.status == 200) {
+                if (response.postal_code === '') {
+                  context.showPossibleError = true;
+                }
+
+                context.setValue(houseNumber, response.number);
+                context.setValue(houseNumberExtension, response.house_number_extension);
+                context.setValue(street, response.street);
+                context.setValue(city, response.city);
+                context.setValue(addressId, response.id);
+              } else {
+                // Else we add errors
+                var errors = response.errors;
+
+                for (var error in errors) {
+                  if (errors.hasOwnProperty(error)) {
+                    var errorMessage = errors[error][0]; // Grab first message
+
+                    var input = document.querySelector("input[name=\"".concat(error, "\"]"));
+                    context.appendError(input, errorMessage);
+                  }
+                }
+              }
+            }
+          }; // Build request url
+
+
+          var url = urlObject.href;
+          var combineChar = urlObject.search ? '&' : '?';
+
+          if (postcode.value) {
+            url += combineChar + 'postal_code=' + postcode.value;
+            combineChar = '&';
+          }
+
+          if (houseNumber.value) {
+            url += combineChar + 'number=' + houseNumber.value;
+            combineChar = '&';
+          }
+
+          if (typeof houseNumberExtension !== 'undefined' && houseNumberExtension.value) {
+            url += combineChar + 'house_number_extension=' + houseNumberExtension.value;
+            combineChar = '&';
+          }
+
+          request.open('GET', url);
+          request.setRequestHeader('Accept', 'application/json');
+          request.responseType = 'json';
+          request.send();
+        }
+      }
+    },
+    setValue: function setValue(input, value) {
+      if (typeof input !== 'undefined' && input && value) {
+        input.value = value;
+      }
+    },
+    appendError: function appendError(input, text) {
+      if (typeof input !== 'undefined' && input) {
+        // "Legacy" support
+        var tag = tailwind ? 'p' : 'span';
+        var className = tailwind ? 'form-error-label' : 'help-block';
+        var parentClassName = tailwind ? 'form-error' : 'has-error';
+        var newError = document.createElement(tag);
+        newError.appendChild(document.createTextNode(text));
+        newError.classList.add('pico-address-error', className);
+        input.parentElement.appendChild(newError);
+        input.parentElement.classList.add(parentClassName);
+      }
+    },
+    removeError: function removeError(input) {
+      if (typeof input !== 'undefined' && input) {
+        input.parentElement.classList.remove(tailwind ? 'form-error' : 'has-error');
+        var errors = input.parentElement.getElementsByClassName('pico-address-error');
+
+        for (var i = 0; i < errors.length; i++) {
+          errors[i].remove();
+        }
+      }
     }
   };
 });
@@ -34257,11 +34407,10 @@ __webpack_require__.r(__webpack_exports__);
     // If the select is disabled
     disabled: false,
     // Is the dropdown open?
-    open: false,
+    open: initiallyOpen,
     init: function init() {
       // This is almost the same as the default alpine select, but this dropdown will have pre-defined options.
       // These will be the sources for each question.
-      this.open = initiallyOpen;
       var select = this.$refs['source-select']; // Get attributes
 
       this.value = select.value;
@@ -34468,6 +34617,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _alpine_scripts_rating_slider_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./alpine-scripts/rating-slider.js */ "./resources/js/alpine-scripts/rating-slider.js");
 /* harmony import */ var _alpine_scripts_slider_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./alpine-scripts/slider.js */ "./resources/js/alpine-scripts/slider.js");
 /* harmony import */ var _alpine_scripts_register_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./alpine-scripts/register.js */ "./resources/js/alpine-scripts/register.js");
+/* harmony import */ var _alpine_scripts_picoAddress_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./alpine-scripts/picoAddress.js */ "./resources/js/alpine-scripts/picoAddress.js");
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -34533,12 +34683,14 @@ if (token) {
 
 
 
+
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('alpineSelect', _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('sourceSelect', _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_2__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('modal', _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_3__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('ratingSlider', _alpine_scripts_rating_slider_js__WEBPACK_IMPORTED_MODULE_4__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('slider', _alpine_scripts_slider_js__WEBPACK_IMPORTED_MODULE_5__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('register', _alpine_scripts_register_js__WEBPACK_IMPORTED_MODULE_6__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('picoAddress', _alpine_scripts_picoAddress_js__WEBPACK_IMPORTED_MODULE_7__["default"]);
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 

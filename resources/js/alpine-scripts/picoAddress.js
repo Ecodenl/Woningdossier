@@ -127,22 +127,26 @@ export default (addressUrl, tailwind = true) => ({
             let tag = (tailwind ? 'p' : 'span');
             let className = (tailwind ? 'form-error-label' : 'help-block');
             let parentClassName = (tailwind ? 'form-error' : 'has-error');
+            // Don't add double errors
+            if (! input.parentElement.querySelector('.form-error-label')) {
+                let newError = document.createElement(tag);
+                newError.appendChild(document.createTextNode(text));
+                newError.classList.add('pico-address-error', className);
 
-            let newError = document.createElement(tag);
-            newError.appendChild(document.createTextNode(text));
-            newError.classList.add('pico-address-error', className);
-
-            input.parentElement.appendChild(newError);
-            input.parentElement.classList.add(parentClassName);
+                input.parentElement.appendChild(newError);
+                input.parentElement.classList.add(parentClassName);
+            }
         }
     },
     removeError(input) {
         if (typeof input !== 'undefined' && input) {
-            input.parentElement.classList.remove((tailwind ? 'form-error' : 'has-error'));
             let errors = input.parentElement.getElementsByClassName('pico-address-error');
+            if (errors.length > 0) {
+                input.parentElement.classList.remove((tailwind ? 'form-error' : 'has-error'));
 
-            for (let i = 0; i < errors.length; i++) {
-                errors[i].remove();
+                for (let i = 0; i < errors.length; i++) {
+                    errors[i].remove();
+                }
             }
         }
     }

@@ -29,7 +29,19 @@
 </main>
 
 <script src="{{ mix('js/app.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Bind simple function to remove errors when clicked
+        let formErrors = document.getElementsByClassName('form-error');
 
+        for(let i = 0; i < formErrors.length; i++) {
+            formErrors[i].addEventListener('click', function () {
+                this.classList.remove('form-error');
+                this.querySelector('.form-error-label').remove();
+            }, {once: true});
+        }
+    })
+</script>
 @stack('js')
 </body>
 

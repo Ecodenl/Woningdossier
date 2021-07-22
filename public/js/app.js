@@ -34210,21 +34210,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         // "Legacy" support
         var tag = tailwind ? 'p' : 'span';
         var className = tailwind ? 'form-error-label' : 'help-block';
-        var parentClassName = tailwind ? 'form-error' : 'has-error';
-        var newError = document.createElement(tag);
-        newError.appendChild(document.createTextNode(text));
-        newError.classList.add('pico-address-error', className);
-        input.parentElement.appendChild(newError);
-        input.parentElement.classList.add(parentClassName);
+        var parentClassName = tailwind ? 'form-error' : 'has-error'; // Don't add double errors
+
+        if (!input.parentElement.querySelector('.form-error-label')) {
+          var newError = document.createElement(tag);
+          newError.appendChild(document.createTextNode(text));
+          newError.classList.add('pico-address-error', className);
+          input.parentElement.appendChild(newError);
+          input.parentElement.classList.add(parentClassName);
+        }
       }
     },
     removeError: function removeError(input) {
       if (typeof input !== 'undefined' && input) {
-        input.parentElement.classList.remove(tailwind ? 'form-error' : 'has-error');
         var errors = input.parentElement.getElementsByClassName('pico-address-error');
 
-        for (var i = 0; i < errors.length; i++) {
-          errors[i].remove();
+        if (errors.length > 0) {
+          input.parentElement.classList.remove(tailwind ? 'form-error' : 'has-error');
+
+          for (var i = 0; i < errors.length; i++) {
+            errors[i].remove();
+          }
         }
       }
     }

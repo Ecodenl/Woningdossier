@@ -1,4 +1,4 @@
-<div class="form-group {{ $class ?? '' }} @error(($inputName ?? '')) form-error @enderror">
+<div class="form-group {{ $class ?? '' }}">
     <div class="form-header">
         {{-- NOTE: Keep on one line, else white-space: break-spaces will fuck up! This is needed, else
         styling for e.g. inline spans becomes really ugly! --}}
@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <div class="input-group">
+    <div class="input-group @error(($inputName ?? '')) form-error @enderror">
         {{ $slot }}
         @error(($inputName ?? ''))
         <p class="form-error-label">

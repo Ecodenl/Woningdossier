@@ -1,8 +1,7 @@
 @extends('cooperation.frontend.layouts.app')
 
 @section('main')
-    <div class="w-full min-h-screen flex justify-center items-center flex-col py-20 bg-center bg-cover"
-         style="background: url('{{asset('images/background.jpg')}}')" x-data="register()">
+    <div class="w-full min-h-screen flex justify-center items-center flex-col py-20 " x-data="register()">
         <div class="bg-white rounded-3xl p-20 text-center space-y-10 w-3/4">
             <i class="icon-xxl icon-hoom-logo"></i>
             <h1 class="heading-1">
@@ -123,8 +122,7 @@
                     'inputName' => 'password_confirmation',
                 ])
                     <div class="checkbox-wrapper">
-                        <input id="allow-access" name="allow_access" type="checkbox"
-                               @if(! is_null(old('allow_access'))) checked @endif x-model="allowAccess">
+                        <input id="allow-access" name="allow_access" type="checkbox" value="1" x-model="allowAccess">
                         <label for="allow-access">
                             <span class="checkmark"></span>
                             <span>

@@ -139,9 +139,13 @@
             </form>
         </div>
         <div class="mt-5 text-center">
-            <a href="#" class="text-white">@lang('default.privacy-policy')</a>
+            <a href="{{ route('cooperation.privacy.index', compact('cooperation')) }}" class="text-white">
+                @lang('default.privacy-policy')
+            </a>
             <span class="text-white">|</span>
-            <a href="#" class="text-white">@lang('default.terms-and-conditions')</a>
+            <a href="{{ route('cooperation.disclaimer.index', compact('cooperation')) }}" class="text-white">
+                @lang('default.terms-and-conditions')
+            </a>
         </div>
     </div>
 @endsection

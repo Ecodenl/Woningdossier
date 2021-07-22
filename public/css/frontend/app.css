@@ -7259,6 +7259,82 @@ video {
   min-height: 100vh;
 }
 
+.min-h-1\/20 {
+  min-height: 5%;
+}
+
+.min-h-2\/20 {
+  min-height: 10%;
+}
+
+.min-h-3\/20 {
+  min-height: 15%;
+}
+
+.min-h-4\/20 {
+  min-height: 20%;
+}
+
+.min-h-5\/20 {
+  min-height: 25%;
+}
+
+.min-h-6\/20 {
+  min-height: 30%;
+}
+
+.min-h-7\/20 {
+  min-height: 35%;
+}
+
+.min-h-8\/20 {
+  min-height: 40%;
+}
+
+.min-h-9\/20 {
+  min-height: 45%;
+}
+
+.min-h-10\/20 {
+  min-height: 50%;
+}
+
+.min-h-11\/20 {
+  min-height: 55%;
+}
+
+.min-h-12\/20 {
+  min-height: 60%;
+}
+
+.min-h-13\/20 {
+  min-height: 65%;
+}
+
+.min-h-14\/20 {
+  min-height: 70%;
+}
+
+.min-h-15\/20 {
+  min-height: 75%;
+}
+
+.min-h-16\/20 {
+  min-height: 80%;
+}
+
+.min-h-17\/20 {
+  min-height: 85%;
+}
+
+.min-h-18\/20 {
+  min-height: 90%;
+}
+
+.min-h-19\/20 {
+  min-height: 95%;
+}
+
 .w-0 {
   width: 0px;
 }
@@ -7585,6 +7661,82 @@ video {
   min-width: -webkit-max-content;
   min-width: -moz-max-content;
   min-width: max-content;
+}
+
+.min-w-1\/20 {
+  min-width: 5%;
+}
+
+.min-w-2\/20 {
+  min-width: 10%;
+}
+
+.min-w-3\/20 {
+  min-width: 15%;
+}
+
+.min-w-4\/20 {
+  min-width: 20%;
+}
+
+.min-w-5\/20 {
+  min-width: 25%;
+}
+
+.min-w-6\/20 {
+  min-width: 30%;
+}
+
+.min-w-7\/20 {
+  min-width: 35%;
+}
+
+.min-w-8\/20 {
+  min-width: 40%;
+}
+
+.min-w-9\/20 {
+  min-width: 45%;
+}
+
+.min-w-10\/20 {
+  min-width: 50%;
+}
+
+.min-w-11\/20 {
+  min-width: 55%;
+}
+
+.min-w-12\/20 {
+  min-width: 60%;
+}
+
+.min-w-13\/20 {
+  min-width: 65%;
+}
+
+.min-w-14\/20 {
+  min-width: 70%;
+}
+
+.min-w-15\/20 {
+  min-width: 75%;
+}
+
+.min-w-16\/20 {
+  min-width: 80%;
+}
+
+.min-w-17\/20 {
+  min-width: 85%;
+}
+
+.min-w-18\/20 {
+  min-width: 90%;
+}
+
+.min-w-19\/20 {
+  min-width: 95%;
 }
 
 .max-w-0 {
@@ -28503,6 +28655,82 @@ Small example
     min-height: 100vh;
   }
 
+  .sm\:min-h-1\/20 {
+    min-height: 5%;
+  }
+
+  .sm\:min-h-2\/20 {
+    min-height: 10%;
+  }
+
+  .sm\:min-h-3\/20 {
+    min-height: 15%;
+  }
+
+  .sm\:min-h-4\/20 {
+    min-height: 20%;
+  }
+
+  .sm\:min-h-5\/20 {
+    min-height: 25%;
+  }
+
+  .sm\:min-h-6\/20 {
+    min-height: 30%;
+  }
+
+  .sm\:min-h-7\/20 {
+    min-height: 35%;
+  }
+
+  .sm\:min-h-8\/20 {
+    min-height: 40%;
+  }
+
+  .sm\:min-h-9\/20 {
+    min-height: 45%;
+  }
+
+  .sm\:min-h-10\/20 {
+    min-height: 50%;
+  }
+
+  .sm\:min-h-11\/20 {
+    min-height: 55%;
+  }
+
+  .sm\:min-h-12\/20 {
+    min-height: 60%;
+  }
+
+  .sm\:min-h-13\/20 {
+    min-height: 65%;
+  }
+
+  .sm\:min-h-14\/20 {
+    min-height: 70%;
+  }
+
+  .sm\:min-h-15\/20 {
+    min-height: 75%;
+  }
+
+  .sm\:min-h-16\/20 {
+    min-height: 80%;
+  }
+
+  .sm\:min-h-17\/20 {
+    min-height: 85%;
+  }
+
+  .sm\:min-h-18\/20 {
+    min-height: 90%;
+  }
+
+  .sm\:min-h-19\/20 {
+    min-height: 95%;
+  }
+
   .sm\:w-0 {
     width: 0px;
   }
@@ -28829,6 +29057,82 @@ Small example
     min-width: -webkit-max-content;
     min-width: -moz-max-content;
     min-width: max-content;
+  }
+
+  .sm\:min-w-1\/20 {
+    min-width: 5%;
+  }
+
+  .sm\:min-w-2\/20 {
+    min-width: 10%;
+  }
+
+  .sm\:min-w-3\/20 {
+    min-width: 15%;
+  }
+
+  .sm\:min-w-4\/20 {
+    min-width: 20%;
+  }
+
+  .sm\:min-w-5\/20 {
+    min-width: 25%;
+  }
+
+  .sm\:min-w-6\/20 {
+    min-width: 30%;
+  }
+
+  .sm\:min-w-7\/20 {
+    min-width: 35%;
+  }
+
+  .sm\:min-w-8\/20 {
+    min-width: 40%;
+  }
+
+  .sm\:min-w-9\/20 {
+    min-width: 45%;
+  }
+
+  .sm\:min-w-10\/20 {
+    min-width: 50%;
+  }
+
+  .sm\:min-w-11\/20 {
+    min-width: 55%;
+  }
+
+  .sm\:min-w-12\/20 {
+    min-width: 60%;
+  }
+
+  .sm\:min-w-13\/20 {
+    min-width: 65%;
+  }
+
+  .sm\:min-w-14\/20 {
+    min-width: 70%;
+  }
+
+  .sm\:min-w-15\/20 {
+    min-width: 75%;
+  }
+
+  .sm\:min-w-16\/20 {
+    min-width: 80%;
+  }
+
+  .sm\:min-w-17\/20 {
+    min-width: 85%;
+  }
+
+  .sm\:min-w-18\/20 {
+    min-width: 90%;
+  }
+
+  .sm\:min-w-19\/20 {
+    min-width: 95%;
   }
 
   .sm\:max-w-0 {
@@ -49534,6 +49838,82 @@ Small example
     min-height: 100vh;
   }
 
+  .md\:min-h-1\/20 {
+    min-height: 5%;
+  }
+
+  .md\:min-h-2\/20 {
+    min-height: 10%;
+  }
+
+  .md\:min-h-3\/20 {
+    min-height: 15%;
+  }
+
+  .md\:min-h-4\/20 {
+    min-height: 20%;
+  }
+
+  .md\:min-h-5\/20 {
+    min-height: 25%;
+  }
+
+  .md\:min-h-6\/20 {
+    min-height: 30%;
+  }
+
+  .md\:min-h-7\/20 {
+    min-height: 35%;
+  }
+
+  .md\:min-h-8\/20 {
+    min-height: 40%;
+  }
+
+  .md\:min-h-9\/20 {
+    min-height: 45%;
+  }
+
+  .md\:min-h-10\/20 {
+    min-height: 50%;
+  }
+
+  .md\:min-h-11\/20 {
+    min-height: 55%;
+  }
+
+  .md\:min-h-12\/20 {
+    min-height: 60%;
+  }
+
+  .md\:min-h-13\/20 {
+    min-height: 65%;
+  }
+
+  .md\:min-h-14\/20 {
+    min-height: 70%;
+  }
+
+  .md\:min-h-15\/20 {
+    min-height: 75%;
+  }
+
+  .md\:min-h-16\/20 {
+    min-height: 80%;
+  }
+
+  .md\:min-h-17\/20 {
+    min-height: 85%;
+  }
+
+  .md\:min-h-18\/20 {
+    min-height: 90%;
+  }
+
+  .md\:min-h-19\/20 {
+    min-height: 95%;
+  }
+
   .md\:w-0 {
     width: 0px;
   }
@@ -49860,6 +50240,82 @@ Small example
     min-width: -webkit-max-content;
     min-width: -moz-max-content;
     min-width: max-content;
+  }
+
+  .md\:min-w-1\/20 {
+    min-width: 5%;
+  }
+
+  .md\:min-w-2\/20 {
+    min-width: 10%;
+  }
+
+  .md\:min-w-3\/20 {
+    min-width: 15%;
+  }
+
+  .md\:min-w-4\/20 {
+    min-width: 20%;
+  }
+
+  .md\:min-w-5\/20 {
+    min-width: 25%;
+  }
+
+  .md\:min-w-6\/20 {
+    min-width: 30%;
+  }
+
+  .md\:min-w-7\/20 {
+    min-width: 35%;
+  }
+
+  .md\:min-w-8\/20 {
+    min-width: 40%;
+  }
+
+  .md\:min-w-9\/20 {
+    min-width: 45%;
+  }
+
+  .md\:min-w-10\/20 {
+    min-width: 50%;
+  }
+
+  .md\:min-w-11\/20 {
+    min-width: 55%;
+  }
+
+  .md\:min-w-12\/20 {
+    min-width: 60%;
+  }
+
+  .md\:min-w-13\/20 {
+    min-width: 65%;
+  }
+
+  .md\:min-w-14\/20 {
+    min-width: 70%;
+  }
+
+  .md\:min-w-15\/20 {
+    min-width: 75%;
+  }
+
+  .md\:min-w-16\/20 {
+    min-width: 80%;
+  }
+
+  .md\:min-w-17\/20 {
+    min-width: 85%;
+  }
+
+  .md\:min-w-18\/20 {
+    min-width: 90%;
+  }
+
+  .md\:min-w-19\/20 {
+    min-width: 95%;
   }
 
   .md\:max-w-0 {
@@ -70565,6 +71021,82 @@ Small example
     min-height: 100vh;
   }
 
+  .lg\:min-h-1\/20 {
+    min-height: 5%;
+  }
+
+  .lg\:min-h-2\/20 {
+    min-height: 10%;
+  }
+
+  .lg\:min-h-3\/20 {
+    min-height: 15%;
+  }
+
+  .lg\:min-h-4\/20 {
+    min-height: 20%;
+  }
+
+  .lg\:min-h-5\/20 {
+    min-height: 25%;
+  }
+
+  .lg\:min-h-6\/20 {
+    min-height: 30%;
+  }
+
+  .lg\:min-h-7\/20 {
+    min-height: 35%;
+  }
+
+  .lg\:min-h-8\/20 {
+    min-height: 40%;
+  }
+
+  .lg\:min-h-9\/20 {
+    min-height: 45%;
+  }
+
+  .lg\:min-h-10\/20 {
+    min-height: 50%;
+  }
+
+  .lg\:min-h-11\/20 {
+    min-height: 55%;
+  }
+
+  .lg\:min-h-12\/20 {
+    min-height: 60%;
+  }
+
+  .lg\:min-h-13\/20 {
+    min-height: 65%;
+  }
+
+  .lg\:min-h-14\/20 {
+    min-height: 70%;
+  }
+
+  .lg\:min-h-15\/20 {
+    min-height: 75%;
+  }
+
+  .lg\:min-h-16\/20 {
+    min-height: 80%;
+  }
+
+  .lg\:min-h-17\/20 {
+    min-height: 85%;
+  }
+
+  .lg\:min-h-18\/20 {
+    min-height: 90%;
+  }
+
+  .lg\:min-h-19\/20 {
+    min-height: 95%;
+  }
+
   .lg\:w-0 {
     width: 0px;
   }
@@ -70891,6 +71423,82 @@ Small example
     min-width: -webkit-max-content;
     min-width: -moz-max-content;
     min-width: max-content;
+  }
+
+  .lg\:min-w-1\/20 {
+    min-width: 5%;
+  }
+
+  .lg\:min-w-2\/20 {
+    min-width: 10%;
+  }
+
+  .lg\:min-w-3\/20 {
+    min-width: 15%;
+  }
+
+  .lg\:min-w-4\/20 {
+    min-width: 20%;
+  }
+
+  .lg\:min-w-5\/20 {
+    min-width: 25%;
+  }
+
+  .lg\:min-w-6\/20 {
+    min-width: 30%;
+  }
+
+  .lg\:min-w-7\/20 {
+    min-width: 35%;
+  }
+
+  .lg\:min-w-8\/20 {
+    min-width: 40%;
+  }
+
+  .lg\:min-w-9\/20 {
+    min-width: 45%;
+  }
+
+  .lg\:min-w-10\/20 {
+    min-width: 50%;
+  }
+
+  .lg\:min-w-11\/20 {
+    min-width: 55%;
+  }
+
+  .lg\:min-w-12\/20 {
+    min-width: 60%;
+  }
+
+  .lg\:min-w-13\/20 {
+    min-width: 65%;
+  }
+
+  .lg\:min-w-14\/20 {
+    min-width: 70%;
+  }
+
+  .lg\:min-w-15\/20 {
+    min-width: 75%;
+  }
+
+  .lg\:min-w-16\/20 {
+    min-width: 80%;
+  }
+
+  .lg\:min-w-17\/20 {
+    min-width: 85%;
+  }
+
+  .lg\:min-w-18\/20 {
+    min-width: 90%;
+  }
+
+  .lg\:min-w-19\/20 {
+    min-width: 95%;
   }
 
   .lg\:max-w-0 {
@@ -91596,6 +92204,82 @@ Small example
     min-height: 100vh;
   }
 
+  .xl\:min-h-1\/20 {
+    min-height: 5%;
+  }
+
+  .xl\:min-h-2\/20 {
+    min-height: 10%;
+  }
+
+  .xl\:min-h-3\/20 {
+    min-height: 15%;
+  }
+
+  .xl\:min-h-4\/20 {
+    min-height: 20%;
+  }
+
+  .xl\:min-h-5\/20 {
+    min-height: 25%;
+  }
+
+  .xl\:min-h-6\/20 {
+    min-height: 30%;
+  }
+
+  .xl\:min-h-7\/20 {
+    min-height: 35%;
+  }
+
+  .xl\:min-h-8\/20 {
+    min-height: 40%;
+  }
+
+  .xl\:min-h-9\/20 {
+    min-height: 45%;
+  }
+
+  .xl\:min-h-10\/20 {
+    min-height: 50%;
+  }
+
+  .xl\:min-h-11\/20 {
+    min-height: 55%;
+  }
+
+  .xl\:min-h-12\/20 {
+    min-height: 60%;
+  }
+
+  .xl\:min-h-13\/20 {
+    min-height: 65%;
+  }
+
+  .xl\:min-h-14\/20 {
+    min-height: 70%;
+  }
+
+  .xl\:min-h-15\/20 {
+    min-height: 75%;
+  }
+
+  .xl\:min-h-16\/20 {
+    min-height: 80%;
+  }
+
+  .xl\:min-h-17\/20 {
+    min-height: 85%;
+  }
+
+  .xl\:min-h-18\/20 {
+    min-height: 90%;
+  }
+
+  .xl\:min-h-19\/20 {
+    min-height: 95%;
+  }
+
   .xl\:w-0 {
     width: 0px;
   }
@@ -91922,6 +92606,82 @@ Small example
     min-width: -webkit-max-content;
     min-width: -moz-max-content;
     min-width: max-content;
+  }
+
+  .xl\:min-w-1\/20 {
+    min-width: 5%;
+  }
+
+  .xl\:min-w-2\/20 {
+    min-width: 10%;
+  }
+
+  .xl\:min-w-3\/20 {
+    min-width: 15%;
+  }
+
+  .xl\:min-w-4\/20 {
+    min-width: 20%;
+  }
+
+  .xl\:min-w-5\/20 {
+    min-width: 25%;
+  }
+
+  .xl\:min-w-6\/20 {
+    min-width: 30%;
+  }
+
+  .xl\:min-w-7\/20 {
+    min-width: 35%;
+  }
+
+  .xl\:min-w-8\/20 {
+    min-width: 40%;
+  }
+
+  .xl\:min-w-9\/20 {
+    min-width: 45%;
+  }
+
+  .xl\:min-w-10\/20 {
+    min-width: 50%;
+  }
+
+  .xl\:min-w-11\/20 {
+    min-width: 55%;
+  }
+
+  .xl\:min-w-12\/20 {
+    min-width: 60%;
+  }
+
+  .xl\:min-w-13\/20 {
+    min-width: 65%;
+  }
+
+  .xl\:min-w-14\/20 {
+    min-width: 70%;
+  }
+
+  .xl\:min-w-15\/20 {
+    min-width: 75%;
+  }
+
+  .xl\:min-w-16\/20 {
+    min-width: 80%;
+  }
+
+  .xl\:min-w-17\/20 {
+    min-width: 85%;
+  }
+
+  .xl\:min-w-18\/20 {
+    min-width: 90%;
+  }
+
+  .xl\:min-w-19\/20 {
+    min-width: 95%;
   }
 
   .xl\:max-w-0 {
@@ -112627,6 +113387,82 @@ Small example
     min-height: 100vh;
   }
 
+  .\32xl\:min-h-1\/20 {
+    min-height: 5%;
+  }
+
+  .\32xl\:min-h-2\/20 {
+    min-height: 10%;
+  }
+
+  .\32xl\:min-h-3\/20 {
+    min-height: 15%;
+  }
+
+  .\32xl\:min-h-4\/20 {
+    min-height: 20%;
+  }
+
+  .\32xl\:min-h-5\/20 {
+    min-height: 25%;
+  }
+
+  .\32xl\:min-h-6\/20 {
+    min-height: 30%;
+  }
+
+  .\32xl\:min-h-7\/20 {
+    min-height: 35%;
+  }
+
+  .\32xl\:min-h-8\/20 {
+    min-height: 40%;
+  }
+
+  .\32xl\:min-h-9\/20 {
+    min-height: 45%;
+  }
+
+  .\32xl\:min-h-10\/20 {
+    min-height: 50%;
+  }
+
+  .\32xl\:min-h-11\/20 {
+    min-height: 55%;
+  }
+
+  .\32xl\:min-h-12\/20 {
+    min-height: 60%;
+  }
+
+  .\32xl\:min-h-13\/20 {
+    min-height: 65%;
+  }
+
+  .\32xl\:min-h-14\/20 {
+    min-height: 70%;
+  }
+
+  .\32xl\:min-h-15\/20 {
+    min-height: 75%;
+  }
+
+  .\32xl\:min-h-16\/20 {
+    min-height: 80%;
+  }
+
+  .\32xl\:min-h-17\/20 {
+    min-height: 85%;
+  }
+
+  .\32xl\:min-h-18\/20 {
+    min-height: 90%;
+  }
+
+  .\32xl\:min-h-19\/20 {
+    min-height: 95%;
+  }
+
   .\32xl\:w-0 {
     width: 0px;
   }
@@ -112953,6 +113789,82 @@ Small example
     min-width: -webkit-max-content;
     min-width: -moz-max-content;
     min-width: max-content;
+  }
+
+  .\32xl\:min-w-1\/20 {
+    min-width: 5%;
+  }
+
+  .\32xl\:min-w-2\/20 {
+    min-width: 10%;
+  }
+
+  .\32xl\:min-w-3\/20 {
+    min-width: 15%;
+  }
+
+  .\32xl\:min-w-4\/20 {
+    min-width: 20%;
+  }
+
+  .\32xl\:min-w-5\/20 {
+    min-width: 25%;
+  }
+
+  .\32xl\:min-w-6\/20 {
+    min-width: 30%;
+  }
+
+  .\32xl\:min-w-7\/20 {
+    min-width: 35%;
+  }
+
+  .\32xl\:min-w-8\/20 {
+    min-width: 40%;
+  }
+
+  .\32xl\:min-w-9\/20 {
+    min-width: 45%;
+  }
+
+  .\32xl\:min-w-10\/20 {
+    min-width: 50%;
+  }
+
+  .\32xl\:min-w-11\/20 {
+    min-width: 55%;
+  }
+
+  .\32xl\:min-w-12\/20 {
+    min-width: 60%;
+  }
+
+  .\32xl\:min-w-13\/20 {
+    min-width: 65%;
+  }
+
+  .\32xl\:min-w-14\/20 {
+    min-width: 70%;
+  }
+
+  .\32xl\:min-w-15\/20 {
+    min-width: 75%;
+  }
+
+  .\32xl\:min-w-16\/20 {
+    min-width: 80%;
+  }
+
+  .\32xl\:min-w-17\/20 {
+    min-width: 85%;
+  }
+
+  .\32xl\:min-w-18\/20 {
+    min-width: 90%;
+  }
+
+  .\32xl\:min-w-19\/20 {
+    min-width: 95%;
   }
 
   .\32xl\:max-w-0 {

@@ -5,8 +5,8 @@
 @endsection
 
 @section('main')
-    <div class="w-full min-h-screen flex justify-center items-center flex-col py-20 bg-center bg-cover"
-         style="background: url('{{asset('images/background.jpg')}}')">
+    <div class="w-full min-h-screen flex justify-center items-center flex-col py-20 bg-center bg-no-repeat bg-cover"
+         style="background-image: url('{{asset('images/background.jpg')}}')">
         <div class="bg-white rounded-3xl p-20 text-center space-y-10">
             <i class="icon-xxl icon-hoom-logo"></i>
             <h1 class="heading-1">

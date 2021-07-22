@@ -191,6 +191,9 @@ return [
     // note, when a key needs a wildcard add it to the custom array.
     // A wildcard wont work in the attributes array but will in the custom array, needs more work but at least we dont need to hardcode the * numbers.
     'attributes' => [
+        'email' => 'E-mailadres',
+        'password' => 'Wachtwoord',
+
         'account.current_password' => 'huidig wachtwoord',
         'account.password' => 'wachtwoord',
         'account.password_confirmation' => 'wachtwoord bevestigen',

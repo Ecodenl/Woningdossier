@@ -16,7 +16,7 @@
                     'inputName' => 'email',
                     'id' => 'email',
                 ])
-                    <input class="form-input" type="text" name="email" id="email"
+                    <input class="form-input" type="text" name="email" id="email" value="{{ old('email') }}"
                            placeholder="@lang('auth.login.form.email')">
                     <i class="icon-sm icon-mail-green absolute right-6 top-5/20"></i>
                 @endcomponent

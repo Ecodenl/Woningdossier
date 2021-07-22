@@ -34203,24 +34203,20 @@ __webpack_require__.r(__webpack_exports__);
       this.$refs['slider'].style.background = "linear-gradient(90deg, var(--slider-before) ".concat(currentPosition, "px, var(--slider-after) ").concat(currentPosition, "px)");
     },
     getThumbPosition: function getThumbPosition() {
-      var slider = this.$refs['slider']; // Get slider thumb CSS
+      var slider = this.$refs['slider'];
+      var sliderWidth = slider.offsetWidth;
+      var thumbWidth = this.parsePixelWidth(window.getComputedStyle(slider, '::-webkit-slider-thumb').width); // If not a number, or exact width of slider, we will try other pseudo-element tags, and if we can't find it,
+      // we'll use the style of the thumb (this isn't dynamic, but better than the slider not functioning correctly)
 
-      var thumbStyle = window.getComputedStyle(slider, '::-webkit-slider-thumb');
+      if (isNaN(thumbWidth) || thumbWidth === sliderWidth) {
+        thumbWidth = this.parsePixelWidth(window.getComputedStyle(slider, '::-moz-range-thumb').width);
 
-      if (thumbStyle.length === 0 || this.parsePixelWidth(thumbStyle.width) === slider.offsetWidth) {
-        thumbStyle = window.getComputedStyle(slider, '::-moz-range-thumb');
-      }
+        if (isNaN(thumbWidth) || thumbWidth === sliderWidth) {
+          // Use fallback width
+          thumbWidth = '42px'; // Defined in form.css
+        }
+      } // Total amount of steps in the slider
 
-      var thumbWidth = this.parsePixelWidth(thumbStyle.width);
-
-      if (thumbWidth === slider.offsetWidth) {
-        // Use fallback width (for now)
-        // TODO: Figure out how to get computed style of webkit thumb
-        thumbWidth = '42px'; // Defined in form.css
-      } // Slider width
-
-
-      var width = slider.offsetWidth; // Total amount of steps in the slider
 
       var totalSteps = (slider.max - slider.min) / slider.step; // Offset per step of the thumb (this is applied to the thumb, otherwise it would go past the end of the slider
       // when the end is reached. This is important because if we don't apply this to the bubble, it will not position
@@ -34232,7 +34228,7 @@ __webpack_require__.r(__webpack_exports__);
       // that value by our current step to get the position of the thumb currently, and then we remove the offset
       // of the thumb that is applied so we have the exact position of the thumb
 
-      return width / totalSteps * currentStep - offsetPerStep * currentStep;
+      return sliderWidth / totalSteps * currentStep - offsetPerStep * currentStep;
     },
     parsePixelWidth: function parsePixelWidth(value) {
       return parseInt(value, 10);

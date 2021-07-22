@@ -14,21 +14,21 @@ export default () => ({
     },
     getThumbPosition() {
         let slider = this.$refs['slider'];
-        // Get slider thumb CSS
-        let thumbStyle = window.getComputedStyle(slider, '::-webkit-slider-thumb');
-        if (thumbStyle.length === 0 || this.parsePixelWidth(thumbStyle.width) === slider.offsetWidth) {
-            thumbStyle = window.getComputedStyle(slider, '::-moz-range-thumb');
+
+        let sliderWidth = slider.offsetWidth;
+        let thumbWidth = this.parsePixelWidth(window.getComputedStyle(slider, '::-webkit-slider-thumb').width);
+
+        // If not a number, or exact width of slider, we will try other pseudo-element tags, and if we can't find it,
+        // we'll use the style of the thumb (this isn't dynamic, but better than the slider not functioning correctly)
+        if (isNaN(thumbWidth) || thumbWidth === sliderWidth) {
+            thumbWidth = this.parsePixelWidth(window.getComputedStyle(slider, '::-moz-range-thumb').width);
+
+            if (isNaN(thumbWidth) || thumbWidth === sliderWidth) {
+                // Use fallback width
+                thumbWidth = '42px'; // Defined in form.css
+            }
         }
 
-        let thumbWidth = this.parsePixelWidth(thumbStyle.width);
-        if (thumbWidth === slider.offsetWidth) {
-            // Use fallback width (for now)
-            // TODO: Figure out how to get computed style of webkit thumb
-            thumbWidth = '42px'; // Defined in form.css
-        }
-
-        // Slider width
-        let width = slider.offsetWidth;
         // Total amount of steps in the slider
         let totalSteps = (slider.max - slider.min) / slider.step;
         // Offset per step of the thumb (this is applied to the thumb, otherwise it would go past the end of the slider
@@ -41,7 +41,7 @@ export default () => ({
         // We calculate the left position per following logic: We calculate the width per step, then, we multiply
         // that value by our current step to get the position of the thumb currently, and then we remove the offset
         // of the thumb that is applied so we have the exact position of the thumb
-        return width / totalSteps * currentStep - offsetPerStep * currentStep
+        return sliderWidth / totalSteps * currentStep - offsetPerStep * currentStep
     },
     parsePixelWidth(value) {
         return parseInt(value, 10);

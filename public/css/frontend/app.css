@@ -14517,6 +14517,10 @@ video {
   --tw-bg-opacity: 0.8;
 }
 
+.bg-opacity-85 {
+  --tw-bg-opacity: 0.85;
+}
+
 .bg-opacity-90 {
   --tw-bg-opacity: 0.9;
 }
@@ -14575,6 +14579,10 @@ video {
 
 .group:hover .group-hover\:bg-opacity-80 {
   --tw-bg-opacity: 0.8;
+}
+
+.group:hover .group-hover\:bg-opacity-85 {
+  --tw-bg-opacity: 0.85;
 }
 
 .group:hover .group-hover\:bg-opacity-90 {
@@ -14637,6 +14645,10 @@ video {
   --tw-bg-opacity: 0.8;
 }
 
+.focus-within\:bg-opacity-85:focus-within {
+  --tw-bg-opacity: 0.85;
+}
+
 .focus-within\:bg-opacity-90:focus-within {
   --tw-bg-opacity: 0.9;
 }
@@ -14695,6 +14707,10 @@ video {
 
 .hover\:bg-opacity-80:hover {
   --tw-bg-opacity: 0.8;
+}
+
+.hover\:bg-opacity-85:hover {
+  --tw-bg-opacity: 0.85;
 }
 
 .hover\:bg-opacity-90:hover {
@@ -14757,6 +14773,10 @@ video {
   --tw-bg-opacity: 0.8;
 }
 
+.focus\:bg-opacity-85:focus {
+  --tw-bg-opacity: 0.85;
+}
+
 .focus\:bg-opacity-90:focus {
   --tw-bg-opacity: 0.9;
 }
@@ -14815,6 +14835,10 @@ video {
 
 .active\:bg-opacity-80:active {
   --tw-bg-opacity: 0.8;
+}
+
+.active\:bg-opacity-85:active {
+  --tw-bg-opacity: 0.85;
 }
 
 .active\:bg-opacity-90:active {
@@ -35671,6 +35695,10 @@ Small example
     --tw-bg-opacity: 0.8;
   }
 
+  .sm\:bg-opacity-85 {
+    --tw-bg-opacity: 0.85;
+  }
+
   .sm\:bg-opacity-90 {
     --tw-bg-opacity: 0.9;
   }
@@ -35729,6 +35757,10 @@ Small example
 
   .group:hover .sm\:group-hover\:bg-opacity-80 {
     --tw-bg-opacity: 0.8;
+  }
+
+  .group:hover .sm\:group-hover\:bg-opacity-85 {
+    --tw-bg-opacity: 0.85;
   }
 
   .group:hover .sm\:group-hover\:bg-opacity-90 {
@@ -35791,6 +35823,10 @@ Small example
     --tw-bg-opacity: 0.8;
   }
 
+  .sm\:focus-within\:bg-opacity-85:focus-within {
+    --tw-bg-opacity: 0.85;
+  }
+
   .sm\:focus-within\:bg-opacity-90:focus-within {
     --tw-bg-opacity: 0.9;
   }
@@ -35849,6 +35885,10 @@ Small example
 
   .sm\:hover\:bg-opacity-80:hover {
     --tw-bg-opacity: 0.8;
+  }
+
+  .sm\:hover\:bg-opacity-85:hover {
+    --tw-bg-opacity: 0.85;
   }
 
   .sm\:hover\:bg-opacity-90:hover {
@@ -35911,6 +35951,10 @@ Small example
     --tw-bg-opacity: 0.8;
   }
 
+  .sm\:focus\:bg-opacity-85:focus {
+    --tw-bg-opacity: 0.85;
+  }
+
   .sm\:focus\:bg-opacity-90:focus {
     --tw-bg-opacity: 0.9;
   }
@@ -35969,6 +36013,10 @@ Small example
 
   .sm\:active\:bg-opacity-80:active {
     --tw-bg-opacity: 0.8;
+  }
+
+  .sm\:active\:bg-opacity-85:active {
+    --tw-bg-opacity: 0.85;
   }
 
   .sm\:active\:bg-opacity-90:active {
@@ -56678,6 +56726,10 @@ Small example
     --tw-bg-opacity: 0.8;
   }
 
+  .md\:bg-opacity-85 {
+    --tw-bg-opacity: 0.85;
+  }
+
   .md\:bg-opacity-90 {
     --tw-bg-opacity: 0.9;
   }
@@ -56736,6 +56788,10 @@ Small example
 
   .group:hover .md\:group-hover\:bg-opacity-80 {
     --tw-bg-opacity: 0.8;
+  }
+
+  .group:hover .md\:group-hover\:bg-opacity-85 {
+    --tw-bg-opacity: 0.85;
   }
 
   .group:hover .md\:group-hover\:bg-opacity-90 {
@@ -56798,6 +56854,10 @@ Small example
     --tw-bg-opacity: 0.8;
   }
 
+  .md\:focus-within\:bg-opacity-85:focus-within {
+    --tw-bg-opacity: 0.85;
+  }
+
   .md\:focus-within\:bg-opacity-90:focus-within {
     --tw-bg-opacity: 0.9;
   }
@@ -56856,6 +56916,10 @@ Small example
 
   .md\:hover\:bg-opacity-80:hover {
     --tw-bg-opacity: 0.8;
+  }
+
+  .md\:hover\:bg-opacity-85:hover {
+    --tw-bg-opacity: 0.85;
   }
 
   .md\:hover\:bg-opacity-90:hover {
@@ -56918,6 +56982,10 @@ Small example
     --tw-bg-opacity: 0.8;
   }
 
+  .md\:focus\:bg-opacity-85:focus {
+    --tw-bg-opacity: 0.85;
+  }
+
   .md\:focus\:bg-opacity-90:focus {
     --tw-bg-opacity: 0.9;
   }
@@ -56976,6 +57044,10 @@ Small example
 
   .md\:active\:bg-opacity-80:active {
     --tw-bg-opacity: 0.8;
+  }
+
+  .md\:active\:bg-opacity-85:active {
+    --tw-bg-opacity: 0.85;
   }
 
   .md\:active\:bg-opacity-90:active {
@@ -77685,6 +77757,10 @@ Small example
     --tw-bg-opacity: 0.8;
   }
 
+  .lg\:bg-opacity-85 {
+    --tw-bg-opacity: 0.85;
+  }
+
   .lg\:bg-opacity-90 {
     --tw-bg-opacity: 0.9;
   }
@@ -77743,6 +77819,10 @@ Small example
 
   .group:hover .lg\:group-hover\:bg-opacity-80 {
     --tw-bg-opacity: 0.8;
+  }
+
+  .group:hover .lg\:group-hover\:bg-opacity-85 {
+    --tw-bg-opacity: 0.85;
   }
 
   .group:hover .lg\:group-hover\:bg-opacity-90 {
@@ -77805,6 +77885,10 @@ Small example
     --tw-bg-opacity: 0.8;
   }
 
+  .lg\:focus-within\:bg-opacity-85:focus-within {
+    --tw-bg-opacity: 0.85;
+  }
+
   .lg\:focus-within\:bg-opacity-90:focus-within {
     --tw-bg-opacity: 0.9;
   }
@@ -77863,6 +77947,10 @@ Small example
 
   .lg\:hover\:bg-opacity-80:hover {
     --tw-bg-opacity: 0.8;
+  }
+
+  .lg\:hover\:bg-opacity-85:hover {
+    --tw-bg-opacity: 0.85;
   }
 
   .lg\:hover\:bg-opacity-90:hover {
@@ -77925,6 +78013,10 @@ Small example
     --tw-bg-opacity: 0.8;
   }
 
+  .lg\:focus\:bg-opacity-85:focus {
+    --tw-bg-opacity: 0.85;
+  }
+
   .lg\:focus\:bg-opacity-90:focus {
     --tw-bg-opacity: 0.9;
   }
@@ -77983,6 +78075,10 @@ Small example
 
   .lg\:active\:bg-opacity-80:active {
     --tw-bg-opacity: 0.8;
+  }
+
+  .lg\:active\:bg-opacity-85:active {
+    --tw-bg-opacity: 0.85;
   }
 
   .lg\:active\:bg-opacity-90:active {
@@ -98692,6 +98788,10 @@ Small example
     --tw-bg-opacity: 0.8;
   }
 
+  .xl\:bg-opacity-85 {
+    --tw-bg-opacity: 0.85;
+  }
+
   .xl\:bg-opacity-90 {
     --tw-bg-opacity: 0.9;
   }
@@ -98750,6 +98850,10 @@ Small example
 
   .group:hover .xl\:group-hover\:bg-opacity-80 {
     --tw-bg-opacity: 0.8;
+  }
+
+  .group:hover .xl\:group-hover\:bg-opacity-85 {
+    --tw-bg-opacity: 0.85;
   }
 
   .group:hover .xl\:group-hover\:bg-opacity-90 {
@@ -98812,6 +98916,10 @@ Small example
     --tw-bg-opacity: 0.8;
   }
 
+  .xl\:focus-within\:bg-opacity-85:focus-within {
+    --tw-bg-opacity: 0.85;
+  }
+
   .xl\:focus-within\:bg-opacity-90:focus-within {
     --tw-bg-opacity: 0.9;
   }
@@ -98870,6 +98978,10 @@ Small example
 
   .xl\:hover\:bg-opacity-80:hover {
     --tw-bg-opacity: 0.8;
+  }
+
+  .xl\:hover\:bg-opacity-85:hover {
+    --tw-bg-opacity: 0.85;
   }
 
   .xl\:hover\:bg-opacity-90:hover {
@@ -98932,6 +99044,10 @@ Small example
     --tw-bg-opacity: 0.8;
   }
 
+  .xl\:focus\:bg-opacity-85:focus {
+    --tw-bg-opacity: 0.85;
+  }
+
   .xl\:focus\:bg-opacity-90:focus {
     --tw-bg-opacity: 0.9;
   }
@@ -98990,6 +99106,10 @@ Small example
 
   .xl\:active\:bg-opacity-80:active {
     --tw-bg-opacity: 0.8;
+  }
+
+  .xl\:active\:bg-opacity-85:active {
+    --tw-bg-opacity: 0.85;
   }
 
   .xl\:active\:bg-opacity-90:active {
@@ -119699,6 +119819,10 @@ Small example
     --tw-bg-opacity: 0.8;
   }
 
+  .\32xl\:bg-opacity-85 {
+    --tw-bg-opacity: 0.85;
+  }
+
   .\32xl\:bg-opacity-90 {
     --tw-bg-opacity: 0.9;
   }
@@ -119757,6 +119881,10 @@ Small example
 
   .group:hover .\32xl\:group-hover\:bg-opacity-80 {
     --tw-bg-opacity: 0.8;
+  }
+
+  .group:hover .\32xl\:group-hover\:bg-opacity-85 {
+    --tw-bg-opacity: 0.85;
   }
 
   .group:hover .\32xl\:group-hover\:bg-opacity-90 {
@@ -119819,6 +119947,10 @@ Small example
     --tw-bg-opacity: 0.8;
   }
 
+  .\32xl\:focus-within\:bg-opacity-85:focus-within {
+    --tw-bg-opacity: 0.85;
+  }
+
   .\32xl\:focus-within\:bg-opacity-90:focus-within {
     --tw-bg-opacity: 0.9;
   }
@@ -119877,6 +120009,10 @@ Small example
 
   .\32xl\:hover\:bg-opacity-80:hover {
     --tw-bg-opacity: 0.8;
+  }
+
+  .\32xl\:hover\:bg-opacity-85:hover {
+    --tw-bg-opacity: 0.85;
   }
 
   .\32xl\:hover\:bg-opacity-90:hover {
@@ -119939,6 +120075,10 @@ Small example
     --tw-bg-opacity: 0.8;
   }
 
+  .\32xl\:focus\:bg-opacity-85:focus {
+    --tw-bg-opacity: 0.85;
+  }
+
   .\32xl\:focus\:bg-opacity-90:focus {
     --tw-bg-opacity: 0.9;
   }
@@ -119997,6 +120137,10 @@ Small example
 
   .\32xl\:active\:bg-opacity-80:active {
     --tw-bg-opacity: 0.8;
+  }
+
+  .\32xl\:active\:bg-opacity-85:active {
+    --tw-bg-opacity: 0.85;
   }
 
   .\32xl\:active\:bg-opacity-90:active {

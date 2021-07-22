@@ -67,6 +67,8 @@
             <div class="h-full bg-purple" style="width: 30%"></div>
         </div>
     </div>
+
+    @include('cooperation.frontend.layouts.parts.messages')
 @endsection
 
 @section('main')

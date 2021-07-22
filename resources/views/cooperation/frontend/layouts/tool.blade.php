@@ -67,9 +67,10 @@
             <div class="h-full bg-purple" style="width: 30%"></div>
         </div>
     </div>
-
-    @include('cooperation.frontend.layouts.parts.messages')
 @endsection
+
+{{-- Remove BG image --}}
+@section('main_style', '')
 
 @section('main')
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20">

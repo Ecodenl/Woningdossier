@@ -128931,7 +128931,7 @@ textarea.form-input {
 
 .modal-container .modal {
   height: auto;
-  width: 20%;
+  width: 50%;
   border-radius: 0.5rem;
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
@@ -128947,6 +128947,12 @@ textarea.form-input {
   --tw-drop-shadow: var(--tw-empty,/*!*/ /*!*/);
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
   --tw-drop-shadow: drop-shadow(0 20px 13px rgba(0, 0, 0, 0.03)) drop-shadow(0 8px 5px rgba(0, 0, 0, 0.08));
+}
+
+@media (min-width: 1280px) {
+  .modal-container .modal {
+    width: 20%;
+  }
 }
 
 .modal-container .modal .modal-header {

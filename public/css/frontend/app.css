@@ -127968,6 +127968,7 @@ p a {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   font-weight: 700;
+  text-decoration: none;
   outline: 2px solid transparent;
   outline-offset: 2px;
   transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
@@ -128433,7 +128434,13 @@ textarea.form-input {
 
 /* Ensure we move the cross more to the left if an input group append is present */
 
-.form-error .input-group input[type="text"] ~ .input-group-append ~ .form-error-label::before {
+.form-error input[type="text"] ~ .input-group-append ~ .form-error-label::before {
+  right: 4rem;
+}
+
+/* Ensure we move the cross more to the left if an icon is present */
+
+.form-error input[type="text"] + i ~ .form-error-label::before {
   right: 4rem;
 }
 

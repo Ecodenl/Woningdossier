@@ -12,7 +12,11 @@
                     @lang('cooperation/auth/verify.resent')
                 @endcomponent
             @endif
-
+            @if(session('status'))
+                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'green'])
+                    {{ session('status') }}
+                @endcomponent
+            @endif
             <p>
                 @lang('cooperation/auth/verify.body')
                 <a onclick="document.getElementById('resend-form').submit()">

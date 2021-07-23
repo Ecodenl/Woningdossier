@@ -12,6 +12,11 @@
                     @lang('cooperation/auth/verify.success-log-in')
                 @endcomponent
             @endif
+            @if(session('status'))
+                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'green'])
+                    {{ session('status') }}
+                @endcomponent
+            @endif
             <form class="w-full flex flex-wrap justify-center" method="POST"
                   action="{{ route('cooperation.auth.login') }}">
                 @csrf

@@ -21,8 +21,11 @@
 </head>
 <body>
 @yield('header')
+<?php
+    $background = optional($cooperation->firstMedia(MediaConstants::BACKGROUND))->getUrl();
+?>
 <main class="bg-cover bg-center bg-no-repeat bg-white"
-      style="@yield('main_style', 'background-image: url(\''. asset('images/background.jpg') .'\');')">
+      style="@yield('main_style', 'background-image: url(\''. $background .'\');')">
 {{--    @include('cooperation.frontend.layouts.parts.messages')--}}
 
     @yield('main')

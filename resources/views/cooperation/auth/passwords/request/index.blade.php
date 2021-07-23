@@ -3,7 +3,7 @@
 @section('main')
     <div class="w-full min-h-screen flex justify-center items-center flex-col py-20">
         <div class="bg-white rounded-3xl p-20 text-center space-y-10">
-            <i class="icon-xxl icon-hoom-logo"></i>
+            @include('cooperation.frontend.layouts.parts.logo')
             <h1 class="heading-1">
                 @lang('auth.email.form.header')
             </h1>
@@ -13,7 +13,7 @@
                 @endcomponent
             @endif
             <form class="w-full flex flex-wrap justify-center" method="POST"
-                  action="{{ route('cooperation.auth.password.request.store', compact('cooperation')) }}">
+                  action="{{ route('cooperation.auth.password.request.store') }}">
                 @csrf
                 @component('cooperation.frontend.layouts.components.form-group', [
                     'withInputSource' => false,
@@ -30,12 +30,12 @@
                 </button>
             </form>
             <p>
-                <a href="{{ route('cooperation.auth.login', compact('cooperation')) }}">
+                <a href="{{ route('cooperation.auth.login') }}">
                     @lang('auth.login.form.header')
                 </a>
                 <br><br>
                 @lang('auth.login.no-account')
-                <a href="{{ route('cooperation.register', compact('cooperation')) }}">
+                <a href="{{ route('cooperation.register') }}">
                     @lang('auth.register.form.header')
                 </a>
             </p>

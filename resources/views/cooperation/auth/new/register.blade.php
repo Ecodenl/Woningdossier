@@ -1,7 +1,8 @@
 @extends('cooperation.frontend.layouts.app')
 
 @section('main')
-    <div class="w-full min-h-screen flex justify-center items-center flex-col py-20 " x-data="register()">
+    <div class="w-full min-h-screen flex justify-center items-center flex-col py-20 "
+         x-data="register('{{route('cooperation.check-existing-email', compact('cooperation'))}}')">
         <div class="bg-white rounded-3xl p-20 text-center space-y-10 w-3/4">
             <i class="icon-xxl icon-hoom-logo"></i>
             <h1 class="heading-1">
@@ -19,14 +20,23 @@
                 ])
                     <input class="form-input" type="text" name="email" value="{{ old('email') }}"
                            placeholder="@lang('auth.register.form.email')" x-on:change="checkEmail($el)">
-                    <p class="text-red -mt-2" x-show="showEmailWarning">
+                    <p class="text-red" x-show="showEmailWarning">
                         @lang('auth.register.form.possible-wrong-email')
+                    </p>
+                    <hr class="w-full h-0 invisible">
+                    <p class="text-blue-800" x-show="alreadyMember">
+                        @lang('auth.register.form.already-member')
+                    </p>
+                    <hr class="w-full h-0 invisible">
+                    <p class="text-blue-800" x-show="emailExists">
+                        @lang('auth.register.form.email-exists')
                     </p>
                 @endcomponent
                 @component('cooperation.frontend.layouts.components.form-group', [
                     'withInputSource' => false,
                     'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
                     'inputName' => 'first_name',
+                    'attr' => 'x-show="! alreadyMember"',
                 ])
                     <input class="form-input" type="text" name="first_name" value="{{ old('first_name') }}"
                            placeholder="@lang('auth.register.form.first-name')">
@@ -35,6 +45,7 @@
                     'withInputSource' => false,
                     'class' => 'w-full -mt-5 lg:w-1/2 lg:pl-3',
                     'inputName' => 'last_name',
+                    'attr' => 'x-show="! alreadyMember"',
                 ])
                     <input class="form-input" type="text" name="last_name" value="{{ old('last_name') }}"
                            placeholder="@lang('auth.register.form.last-name')">
@@ -43,6 +54,7 @@
                     'withInputSource' => false,
                     'class' => 'w-full -mt-5  lg:w-1/2 lg:pr-3',
                     'inputName' => 'postal_code',
+                    'attr' => 'x-show="! alreadyMember"',
                 ])
                     <input class="form-input" type="text" name="postal_code" value="{{ old('postal_code') }}"
                            placeholder="@lang('auth.register.form.postal-code')" x-bind="postcode">
@@ -54,6 +66,7 @@
                     'withInputSource' => false,
                     'class' => 'w-full -mt-5  lg:w-1/4 lg:px-3',
                     'inputName' => 'number',
+                    'attr' => 'x-show="! alreadyMember"',
                 ])
                     <input class="form-input" type="text" name="number" value="{{ old('number') }}"
                            placeholder="@lang('auth.register.form.number')" x-bind="houseNumber">
@@ -62,6 +75,7 @@
                     'withInputSource' => false,
                     'class' => 'w-full -mt-5 lg:w-1/4 lg:pl-3',
                     'inputName' => 'house_number_extension',
+                    'attr' => 'x-show="! alreadyMember"',
                 ])
                     <input class="form-input" type="text" name="house_number_extension"
                            value="{{ old('house_number_extension') }}"
@@ -72,6 +86,7 @@
                     'withInputSource' => false,
                     'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
                     'inputName' => 'street',
+                    'attr' => 'x-show="! alreadyMember"',
                 ])
                     <input class="form-input" type="text" name="street" value="{{ old('street') }}"
                            placeholder="@lang('auth.register.form.street')" x-bind="street">
@@ -80,6 +95,7 @@
                     'withInputSource' => false,
                     'class' => 'w-full -mt-5 lg:w-1/2 lg:pl-3',
                     'inputName' => 'city',
+                    'attr' => 'x-show="! alreadyMember"',
                 ])
                     <input class="form-input" type="text" name="city" value="{{ old('city') }}"
                            placeholder="@lang('auth.register.form.city')" x-bind="city">
@@ -88,6 +104,7 @@
                     'withInputSource' => false,
                     'class' => 'w-full -mt-5',
                     'inputName' => 'phone_number',
+                    'attr' => 'x-show="! alreadyMember"',
                 ])
                     <input class="form-input" type="text" name="phone_number" value="{{ old('phone_number') }}"
                            placeholder="@lang('auth.register.form.phone-number')">
@@ -96,6 +113,7 @@
                     'withInputSource' => false,
                     'class' => 'w-full -mt-5 lg:w-1/2 lg:pr-3',
                     'inputName' => 'password',
+                    'attr' => 'x-show="! alreadyMember && ! emailExists"',
                 ])
                     <div class="w-full" x-data="{showPass: false}">
                         <input class="form-input" type="password" name="password"
@@ -112,6 +130,7 @@
                     'withInputSource' => false,
                     'class' => 'w-full -mt-5 lg:w-1/2 lg:pl-3',
                     'inputName' => 'password_confirmation',
+                    'attr' => 'x-show="! alreadyMember && ! emailExists"',
                 ])
                     <input class="form-input" type="password" name="password_confirmation"
                            placeholder="@lang('auth.register.form.password-confirmation')">
@@ -119,7 +138,8 @@
                 @component('cooperation.frontend.layouts.components.form-group', [
                     'withInputSource' => false,
                     'class' => 'w-full -mt-5',
-                    'inputName' => 'password_confirmation',
+                    'inputName' => 'allow_access',
+                    'attr' => 'x-show="! alreadyMember"',
                 ])
                     <div class="checkbox-wrapper">
                         <input id="allow-access" name="allow_access" type="checkbox" value="1" x-model="allowAccess">
@@ -133,7 +153,7 @@
                     <p class="text-left">@lang('conversation-requests.index.text')</p>
                 @endcomponent
 
-                <button class="btn btn-purple w-full mt-3" type="submit" x-bind:disabled="! allowAccess">
+                <button class="btn btn-purple w-full mt-3" type="submit" x-bind:disabled="! allowAccess || alreadyMember">
                     @lang('auth.register.form.submit')
                 </button>
             </form>

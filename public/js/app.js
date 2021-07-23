@@ -34321,14 +34321,61 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (function () {
+/* harmony default export */ __webpack_exports__["default"] = (function (emailUrl) {
   return {
     allowAccess: false,
     showEmailWarning: false,
+    alreadyMember: false,
+    emailExists: false,
+    emailUrl: emailUrl,
     checkEmail: function checkEmail(element) {
       var goodDomains = new RegExp('\\b(nl|be|net|com|info|nu|de)\\b', 'i'); // If the email does not contain a good domain return a message
 
       this.showEmailWarning = !goodDomains.test(element.value);
+      this.checkExisting(element);
+    },
+    checkExisting: function checkExisting(element) {
+      var urlObject = null;
+
+      if (this.emailUrl) {
+        try {
+          urlObject = new URL(this.emailUrl);
+        } catch (e) {
+          this.emailUrl = null;
+        }
+      }
+
+      if ((window.XMLHttpRequest || window.ActiveXObject) && urlObject && typeof element !== 'undefined' && element.value.length > 0) {
+        var request = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP"); // We need to be able to access this context
+
+        var context = this;
+
+        request.onreadystatechange = function () {
+          // Ajax finished and ready
+          if (request.readyState == window.XMLHttpRequest.DONE) {
+            context.alreadyMember = false;
+            context.emailExists = false;
+            var response = request.response;
+
+            if (request.status == 200) {
+              if (response.email_exists) {
+                if (response.user_is_already_member_of_cooperation) {
+                  context.alreadyMember = true;
+                } else {
+                  context.emailExists = true;
+                }
+              }
+            }
+          }
+        }; // Build request url
+
+
+        var url = urlObject.href + (urlObject.search ? '&' : '?') + 'email=' + element.value;
+        request.open('GET', url);
+        request.setRequestHeader('Accept', 'application/json');
+        request.responseType = 'json';
+        request.send();
+      }
     }
   };
 });

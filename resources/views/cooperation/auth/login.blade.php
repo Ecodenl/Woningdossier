@@ -7,6 +7,11 @@
             <h1 class="heading-1">
                 @lang('auth.login.form.header')
             </h1>
+            @if(session('verified'))
+                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'blue-800'])
+                    @lang('cooperation/auth/verify.success-log-in')
+                @endcomponent
+            @endif
             <form class="w-full flex flex-wrap justify-center" method="POST"
                   action="{{ route('cooperation.auth.login', compact('cooperation')) }}">
                 @csrf

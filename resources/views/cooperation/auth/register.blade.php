@@ -8,6 +8,11 @@
             <h1 class="heading-1">
                 @lang('auth.register.form.header')
             </h1>
+            @if(session('success'))
+                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'green'])
+                    {{ session('success') }}
+                @endcomponent
+            @endif
             <form class="w-full flex flex-wrap justify-center" method="POST" id="register"
                   action="{{ route('cooperation.register', compact('cooperation')) }}"
                   x-data="picoAddress('{{ route('api.get-address-data') }}')">
@@ -157,6 +162,11 @@
                     @lang('auth.register.form.submit')
                 </button>
             </form>
+            <p>
+                <a href="{{ route('cooperation.auth.login', compact('cooperation')) }}">
+                    @lang('auth.login.form.header')
+                </a>
+            </p>
         </div>
         <div class="mt-5 text-center">
             <a href="{{ route('cooperation.privacy.index', compact('cooperation')) }}" class="text-white">

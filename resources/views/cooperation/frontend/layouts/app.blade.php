@@ -23,7 +23,7 @@
 @yield('header')
 <main class="bg-cover bg-center bg-no-repeat bg-white"
       style="@yield('main_style', 'background-image: url(\''. asset('images/background.jpg') .'\');')">
-    @include('cooperation.frontend.layouts.parts.messages')
+{{--    @include('cooperation.frontend.layouts.parts.messages')--}}
 
     @yield('main')
 </main>

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CooperationFormRequest extends FormRequest
+class SettingsFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

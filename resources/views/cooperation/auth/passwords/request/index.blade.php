@@ -13,7 +13,7 @@
                 @endcomponent
             @endif
             <form class="w-full flex flex-wrap justify-center" method="POST"
-                  action="{{ route('cooperation.auth.password.request.store', compact('cooperation')) }}">
+                  action="{{ route('cooperation.auth.password.request.store') }}">
                 @csrf
                 @component('cooperation.frontend.layouts.components.form-group', [
                     'withInputSource' => false,
@@ -30,12 +30,12 @@
                 </button>
             </form>
             <p>
-                <a href="{{ route('cooperation.auth.login', compact('cooperation')) }}">
+                <a href="{{ route('cooperation.auth.login') }}">
                     @lang('auth.login.form.header')
                 </a>
                 <br><br>
                 @lang('auth.login.no-account')
-                <a href="{{ route('cooperation.register', compact('cooperation')) }}">
+                <a href="{{ route('cooperation.register') }}">
                     @lang('auth.register.form.header')
                 </a>
             </p>

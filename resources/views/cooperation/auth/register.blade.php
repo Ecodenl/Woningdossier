@@ -2,7 +2,7 @@
 
 @section('main')
     <div class="w-full min-h-screen flex justify-center items-center flex-col py-20 "
-         x-data="register('{{route('cooperation.check-existing-email', compact('cooperation'))}}')">
+         x-data="register('{{route('cooperation.check-existing-email')}}')">
         <div class="bg-white rounded-3xl p-20 text-center space-y-10 w-3/4">
             <i class="icon-xxl icon-hoom-logo"></i>
             <h1 class="heading-1">
@@ -14,7 +14,7 @@
                 @endcomponent
             @endif
             <form class="w-full flex flex-wrap justify-center" method="POST" id="register"
-                  action="{{ route('cooperation.register', compact('cooperation')) }}"
+                  action="{{ route('cooperation.register') }}"
                   x-data="picoAddress('{{ route('api.get-address-data') }}')">
                 @csrf
                 <input type="hidden" name="addressid" x-bind="addressId" value="{{ old('addressid') }}">
@@ -163,17 +163,17 @@
                 </button>
             </form>
             <p>
-                <a href="{{ route('cooperation.auth.login', compact('cooperation')) }}">
+                <a href="{{ route('cooperation.auth.login') }}">
                     @lang('auth.login.form.header')
                 </a>
             </p>
         </div>
         <div class="mt-5 text-center">
-            <a href="{{ route('cooperation.privacy.index', compact('cooperation')) }}" class="text-white">
+            <a href="{{ route('cooperation.privacy.index') }}" class="text-white">
                 @lang('default.privacy-policy')
             </a>
             <span class="text-white">|</span>
-            <a href="{{ route('cooperation.disclaimer.index', compact('cooperation')) }}" class="text-white">
+            <a href="{{ route('cooperation.disclaimer.index') }}" class="text-white">
                 @lang('default.terms-and-conditions')
             </a>
         </div>

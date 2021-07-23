@@ -347,8 +347,10 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
                         // needs to be the last route due to the param
                         Route::get('home', 'CooperationAdminController@index')->name('index');
 
-                        Route::get('settings', 'SettingsController@index')->name('settings.index');
-                        Route::post('cooperations', 'CooperationsController@store')->name('cooperations.store');
+                        Route::prefix('settings')->as('settings.')->group(function () {
+                            Route::get('', 'SettingsController@index')->name('index');
+                            Route::post('', 'SettingsController@store')->name('store');
+                        });
                     });
                 });
 

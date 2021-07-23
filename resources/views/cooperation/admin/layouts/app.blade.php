@@ -46,13 +46,14 @@
             <?php $cooperationToManage = request()->route()->parameters()['cooperationToManage']; ?>
             <div class="row">
                 <div class="col-md-2">
-                    <a href="{{route('cooperation.admin.super-admin.index')}}" class="btn btn-default btn-block" style="white-space: normal">
+                    <a class="btn btn-default btn-block" style="white-space: normal"
+                       href="{{route('cooperation.admin.super-admin.cooperations.index', ['search' => optional($cooperationToManage)->name])}}">
                         @lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.back-to-normal-environment')
                     </a>
                 </div>
                 <div class="col-md-10">
                     <div class="alert alert-warning">
-                        <strong>Letop!</strong> @lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.alert-on-top', ['cooperation' => $cooperationToManage->name])
+                        <strong>@lang('default.caution')</strong> @lang('woningdossier.cooperation.admin.super-admin.cooperations.cooperation-to-manage.alert-on-top', ['cooperation' => $cooperationToManage->name])
                     </div>
                 </div>
             </div>

@@ -18,6 +18,8 @@ use Plank\Mediable\Mediable;
  * @property string|null $cooperation_email
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ExampleBuilding[] $exampleBuildings
  * @property-read int|null $example_buildings_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Media[] $media
+ * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Questionnaire[] $questionnaires
  * @property-read int|null $questionnaires_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Step[] $steps
@@ -25,16 +27,24 @@ use Plank\Mediable\Mediable;
  * @property-read \App\Models\CooperationStyle|null $style
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
  * @property-read int|null $users_count
+ * @method static \Plank\Mediable\MediableCollection|static[] all($columns = ['*'])
+ * @method static \Plank\Mediable\MediableCollection|static[] get($columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation query()
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereCooperationEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereHasMedia($tags = [], bool $matchAll = false)
+ * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereHasMediaMatchAll(array $tags)
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Cooperation whereWebsiteUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Cooperation withMedia($tags = [], bool $matchAll = false, bool $withVariants = false)
+ * @method static \Illuminate\Database\Eloquent\Builder|Cooperation withMediaAndVariants($tags = [], bool $matchAll = false)
+ * @method static \Illuminate\Database\Eloquent\Builder|Cooperation withMediaAndVariantsMatchAll($tags = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|Cooperation withMediaMatchAll(bool $tags = [], bool $withVariants = false)
  * @mixin \Eloquent
  */
 class Cooperation extends Model

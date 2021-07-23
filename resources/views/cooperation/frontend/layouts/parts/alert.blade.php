@@ -7,7 +7,7 @@
         </div>
     @endif
 
-    <div class="@if(($dismissible ?? true)) w-3/4 @else w-full @endif">
+    <div class="@if(($dismissible ?? true)) w-3/4 @else w-full @endif text-left">
         {{ $slot }}
     </div>
 </div>

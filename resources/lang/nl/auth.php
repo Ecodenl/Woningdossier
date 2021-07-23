@@ -66,6 +66,11 @@ return [
         'no-account' => 'Nog geen account?',
         'warning' => 'Er is geen woning gekoppeld aan uw account, om het Hoomdossier goed te gebruiken hebben wij uw adres nodig.',
     ],
+    'logout' => [
+        'form' => [
+            'header' => 'Uitloggen',
+        ],
+    ],
 
     'general-data' => [
         'may-not-be-filled' => 'Dit veld mag niet gevuld zijn onder deze omstandigheden',

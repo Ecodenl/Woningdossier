@@ -9,7 +9,7 @@ use App\Models\Cooperation;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Plank\Mediable\Facades\MediaUploader;
-use Plank\Mediable\Media;
+use App\Models\Media;
 
 class SettingsController extends Controller
 {

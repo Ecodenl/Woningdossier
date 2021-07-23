@@ -46,7 +46,9 @@
 
                         <div class="row mt-20">
                             <div class="col-md-12">
-                                <button type="submit" class="btn btn-default">@lang('default.buttons.store')</button>
+                                <button type="submit" class="btn btn-default">
+                                    @lang('default.buttons.update')
+                                </button>
                             </div>
                         </div>
 

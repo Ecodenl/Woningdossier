@@ -3,7 +3,7 @@
 @section('main')
     <div class="w-full min-h-screen flex justify-center items-center flex-col py-20">
         <div class="bg-white rounded-3xl p-20 text-center space-y-10">
-            <i class="icon-xxl icon-hoom-logo"></i>
+            @include('cooperation.frontend.layouts.parts.logo')
             <h1 class="heading-1">
                 @lang('auth.email.form.header')
             </h1>

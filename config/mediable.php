@@ -6,7 +6,7 @@ return [
      *
      * Should extend `Plank\Mediable\Media`
      */
-    'model' => Plank\Mediable\Media::class,
+    'model' => App\Models\Media::class,
 
     /*
      * Name to be used for mediables joining table
@@ -16,7 +16,7 @@ return [
     /*
      * Filesystem disk to use if none is specified
      */
-    'default_disk' => 'public',
+    'default_disk' => 'uploads',
 
     /*
      * Filesystems that can be used for media storage

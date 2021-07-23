@@ -8,6 +8,6 @@ return [
         'current' => 'Huidig:',
     ],
     'store' => [
-        'success' => 'Bestanden bijgewerkt',
+        'success' => 'Instellingen bijgewerkt',
     ],
 ];

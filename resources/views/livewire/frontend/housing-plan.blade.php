@@ -1,6 +1,6 @@
 <div>
     {{-- Header row --}}
-    <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-10 mb-3">
+    <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 mb-3">
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
                 <div class="w-5 h-5 bg-blue-800 rounded-full mr-3"></div>
@@ -29,7 +29,7 @@
             <i class="icon-md icon-plus-circle cursor-pointer"></i>
         </div>
     </div>
-    <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-10">
+    <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10">
         <div class="card-wrapper">
             <div class="card">
                 <div class="icon-wrapper">

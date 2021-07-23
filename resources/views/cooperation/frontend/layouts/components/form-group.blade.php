@@ -1,8 +1,8 @@
 <div class="form-group {{ $class ?? '' }}" {!! $attr ?? '' !!}>
     <div class="form-header">
-        {{-- NOTE: Keep on one line, else white-space: break-spaces will fuck up! This is needed, else
-        styling for e.g. inline spans becomes really ugly! --}}
-        <label class="form-label" for="{{ $id ?? '' }}">{!! $label ?? '' !!}</label>
+        <label class="form-label" for="{{ $id ?? '' }}">
+            {!! $label ?? '' !!}
+        </label>
         <div class="form-end">
             @if(($withInputSource ?? true))
                 @include('cooperation.frontend.layouts.parts.source-select')

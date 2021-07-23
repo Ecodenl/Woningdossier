@@ -87,19 +87,21 @@ module.exports = {
             },
             width: {
                 ...fractionTen,
+                ...fractionTwenty,
                 'inherit': 'inherit',
             },
             height: {
-                ...fractionTen
+                ...fractionTen,
+                ...fractionTwenty,
             },
             minHeight: {
-                ...fractionTwenty
+                ...fractionTwenty,
             },
             minWidth: {
-                ...fractionTwenty
+                ...fractionTwenty,
             },
             inset: {
-                ...fractionTwenty
+                ...fractionTwenty,
             },
             zIndex: {
                 '60': '60',

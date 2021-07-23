@@ -4,7 +4,11 @@
 }
 
 .form-group.form-group-heading .form-label {
-    @apply font-semibold text-blue text-md;
+    @apply font-semibold text-blue text-md inline;
+}
+
+.form-group.form-group-heading .form-label > * {
+    @apply inline;
 }
 
 .form-group.form-group-heading .form-header {
@@ -18,7 +22,6 @@
 
 .form-header .form-label {
     @apply flex text-blue-500 text-sm font-bold w-3/4;
-    white-space: break-spaces;
 }
 
 .form-header .form-end {

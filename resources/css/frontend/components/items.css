@@ -29,12 +29,12 @@
 
 /* Drag and drop cards */
 .card-wrapper {
-    @apply rounded-lg bg-blue-100 p-3 space-y-3;
+    @apply rounded-lg bg-blue-100 p-1 lg:p-3 space-y-3;
 }
 
 .card-wrapper .card-placeholder,
 .card-wrapper .card {
-    @apply w-full border border-blue-500 border-opacity-50 rounded-lg h-24 p-3;
+    @apply w-full border border-blue-500 border-opacity-50 rounded-lg h-24 p-1 lg:p-3;
 }
 
 .card-wrapper .card-placeholder {
@@ -46,7 +46,7 @@
 }
 
 .card-wrapper .card .icon-wrapper {
-    @apply w-1/4 h-full;
+    @apply w-0 lg:w-3/20 xl:w-1/4 h-full;
 }
 
 .card-wrapper .card .icon-wrapper i {
@@ -54,11 +54,11 @@
 }
 
 .card-wrapper .card .center-info {
-    @apply w-1/2 h-full flex flex-wrap flex-col justify-center;
+    @apply w-14/20 lg:w-13/20 xl:w-1/2 h-full flex flex-wrap flex-col justify-center;
 }
 
 .card-wrapper .card .end-info {
-    @apply w-1/4 h-full flex flex-wrap flex-col justify-between;
+    @apply w-6/20 lg:w-4/20 h-full flex flex-wrap flex-col justify-between;
 }
 
 .card-wrapper .card .end-info > * {

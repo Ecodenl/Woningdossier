@@ -22,7 +22,7 @@
 
                             <span class="label label-primary">
                                 @lang('cooperation/admin/cooperation/cooperation-admin/settings.index.current')
-                                {{optional($cooperation->firstMedia(Media::LOGO))->filename}}
+                                {{optional($cooperation->firstMedia(MediaConstants::LOGO))->filename}}
                             </span>
 
                             @if($errors->has('medias.logo'))
@@ -36,7 +36,7 @@
                             <input name="medias[background]" id="file-background" type="file"/>
                             <span class="label label-primary">
                                @lang('cooperation/admin/cooperation/cooperation-admin/settings.index.current')
-                                {{optional($cooperation->firstMedia(Media::BACKGROUND))->filename}}
+                                {{optional($cooperation->firstMedia(MediaConstants::BACKGROUND))->filename}}
                             </span>
                             @if($errors->has('medias.background'))
                                 {{$errors->first('medias.background')}}

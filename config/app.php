@@ -199,7 +199,7 @@ return [
     */
 
     'aliases' => [
-        'Media' => \App\Helpers\Media::class,
+        'MediaConstants' => \App\Helpers\MediaConstants::class,
         'Hoomdossier' => \App\Helpers\Hoomdossier::class,
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,

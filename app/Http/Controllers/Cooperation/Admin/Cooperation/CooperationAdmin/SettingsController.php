@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
+use App\Helpers\MediaConstants;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin\SettingsFormRequest;
 use App\Models\Cooperation;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Plank\Mediable\Facades\MediaUploader;
+use Plank\Mediable\Media;
 
 class SettingsController extends Controller
 {
@@ -17,11 +19,21 @@ class SettingsController extends Controller
     }
 
     public function store(SettingsFormRequest $request, Cooperation $cooperation) {
-        $tags = ['logo', 'background'];
+        $tags = MediaConstants::getTags();
         foreach ($tags as $tag) {
             $file = $request->file('medias.'.$tag);
 
             if ($file instanceof UploadedFile) {
+                $media = $cooperation->firstMedia($tag);
+
+                // Check if media for this tag already exists
+                if ($media instanceof Media) {
+                    // We delete it so we can make place for new media;
+                    // We _could_ use replace(), but this doesn't update the file names
+                    $media->delete();
+                }
+
+                // Upload the new media, replace file if it already exists
                 $media = MediaUploader::fromSource($file)
                     ->onDuplicateReplace()
                     ->toDestination('uploads', $cooperation->slug)

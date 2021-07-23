@@ -25,6 +25,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
         Route::view('18', 'cooperation.frontend.templates.step-18');
         Route::view('23', 'cooperation.frontend.templates.step-23');
     });
+    Route::view('housing-plan', 'cooperation.frontend.templates.housing-plan');
 
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
         if ('local' == app()->environment()) {

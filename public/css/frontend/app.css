@@ -128985,7 +128985,87 @@ textarea.form-input {
   padding-left: 1rem;
   padding-right: 1rem;
   padding-bottom: 1.5rem;
-}/* Icons */
+}
+
+/* Drag and drop cards */
+
+.card-wrapper > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+}
+
+.card-wrapper {
+  border-radius: 0.5rem;
+  --tw-bg-opacity: 1;
+  background-color: rgba(240, 241, 242, var(--tw-bg-opacity));
+  padding: 0.75rem;
+}
+
+.card-wrapper .card-placeholder, .card-wrapper .card {
+  height: 6rem;
+  width: 100%;
+  border-radius: 0.5rem;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgba(100, 117, 133, var(--tw-border-opacity));
+  --tw-border-opacity: 0.5;
+  padding: 0.75rem;
+}
+
+.card-wrapper .card-placeholder {
+  border-style: dashed;
+  --tw-bg-opacity: 1;
+  background-color: rgba(100, 117, 133, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.05;
+}
+
+.card-wrapper .card {
+  display: flex;
+  cursor: pointer;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  border-style: solid;
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+}
+
+.card-wrapper .card .icon-wrapper {
+  height: 100%;
+  width: 25%;
+}
+
+.card-wrapper .card .icon-wrapper i {
+  height: 100%;
+  width: 100%;
+}
+
+.card-wrapper .card .center-info {
+  display: flex;
+  height: 100%;
+  width: 50%;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card-wrapper .card .end-info {
+  display: flex;
+  height: 100%;
+  width: 25%;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.card-wrapper .card .end-info > * {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Icons */
 
 .icon-xs {
   height: 0.5rem;

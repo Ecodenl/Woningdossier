@@ -26,3 +26,42 @@
 .modal-container .modal .modal-body {
     @apply px-4 pb-6 break-words;
 }
+
+/* Drag and drop cards */
+.card-wrapper {
+    @apply rounded-lg bg-blue-100 p-3 space-y-3;
+}
+
+.card-wrapper .card-placeholder,
+.card-wrapper .card {
+    @apply w-full border border-blue-500 border-opacity-50 rounded-lg h-24 p-3;
+}
+
+.card-wrapper .card-placeholder {
+    @apply border-dashed bg-blue-500 bg-opacity-5;
+}
+
+.card-wrapper .card {
+    @apply border-solid bg-white overflow-hidden flex flex-wrap justify-between items-center cursor-pointer;
+}
+
+.card-wrapper .card .icon-wrapper {
+    @apply w-1/4 h-full;
+}
+
+.card-wrapper .card .icon-wrapper i {
+    @apply w-full h-full;
+}
+
+.card-wrapper .card .center-info {
+    @apply w-1/2 h-full flex flex-wrap flex-col justify-center;
+}
+
+.card-wrapper .card .end-info {
+    @apply w-1/4 h-full flex flex-wrap flex-col justify-between;
+}
+
+.card-wrapper .card .end-info > * {
+    @apply flex justify-end;
+}
+

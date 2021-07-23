@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="93px" height="30px" viewBox="0 0 93 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Goed</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-512.000000, -2189.000000)">
+            <g id="vloerisolatie-goed" transform="translate(512.000000, 2193.000000)">
+                <polyline id="Path" stroke="#2CA982" stroke-width="3" points="45.49 3.86 25.74 23.61 5.99 3.86"></polyline>
+                <polyline id="Path" stroke="#2CA982" stroke-width="3" points="87.02 3.86 67.27 23.61 47.52 3.86"></polyline>
+                <line x1="93" y1="24.24" x2="0" y2="24.24" id="Path" stroke="#394553" stroke-width="3"></line>
+                <line x1="93" y1="0.5" x2="0" y2="0.5" id="Path" stroke="#394553" stroke-width="9"></line>
+            </g>
+        </g>
+    </g>
+</svg>

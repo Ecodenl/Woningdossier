@@ -1,0 +1,24 @@
+/* Headings */
+.heading-1 {
+    @apply font-semibold text-blue text-xxl;
+}
+.heading-2 {
+    @apply font-semibold text-blue text-xl;
+}
+.heading-3 {
+    @apply font-semibold text-blue text-lg;
+}
+.heading-4 {
+    @apply font-semibold text-blue text-md;
+}
+.heading-5 {
+    @apply font-semibold text-blue text-base;
+}
+.heading-6 {
+    @apply font-semibold text-blue text-sm;
+}
+
+/* Paragraph */
+p {
+    @apply text-blue-500 font-light text-sm;
+}

@@ -17,7 +17,7 @@ use App\Http\Controllers\Api\V1\Controller;
 
 Route::domain('{cooperation}.' . config('hoomdossier.domain'))
     ->middleware(['auth:sanctum', 'cooperation', 'access.cooperation'])
-    ->as('api.v1.cooperation.')
+    ->as('v1.cooperation.')
     ->prefix('v1')
     ->namespace('Cooperation')
     ->group(function () {
@@ -25,7 +25,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))
         Route::post('register', [RegisterController::class, 'store'])->name('register.store');
     });
 
-Route::group(['namespace' => 'Api'], function () {
-    Route::get('address-data', 'GeoController@getAddressData');
+Route::namespace('Api')->group(function () {
+    Route::get('address-data', 'GeoController@getAddressData')->name('get-address-data');
 });
 

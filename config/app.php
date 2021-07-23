@@ -184,6 +184,7 @@ return [
 
         App\Providers\WoningdossierServiceProvider::class,
         //\Ecodenl\PicoWrapper\PicoServiceProvider::class,
+        App\Providers\ViewServiceProvider::class,
     ],
 
     /*

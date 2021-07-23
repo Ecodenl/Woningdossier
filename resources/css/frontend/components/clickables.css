@@ -1,0 +1,52 @@
+/* Hyperlink */
+a {
+    @apply text-blue-900 underline font-medium cursor-pointer transition;
+    line-height: 24px;
+    font-size: 14px;
+
+    @apply hover:opacity-60;
+    @apply focus:opacity-60;
+}
+
+/* Hyperlink in paragraph */
+p a {
+    @apply text-purple no-underline font-medium;
+}
+
+/* Buttons */
+.btn {
+    @apply px-6 py-2 rounded-lg font-bold cursor-pointer transition outline-none;
+    line-height: 24px;
+    font-size: 14px;
+}
+.btn:disabled {
+    @apply cursor-not-allowed bg-gray text-white pointer-events-none;
+}
+.btn-purple {
+    @apply bg-purple-100 bg-opacity-100 text-purple;
+
+    @apply hover:bg-purple hover:bg-opacity-90 hover:text-white hover:shadow-center-purple-25;
+    @apply focus:bg-purple focus:bg-opacity-90 focus:text-white focus:shadow-center-purple-25;
+    @apply active:bg-purple active:bg-opacity-100 active:text-white focus:shadow-center-purple-50;
+}
+.btn-orange {
+    @apply bg-orange bg-opacity-25 text-orange;
+
+    @apply hover:bg-orange hover:bg-opacity-80 hover:text-white hover:shadow-center-orange-25;
+    @apply focus:bg-orange focus:bg-opacity-80 focus:text-white focus:shadow-center-orange-25;
+    @apply active:bg-orange active:bg-opacity-100 active:text-white focus:shadow-center-orange-50;
+}
+.btn-outline-purple {
+    @apply border border-solid border-purple border-opacity-25 border bg-white text-purple;
+
+    @apply hover:border-opacity-75 hover:shadow-center-purple-25;
+    @apply focus:border-opacity-75 focus:shadow-center-purple-25;
+    @apply active:border-opacity-100 focus:shadow-center-purple-50;
+}
+.btn-outline-orange {
+    @apply border border-solid border-orange border-opacity-25 border bg-white text-orange;
+
+    @apply hover:border-opacity-75 hover:shadow-center-orange-25;
+    @apply focus:border-opacity-75 focus:shadow-center-orange-25;
+    @apply active:border-opacity-100 focus:shadow-center-orange-50;
+}

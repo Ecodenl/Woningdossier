@@ -1,0 +1,348 @@
+/* Form groups and its children */
+.form-group {
+    @apply pt-4 relative flex flex-wrap content-start;
+}
+
+.form-group.form-group-heading .form-label {
+    @apply font-semibold text-blue text-md;
+}
+
+.form-group.form-group-heading .form-header {
+    @apply mb-4;
+}
+
+/* Header row of the form group */
+.form-header {
+    @apply flex items-center w-full mb-2;
+}
+
+.form-header .form-label {
+    @apply flex text-blue-500 text-sm font-bold w-3/4;
+    white-space: break-spaces;
+}
+
+.form-header .form-end {
+    @apply flex justify-end items-center w-1/4;
+}
+
+.form-header .form-info {
+    @apply flex cursor-pointer pl-2;
+}
+
+/* Input styles */
+.form-input,
+.radio-wrapper label,
+.checkbox-wrapper label,
+.add-option-wrapper label,
+.select-wrapper .select-input {
+    @apply flex items-center w-full cursor-pointer h-11 rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm outline-none max-w-full bg-white leading-10 relative;
+
+    @apply hover:border-green hover:border-opacity-100;
+    @apply focus:border-green focus:border-opacity-100;
+}
+
+.form-input::placeholder {
+    @apply text-blue-500 text-opacity-50;
+}
+
+.radio-wrapper,
+.checkbox-wrapper,
+.add-option-wrapper {
+    @apply mb-6;
+}
+
+.form-input {
+    @apply pl-3 mb-3;
+}
+
+/* Element specific styles */
+textarea.form-input {
+    @apply h-32;
+    min-height: 2.75rem; /* Height of h-11, base height of input */
+}
+
+.form-input:disabled,
+.radio-wrapper input[type="radio"]:disabled + label,
+.checkbox-wrapper input[type="checkbox"]:disabled + label,
+.select-wrapper .select-input.disabled {
+    @apply cursor-not-allowed bg-blue-100 bg-opacity-50;
+}
+
+.slider {
+    @apply w-full h-1 outline-none appearance-none;
+    --slider-before: theme('colors.green');
+    --slider-after: theme('colors.gray');
+}
+
+/* Slider hands*/
+.slider::-moz-range-thumb {
+    @apply appearance-none relative cursor-pointer bg-green rounded-xl bg-no-repeat bg-center;
+    width: 42px;
+    height: 35px;
+    background-image: url('/icons/arrow-left-right-white.svg');
+}
+.slider::-webkit-slider-thumb {
+    @apply appearance-none relative cursor-pointer bg-green rounded-xl bg-no-repeat bg-center;
+    width: 42px;
+    height: 35px;
+    background-image: url('/icons/arrow-left-right-white.svg');
+}
+
+.slider-bubble {
+    @apply absolute bg-white rounded-lg text-blue-500 font-light text-sm flex justify-center items-center border border-blue-500 border-solid bottom-8;
+    width: 43px;
+    height: 33px;
+}
+
+.slider-bubble::after {
+    @apply absolute border-b border-r border-blue-500 border-solid bg-white transform rotate-45 h-2 w-2;
+    bottom: -4.5px;
+    left: 17px;
+    content: '';
+}
+
+/* Error label */
+.form-error-label {
+    @apply text-red text-sm hidden -mt-3;
+}
+
+/* Form group required */
+.form-group.required .form-label::after {
+    @apply text-green ml-1 font-light;
+    content: '*';
+}
+
+/* Form group error */
+.form-error .form-input,
+.form-error .radio-wrapper label,
+.form-error .checkbox-wrapper label {
+    @apply border-red text-red;
+}
+
+.form-error .form-input::placeholder {
+    @apply text-red text-opacity-100;
+}
+
+.form-error .form-error-label {
+    @apply block;
+}
+
+.form-error input[type="text"] ~ .form-error-label::before {
+    @apply absolute block transform scale-150 right-6 top-3/20;
+    content: url('/icons/error-cross.svg');
+}
+
+/* Ensure we move the cross more to the left if an input group append is present */
+.form-error .input-group input[type="text"] ~ .input-group-append ~ .form-error-label::before {
+    @apply right-16;
+}
+
+/* Styling for radio and checkbox */
+.radio-wrapper,
+.checkbox-wrapper {
+    @apply flex max-w-full;
+}
+
+.radio-wrapper {
+    @apply w-1/2;
+}
+
+.checkbox-wrapper {
+    min-width: 8rem;
+}
+
+.radio-wrapper label,
+.checkbox-wrapper label {
+    @apply px-3;
+}
+
+/* Hide ugly default input */
+.radio-wrapper input[type="radio"],
+.checkbox-wrapper input[type="checkbox"] {
+    @apply hidden;
+}
+
+/* Set label wrapper & checkmark styling when input is checked */
+.radio-wrapper input[type="radio"]:checked + label,
+.checkbox-wrapper input[type="checkbox"]:checked + label {
+    @apply shadow-center-green-50 border-green border-opacity-100 bg-green bg-opacity-10 text-blue;
+}
+
+.radio-wrapper input[type="radio"]:checked + label .checkmark,
+.checkbox-wrapper input[type="checkbox"]:checked + label .checkmark {
+    @apply border-green border-opacity-100 shadow-center-green-50;
+}
+
+/* Set checkmark to visible when input is checked */
+.radio-wrapper input[type="radio"]:checked + label .checkmark::after,
+.checkbox-wrapper input[type="checkbox"]:checked + label .checkmark::after {
+    @apply block;
+}
+
+/* Checkbox becomes green when selected */
+.checkbox-wrapper input[type="checkbox"]:checked + label .checkmark {
+    @apply bg-green;
+}
+
+/* Style checkmark for both radio and checkbox */
+.checkmark {
+    @apply w-4 h-4 mr-2 border border-blue-500 border-opacity-50 relative bg-white;
+}
+
+.checkmark::after {
+    @apply absolute hidden;
+    content: '';
+}
+
+/* Round checkmark for radio */
+.radio-wrapper .checkmark {
+    @apply rounded-full;
+}
+
+.radio-wrapper .checkmark:after {
+    @apply w-7/10 h-7/10 rounded-full bg-green top-3/20;
+    left: 17%;
+}
+
+/* Tick for checkbox */
+.checkbox-wrapper .checkmark {
+    @apply rounded;
+}
+
+.checkbox-wrapper .checkmark::after {
+    @apply w-3/10 h-5/10 border-solid border-white transform rotate-45 left-8/20 top-4/20;
+    border-width: 0 2px 2px 0;
+}
+
+/* Custom style for radio/checkbox add option box */
+.add-option-wrapper label {
+    @apply border-dashed bg-purple bg-opacity-10 text-purple;
+
+    @apply hover:bg-opacity-20 hover:border-purple;
+    @apply focus:bg-opacity-20 focus:border-purple;
+}
+
+/* Wrapper for checkbox/radio if icon is present */
+.media-wrapper {
+    @apply h-40 w-40;
+}
+
+.media-wrapper label {
+    @apply w-full h-full p-0;
+}
+
+.media-wrapper label .media-icon-wrapper {
+    @apply w-full h-full absolute inset-0 flex justify-center items-center;
+}
+
+.media-wrapper label .media-icon-wrapper i {
+    @apply w-full h-7/10 p-4 -mt-4;
+}
+
+.add-option-wrapper.media-wrapper label .media-icon-wrapper i {
+    @apply h-1/2 w-1/2;
+}
+
+.media-wrapper label .checkmark {
+    @apply absolute m-0 top-2 right-2;
+}
+
+.media-wrapper label span:not(.checkmark):not(.media-icon-wrapper) {
+    @apply absolute bottom-2 inset-x-0 text-center;
+}
+
+.media-wrapper.media-wrapper-small {
+    /* WIP */
+}
+
+/* Input groups */
+.input-group {
+    @apply relative w-full flex flex-wrap items-center;
+}
+
+.input-group .input-group-append {
+    @apply flex justify-center items-center absolute top-px right-px bg-blue-100 bg-opacity-50 text-blue-500 w-11 overflow-hidden rounded-r-lg text-sm;
+    height: 2.64rem; /* Slightly smaller than h-11 to fit within the borders of the input */
+}
+
+/* Custom Alpine select */
+.select-wrapper .select-dropdown {
+    @apply w-full absolute rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm bg-white z-50 top-full  filter drop-shadow-xl;
+    min-height: 3rem; /* h-12, height of 1 option. Displays better when no options are available */
+}
+
+.select-wrapper .select-dropdown .select-option {
+    @apply w-full bg-white bg-opacity-100 cursor-pointer h-12 flex items-center pl-3 rounded-lg;
+
+    @apply hover:bg-green hover:bg-opacity-10;
+    @apply focus:bg-green focus:bg-opacity-10;
+}
+
+.select-wrapper .select-dropdown .select-option.selected {
+    @apply bg-green bg-opacity-20;
+}
+
+.select-wrapper .select-dropdown .select-option.disabled {
+    @apply hidden;
+}
+
+.select-wrapper i:not(.select-icon) {
+    @apply absolute right-6 top-5/20 pointer-events-none;
+}
+
+/* Select with icon */
+.select-wrapper .select-icon {
+    @apply h-12 w-12 z-10 absolute left-6 top-1/20 pointer-events-none;
+}
+
+.select-wrapper .select-icon ~ input.form-input {
+    @apply h-14;
+    padding-left: 5.5rem;
+}
+
+.select-wrapper .select-icon ~ i:not(.select-icon) {
+    @apply top-6/20;
+}
+
+/* Input source dropdown */
+.source-select-wrapper {
+    @apply w-auto h-4 rounded-lg text-xs relative;
+    min-width: 4rem;
+}
+
+.source-select-wrapper .source-select-input {
+    @apply flex items-center cursor-pointer h-full rounded-lg outline-none leading-4 pl-2;
+    max-width: 7rem;
+}
+
+.source-select-wrapper i {
+    @apply absolute right-2 top-5/20 pointer-events-none;
+}
+
+.source-select-wrapper .source-select-dropdown {
+    @apply w-28 bg-white bg-opacity-100 h-20 px-2 py-1 rounded absolute top-6 right-0 z-60 filter drop-shadow-xl;
+}
+
+.source-select-wrapper .source-select-dropdown .source-select-option {
+    @apply w-24 h-5 rounded-lg flex items-center pl-1 mb-1 cursor-pointer;
+}
+
+/* Source colors - Naming is important, as these get used to define the color on the main 'button' too */
+.source-resident {
+    @apply border border-opacity-0 border-green bg-green bg-opacity-10 text-green;
+
+    @apply hover:border-opacity-100;
+    @apply focus:border-opacity-100;
+}
+.source-coach {
+    @apply border border-opacity-0 border-blue-800 bg-blue-800 bg-opacity-10 text-blue-800;
+
+    @apply hover:border-opacity-100;
+    @apply focus:border-opacity-100;
+}
+.source-example-building {
+    @apply border border-opacity-0 border-orange bg-orange bg-opacity-10 text-orange;
+
+    @apply hover:border-opacity-100;
+    @apply focus:border-opacity-100;
+}

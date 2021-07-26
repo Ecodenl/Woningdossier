@@ -18,16 +18,30 @@ class HousingPlan extends Component
         ],
     ];
 
+    public array $new_measure = [];
+
+    public string $category = '';
+
     // TODO: Move this to a constant helper when this is retrieved from backend
     public string $SUBSIDY_AVAILABLE = 'available';
     public string $SUBSIDY_UNAVAILABLE = 'unavailable';
     public string $SUBSIDY_UNKNOWN = 'unknown';
 
+    public string $CATEGORY_COMPLETE = 'complete';
+    public string $CATEGORY_TO_DO = 'to-do';
+    public string $CATEGORY_LATER = 'later';
+
+    protected $rules = [
+        'new_measure.subject' => 'required',
+        'new_measure.price.from' => 'required|numeric|min:0',
+        'new_measure.price.to' => 'required|numeric|gt:new_measure.price.from',
+    ];
+
     public function mount()
     {
         // TODO: Find out how to get these from backend data
         $this->cards = [
-            'complete' => [
+            $this->CATEGORY_COMPLETE => [
                 [
                     'name' => 'Ventilatie (mechanisch)',
                     'icon' => 'icon-ventilation',
@@ -73,7 +87,7 @@ class HousingPlan extends Component
                     'info' => 'Een dakkapel zorgt voor veel licht inval.',
                 ],
             ],
-            'to-do' => [
+            $this->CATEGORY_TO_DO => [
                 [
                     'name' => 'Vloerverwarming',
                     'icon' => 'icon-radiant-floor-heating',
@@ -130,7 +144,7 @@ class HousingPlan extends Component
                     'info' => 'Goede isolatie, het spreekt voor zich.',
                 ],
             ],
-            'later' => [
+            $this->CATEGORY_LATER => [
                 [
                     'name' => 'Dakisolatie',
                     'icon' => 'icon-roof-insulation-excellent',
@@ -155,12 +169,36 @@ class HousingPlan extends Component
                 ],
             ],
         ];
-
     }
-
 
     public function render()
     {
         return view('livewire.frontend.housing-plan');
+    }
+
+    public function updated($field)
+    {
+        $this->validateOnly($field, $this->rules);
+    }
+
+    public function submit()
+    {
+        $measureData = $this->validate($this->rules)['new_measure'];
+
+        // Append card
+        $this->cards[$this->category][] = [
+            'name' => $measureData['subject'],
+            'icon' => 'icon-tools',
+            'price' => $measureData['price'],
+            'subsidy' => $this->SUBSIDY_UNKNOWN,
+            'savings' => $measureData['price']['from'] + ($measureData['price']['to'] / 10),
+        ];
+
+        $this->dispatchBrowserEvent('close-modal');
+    }
+
+    public function setCategory($category)
+    {
+        $this->category = $category;
     }
 }

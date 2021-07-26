@@ -1,6 +1,6 @@
 <div>
     {{-- Header row --}}
-    <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 mb-3">
+    <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 mb-3" x-data="modal()">
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
                 <div class="w-5 h-5 bg-blue-800 rounded-full mr-3"></div>
@@ -8,7 +8,8 @@
                     In orde
                 </h5>
             </div>
-            <i class="icon-md icon-plus-circle cursor-pointer"></i>
+            <i class="icon-md icon-plus-circle cursor-pointer" x-on:click="toggle()"
+               wire:click="setCategory('{{$CATEGORY_COMPLETE}}')"></i>
         </div>
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
@@ -17,7 +18,8 @@
                     Nu aanpakken
                 </h5>
             </div>
-            <i class="icon-md icon-plus-circle cursor-pointer"></i>
+            <i class="icon-md icon-plus-circle cursor-pointer" x-on:click="toggle()"
+               wire:click="setCategory('{{$CATEGORY_TO_DO}}')"></i>
         </div>
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
@@ -26,13 +28,60 @@
                     Later uitvoeren
                 </h5>
             </div>
-            <i class="icon-md icon-plus-circle cursor-pointer"></i>
+            <i class="icon-md icon-plus-circle cursor-pointer" x-on:click="toggle()"
+               wire:click="setCategory('{{$CATEGORY_LATER}}')"></i>
         </div>
+        @component('cooperation.frontend.layouts.components.modal', ['header' => __('cooperation/frontend/tool.form.subject')])
+            <form wire:submit.prevent="submit()">
+                <div class="flex flex-wrap mb-5">
+                    @component('cooperation.frontend.layouts.components.form-group', [
+                       'inputName' => 'new_measure.subject',
+                       'class' => 'w-full -mt-4 mb-4',
+                       'id' => 'new-measure-subject',
+                       'withInputSource' => false,
+                   ])
+                        <input class="form-input" wire:model="new_measure.subject" id="new-measure-subject"
+                               placeholder="Placeholder">
+                    @endcomponent
+                    <div class="w-full flex items-center">
+                        <i class="icon-sm icon-info mr-3"></i>
+                        <h6 class="heading-6">
+                            Prijsindicatie in €
+                        </h6>
+                    </div>
+                    @component('cooperation.frontend.layouts.components.form-group', [
+                                    'inputName' => 'new_measure.price.from',
+                                    'class' => 'w-1/2 pr-1',
+                                    'id' => 'new-measure-price-from',
+                                    'withInputSource' => false,
+                                ])
+                        <input class="form-input" wire:model="new_measure.price.from" id="new-measure-price-from"
+                               placeholder="van">
+                    @endcomponent
+                    @component('cooperation.frontend.layouts.components.form-group', [
+                        'inputName' => 'new_measure.price.to',
+                        'class' => 'w-1/2 pl-1',
+                        'id' => 'new-measure-price-to',
+                        'withInputSource' => false,
+                    ])
+                        <input class="form-input" wire:model="new_measure.price.to" id="new-measure-price-to"
+                               placeholder="tot">
+                    @endcomponent
+                </div>
+                <div class="w-full border border-gray fixed left-0"></div>
+                <div class="flex flex-wrap justify-center mt-14">
+                    <button class="btn btn-purple w-full" type="submit">
+                        <i class="icon-xs icon-plus-purple mr-3"></i>
+                        Voeg maatregel toe
+                    </button>
+                </div>
+            </form>
+        @endcomponent
     </div>
     <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10"
          x-data="draggables()">
         @foreach($cards as $cardCategory => $cardCollection)
-            <div class="card-wrapper" x-bind="container"
+            <div class="card-wrapper" x-bind="container" data-category="{{$cardCategory}}"
                  x-on:drop.prevent="let placeholder = $el.querySelector('.card-placeholder');
                  $el.removeChild(placeholder); $el.appendChild(placeholder); ">
                 @foreach($cardCollection as $card)

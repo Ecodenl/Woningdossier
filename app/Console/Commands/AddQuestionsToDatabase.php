@@ -291,8 +291,17 @@ class AddQuestionsToDatabase extends Command
                 'Gas en elektra gebruik' => [
                     'sub_step_template_id' => $template2rows1top2bottom->id,
                     'questions' => [
-                        // todo: hoe wordt er gekookt moet nog toegevoegd worden, dit is alleen een nieuwe vraag \-_-/
-                        // die staat op slide 15
+                        [
+                            'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                            'short' => 'cook-type',
+                            'translation' => "Hoe wordt er gekookt?",
+                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_custom_values' => [
+                                'gas' => 'Gas',
+                                'electric' => 'Elektrisch',
+                                'induction' => 'Inductie',
+                            ],
+                        ],
                         [
                             'validation' => ['required', 'numeric', 'min:0', 'max:10000'],
                             'save_in' => 'user_energy_habits.amount_gas',
@@ -425,13 +434,18 @@ class AddQuestionsToDatabase extends Command
                 ],
                 'Gasketel vragen' => [
                     'sub_step_template_id' => $templateDefault->id,
-                    // todo: deze vraag mag alleen worden weergeven waneer de verwarming vraag gasketel is.
+                    'conditions' => [
+                        [
+                            'column' => 'heat-source',
+                            'operator' => '=',
+                            'value' => 'hr-boiler',
+                        ]
+                    ],
                     'questions' => [
                         [
                             'validation' => ['required', 'exists:services,id'],
                             'save_in' => "building_services.{$boiler->id}.service_value_id",
                             'short' => 'boiler-type',
-                            // was current-state -> type ketel
                             'translation' => "Wat voor gasketel heeft u?",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $boiler->values()->orderBy('order')->get(),
@@ -474,6 +488,13 @@ class AddQuestionsToDatabase extends Command
                 ],
                 'Warmtepomp' => [
                     'sub_step_template_id' => $templateDefault->id,
+                    'conditions' => [
+                        [
+                            'column' => 'heat-source',
+                            'operator' => '=',
+                            'value' => 'heat-pump',
+                        ]
+                    ],
                     'questions' => [
                         [
                             'validation' => ['required', 'exists:services,id'],
@@ -544,6 +565,13 @@ class AddQuestionsToDatabase extends Command
                                 'yes' => 'Ja',
                                 'no' => 'Nee'
                             ],
+                            'conditions' => [
+                                [
+                                    'column' => 'has-solar-panels',
+                                    'operator' => '=',
+                                    'value' => 'yes',
+                                ]
+                            ],
                         ],
                         [
                             'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'min:1', 'max:50'],
@@ -552,6 +580,13 @@ class AddQuestionsToDatabase extends Command
                             'translation' => "Piekvermogen per paneel",
                             'unit_of_measure' => 'WP',
                             'tool_question_type_id' => $textType->id,
+                            'conditions' => [
+                                [
+                                    'column' => 'has-solar-panels',
+                                    'operator' => '=',
+                                    'value' => 'yes',
+                                ]
+                            ],
                         ],
                         [
                             'validation' => [
@@ -566,6 +601,13 @@ class AddQuestionsToDatabase extends Command
                             'placeholder' => 'Voer een jaartal in',
                             'unit_of_measure' => 'WP',
                             'tool_question_type_id' => $textType->id,
+                            'conditions' => [
+                                [
+                                    'column' => 'has-solar-panels',
+                                    'operator' => '=',
+                                    'value' => 'yes',
+                                ]
+                            ],
                         ],
                     ]
                 ],
@@ -577,12 +619,18 @@ class AddQuestionsToDatabase extends Command
             $orderForSubQuestions = 0;
             foreach ($subQuestions as $subQuestionName => $subQuestionData) {
 
-                $subStep = SubStep::create([
+                $subStepData = [
                     'name' => ['nl' => $subQuestionName],
                     'order' => $orderForSubQuestions,
                     'step_id' => $step->id,
                     'sub_step_template_id' => $subQuestionData['sub_step_template_id'],
-                ]);
+                ];
+
+                if (isset($subQuestionData['conditions'])) {
+                    $subStepData['conditions'] = $subQuestionData['conditions'];
+                }
+
+                $subStep = SubStep::create($subStepData);
 
                 if (isset($subQuestionData['questions'])) {
                     foreach ($subQuestionData['questions'] as $questionData) {
@@ -630,7 +678,6 @@ class AddQuestionsToDatabase extends Command
                                 ]);
                             }
                         }
-                        // now we have to create the morph relationship
                     }
                 }
 

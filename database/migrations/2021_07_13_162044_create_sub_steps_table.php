@@ -17,7 +17,7 @@ class CreateSubStepsTable extends Migration
             $table->bigIncrements('id');
             $table->json('name');
             $table->integer('order');
-
+            $table->json('conditions')->nullable()->default(null);
             $table->unsignedInteger('step_id');
             $table->foreign('step_id')->references('id')->on('steps')->onDelete('cascade');
 

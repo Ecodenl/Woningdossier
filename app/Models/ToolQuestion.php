@@ -19,6 +19,7 @@ class ToolQuestion extends Model
 
     protected $fillable = [
         'short',
+        'conditions',
         'placeholder',
         'name',
         'help_text',
@@ -32,6 +33,7 @@ class ToolQuestion extends Model
     ];
 
     protected $casts = [
+        'conditions' => 'array',
         'options' => 'array',
         'save_in' => 'array',
         'validation' => 'array',

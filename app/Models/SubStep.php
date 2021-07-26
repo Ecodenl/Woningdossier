@@ -13,10 +13,15 @@ class SubStep extends Model
         'name',
         'order',
         'step_id',
+        'conditions',
         'sub_step_template_id'
     ];
     protected $translatable = [
         'name',
+    ];
+
+    protected $casts = [
+        'conditions' => 'array',
     ];
 
     public function toolQuestions()

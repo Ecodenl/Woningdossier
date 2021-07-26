@@ -491,30 +491,6 @@ class AddQuestionsToDatabase extends Command
                                 'between:1900,' . date('Y')
                             ],
                             'short' => 'heat-pump-placed-date',
-                            'translation' => "Wanneer is de warmtepomp geplaatst?",
-                            'tool_question_type_id' => $textType->id,
-                        ],
-                    ]
-                ],
-                'Warmtepomp' => [
-                    'sub_step_template_id' => $templateDefault->id,
-                    'questions' => [
-                        [
-                            'validation' => ['required', 'exists:services,id'],
-                            'save_in' => "building_services.{$heatPump->id}.service_value_id",
-                            'short' => 'heat-pump-type',
-                            'translation' => "Heeft u een warmptepomp",
-                            'tool_question_type_id' => $radioType->id,
-                            'tool_question_values' => $heater->values()->orderBy('order')->get(),
-                        ],
-                        [
-                            'validation' => [
-                                // required when the heat pump is available
-                                "required_if:building_services.{$heatPump->id}.service_value_id,!=,".$heater->values()->where('calculate_value', 1)->first()->id,
-                                'numeric',
-                                'between:1900,' . date('Y')
-                            ],
-                            'short' => 'heat-pump-placed-date',
                             'placeholder' => 'Voer een jaartal in',
                             'translation' => "Wanneer is de warmtepomp geplaatst?",
                             'tool_question_type_id' => $textType->id,
@@ -596,7 +572,7 @@ class AddQuestionsToDatabase extends Command
             ],
         ];
         foreach ($structure as $stepShort => $subQuestions) {
-            $this->info("Adding questions to {$stepShort}..");
+            $this->info("Adding questions to {$stepShort}..     ");
             $step = Step::findByShort($stepShort);
             $orderForSubQuestions = 0;
             foreach ($subQuestions as $subQuestionName => $subQuestionData) {
@@ -632,6 +608,7 @@ class AddQuestionsToDatabase extends Command
                         if (isset($questionData['tool_question_custom_values'])) {
                             $toolQuestionCustomValueOrder = 0;
                             foreach ($questionData['tool_question_custom_values'] as $value => $name) {
+
                                 $toolQuestion->toolQuestionCustomValues()->create([
                                     'order' => $toolQuestionCustomValueOrder,
                                     'show' => true,

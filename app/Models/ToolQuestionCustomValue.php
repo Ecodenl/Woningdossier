@@ -11,7 +11,16 @@ class ToolQuestionCustomValue extends Model
 
     protected $translatable = ['name'];
 
-    protected $fillable = ['name', 'order', 'validation', 'options', 'value', 'tool_question_id', 'show'];
+    protected $fillable = [
+        'name',
+        'short',
+        'order',
+        'validation',
+        'options',
+        'value',
+        'tool_question_id',
+        'show'
+    ];
 
     protected $casts = [
         'show' => 'boolean',

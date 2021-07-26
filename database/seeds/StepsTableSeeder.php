@@ -16,14 +16,14 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'general-data',
                 'short' => 'general-data',
-                'names' => [
+                'name' => [
                     'en' => 'General data',
                     'nl' => 'Algemene gegevens',
                 ],
                 'order' => 1,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Gebouwkenmerken',
                 ],
                 'slug' => 'gebouw-kenmerken',
@@ -32,7 +32,7 @@ class StepsTableSeeder extends Seeder
                 'order' => 0,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Huidige staat',
                 ],
                 'slug' => 'huidige-staat',
@@ -41,7 +41,7 @@ class StepsTableSeeder extends Seeder
                 'order' => 1,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Gebruik',
                 ],
                 'slug' => 'gebruik',
@@ -50,7 +50,7 @@ class StepsTableSeeder extends Seeder
                 'order' => 2,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Interesse',
                 ],
                 'slug' => 'interesse',
@@ -61,7 +61,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'ventilation',
                 'short' => 'ventilation',
-                'names' => [
+                'name' => [
                     'en' => 'Ventilation',
                     'nl' => 'Ventilatie',
                 ],
@@ -70,7 +70,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'wall-insulation',
                 'short' => 'wall-insulation',
-                'names' => [
+                'name' => [
                     'en' => 'Wall Insulation',
                     'nl' => 'Gevelisolatie',
                 ],
@@ -79,7 +79,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'insulated-glazing',
                 'short' => 'insulated-glazing',
-                'names' => [
+                'name' => [
                     'en' => 'Insulated Glazing',
                     'nl' => 'Isolerende beglazing',
                 ],
@@ -88,7 +88,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'floor-insulation',
                 'short' => 'floor-insulation',
-                'names' => [
+                'name' => [
                     'en' => 'Floor Insulation',
                     'nl' => 'Vloerisolatie',
                 ],
@@ -97,7 +97,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'roof-insulation',
                 'short' => 'roof-insulation',
-                'names' => [
+                'name' => [
                     'en' => 'Roof Insulation',
                     'nl' => 'Dakisolatie',
                 ],
@@ -106,7 +106,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'high-efficiency-boiler',
                 'short' => 'high-efficiency-boiler',
-                'names' => [
+                'name' => [
                     'en' => 'High Efficiency Boiler',
                     'nl' => 'HR CV-ketel',
                 ],
@@ -115,7 +115,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'heat-pump',
                 'short' => 'heat-pump',
-                'names' => [
+                'name' => [
                     'en' => 'Heat Pump',
                     'nl' => 'Warmtepomp',
                 ],
@@ -124,7 +124,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'solar-panels',
                 'short' => 'solar-panels',
-                'names' => [
+                'name' => [
                     'en' => 'Solar Panels',
                     'nl' => 'Zonnepanelen',
                 ],
@@ -133,7 +133,7 @@ class StepsTableSeeder extends Seeder
             [
                 'slug' => 'heater',
                 'short' => 'heater',
-                'names' => [
+                'name' => [
                     'en' => 'Heater',
                     'nl' => 'Zonneboiler',
                 ],
@@ -180,16 +180,14 @@ class StepsTableSeeder extends Seeder
 
         foreach ($steps as $step) {
 
-            if (! DB::table('steps')->where('slug', $step['slug'])->first() instanceof stdClass) {
-                $insertStepData = [
-                    'slug' => $step['slug'],
-                    'short' => $step['short'],
-                    'name' => json_encode($step['name']),
-                    'order' => $step['order'],
-                ];
+            $insertStepData = [
+                'slug' => $step['slug'],
+                'short' => $step['short'],
+                'name' => json_encode($step['name']),
+                'order' => $step['order'],
+            ];
 
-                \DB::table('steps')->updateOrInsert(['short' => $step['short']], $insertStepData);
-            }
+            \DB::table('steps')->updateOrInsert(['short' => $step['short']], $insertStepData);
         }
 
         $allCooperations = \App\Models\Cooperation::all();

@@ -39,25 +39,30 @@ class DoUpgrade extends Command
      */
     public function handle()
     {
-        $seeders = [
-            \StepsTableSeeder::class,
-            \ToolQuestionTypesTableSeeder::class,
-            \SubStepTemplatesTableSeeder::class,
+        if ($this->confirm('This will 100% mess up your environment when ran unintentionally, do you want to continue')) {
+            $this->info('<fg=yellow>May the force be with you...</>');
+            $seeders = [
+                \StepsTableSeeder::class,
+                \ToolQuestionTypesTableSeeder::class,
+                \SubStepTemplatesTableSeeder::class,
 
-        ];
+            ];
 
-        foreach ($seeders as $seeder) {
-            $this->info("Running $seeder");
-            Artisan::call('db:seed', ['--class' => $seeder]);
-        }
+            foreach ($seeders as $seeder) {
+                $this->info("Running $seeder");
+                Artisan::call('db:seed', ['--class' => $seeder]);
+            }
 
-        $commands = [
-            AddQuestionsToDatabase::class
-        ];
+            $commands = [
+                AddQuestionsToDatabase::class
+            ];
 
-        foreach ($commands as $command) {
-            $this->info("Running $command");
-            Artisan::call($command);
+            foreach ($commands as $command) {
+                $this->info("Running $command");
+                Artisan::call($command);
+            }
+        } else {
+            $this->info('K bye');
         }
     }
 }

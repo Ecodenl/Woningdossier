@@ -15,7 +15,8 @@ class CreateToolQuestionsTable extends Migration
     {
         Schema::create('tool_questions', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('short');
+            $table->string('short')->nullable()->default(null);
+            $table->string('save_in')->nullable()->default(null);
             $table->json('name');
             $table->json('help_text');
             $table->json('placeholder')->nullable()->default(null);
@@ -24,7 +25,6 @@ class CreateToolQuestionsTable extends Migration
             $table->foreign('tool_question_type_id')->references('id')->on('tool_question_types')->onDelete('cascade');
             $table->boolean('coach')->default(true);
             $table->boolean('resident')->default(true);
-            $table->json('save_in')->nullable()->default(null);
             $table->json('options')->nullable()->default(null);
             $table->json('validation')->nullable()->default(null);
             $table->string('unit_of_measure')->nullable()->default(null);

@@ -219,7 +219,7 @@ class AddQuestionsToDatabase extends Command
                     ]
                 ],
             ],
-            'usage' => [
+            'usage-quick-scan' => [
                 'Hoeveel bewoners' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [

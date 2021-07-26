@@ -92,9 +92,10 @@ return [
     'not_regex'            => 'De :attribute formaat is ongeldig.',
     'numeric'              => ':attribute moet een getal bevatten',
     'present'              => 'De :attribute moet gevuld zijn.',
-    'phone_number'         => 'Telefoonnummer bevat geen geldig telefoonnummer.',
-    'postal_code'          => 'De opgegeven postcode is ongeldig.',
-    'house_number'         => 'opgegeven huisnummer is ongeldig.',
+    'phone_number'         => ':attribute is een ongeldig telefoonnummer.',
+    'postal_code'          => ':attribute is een ongeldige postcode.',
+    'house_number'         => ':attribute is een ongeldig huisnummer.',
+    'house_number_extension'    => ':attribute is een ongeldige huisnummer toevoeging.',
     'regex'                => ':attribute formaat is ongeldig.',
     'required'             => ':attribute veld is verplicht.',
     'required_if'          => ':attribute veld is verplicht wanneer :other :value is.',
@@ -191,6 +192,20 @@ return [
     // note, when a key needs a wildcard add it to the custom array.
     // A wildcard wont work in the attributes array but will in the custom array, needs more work but at least we dont need to hardcode the * numbers.
     'attributes' => [
+        'email' => 'E-mailadres',
+        'password' => 'Wachtwoord',
+
+        // Register fields
+        'number' => 'Huisnummer',
+        'postal_code' => 'Postcode',
+        'first_name' => 'Voornaam',
+        'last_name' => 'Achternaam',
+        'street' => 'Straat',
+        'city' => 'Plaats',
+        'phone_number' => 'Telefoonnummer',
+        'house_number' => 'Huisnummer',
+        'house_number_extension' => 'Toevoeging',
+
         'account.current_password' => 'huidig wachtwoord',
         'account.password' => 'wachtwoord',
         'account.password_confirmation' => 'wachtwoord bevestigen',

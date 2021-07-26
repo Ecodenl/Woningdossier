@@ -184,6 +184,7 @@ return [
 
         App\Providers\WoningdossierServiceProvider::class,
         //\Ecodenl\PicoWrapper\PicoServiceProvider::class,
+        App\Providers\ViewServiceProvider::class,
     ],
 
     /*
@@ -198,6 +199,7 @@ return [
     */
 
     'aliases' => [
+        'MediaConstants' => \App\Helpers\MediaConstants::class,
         'Hoomdossier' => \App\Helpers\Hoomdossier::class,
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,

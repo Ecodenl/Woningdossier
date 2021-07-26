@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="78px" height="85px" viewBox="0 0 78 85" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Kozijnen</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-605.000000, -2713.000000)">
+            <g id="kozijnen-icon" transform="translate(607.000000, 2715.000000)">
+                <path d="M5.31018519,5.77955272 L5.31018519,75.2204473 L68.775463,75.2204473 L68.775463,5.77955272 L5.31018519,5.77955272 Z M33.7453704,68.7507987 L11.4768519,68.7507987 L11.4768519,43.9073482 L33.8310185,43.9073482 L33.8310185,68.7507987 L33.7453704,68.7507987 Z M33.7453704,37.1789137 L11.4768519,37.1789137 L11.4768519,12.3354633 L33.8310185,12.3354633 L33.8310185,37.1789137 L33.7453704,37.1789137 Z M62.5231481,68.7507987 L40.2546296,68.7507987 L40.2546296,43.9073482 L62.6087963,43.9073482 L62.6087963,68.7507987 L62.5231481,68.7507987 Z M62.5231481,37.1789137 L40.2546296,37.1789137 L40.2546296,12.3354633 L62.6087963,12.3354633 L62.6087963,37.1789137 L62.5231481,37.1789137 Z" id="Shape" fill="#2CA982" fill-rule="nonzero"></path>
+                <rect id="Rectangle" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" x="0" y="0" width="74" height="81"></rect>
+                <rect id="Rectangle" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" x="5.22453704" y="5.77955272" width="63.5509259" height="69.5271565"></rect>
+                <g id="Group" transform="translate(11.476852, 12.249201)" stroke="#394553" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.58466454">
+                    <g id="Rectangle">
+                        <rect x="0" y="0" width="22.3541667" height="24.8434505"></rect>
+                        <rect x="28.7777778" y="0" width="22.3541667" height="24.8434505"></rect>
+                    </g>
+                    <g transform="translate(0.000000, 31.658147)" id="Rectangle">
+                        <rect x="0" y="0" width="22.3541667" height="24.8434505"></rect>
+                        <rect x="28.7777778" y="0" width="22.3541667" height="24.8434505"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

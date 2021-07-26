@@ -19,6 +19,8 @@ return [
 
     'yes' => 'Ja',
     'no' => 'Nee',
+    'start' => 'Start',
+    'caution' => 'Let op!',
 
     'progress' => [
         'not-completed' => ':step - deze stap is nog niet afgerond',
@@ -32,4 +34,7 @@ return [
         ],
     ],
     'new-message' => 'Nieuwe berichten',
+
+    'privacy-policy' => 'Privacybeleid',
+    'terms-and-conditions' => 'Algemene voorwaarden',
 ];

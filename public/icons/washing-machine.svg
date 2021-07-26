@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="74px" height="89px" viewBox="0 0 74 89" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>wasmachine</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-604.000000, -3133.000000)">
+            <g id="wasmachine" transform="translate(606.000000, 3135.000000)">
+                <path d="M35.2,72.1 C17.1,72.1 16.1,54.1 16.1,54.1 C16.1,54.1 24.1,46.5 33.3,53.3 C33.3,53.3 44.8,62.3 54.2,52.9 C54.3,56.1 53.3,72.1 35.2,72.1 Z" id="Path" fill="#2CA982" fill-rule="nonzero"></path>
+                <path d="M54.9,52.4 C54.9,63.3 46.1,72.1 35.2,72.1 C24.3,72.1 15.5,63.3 15.5,52.4 C15.5,41.5 24.3,32.7 35.2,32.7 C46.1,32.7 54.9,41.6 54.9,52.4 Z" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M16.1,54.1 C16.1,54.1 24.1,46.5 33.3,53.3 C33.3,53.3 44.8,62.3 54.2,52.9" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <line x1="8.3" y1="10" x2="19.2" y2="10" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <path d="M0,20.4 L0,79.3 C0,82.5 2.6,85 5.7,85 L64.6,85 C67.8,85 70.3,82.4 70.3,79.3 L70.3,5.7 C70.3,2.5 67.7,0 64.6,0 L5.7,0 C2.5,0 0,2.6 0,5.7 L0,20.4 L69.5,20.4" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <circle id="Oval" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" cx="60.5" cy="10" r="2.8"></circle>
+                <circle id="Oval" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" cx="50.1" cy="10" r="2.8"></circle>
+            </g>
+        </g>
+    </g>
+</svg>

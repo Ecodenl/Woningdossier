@@ -2056,19 +2056,16 @@ body.new-page {
 .step-intro {
   margin-bottom: 25px;
 }
-
 .step-intro h2 {
   display: block;
   margin: 8px 0 0 0;
 }
-
 .step-intro img {
   width: 50px;
   height: 50px;
   display: block;
   float: left;
 }
-
 .step-intro p {
   padding-top: 25px;
   font-weight: bold;
@@ -2085,12 +2082,10 @@ p {
   font-size: 13.33px;
   line-height: 1.5em;
 }
-
 p.sub-lead {
   font-weight: bold;
   color: #29A082;
 }
-
 p.lead {
   font-weight: bold;
   color: #29A082;
@@ -2101,26 +2096,21 @@ p.lead {
   margin-top: 15px;
   margin-bottom: 15px;
 }
-
 .question-answer-section p.lead {
   margin-bottom: 1px;
 }
-
 .question-answer-section ul {
   list-style: none;
   padding-left: 2em;
 }
-
 .question-answer-section ul li {
   font-size: 13.33px;
 }
-
 .question-answer-section ul li:before {
   content: "-";
   text-indent: -2em;
   display: inline-block;
 }
-
 .question-answer-section .question-answer p {
   display: inline-block;
 }
@@ -2130,39 +2120,31 @@ table {
   font-size: 13.33px;
   margin-bottom: 5px;
 }
-
 table thead {
   background-color: #29A082;
   color: #ffffff;
 }
-
 table thead.no-background {
   background-color: white;
   color: #29A082;
 }
-
 table thead.lead {
   font-weight: bold;
   color: #29A082;
   font-size: 16px;
 }
-
 table thead th {
   text-align: left;
 }
-
 table tbody {
   background-color: #ffffff;
 }
-
 table tbody tr {
   vertical-align: top;
 }
-
 table tbody tr.border-bottom:first-child {
   border-bottom: 1px solid #29A082;
 }
-
 table tbody tr.border-bottom td {
   border-top: 1px solid #29A082;
 }
@@ -2176,20 +2158,16 @@ table tbody tr.border-bottom td {
   text-align: center;
   z-index: -1000;
 }
-
 #front-page #img-front-page img {
   width: 595.28pt;
 }
-
 #front-page #user-info {
   height: 150px;
   padding-top: 5%;
 }
-
 #front-page #intro {
   padding: 2rem 5rem 5rem 5rem;
 }
-
 #front-page .page-footer {
   position: absolute;
   right: 0;
@@ -2200,19 +2178,16 @@ table tbody tr.border-bottom td {
 .step-intro {
   margin-bottom: 25px;
 }
-
 .step-intro h2 {
   display: block;
   margin: 8px 0 0 60px;
 }
-
 .step-intro img {
   width: 50px;
   height: 50px;
   display: block;
   float: left;
 }
-
 .step-intro p {
   padding-top: 25px;
 }
@@ -2220,8 +2195,6 @@ table tbody tr.border-bottom td {
 .measures {
   margin-bottom: -20px;
 }
-
 .measures p {
   display: inline-block;
 }
-

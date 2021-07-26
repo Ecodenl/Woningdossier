@@ -53,3 +53,28 @@ if (token) {
 //     broadcaster: 'pusher',
 //     key: 'your-pusher-key'
 // });
+
+/**
+ * Set up Alpine JS with extra data functions that can be used throughout
+ * the whole application.
+ */
+import Alpine from 'alpinejs'
+import alpineSelect from './alpine-scripts/alpine-select.js';
+import sourceSelect from './alpine-scripts/source-select.js';
+import modal from './alpine-scripts/modal.js';
+import ratingSlider from './alpine-scripts/rating-slider.js';
+import slider from './alpine-scripts/slider.js';
+import register from './alpine-scripts/register.js';
+import picoAddress from './alpine-scripts/picoAddress.js';
+
+Alpine.data('alpineSelect', alpineSelect)
+Alpine.data('sourceSelect', sourceSelect)
+Alpine.data('modal', modal)
+Alpine.data('ratingSlider', ratingSlider)
+Alpine.data('slider', slider)
+Alpine.data('register', register)
+Alpine.data('picoAddress', picoAddress)
+
+window.Alpine = Alpine
+
+Alpine.start()

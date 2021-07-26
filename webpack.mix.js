@@ -1,5 +1,6 @@
-let mix = require('laravel-mix');
+const mix = require('laravel-mix');
 
+const tailwindcss = require("tailwindcss");
 
 /*
  |--------------------------------------------------------------------------
@@ -45,13 +46,18 @@ mix.js('resources/js/app.js', 'public/js')
         ], 'public/js/hoomdossier.js'
     )
     .copy('resources/images', 'public/images')
+    .copy('resources/icons', 'public/icons')
     .sass('resources/sass/admin/app.scss', 'public/css/admin')
     .sass('resources/sass/pdf.scss', 'public/css')
     .sass('resources/sass/admin/datatables/_responsive_bootstrap.scss', 'public/css/admin/datatables/responsive.bootstrap.min.css')
     .sass('resources/sass/admin/datatables/_responsive_datatables.scss', 'public/css/admin/datatables/responsive.dataTables.min.css')
     .sass('resources/sass/admin/datatables/_dataTables_bootstrap.scss', 'public/css/admin/datatables/dataTables.bootstrap.min.css')
     .postCss("resources/css/frontend/app.css", "public/css/frontend", [
-        require("tailwindcss"),
-    ]);
+        tailwindcss,
+    ])
+    .options({
+        // Whether to re-write added URLs based on the new css file location
+        processCssUrls: false,
+    });
 
 

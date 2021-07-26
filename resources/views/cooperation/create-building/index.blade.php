@@ -11,7 +11,7 @@
 
                         <div class="panel-body">
                             <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                                <label for="email" class="col-md-4 control-label">@lang('auth.register.form.e-mail')
+                                <label for="email" class="col-md-4 control-label">@lang('auth.register.form.email')
                                     <span class="required">*</span></label>
 
                                 <div class="col-md-8">
@@ -45,7 +45,7 @@
                                     <div class="col-md-6">
 
                                         <div class="form-group row {{ $errors->has('postal_code') ? ' has-error' : '' }}">
-                                            <label for="postal_code" class="col-md-8 control-label">@lang('auth.register.form.postal_code')<span class="required">*</span></label>
+                                            <label for="postal_code" class="col-md-8 control-label">@lang('auth.register.form.postal-code')<span class="required">*</span></label>
 
                                             <div class="col-md-4">
                                                 <input id="postal_code" type="text" class="form-control" name="postal_code" value="{{ old('postal_code') }}" required >
@@ -80,7 +80,7 @@
                                     <div class="col-md-2">
                                         <div class="form-group row {{ $errors->has('house_number_extension') ? ' has-error' : '' }}">
                                             <div class="col-sm-12">
-                                                <input id="house_number_extension" type="text" class="form-control" name="house_number_extension" placeholder="@lang('auth.register.form.house_number_extension')" value="{{ old('house_number_extension') }}" >
+                                                <input id="house_number_extension" type="text" class="form-control" name="house_number_extension" placeholder="@lang('auth.register.form.house-number-extension')" value="{{ old('house_number_extension') }}" >
                                             </div>
 
                                             @if ($errors->has('house_number_extension'))

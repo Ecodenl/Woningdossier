@@ -14,7 +14,18 @@
 */
 Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () {
 
-    Route::view('styleguide', 'cooperation.styleguide');
+    // TODO: Figure out how to handle these routes; Move to frontend.php?
+    Route::view('styleguide', 'cooperation.frontend.styleguide');
+    Route::view('input-guide', 'cooperation.frontend.input-guide');
+    Route::prefix('step')->group(function () {
+        Route::view('7', 'cooperation.frontend.templates.step-7');
+        Route::view('9', 'cooperation.frontend.templates.step-9');
+        Route::view('11', 'cooperation.frontend.templates.step-11');
+        Route::view('12', 'cooperation.frontend.templates.step-12');
+        Route::view('18', 'cooperation.frontend.templates.step-18');
+        Route::view('23', 'cooperation.frontend.templates.step-23');
+    });
+
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
         if ('local' == app()->environment()) {
             Route::get('mail', function () {
@@ -28,7 +39,8 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
         }
 
         Route::get('/', function () {
-            return view('cooperation.welcome');
+            return redirect()->route('cooperation.home');
+//            return view('cooperation.welcome');
         })->name('welcome');
 
         Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
@@ -322,6 +334,8 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
                         Route::get('home', 'CoordinatorController@index')->name('index');
                     });
 
+
+
                     /* section for the cooperation-admin */
                     Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['current-role:cooperation-admin|super-admin']], function () {
                         Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
@@ -331,6 +345,11 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
 
                         // needs to be the last route due to the param
                         Route::get('home', 'CooperationAdminController@index')->name('index');
+
+                        Route::prefix('settings')->as('settings.')->group(function () {
+                            Route::get('', 'SettingsController@index')->name('index');
+                            Route::post('', 'SettingsController@store')->name('store');
+                        });
                     });
                 });
 

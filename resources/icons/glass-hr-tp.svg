@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="86px" height="103px" viewBox="0 0 86 103" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>HR+++ glas</title>
+    <g id="Styleguide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Styles" transform="translate(-1207.000000, -3415.000000)">
+            <g id="hr+++" transform="translate(1209.000000, 3417.000000)">
+                <polygon id="Path" fill="#2CA982" fill-rule="nonzero" opacity="0.2" points="42.87 0 53.27 5.64 82.1 66.46 82.1 78.43 75.48 81.54 75.48 74.64 42.87 55.92"></polygon>
+                <polyline id="Path" stroke="#9CA1A7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="82.1 78.43 42.87 55.92 42.87 0"></polyline>
+                <polygon id="Path" stroke="#2CA982" stroke-width="3" fill="#2CA982" fill-rule="nonzero" opacity="0.4" stroke-linecap="round" stroke-linejoin="round" points="36.26 3.1 42.87 0 42.87 6.69 46.66 8.74 75.48 69.56 75.48 81.54 63.97 87.17 24.74 64.47 24.74 8.55"></polygon>
+                <line x1="36.26" y1="3.1" x2="42.87" y2="0" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="46.66" y1="8.74" x2="53.15" y2="5.7" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="75.48" y1="69.56" x2="82.1" y2="66.46" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="75.48" y1="81.54" x2="82.1" y2="78.43" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <polygon id="Path" stroke="#622181" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="36.26 3.1 46.66 8.74 75.48 69.56 75.48 81.54 36.26 59.03"></polygon>
+                <polyline id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="42.87 0 53.27 5.64 82.1 66.46 82.1 78.43"></polyline>
+                <polygon id="Path" fill="#2CA982" fill-rule="nonzero" opacity="0.2" points="24.74 8.73 35.14 14.38 63.97 75.19 63.97 87.17 57.36 90.27 57.36 83.38 24.74 64.66"></polygon>
+                <polyline id="Path" stroke="#9CA1A7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="63.97 87.17 24.74 64.66 24.74 8.73"></polyline>
+                <polygon id="Path" stroke="#2CA982" stroke-width="3" fill="#2CA982" fill-rule="nonzero" opacity="0.4" stroke-linecap="round" stroke-linejoin="round" points="18.13 11.84 24.74 8.73 24.74 15.43 28.53 17.48 57.36 78.3 57.36 90.27 45.84 95.91 6.62 73.21 6.62 17.28"></polygon>
+                <line x1="18.13" y1="11.84" x2="24.74" y2="8.73" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="28.53" y1="17.48" x2="35.02" y2="14.43" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="57.36" y1="78.3" x2="63.97" y2="75.19" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="57.36" y1="90.27" x2="63.97" y2="87.17" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <polygon id="Path" stroke="#622181" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="18.13 11.84 28.53 17.48 57.36 78.3 57.36 90.27 18.13 67.77"></polygon>
+                <polyline id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="24.74 8.73 35.14 14.38 63.97 75.19 63.97 87.17"></polyline>
+                <polygon id="Path" fill="#2CA982" fill-rule="nonzero" opacity="0.2" points="6.62 17.28 17.02 22.93 45.84 83.74 45.84 95.72 39.23 98.82 39.23 91.93 6.62 73.21"></polygon>
+                <polyline id="Path" stroke="#9CA1A7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="45.84 95.91 6.62 73.21 6.62 17.28"></polyline>
+                <polygon id="Path" fill="#2CA982" fill-rule="nonzero" opacity="0.4" points="0 20.39 6.62 17.28 7.82 17.94 7.81 24.08 10.4 26.03 39.23 86.85 39.23 98.82 0 76.31"></polygon>
+                <polygon id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0 20.39 10.4 26.03 39.23 86.85 39.23 98.82 0 76.31"></polygon>
+                <line x1="0" y1="20.39" x2="6.62" y2="17.28" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="39.23" y1="98.82" x2="45.84" y2="95.91" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="39.23" y1="86.84" x2="45.84" y2="83.74" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <line x1="10.28" y1="26.09" x2="16.9" y2="22.98" id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></line>
+                <polyline id="Path" stroke="#394553" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="6.62 17.28 17.02 22.93 45.84 83.74 45.84 95.72"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>

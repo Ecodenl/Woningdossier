@@ -30,38 +30,51 @@
         </div>
     </div>
     <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10">
-        <div class="card-wrapper">
-            <div class="card">
-                <div class="icon-wrapper">
-                    <i class="icon-ventilation"></i>
-                </div>
-                <div class="center-info">
-                    <h6 class="heading-6">Ventilatie (mechanisch)</h6>
-                    <p class="-mt-1">€ 500 - € 700</p>
-                    <div class="w-auto h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center pl-2">
-                        Subsidie mogelijk
+        @foreach($cards as $cardCategory => $cardCollection)
+            <div class="card-wrapper">
+                @foreach($cardCollection as $card)
+                    <div class="card">
+                        <div class="icon-wrapper">
+                            <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
+                        </div>
+                        <div class="center-info">
+                            <h6 class="heading-6">{{ $card['name'] }}</h6>
+                            <p class="-mt-1">
+                                @if(empty($card['price']['from']) && empty($card['price']['to']))
+                                    Zie info
+                                @else
+                                    {{ \App\Helpers\NumberFormatter::range($card['price']['from'] ?? '', $card['price']['to'] ?? '', 0, ' - ', '€ ') }}
+                                @endif
+                            </p>
+                            <?php
+                                $subsidy = $card['subsidy'] ?? '';
+                            ?>
+                            @if($subsidy == $SUBSIDY_AVAILABLE)
+                                <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2"
+                                     style="width: fit-content; width: -moz-fit-content;">
+                                    Subsidie mogelijk
+                                </div>
+                            @elseif($subsidy == $SUBSIDY_UNAVAILABLE)
+                                <div class="h-4 rounded-lg text-xs relative text-red p bg-red bg-opacity-10 flex items-center px-2"
+                                     style="width: fit-content; width: -moz-fit-content;">
+                                    Geen subsidie
+                                </div>
+                            @endif
+                        </div>
+                        <div class="end-info">
+                            <div x-data="modal()">
+                                @if(! empty($card['info']))
+                                    <i class="icon-md icon-info-light" x-on:click="toggle()"></i>
+                                    @component('cooperation.frontend.layouts.components.modal')
+                                        {!! $card['info'] !!}
+                                    @endcomponent
+                                @endif
+                            </div>
+                            <p class="font-bold">{{ \App\Helpers\NumberFormatter::prefix($card['savings'] ?? 0, '€ ') }}</p>
+                        </div>
                     </div>
-                </div>
-                <div class="end-info">
-                    <div>
-                        <i class="icon-md icon-info-light"></i>
-                    </div>
-                    <p class="font-bold">€ 0</p>
-                </div>
+                @endforeach
             </div>
-            @for($i = 0; $i < 4; $i++)
-                <div class="card-placeholder"></div>
-            @endfor
-        </div>
-        <div class="card-wrapper">
-            @for($i = 0; $i < 5; $i++)
-                <div class="card-placeholder"></div>
-            @endfor
-        </div>
-        <div class="card-wrapper">
-            @for($i = 0; $i < 5; $i++)
-                <div class="card-placeholder"></div>
-            @endfor
-        </div>
+        @endforeach
     </div>
 </div>

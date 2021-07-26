@@ -73,7 +73,7 @@ class NumberFormatter
         }
 
         // if the number is numeric we can format it
-        // else we return the value thats not a correct number
+        // else we return the value that's not a correct number
         if (is_numeric($number)) {
             if ($shouldRoundNumber) {
                 $number = static::round($number);
@@ -127,6 +127,32 @@ class NumberFormatter
         return str_replace(self::$reverseLocaleSeparators[$locale]['decimal'],
             '.',
             $number);
+    }
+
+    public static function range($from, $to, $decimals = 0, $separator = ' - ', $prefix = '')
+    {
+        $from = static::mathableFormat($from, $decimals);
+        $from = static::format($from, $decimals);
+        $from = static::prefix($from, $prefix);
+
+        $to = static::mathableFormat($to, $decimals);
+        $to = static::format($to, $decimals);
+        $to = static::prefix($to, $prefix);
+
+        if (! empty($from) && empty($to)) {
+            return $from;
+        } elseif (empty($from) && ! empty($to)) {
+            return $to;
+        } elseif (empty($from) && empty($to)) {
+            return 0;
+        } else {
+            return sprintf('%s%s%s', $from, $separator, $to);
+        }
+    }
+
+    public static function prefix($value, $prefix)
+    {
+        return sprintf('%s%s', $prefix, $value);
     }
 
     protected static function removeMultipleDecimals($number)

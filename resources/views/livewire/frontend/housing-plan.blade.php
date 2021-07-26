@@ -79,16 +79,18 @@
         @endcomponent
     </div>
     <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10"
-         x-data="draggables()">
+         x-data="draggables()"
+         x-on:item-dragged.window="livewire.emit('cardMoved', $event.detail.from.getAttribute('data-category'), $event.detail.to.getAttribute('data-category'), $event.detail.id)">
         @foreach($cards as $cardCategory => $cardCollection)
             <div class="card-wrapper" x-bind="container" data-category="{{$cardCategory}}"
                  x-on:drop.prevent="let placeholder = $el.querySelector('.card-placeholder');
-                 $el.removeChild(placeholder); $el.appendChild(placeholder); ">
-                @foreach($cardCollection as $card)
-                    <div class="card" id="{{ \Illuminate\Support\Str::random() }}"
-                         x-bind="draggable"
+                 $el.removeChild(placeholder); $el.appendChild(placeholder)">
+                @foreach($cardCollection as $id => $card)
+                    <div class="card" id="{{ $id }}"
+                         x-bind="draggable" draggable="true"
                          x-on:drag="$el.classList.remove('card'); $el.classList.add('card-placeholder');"
-                         x-on:dragend="$el.classList.remove('card-placeholder'); $el.classList.add('card');">
+                         x-on:dragend="$el.classList.remove('card-placeholder'); $el.classList.add('card');
+                         ">
                         <div class="icon-wrapper">
                             <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
                         </div>
@@ -101,9 +103,7 @@
                                     {{ \App\Helpers\NumberFormatter::range($card['price']['from'] ?? '', $card['price']['to'] ?? '', 0, ' - ', '€ ') }}
                                 @endif
                             </p>
-                            <?php
-                                $subsidy = $card['subsidy'] ?? '';
-                            ?>
+                            <?php $subsidy = $card['subsidy'] ?? ''; ?>
                             @if($subsidy == $SUBSIDY_AVAILABLE)
                                 <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2"
                                      style="width: fit-content; width: -moz-fit-content;">

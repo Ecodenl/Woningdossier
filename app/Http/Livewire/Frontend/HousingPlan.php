@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Frontend;
 
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class HousingPlan extends Component
@@ -37,12 +38,16 @@ class HousingPlan extends Component
         'new_measure.price.to' => 'required|numeric|gt:new_measure.price.from',
     ];
 
+    protected $listeners = [
+        'cardMoved' => 'cardMoved'
+    ];
+
     public function mount()
     {
         // TODO: Find out how to get these from backend data
         $this->cards = [
             $this->CATEGORY_COMPLETE => [
-                [
+                Str::random() => [
                     'name' => 'Ventilatie (mechanisch)',
                     'icon' => 'icon-ventilation',
                     'price' => [
@@ -53,7 +58,7 @@ class HousingPlan extends Component
                     'savings' => 0,
                     'info' => 'Ventilatie helpt met het goed doorluchten van het huis.',
                 ],
-                [
+                Str::random() => [
                     'name' => 'Nieuwe keuken',
                     'icon' => 'icon-kitchen',
                     'price' => [
@@ -64,7 +69,7 @@ class HousingPlan extends Component
                     'savings' => 300,
                     'info' => 'Een nieuwe keuken geeft jouw huis een betere uitstraling.',
                 ],
-                [
+                Str::random() => [
                     'name' => 'Nieuwe badkamer',
                     'icon' => 'icon-bathroom',
                     'price' => [
@@ -75,7 +80,7 @@ class HousingPlan extends Component
                     'savings' => 5000,
                     'info' => 'Een goede badkamer bespaart water.',
                 ],
-                [
+                Str::random() => [
                     'name' => 'Dakkapel',
                     'icon' => 'icon-dormer',
                     'price' => [
@@ -88,7 +93,7 @@ class HousingPlan extends Component
                 ],
             ],
             $this->CATEGORY_TO_DO => [
-                [
+                Str::random() => [
                     'name' => 'Vloerverwarming',
                     'icon' => 'icon-radiant-floor-heating',
                     'price' => [
@@ -99,7 +104,7 @@ class HousingPlan extends Component
                     'savings' => 0,
                     'info' => 'Vloerverwaming houdt warmte vast.',
                 ],
-                [
+                Str::random() => [
                     'name' => 'Kozijnen vervangen',
                     'icon' => 'icon-window-frame',
                     'price' => [
@@ -110,7 +115,7 @@ class HousingPlan extends Component
                     'savings' => 1400,
                     'info' => 'Een nieuw kozijn kan helpen met isolatie.',
                 ],
-                [
+                Str::random() => [
                     'name' => 'Gevelisolatie',
                     'icon' => 'icon-wall-insulation-excellent',
                     'price' => [
@@ -121,7 +126,7 @@ class HousingPlan extends Component
                     'savings' => 0,
                     'info' => 'Goede isolatie, het spreekt voor zich.',
                 ],
-                [
+                Str::random() => [
                     'name' => 'Schilderwerk',
                     'icon' => 'icon-paint-job',
                     'price' => [
@@ -132,7 +137,7 @@ class HousingPlan extends Component
                     'savings' => 1000,
                     'info' => 'De kosten hangen af van het aantal manuren.',
                 ],
-                [
+                Str::random() => [
                     'name' => 'Vloerisolatie',
                     'icon' => 'icon-floor-insulation-excellent',
                     'price' => [
@@ -145,7 +150,7 @@ class HousingPlan extends Component
                 ],
             ],
             $this->CATEGORY_LATER => [
-                [
+                Str::random() => [
                     'name' => 'Dakisolatie',
                     'icon' => 'icon-roof-insulation-excellent',
                     'price' => [
@@ -156,7 +161,7 @@ class HousingPlan extends Component
                     'savings' => 0,
                     'info' => 'Goede isolatie, het spreekt voor zich.',
                 ],
-                [
+                Str::random() => [
                     'name' => 'Isolerende beglazing',
                     'icon' => 'icon-glass-hr-p',
                     'price' => [
@@ -186,7 +191,7 @@ class HousingPlan extends Component
         $measureData = $this->validate($this->rules)['new_measure'];
 
         // Append card
-        $this->cards[$this->category][] = [
+        $this->cards[$this->category][Str::random()] = [
             'name' => $measureData['subject'],
             'icon' => 'icon-tools',
             'price' => $measureData['price'],
@@ -200,5 +205,15 @@ class HousingPlan extends Component
     public function setCategory($category)
     {
         $this->category = $category;
+    }
+
+    public function cardMoved($fromCategory, $toCategory, $id)
+    {
+        $card = $this->cards[$fromCategory][$id] ?? null;
+        unset($this->cards[$fromCategory][$id]);
+
+        if (! empty($card)) {
+            $this->cards[$toCategory][$id] = $card;
+        }
     }
 }

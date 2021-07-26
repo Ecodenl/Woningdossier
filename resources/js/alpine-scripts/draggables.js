@@ -11,9 +11,21 @@ export default (supportedClasses = ['card-wrapper'], hoverColor = 'rgba(100, 117
                 let target = this.getSupportedTarget(eventTarget);
 
                 if (! (null === target)) {
-                    this.dragged.parentElement.removeChild(this.dragged);
+                    let parentElement = this.dragged.parentElement;
+
+                    parentElement.removeChild(this.dragged);
                     target.appendChild(this.dragged);
                     target.style.backgroundColor = '';
+
+                    let event = new CustomEvent('item-dragged', {
+                        detail: {
+                            from: parentElement,
+                            to: target,
+                            id: this.dragged.id,
+                        },
+                        bubbles: true,
+                    });
+                    dispatchEvent(event);
                 }
 
                 this.dragged = null;
@@ -40,7 +52,6 @@ export default (supportedClasses = ['card-wrapper'], hoverColor = 'rgba(100, 117
         },
     },
     draggable: {
-        ['x-bind:draggable']: true,
         ['x-on:dragstart.self']() {
             this.dragged = this.$el;
         }

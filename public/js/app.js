@@ -34071,7 +34071,7 @@ __webpack_require__.r(__webpack_exports__);
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /* harmony default export */ __webpack_exports__["default"] = (function () {
-  var _container, _draggable;
+  var _container;
 
   var supportedClasses = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ['card-wrapper'];
   var hoverColor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'rgba(100, 117, 133, 0.2)';
@@ -34086,9 +34086,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         var target = this.getSupportedTarget(eventTarget);
 
         if (!(null === target)) {
-          this.dragged.parentElement.removeChild(this.dragged);
+          var parentElement = this.dragged.parentElement;
+          parentElement.removeChild(this.dragged);
           target.appendChild(this.dragged);
           target.style.backgroundColor = '';
+          var event = new CustomEvent('item-dragged', {
+            detail: {
+              from: parentElement,
+              to: target,
+              id: this.dragged.id
+            },
+            bubbles: true
+          });
+          dispatchEvent(event);
         }
 
         this.dragged = null;
@@ -34109,9 +34119,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         target.style.backgroundColor = '';
       }
     }), _container),
-    draggable: (_draggable = {}, _defineProperty(_draggable, 'x-bind:draggable', true), _defineProperty(_draggable, 'x-on:dragstart.self', function xOnDragstartSelf() {
+    draggable: _defineProperty({}, 'x-on:dragstart.self', function xOnDragstartSelf() {
       this.dragged = this.$el;
-    }), _draggable),
+    }),
     getSupportedTarget: function getSupportedTarget(element) {
       var target = null;
 

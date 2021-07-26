@@ -34059,6 +34059,87 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/alpine-scripts/draggables.js":
+/*!***************************************************!*\
+  !*** ./resources/js/alpine-scripts/draggables.js ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  var _container, _draggable;
+
+  var supportedClasses = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ['card-wrapper'];
+  var hoverColor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'rgba(100, 117, 133, 0.2)';
+  return {
+    // Docs: use supportedClasses to define classes in which elements can be dropped
+    // Define hoverColor for the background color that gets used when hovering over supported classes
+    // Define extra logic on elements themselves, e.g. switching classes on the dragged object
+    dragged: null,
+    container: (_container = {}, _defineProperty(_container, 'x-on:drop.prevent', function xOnDropPrevent() {
+      if (!(null === this.dragged)) {
+        var eventTarget = this.$event.target;
+        var target = this.getSupportedTarget(eventTarget);
+
+        if (!(null === target)) {
+          this.dragged.parentElement.removeChild(this.dragged);
+          target.appendChild(this.dragged);
+          target.style.backgroundColor = '';
+        }
+
+        this.dragged = null;
+      }
+    }), _defineProperty(_container, 'x-on:dragover.prevent', function xOnDragoverPrevent() {// This needs to be prevented, else drop doesn't work
+    }), _defineProperty(_container, 'x-on:dragenter', function xOnDragenter() {
+      var eventTarget = this.$event.target;
+      var target = this.getSupportedTarget(eventTarget);
+
+      if (!(null === target)) {
+        target.style.backgroundColor = hoverColor;
+      }
+    }), _defineProperty(_container, 'x-on:dragleave', function xOnDragleave() {
+      var eventTarget = this.$event.target;
+      var target = this.getSupportedTarget(eventTarget);
+
+      if (!(null === target)) {
+        target.style.backgroundColor = '';
+      }
+    }), _container),
+    draggable: (_draggable = {}, _defineProperty(_draggable, 'x-bind:draggable', true), _defineProperty(_draggable, 'x-on:dragstart.self', function xOnDragstartSelf() {
+      this.dragged = this.$el;
+    }), _draggable),
+    getSupportedTarget: function getSupportedTarget(element) {
+      var target = null;
+
+      if (Array.isArray(supportedClasses) && typeof element.classList !== 'undefined') {
+        supportedClasses.forEach(function (className) {
+          if (element.classList.contains(className)) {
+            target = element;
+          }
+        });
+
+        if (null === target) {
+          supportedClasses.forEach(function (className) {
+            var parent = element.closest('.' + className);
+
+            if (!(null === parent)) {
+              target = parent;
+            }
+          });
+        }
+      }
+
+      return target;
+    }
+  };
+});
+
+/***/ }),
+
 /***/ "./resources/js/alpine-scripts/modal.js":
 /*!**********************************************!*\
   !*** ./resources/js/alpine-scripts/modal.js ***!
@@ -34671,6 +34752,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _alpine_scripts_slider_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./alpine-scripts/slider.js */ "./resources/js/alpine-scripts/slider.js");
 /* harmony import */ var _alpine_scripts_register_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./alpine-scripts/register.js */ "./resources/js/alpine-scripts/register.js");
 /* harmony import */ var _alpine_scripts_picoAddress_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./alpine-scripts/picoAddress.js */ "./resources/js/alpine-scripts/picoAddress.js");
+/* harmony import */ var _alpine_scripts_draggables_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./alpine-scripts/draggables.js */ "./resources/js/alpine-scripts/draggables.js");
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -34737,6 +34819,7 @@ if (token) {
 
 
 
+
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('alpineSelect', _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('sourceSelect', _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_2__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('modal', _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_3__["default"]);
@@ -34744,6 +34827,7 @@ alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('ratingSlider', _alpine_sc
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('slider', _alpine_scripts_slider_js__WEBPACK_IMPORTED_MODULE_5__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('register', _alpine_scripts_register_js__WEBPACK_IMPORTED_MODULE_6__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('picoAddress', _alpine_scripts_picoAddress_js__WEBPACK_IMPORTED_MODULE_7__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('draggables', _alpine_scripts_draggables_js__WEBPACK_IMPORTED_MODULE_8__["default"]);
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 

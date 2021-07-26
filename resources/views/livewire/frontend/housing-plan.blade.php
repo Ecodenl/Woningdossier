@@ -29,11 +29,17 @@
             <i class="icon-md icon-plus-circle cursor-pointer"></i>
         </div>
     </div>
-    <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10">
+    <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10"
+         x-data="draggables()">
         @foreach($cards as $cardCategory => $cardCollection)
-            <div class="card-wrapper">
+            <div class="card-wrapper" x-bind="container"
+                 x-on:drop.prevent="let placeholder = $el.querySelector('.card-placeholder');
+                 $el.removeChild(placeholder); $el.appendChild(placeholder); ">
                 @foreach($cardCollection as $card)
-                    <div class="card">
+                    <div class="card" id="{{ \Illuminate\Support\Str::random() }}"
+                         x-bind="draggable"
+                         x-on:drag="$el.classList.remove('card'); $el.classList.add('card-placeholder');"
+                         x-on:dragend="$el.classList.remove('card-placeholder'); $el.classList.add('card');">
                         <div class="icon-wrapper">
                             <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
                         </div>
@@ -74,6 +80,9 @@
                         </div>
                     </div>
                 @endforeach
+                <div class="card-placeholder">
+
+                </div>
             </div>
         @endforeach
     </div>

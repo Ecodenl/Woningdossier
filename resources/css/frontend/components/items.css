@@ -34,15 +34,19 @@
 
 .card-wrapper .card-placeholder,
 .card-wrapper .card {
-    @apply w-full border border-blue-500 border-opacity-50 rounded-lg h-24 p-1 lg:p-3;
+    @apply w-full border border-blue-500 border-opacity-50 rounded-lg h-24 p-1 lg:p-3 overflow-hidden;
 }
 
 .card-wrapper .card-placeholder {
     @apply border-dashed bg-blue-500 bg-opacity-5;
 }
 
+.card-wrapper .card-placeholder > * {
+    @apply hidden;
+}
+
 .card-wrapper .card {
-    @apply border-solid bg-white overflow-hidden flex flex-wrap justify-between items-center cursor-pointer;
+    @apply border-solid bg-white flex flex-wrap justify-between items-center cursor-pointer;
 }
 
 .card-wrapper .card .icon-wrapper {

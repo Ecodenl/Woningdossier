@@ -32,6 +32,10 @@ class ToolQuestionTypesTableSeeder extends Seeder
                 'name'  => ['nl' => 'Tekstvak'],
                 'short' => 'textarea'
             ],
+            [
+                'name' => ['nl' => 'Prioriteiten meter'],
+                'short' => 'measure-priority'
+            ],
         ];
 
         foreach ($datas as $data) {

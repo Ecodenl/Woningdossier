@@ -122,6 +122,7 @@ class AddQuestionsToDatabase extends Command
         $textType = ToolQuestionType::findByShort('text');
         $sliderType = ToolQuestionType::findByShort('slider');
         $textareaType = ToolQuestionType::findByShort('textarea');
+        $measurePriorityType = ToolQuestionType::findByShort('measure-priority');
 
         $templateDefault = SubStepTemplate::findByShort('template-default');
         $template2rows1top2bottom = SubStepTemplate::findByShort('template-2-rows-1-top-2-bottom');
@@ -329,23 +330,57 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'numeric', 'min:10', 'max:30'],
                             'translation' => 'Hoeveel jaar denkt u hier nog te blijven wonen',
                             'tool_question_type_id' => $sliderType->id,
-                            'options' => ['min' => 1, 'max' => 10, 'value' => 5, 'step' => 1],
+                            'options' => ['min' => 1, 'max' => 10, 'value' => 7, 'step' => 1],
                         ],
 
                     ]
                 ],
-                'Prioriteiten' => [
-                    // todo: dit is de prio meter, zie slide 17
+                'Welke zaken vind u belangenrijk?' => [
                     'sub_step_template_id' => $templateDefault->id,
-//                    'questions' => [
-//                        [
-                    // note: new question
-//                            'short' => 'remaining-living-years',
-//                            'validation' => ['required', 'numeric', 'min:10', 'max:30'],
-//                            'translation' => 'Hoeveel jaar denkt u hier nog te blijven wonen',
-//                            'tool_question_type_id' => $sliderType->id,
-//                            'options' => ['min' => 1, 'max' => 10, 'value' => 5, 'step' => 1],
-//                        ],
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'in:1,2,3,4,5'],
+                            'short' => 'comfort-priority',
+                            'translation' => "Comfort",
+                            'tool_question_type_id' => $measurePriorityType->id,
+                            'options' => ['min' => 1, 'max' => 5, 'value' => 1],
+                        ],
+                        [
+                            'validation' => ['required', 'in:1,2,3,4,5'],
+                            'short' => 'investment-priority',
+                            'translation' => "Goede investering",
+                            'tool_question_type_id' => $measurePriorityType->id,
+                            'options' => ['min' => 1, 'max' => 5, 'value' => 1],
+                        ],
+                        [
+                            'validation' => ['required', 'in:1,2,3,4,5'],
+                            'short' => 'adjust-to-liking-priority',
+                            'translation' => "Naar eigen smaak maken",
+                            'tool_question_type_id' => $measurePriorityType->id,
+                            'options' => ['min' => 1, 'max' => 5, 'value' => 1],
+                        ],
+                        [
+                            'validation' => ['required', 'in:1,2,3,4,5'],
+                            'short' => 'sustainability-priority',
+                            'translation' => "Duurzaamheid",
+                            'tool_question_type_id' => $measurePriorityType->id,
+                            'options' => ['min' => 1, 'max' => 5, 'value' => 1],
+                        ],
+                        [
+                            'validation' => ['required', 'in:1,2,3,4,5'],
+                            'short' => 'to-lower-expenses-priority',
+                            'translation' => "Verlaging maandlasten",
+                            'tool_question_type_id' => $measurePriorityType->id,
+                            'options' => ['min' => 1, 'max' => 5, 'value' => 1],
+                        ],
+                        [
+                            'validation' => ['required', 'in:1,2,3,4,5'],
+                            'short' => 'indoor-climate-priority',
+                            'translation' => "Gezond binnenklimaat",
+                            'tool_question_type_id' => $measurePriorityType->id,
+                            'options' => ['min' => 1, 'max' => 5, 'value' => 1],
+                        ],
+                    ],
 
                 ],
                 'Welke zaken vervangen' => [
@@ -577,7 +612,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'min:1', 'max:50'],
                             'save_in' => "building_pv_panels.total_installed_power",
                             // was current-state -> Geinstalleerd vermogen (totaal)
-                            'translation' => "Piekvermogen per paneel",
+                            'translation' => "Totaal vermogen",
                             'unit_of_measure' => 'WP',
                             'tool_question_type_id' => $textType->id,
                             'conditions' => [

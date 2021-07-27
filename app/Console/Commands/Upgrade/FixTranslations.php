@@ -37,7 +37,14 @@ class FixTranslations extends Command
      *
      * @var array|string[]
      */
-    protected array $groups = ['home'];
+    protected array $groupsToDelete = ['home'];
+
+    /**
+     * The groups to update (reimport)
+     *
+     * @var array|string[]
+     */
+    protected array $groupsToUpdate = ['home'];
 
     /**
      * The specific keys to delete
@@ -56,16 +63,14 @@ class FixTranslations extends Command
     {
         $this->info('Deleting old translations from database...');
 
-        $groupsDeleted = LanguageLine::whereIn('group', $this->groups)->delete();
+        $groupsDeleted = LanguageLine::whereIn('group', $this->groupsToDelete)->delete();
         $keysDeleted = LanguageLine::whereIn('keys', $this->keys)->delete();
         $total = $groupsDeleted + $keysDeleted;
 
         $this->info("Removed {$total} old translations removed, re-importing...");
 
-        $groups = implode(',', $this->groups);
-
         Artisan::call('cache:clear');
-        Artisan::call('translations:import', ['--only-groups' => $groups]);
+        Artisan::call('translations:import', ['--only-groups' => implode(',', $this->groupsToUpdate)]);
 
         $this->info('All done.');
     }

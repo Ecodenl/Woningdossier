@@ -12,7 +12,7 @@
             </div>
             <div class="flex flex-row justify-end space-x-4">
                 <p>
-                    <a>
+                    <a href="{{ route('cooperation.home') }}">
                         Start
                     </a>
                 </p>

@@ -41,7 +41,7 @@ class ToolQuestionTypesTableSeeder extends Seeder
         foreach ($datas as $data) {
             $data['name'] = json_encode($data['name']);
             DB::table('tool_question_types')
-                ->insert($data);
+                ->updateOrInsert(['short' => $data['short']], $data);
         }
     }
 }

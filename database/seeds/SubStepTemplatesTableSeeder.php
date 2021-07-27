@@ -37,7 +37,7 @@ class SubStepTemplatesTableSeeder extends Seeder
         foreach ($datas as $data) {
             $data['name'] = json_encode($data['name']);
             DB::table('sub_step_templates')
-                ->insert($data);
+                ->updateOrInsert(['short' => $data['short']], $data);
         }
     }
 }

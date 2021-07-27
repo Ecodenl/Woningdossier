@@ -36,4 +36,14 @@ class SubStep extends Model
     {
         return $this->belongsToMany(ToolQuestion::class, 'sub_step_tool_questions')->withPivot('order');
     }
+
+    public function next(): SubStep
+    {
+        return SubStep::where('order', '>', $this->order)->first();
+    }
+
+    public function previous(): SubStep
+    {
+        return SubStep::where('order', '<', $this->order)->orderByDesc('order')->first();
+    }
 }

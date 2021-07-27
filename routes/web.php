@@ -25,6 +25,8 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
             });
         }
 
+        Route::livewire('quick-scan/{step}/{subStep}', 'cooperation.tool.quick-scan');
+
         // TODO: Figure out how to handle these routes; Move to frontend.php?
         Route::view('styleguide', 'cooperation.frontend.styleguide');
         Route::view('input-guide', 'cooperation.frontend.input-guide');

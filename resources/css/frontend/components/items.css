@@ -34,7 +34,7 @@
 
 .card-wrapper .card-placeholder,
 .card-wrapper .card {
-    @apply w-full border border-blue-500 border-opacity-50 rounded-lg h-24 p-1 lg:p-3 overflow-hidden;
+    @apply w-full border border-blue-500 border-opacity-50 rounded-lg h-24 p-2 lg:p-3 overflow-hidden;
 }
 
 .card-wrapper .card-placeholder {
@@ -46,26 +46,18 @@
 }
 
 .card-wrapper .card {
-    @apply border-solid bg-white flex flex-wrap justify-between items-center cursor-pointer;
+    @apply border-solid bg-white flex flex-wrap justify-between items-center cursor-pointer relative;
 }
 
 .card-wrapper .card .icon-wrapper {
-    @apply w-0 lg:w-3/20 xl:w-1/4 h-full;
+    @apply w-0 lg:w-3/20 xl:w-1/4 h-full lg:pr-1;
 }
 
 .card-wrapper .card .icon-wrapper i {
     @apply w-full h-full;
 }
 
-.card-wrapper .card .center-info {
-    @apply w-14/20 lg:w-13/20 xl:w-1/2 h-full flex flex-wrap flex-col justify-center;
-}
-
-.card-wrapper .card .end-info {
-    @apply w-6/20 lg:w-4/20 h-full flex flex-wrap flex-col justify-between;
-}
-
-.card-wrapper .card .end-info > * {
-    @apply flex justify-end;
+.card-wrapper .card .info {
+    @apply w-full lg:w-17/20 xl:w-3/4 h-full flex flex-wrap flex-col justify-center;
 }
 

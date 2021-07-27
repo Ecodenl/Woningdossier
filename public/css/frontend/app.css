@@ -129933,7 +129933,7 @@ textarea.form-input {
   --tw-border-opacity: 1;
   border-color: rgba(100, 117, 133, var(--tw-border-opacity));
   --tw-border-opacity: 0.5;
-  padding: 0.25rem;
+  padding: 0.5rem;
 }
 
 @media (min-width: 1024px) {
@@ -129954,6 +129954,7 @@ textarea.form-input {
 }
 
 .card-wrapper .card {
+  position: relative;
   display: flex;
   cursor: pointer;
   flex-wrap: wrap;
@@ -129972,6 +129973,7 @@ textarea.form-input {
 @media (min-width: 1024px) {
   .card-wrapper .card .icon-wrapper {
     width: 15%;
+    padding-right: 0.25rem;
   }
 }
 
@@ -129986,45 +129988,25 @@ textarea.form-input {
   width: 100%;
 }
 
-.card-wrapper .card .center-info {
+.card-wrapper .card .info {
   display: flex;
   height: 100%;
-  width: 70%;
+  width: 100%;
   flex-direction: column;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 @media (min-width: 1024px) {
-  .card-wrapper .card .center-info {
-    width: 65%;
+  .card-wrapper .card .info {
+    width: 85%;
   }
 }
 
 @media (min-width: 1280px) {
-  .card-wrapper .card .center-info {
-    width: 50%;
+  .card-wrapper .card .info {
+    width: 75%;
   }
-}
-
-.card-wrapper .card .end-info {
-  display: flex;
-  height: 100%;
-  width: 30%;
-  flex-direction: column;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-@media (min-width: 1024px) {
-  .card-wrapper .card .end-info {
-    width: 20%;
-  }
-}
-
-.card-wrapper .card .end-info > * {
-  display: flex;
-  justify-content: flex-end;
 }
 
 /* Icons */

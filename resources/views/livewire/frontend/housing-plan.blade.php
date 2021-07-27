@@ -94,7 +94,7 @@
                         <div class="icon-wrapper">
                             <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
                         </div>
-                        <div class="center-info">
+                        <div class="info">
                             <h6 class="heading-6">{{ $card['name'] }}</h6>
                             <p class="-mt-1">
                                 @if(empty($card['price']['from']) && empty($card['price']['to']))
@@ -116,17 +116,17 @@
                                 </div>
                             @endif
                         </div>
-                        <div class="end-info">
-                            <div x-data="modal()">
-                                @if(! empty($card['info']))
-                                    <i class="icon-md icon-info-light" x-on:click="toggle()"></i>
-                                    @component('cooperation.frontend.layouts.components.modal')
-                                        {!! $card['info'] !!}
-                                    @endcomponent
-                                @endif
-                            </div>
-                            <p class="font-bold">{{ \App\Helpers\NumberFormatter::prefix($card['savings'] ?? 0, '€ ') }}</p>
+                        <div x-data="modal()" class="absolute right-1 top-1 lg:right-3 lg:top-3">
+                            @if(! empty($card['info']))
+                                <i class="icon-md icon-info-light" x-on:click="toggle()"></i>
+                                @component('cooperation.frontend.layouts.components.modal')
+                                    {!! $card['info'] !!}
+                                @endcomponent
+                            @endif
                         </div>
+                        <p class="font-bold absolute right-1 bottom-1 lg:right-3 lg:bottom-3">
+                            {{ \App\Helpers\NumberFormatter::prefix($card['savings'] ?? 0, '€ ') }}
+                        </p>
                     </div>
                 @endforeach
                 <div class="card-placeholder">

@@ -34340,31 +34340,59 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = (function () {
+  var defaultValue = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+  var activeClass = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'bg-green';
+  var disabled = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
   return {
     index: -1,
-    value: 0,
+    value: defaultValue,
     inactiveClass: 'bg-gray',
-    activeClass: 'bg-green',
+    activeClass: activeClass,
+    disabled: disabled,
     init: function init() {
-      var activeClass = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      // Ensure the slider gets updated with the default value
+      if (this.value > 0) {
+        var element = this.$refs['rating-slider'].querySelector("div[data-value=\"".concat(this.value, "\"]"));
 
-      if (!(null === activeClass)) {
-        this.activeClass = activeClass;
+        if (!(null === element)) {
+          // Ensure we can set the value on init, so we temporary enable, even if it's disabled.
+          var tempDisable = this.disabled;
+          this.disabled = false;
+          this.selectOption(element);
+          this.disabled = tempDisable;
+        } else {
+          this.value = 0;
+        }
       }
     },
     mouseEnter: function mouseEnter(element) {
-      this.setChildrenGray(); // Set this and all previous as green
+      if (!this.disabled) {
+        this.setAllGray(); // Set this and all previous as green
 
-      this.setActive(element);
-
-      while ((element = element.previousElementSibling) != null) {
         this.setActive(element);
+
+        while ((element = element.previousElementSibling) != null) {
+          this.setActive(element);
+        }
       }
     },
     mouseLeave: function mouseLeave(element) {
+      if (!this.disabled) {
+        this.setIndexActive();
+      }
+    },
+    selectOption: function selectOption(element) {
+      if (!this.disabled) {
+        var parent = this.$refs['rating-slider'];
+        this.index = Array.from(parent.children).indexOf(element);
+        this.value = element.getAttribute('data-value');
+        this.setIndexActive();
+      }
+    },
+    setIndexActive: function setIndexActive() {
       var _this = this;
 
-      this.setChildrenGray();
+      this.setAllGray();
       var parent = this.$refs['rating-slider'];
       var children = Array.from(parent.children);
       children.forEach(function (element) {
@@ -34375,12 +34403,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    selectOption: function selectOption(element) {
-      var parent = this.$refs['rating-slider'];
-      this.index = Array.from(parent.children).indexOf(element);
-      this.value = element.getAttribute('data-value');
-    },
-    setChildrenGray: function setChildrenGray() {
+    setAllGray: function setAllGray() {
       var _this2 = this;
 
       var parent = this.$refs['rating-slider'];

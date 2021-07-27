@@ -20,6 +20,9 @@ class HousingPlan extends Component
     ];
 
     public array $new_measure = [];
+    public int $investment = 0;
+    public int $yearlySavings = 0;
+    public int $availableSubsidy = 0;
 
     public string $category = '';
 
@@ -39,7 +42,7 @@ class HousingPlan extends Component
     ];
 
     protected $listeners = [
-        'cardMoved' => 'cardMoved'
+        'cardMoved' => 'cardMoved',
     ];
 
     public function mount()
@@ -174,6 +177,8 @@ class HousingPlan extends Component
                 ],
             ],
         ];
+
+        $this->recalculate();
     }
 
     public function render()
@@ -200,6 +205,8 @@ class HousingPlan extends Component
         ];
 
         $this->dispatchBrowserEvent('close-modal');
+
+        $this->recalculate();
     }
 
     public function setCategory($category)
@@ -215,5 +222,35 @@ class HousingPlan extends Component
         if (! empty($card)) {
             $this->cards[$toCategory][$id] = $card;
         }
+
+        $this->recalculate();
+    }
+
+    public function recalculate()
+    {
+        // TODO: Get logic for this. This is a guessed placeholder
+        $subsidyPercentage = 0.1;
+
+        $minInvestment = 0;
+        $maxInvestment = 0;
+        $savings = 0;
+        $subsidy = 0;
+
+        foreach ($this->cards[$this->CATEGORY_TO_DO] as $card) {
+            $from = $card['price']['from'] ?? 0;
+            $to = $card['price']['to'] ?? 0;
+
+            $minInvestment += $from;
+            $maxInvestment += $to;
+            $savings += $card['savings'] ?? 0;
+
+            if ($card['subsidy'] === $this->SUBSIDY_AVAILABLE) {
+                $subsidy += ($to - $from) * $subsidyPercentage;
+            }
+        }
+
+        $this->investment = ($maxInvestment + $minInvestment) / 2;
+        $this->yearlySavings = $savings;
+        $this->availableSubsidy = $subsidy;
     }
 }

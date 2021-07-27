@@ -1,6 +1,6 @@
 <div>
     {{-- Header row --}}
-    <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 mb-3" x-data="modal()">
+    <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 mb-3 px-3 lg:px-8" x-data="modal()">
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
                 <div class="w-5 h-5 bg-blue-800 rounded-full mr-3"></div>
@@ -78,7 +78,7 @@
             </form>
         @endcomponent
     </div>
-    <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10"
+    <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 px-3 lg:px-8"
          x-data="draggables()"
          x-on:item-dragged.window="livewire.emit('cardMoved', $event.detail.from.getAttribute('data-category'), $event.detail.to.getAttribute('data-category'), $event.detail.id)">
         @foreach($cards as $cardCategory => $cardCollection)
@@ -134,5 +134,83 @@
                 </div>
             </div>
         @endforeach
+    </div>
+    <div class="w-full grid grid-rows-2 grid-cols-3 lg:grid-rows-1 lg:grid-cols-6 grid-flow-row gap-3 mt-5 px-3 py-8 lg:px-8 content-center border-t-2 border-b-2 border-blue-500 border-opacity-10">
+        <div class="w-full flex flex-wrap items-center space-x-3">
+            <div class="rounded-full bg-blue bg-opacity-10 w-8 h-8 flex justify-center items-center">
+                <i class="icon-sm icon-moneybag-orange"></i>
+            </div>
+            <div class="flex flex-col justify-center">
+                <span class="text-orange text-sm font-bold">
+                    {{ \App\Helpers\NumberFormatter::prefix($investment, '€ ') }}
+                </span>
+                <p class="-mt-2">
+                    Investering
+                </p>
+            </div>
+        </div>
+        <div class="w-full flex flex-wrap items-center space-x-3">
+            <div class="rounded-full bg-blue bg-opacity-10 w-8 h-8 flex justify-center items-center">
+                <i class="icon-sm icon-piggybank-green"></i>
+            </div>
+            <div class="flex flex-col justify-center">
+                <span class="text-green text-sm font-bold">
+                    {{ \App\Helpers\NumberFormatter::prefix($yearlySavings, '€ ') }}
+                </span>
+                <p class="-mt-2">
+                    Besparing per jaar
+                </p>
+            </div>
+        </div>
+        <div class="w-full flex flex-wrap items-center space-x-3">
+            <div class="rounded-full bg-blue bg-opacity-10 w-8 h-8 flex justify-center items-center">
+                <i class="icon-sm icon-savings"></i>
+            </div>
+            <div class="flex flex-col justify-center">
+                <span class="text-blue text-sm font-bold">
+                    {{ \App\Helpers\NumberFormatter::prefix($availableSubsidy, '€ ') }}
+                </span>
+                <p class="-mt-2">
+                    Subsidie mogelijk
+                </p>
+            </div>
+        </div>
+        <div class="w-full flex flex-wrap items-center pr-3">
+            @include('cooperation.frontend.layouts.parts.rating-slider', ['label' => 'Comfort', 'default' => 5, 'disabled' => true])
+        </div>
+        <div class="w-full flex flex-wrap items-center">
+            @include('cooperation.frontend.layouts.parts.rating-slider', ['label' => 'Duurzaamheid', 'default' => 4, 'disabled' => true])
+        </div>
+        <div class="w-full flex flex-wrap items-center">
+            @include('cooperation.frontend.layouts.parts.rating-slider', ['label' => 'Goede investering', 'default' => 3, 'disabled' => true])
+        </div>
+    </div>
+    <div class="w-full flex flex-wrap bg-blue-100 pb-8 px-3 lg:px-8 items-center">
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'label' => 'Opmerkingen bewoner',
+            'class' => 'w-full md:w-1/2 md:pr-3',
+            'withInputSource' => false,
+            'id' => 'comments-resident',
+            'inputName' => 'comments.resident'
+        ])
+            <textarea id="comments-resident" class="form-input" name="comments[resident]"
+                      placeholder="Type hier uw opmerkingen..."></textarea>
+            <button class="btn btn-purple absolute right-3 bottom-7">
+                @lang('default.buttons.save')
+            </button>
+        @endcomponent
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'label' => 'Opmerkingen coach',
+            'class' => 'w-full md:w-1/2 md:pl-3',
+            'withInputSource' => false,
+            'id' => 'comments-coach',
+            'inputName' => 'comments.coach'
+        ])
+            <textarea id="comments-coach" class="form-input" name="comments[coach]"
+                      placeholder="Type hier uw opmerkingen..."></textarea>
+            <button class="btn btn-purple absolute right-3 bottom-7">
+                @lang('default.buttons.save')
+            </button>
+        @endcomponent
     </div>
 </div>

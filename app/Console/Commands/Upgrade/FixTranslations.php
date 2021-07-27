@@ -62,8 +62,10 @@ class FixTranslations extends Command
 
         $this->info("Removed {$total} old translations removed, re-importing...");
 
+        $groups = implode(',', $this->groups);
+
         Artisan::call('cache:clear');
-        Artisan::call('translations:import');
+        Artisan::call('translations:import', ['--only-groups' => $groups]);
 
         $this->info('All done.');
     }

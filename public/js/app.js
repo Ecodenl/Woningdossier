@@ -34263,22 +34263,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 }
               }
             }
-          }; // Build request url
+          };
 
+          var params = url.searchParams;
 
           if (postcode.value) {
-            url.searchParams.append('postal_code', postcode.value);
+            params.append('postal_code', postcode.value);
           }
 
           if (houseNumber.value) {
-            url.searchParams.append('number', houseNumber.value);
+            params.append('number', houseNumber.value);
           }
 
           if (typeof houseNumberExtension !== 'undefined' && houseNumberExtension.value) {
-            url.searchParams.append('house_number_extension', houseNumberExtension.value);
+            params.append('house_number_extension', houseNumberExtension.value);
           }
 
-          request.open('GET', url.href);
+          request.open('GET', url.toString());
           request.setRequestHeader('Accept', 'application/json');
           request.responseType = 'json';
           request.send();

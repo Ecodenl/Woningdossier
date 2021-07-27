@@ -19,10 +19,12 @@ class ToolQuestionCustomValue extends Model
         'options',
         'value',
         'tool_question_id',
-        'show'
+        'show',
+        'extra',
     ];
 
     protected $casts = [
         'show' => 'boolean',
+        'extra' => 'array',
     ];
 }

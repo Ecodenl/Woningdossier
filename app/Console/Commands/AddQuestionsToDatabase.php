@@ -146,7 +146,7 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // wat voor type aappartament heeft u moet nog komen.
+                // TODO: wat voor type appartament heeft u moet nog komen.
                 'Wat voor dak' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -187,9 +187,18 @@ class AddQuestionsToDatabase extends Command
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.monument',
                             'tool_question_type_id' => $radioType->id,
                             'tool_question_custom_values' => [
-                                1 => __('woningdossier.cooperation.radiobutton.yes'),
-                                2 => __('woningdossier.cooperation.radiobutton.no'),
-                                0 => __('woningdossier.cooperation.radiobutton.unknown'),
+                                1 => [
+                                    'name' => __('woningdossier.cooperation.radiobutton.yes'),
+                                    'extra' => [],
+                                ],
+                                2 => [
+                                    'name' => __('woningdossier.cooperation.radiobutton.no'),
+                                    'extra' => [],
+                                ],
+                                0 => [
+                                    'name' => __('woningdossier.cooperation.radiobutton.unknown'),
+                                    'extra' => [],
+                                ],
                             ],
                         ],
                         [
@@ -230,13 +239,54 @@ class AddQuestionsToDatabase extends Command
                             'translation' => 'Hoeveel mensen wonen er in de woning',
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_custom_values' => [
-                                1 => 'Alleen',
-                                2 => 'Twee',
-                                3 => 'Vier',
-                                5 => 'Vijf',
-                                6 => 'Zes',
-                                7 => 'Zeven',
-                                0 => 'Meer dan zeven',
+                                1 => [
+                                    'name' => 'Alleen',
+                                    'extra' => [
+                                        'icon' => 'icon-persons-one',
+                                    ],
+                                ],
+                                2 => [
+                                    'name' => 'Twee',
+                                    'extra' => [
+                                        'icon' => 'icon-persons-two',
+                                    ],
+                                ],
+                                3 => [
+                                    'name' => 'Drie',
+                                    'extra' => [
+                                        'icon' => 'icon-persons-three',
+                                    ],
+                                ],
+                                4 => [
+                                    'name' => 'Vier',
+                                    'extra' => [
+                                        'icon' => 'icon-persons-four',
+                                    ],
+                                ],
+                                5 => [
+                                    'name' => 'Vijf',
+                                    'extra' => [
+                                        'icon' => 'icon-persons-five',
+                                    ],
+                                ],
+                                6 => [
+                                    'name' => 'Zes',
+                                    'extra' => [
+                                        'icon' => 'icon-persons-six',
+                                    ],
+                                ],
+                                7 => [
+                                    'name' => 'Zeven',
+                                    'extra' => [
+                                        'icon' => 'icon-persons-seven',
+                                    ],
+                                ],
+                                0 => [
+                                    'name' => 'Meer dan zeven',
+                                    'extra' => [
+                                        'icon' => 'icon-persons-more-than-seven',
+                                    ],
+                                ],
                             ],
                         ],
                     ]
@@ -298,9 +348,24 @@ class AddQuestionsToDatabase extends Command
                             'translation' => "Hoe wordt er gekookt?",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_custom_values' => [
-                                'gas' => 'Gas',
-                                'electric' => 'Elektrisch',
-                                'induction' => 'Inductie',
+                                'gas' => [
+                                    'name' => 'Gas',
+                                    'extra' => [
+                                        'icon' => 'icon-gas',
+                                    ],
+                                ],
+                                'electric' => [
+                                    'name' => 'Elektrisch',
+                                    'extra' => [
+                                        'icon' => 'icon-electric',
+                                    ],
+                                ],
+                                'induction' => [
+                                    'name' => 'Inductie',
+                                    'extra' => [
+                                        'icon' => 'icon-induction',
+                                    ],
+                                ],
                             ],
                         ],
                         [
@@ -459,10 +524,30 @@ class AddQuestionsToDatabase extends Command
                             'translation' => "Wat gebruikt u voor de verwarming en warm water?",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_custom_values' => [
-                                'hr-boiler' => 'Gasketel',
-                                'heat-pump' => 'Warmtepomp',
-                                'infrared' => 'Infrarood',
-                                'district-heating' => 'Stadsverwarming',
+                                'hr-boiler' => [
+                                    'name' => 'Gasketel',
+                                    'extra' => [
+                                        'icon' => 'icon-central-heater-gas',
+                                    ],
+                                ],
+                                'heat-pump' => [
+                                    'name' => 'Warmtepomp',
+                                    'extra' => [
+                                        'icon' => 'icon-heat-pump',
+                                    ],
+                                ],
+                                'infrared' => [
+                                    'name' => 'Infrarood',
+                                    'extra' => [
+                                        'icon' => 'icon-infrared-heater',
+                                    ],
+                                ],
+                                'district-heating' => [
+                                    'name' => 'Stadsverwarming',
+                                    'extra' => [
+                                        'icon' => 'icon-district-heating',
+                                    ],
+                                ],
                             ],
                         ],
                     ]
@@ -586,8 +671,18 @@ class AddQuestionsToDatabase extends Command
                             'translation' => "Heeft u zonnepanelen",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_custom_values' => [
-                                'yes' => 'Ja',
-                                'no' => 'Nee'
+                                'yes' => [
+                                    'name' => 'Ja',
+                                    'extra' => [
+                                        'icon' => 'icon-solar-panels',
+                                    ],
+                                ],
+                                'no' => [
+                                    'name' => 'Nee',
+                                    'extra' => [
+                                        'icon' => 'icon-solar-panels-none',
+                                    ],
+                                ],
                             ],
                         ],
                         [
@@ -596,10 +691,6 @@ class AddQuestionsToDatabase extends Command
                             // was current-state -> hoeveel zonnepanelen zijn er aanwezig
                             'translation' => "Hoeveel zonnepanelen?",
                             'tool_question_type_id' => $textType->id,
-                            'tool_question_custom_values' => [
-                                'yes' => 'Ja',
-                                'no' => 'Nee'
-                            ],
                             'conditions' => [
                                 [
                                     'column' => 'has-solar-panels',
@@ -690,7 +781,9 @@ class AddQuestionsToDatabase extends Command
 
                         if (isset($questionData['tool_question_custom_values'])) {
                             $toolQuestionCustomValueOrder = 0;
-                            foreach ($questionData['tool_question_custom_values'] as $value => $name) {
+                            foreach ($questionData['tool_question_custom_values'] as $value => $customValueData) {
+                                $name = $customValueData['name'];
+                                $extra = $customValueData['extra'] ?? [];
 
                                 $toolQuestion->toolQuestionCustomValues()->create([
                                     'order' => $toolQuestionCustomValueOrder,
@@ -698,7 +791,8 @@ class AddQuestionsToDatabase extends Command
                                     // so we will compare the short to determine what is what, but we will keep value for now
                                     'short' => $value,
                                     'value' => $value,
-                                    'name' => $name
+                                    'name' => $name,
+                                    'extra' => $extra,
                                 ]);
                             }
                         }

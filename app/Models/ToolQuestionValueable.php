@@ -14,6 +14,12 @@ class ToolQuestionValueable extends Model
         'tool_question_id',
         'tool_question_valueable_type',
         'tool_question_valueable_id',
+        'extra',
+    ];
+
+    protected $casts = [
+        'show' => 'boolean',
+        'extra' => 'array',
     ];
 
     /**

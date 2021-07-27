@@ -2,7 +2,7 @@
 
 namespace App\Helpers;
 
-class MediaConstants {
+class MediaHelper {
     const LOGO = 'logo';
     const BACKGROUND = 'background';
 

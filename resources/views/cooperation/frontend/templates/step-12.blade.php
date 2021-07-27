@@ -92,24 +92,39 @@
                         </label>
                         @component('cooperation.frontend.layouts.components.modal', ['header' => __('cooperation/frontend/tool.form.subject')])
                             <div class="flex flex-wrap mb-5">
-                                <div class="form-group w-full -mt-4 mb-4">
-                                    <input class="form-input" name="new_option[subject]" id="new-option-subject"
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                   'inputName' => 'new_measure.subject',
+                                   'class' => 'w-full -mt-4 mb-4',
+                                   'id' => 'new-measure-subject',
+                                   'withInputSource' => false,
+                               ])
+                                    <input class="form-input" name="new_measure[subject]" id="new-measure-subject"
                                            placeholder="Placeholder">
-                                </div>
+                                @endcomponent
                                 <div class="w-full flex items-center">
                                     <i class="icon-sm icon-info mr-3"></i>
                                     <h6 class="heading-6">
                                         Prijsindicatie in €
                                     </h6>
                                 </div>
-                                <div class="form-group w-1/2 pr-1">
-                                    <input class="form-input" name="new_option[price][from" id="new-option-price-from"
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                   'inputName' => 'new_measure.price.from',
+                                   'class' => 'w-1/2 pr-1',
+                                   'id' => 'new-measure-price-from',
+                                   'withInputSource' => false,
+                               ])
+                                    <input class="form-input" name="new_measure[price][from]" id="new-measure-price-from"
                                            placeholder="van">
-                                </div>
-                                <div class="form-group w-1/2 pl-1">
-                                    <input class="form-input" name="new_option[price][to" id="new-option-price-to"
-                                           placeholder="van">
-                                </div>
+                                @endcomponent
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                   'inputName' => 'new_measure.price.to',
+                                   'class' => 'w-1/2 pl-1',
+                                   'id' => 'new-measure-price-to',
+                                   'withInputSource' => false,
+                               ])
+                                    <input class="form-input" name="new_measure[price][to]" id="new-measure-price-to"
+                                           placeholder="tot">
+                                @endcomponent
                             </div>
                             <div class="w-full border border-gray fixed left-0"></div>
                             <div class="flex flex-wrap justify-center mt-14">

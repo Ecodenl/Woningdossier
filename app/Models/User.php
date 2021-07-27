@@ -34,7 +34,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Building[] $buildings
  * @property-read int|null $buildings_count
  * @property-read \App\Models\Cooperation|null $cooperation
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Cooperation[] $cooperations
+ * @property-read \Plank\Mediable\MediableCollection|\App\Models\Cooperation[] $cooperations
  * @property-read int|null $cooperations_count
  * @property-read \App\Models\UserEnergyHabit|null $energyHabit
  * @property-read mixed $email

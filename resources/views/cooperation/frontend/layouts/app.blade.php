@@ -6,9 +6,9 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-@stack('meta')
+    @stack('meta')
 
-<!-- CSRF Token -->
+    <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('page_title', config('app.name', 'Laravel'))</title>
@@ -16,13 +16,13 @@
     <!-- Styles -->
     <link rel="stylesheet" href="{{asset('css/frontend/app.css')}}">
 
-
+    @livewireStyles
     @stack('css')
 </head>
 <body>
 @yield('header')
 <?php
-    $background = optional($cooperation->firstMedia(MediaConstants::BACKGROUND))->getUrl();
+    $background = optional($cooperation->firstMedia(MediaHelper::BACKGROUND))->getUrl();
     $background = empty($background) ? asset('images/background.jpg') : $background;
 ?>
 <main class="bg-cover bg-center bg-no-repeat bg-white"
@@ -32,13 +32,15 @@
     @yield('main')
 </main>
 
+@livewireScripts
+{{-- Ensure Livewire is above app.js -> Alpine is loaded in app.js and must be loaded after Livewire --}}
 <script src="{{ mix('js/app.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Bind simple function to remove errors when clicked
         let formErrors = document.getElementsByClassName('form-error');
 
-        for(let i = 0; i < formErrors.length; i++) {
+        for (let i = 0; i < formErrors.length; i++) {
             formErrors[i].addEventListener('click', function () {
                 this.classList.remove('form-error');
                 this.querySelector('.form-error-label').remove();
@@ -48,5 +50,4 @@
 </script>
 @stack('js')
 </body>
-
 </html>

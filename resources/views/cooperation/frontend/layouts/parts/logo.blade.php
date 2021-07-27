@@ -1,5 +1,5 @@
 <?php
-    $logo = $cooperation->firstMedia(MediaConstants::LOGO);
+    $logo = $cooperation->firstMedia(MediaHelper::LOGO);
 ?>
 <div class="flex flex-wrap w-full justify-center items-center">
     <div class="w-36 h-36 flex flex-wrap justify-center items-center">

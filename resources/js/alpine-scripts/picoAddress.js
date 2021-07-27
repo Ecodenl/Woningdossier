@@ -38,10 +38,10 @@ export default (addressUrl, tailwind = true) => ({
         let street = this.$refs['street'];
         let addressId = this.$refs['addressId'];
 
-        let urlObject = null;
+        let url = null;
         if (this.apiUrl) {
             try {
-                urlObject = new URL(this.apiUrl);
+                url = new URL(this.apiUrl);
             } catch (e) {
                 this.apiUrl = null
             }
@@ -50,7 +50,7 @@ export default (addressUrl, tailwind = true) => ({
         // We can't do anything if we don't have these
         if (typeof postcode !== 'undefined' && typeof houseNumber !== 'undefined') {
             // We need these to make ajax calls
-            if ((window.XMLHttpRequest || window.ActiveXObject) && urlObject) {
+            if ((window.XMLHttpRequest || window.ActiveXObject) && url) {
                 let request = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP");
                 // We need to be able to access this context
                 let context = this;
@@ -92,24 +92,20 @@ export default (addressUrl, tailwind = true) => ({
                     }
                 };
 
-                // Build request url
-                let url = urlObject.href;
-                let combineChar = (urlObject.search ? '&' : '?');
+                let params = url.searchParams;
 
                 if (postcode.value) {
-                    url+= combineChar + 'postal_code=' + postcode.value;
-                    combineChar = '&';
-                }
-                if (houseNumber.value) {
-                    url+= combineChar + 'number=' + houseNumber.value;
-                    combineChar = '&';
-                }
-                if (typeof houseNumberExtension !== 'undefined' && houseNumberExtension.value) {
-                    url+= combineChar + 'house_number_extension=' + houseNumberExtension.value;
-                    combineChar = '&';
+                    params.append('postal_code', postcode.value)
                 }
 
-                request.open('GET', url);
+                if (houseNumber.value) {
+                    params.append('number', houseNumber.value)
+                }
+
+                if (typeof houseNumberExtension !== 'undefined' && houseNumberExtension.value) {
+                    params.append('house_number_extension', houseNumberExtension.value)
+                }
+                request.open('GET', url.toString());
                 request.setRequestHeader('Accept', 'application/json');
                 request.responseType = 'json';
                 request.send();

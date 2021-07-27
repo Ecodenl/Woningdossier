@@ -13,19 +13,6 @@
 |
 */
 Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () {
-
-    // TODO: Figure out how to handle these routes; Move to frontend.php?
-    Route::view('styleguide', 'cooperation.frontend.styleguide');
-    Route::view('input-guide', 'cooperation.frontend.input-guide');
-    Route::prefix('step')->group(function () {
-        Route::view('7', 'cooperation.frontend.templates.step-7');
-        Route::view('9', 'cooperation.frontend.templates.step-9');
-        Route::view('11', 'cooperation.frontend.templates.step-11');
-        Route::view('12', 'cooperation.frontend.templates.step-12');
-        Route::view('18', 'cooperation.frontend.templates.step-18');
-        Route::view('23', 'cooperation.frontend.templates.step-23');
-    });
-
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
         if ('local' == app()->environment()) {
             Route::get('mail', function () {
@@ -37,6 +24,20 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
 //            return new \App\Mail\RequestAccountConfirmationEmail(\App\Models\User::find(1), \App\Models\Cooperation::find(1));
             });
         }
+
+        // TODO: Figure out how to handle these routes; Move to frontend.php?
+        Route::view('styleguide', 'cooperation.frontend.styleguide');
+        Route::view('input-guide', 'cooperation.frontend.input-guide');
+        Route::prefix('step')->group(function () {
+            Route::view('7', 'cooperation.frontend.templates.step-7');
+            Route::view('9', 'cooperation.frontend.templates.step-9');
+            Route::view('11', 'cooperation.frontend.templates.step-11');
+            Route::view('12', 'cooperation.frontend.templates.step-12');
+            Route::view('18', 'cooperation.frontend.templates.step-18');
+            Route::view('23', 'cooperation.frontend.templates.step-23');
+        });
+        Route::view('housing-plan', 'cooperation.frontend.templates.housing-plan');
+        // TODO END
 
         Route::get('/', function () {
             return redirect()->route('cooperation.home');

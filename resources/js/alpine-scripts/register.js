@@ -13,16 +13,16 @@ export default (emailUrl) => ({
         this.checkExisting(element);
     },
     checkExisting(element) {
-        let urlObject = null;
+        let url = null;
         if (this.emailUrl) {
             try {
-                urlObject = new URL(this.emailUrl);
+                url = new URL(this.emailUrl);
             } catch (e) {
                 this.emailUrl = null
             }
         }
 
-        if ((window.XMLHttpRequest || window.ActiveXObject) && urlObject && typeof element !== 'undefined' && element.value.length > 0) {
+        if ((window.XMLHttpRequest || window.ActiveXObject) && url && typeof element !== 'undefined' && element.value.length > 0) {
             let request = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP");
             // We need to be able to access this context
             let context = this;
@@ -46,10 +46,10 @@ export default (emailUrl) => ({
                 }
             };
 
-            // Build request url
-            let url = urlObject.href + (urlObject.search ? '&' : '?') + 'email=' + element.value;
+            // Add searchParams
+            url.searchParams.append('email', element.value);
 
-            request.open('GET', url);
+            request.open('GET', url.href);
             request.setRequestHeader('Accept', 'application/json');
             request.responseType = 'json';
             request.send();

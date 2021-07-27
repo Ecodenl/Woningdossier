@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e1ae4d68ab5b573dc004afd46b1575fb",
+    "content-hash": "5dc9c2e3bd1ee92ba9b639652265f35e",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -1853,6 +1853,10 @@
                 "sftp",
                 "storage"
             ],
+            "support": {
+                "issues": "https://github.com/thephpleague/flysystem/issues",
+                "source": "https://github.com/thephpleague/flysystem/tree/1.1.4"
+            },
             "time": "2021-06-23T21:56:05+00:00"
         },
         {
@@ -1896,6 +1900,63 @@
             ],
             "description": "Mime-type detection for Flysystem",
             "time": "2021-01-18T20:58:21+00:00"
+        },
+        {
+            "name": "livewire/livewire",
+            "version": "v1.3.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/livewire/livewire.git",
+                "reference": "49a249aff329283a50d9d9659e266be365362986"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/livewire/livewire/zipball/49a249aff329283a50d9d9659e266be365362986",
+                "reference": "49a249aff329283a50d9d9659e266be365362986",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "~5.6.0|~5.7.0|~5.8.0|^6.0|^7.0|^8.0",
+                "illuminate/support": "~5.6.0|~5.7.0|~5.8.0|^6.0|^7.0|^8.0",
+                "illuminate/validation": "~5.6.0|~5.7.0|~5.8.0|^6.0|^7.0|^8.0",
+                "php": "^7.1.3",
+                "symfony/http-kernel": "^4.0|^5.0"
+            },
+            "require-dev": {
+                "laravel/framework": "~5.6.0|~5.7.0|~5.8.0|^6.0|^7.0",
+                "mockery/mockery": "^1.3.1",
+                "orchestra/testbench": "~3.6.0|~3.7.0|~3.8.0|^4.0|^5.0",
+                "phpunit/phpunit": "^7.5.15|^8.4|^9.0",
+                "psy/psysh": "@stable"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Livewire\\LivewireServiceProvider"
+                    ],
+                    "aliases": {
+                        "Livewire": "Livewire\\Livewire"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Livewire\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Caleb Porzio",
+                    "email": "calebporzio@gmail.com"
+                }
+            ],
+            "description": "A front-end framework for Laravel.",
+            "time": "2021-03-22T14:41:27+00:00"
         },
         {
             "name": "maatwebsite/excel",

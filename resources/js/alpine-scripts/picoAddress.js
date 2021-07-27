@@ -92,24 +92,22 @@ export default (addressUrl, tailwind = true) => ({
                     }
                 };
 
-                // Build request url
-                let url = urlObject.href;
-                let combineChar = (urlObject.search ? '&' : '?');
+                // build the request URL
+                let url = new URL(urlObject.href);
+                let params = url.searchParams;
 
                 if (postcode.value) {
-                    url+= combineChar + 'postal_code=' + postcode.value;
-                    combineChar = '&';
-                }
-                if (houseNumber.value) {
-                    url+= combineChar + 'number=' + houseNumber.value;
-                    combineChar = '&';
-                }
-                if (typeof houseNumberExtension !== 'undefined' && houseNumberExtension.value) {
-                    url+= combineChar + 'house_number_extension=' + houseNumberExtension.value;
-                    combineChar = '&';
+                    params.append('postal_code', postcode.value)
                 }
 
-                request.open('GET', url);
+                if (houseNumber.value) {
+                    params.append('number', houseNumber.value)
+                }
+
+                if (typeof houseNumberExtension !== 'undefined' && houseNumberExtension.value) {
+                    params.append('house_number_extension', houseNumberExtension.value)
+                }
+                request.open('GET', url.toString());
                 request.setRequestHeader('Accept', 'application/json');
                 request.responseType = 'json';
                 request.send();

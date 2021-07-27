@@ -24,6 +24,7 @@ class CreateToolQuestionValueablesTable extends Migration
 
             $table->unsignedBigInteger('tool_question_valueable_id')->index();
             $table->string('tool_question_valueable_type')->index();
+            $table->json('extra')->nullable();
 
             $table->timestamps();
         });

@@ -20,7 +20,7 @@ class ChangeNameColumnOnStepsTable extends Migration
             $table->string('name')->change();
         });
 
-        // eventhough we dont need em, we cant throw em away just yet.
+        // even though we dont need em, we cant throw em away just yet.
         foreach (DB::table('steps')->get() as $step) {
             if (\Illuminate\Support\Str::isUuid($step->name)) {
                 $trans = DB::table('translations')->where('key', $step->name)->where('language', 'nl')->first();

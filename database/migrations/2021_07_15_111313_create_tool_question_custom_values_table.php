@@ -25,6 +25,7 @@ class CreateToolQuestionCustomValuesTable extends Migration
             $table->string('value');
             $table->boolean('show');
             $table->integer('order');
+            $table->json('extra')->nullable();
 
             $table->timestamps();
         });

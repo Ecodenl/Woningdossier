@@ -100,7 +100,7 @@
                                 @if(empty($card['price']['from']) && empty($card['price']['to']))
                                     Zie info
                                 @else
-                                    {{ NumberFormatter::range($card['price']['from'] ?? '', $card['price']['to'] ?? '', 0, ' - ', '€ ') }}
+                                    {{ \App\Helpers\NumberFormatter::range($card['price']['from'] ?? '', $card['price']['to'] ?? '', 0, ' - ', '€ ') }}
                                 @endif
                             </p>
                             <?php $subsidy = $card['subsidy'] ?? ''; ?>
@@ -125,7 +125,7 @@
                             @endif
                         </div>
                         <p class="font-bold absolute right-1 bottom-1 lg:right-3 lg:bottom-3">
-                            {{ NumberFormatter::prefix($card['savings'] ?? 0, '€ ') }}
+                            {{ \App\Helpers\NumberFormatter::prefix($card['savings'] ?? 0, '€ ') }}
                         </p>
                     </div>
                 @endforeach
@@ -142,7 +142,7 @@
             </div>
             <div class="flex flex-col justify-center">
                 <span class="text-orange text-sm font-bold">
-                    {{ NumberFormatter::prefix($investment, '€ ') }}
+                    {{ \App\Helpers\NumberFormatter::prefix($investment, '€ ') }}
                 </span>
                 <p class="-mt-2">
                     Investering
@@ -155,7 +155,7 @@
             </div>
             <div class="flex flex-col justify-center">
                 <span class="text-green text-sm font-bold">
-                    {{ NumberFormatter::prefix($yearlySavings, '€ ') }}
+                    {{ \App\Helpers\NumberFormatter::prefix($yearlySavings, '€ ') }}
                 </span>
                 <p class="-mt-2">
                     Besparing per jaar
@@ -168,7 +168,7 @@
             </div>
             <div class="flex flex-col justify-center">
                 <span class="text-blue text-sm font-bold">
-                    {{ NumberFormatter::prefix($availableSubsidy, '€ ') }}
+                    {{ \App\Helpers\NumberFormatter::prefix($availableSubsidy, '€ ') }}
                 </span>
                 <p class="-mt-2">
                     Subsidie mogelijk

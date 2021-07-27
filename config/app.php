@@ -200,7 +200,7 @@ return [
 
     'aliases' => [
         'MediaHelper' => \App\Helpers\MediaHelper::class,
-        'NumberFormatter' => \App\Helpers\NumberFormatter::class,
+//        'NumberFormatter' => \App\Helpers\NumberFormatter::class, // We cannot alias NumberFormatter due to the native PHP class (https://www.php.net/manual/en/class.numberformatter.php)
         'Hoomdossier' => \App\Helpers\Hoomdossier::class,
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,

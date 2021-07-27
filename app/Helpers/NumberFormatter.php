@@ -133,19 +133,19 @@ class NumberFormatter
     {
         $from = static::mathableFormat($from, $decimals);
         $from = static::format($from, $decimals);
-        $from = static::prefix($from, $prefix);
 
         $to = static::mathableFormat($to, $decimals);
         $to = static::format($to, $decimals);
-        $to = static::prefix($to, $prefix);
 
-        if (! empty($from) && empty($to)) {
-            return $from;
-        } elseif (empty($from) && ! empty($to)) {
-            return $to;
-        } elseif (empty($from) && empty($to)) {
+        if (! empty($from) && empty($to) && ! is_numeric($to)) {
+            return static::prefix($from, $prefix);
+        } elseif (empty($from) && ! is_numeric($from) && ! empty($to)) {
+            return static::prefix($to, $prefix);
+        } elseif (empty($from) && ! is_numeric($from) && empty($to) && ! is_numeric($to)) {
             return 0;
         } else {
+            $from = static::prefix($from, $prefix);
+            $to = static::prefix($to, $prefix);
             return sprintf('%s%s%s', $from, $separator, $to);
         }
     }

@@ -206,6 +206,12 @@ return [
         'house_number' => 'Huisnummer',
         'house_number_extension' => 'Toevoeging',
 
+        // New measure
+        'new_measure.subject' => 'Onderwerp',
+        'new_measure.price.from' => 'Prijsindicatie van',
+        'new_measure.price.to' => 'Prijsindicatie tot',
+
+
         'account.current_password' => 'huidig wachtwoord',
         'account.password' => 'wachtwoord',
         'account.password_confirmation' => 'wachtwoord bevestigen',

@@ -23,6 +23,16 @@ class NumberFormatterTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider formatterProvider
+     */
+    public function testFormat($locale, $number, $decimals, $expected)
+    {
+        $this->app->setLocale($locale);
+
+        $this->assertEquals($expected, NumberFormatter::format($number, $decimals));
+    }
+
     public static function reverseFormatterProvider()
     {
         return [
@@ -36,16 +46,6 @@ class NumberFormatterTest extends TestCase
             ['en', '123.456', '123.456'],
             ['en', '123, 456. 789', '123456.789'],
         ];
-    }
-
-    /**
-     * @dataProvider formatterProvider
-     */
-    public function testFormat($locale, $number, $decimals, $expected)
-    {
-        $this->app->setLocale($locale);
-
-        $this->assertEquals($expected, NumberFormatter::format($number, $decimals));
     }
 
     /**
@@ -107,5 +107,50 @@ class NumberFormatterTest extends TestCase
     public function testRound($number, $bucket, $expected)
     {
         $this->assertEquals($expected, NumberFormatter::round($number, $bucket));
+    }
+
+    public static function rangeProvider()
+    {
+        // Expected is in locale en
+        return [
+            [50, 100, 0, '-', '', '50-100'],
+            [50, 100, 2, '-', '', '50.00-100.00'],
+            [50, 100, 0, ' - ', '€', '€50 - €100'],
+            [null, 100, 0, '-', '', '100'],
+            [50, null, 0, '-', '', '50'],
+            [0, 100, 0, '-', '', '0-100'],
+            [0, 100, 1, '-', '', '0.0-100.0'],
+            [50, null, 0, '-', '£ ', '£ 50'],
+            [null, null, 0, '-', '£ ', '0'],
+        ];
+    }
+
+    /**
+     * @dataProvider rangeProvider
+     */
+    public function testRange($from, $to, $decimals, $separator, $prefix, $expected)
+    {
+        app()->setLocale('en');
+
+        $this->assertEquals($expected, NumberFormatter::range($from, $to, $decimals, $separator, $prefix));
+    }
+
+    public static function prefixProvider()
+    {
+        return [
+            [50, '€', '€50'],
+            [null, '€', '€'],
+            [null, '', ''],
+            [null, null, ''],
+            ['203', '--', '--203'],
+        ];
+    }
+
+    /**
+     * @dataProvider prefixProvider
+     */
+    public function testPrefix($value, $prefix, $expected)
+    {
+        $this->assertEquals($expected, NumberFormatter::prefix($value, $prefix));
     }
 }

@@ -9,6 +9,7 @@ return [
         'next' => 'Opslaan',
         'next-page' => 'Volgende pagina',
         'prev' => 'Vorige',
+        'save' => 'Opslaan',
     ],
 
     'form' => [

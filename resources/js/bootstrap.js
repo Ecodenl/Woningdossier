@@ -66,6 +66,7 @@ import ratingSlider from './alpine-scripts/rating-slider.js';
 import slider from './alpine-scripts/slider.js';
 import register from './alpine-scripts/register.js';
 import picoAddress from './alpine-scripts/picoAddress.js';
+import draggables from './alpine-scripts/draggables.js';
 
 Alpine.data('alpineSelect', alpineSelect)
 Alpine.data('sourceSelect', sourceSelect)
@@ -74,6 +75,7 @@ Alpine.data('ratingSlider', ratingSlider)
 Alpine.data('slider', slider)
 Alpine.data('register', register)
 Alpine.data('picoAddress', picoAddress)
+Alpine.data('draggables', draggables)
 
 window.Alpine = Alpine
 

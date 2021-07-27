@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
-use App\Helpers\MediaConstants;
+use App\Helpers\MediaHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin\SettingsFormRequest;
 use App\Models\Cooperation;
@@ -19,7 +19,7 @@ class SettingsController extends Controller
     }
 
     public function store(SettingsFormRequest $request, Cooperation $cooperation) {
-        $tags = MediaConstants::getTags();
+        $tags = MediaHelper::getTags();
         foreach ($tags as $tag) {
             $file = $request->file('medias.'.$tag);
 

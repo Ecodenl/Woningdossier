@@ -7,7 +7,8 @@
 
     $disabled = $disabled ?? false;
 @endphp
-<div x-data="ratingSlider({{$default ?? 0}}, '{{$activeClass ?? 'bg-green'}}', {{$disabled}})" x-ref="rating-slider-wrapper" class="w-inherit">
+<div x-data="ratingSlider({{$default ?? 0}}, '{{$activeClass ?? 'bg-green'}}', {{$disabled}})"
+     x-ref="rating-slider-wrapper" class="w-inherit" wire:ignore>
     <input class="hidden" name="{{$inputName ?? ''}}" x-ref="rating-slider-input" x-model="value">
     <div class="flex justify-between mb-3">
         <p>{{$label ?? ''}}</p>

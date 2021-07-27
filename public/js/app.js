@@ -34211,11 +34211,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var city = this.$refs['city'];
       var street = this.$refs['street'];
       var addressId = this.$refs['addressId'];
-      var urlObject = null;
+      var url = null;
 
       if (this.apiUrl) {
         try {
-          urlObject = new URL(this.apiUrl);
+          url = new URL(this.apiUrl);
         } catch (e) {
           this.apiUrl = null;
         }
@@ -34224,7 +34224,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       if (typeof postcode !== 'undefined' && typeof houseNumber !== 'undefined') {
         // We need these to make ajax calls
-        if ((window.XMLHttpRequest || window.ActiveXObject) && urlObject) {
+        if ((window.XMLHttpRequest || window.ActiveXObject) && url) {
           var request = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP"); // We need to be able to access this context
 
           var context = this;
@@ -34263,25 +34263,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 }
               }
             }
-          }; // build the request URL
+          }; // Build request url
 
-
-          var url = new URL(urlObject.href);
-          var params = url.searchParams;
 
           if (postcode.value) {
-            params.append('postal_code', postcode.value);
+            url.searchParams.append('postal_code', postcode.value);
           }
 
           if (houseNumber.value) {
-            params.append('number', houseNumber.value);
+            url.searchParams.append('number', houseNumber.value);
           }
 
           if (typeof houseNumberExtension !== 'undefined' && houseNumberExtension.value) {
-            params.append('house_number_extension', houseNumberExtension.value);
+            url.searchParams.append('house_number_extension', houseNumberExtension.value);
           }
 
-          request.open('GET', url.toString());
+          request.open('GET', url.href);
           request.setRequestHeader('Accept', 'application/json');
           request.responseType = 'json';
           request.send();
@@ -34446,17 +34443,17 @@ __webpack_require__.r(__webpack_exports__);
       this.checkExisting(element);
     },
     checkExisting: function checkExisting(element) {
-      var urlObject = null;
+      var url = null;
 
       if (this.emailUrl) {
         try {
-          urlObject = new URL(this.emailUrl);
+          url = new URL(this.emailUrl);
         } catch (e) {
           this.emailUrl = null;
         }
       }
 
-      if ((window.XMLHttpRequest || window.ActiveXObject) && urlObject && typeof element !== 'undefined' && element.value.length > 0) {
+      if ((window.XMLHttpRequest || window.ActiveXObject) && url && typeof element !== 'undefined' && element.value.length > 0) {
         var request = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP"); // We need to be able to access this context
 
         var context = this;
@@ -34478,11 +34475,11 @@ __webpack_require__.r(__webpack_exports__);
               }
             }
           }
-        }; // Build request url
+        }; // Add searchParams
 
 
-        var url = urlObject.href + (urlObject.search ? '&' : '?') + 'email=' + element.value;
-        request.open('GET', url);
+        url.searchParams.append('email', element.value);
+        request.open('GET', url.href);
         request.setRequestHeader('Accept', 'application/json');
         request.responseType = 'json';
         request.send();

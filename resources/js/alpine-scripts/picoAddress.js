@@ -38,10 +38,10 @@ export default (addressUrl, tailwind = true) => ({
         let street = this.$refs['street'];
         let addressId = this.$refs['addressId'];
 
-        let urlObject = null;
+        let url = null;
         if (this.apiUrl) {
             try {
-                urlObject = new URL(this.apiUrl);
+                url = new URL(this.apiUrl);
             } catch (e) {
                 this.apiUrl = null
             }
@@ -50,7 +50,7 @@ export default (addressUrl, tailwind = true) => ({
         // We can't do anything if we don't have these
         if (typeof postcode !== 'undefined' && typeof houseNumber !== 'undefined') {
             // We need these to make ajax calls
-            if ((window.XMLHttpRequest || window.ActiveXObject) && urlObject) {
+            if ((window.XMLHttpRequest || window.ActiveXObject) && url) {
                 let request = window.XMLHttpRequest ? new window.XMLHttpRequest() : new window.ActiveXObject("Microsoft.XMLHTTP");
                 // We need to be able to access this context
                 let context = this;
@@ -92,8 +92,6 @@ export default (addressUrl, tailwind = true) => ({
                     }
                 };
 
-                // build the request URL
-                let url = new URL(urlObject.href);
                 let params = url.searchParams;
 
                 if (postcode.value) {

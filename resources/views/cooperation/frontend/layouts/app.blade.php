@@ -22,7 +22,7 @@
 <body>
 @yield('header')
 <?php
-    $background = optional($cooperation->firstMedia(MediaConstants::BACKGROUND))->getUrl();
+    $background = optional($cooperation->firstMedia(MediaHelper::BACKGROUND))->getUrl();
     $background = empty($background) ? asset('images/background.jpg') : $background;
 ?>
 <main class="bg-cover bg-center bg-no-repeat bg-white"

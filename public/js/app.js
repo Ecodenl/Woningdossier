@@ -34642,9 +34642,6 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
  */
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
-var Turbolinks = __webpack_require__(/*! turbolinks */ "./node_modules/turbolinks/dist/turbolinks.js");
-
-Turbolinks.start();
 $.ajaxSetup({
   headers: {
     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -34881,6 +34878,10 @@ alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('picoAddress', _alpine_scr
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('draggables', _alpine_scripts_draggables_js__WEBPACK_IMPORTED_MODULE_8__["default"]);
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
+
+var Turbolinks = __webpack_require__(/*! turbolinks */ "./node_modules/turbolinks/dist/turbolinks.js");
+
+Turbolinks.start();
 
 /***/ }),
 

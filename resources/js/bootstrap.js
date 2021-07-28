@@ -80,3 +80,7 @@ Alpine.data('draggables', draggables)
 window.Alpine = Alpine
 
 Alpine.start();
+
+var Turbolinks = require("turbolinks");
+Turbolinks.start();
+

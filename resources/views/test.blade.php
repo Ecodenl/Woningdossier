@@ -3,11 +3,11 @@
 @section('content')
 <?php
     /** @var \App\Models\Cooperation $cooperation */
-    $steps = $cooperation->steps()->activeOrderedSteps()->withoutSubSteps()->get();
+    $steps = $cooperation->steps()->activeOrderedSteps()->withoutChildren()->get();
 
     foreach ($steps as $step) {
 //        echo $step->name;
-        $subSteps = $cooperation->getSubStepsForStep($step);
+        $subSteps = $cooperation->getchildrenForStep($step);
     }
 
     $thingThatShouldComeFromUrl = 'building-characteristics';
@@ -23,9 +23,9 @@
                We check if the current step is the building detail
             --}}
 
-            @if($currentStep->hasSubSteps())
+            @if($currentStep->hasChildren())
                 <ul class="nav nav-tabs">
-                @foreach($cooperation->getSubStepsForStep($step) as $subStep)
+                @foreach($cooperation->getchildrenForStep($step) as $subStep)
                     <li @if($subSteps->slug == $thingThatShouldComeFromUrl)class="active"@endif>
                         <a href="# {{--urlnaasubstep--}}" >@lang('woningdossier.cooperation.step.building-detail')</a>
                     </li>

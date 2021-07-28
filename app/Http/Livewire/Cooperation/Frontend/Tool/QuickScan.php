@@ -26,6 +26,9 @@ class QuickScan extends Component
     {
         $subStep->load(['toolQuestions', 'subStepTemplate']);
 
+        dd($step->subSteps()->first(), $subStep);
+        if ($step->subSteps()->orderByDesc('order')->first())
+        dd($subStep->next());
         $this->step = $step;
         $this->nextStep = $step->nextQuickScan();
         $this->previousStep = $step->previousQuickScan();

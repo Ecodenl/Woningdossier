@@ -28,7 +28,7 @@ class GeneralDataController extends Controller
         })->get();
 
 
-        if (Step::onlySubSteps()->count() == $completedSubStepsOfGeneralData->count()) {
+        if (Step::onlyChildren()->count() == $completedSubStepsOfGeneralData->count()) {
             return redirect()->route('cooperation.tool.general-data.interest.index');
         }
 

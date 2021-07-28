@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\HoomdossierSession;
-use App\Helpers\TranslatableTrait;
+use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -46,8 +46,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Question extends Model
 {
-    use TranslatableTrait;
-    use SoftDeletes;
+    use SoftDeletes,
+        HasTranslations;
+
+    protected $translatable = [
+        'name',
+    ];
 
     protected $fillable = [
         'name', 'type', 'order', 'required', 'questionnaire_id', 'validation',

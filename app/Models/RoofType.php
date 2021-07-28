@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Helpers\TranslatableTrait;
 use App\Traits\HasShortTrait;
+use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -33,8 +33,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class RoofType extends Model
 {
-    use TranslatableTrait;
-    use HasShortTrait;
+    use HasShortTrait,
+        HasTranslations;
+
+    protected $translatable = [
+        'name',
+    ];
 
     public function buildingFeatures()
     {

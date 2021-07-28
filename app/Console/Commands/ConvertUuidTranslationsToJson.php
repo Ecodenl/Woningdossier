@@ -138,6 +138,9 @@ class ConvertUuidTranslationsToJson extends Command
                                             ->pluck('translation', 'language')
                                             ->toArray();
 
+                                        // Clean from translations table
+                                        Translation::where('key', $uuid)->delete();
+
                                         $data = [
                                             $column => json_encode($translations),
                                         ];

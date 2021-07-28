@@ -19,7 +19,7 @@ class StepController extends Controller
             ->steps()
             ->orderBy('cooperation_steps.order')
             ->where('short', '!=', 'general-data')
-            ->whereNotIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS)
+            ->expert()
             ->whereNull('parent_id')
             ->get();
 

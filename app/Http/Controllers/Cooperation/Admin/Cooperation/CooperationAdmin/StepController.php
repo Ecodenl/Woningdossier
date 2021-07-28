@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 
 use App\Helpers\Cache\Cooperation as CooperationCache;
+use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\Step;
@@ -12,11 +13,13 @@ class StepController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
+
         // since the general-data always need to be the first step and is always needed
         $steps = $cooperation
             ->steps()
             ->orderBy('cooperation_steps.order')
-            ->where('slug', '!=', 'general-data')
+            ->where('short', '!=', 'general-data')
+            ->whereNotIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS)
             ->whereNull('parent_id')
             ->get();
 

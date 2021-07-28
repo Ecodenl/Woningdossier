@@ -20,6 +20,7 @@
     @stack('css')
 </head>
 <body>
+
 @yield('header')
 <?php
     $background = optional($cooperation->firstMedia(MediaHelper::BACKGROUND))->getUrl();
@@ -33,8 +34,10 @@
 </main>
 
 @livewireScripts
+<script src="https://cdn.jsdelivr.net/gh/livewire/turbolinks@v0.1.x/dist/livewire-turbolinks.js" data-turbolinks-eval="false"></script>
 {{-- Ensure Livewire is above app.js -> Alpine is loaded in app.js and must be loaded after Livewire --}}
 <script src="{{ mix('js/app.js') }}"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Bind simple function to remove errors when clicked

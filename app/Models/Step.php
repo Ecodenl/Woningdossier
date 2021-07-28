@@ -68,6 +68,7 @@ class Step extends Model
     {
         return Step::whereIn('short', ['building-data', 'usage-quick-scan', 'living-requirements', 'residential-status'])
             ->where('order', '>', $this->order)
+            ->orderBy('order')
             ->first();
     }
 

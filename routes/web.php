@@ -25,9 +25,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
             });
         }
 
-        Route::livewire('quick-scan/{step}/{subStep}', 'cooperation.frontend.tool.quick-scan')
-            ->layout('cooperation.frontend.layouts.tool')
-            ->section('content');
+
 
         // TODO: Figure out how to handle these routes; Move to frontend.php?
         Route::view('styleguide', 'cooperation.frontend.styleguide');
@@ -169,7 +167,13 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
                 Route::post('', 'ImportController@copy')->name('copy');
             });
 
+                //        Route::livewire('quick-scan/{step}/{subStep}', 'cooperation.frontend.tool.quick-scan')
+//            ->layout('cooperation.frontend.layouts.tool')
+//            ->section('content');
+            Route::get('quick-scan/{step}/{subStep}', 'Frontend\\Tool\\QuickScanController@index')->name('quick-scan.index');
+
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
+
                 Route::get('/', 'ToolController@index')->name('index');
 
                 Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {

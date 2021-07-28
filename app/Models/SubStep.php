@@ -52,14 +52,4 @@ class SubStep extends Model
             ->orderBy('order')
             ->withPivot('order');
     }
-
-    public function next(): ?SubStep
-    {
-        return SubStep::where('order', '>', $this->order)->first();
-    }
-
-    public function previous(): ?SubStep
-    {
-        return SubStep::where('order', '<', $this->order)->orderByDesc('order')->first();
-    }
 }

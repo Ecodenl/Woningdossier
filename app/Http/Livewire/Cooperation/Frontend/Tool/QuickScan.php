@@ -32,7 +32,7 @@ class QuickScan extends Component
 
         $this->subStep = $subStep;
         $this->nextSubStep = $subStep->next();
-        $this->previousSubStep = $subStep->next();
+        $this->previousSubStep = $subStep->previous();
 
 
         $this->toolQuestions = $subStep->toolQuestions;

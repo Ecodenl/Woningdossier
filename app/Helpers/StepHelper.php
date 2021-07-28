@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Building;
 use App\Models\CompletedStep;
+use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\Questionnaire;
@@ -29,6 +30,13 @@ class StepHelper
         'total-sun-panels' => 'solar-panels',
         'sun-boiler' => 'heater',
         'house-ventilation' => 'ventilation',
+    ];
+
+    const QUICK_SCAN_STEP_SHORTS = [
+        'building-data',
+        'usage-quick-scan',
+        'living-requirements',
+        'residential-status',
     ];
 
     /**
@@ -275,5 +283,19 @@ class StepHelper
                 ]);
             }
         }
+    }
+
+    public static function getQuickScanSteps(Cooperation $cooperation)
+    {
+        return $cooperation->steps()
+            ->whereIn('short', self::QUICK_SCAN_STEP_SHORTS)
+            ->get();
+    }
+
+    public static function getExpertSteps(Cooperation $cooperation)
+    {
+        return $cooperation->steps()
+            ->whereNotIn('short', self::QUICK_SCAN_STEP_SHORTS)
+            ->get();
     }
 }

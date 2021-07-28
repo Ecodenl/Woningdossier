@@ -15,7 +15,7 @@ class CreateBuildingCurrentHeatingsTable extends Migration
     {
         Schema::create('building_current_heatings', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->json('name');
             $table->integer('calculate_value');
             $table->timestamps();
         });

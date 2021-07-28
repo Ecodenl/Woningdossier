@@ -40,7 +40,7 @@ class Element extends Model
         HasTranslations;
 
     protected $translatable = [
-        'name',
+        'name', 'info',
     ];
 
     public function serviceType()

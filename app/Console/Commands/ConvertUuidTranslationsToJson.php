@@ -51,7 +51,10 @@ class ConvertUuidTranslationsToJson extends Command
             'building_types' => 'name',
             'comfort_level_tap_water' => 'name',
             'crawlspace_accesses' => 'name',
-            'elements' => 'name',
+            'elements' => [
+                'name',
+                'info',
+            ],
             'element_values' => 'value',
             'example_buildings' => 'name',
             'facade_damaged_paintworks' => 'name',

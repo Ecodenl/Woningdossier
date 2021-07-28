@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class RoofTypesTableSeeder extends Seeder
 {
@@ -13,7 +14,7 @@ class RoofTypesTableSeeder extends Seeder
     {
         $roofTypes = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Hellend dak',
                 ],
                 'order' => 0,
@@ -21,7 +22,7 @@ class RoofTypesTableSeeder extends Seeder
                 'short' => 'pitched',
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Plat dak',
                 ],
                 'order' => 2,
@@ -29,7 +30,7 @@ class RoofTypesTableSeeder extends Seeder
                 'short' => 'flat',
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Geen dak',
                 ],
                 'order' => 4,
@@ -39,19 +40,10 @@ class RoofTypesTableSeeder extends Seeder
         ];
 
         foreach ($roofTypes as $roofType) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($roofType['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
-            \DB::table('roof_types')->insert([
+            DB::table('roof_types')->insert([
                 'calculate_value' => $roofType['calculate_value'],
                 'order' => $roofType['order'],
-                'name' => $uuid,
+                'name' => json_encode($roofType['name']),
                 'short' => $roofType['short'],
             ]);
         }

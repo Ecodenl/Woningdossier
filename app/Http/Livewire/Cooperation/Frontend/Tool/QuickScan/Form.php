@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class Form extends Component
 {
-    protected $listeners = ['save' => 'save'];
+    protected $listeners = ['save'];
 
     public $step;
     public $subStep;
@@ -33,6 +33,6 @@ class Form extends Component
 
     public function save()
     {
-        dd('save');
+//        $this->dispatchBrowserEvent('next-sub-step', ['url' => ]);
     }
 }

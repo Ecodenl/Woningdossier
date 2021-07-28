@@ -25,8 +25,20 @@
         <i class="icon-xs icon-arrow-left-bold-purple mr-5"></i>
         @lang('cooperation/frontend/shared.defaults.previous')
     </a>
-    <button wire:click="$emitTo('cooperation.tool.quick-scan.form', 'save')" class="btn btn-purple flex items-center ml-1">
+    <button wire:click="$emit('save')" class="btn btn-purple flex items-center ml-1">
         @lang('cooperation/frontend/shared.defaults.next')
         <i class="icon-xs icon-arrow-right-bold-purple ml-5"></i>
     </button>
+
+
+
+    <script>
+        document.addEventListener('livewire:load', () => {
+            window.livewire.on('save', e => {
+                Turbolinks.visit("{{$nextUrl}}", { action: "replace" })
+            })
+        });
+    </script>
+
+
 </div>

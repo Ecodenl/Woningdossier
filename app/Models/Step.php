@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\StepHelper;
 use App\Helpers\TranslatableTrait;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
@@ -146,6 +147,16 @@ class Step extends Model
     public function scopeOrdered(Builder $query)
     {
         return $query->orderBy('order', 'asc');
+    }
+
+    public function scopeQuickScan(Builder $query)
+    {
+        return $query->whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS);
+    }
+
+    public function scopeExpert(Builder $query)
+    {
+        return $query->whereNotIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS);
     }
 
     /**

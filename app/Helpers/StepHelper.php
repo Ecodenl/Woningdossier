@@ -284,18 +284,4 @@ class StepHelper
             }
         }
     }
-
-    public static function getQuickScanSteps(Cooperation $cooperation)
-    {
-        return $cooperation->steps()
-            ->whereIn('short', self::QUICK_SCAN_STEP_SHORTS)
-            ->get();
-    }
-
-    public static function getExpertSteps(Cooperation $cooperation)
-    {
-        return $cooperation->steps()
-            ->whereNotIn('short', self::QUICK_SCAN_STEP_SHORTS)
-            ->get();
-    }
 }

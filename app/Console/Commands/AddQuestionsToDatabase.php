@@ -24,7 +24,7 @@ use App\Models\SubStepToolQuestion;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\ToolQuestionType;
-use App\Models\ToolQuestionValueable;
+use App\Models\ToolQuestionValuable;
 use App\Models\WoodRotStatus;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
@@ -64,7 +64,7 @@ class AddQuestionsToDatabase extends Command
     public function handle()
     {
         \Schema::disableForeignKeyConstraints();
-        ToolQuestionValueable::truncate();
+        ToolQuestionValuable::truncate();
         ToolQuestion::truncate();
         ToolQuestionCustomValue::truncate();
         \Schema::enableForeignKeyConstraints();
@@ -1073,11 +1073,11 @@ class AddQuestionsToDatabase extends Command
                             $extra = $questionData['extra'];
 
                             foreach ($questionData['tool_question_values'] as $toolQuestionValueOrder => $toolQuestionValue) {
-                                $toolQuestion->toolQuestionValueables()->create([
+                                $toolQuestion->toolQuestionValuables()->create([
                                     'order' => $toolQuestionValueOrder,
                                     'show' => true,
-                                    'tool_question_valueable_type' => get_class($toolQuestionValue),
-                                    'tool_question_valueable_id' => $toolQuestionValue->id,
+                                    'tool_question_valuable_type' => get_class($toolQuestionValue),
+                                    'tool_question_valuable_id' => $toolQuestionValue->id,
                                     // We grab the extra data by the set column (e.g. calculate_value)
                                     'extra' => $extra['data'][$toolQuestionValue->{$extra['column']}]
                                 ]);

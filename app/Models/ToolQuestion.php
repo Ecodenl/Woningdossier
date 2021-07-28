@@ -46,9 +46,9 @@ class ToolQuestion extends Model
      *
      * @return HasMany
      */
-    public function toolQuestionValueables(): HasMany
+    public function toolQuestionValuables(): HasMany
     {
-        return $this->hasMany(ToolQuestionValueable::class);
+        return $this->hasMany(ToolQuestionValuable::class);
     }
 
     public function toolQuestionCustomValues()
@@ -63,13 +63,13 @@ class ToolQuestion extends Model
      */
     public function getQuestionValues(): Collection
     {
-        // relationships exists on the toolQuestionValueable model as well.
+        // relationships exists on the toolQuestionValuable model as well.
         return $this
-            ->toolQuestionValueables()
+            ->toolQuestionValuables()
             ->visible()
             ->ordered()
-            ->with('toolQuestionValueables')
+            ->with('toolQuestionValuables')
             ->get()
-            ->pluck('tool_question_valueable');
+            ->pluck('tool_question_valuable');
     }
 }

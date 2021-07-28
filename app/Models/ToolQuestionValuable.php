@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class ToolQuestionValueable extends Model
+class ToolQuestionValuable extends Model
 {
     protected $fillable = [
         'show',
         'order',
         'tool_question_id',
-        'tool_question_valueable_type',
-        'tool_question_valueable_id',
+        'tool_question_valuable_type',
+        'tool_question_valuable_id',
         'extra',
     ];
 
@@ -27,9 +27,9 @@ class ToolQuestionValueable extends Model
      *
      * @return MorphTo
      */
-    public function toolQuestionValueables(): MorphTo
+    public function toolQuestionValuables(): MorphTo
     {
-        return $this->morphTo('tool_question_valueable');
+        return $this->morphTo('tool_question_valuable');
     }
 
 

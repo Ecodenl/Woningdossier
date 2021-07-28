@@ -8,8 +8,14 @@ use Livewire\Component;
 
 class QuickScan extends Component
 {
+
     public $step;
+    public $nextStep;
+    public $previousStep;
+
     public $subStep;
+    public $nextSubStep;
+    public $previousSubStep;
 
     public $toolQuestions;
 
@@ -21,11 +27,19 @@ class QuickScan extends Component
         $subStep->load(['toolQuestions', 'subStepTemplate']);
 
         $this->step = $step;
+        $this->nextStep = $step->nextQuickScan();
+        $this->previousStep = $step->previousQuickScan();
+
         $this->subStep = $subStep;
+        $this->nextSubStep = $subStep->next();
+        $this->previousSubStep = $subStep->next();
+
 
         $this->toolQuestions = $subStep->toolQuestions;
 
-//        $this->total = Ste
+        $this->total = Step::whereIn('short', ['building-data', 'usage-quick-scan', 'living-requirements', 'residential-status'])
+            ->leftJoin('sub_steps', 'steps.id', '=', 'sub_steps.step_id')
+            ->count();
         $this->current = $subStep->order;
     }
 

@@ -58,6 +58,21 @@ class Step extends Model
         return 'slug';
     }
 
+    public function nextQuickScan(): ?Step
+    {
+        return Step::whereIn('short', ['building-data', 'usage-quick-scan', 'living-requirements', 'residential-status'])
+            ->where('order', '>', $this->order)
+            ->first();
+    }
+
+    public function previousQuickScan(): ?Step
+    {
+        return Step::whereIn('short', ['building-data', 'usage-quick-scan', 'living-requirements', 'residential-status'])
+            ->where('order', '<', $this->order)
+            ->orderByDesc('order')
+            ->first();
+    }
+
     /**
      * Return the children or so called "sub steps" of a step.
      *
@@ -126,7 +141,7 @@ class Step extends Model
     public function isSubStep(): bool
     {
         // when the parent id is null, its a parent else its a sub step / child.
-        return ! is_null($this->parent_id);
+        return !is_null($this->parent_id);
     }
 
     public function questionnaires()

@@ -9,7 +9,9 @@ class ToolQuestionCustomValue extends Model
 {
     use TranslatableTrait;
 
-    protected $translatable = ['name'];
+    protected $translatable = [
+        'name'
+    ];
 
     protected $fillable = [
         'name',

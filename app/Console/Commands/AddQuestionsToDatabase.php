@@ -791,7 +791,9 @@ class AddQuestionsToDatabase extends Command
                                     // so we will compare the short to determine what is what, but we will keep value for now
                                     'short' => $value,
                                     'value' => $value,
-                                    'name' => $name,
+                                    'name' => [
+                                        'nl' => $name,
+                                    ],
                                     'extra' => $extra,
                                 ]);
                             }

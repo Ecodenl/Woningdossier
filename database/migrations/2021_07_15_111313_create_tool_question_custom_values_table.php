@@ -21,10 +21,11 @@ class CreateToolQuestionCustomValuesTable extends Migration
 
             $table->string('short');
 
-            $table->string('name');
+            $table->json('name');
             $table->string('value');
             $table->boolean('show');
             $table->integer('order');
+            $table->json('extra')->nullable();
 
             $table->timestamps();
         });

@@ -25,6 +25,8 @@ class FixForeignOnMediablesTable extends Migration
                     ->references('id')->on('media')->onDelete('cascade');
             });
         }
+
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

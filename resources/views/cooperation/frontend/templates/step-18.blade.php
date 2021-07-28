@@ -47,7 +47,7 @@
                         <input type="radio" id="heating-type-city-heating" name="heating_type" value="city-heating">
                         <label for="heating-type-city-heating">
                             <span class="media-icon-wrapper">
-                                <i class="icon-city-heating"></i>
+                                <i class="icon-district-heating"></i>
                             </span>
                             <span class="checkmark"></span>
                             <span>Stadsverwarming</span>

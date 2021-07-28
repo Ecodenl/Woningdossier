@@ -13,12 +13,20 @@ class QuickScan extends Component
 
     public $toolQuestions;
 
+    public int $current;
+    public int $total;
+
     public function mount(Step $step, SubStep $subStep)
     {
+        $subStep->load(['toolQuestions', 'subStepTemplate']);
+
         $this->step = $step;
         $this->subStep = $subStep;
 
-        $this->toolQuestions = $subStep->toolQuestions();
+        $this->toolQuestions = $subStep->toolQuestions;
+
+//        $this->total = Ste
+        $this->current = $subStep->order;
     }
 
     public function render()

@@ -2,8 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Translation;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class ConvertUuidTranslationsToJson extends Command
 {
@@ -88,16 +93,77 @@ class ConvertUuidTranslationsToJson extends Command
             'wood_rot_statuses' => 'name',
         ];
 
+        // Define enum for doctrine so we can do change calls on tables WITH an enum column
+        DB::getDoctrineSchemaManager()
+            ->getDatabasePlatform()
+            ->registerDoctrineTypeMapping('enum', 'string');
+
         // We can't do anything if the translations table doesn't exist
         if (Schema::hasTable('translations')) {
-            $this->info('Processing');
+            // Start a progress bar
+            $this->info('Processing ' . count($tables) . ' tables...');
             $bar = $this->output->createProgressBar(count($tables));
-
-            foreach($tables as $table => $columns) {
+            $bar->start();
+            // Loop each table
+            foreach ($tables as $table => $columns) {
                 // We can't update a non-existing table
                 if (Schema::hasTable($table)) {
                     $columns = is_array($columns) ? $columns : [$columns];
 
+                    // Get all rows
+                    $rows = DB::table($table)->get();
+
+                    // Process each column
+                    foreach ($columns as $column) {
+                        // Can't do anything if the column doesn't exist
+                        if (Schema::hasColumn($table, $column)) {
+                            // We expect a CHAR with 36 maximum chars. This means we can't just set it to json
+                            // We do 2 things: we alter the table to TEXT so we can fit the translation, and then
+                            // set it to JSON
+                            if ('json' !== Schema::getColumnType($table, $column)) {
+                                Schema::table($table, function (Blueprint $table) use ($column) {
+                                    $table->text($column)->change();
+                                });
+                            }
+
+                            // Loop rows (which have the data from before the altering)
+                            foreach ($rows as $row) {
+                                // We can't update a non-existing property
+                                if (property_exists($row, $column) && property_exists($row, 'id')) {
+                                    $uuid = $row->{$column};
+                                    // We need a valid uuid
+                                    if (Str::isUuid($uuid)) {
+                                        // Get translation(s)
+                                        $translations = Translation::where('key', $uuid)
+                                            ->pluck('translation', 'language')
+                                            ->toArray();
+
+                                        $data = [
+                                            $column => json_encode($translations),
+                                        ];
+
+                                        // Set updated at if exists
+                                        if (Schema::hasColumn($table, 'updated_at')) {
+                                            $data['updated_at'] = Carbon::now();
+                                        }
+
+                                        // Update row with new json translations
+                                        DB::table($table)->where('id', $row->id)
+                                            ->update($data);
+                                    }
+                                }
+                            }
+
+                            // Convert column to json if not already json
+                            // We have to cast to json AFTER converting the uuids, else we can't convert due to invalid
+                            // json values
+                            if ('json' !== Schema::getColumnType($table, $column)) {
+                                Schema::table($table, function (Blueprint $table) use ($column) {
+                                    $table->json($column)->change();
+                                });
+                            }
+                        }
+                    }
                 }
 
                 $bar->advance();
@@ -105,7 +171,7 @@ class ConvertUuidTranslationsToJson extends Command
 
             $bar->finish();
             $this->output->newLine();
-
+            $this->info('All converted');
         } else {
             $this->error('Translations table not found');
         }

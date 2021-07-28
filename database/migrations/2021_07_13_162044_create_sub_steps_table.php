@@ -16,6 +16,7 @@ class CreateSubStepsTable extends Migration
         Schema::create('sub_steps', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->json('name');
+            $table->json('slug');
             $table->integer('order');
             $table->json('conditions')->nullable()->default(null);
             $table->unsignedInteger('step_id');

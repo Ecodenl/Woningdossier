@@ -8,6 +8,7 @@ use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\Step
@@ -59,6 +60,10 @@ class Step extends Model
         return 'slug';
     }
 
+    public function subSteps(): HasMany
+    {
+        return $this->hasMany(SubStep::class);
+    }
     public function nextQuickScan(): ?Step
     {
         return Step::whereIn('short', ['building-data', 'usage-quick-scan', 'living-requirements', 'residential-status'])

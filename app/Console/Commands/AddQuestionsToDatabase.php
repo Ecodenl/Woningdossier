@@ -28,6 +28,7 @@ use App\Models\ToolQuestionValuable;
 use App\Models\WoodRotStatus;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class AddQuestionsToDatabase extends Command
@@ -1018,7 +1019,8 @@ class AddQuestionsToDatabase extends Command
 
                 $subStepData = [
                     'name' => ['nl' => $subQuestionName],
-                    'order' => $orderForSubQuestions,
+                    'order' =>  $orderForSubQuestions,
+                    'slug' => ['nl' => Str::slug($subQuestionName)],
                     'step_id' => $step->id,
                     'sub_step_template_id' => $subQuestionData['sub_step_template_id'],
                 ];

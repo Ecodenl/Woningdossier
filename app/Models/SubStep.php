@@ -20,6 +20,7 @@ class SubStep extends Model
 
     protected $fillable = [
         'name',
+        'slug',
         'order',
         'step_id',
         'conditions',
@@ -27,11 +28,18 @@ class SubStep extends Model
     ];
     protected $translatable = [
         'name',
+        'slug',
     ];
 
     protected $casts = [
         'conditions' => 'array',
     ];
+
+    public function getRouteKeyName(): string
+    {
+        $locale = app()->getLocale();
+        return "slug->{$locale}";
+    }
 
     public function subStepTemplate(): BelongsTo
     {
@@ -45,12 +53,12 @@ class SubStep extends Model
             ->withPivot('order');
     }
 
-    public function next(): SubStep
+    public function next(): ?SubStep
     {
         return SubStep::where('order', '>', $this->order)->first();
     }
 
-    public function previous(): SubStep
+    public function previous(): ?SubStep
     {
         return SubStep::where('order', '<', $this->order)->orderByDesc('order')->first();
     }

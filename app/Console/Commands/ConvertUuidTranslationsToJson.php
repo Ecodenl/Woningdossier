@@ -107,6 +107,10 @@ class ConvertUuidTranslationsToJson extends Command
             $this->info('Processing ' . count($tables) . ' tables...');
             $bar = $this->output->createProgressBar(count($tables));
             $bar->start();
+
+            // We need these later
+            $translationUuids = [];
+
             // Loop each table
             foreach ($tables as $table => $columns) {
                 // We can't update a non-existing table
@@ -141,8 +145,8 @@ class ConvertUuidTranslationsToJson extends Command
                                             ->pluck('translation', 'language')
                                             ->toArray();
 
-                                        // Clean from translations table
-                                        Translation::where('key', $uuid)->delete();
+                                        // Push to array
+                                        $translationUuids[] = $uuid;
 
                                         $data = [
                                             $column => json_encode($translations),
@@ -174,6 +178,10 @@ class ConvertUuidTranslationsToJson extends Command
 
                 $bar->advance();
             }
+
+            // Multiple rows can use the same translation. We delete afterwards to ensure we don't get
+            // rows with a missing translation
+            Translation::whereIn('key', $translationUuids)->delete();
 
             $bar->finish();
             $this->output->newLine();

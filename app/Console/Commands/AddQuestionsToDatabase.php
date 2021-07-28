@@ -63,7 +63,6 @@ class AddQuestionsToDatabase extends Command
      */
     public function handle()
     {
-
         \Schema::disableForeignKeyConstraints();
         ToolQuestionValueable::truncate();
         ToolQuestion::truncate();
@@ -86,7 +85,7 @@ class AddQuestionsToDatabase extends Command
 
         // Insulated glazing
         $insulatedGlazings = InsulatingGlazing::all();
-        $heatings = BuildingHeating::where('calculate_value', '<', 5)->get(); // we don't want n.v.t.
+        $heatings = BuildingHeating::all();
         $crackSealing = Element::findByShort('crack-sealing');
         $frames = Element::findByShort('frames');
         $woodElements = Element::findByShort('wood-elements');
@@ -143,10 +142,45 @@ class AddQuestionsToDatabase extends Command
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.building-type',
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $buildingTypes,
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    2 => [
+                                        'icon' => 'icon-detached-house',
+                                    ],
+                                    3 => [
+                                        'icon' => 'icon-two-under-one-roof',
+                                    ],
+                                    4 => [
+                                        'icon' => 'icon-end-of-terrace-house',
+                                    ],
+                                    5 => [
+                                        'icon' => 'icon-mid-terrace-house',
+                                    ],
+                                    6 => [
+                                        'icon' => 'icon-apartment-ground-floor-corner', // TODO: See below
+                                    ],
+                                    7 => [
+                                        'icon' => 'icon-apartment-ground-floor-between', // TODO: See below
+                                    ],
+                                    8 => [
+                                        'icon' => 'icon-upstairs-apartment-between',
+                                    ],
+                                    9 => [
+                                        'icon' => 'icon-upstairs-apartment-corner',
+                                    ],
+                                    10 => [
+                                        'icon' => 'icon-apartment-mid-floor-between', // TODO: See below
+                                    ],
+                                    11 => [
+                                        'icon' => 'icon-apartment-mid-floor-corner', // TODO: See below
+                                    ],
+                                ],
+                            ],
                         ],
                     ]
                 ],
-                // TODO: wat voor type appartament heeft u moet nog komen.
+                // TODO: wat voor type appartament heeft u moet nog komen. Dit moet de vorige vraag aanpassen, gezien de vorige vraag de optie van het type appartement nu al aangeeft
                 'Wat voor dak' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -155,10 +189,25 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => 'building_features.roof_type_id',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.roof-type',
                             'tool_question_type_id' => $radioIconType->id,
-                            'tool_question_values' => RoofType::all(),
+                            'tool_question_values' => $roofTypes,
+                            'extra' => [
+                                'column' => 'short',
+                                'data' => [
+                                    'pitched' => [
+                                        'icon' => 'icon-pitched-roof',
+                                    ],
+                                    'flat' => [
+                                        'icon' => 'icon-flat-roof',
+                                    ],
+                                    'none' => [
+                                        'icon' => 'icon-other',
+                                    ],
+                                ],
+                            ],
                         ]
                     ]
                 ],
+                // TODO: Er zijn meer opties voor daken in het nieuwe desing dan de opties hierboven
                 'Bouwjaar en oppervlak' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -206,7 +255,33 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => 'building_features.energy_label_id',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.energy-label',
                             'tool_question_type_id' => $radioIconType->id,
-                            'tool_question_values' => EnergyLabel::all(),
+                            'tool_question_values' => $energyLabels,
+                            'extra' => [
+                                'column' => 'name',
+                                'data' => [
+                                    'A' => [
+                                        'icon' => 'icon-label-a',
+                                    ],
+                                    'B' => [
+                                        'icon' => 'icon-label-b',
+                                    ],
+                                    'C' => [
+                                        'icon' => 'icon-label-c',
+                                    ],
+                                    'D' => [
+                                        'icon' => 'icon-label-d',
+                                    ],
+                                    'E' => [
+                                        'icon' => 'icon-label-e',
+                                    ],
+                                    'F' => [
+                                        'icon' => 'icon-label-f',
+                                    ],
+                                    'G' => [
+                                        'icon' => 'icon-label-g',
+                                    ],
+                                ],
+                            ],
                         ],
                     ]
                 ],
@@ -328,14 +403,32 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => 'user_energy_habits.heating_first_floor',
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.heating-first-floor',
                             'tool_question_type_id' => $radioType->id,
-                            'tool_question_values' => BuildingHeating::all(),
+                            'tool_question_values' => $heatings,
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    2 => [],
+                                    3 => [],
+                                    4 => [],
+                                    5 => [],
+                                ],
+                            ],
                         ],
                         [
                             'validation' => ['required', 'exists:building_heatings,id'],
                             'save_in' => 'user_energy_habits.heating_second_floor',
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.heating-second-floor',
                             'tool_question_type_id' => $radioType->id,
-                            'tool_question_values' => BuildingHeating::all(),
+                            'tool_question_values' => $heatings,
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    2 => [],
+                                    3 => [],
+                                    4 => [],
+                                    5 => [],
+                                ],
+                            ],
                         ],
                     ]
                 ],
@@ -463,7 +556,27 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => "building_elements.{$wallInsulation->id}.element_value_id",
                             'translation' => "Wat is de staat van de muurisolatie",
                             'tool_question_type_id' => $radioIconType->id,
-                            'tool_question_values' => $wallInsulation->values()->orderBy('order')->get()
+                            'tool_question_values' => $wallInsulation->values()->orderBy('order')->get(),
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    1 => [
+                                        'icon' => 'icon-other',
+                                    ],
+                                    2 => [
+                                        'icon' => 'icon-wall-insulation-none',
+                                    ],
+                                    3 => [
+                                        'icon' => 'icon-wall-insulation-moderate',
+                                    ],
+                                    4 => [
+                                        'icon' => 'icon-wall-insulation-good',
+                                    ],
+                                    5 => [
+                                        'icon' => 'icon-wall-insulation-excellent',
+                                    ],
+                                ],
+                            ],
                         ],
                     ]
                 ],
@@ -475,10 +588,34 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => "building_elements.{$floorInsulation->id}.element_value_id",
                             'translation' => "Wat is de staat van de vloerisolatie",
                             'tool_question_type_id' => $radioIconType->id,
-                            'tool_question_values' => $floorInsulation->values()->orderBy('order')->get()
+                            'tool_question_values' => $floorInsulation->values()->orderBy('order')->get(),
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    1 => [
+                                        'icon' => 'icon-other',
+                                    ],
+                                    2 => [
+                                        'icon' => 'icon-floor-insulation-none',
+                                    ],
+                                    3 => [
+                                        'icon' => 'icon-floor-insulation-moderate',
+                                    ],
+                                    4 => [
+                                        'icon' => 'icon-floor-insulation-good',
+                                    ],
+                                    5 => [
+                                        'icon' => 'icon-floor-insulation-excellent',
+                                    ],
+                                    6 => [
+                                        'icon' => 'icon-other',
+                                    ],
+                                ],
+                            ],
                         ],
                     ]
                 ],
+                // TODO: Niet van toepassing is niet zichtbaar in het design
                 'Dakisolatie' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -487,10 +624,34 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => "building_elements.{$roofInsulation->id}.element_value_id",
                             'translation' => "Wat is de staat van de dakisolatie",
                             'tool_question_type_id' => $radioIconType->id,
-                            'tool_question_values' => $roofInsulation->values()->orderBy('order')->get()
+                            'tool_question_values' => $roofInsulation->values()->orderBy('order')->get(),
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    1 => [
+                                        'icon' => 'icon-other',
+                                    ],
+                                    2 => [
+                                        'icon' => 'icon-roof-insulation-none',
+                                    ],
+                                    3 => [
+                                        'icon' => 'icon-roof-insulation-moderate',
+                                    ],
+                                    4 => [
+                                        'icon' => 'icon-roof-insulation-good',
+                                    ],
+                                    5 => [
+                                        'icon' => 'icon-roof-insulation-excellent',
+                                    ],
+                                    6 => [
+                                        'icon' => 'icon-other',
+                                    ],
+                                ],
+                            ],
                         ],
                     ]
                 ],
+                // TODO: Niet van toepassing is niet zichtbaar in het design
                 'Glasisolatie eerste woonlaag' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -499,10 +660,28 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => "building_elements.{$livingRoomsWindows->id}.element_value_id",
                             'translation' => "Welke glasisolatie heeft u op de eerste woonlaag",
                             'tool_question_type_id' => $radioIconType->id,
-                            'tool_question_values' => $livingRoomsWindows->values()->orderBy('order')->get()
+                            'tool_question_values' => $livingRoomsWindows->values()->orderBy('order')->get(),
+                            'extra' => [
+                                'column' => 'order',
+                                'data' => [
+                                    0 => [
+                                        'icon' => 'icon-glass-single',
+                                    ],
+                                    1 => [
+                                        'icon' => 'icon-glass-double',
+                                    ],
+                                    2 => [
+                                        'icon' => 'icon-glass-hr-dp',
+                                    ],
+                                    3 => [
+                                        'icon' => 'icon-glass-hr-tp', // TODO: Drievoudig glas, is dat hetzelfde als hr+++?
+                                    ],
+                                ],
+                            ],
                         ],
                     ]
                 ],
+                // TODO: Meer glas opties in design dan in de database
                 'Glasisolatie tweede woonlaag' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -511,10 +690,28 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => "building_elements.{$sleepingRoomsWindows->id}.element_value_id",
                             'translation' => "Welke glasisolatie heeft u op de tweede woonlaag",
                             'tool_question_type_id' => $radioIconType->id,
-                            'tool_question_values' => $sleepingRoomsWindows->values()->orderBy('order')->get()
+                            'tool_question_values' => $sleepingRoomsWindows->values()->orderBy('order')->get(),
+                            'extra' => [
+                                'column' => 'order',
+                                'data' => [
+                                    0 => [
+                                        'icon' => 'icon-glass-single',
+                                    ],
+                                    1 => [
+                                        'icon' => 'icon-glass-double',
+                                    ],
+                                    2 => [
+                                        'icon' => 'icon-glass-hr-dp',
+                                    ],
+                                    3 => [
+                                        'icon' => 'icon-glass-hr-tp', // TODO: Drievoudig glas, is dat hetzelfde als hr+++?
+                                    ],
+                                ],
+                            ],
                         ],
                     ]
                 ],
+                // TODO: Meer glas opties in design dan in de database
                 'Verwarming' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -569,6 +766,16 @@ class AddQuestionsToDatabase extends Command
                             'translation' => "Wat voor gasketel heeft u?",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $boiler->values()->orderBy('order')->get(),
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    1 => [],
+                                    2 => [],
+                                    3 => [],
+                                    4 => [],
+                                    5 => [],
+                                ],
+                            ],
                         ],
                         [
                             'validation' => ['nullable', 'numeric', 'between:1970,'.date('Y'),],
@@ -590,9 +797,27 @@ class AddQuestionsToDatabase extends Command
                             'translation' => "Hoe is de verwarming",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $buildingHeatingApplications,
+                            'extra' => [
+                                'column' => 'short',
+                                'data' => [
+                                    'radiators' => [
+                                        'icon' => 'icon-radiator',
+                                    ],
+                                    'radiators-with-floor-heating' => [
+                                        'icon' => 'icon-radiant-floor-heating',
+                                    ],
+                                    'low-temperature-heater' => [
+                                        'icon' => 'icon-radiator-low-temp',
+                                    ],
+                                    'floor-wall-heating' => [
+                                        'icon' => 'icon-radiant-wall-heating',
+                                    ],
+                                ],
+                            ],
                         ],
                     ]
                 ],
+                // TODO: Meer/andere opties in design dan in datbase
                 'Zonnenboiler' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -603,6 +828,23 @@ class AddQuestionsToDatabase extends Command
                             'translation' => "Heeft u een zonneboiler",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $heater->values()->orderBy('order')->get(),
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    1 => [
+                                        'icon' => 'icon-sun-boiler-none',
+                                    ],
+                                    2 => [
+                                        'icon' => 'icon-sun-boiler-hot-water',
+                                    ],
+                                    3 => [
+                                        'icon' => 'icon-sun-boiler-heating',
+                                    ],
+                                    4 => [
+                                        'icon' => 'icon-sun-boiler-both',
+                                    ],
+                                ],
+                            ],
                         ],
                     ]
                 ],
@@ -622,7 +864,17 @@ class AddQuestionsToDatabase extends Command
                             'short' => 'heat-pump-type',
                             'translation' => "Heeft u een warmptepomp",
                             'tool_question_type_id' => $radioType->id,
-                            'tool_question_values' => $heater->values()->orderBy('order')->get(),
+                            'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    1 => [],
+                                    2 => [],
+                                    3 => [],
+                                    4 => [],
+                                    5 => [],
+                                ],
+                            ],
                         ],
                         [
                             'validation' => [
@@ -649,7 +901,17 @@ class AddQuestionsToDatabase extends Command
                             'translation' => "Heeft u ventilatie?",
                             'tool_question_type_id' => $radioType->id,
                             'tool_question_values' => $ventilation->values()->orderBy('order')->get(),
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    1 => [],
+                                    2 => [],
+                                    3 => [],
+                                    4 => [],
+                                ],
+                            ],
                         ],
+                        // TODO: Andere opties in design dan in database
                         [
                             'save_in' => "building_elements.{$crackSealing->id}.element_value_id",
                             'validation' => ['required', "exists:elements,id",],
@@ -658,6 +920,15 @@ class AddQuestionsToDatabase extends Command
                             'translation' => "Heeft u kierdichting?",
                             'tool_question_type_id' => $radioType->id,
                             'tool_question_values' => $crackSealing->values()->orderBy('order')->get(),
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    1 => [],
+                                    2 => [],
+                                    3 => [],
+                                    4 => [],
+                                ],
+                            ],
                         ],
                     ]
                 ],
@@ -774,7 +1045,7 @@ class AddQuestionsToDatabase extends Command
                         }
                         /** @var ToolQuestion $toolQuestion */
                         $toolQuestion = ToolQuestion::create(
-                            Arr::except($questionData, ['tool_question_values', 'tool_question_custom_values'])
+                            Arr::except($questionData, ['tool_question_values', 'tool_question_custom_values', 'extra'])
                         );
 
                         $subStep->toolQuestions()->attach($toolQuestion, ['order' => $orderForSubQuestions]);
@@ -784,7 +1055,6 @@ class AddQuestionsToDatabase extends Command
                             foreach ($questionData['tool_question_custom_values'] as $value => $customValueData) {
                                 $name = $customValueData['name'];
                                 $extra = $customValueData['extra'] ?? [];
-
                                 $toolQuestion->toolQuestionCustomValues()->create([
                                     'order' => $toolQuestionCustomValueOrder,
                                     'show' => true,
@@ -800,12 +1070,16 @@ class AddQuestionsToDatabase extends Command
                         }
 
                         if (isset($questionData['tool_question_values'])) {
+                            $extra = $questionData['extra'];
+
                             foreach ($questionData['tool_question_values'] as $toolQuestionValueOrder => $toolQuestionValue) {
                                 $toolQuestion->toolQuestionValueables()->create([
                                     'order' => $toolQuestionValueOrder,
                                     'show' => true,
                                     'tool_question_valueable_type' => get_class($toolQuestionValue),
                                     'tool_question_valueable_id' => $toolQuestionValue->id,
+                                    // We grab the extra data by the set column (e.g. calculate_value)
+                                    'extra' => $extra['data'][$toolQuestionValue->{$extra['column']}]
                                 ]);
                             }
                         }

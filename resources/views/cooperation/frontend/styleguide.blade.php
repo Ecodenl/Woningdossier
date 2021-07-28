@@ -385,7 +385,7 @@
                 <i class="icon-xl icon-central-heater"></i>
                 <i class="icon-xl icon-heat-pump"></i>
                 <i class="icon-xl icon-infrared-heater"></i>
-                <i class="icon-xl icon-city-heating"></i>
+                <i class="icon-xl icon-district-heating"></i>
             </div>
             <div class="flex items-center w-full space-x-8">
                 <i class="icon-xl icon-radiant-floor-heating"></i>

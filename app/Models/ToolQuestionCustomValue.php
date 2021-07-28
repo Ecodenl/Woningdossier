@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
-use App\Helpers\TranslatableTrait;
+use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 
 class ToolQuestionCustomValue extends Model
 {
-    use TranslatableTrait;
+    use HasTranslations;
 
-    protected $translatable = ['name'];
+    protected $translatable = [
+        'name'
+    ];
 
     protected $fillable = [
         'name',
@@ -19,10 +21,12 @@ class ToolQuestionCustomValue extends Model
         'options',
         'value',
         'tool_question_id',
-        'show'
+        'show',
+        'extra',
     ];
 
     protected $casts = [
         'show' => 'boolean',
+        'extra' => 'array',
     ];
 }

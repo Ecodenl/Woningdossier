@@ -196,7 +196,10 @@ class StepsTableSeeder extends Seeder
 
         foreach ($allCooperations as $cooperation) {
             foreach ($steps as $step) {
-                $cooperation->steps()->attach($step);
+                // Only attach if not available
+                if (! $cooperation->steps()->find($step->id) instanceof \App\Models\Step) {
+                    $cooperation->steps()->attach($step);
+                }
                 $cooperation->steps()->updateExistingPivot($step->id, ['order' => $step->order]);
             }
         }

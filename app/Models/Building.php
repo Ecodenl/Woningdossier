@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Arr;
 use App\Scopes\GetValueScope;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Builder;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Str;
 
 /**
  * App\Models\Building
@@ -120,14 +122,15 @@ class Building extends Model
             if (count($savedInParts) > 2) {
                 // in this case the column holds a extra where value
                 $where[] = [$conditionalMap[$table], '=', $column];
-                $column = $savedInParts[2];
+
+                $columns = array_slice($savedInParts, 2);
+                $column = implode('.', $columns);
             }
 
-//             get the answer, since there is only 1 colu
-            return DB::table($table)
-                ->where($where)
-                ->pluck($column)
-                ->first();
+            $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
+
+            // we do a get so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
+            return $modelName::where($where)->get()->pluck($column)->first();
         }
     }
 

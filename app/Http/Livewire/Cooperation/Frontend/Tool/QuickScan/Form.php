@@ -48,7 +48,7 @@ class Form extends Component
     {
         foreach ($this->toolQuestions as $toolQuestion) {
 
-            $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+            $answerForInputSource = $this->building->getAnswer($this->currentInputSource, $toolQuestion);
 
             $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
         }
@@ -79,9 +79,9 @@ class Form extends Component
         $table = $savedInParts[0];
         $column = $savedInParts[1];
 
-        if (count($savedInParts) > 2) {
-            dd($savedInParts);
-        }
+//        if (count($savedInParts) > 2) {
+//            dd($savedInParts);
+//        }
         // we will save it on the model, this way we keep the current events behind them
         $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
 

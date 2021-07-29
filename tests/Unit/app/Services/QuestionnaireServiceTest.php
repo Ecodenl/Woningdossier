@@ -109,4 +109,44 @@ class QuestionnaireServiceTest extends TestCase
             'questionnaire_id' => $copiedQuestionnaire->id,
         ]);
     }
+
+    public function isEmptyTranslationProvider()
+    {
+        return [
+            [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], false],
+            [['en' => '', 'nl' => 'Dit is een nederlandse vertaling'], false],
+            [['fr' => 'franse vertaling', 'en' => '', 'nl' => null], false],
+            [['fr' => '', 'en' => '', 'nl' => ''], true],
+            [['fr' => '', 'en' => null, 'nl' => ''], true],
+            [['fr' => null, 'en' => null, 'nl' => '', 'de' => 'duitse tekst'], false],
+        ];
+    }
+
+    /**
+     * @dataProvider isEmptyTranslationProvider
+     */
+    public function testIsEmptyTranslation($translations, $expected)
+    {
+        $this->assertEquals($expected, QuestionnaireService::isEmptyTranslation($translations));
+    }
+
+    public function isNotEmptyTranslationProvider()
+    {
+        return [
+            [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], true],
+            [['en' => '', 'nl' => 'Dit is een nederlandse vertaling'], true],
+            [['fr' => 'franse vertaling', 'en' => '', 'nl' => null], true],
+            [['fr' => '', 'en' => '', 'nl' => ''], false],
+            [['fr' => '', 'en' => null, 'nl' => ''], false],
+            [['fr' => null, 'en' => null, 'nl' => '', 'de' => 'duitse tekst'], true],
+        ];
+    }
+
+    /**
+     * @dataProvider isNotEmptyTranslationProvider
+     */
+    public function testisNotEmptyTranslation($translations, $expected)
+    {
+        $this->assertEquals($expected, QuestionnaireService::isNotEmptyTranslation($translations));
+    }
 }

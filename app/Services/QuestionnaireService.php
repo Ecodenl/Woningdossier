@@ -128,18 +128,20 @@ class QuestionnaireService
     {
         $required = array_key_exists('required', $questionData);
 
-        $createdQuestion = $questionnaire->questions()->create([
-            'name' => $questionData['question'],
-            'type' => $questionType,
-            'order' => $order,
-            'required' => $required,
-            'validation' => self::getValidationRule($questionData, $validation),
-        ]);
+        if (self::isNotEmptyTranslation($questionData['question'])) {
+            $createdQuestion = $questionnaire->questions()->create([
+                'name' => $questionData['question'],
+                'type' => $questionType,
+                'order' => $order,
+                'required' => $required,
+                'validation' => self::getValidationRule($questionData, $validation),
+            ]);
 
-        if (self::hasQuestionOptions($questionType) && $createdQuestion instanceof Question) {
-            // create the options for the question
-            foreach ($questionData['options'] as $newOptions) {
-                self::createQuestionOptions($newOptions, $createdQuestion);
+            if (self::hasQuestionOptions($questionType) && $createdQuestion instanceof Question) {
+                // create the options for the question
+                foreach ($questionData['options'] as $newOptions) {
+                    self::createQuestionOptions($newOptions, $createdQuestion);
+                }
             }
         }
     }
@@ -168,10 +170,12 @@ class QuestionnaireService
      */
     public static function createQuestionOptions(array $newOptions, Question $question)
     {
-        QuestionOption::create([
-            'question_id' => $question->id,
-            'name' => $newOptions,
-        ]);
+        if (self::isNotEmptyTranslation($newOptions)) {
+            QuestionOption::create([
+                'question_id' => $question->id,
+                'name' => $newOptions,
+            ]);
+        }
     }
 
     /**
@@ -186,10 +190,10 @@ class QuestionnaireService
         // so if the $questionOptionId = a valid guid we need to create a new QuestionOption.
         foreach ($editedQuestion['options'] as $questionOptionId => $translations) {
             // check whether its a guid
-            if (Str::isValidGuid($questionOptionId)) {
+            if (Str::isValidGuid($questionOptionId) && self::isNotEmptyTranslation($translations)) {
                 // its a new option, create it
                 self::createQuestionOptions($translations, $question);
-            } else {
+            } elseif (self::isNotEmptyTranslation($translations)) {
                 QuestionOption::find($questionOptionId)->update([
                     'name' => $translations,
                 ]);
@@ -206,12 +210,17 @@ class QuestionnaireService
 
         $currentQuestion = Question::find($questionId);
 
-        $currentQuestion->update([
+        $data = [
             'validation' => self::getValidationRule($editedQuestion, $validation),
             'order' => $order,
             'required' => $required,
-            'name' => $editedQuestion['question'],
-        ]);
+        ];
+
+        if (self::isNotEmptyTranslation($editedQuestion['question'])) {
+            $data['name'] = $editedQuestion['question'];
+        }
+
+        $currentQuestion->update($data);
 
         if (self::hasQuestionOptions($currentQuestion->type)) {
             self::updateQuestionOptions($editedQuestion, $currentQuestion);
@@ -261,5 +270,35 @@ class QuestionnaireService
         }
 
         return [];
+    }
+
+    /**
+     * Returns the inverse of isEmptyTranslation.
+     *
+     * @param  array  $translations
+     *
+     * @return bool
+     */
+    public static function isNotEmptyTranslation(array $translations): bool
+    {
+        return ! self::isEmptyTranslation($translations);
+    }
+
+    /**
+     * Check if the translations from the request are empty.
+     *
+     * @param  array  $translations
+     *
+     * @return bool
+     */
+    public static function isEmptyTranslation(array $translations): bool
+    {
+        foreach ($translations as $locale => $translation) {
+            if (! empty($translation)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -29,6 +29,7 @@
                                                 <span class="input-group-addon">{{$locale}}</span>
                                                 <input type="text" class="form-control" id="name"
                                                        name="questionnaire[name][{{$locale}}]"
+                                                       value="{{ old("questionnaire.name.{$locale}")}}"
                                                        placeholder="Nieuwe vragenlijst">
                                             </div>
                                         </div>
@@ -37,7 +38,8 @@
                                         <label for="step-id">Na stap:</label>
                                         <select name="questionnaire[step_id]" class="form-control" id="step-id">
                                             @foreach($steps as $i => $step)
-                                                <option value="{{ $step->id }}">
+                                                <option value="{{ $step->id }}"
+                                                        @if(old('questionnaire.step_id') == $step->id) selected="selected" @endif>
                                                     {{ $i+1 }}: {{ $step->name }}
                                                 </option>
                                             @endforeach

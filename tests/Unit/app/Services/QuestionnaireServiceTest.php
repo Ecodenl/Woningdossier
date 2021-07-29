@@ -39,43 +39,6 @@ class QuestionnaireServiceTest extends TestCase
         $this->assertEquals($expected, QuestionnaireService::hasQuestionOptions($input));
     }
 
-    public static function getTranslationProvider()
-    {
-        return [
-            [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], 'Dit is een engelse vertaling'],
-            [['en' => '', 'nl' => 'Dit is een nederlandse vertaling'], 'Dit is een nederlandse vertaling'],
-            [['fr' => 'franse vertaling', 'en' => '', 'nl' => null], 'franse vertaling'],
-        ];
-    }
-
-    /**
-     * @dataProvider getTranslationProvider
-     */
-    public function testGetTranslation($translations, $expected)
-    {
-        $this->assertEquals($expected, QuestionnaireService::getTranslation($translations, $expected));
-    }
-
-    public function isEmptyTranslationProvider()
-    {
-        return [
-            [['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling'], false],
-            [['en' => '', 'nl' => 'Dit is een nederlandse vertaling'], false],
-            [['fr' => 'franse vertaling', 'en' => '', 'nl' => null], false],
-            [['fr' => '', 'en' => '', 'nl' => ''], true],
-            [['fr' => '', 'en' => null, 'nl' => ''], true],
-            [['fr' => null, 'en' => null, 'nl' => '', 'de' => 'duitse tekst'], false],
-        ];
-    }
-
-    /**
-     * @dataProvider isEmptyTranslationProvider
-     */
-    public function testIsEmptyTranslation($translations, $expected)
-    {
-        $this->assertEquals($expected, QuestionnaireService::isEmptyTranslation($translations));
-    }
-
     public function testCreateQuestionnaire()
     {
         $cooperation = factory(Cooperation::class)->create();
@@ -88,7 +51,7 @@ class QuestionnaireServiceTest extends TestCase
         $this->assertInstanceOf(Questionnaire::class, $questionnaire);
     }
 
-    public function testCreateQuestionProvider()
+    public function createQuestionProvider()
     {
         return [
             [[
@@ -101,7 +64,7 @@ class QuestionnaireServiceTest extends TestCase
     }
 
     /**
-     * @dataProvider testCreateQuestionProvider
+     * @dataProvider createQuestionProvider
      */
     public function testCreateQuestion($questionData)
     {
@@ -125,7 +88,7 @@ class QuestionnaireServiceTest extends TestCase
             );
         }
         // where we will copy the questionnaire to.
-        $cooperation = Cooperation::whereSlug('hnwr')->first();
+        $cooperation = factory(Cooperation::class)->create();
 
         // copy the questionnaire
         QuestionnaireService::copyQuestionnaireToCooperation($cooperation, $questionnaire);
@@ -141,10 +104,6 @@ class QuestionnaireServiceTest extends TestCase
 
         // check if the translations are the same
         $this->assertSame($copiedQuestionnaire->name, $questionnaire->name);
-
-        // now check if the uuid's are different
-        // this is important, otherwise the translations will run trough each other
-        $this->assertNotSame($copiedQuestionnaire->attributesToArray()['name'], $questionnaire->attributesToArray()['name']);
 
         $this->assertDatabaseHas('questions', [
             'questionnaire_id' => $copiedQuestionnaire->id,

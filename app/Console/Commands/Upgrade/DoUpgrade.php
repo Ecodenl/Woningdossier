@@ -56,6 +56,7 @@ class DoUpgrade extends Command
                 \StepsTableSeeder::class,
                 \ToolQuestionTypesTableSeeder::class,
                 \SubStepTemplatesTableSeeder::class,
+                \InputSourcesTableSeeder::class,
 
             ];
 

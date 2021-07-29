@@ -32,10 +32,15 @@ class InputSourcesTableSeeder extends Seeder
                 'short' => 'cooperation',
                 'order' => 4,
             ],
+            [
+                'name' => 'Master',
+                'short' => 'master',
+                'order' => 5
+            ]
         ];
 
         foreach ($inputSources as $inputSource) {
-            \App\Models\InputSource::firstOrCreate($inputSource);
+            \App\Models\InputSource::updateOrCreate(['short' => $inputSource['short']], $inputSource);
         }
     }
 }

@@ -79,6 +79,9 @@ class Form extends Component
         $table = $savedInParts[0];
         $column = $savedInParts[1];
 
+        if (count($savedInParts) > 2) {
+            dd($savedInParts);
+        }
         // we will save it on the model, this way we keep the current events behind them
         $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
 

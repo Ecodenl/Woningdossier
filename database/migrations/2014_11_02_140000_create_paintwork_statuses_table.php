@@ -15,7 +15,7 @@ class CreatePaintworkStatusesTable extends Migration
     {
         Schema::create('paintwork_statuses', function (Blueprint $table) {
             $table->increments('id');
-            $table->uuid('name');
+            $table->json('name');
             $table->integer('calculate_value')->nullable();
             $table->integer('order');
             $table->timestamps();

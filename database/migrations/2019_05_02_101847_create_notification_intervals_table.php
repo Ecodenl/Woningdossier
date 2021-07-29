@@ -15,7 +15,7 @@ class CreateNotificationIntervalsTable extends Migration
     {
         Schema::create('notification_intervals', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->json('name');
             $table->string('short');
             $table->timestamps();
         });

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class FileTypeCategoriesTableSeeder extends Seeder
 {
@@ -13,7 +14,7 @@ class FileTypeCategoriesTableSeeder extends Seeder
     {
         $fileTypeCategories = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Rapportages',
                     'en' => 'Report',
                 ],
@@ -23,19 +24,8 @@ class FileTypeCategoriesTableSeeder extends Seeder
         ];
 
         foreach ($fileTypeCategories as $fileTypeCategory) {
-            $uuid = \App\Helpers\Str::uuid();
-
-            // create the translations
-            foreach ($fileTypeCategory['names'] as $locale => $translation) {
-                DB::table('translations')->insert([
-                    'key' => $uuid,
-                    'language' => $locale,
-                    'translation' => $translation,
-                ]);
-            }
-            // create the file type itself
             DB::table('file_type_categories')->insert([
-                'name' => $uuid,
+                'name' => json_encode($fileTypeCategory['name']),
                 'short' => $fileTypeCategory['short'],
             ]);
         }

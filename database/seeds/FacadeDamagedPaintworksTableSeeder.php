@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class FacadeDamagedPaintworksTableSeeder extends Seeder
 {
@@ -13,7 +14,7 @@ class FacadeDamagedPaintworksTableSeeder extends Seeder
     {
         $items = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Nee',
                 ],
                 'calculate_value' => 0,
@@ -21,7 +22,7 @@ class FacadeDamagedPaintworksTableSeeder extends Seeder
                 'term_years' => 15,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Een beetje',
                 ],
                 'calculate_value' => 3,
@@ -29,7 +30,7 @@ class FacadeDamagedPaintworksTableSeeder extends Seeder
                 'term_years' => 7,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Ja',
                 ],
                 'calculate_value' => 5,
@@ -39,18 +40,8 @@ class FacadeDamagedPaintworksTableSeeder extends Seeder
         ];
 
         foreach ($items as $item) {
-            $uuid = \App\Helpers\Str::uuid();
-
-            foreach ($item['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
-            \DB::table('facade_damaged_paintworks')->insert([
-                'name' => $uuid,
+            DB::table('facade_damaged_paintworks')->insert([
+                'name' => json_encode($item['name']),
                 'calculate_value' => $item['calculate_value'],
                 'order' => $item['order'],
                 'term_years' => $item['term_years'],

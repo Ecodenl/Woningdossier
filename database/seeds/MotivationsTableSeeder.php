@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class MotivationsTableSeeder extends Seeder
 {
@@ -13,28 +14,28 @@ class MotivationsTableSeeder extends Seeder
     {
         $motivations = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Comfortverbetering',
                 ],
                 'calculate_value' => null,
                 'order' => 0,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Iets voor het milieu doen',
                 ],
                 'calculate_value' => null,
                 'order' => 1,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Verlaging van de maandlasten',
                 ],
                 'calculate_value' => null,
                 'order' => 2,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Goed rendement op de investering',
                 ],
                 'calculate_value' => null,
@@ -43,17 +44,8 @@ class MotivationsTableSeeder extends Seeder
         ];
 
         foreach ($motivations as $motivation) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($motivation['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
-            \DB::table('motivations')->insert([
-                'name' => $uuid,
+           DB::table('motivations')->insert([
+                'name' => json_encode($motivation['name']),
                 'calculate_value' => $motivation['calculate_value'],
                 'order' => $motivation['order'],
             ]);

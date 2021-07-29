@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Helpers\TranslatableTrait;
+use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -37,7 +37,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class FileType extends Model
 {
-    use TranslatableTrait;
+    use HasTranslations;
+
+    protected $translatable = [
+        'name',
+    ];
 
     /**
      * Attributes that should be casted to native types.

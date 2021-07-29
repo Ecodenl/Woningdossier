@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class WoodRotStatusesTableSeeder extends Seeder
 {
@@ -13,21 +14,21 @@ class WoodRotStatusesTableSeeder extends Seeder
     {
         $statuses = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Nee',
                 ],
                 'calculate_value' => null,
                 'order' => 0,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Een beetje',
                 ],
                 'calculate_value' => 3, // year
                 'order' => 1,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Ja',
                 ],
                 'calculate_value' => 1, // year
@@ -36,17 +37,8 @@ class WoodRotStatusesTableSeeder extends Seeder
         ];
 
         foreach ($statuses as $status) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($status['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
-            \DB::table('wood_rot_statuses')->insert([
-                'name' => $uuid,
+            DB::table('wood_rot_statuses')->insert([
+                'name' => json_encode($status['name']),
                 'calculate_value' => $status['calculate_value'],
                 'order' => $status['order'],
             ]);

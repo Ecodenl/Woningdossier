@@ -15,7 +15,7 @@ class CreateFileTypeCategoriesTable extends Migration
     {
         Schema::create('file_type_categories', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->json('name');
             $table->string('short');
             $table->timestamps();
         });

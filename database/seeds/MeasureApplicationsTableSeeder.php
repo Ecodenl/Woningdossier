@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class MeasureApplicationsTableSeeder extends Seeder
 {
@@ -26,7 +27,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             // Energiebesparende maatregelen
             [
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Vloerisolatie',
                 ],
                 'short' => 'floor-insulation',
@@ -44,7 +45,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Bodemisolatie',
                 ],
                 'short' => 'bottom-insulation',
@@ -62,7 +63,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Er is nader onderzoek nodig of de vloer geïsoleerd kan worden',
                 ],
                 'short' => 'floor-insulation-research',
@@ -80,7 +81,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Spouwmuurisolatie',
                 ],
                 'short' => 'cavity-wall-insulation',
@@ -98,7 +99,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Binnengevelisolatie',
                 ],
                 'short' => 'facade-wall-insulation',
@@ -116,7 +117,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Er is nader onderzoek nodig hoe de gevel het beste geïsoleerd kan worden',
                 ],
                 'short' => 'wall-insulation-research',
@@ -134,7 +135,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [ // stap: isolerende beglazing
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Glas in lood vervangen',
                 ],
                 'short' => 'glass-in-lead',
@@ -152,7 +153,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [ // stap: isolerende beglazing
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Plaatsen van HR++ glas (alleen het glas)',
                 ],
                 'short' => 'hrpp-glass-only',
@@ -170,7 +171,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [ // stap: isolerende beglazing
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Plaatsen van HR++ glas (inclusief kozijn)',
                 ],
                 'short' => 'hrpp-glass-frames',
@@ -188,7 +189,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [ // stap: isolerende beglazing
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Plaatsen van drievoudige HR beglazing (inclusief kozijn)',
                 ],
                 'short' => 'hr3p-frames',
@@ -206,7 +207,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Kierdichting verbeteren',
                 ],
                 'short' => 'crack-sealing',
@@ -224,7 +225,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Isolatie hellend dak van binnen uit',
                 ],
                 'short' => 'roof-insulation-pitched-inside',
@@ -242,7 +243,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Isolatie hellend dak met vervanging van de dakpannen',
                 ],
                 'short' => 'roof-insulation-pitched-replace-tiles',
@@ -260,7 +261,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Isolatie plat dak op huidige dakbedekking',
                 ],
                 'short' => 'roof-insulation-flat-current',
@@ -278,7 +279,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Isolatie plat dak met vervanging van de dakbedekking',
                 ],
                 'short' => 'roof-insulation-flat-replace-current',
@@ -296,7 +297,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Vervangen cv ketel',
                 ],
                 'short' => 'high-efficiency-boiler-replace',
@@ -315,7 +316,7 @@ class MeasureApplicationsTableSeeder extends Seeder
 
             [
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Plaatsen / vervangen zonneboiler',
                 ],
                 'short' => 'heater-place-replace',
@@ -333,7 +334,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Plaatsen / vervangen zonnepanelen',
                 ],
                 'short' => 'solar-panels-place-replace',
@@ -351,7 +352,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' =>'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Gebalanceerde ventilatie met warmte terugwinning',
                 ],
                 'short' => 'ventilation-balanced-wtw',
@@ -369,7 +370,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' =>'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Decentrale mechanische ventilatie met warmte terugwinning',
                 ],
                 'short' => 'ventilation-decentral-wtw',
@@ -387,7 +388,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' =>'energy_saving',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Vraag gestuurde ventilatie',
                 ],
                 'short' => 'ventilation-demand-driven',
@@ -408,7 +409,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             // Onderhoudsmaatregelen
             [
                 'measure_type' => 'maintenance',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Reparatie voegwerk',
                 ],
                 'short' => 'repair-joint',
@@ -426,7 +427,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'maintenance',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Reinigen metselwerk',
                 ],
                 'short' => 'clean-brickwork',
@@ -444,7 +445,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'maintenance',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Impregneren gevel',
                 ],
                 'short' => 'impregnate-wall',
@@ -462,7 +463,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'maintenance',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Gevelschilderwerk op stuk- of metselwerk',
                 ],
                 'short' => 'paint-wall',
@@ -480,7 +481,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'maintenance',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Schilderwerk houten geveldelen',
                 ],
                 'short' => 'paint-wood-elements',
@@ -498,7 +499,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'maintenance',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Vervangen dakpannen',
                 ],
                 'short' => 'replace-tiles',
@@ -516,7 +517,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'maintenance',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Vervangen dakbedekking',
                 ],
                 'short' => 'replace-roof-insulation',
@@ -534,7 +535,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'maintenance',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Inspectie en reparatie daken',
                 ],
                 'short' => 'inspect-repair-roofs',
@@ -552,7 +553,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'maintenance',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Zinkwerk hellend dak',
                 ],
                 'short' => 'replace-zinc-pitched',
@@ -570,7 +571,7 @@ class MeasureApplicationsTableSeeder extends Seeder
             ],
             [
                 'measure_type' => 'maintenance',
-                'measure_names' => [
+                'measure_name' => [
                     'nl' => 'Zinkwerk plat dak',
                 ],
                 'short' => 'replace-zinc-flat',
@@ -590,81 +591,19 @@ class MeasureApplicationsTableSeeder extends Seeder
             // add more onderhoudsmaatregelen here!
         ];
 
-        $translationUUIDs = [];
-
         foreach ($measureApplications as $measureApplication) {
-            foreach ($measureApplication['measure_names'] as $locale => $measureName) {
-                if (! array_key_exists('measure_names', $translationUUIDs)) {
-                    $translationUUIDs['measure_names'] = [];
-                }
-                if (! array_key_exists($locale, $translationUUIDs['measure_names'])) {
-                    $translationUUIDs['measure_names'][$locale] = [];
-                }
-                if (! isset($translationUUIDs['measure_names'][$locale][$measureName])) {
-                    $mnUuid = \App\Helpers\Str::uuid();
-                    \DB::table('translations')->insert([
-                        'key'         => $mnUuid,
-                        'language'    => $locale,
-                        'translation' => $measureName,
-                    ]);
-                    $translationUUIDs['measure_names'][$locale][$measureName] = $mnUuid;
-                } else {
-                    $mnUuid = $translationUUIDs['measure_names'][$locale][$measureName];
-                }
-            }
-
-            foreach ($measureApplication['cost_unit'] as $locale => $costUnitName) {
-                if (! array_key_exists('cost_unit', $translationUUIDs)) {
-                    $translationUUIDs['cost_unit'] = [];
-                }
-                if (! array_key_exists($locale, $translationUUIDs['cost_unit'])) {
-                    $translationUUIDs['cost_unit'][$locale] = [];
-                }
-                if (! isset($translationUUIDs['cost_unit'][$locale][$costUnitName])) {
-                    $cuUUID = \App\Helpers\Str::uuid();
-                    \DB::table('translations')->insert([
-                        'key'         => $cuUUID,
-                        'language'    => $locale,
-                        'translation' => $costUnitName,
-                    ]);
-                    $translationUUIDs['cost_unit'][$locale][$costUnitName] = $cuUUID;
-                } else {
-                    $cuUUID = $translationUUIDs['cost_unit'][$locale][$costUnitName];
-                }
-            }
-
-            foreach ($measureApplication['maintenance_unit'] as $locale => $maintenanceUnitName) {
-                if (! array_key_exists('maintenance_unit', $translationUUIDs)) {
-                    $translationUUIDs['maintenance_unit'] = [];
-                }
-                if (! array_key_exists($locale, $translationUUIDs['maintenance_unit'])) {
-                    $translationUUIDs['maintenance_unit'][$locale] = [];
-                }
-                if (! isset($translationUUIDs['maintenance_unit'][$locale][$maintenanceUnitName])) {
-                    $muUUID = \App\Helpers\Str::uuid();
-                    \DB::table('translations')->insert([
-                        'key'         => $muUUID,
-                        'language'    => $locale,
-                        'translation' => $maintenanceUnitName,
-                    ]);
-                    $translationUUIDs['maintenance_unit'][$locale][$maintenanceUnitName] = $muUUID;
-                } else {
-                    $muUUID = $translationUUIDs['maintenance_unit'][$locale][$maintenanceUnitName];
-                }
-            }
-
             $step = DB::table('steps')->where('slug', $measureApplication['step'])->first();
 
             DB::table('measure_applications')->insert([
                 'measure_type' => $measureApplication['measure_type'],
-                'measure_name' => $mnUuid,
+                'measure_name' => json_encode($measureApplication['measure_name']),
                 'short' => $measureApplication['short'],
                 'application' => $measureApplication['application'],
                 'costs' => $measureApplication['costs'],
-                'cost_unit' => $cuUUID,
+                'cost_unit' => json_encode($measureApplication['cost_unit']),
                 'minimal_costs' => $measureApplication['minimal_costs'],
                 'maintenance_interval' => $measureApplication['maintenance_interval'],
-                'maintenance_unit' => $muUUID,
+                'maintenance_unit' => json_encode($measureApplication['maintenance_unit']),
                 'step_id' => $step->id,
             ]);
         }

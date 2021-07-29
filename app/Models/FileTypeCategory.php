@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Helpers\TranslatableTrait;
+use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -31,7 +31,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class FileTypeCategory extends Model
 {
-    use TranslatableTrait;
+    use HasTranslations;
+
+    protected $translatable = [
+        'name',
+    ];
 
     /**
      * Scope on the short column.

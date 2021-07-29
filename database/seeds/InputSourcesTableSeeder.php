@@ -20,12 +20,12 @@ class InputSourcesTableSeeder extends Seeder
             [
                 'name' => 'Voorbeeld woning',
                 'short' => 'example-building',
-                'order' => 2,
+                'order' => 3,
             ],
             [
                 'name' => 'Coach',
                 'short' => 'coach',
-                'order' => 3,
+                'order' => 2,
             ],
             [
                 'name' => 'Coöperatie',

@@ -15,7 +15,7 @@ class CreateExampleBuildingsTable extends Migration
     {
         Schema::create('example_buildings', function (Blueprint $table) {
             $table->increments('id');
-            $table->uuid('name');
+            $table->json('name');
 
             $table->integer('building_type_id')->unsigned()->nullable()->default(null);
             $table->foreign('building_type_id')->references('id')->on('building_types')->onDelete('restrict');

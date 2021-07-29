@@ -27,15 +27,21 @@
                                         <label for="name">Naam:</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon">{{$locale}}</span>
-                                                <input type="text" class="form-control" name="questionnaire[name][{{$locale}}]" placeholder="Nieuwe vragenlijst">
+                                                <input type="text" class="form-control" id="name"
+                                                       name="questionnaire[name][{{$locale}}]"
+                                                       value="{{ old("questionnaire.name.{$locale}")}}"
+                                                       placeholder="Nieuwe vragenlijst">
                                             </div>
                                         </div>
                                     @endforeach
                                     <div class="form-group {{ $errors->has('questionnaire.step_id') ? ' has-error' : '' }}">
-                                        <label for="step_id">Na stap:</label>
-                                        <select name="questionnaire[step_id]" class="form-control">
+                                        <label for="step-id">Na stap:</label>
+                                        <select name="questionnaire[step_id]" class="form-control" id="step-id">
                                             @foreach($steps as $i => $step)
-                                            <option value="{{ $step->id }}">{{ $i+1 }}: {{ $step->name }}</option>
+                                                <option value="{{ $step->id }}"
+                                                        @if(old('questionnaire.step_id') == $step->id) selected="selected" @endif>
+                                                    {{ $i+1 }}: {{ $step->name }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>

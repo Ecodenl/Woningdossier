@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class BuildingCategoriesTableSeeder extends Seeder
 {
@@ -14,109 +15,100 @@ class BuildingCategoriesTableSeeder extends Seeder
         $categories = [
             [
                 'type' => 'BLDNGCAT_RES_SINGLE',
-                'names' => [
+                'name' => [
                     'en' => 'Single-family houses of different types',
                 ],
             ],
             [
                 'type' => 'BLDNGCAT_RES_APPBLOCK',
-                'names' => [
+                'name' => [
                     'en' => 'Apartment blocks',
                 ],
             ],
             [
                 'type' => 'BLDNGCAT_RES_ELDER',
-                'names' => [
+                'name' => [
                     'en' =>'Homes for elderly and disabled people',
                 ],
             ],
             [
                 'type' => 'BLDNGCAT_RES_COLL',
-                'names' => [
+                'name' => [
                     'en' =>'Residence for collective use',
                 ],
             ],
             [
                 'type' => 'BLDNGCAT_RES_MOBIL',
-                'names' => [
+                'name' => [
                     'en' =>'Mobile home',
                 ],
             ],
             [
                 'type' => 'BLDNGCAT_RES_HOL',
-                'names' => [
+                'name' => [
                     'en' =>'Holiday home',
                 ],
             ],
             [
                 'type' => 'BLDNGCAT_OFF',
-                'names' => [
+                'name' => [
                     'en' =>'Offices',
                 ],
             ],
             [
                 'type' => 'BLDNGCAT_EDUC',
-                'names' => [
+                'name' => [
                     'en' =>'Educational buildings',
                 ],
             ],
             [
                 'type' => 'BLDNGCAT_HOSP',
-                'names' => [
+                'name' => [
                     'en' =>'Hospitals',
                 ],
             ],
             [
                 'type' => 'BLDNGCAT_HOTEL',
-                'names' => [
+                'name' => [
                     'en' =>'Hotels and restaurants',
                 ],
             ],
             [
                 'type' => 'BLDNGCAT_SPORT',
-                'names' => [
+                'name' => [
                     'en' =>'Sports facilities',
                 ],
             ],
             [
                 'type' => 'BLDNGCAT_RETAIL',
-                'names' => [
+                'name' => [
                     'en' =>'Wholesale and retail trade services buildings',
                 ],
             ],
             [
                 'type' => 'BLDNGCAT_DATA_CENTER',
-                'names' => [
+                'name' => [
                     'en' =>'Data centre',
                 ],
             ],
             [
                 'type' => 'BLDNGCAT_INDUS',
-                'names' => [
+                'name' => [
                     'en' =>'Industrial sites',
                 ],
             ],
             [
                 'type' => 'BLDNGCAT_WORKS',
-                'names' => [
+                'name' => [
                     'en' =>'Workshops',
                 ],
             ],
         ];
 
         foreach ($categories as $category) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($category['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                'key' => $uuid,
-                'language' => $locale,
-                'translation' => $name,
-            ]);
-            }
-
-            \DB::table('building_categories')->insert([
+            DB::table('building_categories')->insert([
                 'type' => $category['type'],
-                'name' => $uuid,
+                'name' => json_encode($category['name']),
             ]);
         }
     }

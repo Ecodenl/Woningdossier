@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class BuildingHeatingApplicationsTableSeeder extends Seeder
 {
@@ -13,7 +14,7 @@ class BuildingHeatingApplicationsTableSeeder extends Seeder
     {
         $buildingHeatingApplications = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Met gewone radiatoren',
                 ],
                 'short' => 'radiators',
@@ -21,7 +22,7 @@ class BuildingHeatingApplicationsTableSeeder extends Seeder
                 'order' => 0,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Met gewone radiatoren en vloerverwarming',
                 ],
                 'short' => 'radiators-with-floor-heating',
@@ -29,7 +30,7 @@ class BuildingHeatingApplicationsTableSeeder extends Seeder
                 'order' => 1,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Met lage temperatuur radiatoren',
                 ],
                 'short' => 'low-temperature-heater',
@@ -37,7 +38,7 @@ class BuildingHeatingApplicationsTableSeeder extends Seeder
                 'order' => 2,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Met vloer- en/of wandverwarming',
                 ],
                 'short' => 'floor-wall-heating',
@@ -47,17 +48,8 @@ class BuildingHeatingApplicationsTableSeeder extends Seeder
         ];
 
         foreach ($buildingHeatingApplications as $buildingHeatingApplication) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($buildingHeatingApplication['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
-            \DB::table('building_heating_applications')->insert([
-                'name' => $uuid,
+            DB::table('building_heating_applications')->insert([
+                'name' => json_encode($buildingHeatingApplication['name']),
                 'short' => $buildingHeatingApplication['short'],
                 'calculate_value' => $buildingHeatingApplication['calculate_value'],
                 'order' => $buildingHeatingApplication['order'],

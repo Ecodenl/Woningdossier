@@ -14,8 +14,10 @@ class SqlDumpSeeder extends Seeder
         $db = config('database.connections.'.config('database.default'));
 
         $sqlFiles = [
-            'database/sql-dumps/example_buildings.sql',
-            'database/sql-dumps/example_building_contents.sql',
+            // TODO: Check if these are relevant to DB seeding, currently using non-existing translation
+            // for example buildings, which causes error when seeding this
+//            'database/sql-dumps/example_buildings.sql',
+//            'database/sql-dumps/example_building_contents.sql',
         ];
         foreach ($sqlFiles as $sqlFile) {
             if (file_exists($sqlFile)) {

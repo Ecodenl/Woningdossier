@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class PriceIndexingsTableSeeder extends Seeder
 {
@@ -14,21 +15,21 @@ class PriceIndexingsTableSeeder extends Seeder
         $indexes = [
             [
                 'short' => 'gas',
-                'names' => [
+                'name' => [
                     'nl' => 'Gas',
                 ],
                 'percentage' => 5.00,
             ],
             [
                 'short' => 'electricity',
-                'names' => [
+                'name' => [
                     'nl' => 'Elektra',
                 ],
                 'percentage' => 2.00,
             ],
             [
                 'short' => 'common',
-                'names' => [
+                'name' => [
                     'nl' => 'Algemeen',
                 ],
                 'percentage' => 2.00,
@@ -36,19 +37,9 @@ class PriceIndexingsTableSeeder extends Seeder
         ];
 
         foreach ($indexes as $index) {
-            $uuid = \App\Helpers\Str::uuid();
-
-            foreach ($index['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
-            \DB::table('price_indexings')->insert([
+            DB::table('price_indexings')->insert([
+                'name' => json_encode($index['name']),
                 'short' => $index['short'],
-                'name' => $uuid,
                 'percentage' => $index['percentage'],
             ]);
         }

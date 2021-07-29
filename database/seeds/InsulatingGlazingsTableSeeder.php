@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class InsulatingGlazingsTableSeeder extends Seeder
 {
@@ -13,29 +14,20 @@ class InsulatingGlazingsTableSeeder extends Seeder
     {
         $insulatings = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Enkelglas',
                 ],
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Dubbelglas / voorzetraam',
                 ],
             ],
         ];
 
         foreach ($insulatings as $insulating) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($insulating['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
-            \DB::table('insulating_glazings')->insert([
-                'name' => $uuid,
+            DB::table('insulating_glazings')->insert([
+                'name' => json_encode($insulating['name']),
             ]);
         }
     }

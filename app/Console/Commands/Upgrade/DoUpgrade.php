@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Upgrade;
 
 use App\Console\Commands\AddQuestionsToDatabase;
+use App\Console\Commands\ConvertUuidTranslationsToJson;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 
@@ -41,6 +42,16 @@ class DoUpgrade extends Command
     {
         if ($this->confirm('This will 100% mess up your environment when ran unintentionally, do you want to continue')) {
             $this->info('<fg=yellow>May the force be with you...</>');
+
+            $beforeCommands = [
+                ConvertUuidTranslationsToJson::class,
+            ];
+
+            foreach ($beforeCommands as $command) {
+                $this->info("Running $command");
+                Artisan::call($command);
+            }
+
             $seeders = [
                 \StepsTableSeeder::class,
                 \ToolQuestionTypesTableSeeder::class,
@@ -53,11 +64,11 @@ class DoUpgrade extends Command
                 Artisan::call('db:seed', ['--class' => $seeder]);
             }
 
-            $commands = [
-                AddQuestionsToDatabase::class
+            $afterCommands = [
+                AddQuestionsToDatabase::class,
             ];
 
-            foreach ($commands as $command) {
+            foreach ($afterCommands as $command) {
                 $this->info("Running $command");
                 Artisan::call($command);
             }

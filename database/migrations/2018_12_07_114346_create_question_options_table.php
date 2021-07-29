@@ -19,7 +19,7 @@ class CreateQuestionOptionsTable extends Migration
             $table->integer('question_id')->unsigned();
             $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
 
-            $table->string('name');
+            $table->json('name');
 
             $table->timestamps();
         });

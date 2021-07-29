@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ComfortLevelTapWatersTableSeeder extends Seeder
 {
@@ -13,21 +14,21 @@ class ComfortLevelTapWatersTableSeeder extends Seeder
     {
         $statuses = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Standaard',
                 ],
                 'calculate_value' => 1,
                 'order' => 0,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Comfort',
                 ],
                 'calculate_value' => 2,
                 'order' => 1,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Comfort plus',
                 ],
                 'calculate_value' => 3,
@@ -36,17 +37,8 @@ class ComfortLevelTapWatersTableSeeder extends Seeder
         ];
 
         foreach ($statuses as $status) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($status['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
-            \DB::table('comfort_level_tap_waters')->insert([
-                'name' => $uuid,
+            DB::table('comfort_level_tap_waters')->insert([
+                'name' => json_encode($status['name']),
                 'calculate_value' => $status['calculate_value'],
                 'order' => $status['order'],
             ]);

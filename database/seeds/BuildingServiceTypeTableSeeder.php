@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class BuildingServiceTypeTableSeeder extends Seeder
 {
@@ -13,7 +14,7 @@ class BuildingServiceTypeTableSeeder extends Seeder
     {
         $heatings = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Hoe word de woning nu verwarmd',
                 ],
                 'service_type' => 'Heating',
@@ -57,18 +58,9 @@ class BuildingServiceTypeTableSeeder extends Seeder
 
         // todo: fix
         foreach ($heatings as $heating) {
-            $uuid = App\Helpers\Str::uuid();
-            foreach ($heating['names'] as $locale => $name) {
-                \App\Models\Translation::create([
-                    'key' => $uuid,
-                    'language' => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
             foreach ($heating['service_values'] as $heatingValue) {
-                \DB::table('building_service_values')->insert([
-                    'name' => $uuid,
+                DB::table('building_service_values')->insert([
+                    'name' => json_encode($heatingValue['name']),
                     'calculate_value' => isset($heatingValue['calculate_value']) ? $heatingValue['calculate_value'] : null,
             ]);
             }

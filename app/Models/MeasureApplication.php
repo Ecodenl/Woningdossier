@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Helpers\KeyFigures\FloorInsulation\Temperature as FloorInsulationTemperature;
 use App\Helpers\KeyFigures\WallInsulation\Temperature as WallInsulationTemperature;
-use App\Helpers\TranslatableTrait;
+use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -46,7 +46,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class MeasureApplication extends Model
 {
-    use TranslatableTrait;
+    use HasTranslations;
+
+    protected $translatable = [
+        'measure_name', 'cost_unit', 'maintenance_unit',
+    ];
 
     /**
      * @param string $short

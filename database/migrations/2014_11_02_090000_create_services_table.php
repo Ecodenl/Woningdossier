@@ -15,13 +15,13 @@ class CreateServicesTable extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->increments('id');
-            $table->uuid('name');
+            $table->json('name');
             $table->string('short'); // kind of slug identifier
             $table->integer('service_type_id')->unsigned();
             $table->foreign('service_type_id')->references('id')->on('service_types')->onDelete('restrict');
 
             $table->integer('order');
-            $table->uuid('info');
+            $table->json('info');
             $table->timestamps();
         });
     }

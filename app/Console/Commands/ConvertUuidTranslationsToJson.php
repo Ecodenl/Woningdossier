@@ -93,6 +93,7 @@ class ConvertUuidTranslationsToJson extends Command
             'service_values' => 'value',
             'space_categories' => 'name',
             'statuses' => 'name',
+            'steps' => 'name',
             'wood_rot_statuses' => 'name',
         ];
 

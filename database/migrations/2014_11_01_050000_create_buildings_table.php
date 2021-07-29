@@ -33,7 +33,7 @@ class CreateBuildingsTable extends Migration
             $table->string('bag_addressid')->default('');
 
             $table->integer('example_building_id')->unsigned()->nullable();
-            $table->foreign('example_building_id')->references('id')->on('example_buildings')->onDelete('restrict');
+            $table->foreign('example_building_id')->references('id')->on('example_buildings')->onDelete('set null');
 
             $table->timestamps();
             $table->softDeletes();

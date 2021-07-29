@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class InterestsTableSeeder extends Seeder
 {
@@ -13,35 +14,35 @@ class InterestsTableSeeder extends Seeder
     {
         $interests = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Ja, op korte termijn',
                 ],
                 'calculate_value' => 1,
                 'order' => 0,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Ja, op termijn',
                 ],
                 'calculate_value' => 2,
                 'order' => 1,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Misschien, meer informatie gewenst',
                 ],
                 'calculate_value' => 3,
                 'order' => 2,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Nee, geen interesse',
                 ],
                 'calculate_value' => 4,
                 'order' => 3,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Nee, niet mogelijk / reeds uitgevoerd',
                 ],
                 'calculate_value' => 5,
@@ -50,17 +51,8 @@ class InterestsTableSeeder extends Seeder
         ];
 
         foreach ($interests as $interest) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($interest['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
-            \DB::table('interests')->insert([
-                'name' => $uuid,
+            DB::table('interests')->insert([
+                'name' => json_encode($interest['name']),
                 'calculate_value' => $interest['calculate_value'],
                 'order' => $interest['order'],
             ]);

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class MeasureCategoriesTableSeeder extends Seeder
 {
@@ -13,94 +14,85 @@ class MeasureCategoriesTableSeeder extends Seeder
     {
         $measureCategories = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Vloerisolatie',
                 ],
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Gevelisolatie',
                 ],
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Dakisolatie',
                 ],
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Isolatieglas',
                 ],
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Kierdichting',
                 ],
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Ventilatie',
                 ],
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Cv-ketel',
                 ],
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Warmtepomp',
                 ],
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Biomassa',
                 ],
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Warmte afgifte',
                 ],
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Zonnepanelen',
                 ],
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Zonneboiler',
                 ],
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'PVT',
                 ],
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Opslag',
                 ],
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Overig',
                 ],
             ],
         ];
 
         foreach ($measureCategories as $measureCategory) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($measureCategory['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
-            \DB::table('measure_categories')->insert([
-                'name' => $uuid,
+            DB::table('measure_categories')->insert([
+                'name' => json_encode($measureCategory['name']),
             ]);
         }
     }

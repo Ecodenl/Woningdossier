@@ -15,8 +15,8 @@ class CreatePriceIndexingsTable extends Migration
     {
         Schema::create('price_indexings', function (Blueprint $table) {
             $table->increments('id');
+            $table->json('name');
             $table->string('short');
-            $table->uuid('name');
             $table->decimal('percentage', 5, 2);
             $table->timestamps();
         });

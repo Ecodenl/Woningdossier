@@ -30,16 +30,18 @@ class QuestionnaireController extends Controller
 
     public function edit(Cooperation $cooperation, Questionnaire $questionnaire)
     {
-        $this->authorize('edit', $questionnaire);
+        $this->authorize('update', $questionnaire);
 
-        $steps = Step::withoutSubSteps()->orderBy('order')->get();
+        $steps = Step::withoutSubSteps()->expert()->orderBy('order')->get();
 
         return view('cooperation.admin.cooperation.questionnaires.questionnaire-editor', compact('questionnaire', 'steps'));
     }
 
     public function create()
     {
-        $steps = Step::withoutSubSteps()->orderBy('order')->get();
+        $this->authorize('create', Questionnaire::class);
+
+        $steps = Step::withoutSubSteps()->expert()->orderBy('order')->get();
 
         return view('cooperation.admin.cooperation.questionnaires.create', compact('steps'));
     }
@@ -54,30 +56,27 @@ class QuestionnaireController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(QuestionnaireRequest $request)
+    public function update(QuestionnaireRequest $request, Cooperation $cooperation, Questionnaire $questionnaire)
     {
-        // get the data for the questionnaire
-        $questionnaireNameTranslations = $request->input('questionnaire.name');
-        $questionnaireId = $request->input('questionnaire.id');
-        $validation = $request->get('validation', []);
-        $stepId = $request->input('questionnaire.step_id');
-        $order = 0;
-
-        // find the current questionnaire
-        $questionnaire = Questionnaire::find($questionnaireId);
-
         $this->authorize('update', $questionnaire);
 
-        QuestionnaireService::updateQuestionnaire($questionnaire, $questionnaireNameTranslations, $stepId);
+        // TODO: Make form name plural, like the table name
+        $questionnaireData = $request->validated()['questionnaire'];
+        $questionnaire->update($questionnaireData);
+
+        // get the data for the questionnaire
+        $validation = $request->get('validation', []);
+        $order = 0;
 
         if ($request->has('questions')) {
-            foreach ($request->get('questions') as $questionIdOrUuid => $questionData) {
+            foreach ($request->input('questions') as $questionIdOrUuid => $questionData) {
                 ++$order;
                 QuestionnaireService::createOrUpdateQuestion($questionnaire, $questionIdOrUuid, $questionData, $validation, $order);
             }
         }
 
-        return redirect(route('cooperation.admin.cooperation.questionnaires.edit', compact('questionnaire')))
+        return redirect()
+            ->route('cooperation.admin.cooperation.questionnaires.edit', compact('questionnaire'))
             ->with('success', __('woningdossier.cooperation.admin.cooperation.questionnaires.edit.success'));
     }
 
@@ -92,14 +91,17 @@ class QuestionnaireController extends Controller
      */
     public function store(Cooperation $cooperation, QuestionnaireRequest $request)
     {
-        $this->authorize('store', Questionnaire::class);
+        $this->authorize('create', Questionnaire::class);
 
-        $questionnaireNameTranslations = $request->input('questionnaire.name');
-        $stepId = $request->input('questionnaire.step_id');
+        // TODO: Make form name plural, like the table name
+        $questionnaireData = $request->validated()['questionnaire'];
+
+        $nameTranslations = $questionnaireData['name'];
+        $stepId = $questionnaireData['step_id'];
 
         $step = Step::find($stepId);
 
-        QuestionnaireService::createQuestionnaire($cooperation, $step, $questionnaireNameTranslations);
+        QuestionnaireService::createQuestionnaire($cooperation, $step, $nameTranslations);
 
         return redirect()->route('cooperation.admin.cooperation.questionnaires.index');
     }

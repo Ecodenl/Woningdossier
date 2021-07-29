@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class StepsTableSeeder extends Seeder
 {
@@ -187,7 +188,7 @@ class StepsTableSeeder extends Seeder
                 'order' => $step['order'],
             ];
 
-            \DB::table('steps')->updateOrInsert(['short' => $step['short']], $insertStepData);
+            DB::table('steps')->updateOrInsert(['short' => $step['short']], $insertStepData);
         }
 
         $allCooperations = \App\Models\Cooperation::all();

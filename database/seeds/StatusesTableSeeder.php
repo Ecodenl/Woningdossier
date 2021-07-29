@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class StatusesTableSeeder extends Seeder
 {
@@ -13,42 +14,42 @@ class StatusesTableSeeder extends Seeder
     {
         $statuses = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Actief',
                     'en' => 'Active',
                 ],
                 'short' => 'active',
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Inactief',
                     'en' => 'Inactive',
                 ],
                 'short' => 'inactive',
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'In afwachting',
                     'en' => 'Pending',
                 ],
                 'short' => 'pending',
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'In uitvoering',
                     'en' => 'In progress',
                 ],
                 'short' => 'in_progress',
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Uitgevoerd',
                     'en' => 'Executed',
                 ],
                 'short' => 'executed',
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'Geen uitvoering',
                     'en' => 'No execution',
                 ],
@@ -57,18 +58,9 @@ class StatusesTableSeeder extends Seeder
         ];
 
         foreach ($statuses as $order => $status) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($status['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
-            \DB::table('statuses')->insert([
+            DB::table('statuses')->insert([
                 'order' => $order,
-                'name' => $uuid,
+                'name' => json_encode($status['name']),
                 'short' => $status['short'],
             ]);
         }

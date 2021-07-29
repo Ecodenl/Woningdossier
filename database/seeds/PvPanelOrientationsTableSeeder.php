@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class PvPanelOrientationsTableSeeder extends Seeder
 {
@@ -13,91 +14,91 @@ class PvPanelOrientationsTableSeeder extends Seeder
     {
         $statuses = [
             [
-                'names' => [
+                'name' => [
                     'nl' => 'noord-oost',
                 ],
                 'short' => 'n-o',
                 'order' => 0,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'oost-noord-oost',
                 ],
                 'short' => 'o-n-o',
                 'order' => 1,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'oost',
                 ],
                 'short' => 'o',
                 'order' => 2,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'oost-zuid-oost',
                 ],
                 'short' => 'o-z-o',
                 'order' => 3,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'zuid-oost',
                 ],
                 'short' => 'z-o',
                 'order' => 4,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'zuid-zuid-oost',
                 ],
                 'short' => 'z-z-o',
                 'order' => 5,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'zuid',
                 ],
                 'short' => 'z',
                 'order' => 6,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'zuid-zuid-west',
                 ],
                 'short' => 'z-z-w',
                 'order' => 7,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'zuid-west',
                 ],
                 'short' => 'z-w',
                 'order' => 8,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'west-zuid-west',
                 ],
                 'short' => 'w-z-w',
                 'order' => 9,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'west',
                 ],
                 'short' => 'w',
                 'order' => 10,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'west-noord-west',
                 ],
                 'short' => 'w-n-w',
                 'order' => 11,
             ],
             [
-                'names' => [
+                'name' => [
                     'nl' => 'noord-west',
                 ],
                 'short' => 'n-w',
@@ -106,17 +107,8 @@ class PvPanelOrientationsTableSeeder extends Seeder
         ];
 
         foreach ($statuses as $status) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($status['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
-            \DB::table('pv_panel_orientations')->insert([
-                'name' => $uuid,
+            DB::table('pv_panel_orientations')->insert([
+                'name' => json_encode($status['name']),
                 'short' => $status['short'],
                 'order' => $status['order'],
             ]);

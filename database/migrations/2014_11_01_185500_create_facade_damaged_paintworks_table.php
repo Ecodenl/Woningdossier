@@ -15,7 +15,7 @@ class CreateFacadeDamagedPaintworksTable extends Migration
     {
         Schema::create('facade_damaged_paintworks', function (Blueprint $table) {
             $table->increments('id');
-            $table->uuid('name');
+            $table->json('name');
             $table->integer('calculate_value')->nullable();
             $table->integer('order');
             $table->integer('term_years')->nullable();

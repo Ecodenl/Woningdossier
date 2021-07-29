@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class SpaceCategoriesTableSeeder extends Seeder
 {
@@ -14,205 +15,196 @@ class SpaceCategoriesTableSeeder extends Seeder
         $categories = [
             [
                 'type' => 'SPACECAT_RES_LIV',
-                'names' => [
+                'name' => [
                     'en' => 'Residential living space, kitchen, bed room, study, bath room or toilet',
                 ],
             ],
             [
                 'type' => 'SPACECAT_RES_INDIV_OTHER',
-                'names' => [
+                'name' => [
                     'en' => 'Residential individual: hall, corridor, staircase inside thermal envelope, attic inside thermal envelope',
                 ],
             ],
             [
                 'type' => 'SPACECAT_RES_COLL',
-                'names' => [
+                'name' => [
                     'en' => 'Residential collective or non-residential: hall, corridor, staircase inside thermal envelope',
                 ],
             ],
             [
                 'type' => 'SPACECAT_TH.UNCOND_OTHER',
-                'names' => [
+                'name' => [
                     'en' => 'Thermally unconditioned adjacent space, such as storage room or unconditioned attic',
                 ],
             ],
             [
                 'type' => 'SPACECAT_TH.UNCOND_SUN',
-                'names' => [
+                'name' => [
                     'en' => 'Thermally unconditioned sunspace or atrium',
                 ],
             ],
             [
                 'type' => 'SPACECAT_HALL',
-                'names' => [
+                'name' => [
                     'en' => 'Entrance hall/foyer',
                 ],
             ],
             [
                 'type' => 'SPACECAT_CORR',
-                'names' => [
+                'name' => [
                     'en' => 'Corridor',
                 ],
             ],
             [
                 'type' => 'SPACECAT_TH.UNCOND_CORR',
-                'names' => [
+                'name' => [
                     'en' => 'Hall, corridor outside thermal envelope',
                 ],
             ],
             [
                 'type' => 'SPACECAT_OFF',
-                'names' => [
+                'name' => [
                     'en' => 'Office space',
                 ],
             ],
             [
                 'type' => 'SPACECAT_EDUC',
-                'names' => [
+                'name' => [
                     'en' => 'Educational space',
                 ],
             ],
             [
                 'type' => 'SPACECAT_HOSP_BED',
-                'names' => [
+                'name' => [
                     'en' => 'Hospital bed room',
                 ],
             ],
             [
                 'type' => 'SPACECAT_HOSP_OTHER',
-                'names' => [
+                'name' => [
                     'en' => 'Hospital other room',
                 ],
             ],
             [
                 'type' => 'SPACECAT_HOTEL',
-                'names' => [
+                'name' => [
                     'en' => 'Hotels room',
                 ],
             ],
             [
                 'type' => 'SPACECAT_REST',
-                'names' => [
+                'name' => [
                     'en' => 'Restaurant space',
                 ],
             ],
             [
                 'type' => 'SPACECAT_REST_KITCH',
-                'names' => [
+                'name' => [
                     'en' => 'Restaurant kitchen',
                 ],
             ],
             [
                 'type' => 'SPACECAT_MEET',
-                'names' => [
+                'name' => [
                     'en' => 'Meeting or seminar space',
                 ],
             ],
             [
                 'type' => 'SPACECAT_AUDIT',
-                'names' => [
+                'name' => [
                     'en' => 'Auditorium, lecture room',
                 ],
             ],
             [
                 'type' => 'SPACECAT_THEAT',
-                'names' => [
+                'name' => [
                     'en' => 'Theatre or cinema space',
                 ],
             ],
             [
                 'type' => 'SPACECAT_SERVER',
-                'names' => [
+                'name' => [
                     'en' => 'Server or computer room',
                 ],
             ],
             [
                 'type' => 'SPACECAT_SPORT_TH.COND',
-                'names' => [
+                'name' => [
                     'en' => 'Sport facilities, thermally conditioned',
                 ],
             ],
             [
                 'type' => 'SPACECAT_SPORT_TH.UNCOND',
-                'names' => [
+                'name' => [
                     'en' => 'Sport facilities, thermally unconditioned',
                 ],
             ],
             [
                 'type' => 'SPACECAT_RETAIL',
-                'names' => [
+                'name' => [
                     'en' => 'Wholesale and retail trade services space (shop)',
                 ],
             ],
             [
                 'type' => 'SPACECAT_NONRES_BATH',
-                'names' => [
+                'name' => [
                     'en' => 'Non-residential bath room, shower, toilet, if inside thermal envelope',
                 ],
             ],
             [
                 'type' => 'SPACECAT_SPA',
-                'names' => [
+                'name' => [
                     'en' => 'Spa area with sauna shower and/or relaxing area',
                 ],
             ],
             [
                 'type' => 'SPACECAT_SWIMM',
-                'names' => [
+                'name' => [
                     'en' => 'Space with indoor swimming pool',
                 ],
             ],
             [
                 'type' => 'SPACECAT_STOR_HEAT',
-                'names' => [
+                'name' => [
                     'en' => 'Heated storage space',
                 ],
             ],
             [
                 'type' => 'SPACECAT_STOR_COOL',
-                'names' => [
+                'name' => [
                     'en' => 'Cooled storage space',
                 ],
             ],
             [
                 'type' => 'SPACECAT_STOR_NOCON',
-                'names' => [
+                'name' => [
                     'en' => 'Non conditioned storage space',
                 ],
             ],
             [
                 'type' => 'SPACECAT_ENGINE',
-                'names' => [
+                'name' => [
                     'en' => 'Engine room',
                 ],
             ],
             [
                 'type' => 'SPACECAT_CAR',
-                'names' => [
+                'name' => [
                     'en' => 'Individual garage or collective indoor car park',
                 ],
             ],
             [
                 'type' => 'SPACECAT_BARN',
-                'names' => [
+                'name' => [
                     'en' => 'Barn',
                 ],
             ],
         ];
 
         foreach ($categories as $category) {
-            $uuid = \App\Helpers\Str::uuid();
-            foreach ($category['names'] as $locale => $name) {
-                \DB::table('translations')->insert([
-                    'key'         => $uuid,
-                    'language'    => $locale,
-                    'translation' => $name,
-                ]);
-            }
-
-            \DB::table('space_categories')->insert([
+            DB::table('space_categories')->insert([
                 'type' => $category['type'],
-                'name' => $uuid,
+                'name' => json_encode($category['name']),
             ]);
         }
     }

@@ -40,7 +40,7 @@ class StepHelper
     ];
 
     /**
-     * Get alle the comments categorized under step and input source.
+     * Get all the comments categorized under step and input source.
      *
      * @param bool $withEmptyComments
      * @param null $specificInputSource

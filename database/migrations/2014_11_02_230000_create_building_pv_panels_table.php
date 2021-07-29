@@ -20,10 +20,10 @@ class CreateBuildingPvPanelsTable extends Migration
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('restrict');
 
             $table->integer('peak_power')->unsigned()->nullable();
-            $table->integer('number')->unsigned()->default(0);
+            $table->integer('number')->default(0);
 
-            $table->integer('pv_panel_orientation_id')->unsigned();
-            $table->foreign('pv_panel_orientation_id')->references('id')->on('pv_panel_orientations')->onDelete('restrict');
+            $table->integer('pv_panel_orientation_id')->unsigned()->nullable();
+            $table->foreign('pv_panel_orientation_id')->references('id')->on('pv_panel_orientations')->onDelete('set null');
 
             $table->integer('angle')->unsigned()->nullable();
 

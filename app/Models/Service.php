@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Helpers\TranslatableTrait;
+use App\Traits\Models\HasTranslations;
 use App\Traits\HasShortTrait;
 use Illuminate\Database\Eloquent\Model;
 
@@ -36,8 +36,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Service extends Model
 {
-    use TranslatableTrait;
-    use HasShortTrait;
+    use HasShortTrait,
+        HasTranslations;
+
+    protected $translatable = [
+        'name', 'info',
+    ];
 
     public function serviceType()
     {

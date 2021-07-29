@@ -7,14 +7,12 @@ use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\Step;
 use App\Services\QuestionnaireService;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\CreatesApplication;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class QuestionnaireServiceTest extends TestCase
 {
-    use CreatesApplication;
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
@@ -80,13 +78,14 @@ class QuestionnaireServiceTest extends TestCase
 
     public function testCreateQuestionnaire()
     {
-        $cooperation = Cooperation::find(1);
-        $step = Step::find(1);
-        QuestionnaireService::createQuestionnaire(
+        $cooperation = factory(Cooperation::class)->create();
+        $step = factory(Step::class)->create();
+
+        $questionnaire = QuestionnaireService::createQuestionnaire(
             $cooperation, $step, ['en' => 'Dit is een engelse vertaling', 'nl' => 'Dit is een nederlandse vertaling']
         );
 
-        $this->assertEquals(1, Questionnaire::count());
+        $this->assertInstanceOf(Questionnaire::class, $questionnaire);
     }
 
     public function testCreateQuestionProvider()

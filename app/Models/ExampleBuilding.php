@@ -69,18 +69,10 @@ class ExampleBuilding extends Model
     {
         parent::boot();
 
-        self::deleting(function ($model) {
+        static::deleting(function ($model) {
             /* @var ExampleBuilding $model */
             // delete contents
             $model->contents()->delete();
-            // delete translations
-            $translations = $model->getTranslations('name');
-            if ($translations instanceof Collection) {
-                /** @var Translation $translation */
-                foreach ($translations as $translation) {
-                    $translation->delete();
-                }
-            }
             \Log::debug('Deleting done..');
         });
     }

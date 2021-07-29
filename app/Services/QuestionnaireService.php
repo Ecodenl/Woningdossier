@@ -92,34 +92,24 @@ class QuestionnaireService
     /**
      * Method to create a new questionnaire.
      *
+     * @param  \App\Models\Cooperation  $cooperation
+     * @param  \App\Models\Step  $step
+     * @param  array  $questionnaireNameTranslations
+     *
+     * @return \App\Models\Questionnaire
      * @throws \Exception
      */
     public static function createQuestionnaire(Cooperation $cooperation, Step $step, array $questionnaireNameTranslations): Questionnaire
     {
-        $questionnaireNameKey = Uuid::uuid4();
-
         $maxOrderForQuestionnairesInSelectedSteps = $step->questionnaires()->max('order');
 
         $questionnaire = Questionnaire::create([
-            'name' => $questionnaireNameKey,
+            'name' => $questionnaireNameTranslations,
             'step_id' => $step->id,
             'order' => ++$maxOrderForQuestionnairesInSelectedSteps,
             'cooperation_id' => $cooperation->id,
             'is_active' => false,
         ]);
-
-        if (self::isNotEmptyTranslation($questionnaireNameTranslations)) {
-            foreach ($questionnaireNameTranslations as $locale => $questionnaireNameTranslation) {
-                if (empty($questionnaireNameTranslation)) {
-                    $questionnaireNameTranslation = current(array_filter($questionnaireNameTranslations));
-                }
-                Translation::create([
-                    'key' =>  $questionnaireNameKey,
-                    'language' => $locale,
-                    'translation' => $questionnaireNameTranslation,
-                ]);
-            }
-        }
 
         return $questionnaire;
     }

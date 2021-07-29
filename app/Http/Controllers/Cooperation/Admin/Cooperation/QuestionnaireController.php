@@ -32,14 +32,14 @@ class QuestionnaireController extends Controller
     {
         $this->authorize('edit', $questionnaire);
 
-        $steps = Step::withoutSubSteps()->orderBy('order')->get();
+        $steps = Step::withoutSubSteps()->expert()->orderBy('order')->get();
 
         return view('cooperation.admin.cooperation.questionnaires.questionnaire-editor', compact('questionnaire', 'steps'));
     }
 
     public function create()
     {
-        $steps = Step::withoutSubSteps()->orderBy('order')->get();
+        $steps = Step::withoutSubSteps()->expert()->orderBy('order')->get();
 
         return view('cooperation.admin.cooperation.questionnaires.create', compact('steps'));
     }
@@ -94,12 +94,15 @@ class QuestionnaireController extends Controller
     {
         $this->authorize('store', Questionnaire::class);
 
-        $questionnaireNameTranslations = $request->input('questionnaire.name');
-        $stepId = $request->input('questionnaire.step_id');
+        // TODO: Make form name plural, like the table name
+        $questionnaireData = $request->validated()['questionnaire'];
+
+        $nameTranslations = $questionnaireData['name'];
+        $stepId = $questionnaireData['step_id'];
 
         $step = Step::find($stepId);
 
-        QuestionnaireService::createQuestionnaire($cooperation, $step, $questionnaireNameTranslations);
+        QuestionnaireService::createQuestionnaire($cooperation, $step, $nameTranslations);
 
         return redirect()->route('cooperation.admin.cooperation.questionnaires.index');
     }

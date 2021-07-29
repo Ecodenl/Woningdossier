@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\ToolQuestionAnswer;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -41,6 +42,10 @@ class ToolQuestion extends Model
         'resident' => 'boolean',
     ];
 
+    public function toolQuestionAnswers()
+    {
+        return $this->hasMany(ToolQuestionAnswer::class);
+    }
     /**
      * Method to return the intermediary morph table
      *

@@ -56,6 +56,7 @@ class ToolQuestion extends Model
         return $this->hasMany(ToolQuestionCustomValue::class);
     }
 
+
     /**
      * Method to return the question values  (morphed models / the options for the question)
      *
@@ -63,13 +64,33 @@ class ToolQuestion extends Model
      */
     public function getQuestionValues(): Collection
     {
-        // relationships exists on the toolQuestionValuable model as well.
-        return $this
-            ->toolQuestionValuables()
+        if ($this->toolQuestionValuables()->exists()) {
+            return $this->toolQuestionValuables()
+                ->visible()
+                ->ordered()
+                ->with('toolQuestionValuables')
+                ->get()
+                ->map(function ($toolQuestion) {
+                    $toolQuestionValuable = $toolQuestion->tool_question_valuable;
+                    $questionValue = $toolQuestionValuable->toArray();
+
+                    $questionValue['extra'] = $toolQuestion->extra;
+                    $questionValue['name'] = $toolQuestionValuable->name;
+
+                    return $questionValue;
+                });
+
+
+        }
+        return $this->toolQuestionCustomValues()
             ->visible()
             ->ordered()
-            ->with('toolQuestionValuables')
             ->get()
-            ->pluck('tool_question_valuable');
+            ->map(function ($toolQuestion) {
+                $questionValue = $toolQuestion->toArray();
+                $questionValue['name'] = $toolQuestion->name;
+
+                return $questionValue;
+            });
     }
 }

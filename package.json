@@ -24,7 +24,6 @@
         "vue-template-compiler": "^2.6.14"
     },
     "dependencies": {
-        "alpinejs": "^3.2.1",
-        "turbolinks": "^5.2.0"
+        "alpinejs": "^3.2.1"
     }
 }

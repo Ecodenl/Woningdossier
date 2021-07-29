@@ -23,8 +23,8 @@
             @endcomponent
         </div>
     </div>
-    @include('cooperation.frontend.layouts.parts.step-buttons', [
-        'current' => '11',
-        'total' => '24',
-    ])
+{{--    @include('cooperation.frontend.layouts.parts.step-buttons', [--}}
+{{--        'current' => '11',--}}
+{{--        'total' => '24',--}}
+{{--    ])--}}
 @endsection

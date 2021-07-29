@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Models\HasTranslations;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class ToolQuestionCustomValue extends Model
@@ -29,4 +30,14 @@ class ToolQuestionCustomValue extends Model
         'show' => 'boolean',
         'extra' => 'array',
     ];
+
+    public function scopeVisible(Builder $query): Builder
+    {
+        return $query->where('show', true);
+    }
+
+    public function scopeOrdered(Builder $query): Builder
+    {
+        return $query->orderBy('order');
+    }
 }

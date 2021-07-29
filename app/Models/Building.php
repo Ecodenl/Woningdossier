@@ -98,6 +98,29 @@ class Building extends Model
         'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension', 'is_active',
     ];
 
+    public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
+    {
+        // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
+        if (!is_null($toolQuestion->save_in)) {
+            $savedInParts = explode('.', $toolQuestion->save_in);
+            $table = $savedInParts[0];
+            $column = $savedInParts[1];
+
+            // 2 parts is the simple scenario, this just means a table + column
+            // but in some cases it holds more info we need to build wheres.
+            if (count($savedInParts) > 2) {
+                // will come
+            }
+
+//             get the answer, since there is only 1 colu
+            return DB::table($table)
+                ->where('input_source_id', $inputSource->id)
+                ->where('building_id', $this->id)
+                ->pluck($column)
+                ->first();
+        }
+    }
+
     /**
      * Method to check whether a building is the owner of a file.
      */

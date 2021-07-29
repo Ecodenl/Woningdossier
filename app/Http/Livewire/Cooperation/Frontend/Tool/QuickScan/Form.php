@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
+use App\Helpers\HoomdossierSession;
 use App\Models\Step;
 use App\Models\SubStep;
 use Livewire\Component;
@@ -9,6 +10,8 @@ use Livewire\Component;
 class Form extends Component
 {
     protected $listeners = ['save'];
+
+    public $building;
 
     public $step;
     public $subStep;
@@ -23,6 +26,7 @@ class Form extends Component
         $this->step = $step;
         $this->subStep = $subStep;
 
+        $this->building = HoomdossierSession::getBuilding(true);
         $this->toolQuestions = $subStep->toolQuestions;
     }
 

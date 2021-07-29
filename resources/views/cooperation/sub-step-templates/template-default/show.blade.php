@@ -10,11 +10,24 @@
                     {!! $toolQuestion->help_text !!}
                 </p>
             @endslot
+        <?php
+            $answerForInputSource = $building->getAnswer(\App\Helpers\HoomdossierSession::getInputSource(true), $toolQuestion);
+            $answerForToolQuestion = old(
+                $toolQuestion->save_in ?? $toolQuestion->short,
+                $answerForInputSource
+            );
+        ?>
             <div class="w-full grid grid-rows-2 grid-cols-4 grid-flow-row justify-items-center">
                 @foreach($toolQuestion->getQuestionValues() as $toolQuestionValue)
                     <div class="radio-wrapper media-wrapper">
-                        <input type="radio" id="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}" name="heating_type"
-                               value="central-heater-gas">
+                        <input type="radio"
+                               @if($toolQuestionValue['id'] == $answerForToolQuestion)
+                                   checked="checked"
+                               @endif
+                               id="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}"
+                               name="heating_type"
+                               value="{{$toolQuestionValue['id']}}"
+                        >
                         <label for="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}">
                             <span class="media-icon-wrapper">
                                 <i class="{{$toolQuestionValue['extra']['icon']}}"></i>
@@ -23,17 +36,6 @@
                             <span>{{$toolQuestionValue['name']}}</span>
                         </label>
                     </div>
-
-                    {{--                    <div class="radio-wrapper media-wrapper">--}}
-                    {{--                        <input type="radio" id="heating-type-other" name="heating_type" value="other">--}}
-                    {{--                        <label for="heating-type-other">--}}
-                    {{--                            <span class="media-icon-wrapper">--}}
-                    {{--                                <i class="icon-other"></i>--}}
-                    {{--                            </span>--}}
-                    {{--                            <span class="checkmark"></span>--}}
-                    {{--                            <span>@lang('cooperation/frontend/tool.form.other')...</span>--}}
-                    {{--                        </label>--}}
-                    {{--                    </div>--}}
                 @endforeach
             </div>
         @endcomponent

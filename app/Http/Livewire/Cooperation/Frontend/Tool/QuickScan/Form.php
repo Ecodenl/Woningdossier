@@ -80,7 +80,7 @@ class Form extends Component
         $table = $savedInParts[0];
         $column = $savedInParts[1];
 
-        $where = ['input_source_id' => $this->currentInputSource->id, 'building_id' => $this->building->id];
+        $where = ['building_id' => $this->building->id];
 
         // this means we have to add some thing to the where
         if (count($savedInParts) > 2) {
@@ -99,6 +99,7 @@ class Form extends Component
         // we will save it on the model, this way we keep the current events behind them
         $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
 
+        $where['input_source_id'] = $this->currentInputSource->id;
         // now save it for both input sources.
         $modelName::allInputSources()
             ->updateOrCreate(
@@ -106,6 +107,7 @@ class Form extends Component
                 [$column => $givenAnswer]
             );
 
+        $where['input_source_id'] = $this->masterInputSource->id;
         $modelName::allInputSources()
             ->updateOrCreate(
                 $where,

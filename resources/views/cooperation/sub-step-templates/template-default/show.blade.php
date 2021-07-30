@@ -1,34 +1,18 @@
-<div class="w-full">
-
+<div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-{{$toolQuestions->count() > 1 ? 10 : 5}} ">
     @foreach($toolQuestions as $toolQuestion)
-        @component('cooperation.frontend.layouts.components.form-group', [
-            'class' => 'form-group-heading',
-            'label' => $toolQuestion->name,
-        ])
-            @slot('modalBodySlot')
-                <p>
-                    {!! $toolQuestion->help_text !!}
-                </p>
-            @endslot
+        <div class="w-full @if($loop->iteration > 1) pt-10 @endif">
+            @component('cooperation.frontend.layouts.components.form-group', [
+                'class' => 'form-group-heading',
+                'label' => $toolQuestion->name,
+            ])
+                @slot('modalBodySlot')
+                    <p>
+                        {!! $toolQuestion->help_text !!}
+                    </p>
+                @endslot
 
-            <div class="w-full grid grid-rows-2 grid-cols-4 grid-flow-row justify-items-center">
-                @foreach($toolQuestion->getQuestionValues() as $toolQuestionValue)
-                    <div class="radio-wrapper media-wrapper">
-                        <input type="radio"
-                               id="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}"
-                               wire:model="filledInAnswers.{{$toolQuestion['id']}}"
-                               value="{{$toolQuestionValue['id']}}"
-                        >
-                        <label for="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}">
-                            <span class="media-icon-wrapper">
-                                <i class="{{$toolQuestionValue['extra']['icon']}}"></i>
-                            </span>
-                            <span class="checkmark"></span>
-                            <span>{{$toolQuestionValue['name']}}</span>
-                        </label>
-                    </div>
-                @endforeach
-            </div>
-        @endcomponent
+                @include("cooperation.tool-question-type-templates.{$toolQuestion->toolQuestionType->short}.show")
+            @endcomponent
+        </div>
+    @endforeach
 </div>
-@endforeach

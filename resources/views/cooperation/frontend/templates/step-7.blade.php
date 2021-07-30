@@ -42,4 +42,8 @@
             @endcomponent
         </div>
     </div>
+    @include('cooperation.frontend.layouts.parts.step-buttons', [
+        'current' => '07',
+        'total' => '24',
+    ])
 @endsection

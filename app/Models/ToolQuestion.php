@@ -5,6 +5,7 @@ namespace App\Models;
 use App\ToolQuestionAnswer;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
@@ -42,7 +43,13 @@ class ToolQuestion extends Model
         'resident' => 'boolean',
     ];
 
-    public function toolQuestionAnswers()
+
+    public function toolQuestionType(): BelongsTo
+    {
+        return $this->belongsTo(ToolQuestionType::class);
+    }
+
+    public function toolQuestionAnswers(): HasMany
     {
         return $this->hasMany(ToolQuestionAnswer::class);
     }

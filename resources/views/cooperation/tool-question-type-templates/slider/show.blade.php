@@ -1,0 +1,1 @@
+@include('cooperation.frontend.layouts.parts.slider', ['min' => 10, 'max' => 30, 'step' => 2, 'unit' => '°'])

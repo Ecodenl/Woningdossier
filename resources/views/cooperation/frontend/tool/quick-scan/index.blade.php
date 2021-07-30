@@ -1,10 +1,8 @@
 @extends('cooperation.frontend.layouts.tool')
 
 @section('content')
-    <div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-5">
-        <div class="w-full">
-            @livewire('cooperation.frontend.tool.quick-scan.form', compact('step', 'subStep'))
-        </div>
+    <div class="w-full">
+        @livewire('cooperation.frontend.tool.quick-scan.form', compact('step', 'subStep'))
     </div>
 
     <div class="w-full flex flex-wrap items-center">

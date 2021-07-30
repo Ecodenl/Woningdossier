@@ -123,6 +123,8 @@ class Form extends Component
 
     private function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
     {
+        // save bug on
+        // todo: bewoners-gebruik/gas-en-elektra-gebruik
         // we have to do this twice, once for the current input source and once for the master input source
         $toolQuestion
             ->toolQuestionAnswers()
@@ -130,6 +132,7 @@ class Form extends Component
                 'building_id' => $this->building->id,
                 'input_source_id' => $this->currentInputSource->id,
                 'tool_question_custom_value_id' => $givenAnswer,
+                'answer' => $givenAnswer,
 
             ])
             ->replicate(['input_source_id'])

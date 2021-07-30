@@ -376,7 +376,7 @@ class AddQuestionsToDatabase extends Command
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-high',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 10, 'max' => 30, 'value' => 22, 'step' => 1],
-                            'unit_of_measure' => __('general.unit.degrees.title'),
+                            'unit_of_measure' => '°',
                         ],
                         [
                             'validation' => ['required', 'numeric', 'min:10', 'max:30'],
@@ -384,7 +384,7 @@ class AddQuestionsToDatabase extends Command
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-low',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 10, 'max' => 30, 'value' => 12, 'step' => 1],
-                            'unit_of_measure' => __('general.unit.degrees.title'),
+                            'unit_of_measure' => '°',
                         ],
                         [
 

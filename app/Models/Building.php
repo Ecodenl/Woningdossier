@@ -111,9 +111,9 @@ class Building extends Model
             $column = $savedInParts[1];
 
             if (Schema::hasColumn($table, 'user_id')) {
-                $where = ['user_id' => $this->user_id];
+                $where[] = ['user_id', '=', $this->user_id];
             } else {
-                $where = ['building_id' => $this->id];
+                $where[] = ['building_id', '=', $this->id];
             }
 
             $where[] = ['input_source_id', '=', $inputSource->id];
@@ -131,7 +131,7 @@ class Building extends Model
             $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
 
             // we do a get so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
-            return $modelName::where($where)->get()->pluck($column)->first();
+            return $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
         }
     }
 

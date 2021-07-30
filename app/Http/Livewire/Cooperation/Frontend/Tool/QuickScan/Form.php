@@ -9,6 +9,7 @@ use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -39,7 +40,7 @@ class Form extends Component
 
         $this->building = HoomdossierSession::getBuilding(true);
         $this->toolQuestions = $subStep->toolQuestions;
-        $this->masterInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
         $this->setFilledInAnswers();
@@ -49,7 +50,7 @@ class Form extends Component
     {
         foreach ($this->toolQuestions as $toolQuestion) {
 
-            $answerForInputSource = $this->building->getAnswer($this->currentInputSource, $toolQuestion);
+            $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
 
             $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
         }
@@ -80,7 +81,11 @@ class Form extends Component
         $table = $savedInParts[0];
         $column = $savedInParts[1];
 
-        $where = ['building_id' => $this->building->id];
+        if (Schema::hasColumn($table, 'user_id')) {
+            $where = ['user_id' => $this->building->user_id];
+        } else {
+            $where = ['building_id' => $this->building->id];
+        }
 
         // this means we have to add some thing to the where
         if (count($savedInParts) > 2) {

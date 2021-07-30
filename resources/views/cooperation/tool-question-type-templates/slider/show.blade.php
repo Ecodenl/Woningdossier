@@ -1,9 +1,6 @@
 @php
     $min = $toolQuestion->options['min'];
     $max = $toolQuestion->options['max'];
-    // Set proper values
-    $min = $min < 0 ? 0 : $min;
-    $max = $max <= $min ? $min + 10 : $max;
 
     $step = $toolQuestion->options['step'];
     $unit = $toolQuestion->unit_of_measure;
@@ -11,7 +8,7 @@
 <div class="flex flex-wrap items-center w-full mt-12" x-data="slider()">
     <p class="w-1/12 flex justify-end pr-5">{{$min}}{!! $unit !!}</p>
     <div class="w-10/12 relative flex justify-center items-center">
-        <input type="range" min="{{$min}}" max="{{$max}}" step="{{$step}}" name="{{$inputName ?? ''}}" class="slider"
+        <input type="range" min="{{$min}}" max="{{$max}}" step="{{$step}}" class="slider"
                wire:model="filledInAnswers.{{$toolQuestion['id']}}"
                x-ref="slider" x-on:input="updateVisuals()" x-model="value">
         <div class="slider-bubble" x-show="initialized" x-ref="slider-bubble">

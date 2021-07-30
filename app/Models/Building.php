@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 /**
@@ -103,17 +104,20 @@ class Building extends Model
 
     public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
     {
-
         // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
         if (!is_null($toolQuestion->save_in)) {
             $savedInParts = explode('.', $toolQuestion->save_in);
             $table = $savedInParts[0];
             $column = $savedInParts[1];
 
-            $where = [
-                ['input_source_id', '=', $inputSource->id],
-                ['building_id', '=', $this->id]
-            ];
+            if (Schema::hasColumn($table, 'user_id')) {
+                $where = ['user_id' => $this->user_id];
+            } else {
+                $where = ['building_id' => $this->id];
+            }
+
+            $where[] = ['input_source_id', '=', $inputSource->id];
+
             // 2 parts is the simple scenario, this just means a table + column
             // but in some cases it holds more info we need to build wheres.
             if (count($savedInParts) > 2) {

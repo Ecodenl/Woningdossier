@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\Arr;
+use App\Helpers\ToolQuestionHelper;
 use App\Scopes\GetValueScope;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Builder;
@@ -102,11 +103,7 @@ class Building extends Model
 
     public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
     {
-        // these tables should query on a extra column.
-        $conditionalMap = [
-            'building_elements' => 'element_id',
-            'building_services' => 'service_id',
-        ];
+
         // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
         if (!is_null($toolQuestion->save_in)) {
             $savedInParts = explode('.', $toolQuestion->save_in);
@@ -121,7 +118,7 @@ class Building extends Model
             // but in some cases it holds more info we need to build wheres.
             if (count($savedInParts) > 2) {
                 // in this case the column holds a extra where value
-                $where[] = [$conditionalMap[$table], '=', $column];
+                $where[] = [ToolQuestionHelper::TABLE_COLUMN[$table], '=', $column];
 
                 $columns = array_slice($savedInParts, 2);
                 $column = implode('.', $columns);

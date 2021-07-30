@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\InputSource;
 use App\Models\Step;
@@ -67,7 +68,7 @@ class Form extends Component
             if (is_null($toolQuestion->save_in)) {
                 $this->saveToolQuestionCustomValues($toolQuestion, $givenAnswer);
             } else {
-               $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
+                $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
             }
         }
         return redirect()->to($nextUrl);
@@ -79,21 +80,35 @@ class Form extends Component
         $table = $savedInParts[0];
         $column = $savedInParts[1];
 
-//        if (count($savedInParts) > 2) {
-//            dd($savedInParts);
-//        }
+        $where = ['input_source_id' => $this->currentInputSource->id, 'building_id' => $this->building->id];
+
+        // this means we have to add some thing to the where
+        if (count($savedInParts) > 2) {
+            // in this case the column holds a extra where value
+            $where[ToolQuestionHelper::TABLE_COLUMN[$table]] = $column;
+            $column = $savedInParts[2];
+            // the extra column holds a array / json, so we have to transform the answer into a
+            if ($savedInParts[2] == 'extra') {
+                // the column to which we actually have to save the data
+                $column = 'extra';
+                // in this case, the fourth index holds the json key.
+                $givenAnswer = [$savedInParts[3] => $givenAnswer];
+            }
+        }
+
         // we will save it on the model, this way we keep the current events behind them
         $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
 
         // now save it for both input sources.
         $modelName::allInputSources()
             ->updateOrCreate(
-                ['input_source_id' => $this->currentInputSource->id, 'building_id' => $this->building->id],
+                $where,
                 [$column => $givenAnswer]
             );
+
         $modelName::allInputSources()
             ->updateOrCreate(
-                ['input_source_id' => $this->masterInputSource->id, 'building_id' => $this->building->id],
+                $where,
                 [$column => $givenAnswer]
             );
     }

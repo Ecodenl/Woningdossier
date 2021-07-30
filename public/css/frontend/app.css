@@ -129559,10 +129559,25 @@ textarea.form-input {
   right: 0px;
   bottom: 0.5rem;
   text-align: center;
+  line-height: 1.25rem;
 }
 
+/* Small box variant */
+
 .media-wrapper.media-wrapper-small {
-  /* WIP */
+  height: 6rem;
+  width: 6rem;
+}
+
+.media-wrapper.media-wrapper-small label .media-icon-wrapper i {
+  margin-top: 0px;
+  height: 90%;
+}
+
+/* Potential text spans are hidden */
+
+.media-wrapper.media-wrapper-small label span:not(.checkmark):not(.media-icon-wrapper) {
+  display: none;
 }
 
 /* Input groups */

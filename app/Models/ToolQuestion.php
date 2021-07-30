@@ -80,7 +80,7 @@ class ToolQuestion extends Model
                     $questionValue = $toolQuestionValuable->toArray();
 
                     $questionValue['extra'] = $toolQuestion->extra;
-                    $questionValue['name'] = $toolQuestionValuable->name;
+                    $questionValue['name'] = $toolQuestionValuable->name ?? $toolQuestionValuable->value;
 
                     return $questionValue;
                 });

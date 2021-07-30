@@ -3,7 +3,7 @@
         <label class="form-label" for="{{ $id ?? '' }}">
             {!! $label ?? '' !!}
         </label>
-        <div class="form-end">
+        <div class="form-end" wire:ignore>
             @if(($withInputSource ?? true))
                 @include('cooperation.frontend.layouts.parts.source-select')
             @endif

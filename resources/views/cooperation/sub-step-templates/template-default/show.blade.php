@@ -16,7 +16,7 @@
                     <div class="radio-wrapper media-wrapper">
                         <input type="radio"
                                id="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}"
-                               wire:model.defer="filledInAnswers.{{$toolQuestion['id']}}"
+                               wire:model="filledInAnswers.{{$toolQuestion['id']}}"
                                value="{{$toolQuestionValue['id']}}"
                         >
                         <label for="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}">

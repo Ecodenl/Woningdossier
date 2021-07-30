@@ -295,13 +295,13 @@ class AddQuestionsToDatabase extends Command
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface',
                             'tool_question_type_id' => $textType->id,
                         ],
-                        [
-                            // todo: find the right column to save this at, this is "zijn er nog bijzonderheden oevr de woning"
-                            'validation' => ['numeric', 'min:20', 'max:999999'],
-                            'save_in' => 'building_features.surface',
-                            'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface',
-                            'tool_question_type_id' => $textareaType->id,
-                        ],
+//                        [
+//                             todo: find the right column to save this at, this is "zijn er nog bijzonderheden oevr de woning"
+//                            'validation' => ['numeric', 'min:20', 'max:999999'],
+//                            'save_in' => 'building_features.surface',
+//                            'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface',
+//                            'tool_question_type_id' => $textareaType->id,
+//                        ],
                     ]
                 ],
             ],

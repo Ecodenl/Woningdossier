@@ -10,7 +10,7 @@ w-full grid grid-rows-2 grid-cols-4 grid-flow-row gap-4
             <input type="radio"
                    id="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}"
                    wire:model="filledInAnswers.{{$toolQuestion['id']}}"
-                   value="{{$toolQuestionValue['short'] ?? $toolQuestionValue['id']}}"
+                   value="{{$toolQuestionValue['value']}}"
             >
             <label for="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}">
                             <span class="media-icon-wrapper">

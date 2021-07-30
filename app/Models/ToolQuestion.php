@@ -88,6 +88,7 @@ class ToolQuestion extends Model
 
                     $questionValue['extra'] = $toolQuestion->extra;
                     $questionValue['name'] = $toolQuestionValuable->name ?? $toolQuestionValuable->value;
+                    $questionValue['value'] = $toolQuestionValuable->id;
 
                     return $questionValue;
                 });
@@ -101,6 +102,7 @@ class ToolQuestion extends Model
             ->map(function ($toolQuestion) {
                 $questionValue = $toolQuestion->toArray();
                 $questionValue['name'] = $toolQuestion->name;
+                $questionValue['value'] = $toolQuestion->short;
 
                 return $questionValue;
             });

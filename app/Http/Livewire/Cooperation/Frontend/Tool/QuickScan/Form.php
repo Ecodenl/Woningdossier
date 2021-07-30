@@ -39,7 +39,7 @@ class Form extends Component
 
         $this->building = HoomdossierSession::getBuilding(true);
         $this->toolQuestions = $subStep->toolQuestions;
-        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $this->masterInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
         $this->setFilledInAnswers();

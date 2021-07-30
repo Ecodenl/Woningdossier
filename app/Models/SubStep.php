@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\SubStep
@@ -19,6 +20,7 @@ class SubStep extends Model
 
     protected $fillable = [
         'name',
+        'slug',
         'order',
         'step_id',
         'conditions',
@@ -26,24 +28,28 @@ class SubStep extends Model
     ];
     protected $translatable = [
         'name',
+        'slug',
     ];
 
     protected $casts = [
         'conditions' => 'array',
     ];
 
+    public function getRouteKeyName(): string
+    {
+        $locale = app()->getLocale();
+        return "slug->{$locale}";
+    }
+
+    public function subStepTemplate(): BelongsTo
+    {
+        return $this->belongsTo(SubStepTemplate::class);
+    }
+
     public function toolQuestions()
     {
-        return $this->belongsToMany(ToolQuestion::class, 'sub_step_tool_questions')->withPivot('order');
-    }
-
-    public function next(): SubStep
-    {
-        return SubStep::where('order', '>', $this->order)->first();
-    }
-
-    public function previous(): SubStep
-    {
-        return SubStep::where('order', '<', $this->order)->orderByDesc('order')->first();
+        return $this->belongsToMany(ToolQuestion::class, 'sub_step_tool_questions')
+            ->orderBy('order')
+            ->withPivot('order');
     }
 }

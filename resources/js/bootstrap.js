@@ -80,3 +80,4 @@ Alpine.data('draggables', draggables)
 window.Alpine = Alpine
 
 Alpine.start();
+

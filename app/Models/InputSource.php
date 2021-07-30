@@ -32,6 +32,7 @@ class InputSource extends Model
     const RESIDENT_SHORT = 'resident';
     const COACH_SHORT = 'coach';
     const COOPERATION_SHORT = 'cooperation';
+    const MASTER_SHORT = 'master';
     const EXAMPLE_BUILDING = 'example-building';
 
     /**

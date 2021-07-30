@@ -77,8 +77,4 @@
             @endcomponent
         </div>
     </div>
-    @include('cooperation.frontend.layouts.parts.step-buttons', [
-        'current' => '09',
-        'total' => '24',
-    ])
 @endsection

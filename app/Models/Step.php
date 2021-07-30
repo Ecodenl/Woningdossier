@@ -7,6 +7,7 @@ use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\Step
@@ -29,10 +30,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|Step activeOrderedSteps()
  * @method static Builder|Step newModelQuery()
  * @method static Builder|Step newQuery()
- * @method static Builder|Step onlySubSteps()
+ * @method static Builder|Step onlyChildren()
  * @method static Builder|Step ordered()
  * @method static Builder|Step query()
- * @method static Builder|Step subStepsForStep(\App\Models\Step $step)
+ * @method static Builder|Step childrenForStep(\App\Models\Step $step)
  * @method static Builder|Step translated($attribute, $name, $locale = 'nl')
  * @method static Builder|Step whereCreatedAt($value)
  * @method static Builder|Step whereId($value)
@@ -61,12 +62,32 @@ class Step extends Model
         return 'slug';
     }
 
+    public function subSteps(): HasMany
+    {
+        return $this->hasMany(SubStep::class);
+    }
+    public function nextQuickScan(): ?Step
+    {
+        return Step::whereIn('short', ['building-data', 'usage-quick-scan', 'living-requirements', 'residential-status'])
+            ->where('order', '>', $this->order)
+            ->orderBy('order')
+            ->first();
+    }
+
+    public function previousQuickScan(): ?Step
+    {
+        return Step::whereIn('short', ['building-data', 'usage-quick-scan', 'living-requirements', 'residential-status'])
+            ->where('order', '<', $this->order)
+            ->orderByDesc('order')
+            ->first();
+    }
+
     /**
      * Return the children or so called "sub steps" of a step.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function subSteps()
+    public function children()
     {
         return $this->hasMany(Step::class, 'parent_id', 'id');
     }
@@ -86,9 +107,9 @@ class Step extends Model
      *
      * @return bool
      */
-    public function hasSubSteps()
+    public function hasChildren()
     {
-        return $this->subSteps()->exists();
+        return $this->children()->exists();
     }
 
     /**
@@ -103,12 +124,12 @@ class Step extends Model
             ->where('cooperation_steps.is_active', '1');
     }
 
-    public function scopeSubStepsForStep(Builder $query, Step $step)
+    public function scopeChildrenForStep(Builder $query, Step $step)
     {
         return $query->where('parent_id', $step->id);
     }
 
-    public function scopeOnlySubSteps(Builder $query)
+    public function scopeOnlyChildren(Builder $query)
     {
         return $query->whereNotNull('parent_id');
     }
@@ -118,7 +139,7 @@ class Step extends Model
      *
      * @return Builder
      */
-    public function scopeWithoutSubSteps(Builder $query)
+    public function scopeWithoutChildren(Builder $query)
     {
         return $query->where('parent_id', null);
     }
@@ -126,10 +147,10 @@ class Step extends Model
     /**
      * Check whether a step is a sub step.
      */
-    public function isSubStep(): bool
+    public function isChild(): bool
     {
         // when the parent id is null, its a parent else its a sub step / child.
-        return ! is_null($this->parent_id);
+        return !is_null($this->parent_id);
     }
 
     public function questionnaires()

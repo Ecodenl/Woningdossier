@@ -32,7 +32,7 @@ class QuestionnaireController extends Controller
     {
         $this->authorize('update', $questionnaire);
 
-        $steps = Step::withoutSubSteps()->expert()->orderBy('order')->get();
+        $steps = Step::withoutChildren()->expert()->orderBy('order')->get();
 
         return view('cooperation.admin.cooperation.questionnaires.questionnaire-editor', compact('questionnaire', 'steps'));
     }
@@ -41,7 +41,7 @@ class QuestionnaireController extends Controller
     {
         $this->authorize('create', Questionnaire::class);
 
-        $steps = Step::withoutSubSteps()->expert()->orderBy('order')->get();
+        $steps = Step::withoutChildren()->expert()->orderBy('order')->get();
 
         return view('cooperation.admin.cooperation.questionnaires.create', compact('steps'));
     }

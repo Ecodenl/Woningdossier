@@ -23,7 +23,7 @@
                 <ul class="nav nav-tabs mt-20">
 
                     @if(isset($currentStep))
-                        <?php $subStepsForStep = $cooperation->getSubStepsForStep($currentStep); ?>
+                        <?php $subStepsForStep = $cooperation->getchildrenForStep($currentStep); ?>
                         @if($subStepsForStep->isEmpty())
                             <li class="active @if($building->hasCompleted($currentStep)) completed @endif">
                                 <a href="{{route("cooperation.tool.{$currentStep->short}.index")}}">{{$currentStep->name}}</a>
@@ -91,7 +91,7 @@
                                         // some way of determining the previous step
 
                                         if ($currentSubStep instanceof \App\Models\Step) {
-                                            $subStepsForCurrentStep = $currentStep->subSteps;
+                                            $subStepsForCurrentStep = $currentStep->children;
                                             $previousStep = $subStepsForCurrentStep->where('order', '<', $currentSubStep->order)->last();
                                         } else {
                                             $previousStep = $steps->where('order', '<', $currentSubStep->order ?? $currentStep->order)->last();

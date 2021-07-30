@@ -28,6 +28,7 @@ use App\Models\ToolQuestionValuable;
 use App\Models\WoodRotStatus;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class AddQuestionsToDatabase extends Command
@@ -294,13 +295,13 @@ class AddQuestionsToDatabase extends Command
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface',
                             'tool_question_type_id' => $textType->id,
                         ],
-                        [
-                            // todo: find the right column to save this at, this is "zijn er nog bijzonderheden oevr de woning"
-                            'validation' => ['numeric', 'min:20', 'max:999999'],
-                            'save_in' => 'building_features.surface',
-                            'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface',
-                            'tool_question_type_id' => $textareaType->id,
-                        ],
+//                        [
+//                             todo: find the right column to save this at, this is "zijn er nog bijzonderheden oevr de woning"
+//                            'validation' => ['numeric', 'min:20', 'max:999999'],
+//                            'save_in' => 'building_features.surface',
+//                            'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface',
+//                            'tool_question_type_id' => $textareaType->id,
+//                        ],
                     ]
                 ],
             ],
@@ -375,7 +376,7 @@ class AddQuestionsToDatabase extends Command
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-high',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 10, 'max' => 30, 'value' => 22, 'step' => 1],
-                            'unit_of_measure' => __('general.unit.degrees.title'),
+                            'unit_of_measure' => '°',
                         ],
                         [
                             'validation' => ['required', 'numeric', 'min:10', 'max:30'],
@@ -383,7 +384,7 @@ class AddQuestionsToDatabase extends Command
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-low',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 10, 'max' => 30, 'value' => 12, 'step' => 1],
-                            'unit_of_measure' => __('general.unit.degrees.title'),
+                            'unit_of_measure' => '°',
                         ],
                         [
 
@@ -1018,7 +1019,8 @@ class AddQuestionsToDatabase extends Command
 
                 $subStepData = [
                     'name' => ['nl' => $subQuestionName],
-                    'order' => $orderForSubQuestions,
+                    'order' =>  $orderForSubQuestions,
+                    'slug' => ['nl' => Str::slug($subQuestionName)],
                     'step_id' => $step->id,
                     'sub_step_template_id' => $subQuestionData['sub_step_template_id'],
                 ];

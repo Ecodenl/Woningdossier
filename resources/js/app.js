@@ -4,9 +4,6 @@
 
 require('./bootstrap');
 
-var Turbolinks = require("turbolinks");
-Turbolinks.start();
-
 $.ajaxSetup({
     headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

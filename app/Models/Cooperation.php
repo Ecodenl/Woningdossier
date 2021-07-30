@@ -103,9 +103,9 @@ class Cooperation extends Model
      *
      * @return mixed
      */
-    public function getSubStepsForStep(Step $step)
+    public function getchildrenForStep(Step $step)
     {
-        return $this->steps()->subStepsForStep($step)->activeOrderedSteps()->get();
+        return $this->steps()->childrenForStep($step)->activeOrderedSteps()->get();
     }
 
     /**

@@ -66,7 +66,7 @@ class StepHelper
         }
 
         foreach ($stepComments as $stepComment) {
-            if ($stepComment->step->isSubStep()) {
+            if ($stepComment->step->isChild()) {
                 if (is_null($stepComment->short)) {
                     $commentsByStep[$stepComment->step->parentStep->short][$stepComment->step->short][$stepComment->inputSource->name] = $stepComment->comment;
                 } else {
@@ -114,12 +114,12 @@ class StepHelper
      *
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
-    public static function getUnfinishedSubStepsForStep(
+    public static function getUnfinishedchildrenForStep(
         Step $step,
         Building $building,
         InputSource $inputSource
     ) {
-        return $step->subSteps()
+        return $step->children()
             ->whereNotExists(function (Builder $query) use (
                 $building,
                 $inputSource
@@ -150,8 +150,8 @@ class StepHelper
          * @var Step $parentStep
          * @var Step $subStep
          */
-        $parentStep = $current->isSubStep() ? $current->parentStep : $current;
-        $subStep = $current->isSubStep() ? $current : null;
+        $parentStep = $current->isChild() ? $current->parentStep : $current;
+        $subStep = $current->isChild() ? $current : null;
 
         $url = static::buildStepUrl($parentStep, $subStep);
 
@@ -162,7 +162,7 @@ class StepHelper
         $nonCompletedSteps = collect();
         // when there is a substep try to redirect them to the next sub step
         if ($subStep instanceof Step) {
-            $nonCompletedSteps = static::getUnfinishedSubStepsForStep($parentStep,
+            $nonCompletedSteps = static::getUnfinishedchildrenForStep($parentStep,
                 $building, $inputSource);
         }
 
@@ -212,10 +212,10 @@ class StepHelper
         foreach ($nonCompletedSteps as $nonCompletedStep) {
             // when the non completed step is a substep, we can always return it.
             // else we have to check whether the user has interest in the step
-            if ($nonCompletedStep instanceof Step && ($nonCompletedStep->isSubStep() || self::hasInterestInStep($user,
+            if ($nonCompletedStep instanceof Step && ($nonCompletedStep->isChild() || self::hasInterestInStep($user,
                         Step::class, $nonCompletedStep->id))) {
                 // when its a substep we need to build it again for the sub step
-                if ($nonCompletedStep->isSubStep()) {
+                if ($nonCompletedStep->isChild()) {
                     $url = static::buildStepUrl($parentStep, $nonCompletedStep);
                 } else {
                     $url = static::buildStepUrl($nonCompletedStep);
@@ -262,10 +262,10 @@ class StepHelper
         ]);
 
         // check if all sub steps are completed, if so complete the parent step
-        if ($step->isSubStep()) {
+        if ($step->isChild()) {
             $parentStep = $step->parentStep;
             $uncompletedSubStepsForParentStep = $parentStep
-                ->subSteps()
+                ->children()
                 ->whereNotExists(function (Builder $query) use ($building, $inputSource) {
                     $query->select('*')
                         ->from('completed_steps')

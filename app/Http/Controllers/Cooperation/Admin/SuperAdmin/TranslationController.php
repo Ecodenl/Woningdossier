@@ -62,7 +62,7 @@ class TranslationController extends Controller
         // it is what it is, for the time being this will do. should be refactored
         $step = Step::findByShort($group);
 
-        if ($step instanceof Step && $step->isSubStep()) {
+        if ($step instanceof Step && $step->isChild()) {
             $group = "cooperation/tool/general-data/{$group}";
         }
         if ('ventilation' == $group) {

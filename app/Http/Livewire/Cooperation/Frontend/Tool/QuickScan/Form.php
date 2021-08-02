@@ -15,6 +15,13 @@ use Livewire\Component;
 
 class Form extends Component
 {
+    /*
+     *
+     * NOTE: When programmatically updating variables, ensure the updated method is called! This triggers a browser
+     * event, which can be caught by the frontend and set visuals correct, e.g. with the sliders.
+     *
+     */
+
     protected $listeners = ['save'];
 
     /** @var Building */
@@ -59,6 +66,12 @@ class Form extends Component
     public function render()
     {
         return view('livewire.cooperation.frontend.tool.quick-scan.form');
+    }
+
+    public function updated($field, $value)
+    {
+        // TODO: Deprecate this in V2
+        $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
     }
 
     public function save($nextUrl)

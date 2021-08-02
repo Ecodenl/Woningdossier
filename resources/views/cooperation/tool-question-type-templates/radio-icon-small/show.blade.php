@@ -1,6 +1,6 @@
-<div class="w-full grid grid-rows-2 grid-cols-4 grid-flow-row gap-4">
+<div class="w-full flex justify-between">
     @foreach($toolQuestion->getQuestionValues() as $toolQuestionValue)
-        <div class="radio-wrapper media-wrapper">
+        <div class="radio-wrapper media-wrapper media-wrapper-small">
             <input type="radio"
                    id="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}"
                    wire:model="filledInAnswers.{{$toolQuestion['id']}}"

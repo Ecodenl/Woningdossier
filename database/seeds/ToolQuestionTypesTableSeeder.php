@@ -17,6 +17,10 @@ class ToolQuestionTypesTableSeeder extends Seeder
                 'short' => 'radio-icon'
             ],
             [
+                'name'  => ['nl' => 'Keuze met icon, klein en zonder tekst'],
+                'short' => 'radio-icon-small'
+            ],
+            [
                 'name'  => ['nl' => 'Keuze veld'],
                 'short' => 'radio'
             ],

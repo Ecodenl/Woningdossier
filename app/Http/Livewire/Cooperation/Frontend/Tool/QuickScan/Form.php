@@ -123,6 +123,7 @@ class Form extends Component
 
     private function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
     {
+        dd($givenAnswer);
         // save bug on
         // todo: bewoners-gebruik/gas-en-elektra-gebruik
         // we have to do this twice, once for the current input source and once for the master input source

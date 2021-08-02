@@ -1,66 +1,51 @@
-    <div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-5">
-        <div class="w-full">
-            @component('cooperation.frontend.layouts.components.form-group', [
-                'class' => 'form-group-heading',
-                'label' => $subStep->name,
-            ])
-                @slot('modalBodySlot')
-                    <p>
-                        Selecteer de wijze waarbij u thuis het huis en het water verwarmt.
-                    </p>
-                @endslot
-                <div class="w-full grid grid-rows-2 grid-cols-4 grid-flow-row justify-items-center">
-                    <div class="radio-wrapper media-wrapper">
-                        <input type="radio" id="heating-type-central-heater-gas" name="heating_type" value="central-heater-gas">
-                        <label for="heating-type-central-heater-gas">
-                            <span class="media-icon-wrapper">
-                                <i class="icon-central-heater-gas"></i>
-                            </span>
-                            <span class="checkmark"></span>
-                            <span>Gasketel</span>
-                        </label>
-                    </div>
-                    <div class="radio-wrapper media-wrapper">
-                        <input type="radio" id="heating-type-heat-pump" name="heating_type" value="heat-pump">
-                        <label for="heating-type-heat-pump">
-                            <span class="media-icon-wrapper">
-                                <i class="icon-heat-pump"></i>
-                            </span>
-                            <span class="checkmark"></span>
-                            <span>Warmtepomp</span>
-                        </label>
-                    </div>
-                    <div class="radio-wrapper media-wrapper">
-                        <input type="radio" id="heating-type-infrared" name="heating_type" value="infrared">
-                        <label for="heating-type-infrared">
-                            <span class="media-icon-wrapper">
-                                <i class="icon-infrared-heater"></i>
-                            </span>
-                            <span class="checkmark"></span>
-                            <span>Infrarood</span>
-                        </label>
-                    </div>
-                    <div class="radio-wrapper media-wrapper">
-                        <input type="radio" id="heating-type-city-heating" name="heating_type" value="city-heating">
-                        <label for="heating-type-city-heating">
-                            <span class="media-icon-wrapper">
-                                <i class="icon-district-heating"></i>
-                            </span>
-                            <span class="checkmark"></span>
-                            <span>Stadsverwarming</span>
-                        </label>
-                    </div>
-                    <div class="radio-wrapper media-wrapper">
-                        <input type="radio" id="heating-type-other" name="heating_type" value="other">
-                        <label for="heating-type-other">
-                            <span class="media-icon-wrapper">
-                                <i class="icon-other"></i>
-                            </span>
-                            <span class="checkmark"></span>
-                            <span>@lang('cooperation/frontend/tool.form.other')...</span>
-                        </label>
-                    </div>
-                </div>
-            @endcomponent
-        </div>
+<div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-{{$toolQuestions->count() > 1 ? 10 : 5}} ">
+
+    <?php
+    // some necessary crap to display the toolQuestions in the right manor
+    $top = $toolQuestions->where('pivot.order', 0)->first();
+    $bottomLeft = $toolQuestions->where('pivot.order', 1)->first();
+    $bottomRight = $toolQuestions->where('pivot.order', 2)->first();
+
+    ?>
+    <div class="w-full">
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'class' => 'form-group-heading',
+            'label' => $top->name,
+        ])
+            @slot('modalBodySlot')
+                <p>
+                    {!! $top->help_text !!}
+                </p>
+            @endslot
+
+            @include("cooperation.tool-question-type-templates.{$top->toolQuestionType->short}.show", ['toolQuestion' => $top])
+        @endcomponent
     </div>
+    <div class="pt-5 grid grid-cols-1 gap-x-6 sm:grid-cols-2">
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'class' => 'form-group-heading w-full',
+            'label' => $bottomLeft->name,
+        ])
+            @slot('modalBodySlot')
+                <p>
+                    {!! $bottomLeft->help_text !!}
+                </p>
+            @endslot
+
+            @include("cooperation.tool-question-type-templates.{$bottomLeft->toolQuestionType->short}.show", ['toolQuestion' => $bottomLeft])
+        @endcomponent
+
+        @component('cooperation.frontend.layouts.components.form-group', [
+            'class' => 'form-group-heading w-full ',
+            'label' => $bottomRight->name,
+            ])
+            @slot('modalBodySlot')
+                <p>
+                    {!! $bottomRight->help_text !!}
+                </p>
+            @endslot
+
+            @include("cooperation.tool-question-type-templates.{$bottomRight->toolQuestionType->short}.show", ['toolQuestion' => $bottomRight])
+        @endcomponent
+    </div>
+</div>

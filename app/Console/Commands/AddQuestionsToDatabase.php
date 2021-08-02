@@ -118,6 +118,7 @@ class AddQuestionsToDatabase extends Command
         $roofTileStatuses = RoofTileStatus::orderBy('order')->get();
         $buildingTypes = BuildingType::all();
         $radioIconType = ToolQuestionType::findByShort('radio-icon');
+        $radioIconSmallType = ToolQuestionType::findByShort('radio-icon-small');
         $radioType = ToolQuestionType::findByShort('radio');
         $textType = ToolQuestionType::findByShort('text');
         $sliderType = ToolQuestionType::findByShort('slider');
@@ -255,7 +256,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['numeric', 'exists:energy_labels,id'],
                             'save_in' => 'building_features.energy_label_id',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.energy-label',
-                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_type_id' => $radioIconSmallType->id,
                             'tool_question_values' => $energyLabels,
                             'extra' => [
                                 'column' => 'name',
@@ -1032,6 +1033,7 @@ class AddQuestionsToDatabase extends Command
                 $subStep = SubStep::create($subStepData);
 
                 if (isset($subQuestionData['questions'])) {
+                    $orderForSubStepToolQuestions = 0;
                     foreach ($subQuestionData['questions'] as $questionData) {
                         // create the question itself
                         $questionData['name'] = [
@@ -1050,7 +1052,7 @@ class AddQuestionsToDatabase extends Command
                             Arr::except($questionData, ['tool_question_values', 'tool_question_custom_values', 'extra'])
                         );
 
-                        $subStep->toolQuestions()->attach($toolQuestion, ['order' => $orderForSubQuestions]);
+                        $subStep->toolQuestions()->attach($toolQuestion, ['order' => $orderForSubStepToolQuestions]);
 
                         if (isset($questionData['tool_question_custom_values'])) {
                             $toolQuestionCustomValueOrder = 0;
@@ -1068,6 +1070,7 @@ class AddQuestionsToDatabase extends Command
                                     ],
                                     'extra' => $extra,
                                 ]);
+                                $toolQuestionCustomValueOrder++;
                             }
                         }
 
@@ -1085,6 +1088,7 @@ class AddQuestionsToDatabase extends Command
                                 ]);
                             }
                         }
+                        $orderForSubStepToolQuestions++;
                     }
                 }
 

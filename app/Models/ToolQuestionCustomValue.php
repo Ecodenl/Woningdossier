@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class ToolQuestionCustomValue extends Model
 {
-    use HasTranslations;
+    use HasTranslations, HasShortTrait;
 
     protected $translatable = [
         'name'

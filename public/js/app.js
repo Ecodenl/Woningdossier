@@ -34341,7 +34341,7 @@ __webpack_require__.r(__webpack_exports__);
   return {
     index: -1,
     value: defaultValue,
-    inactiveClass: 'bg-gray',
+    inactiveClass: 'bg-green',
     activeClass: activeClass,
     disabled: disabled,
     init: function init() {

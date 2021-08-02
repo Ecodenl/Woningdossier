@@ -11,8 +11,8 @@
 
 
         <div x-data="ratingSlider({{$default ?? 0}}, '{{$activeClass ?? 'bg-green'}}', {{$disabled}})"
-             x-ref="rating-slider-wrapper" class="w-inherit" >
-            <input class="hidden" wire:model="filledInAnswers.{{$toolQuestion['id']}}.{{$option['short']}}" x-ref="rating-slider-input" x-model="value">
+             x-ref="rating-slider-wrapper" class="w-inherit">
+            <input wire:model="filledInAnswers.{{$toolQuestion['id']}}.{{$option['short']}}" class="hidden" x-ref="rating-slider-input" x-model="value">
             <div class="flex justify-between mb-3">
                 <p>{{$label ?? ''}}</p>
                 <p class="font-bold" x-text="value"></p>

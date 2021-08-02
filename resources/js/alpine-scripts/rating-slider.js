@@ -1,7 +1,7 @@
 export default (defaultValue = 0, activeClass = 'bg-green', disabled = false) => ({
     index: -1,
     value: defaultValue,
-    inactiveClass: 'bg-gray',
+    inactiveClass: 'bg-green',
     activeClass: activeClass,
     disabled: disabled,
 

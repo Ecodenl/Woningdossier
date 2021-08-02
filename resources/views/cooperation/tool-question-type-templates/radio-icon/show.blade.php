@@ -1,4 +1,3 @@
-@component('cooperation.tool-question-type-templates.components.default')
 <div class="w-full grid grid-rows-1 grid-cols-4 grid-flow-row gap-4">
     @foreach($toolQuestion->getQuestionValues() as $toolQuestionValue)
         <div class="radio-wrapper media-wrapper">
@@ -17,4 +16,3 @@
         </div>
     @endforeach
 </div>
-@endcomponent

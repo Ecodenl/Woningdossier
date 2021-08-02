@@ -1,4 +1,3 @@
-@component('cooperation.tool-question-type-templates.components.default')
     @foreach($toolQuestion->getQuestionValues() as $toolQuestionValue)
         <div class="radio-wrapper pr-3">
             <input type="radio"
@@ -12,4 +11,3 @@
             </label>
         </div>
     @endforeach
-@endcomponent

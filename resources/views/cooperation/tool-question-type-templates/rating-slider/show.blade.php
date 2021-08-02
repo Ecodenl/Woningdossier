@@ -1,16 +1,18 @@
 <div class="w-full grid grid-rows-3 grid-cols-2 grid-flow-row justify-items-center gap-x-32 lg:gap-x-64 gap-y-10">
-{{--    @foreach($toolQuestion as $toolQuestionValue)--}}
+    @foreach($toolQuestion->options as $option)
         @php
-            $min = $toolQuestion->options['min'];
-            $max = $toolQuestion->options['max'];
+            $min = $option['min'];
+            $max = $option['max'];
 
             $disabled = $disabled ?? false;
-            $inputName = $toolQuestion->name;
+            $inputName = $option['name'];
+            $label = $option['name'];
         @endphp
 
+
         <div x-data="ratingSlider({{$default ?? 0}}, '{{$activeClass ?? 'bg-green'}}', {{$disabled}})"
-             x-ref="rating-slider-wrapper" class="w-inherit" wire:ignore>
-            <input class="hidden" name="{{$inputName ?? ''}}" x-ref="rating-slider-input" x-model="value">
+             x-ref="rating-slider-wrapper" class="w-inherit" >
+            <input class="hidden" wire:model="filledInAnswers.{{$toolQuestion['id']}}.{{$option['short']}}" x-ref="rating-slider-input" x-model="value">
             <div class="flex justify-between mb-3">
                 <p>{{$label ?? ''}}</p>
                 <p class="font-bold" x-text="value"></p>
@@ -28,5 +30,5 @@
                 @endfor
             </div>
         </div>
-{{--    @endforeach--}}
+    @endforeach
 </div>

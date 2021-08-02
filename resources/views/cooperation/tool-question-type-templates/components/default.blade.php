@@ -9,7 +9,7 @@
                     {!! $toolQuestion->help_text !!}
                 </p>
             @endslot
-
+            {!! $slot !!}
         @endcomponent
     </div>
 @endforeach

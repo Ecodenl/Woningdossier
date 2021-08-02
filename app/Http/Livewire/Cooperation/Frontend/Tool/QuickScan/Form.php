@@ -57,8 +57,13 @@ class Form extends Component
         foreach ($this->toolQuestions as $toolQuestion) {
 
             $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
-
-            $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
+            if ($toolQuestion->toolQuestionType->short == 'rating-slider') {
+                foreach ($toolQuestion->options as $option) {
+                    $this->filledInAnswers[$toolQuestion->id][$option['short']] = $answerForInputSource;
+                }
+            } else {
+                $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
+            }
         }
     }
 
@@ -132,6 +137,9 @@ class Form extends Component
 
     private function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
     {
+        if (is_array($givenAnswer)) {
+            $givenAnswer = json_encode($givenAnswer);
+        }
         $data = [
             'building_id' => $this->building->id,
             'input_source_id' => $this->currentInputSource->id,
@@ -143,6 +151,8 @@ class Form extends Component
             $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($givenAnswer);
             $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
         }
+
+
         // we have to do this twice, once for the current input source and once for the master input source
         $toolQuestion
             ->toolQuestionAnswers()

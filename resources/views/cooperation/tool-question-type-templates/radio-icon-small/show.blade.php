@@ -1,4 +1,3 @@
-@component('cooperation.tool-question-type-templates.components.default')
 <div class="w-full flex justify-between">
     @foreach($toolQuestion->getQuestionValues() as $toolQuestionValue)
         <div class="radio-wrapper media-wrapper media-wrapper-small">
@@ -17,4 +16,3 @@
         </div>
     @endforeach
 </div>
-@endcomponent

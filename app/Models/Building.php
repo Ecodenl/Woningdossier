@@ -104,6 +104,8 @@ class Building extends Model
 
     public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
     {
+        $answer = null;
+        $where[] = ['input_source_id', '=', $inputSource->id];
         // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
         if (!is_null($toolQuestion->save_in)) {
             $savedInParts = explode('.', $toolQuestion->save_in);
@@ -116,7 +118,6 @@ class Building extends Model
                 $where[] = ['building_id', '=', $this->id];
             }
 
-            $where[] = ['input_source_id', '=', $inputSource->id];
 
             // 2 parts is the simple scenario, this just means a table + column
             // but in some cases it holds more info we need to build wheres.
@@ -131,8 +132,17 @@ class Building extends Model
             $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
 
             // we do a get so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
-            return $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
+            $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
+        } else {
+            $answer = optional($toolQuestion
+                ->toolQuestionAnswers()
+                ->allInputSources()
+                ->where($where)
+                ->first())
+                ->answer;
         }
+
+        return $answer;
     }
 
     /**

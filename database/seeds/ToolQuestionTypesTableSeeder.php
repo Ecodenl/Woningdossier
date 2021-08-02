@@ -38,7 +38,7 @@ class ToolQuestionTypesTableSeeder extends Seeder
             ],
             [
                 'name' => ['nl' => 'Prioriteiten meter'],
-                'short' => 'measure-priority'
+                'short' => 'rating-slider'
             ],
         ];
 

@@ -1,4 +1,4 @@
-<div class="w-full grid grid-rows-2 grid-cols-4 grid-flow-row gap-4">
+<div class="w-full grid grid-rows-1 grid-cols-4 grid-flow-row gap-4">
     @foreach($toolQuestion->getQuestionValues() as $toolQuestionValue)
         <div class="radio-wrapper media-wrapper">
             <input type="radio"

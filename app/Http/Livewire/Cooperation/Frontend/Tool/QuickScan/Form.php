@@ -9,6 +9,7 @@ use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
+use App\Models\ToolQuestionCustomValue;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -53,13 +54,23 @@ class Form extends Component
         $this->setFilledInAnswers();
     }
 
+    public function updated()
+    {
+        $this->toolQuestions = $this->subStep->toolQuestions;
+    }
+
     private function setFilledInAnswers()
     {
         foreach ($this->toolQuestions as $toolQuestion) {
 
             $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
-
-            $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
+            if ($toolQuestion->toolQuestionType->short == 'rating-slider') {
+                foreach ($toolQuestion->options as $option) {
+                    $this->filledInAnswers[$toolQuestion->id][$option['short']] = $answerForInputSource;
+                }
+            } else {
+                $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
+            }
         }
     }
 
@@ -85,6 +96,9 @@ class Form extends Component
                 $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
             }
         }
+
+        $this->toolQuestions = $this->subStep->toolQuestions;
+
         return redirect()->to($nextUrl);
     }
 
@@ -136,19 +150,26 @@ class Form extends Component
 
     private function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
     {
-        dd($givenAnswer);
-        // save bug on
-        // todo: bewoners-gebruik/gas-en-elektra-gebruik
+        if (is_array($givenAnswer)) {
+            $givenAnswer = json_encode($givenAnswer);
+        }
+        $data = [
+            'building_id' => $this->building->id,
+            'input_source_id' => $this->currentInputSource->id,
+            'answer' => $givenAnswer,
+        ];
+        // Try to resolve the id is the question has custom values
+        if ($toolQuestion->toolQuestionCustomValues()->exists()) {
+            // if so, the given answer contains a short.
+            $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($givenAnswer);
+            $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
+        }
+
+
         // we have to do this twice, once for the current input source and once for the master input source
         $toolQuestion
             ->toolQuestionAnswers()
-            ->create([
-                'building_id' => $this->building->id,
-                'input_source_id' => $this->currentInputSource->id,
-                'tool_question_custom_value_id' => $givenAnswer,
-                'answer' => $givenAnswer,
-
-            ])
+            ->create($data)
             ->replicate(['input_source_id'])
             ->fill(['input_source_id' => $this->masterInputSource->id])
             ->save();

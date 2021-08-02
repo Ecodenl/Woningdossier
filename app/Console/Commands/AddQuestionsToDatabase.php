@@ -123,7 +123,7 @@ class AddQuestionsToDatabase extends Command
         $textType = ToolQuestionType::findByShort('text');
         $sliderType = ToolQuestionType::findByShort('slider');
         $textareaType = ToolQuestionType::findByShort('textarea');
-        $measurePriorityType = ToolQuestionType::findByShort('measure-priority');
+        $measurePriorityType = ToolQuestionType::findByShort('rating-slider');
 
         $templateDefault = SubStepTemplate::findByShort('template-default');
         $template2rows1top2bottom = SubStepTemplate::findByShort('template-2-rows-1-top-2-bottom');
@@ -501,44 +501,52 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'in:1,2,3,4,5'],
                             'short' => 'comfort-priority',
-                            'translation' => "Comfort",
+                            'translation' => "Welke zaken vindt u belangrijk?",
                             'tool_question_type_id' => $measurePriorityType->id,
-                            'options' => ['min' => 1, 'max' => 5, 'value' => 1],
-                        ],
-                        [
-                            'validation' => ['required', 'in:1,2,3,4,5'],
-                            'short' => 'investment-priority',
-                            'translation' => "Goede investering",
-                            'tool_question_type_id' => $measurePriorityType->id,
-                            'options' => ['min' => 1, 'max' => 5, 'value' => 1],
-                        ],
-                        [
-                            'validation' => ['required', 'in:1,2,3,4,5'],
-                            'short' => 'adjust-to-liking-priority',
-                            'translation' => "Naar eigen smaak maken",
-                            'tool_question_type_id' => $measurePriorityType->id,
-                            'options' => ['min' => 1, 'max' => 5, 'value' => 1],
-                        ],
-                        [
-                            'validation' => ['required', 'in:1,2,3,4,5'],
-                            'short' => 'sustainability-priority',
-                            'translation' => "Duurzaamheid",
-                            'tool_question_type_id' => $measurePriorityType->id,
-                            'options' => ['min' => 1, 'max' => 5, 'value' => 1],
-                        ],
-                        [
-                            'validation' => ['required', 'in:1,2,3,4,5'],
-                            'short' => 'to-lower-expenses-priority',
-                            'translation' => "Verlaging maandlasten",
-                            'tool_question_type_id' => $measurePriorityType->id,
-                            'options' => ['min' => 1, 'max' => 5, 'value' => 1],
-                        ],
-                        [
-                            'validation' => ['required', 'in:1,2,3,4,5'],
-                            'short' => 'indoor-climate-priority',
-                            'translation' => "Gezond binnenklimaat",
-                            'tool_question_type_id' => $measurePriorityType->id,
-                            'options' => ['min' => 1, 'max' => 5, 'value' => 1],
+                            'options' => [
+                                [
+                                    'name' => 'Comfort',
+                                    'short' => 'comfort',
+                                    'min' => 1,
+                                    'max' => 5,
+                                    'value' => 1,
+                                ],
+                                [
+                                    'name' => 'Duurzaamheid',
+                                    'short' => 'renewable',
+                                    'min' => 1,
+                                    'max' => 5,
+                                    'value' => 1,
+                                ],
+                                [
+                                    'name' => 'Goede investering',
+                                    'short' => 'investment',
+                                    'min' => 1,
+                                    'max' => 5,
+                                    'value' => 1,
+                                ],
+                                [
+                                    'name' => 'Verlaging maandlasten',
+                                    'short' => 'lower-monthly-costs',
+                                    'min' => 1,
+                                    'max' => 5,
+                                    'value' => 1,
+                                ],
+                                [
+                                    'name' => 'Naar eigen smaak maken',
+                                    'short' => 'to-own-taste',
+                                    'min' => 1,
+                                    'max' => 5,
+                                    'value' => 1,
+                                ],
+                                [
+                                    'name' => 'Gezond binnenklimaat',
+                                    'short' => 'indoor-climate',
+                                    'min' => 1,
+                                    'max' => 5,
+                                    'value' => 1,
+                                ],
+                            ],
                         ],
                     ],
 

@@ -1,9 +1,6 @@
-{{--<div class="w-full flex justify-between flex-wrap">--}}
+@component('cooperation.tool-question-type-templates.components.default')
 <div class="w-full grid grid-rows-1 grid-cols-4 grid-flow-row gap-4">
     @foreach($toolQuestion->getQuestionValues() as $toolQuestionValue)
-        {{--            <div class="w-1/4 flex @if($loop->last) justify-end @elseif($loop->first) justify-start @else justify-center @endif">--}}
-
-
         <div class="radio-wrapper media-wrapper">
             <input type="radio"
                    id="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}"
@@ -20,3 +17,4 @@
         </div>
     @endforeach
 </div>
+@endcomponent

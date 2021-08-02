@@ -123,7 +123,7 @@ class AddQuestionsToDatabase extends Command
         $textType = ToolQuestionType::findByShort('text');
         $sliderType = ToolQuestionType::findByShort('slider');
         $textareaType = ToolQuestionType::findByShort('textarea');
-        $measurePriorityType = ToolQuestionType::findByShort('measure-priority');
+        $measurePriorityType = ToolQuestionType::findByShort('rating-slider');
 
         $templateDefault = SubStepTemplate::findByShort('template-default');
         $template2rows1top2bottom = SubStepTemplate::findByShort('template-2-rows-1-top-2-bottom');

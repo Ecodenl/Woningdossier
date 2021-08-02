@@ -1,3 +1,4 @@
+@component('cooperation.tool-question-type-templates.components.default')
 @php
     $min = $toolQuestion->options['min'];
     $max = $toolQuestion->options['max'];
@@ -17,3 +18,4 @@
     </div>
     <p class="w-1/12 flex justify-start pl-5" x-on:click="document.querySelector('.slider').value = 4;">{{$max}}{!! $unit !!}</p>
 </div>
+@endcomponent

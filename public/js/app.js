@@ -34362,6 +34362,8 @@ __webpack_require__.r(__webpack_exports__);
         } else {
           this.value = 0;
         }
+      } else if (isNaN(this.value)) {
+        this.value = 0;
       }
     },
     mouseEnter: function mouseEnter(element) {
@@ -34388,7 +34390,7 @@ __webpack_require__.r(__webpack_exports__);
         this.setIndexActive();
 
         if (this.livewireModel !== null) {
-          window.livewire.emitTo(this.componentName, 'updated', this.livewireModel, this.value);
+          window.livewire.emitTo(this.componentName, 'update', this.livewireModel, this.value, false);
         }
       }
     },

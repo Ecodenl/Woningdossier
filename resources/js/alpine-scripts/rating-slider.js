@@ -20,6 +20,8 @@ export default (defaultValue = 0, activeClass = 'bg-green', disabled = false, co
             } else {
                 this.value = 0;
             }
+        } else if(isNaN(this.value)) {
+            this.value = 0;
         }
     },
     mouseEnter(element) {
@@ -45,7 +47,7 @@ export default (defaultValue = 0, activeClass = 'bg-green', disabled = false, co
             this.setIndexActive();
 
             if (this.livewireModel !== null) {
-                window.livewire.emitTo(this.componentName, 'updated', this.livewireModel, this.value);
+                window.livewire.emitTo(this.componentName, 'update', this.livewireModel, this.value, false);
             }
         }
     },

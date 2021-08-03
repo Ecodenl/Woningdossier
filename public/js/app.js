@@ -34338,18 +34338,23 @@ __webpack_require__.r(__webpack_exports__);
   var defaultValue = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
   var activeClass = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'bg-green';
   var disabled = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  var componentName = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+  var livewireModel = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
   return {
     index: -1,
     value: defaultValue,
     inactiveClass: 'bg-green',
     activeClass: activeClass,
     disabled: disabled,
+    livewireModel: livewireModel,
+    componentName: componentName,
     init: function init() {
-      // Ensure the slider gets updated with the default value
+      console.log(this.livewireModel); // Ensure the slider gets updated with the default value
+
       if (this.value > 0) {
         var element = this.$refs['rating-slider'].querySelector("div[data-value=\"".concat(this.value, "\"]"));
 
-        if (!(null === element)) {
+        if (element !== null) {
           // Ensure we can set the value on init, so we temporary enable, even if it's disabled.
           var tempDisable = this.disabled;
           this.disabled = false;
@@ -34382,6 +34387,10 @@ __webpack_require__.r(__webpack_exports__);
         this.index = Array.from(parent.children).indexOf(element);
         this.value = element.getAttribute('data-value');
         this.setIndexActive();
+
+        if (this.livewireModel !== null) {
+          window.livewire.emitTo(this.componentName, 'updated', this.livewireModel, this.value);
+        }
       }
     },
     setIndexActive: function setIndexActive() {

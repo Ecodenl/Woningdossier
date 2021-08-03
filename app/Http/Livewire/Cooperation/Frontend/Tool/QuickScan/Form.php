@@ -23,7 +23,7 @@ class Form extends Component
      *
      */
 
-    protected $listeners = ['save'];
+    protected $listeners = ['updated', 'save'];
 
     /** @var Building */
     public $building;
@@ -54,11 +54,6 @@ class Form extends Component
         $this->setFilledInAnswers();
     }
 
-    public function updated()
-    {
-        $this->toolQuestions = $this->subStep->toolQuestions;
-    }
-
     private function setFilledInAnswers()
     {
         foreach ($this->toolQuestions as $toolQuestion) {
@@ -81,8 +76,10 @@ class Form extends Component
 
     public function updated($field, $value)
     {
-        // TODO: Deprecate this in V2
+        // TODO: Deprecate this dispatch in Livewire V2
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
+
+        $this->toolQuestions = $this->subStep->toolQuestions;
     }
 
     public function save($nextUrl)

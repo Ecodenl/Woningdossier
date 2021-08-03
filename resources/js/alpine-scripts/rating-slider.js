@@ -1,15 +1,18 @@
-export default (defaultValue = 0, activeClass = 'bg-green', disabled = false) => ({
+export default (defaultValue = 0, activeClass = 'bg-green', disabled = false, componentName = null, livewireModel = null) => ({
     index: -1,
     value: defaultValue,
     inactiveClass: 'bg-green',
     activeClass: activeClass,
     disabled: disabled,
+    livewireModel: livewireModel,
+    componentName: componentName,
 
     init() {
+        console.log(this.livewireModel);
         // Ensure the slider gets updated with the default value
         if (this.value > 0) {
             let element = this.$refs['rating-slider'].querySelector(`div[data-value="${this.value}"]`);
-            if (! (null === element)) {
+            if (element !== null) {
                 // Ensure we can set the value on init, so we temporary enable, even if it's disabled.
                 let tempDisable = this.disabled;
                 this.disabled = false;
@@ -21,26 +24,30 @@ export default (defaultValue = 0, activeClass = 'bg-green', disabled = false) =>
         }
     },
     mouseEnter(element) {
-        if (! this.disabled) {
+        if (!this.disabled) {
             this.setAllGray();
             // Set this and all previous as green
             this.setActive(element);
-            while((element = element.previousElementSibling) != null) {
+            while ((element = element.previousElementSibling) != null) {
                 this.setActive(element);
             }
         }
     },
     mouseLeave(element) {
-        if (! this.disabled) {
+        if (!this.disabled) {
             this.setIndexActive();
         }
     },
     selectOption(element) {
-        if (! this.disabled) {
+        if (!this.disabled) {
             let parent = this.$refs['rating-slider'];
             this.index = Array.from(parent.children).indexOf(element);
             this.value = element.getAttribute('data-value');
             this.setIndexActive();
+
+            if (this.livewireModel !== null) {
+                window.livewire.emitTo(this.componentName, 'updated', this.livewireModel, this.value);
+            }
         }
     },
     setIndexActive() {

@@ -7,12 +7,15 @@
             $disabled = $disabled ?? false;
             $inputName = $option['name'];
             $label = $option['name'];
+
+            $componentName = "cooperation.frontend.tool.quick-scan.form";
+            $livewireModel = "filledInAnswers.{$toolQuestion['id']}.{$option['short']}";
         @endphp
 
 
-        <div x-data="ratingSlider({{$default ?? 0}}, '{{$activeClass ?? 'bg-green'}}', {{$disabled}})"
+        <div x-data="ratingSlider({{$default ?? 0}}, '{{$activeClass ?? 'bg-green'}}', '{{$disabled}}', '{{$componentName}}', '{{$livewireModel}}')"
              x-ref="rating-slider-wrapper" class="w-inherit">
-            <input wire:model="filledInAnswers.{{$toolQuestion['id']}}.{{$option['short']}}" class="hidden" x-ref="rating-slider-input" x-model="value">
+            <input class="hidden" x-ref="rating-slider-input" x-model="value">
             <div class="flex justify-between mb-3">
                 <p>{{$label ?? ''}}</p>
                 <p class="font-bold" x-text="value"></p>

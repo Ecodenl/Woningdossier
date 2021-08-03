@@ -8,7 +8,7 @@
             >
             <label for="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}">
                             <span class="media-icon-wrapper">
-                                <i class="{{$toolQuestionValue['extra']['icon']}}"></i>
+                                <i class="{{$toolQuestionValue['extra']['icon'] ?? ''}}"></i>
                             </span>
                 <span class="checkmark"></span>
                 <span>{{$toolQuestionValue['name']}}</span>

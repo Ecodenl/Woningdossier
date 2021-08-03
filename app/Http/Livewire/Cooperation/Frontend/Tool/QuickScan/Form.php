@@ -46,7 +46,9 @@ class Form extends Component
         $this->step = $step;
         $this->subStep = $subStep;
 
-        $this->building = HoomdossierSession::getBuilding(true);
+        if ($this->subStep)
+
+            $this->building = HoomdossierSession::getBuilding(true);
         $this->toolQuestions = $subStep->toolQuestions;
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
@@ -150,6 +152,10 @@ class Form extends Component
         if (is_array($givenAnswer)) {
             $givenAnswer = json_encode($givenAnswer);
         }
+        $where = [
+            'building_id' => $this->building->id,
+            'tool_question_id' => $toolQuestion->id,
+        ];
         $data = [
             'building_id' => $this->building->id,
             'input_source_id' => $this->currentInputSource->id,
@@ -163,12 +169,19 @@ class Form extends Component
         }
 
 
+        $where['input_source_id'] = $this->currentInputSource->id;
         // we have to do this twice, once for the current input source and once for the master input source
         $toolQuestion
             ->toolQuestionAnswers()
-            ->create($data)
-            ->replicate(['input_source_id'])
-            ->fill(['input_source_id' => $this->masterInputSource->id])
+            ->allInputSources()
+            ->updateOrCreate($where, $data)
+            ->save();
+        $where['input_source_id'] = $this->masterInputSource->id;
+        $data['input_source_id'] = $this->masterInputSource->id;
+        $toolQuestion
+            ->toolQuestionAnswers()
+            ->allInputSources()
+            ->updateOrCreate($where, $data)
             ->save();
     }
 }

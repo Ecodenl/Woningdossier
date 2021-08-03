@@ -34392,6 +34392,13 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
     },
+    selectOptionByValue: function selectOptionByValue(value) {
+      var element = this.$refs['rating-slider'].querySelector("div[data-value=\"".concat(value, "\"]"));
+
+      if (element) {
+        this.selectOption(element);
+      }
+    },
     setIndexActive: function setIndexActive() {
       var _this = this;
 

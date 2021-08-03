@@ -49,6 +49,12 @@ export default (defaultValue = 0, activeClass = 'bg-green', disabled = false, co
             }
         }
     },
+    selectOptionByValue(value) {
+        let element = this.$refs['rating-slider'].querySelector(`div[data-value="${value}"]`);
+        if (element) {
+            this.selectOption(element);
+        }
+    },
     setIndexActive() {
         this.setAllGray();
         let parent = this.$refs['rating-slider'];

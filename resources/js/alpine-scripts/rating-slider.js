@@ -1,14 +1,13 @@
 export default (defaultValue = 0, activeClass = 'bg-green', disabled = false, componentName = null, livewireModel = null) => ({
     index: -1,
     value: defaultValue,
-    inactiveClass: 'bg-green',
+    inactiveClass: 'bg-gray',
     activeClass: activeClass,
     disabled: disabled,
     livewireModel: livewireModel,
     componentName: componentName,
 
     init() {
-        console.log(this.livewireModel);
         // Ensure the slider gets updated with the default value
         if (this.value > 0) {
             let element = this.$refs['rating-slider'].querySelector(`div[data-value="${this.value}"]`);
@@ -48,6 +47,12 @@ export default (defaultValue = 0, activeClass = 'bg-green', disabled = false, co
             if (this.livewireModel !== null) {
                 window.livewire.emitTo(this.componentName, 'updated', this.livewireModel, this.value);
             }
+        }
+    },
+    selectOptionByValue(value) {
+        let element = this.$refs['rating-slider'].querySelector(`div[data-value="${value}"]`);
+        if (element) {
+            this.selectOption(element);
         }
     },
     setIndexActive() {

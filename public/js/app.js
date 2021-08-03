@@ -34343,14 +34343,13 @@ __webpack_require__.r(__webpack_exports__);
   return {
     index: -1,
     value: defaultValue,
-    inactiveClass: 'bg-green',
+    inactiveClass: 'bg-gray',
     activeClass: activeClass,
     disabled: disabled,
     livewireModel: livewireModel,
     componentName: componentName,
     init: function init() {
-      console.log(this.livewireModel); // Ensure the slider gets updated with the default value
-
+      // Ensure the slider gets updated with the default value
       if (this.value > 0) {
         var element = this.$refs['rating-slider'].querySelector("div[data-value=\"".concat(this.value, "\"]"));
 

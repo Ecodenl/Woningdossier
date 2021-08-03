@@ -45,7 +45,7 @@ class AddQuestionsToDatabase extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Adds all questions to the database';
 
     /**
      * Create a new command instance.
@@ -1044,13 +1044,21 @@ class AddQuestionsToDatabase extends Command
                     $orderForSubStepToolQuestions = 0;
                     foreach ($subQuestionData['questions'] as $questionData) {
                         // create the question itself
+
+                        // Translation can be a key or text. We compare the results, because if it's a key, then the
+                        // result will be different
+                        $translation = $questionData['translation'];
+                        $name = __($translation . '.title');
+                        $name = $name === $translation . '.title' ? $translation : $name;
+                        $help = __($questionData['translation'] . '.help');
+                        $help = $help === $translation . '.help' ? $translation : $help;
+
                         $questionData['name'] = [
-                            'nl' => __($questionData['translation'] . '.title'),
+                            'nl' => $name,
                         ];
                         $questionData['help_text'] = [
-                            'nl' => __($questionData['translation'] . '.help'),
+                            'nl' => $help,
                         ];
-
                         // when the short is not set, we will use the column name as this describes it clearly
                         if (!isset($questionData['short'])) {
                             $questionData['short'] = last(explode('.', $questionData['save_in']));

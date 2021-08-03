@@ -11,6 +11,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -48,6 +49,18 @@ class AppServiceProvider extends ServiceProvider
 
         Builder::macro('whereLike', function (string $attribute, string $searchTerm) {
             return $this->where($attribute, 'LIKE', "%{$searchTerm}%");
+        });
+
+        Collection::macro('addArrayOfWheres', function ($array, $method, $boolean) {
+            $this->whereNested(function ($query) use ($array, $method, $boolean) {
+                foreach ($array as $key => $value) {
+                    if (is_numeric($key) && is_array($value)) {
+                        $query->{$method}(...array_values($value));
+                    } else {
+                        $query->$method($key, '=', $value, $boolean);
+                    }
+                }
+            }, $boolean);
         });
 
         \Queue::before(function (JobProcessing $event) {

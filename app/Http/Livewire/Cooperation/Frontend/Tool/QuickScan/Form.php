@@ -6,13 +6,16 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Models\Question;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use App\Models\User;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use function Clue\StreamFilter\fun;
 
 class Form extends Component
 {
@@ -45,12 +48,33 @@ class Form extends Component
         // set default steps, the checks will come later on.
         $this->step = $step;
         $this->subStep = $subStep;
-
-        if ($this->subStep)
-
-            $this->building = HoomdossierSession::getBuilding(true);
-        $this->toolQuestions = $subStep->toolQuestions;
+        $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
+        if (!empty($this->subStep->conditions)) {
+            // we will collect the answers, this way we can query on the collection with the $conditions array.
+            $answers = collect();
+            $conditions = $this->subStep->conditions;
+            foreach ($conditions as $condition) {
+                $toolQuestion = ToolQuestion::findByShort($condition['column']);
+                // set the answers inside the collection
+                $answers->put($condition['column'], $this->building->getAnswer($this->masterInputSource, $toolQuestion));
+            }
+
+
+//            User::where()
+            foreach ($conditions as $condition) {
+                $answers = $answers->where($condition['column'], $condition['operator'], $condition['value']);
+            }
+
+
+            // if there is no match we should go to the next step.
+            if ($answers->isEmpty()) {
+            }
+        }
+
+        $this->toolQuestions = $subStep->toolQuestions;
+
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
         $this->setFilledInAnswers();
@@ -165,7 +189,7 @@ class Form extends Component
         if ($toolQuestion->toolQuestionCustomValues()->exists()) {
             // if so, the given answer contains a short.
             $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($givenAnswer);
-            $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
+//            $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
         }
 
 

@@ -2,33 +2,7 @@
 
 @section('header')
     <div class="w-full">
-        {{-- Nav bar --}}
-        <div class="grid grid-flow-row grid-cols-3 items-center w-full bg-white h-12 px-5 xl:px-20 relative z-40 shadow-lg">
-            <div>
-                <i class="icon-hoomdossier"></i>
-            </div>
-            <div>
-                {{-- White space --}}
-            </div>
-            <div class="flex flex-row justify-end space-x-4">
-                <p>
-                    <a href="{{ route('cooperation.home') }}">
-                        Start
-                    </a>
-                </p>
-                <p>
-                    <a class="text-blue">
-                        Basisadvies
-                    </a>
-                </p>
-                {{-- I assume this will be chat-alert only if there are actual messages --}}
-                <i class="icon-md icon-chat-alert"></i>
-                <div class="flex items-center">
-                    <i class="icon-md icon-account-circle mr-1"></i>
-                    <i class="icon-xs icon-arrow-down"></i>
-                </div>
-            </div>
-        </div>
+        @include('cooperation.frontend.layouts.parts.navigation')
         {{-- Step progress --}}
         <div class="flex items-center justify-between w-full bg-blue-100 border-b-1 h-16 px-5 xl:px-20 relative z-30">
             <div class=" flex items-center h-full">

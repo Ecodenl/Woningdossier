@@ -11,7 +11,7 @@
     <p class="w-1/12 flex justify-end pr-5">{{$min}}{!! $unit !!}</p>
     <div class="w-10/12 relative flex justify-center items-center">
         <input type="range" min="{{$min}}" max="{{$max}}" step="{{$step}}" class="slider" autocomplete="off"
-               wire:model="filledInAnswers.{{$toolQuestion['id']}}"
+               wire:model.lazy="filledInAnswers.{{$toolQuestion['id']}}"
                x-ref="slider" x-on:input="updateVisuals()" x-model="value"
                x-on:livewire:load.window="updateVisuals({{ $filledInAnswers[$toolQuestion['id']] ?? $default }})"
                x-on:element:updated.window="if ($event.detail.field === $el.getAttribute('wire:model')) {updateVisuals(); value = $event.detail.value;}">

@@ -36,6 +36,27 @@ p a {
     @apply focus:bg-orange focus:bg-opacity-80 focus:text-white focus:shadow-center-orange-25;
     @apply active:bg-orange active:bg-opacity-100 active:text-white focus:shadow-center-orange-50;
 }
+.btn-yellow {
+    @apply bg-yellow bg-opacity-25 text-yellow;
+
+    @apply hover:bg-yellow hover:bg-opacity-80 hover:text-white hover:shadow-center-yellow-25;
+    @apply focus:bg-yellow focus:bg-opacity-80 focus:text-white focus:shadow-center-yellow-25;
+    @apply active:bg-yellow active:bg-opacity-100 active:text-white focus:shadow-center-yellow-50;
+}
+.btn-green {
+    @apply bg-green bg-opacity-25 text-green;
+
+    @apply hover:bg-green hover:bg-opacity-80 hover:text-white hover:shadow-center-green-25;
+    @apply focus:bg-green focus:bg-opacity-80 focus:text-white focus:shadow-center-green-25;
+    @apply active:bg-green active:bg-opacity-100 active:text-white focus:shadow-center-green-50;
+}
+.btn-red {
+    @apply bg-red bg-opacity-25 text-red;
+
+    @apply hover:bg-red hover:bg-opacity-80 hover:text-white hover:shadow-center-red-25;
+    @apply focus:bg-red focus:bg-opacity-80 focus:text-white focus:shadow-center-red-25;
+    @apply active:bg-red active:bg-opacity-100 active:text-white focus:shadow-center-red-50;
+}
 .btn-outline-purple {
     @apply border border-solid border-purple border-opacity-25 border bg-white text-purple;
 
@@ -49,4 +70,25 @@ p a {
     @apply hover:border-opacity-75 hover:shadow-center-orange-25;
     @apply focus:border-opacity-75 focus:shadow-center-orange-25;
     @apply active:border-opacity-100 focus:shadow-center-orange-50;
+}
+.btn-outline-yellow {
+    @apply border border-solid border-yellow border-opacity-25 border bg-white text-yellow;
+
+    @apply hover:border-opacity-75 hover:shadow-center-yellow-25;
+    @apply focus:border-opacity-75 focus:shadow-center-yellow-25;
+    @apply active:border-opacity-100 focus:shadow-center-yellow-50;
+}
+.btn-outline-green {
+    @apply border border-solid border-green border-opacity-25 border bg-white text-green;
+
+    @apply hover:border-opacity-75 hover:shadow-center-green-25;
+    @apply focus:border-opacity-75 focus:shadow-center-green-25;
+    @apply active:border-opacity-100 focus:shadow-center-green-50;
+}
+.btn-outline-red {
+    @apply border border-solid border-red border-opacity-25 border bg-white text-red;
+
+    @apply hover:border-opacity-75 hover:shadow-center-red-25;
+    @apply focus:border-opacity-75 focus:shadow-center-red-25;
+    @apply active:border-opacity-100 focus:shadow-center-red-50;
 }

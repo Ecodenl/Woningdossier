@@ -7,15 +7,13 @@
     </select>
 
     <div class="input-group">
-        <input class="source-select-input" readonly x-ref="source-select-input" x-model="text"
+        <input class="source-select-input select-none" readonly x-ref="source-select-input" x-model="text"
                x-bind:class="'source-' + value" x-on:click="toggle()" x-on:click.outside="open = false">
-        <i x-show="open == false"
-           class="icon-xs icon-arrow-down"></i>
-        <i x-show="open == true"
-           class="icon-xs icon-arrow-up"></i>
+        <i x-show="open == false" class="icon-xs icon-arrow-down"></i>
+        <i x-cloak x-show="open == true" class="icon-xs icon-arrow-up"></i>
     </div>
 
-    <div x-ref="source-select-options" class="source-select-dropdown" x-show="open">
+    <div x-cloak x-ref="source-select-options" class="source-select-dropdown" x-show="open">
         <span class="source-select-option source-resident" data-value="resident" x-on:click="changeOption($el)">
             @lang('cooperation/frontend/shared.input-sources.resident')
         </span>

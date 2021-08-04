@@ -71,6 +71,20 @@ module.exports = {
                 'center-lg-orange-75': '0 25px 15px -10px rgba(255,127,74,0.75)',
                 'center-lg-orange': '0 25px 15px -10px rgba(255,127,74,1)',
 
+                // Yellow
+                'center-yellow-25': '0 15px 15px -10px rgba(255,189,90,0.25)',
+                'center-yellow-50': '0 15px 15px -10px rgba(255,189,90,0.5)',
+                'center-yellow-75': '0 15px 15px -10px rgba(255,189,90,0.75)',
+                'center-yellow': '0 15px 15px -10px rgba(255,189,90,1)',
+                'center-md-yellow-25': '0 20px 15px -10px rgba(255,189,90,0.25)',
+                'center-md-yellow-50': '0 20px 15px -10px rgba(255,189,90,0.5)',
+                'center-md-yellow-75': '0 20px 15px -10px rgba(255,189,90,0.75)',
+                'center-md-yellow': '0 20px 15px -10px rgba(255,189,90,1)',
+                'center-lg-yellow-25': '0 25px 15px -10px rgba(255,189,90,0.25)',
+                'center-lg-yellow-50': '0 25px 15px -10px rgba(255,189,90,0.5)',
+                'center-lg-yellow-75': '0 25px 15px -10px rgba(255,189,90,0.75)',
+                'center-lg-yellow': '0 25px 15px -10px rgba(255,189,90,1)',
+                
                 // Green
                 'center-green-25': '0 15px 15px -10px rgba(44,169,130,0.25)',
                 'center-green-50': '0 15px 15px -10px rgba(44,169,130,0.5)',
@@ -84,6 +98,20 @@ module.exports = {
                 'center-lg-green-50': '0 25px 15px -10px rgba(44,169,130,0.5)',
                 'center-lg-green-75': '0 25px 15px -10px rgba(44,169,130,0.75)',
                 'center-lg-green': '0 25px 15px -10px rgba(44,169,130,1)',
+
+                // Red
+                'center-red-25': '0 15px 15px -10px rgba(227,20,64,0.25)',
+                'center-red-50': '0 15px 15px -10px rgba(227,20,64,0.5)',
+                'center-red-75': '0 15px 15px -10px rgba(227,20,64,0.75)',
+                'center-red': '0 15px 15px -10px rgba(227,20,64,1)',
+                'center-md-red-25': '0 20px 15px -10px rgba(227,20,64,0.25)',
+                'center-md-red-50': '0 20px 15px -10px rgba(227,20,64,0.5)',
+                'center-md-red-75': '0 20px 15px -10px rgba(227,20,64,0.75)',
+                'center-md-red': '0 20px 15px -10px rgba(227,20,64,1)',
+                'center-lg-red-25': '0 25px 15px -10px rgba(227,20,64,0.25)',
+                'center-lg-red-50': '0 25px 15px -10px rgba(227,20,64,0.5)',
+                'center-lg-red-75': '0 25px 15px -10px rgba(227,20,64,0.75)',
+                'center-lg-red': '0 25px 15px -10px rgba(227,20,64,1)',
             },
             width: {
                 ...fractionTen,

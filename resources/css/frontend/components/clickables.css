@@ -12,7 +12,7 @@ p a {
 }
 
 .clickable {
-    @apply transition;
+    @apply cursor-pointer transition;
 
     @apply hover:opacity-60;
     @apply focus:opacity-60;

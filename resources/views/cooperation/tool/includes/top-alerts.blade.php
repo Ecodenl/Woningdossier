@@ -60,10 +60,10 @@
                         </span>
                     </div>
                     <div class="w-full md:w-1/2 text-right space-x-2">
-                        <a onclick="$('#copy-input-{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}').submit()" class="btn btn-sm btn-green">
+                        <a onclick="$('#copy-input-{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}').submit()" class="btn btn-sm btn-green  mt-1">
                             @lang('my-account.import-center.index.copy-data', ['input_source_name' => \App\Models\InputSource::findByShort(\App\Helpers\HoomdossierSession::getCompareInputSourceShort())->name])
                         </a>
-                        <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => \App\Helpers\HoomdossierSession::getInputSource(true)->short])}}" class="btn btn-sm btn-green">
+                        <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => \App\Helpers\HoomdossierSession::getInputSource(true)->short])}}" class="btn btn-sm btn-green  mt-1">
                             Stop vergelijking
                         </a>
                     </div>
@@ -97,10 +97,10 @@
                             </span>
                         </div>
                         <div class="w-full md:w-1/2 text-right space-x-2">
-                            <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => $toolSetting->changedInputSource->short])}}" class="btn btn-sm btn-green">
+                            <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => $toolSetting->changedInputSource->short])}}" class="btn btn-sm btn-green  mt-1">
                                 @lang('my-account.import-center.index.show-differences')
                             </a>
-                            <a onclick="$('#copy-input-{{$toolSetting->id}}').submit()" class="btn btn-sm btn-green">
+                            <a onclick="$('#copy-input-{{$toolSetting->id}}').submit()" class="btn btn-sm btn-green mt-1">
                                 @lang('my-account.import-center.index.copy-data', ['input_source_name' => $toolSetting->changedInputSource->name])
                             </a>
                         </div>

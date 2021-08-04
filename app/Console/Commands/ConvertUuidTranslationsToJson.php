@@ -49,7 +49,7 @@ class ConvertUuidTranslationsToJson extends Command
             'building_heatings' => 'name',
             'building_heating_applications' => 'name',
             'building_types' => 'name',
-            'comfort_level_tap_water' => 'name',
+            'comfort_level_tap_waters' => 'name',
             'crawlspace_accesses' => 'name',
             'elements' => [
                 'name',

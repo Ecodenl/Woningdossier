@@ -32,7 +32,6 @@ class ChecksConditionsForSubSteps
                 $answers->push([$condition['column'] =>  $building->getAnswer($masterInputSource, $toolQuestion)]);
             }
 
-
             // first check if the user actually gave an answer, which is mandatory but better to double check
             if ($answers->filter()->isNotEmpty()) {
                 foreach ($conditions as $condition) {
@@ -41,6 +40,7 @@ class ChecksConditionsForSubSteps
 
                 // if there is no match we should go to the next step.
                 if ($answers->isEmpty()) {
+                    // this indeed only covers the next step
                     return redirect()->to(QuickScanHelper::getNextStepUrl($request->route('step'), $subStep));
                 }
             }

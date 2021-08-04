@@ -19,27 +19,6 @@
     @livewireStyles
     @stack('css')
 
-    @livewireScripts
-    {{--<script src="https://cdn.jsdelivr.net/gh/livewire/turbolinks@v0.1.x/dist/livewire-turbolinks.js" data-turbolinks-eval="true"></script>--}}
-    {{-- Ensure Livewire is above app.js -> Alpine is loaded in app.js and must be loaded after Livewire --}}
-    <script src="{{ asset('js/app.js') }}" defer></script>
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Bind simple function to remove errors when clicked
-            let formErrors = document.getElementsByClassName('form-error');
-
-            for (let i = 0; i < formErrors.length; i++) {
-                formErrors[i].addEventListener('click', function () {
-                    this.classList.remove('form-error');
-                    this.querySelector('.form-error-label').remove();
-                }, {once: true});
-            }
-        })
-    </script>
-    @stack('js')
-
 </head>
 <body>
 
@@ -55,6 +34,26 @@
     @yield('main')
 </main>
 
+@livewireScripts
+{{--<script src="https://cdn.jsdelivr.net/gh/livewire/turbolinks@v0.1.x/dist/livewire-turbolinks.js" data-turbolinks-eval="true"></script>--}}
+{{-- Ensure Livewire is above app.js -> Alpine is loaded in app.js and must be loaded after Livewire --}}
+<script src="{{ asset('js/app.js') }}" defer></script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Bind simple function to remove errors when clicked
+        let formErrors = document.getElementsByClassName('form-error');
+
+        for (let i = 0; i < formErrors.length; i++) {
+            formErrors[i].addEventListener('click', function () {
+                this.classList.remove('form-error');
+                this.querySelector('.form-error-label').remove();
+            }, {once: true});
+        }
+    })
+</script>
+@stack('js')
 </body>
 
 </html>

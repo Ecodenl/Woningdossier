@@ -21,7 +21,10 @@ return [
     | method.
     |
     */
-    'supported_locales' => ['nl'],
+    'supported_locales' => [
+        'nl',
+//        'en',
+    ],
 
     'cache' => [
         'prefix' => env('CACHE_PREFIX', 'hoomdossier_'),

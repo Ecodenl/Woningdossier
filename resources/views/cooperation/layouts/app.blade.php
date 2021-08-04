@@ -21,6 +21,10 @@
         .add-space {
             padding: 0 10px 0 10px;
         }
+
+        [x-cloak] {
+            display: none;
+        }
     </style>
     @stack('css')
 </head>

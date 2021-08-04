@@ -17,6 +17,11 @@
     <link rel="stylesheet" href="{{asset('css/frontend/app.css')}}">
 
     @livewireStyles
+    <style>
+        [x-cloak] {
+            display: none;
+        }
+    </style>
     @stack('css')
 
 </head>
@@ -38,7 +43,6 @@
 {{--<script src="https://cdn.jsdelivr.net/gh/livewire/turbolinks@v0.1.x/dist/livewire-turbolinks.js" data-turbolinks-eval="true"></script>--}}
 {{-- Ensure Livewire is above app.js -> Alpine is loaded in app.js and must be loaded after Livewire --}}
 <script src="{{ asset('js/app.js') }}" defer></script>
-
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {

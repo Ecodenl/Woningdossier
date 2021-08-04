@@ -2,7 +2,7 @@
 
 @section('header')
     <div class="w-full">
-        @include('cooperation.frontend.layouts.parts.navigation')
+        @include('cooperation.frontend.layouts.parts.navbar')
         @if(\App\Helpers\Blade\RouteLogic::inQuickScanTool(\Illuminate\Support\Facades\Route::currentRouteName()))
             {{-- Step progress --}}
             <div class="flex items-center justify-between w-full bg-blue-100 border-b-1 h-16 px-5 xl:px-20 relative z-30">

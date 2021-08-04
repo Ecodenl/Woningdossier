@@ -61,3 +61,20 @@
     @apply w-full lg:w-17/20 xl:w-3/4 h-full flex flex-wrap flex-col justify-center;
 }
 
+/* Dropdowns */
+.dropdown-wrapper {
+    @apply relative;
+}
+
+.dropdown-wrapper .dropdown-toggle {
+    @apply cursor-pointer;
+}
+
+.dropdown-wrapper .dropdown {
+    @apply w-48 absolute rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm bg-white z-50 top-full filter drop-shadow-xl divide-y divide-blue-500 py-2;
+    min-height: 3rem; /* h-12, height of 1 option. Displays better when no options are available */
+}
+
+.dropdown-wrapper .dropdown > * {
+    @apply py-1 px-3
+}

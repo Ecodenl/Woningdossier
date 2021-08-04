@@ -29,7 +29,7 @@ class ChecksConditionsForSubSteps
             foreach ($conditions as $condition) {
                 $toolQuestion = ToolQuestion::findByShort($condition['column']);
                 // set the answers inside the collection
-                $answers->put($condition['column'], $building->getAnswer($masterInputSource, $toolQuestion));
+                $answers->push([$condition['column'] =>  $building->getAnswer($masterInputSource, $toolQuestion)]);
             }
 
 

@@ -8,7 +8,7 @@
 
     <form  method="POST" id="main-form"
           action="{{ route('cooperation.tool.general-data.interest.store') }}" autocomplete="off">
-        {{ csrf_field() }}
+        @csrf
         <div class="row">
             @for($i = 0; $i < $stepCount; $i++)
                 <?php

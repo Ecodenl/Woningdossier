@@ -34522,11 +34522,11 @@ __webpack_require__.r(__webpack_exports__);
     initialized: false,
     value: 0,
     init: function init() {
-      this.value = this.$refs['slider'].value;
       this.updateVisuals();
       this.initialized = true;
     },
     updateVisuals: function updateVisuals() {
+      this.value = this.$refs['slider'].value;
       var currentPosition = this.getThumbPosition();
       this.$refs['slider-bubble'].style.left = currentPosition + 'px';
       this.$refs['slider'].style.background = "linear-gradient(90deg, var(--slider-before) ".concat(currentPosition, "px, var(--slider-after) ").concat(currentPosition, "px)");

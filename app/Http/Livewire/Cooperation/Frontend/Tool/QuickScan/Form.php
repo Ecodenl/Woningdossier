@@ -51,7 +51,7 @@ class Form extends Component
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
-        $this->setFilledInAnswers();
+        $this->setFilledInAnswers(); $this->filledInAnswers[9] = 12;
     }
 
     private function setFilledInAnswers()

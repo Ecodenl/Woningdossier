@@ -50,10 +50,9 @@ class RoofTypesTableSeeder extends Seeder
                 'short' => 'straw-roof',
             ],
             [
-                'name' => 'Geen dak',
+                'name' => 'Niet van toepassing',
                 'order' => 6,
                 // the old one
-                'calculate_value' => 5,
                 'new_calculate_value' => 100,
                 'short' => 'none',
             ],
@@ -62,7 +61,7 @@ class RoofTypesTableSeeder extends Seeder
         foreach ($roofTypes as $roofType) {
             DB::table('roof_types')->updateOrInsert(
                 [
-                    'calculate_value' => $roofType['calculate_value'],
+                    'short' => $roofType['short'],
                 ],
                 [
                     'calculate_value' => $roofType['new_calculate_value'] ?? $roofType['calculate_value'],

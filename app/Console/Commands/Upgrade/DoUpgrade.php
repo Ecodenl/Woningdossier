@@ -64,6 +64,7 @@ class DoUpgrade extends Command
                 \SubStepTemplatesTableSeeder::class,
                 \InputSourcesTableSeeder::class,
                 \RoofTypesTableSeeder::class,
+                \EnergyLabelsTableSeeder::class,
             ];
 
             foreach ($seeders as $seeder) {
@@ -80,7 +81,7 @@ class DoUpgrade extends Command
                 Artisan::call($command);
             }
 
-            if ($this->confirm('Should we clear the cache ?')) {
+            if ($this->confirm('Should we clear the cache ?', 'yes')) {
                 $this->info('Cache cleared');
             }
         } else {

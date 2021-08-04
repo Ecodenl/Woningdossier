@@ -7,6 +7,7 @@ use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Models\BuildingHeating;
 use App\Models\BuildingHeatingApplication;
 use App\Models\BuildingType;
+use App\Models\ComfortLevelTapWater;
 use App\Models\Element;
 use App\Models\EnergyLabel;
 use App\Models\FacadeDamagedPaintwork;
@@ -83,6 +84,7 @@ class AddQuestionsToDatabase extends Command
         $surfaces = FacadeSurface::orderBy('order')->get();
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
         $energyLabels = EnergyLabel::all();
+        $comfortLevelsTapWater = ComfortLevelTapWater::where('calculate_value', '<=', 3)->get();
 
         // Insulated glazing
         $insulatedGlazings = InsulatingGlazing::all();
@@ -294,6 +296,9 @@ class AddQuestionsToDatabase extends Command
                                     'G' => [
                                         'icon' => 'icon-label-g',
                                     ],
+                                    '?' => [
+                                        'icon' => 'icon-label-unknown',
+                                    ],
                                 ],
                             ],
                         ],
@@ -370,8 +375,8 @@ class AddQuestionsToDatabase extends Command
                                         'icon' => 'icon-persons-seven',
                                     ],
                                 ],
-                                0 => [
-                                    'name' => 'Meer dan zeven',
+                                8 => [
+                                    'name' => 'Acht',
                                     'extra' => [
                                         'icon' => 'icon-persons-more-than-seven',
                                     ],
@@ -415,7 +420,8 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:building_heatings,id'],
                             'save_in' => 'user_energy_habits.heating_first_floor',
-                            'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.heating-first-floor',
+                            // was cooperation/tool/general-data/usage.index.heating-habits.heating-first-floor
+                            'translation' => 'Wat is de situatie op de eerste verdieping',
                             'tool_question_type_id' => $radioType->id,
                             'tool_question_values' => $heatings,
                             'extra' => [
@@ -429,21 +435,29 @@ class AddQuestionsToDatabase extends Command
                             ],
                         ],
                         [
-                            'validation' => ['required', 'exists:building_heatings,id'],
-                            'save_in' => 'user_energy_habits.heating_second_floor',
-                            'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.heating-second-floor',
+                            'validation' => ['required', 'exists:comfort_level_tapwaters,id'],
+                            'save_in' => 'user_energy_habits.water_comfort_id',
+                            // was __('cooperation/tool/general-data/usage.index.water-gas.water-comfort.title'),
+                            'translation' => 'Wat is het comfortniveau voor het gebruik van warm tapwater',
                             'tool_question_type_id' => $radioType->id,
-                            'tool_question_values' => $heatings,
-                            'extra' => [
-                                'column' => 'calculate_value',
-                                'data' => [
-                                    2 => [],
-                                    3 => [],
-                                    4 => [],
-                                    5 => [],
-                                ],
-                            ],
+                            'tool_question_values' => $comfortLevelsTapWater,
                         ],
+//                        [
+//                            'validation' => ['required', 'exists:building_heatings,id'],
+//                            'save_in' => 'user_energy_habits.heating_second_floor',
+//                            'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.heating-second-floor',
+//                            'tool_question_type_id' => $radioType->id,
+//                            'tool_question_values' => $heatings,
+//                            'extra' => [
+//                                'column' => 'calculate_value',
+//                                'data' => [
+//                                    2 => [],
+//                                    3 => [],
+//                                    4 => [],
+//                                    5 => [],
+//                                ],
+//                            ],
+//                        ],
                     ]
                 ],
                 'Gas en elektra gebruik' => [
@@ -1103,16 +1117,20 @@ class AddQuestionsToDatabase extends Command
                         }
 
                         if (isset($questionData['tool_question_values'])) {
-                            $extra = $questionData['extra'];
+                            $extra = $questionData['extra'] ?? [];
+
 
                             foreach ($questionData['tool_question_values'] as $toolQuestionValueOrder => $toolQuestionValue) {
+                                if (isset($extra['data'])) {
+                                    $extra['data'][$toolQuestionValue->{$extra['column']}];
+                                }
                                 $toolQuestion->toolQuestionValuables()->create([
                                     'order' => $toolQuestionValueOrder,
                                     'show' => true,
                                     'tool_question_valuable_type' => get_class($toolQuestionValue),
                                     'tool_question_valuable_id' => $toolQuestionValue->id,
                                     // We grab the extra data by the set column (e.g. calculate_value)
-                                    'extra' => $extra['data'][$toolQuestionValue->{$extra['column']}]
+                                    'extra' => $extra
                                 ]);
                             }
                         }

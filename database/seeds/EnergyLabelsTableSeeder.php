@@ -40,10 +40,15 @@ class EnergyLabelsTableSeeder extends Seeder
                 'name' => 'G',
                 'country_code' => 'nl',
             ],
+            [
+                'name' => '?',
+                'country_code' => 'nl'
+            ],
         ];
 
         foreach ($energyLabels as $energyLabel) {
-            \DB::table('energy_labels')->insert(
+            \DB::table('energy_labels')->updateOrInsert(
+                ['name' => $energyLabel['name']],
                 $energyLabel
             );
         }

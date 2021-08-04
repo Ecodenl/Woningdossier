@@ -38,4 +38,10 @@ return [
 
     'privacy-policy' => 'Privacybeleid',
     'terms-and-conditions' => 'Algemene voorwaarden',
+
+    'language' => 'Taal',
+    'languages' => [
+        'nl' => 'Nederlands',
+        'en' => 'Engels',
+    ],
 ];

@@ -20,12 +20,12 @@
         @endauth
         @if(App::environment() == 'local') {{-- currently only for local development --}}
             @if(count(config('hoomdossier.supported_locales')) > 1)
-                @component('cooperation.frontend.layouts.components.dropdown', ['label' => __('cooperation/frontend/layouts.navbar.language')])
+                @component('cooperation.frontend.layouts.components.dropdown', ['label' => __('default.language')])
                     @foreach(config('hoomdossier.supported_locales') as $locale)
                         @if(app()->getLocale() != $locale)
                             <li>
                                 <a href="{{ route('cooperation.switch-language', ['cooperation' => $cooperation, 'locale' => $locale]) }}">
-                                    @lang('woningdossier.navbar.languages.'. $locale)
+                                    @lang('default.languages.'. $locale)
                                 </a>
                             </li>
                         @endif
@@ -62,11 +62,60 @@
         @endif
 
         @if (!\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
+            @if(\App\Helpers\Hoomdossier::user()->getRoleNames()->count() > 1 && \App\Helpers\HoomdossierSession::hasRole())
+                @component('cooperation.frontend.layouts.components.dropdown', ['label' => __('cooperation/frontend/layouts.navbar.current-role') . \Spatie\Permission\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->human_readable_name])
+                    @foreach(\App\Helpers\Hoomdossier::user()->roles()->orderBy('level', 'DESC')->get() as $role)
+                        <li>
+                            <a href="{{ route('cooperation.admin.switch-role', ['role' => $role->name]) }}">
+                                {{ $role->human_readable_name }}
+                            </a>
+                        </li>
+                    @endforeach
+                @endcomponent
+            @endif
+
             @livewire('cooperation.frontend.layouts.parts.messages')
-            <div class="flex items-center">
-                <i class="icon-md icon-account-circle mr-1"></i>
-                <i class="icon-xs icon-arrow-down"></i>
-            </div>
+
+            @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-account-circle"></i>'])
+                <li>
+                    <a href="{{ route('cooperation.my-account.index', ['cooperation' => $cooperation]) }}">
+                        @lang('woningdossier.cooperation.navbar.my-account')
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('cooperation.privacy.index', ['cooperation' => $cooperation]) }}">
+                        @lang('woningdossier.cooperation.navbar.privacy')
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('cooperation.disclaimer.index', ['cooperation' => $cooperation]) }}">
+                        @lang('woningdossier.cooperation.navbar.disclaimer')
+                    </a>
+                </li>
+{{--                <li>--}}
+{{--                    <a href="{{ route('cooperation.my-account.cooperations.index', ['cooperation' => $cooperation->slug]) }}">--}}
+{{--                        @lang('my-account.cooperations.form.header')--}}
+{{--                    </a>--}}
+{{--                </li>--}}
+                <li>
+                    <a href="{{ route('cooperation.auth.logout', ['cooperation' => $cooperation]) }}"
+                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        @lang('auth.logout.form.header')
+                    </a>
+
+                    <form id="logout-form" method="POST" style="display: none;"
+                          action="{{ route('cooperation.auth.logout', ['cooperation' => $cooperation]) }}">
+                        @csrf
+                    </form>
+                </li>
+                <li>
+                    <span class="float-right" style="padding-right:.5em;line-height:100%;">
+                        <small>
+                            v{{ config('app.version') }}@if(App::environment() != 'production') - {{ App::environment() }}@endif
+                        </small>
+                    </span>
+                </li>
+            @endcomponent
         @endif
     </div>
 </div>

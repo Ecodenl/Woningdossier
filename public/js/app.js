@@ -34167,10 +34167,34 @@ __webpack_require__.r(__webpack_exports__);
     toggle: function toggle() {
       this.$event.preventDefault();
       this.open = !this.open;
+
+      if (this.open == true) {
+        this.updatePosition();
+      }
     },
     close: function close() {
       this.$event.preventDefault();
       this.open = false;
+    },
+    updatePosition: function updatePosition() {
+      var _this = this;
+
+      var tries = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      var dropdown = this.$refs['dropdown'];
+
+      if (tries <= 5) {
+        if (getComputedStyle(dropdown).display === 'none') {
+          setTimeout(function () {
+            return _this.updatePosition(++tries);
+          }, 25);
+        } else {
+          var rect = dropdown.getBoundingClientRect();
+
+          if (rect.x + rect.width > window.innerWidth) {
+            dropdown.style.right = 0;
+          }
+        }
+      }
     }
   };
 });

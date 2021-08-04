@@ -42,8 +42,7 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
         // TODO END
 
         Route::get('/', function () {
-            return redirect()->route('cooperation.home');
-//            return view('cooperation.welcome');
+            return view('cooperation.welcome');
         })->name('welcome');
 
         Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');

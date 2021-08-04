@@ -44,7 +44,9 @@ class DoUpgrade extends Command
             $this->info('<fg=yellow>May the force be with you...</>');
 
             if (app()->environment() == 'local') {
+                $this->info('Rolling back migrations..');
                 Artisan::call('migrate:rollback');
+                $this->info('Running migrations..');
                 Artisan::call('migrate');
             }
             $beforeCommands = [
@@ -76,6 +78,10 @@ class DoUpgrade extends Command
             foreach ($afterCommands as $command) {
                 $this->info("Running $command");
                 Artisan::call($command);
+            }
+
+            if ($this->confirm('Should we clear the cache ?')) {
+                $this->info('Cache cleared');
             }
         } else {
             $this->info('K bye');

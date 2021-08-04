@@ -73,8 +73,7 @@
                         </div>
                     </div>
 
-                    {{--@foreach(['flat', 'pitched'] as $roofCat)--}}
-                    @foreach($roofTypes->where('calculate_value', '<', 5) as $roofType)
+                    @foreach($roofTypes->whereIn('short', ['flat', 'pitched']) as $roofType)
 
                         <?php
                         $roofCat = $roofType->short;

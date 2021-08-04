@@ -38,7 +38,7 @@
                 not-available
             @endif
                 ">
-            <a href="{{ route('cooperation.tool.' . $step->slug . '.index', ['cooperation' => $cooperation]) }}">
+            <a href="{{ route('cooperation.tool.' . $step->short . '.index', ['cooperation' => $cooperation]) }}">
                 <img src="{{ asset('images/icons/' . $step->slug . '.png') }}"
                      title="{{$titleForIcon}}"
                      alt="{{ $step->name }}" class="img-circle"/>

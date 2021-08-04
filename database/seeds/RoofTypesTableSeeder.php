@@ -54,7 +54,7 @@ class RoofTypesTableSeeder extends Seeder
                 'order' => 6,
                 // the old one
                 'calculate_value' => 5,
-                'new_calculate_value' => 5,
+                'new_calculate_value' => 100,
                 'short' => 'none',
             ],
         ];

@@ -188,12 +188,17 @@ class StepsTableSeeder extends Seeder
                 'order' => $step['order'],
             ];
 
+            if (isset($step['parent_short'])) {
+                $parent = \App\Models\Step::whereShort($step['parent_short'])->first();
+                $insertStepData['parent_id'] = $parent->id;
+            }
+
             DB::table('steps')->updateOrInsert(['short' => $step['short']], $insertStepData);
         }
 
         $allCooperations = \App\Models\Cooperation::all();
 
-        $steps = \App\Models\Step::all();
+        $steps = \App\Models\Step::whereNotIn('short', ['building-data', 'usage-quick-scan', 'living-requirements', 'residential-status'])->get();
 
         foreach ($allCooperations as $cooperation) {
             foreach ($steps as $step) {

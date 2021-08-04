@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\ToolQuestionAnswer;
+use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +12,7 @@ use Illuminate\Support\Collection;
 
 class ToolQuestion extends Model
 {
-    use HasTranslations;
+    use HasTranslations, HasShortTrait;
 
     protected $translatable = [
         'name',

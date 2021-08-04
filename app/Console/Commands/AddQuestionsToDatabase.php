@@ -195,11 +195,24 @@ class AddQuestionsToDatabase extends Command
                             'extra' => [
                                 'column' => 'short',
                                 'data' => [
+                                    'gabled-roof'  => [
+                                        'icon' => 'icon-pointed-roof'
+                                    ],
                                     'pitched' => [
                                         'icon' => 'icon-pitched-roof',
                                     ],
                                     'flat' => [
                                         'icon' => 'icon-flat-roof',
+                                    ],
+                                    'flat-pitched-roof'  => [
+                                        'icon' => 'icon-flat-pitched-roof'
+                                    ],
+                                    'rounded-roof' => [
+                                        'icon' => 'icon-rounded-roof'
+                                    ],
+                                    'straw-roof' => [
+                                        // todo: add rieten dak
+                                        'icon' => 'icon-pointed-roof'
                                     ],
                                     'none' => [
                                         'icon' => 'icon-other',
@@ -209,7 +222,6 @@ class AddQuestionsToDatabase extends Command
                         ]
                     ]
                 ],
-                // TODO: Er zijn meer opties voor daken in het nieuwe desing dan de opties hierboven
                 'Bouwjaar en oppervlak' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [

@@ -43,6 +43,12 @@ class DoUpgrade extends Command
         if ($this->confirm('This will 100% mess up your environment when ran unintentionally, do you want to continue')) {
             $this->info('<fg=yellow>May the force be with you...</>');
 
+            if (app()->environment() == 'local') {
+                $this->info('Rolling back migrations..');
+                Artisan::call('migrate:rollback');
+                $this->info('Running migrations..');
+                Artisan::call('migrate');
+            }
             $beforeCommands = [
                 ConvertUuidTranslationsToJson::class,
             ];
@@ -57,7 +63,7 @@ class DoUpgrade extends Command
                 \ToolQuestionTypesTableSeeder::class,
                 \SubStepTemplatesTableSeeder::class,
                 \InputSourcesTableSeeder::class,
-
+                \RoofTypesTableSeeder::class,
             ];
 
             foreach ($seeders as $seeder) {
@@ -72,6 +78,10 @@ class DoUpgrade extends Command
             foreach ($afterCommands as $command) {
                 $this->info("Running $command");
                 Artisan::call($command);
+            }
+
+            if ($this->confirm('Should we clear the cache ?')) {
+                $this->info('Cache cleared');
             }
         } else {
             $this->info('K bye');

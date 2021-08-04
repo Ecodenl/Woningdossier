@@ -133160,6 +133160,8 @@ p {
 
 a {
   cursor: pointer;
+  font-size: 14px;
+  line-height: 24px;
   font-weight: 500;
   --tw-text-opacity: 1;
   color: rgba(17, 34, 200, var(--tw-text-opacity));
@@ -133169,8 +133171,6 @@ a {
   transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
-  line-height: 24px;
-  font-size: 14px;
 }
 
 a:hover {
@@ -133190,15 +133190,34 @@ p a {
   text-decoration: none;
 }
 
+.clickable {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.clickable:hover {
+  opacity: 0.6;
+}
+
+.clickable:focus {
+  opacity: 0.6;
+}
+
 /* Buttons */
 
 .btn {
+  display: inline-block;
   cursor: pointer;
   border-radius: 0.5rem;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+  font-size: 14px;
+  line-height: 24px;
   font-weight: 700;
   text-decoration: none;
   outline: 2px solid transparent;
@@ -133208,8 +133227,16 @@ p a {
   transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
-  line-height: 24px;
-  font-size: 14px;
+}
+
+.btn-sm {
+  padding: 0.5rem;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.btn-solid {
+  --tw-bg-opacity: 1;
 }
 
 .btn:disabled {

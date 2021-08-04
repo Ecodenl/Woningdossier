@@ -1,8 +1,6 @@
 /* Hyperlink */
 a {
-    @apply text-blue-900 underline font-medium cursor-pointer transition;
-    line-height: 24px;
-    font-size: 14px;
+    @apply text-blue-900 underline font-medium cursor-pointer transition text-sm;
 
     @apply hover:opacity-60;
     @apply focus:opacity-60;
@@ -13,11 +11,24 @@ p a {
     @apply text-purple no-underline font-medium;
 }
 
+.clickable {
+    @apply transition;
+
+    @apply hover:opacity-60;
+    @apply focus:opacity-60;
+}
+
 /* Buttons */
 .btn {
-    @apply px-6 py-2 rounded-lg font-bold cursor-pointer transition outline-none no-underline;
-    line-height: 24px;
-    font-size: 14px;
+    @apply px-6 py-2 rounded-lg font-bold cursor-pointer transition outline-none no-underline text-sm inline-block;
+}
+.btn-sm {
+    @apply p-2;
+    font-size: 12px;
+    line-height: 1.5;
+}
+.btn-solid {
+    @apply bg-opacity-100;
 }
 .btn:disabled {
     @apply cursor-not-allowed bg-gray text-white pointer-events-none;

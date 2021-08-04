@@ -1,10 +1,12 @@
-@extends('cooperation.tool.layout')
+{{--@extends('cooperation.tool.layout')--}}
+@extends('cooperation.frontend.layouts.tool')
 
 @push('css')
     <link rel="stylesheet" href="{{asset('css/select2/select2.min.css')}}">
 @endpush
 
-@section('step_content')
+{{--@section('step_content')--}}
+@section('content')
 
     <form  method="POST" id="main-form"
           action="{{ route('cooperation.tool.general-data.interest.store') }}" autocomplete="off">

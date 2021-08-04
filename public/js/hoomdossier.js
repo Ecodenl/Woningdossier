@@ -16,7 +16,7 @@ function updateTotalUnreadMessageCount() {
         },
         statusCode: {
             401: function () {
-                // Redirec the to the login page.
+                // Redirect the to the login page.
                 window.location.href = '/login';
             }
         }

@@ -1,13 +1,14 @@
 <?php $color = $color ?? 'blue'; ?>
 
-<div id="{{$id ?? ''}}" class="w-full p-4 relative bg-white rounded-lg text-sm text-{{$color}} border border-solid border-{{$color}} my-3 {{$class ?? ''}}" role="alert" x-data="{display: true}" x-show="display">
+<div id="{{$id ?? ''}}" role="alert" x-data="{display: true}" x-show="display"
+     class="flex flex-row flex-wrap items-center w-full p-4 relative rounded-lg text-sm text-{{$color}} border border-solid border-{{$color}} my-3 @if(($withBackground ?? false)) bg-{{$color}} bg-opacity-25 @else bg-white @endif {{$class ?? ''}}">
     @if(($dismissible ?? true))
-        <div class="absolute right-3 top-3 cursor-pointer" x-on:click="display = false;">
-            <i class="icon-md icon-close-circle-light"></i>
+        <div class="absolute right-3 top-3 cursor-pointer {{$closeClass ?? ''}}" x-on:click="display = false;">
+            <i class="icon-md icon-close-circle-light clickable"></i>
         </div>
     @endif
 
-    <div class="@if(($dismissible ?? true)) w-3/4 @else w-full @endif text-left">
+    <div class="@if(($dismissible ?? true)) w-17/20 @else w-full @endif text-left">
         {{ $slot }}
     </div>
 </div>

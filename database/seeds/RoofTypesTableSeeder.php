@@ -34,25 +34,27 @@ class RoofTypesTableSeeder extends Seeder
             [
                 'name' => 'Plat + hellend dak',
                 'order' => 3,
-                'calculate_value' => 3,
-                'short' => 'gabbled-flat-roof',
+                'calculate_value' => 4,
+                'short' => 'flat-pitched-roof',
             ],
             [
                 'name' => 'Afgerond dak',
                 'order' => 4,
-                'calculate_value' => 3,
+                'calculate_value' => 5,
                 'short' => 'rounded-roof',
             ],
             [
                 'name' => 'Rieten dak',
                 'order' => 5,
-                'calculate_value' => 3,
-                'short' => 'straw-roofing',
+                'calculate_value' => 6,
+                'short' => 'straw-roof',
             ],
             [
                 'name' => 'Geen dak',
-                'order' => 4,
+                'order' => 6,
+                // the old one
                 'calculate_value' => 5,
+                'new_calculate_value' => 5,
                 'short' => 'none',
             ],
         ];
@@ -63,9 +65,9 @@ class RoofTypesTableSeeder extends Seeder
                     'calculate_value' => $roofType['calculate_value'],
                 ],
                 [
-                    'calculate_value' => $roofType['calculate_value'],
+                    'calculate_value' => $roofType['new_calculate_value'] ?? $roofType['calculate_value'],
                     'order' => $roofType['order'],
-                    'name' => json_encode($roofType['name']),
+                    'name' => json_encode(['nl' => $roofType['name']]),
                     'short' => $roofType['short'],
                 ]
             );

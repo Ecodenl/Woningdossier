@@ -43,6 +43,10 @@ class DoUpgrade extends Command
         if ($this->confirm('This will 100% mess up your environment when ran unintentionally, do you want to continue')) {
             $this->info('<fg=yellow>May the force be with you...</>');
 
+            if (app()->environment() == 'local') {
+                Artisan::call('migrate:rollback');
+                Artisan::call('migrate');
+            }
             $beforeCommands = [
                 ConvertUuidTranslationsToJson::class,
             ];
@@ -57,7 +61,7 @@ class DoUpgrade extends Command
                 \ToolQuestionTypesTableSeeder::class,
                 \SubStepTemplatesTableSeeder::class,
                 \InputSourcesTableSeeder::class,
-
+                \RoofTypesTableSeeder::class,
             ];
 
             foreach ($seeders as $seeder) {

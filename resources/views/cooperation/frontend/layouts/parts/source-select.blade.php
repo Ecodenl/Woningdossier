@@ -7,7 +7,7 @@
     </select>
 
     <div class="input-group">
-        <input class="source-select-input" readonly x-ref="source-select-input" x-model="text"
+        <input class="source-select-input select-none" readonly x-ref="source-select-input" x-model="text"
                x-bind:class="'source-' + value" x-on:click="toggle()" x-on:click.outside="open = false">
         <i x-show="open == false" class="icon-xs icon-arrow-down"></i>
         <i x-cloak x-show="open == true" class="icon-xs icon-arrow-up"></i>

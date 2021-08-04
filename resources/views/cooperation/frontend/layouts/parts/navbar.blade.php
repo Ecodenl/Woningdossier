@@ -45,22 +45,28 @@
             @endauth
         @endif
     </div>
-    <div class="flex flex-row justify-end space-x-4">
-        <p>
-            <a href="{{ route('cooperation.home') }}">
-                @lang('default.start')
-            </a>
-        </p>
-        <p>
-            <a class="text-blue">
-                @lang('cooperation/frontend/layouts.navbar.advise')
-            </a>
-        </p>
-        {{-- TODO: This will be chat-alert only if there are actual messages --}}
-        <i class="icon-md icon-chat-alert"></i>
-        <div class="flex items-center">
-            <i class="icon-md icon-account-circle mr-1"></i>
-            <i class="icon-xs icon-arrow-down"></i>
-        </div>
+    <div class="flex flex-row justify-end items-center space-x-4">
+        @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('resident'))
+            @if (!\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
+                <p>
+                    <a href="{{ route('cooperation.home') }}">
+                        @lang('default.start')
+                    </a>
+                </p>
+            @endif
+            <p>
+                <a class="text-blue" href="{{ route('cooperation.tool.general-data.index') }}">
+                    @lang('cooperation/frontend/layouts.navbar.advise')
+                </a>
+            </p>
+        @endif
+
+        @if (!\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
+            @livewire('cooperation.frontend.layouts.parts.messages')
+            <div class="flex items-center">
+                <i class="icon-md icon-account-circle mr-1"></i>
+                <i class="icon-xs icon-arrow-down"></i>
+            </div>
+        @endif
     </div>
 </div>

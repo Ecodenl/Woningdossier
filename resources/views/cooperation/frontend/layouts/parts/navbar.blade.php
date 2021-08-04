@@ -1,6 +1,6 @@
 {{-- Nav bar --}}
-<div class="grid grid-flow-row grid-cols-3 items-center w-full bg-white h-12 px-5 xl:px-20 relative z-40 shadow-lg">
-    <div class="flex flex-row flex-wrap justify-between items-center">
+<div class="flex flex-wrap flex-row justify-between items-center w-full bg-white h-12 px-5 xl:px-20 relative z-40 shadow-lg">
+    <div class="flex flex-row flex-wrap justify-between items-center space-x-4">
         {{-- TODO: Check if this should be interchangable per cooperation --}}
         <a href="{{ route('cooperation.welcome') }}">
             <i class="icon-hoomdossier"></i>
@@ -18,9 +18,32 @@
                 </a>
             @endif
         @endauth
-    </div>
-    <div>
-        {{-- White space --}}
+        @if(App::environment() == 'local') {{-- currently only for local development --}}
+            @if(count(config('hoomdossier.supported_locales')) > 1)
+                @component('cooperation.frontend.layouts.components.dropdown', ['label' => __('cooperation/frontend/layouts.navbar.language')])
+                    @foreach(config('hoomdossier.supported_locales') as $locale)
+                        @if(app()->getLocale() != $locale)
+                            <li>
+                                <a href="{{ route('cooperation.switch-language', ['cooperation' => $cooperation, 'locale' => $locale]) }}">
+                                    @lang('woningdossier.navbar.languages.'. $locale)
+                                </a>
+                            </li>
+                        @endif
+                    @endforeach
+                @endcomponent
+            @endif
+            @auth
+                @component('cooperation.frontend.layouts.components.dropdown', ['label' => __('cooperation/frontend/layouts.navbar.input-source')])
+                    @foreach($inputSources as $inputSource)
+                        @if(\App\Models\BuildingFeature::withoutGlobalScope(\App\Scopes\GetValueScope::class)->where('input_source_id', $inputSource->id)->first() instanceof \App\Models\BuildingFeature)
+                            <li>
+                                <a href="{{ route('cooperation.input-source.change-input-source-value', ['cooperation' => $cooperation, 'input_source_value_id' => $inputSource->id]) }}">{{$inputSource->name}}</a>
+                            </li>
+                        @endif
+                    @endforeach
+                @endcomponent
+            @endauth
+        @endif
     </div>
     <div class="flex flex-row justify-end space-x-4">
         <p>

@@ -1,5 +1,6 @@
-export default () => ({
-    open: false,
+export default (initiallyOpen = false) => ({
+    // Is the dropdown open?
+    open: initiallyOpen,
 
     toggle() {
         this.$event.preventDefault();

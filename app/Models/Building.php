@@ -118,7 +118,6 @@ class Building extends Model
                 $where[] = ['building_id', '=', $this->id];
             }
 
-
             // 2 parts is the simple scenario, this just means a table + column
             // but in some cases it holds more info we need to build wheres.
             if (count($savedInParts) > 2) {

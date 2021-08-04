@@ -33,15 +33,11 @@ class Buttons extends Component
 
         $this->subStep = $subStep;
 
-        $this->nextSubStep = $step->subSteps()->where('order', '>', $subStep->order)->orderBy('order')->first();
-        $this->previousSubStep = $step->subSteps()->where('order', '<', $subStep->order)->orderByDesc('order')->first();
 
+        $this->nextSubStep = $this->step->subSteps()->where('order', '>', $this->subStep->order)->orderBy('order')->first();
         // we will check if the current sub step is the last one, that way we know we have to go to the next one.
         $lastSubStepForStep = $step->subSteps()->orderByDesc('order')->first();
-        $firstSubStepForStep = $step->subSteps()->orderBy('order')->first();
-
-
-        if ($lastSubStepForStep->id === $subStep->id) {
+        if ($lastSubStepForStep->id === $this->subStep->id) {
             $this->nextStep = $step->nextQuickScan();
             // the last cant have a next one
             if ($this->nextStep instanceof Step) {
@@ -50,7 +46,8 @@ class Buttons extends Component
             }
         }
 
-
+        $this->previousSubStep = $this->step->subSteps()->where('order', '<', $this->subStep->order)->orderByDesc('order')->first();
+        $firstSubStepForStep = $step->subSteps()->orderBy('order')->first();
         if ($firstSubStepForStep->id === $subStep->id) {
             $this->previousStep = $step->previousQuickScan();
 

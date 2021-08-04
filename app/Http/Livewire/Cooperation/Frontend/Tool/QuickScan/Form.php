@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\QuickScanHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\InputSource;
@@ -50,28 +51,6 @@ class Form extends Component
         $this->subStep = $subStep;
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-
-        if (!empty($this->subStep->conditions)) {
-            // we will collect the answers, this way we can query on the collection with the $conditions array.
-            $answers = collect();
-            $conditions = $this->subStep->conditions;
-            foreach ($conditions as $condition) {
-                $toolQuestion = ToolQuestion::findByShort($condition['column']);
-                // set the answers inside the collection
-                $answers->put($condition['column'], $this->building->getAnswer($this->masterInputSource, $toolQuestion));
-            }
-
-
-//            User::where()
-            foreach ($conditions as $condition) {
-                $answers = $answers->where($condition['column'], $condition['operator'], $condition['value']);
-            }
-
-
-            // if there is no match we should go to the next step.
-            if ($answers->isEmpty()) {
-            }
-        }
 
         $this->toolQuestions = $subStep->toolQuestions;
 

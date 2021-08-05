@@ -51,13 +51,135 @@
 @section('main')
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20">
         @if(\App\Helpers\Blade\RouteLogic::inExpertTool(\Illuminate\Support\Facades\Route::currentRouteName()))
+            {{-- Expert tool has a card-wrapper around the content --}}
             <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
                 @include('cooperation.tool.includes.top-alerts')
                 @include('cooperation.tool.parts.progress')
             </div>
-        @endif
 
-        @yield('content')
+            <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
+                <div class="flex flex-row flex-wrap w-full" x-data="tabs()">
+                    @if($currentSubStep instanceof \App\Models\Step)
+                        <h2 class="heading-2">
+                            {{$currentStep->name}}
+                        </h2>
+                    @endif
+                    <ul class="nav-tabs mt-5" x-ref="nav-tabs">
+                        @if(isset($currentStep))
+                            <?php $subStepsForStep = $cooperation->getchildrenForStep($currentStep); ?>
+                            @if($subStepsForStep->isEmpty())
+                                <li class="active @if($building->hasCompleted($currentStep)) completed @endif">
+                                    <a href="{{route("cooperation.tool.{$currentStep->short}.index")}}">
+                                        {{$currentStep->name}}
+                                    </a>
+                                </li>
+                            @endif
+                            @foreach($subStepsForStep as $subStep)
+                                <li class="@if($subStep->short == $currentSubStep->short) active @endif @if($building->hasCompleted($subStep)) completed @endif">
+                                    <a href="{{route("cooperation.tool.{$currentStep->short}.{$subStep->short}.index")}}">
+                                        {{$subStep->name}}
+                                    </a>
+                                </li>
+                            @endforeach
+                        @endif
+
+                        @if(isset($currentStep) && $currentStep->hasQuestionnaires())
+                            @foreach($currentStep->questionnaires as $questionnaire)
+
+                                @if($questionnaire->isActive())
+                                    <li class="@if($buildingOwner->hasCompletedQuestionnaire($questionnaire)) completed @endif">
+                                        <a href="#questionnaire-{{$questionnaire->id}}" x-bind="tab">
+                                            {{$questionnaire->name}}
+                                        </a>
+                                    </li>
+                                @endif
+                            @endforeach
+                        @endif
+                    </ul>
+
+                    <div class="w-full border border-solid border-blue-500 border-opacity-50 rounded-b-lg rounded-tr-lg tab-content"
+                        x-ref="tab-content">
+                        @include('cooperation.frontend.layouts.parts.custom-questionnaire')
+
+                        <div class="w-full divide-y divide-blue-500 divide-opacity-50" id="main-tab" x-ref="main-tab">
+                            <div class="px-4 py-8">
+                                <h3 class="heading-3 inline-block">
+                                    @yield('step_title', $currentSubStep->name ?? $currentStep->name ?? '')
+                                </h3>
+
+                                @if(!in_array(Route::currentRouteName(), ['cooperation.tool.index', 'cooperation.tool.my-plan.index']) && !\App\helpers\HoomdossierSession::isUserObserving())
+                                    <button class="float-right btn btn-purple submit-main-form">
+                                        @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index', 'cooperation.tool.heat-pump.index']))
+                                            @lang('default.buttons.next-page')
+                                        @else
+                                            @lang('default.buttons.next')
+                                        @endif
+                                    </button>
+                                @elseif(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']) && $buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
+                                    <form action="{{route('cooperation.file-storage.store', ['fileType' => $pdfReportFileType->short])}}"
+                                          method="post">
+                                        @csrf
+                                        <button style="margin-top: -35px" type="submit"
+                                                class="float-right btn btn-purple pdf-report">
+                                            {{ \App\Helpers\Translation::translate('my-plan.download.title') }}
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+
+                            <div class="px-4 py-8">
+                                @yield('content')
+                            </div>
+
+                            <div class="px-4 py-8 bg-white">
+                                @if(!\App\helpers\HoomdossierSession::isUserObserving() && !Request::routeIs('cooperation.tool.my-plan.index'))
+                                    <div class="flex flex-row flex-wrap w-full">
+                                        <div class="w-full sm:w-1/2">
+                                            <?php
+                                            // some way of determining the previous step
+
+                                            if ($currentSubStep instanceof \App\Models\Step) {
+                                                $subStepsForCurrentStep = $currentStep->children;
+                                                $previousStep = $subStepsForCurrentStep->where('order', '<', $currentSubStep->order)->last();
+                                            } else {
+                                                $previousStep = $steps->where('order', '<', $currentSubStep->order ?? $currentStep->order)->last();
+                                            }
+
+                                            if ($currentSubStep instanceof \App\Models\Step && $previousStep instanceof \App\Models\Step) {
+                                                $previousUrl = route("cooperation.tool.{$currentStep->short}.{$previousStep->short}.index");
+                                            } elseif ($previousStep instanceof \App\Models\Step) {
+                                                $previousUrl = route("cooperation.tool.{$previousStep->short}.index");
+                                            }
+                                            ?>
+                                            @if($previousStep instanceof \App\Models\Step)
+                                                <a class="btn btn-green float-left"
+                                                   href="{{$previousUrl}}">@lang('default.buttons.prev')</a>
+                                            @endif
+                                        </div>
+{{--                                        @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')--}}
+{{--                                            @lang('default.buttons.next-page')--}}
+{{--                                            <div class="col-sm-6">--}}
+{{--                                                <a href="" class="pull-right btn btn-primary submit-main-form">--}}
+{{--                                                    @lang('default.buttons.next-page')--}}
+{{--                                                </a>--}}
+{{--                                            </div>--}}
+{{--                                        @else--}}
+                                        <div class="w-full sm:w-1/2">
+                                            <button class="float-right btn btn-purple submit-main-form">
+                                                @lang('default.buttons.next')
+                                            </button>
+                                        </div>
+{{--                                    @endif--}}
+                                    </div>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @else
+            @yield('content')
+        @endif
     </div>
 @endsection
 
@@ -92,22 +214,8 @@
             });
 
             $(document).ready(function () {
-                // get the current url
-                var url = document.location.href;
-
-                // scroll to top off page for less retarded behaviour
+                // scroll to top off page for less clunky behaviour
                 window.scrollTo(0, 0);
-
-                // check if the current url matches a hashtag
-                if (url.match('#')) {
-                    // see if there is a tab and show it.
-                    $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
-                }
-
-                // set the hash in url
-                $('.nav-tabs a').on('shown.bs.tab', function (e) {
-                    window.location.hash = e.target.hash;
-                });
 
                 compareInputSourceValues();
                 whenObservingDisableInputs();
@@ -120,6 +228,7 @@
                 if (isUserObservingTool) {
                     var tabContent = $('.tab-content');
 
+                    {{-- TODO: REPLACE .form-control WITH NEW CLASS --}}
                     tabContent.find('.form-control').addClass('disabled').prop('disabled', true);
                     tabContent.find('input[type=radio]').addClass('disabled').prop('disabled', true);
                     tabContent.find('input[type=checkbox]').addClass('disabled').prop('disabled', true);
@@ -141,7 +250,7 @@
                 }
             });
             $('#copy-example-building-input').on('submit', function (event) {
-                if (confirm('Weet u zeker dat u alle waardes van de voorbeeldwoning wilt overnemen ? Al uw huidige antwoorden zullen worden overschreven door die van de voorbeeldwoning.')) {
+                if (confirm('@lang('woningdossier.cooperation.tool.general-data.example-building-input.copy.help')')) {
 
                 } else {
                     event.preventDefault();
@@ -152,10 +261,7 @@
 
             function isUserComparingInputSources() {
                 var isUserComparingInputSources = '{{\App\Helpers\HoomdossierSession::isUserComparingInputSources()}}';
-                if (isUserComparingInputSources) {
-                    return true;
-                }
-                return false;
+                return !!isUserComparingInputSources;
             }
 
             function inputType(input) {

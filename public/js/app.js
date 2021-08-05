@@ -34678,6 +34678,67 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/alpine-scripts/tabs.js":
+/*!*********************************************!*\
+  !*** ./resources/js/alpine-scripts/tabs.js ***!
+  \*********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  var defaultTab = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  return {
+    currentTab: null,
+    init: function init() {
+      var _this = this;
+
+      document.addEventListener('DOMContentLoaded', function () {
+        // get the current url
+        var url = document.location.href; // check if the current url matches a hashtag
+
+        if (url.match('#')) {
+          try {
+            var hash = new URL(url).hash;
+
+            _this.switchTab(document.querySelector("a[href=\"".concat(hash, "\"]")));
+          } catch (e) {// Not valid URL
+          }
+        } else if (defaultTab && defaultTab.nodeType === Node.ELEMENT_NODE) {
+          _this.switchTab(defaultTab);
+        }
+      });
+    },
+    tab: _defineProperty({}, 'x-on:click', function xOnClick() {
+      this.switchTab(this.$el);
+    }),
+    switchTab: function switchTab(element) {
+      var href = element.getAttribute('href');
+
+      if (href[0] === '#') {
+        var tab = document.querySelector(href);
+
+        if (tab && tab !== this.currentTab) {
+          // If tab is defined and different from current tab
+          if (!this.currentTab) {
+            this.$refs['main-tab'].classList.add('hidden');
+          }
+
+          this.currentTab = tab;
+          window.location.hash = element.hash;
+          this.$refs['nav-tabs'].querySelector('li.active').classList.remove('active');
+          element.parentElement.classList.add('active');
+        }
+      }
+    }
+  };
+});
+
+/***/ }),
+
 /***/ "./resources/js/app.js":
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
@@ -34852,6 +34913,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _alpine_scripts_picoAddress_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./alpine-scripts/picoAddress.js */ "./resources/js/alpine-scripts/picoAddress.js");
 /* harmony import */ var _alpine_scripts_draggables_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./alpine-scripts/draggables.js */ "./resources/js/alpine-scripts/draggables.js");
 /* harmony import */ var _alpine_scripts_dropdown_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./alpine-scripts/dropdown.js */ "./resources/js/alpine-scripts/dropdown.js");
+/* harmony import */ var _alpine_scripts_tabs_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./alpine-scripts/tabs.js */ "./resources/js/alpine-scripts/tabs.js");
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -34920,6 +34982,7 @@ if (token) {
 
 
 
+
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('alpineSelect', _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('sourceSelect', _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_2__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('modal', _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_3__["default"]);
@@ -34929,6 +34992,7 @@ alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('register', _alpine_script
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('picoAddress', _alpine_scripts_picoAddress_js__WEBPACK_IMPORTED_MODULE_7__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('draggables', _alpine_scripts_draggables_js__WEBPACK_IMPORTED_MODULE_8__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('dropdown', _alpine_scripts_dropdown_js__WEBPACK_IMPORTED_MODULE_9__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('tabs', _alpine_scripts_tabs_js__WEBPACK_IMPORTED_MODULE_10__["default"]);
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 

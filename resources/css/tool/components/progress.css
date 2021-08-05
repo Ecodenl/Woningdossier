@@ -1,4 +1,8 @@
 /* Progress list */
+ul.progress-list {
+    @apply list-none;
+}
+
 ul.progress-list li {
     width: 75px;
 }
@@ -26,6 +30,9 @@ ul.progress-list li a img {
  /* Need this to override weight of previous defined class */
 ul.progress-list li a.no-border {
     @apply border-none;
+
+    @apply hover:opacity-60;
+    @apply focus:opacity-60;
 }
 
 ul.progress-list li a img.no-border {

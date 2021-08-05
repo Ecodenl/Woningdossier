@@ -50,7 +50,7 @@
                 </ul>
 
                 <div class="tab-content">
-                    @include('cooperation.layouts.custom-questionnaire')
+                    @include('cooperation.frontend.layouts.parts.custom-questionnaire')
 
                     <div class="panel tab-pane active tab-pane panel-default" id="main-tab">
                         <div class="panel-heading">

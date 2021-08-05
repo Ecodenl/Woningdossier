@@ -103,3 +103,23 @@ p a {
     @apply focus:border-opacity-75 focus:shadow-center-red-25;
     @apply active:border-opacity-100 focus:shadow-center-red-50;
 }
+
+/* Navigation tabs */
+.nav-tabs {
+    @apply pl-0 pb-0 list-none w-full;
+}
+
+.nav-tabs li {
+    @apply float-left relative block;
+}
+
+.nav-tabs li a {
+    @apply no-underline relative block py-2 px-4 mr-1 text-sm text-green border border-solid border-transparent rounded-t bg-transparent;
+}
+
+.nav-tabs li.completed a {
+    @apply text-white bg-blue-800;
+}
+.nav-tabs li.active a {
+    @apply text-white bg-green;
+}

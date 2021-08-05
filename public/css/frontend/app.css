@@ -137424,6 +137424,56 @@ p a {
 .btn-outline-red:focus {
   --tw-shadow: 0 15px 15px -10px rgba(227,20,64,0.5);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+/* Navigation tabs */
+
+.nav-tabs {
+  width: 100%;
+  list-style-type: none;
+  padding-bottom: 0px;
+  padding-left: 0px;
+}
+
+.nav-tabs li {
+  position: relative;
+  float: left;
+  display: block;
+}
+
+.nav-tabs li a {
+  position: relative;
+  margin-right: 0.25rem;
+  display: block;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  background-color: transparent;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: 14px;
+  line-height: 24px;
+  --tw-text-opacity: 1;
+  color: rgba(44, 169, 130, var(--tw-text-opacity));
+  text-decoration: none;
+}
+
+.nav-tabs li.completed a {
+  --tw-bg-opacity: 1;
+  background-color: rgba(55, 129, 240, var(--tw-bg-opacity));
+  --tw-text-opacity: 1;
+  color: rgba(255, 255, 255, var(--tw-text-opacity));
+}
+
+.nav-tabs li.active a {
+  --tw-bg-opacity: 1;
+  background-color: rgba(44, 169, 130, var(--tw-bg-opacity));
+  --tw-text-opacity: 1;
+  color: rgba(255, 255, 255, var(--tw-text-opacity));
 }/* Form groups and its children */
 
 .form-group {
@@ -139090,6 +139140,10 @@ textarea.form-input {
   content: url('/icons/window-frame.svg');
 }/* Progress list */
 
+ul.progress-list {
+  list-style-type: none;
+}
+
 ul.progress-list li {
   width: 75px;
 }
@@ -139145,6 +139199,14 @@ ul.progress-list li a img {
 
 ul.progress-list li a.no-border {
   border-style: none;
+}
+
+ul.progress-list li a.no-border:hover {
+  opacity: 0.6;
+}
+
+ul.progress-list li a.no-border:focus {
+  opacity: 0.6;
 }
 
 ul.progress-list li a img.no-border {

@@ -5,13 +5,17 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 use App\Helpers\StepHelper;
 use App\Models\Step;
 use App\Models\SubStep;
+use Illuminate\Http\Request;
 use Livewire\Component;
 
 class Buttons extends Component
 {
+    private $account;
     public $step;
     public $nextStep;
     public $previousStep;
+
+    public $i;
 
     public $subStep;
     public $nextSubStep;
@@ -19,8 +23,10 @@ class Buttons extends Component
 
     public $toolQuestions;
 
-    public function mount(Step $step, SubStep $subStep)
+    public function mount(Request $request, Step $step, SubStep $subStep)
     {
+        $this->account = $request->user();
+
         $subStep->load(['toolQuestions', 'subStepTemplate']);
 
         // the route will always be matched, however a sub step has to match the step.
@@ -46,21 +52,44 @@ class Buttons extends Component
             }
         }
 
-        $this->previousSubStep = $this->step->subSteps()->where('order', '<', $this->subStep->order)->orderByDesc('order')->first();
-        $firstSubStepForStep = $step->subSteps()->orderBy('order')->first();
-        if ($firstSubStepForStep->id === $subStep->id) {
-            $this->previousStep = $step->previousQuickScan();
 
-            // the first one cant have a previous one
-            if ($this->previousStep instanceof Step) {
-                // the previous step is a different one, so we should get the last sub step of the previous step
-                $this->previousSubStep = $this->previousStep->subSteps()->orderByDesc('order')->first();
-            }
-        }
+        $this->setPreviousStep();
     }
 
     public function render()
     {
         return view('livewire.cooperation.frontend.tool.quick-scan.buttons');
+    }
+
+    private function setPreviousStep()
+    {
+        if ($this->subStep instanceof SubStep) {
+
+
+            $this->previousSubStep = $this
+                ->step
+                ->subSteps()
+                ->where('order', '<', $this->subStep->order)
+                ->orderByDesc('order')
+                ->first();
+
+            $firstSubStepForStep = $this->step->subSteps()->orderBy('order')->first();
+            if ($firstSubStepForStep->id === $this->subStep->id) {
+                $this->previousStep = $this->step->previousQuickScan();
+
+                // the first one cant have a previous one
+                if ($this->previousStep instanceof Step) {
+                    // the previous step is a different one, so we should get the last sub step of the previous step
+                    $this->previousSubStep = $this->previousStep->subSteps()->orderByDesc('order')->first();
+                }
+            }
+
+            if ($this->account->cannot('show', $this->previousSubStep)) {
+                // so the user is not allowed to see this sub step
+                // now we also have to set the subStep so this wont do a infinite loop
+                $this->subStep = $this->previousSubStep;
+                $this->setPreviousStep();
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 <div x-data="sourceSelect({{$initiallyOpen ?? false}})" x-ref="source-select-wrapper" class="source-select-wrapper">
     <select name="{{$inputName ?? 'input_source'}}" x-ref="source-select"
             @if(($disabled ?? false)) disabled @endif style="display: none;">
+        <option value="null">@lang('cooperation/frontend/shared.input-sources.no-answer')</option>
         <option value="resident">@lang('cooperation/frontend/shared.input-sources.resident')</option>
         <option value="coach">@lang('cooperation/frontend/shared.input-sources.coach')</option>
         <option value="example-building">@lang('cooperation/frontend/shared.input-sources.example-building')</option>
@@ -13,15 +14,9 @@
         <i x-cloak x-show="open == true" class="icon-xs icon-arrow-up"></i>
     </div>
 
-    <div x-cloak x-ref="source-select-options" class="source-select-dropdown" x-show="open">
-        <span class="source-select-option source-resident" data-value="resident" x-on:click="changeOption($el)">
-            @lang('cooperation/frontend/shared.input-sources.resident')
-        </span>
-        <span class="source-select-option source-coach" data-value="coach" x-on:click="changeOption($el)">
-            @lang('cooperation/frontend/shared.input-sources.coach')
-        </span>
-        <span class="source-select-option source-example-building" data-value="example-building" x-on:click="changeOption($el)">
-            @lang('cooperation/frontend/shared.input-sources.example-building')
-        </span>
-    </div>
+    @if(! empty($sourceSlot))
+        <ul x-cloak x-ref="source-select-options" class="source-select-dropdown" x-show="open">
+            {!! $sourceSlot ?? '' !!}
+        </ul>
+    @endif
 </div>

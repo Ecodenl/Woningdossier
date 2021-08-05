@@ -7,6 +7,9 @@
             'id' => "questions-{$question->id}",
             'class' => ($question->isRequired() ? 'required' : ''),
         ])
+            @slot('sourceSlot')
+                @include('cooperation.tool.questionnaires.components.questionnaire-source-list')
+            @endslot
             @component('cooperation.frontend.layouts.components.alpine-select')
                 <select id="questions-{{$question->id}}" name="questions[{{$question->id}}]" class="form-input">
                     @foreach($question->questionOptions as $option)
@@ -18,8 +21,5 @@
                 </select>
             @endcomponent
         @endcomponent
-
-{{--            @component('cooperation.tool.questionnaires.components.input-group',--}}
-{{--            ['inputType' => 'select', 'inputValues' => $question->questionOptions, 'userInputValues' => $question->questionAnswersForMe, 'userInputColumn' => 'answer'])--}}
     </div>
 </div>

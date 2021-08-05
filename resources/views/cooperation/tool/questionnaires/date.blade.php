@@ -10,13 +10,13 @@
             'id' => "questions-{$question->id}",
             'class' => ($question->isRequired() ? 'required' : ''),
         ])
+            @slot('sourceSlot')
+                @include('cooperation.tool.questionnaires.components.questionnaire-source-list')
+            @endslot
             <input @if($question->isRequired()) required="required" @endif name="questions[{{$question->id}}]"
                    data-input-value="{{$question->id}}" placeholder="{{$question->name}}"
                    id="questions-{{$question->id}}" type="date" class="form-input"
                    value="{{old('questions.'.$question->id, $value)}}">
         @endcomponent
-        {{--            @component('cooperation.tool.questionnaires.components.input-group',--}}
-        {{--            ['inputType' => 'input', 'userInputValues' => $question->questionAnswersForMe, 'userInputColumn' => 'answer'])--}}
-
     </div>
 </div>

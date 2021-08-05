@@ -2,6 +2,7 @@
 
 return [
     'input-sources' => [
+        'no-answer' => 'Geen gegevens bekend',
         'resident' => 'Bewoner',
         'coach' => 'Coach',
         'example-building' => 'Voorbeeldwoning',

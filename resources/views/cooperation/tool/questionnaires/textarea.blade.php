@@ -7,13 +7,13 @@
             'id' => "questions-{$question->id}",
             'class' => ($question->isRequired() ? 'required' : ''),
         ])
+            @slot('sourceSlot')
+                @include('cooperation.tool.questionnaires.components.questionnaire-source-list')
+            @endslot
             <textarea id="questions-{{$question->id}}" data-input-value="{{$question->id}}"
                       @if($question->isRequired()) required="required" @endif name="questions[{{$question->id}}]"
                       class="form-input"
             >{{old('questions.'.$question->id, \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($question->questionAnswers, 'answer'))}}</textarea>
-
         @endcomponent
-{{--            @component('cooperation.tool.questionnaires.components.input-group',--}}
-{{--            ['inputType' => 'input', 'userInputValues' => $question->questionAnswersForMe,'userInputColumn' => 'answer'])--}}
     </div>
 </div>

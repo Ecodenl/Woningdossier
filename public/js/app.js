@@ -34652,6 +34652,19 @@ __webpack_require__.r(__webpack_exports__);
       if (this.disabled) {
         this.$refs['source-select-input'].classList.add('disabled');
         this.open = false;
+      } // Prepare list items for Alpine!
+      // Get children injected by PHP (these will be list items with a nested anchor)
+
+
+      var children = this.$refs['source-select-options'].children; // Note: we cannot use forEach, as options is a HTML collection, which is not an array
+
+      for (var i = 0; i < children.length; i++) {
+        children[i].setAttribute("x-on:click", "changeOption($el)");
+
+        var _short = children[i].getAttribute('data-input-source-short');
+
+        children[i].classList.add('source-select-option');
+        children[i].classList.add("source-".concat(_short));
       }
     },
     toggle: function toggle() {
@@ -34662,14 +34675,14 @@ __webpack_require__.r(__webpack_exports__);
     },
     changeOption: function changeOption(element) {
       if (!element.classList.contains('disabled')) {
-        this.setValue(element.getAttribute('data-value'), element.textContent);
+        this.setValue(element.getAttribute('data-input-source-short'));
       }
     },
     setValue: function setValue(value) {
       var text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       this.value = value;
       this.$refs['source-select'].value = value;
-      this.text = null === text ? value : text;
+      this.text = null === text ? this.$refs['source-select'].querySelector("option[value=\"".concat(value, "\"]")).textContent : text;
       this.text = this.text.trim();
       this.open = false;
     }

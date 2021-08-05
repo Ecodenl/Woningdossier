@@ -66,9 +66,9 @@
     <script>
         $('button[id*=submit-custom-questionnaire]').on('click', function () {
             var questionnaireId = $(this).data('questionnaire-id');
-            // we could just find the questionnaire form and submit it, but the html5 validation wont be triggerd.
+            // we could just find the questionnaire form and submit it, but the html5 validation wont be triggered.
             // so we find the submit button in the questionnaire form and click that one.
             $('body').find('#questionnaire-form-'+questionnaireId).find('button[type=submit]').click();
         })
-    </script>
+    </script>e
 @endpush

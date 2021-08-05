@@ -15,8 +15,6 @@ class Buttons extends Component
     public $nextStep;
     public $previousStep;
 
-    public $i;
-
     public $subStep;
     public $nextSubStep;
     public $previousSubStep;
@@ -40,19 +38,7 @@ class Buttons extends Component
         $this->subStep = $subStep;
 
 
-        $this->nextSubStep = $this->step->subSteps()->where('order', '>', $this->subStep->order)->orderBy('order')->first();
-        // we will check if the current sub step is the last one, that way we know we have to go to the next one.
-        $lastSubStepForStep = $step->subSteps()->orderByDesc('order')->first();
-        if ($lastSubStepForStep->id === $this->subStep->id) {
-            $this->nextStep = $step->nextQuickScan();
-            // the last cant have a next one
-            if ($this->nextStep instanceof Step) {
-                // the previous step is a different one, so we should get the first sub step of the previous step
-                $this->nextSubStep = $this->nextStep->subSteps()->first();
-            }
-        }
-
-
+        $this->setNextStep();
         $this->setPreviousStep();
     }
 
@@ -60,6 +46,8 @@ class Buttons extends Component
     {
         return view('livewire.cooperation.frontend.tool.quick-scan.buttons');
     }
+
+
 
     private function setPreviousStep()
     {
@@ -87,6 +75,21 @@ class Buttons extends Component
                 // now we also have to set the subStep so this wont do a infinite loop
                 $this->subStep = $this->previousSubStep;
                 $this->setPreviousStep();
+            }
+        }
+    }
+
+    private function setNextStep()
+    {
+        $this->nextSubStep = $this->step->subSteps()->where('order', '>', $this->subStep->order)->orderBy('order')->first();
+        // we will check if the current sub step is the last one, that way we know we have to go to the next one.
+        $lastSubStepForStep = $this->step->subSteps()->orderByDesc('order')->first();
+        if ($lastSubStepForStep->id === $this->subStep->id) {
+            $this->nextStep = $this->step->nextQuickScan();
+            // the last cant have a next one
+            if ($this->nextStep instanceof Step) {
+                // the previous step is a different one, so we should get the first sub step of the previous step
+                $this->nextSubStep = $this->nextStep->subSteps()->first();
             }
         }
     }

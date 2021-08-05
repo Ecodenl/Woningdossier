@@ -16,7 +16,7 @@
                    $step = \App\Models\Step::whereShort('building-data')->first();
                    $subStep = \App\Models\SubStep::first();
                    ?>
-                    href="{{route('cooperation.quick-scan.index', ['step' => $step->slug, 'subStep' => $subStep->slug])}}">
+                    href="{{route('cooperation.frontend.tool.quick-scan.index', ['step' => $step->slug, 'subStep' => $subStep->slug])}}">
                     @lang('default.start')
                     <i class="icon-sm icon-arrow-right-circle ml-5"></i>
                 </a>

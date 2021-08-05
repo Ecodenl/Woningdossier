@@ -169,11 +169,14 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
                 //        Route::livewire('quick-scan/{step}/{subStep}', 'cooperation.frontend.tool.quick-scan')
 //            ->layout('cooperation.frontend.layouts.tool')
 //            ->section('content');
+
             Route::get('quick-scan/{step}/{subStep}', 'Frontend\\Tool\\QuickScanController@index')
-                ->name('quick-scan.index')
+                ->name('frontend.tool.quick-scan.index')
                 ->middleware('checks-conditions-for-sub-steps');
 
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
+
+
 
                 Route::get('/', 'ToolController@index')->name('index');
 

@@ -590,6 +590,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:elements,id'],
                             'save_in' => "building_elements.{$wallInsulation->id}.element_value_id",
+                            'short' => 'current-wall-insulation',
                             'translation' => "Wat is de staat van de muurisolatie",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $wallInsulation->values()->orderBy('order')->get(),
@@ -622,6 +623,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:elements,id'],
                             'save_in' => "building_elements.{$floorInsulation->id}.element_value_id",
+                            'short' => 'current-floor-insulation',
                             'translation' => "Wat is de staat van de vloerisolatie",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $floorInsulation->values()->orderBy('order')->get(),
@@ -658,6 +660,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:elements,id'],
                             'save_in' => "building_elements.{$roofInsulation->id}.element_value_id",
+                            'short' => 'current-roof-insulation',
                             'translation' => "Wat is de staat van de dakisolatie",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $roofInsulation->values()->orderBy('order')->get(),
@@ -694,6 +697,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:elements,id'],
                             'save_in' => "building_elements.{$livingRoomsWindows->id}.element_value_id",
+                            'short' => 'current-living-rooms-windows',
                             'translation' => "Welke glasisolatie heeft u op de eerste woonlaag",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $livingRoomsWindows->values()->orderBy('order')->get(),
@@ -724,6 +728,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:elements,id'],
                             'save_in' => "building_elements.{$sleepingRoomsWindows->id}.element_value_id",
+                            'short' => 'current-living-rooms-windows',
                             'translation' => "Welke glasisolatie heeft u op de tweede woonlaag",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $sleepingRoomsWindows->values()->orderBy('order')->get(),
@@ -995,6 +1000,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'min:1', 'max:50'],
                             'save_in' => "building_services.{$solarPanels->id}.service_value_id",
+                            'short' => 'solar-panel-count',
                             // was current-state -> hoeveel zonnepanelen zijn er aanwezig
                             'translation' => "Hoeveel zonnepanelen?",
                             'tool_question_type_id' => $textType->id,

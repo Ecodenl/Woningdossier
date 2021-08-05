@@ -35,7 +35,7 @@ class SubStep extends Model
         'conditions' => 'array',
     ];
 
-    public function step()
+    public function step(): BelongsTo
     {
         return $this->belongsTo(Step::class);
     }

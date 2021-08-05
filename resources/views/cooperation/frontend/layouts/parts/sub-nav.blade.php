@@ -20,8 +20,3 @@
         <span class="text-blue">Woonplan</span>
     </div>
 </div>
-{{-- Progress bar --}}
-<div class="w-full bg-gray h-2">
-    {{-- Define style-width based on step progress divided by total steps --}}
-    <div class="h-full bg-purple" style="width: 30%"></div>
-</div>

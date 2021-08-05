@@ -1,12 +1,15 @@
 <div class="w-full flex justify-between">
     @foreach($toolQuestion->getQuestionValues() as $toolQuestionValue)
+        @php
+        $uuid = Str::uuid();
+        @endphp
         <div class="radio-wrapper media-wrapper media-wrapper-small">
             <input type="radio"
-                   id="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}"
+                   id="{{$uuid}}"
                    wire:model="filledInAnswers.{{$toolQuestion['id']}}"
                    value="{{$toolQuestionValue['value']}}"
             >
-            <label for="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}">
+            <label for="{{$uuid}}">
                             <span class="media-icon-wrapper">
                                 <i class="{{$toolQuestionValue['extra']['icon']}}"></i>
                             </span>

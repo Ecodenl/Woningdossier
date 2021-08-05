@@ -1,11 +1,14 @@
     @foreach($toolQuestion->getQuestionValues() as $toolQuestionValue)
+        @php
+            $uuid = Str::uuid();
+        @endphp
         <div class="radio-wrapper pr-3">
             <input type="radio"
-                   id="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}"
+                   id="{{$uuid}}"
                    wire:model="filledInAnswers.{{$toolQuestion['id']}}"
                    value="{{$toolQuestionValue['short'] ?? $toolQuestionValue['id']}}"
             >
-            <label for="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}">
+            <label for="{{$uuid}}">
                 <span class="checkmark"></span>
                 <span>{{$toolQuestionValue['name']}}</span>
             </label>

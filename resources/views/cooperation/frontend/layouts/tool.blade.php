@@ -131,7 +131,7 @@
                                 @yield('content')
                             </div>
 
-                            <div class="px-4 py-8 bg-white">
+                            <div class="px-4 py-8">
                                 @if(!\App\helpers\HoomdossierSession::isUserObserving() && !Request::routeIs('cooperation.tool.my-plan.index'))
                                     <div class="flex flex-row flex-wrap w-full">
                                         <div class="w-full sm:w-1/2">

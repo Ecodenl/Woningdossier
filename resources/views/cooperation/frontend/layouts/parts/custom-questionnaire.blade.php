@@ -47,7 +47,6 @@
                         @if(!\App\helpers\HoomdossierSession::isUserObserving())
                             <div class="flex flex-row flex-wrap w-full">
                                 <div class="w-full">
-                                    <hr>
                                     <div class="my-4 px-2">
                                         <button type="submit" class="float-right btn btn-purple">
                                             @lang('default.buttons.save')

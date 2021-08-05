@@ -158,8 +158,8 @@
                                         </div>
 {{--                                        @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')--}}
 {{--                                            @lang('default.buttons.next-page')--}}
-{{--                                            <div class="col-sm-6">--}}
-{{--                                                <a href="" class="pull-right btn btn-primary submit-main-form">--}}
+{{--                                            <div class="w-full sm:w-1/2">--}}
+{{--                                                <a href="" class="float-right btn btn-purple submit-main-form">--}}
 {{--                                                    @lang('default.buttons.next-page')--}}
 {{--                                                </a>--}}
 {{--                                            </div>--}}
@@ -194,6 +194,7 @@
                 $('.help-block').remove()
             }
             function addError(input, message) {
+                {{-- TODO:These are also within the app.js, check if these are needed here --}}
                 var helpBlock = '<span class="help-block"></span>';
                 input.parents('.form-group').addClass('has-error');
                 input.parents('.form-group').append($(helpBlock).append('<strong>' + message + '</strong>'));
@@ -260,7 +261,7 @@
 
 
             function isUserComparingInputSources() {
-                var isUserComparingInputSources = '{{\App\Helpers\HoomdossierSession::isUserComparingInputSources()}}';
+                let isUserComparingInputSources = '{{\App\Helpers\HoomdossierSession::isUserComparingInputSources()}}';
                 return !!isUserComparingInputSources;
             }
 
@@ -270,6 +271,7 @@
 
             function compareInputSourceValues() {
                 if (isUserComparingInputSources()) {
+                    {{-- TODO: Check these classes --}}
                     var formGroups = $('.input-source-group');
 
                     $(formGroups).each(function () {

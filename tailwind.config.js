@@ -140,9 +140,14 @@ module.exports = {
             },
             backgroundOpacity: {
                 '85': '0.85',
+            },
+            borderRadius: {
+                ...fractionTen,
+                '1/2': '50%',
             }
         },
         colors: {
+            transparent: 'transparent',
             black: '#000000',
             white: '#FFFFFF',
             gray: '#CDD2D7',
@@ -178,6 +183,7 @@ module.exports = {
             backgroundColor: ['active'],
             backgroundOpacity: ['active'],
             borderOpacity: ['active'],
+            borderColor: ['active'],
             textColor: ['active'],
             boxShadow: ['active'],
         },

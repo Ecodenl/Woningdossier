@@ -53,6 +53,7 @@
         @if(\App\Helpers\Blade\RouteLogic::inExpertTool(\Illuminate\Support\Facades\Route::currentRouteName()))
             <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
                 @include('cooperation.tool.includes.top-alerts')
+                @include('cooperation.tool.parts.progress')
             </div>
         @endif
 

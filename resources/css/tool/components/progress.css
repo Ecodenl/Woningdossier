@@ -1,0 +1,34 @@
+/* Progress list */
+ul.progress-list li {
+    width: 75px;
+}
+
+ul.progress-list li i {
+    @apply top-6 -ml-6 text-md
+}
+
+ul.progress-list li a {
+    @apply rounded-full inline-block border-4 border-solid border-transparent no-underline opacity-100;
+
+    @apply hover:border-green;
+    @apply focus:border-green;
+    @apply active:border-green;
+}
+
+ul.progress-list li.active a {
+    @apply border-blue-800;
+}
+
+ul.progress-list li a img {
+  @apply w-12 h-12 border border-solid border-blue-500 border-opacity-50;
+}
+
+ /* Need this to override weight of previous defined class */
+ul.progress-list li a.no-border {
+    @apply border-none;
+}
+
+ul.progress-list li a img.no-border {
+    @apply border-none;
+}
+

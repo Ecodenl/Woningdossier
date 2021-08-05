@@ -21,10 +21,10 @@ class ChecksConditionsForSubSteps
     {
         $subStep = $request->route('subStep');
 
-//        if ($request->user()->cannot('show', $subStep)) {
-//             this indeed only covers the next step
-//            return redirect()->to(QuickScanHelper::getNextStepUrl($request->route('step'), $subStep));
-//        }
+        if ($request->user()->cannot('show', $subStep)) {
+            // this indeed only covers the next step
+            return redirect()->to(QuickScanHelper::getNextStepUrl($request->route('step'), $subStep));
+        }
 
         return $next($request);
     }

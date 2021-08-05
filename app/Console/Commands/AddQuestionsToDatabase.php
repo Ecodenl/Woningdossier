@@ -1121,8 +1121,8 @@ class AddQuestionsToDatabase extends Command
 
 
                             foreach ($questionData['tool_question_values'] as $toolQuestionValueOrder => $toolQuestionValue) {
-                                if (isset($extra['data'])) {
-                                    $extra['data'][$toolQuestionValue->{$extra['column']}];
+                                if (isset($extra['column'])) {
+                                    $extraData = $extra['data'][$toolQuestionValue->{$extra['column']}];
                                 }
                                 $toolQuestion->toolQuestionValuables()->create([
                                     'order' => $toolQuestionValueOrder,
@@ -1130,7 +1130,7 @@ class AddQuestionsToDatabase extends Command
                                     'tool_question_valuable_type' => get_class($toolQuestionValue),
                                     'tool_question_valuable_id' => $toolQuestionValue->id,
                                     // We grab the extra data by the set column (e.g. calculate_value)
-                                    'extra' => $extra
+                                    'extra' => $extraData ?? $extra
                                 ]);
                             }
                         }

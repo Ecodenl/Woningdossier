@@ -229,8 +229,7 @@
                 if (isUserObservingTool) {
                     var tabContent = $('.tab-content');
 
-                    {{-- TODO: REPLACE .form-control WITH NEW CLASS --}}
-                    tabContent.find('.form-control').addClass('disabled').prop('disabled', true);
+                    tabContent.find('.form-input').addClass('disabled').prop('disabled', true);
                     tabContent.find('input[type=radio]').addClass('disabled').prop('disabled', true);
                     tabContent.find('input[type=checkbox]').addClass('disabled').prop('disabled', true);
                 }

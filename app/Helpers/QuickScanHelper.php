@@ -8,6 +8,13 @@ use App\Models\SubStep;
 class QuickScanHelper
 {
 
+    /**
+     * Method to return the next step url
+     *
+     * @param Step $step
+     * @param SubStep $subStep
+     * @return string
+     */
     public static function getNextStepUrl(Step $step, SubStep $subStep)
     {
         $nextSubStep = $step->subSteps()->where('order', '>', $subStep->order)->orderBy('order')->first();

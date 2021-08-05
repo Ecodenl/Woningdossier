@@ -5,6 +5,14 @@
         @include('cooperation.frontend.layouts.parts.navbar')
         {{-- Step progress --}}
         @include('cooperation.frontend.layouts.parts.sub-nav')
+        {{-- Progress bar --}}
+        <div class="w-full bg-gray h-2">
+            @php
+            $width = 100 / $total * $current;
+            @endphp
+            {{-- Define style-width based on step progress divided by total steps --}}
+            <div class="h-full bg-purple" style="width: {{$width}}%"></div>
+        </div>
     </div>
 @endsection
 

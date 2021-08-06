@@ -153,7 +153,6 @@ class QuestionnaireController extends Controller
 
             // since the question could exist, but the option dont. So check.
             if ($questionOption instanceof QuestionOption) {
-                $questionOption->deleteTranslations('name');
                 $questionOption->delete();
             }
         }

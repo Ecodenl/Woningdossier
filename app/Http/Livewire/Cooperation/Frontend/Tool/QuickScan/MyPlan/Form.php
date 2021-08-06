@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Livewire\Frontend;
+namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
 
 use Illuminate\Support\Str;
 use Livewire\Component;
 
-class HousingPlan extends Component
+class Form extends Component
 {
     public array $cards = [
         'complete' => [
@@ -183,7 +183,7 @@ class HousingPlan extends Component
 
     public function render()
     {
-        return view('livewire.frontend.housing-plan');
+        return view('livewire.cooperation.frontend.tool.quick-scan.my-plan.form');
     }
 
     public function updated($field)

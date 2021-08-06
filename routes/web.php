@@ -171,7 +171,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                     ->name('quick-scan.index')
                     ->middleware('checks-conditions-for-sub-steps');
 
-                Route::view('housing-plan', 'cooperation.frontend.templates.housing-plan')->name('my-plan.index');
+
+                Route::get('housing-plan', 'QuickScan\\MyPlanController@index')->name('my-plan.index');
             });
 
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {

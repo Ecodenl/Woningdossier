@@ -23,6 +23,8 @@
 
 @section('main')
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20">
-        @yield('content')
+        @livewire('cooperation.frontend.tool.quick-scan.my-plan.form')
+{{--        @yield('content')--}}
     </div>
 @endsection
+

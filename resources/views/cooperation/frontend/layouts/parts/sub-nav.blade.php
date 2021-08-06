@@ -3,12 +3,12 @@
     <div class="flex items-center h-full">
         @if($building->hasCompleted($step, \App\Helpers\HoomdossierSession::getInputSource(true)))
         <i class="icon-sm icon-check-circle-dark mr-1 border-purple"></i>
-        @elseif($currentStep->short == $step->short)
+        @elseif(isset($currentStep) && $currentStep->short == $step->short)
         <i class="icon-sm bg-purple bg-opacity-25 rounded-full border border-solid border-purple mr-1"></i>
         @else
         <i class="icon-sm bg-transparent rounded-full border border-solid border-blue mr-1"></i>
         @endif
-        <span class="text-{{$currentStep->short == $step->short ? 'purple' : 'blue'}}">{{$step->name}}</span>
+        <span class="text-{{isset($currentStep) && $currentStep->short == $step->short ? 'purple' : 'blue'}}">{{$step->name}}</span>
     </div>
     @if(!$loop->last)
         <div class="step-divider-line"></div>

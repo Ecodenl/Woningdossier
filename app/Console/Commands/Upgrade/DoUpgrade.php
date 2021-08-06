@@ -14,7 +14,7 @@ class DoUpgrade extends Command
      *
      * @var string
      */
-    protected $signature = 'upgrade:do';
+    protected $signature = 'upgrade:do  {--force}';
 
     /**
      * The console command description.
@@ -40,7 +40,8 @@ class DoUpgrade extends Command
      */
     public function handle()
     {
-        if ($this->confirm('This will 100% mess up your environment when ran unintentionally, do you want to continue')) {
+        $force = $this->option('force') ?? false;
+        if ($force || $this->confirm('This will 100% mess up your environment when ran unintentionally, do you want to continue')) {
             $this->info('<fg=yellow>May the force be with you...</>');
 
             if (app()->environment() == 'local') {
@@ -81,9 +82,9 @@ class DoUpgrade extends Command
                 Artisan::call($command);
             }
 
-            if ($this->confirm('Should we clear the cache ?', 'yes')) {
+            //if ($this->confirm('Should we clear the cache ?', 'yes')) {
                 $this->info('Cache cleared');
-            }
+            //}
         } else {
             $this->info('K bye');
         }

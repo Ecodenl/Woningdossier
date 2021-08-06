@@ -23,6 +23,11 @@ export default (defaultValue = 0, activeClass = 'bg-green', disabled = false, co
         } else if(isNaN(this.value)) {
             this.value = 0;
         }
+
+        // Bind event listener for change
+        this.$refs['rating-slider-input'].addEventListener('change', function (event) {
+            this.selectOptionByValue(event.target.value);
+        });
     },
     mouseEnter(element) {
         if (!this.disabled) {

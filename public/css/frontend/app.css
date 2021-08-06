@@ -139068,6 +139068,10 @@ textarea.form-input {
   outline-offset: 2px;
 }
 
+.source-select-wrapper .source-select-input.disabled {
+  cursor: not-allowed;
+}
+
 .source-select-wrapper i {
   pointer-events: none;
   position: absolute;
@@ -139176,6 +139180,46 @@ textarea.form-input {
 }
 
 .source-example-building:focus {
+  --tw-border-opacity: 1;
+}
+
+.source-null {
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgba(65, 76, 87, var(--tw-border-opacity));
+  --tw-border-opacity: 0;
+  --tw-bg-opacity: 1;
+  background-color: rgba(65, 76, 87, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.1;
+  --tw-text-opacity: 1;
+  color: rgba(65, 76, 87, var(--tw-text-opacity));
+}
+
+.source-null:hover {
+  --tw-border-opacity: 1;
+}
+
+.source-null:focus {
+  --tw-border-opacity: 1;
+}
+
+.source-no-match {
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgba(98, 33, 145, var(--tw-border-opacity));
+  --tw-border-opacity: 0;
+  --tw-bg-opacity: 1;
+  background-color: rgba(98, 33, 145, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.1;
+  --tw-text-opacity: 1;
+  color: rgba(98, 33, 145, var(--tw-text-opacity));
+}
+
+.source-no-match:hover {
+  --tw-border-opacity: 1;
+}
+
+.source-no-match:focus {
   --tw-border-opacity: 1;
 }/* Horizontal divider between steps in the header bar */
 

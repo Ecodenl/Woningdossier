@@ -331,6 +331,10 @@ textarea.form-input {
     @apply w-full flex flex-wrap items-center cursor-pointer h-full rounded-lg outline-none leading-4 pl-2;
 }
 
+.source-select-wrapper .source-select-input.disabled {
+    @apply cursor-not-allowed;
+}
+
 .source-select-wrapper i {
     @apply absolute right-2 top-5/20 pointer-events-none;
 }
@@ -361,6 +365,18 @@ textarea.form-input {
 }
 .source-example-building {
     @apply border border-opacity-0 border-orange bg-orange bg-opacity-10 text-orange;
+
+    @apply hover:border-opacity-100;
+    @apply focus:border-opacity-100;
+}
+.source-null {
+    @apply border border-opacity-0 border-blue bg-blue bg-opacity-10 text-blue;
+
+    @apply hover:border-opacity-100;
+    @apply focus:border-opacity-100;
+}
+.source-no-match {
+    @apply border border-opacity-0 border-purple bg-purple bg-opacity-10 text-purple;
 
     @apply hover:border-opacity-100;
     @apply focus:border-opacity-100;

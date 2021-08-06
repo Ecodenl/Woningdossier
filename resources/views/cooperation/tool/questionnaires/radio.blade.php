@@ -8,7 +8,10 @@
             'class' => ($question->isRequired() ? 'required' : ''),
         ])
             @slot('sourceSlot')
-                @include('cooperation.tool.questionnaires.components.questionnaire-source-list')
+                @include('cooperation.tool.questionnaires.components.questionnaire-source-list', [
+                    'inputType' => 'radio', 'inputValues' => $question->questionOptions,
+                    'userInputValues' => $question->questionAnswersForMe, 'userInputColumn' => 'id'
+                ])
             @endslot
             @foreach($question->questionOptions as $option)
                 <div class="radio-wrapper pr-3">

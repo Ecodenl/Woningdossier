@@ -8,7 +8,10 @@
             'class' => ($question->isRequired() ? 'required' : ''),
         ])
             @slot('sourceSlot')
-                @include('cooperation.tool.questionnaires.components.questionnaire-source-list')
+                @include('cooperation.tool.questionnaires.components.questionnaire-source-list', [
+                    'inputType' => 'checkbox', 'inputValues' => $question->questionOptions,
+                    'userInputValues' => $question->questionAnswersForMe
+                ])
             @endslot
             <?php
             // explode it on pipe | and create a collection from it.

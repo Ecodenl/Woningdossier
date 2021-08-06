@@ -11,7 +11,10 @@
             'class' => ($question->isRequired() ? 'required' : ''),
         ])
             @slot('sourceSlot')
-                @include('cooperation.tool.questionnaires.components.questionnaire-source-list')
+                @include('cooperation.tool.questionnaires.components.questionnaire-source-list', [
+                    'inputType' => 'input', 'userInputValues' => $question->questionAnswersForMe,
+                    'userInputColumn' => 'answer'
+                ])
             @endslot
             <input @if($question->isRequired()) required="required" @endif name="questions[{{$question->id}}]"
                    data-input-value="{{$question->id}}" placeholder="{{$question->name}}"

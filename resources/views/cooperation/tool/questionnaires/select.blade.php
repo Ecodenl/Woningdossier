@@ -8,7 +8,10 @@
             'class' => ($question->isRequired() ? 'required' : ''),
         ])
             @slot('sourceSlot')
-                @include('cooperation.tool.questionnaires.components.questionnaire-source-list')
+                @include('cooperation.tool.questionnaires.components.questionnaire-source-list', [
+                    'inputType' => 'select', 'inputValues' => $question->questionOptions,
+                    'userInputValues' => $question->questionAnswersForMe, 'userInputColumn' => 'answer'
+                ])
             @endslot
             @component('cooperation.frontend.layouts.components.alpine-select')
                 <select id="questions-{{$question->id}}" name="questions[{{$question->id}}]" class="form-input">

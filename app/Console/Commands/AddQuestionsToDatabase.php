@@ -129,7 +129,7 @@ class AddQuestionsToDatabase extends Command
 
         $templateDefault = SubStepTemplate::findByShort('template-default');
         $template2rows1top2bottom = SubStepTemplate::findByShort('template-2-rows-1-top-2-bottom');
-        $template2rows2top1bottom = SubStepTemplate::findByShort('template-2-rows-1-top-2-bottom');
+        $template2rows3top1bottom = SubStepTemplate::findByShort('template-2-rows-3-top-1-bottom');
         $templateCustomChanges = SubStepTemplate::findByShort('template-custom-changes');
 
         $structure = [
@@ -590,6 +590,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:elements,id'],
                             'save_in' => "building_elements.{$wallInsulation->id}.element_value_id",
+                            'short' => 'current-wall-insulation',
                             'translation' => "Wat is de staat van de muurisolatie",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $wallInsulation->values()->orderBy('order')->get(),
@@ -622,6 +623,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:elements,id'],
                             'save_in' => "building_elements.{$floorInsulation->id}.element_value_id",
+                            'short' => 'current-floor-insulation',
                             'translation' => "Wat is de staat van de vloerisolatie",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $floorInsulation->values()->orderBy('order')->get(),
@@ -658,6 +660,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:elements,id'],
                             'save_in' => "building_elements.{$roofInsulation->id}.element_value_id",
+                            'short' => 'current-roof-insulation',
                             'translation' => "Wat is de staat van de dakisolatie",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $roofInsulation->values()->orderBy('order')->get(),
@@ -694,6 +697,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:elements,id'],
                             'save_in' => "building_elements.{$livingRoomsWindows->id}.element_value_id",
+                            'short' => 'current-living-rooms-windows',
                             'translation' => "Welke glasisolatie heeft u op de eerste woonlaag",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $livingRoomsWindows->values()->orderBy('order')->get(),
@@ -724,6 +728,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:elements,id'],
                             'save_in' => "building_elements.{$sleepingRoomsWindows->id}.element_value_id",
+                            'short' => 'current-living-rooms-windows',
                             'translation' => "Welke glasisolatie heeft u op de tweede woonlaag",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $sleepingRoomsWindows->values()->orderBy('order')->get(),
@@ -800,7 +805,7 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => "building_services.{$boiler->id}.service_value_id",
                             'short' => 'boiler-type',
                             'translation' => "Wat voor gasketel heeft u?",
-                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_type_id' => $radioType->id,
                             'tool_question_values' => $boiler->values()->orderBy('order')->get(),
                             'extra' => [
                                 'column' => 'calculate_value',
@@ -969,12 +974,11 @@ class AddQuestionsToDatabase extends Command
                     ]
                 ],
                 'Zonnepanelen' => [
-                    'sub_step_template_id' => $template2rows2top1bottom->id,
+                    'sub_step_template_id' => $template2rows3top1bottom->id,
                     'questions' => [
                         [
                             'validation' => ['required', 'exists:services,id'],
                             'short' => 'has-solar-panels',
-                            // was current-state -> hoe word het huis geventileerd
                             'translation' => "Heeft u zonnepanelen",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_custom_values' => [
@@ -995,6 +999,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'min:1', 'max:50'],
                             'save_in' => "building_services.{$solarPanels->id}.service_value_id",
+                            'short' => 'solar-panel-count',
                             // was current-state -> hoeveel zonnepanelen zijn er aanwezig
                             'translation' => "Hoeveel zonnepanelen?",
                             'tool_question_type_id' => $textType->id,
@@ -1121,8 +1126,8 @@ class AddQuestionsToDatabase extends Command
 
 
                             foreach ($questionData['tool_question_values'] as $toolQuestionValueOrder => $toolQuestionValue) {
-                                if (isset($extra['data'])) {
-                                    $extra['data'][$toolQuestionValue->{$extra['column']}];
+                                if (isset($extra['column'])) {
+                                    $extraData = $extra['data'][$toolQuestionValue->{$extra['column']}];
                                 }
                                 $toolQuestion->toolQuestionValuables()->create([
                                     'order' => $toolQuestionValueOrder,
@@ -1130,7 +1135,7 @@ class AddQuestionsToDatabase extends Command
                                     'tool_question_valuable_type' => get_class($toolQuestionValue),
                                     'tool_question_valuable_id' => $toolQuestionValue->id,
                                     // We grab the extra data by the set column (e.g. calculate_value)
-                                    'extra' => $extra
+                                    'extra' => $extraData ?? $extra
                                 ]);
                             }
                         }

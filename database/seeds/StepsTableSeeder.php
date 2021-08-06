@@ -148,7 +148,7 @@ class StepsTableSeeder extends Seeder
                     'en' => 'Building data',
                     'nl' => 'Woninggegevens',
                 ],
-                'order' => 1,
+                'order' => 0,
             ],
             [
                 'slug' => 'bewoners-gebruik',
@@ -157,7 +157,7 @@ class StepsTableSeeder extends Seeder
                     'en' => 'Usage',
                     'nl' => 'Gebruik',
                 ],
-                'order' => 2,
+                'order' => 1,
             ],
             [
                 'slug' => 'woonwensen',
@@ -166,7 +166,7 @@ class StepsTableSeeder extends Seeder
                     'en' => 'Living requirements',
                     'nl' => 'Woonwensen',
                 ],
-                'order' => 3,
+                'order' => 2,
             ],
             [
                 'slug' => 'woonstatus',
@@ -175,7 +175,7 @@ class StepsTableSeeder extends Seeder
                     'en' => 'Residential status',
                     'nl' => 'Woonstatus',
                 ],
-                'order' => 4,
+                'order' => 3,
             ],
         ];
 

@@ -74,6 +74,9 @@ class Kernel extends HttpKernel
         'step-disabled' => \App\Http\Middleware\RedirectIfStepDisabled::class,
         'restore-building-session-if-filling-for-other-building' => \App\Http\Middleware\RestoreBuildingSessionIfFillingForOtherBuilding::class,
 
+        // quick scan
+        'checks-conditions-for-sub-steps' => \App\Http\Middleware\ChecksConditionsForSubSteps::class,
+
         // api
         'access.cooperation' => \App\Http\Middleware\Api\AllowIfTokenCanAccessCooperation::class,
     ];

@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\QuickScanHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\InputSource;
@@ -28,6 +29,8 @@ class Form extends Component
 
     protected $listeners = ['update', 'updated', 'save',];
 
+    private $rules;
+
     /** @var Building */
     public $building;
 
@@ -51,49 +54,13 @@ class Form extends Component
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-        if (!empty($this->subStep->conditions)) {
-            // we will collect the answers, this way we can query on the collection with the $conditions array.
-            $answers = collect();
-            $conditions = $this->subStep->conditions;
-            foreach ($conditions as $condition) {
-                $toolQuestion = ToolQuestion::findByShort($condition['column']);
-                // set the answers inside the collection
-                $answers->put($condition['column'], $this->building->getAnswer($this->masterInputSource, $toolQuestion));
-            }
-
-
-//            User::where()
-            foreach ($conditions as $condition) {
-                $answers = $answers->where($condition['column'], $condition['operator'], $condition['value']);
-            }
-
-
-            // if there is no match we should go to the next step.
-            if ($answers->isEmpty()) {
-            }
-        }
-
-        $this->toolQuestions = $subStep->toolQuestions;
+        $this->toolQuestions = $subStep->toolQuestions()->orderBy('order')->get();
 
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
         $this->setFilledInAnswers();
     }
 
-    private function setFilledInAnswers()
-    {
-        foreach ($this->toolQuestions as $toolQuestion) {
-
-            $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
-            if ($toolQuestion->toolQuestionType->short == 'rating-slider') {
-                foreach ($toolQuestion->options as $option) {
-                    $this->filledInAnswers[$toolQuestion->id][$option['short']] = $answerForInputSource;
-                }
-            } else {
-                $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
-            }
-        }
-    }
 
     public function render()
     {
@@ -128,7 +95,26 @@ class Form extends Component
         // TODO: Deprecate this dispatch in Livewire V2
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
 
-        $this->toolQuestions = $this->subStep->toolQuestions;
+        // Filter out the questions that do not match the condition
+        $this->toolQuestions = $this->subStep->toolQuestions()->orderBy('order')->get();
+
+        // now collect the given answers
+        $answers = collect();
+        foreach ($this->toolQuestions as $toolQuestion) {
+            $answers->push([$toolQuestion->short => $this->filledInAnswers[$toolQuestion->id]]);
+        }
+
+        foreach ($this->toolQuestions as $index => $toolQuestion) {
+            if (!empty($toolQuestion->conditions)) {
+                foreach ($toolQuestion->conditions as $condition) {
+                    $answer = $answers->where($condition['column'], $condition['operator'], $condition['value'])->first();
+                    // so this means the answer is not found, this means we have to remove the question.
+                    if ($answer === null) {
+                        $this->toolQuestions = $this->toolQuestions->forget($index);
+                    }
+                }
+            }
+        }
     }
 
     public function save($nextUrl)
@@ -146,6 +132,28 @@ class Form extends Component
         $this->toolQuestions = $this->subStep->toolQuestions;
 
         return redirect()->to($nextUrl);
+    }
+
+    private function setFilledInAnswers()
+    {
+        // base key where every answer is stored
+        foreach ($this->toolQuestions as $index => $toolQuestion) {
+            $validationKeys[$index][] = 'filledInAnswers';
+            $validationKeys[$index][] = $toolQuestion->id;
+
+            $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+            if ($toolQuestion->toolQuestionType->short == 'rating-slider') {
+                foreach ($toolQuestion->options as $option) {
+                    $this->filledInAnswers[$toolQuestion->id][$option['short']] = $answerForInputSource;
+                    $validationKeys[$index] = $option['short'];
+
+                }
+            } else {
+                $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
+            }
+
+            $this->rules[implode('.', $validationKeys[$index])] = $toolQuestion->validation;
+        }
     }
 
     private function saveToolQuestionValuables(ToolQuestion $toolQuestion, $givenAnswer)

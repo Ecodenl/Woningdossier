@@ -12,7 +12,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () {
+Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function () {
     Route::group(['middleware' => 'cooperation', 'as' => 'cooperation.', 'namespace' => 'Cooperation'], function () {
         if ('local' == app()->environment()) {
             Route::get('mail', function () {
@@ -24,7 +24,6 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
 //            return new \App\Mail\RequestAccountConfirmationEmail(\App\Models\User::find(1), \App\Models\Cooperation::find(1));
             });
         }
-
 
 
         // TODO: Figure out how to handle these routes; Move to frontend.php?
@@ -166,12 +165,17 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
                 Route::post('', 'ImportController@copy')->name('copy');
             });
 
-                //        Route::livewire('quick-scan/{step}/{subStep}', 'cooperation.frontend.tool.quick-scan')
-//            ->layout('cooperation.frontend.layouts.tool')
-//            ->section('content');
-            Route::get('quick-scan/{step}/{subStep}', 'Frontend\\Tool\\QuickScanController@index')->name('quick-scan.index');
+
+            Route::group(['namespace' => 'Frontend\Tool', 'as' => 'frontend.tool.'], function () {
+                Route::get('quick-scan/{step}/{subStep}', 'QuickScanController@index')
+                    ->name('quick-scan.index')
+                    ->middleware('checks-conditions-for-sub-steps');
+
+                Route::view('housing-plan', 'cooperation.frontend.templates.housing-plan')->name('my-plan.index');
+            });
 
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
+
 
                 Route::get('/', 'ToolController@index')->name('index');
 
@@ -341,7 +345,6 @@ Route::domain('{cooperation}.'.config('hoomdossier.domain'))->group(function () 
                         // needs to be the last route due to the param
                         Route::get('home', 'CoordinatorController@index')->name('index');
                     });
-
 
 
                     /* section for the cooperation-admin */

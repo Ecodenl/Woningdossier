@@ -156,8 +156,7 @@ class Form extends Component
         }
     }
 
-    private
-    function saveToolQuestionValuables(ToolQuestion $toolQuestion, $givenAnswer)
+    private function saveToolQuestionValuables(ToolQuestion $toolQuestion, $givenAnswer)
     {
         $savedInParts = explode('.', $toolQuestion->save_in);
         $table = $savedInParts[0];
@@ -203,8 +202,7 @@ class Form extends Component
     }
 
 
-    private
-    function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
+    private function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
     {
         if (is_array($givenAnswer)) {
             $givenAnswer = json_encode($givenAnswer);

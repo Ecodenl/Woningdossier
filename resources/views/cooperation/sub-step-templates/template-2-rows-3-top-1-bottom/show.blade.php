@@ -10,6 +10,7 @@
 
     ?>
     <div class="w-full flex flex-wrap">
+        @if($topLeft instanceof \App\Models\ToolQuestion)
         @component('cooperation.frontend.layouts.components.form-group', [
             'class' => 'form-group-heading w-full lg:w-1/2 lg:pr-3',
             'label' => $topLeft->name,
@@ -22,8 +23,10 @@
 
             @include("cooperation.tool-question-type-templates.{$topLeft->toolQuestionType->short}.show", ['toolQuestion' => $topLeft])
         @endcomponent
+        @endif
 
         <div class="w-full lg:w-1/2 lg:pl-3">
+            @if($topRightFirst instanceof \App\Models\ToolQuestion)
             @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'form-group-heading w-full',
                 'label' => $topRightFirst->name,
@@ -36,9 +39,11 @@
 
                 @include("cooperation.tool-question-type-templates.{$topRightFirst->toolQuestionType->short}.show", ['toolQuestion' => $topRightFirst])
             @endcomponent
+            @endif
+                @if($topRightSecond instanceof \App\Models\ToolQuestion)
             @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'form-group-heading w-full',
-                'label' => $topRightFirst->name,
+                'label' => $topRightSecond->name,
             ])
                 @slot('modalBodySlot')
                     <p>
@@ -48,8 +53,10 @@
 
                 @include("cooperation.tool-question-type-templates.{$topRightSecond->toolQuestionType->short}.show", ['toolQuestion' => $topRightSecond])
             @endcomponent
+                    @endif
         </div>
     </div>
+        @if($bottomLeft instanceof \App\Models\ToolQuestion)
     <div class="w-full pt-5">
         @component('cooperation.frontend.layouts.components.form-group', [
             'class' => 'form-group-heading w-full',
@@ -65,7 +72,7 @@
                 @include("cooperation.tool-question-type-templates.{$bottomLeft->toolQuestionType->short}.show", ['toolQuestion' => $bottomLeft])
             </div>
         @endcomponent
-
     </div>
+        @endif
 
 </div>

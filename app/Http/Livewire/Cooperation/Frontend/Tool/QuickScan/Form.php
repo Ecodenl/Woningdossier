@@ -29,6 +29,8 @@ class Form extends Component
 
     protected $listeners = ['update', 'updated', 'save',];
 
+    private $rules;
+
     /** @var Building */
     public $building;
 
@@ -59,20 +61,7 @@ class Form extends Component
         $this->setFilledInAnswers();
     }
 
-    private function setFilledInAnswers()
-    {
-        foreach ($this->toolQuestions as $toolQuestion) {
 
-            $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
-            if ($toolQuestion->toolQuestionType->short == 'rating-slider') {
-                foreach ($toolQuestion->options as $option) {
-                    $this->filledInAnswers[$toolQuestion->id][$option['short']] = $answerForInputSource;
-                }
-            } else {
-                $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
-            }
-        }
-    }
 
     public function render()
     {
@@ -125,6 +114,28 @@ class Form extends Component
         $this->toolQuestions = $this->subStep->toolQuestions;
 
         return redirect()->to($nextUrl);
+    }
+
+    private function setFilledInAnswers()
+    {
+        // base key where every answer is stored
+        foreach ($this->toolQuestions as $index => $toolQuestion) {
+            $validationKeys[$index][] = 'filledInAnswers';
+            $validationKeys[$index][] = $toolQuestion->id;
+
+            $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+            if ($toolQuestion->toolQuestionType->short == 'rating-slider') {
+                foreach ($toolQuestion->options as $option) {
+                    $this->filledInAnswers[$toolQuestion->id][$option['short']] = $answerForInputSource;
+                    $validationKeys[$index] = $option['short'];
+
+                }
+            } else {
+                $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
+            }
+
+            $this->rules[implode('.', $validationKeys[$index])] = $toolQuestion->validation;
+        }
     }
 
     private function saveToolQuestionValuables(ToolQuestion $toolQuestion, $givenAnswer)

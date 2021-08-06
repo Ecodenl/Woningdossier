@@ -128,6 +128,12 @@ module.exports = {
             minWidth: {
                 ...fractionTwenty,
             },
+            maxHeight: {
+                ...fractionTwenty,
+            },
+            maxWidth: {
+                ...fractionTwenty,
+            },
             inset: {
                 ...fractionTwenty,
             },

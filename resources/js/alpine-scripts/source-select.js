@@ -9,8 +9,8 @@ export default (initiallyOpen = false) => ({
     open: initiallyOpen,
 
     init() {
-        // This is almost the same as the default alpine select, but this dropdown will have pre-defined options.
-        // These will be the sources for each question.
+        // This is almost the same as the default alpine select, but this dropdown will behave differently. Inputs
+        // must still be given, but these will be the sources for each question.
         let select = this.$refs['source-select'];
 
         // Get attributes

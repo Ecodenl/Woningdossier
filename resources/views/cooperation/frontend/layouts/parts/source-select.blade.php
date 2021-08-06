@@ -7,12 +7,10 @@
         <option value="example-building">@lang('cooperation/frontend/shared.input-sources.example-building')</option>
     </select>
 
-    <div class="input-group">
-        <input class="source-select-input select-none" readonly x-ref="source-select-input" x-model="text"
-               x-bind:class="'source-' + value" x-on:click="toggle()" x-on:click.outside="open = false">
-        <i x-show="open == false" class="icon-xs icon-arrow-down"></i>
-        <i x-cloak x-show="open == true" class="icon-xs icon-arrow-up"></i>
-    </div>
+    <input class="source-select-input select-none" readonly x-ref="source-select-input" x-model="text"
+           x-bind:class="'source-' + value" x-on:click="toggle()" x-on:click.outside="open = false">
+    <i x-show="open == false" class="icon-xs icon-arrow-down"></i>
+    <i x-cloak x-show="open == true" class="icon-xs icon-arrow-up"></i>
 
     @if(! empty($sourceSlot))
         <ul x-cloak x-ref="source-select-options" class="source-select-dropdown" x-show="open">

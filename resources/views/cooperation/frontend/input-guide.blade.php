@@ -4,7 +4,7 @@
 
 @section('content')
     @php
-        $html = '<li class="change-input-value" data-input-value="2" data-input-source-short="resident"><a href="#">Bewoner: N/A</a></li><li class="change-input-value" data-input-value="1" data-input-source-short="coach"><a href="#">Coach: N/A</a></li>';
+        $html = '<li class="change-input-value" data-input-value="2" data-input-source-short="resident">Bewoner: N/A</li><li class="change-input-value" data-input-value="1" data-input-source-short="coach">Coach: N/A</li>';
     @endphp
 
 

@@ -34641,8 +34641,8 @@ __webpack_require__.r(__webpack_exports__);
     // Is the dropdown open?
     open: initiallyOpen,
     init: function init() {
-      // This is almost the same as the default alpine select, but this dropdown will have pre-defined options.
-      // These will be the sources for each question.
+      // This is almost the same as the default alpine select, but this dropdown will behave differently. Inputs
+      // must still be given, but these will be the sources for each question.
       var select = this.$refs['source-select']; // Get attributes
 
       this.value = select.value;

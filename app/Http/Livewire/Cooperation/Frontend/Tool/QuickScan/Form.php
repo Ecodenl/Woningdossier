@@ -54,13 +54,12 @@ class Form extends Component
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-        $this->toolQuestions = $subStep->toolQuestions;
+        $this->toolQuestions = $subStep->toolQuestions()->orderBy('order')->get();
 
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
         $this->setFilledInAnswers();
     }
-
 
 
     public function render()
@@ -96,7 +95,26 @@ class Form extends Component
         // TODO: Deprecate this dispatch in Livewire V2
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
 
-        $this->toolQuestions = $this->subStep->toolQuestions;
+        // Filter out the questions that do not match the condition
+        $this->toolQuestions = $this->subStep->toolQuestions()->orderBy('order')->get();
+
+        // now collect the given answers
+        $answers = collect();
+        foreach ($this->toolQuestions as $toolQuestion) {
+            $answers->push([$toolQuestion->short => $this->filledInAnswers[$toolQuestion->id]]);
+        }
+
+        foreach ($this->toolQuestions as $index => $toolQuestion) {
+            if (!empty($toolQuestion->conditions)) {
+                foreach ($toolQuestion->conditions as $condition) {
+                    $answer = $answers->where($condition['column'], $condition['operator'], $condition['value'])->first();
+                    // so this means the answer is not found, this means we have to remove the question.
+                    if ($answer === null) {
+                        $this->toolQuestions = $this->toolQuestions->forget($index);
+                    }
+                }
+            }
+        }
     }
 
     public function save($nextUrl)
@@ -138,7 +156,8 @@ class Form extends Component
         }
     }
 
-    private function saveToolQuestionValuables(ToolQuestion $toolQuestion, $givenAnswer)
+    private
+    function saveToolQuestionValuables(ToolQuestion $toolQuestion, $givenAnswer)
     {
         $savedInParts = explode('.', $toolQuestion->save_in);
         $table = $savedInParts[0];
@@ -184,7 +203,8 @@ class Form extends Component
     }
 
 
-    private function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
+    private
+    function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
     {
         if (is_array($givenAnswer)) {
             $givenAnswer = json_encode($givenAnswer);

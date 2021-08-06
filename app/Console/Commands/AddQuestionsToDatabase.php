@@ -805,7 +805,7 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => "building_services.{$boiler->id}.service_value_id",
                             'short' => 'boiler-type',
                             'translation' => "Wat voor gasketel heeft u?",
-                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_type_id' => $radioType->id,
                             'tool_question_values' => $boiler->values()->orderBy('order')->get(),
                             'extra' => [
                                 'column' => 'calculate_value',

@@ -2,7 +2,6 @@
 
 namespace App\Http\ViewComposers\Frontend\Layouts\Parts;
 
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Models\Step;

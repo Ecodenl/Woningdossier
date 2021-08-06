@@ -129,7 +129,7 @@ class AddQuestionsToDatabase extends Command
 
         $templateDefault = SubStepTemplate::findByShort('template-default');
         $template2rows1top2bottom = SubStepTemplate::findByShort('template-2-rows-1-top-2-bottom');
-        $template2rows2top1bottom = SubStepTemplate::findByShort('template-2-rows-1-top-2-bottom');
+        $template2rows3top1bottom = SubStepTemplate::findByShort('template-2-rows-3-top-1-bottom');
         $templateCustomChanges = SubStepTemplate::findByShort('template-custom-changes');
 
         $structure = [
@@ -974,12 +974,11 @@ class AddQuestionsToDatabase extends Command
                     ]
                 ],
                 'Zonnepanelen' => [
-                    'sub_step_template_id' => $template2rows2top1bottom->id,
+                    'sub_step_template_id' => $template2rows3top1bottom->id,
                     'questions' => [
                         [
                             'validation' => ['required', 'exists:services,id'],
                             'short' => 'has-solar-panels',
-                            // was current-state -> hoe word het huis geventileerd
                             'translation' => "Heeft u zonnepanelen",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_custom_values' => [

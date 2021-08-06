@@ -3,6 +3,7 @@
     <?php
     // some necessary crap to display the toolQuestions in the right manor
     $top = $toolQuestions->where('pivot.order', 0)->first();
+
     $bottomLeft = $toolQuestions->where('pivot.order', 1)->first();
     $bottomRight = $toolQuestions->where('pivot.order', 2)->first();
 

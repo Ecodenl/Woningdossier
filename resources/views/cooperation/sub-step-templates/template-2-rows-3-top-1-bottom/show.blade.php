@@ -12,7 +12,7 @@
     <div class="w-full flex flex-wrap">
         @component('cooperation.frontend.layouts.components.form-group', [
             'class' => 'form-group-heading w-full lg:w-1/2 lg:pr-3',
-             'label' => $topLeft->name,
+            'label' => $topLeft->name,
          ])
             @slot('modalBodySlot')
                 <p>
@@ -37,9 +37,9 @@
                 @include("cooperation.tool-question-type-templates.{$topRightFirst->toolQuestionType->short}.show", ['toolQuestion' => $topRightFirst])
             @endcomponent
             @component('cooperation.frontend.layouts.components.form-group', [
-    'class' => 'form-group-heading w-full',
-     'label' => $topRightFirst->name,
- ])
+                'class' => 'form-group-heading w-full',
+                'label' => $topRightFirst->name,
+            ])
                 @slot('modalBodySlot')
                     <p>
                         {!! $topRightSecond->help_text !!}
@@ -48,22 +48,21 @@
 
                 @include("cooperation.tool-question-type-templates.{$topRightSecond->toolQuestionType->short}.show", ['toolQuestion' => $topRightSecond])
             @endcomponent
-
         </div>
     </div>
     <div class="w-full pt-5">
         @component('cooperation.frontend.layouts.components.form-group', [
-    'class' => 'form-group-heading w-full',
-'label' => $bottomLeft->name,
-])
+            'class' => 'form-group-heading w-full',
+            'label' => $bottomLeft->name,
+        ])
             @slot('modalBodySlot')
                 <p>
-                    {!! $bottomleft->help_text !!}
+                    {!! $bottomLeft->help_text !!}
                 </p>
             @endslot
             <div class="w-1/2">
 
-                @include("cooperation.tool-question-type-templates.{$topRightSecond->toolQuestionType->short}.show", ['toolQuestion' => $topRightSecond])
+                @include("cooperation.tool-question-type-templates.{$bottomLeft->toolQuestionType->short}.show", ['toolQuestion' => $bottomLeft])
             </div>
         @endcomponent
 

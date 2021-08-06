@@ -11,7 +11,7 @@ $hasAnswer = false;
 if ($userInputValues->count() > 1) {
     $hasAnswer = true;
 } else {
-    // check if there are actualy answers
+    // check if there are actually answers
     if ($userInputValues instanceof \Illuminate\Support\Collection && $userInputValues->isNotEmpty()) {
         // check what we need to do.
         if (in_array($inputType, ['select', 'radio', 'checkbox'])) {
@@ -42,31 +42,31 @@ if ($userInputValues->count() > 1) {
 @else
     @switch($inputType)
         @case('select')
-        @include('cooperation.tool.questionnaires.components.includes.select', [
-            'userInputValues' => $userInputValues,
-            'inputValues' => $inputValues,
-        ])
-        @break
+            @include('cooperation.tool.questionnaires.components.includes.select', [
+                'userInputValues' => $userInputValues,
+                'inputValues' => $inputValues,
+            ])
+            @break
         @case('input')
-        @include('cooperation.tool.questionnaires.components.includes.input', [
-            'userInputValues' => $userInputValues,
-            'userInputColumn' => $userInputColumn ?? 'answer'
-        ])
-        @break
+            @include('cooperation.tool.questionnaires.components.includes.input', [
+                'userInputValues' => $userInputValues,
+                'userInputColumn' => $userInputColumn ?? 'answer'
+            ])
+            @break
         @default
 
         @break
         @case('checkbox')
-        @include('cooperation.tool.questionnaires.components.includes.checkbox', [
-            'userInputValues' => $userInputValues,
-            'inputValues' => $inputValues,
-        ])
-        @break
+            @include('cooperation.tool.questionnaires.components.includes.checkbox', [
+                'userInputValues' => $userInputValues,
+                'inputValues' => $inputValues,
+            ])
+            @break
         @case('radio')
-        @include('cooperation.tool.questionnaires.components.includes.radio', [
-            'userInputValues' => $userInputValues,
-            'inputValues' => $inputValues,
-        ])
-        @break
+            @include('cooperation.tool.questionnaires.components.includes.radio', [
+                'userInputValues' => $userInputValues,
+                'inputValues' => $inputValues,
+            ])
+            @break
     @endswitch
 @endif

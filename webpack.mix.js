@@ -59,5 +59,4 @@ mix.js('resources/js/app.js', 'public/js')
         // Whether to re-write added URLs based on the new css file location
         processCssUrls: false,
     });
-
-
+mix.version();

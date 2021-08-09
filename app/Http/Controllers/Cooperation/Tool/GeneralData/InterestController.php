@@ -26,7 +26,7 @@ class InterestController extends Controller
 
         // we wont show the general data cause we cant give our interest for that
         $steps = $steps->keyBy('short')->forget('general-data');
-        // used in the forloopt
+        // used in the forloop
         $stepCount = $steps->count();
 
         // we have to display the services on the left side, and elements on right side
@@ -67,7 +67,7 @@ class InterestController extends Controller
 
         $interests = Interest::orderBy('order')->get();
 
-        // because the $steps is loaded with view composers and will be overwriten
+        // because the $steps is loaded with view composers and will be overwritten
         $filteredSteps = $steps;
 
         return view('cooperation.tool.general-data.interest.index', compact(

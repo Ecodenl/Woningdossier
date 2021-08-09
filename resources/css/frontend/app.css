@@ -1,9 +1,16 @@
+/* Tailwind */
 @import '../shared/components/tailwind.css';
 
-@import './base/normalize.css';
-
+/* Base CSS */
+@import 'base/normalize.css';
 @import 'components/typography.css';
 @import 'components/clickables.css';
 @import 'components/form.css';
 @import 'components/items.css';
 @import '../shared/components/icons.css';
+
+/* Extras */
+@import '../shared/components/spaces.css';
+
+/* CSS for expert tool */
+@import '../tool/expert.css';

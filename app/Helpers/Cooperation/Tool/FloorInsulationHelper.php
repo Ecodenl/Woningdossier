@@ -114,7 +114,8 @@ class FloorInsulationHelper extends ToolHelper
                 $results = FloorInsulation::calculate($this->building, $this->inputSource, $userEnergyHabit, $this->getValues());
 
                 if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
-                    $measureApplication = MeasureApplication::where('measure_name->nl', $results['insulation_advice'])->first();
+                    $measureApplication = MeasureApplication::where('measure_name->nl', $results['insulation_advice'])
+                        ->first(['measure_applications.*']);
                     if ($measureApplication instanceof MeasureApplication) {
                         $actionPlanAdvice = new UserActionPlanAdvice($results);
                         $actionPlanAdvice->input_source_id = $this->inputSource->id;

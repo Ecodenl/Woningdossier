@@ -689,6 +689,12 @@ return [
                     ],
                 ],
 
+                'example-building-input' => [
+                    'copy' => [
+                        'help' => 'Weet u zeker dat u alle waardes van de voorbeeldwoning wilt overnemen ? Al uw huidige antwoorden zullen worden overschreven door die van de voorbeeldwoning.',
+                    ],
+                ],
+
                 'example-building' => [
                     'example-building-type' => 'Kies de best passende voorbeeldwoning',
                 ],

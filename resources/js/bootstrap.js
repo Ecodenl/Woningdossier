@@ -68,6 +68,7 @@ import register from './alpine-scripts/register.js';
 import picoAddress from './alpine-scripts/picoAddress.js';
 import draggables from './alpine-scripts/draggables.js';
 import dropdown from './alpine-scripts/dropdown.js';
+import tabs from './alpine-scripts/tabs.js';
 
 Alpine.data('alpineSelect', alpineSelect)
 Alpine.data('sourceSelect', sourceSelect)
@@ -78,6 +79,7 @@ Alpine.data('register', register)
 Alpine.data('picoAddress', picoAddress)
 Alpine.data('draggables', draggables)
 Alpine.data('dropdown', dropdown)
+Alpine.data('tabs', tabs)
 
 window.Alpine = Alpine
 

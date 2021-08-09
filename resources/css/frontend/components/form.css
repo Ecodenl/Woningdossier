@@ -17,15 +17,15 @@
 
 /* Header row of the form group */
 .form-header {
-    @apply flex items-center w-full mb-2;
+    @apply flex items-center justify-between w-full mb-2;
 }
 
 .form-header .form-label {
-    @apply flex text-blue-500 text-sm font-bold w-3/4;
+    @apply flex text-blue-500 text-sm font-bold max-w-15/20;
 }
 
 .form-header .form-end {
-    @apply flex justify-end items-center w-1/4;
+    @apply flex justify-end items-center;
 }
 
 .form-header .form-info {
@@ -324,13 +324,15 @@ textarea.form-input {
 
 /* Input source dropdown */
 .source-select-wrapper {
-    @apply w-auto h-4 rounded-lg text-xs relative;
-    min-width: 4rem;
+    @apply w-36 h-4 rounded-lg text-xs relative;
 }
 
 .source-select-wrapper .source-select-input {
-    @apply flex items-center cursor-pointer h-full rounded-lg outline-none leading-4 pl-2;
-    max-width: 7rem;
+    @apply w-full flex flex-wrap items-center cursor-pointer h-full rounded-lg outline-none leading-4 pl-2;
+}
+
+.source-select-wrapper .source-select-input.disabled {
+    @apply cursor-not-allowed;
 }
 
 .source-select-wrapper i {
@@ -338,11 +340,14 @@ textarea.form-input {
 }
 
 .source-select-wrapper .source-select-dropdown {
-    @apply w-28 bg-white bg-opacity-100 h-20 px-2 py-1 rounded absolute top-6 right-0 z-60 filter drop-shadow-xl;
+    @apply bg-white bg-opacity-100 px-2 py-1 rounded absolute top-6 right-0 z-60 filter drop-shadow-xl;
+    min-height: 1.25rem;
+    min-width: 9rem;
+    margin-left: -100vw;
 }
 
 .source-select-wrapper .source-select-dropdown .source-select-option {
-    @apply w-24 h-5 rounded-lg flex items-center pl-1 mb-1 cursor-pointer;
+    @apply w-full h-5 rounded-lg flex items-center px-1 mb-1 cursor-pointer overflow-hidden;
 }
 
 /* Source colors - Naming is important, as these get used to define the color on the main 'button' too */
@@ -360,6 +365,18 @@ textarea.form-input {
 }
 .source-example-building {
     @apply border border-opacity-0 border-orange bg-orange bg-opacity-10 text-orange;
+
+    @apply hover:border-opacity-100;
+    @apply focus:border-opacity-100;
+}
+.source-null {
+    @apply border border-opacity-0 border-blue bg-blue bg-opacity-10 text-blue;
+
+    @apply hover:border-opacity-100;
+    @apply focus:border-opacity-100;
+}
+.source-no-match {
+    @apply border border-opacity-0 border-purple bg-purple bg-opacity-10 text-purple;
 
     @apply hover:border-opacity-100;
     @apply focus:border-opacity-100;

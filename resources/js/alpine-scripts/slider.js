@@ -5,6 +5,11 @@ export default () => ({
     init() {
         this.updateVisuals();
         this.initialized = true;
+
+        // Bind event listener for change
+        this.$refs['slider'].addEventListener('change', function (event) {
+            this.updateVisuals();
+        });
     },
     updateVisuals() {
         this.value = this.$refs['slider'].value;

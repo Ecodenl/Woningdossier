@@ -8,13 +8,12 @@ $translationKey = '';
 {{-- edits --}}
     @foreach($locales as $locale => $i)
 
-        @foreach($exampleBuilding->getTranslations('name') as $translation)
-            <?php $translationKey = $translation->key; ?>
-            @if ($translation->language == $locale)
+        @foreach($exampleBuilding->getTranslations('name') as $language => $translation)
+            @if ($language == $locale)
                 <div class="form-group">
                     <label for="name-{{ $locale }}">{{ $locale }}:</label>
-                    <input id="name-{{$locale}}" class="form-control" name="name[{{ $translation->language }}]" value="{{ old('name.' . $translation->language, $translation->translation) }}">
-                    {{--<input id="name-{{$locale}}" class="form-control" name="name[{{ $translationKey }}][{{ $translation->language }}]" value="{{ $translation->translation }}">--}}
+                    <input id="name-{{$locale}}" class="form-control" name="name[{{ $language }}]" value="{{ old('name.' . $language, $translation) }}">
+                    {{--<input id="name-{{$locale}}" class="form-control" name="name[{{ $translationKey }}][{{ $language }}]" value="{{ $translation->translation }}">--}}
                 </div>
                 <?php unset($locales[$locale]); ?>
             @endif

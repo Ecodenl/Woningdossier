@@ -1,8 +1,6 @@
 /* Hyperlink */
 a {
-    @apply text-blue-900 underline font-medium cursor-pointer transition;
-    line-height: 24px;
-    font-size: 14px;
+    @apply text-blue-900 underline font-medium cursor-pointer transition text-sm;
 
     @apply hover:opacity-60;
     @apply focus:opacity-60;
@@ -13,11 +11,24 @@ p a {
     @apply text-purple no-underline font-medium;
 }
 
+.clickable {
+    @apply cursor-pointer transition;
+
+    @apply hover:opacity-60;
+    @apply focus:opacity-60;
+}
+
 /* Buttons */
 .btn {
-    @apply px-6 py-2 rounded-lg font-bold cursor-pointer transition outline-none no-underline;
-    line-height: 24px;
-    font-size: 14px;
+    @apply px-6 py-2 rounded-lg font-bold cursor-pointer transition outline-none no-underline text-sm inline-block;
+}
+.btn-sm {
+    @apply p-2;
+    font-size: 12px;
+    line-height: 1.5;
+}
+.btn-solid {
+    @apply bg-opacity-100;
 }
 .btn:disabled {
     @apply cursor-not-allowed bg-gray text-white pointer-events-none;
@@ -91,4 +102,24 @@ p a {
     @apply hover:border-opacity-75 hover:shadow-center-red-25;
     @apply focus:border-opacity-75 focus:shadow-center-red-25;
     @apply active:border-opacity-100 focus:shadow-center-red-50;
+}
+
+/* Navigation tabs */
+.nav-tabs {
+    @apply pl-0 pb-0 list-none w-full;
+}
+
+.nav-tabs li {
+    @apply float-left relative block;
+}
+
+.nav-tabs li a {
+    @apply no-underline relative block py-2 px-4 mr-1 text-sm text-green border border-solid border-transparent rounded-t bg-transparent;
+}
+
+.nav-tabs li.completed a {
+    @apply text-white bg-blue-800;
+}
+.nav-tabs li.active a {
+    @apply text-white bg-green;
 }

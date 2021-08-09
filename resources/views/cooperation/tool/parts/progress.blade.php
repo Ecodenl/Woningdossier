@@ -1,4 +1,4 @@
-<ul class="progress-list list-inline">
+<ul class="progress-list list-none -ml-1 flex flex-row flex-wrap w-full justify-center mt-5">
     <?php
     $building = \App\Helpers\HoomdossierSession::getBuilding(true);
     $currentStepIsSubStep = $currentSubStep instanceof \App\Models\Step;
@@ -28,33 +28,25 @@
 
         ?>
         {{-- There is no interest for the general-data so we skip that --}}
-        <li class="list-inline-item
-            @if($routeIsCurrentRoute)
-                active
-            @elseif($isStepCompleted)
-                done
-            @endif
-        @if($step->short != 'general-data' && !$routeIsCurrentRoute && $userDoesNotHaveInterestInStep)
-                not-available
-            @endif
-                ">
+        <li class="inline-block px-1 @if($routeIsCurrentRoute) active @elseif($isStepCompleted) done @endif
+            @if($step->short != 'general-data' && !$routeIsCurrentRoute && $userDoesNotHaveInterestInStep) not-available @endif">
             <a href="{{ route('cooperation.tool.' . $step->short . '.index', ['cooperation' => $cooperation]) }}">
                 <img src="{{ asset('images/icons/' . $step->slug . '.png') }}"
                      title="{{$titleForIcon}}"
-                     alt="{{ $step->name }}" class="img-circle"/>
+                     alt="{{ $step->name }}" class="rounded-1/2"/>
             </a>
             @if(!$routeIsCurrentRoute)
                 @if($isStepCompleted && !$userDoesNotHaveInterestInStep)
-                    <span class="glyphicon glyphicon-ok"></span>
+                    <i class="icon-md icon-check-circle-green"></i>
                 @elseif($step->short != 'general-data' && !$routeIsCurrentRoute && $userDoesNotHaveInterestInStep)
-                    <span class="glyphicon glyphicon-ban-circle"></span>
+                    <i class="icon-md icon-error-cross"></i>
                 @endif
             @endif
 
         </li>
     @endforeach
 
-    <li class="list-inline-item">
+    <li class="inline-block px-1">
         <a class="no-border" href="{{ route('cooperation.tool.my-plan.index', ['cooperation' => $cooperation]) }}">
             <img class="no-border" src="{{ asset('images/icons/my-plan.png') }}"/>
         </a>

@@ -2,6 +2,8 @@
 
 return [
     'input-sources' => [
+        'view-answers' => 'Antwoorden bekijken',
+        'no-answer' => 'Geen gegevens bekend',
         'resident' => 'Bewoner',
         'coach' => 'Coach',
         'example-building' => 'Voorbeeldwoning',

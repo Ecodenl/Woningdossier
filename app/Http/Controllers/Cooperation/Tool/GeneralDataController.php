@@ -12,7 +12,7 @@ class GeneralDataController extends Controller
     /**
      * Just here to redirect!
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function index()
     {

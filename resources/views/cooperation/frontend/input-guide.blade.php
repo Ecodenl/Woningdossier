@@ -3,11 +3,19 @@
 @section('page_title', 'Hoomdossier input guide')
 
 @section('content')
+    @php
+        $html = '<li class="change-input-value" data-input-value="2" data-input-source-short="resident">Bewoner: N/A</li><li class="change-input-value" data-input-value="1" data-input-source-short="coach">Coach: N/A</li>';
+    @endphp
+
+
     <div class="w-full">
         <h4 class="heading-4">
             Welke woning past het beste bij uw situatie?
         </h4>
         @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Voorbeeldwoning opties'])
+            @slot('sourceSlot')
+                {!! $html !!}
+            @endslot
             @slot('modalBodySlot')
                 <p class="font-bold text-red">
                     Use @@slot('modalBodySlot') within a form group component to set the modal content in the modal
@@ -64,6 +72,9 @@
 
         <div class="flex flex-wrap">
             @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pr-3'])
+                @slot('sourceSlot')
+                    {!! $html !!}
+                @endslot
                 @slot('modalBodySlot')
                     <p class="font-bold text-red">
                         Use @@slot('modalBodySlot') within a form group component to set the modal content in the modal
@@ -75,6 +86,9 @@
                 <input id="default" type="text" class="form-input" placeholder="Placeholder">
             @endcomponent
             @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
+                    @slot('sourceSlot')
+                        {!! $html !!}
+                    @endslot
                 @slot('modalBodySlot')
                     <p class="font-bold">select.form-input (class for styling in case of errors with Alpine)</p>
                     <p class="font-bold text-red">
@@ -92,9 +106,15 @@
         </div>
         <div class="flex flex-wrap">
             @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pr-3'])
+                @slot('sourceSlot')
+                    {!! $html !!}
+                @endslot
                 <input id="default-2" type="text" class="form-input" placeholder="Placeholder">
             @endcomponent
             @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
+                @slot('sourceSlot')
+                    {!! $html !!}
+                @endslot
                 @component('cooperation.frontend.layouts.components.alpine-select', ['initiallyOpen' => true])
                     <select id="dropdown-open" class="form-input" name="alpine[dropdown_open]">
                         <option selected disabled>Dropdown focus</option>
@@ -109,6 +129,9 @@
         </div>
         <div class="flex flex-wrap">
             @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3 form-error required'])
+                @slot('sourceSlot')
+                    {!! $html !!}
+                @endslot
                 @slot('modalBodySlot')
                     <p class="font-bold">Error styling handled by form group component</p>
                 @endslot
@@ -120,6 +143,9 @@
         </div>
         <div class="flex flex-wrap">
             @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3 form-error required'])
+                @slot('sourceSlot')
+                    {!! $html !!}
+                @endslot
                 <input id="input-group-error" type="text" class="form-input" placeholder="Error met waarde">
                 <div class="input-group-append">
                     m<sup>2</sup>
@@ -131,6 +157,9 @@
         </div>
         <div class="flex flex-wrap">
             @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3'])
+                @slot('sourceSlot')
+                    {!! $html !!}
+                @endslot
                 @slot('modalBodySlot')
                     <p class="font-bold">input.form-input:disabled</p>
                 @endslot
@@ -139,6 +168,9 @@
         </div>
         <div class="flex flex-wrap">
             @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3 required'])
+                @slot('sourceSlot')
+                    {!! $html !!}
+                @endslot
                 @slot('modalBodySlot')
                     <p class="font-bold text-red">
                         Append .required to component:
@@ -152,12 +184,18 @@
 
         <div class="flex flex-wrap">
             @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pr-3'])
+                @slot('sourceSlot')
+                    {!! $html !!}
+                @endslot
                 @slot('modalBodySlot')
                     <p class="font-bold">textarea.form-input</p>
                 @endslot
                 <textarea id="text-area" class="form-input" placeholder="Text area"></textarea>
             @endcomponent
             @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
+                @slot('sourceSlot')
+                    {!! $html !!}
+                @endslot
                 <input id="placeholder" type="text" class="form-input" placeholder="Placeholder">
             @endcomponent
         </div>
@@ -166,6 +204,9 @@
     <div class="w-full">
         <div class="flex flex-wrap">
             @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pr-3'])
+                @slot('sourceSlot')
+                    {!! $html !!}
+                @endslot
                 @slot('modalBodySlot')
                     <p class="font-bold">input.form-input ~ div.input-group-append</p>
                 @endslot
@@ -175,6 +216,9 @@
                 </div>
             @endcomponent
             @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full md:w-1/2 md:pl-3'])
+                @slot('sourceSlot')
+                    {!! $html !!}
+                @endslot
                 @slot('modalBodySlot')
                     <p class="font-bold text-red">
                         Append .icon to component:
@@ -191,6 +235,9 @@
         </div>
         <div class="flex flex-wrap">
             @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-1/2 md:pr-3'])
+                @slot('sourceSlot')
+                    {!! $html !!}
+                @endslot
                 <input type="text" class="form-input" placeholder="Placeholder">
                 <div class="input-group-append">
                     kWh
@@ -202,6 +249,9 @@
     <div class="w-full">
         <div class="flex flex-wrap">
             @component('cooperation.frontend.layouts.components.form-group', ['label' => 'Onderwerp', 'class' => 'w-full'])
+                @slot('sourceSlot')
+                    {!! $html !!}
+                @endslot
                 @slot('modalBodySlot')
                     <p class="font-bold">div.checkbox-wrapper > input type="checkbox" ~ label > span.checkmark ~ span</p>
                 @endslot

@@ -1,33 +1,44 @@
-@extends('cooperation.tool.layout')
+@extends('cooperation.frontend.layouts.tool')
 
 @section('step_title', \App\Helpers\Translation::translate('wall-insulation.title.title'))
 
-@section('step_content')
+@section('content')
     <form method="POST"
           action="{{ route('cooperation.tool.wall-insulation.store', ['cooperation' => $cooperation]) }}">
-        {{ csrf_field() }}
+        @csrf
 
         <div id="intro">
             @include('cooperation.tool.includes.interested', [
-                'translation' => 'wall-insulation.index.interested-in-improvement', 'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+                'translation' => 'wall-insulation.index.interested-in-improvement', 
+                'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
             ])
-            <div class="row">
-                <div class="col-sm-12">
+            <div class="flex flex-row flex-wrap w-full">
+                <div class="w-full">
                     <?php // todo: something seems off with the name ?>
-                    @component('cooperation.tool.components.step-question', ['id' => 'element_' . $facadeInsulation->element->id, 'name' => 'house_has_insulation', 'translation' => 'wall-insulation.intro.filled-insulation'])
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'element_' . $facadeInsulation->element->id,
+                        'name' => 'house_has_insulation',
+                        'translation' => 'wall-insulation.intro.filled-insulation'
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'select',
+                                'inputValues' => $facadeInsulation->element->values()->orderBy('order')->get(),
+                                'userInputValues' => $facadeInsulation->forMe()->get(),
+                                'userInputColumn' => 'element_value_id'
+                            ])
+                        @endslot
 
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => $facadeInsulation->element->values()->orderBy('order')->get(), 'userInputValues' => $facadeInsulation->forMe()->get(), 'userInputColumn' => 'element_value_id'])
-                            <select id="element_{{ $facadeInsulation->element->id }}" class="form-control"
-                                    name="element[{{ $facadeInsulation->element->id }}]">
-                                @foreach($facadeInsulation->element->values()->orderBy('order')->get() as $elementValue)
-                                    <option data-calculate-value="{{$elementValue->calculate_value}}"
-                                            @if(old('element.' . $facadeInsulation->element->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $facadeInsulation->element->id), 'element_value_id')) == $elementValue->id) selected="selected"
-                                            @endif value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
-                                @endforeach
-                            </select>
-                        @endcomponent
-
+                        <select id="element_{{ $facadeInsulation->element->id }}" class="form-input"
+                                name="element[{{ $facadeInsulation->element->id }}]">
+                            @foreach($facadeInsulation->element->values()->orderBy('order')->get() as $elementValue)
+                                <option data-calculate-value="{{$elementValue->calculate_value}}"
+                                        value="{{ $elementValue->id }}"
+                                        @if(old('element.' . $facadeInsulation->element->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $facadeInsulation->element->id), 'element_value_id')) == $elementValue->id) selected="selected" @endif>
+                                    {{ $elementValue->value }}
+                                </option>
+                            @endforeach
+                        </select>
                     @endcomponent
                 </div>
 
@@ -37,8 +48,8 @@
         <div class="hideable">
 
             @if(isset($building->buildingFeatures->build_year))
-                <div class="row">
-                    <div class="col-sm-12">
+                <div class="flex flex-row flex-wrap w-full">
+                    <div class="w-full">
                         <label for="house_has_insulation" class="control-label">
                             {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year.title', ['year' => $building->buildingFeatures->build_year]) }}
                             @if($building->buildingFeatures->build_year >= 1985)
@@ -53,8 +64,8 @@
                 </div>
             @endif
 
-            <div class="row">
-                <div class="col-sm-12">
+            <div class="flex flex-row flex-wrap w-full">
+                <div class="w-full">
 
                     @component('cooperation.tool.components.input-group',
                     ['inputType' => 'radio',
@@ -89,8 +100,8 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
+        <div class="flex flex-row flex-wrap w-full">
+            <div class="w-full">
 
                 @component('cooperation.tool.components.input-group', ['inputType' => 'radio', 'inputValues' => [
                     1 => \App\Helpers\Translation::translate('general.options.yes.title'),
@@ -125,7 +136,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="flex flex-row flex-wrap w-full">
             <div id="painted-options" style="display: none;">
                 <div class="col-sm-6">
                     @component('cooperation.tool.components.step-question', ['id' => 'building_features.facade_plastered_surface_id', 'translation' => 'wall-insulation.intro.surface-paintwork', 'required' => false])
@@ -161,7 +172,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="flex flex-row flex-wrap w-full">
             <div class="hideable" id="surfaces">
                 <div class="col-sm-6">
                     @component('cooperation.tool.components.step-question', ['id' => 'building_features.wall_surface', 'translation' => 'wall-insulation.optional.facade-surface', 'required' => true])
@@ -207,7 +218,7 @@
             <hr>
             @include('cooperation.tool.includes.section-title', ['translation' => 'wall-insulation.optional.title', 'id' => 'optional',])
 
-            <div id="wall-joints" class="row">
+            <div id="wall-joints" class="flex flex-row flex-wrap w-full">
                 <div class="col-sm-6">
 
                     @component('cooperation.tool.components.step-question', ['id' => 'building_features.wall_joints', 'translation' => 'wall-insulation.optional.flushing', 'required' => false])
@@ -242,7 +253,7 @@
 
 
             <div class="hideable">
-                <div class="row" id="cavity-wall-alert" style="display: none;">
+                <div class="flex flex-row flex-wrap w-full" id="cavity-wall-alert" style="display: none;">
                     <div class="col-sm-12 col-md-8 col-md-offset-2">
                         <div class="alert alert-warning" role="alert">
                             <p>
@@ -261,7 +272,7 @@
                             'id' => 'indication-for-costs'
                         ])
 
-                    <div id="costs" class="row">
+                    <div id="costs" class="flex flex-row flex-wrap w-full">
                         <div class="col-sm-4">
                             @include('cooperation.layouts.indication-for-costs.gas', ['translation' => 'wall-insulation.index.costs.gas'])
                         </div>
@@ -274,7 +285,7 @@
                              ])
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="flex flex-row flex-wrap w-full">
                         <div class="col-sm-4">
                             @include('cooperation.layouts.indication-for-costs.indicative-costs', [
                                 'translation' => 'wall-insulation.index.indicative-costs'
@@ -293,7 +304,7 @@
                 @include('cooperation.tool.includes.section-title', ['translation' => 'wall-insulation.taking-into-account.title', 'id' => 'taking-into-account'])
                 <span>{{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.sub-title.title')}}</span>
 
-                <div class="row">
+                <div class="flex flex-row flex-wrap w-full">
                     <div class="col-sm-6">
                         @component('cooperation.tool.components.step-question', ['id' => 'repair_joint', 'translation' => 'wall-insulation.taking-into-account.repair-joint', 'required' => false])
                             <span id="repair_joint_year">(in 2018)</span>
@@ -315,7 +326,7 @@
                         @endcomponent
                     </div>
                 </div>
-                <div class="row">
+                <div class="flex flex-row flex-wrap w-full">
                     <div class="col-sm-6">
                         @component('cooperation.tool.components.step-question', ['id' => 'impregnate_wall', 'translation' => 'wall-insulation.taking-into-account.impregnate-wall', 'required' => false])
                             <span id="impregnate_wall_year"></span>
@@ -343,7 +354,7 @@
                  'translation' => 'wall-insulation.index.specific-situation'
             ])
 
-            <div class="row">
+            <div class="flex flex-row flex-wrap w-full">
                 <div class="col-md-12">
                     <div class="panel panel-primary">
                         <div class="panel-heading">@lang('default.buttons.download')</div>
@@ -483,10 +494,10 @@
 
             if (elementCalculateValue >= 3) {
                 $('.hideable').hide();
-                $('#wall-insulation-info-alert').find('.alert').removeClass('hide');
+                $('#wall-insulation-info-alert').find('.alert').show();
             } else {
                 $('.hideable').show();
-                $('#wall-insulation-info-alert').find('.alert').addClass('hide');
+                $('#wall-insulation-info-alert').find('.alert').hide();
             }
         }
 

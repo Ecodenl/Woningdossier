@@ -82,7 +82,7 @@ export default (inputSource = 'no-match') => ({
     },
     setElementValue(value) {
         if (this.inputGroup) {
-            let input = this.inputGroup.querySelector('input');
+            let input = this.inputGroup.querySelector('input:not([disabled]):not([readonly])');
             // Not an input?
             if (! input) {
                 // Check if select
@@ -112,7 +112,7 @@ export default (inputSource = 'no-match') => ({
                         case 'hidden':
                             input.value = value;
                             this.checkLivewire(input);
-                            this.triggerChange(input);
+                            window.triggerEvent(input, 'change');
                             break;
                         case 'radio':
                             input = this.inputGroup.querySelector(`input[type="radio"][value="${value}"]`);
@@ -120,7 +120,7 @@ export default (inputSource = 'no-match') => ({
                                 this.inputGroup.querySelector('input[type="radio"]:checked').checked = false;
                                 input.checked = true;
                                 this.checkLivewire(input);
-                                this.triggerChange(input);
+                                window.triggerEvent(input, 'change');
                             }
                             break;
                         case "checkbox":
@@ -128,7 +128,7 @@ export default (inputSource = 'no-match') => ({
                             if (input) {
                                 input.checked = true;
                                 this.checkLivewire(input);
-                                this.triggerChange(input);
+                                window.triggerEvent(input, 'change');
                             }
                             break;
                         default:
@@ -144,8 +144,4 @@ export default (inputSource = 'no-match') => ({
             window.livewire.emit('source-changed', input.getAttribute('wire:model'), input.value);
         }
     },
-    triggerChange(input) {
-        let event = new Event('change', { bubbles: true });
-        input.dispatchEvent(event);
-    }
 });

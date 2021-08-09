@@ -34000,7 +34000,7 @@ __webpack_require__.r(__webpack_exports__);
         if (this.options.length > 0) {
           // Get attributes
           this.value = this.select.value;
-          this.text = this.select.options[this.select.selectedIndex].textContent;
+          this.text = this.select.options[this.select.selectedIndex].textContent.trim();
           this.disabled = this.select.hasAttribute('disabled'); // Add class if disabled, so css can do magic
 
           if (this.disabled) {
@@ -34029,9 +34029,14 @@ __webpack_require__.r(__webpack_exports__);
         this.open = !this.open;
       }
     },
+    close: function close() {
+      this.open = false;
+    },
     changeOption: function changeOption(element) {
       if (!element.classList.contains('disabled')) {
         this.setValue(element.getAttribute('data-value'), element.textContent);
+        this.close();
+        window.triggerEvent(this.select, 'change');
       }
     },
     setValue: function setValue(value) {
@@ -34042,12 +34047,15 @@ __webpack_require__.r(__webpack_exports__);
       this.text = this.text.trim();
     },
     buildOption: function buildOption(parent, option) {
-      // Build a new alpine option
-      var newOption = document.createElement('span');
-      newOption.appendChild(document.createTextNode(option.textContent));
-      newOption.setAttribute("data-value", option.value); // Add alpine functions
+      // Trim to ensure it's not filled with unnecessary white space (will look ugly in the input)
+      var value = option.value;
+      var text = option.textContent.trim(); // Build a new alpine option
 
-      newOption.setAttribute("x-bind:class", "value == '" + option.value + "' ? 'selected' : ''");
+      var newOption = document.createElement('span');
+      newOption.appendChild(document.createTextNode(text));
+      newOption.setAttribute("data-value", value); // Add alpine functions
+
+      newOption.setAttribute("x-bind:class", "value == '" + value + "' ? 'selected' : ''");
       newOption.setAttribute("x-on:click", "changeOption($el)");
       newOption.classList.add('select-option');
 
@@ -34725,7 +34733,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     setElementValue: function setElementValue(value) {
       if (this.inputGroup) {
-        var input = this.inputGroup.querySelector('input'); // Not an input?
+        var input = this.inputGroup.querySelector('input:not([disabled]):not([readonly])'); // Not an input?
 
         if (!input) {
           // Check if select
@@ -34754,7 +34762,7 @@ __webpack_require__.r(__webpack_exports__);
               case 'hidden':
                 input.value = value;
                 this.checkLivewire(input);
-                this.triggerChange(input);
+                window.triggerEvent(input, 'change');
                 break;
 
               case 'radio':
@@ -34764,7 +34772,7 @@ __webpack_require__.r(__webpack_exports__);
                   this.inputGroup.querySelector('input[type="radio"]:checked').checked = false;
                   input.checked = true;
                   this.checkLivewire(input);
-                  this.triggerChange(input);
+                  window.triggerEvent(input, 'change');
                 }
 
                 break;
@@ -34775,7 +34783,7 @@ __webpack_require__.r(__webpack_exports__);
                 if (input) {
                   input.checked = true;
                   this.checkLivewire(input);
-                  this.triggerChange(input);
+                  window.triggerEvent(input, 'change');
                 }
 
                 break;
@@ -34792,12 +34800,6 @@ __webpack_require__.r(__webpack_exports__);
       if (input.hasAttribute('wire:model')) {
         window.livewire.emit('source-changed', input.getAttribute('wire:model'), input.value);
       }
-    },
-    triggerChange: function triggerChange(input) {
-      var event = new Event('change', {
-        bubbles: true
-      });
-      input.dispatchEvent(event);
     }
   };
 });
@@ -34884,6 +34886,16 @@ $.ajaxSetup({
     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
   }
 });
+
+window.triggerEvent = function (element, eventName) {
+  if (element && element.nodeType === Node.ELEMENT_NODE && eventName) {
+    var event = new Event(eventName, {
+      bubbles: true
+    });
+    element.dispatchEvent(event);
+  }
+};
+
 var baseUrl = window.location.origin;
 var apiUrl = '/api';
 var getAddressDataUrl = baseUrl + apiUrl + "/address-data";

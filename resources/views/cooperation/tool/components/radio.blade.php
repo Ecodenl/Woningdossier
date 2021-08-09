@@ -19,7 +19,7 @@ $userInputValues = $userInputValues->sortBy(function ($a) {
                 }
             ?>
             @if(!is_null($value) && $inputValue == $value)
-                <li class="change-input-value" data-input-source-short="{{$userInputValue->inputSource->short}}" data-input-value="{{ $value }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $inputValueLabel }}</a></li>
+                <li class="change-input-value" data-input-source-short="{{$userInputValue->inputSource->short}}" data-input-value="{{ $value }}">{{ $userInputValue->getInputSourceName() }}: {{ $inputValueLabel }}</li>
             @endif
         @endforeach
     @endforeach

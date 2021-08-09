@@ -1,8 +1,8 @@
 <?php
-    $changedToolSettings = $toolSettings->where('has_changed', true);
-    $totalChangedToolSettings = $changedToolSettings->count();
-    $toolSettingsLoopCount = 1;
-    $isFillingToolForOtherBuilding = $user->isFillingToolForOtherBuilding()
+$changedToolSettings = $toolSettings->where('has_changed', true);
+$totalChangedToolSettings = $changedToolSettings->count();
+$toolSettingsLoopCount = 1;
+$isFillingToolForOtherBuilding = $user->isFillingToolForOtherBuilding()
 ?>
 
 <div class="flex flex-wrap flex-row w-full">
@@ -45,14 +45,17 @@
     From a other input source
  --}}
 @if(\App\Helpers\HoomdossierSession::isUserComparingInputSources())
-    <form id="copy-input-{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}" action="{{route('cooperation.import.copy')}}" method="post">
-        <input type="hidden" name="input_source" value="{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}">
+    <form id="copy-input-{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}"
+          action="{{route('cooperation.import.copy')}}" method="post" class="hidden">
+        <input type="hidden" name="input_source"
+               value="{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}">
         @csrf
     </form>
     <div class="flex flex-row flex-wrap w-full">
         <div class="w-full">
             @component('cooperation.frontend.layouts.parts.alert', ['color' => 'blue-800', 'dismissible' => false, 'withBackground' => true, 'class' => 'input-source-notifications', 'closeClass' => 'close-input-source-notification'])
-                <input type="hidden" class="input-source-short" value="{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}">
+                <input type="hidden" class="input-source-short"
+                       value="{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}">
                 <div class="flex flex-row flex-wrap w-full justify-between items-center">
                     <div class="w-full md:w-1/2">
                         <span>
@@ -60,10 +63,12 @@
                         </span>
                     </div>
                     <div class="w-full md:w-1/2 text-right space-x-2">
-                        <a onclick="$('#copy-input-{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}').submit()" class="btn btn-sm btn-green  mt-1">
+                        <a onclick="$('#copy-input-{{\App\Helpers\HoomdossierSession::getCompareInputSourceShort()}}').submit()"
+                           class="btn btn-sm btn-green  mt-1">
                             @lang('my-account.import-center.index.copy-data', ['input_source_name' => \App\Models\InputSource::findByShort(\App\Helpers\HoomdossierSession::getCompareInputSourceShort())->name])
                         </a>
-                        <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => \App\Helpers\HoomdossierSession::getInputSource(true)->short])}}" class="btn btn-sm btn-green  mt-1">
+                        <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => \App\Helpers\HoomdossierSession::getInputSource(true)->short])}}"
+                           class="btn btn-sm btn-green  mt-1">
                             Stop vergelijking
                         </a>
                     </div>
@@ -72,13 +77,14 @@
         </div>
     </div>
 @elseif(!\App\Helpers\HoomdossierSession::isUserObserving())
-{{--
-    Alerts that will show when a resident / user is not comparing input sources
---}}
+    {{--
+        Alerts that will show when a resident / user is not comparing input sources
+    --}}
     <div class="flex flex-row flex-wrap w-full" id="input-source-notifications-row">
         @foreach($changedToolSettings as $i => $toolSetting)
             <?php ++$toolSettingsLoopCount; ?>
-            <form id="copy-input-{{$toolSetting->id}}" action="{{route('cooperation.import.copy')}}" method="post">
+            <form id="copy-input-{{$toolSetting->id}}" action="{{route('cooperation.import.copy')}}" method="post"
+                  class="hidden">
                 <input type="hidden" name="input_source" value="{{$toolSetting->changedInputSource->short}}">
                 @csrf
             </form>
@@ -97,10 +103,12 @@
                             </span>
                         </div>
                         <div class="w-full md:w-1/2 text-right space-x-2">
-                            <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => $toolSetting->changedInputSource->short])}}" class="btn btn-sm btn-green  mt-1">
+                            <a href="{{route('cooperation.my-account.import-center.set-compare-session', ['inputSourceShort' => $toolSetting->changedInputSource->short])}}"
+                               class="btn btn-sm btn-green  mt-1">
                                 @lang('my-account.import-center.index.show-differences')
                             </a>
-                            <a onclick="$('#copy-input-{{$toolSetting->id}}').submit()" class="btn btn-sm btn-green mt-1">
+                            <a onclick="$('#copy-input-{{$toolSetting->id}}').submit()"
+                               class="btn btn-sm btn-green mt-1">
                                 @lang('my-account.import-center.index.copy-data', ['input_source_name' => $toolSetting->changedInputSource->name])
                             </a>
                         </div>

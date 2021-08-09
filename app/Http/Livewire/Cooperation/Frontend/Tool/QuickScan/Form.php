@@ -145,7 +145,7 @@ class Form extends Component
             if ($toolQuestion->toolQuestionType->short == 'rating-slider') {
                 foreach ($toolQuestion->options as $option) {
                     $this->filledInAnswers[$toolQuestion->id][$option['short']] = $answerForInputSource;
-                    $validationKeys[$index] = $option['short'];
+                    $validationKeys[$index][] = $option['short'];
 
                 }
             } else {

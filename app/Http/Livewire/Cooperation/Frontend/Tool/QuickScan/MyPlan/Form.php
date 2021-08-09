@@ -53,7 +53,7 @@ class Form extends Component
 
         $building = HoomdossierSession::getBuilding(true);
 
-        $building->
+//        $building->
 
         $this->cards = [
             $this->CATEGORY_COMPLETE => [

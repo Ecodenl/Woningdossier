@@ -140097,6 +140097,28 @@ textarea.form-input {
 
 .icon-window-frame {
   content: url('/icons/window-frame.svg');
+}.pad-x-1 > :not([hidden]) ~ :not([hidden]) {
+  padding-left: 0.25rem;
+}
+
+.pad-x-2 > :not([hidden]) ~ :not([hidden]) {
+  padding-left: 0.5rem;
+}
+
+.pad-x-3 > :not([hidden]) ~ :not([hidden]) {
+  padding-left: 0.75rem;
+}
+
+.pad-x-4 > :not([hidden]) ~ :not([hidden]) {
+  padding-left: 1rem;
+}
+
+.pad-x-5 > :not([hidden]) ~ :not([hidden]) {
+  padding-left: 1.25rem;
+}
+
+.pad-x-6 > :not([hidden]) ~ :not([hidden]) {
+  padding-left: 1.5rem;
 }/* Progress list */
 
 ul.progress-list {
@@ -140172,3 +140194,10 @@ ul.progress-list li a img.no-border {
   border-style: none;
 }
 
+/* Tailwind */
+
+/* Base CSS */
+
+/* Extras */
+
+/* CSS for expert tool */

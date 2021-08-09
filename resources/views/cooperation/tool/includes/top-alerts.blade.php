@@ -80,20 +80,20 @@ $isFillingToolForOtherBuilding = $user->isFillingToolForOtherBuilding()
     {{--
         Alerts that will show when a resident / user is not comparing input sources
     --}}
-    <div class="flex flex-row flex-wrap w-full" id="input-source-notifications-row">
+    <div class="flex flex-row flex-wrap w-full pad-x-5" id="input-source-notifications-row">
         @foreach($changedToolSettings as $i => $toolSetting)
-            <?php ++$toolSettingsLoopCount; ?>
-            <form id="copy-input-{{$toolSetting->id}}" action="{{route('cooperation.import.copy')}}" method="post"
-                  class="hidden">
-                <input type="hidden" name="input_source" value="{{$toolSetting->changedInputSource->short}}">
-                @csrf
-            </form>
-
             {{--
                 If there are more than one we will load all the input-source notifications, the building notification will be loaded on top of the page
              --}}
-            <?php $width = 12 / $totalChangedToolSettings; $width = $width === 12 ? 'full' : $width; ?>
+            <?php $width = 12 / $totalChangedToolSettings; $width = $width === 12 ? 'full' : "{$width}/12"; ?>
             <div class="w-full sm:w-{{$width}}">
+                <?php ++$toolSettingsLoopCount; ?>
+                <form id="copy-input-{{$toolSetting->id}}" action="{{route('cooperation.import.copy')}}" method="post"
+                      class="hidden">
+                    <input type="hidden" name="input_source" value="{{$toolSetting->changedInputSource->short}}">
+                    @csrf
+                </form>
+
                 @component('cooperation.frontend.layouts.parts.alert', ['color' => 'green', 'dismissible' => true, 'withBackground' => true, 'class' => 'input-source-notifications', 'closeClass' => 'close-input-source-notification'])
                     <input type="hidden" class="input-source-short" value="{{$toolSetting->changedInputSource->short}}">
                     <div class="flex flex-row flex-wrap w-full justify-between items-center">

@@ -1,6 +1,6 @@
 @extends('cooperation.frontend.layouts.tool')
 
-@section('step_title', \App\Helpers\Translation::translate('wall-insulation.title.title'))
+@section('step_title', __('wall-insulation.title.title'))
 
 @section('content')
     <form method="POST"
@@ -50,14 +50,14 @@
             @if(isset($building->buildingFeatures->build_year))
                 <div class="flex flex-row flex-wrap w-full">
                     <div class="w-full">
-                        <label for="house_has_insulation" class="control-label">
-                            {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year.title', ['year' => $building->buildingFeatures->build_year]) }}
+                        <label for="house_has_insulation" class="text-sm text-blue-500 font-bold">
+                            @lang('wall-insulation.intro.build-year.title', ['year' => $building->buildingFeatures->build_year])
                             @if($building->buildingFeatures->build_year >= 1985)
-                                {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year-post-1985.title')}}
+                                @lang('wall-insulation.intro.build-year-post-1985.title')
                             @elseif($building->buildingFeatures->build_year >= 1930)
-                                {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year-post-1930.title')}}
+                                @lang('wall-insulation.intro.build-year-post-1930.title')
                             @else
-                                {{\App\Helpers\Translation::translate('wall-insulation.intro.build-year-pre-1930.title')}}
+                                @lang('wall-insulation.intro.build-year-pre-1930.title')
                             @endif
                         </label>
                     </div>
@@ -67,34 +67,51 @@
             <div class="flex flex-row flex-wrap w-full">
                 <div class="w-full">
 
-                    @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'radio',
-                    'inputValues' => [
-                        1 => \App\Helpers\Translation::translate('general.options.yes.title'),
-                        2 => \App\Helpers\Translation::translate('general.options.no.title'),
-                        0 => \App\Helpers\Translation::translate('general.options.unknown.title'),
-                    ],
-                    'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'cavity_wall'])
-                        @component('cooperation.tool.components.step-question', ['id' => 'cavity_wall', 'translation' => 'wall-insulation.intro.has-cavity-wall', 'required' => true])
-                            <label class="radio-inline">
-                                <input type="radio" name="building_features[cavity_wall]"
-                                       @if(old('building_features.cavity_wall', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'cavity_wall')) == 1) checked
-                                       @endif value="1">{{\App\Helpers\Translation::translate('general.options.yes.title') }}
-                                {{--<input type="radio" name="cavity_wall" @if(old('cavity_wall') == "1") checked @elseif(isset($buildingFeature) && $buildingFeature->cavity_wall == "1") checked @endif  value="1">@lang('woningdossier.cooperation.radiobutton.yes')--}}
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="building_features[cavity_wall]"
-                                       @if(old('building_features.cavity_wall', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'cavity_wall')) == 2) checked
-                                       @endif value="2">{{\App\Helpers\Translation::translate('general.options.no.title') }}
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="building_features[cavity_wall]"
-                                       @if(old('building_features.cavity_wall', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'cavity_wall')) == 0) checked
-                                       @endif value="0">{{\App\Helpers\Translation::translate('general.options.unknown.title') }}
-                            </label>
-                        @endcomponent
-                        <br>
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'cavity_wall', 'translation' => 'wall-insulation.intro.has-cavity-wall',
+                        'required' => true,
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'radio',
+                                'inputValues' => [
+                                    1 => __('general.options.yes.title'),
+                                    2 => __('general.options.no.title'),
+                                    0 => __('general.options.unknown.title'),
+                                ],
+                                'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'cavity_wall'
+                            ])
+                        @endslot
 
+                        <div class="radio-wrapper pr-3">
+                            <input type="radio" id="building-features-cavity-wall-1"
+                                   name="building_features[cavity_wall]" value="1"
+                                   @if(old('building_features.cavity_wall', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'cavity_wall')) == 1) checked @endif>
+                            <label for="building-features-cavity-wall-1">
+                                <span class="checkmark"></span>
+                                <span>@lang('general.options.yes.title')</span>
+                            </label>
+                        </div>
+
+                        <div class="radio-wrapper pl-3">
+                            <input type="radio" id="building-features-cavity-wall-2"
+                                   name="building_features[cavity_wall]" value="2"
+                                   @if(old('building_features.cavity_wall', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'cavity_wall')) == 2) checked @endif>
+                            <label for="building-features-cavity-wall-2">
+                                <span class="checkmark"></span>
+                                <span>@lang('general.options.no.title')</span>
+                            </label>
+                        </div>
+
+                        <div class="radio-wrapper pr-3">
+                            <input type="radio" id="building-features-cavity-wall-0"
+                                   name="building_features[cavity_wall]" value="0"
+                                   @if(old('building_features.cavity_wall', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'cavity_wall')) == 0) checked @endif>
+                            <label for="building-features-cavity-wall-0">
+                                <span class="checkmark"></span>
+                                <span>@lang('general.options.unknown.title')</span>
+                            </label>
+                        </div>
                     @endcomponent
 
                 </div>
@@ -103,34 +120,49 @@
         <div class="flex flex-row flex-wrap w-full">
             <div class="w-full">
 
-                @component('cooperation.tool.components.input-group', ['inputType' => 'radio', 'inputValues' => [
-                    1 => \App\Helpers\Translation::translate('general.options.yes.title'),
-                    2 => \App\Helpers\Translation::translate('general.options.no.title'),
-                    3 => \App\Helpers\Translation::translate('general.options.unknown.title'),
-                ],
-                    'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_painted'])
+                @component('cooperation.tool.components.step-question', [
+                    'id' => 'facade_plastered_painted',
+                    'translation' => 'wall-insulation.intro.is-facade-plastered-painted', 'required' => true
+                ])
+                    @slot('sourceSlot')
+                        @include('cooperation.tool.components.source-list', [
+                            'inputType' => 'radio',
+                            'inputValues' => [
+                                1 => __('general.options.yes.title'),
+                                2 => __('general.options.no.title'),
+                                3 => __('general.options.unknown.title'),
+                            ],
+                            'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_painted'
+                        ])
+                    @endslot
 
-                    @component('cooperation.tool.components.step-question', ['id' => 'facade_plastered_painted', 'translation' => 'wall-insulation.intro.is-facade-plastered-painted', 'required' => true])
-                        <label class="radio-inline">
-                            <input class="is-painted"
-                                   @if(old('building_features.facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'facade_plastered_painted')) == 1) checked
-                                   @endif type="radio" name="building_features[facade_plastered_painted]"
-                                   value="1">{{ \App\Helpers\Translation::translate('general.options.yes.title') }}
+                    <div class="radio-wrapper pr-3">
+                        <input type="radio" id="building-features-facade-plastered-painted-1" class="is-painted"
+                               name="building_features[facade_plastered_painted]" value="1"
+                               @if(old('building_features.facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'facade_plastered_painted')) == 1) checked @endif>
+                        <label for="building-features-facade-plastered-painted-1">
+                            <span class="checkmark"></span>
+                            <span>@lang('general.options.yes.title')</span>
                         </label>
-                        <label class="radio-inline">
-                            <input @if(old('building_features.facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'facade_plastered_painted')) == 2) checked
-                                   @endif type="radio" name="building_features[facade_plastered_painted]"
-                                   value="2">{{ \App\Helpers\Translation::translate('general.options.no.title') }}
+                    </div>
+                    <div class="radio-wrapper pl-3">
+                        <input type="radio" id="building-features-facade-plastered-painted-2"
+                               name="building_features[facade_plastered_painted]" value="2"
+                               @if(old('building_features.facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'facade_plastered_painted')) == 2) checked @endif>
+                        <label for="building-features-facade-plastered-painted-2">
+                            <span class="checkmark"></span>
+                            <span>@lang('general.options.no.title')</span>
                         </label>
-                        <label class="radio-inline">
-                            <input class="is-painted"
-                                   @if(old('building_features.facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'facade_plastered_painted')) == 3) checked
-                                   @endif type="radio" name="building_features[facade_plastered_painted]"
-                                   value="3">{{ \App\Helpers\Translation::translate('general.options.unknown.title') }}
+                    </div>
+                    <div class="radio-wrapper pr-3">
+                        <input type="radio" id="building-features-facade-plastered-painted-3" class="is-painted"
+                               name="building_features[facade_plastered_painted]" value="3"
+                               @if(old('building_features.facade_plastered_painted', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'facade_plastered_painted')) == 3) checked @endif>
+                        <label for="building-features-facade-plastered-painted-3">
+                            <span class="checkmark"></span>
+                            <span>@lang('general.options.unknown.title')</span>
                         </label>
-                    @endcomponent
-                    <br>
-
+                    </div>
                 @endcomponent
 
             </div>
@@ -182,7 +214,7 @@
                             <input id="wall_surface" type="text" name="building_features[wall_surface]"
                                    value="{{ \App\Helpers\NumberFormatter::format(old('building_features.wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'wall_surface')),1) }}"
                                    class="form-control" required="required">
-                            <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
+                            <span class="input-group-addon">@lang('general.unit.square-meters.title')</span>
                         @endcomponent
 
                     @endcomponent
@@ -195,7 +227,7 @@
                             <input id="insulation_wall_surface" type="text" name="building_features[insulation_wall_surface]" required="required"
                                    value="{{ \App\Helpers\NumberFormatter::format(old('building_features.insulation_wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'insulation_wall_surface')),1) }}"
                                    class="form-control">
-                            <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
+                            <span class="input-group-addon">@lang('general.unit.square-meters.title')</span>
                         @endcomponent
 
                     @endcomponent
@@ -206,7 +238,7 @@
                 <div id="advice-help">
                     <div class="col-sm-12 col-md-8 col-md-offset-2">
                         <div class="alert alert-info" role="alert">
-                            <p>{{\App\Helpers\Translation::translate('wall-insulation.insulation-advice.text.title')}}</p>
+                            <p>@lang('wall-insulation.insulation-advice.text.title')</p>
                             <p id="insulation-advice"></p>
                         </div>
                     </div>
@@ -257,7 +289,7 @@
                     <div class="col-sm-12 col-md-8 col-md-offset-2">
                         <div class="alert alert-warning" role="alert">
                             <p>
-                                <strong>{{ \App\Helpers\Translation::translate('wall-insulation.alerts.description.title') }}</strong>
+                                <strong>@lang('wall-insulation.alerts.description.title')</strong>
                             </p>
                         </div>
                     </div>
@@ -302,7 +334,7 @@
             <div id="taking-into-account">
                 <hr>
                 @include('cooperation.tool.includes.section-title', ['translation' => 'wall-insulation.taking-into-account.title', 'id' => 'taking-into-account'])
-                <span>{{\App\Helpers\Translation::translate('wall-insulation.taking-into-account.sub-title.title')}}</span>
+                <span>@lang('wall-insulation.taking-into-account.sub-title.title')</span>
 
                 <div class="flex flex-row flex-wrap w-full">
                     <div class="col-sm-6">

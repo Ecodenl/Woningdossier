@@ -33990,7 +33990,11 @@ __webpack_require__.r(__webpack_exports__);
       this.select = wrapper.querySelector('select'); // Select is defined!
 
       if (!(null === this.select)) {
-        // Get options
+        // Bind event listener for change
+        this.select.addEventListener('change', function (event) {
+          this.setValue(event.target.value);
+        }); // Get options
+
         this.options = this.select.getElementsByTagName('option'); // There are options!
 
         if (this.options.length > 0) {
@@ -34417,7 +34421,12 @@ __webpack_require__.r(__webpack_exports__);
         }
       } else if (isNaN(this.value)) {
         this.value = 0;
-      }
+      } // Bind event listener for change
+
+
+      this.$refs['rating-slider-input'].addEventListener('change', function (event) {
+        this.selectOptionByValue(event.target.value);
+      });
     },
     mouseEnter: function mouseEnter(element) {
       if (!this.disabled) {
@@ -34576,7 +34585,11 @@ __webpack_require__.r(__webpack_exports__);
     value: 0,
     init: function init() {
       this.updateVisuals();
-      this.initialized = true;
+      this.initialized = true; // Bind event listener for change
+
+      this.$refs['slider'].addEventListener('change', function (event) {
+        this.updateVisuals();
+      });
     },
     updateVisuals: function updateVisuals() {
       this.value = this.$refs['slider'].value;
@@ -34630,7 +34643,7 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = (function () {
-  var initiallyOpen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  var inputSource = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'no-match';
   return {
     // Text display
     text: null,
@@ -34639,15 +34652,45 @@ __webpack_require__.r(__webpack_exports__);
     // If the select is disabled
     disabled: false,
     // Is the dropdown open?
-    open: initiallyOpen,
+    open: false,
+    // The input-group div that will hold all inputs
+    inputGroup: null,
     init: function init() {
-      // This is almost the same as the default alpine select, but this dropdown will have pre-defined options.
-      // These will be the sources for each question.
-      var select = this.$refs['source-select']; // Get attributes
+      // This is almost the same as the default alpine select, but this dropdown will behave differently. Inputs
+      // must still be given, but these will be the sources for each question.
+      var select = this.$refs['source-select'];
+      this.disabled = select.hasAttribute('disabled'); // Prepare list items for Alpine!
+      // Get children injected by PHP
 
-      this.value = select.value;
-      this.text = select.options[select.selectedIndex].textContent;
-      this.disabled = select.hasAttribute('disabled'); // Add class if disabled, so css can do magic
+      var children = this.$refs['source-select-options'].children; // If there's no children, then there's no answers
+
+      if (children.length === 0) {
+        this.disabled = true;
+        inputSource = null;
+      } else {
+        // Note: we cannot use forEach, as options is a HTML collection, which is not an array
+        for (var i = 0; i < children.length; i++) {
+          var _short = children[i].getAttribute('data-input-source-short');
+
+          children[i].setAttribute("x-on:click", "changeOption($el)");
+          children[i].classList.add('source-select-option');
+          children[i].classList.add("source-".concat(_short)); // If the short is null, then there's no answers and we must disable the input
+
+          if (_short === null) {
+            this.disabled = true;
+            inputSource = null;
+          }
+        }
+      } // Fetch related input group
+
+
+      var formGroup = this.$refs['source-select-wrapper'].closest('.form-group');
+
+      if (null !== formGroup) {
+        this.inputGroup = formGroup.querySelector('.input-group');
+      }
+
+      this.setSourceValue(inputSource); // Add class if disabled, so css can do magic
 
       if (this.disabled) {
         this.$refs['source-select-input'].classList.add('disabled');
@@ -34662,16 +34705,153 @@ __webpack_require__.r(__webpack_exports__);
     },
     changeOption: function changeOption(element) {
       if (!element.classList.contains('disabled')) {
-        this.setValue(element.getAttribute('data-value'), element.textContent);
+        this.setSourceValue(element.getAttribute('data-input-source-short'));
+        this.setElementValue(element.getAttribute('data-input-value'));
       }
     },
-    setValue: function setValue(value) {
+    setSourceValue: function setSourceValue(value) {
       var text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       this.value = value;
-      this.$refs['source-select'].value = value;
-      this.text = null === text ? value : text;
+      this.text = null === text ? this.$refs['source-select'].querySelector("option[value=\"".concat(value, "\"]")).textContent : text;
       this.text = this.text.trim();
       this.open = false;
+    },
+    setElementValue: function setElementValue(value) {
+      if (this.inputGroup) {
+        var input = this.inputGroup.querySelector('input'); // Not an input?
+
+        if (!input) {
+          // Check if select
+          input = this.inputGroup.querySelector('select'); // Check if valid, else we get a textarea
+
+          input = input ? input : this.inputGroup.querySelector('textarea');
+        } // If an input is found...
+
+
+        if (input) {
+          var type = input.getAttribute('type'); // No type? Then probably select or textarea. We try the tag
+
+          if (type === null) {
+            type = input.tagName;
+          }
+
+          if (typeof type !== 'undefined') {
+            type = type.toLowerCase();
+
+            switch (type) {
+              case 'text':
+              case 'date':
+              case 'select':
+              case 'textarea':
+              case 'range':
+              case 'hidden':
+                input.value = value;
+                this.checkLivewire(input);
+                this.triggerChange(input);
+                break;
+
+              case 'radio':
+                input = this.inputGroup.querySelector("input[type=\"radio\"][value=\"".concat(value, "\"]"));
+
+                if (input) {
+                  this.inputGroup.querySelector('input[type="radio"]:checked').checked = false;
+                  input.checked = true;
+                  this.checkLivewire(input);
+                  this.triggerChange(input);
+                }
+
+                break;
+
+              case "checkbox":
+                input = this.inputGroup.querySelector("input[type=\"checkbox\"][value=\"".concat(value, "\"]"));
+
+                if (input) {
+                  input.checked = true;
+                  this.checkLivewire(input);
+                  this.triggerChange(input);
+                }
+
+                break;
+
+              default:
+                // Not a valid input type?
+                break;
+            }
+          }
+        }
+      }
+    },
+    checkLivewire: function checkLivewire(input) {
+      if (input.hasAttribute('wire:model')) {
+        window.livewire.emit('source-changed', input.getAttribute('wire:model'), input.value);
+      }
+    },
+    triggerChange: function triggerChange(input) {
+      var event = new Event('change', {
+        bubbles: true
+      });
+      input.dispatchEvent(event);
+    }
+  };
+});
+
+/***/ }),
+
+/***/ "./resources/js/alpine-scripts/tabs.js":
+/*!*********************************************!*\
+  !*** ./resources/js/alpine-scripts/tabs.js ***!
+  \*********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  var defaultTab = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  return {
+    currentTab: null,
+    init: function init() {
+      var _this = this;
+
+      document.addEventListener('DOMContentLoaded', function () {
+        // get the current url
+        var url = document.location.href; // check if the current url matches a hashtag
+
+        if (url.match('#')) {
+          try {
+            var hash = new URL(url).hash;
+
+            _this.switchTab(document.querySelector("a[href=\"".concat(hash, "\"]")));
+          } catch (e) {// Not valid URL
+          }
+        } else if (defaultTab && defaultTab.nodeType === Node.ELEMENT_NODE) {
+          _this.switchTab(defaultTab);
+        }
+      });
+    },
+    tab: _defineProperty({}, 'x-on:click', function xOnClick() {
+      this.switchTab(this.$el);
+    }),
+    switchTab: function switchTab(element) {
+      var href = element.getAttribute('href');
+
+      if (href[0] === '#') {
+        var tab = document.querySelector(href);
+
+        if (tab && tab !== this.currentTab) {
+          // If tab is defined and different from current tab
+          if (!this.currentTab) {
+            this.$refs['main-tab'].classList.add('hidden');
+          }
+
+          this.currentTab = tab;
+          window.location.hash = element.hash;
+          this.$refs['nav-tabs'].querySelector('li.active').classList.remove('active');
+          element.parentElement.classList.add('active');
+        }
+      }
     }
   };
 });
@@ -34852,6 +35032,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _alpine_scripts_picoAddress_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./alpine-scripts/picoAddress.js */ "./resources/js/alpine-scripts/picoAddress.js");
 /* harmony import */ var _alpine_scripts_draggables_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./alpine-scripts/draggables.js */ "./resources/js/alpine-scripts/draggables.js");
 /* harmony import */ var _alpine_scripts_dropdown_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./alpine-scripts/dropdown.js */ "./resources/js/alpine-scripts/dropdown.js");
+/* harmony import */ var _alpine_scripts_tabs_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./alpine-scripts/tabs.js */ "./resources/js/alpine-scripts/tabs.js");
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -34920,6 +35101,7 @@ if (token) {
 
 
 
+
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('alpineSelect', _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('sourceSelect', _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_2__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('modal', _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_3__["default"]);
@@ -34929,6 +35111,7 @@ alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('register', _alpine_script
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('picoAddress', _alpine_scripts_picoAddress_js__WEBPACK_IMPORTED_MODULE_7__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('draggables', _alpine_scripts_draggables_js__WEBPACK_IMPORTED_MODULE_8__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('dropdown', _alpine_scripts_dropdown_js__WEBPACK_IMPORTED_MODULE_9__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('tabs', _alpine_scripts_tabs_js__WEBPACK_IMPORTED_MODULE_10__["default"]);
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 

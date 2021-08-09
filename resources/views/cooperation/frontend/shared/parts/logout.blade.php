@@ -1,4 +1,5 @@
-<a onclick="document.getElementById('logout-form').submit();">
+<a href="{{ route('cooperation.auth.logout', ['cooperation' => $cooperation]) }}"
+   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
     @lang('auth.logout.form.header')
 </a>
 

@@ -110,6 +110,9 @@
 .icon-check-circle {
     content: url('/icons/check-circle.svg');
 }
+.icon-check-circle-green {
+    content: url('/icons/check-circle-green.svg');
+}
 .icon-check-circle-dark {
     content: url('/icons/check-circle-dark.svg');
 }

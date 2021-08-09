@@ -98,15 +98,7 @@
 {{--                    </a>--}}
 {{--                </li>--}}
                 <li>
-                    <a href="{{ route('cooperation.auth.logout', ['cooperation' => $cooperation]) }}"
-                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        @lang('auth.logout.form.header')
-                    </a>
-
-                    <form id="logout-form" method="POST" style="display: none;"
-                          action="{{ route('cooperation.auth.logout', ['cooperation' => $cooperation]) }}">
-                        @csrf
-                    </form>
+                    @include('cooperation.frontend.shared.parts.logout')
                 </li>
                 <li>
                     <span class="float-right" style="padding-right:.5em;line-height:100%;">

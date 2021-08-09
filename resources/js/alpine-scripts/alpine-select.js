@@ -18,6 +18,11 @@ export default (initiallyOpen = false) => ({
         this.select = wrapper.querySelector('select');
         // Select is defined!
         if (! (null === this.select)) {
+            // Bind event listener for change
+            this.select.addEventListener('change', function (event) {
+                this.setValue(event.target.value);
+            });
+
             // Get options
             this.options = this.select.getElementsByTagName('option');
             // There are options!

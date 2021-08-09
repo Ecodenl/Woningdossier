@@ -34711,6 +34711,13 @@ __webpack_require__.r(__webpack_exports__);
     },
     setSourceValue: function setSourceValue(value) {
       var text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      var option = this.$refs['source-select'].querySelector("option[value=\"".concat(value, "\"]"));
+
+      if (null === option) {
+        // Option not found? Fallback to no match
+        value = 'no-match';
+      }
+
       this.value = value;
       this.text = null === text ? this.$refs['source-select'].querySelector("option[value=\"".concat(value, "\"]")).textContent : text;
       this.text = this.text.trim();

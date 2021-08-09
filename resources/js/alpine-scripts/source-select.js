@@ -69,6 +69,11 @@ export default (inputSource = 'no-match') => ({
         }
     },
     setSourceValue(value, text = null) {
+        let option = this.$refs['source-select'].querySelector(`option[value="${value}"]`);
+        if (null === option) {
+            // Option not found? Fallback to no match
+            value = 'no-match';
+        }
         this.value = value;
 
         this.text = null === text ? this.$refs['source-select'].querySelector(`option[value="${value}"]`).textContent : text;

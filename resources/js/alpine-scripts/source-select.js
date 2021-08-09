@@ -82,13 +82,14 @@ export default (inputSource = 'no-match') => ({
     },
     setElementValue(value) {
         if (this.inputGroup) {
-            let input = this.inputGroup.querySelector('input:not([disabled]):not([readonly])');
+            // Define the input. It cannot be hidden, disabled or readonly
+            let input = this.inputGroup.querySelector('input:not([disabled]):not([readonly]):not([type="hidden"])');
             // Not an input?
             if (! input) {
                 // Check if select
-                input = this.inputGroup.querySelector('select');
+                input = this.inputGroup.querySelector('select:not([disabled]):not([readonly])');
                 // Check if valid, else we get a textarea
-                input = input ? input : this.inputGroup.querySelector('textarea');
+                input = input ? input : this.inputGroup.querySelector('textarea:not([disabled]):not([readonly])');
             }
 
             // If an input is found...

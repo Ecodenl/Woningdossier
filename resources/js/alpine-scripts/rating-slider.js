@@ -25,8 +25,9 @@ export default (defaultValue = 0, activeClass = 'bg-green', disabled = false, co
         }
 
         // Bind event listener for change
+        let context = this;
         this.$refs['rating-slider-input'].addEventListener('change', function (event) {
-            this.selectOptionByValue(event.target.value);
+            context.selectOptionByValue(event.target.value);
         });
     },
     mouseEnter(element) {

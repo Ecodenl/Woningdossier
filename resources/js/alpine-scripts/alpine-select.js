@@ -19,8 +19,9 @@ export default (initiallyOpen = false) => ({
         // Select is defined!
         if (! (null === this.select)) {
             // Bind event listener for change
+            let context = this;
             this.select.addEventListener('change', function (event) {
-                this.setValue(event.target.value);
+                context.setValue(event.target.value);
             });
 
             // Get options
@@ -72,8 +73,9 @@ export default (initiallyOpen = false) => ({
     setValue(value, text = null) {
         this.value = value;
         this.select.value = value;
+        let option = this.$refs['select-options'].querySelector(`span[data-value="${value}"]`);
 
-        this.text = null === text ? value : text;
+        this.text = null === text ? (option ? option.textContent : value) : text;
         this.text = this.text.trim();
     },
     buildOption(parent, option) {

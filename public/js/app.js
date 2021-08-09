@@ -33991,8 +33991,9 @@ __webpack_require__.r(__webpack_exports__);
 
       if (!(null === this.select)) {
         // Bind event listener for change
+        var context = this;
         this.select.addEventListener('change', function (event) {
-          this.setValue(event.target.value);
+          context.setValue(event.target.value);
         }); // Get options
 
         this.options = this.select.getElementsByTagName('option'); // There are options!
@@ -34043,7 +34044,8 @@ __webpack_require__.r(__webpack_exports__);
       var text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       this.value = value;
       this.select.value = value;
-      this.text = null === text ? value : text;
+      var option = this.$refs['select-options'].querySelector("span[data-value=\"".concat(value, "\"]"));
+      this.text = null === text ? option ? option.textContent : value : text;
       this.text = this.text.trim();
     },
     buildOption: function buildOption(parent, option) {
@@ -34432,8 +34434,9 @@ __webpack_require__.r(__webpack_exports__);
       } // Bind event listener for change
 
 
+      var context = this;
       this.$refs['rating-slider-input'].addEventListener('change', function (event) {
-        this.selectOptionByValue(event.target.value);
+        context.selectOptionByValue(event.target.value);
       });
     },
     mouseEnter: function mouseEnter(element) {
@@ -34595,8 +34598,9 @@ __webpack_require__.r(__webpack_exports__);
       this.updateVisuals();
       this.initialized = true; // Bind event listener for change
 
+      var context = this;
       this.$refs['slider'].addEventListener('change', function (event) {
-        this.updateVisuals();
+        context.updateVisuals();
       });
     },
     updateVisuals: function updateVisuals() {
@@ -34733,13 +34737,14 @@ __webpack_require__.r(__webpack_exports__);
     },
     setElementValue: function setElementValue(value) {
       if (this.inputGroup) {
-        var input = this.inputGroup.querySelector('input:not([disabled]):not([readonly])'); // Not an input?
+        // Define the input. It cannot be hidden, disabled or readonly
+        var input = this.inputGroup.querySelector('input:not([disabled]):not([readonly]):not([type="hidden"])'); // Not an input?
 
         if (!input) {
           // Check if select
-          input = this.inputGroup.querySelector('select'); // Check if valid, else we get a textarea
+          input = this.inputGroup.querySelector('select:not([disabled]):not([readonly])'); // Check if valid, else we get a textarea
 
-          input = input ? input : this.inputGroup.querySelector('textarea');
+          input = input ? input : this.inputGroup.querySelector('textarea:not([disabled]):not([readonly])');
         } // If an input is found...
 
 

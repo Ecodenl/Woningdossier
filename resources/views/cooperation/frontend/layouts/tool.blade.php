@@ -3,7 +3,7 @@
 @section('header')
     <div class="w-full">
         @include('cooperation.frontend.layouts.parts.navbar')
-        @if(\App\Helpers\Blade\RouteLogic::inQuickScanTool(\Illuminate\Support\Facades\Route::currentRouteName()))
+        @if(\App\Helpers\Blade\RouteLogic::inQuickScanTool(Route::currentRouteName()))
             {{-- Step progress --}}
             @include('cooperation.frontend.layouts.parts.sub-nav')
             {{-- Progress bar --}}
@@ -22,7 +22,7 @@
 
 @section('main')
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20">
-        @if(\App\Helpers\Blade\RouteLogic::inExpertTool(\Illuminate\Support\Facades\Route::currentRouteName()))
+        @if(\App\Helpers\Blade\RouteLogic::inExpertTool(Route::currentRouteName()))
             {{-- Expert tool has a card-wrapper around the content --}}
             <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
                 @include('cooperation.tool.includes.top-alerts')
@@ -155,7 +155,7 @@
     </div>
 @endsection
 
-@if(\App\Helpers\Blade\RouteLogic::inExpertTool(\Illuminate\Support\Facades\Route::currentRouteName()))
+@if(\App\Helpers\Blade\RouteLogic::inExpertTool(Route::currentRouteName()))
     @push('js')
         <script>
 {{-- TODO: Check the usages of these scripts --}}

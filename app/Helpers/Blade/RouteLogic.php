@@ -11,7 +11,7 @@ class RouteLogic
     {
         $routeName = $route instanceof Route ? $route->getName() : $route;
 
-        return Str::startsWith($routeName, 'cooperation.quick-scan');
+        return Str::startsWith($routeName, 'cooperation.frontend.tool.quick-scan');
     }
 
     public static function inExpertTool($route): bool

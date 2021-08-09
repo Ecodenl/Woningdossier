@@ -81,6 +81,7 @@
     <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 px-3 lg:px-8"
          x-data="draggables()"
          x-on:item-dragged.window="livewire.emit('cardMoved', $event.detail.from.getAttribute('data-category'), $event.detail.to.getAttribute('data-category'), $event.detail.id)">
+        {{dd($cards)}}
         @foreach($cards as $cardCategory => $cardCollection)
             <div class="card-wrapper" x-bind="container" data-category="{{$cardCategory}}"
                  x-on:drop.prevent="let placeholder = $el.querySelector('.card-placeholder');

@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
 
+use App\Helpers\HoomdossierSession;
+use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -48,6 +50,11 @@ class Form extends Component
     public function mount()
     {
         // TODO: Find out how to get these from backend data
+
+        $building = HoomdossierSession::getBuilding(true);
+
+        $building->
+
         $this->cards = [
             $this->CATEGORY_COMPLETE => [
                 Str::random() => [

@@ -23,10 +23,7 @@ class CreateCustomMeasureApplicationsTable extends Migration
 
             $table->json('name');
             $table->json('info');
-            $table->json('costs');
-            $table->string('savings_money');
 
-            $table->boolean('subsidy');
             $table->json('extra');
             $table->timestamps();
         });

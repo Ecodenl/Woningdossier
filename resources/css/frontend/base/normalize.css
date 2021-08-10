@@ -3,5 +3,5 @@ select {
 }
 
 hr {
-    @apply text-blue-500 opacity-50;
+    @apply border border-solid border-blue-500 border-opacity-50 text-transparent my-5;
 }

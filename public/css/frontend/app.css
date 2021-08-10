@@ -154249,9 +154249,14 @@ Small example
 }
 
 hr {
-  --tw-text-opacity: 1;
-  color: rgba(100, 117, 133, var(--tw-text-opacity));
-  opacity: 0.5;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  border-width: 1px;
+  border-style: solid;
+  --tw-border-opacity: 1;
+  border-color: rgba(100, 117, 133, var(--tw-border-opacity));
+  --tw-border-opacity: 0.5;
+  color: transparent;
 }/* Headings */
 
 .heading-1 {
@@ -154864,13 +154869,21 @@ p a {
 }
 
 .form-header .form-label {
-  display: flex;
   max-width: 75%;
   font-size: 14px;
   line-height: 24px;
   font-weight: 700;
   --tw-text-opacity: 1;
   color: rgba(100, 117, 133, var(--tw-text-opacity));
+}
+
+.form-header .form-label strong {
+  --tw-text-opacity: 1;
+  color: rgba(44, 169, 130, var(--tw-text-opacity));
+}
+
+.form-header .form-label span {
+  font-weight: 400;
 }
 
 .form-header .form-end {
@@ -154920,6 +154933,12 @@ p a {
   --tw-border-opacity: 1;
   border-color: rgba(44, 169, 130, var(--tw-border-opacity));
   --tw-border-opacity: 1;
+}
+
+.form-input {
+  flex: 1 1 auto;
+  width: 1%;
+  min-width: 0;
 }
 
 .form-input::-moz-placeholder {
@@ -155059,6 +155078,7 @@ textarea.form-input {
 .form-error-label {
   margin-top: -0.75rem;
   display: none;
+  width: 100%;
   font-size: 14px;
   line-height: 24px;
   --tw-text-opacity: 1;
@@ -155082,6 +155102,11 @@ textarea.form-input {
   border-color: rgba(228, 20, 64, var(--tw-border-opacity));
   --tw-text-opacity: 1;
   color: rgba(228, 20, 64, var(--tw-text-opacity));
+}
+
+.form-error .input-group-prepend, .form-error .input-group-append {
+  --tw-border-opacity: 1;
+  border-color: rgba(228, 20, 64, var(--tw-border-opacity));
 }
 
 .form-error .form-input::-moz-placeholder {
@@ -155366,25 +155391,71 @@ textarea.form-input {
   align-items: center;
 }
 
-.input-group .input-group-append {
-  position: absolute;
-  top: 1px;
-  right: 1px;
+.input-group .input-group-prepend {
+  position: relative;
+  z-index: 10;
+  margin-bottom: 0.75rem;
   display: flex;
-  width: 2.75rem;
+  height: 2.75rem;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  border-top-right-radius: 0.5rem;
-  border-bottom-right-radius: 0.5rem;
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+  border-width: 1px;
+  border-right-width: 0px;
+  border-style: solid;
+  --tw-border-opacity: 1;
+  border-color: rgba(100, 117, 133, var(--tw-border-opacity));
+  --tw-border-opacity: 0.5;
   --tw-bg-opacity: 1;
   background-color: rgba(240, 241, 242, var(--tw-bg-opacity));
   --tw-bg-opacity: 0.5;
   font-size: 14px;
   line-height: 24px;
+  line-height: 2.5rem;
   --tw-text-opacity: 1;
   color: rgba(100, 117, 133, var(--tw-text-opacity));
-  height: 2.64rem; /* Slightly smaller than h-11 to fit within the borders of the input */
+  padding: 2px 10px;
+  min-width: 2.75rem;
+}
+
+.input-group .input-group-prepend + .form-input {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.input-group .input-group-append {
+  position: relative;
+  z-index: 10;
+  margin-bottom: 0.75rem;
+  display: flex;
+  height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  border-width: 1px;
+  border-left-width: 0px;
+  border-style: solid;
+  --tw-border-opacity: 1;
+  border-color: rgba(100, 117, 133, var(--tw-border-opacity));
+  --tw-border-opacity: 0.5;
+  --tw-bg-opacity: 1;
+  background-color: rgba(240, 241, 242, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.5;
+  font-size: 14px;
+  line-height: 24px;
+  line-height: 2.5rem;
+  --tw-text-opacity: 1;
+  color: rgba(100, 117, 133, var(--tw-text-opacity));
+  padding: 2px 10px;
+  min-width: 2.75rem;
+}
+
+.input-group .form-input.with-append {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-right-width: 0px;
 }
 
 /* Custom Alpine select */

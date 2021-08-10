@@ -24,7 +24,7 @@
     $hasHelpTranslation = isset($translation) ? \App\Helpers\Translation::hasTranslation($translation . '.help') : false;
     $shouldShowHelpIcon =  $hasHelpTranslation && !empty(__($translation . '.help'));
 
-    $label = isset($translation) ? __($translation . '.title', $translationReplace) : '';
+    $label = (isset($translation) ? __($translation . '.title', $translationReplace) : '') . '' . ($label ?? '');
 ?>
 
 @component('cooperation.frontend.layouts.components.form-group', [

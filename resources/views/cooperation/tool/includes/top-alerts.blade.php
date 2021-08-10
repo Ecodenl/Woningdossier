@@ -80,7 +80,7 @@ $isFillingToolForOtherBuilding = $user->isFillingToolForOtherBuilding()
     {{--
         Alerts that will show when a resident / user is not comparing input sources
     --}}
-    <div class="flex flex-row flex-wrap w-full pad-x-5" id="input-source-notifications-row">
+    <div class="flex flex-row flex-wrap w-full sm:pad-x-5" id="input-source-notifications-row">
         @foreach($changedToolSettings as $i => $toolSetting)
             {{--
                 If there are more than one we will load all the input-source notifications, the building notification will be loaded on top of the page

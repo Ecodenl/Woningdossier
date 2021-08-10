@@ -3,7 +3,7 @@
 @section('step_title', __('wall-insulation.title.title'))
 
 @section('content')
-    <form method="POST"
+    <form method="POST" id="wall-insulation-form"
           action="{{ route('cooperation.tool.wall-insulation.store', ['cooperation' => $cooperation]) }}">
         @csrf
 
@@ -359,7 +359,7 @@
                             'id' => 'indication-for-costs'
                         ])
 
-                    <div id="costs" class="flex flex-row flex-wrap w-full pad-x-6">
+                    <div id="costs" class="flex flex-row flex-wrap w-full sm:pad-x-6">
                         <div class="w-full sm:w-1/3">
                             @include('cooperation.layouts.indication-for-costs.gas', [
                                 'translation' => 'wall-insulation.index.costs.gas'
@@ -376,7 +376,7 @@
                              ])
                         </div>
                     </div>
-                    <div class="flex flex-row flex-wrap w-full pad-x-6">
+                    <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
                         <div class="w-full sm:w-1/3">
                             @include('cooperation.layouts.indication-for-costs.indicative-costs', [
                                 'translation' => 'wall-insulation.index.indicative-costs'
@@ -448,21 +448,23 @@
                  'translation' => 'wall-insulation.index.specific-situation'
             ])
 
-            <div class="flex flex-row flex-wrap w-full">
-                <div class="col-md-12">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">@lang('default.buttons.download')</div>
-                        <div class="panel-body">
-                            <ol>
-                                <li><a download=""
-                                       href="{{asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf'))))) }}</a>
-                                </li>
-                                <li><a download=""
-                                       href="{{asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')}}">{{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf'))))) }}</a>
-                                </li>
-                            </ol>
-                        </div>
-                    </div>
+            <div class="flex flex-row flex-wrap w-full border border-solid border-green rounded-lg">
+                <div class="flex flex-row flex-wrap w-full items-center bg-green text-white h-11 px-5 rounded-lg">
+                    @lang('default.buttons.download')
+                </div>
+                <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 py-8 rounded-b-lg">
+                    <ol class="list-decimal ml-8">
+                        <li><a download=""
+                               href="{{asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')}}">
+                                {{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf'))))) }}
+                            </a>
+                        </li>
+                        <li><a download=""
+                               href="{{asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')}}">
+                                {{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf'))))) }}
+                            </a>
+                        </li>
+                    </ol>
                 </div>
             </div>
         </div>
@@ -482,7 +484,8 @@
                     // $('#surfaces').hide()
                 }
 
-                var form = $(this).closest("form").serialize();
+                let $form = $('#wall-insulation-form');
+                let form = $form.serialize();
                 $.ajax({
                     type: "POST",
                     url: '{{ route('cooperation.tool.wall-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',

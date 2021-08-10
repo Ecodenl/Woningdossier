@@ -1,3 +1,6 @@
+const _ = require('lodash')
+const plugin = require('tailwindcss/plugin')
+
 const fractionTen = {
     '1/10': '10%',
     '2/10': '20%',
@@ -211,5 +214,31 @@ module.exports = {
             boxShadow: ['active'],
         },
     },
-    plugins: [],
+    plugins: [
+        plugin(function({ addUtilities, theme, e }) {
+            const spacing = theme('spacing', {});
+
+            const pads = _.map(spacing,(value, key) => {
+                return {
+                    [`.pad-${e(key)} > :not([hidden]) ~ :not([hidden])`]: {
+                        padding: value
+                    },
+                    [`.pad-y-${e(key)} > :not([hidden]) ~ :not([hidden])`]: {
+                        'padding-top': value
+                    },
+                    [`.pad-x-${e(key)} > :not([hidden]) ~ :not([hidden])`]: {
+                        'padding-left': value
+                    },
+                }
+            });
+
+            const newUtilities = [
+                ...pads,
+            ];
+
+            addUtilities(newUtilities, {
+                variants: ['responsive'],
+            });
+        })
+    ],
 }

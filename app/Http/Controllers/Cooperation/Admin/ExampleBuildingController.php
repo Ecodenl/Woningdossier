@@ -74,7 +74,7 @@ class ExampleBuildingController extends Controller
 
         $translations = $request->input('name', []);
         $translations = Arr::only($translations, config('hoomdossier.supported_locales'));
-        $exampleBuilding->createTranslations('name', $translations);
+        $exampleBuilding->name = $translations;
 
         $exampleBuilding->buildingType()->associate($buildingType);
         if (! is_null($cooperation)) {
@@ -181,11 +181,7 @@ class ExampleBuildingController extends Controller
         $cooperation = Cooperation::find($request->get('cooperation_id'));
 
         $translations = $request->input('name', []);
-        foreach (config('hoomdossier.supported_locales') as $locale) {
-            if (isset($translations[$locale]) && ! empty($translations[$locale])) {
-                $exampleBuilding->updateTranslation('name', $translations[$locale], $locale);
-            }
-        }
+        $exampleBuilding->name = $translations;
 
         $exampleBuilding->buildingType()->associate($buildingType);
         if (! is_null($cooperation)) {
@@ -260,7 +256,7 @@ class ExampleBuildingController extends Controller
         }
 
         $newEB = new ExampleBuilding($exampleBuilding->toArray());
-        $name = $newEB->createTranslations('name', $names);
+        $name = $newEB->name = $names;
         $newEB->name = $name;
         $newEB->save();
 

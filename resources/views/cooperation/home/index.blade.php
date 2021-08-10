@@ -12,7 +12,7 @@
                 {!! __('home.start.description') !!}
 
                 <a class="btn btn-purple w-full xl:w-1/4 flex items-center justify-center mt-5"
-                    href="{{url(\App\Helpers\QuickScanHelper::getNextStepUrl($mostRecentCompletedStep, $mostRecentCompletedSubStep))}}">
+                    href="{{$url}}">
                     @lang('default.start')
                     <i class="icon-sm icon-arrow-right-circle ml-5"></i>
                 </a>

@@ -8,6 +8,7 @@ use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\Step;
+use App\Models\SubStep;
 
 class HomeController extends Controller
 {
@@ -22,15 +23,34 @@ class HomeController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
 
+        $mostRecentCompletedSubStep = optional($building->completedSubSteps()->orderByDesc('created_at')->first())->subStep;
+
         // get all the completed steps
-        $mostRecentCompletedStep = $building->completedSteps()->whereIn(
+        $mostRecentCompletedStep = optional($building->completedSteps()->whereIn(
             'step_id',
             Step::whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS)->pluck('id')->toArray()
-        )->orderByDesc('created_at')->first()->step;
-
-        $mostRecentCompletedSubStep = $building->completedSubSteps()->orderByDesc('created_at')->first()->subStep;
+        )->orderByDesc('created_at')->first())->step;
 
 
-        return view('cooperation.home.index', compact('mostRecentCompletedStep', 'mostRecentCompletedSubStep'));
+        // it could be that there is no completed step yet, in that case we just pick the first one.
+        if (!$mostRecentCompletedStep instanceof Step) {
+            $mostRecentCompletedStep = Step::whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS)
+                ->orderBy('order')
+                ->first();
+        }
+
+        if ($mostRecentCompletedSubStep instanceof SubStep) {
+            // now give the user the uncompleted step, because this is probably where he left of
+            $url = QuickScanHelper::getNextStepUrl($mostRecentCompletedStep, $mostRecentCompletedSubStep);
+        }
+
+        // it could also be that there is no completed sub step, this will mean its the user his first time using the tool (yay)
+        if (!$mostRecentCompletedSubStep instanceof SubStep) {
+            $mostRecentCompletedSubStep = $mostRecentCompletedStep->subSteps()->orderBy('order')->first();
+
+            $url = route('cooperation.frontend.tool.quick-scan.index', ['step' => $mostRecentCompletedStep, 'subStep' => $mostRecentCompletedSubStep]);
+        }
+
+        return view('cooperation.home.index', compact('url'));
     }
 }

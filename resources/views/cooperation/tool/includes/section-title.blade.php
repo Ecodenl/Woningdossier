@@ -11,16 +11,16 @@ $hasHelpTranslation = isset($translation) ? \App\Helpers\Translation::hasTransla
 $shouldShowHelpIcon =  $hasHelpTranslation && !empty(__($translation . '.help'));
 ?>
 
-<div class="section-title">
-    <h4 style="margin-left: -5px;">
+<div class="section-title" x-data="modal()">
+    <h4 class="heading-4" style="margin-left: -5px;">
         @if(\App\Helpers\Translation::hasTranslation($translation.'.help') && $shouldShowHelpIcon)
             <i data-target="#{{$id}}-info"
-               class="glyphicon glyphicon-info-sign glyphicon-padding collapsed" aria-expanded="false"></i>
+               class="icon-sm icon-info-light clickable" x-on:click="toggle()"></i>
         @endif
         {{\App\Helpers\Translation::translate($translation.'.title')}}
     </h4>
     @if(\App\Helpers\Translation::hasTranslation($translation.'.help') && $shouldShowHelpIcon)
-        @component('cooperation.tool.components.help-modal', ['id' => $id])
+        @component('cooperation.frontend.layouts.components.modal', ['id' => $id])
             {!! \App\Helpers\Translation::translate($translation.'.help') !!}
         @endcomponent
     @endif

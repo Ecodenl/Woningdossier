@@ -16,3 +16,4 @@
 .pad-x-6 > :not([hidden]) ~ :not([hidden]) {
     padding-left: 1.5rem;
 }
+

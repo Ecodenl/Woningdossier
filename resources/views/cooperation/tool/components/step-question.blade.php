@@ -31,6 +31,7 @@
     'inputName' => $name,
     'label' => $label,
     'id' => $id,
+    'modalId' => $id . '-info',
     'class' => ($required ? 'required' : ''),
 ])
     @if(! empty($sourceSlot))

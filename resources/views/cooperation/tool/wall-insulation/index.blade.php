@@ -29,16 +29,18 @@
                             ])
                         @endslot
 
-                        <select id="element_{{ $facadeInsulation->element->id }}" class="form-input"
-                                name="element[{{ $facadeInsulation->element->id }}]">
-                            @foreach($facadeInsulation->element->values()->orderBy('order')->get() as $elementValue)
-                                <option data-calculate-value="{{$elementValue->calculate_value}}"
-                                        value="{{ $elementValue->id }}"
-                                        @if(old('element.' . $facadeInsulation->element->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $facadeInsulation->element->id), 'element_value_id')) == $elementValue->id) selected="selected" @endif>
-                                    {{ $elementValue->value }}
-                                </option>
-                            @endforeach
-                        </select>
+                        @component('cooperation.frontend.layouts.components.alpine-select')
+                            <select id="element_{{ $facadeInsulation->element->id }}" class="form-input"
+                                    name="element[{{ $facadeInsulation->element->id }}]">
+                                @foreach($facadeInsulation->element->values()->orderBy('order')->get() as $elementValue)
+                                    <option data-calculate-value="{{$elementValue->calculate_value}}"
+                                            value="{{ $elementValue->id }}"
+                                            @if(old('element.' . $facadeInsulation->element->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $facadeInsulation->element->id), 'element_value_id')) == $elementValue->id) selected="selected" @endif>
+                                        {{ $elementValue->value }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        @endcomponent
                     @endcomponent
                 </div>
 
@@ -170,27 +172,48 @@
 
         <div class="flex flex-row flex-wrap w-full">
             <div id="painted-options" style="display: none;">
-                <div class="col-sm-6">
-                    @component('cooperation.tool.components.step-question', ['id' => 'building_features.facade_plastered_surface_id', 'translation' => 'wall-insulation.intro.surface-paintwork', 'required' => false])
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => $facadePlasteredSurfaces, 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'facade_plastered_surface_id'])
-                            <select id="building_features.facade_plastered_surface_id" class="form-control"
+                <div class="w-full sm:w-1/2">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'building_features.facade_plastered_surface_id',
+                        'translation' => 'wall-insulation.intro.surface-paintwork', 'required' => false
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list',[
+                                'inputType' => 'select', 'inputValues' => $facadePlasteredSurfaces,
+                                'userInputValues' => $buildingFeaturesForMe,
+                                'userInputColumn' => 'facade_plastered_surface_id'
+                            ])
+                        @endslot
+
+                        @component('cooperation.frontend.layouts.components.alpine-select')
+                            <select id="building_features.facade_plastered_surface_id" class="form-input"
                                     name="building_features[facade_plastered_surface_id]">
                                 @foreach($facadePlasteredSurfaces as $facadePlasteredSurface)
                                     <option @if(old('building_features.facade_plastered_surface_id', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'building_features.facade_plastered_surface_id'))  == $facadePlasteredSurface->id) selected="selected"
-                                            @endif value="{{ $facadePlasteredSurface->id }}">{{ $facadePlasteredSurface->name }}</option>
+                                            @endif value="{{ $facadePlasteredSurface->id }}">
+                                        {{ $facadePlasteredSurface->name }}
+                                    </option>
                                     {{--<option @if(old('building_features.facade_plastered_surface_id') == $facadePlasteredSurface->id) selected @elseif(isset($buildingFeature) && $buildingFeature->building_features.facade_plastered_surface_id == $facadePlasteredSurface->id ) selected @endif value="{{ $facadePlasteredSurface->id }}">{{ $facadePlasteredSurface->name }}</option>--}}
                                 @endforeach
-                            </select>@endcomponent
+                            </select>
+                        @endcomponent
                     @endcomponent
 
                 </div>
 
-                <div class="col-sm-6">
+                <div class="w-full sm:w-1/2">
 
                     @component('cooperation.tool.components.step-question', ['id' => 'facade_damaged_paintwork_id', 'translation' => 'wall-insulation.intro.damage-paintwork', 'required' => false])
-                        @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $facadeDamages, 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'facade_damaged_paintwork_id'])
-                            <select id="facade_damaged_paintwork_id" class="form-control"
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'select', 'inputValues' => $facadeDamages, 
+                                'userInputValues' => $buildingFeaturesForMe,
+                                'userInputColumn' => 'facade_damaged_paintwork_id'
+                            ])
+                        @endslot
+                    
+                        @component('cooperation.frontend.layouts.components.alpine-select')
+                            <select id="facade_damaged_paintwork_id" class="form-input"
                                     name="building_features[facade_damaged_paintwork_id]">
                                 @foreach($facadeDamages as $facadeDamage)
                                     <option @if(old('building_features.facade_damaged_paintwork_id', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'facade_damaged_paintwork_id'))  == $facadeDamage->id) selected="selected"
@@ -206,41 +229,41 @@
         </div>
         <div class="flex flex-row flex-wrap w-full">
             <div class="hideable" id="surfaces">
-                <div class="col-sm-6">
+                <div class="w-full sm:w-1/2">
                     @component('cooperation.tool.components.step-question', ['id' => 'building_features.wall_surface', 'translation' => 'wall-insulation.optional.facade-surface', 'required' => true])
+                        @include('cooperation.tool.components.source-list', [
+                            'inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe,
+                            'userInputColumn' => 'wall_surface', 'needsFormat' => true
+                        ])
 
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_surface', 'needsFormat' => true])
-                            <input id="wall_surface" type="text" name="building_features[wall_surface]"
-                                   value="{{ \App\Helpers\NumberFormatter::format(old('building_features.wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'wall_surface')),1) }}"
-                                   class="form-control" required="required">
-                            <span class="input-group-addon">@lang('general.unit.square-meters.title')</span>
-                        @endcomponent
-
+                        <input id="wall_surface" type="text" name="building_features[wall_surface]"
+                               value="{{ \App\Helpers\NumberFormatter::format(old('building_features.wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'wall_surface')),1) }}"
+                               class="form-input" required="required">
+                        <span class="input-group-append">@lang('general.unit.square-meters.title')</span>
                     @endcomponent
                 </div>
-                <div class="col-sm-6">
+                <div class="w-full sm:w-1/2">
                     @component('cooperation.tool.components.step-question', ['id' => 'building_features.insulation_wall_surface', 'translation' => 'wall-insulation.optional.insulated-surface', 'required' => true])
+                        @include('cooperation.tool.components.source-list', [
+                            'inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe,
+                            'userInputColumn' => 'insulation_wall_surface', 'needsFormat' => true
+                        ])
 
-                        @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'insulation_wall_surface', 'needsFormat' => true])
-                            <input id="insulation_wall_surface" type="text" name="building_features[insulation_wall_surface]" required="required"
-                                   value="{{ \App\Helpers\NumberFormatter::format(old('building_features.insulation_wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'insulation_wall_surface')),1) }}"
-                                   class="form-control">
-                            <span class="input-group-addon">@lang('general.unit.square-meters.title')</span>
-                        @endcomponent
-
+                        <input id="insulation_wall_surface" type="text" name="building_features[insulation_wall_surface]" required="required"
+                               value="{{ \App\Helpers\NumberFormatter::format(old('building_features.insulation_wall_surface', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'insulation_wall_surface')),1) }}"
+                               class="form-input">
+                        <span class="input-group-append">@lang('general.unit.square-meters.title')</span>
                     @endcomponent
                 </div>
             </div>
 
             <div class="hideable">
                 <div id="advice-help">
-                    <div class="col-sm-12 col-md-8 col-md-offset-2">
-                        <div class="alert alert-info" role="alert">
+                    <div class="w-full md:w-2/3 md:ml-2/12">
+                        @component('cooperation.frontend.layouts.parts.alert', ['color' => 'blue-800', 'dismissible' => false])
                             <p>@lang('wall-insulation.insulation-advice.text.title')</p>
                             <p id="insulation-advice"></p>
-                        </div>
+                        @endcomponent
                     </div>
                 </div>
             </div>
@@ -251,26 +274,36 @@
             @include('cooperation.tool.includes.section-title', ['translation' => 'wall-insulation.optional.title', 'id' => 'optional',])
 
             <div id="wall-joints" class="flex flex-row flex-wrap w-full">
-                <div class="col-sm-6">
+                <div class="w-full sm:w-1/2">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'building_features.wall_joints', 'translation' => 'wall-insulation.optional.flushing',
+                        'required' => false
+                    ])
+                        @include('cooperation.tool.components.source-list', [
+                            'inputType' => 'select', 'inputValues' => $surfaces,
+                            'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_joints'
+                        ])
 
-                    @component('cooperation.tool.components.step-question', ['id' => 'building_features.wall_joints', 'translation' => 'wall-insulation.optional.flushing', 'required' => false])
-                        @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'select', 'inputValues' => $surfaces, 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'wall_joints'])
-                            <select id="building_features.wall_joints" class="form-control" name="building_features[wall_joints]">
+                        @component('cooperation.frontend.layouts.components.alpine-select')
+                            <select id="building_features.wall_joints" class="form-input"
+                                    name="building_features[wall_joints]">
                                 @foreach($surfaces as $surface)
                                     <option @if(old('building_features.wall_joints', \App\Helpers\Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnCredibility, 'wall_joints'))  == $surface->id) selected="selected"
-                                            @endif value="{{ $surface->id }}">{{ $surface->name }}</option>
+                                            @endif value="{{ $surface->id }}">
+                                        {{ $surface->name }}
+                                    </option>
                                     {{--<option @if(old('building_features.wall_joints') == $surface->id) selected @elseif(isset($buildingFeature) && $buildingFeature->building_features.wall_joints == $surface->id ) selected  @endif value="{{ $surface->id }}">{{ $surface->name }}</option>--}}
                                 @endforeach
-                            </select>@endcomponent
+                            </select>
+                        @endcomponent
                     @endcomponent
                 </div>
 
-                <div class="col-sm-6">
+                <div class="w-full sm:w-1/2">
                     @component('cooperation.tool.components.step-question', ['id' => 'building_features.contaminated_wall_joints', 'translation' => 'wall-insulation.optional.is-facade-dirty', 'required' => false])
                         @component('cooperation.tool.components.input-group',
                             ['inputType' => 'select', 'inputValues' => $surfaces, 'userInputValues' => $buildingFeaturesForMe ,'userInputColumn' => 'contaminated_wall_joints'])
-                            <select id="contaminated_wall_joints" class="form-control" name="building_features[contaminated_wall_joints]">
+                            <select id="contaminated_wall_joints" class="form-input" name="building_features[contaminated_wall_joints]">
                                 @foreach($surfaces as $surface)
                                     <option @if(old('building_features.contaminated_wall_joints') == $surface->id) selected
                                             @elseif(isset($buildingFeature) && $buildingFeature->contaminated_wall_joints == $surface->id ) selected
@@ -337,21 +370,21 @@
                 <span>@lang('wall-insulation.taking-into-account.sub-title.title')</span>
 
                 <div class="flex flex-row flex-wrap w-full">
-                    <div class="col-sm-6">
+                    <div class="w-full sm:w-1/2">
                         @component('cooperation.tool.components.step-question', ['id' => 'repair_joint', 'translation' => 'wall-insulation.taking-into-account.repair-joint', 'required' => false])
                             <span id="repair_joint_year">(in 2018)</span>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                                <span class="input-group-append"><i class="glyphicon glyphicon-euro"></i></span>
                                 <input type="text" id="repair_joint" class="form-control disabled" disabled=""
                                        value="0">
                             </div>
                         @endcomponent
                     </div>
-                    <div class="col-sm-6">
+                    <div class="w-full sm:w-1/2">
                         @component('cooperation.tool.components.step-question', ['id' => 'clean_brickwork', 'translation' => 'wall-insulation.taking-into-account.clean-brickwork', 'required' => false])
                             <span id="clean_brickwork_year"></span>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                                <span class="input-group-append"><i class="glyphicon glyphicon-euro"></i></span>
                                 <input type="text" id="clean_brickwork" class="form-control disabled" disabled=""
                                        value="0">
                             </div>
@@ -359,21 +392,21 @@
                     </div>
                 </div>
                 <div class="flex flex-row flex-wrap w-full">
-                    <div class="col-sm-6">
+                    <div class="w-full sm:w-1/2">
                         @component('cooperation.tool.components.step-question', ['id' => 'impregnate_wall', 'translation' => 'wall-insulation.taking-into-account.impregnate-wall', 'required' => false])
                             <span id="impregnate_wall_year"></span>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                                <span class="input-group-append"><i class="glyphicon glyphicon-euro"></i></span>
                                 <input type="text" id="impregnate_wall" class="form-control disabled" disabled=""
                                        value="0">
                             </div>
                         @endcomponent
                     </div>
-                    <div class="col-sm-6">
+                    <div class="w-full sm:w-1/2">
                         @component('cooperation.tool.components.step-question', ['id' => 'paint_wall', 'translation' => 'wall-insulation.taking-into-account.wall-painting', 'required' => false])
                             <span id="paint_wall_year"></span>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
+                                <span class="input-group-append"><i class="glyphicon glyphicon-euro"></i></span>
                                 <input type="text" id="paint_wall" class="form-control disabled" disabled="" value="0">
                             </div>
                         @endcomponent

@@ -2,9 +2,9 @@
     <div class="checkbox-wrapper media-wrapper">
         <input type="checkbox" id="changes-kitchen" name="changes" value="kitchen">
         <label for="changes-kitchen">
-                            <span class="media-icon-wrapper">
-                                <i class="icon-kitchen"></i>
-                            </span>
+            <span class="media-icon-wrapper">
+                <i class="icon-kitchen"></i>
+            </span>
             <span class="checkmark"></span>
             <span>Keuken</span>
         </label>
@@ -26,7 +26,7 @@
 
                 <span>{{$customMeasureApplication['name']}}</span>
             </label>
-            @component('cooperation.frontend.layouts.components.modal', ['header' => __('cooperation/frontend/tool.form.subject')])
+            @component('cooperation.frontend.layouts.components.modal', ['header' => __('livewire/cooperation/frontend/tool/quick-scan/custom-changes.name.title')])
                 <div class="flex flex-wrap mb-5">
                     @component('cooperation.frontend.layouts.components.form-group', [
                        'inputName' => 'new_measure.subject',
@@ -34,14 +34,12 @@
                        'id' => 'new-measure-subject',
                        'withInputSource' => false,
                    ])
-                        <input class="form-input" wire:model="customMeasureApplications.{{$index}}.name"
-                               id="new-measure-subject"
-                               placeholder="Placeholder">
+                        <input class="form-input" wire:model="customMeasureApplications.{{$index}}.name" id="new-measure-subject" placeholder="@lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.name.placeholder')">
                     @endcomponent
                     <div class="w-full flex items-center">
                         <i class="icon-sm icon-info mr-3"></i>
                         <h6 class="heading-6">
-                            Prijsindicatie in €
+                            @lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.name.title')
                         </h6>
                     </div>
                     @component('cooperation.frontend.layouts.components.form-group', [
@@ -54,20 +52,19 @@
                                placeholder="van">
                     @endcomponent
                     @component('cooperation.frontend.layouts.components.form-group', [
-                       'inputName' => 'new_measure.price.to',
-                       'class' => 'w-1/2 pl-1',
-                       'id' => 'new-measure-price-to',
-                       'withInputSource' => false,
-                   ])
-                        <input class="form-input" name="new_measure[price][to]" id="new-measure-price-to"
-                               placeholder="tot">
+                        'inputName' => 'new_measure.price.to',
+                        'class' => 'w-1/2 pl-1',
+                        'id' => 'new-measure-price-to',
+                        'withInputSource' => false,
+                    ])
+                            <input class="form-input" name="new_measure[price][to]" id="new-measure-price-to" placeholder="tot">
                     @endcomponent
                 </div>
                 <div class="w-full border border-gray fixed left-0"></div>
                 <div class="flex flex-wrap justify-center mt-14">
                     <button x-on:click="toggle()" wire:click="save" class="btn btn-purple w-full">
                         <i class="icon-xs icon-plus-purple mr-3"></i>
-                        Voeg maatregel toe
+                        @lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.save')
                     </button>
                 </div>
             @endcomponent

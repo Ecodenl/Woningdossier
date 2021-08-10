@@ -102,6 +102,11 @@ class Building extends Model
         'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension', 'is_active',
     ];
 
+    public function customMeasureApplications(): HasMany
+    {
+        return $this->hasMany(CustomMeasureApplication::class);
+    }
+
     public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
     {
         $answer = null;

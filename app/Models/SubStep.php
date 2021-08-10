@@ -35,15 +35,20 @@ class SubStep extends Model
         'conditions' => 'array',
     ];
 
-    public function step(): BelongsTo
-    {
-        return $this->belongsTo(Step::class);
-    }
-
     public function getRouteKeyName(): string
     {
         $locale = app()->getLocale();
         return "slug->{$locale}";
+    }
+
+    public function getRouteKey()
+    {
+        return $this->slug;
+    }
+
+    public function step(): BelongsTo
+    {
+        return $this->belongsTo(Step::class);
     }
 
     public function subStepTemplate(): BelongsTo

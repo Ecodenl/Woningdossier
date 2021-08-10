@@ -4,8 +4,10 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\QuickScanHelper;
+use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
+use App\Models\CompletedSubStep;
 use App\Models\InputSource;
 use App\Models\Question;
 use App\Models\Step;
@@ -131,6 +133,19 @@ class Form extends Component
 
         $this->toolQuestions = $this->subStep->toolQuestions;
 
+        // now mark the sub step as complete
+        CompletedSubStep::firstOrCreate([
+            'sub_step_id' => $this->subStep->id,
+            'building_id' => $this->building->id,
+            'input_source_id' => $this->currentInputSource->id
+        ]);
+
+        $lastSubStepForStep = $this->step->subSteps()->orderByDesc('order')->first();
+        // last substep is done, now we can complete the main step
+        if ($this->subStep->id === $lastSubStepForStep->id) {
+            StepHelper::complete($this->step, $this->building, $this->currentInputSource);
+        }
+
         return redirect()->to($nextUrl);
     }
 
@@ -145,7 +160,7 @@ class Form extends Component
             if ($toolQuestion->toolQuestionType->short == 'rating-slider') {
                 foreach ($toolQuestion->options as $option) {
                     $this->filledInAnswers[$toolQuestion->id][$option['short']] = $answerForInputSource;
-                    $validationKeys[$index] = $option['short'];
+                    $validationKeys[$index][] = $option['short'];
 
                 }
             } else {

@@ -225,6 +225,11 @@ class Building extends Model
         return $this->hasMany(CompletedStep::class);
     }
 
+    public function completedSubSteps(): HasMany
+    {
+        return $this->hasMany(CompletedSubStep::class);
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

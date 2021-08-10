@@ -31,7 +31,7 @@ class Form extends Component
 
     protected $listeners = ['update', 'updated', 'save',];
 
-    private $rules;
+    public $rules;
 
     /** @var Building */
     public $building;
@@ -121,6 +121,8 @@ class Form extends Component
 
     public function save($nextUrl)
     {
+        // $this->validate($this->rules);
+
         foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
             /** @var ToolQuestion $toolQuestion */
             $toolQuestion = ToolQuestion::find($toolQuestionId);

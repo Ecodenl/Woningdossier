@@ -4,7 +4,12 @@
             @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'form-group-heading',
                 'label' => $toolQuestion->name,
+                'inputName' => "filledInAnswers.{$toolQuestion->id}",
             ])
+                @slot('sourceSlot')
+
+                @endslot
+
                 @slot('modalBodySlot')
                     <p>
                         {!! $toolQuestion->help_text !!}

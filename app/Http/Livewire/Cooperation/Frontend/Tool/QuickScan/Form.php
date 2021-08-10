@@ -121,7 +121,7 @@ class Form extends Component
 
     public function save($nextUrl)
     {
-        // $this->validate($this->rules);
+         $this->validate($this->rules);
 
         foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
             /** @var ToolQuestion $toolQuestion */

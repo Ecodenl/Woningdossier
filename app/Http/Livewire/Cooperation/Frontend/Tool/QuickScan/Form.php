@@ -140,6 +140,12 @@ class Form extends Component
             'input_source_id' => $this->currentInputSource->id
         ]);
 
+        $lastSubStepForStep = $this->step->subSteps()->orderByDesc('order')->first();
+        // last substep is done, now we can complete the main step
+        if ($this->subStep->id === $lastSubStepForStep->id) {
+            StepHelper::complete($this->step, $this->building, $this->currentInputSource);
+        }
+
         return redirect()->to($nextUrl);
     }
 
@@ -154,7 +160,7 @@ class Form extends Component
             if ($toolQuestion->toolQuestionType->short == 'rating-slider') {
                 foreach ($toolQuestion->options as $option) {
                     $this->filledInAnswers[$toolQuestion->id][$option['short']] = $answerForInputSource;
-                    $validationKeys[$index] = $option['short'];
+                    $validationKeys[$index][] = $option['short'];
 
                 }
             } else {

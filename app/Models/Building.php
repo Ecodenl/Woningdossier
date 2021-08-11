@@ -204,7 +204,7 @@ class Building extends Model
             if ($toolQuestionAnswer instanceof ToolQuestionAnswer) {
                 $answer = $toolQuestion->answer;
                 if ($toolQuestionAnswer->toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
-                    $answer = $toolQuestionAnswer->toolQuestionCustomValue->id;
+                    $answer = $toolQuestionAnswer->toolQuestionCustomValue->short;
                 }
             }
         }

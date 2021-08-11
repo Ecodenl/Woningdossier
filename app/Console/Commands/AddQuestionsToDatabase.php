@@ -435,7 +435,7 @@ class AddQuestionsToDatabase extends Command
                             ],
                         ],
                         [
-                            'validation' => ['required', 'exists:comfort_level_tapwaters,id'],
+                            'validation' => ['required', 'exists:comfort_level_tap_waters,id'],
                             'save_in' => 'user_energy_habits.water_comfort_id',
                             // was __('cooperation/tool/general-data/usage.index.water-gas.water-comfort.title'),
                             'translation' => 'Wat is het comfortniveau voor het gebruik van warm tapwater',
@@ -464,7 +464,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $template2rows1top2bottom->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                            'validation' => ['required', 'exists:tool_question_custom_values,value'],
                             'short' => 'cook-type',
                             'translation' => "Hoe wordt er gekookt?",
                             'tool_question_type_id' => $radioIconType->id,
@@ -757,7 +757,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:tool_question_custom_values,id'],
+                            'validation' => ['required', 'exists:tool_question_custom_values,value'],
                             'short' => 'heat-source',
                             'translation' => "Wat gebruikt u voor de verwarming en warm water?",
                             'tool_question_type_id' => $radioIconType->id,

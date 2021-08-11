@@ -217,7 +217,7 @@ class Form extends Component
         // Try to resolve the id is the question has custom values
         if ($toolQuestion->toolQuestionCustomValues()->exists()) {
             // if so, the given answer contains a short.
-            $toolQuestionCustomValue = ToolQuestionCustomValue::find($givenAnswer);
+            $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($givenAnswer);
             $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
         }
 

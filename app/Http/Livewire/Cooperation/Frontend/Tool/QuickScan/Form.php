@@ -16,6 +16,7 @@ use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use function Clue\StreamFilter\fun;
@@ -67,6 +68,7 @@ class Form extends Component
 
     public function render()
     {
+//        dd($this->toolQuestions->first()->getQuestionValues());
         return view('livewire.cooperation.frontend.tool.quick-scan.form');
     }
 
@@ -99,7 +101,9 @@ class Form extends Component
 
     public function save($nextUrl)
     {
-         $this->validate($this->rules);
+        if (!empty($this->rules)) {
+            $this->validate($this->rules);
+        }
 
         foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
             /** @var ToolQuestion $toolQuestion */

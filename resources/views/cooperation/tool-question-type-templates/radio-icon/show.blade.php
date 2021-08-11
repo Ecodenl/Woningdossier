@@ -4,7 +4,7 @@
             <input type="radio"
                    id="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}"
                    wire:model="filledInAnswers.{{$toolQuestion['id']}}"
-                   value="{{$toolQuestionValue['short']}}"
+                   value="{{$toolQuestionValue['value']}}"
             >
             <label for="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}">
                             <span class="media-icon-wrapper">

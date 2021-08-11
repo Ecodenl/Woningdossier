@@ -106,7 +106,7 @@ class Building extends Model
 
     public function getAnswerForAllInputSources(ToolQuestion $toolQuestion)
     {
-        $answer = null;
+        $answers = null;
         $where = [];
         // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
         if (!is_null($toolQuestion->save_in)) {
@@ -132,11 +132,26 @@ class Building extends Model
 
             $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
 
+            // these contain the human readable answers, we need this because the answer for a yes, no, unknown could be a 1,2,3
+            $questionValues = $toolQuestion->getQuestionValues()->pluck('name', 'value');
+
             // we do a get so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
-            $answer = $modelName::allInputSources()->with('inputSource')->where($where)->get()->pluck($column, 'inputSource.name')->toArray();
+            $answers = $modelName::allInputSources()
+                ->with('inputSource')
+                ->where($where)
+                ->get()
+                ->flatMap(function (Model $model) use ($column, $questionValues) {
+                    // now check if we need to "translate" the answer
+                    $answer = $model->getAttribute($column);
+
+                    if ($questionValues->isNotEmpty() && !is_null($answer)) {
+                        $answer = $questionValues[$answer];
+                    }
+                    return [$model->inputSource->name => $answer];
+                });
+
         } else {
-            DB::enableQueryLog();
-            $answer = $toolQuestion
+            $answers = $toolQuestion
                 ->toolQuestionAnswers()
                 ->allInputSources()
                 ->with('inputSource')
@@ -147,7 +162,7 @@ class Building extends Model
                     ];
                 })->toArray();
         }
-        return $answer;
+        return $answers;
     }
 
     public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)

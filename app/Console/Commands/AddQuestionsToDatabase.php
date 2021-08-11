@@ -247,7 +247,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['numeric', 'between:1900,' . date('Y')],
+                            'validation' => ['numeric', 'in:1,2,0'],
                             'save_in' => 'building_features.monument',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.monument',
                             'tool_question_type_id' => $radioType->id,

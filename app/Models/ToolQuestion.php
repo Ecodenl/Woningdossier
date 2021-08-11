@@ -103,7 +103,7 @@ class ToolQuestion extends Model
             ->map(function ($toolQuestionCustomValue) {
                 $questionValue = $toolQuestionCustomValue->toArray();
                 $questionValue['name'] = $toolQuestionCustomValue->name;
-                $questionValue['value'] = $toolQuestionCustomValue->id;
+                $questionValue['value'] = $toolQuestionCustomValue->value;
 
                 return $questionValue;
             });

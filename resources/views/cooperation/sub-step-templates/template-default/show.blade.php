@@ -8,7 +8,11 @@
                 'inputName' => "filledInAnswers.{$toolQuestion->id}",
             ])
                 @slot('sourceSlot')
-
+                    @foreach($filledInAnswersForAllInputSources[$toolQuestion->id] as $inputSourceName => $answer)
+                        <li class="change-input-value" data-input-source-short="resident" data-input-value="gas">
+                            {{$inputSourceName}}: {{$answer}}
+                        </li>
+                    @endforeach
                 @endslot
 
                 @slot('modalBodySlot')

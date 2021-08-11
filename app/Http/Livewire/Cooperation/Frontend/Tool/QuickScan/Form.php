@@ -45,6 +45,7 @@ class Form extends Component
     public $toolQuestions;
 
     public $filledInAnswers = [];
+    public $filledInAnswersForAllInputSources = [];
 
     public function mount(Step $step, SubStep $subStep)
     {
@@ -155,6 +156,9 @@ class Form extends Component
     {
         // base key where every answer is stored
         foreach ($this->toolQuestions as $index => $toolQuestion) {
+
+            $this->filledInAnswersForAllInputSources[$toolQuestion->id] = $this->building->getAnswerForAllInputSources($toolQuestion);
+
             $validationKeys[$index][] = 'filledInAnswers';
             $validationKeys[$index][] = $toolQuestion->id;
 
@@ -236,8 +240,8 @@ class Form extends Component
         // Try to resolve the id is the question has custom values
         if ($toolQuestion->toolQuestionCustomValues()->exists()) {
             // if so, the given answer contains a short.
-            $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($givenAnswer);
-//            $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
+            $toolQuestionCustomValue = ToolQuestionCustomValue::find($givenAnswer);
+            $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
         }
 
 

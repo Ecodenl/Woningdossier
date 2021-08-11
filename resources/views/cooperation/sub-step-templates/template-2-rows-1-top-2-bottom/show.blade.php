@@ -14,10 +14,11 @@
             'inputName' => "filledInAnswers.{$top->id}",
         ])
             @slot('sourceSlot')
+                @foreach($filledInAnswersForAllInputSources[$top->id] as $inputSourceName => $answer)
                 <li class="change-input-value" data-input-source-short="resident" data-input-value="gas">
-{{-- TODO: Add actual values here --}}
-                    Bewoner: WAARDE
+                    {{$inputSourceName}}: {{$answer}}
                 </li>
+                @endforeach
             @endslot
 
             @slot('modalBodySlot')
@@ -37,7 +38,11 @@
                 'inputName' => "filledInAnswers.{$bottomLeft->id}",
             ])
                 @slot('sourceSlot')
-
+                    @foreach($filledInAnswersForAllInputSources[$bottomLeft->id] as $inputSourceName => $answer)
+                        <li class="change-input-value" data-input-source-short="resident" data-input-value="gas">
+                            {{$inputSourceName}}: {{$answer}}
+                        </li>
+                    @endforeach
                 @endslot
 
                 @slot('modalBodySlot')
@@ -57,7 +62,11 @@
                 'inputName' => "filledInAnswers.{$bottomRight->id}",
             ])
                 @slot('sourceSlot')
-
+                        @foreach($filledInAnswersForAllInputSources[$bottomRight->id] as $inputSourceName => $answer)
+                            <li class="change-input-value" data-input-source-short="resident" data-input-value="gas">
+                                {{$inputSourceName}}: {{$answer}}
+                            </li>
+                        @endforeach
                 @endslot
 
                 @slot('modalBodySlot')

@@ -100,10 +100,10 @@ class ToolQuestion extends Model
             ->visible()
             ->ordered()
             ->get()
-            ->map(function ($toolQuestion) {
-                $questionValue = $toolQuestion->toArray();
-                $questionValue['name'] = $toolQuestion->name;
-                $questionValue['value'] = $toolQuestion->short;
+            ->map(function ($toolQuestionCustomValue) {
+                $questionValue = $toolQuestionCustomValue->toArray();
+                $questionValue['name'] = $toolQuestionCustomValue->name;
+                $questionValue['value'] = $toolQuestionCustomValue->id;
 
                 return $questionValue;
             });

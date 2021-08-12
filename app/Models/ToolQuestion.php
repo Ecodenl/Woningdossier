@@ -88,7 +88,7 @@ class ToolQuestion extends Model
                     // so now get the actual morphed model.
                     $valuable = $toolQuestionValuable->tool_question_valuable;
 
-                    $questionValue = Arr::only($valuable->toArray(), ['calculate_value']);
+                    $questionValue = Arr::only($valuable->toArray(), ['calculate_value', 'short']);
 
                     $questionValue['extra'] = $toolQuestionValuable->extra;
                     // the humand readable name is either set in the name or value column.

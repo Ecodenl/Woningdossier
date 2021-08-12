@@ -1,12 +1,15 @@
 <div class="w-full grid grid-rows-1 grid-cols-4 grid-flow-row gap-4">
     @foreach($toolQuestion->getQuestionValues() as $toolQuestionValue)
+        @php
+            $id = $toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value'] ?? $toolQuestionValue['value'];
+        @endphp
         <div class="radio-wrapper media-wrapper">
             <input type="radio"
-                   id="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}"
+                   id="{{$id}}"
                    wire:model="filledInAnswers.{{$toolQuestion['id']}}"
                    value="{{$toolQuestionValue['value']}}"
             >
-            <label for="{{$toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value']}}">
+            <label for="{{$id}}">
                             <span class="media-icon-wrapper">
                                 <i class="{{$toolQuestionValue['extra']['icon'] ?? ''}}"></i>
                             </span>

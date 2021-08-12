@@ -101,7 +101,6 @@ class Form extends Component
 
     public function save($nextUrl)
     {
-//        dd($this->rules, $this->filledInAnswers);
         if (!empty($this->rules)) {
             $this->validate($this->rules);
         }
@@ -145,6 +144,8 @@ class Form extends Component
             $validationKeys[$index][] = $toolQuestion->id;
 
             $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+
+
             if ($toolQuestion->toolQuestionType->short == 'rating-slider') {
                 foreach ($toolQuestion->options as $option) {
                     $this->filledInAnswers[$toolQuestion->id][$option['short']] = $answerForInputSource;

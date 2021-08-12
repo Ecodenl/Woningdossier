@@ -3,23 +3,18 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Helpers\HoomdossierSession;
-use App\Helpers\QuickScanHelper;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
-use App\Models\Question;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
-use App\Models\User;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
-use function Clue\StreamFilter\fun;
 
 class Form extends Component
 {
@@ -88,10 +83,16 @@ class Form extends Component
         foreach ($this->toolQuestions as $index => $toolQuestion) {
             if (!empty($toolQuestion->conditions)) {
                 foreach ($toolQuestion->conditions as $condition) {
-                    $answer = $answers->where($condition['column'], $condition['operator'], $condition['value'])->first();
-                    // so this means the answer is not found, this means we have to remove the question.
-                    if ($answer === null) {
-                        $this->toolQuestions = $this->toolQuestions->forget($index);
+                    // there is a possibility the user fills the form in a unexpected order,
+                    // so we have to check if the field which should match the condition is actually answered.
+                    // may have to change in the future if there is some null condition thing.
+                    if ($answers->where($condition['column'], '!=', null)->count() > 0) {
+                        // now execute the actual condition
+                        $answer = $answers->where($condition['column'], $condition['operator'], $condition['value'])->first();
+                        // so this means the answer is not found, this means we have to remove the question.
+                        if ($answer === null) {
+                            $this->toolQuestions = $this->toolQuestions->forget($index);
+                        }
                     }
                 }
             }

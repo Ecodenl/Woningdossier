@@ -977,7 +977,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $template2rows3top1bottom->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:element_values,id'],
+                            'validation' => ['required', 'exists:tool_question_custom_values,short'],
                             'short' => 'has-solar-panels',
                             'translation' => "Heeft u zonnepanelen",
                             'tool_question_type_id' => $radioIconType->id,

@@ -75,7 +75,8 @@
 
 /* Element specific styles */
 textarea.form-input {
-    @apply h-32;
+    @apply h-32 py-2;
+    line-height: 24px;
     min-height: 2.75rem; /* Height of h-11, base height of input */
 }
 

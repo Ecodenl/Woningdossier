@@ -158616,6 +158616,9 @@ p a {
 
 textarea.form-input {
   height: 8rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  line-height: 24px;
   min-height: 2.75rem; /* Height of h-11, base height of input */
 }
 

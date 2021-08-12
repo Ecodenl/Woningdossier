@@ -1,11 +1,13 @@
 <div class="flex flex-row flex-wrap w-full">
     <div class="w-full">
-        @component('cooperation.tool.components.step-question', ['id' => 'user_interest', 'translation' => $translation])
+        @component('cooperation.tool.components.step-question', [
+            'id' => 'user_interest', 'translation' => $translation,
+        ])
             @slot('sourceSlot')
                 @include('cooperation.tool.components.source-list', [
                     'inputType' => 'select', 'inputValues' => $interests,
                     'userInputValues' => $buildingOwner->userInterestsForSpecificType($interestedInType, $interestedInId)->forMe()->get(),
-                    'userInputColumn' => 'interest_id'
+                    'userInputColumn' => 'interest_id',
                 ])
             @endslot
             @component('cooperation.frontend.layouts.components.alpine-select')

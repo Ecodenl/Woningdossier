@@ -147,7 +147,7 @@ class Building extends Model
                     if ($questionValues->isNotEmpty() && !is_null($answer)) {
                         $answer = $questionValues[$answer];
                     }
-                    return [$model->inputSource->name => $answer];
+                    return [$model->inputSource->short => $answer];
                 });
 
         } else {
@@ -158,7 +158,7 @@ class Building extends Model
                 ->where($where)
                 ->get()->flatMap(function (ToolQuestionAnswer $toolQuestionAnswer) {
                     return [
-                        $toolQuestionAnswer->inputSource->name => optional($toolQuestionAnswer->toolQuestionCustomValue)->name ?? $toolQuestionAnswer->answer
+                        $toolQuestionAnswer->inputSource->short => optional($toolQuestionAnswer->toolQuestionCustomValue)->name ?? $toolQuestionAnswer->answer
                     ];
                 })->toArray();
         }
@@ -202,7 +202,7 @@ class Building extends Model
                 ->where($where)
                 ->first();
             if ($toolQuestionAnswer instanceof ToolQuestionAnswer) {
-                $answer = $toolQuestion->answer;
+                $answer = $toolQuestionAnswer->answer;
                 if ($toolQuestionAnswer->toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
                     $answer = $toolQuestionAnswer->toolQuestionCustomValue->short;
                 }

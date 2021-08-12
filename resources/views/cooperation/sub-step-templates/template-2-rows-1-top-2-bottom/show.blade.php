@@ -14,11 +14,7 @@
             'inputName' => "filledInAnswers.{$top->id}",
         ])
             @slot('sourceSlot')
-                @foreach($filledInAnswersForAllInputSources[$top->id] as $inputSourceName => $answer)
-                <li class="change-input-value" data-input-source-short="resident" data-input-value="gas">
-                    {{$inputSourceName}}: {{$answer}}
-                </li>
-                @endforeach
+                @include('cooperation.sub-step-templates.parts.source-slot-values', ['values' => $filledInAnswersForAllInputSources[$top->id]])
             @endslot
 
             @slot('modalBodySlot')
@@ -38,11 +34,7 @@
                 'inputName' => "filledInAnswers.{$bottomLeft->id}",
             ])
                 @slot('sourceSlot')
-                    @foreach($filledInAnswersForAllInputSources[$bottomLeft->id] as $inputSourceName => $answer)
-                        <li class="change-input-value" data-input-source-short="resident" data-input-value="gas">
-                            {{$inputSourceName}}: {{$answer}}
-                        </li>
-                    @endforeach
+                    @include('cooperation.sub-step-templates.parts.source-slot-values', ['values' => $filledInAnswersForAllInputSources[$bottomLeft->id]])
                 @endslot
 
                 @slot('modalBodySlot')
@@ -62,11 +54,7 @@
                 'inputName' => "filledInAnswers.{$bottomRight->id}",
             ])
                 @slot('sourceSlot')
-                        @foreach($filledInAnswersForAllInputSources[$bottomRight->id] as $inputSourceName => $answer)
-                            <li class="change-input-value" data-input-source-short="resident" data-input-value="gas">
-                                {{$inputSourceName}}: {{$answer}}
-                            </li>
-                        @endforeach
+                        @include('cooperation.sub-step-templates.parts.source-slot-values', ['values' => $filledInAnswersForAllInputSources[$bottomRight->id]])
                 @endslot
 
                 @slot('modalBodySlot')

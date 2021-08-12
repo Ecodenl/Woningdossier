@@ -68,7 +68,6 @@ class Form extends Component
 
     public function render()
     {
-//        dd($this->toolQuestions->first()->getQuestionValues());
         return view('livewire.cooperation.frontend.tool.quick-scan.form');
     }
 
@@ -140,23 +139,18 @@ class Form extends Component
 
             $this->filledInAnswersForAllInputSources[$toolQuestion->id] = $this->building->getAnswerForAllInputSources($toolQuestion);
 
-            $validationKeys[$index][] = 'filledInAnswers';
-            $validationKeys[$index][] = $toolQuestion->id;
-
             $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
 
-
             if ($toolQuestion->toolQuestionType->short == 'rating-slider') {
+                $filledInAnswerOptions = json_decode($answerForInputSource, true);
                 foreach ($toolQuestion->options as $option) {
-                    $this->filledInAnswers[$toolQuestion->id][$option['short']] = $answerForInputSource;
-                    $validationKeys[$index][] = $option['short'];
-
+                    $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']];
+                    $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $toolQuestion->validation;
                 }
             } else {
                 $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
+                $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
             }
-
-            $this->rules[implode('.', $validationKeys[$index])] = $toolQuestion->validation;
         }
     }
 

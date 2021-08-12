@@ -89,13 +89,11 @@ class ToolQuestion extends Model
                     $valuable = $toolQuestionValuable->tool_question_valuable;
 
                     $questionValue = Arr::only($valuable->toArray(), ['calculate_value', 'short']);
-
                     $questionValue['extra'] = $toolQuestionValuable->extra;
-                    // the humand readable name is either set in the name or value column.
+                    // the humane readable name is either set in the name or value column.
                     $questionValue['name'] = $valuable->name ?? $valuable->value;
                     $questionValue['value'] = $valuable->id;
 
-//                    dd($questionValue);
                     return $questionValue;
                 });
 

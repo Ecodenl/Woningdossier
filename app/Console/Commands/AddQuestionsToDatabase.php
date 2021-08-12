@@ -464,7 +464,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $template2rows1top2bottom->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:tool_question_custom_values,value'],
+                            'validation' => ['required', 'exists:tool_question_custom_values,short'],
                             'short' => 'cook-type',
                             'translation' => "Hoe wordt er gekookt?",
                             'tool_question_type_id' => $radioIconType->id,
@@ -757,7 +757,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:tool_question_custom_values,value'],
+                            'validation' => ['required', 'exists:tool_question_custom_values,short'],
                             'short' => 'heat-source',
                             'translation' => "Wat gebruikt u voor de verwarming en warm water?",
                             'tool_question_type_id' => $radioIconType->id,

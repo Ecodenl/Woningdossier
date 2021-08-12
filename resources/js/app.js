@@ -10,6 +10,13 @@ $.ajaxSetup({
     }
 });
 
+window.triggerEvent = function (element, eventName) {
+    if (element && element.nodeType === Node.ELEMENT_NODE && eventName) {
+        let event = new Event(eventName, { bubbles: true });
+        element.dispatchEvent(event);
+    }
+}
+
 var baseUrl = window.location.origin;
 var apiUrl = '/api';
 var getAddressDataUrl = baseUrl + apiUrl + "/address-data";

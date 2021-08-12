@@ -42,16 +42,16 @@ if (array_key_exists($currentStep->short, $commentsByStep) && array_key_exists($
             We dont want to show that to the user
          --}}
         @if(!empty($comment))
-            <div class="row">
-                <div class="col-sm-12">
+            <div class="flex flex-row flex-wrap w-full">
+                <div class="w-full">
                     {{-- A translation replace is given, if :item exists in the translation it will be replaced otherwise nothing will hapen --}}
                     @component('cooperation.tool.components.step-question', ['id' => $oldValueKey, 'translation' => $translation, 'translationReplace' => ['item' => $currentStep->name]])
                         @if($currentInputSource->name != $inputSourceName)({{$inputSourceName}}) @endif
 
                         @if($inputSourceName === $currentInputSource->name)
-                            <textarea name="{{$columnName}}" class="form-control">{{old($oldValueKey, $comment)}}</textarea>
+                            <textarea name="{{$columnName}}" class="form-input">{{old($oldValueKey, $comment)}}</textarea>
                         @else
-                            <textarea disabled="disabled" class="disabled form-control">{{$comment}}</textarea>
+                            <textarea disabled="disabled" class="disabled form-input">{{$comment}}</textarea>
                         @endif
                     @endcomponent
 
@@ -61,10 +61,10 @@ if (array_key_exists($currentStep->short, $commentsByStep) && array_key_exists($
     @endforeach
 @endif
 @if($currentInputSourceHasACommentButIsEmpty || $currentInputSourceHasNoPlacedComment)
-    <div class="row">
-        <div class="col-sm-12">
+    <div class="flex flex-row flex-wrap w-full">
+        <div class="w-full">
             @component('cooperation.tool.components.step-question', ['id' => $oldValueKey, 'translation' => $translation, 'translationReplace' => ['item' => $currentStep->name]])
-                <textarea name="{{$columnName}}" class="form-control">{{old($oldValueKey)}}</textarea>
+                <textarea name="{{$columnName}}" class="form-input">{{old($oldValueKey)}}</textarea>
             @endcomponent
         </div>
     </div>

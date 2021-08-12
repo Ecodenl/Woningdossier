@@ -9,8 +9,5 @@
 @import 'components/items.css';
 @import '../shared/components/icons.css';
 
-/* Extras */
-@import '../shared/components/spaces.css';
-
 /* CSS for expert tool */
 @import '../tool/expert.css';

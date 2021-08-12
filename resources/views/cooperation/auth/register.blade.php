@@ -25,15 +25,13 @@
                 ])
                     <input class="form-input" type="text" name="email" value="{{ old('email') }}"
                            placeholder="@lang('auth.register.form.email')" x-on:change="checkEmail($el)">
-                    <p class="text-red" x-show="showEmailWarning">
+                    <p class="text-red w-full text-left" x-show="showEmailWarning">
                         @lang('auth.register.form.possible-wrong-email')
                     </p>
-                    <hr class="w-full h-0 invisible">
-                    <p class="text-blue-800" x-show="alreadyMember">
+                    <p class="text-blue-800 w-full text-left" x-show="alreadyMember">
                         @lang('auth.register.form.already-member')
                     </p>
-                    <hr class="w-full h-0 invisible">
-                    <p class="text-blue-800" x-show="emailExists">
+                    <p class="text-blue-800 w-full text-left" x-show="emailExists">
                         @lang('auth.register.form.email-exists')
                     </p>
                 @endcomponent
@@ -120,7 +118,7 @@
                     'inputName' => 'password',
                     'attr' => 'x-show="! alreadyMember && ! emailExists"',
                 ])
-                    <div class="w-full" x-data="{showPass: false}">
+                    <div class="flex w-full" x-data="{showPass: false}">
                         <input class="form-input" type="password" name="password"
                                placeholder="@lang('auth.register.form.password')" x-ref="password-input">
                         <i class="icon-sm icon-show absolute right-6 top-5/20 cursor-pointer"

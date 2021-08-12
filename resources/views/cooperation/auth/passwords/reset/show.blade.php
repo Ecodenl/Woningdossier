@@ -33,7 +33,7 @@
                         'inputName' => 'password',
                         'id' => 'password',
                     ])
-                        <div class="w-full" x-data="{showPass: false}">
+                        <div class="flex w-full" x-data="{showPass: false}">
                             <input class="form-input" type="password" name="password" id="password"
                                    placeholder="@lang('auth.register.form.new-password')" x-ref="password-input">
                             <i class="icon-sm icon-show absolute right-6 top-5/20 cursor-pointer" x-show="showPass === false"

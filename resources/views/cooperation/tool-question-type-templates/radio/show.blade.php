@@ -5,8 +5,8 @@
         <div class="radio-wrapper pr-3">
             <input type="radio"
                    id="{{$uuid}}"
-                   wire:model="filledInAnswers.{{$toolQuestion['id']}}"
-                   value="{{$toolQuestionValue['short'] ?? $toolQuestionValue['id']}}"
+                   wire:model="filledInAnswers.{{$toolQuestion->id}}"
+                   value="{{$toolQuestionValue['value']}}"
             >
             <label for="{{$uuid}}">
                 <span class="checkmark"></span>

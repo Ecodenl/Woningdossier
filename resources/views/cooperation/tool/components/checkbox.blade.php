@@ -35,12 +35,12 @@ $userInputValues = $userInputValues->sortBy(function ($a) {
         @if(isset($values) && is_array($values))
             @foreach($values as $value)
                 @if(!is_null($value) && $inputValue->$userInputColumn == $value)
-                    <li class="change-input-value" data-input-source-short="{{$userInputValue->inputSource->short}}" data-input-value="{{ $inputValue->$userInputColumn }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $inputName }}</a></li>
+                    <li class="change-input-value" data-input-source-short="{{$userInputValue->inputSource->short}}" data-input-value="{{ $inputValue->$userInputColumn }}">{{ $userInputValue->getInputSourceName() }}: {{ $inputName }}</li>
                 @endif
             @endforeach
         @else
             @if(!is_null($value) && $inputValue->id == $value)
-                <li class="change-input-value" data-input-source-short="{{$userInputValue->inputSource->short}}" data-input-value="{{ $inputValue->id }}"><a href="#">{{ $userInputValue->getInputSourceName() }}: {{ $inputName }}</a></li>
+                <li class="change-input-value" data-input-source-short="{{$userInputValue->inputSource->short}}" data-input-value="{{ $inputValue->id }}">{{ $userInputValue->getInputSourceName() }}: {{ $inputName }}</li>
             @endif
         @endif
 

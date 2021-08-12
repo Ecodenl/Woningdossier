@@ -33991,8 +33991,9 @@ __webpack_require__.r(__webpack_exports__);
 
       if (!(null === this.select)) {
         // Bind event listener for change
+        var context = this;
         this.select.addEventListener('change', function (event) {
-          this.setValue(event.target.value);
+          context.setValue(event.target.value);
         }); // Get options
 
         this.options = this.select.getElementsByTagName('option'); // There are options!
@@ -34000,7 +34001,7 @@ __webpack_require__.r(__webpack_exports__);
         if (this.options.length > 0) {
           // Get attributes
           this.value = this.select.value;
-          this.text = this.select.options[this.select.selectedIndex].textContent;
+          this.text = this.select.options[this.select.selectedIndex].textContent.trim();
           this.disabled = this.select.hasAttribute('disabled'); // Add class if disabled, so css can do magic
 
           if (this.disabled) {
@@ -34029,25 +34030,34 @@ __webpack_require__.r(__webpack_exports__);
         this.open = !this.open;
       }
     },
+    close: function close() {
+      this.open = false;
+    },
     changeOption: function changeOption(element) {
       if (!element.classList.contains('disabled')) {
         this.setValue(element.getAttribute('data-value'), element.textContent);
+        this.close();
+        window.triggerEvent(this.select, 'change');
       }
     },
     setValue: function setValue(value) {
       var text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       this.value = value;
       this.select.value = value;
-      this.text = null === text ? value : text;
+      var option = this.$refs['select-options'].querySelector("span[data-value=\"".concat(value, "\"]"));
+      this.text = null === text ? option ? option.textContent : value : text;
       this.text = this.text.trim();
     },
     buildOption: function buildOption(parent, option) {
-      // Build a new alpine option
-      var newOption = document.createElement('span');
-      newOption.appendChild(document.createTextNode(option.textContent));
-      newOption.setAttribute("data-value", option.value); // Add alpine functions
+      // Trim to ensure it's not filled with unnecessary white space (will look ugly in the input)
+      var value = option.value;
+      var text = option.textContent.trim(); // Build a new alpine option
 
-      newOption.setAttribute("x-bind:class", "value == '" + option.value + "' ? 'selected' : ''");
+      var newOption = document.createElement('span');
+      newOption.appendChild(document.createTextNode(text));
+      newOption.setAttribute("data-value", value); // Add alpine functions
+
+      newOption.setAttribute("x-bind:class", "value == '" + value + "' ? 'selected' : ''");
       newOption.setAttribute("x-on:click", "changeOption($el)");
       newOption.classList.add('select-option');
 
@@ -34424,8 +34434,9 @@ __webpack_require__.r(__webpack_exports__);
       } // Bind event listener for change
 
 
+      var context = this;
       this.$refs['rating-slider-input'].addEventListener('change', function (event) {
-        this.selectOptionByValue(event.target.value);
+        context.selectOptionByValue(event.target.value);
       });
     },
     mouseEnter: function mouseEnter(element) {
@@ -34449,7 +34460,7 @@ __webpack_require__.r(__webpack_exports__);
         var parent = this.$refs['rating-slider'];
         this.index = Array.from(parent.children).indexOf(element);
         this.value = element.getAttribute('data-value');
-        this.setIndexActive();
+        this.setIndexActive(); // TODO: Check if we can do this with window.triggerEvent(element, 'change');
 
         if (this.livewireModel !== null) {
           window.livewire.emitTo(this.componentName, 'update', this.livewireModel, this.value, false);
@@ -34587,8 +34598,9 @@ __webpack_require__.r(__webpack_exports__);
       this.updateVisuals();
       this.initialized = true; // Bind event listener for change
 
+      var context = this;
       this.$refs['slider'].addEventListener('change', function (event) {
-        this.updateVisuals();
+        context.updateVisuals();
       });
     },
     updateVisuals: function updateVisuals() {
@@ -34711,6 +34723,13 @@ __webpack_require__.r(__webpack_exports__);
     },
     setSourceValue: function setSourceValue(value) {
       var text = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      var option = this.$refs['source-select'].querySelector("option[value=\"".concat(value, "\"]"));
+
+      if (null === option) {
+        // Option not found? Fallback to no match
+        value = 'no-match';
+      }
+
       this.value = value;
       this.text = null === text ? this.$refs['source-select'].querySelector("option[value=\"".concat(value, "\"]")).textContent : text;
       this.text = this.text.trim();
@@ -34718,13 +34737,14 @@ __webpack_require__.r(__webpack_exports__);
     },
     setElementValue: function setElementValue(value) {
       if (this.inputGroup) {
-        var input = this.inputGroup.querySelector('input'); // Not an input?
+        // Define the input. It cannot be hidden, disabled or readonly
+        var input = this.inputGroup.querySelector('input:not([disabled]):not([readonly]):not([type="hidden"])'); // Not an input?
 
         if (!input) {
           // Check if select
-          input = this.inputGroup.querySelector('select'); // Check if valid, else we get a textarea
+          input = this.inputGroup.querySelector('select:not([disabled]):not([readonly])'); // Check if valid, else we get a textarea
 
-          input = input ? input : this.inputGroup.querySelector('textarea');
+          input = input ? input : this.inputGroup.querySelector('textarea:not([disabled]):not([readonly])');
         } // If an input is found...
 
 
@@ -34744,20 +34764,24 @@ __webpack_require__.r(__webpack_exports__);
               case 'select':
               case 'textarea':
               case 'range':
-              case 'hidden':
+                // case 'hidden':
                 input.value = value;
-                this.checkLivewire(input);
-                this.triggerChange(input);
+                window.triggerEvent(input, 'input');
+                window.triggerEvent(input, 'change');
                 break;
 
               case 'radio':
                 input = this.inputGroup.querySelector("input[type=\"radio\"][value=\"".concat(value, "\"]"));
 
                 if (input) {
-                  this.inputGroup.querySelector('input[type="radio"]:checked').checked = false;
+                  var checkedInput = this.inputGroup.querySelector('input[type="radio"]:checked');
+
+                  if (checkedInput) {
+                    checkedInput.checked = false;
+                  }
+
                   input.checked = true;
-                  this.checkLivewire(input);
-                  this.triggerChange(input);
+                  window.triggerEvent(input, 'change');
                 }
 
                 break;
@@ -34767,8 +34791,7 @@ __webpack_require__.r(__webpack_exports__);
 
                 if (input) {
                   input.checked = true;
-                  this.checkLivewire(input);
-                  this.triggerChange(input);
+                  window.triggerEvent(input, 'change');
                 }
 
                 break;
@@ -34780,17 +34803,6 @@ __webpack_require__.r(__webpack_exports__);
           }
         }
       }
-    },
-    checkLivewire: function checkLivewire(input) {
-      if (input.hasAttribute('wire:model')) {
-        window.livewire.emit('source-changed', input.getAttribute('wire:model'), input.value);
-      }
-    },
-    triggerChange: function triggerChange(input) {
-      var event = new Event('change', {
-        bubbles: true
-      });
-      input.dispatchEvent(event);
     }
   };
 });
@@ -34877,6 +34889,16 @@ $.ajaxSetup({
     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
   }
 });
+
+window.triggerEvent = function (element, eventName) {
+  if (element && element.nodeType === Node.ELEMENT_NODE && eventName) {
+    var event = new Event(eventName, {
+      bubbles: true
+    });
+    element.dispatchEvent(event);
+  }
+};
+
 var baseUrl = window.location.origin;
 var apiUrl = '/api';
 var getAddressDataUrl = baseUrl + apiUrl + "/address-data";

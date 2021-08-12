@@ -10,6 +10,7 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
+        "@tailwindcss/postcss7-compat": "^2.2.7",
         "autoprefixer": "^9.8.6",
         "axios": "^0.21",
         "bootstrap-sass": "^3.4.1",
@@ -20,7 +21,7 @@
         "postcss": "^7.0.36",
         "sass": "^1.35.2",
         "sass-loader": "^8.0.2",
-        "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.4",
+        "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.7",
         "vue-template-compiler": "^2.6.14"
     },
     "dependencies": {

@@ -136,7 +136,7 @@
                     <p class="font-bold">Error styling handled by form group component</p>
                 @endslot
                 <input id="error" type="text" class="form-input" placeholder="Error">
-                <p class="form-error-label w-full">
+                <p class="form-error-label">
                     Vul de correcte gegevens in
                 </p>
             @endcomponent
@@ -146,7 +146,7 @@
                 @slot('sourceSlot')
                     {!! $html !!}
                 @endslot
-                <input id="input-group-error" type="text" class="form-input" placeholder="Error met waarde">
+                <input id="input-group-error" type="text" class="form-input with-append" placeholder="Error met waarde">
                 <div class="input-group-append">
                     m<sup>2</sup>
                 </div>
@@ -208,9 +208,15 @@
                     {!! $html !!}
                 @endslot
                 @slot('modalBodySlot')
-                    <p class="font-bold">input.form-input ~ div.input-group-append</p>
+                    <p class="font-bold">
+                        input.form-input ~ div.input-group-append
+                        <br>
+                        When applying an input-group-append, it is suggested to add styling to the input:
+                        .with-append
+                        This will make the append feel more natural
+                    </p>
                 @endslot
-                <input type="text" class="form-input" placeholder="Placeholder">
+                <input type="text" class="form-input with-append" placeholder="Placeholder">
                 <div class="input-group-append">
                     m<sup>2</sup>
                 </div>
@@ -238,7 +244,7 @@
                 @slot('sourceSlot')
                     {!! $html !!}
                 @endslot
-                <input type="text" class="form-input" placeholder="Placeholder">
+                <input type="text" class="form-input with-append" placeholder="Placeholder">
                 <div class="input-group-append">
                     kWh
                 </div>

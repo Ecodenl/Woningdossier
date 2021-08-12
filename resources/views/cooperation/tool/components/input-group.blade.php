@@ -1,3 +1,4 @@
+{{-- TODO: Delete when all moved over to source-list --}}
 <div class="input-group input-source-group">
     {{ $slot }}
     <div class="input-group-btn">

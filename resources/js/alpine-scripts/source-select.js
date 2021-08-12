@@ -69,6 +69,11 @@ export default (inputSource = 'no-match') => ({
         }
     },
     setSourceValue(value, text = null) {
+        let option = this.$refs['source-select'].querySelector(`option[value="${value}"]`);
+        if (null === option) {
+            // Option not found? Fallback to no match
+            value = 'no-match';
+        }
         this.value = value;
 
         this.text = null === text ? this.$refs['source-select'].querySelector(`option[value="${value}"]`).textContent : text;
@@ -77,13 +82,14 @@ export default (inputSource = 'no-match') => ({
     },
     setElementValue(value) {
         if (this.inputGroup) {
-            let input = this.inputGroup.querySelector('input');
+            // Define the input. It cannot be hidden, disabled or readonly
+            let input = this.inputGroup.querySelector('input:not([disabled]):not([readonly]):not([type="hidden"])');
             // Not an input?
             if (! input) {
                 // Check if select
-                input = this.inputGroup.querySelector('select');
+                input = this.inputGroup.querySelector('select:not([disabled]):not([readonly])');
                 // Check if valid, else we get a textarea
-                input = input ? input : this.inputGroup.querySelector('textarea');
+                input = input ? input : this.inputGroup.querySelector('textarea:not([disabled]):not([readonly])');
             }
 
             // If an input is found...
@@ -104,26 +110,27 @@ export default (inputSource = 'no-match') => ({
                         case 'select':
                         case 'textarea':
                         case 'range':
-                        case 'hidden':
+                        // case 'hidden':
                             input.value = value;
-                            this.checkLivewire(input);
-                            this.triggerChange(input);
+                            window.triggerEvent(input, 'input');
+                            window.triggerEvent(input, 'change');
                             break;
                         case 'radio':
                             input = this.inputGroup.querySelector(`input[type="radio"][value="${value}"]`);
                             if (input) {
-                                this.inputGroup.querySelector('input[type="radio"]:checked').checked = false;
+                                let checkedInput = this.inputGroup.querySelector('input[type="radio"]:checked');
+                                if (checkedInput) {
+                                    checkedInput.checked = false;
+                                }
                                 input.checked = true;
-                                this.checkLivewire(input);
-                                this.triggerChange(input);
+                                window.triggerEvent(input, 'change');
                             }
                             break;
                         case "checkbox":
                             input = this.inputGroup.querySelector(`input[type="checkbox"][value="${value}"]`);
                             if (input) {
                                 input.checked = true;
-                                this.checkLivewire(input);
-                                this.triggerChange(input);
+                                window.triggerEvent(input, 'change');
                             }
                             break;
                         default:
@@ -134,13 +141,4 @@ export default (inputSource = 'no-match') => ({
             }
         }
     },
-    checkLivewire(input) {
-        if (input.hasAttribute('wire:model')) {
-            window.livewire.emit('source-changed', input.getAttribute('wire:model'), input.value);
-        }
-    },
-    triggerChange(input) {
-        let event = new Event('change', { bubbles: true });
-        input.dispatchEvent(event);
-    }
 });

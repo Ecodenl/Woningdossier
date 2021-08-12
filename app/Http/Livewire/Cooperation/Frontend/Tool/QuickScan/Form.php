@@ -162,7 +162,8 @@ class Form extends Component
             if ($toolQuestion->toolQuestionType->short == 'rating-slider') {
                 $filledInAnswerOptions = json_decode($answerForInputSource, true);
                 foreach ($toolQuestion->options as $option) {
-                    $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']];
+
+                    $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']] ?? 0;
                     $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $toolQuestion->validation;
                 }
             } else {

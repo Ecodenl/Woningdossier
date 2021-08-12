@@ -801,7 +801,7 @@ class AddQuestionsToDatabase extends Command
                     ],
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:building_services,id'],
+                            'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_services.{$boiler->id}.service_value_id",
                             'short' => 'boiler-type',
                             'translation' => "Wat voor gasketel heeft u?",
@@ -831,7 +831,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:building_services,id'],
+                            'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_features.building_heating_application_id",
                             'short' => 'heat-source',
                             // was current-state -> hoe word de woning nu verwarmd
@@ -863,7 +863,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:building_services,id'],
+                            'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_services.{$heater->id}.service_value_id",
                             'short' => 'heater-type',
                             'translation' => "Heeft u een zonneboiler",
@@ -900,7 +900,7 @@ class AddQuestionsToDatabase extends Command
                     ],
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:building_services,id'],
+                            'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_services.{$heatPump->id}.service_value_id",
                             'short' => 'heat-pump-type',
                             'translation' => "Heeft u een warmptepomp",
@@ -935,7 +935,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:building_services,id'],
+                            'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_services.{$ventilation->id}.service_value_id",
                             'short' => 'ventilation-type',
                             // was current-state -> hoe word het huis geventileerd
@@ -977,7 +977,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $template2rows3top1bottom->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:building_services,id'],
+                            'validation' => ['required', 'exists:element_values,id'],
                             'short' => 'has-solar-panels',
                             'translation' => "Heeft u zonnepanelen",
                             'tool_question_type_id' => $radioIconType->id,

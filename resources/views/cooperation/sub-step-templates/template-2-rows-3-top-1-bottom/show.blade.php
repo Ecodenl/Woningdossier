@@ -11,7 +11,7 @@
     ?>
     <div class="w-full flex flex-wrap">
         @if($topLeft instanceof \App\Models\ToolQuestion)
-            @component('cooperation.frontend.layouts.componentsform-input', [
+            @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'form-group-heading w-full lg:w-1/2 lg:pr-3',
                 'label' => $topLeft->name,
                 'inputName' => "filledInAnswers.{$topLeft->id}",
@@ -38,7 +38,7 @@
                     'inputName' => "filledInAnswers.{$topRightFirst->id}",
                  ])
                     @slot('sourceSlot')
-
+                        @include('cooperation.sub-step-templates.parts.source-slot-values', ['values' => $filledInAnswersForAllInputSources[$topRightFirst->id]])
                     @endslot
 
                     @slot('modalBodySlot')
@@ -51,13 +51,13 @@
                 @endcomponent
             @endif
             @if($topRightSecond instanceof \App\Models\ToolQuestion)
-                @component('cooperation.frontend.layouts.components.form-group', [
-                    'class' => 'form-group-heading w-full',
-                    'label' => $topRightSecond->name,
-                    'inputName' => "filledInAnswers.{$topRightSecond->id}",
-                ])
+                    @component('cooperation.frontend.layouts.components.form-group', [
+                        'class' => 'form-group-heading w-full',
+                        'label' => $topRightSecond->name,
+                        'inputName' => "filledInAnswers.{$topRightSecond->id}",
+                    ])
                     @slot('sourceSlot')
-
+                            @include('cooperation.sub-step-templates.parts.source-slot-values', ['values' => $filledInAnswersForAllInputSources[$topRightSecond->id]])
                     @endslot
 
                     @slot('modalBodySlot')
@@ -79,7 +79,7 @@
                 'inputName' => "filledInAnswers.{$bottomLeft->id}",
             ])
                 @slot('sourceSlot')
-
+                    @include('cooperation.sub-step-templates.parts.source-slot-values', ['values' => $filledInAnswersForAllInputSources[$bottomLeft->id]])
                 @endslot
 
                 @slot('modalBodySlot')

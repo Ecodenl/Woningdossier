@@ -45,7 +45,11 @@ if (array_key_exists($currentStep->short, $commentsByStep) && array_key_exists($
             <div class="flex flex-row flex-wrap w-full">
                 <div class="w-full">
                     {{-- A translation replace is given, if :item exists in the translation it will be replaced otherwise nothing will hapen --}}
-                    @component('cooperation.tool.components.step-question', ['id' => $oldValueKey, 'translation' => $translation, 'translationReplace' => ['item' => $currentStep->name]])
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => $oldValueKey, 'translation' => $translation,
+                        'translationReplace' => ['item' => $currentStep->name],
+                        'withInputSource' => false,
+                    ])
                         @if($currentInputSource->name != $inputSourceName)({{$inputSourceName}}) @endif
 
                         @if($inputSourceName === $currentInputSource->name)
@@ -63,7 +67,11 @@ if (array_key_exists($currentStep->short, $commentsByStep) && array_key_exists($
 @if($currentInputSourceHasACommentButIsEmpty || $currentInputSourceHasNoPlacedComment)
     <div class="flex flex-row flex-wrap w-full">
         <div class="w-full">
-            @component('cooperation.tool.components.step-question', ['id' => $oldValueKey, 'translation' => $translation, 'translationReplace' => ['item' => $currentStep->name]])
+            @component('cooperation.tool.components.step-question', [
+                'id' => $oldValueKey, 'translation' => $translation,
+                'translationReplace' => ['item' => $currentStep->name],
+                'withInputSource' => false,
+            ])
                 <textarea name="{{$columnName}}" class="form-input">{{old($oldValueKey)}}</textarea>
             @endcomponent
         </div>

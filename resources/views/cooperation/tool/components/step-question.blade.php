@@ -14,6 +14,7 @@
     // set some defaults if not given
     $name = $name ?? $id;
     $required = $required ?? false;
+    $withInputSource = $withInputSource ?? true;
 
     $labelClass = $labelClass ?? ''; if (! empty($labelClass)) { \Log::debug('LABEL CLASS: ' . $labelClass); } // For upgrade, was on label class
     $labelStyling = $labelStyling ?? ''; if (! empty($labelStyling)) {\Log::debug('LABEL STYLING: ' . $labelStyling); } // For upgrade, was on form group div style tag
@@ -33,6 +34,7 @@
     'id' => $id,
     'modalId' => $id . '-info',
     'class' => ($required ? 'required' : ''),
+    'withInputSource' => $withInputSource,
 ])
     @if(! empty($sourceSlot))
         @slot('sourceSlot')

@@ -22,7 +22,6 @@ class CreateToolQuestionCustomValuesTable extends Migration
             $table->string('short');
 
             $table->json('name');
-            $table->string('value');
             $table->boolean('show');
             $table->integer('order');
             $table->json('extra')->nullable();

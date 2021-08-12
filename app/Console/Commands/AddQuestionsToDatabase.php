@@ -588,7 +588,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:building_elements,id'],
+                            'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_elements.{$wallInsulation->id}.element_value_id",
                             'short' => 'current-wall-insulation',
                             'translation' => "Wat is de staat van de muurisolatie",
@@ -621,7 +621,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:building_elements,id'],
+                            'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_elements.{$floorInsulation->id}.element_value_id",
                             'short' => 'current-floor-insulation',
                             'translation' => "Wat is de staat van de vloerisolatie",
@@ -658,7 +658,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:building_elements,id'],
+                            'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_elements.{$roofInsulation->id}.element_value_id",
                             'short' => 'current-roof-insulation',
                             'translation' => "Wat is de staat van de dakisolatie",
@@ -695,7 +695,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:building_elements,id'],
+                            'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_elements.{$livingRoomsWindows->id}.element_value_id",
                             'short' => 'current-living-rooms-windows',
                             'translation' => "Welke glasisolatie heeft u op de eerste woonlaag",
@@ -726,7 +726,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:building_elements,id'],
+                            'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_elements.{$sleepingRoomsWindows->id}.element_value_id",
                             'short' => 'current-living-rooms-windows',
                             'translation' => "Welke glasisolatie heeft u op de tweede woonlaag",
@@ -955,7 +955,7 @@ class AddQuestionsToDatabase extends Command
                         // TODO: Andere opties in design dan in database
                         [
                             'save_in' => "building_elements.{$crackSealing->id}.element_value_id",
-                            'validation' => ['required', "exists:building_elements,id",],
+                            'validation' => ['required', "exists:element_values,id",],
                             'short' => 'crack-sealing-type',
                             // was current-state -> zijn de ramen en deuren voorzien van kierdichting
                             'translation' => "Heeft u kierdichting?",
@@ -1111,7 +1111,6 @@ class AddQuestionsToDatabase extends Command
                                     'show' => true,
                                     // so we will compare the short to determine what is what, but we will keep value for now
                                     'short' => $value,
-                                    'value' => $value,
                                     'name' => [
                                         'nl' => $name,
                                     ],

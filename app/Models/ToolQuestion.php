@@ -8,6 +8,7 @@ use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 class ToolQuestion extends Model
@@ -83,14 +84,18 @@ class ToolQuestion extends Model
                 ->ordered()
                 ->with('toolQuestionValuables')
                 ->get()
-                ->map(function ($toolQuestion) {
-                    $toolQuestionValuable = $toolQuestion->tool_question_valuable;
-                    $questionValue = $toolQuestionValuable->toArray();
+                ->map(function (ToolQuestionValuable $toolQuestionValuable) {
+                    // so now get the actual morphed model.
+                    $valuable = $toolQuestionValuable->tool_question_valuable;
 
-                    $questionValue['extra'] = $toolQuestion->extra;
-                    $questionValue['name'] = $toolQuestionValuable->name ?? $toolQuestionValuable->value;
-                    $questionValue['value'] = $toolQuestionValuable->id;
+                    $questionValue = Arr::only($valuable->toArray(), ['calculate_value']);
 
+                    $questionValue['extra'] = $toolQuestionValuable->extra;
+                    // the humand readable name is either set in the name or value column.
+                    $questionValue['name'] = $valuable->name ?? $valuable->value;
+                    $questionValue['value'] = $valuable->id;
+
+//                    dd($questionValue);
                     return $questionValue;
                 });
 

@@ -12,7 +12,9 @@ use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -71,9 +73,16 @@ class Form extends Component
         // TODO: Deprecate this dispatch in Livewire V2
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
 
-        // Filter out the questions that do not match the condition
+        $this->setToolQuestions();
+        
+    }
+
+    private function setToolQuestions()
+    {
+        // each request, the toolQuestions will be rehydrated. But not completely (no pivot) so we have to do this each time
         $this->toolQuestions = $this->subStep->toolQuestions()->orderBy('order')->get();
 
+        // Filter out the questions that do not match the condition
         // now collect the given answers
         $answers = collect();
         foreach ($this->toolQuestions as $toolQuestion) {
@@ -101,8 +110,17 @@ class Form extends Component
 
     public function save($nextUrl)
     {
+
         if (!empty($this->rules)) {
-            $this->validate($this->rules);
+            $validator = Validator::make([
+                'filledInAnswers' => $this->filledInAnswers
+            ], $this->rules);
+            
+            if ($validator->fails()) {
+                $this->setToolQuestions();
+            }
+
+            $validator->validate();
         }
 
         foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {

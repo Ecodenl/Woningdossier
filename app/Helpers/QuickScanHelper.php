@@ -30,6 +30,6 @@ class QuickScanHelper
             }
         }
 
-        return route('cooperation.frontend.tool.quick-scan.index', ['step' => $nextStep->slug, 'subStep' => $nextSubStep->slug]);
+        return route('cooperation.frontend.tool.quick-scan.index', ['step' => $nextStep, 'subStep' => $nextSubStep]);
     }
 }

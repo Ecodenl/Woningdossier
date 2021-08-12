@@ -99,7 +99,7 @@
                                 @endif
                             </div>
 
-                            <div class="px-4 py-8">
+                            <div class="px-4 py-8" id="main-content">
                                 @yield('content')
                             </div>
 
@@ -209,7 +209,7 @@
 
             $('.submit-main-form').click(function () {
                 // submit the main form / tool tab
-                $('.panel#main-tab form').submit();
+                $('#main-tab #main-content form').submit();
                 $('.submit-main-form').prop('disabled', 'disabled').addClass('disabled');
             });
 

@@ -52,6 +52,7 @@ export default (defaultValue = 0, activeClass = 'bg-green', disabled = false, co
             this.value = element.getAttribute('data-value');
             this.setIndexActive();
 
+            // TODO: Check if we can do this with window.triggerEvent(element, 'change');
             if (this.livewireModel !== null) {
                 window.livewire.emitTo(this.componentName, 'update', this.livewireModel, this.value, false);
             }

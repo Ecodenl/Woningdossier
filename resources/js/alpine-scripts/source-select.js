@@ -110,17 +110,19 @@ export default (inputSource = 'no-match') => ({
                         case 'select':
                         case 'textarea':
                         case 'range':
-                        case 'hidden':
+                        // case 'hidden':
                             input.value = value;
-                            this.checkLivewire(input);
+                            window.triggerEvent(input, 'input');
                             window.triggerEvent(input, 'change');
                             break;
                         case 'radio':
                             input = this.inputGroup.querySelector(`input[type="radio"][value="${value}"]`);
                             if (input) {
-                                this.inputGroup.querySelector('input[type="radio"]:checked').checked = false;
+                                let checkedInput = this.inputGroup.querySelector('input[type="radio"]:checked');
+                                if (checkedInput) {
+                                    checkedInput.checked = false;
+                                }
                                 input.checked = true;
-                                this.checkLivewire(input);
                                 window.triggerEvent(input, 'change');
                             }
                             break;
@@ -128,7 +130,6 @@ export default (inputSource = 'no-match') => ({
                             input = this.inputGroup.querySelector(`input[type="checkbox"][value="${value}"]`);
                             if (input) {
                                 input.checked = true;
-                                this.checkLivewire(input);
                                 window.triggerEvent(input, 'change');
                             }
                             break;
@@ -138,11 +139,6 @@ export default (inputSource = 'no-match') => ({
                     }
                 }
             }
-        }
-    },
-    checkLivewire(input) {
-        if (input.hasAttribute('wire:model')) {
-            window.livewire.emit('source-changed', input.getAttribute('wire:model'), input.value);
         }
     },
 });

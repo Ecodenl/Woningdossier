@@ -34460,7 +34460,7 @@ __webpack_require__.r(__webpack_exports__);
         var parent = this.$refs['rating-slider'];
         this.index = Array.from(parent.children).indexOf(element);
         this.value = element.getAttribute('data-value');
-        this.setIndexActive();
+        this.setIndexActive(); // TODO: Check if we can do this with window.triggerEvent(element, 'change');
 
         if (this.livewireModel !== null) {
           window.livewire.emitTo(this.componentName, 'update', this.livewireModel, this.value, false);
@@ -34764,9 +34764,9 @@ __webpack_require__.r(__webpack_exports__);
               case 'select':
               case 'textarea':
               case 'range':
-              case 'hidden':
+                // case 'hidden':
                 input.value = value;
-                this.checkLivewire(input);
+                window.triggerEvent(input, 'input');
                 window.triggerEvent(input, 'change');
                 break;
 
@@ -34774,9 +34774,13 @@ __webpack_require__.r(__webpack_exports__);
                 input = this.inputGroup.querySelector("input[type=\"radio\"][value=\"".concat(value, "\"]"));
 
                 if (input) {
-                  this.inputGroup.querySelector('input[type="radio"]:checked').checked = false;
+                  var checkedInput = this.inputGroup.querySelector('input[type="radio"]:checked');
+
+                  if (checkedInput) {
+                    checkedInput.checked = false;
+                  }
+
                   input.checked = true;
-                  this.checkLivewire(input);
                   window.triggerEvent(input, 'change');
                 }
 
@@ -34787,7 +34791,6 @@ __webpack_require__.r(__webpack_exports__);
 
                 if (input) {
                   input.checked = true;
-                  this.checkLivewire(input);
                   window.triggerEvent(input, 'change');
                 }
 
@@ -34799,11 +34802,6 @@ __webpack_require__.r(__webpack_exports__);
             }
           }
         }
-      }
-    },
-    checkLivewire: function checkLivewire(input) {
-      if (input.hasAttribute('wire:model')) {
-        window.livewire.emit('source-changed', input.getAttribute('wire:model'), input.value);
       }
     }
   };

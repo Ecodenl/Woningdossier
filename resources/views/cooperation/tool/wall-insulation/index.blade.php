@@ -576,7 +576,7 @@
                 })
             });
             // Trigger the change event so it will load the data
-            $('.panel-body form').find('*').filter(':input:visible:first').trigger('change');
+            $('.form-input:visible:enabled').first().trigger('change');
 
         });
 

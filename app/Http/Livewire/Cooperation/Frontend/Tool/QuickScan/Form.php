@@ -101,7 +101,6 @@ class Form extends Component
 
     public function save($nextUrl)
     {
-        dd($this->filledInAnswers, $this->rules);
         if (!empty($this->rules)) {
             $this->validate($this->rules);
         }

@@ -49,9 +49,8 @@ if (array_key_exists($currentStep->short, $commentsByStep) && array_key_exists($
                         'id' => $oldValueKey, 'translation' => $translation,
                         'translationReplace' => ['item' => $currentStep->name],
                         'withInputSource' => false,
+                        'label' => '<span>' . ($currentInputSource->name != $inputSourceName ? "({$inputSourceName})" : '') . '</span>',
                     ])
-                        @if($currentInputSource->name != $inputSourceName)({{$inputSourceName}}) @endif
-
                         @if($inputSourceName === $currentInputSource->name)
                             <textarea name="{{$columnName}}" class="form-input">{{old($oldValueKey, $comment)}}</textarea>
                         @else

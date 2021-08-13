@@ -5,11 +5,9 @@
             $max = $option['max'];
 
             $disabled = $disabled ?? false;
-            $inputName = $option['name'];
             $label = $option['name'];
 
             $default = $filledInAnswers[$toolQuestion['id']][$option['short']] ?? 0;
-            $componentName = "cooperation.frontend.tool.quick-scan.form";
             $livewireModel = "filledInAnswers.{$toolQuestion['id']}.{$option['short']}";
         @endphp
 

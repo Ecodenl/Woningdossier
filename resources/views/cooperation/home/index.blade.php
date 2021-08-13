@@ -12,11 +12,7 @@
                 {!! __('home.start.description') !!}
 
                 <a class="btn btn-purple w-full xl:w-1/4 flex items-center justify-center mt-5"
-                   <?php
-                   $step = \App\Models\Step::whereShort('building-data')->first();
-                   $subStep = \App\Models\SubStep::first();
-                   ?>
-                    href="{{route('cooperation.frontend.tool.quick-scan.index', ['step' => $step->slug, 'subStep' => $subStep->slug])}}">
+                    href="{{$url}}">
                     @lang('default.start')
                     <i class="icon-sm icon-arrow-right-circle ml-5"></i>
                 </a>

@@ -3,7 +3,11 @@
         @component('cooperation.frontend.layouts.components.form-group', [
             'class' => 'form-group-heading',
             'label' => 'Welke zaken zou u willen veranderen aan uw woning?',
-        ])
+        'inputName' => "filledInAnswers.{$toolQuestion->id}",
+            ])
+                @slot('sourceSlot')
+
+                @endslot
             @slot('modalBodySlot')
                 <p>
                     Selecteer welke dingen u zou willen veranderen aan uw woning.

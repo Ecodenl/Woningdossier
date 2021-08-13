@@ -19,8 +19,9 @@ export default (initiallyOpen = false) => ({
         // Select is defined!
         if (! (null === this.select)) {
             // Bind event listener for change
+            let context = this;
             this.select.addEventListener('change', function (event) {
-                this.setValue(event.target.value);
+                context.setValue(event.target.value);
             });
 
             // Get options
@@ -29,7 +30,7 @@ export default (initiallyOpen = false) => ({
             if (this.options.length > 0) {
                 // Get attributes
                 this.value = this.select.value;
-                this.text = this.select.options[this.select.selectedIndex].textContent;
+                this.text = this.select.options[this.select.selectedIndex].textContent.trim();
                 this.disabled = this.select.hasAttribute('disabled');
 
                 // Add class if disabled, so css can do magic
@@ -59,25 +60,35 @@ export default (initiallyOpen = false) => ({
             this.open = ! this.open
         }
     },
+    close() {
+        this.open = false;
+    },
     changeOption(element) {
         if (! element.classList.contains('disabled')) {
             this.setValue(element.getAttribute('data-value'), element.textContent);
+            this.close();
+            window.triggerEvent(this.select, 'change');
         }
     },
     setValue(value, text = null) {
         this.value = value;
         this.select.value = value;
+        let option = this.$refs['select-options'].querySelector(`span[data-value="${value}"]`);
 
-        this.text = null === text ? value : text;
+        this.text = null === text ? (option ? option.textContent : value) : text;
         this.text = this.text.trim();
     },
     buildOption(parent, option) {
+        // Trim to ensure it's not filled with unnecessary white space (will look ugly in the input)
+        let value = option.value;
+        let text = option.textContent.trim();
+
         // Build a new alpine option
         let newOption = document.createElement('span');
-        newOption.appendChild(document.createTextNode(option.textContent));
-        newOption.setAttribute("data-value", option.value);
+        newOption.appendChild(document.createTextNode(text));
+        newOption.setAttribute("data-value", value);
         // Add alpine functions
-        newOption.setAttribute("x-bind:class", "value == '" + option.value + "' ? 'selected' : ''");
+        newOption.setAttribute("x-bind:class", "value == '" + value + "' ? 'selected' : ''");
         newOption.setAttribute("x-on:click", "changeOption($el)");
         newOption.classList.add('select-option');
 

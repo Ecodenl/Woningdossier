@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Helpers\Arr;
 use App\Helpers\ToolQuestionHelper;
 use App\Scopes\GetValueScope;
+use App\ToolQuestionAnswer;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use function Clue\StreamFilter\fun;
 
 /**
  * App\Models\Building
@@ -107,43 +109,80 @@ class Building extends Model
         return $this->hasMany(CustomMeasureApplication::class);
     }
 
+    public function getAnswerForAllInputSources(ToolQuestion $toolQuestion)
+    {
+        $answers = null;
+        $where = [['input_source_id', '!=', InputSource::findByShort(InputSource::MASTER_SHORT)->id]];
+        // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
+        if (!is_null($toolQuestion->save_in)) {
+            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);
+            $table = $saveIn['table'];
+            $column = $saveIn['column'];
+            $where = array_merge($saveIn['where'], $where);
+
+            $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
+
+            // these contain the human readable answers, we need this because the answer for a yes, no, unknown could be a 1,2,3
+            $questionValues = $toolQuestion->getQuestionValues()->pluck('name', 'value');
+
+            // we do a get so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
+            $answers = $modelName::allInputSources()
+                ->with('inputSource')
+                ->where($where)
+                ->get()
+                ->flatMap(function (Model $model) use ($column, $questionValues, $table) {
+                    // now check if we need to "translate" the answer
+                    $answer = $model->getAttribute($column);
+
+                    if ($questionValues->isNotEmpty() && !is_null($answer)) {
+                        $answer = $questionValues[$answer];
+                    }
+                    return [$model->inputSource->short => $answer];
+                });
+
+        } else {
+            $answers = $toolQuestion
+                ->toolQuestionAnswers()
+                ->allInputSources()
+                ->with('inputSource')
+                ->where($where)
+                ->get()->flatMap(function (ToolQuestionAnswer $toolQuestionAnswer) {
+                    return [
+                        $toolQuestionAnswer->inputSource->short => optional($toolQuestionAnswer->toolQuestionCustomValue)->name ?? $toolQuestionAnswer->answer
+                    ];
+                })->toArray();
+        }
+        return $answers;
+    }
+
     public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
     {
+
         $answer = null;
         $where[] = ['input_source_id', '=', $inputSource->id];
         // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
         if (!is_null($toolQuestion->save_in)) {
-            $savedInParts = explode('.', $toolQuestion->save_in);
-            $table = $savedInParts[0];
-            $column = $savedInParts[1];
-
-            if (Schema::hasColumn($table, 'user_id')) {
-                $where[] = ['user_id', '=', $this->user_id];
-            } else {
-                $where[] = ['building_id', '=', $this->id];
-            }
-
-            // 2 parts is the simple scenario, this just means a table + column
-            // but in some cases it holds more info we need to build wheres.
-            if (count($savedInParts) > 2) {
-                // in this case the column holds a extra where value
-                $where[] = [ToolQuestionHelper::TABLE_COLUMN[$table], '=', $column];
-
-                $columns = array_slice($savedInParts, 2);
-                $column = implode('.', $columns);
-            }
+            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);
+            $table = $saveIn['table'];
+            $column = $saveIn['column'];
+            $where = array_merge($saveIn['where'], $where);
 
             $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
 
             // we do a get so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
             $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
         } else {
-            $answer = optional($toolQuestion
+            $toolQuestionAnswer = $toolQuestion
                 ->toolQuestionAnswers()
                 ->allInputSources()
                 ->where($where)
-                ->first())
-                ->answer;
+                ->first();
+            if ($toolQuestionAnswer instanceof ToolQuestionAnswer) {
+                $answer = $toolQuestionAnswer->answer;
+                if ($toolQuestionAnswer->toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
+                    $answer = $toolQuestionAnswer->toolQuestionCustomValue->short;
+                }
+            }
         }
 
         return $answer;
@@ -228,6 +267,11 @@ class Building extends Model
     public function completedSteps()
     {
         return $this->hasMany(CompletedStep::class);
+    }
+
+    public function completedSubSteps(): HasMany
+    {
+        return $this->hasMany(CompletedSubStep::class);
     }
 
     /**

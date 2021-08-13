@@ -7,8 +7,9 @@ export default () => ({
         this.initialized = true;
 
         // Bind event listener for change
+        let context = this;
         this.$refs['slider'].addEventListener('change', function (event) {
-            this.updateVisuals();
+            context.updateVisuals();
         });
     },
     updateVisuals() {

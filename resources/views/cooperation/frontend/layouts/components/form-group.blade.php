@@ -10,8 +10,8 @@
             {{-- No need to show the info icon if no info was given --}}
             @if(! empty($modalBodySlot))
                 <div class="form-info" x-data="modal()">
-                    <i class="icon-md icon-info-light" x-on:click="toggle()"></i>
-                    @component('cooperation.frontend.layouts.components.modal')
+                    <i class="icon-md icon-info-light clickable" x-on:click="toggle()"></i>
+                    @component('cooperation.frontend.layouts.components.modal', ['id' => $modalId ?? ''])
                         {{ $modalBodySlot ?? '' }}
                     @endcomponent
                 </div>

@@ -12,7 +12,7 @@
         <i x-cloak x-show="open == true" class="icon-sm icon-arrow-up"></i>
     </div>
 
-    <div x-cloak x-ref="select-options" class="select-dropdown" x-show="open">
+    <div x-cloak x-ref="select-options" class="select-dropdown" x-show="open" x-on:click.outside="close()">
         <!-- Will be populated by Alpine -->
     </div>
 </div>

@@ -21,7 +21,6 @@ class ToolQuestionCustomValue extends Model
         'order',
         'validation',
         'options',
-        'value',
         'tool_question_id',
         'show',
         'extra',

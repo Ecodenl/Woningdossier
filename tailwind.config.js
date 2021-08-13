@@ -1,3 +1,6 @@
+const _ = require('lodash')
+const plugin = require('tailwindcss/plugin')
+
 const fractionTen = {
     '1/10': '10%',
     '2/10': '20%',
@@ -30,7 +33,21 @@ const fractionTwenty = {
     '17/20': '85%',
     '18/20': '90%',
     '19/20': '95%',
-}
+};
+
+const fractionTwelve = {
+    '1/12': '8.333333%',
+    '2/12': '16.666667%',
+    '3/12': '25%',
+    '4/12': '33.333333%',
+    '5/12': '41.666667%',
+    '6/12': '50%',
+    '7/12': '58.333333%',
+    '8/12': '66.666667%',
+    '9/12': '75%',
+    '10/12': '83.333333%',
+    '11/12': '91.666667%',
+};
 
 module.exports = {
     purge: [
@@ -134,6 +151,9 @@ module.exports = {
             maxWidth: {
                 ...fractionTwenty,
             },
+            spacing: {
+                ...fractionTwelve
+            },
             inset: {
                 ...fractionTwenty,
             },
@@ -194,5 +214,31 @@ module.exports = {
             boxShadow: ['active'],
         },
     },
-    plugins: [],
+    plugins: [
+        plugin(function({ addUtilities, theme, e }) {
+            const spacing = theme('spacing', {});
+
+            const pads = _.map(spacing,(value, key) => {
+                return {
+                    [`.pad-${e(key)} > :not([hidden]) ~ :not([hidden])`]: {
+                        padding: value
+                    },
+                    [`.pad-y-${e(key)} > :not([hidden]) ~ :not([hidden])`]: {
+                        'padding-top': value
+                    },
+                    [`.pad-x-${e(key)} > :not([hidden]) ~ :not([hidden])`]: {
+                        'padding-left': value
+                    },
+                }
+            });
+
+            const newUtilities = [
+                ...pads,
+            ];
+
+            addUtilities(newUtilities, {
+                variants: ['responsive'],
+            });
+        })
+    ],
 }

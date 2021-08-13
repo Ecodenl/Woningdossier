@@ -21,7 +21,15 @@
 }
 
 .form-header .form-label {
-    @apply flex text-blue-500 text-sm font-bold max-w-15/20;
+    @apply text-blue-500 text-sm font-bold max-w-15/20;
+}
+
+.form-header .form-label strong {
+    @apply text-green;
+}
+
+.form-header .form-label span {
+    @apply font-normal;
 }
 
 .form-header .form-end {
@@ -29,7 +37,7 @@
 }
 
 .form-header .form-info {
-    @apply flex cursor-pointer pl-2;
+    @apply flex pl-2;
 }
 
 /* Input styles */
@@ -42,6 +50,13 @@
 
     @apply hover:border-green hover:border-opacity-100;
     @apply focus:border-green focus:border-opacity-100;
+}
+
+.form-input {
+    @apply flex-auto;
+
+    width: 1%;
+    min-width: 0;
 }
 
 .form-input::placeholder {
@@ -60,7 +75,8 @@
 
 /* Element specific styles */
 textarea.form-input {
-    @apply h-32;
+    @apply h-32 py-2;
+    line-height: 24px;
     min-height: 2.75rem; /* Height of h-11, base height of input */
 }
 
@@ -106,7 +122,7 @@ textarea.form-input {
 
 /* Error label */
 .form-error-label {
-    @apply text-red text-sm hidden -mt-3;
+    @apply text-red text-sm hidden -mt-3 w-full;
 }
 
 /* Form group required */
@@ -120,6 +136,11 @@ textarea.form-input {
 .form-error .radio-wrapper label,
 .form-error .checkbox-wrapper label {
     @apply border-red text-red;
+}
+
+.form-error .input-group-prepend,
+.form-error .input-group-append {
+    @apply border-red;
 }
 
 .form-error .form-input::placeholder {
@@ -278,9 +299,24 @@ textarea.form-input {
     @apply relative w-full flex flex-wrap items-center;
 }
 
+.input-group .input-group-prepend {
+    @apply h-11 leading-10 rounded-l-lg mb-3 z-10 relative flex justify-center items-center bg-blue-100 bg-opacity-50 text-blue-500 text-sm border border-r-0 border-solid border-blue-500 border-opacity-50;
+    padding: 2px 10px;
+    min-width: 2.75rem;
+}
+
+.input-group .input-group-prepend + .form-input {
+    @apply rounded-l-none;
+}
+
 .input-group .input-group-append {
-    @apply flex justify-center items-center absolute top-px right-px bg-blue-100 bg-opacity-50 text-blue-500 w-11 overflow-hidden rounded-r-lg text-sm;
-    height: 2.64rem; /* Slightly smaller than h-11 to fit within the borders of the input */
+    @apply h-11 leading-10 rounded-r-lg mb-3 z-10 relative flex justify-center items-center bg-blue-100 bg-opacity-50 text-blue-500 text-sm border border-l-0 border-solid border-blue-500 border-opacity-50;
+    padding: 2px 10px;
+    min-width: 2.75rem;
+}
+
+.input-group .form-input.with-append {
+    @apply border-r-0 rounded-r-none;
 }
 
 /* Custom Alpine select */

@@ -107,7 +107,7 @@ class Building extends Model
     public function getAnswerForAllInputSources(ToolQuestion $toolQuestion)
     {
         $answers = null;
-        $where = [];
+        $where = [['input_source_id', '!=', InputSource::findByShort(InputSource::MASTER_SHORT)->id]];
         // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
         if (!is_null($toolQuestion->save_in)) {
             $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion);

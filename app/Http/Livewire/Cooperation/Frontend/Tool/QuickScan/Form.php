@@ -73,7 +73,7 @@ class Form extends Component
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
 
         $this->setToolQuestions();
-        
+
     }
 
     private function setToolQuestions()
@@ -109,7 +109,6 @@ class Form extends Component
 
     public function save($nextUrl)
     {
-
         if (!empty($this->rules)) {
             $validator = Validator::make([
                 'filledInAnswers' => $this->filledInAnswers
@@ -226,7 +225,6 @@ class Form extends Component
             );
     }
 
-
     private function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
     {
         if (is_array($givenAnswer)) {
@@ -248,7 +246,6 @@ class Form extends Component
             $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
         }
 
-
         $where['input_source_id'] = $this->currentInputSource->id;
         // we have to do this twice, once for the current input source and once for the master input source
         $toolQuestion
@@ -264,7 +261,6 @@ class Form extends Component
             ->updateOrCreate($where, $data)
             ->save();
     }
-
 
     public function update($field, $value, $triggerUpdate = true)
     {

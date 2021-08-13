@@ -158808,6 +158808,12 @@ textarea.form-input {
   right: 4rem;
 }
 
+/* Rating sliders need a higher margin */
+
+.form-error.rating-slider-wrapper .form-error-label {
+  margin-top: 1rem;
+}
+
 /* Styling for radio and checkbox */
 
 .radio-wrapper, .checkbox-wrapper {

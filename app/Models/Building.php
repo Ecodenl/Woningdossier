@@ -110,24 +110,14 @@ class Building extends Model
         $where = [];
         // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
         if (!is_null($toolQuestion->save_in)) {
-            $savedInParts = explode('.', $toolQuestion->save_in);
-            $table = $savedInParts[0];
-            $column = $savedInParts[1];
+            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion);
+            $table = $saveIn['table'];
+            $column = $saveIn['column'];
 
             if (Schema::hasColumn($table, 'user_id')) {
                 $where[] = ['user_id', '=', $this->user_id];
             } else {
                 $where[] = ['building_id', '=', $this->id];
-            }
-
-            // 2 parts is the simple scenario, this just means a table + column
-            // but in some cases it holds more info we need to build wheres.
-            if (count($savedInParts) > 2) {
-                // in this case the column holds a extra where value
-                $where[] = [ToolQuestionHelper::TABLE_COLUMN[$table], '=', $column];
-
-                $columns = array_slice($savedInParts, 2);
-                $column = implode('.', $columns);
             }
 
             $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
@@ -171,24 +161,14 @@ class Building extends Model
         $where[] = ['input_source_id', '=', $inputSource->id];
         // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
         if (!is_null($toolQuestion->save_in)) {
-            $savedInParts = explode('.', $toolQuestion->save_in);
-            $table = $savedInParts[0];
-            $column = $savedInParts[1];
+            $savedIn = ToolQuestionHelper::resolveSaveIn($toolQuestion);
+            $table = $savedIn['table'];
+            $column = $savedIn['column'];
 
             if (Schema::hasColumn($table, 'user_id')) {
                 $where[] = ['user_id', '=', $this->user_id];
             } else {
                 $where[] = ['building_id', '=', $this->id];
-            }
-
-            // 2 parts is the simple scenario, this just means a table + column
-            // but in some cases it holds more info we need to build wheres.
-            if (count($savedInParts) > 2) {
-                // in this case the column holds a extra where value
-                $where[] = [ToolQuestionHelper::TABLE_COLUMN[$table], '=', $column];
-
-                $columns = array_slice($savedInParts, 2);
-                $column = implode('.', $columns);
             }
 
             $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));

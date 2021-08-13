@@ -114,7 +114,7 @@ class Form extends Component
             $validator = Validator::make([
                 'filledInAnswers' => $this->filledInAnswers
             ], $this->rules);
-            
+
             if ($validator->fails()) {
                 $this->setToolQuestions();
             }

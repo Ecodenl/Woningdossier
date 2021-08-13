@@ -41,7 +41,7 @@ class UserActionPlanAdviceService
         $adviceYear = null;
         $step = $userActionPlanAdvice->step;
         $buildingOwner = $userActionPlanAdvice->user;
-        $measureApplication = $userActionPlanAdvice->measureApplication;
+        $measureApplication = $userActionPlanAdvice->userActionPlanAdvisable;
 
         // set the default user interest on the step.
         $userInterest = $buildingOwner->userInterestsForSpecificType(get_class($step), $step->id)->with('interest')->first();
@@ -153,8 +153,8 @@ class UserActionPlanAdviceService
                             'interested' => $advice->planned,
                             'advice_id' => $advice->id,
                             'warning' => $advice->warning,
-                            'measure' => $advice->measureApplication->measure_name,
-                            'measure_short' => $advice->measureApplication->short,                    // In the table the costs are indexed based on the advice year
+                            'measure' => $advice->userActionPlanAdvisable->measure_name,
+                            'measure_short' => $advice->userActionPlanAdvisable->short,                    // In the table the costs are indexed based on the advice year
                             // Now re-index costs based on user planned year in the personal plan
                             'costs' => NumberFormatter::round(Calculator::indexCosts($advice->costs, $costYear)),
                             'savings_gas' => Number::isNegative($savingsGas) ? 0 : $savingsGas,
@@ -227,7 +227,8 @@ class UserActionPlanAdviceService
 
         $advices = UserActionPlanAdvice::forInputSource($inputSource)
             ->where('user_id', $user->id)
-            ->with('user.building', 'measureApplication', 'step')
+            ->with('user.building', 'userActionPlanAdvisable', 'step')
+            ->where('user_action_plan_advisable_type', MeasureApplication::class)
             ->orderBy('step_id', 'asc')
             ->orderBy('year', 'asc')
             ->get();
@@ -236,14 +237,14 @@ class UserActionPlanAdviceService
         foreach ($advices as $advice) {
             if ($advice->step instanceof Step) {
                 /** @var MeasureApplication $measureApplication */
-                $measureApplication = $advice->measureApplication;
+                $measureApplication = $advice->userActionPlanAdvisable;
 
                 if (is_null($advice->year)) {
                     $advice->year = self::getAdviceYear($advice);
                 }
 
                 // check if we have to set the $savingsMoney to ntb.
-                if ('energy_saving' == $advice->measureApplication->measure_type) {
+                if ('energy_saving' == $advice->userActionPlanAdvisable->measure_type) {
                     $advice->savings_money = self::checkSavingsMoney($advice, $advice->savings_money);
                 }
 

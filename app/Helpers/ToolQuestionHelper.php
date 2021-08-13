@@ -23,11 +23,18 @@ class ToolQuestionHelper {
      * @param Building $building
      * @return array
      */
-    public static function resolveSaveIn(ToolQuestion $toolQuestion): array
+    public static function resolveSaveIn(ToolQuestion $toolQuestion, Building $building): array
     {
         $savedInParts = explode('.', $toolQuestion->save_in);
         $table = $savedInParts[0];
         $column = $savedInParts[1];
+        $where = [];
+
+        if (Schema::hasColumn($table, 'user_id')) {
+            $where[] = ['user_id', '=', $building->user_id];
+        } else {
+            $where[] = ['building_id', '=', $building->id];
+        }
 
         // 2 parts is the simple scenario, this just means a table + column
         // but in some cases it holds more info we need to build wheres.
@@ -39,6 +46,6 @@ class ToolQuestionHelper {
             $column = implode('.', $columns);
         }
 
-        return compact('table', 'column');
+        return compact('table', 'column', 'where');
     }
 }

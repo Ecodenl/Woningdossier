@@ -22,9 +22,7 @@ class CreateCustomMeasureApplicationsTable extends Migration
             $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('cascade');
 
             $table->json('name');
-            $table->json('info');
 
-            $table->json('extra');
             $table->timestamps();
         });
     }

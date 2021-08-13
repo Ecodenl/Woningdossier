@@ -36,7 +36,7 @@
                    ])
                         <input class="form-input" wire:model="customMeasureApplications.{{$index}}.name" id="new-measure-subject"
 
-                               placeholder="@lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.na')">
+                               placeholder="@lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.name.placeholder')">
                     @endcomponent
                     <div class="w-full flex items-center">
                         <i class="icon-sm icon-info mr-3"></i>

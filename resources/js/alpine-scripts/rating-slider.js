@@ -1,11 +1,9 @@
-export default (defaultValue = 0, activeClass = 'bg-green', disabled = false, componentName = null, livewireModel = null) => ({
+export default (defaultValue = 0, activeClass = 'bg-green', disabled = false) => ({
     index: -1,
     value: defaultValue,
     inactiveClass: 'bg-gray',
     activeClass: activeClass,
     disabled: disabled,
-    livewireModel: livewireModel,
-    componentName: componentName,
 
     init() {
         // Ensure the slider gets updated with the default value
@@ -50,12 +48,8 @@ export default (defaultValue = 0, activeClass = 'bg-green', disabled = false, co
             let parent = this.$refs['rating-slider'];
             this.index = Array.from(parent.children).indexOf(element);
             this.value = element.getAttribute('data-value');
+            this.$refs['rating-slider-input'].value = this.value;
             this.setIndexActive();
-
-            // TODO: Check if we can do this with window.triggerEvent(element, 'change');
-            if (this.livewireModel !== null) {
-                window.livewire.emitTo(this.componentName, 'update', this.livewireModel, this.value, false);
-            }
         }
     },
     selectOptionByValue(value) {
@@ -63,6 +57,11 @@ export default (defaultValue = 0, activeClass = 'bg-green', disabled = false, co
         if (element) {
             this.selectOption(element);
         }
+    },
+    selectOptionByElement(element) {
+        this.selectOption(element);
+        window.triggerEvent(this.$refs['rating-slider-input'], 'input');
+        window.triggerEvent(this.$refs['rating-slider-input'], 'change');
     },
     setIndexActive() {
         this.setAllGray();

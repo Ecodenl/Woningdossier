@@ -5,19 +5,18 @@
             $max = $option['max'];
 
             $disabled = $disabled ?? false;
-            $inputName = $option['name'];
             $label = $option['name'];
 
             $default = $filledInAnswers[$toolQuestion['id']][$option['short']] ?? 0;
-            $componentName = "cooperation.frontend.tool.quick-scan.form";
             $livewireModel = "filledInAnswers.{$toolQuestion['id']}.{$option['short']}";
         @endphp
 
 
-        <div x-data="ratingSlider({{$default ?? 0}}, '{{$activeClass ?? 'bg-green'}}', '{{$disabled}}', '{{$componentName}}', '{{$livewireModel}}')"
+        <div x-data="ratingSlider({{$default ?? 0}}, '{{$activeClass ?? 'bg-green'}}', '{{$disabled}}')"
              x-ref="rating-slider-wrapper" class="w-inherit" wire:ignore>
-            <input class="hidden" x-ref="rating-slider-input" x-model="value"
-                   x-on:element:updated.window="if ($event.detail.field === livewireModel) {selectOptionByValue($event.detail.value);}">
+            <input type="hidden" x-ref="rating-slider-input" data-short="{{ $option['short'] }}"
+                   wire:model="{{$livewireModel}}"
+                   x-on:element:updated.window="if ($event.detail.field === $el.getAttribute('wire:model')) { selectOptionByValue($event.detail.value);}">
             <div class="flex justify-between mb-3">
                 <p>{{$label ?? ''}}</p>
                 <p class="font-bold" x-text="value"></p>
@@ -29,7 +28,7 @@
                 @for($i = $min; $i <= $max; $i++)
                     <div class="w-full h-2 bg-gray @if($disabled) cursor-not-allowed @else cursor-pointer @endif"
                          data-value="{{$i}}" x-on:mouseenter="mouseEnter($el)" x-on:mouseleave="mouseLeave($el)"
-                         x-on:click="selectOption($el)">
+                         x-on:click="selectOptionByElement($el)">
 
                     </div>
                 @endfor

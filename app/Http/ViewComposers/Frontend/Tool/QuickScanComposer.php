@@ -22,30 +22,34 @@ class QuickScanComposer
         $step = $this->request->route('step');
         $subStep = $this->request->route('subStep');
 
-        $total = Step::whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS)
+        $total = Step::quickScan()
             ->leftJoin('sub_steps', 'steps.id', '=', 'sub_steps.step_id')
             ->count();
 
-        // get the previous step ids.
+        // Get all the IDs of previous steps. Currently there are a total of 4 steps, so
+        // we can have a maximum of 3 step IDs
         $stepIds = DB::table('steps')
             ->select('steps.id')
             ->whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS)
             ->where('order', '<', $step->order)
             ->pluck('id')->toArray();
 
-        // now get the sub steps for the previous steps, this way we can sum the max sub step order.
+        // Now get the sub steps for the previous steps. This way we can sum the max sub step order.
         $summedOrder = DB::table('steps')
             ->whereIn('steps.id', $stepIds)
-            ->selectRaw('max(sub_steps.order) as order_sum')
+            ->selectRaw('max(sub_steps.order) + 1 as order_sum')
             ->groupBy('sub_steps.step_id')
             ->leftJoin('sub_steps', 'steps.id', '=', 'sub_steps.step_id')
             ->get()->sum('order_sum');
 
-        $current = $subStep->order + $summedOrder;
+        // So the logic is as follows:
+        // The order always starts at 0. Therefore, if we're at the 5th question, order will be 4. We increment
+        // the order by 1, and then add the summed order. The summed order consists of the maximum order + 1, for
+        // the same logic as already defined; The summed order holds the total sub steps (OF PREVIOUS STEPS) already
+        // completed.
+        $current = $subStep->order + 1 + $summedOrder;
 
         $view->with('current', $current);
         $view->with('total', $total);
     }
 }
-
-

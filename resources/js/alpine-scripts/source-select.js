@@ -82,63 +82,86 @@ export default (inputSource = 'no-match') => ({
     },
     setElementValue(value) {
         if (this.inputGroup) {
-            // Define the input. It cannot be hidden, disabled or readonly
-            let input = this.inputGroup.querySelector('input:not([disabled]):not([readonly]):not([type="hidden"])');
-            // Not an input?
-            if (! input) {
-                // Check if select
-                input = this.inputGroup.querySelector('select:not([disabled]):not([readonly])');
-                // Check if valid, else we get a textarea
-                input = input ? input : this.inputGroup.querySelector('textarea:not([disabled]):not([readonly])');
-            }
-
-            // If an input is found...
-            if (input) {
-                let type = input.getAttribute('type');
-
-                // No type? Then probably select or textarea. We try the tag
-                if (type === null) {
-                    type = input.tagName;
+            // If the value is JSON, we need to do something slightly different (currently only relevant for rating slider)
+            let parsed = this.parseJson(value);
+            if (parsed !== null) {
+                // Set values for each input in the JSON object.
+                for (const [short, value] of Object.entries(parsed)) {
+                    let input = this.inputGroup.querySelector(`input:not([disabled]):not([readonly])[type="hidden"][data-short="${short}"]`);
+                    if (input) {
+                        input.value = value;
+                        window.triggerEvent(input, 'input');
+                        window.triggerEvent(input, 'change');
+                    }
+                }
+            } else {
+                // Define the input. It cannot be hidden, disabled or readonly
+                let input = this.inputGroup.querySelector('input:not([disabled]):not([readonly]):not([type="hidden"])');
+                // Not an input?
+                if (! input) {
+                    // Check if select
+                    input = this.inputGroup.querySelector('select:not([disabled]):not([readonly])');
+                    // Check if valid, else we get a textarea
+                    input = input ? input : this.inputGroup.querySelector('textarea:not([disabled]):not([readonly])');
                 }
 
-                if (typeof type !== 'undefined') {
-                    type = type.toLowerCase();
+                // If an input is found...
+                if (input) {
+                    let type = input.getAttribute('type');
 
-                    switch (type) {
-                        case 'text':
-                        case 'date':
-                        case 'select':
-                        case 'textarea':
-                        case 'range':
-                        // case 'hidden':
-                            input.value = value;
-                            window.triggerEvent(input, 'input');
-                            window.triggerEvent(input, 'change');
-                            break;
-                        case 'radio':
-                            input = this.inputGroup.querySelector(`input[type="radio"][value="${value}"]`);
-                            if (input) {
-                                let checkedInput = this.inputGroup.querySelector('input[type="radio"]:checked');
-                                if (checkedInput) {
-                                    checkedInput.checked = false;
+                    // No type? Then probably select or textarea. We try the tag
+                    if (type === null) {
+                        type = input.tagName;
+                    }
+
+                    if (typeof type !== 'undefined') {
+                        type = type.toLowerCase();
+
+                        switch (type) {
+                            case 'text':
+                            case 'date':
+                            case 'select':
+                            case 'textarea':
+                            case 'range':
+                                input.value = value;
+                                window.triggerEvent(input, 'input');
+                                window.triggerEvent(input, 'change');
+                                break;
+                            case 'radio':
+                                input = this.inputGroup.querySelector(`input[type="radio"][value="${value}"]`);
+                                if (input) {
+                                    let checkedInput = this.inputGroup.querySelector('input[type="radio"]:checked');
+                                    if (checkedInput) {
+                                        checkedInput.checked = false;
+                                    }
+                                    input.checked = true;
+                                    window.triggerEvent(input, 'change');
                                 }
-                                input.checked = true;
-                                window.triggerEvent(input, 'change');
-                            }
-                            break;
-                        case "checkbox":
-                            input = this.inputGroup.querySelector(`input[type="checkbox"][value="${value}"]`);
-                            if (input) {
-                                input.checked = true;
-                                window.triggerEvent(input, 'change');
-                            }
-                            break;
-                        default:
-                            // Not a valid input type?
-                            break;
+                                break;
+                            case "checkbox":
+                                input = this.inputGroup.querySelector(`input[type="checkbox"][value="${value}"]`);
+                                if (input) {
+                                    input.checked = true;
+                                    window.triggerEvent(input, 'change');
+                                }
+                                break;
+                            default:
+                                // Not a valid input type?
+                                break;
+                        }
                     }
                 }
             }
         }
     },
+    parseJson(value) {
+        let parsed = null;
+        try {
+            parsed = JSON.parse(value);
+        } catch (e) {
+            parsed = null;
+        }
+
+        return parsed;
+    }
 });

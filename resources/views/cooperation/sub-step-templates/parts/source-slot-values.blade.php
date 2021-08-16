@@ -10,13 +10,16 @@
 
             // We try to build the input source names based off the options, but if they aren't available,
             // we will use the shorts provided
-            if (! empty($toolQuestion->options)) {
-                foreach ($toolQuestion->options as $option) {
-                    $formatted[$option['short']] = "{$option['name']}: {$json[$option['short']]}";
-                }
+            if ($toolQuestion->hasOptions()) {
 
-                // Follow order of input source
-                $formatted = array_merge($json, $formatted);
+                // not every option contains additional answers, only some do.
+                if ($toolQuestion->toolQuestionType->short === 'rating-slider') {
+                    foreach ($toolQuestion->options as $option) {
+                        $formatted[$option['short']] = "{$option['name']}: {$json[$option['short']]}";
+                    }
+                    // Follow order of input source
+                    $formatted = array_merge($json, $formatted);
+                }
             } else {
                 foreach ($json as $short => $value) {
                     $formatted[$short] = "${short}: {$value}";

@@ -45,6 +45,10 @@ class ToolQuestion extends Model
         'resident' => 'boolean',
     ];
 
+    public function hasOptions(): bool
+    {
+        return  !empty($this->options);
+    }
 
     public function toolQuestionType(): BelongsTo
     {

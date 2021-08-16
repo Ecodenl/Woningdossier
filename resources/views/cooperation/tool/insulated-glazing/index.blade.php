@@ -1,9 +1,8 @@
-@extends('cooperation.tool.layout')
+@extends('cooperation.frontend.layouts.tool')
 
-@section('step_title', \App\Helpers\Translation::translate('insulated-glazing.title.title'))
+@section('step_title', __('insulated-glazing.title.title''))
 
-
-@section('step_content')
+@section('content')
 
     <?php
     // we only need this for the titles above the main inputs
@@ -15,8 +14,8 @@
     ];
     ?>
     <form method="POST"
-          action="{{ route('cooperation.tool.insulated-glazing.store', ['cooperation' => $cooperation]) }}">
-        {{ csrf_field() }}
+          action="{{ route('cooperation.tool.insulated-glazing.store', compact('cooperation')) }}">
+        @csrf
 
         <div id="main-glass-questions">
             @foreach($measureApplications as $i => $measureApplication)
@@ -34,8 +33,8 @@
                     )->get();
                 ?>
 
-                <div class="row">
-                    <div class="col-sm-12">
+                <div class="flex flex-row flex-wrap w-full">
+                    <div class="w-full">
                         {{-- since there is no title / subtitle for the hr3p --}}
                         @if(array_key_exists($measureApplication->id, $titles))
                             @include('cooperation.tool.includes.section-title', [
@@ -82,7 +81,7 @@
                     <div class="values">
 
 
-                        <div class="col-sm-3">
+                        <div class="w-full sm:w-1/4">
                             @component('cooperation.tool.components.step-question', ['id' => 'building_insulated_glazings.' . $measureApplication->id . '.insulating_glazing_id', 'translation' => 'insulated-glazing.'.$measureApplication->short.'.current-glass', 'required' => false])
                                 @component('cooperation.tool.components.input-group',
                                 ['inputType' => 'select', 'inputValues' => $insulatedGlazings, 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'insulating_glazing_id'])
@@ -99,7 +98,7 @@
                             @endcomponent
 
                         </div>
-                        <div class="col-sm-3">
+                        <div class="w-full sm:w-1/4">
                             @component('cooperation.tool.components.step-question',
                             ['id' => 'building_insulated_glazings.' . $measureApplication->id . '.building_heating_id', 'translation' => 'insulated-glazing.'.$measureApplication->short.'.rooms-heated', 'required' => false])
 
@@ -118,7 +117,7 @@
                             @endcomponent
 
                         </div>
-                        <div class="col-sm-3">
+                        <div class="w-full sm:w-1/4">
                             @component('cooperation.tool.components.step-question', [
                                 'id' => 'building_insulated_glazings.' . $measureApplication->id . '.m2',
                                 'name' => 'building_insulated_glazings.' . $measureApplication->id . '.m2',
@@ -139,7 +138,7 @@
 
                         </div>
 
-                        <div class="col-sm-3">
+                        <div class="w-full sm:w-1/4">
                             @component('cooperation.tool.components.step-question', [
                                 'id' => 'building_insulated_glazings.' . $measureApplication->id . '.windows',
                                 'translation' => 'insulated-glazing.'.$measureApplication->short.'.window-replace',
@@ -165,8 +164,8 @@
         <hr>
 
         <div id="paint-work">
-            <div class="row">
-                <div class="col-sm-12">
+            <div class="flex flex-row flex-wrap w-full">
+                <div class="w-full">
                     <hr>
                     @include('cooperation.tool.includes.section-title', [
                  'translation' => 'insulated-glazing.paint-work.title',
@@ -174,8 +173,8 @@
              ])
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-12">
+            <div class="flex flex-row flex-wrap w-full">
+                <div class="w-full">
                     @component('cooperation.tool.components.step-question', ['id' => 'building_features.window_surface', 'translation' => 'insulated-glazing.windows-surface', 'required' => false])
 
                         @component('cooperation.tool.components.input-group',
@@ -190,8 +189,8 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
+        <div class="flex flex-row flex-wrap w-full">
+            <div class="w-full">
                 @component('cooperation.tool.components.step-question', ['id' => 'building_elements.'.$frames->id, 'translation' => 'insulated-glazing.paint-work.which-frames', 'required' => false])
 
                     @component('cooperation.tool.components.input-group',
@@ -209,8 +208,8 @@
 
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
+        <div class="flex flex-row flex-wrap w-full">
+            <div class="w-full">
                 @component('cooperation.tool.components.step-question',
                 ['id' => 'building_elements.'.$woodElements->id.'.wood-elements', 'translation' => 'insulated-glazing.paint-work.other-wood-elements', 'required' => false])
 
@@ -274,8 +273,8 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-sm-6">
+        <div class="flex flex-row flex-wrap w-full">
+            <div class="w-full sm:w-1/2">
                 @component('cooperation.tool.components.step-question',
                 ['id' => 'building_paintwork_statuses.last_painted_year', 'translation' => 'insulated-glazing.paint-work.last-paintjob', 'required' => false])
 
@@ -289,7 +288,7 @@
                 @endcomponent
 
             </div>
-            <div class="col-sm-6">
+            <div class="w-full sm:w-1/2">
                 @component('cooperation.tool.components.step-question',
                 ['id' => 'building_paintwork_statuses.paintwork_status_id', 'translation' => 'insulated-glazing.paint-work.paint-damage-visible', 'required' => false])
 
@@ -308,8 +307,8 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-sm-12">
+        <div class="flex flex-row flex-wrap w-full">
+            <div class="w-full">
                 @component('cooperation.tool.components.step-question', ['id' => 'building_paintwork_statuses.wood_rot_status_id', 'translation' => 'insulated-glazing.paint-work.wood-rot-visible', 'required' => false])
 
                     @component('cooperation.tool.components.input-group',
@@ -332,26 +331,26 @@
             <hr>
             @include('cooperation.tool.includes.section-title', ['translation' => 'insulated-glazing.costs.cost-and-benefits', 'id' => 'cost-and-benefits',])
 
-            <div id="costs" class="row">
-                <div class="col-sm-4">
+            <div id="costs" class="flex flex-row flex-wrap w-full">
+                <div class="w-full sm:w-1/3">
                     @include('cooperation.layouts.indication-for-costs.gas', ['translation' => 'insulated-glazing.index.costs.gas'])
                 </div>
-                <div class="col-sm-4">
+                <div class="w-full sm:w-1/3">
                     @include('cooperation.layouts.indication-for-costs.co2', ['translation' => 'insulated-glazing.index.costs.co2'])
                 </div>
-                <div class="col-sm-4">
+                <div class="w-full sm:w-1/3">
                     @include('cooperation.layouts.indication-for-costs.savings-in-euro', [
                         'translation' => 'insulated-glazing.index.savings-in-euro'
                     ])
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-4">
+            <div class="flex flex-row flex-wrap w-full">
+                <div class="w-full sm:w-1/3">
                     @include('cooperation.layouts.indication-for-costs.indicative-costs', [
                         'translation' => 'insulated-glazing.index.indicative-costs'
                     ])
                 </div>
-                <div class="col-sm-4">
+                <div class="w-full sm:w-1/3">
                     @include('cooperation.layouts.indication-for-costs.comparable-rent', [
                         'translation' => 'insulated-glazing.index.comparable-rent'
                     ])
@@ -363,8 +362,8 @@
             <hr>
             @include('cooperation.tool.includes.section-title', ['translation' => 'insulated-glazing.taking-into-account.title', 'id' => 'taking-into-account',])
 
-            <div class="row">
-                <div class="col-sm-6">
+            <div class="flex flex-row flex-wrap w-full">
+                <div class="w-full sm:w-1/2">
                     @component('cooperation.tool.components.step-question', ['id' => 'paintwork', 'translation' => 'insulated-glazing.taking-into-account.paintwork',])
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-euro"></i></span>
@@ -373,7 +372,7 @@
                         </div>
                     @endcomponent
                 </div>
-                <div class="col-sm-6">
+                <div class="w-full sm:w-1/2">
                     @component('cooperation.tool.components.step-question', ['id' => 'paintwork_year', 'translation' => 'insulated-glazing.taking-into-account.paintwork_year',])
                         <div class="input-group">
                             <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
@@ -389,8 +388,8 @@
             'translation' => 'insulated-glazing.index.specific-situation'
         ])
 
-        <div class="row">
-            <div class="col-md-12">
+        <div class="flex flex-row flex-wrap w-full">
+            <div class="w-full">
                 <div class="panel panel-primary">
                     <div class="panel-heading">@lang('default.buttons.download')</div>
                     <div class="panel-body">

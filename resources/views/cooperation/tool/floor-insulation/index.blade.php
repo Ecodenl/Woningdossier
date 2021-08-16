@@ -1,34 +1,46 @@
-@extends('cooperation.tool.layout')
+@extends('cooperation.frontend.layouts.tool')
 
-@section('step_title', \App\Helpers\Translation::translate('floor-insulation.title.title'))
+@section('step_title', __('floor-insulation.title.title'))
 
-
-@section('step_content')
-    <form method="POST"
-          action="{{ route('cooperation.tool.floor-insulation.store', ['cooperation' => $cooperation]) }}">
-        {{ csrf_field() }}
+@section('content')
+    <form method="POST" id="floor-insulation-form"
+          action="{{ route('cooperation.tool.floor-insulation.store', compact('cooperation')) }}">
+        @csrf
 
         @include('cooperation.tool.includes.interested', [
-            'translation' => 'floor-insulation.index.interested-in-improvement', 'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+            'translation' => 'floor-insulation.index.interested-in-improvement', 
+            'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
         ])
         <div id="floor-insulation">
-            <div class="row">
-                <div class="col-sm-12">
-                    @component('cooperation.tool.components.step-question', ['id' => 'element.' . $floorInsulation->id, 'translation' => 'floor-insulation.floor-insulation', 'required' => false])
-
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'select', 'inputValues' => $floorInsulation->values()->orderBy('order')->get(), 'userInputValues' => $buildingInsulationForMe ,'userInputColumn' => 'element_value_id'])
-                            <div id="floor-insulation-options">
-                                <select id="element_{{ $floorInsulation->id }}" class="form-control"
+            <div class="flex flex-row flex-wrap w-full">
+                <div class="w-full">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'element.' . $floorInsulation->id, 
+                        'translation' => 'floor-insulation.floor-insulation', 'required' => false
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'select', 
+                                'inputValues' => $floorInsulation->values()->orderBy('order')->get(), 
+                                'userInputValues' => $buildingInsulationForMe,
+                                'userInputColumn' => 'element_value_id'
+                            ])
+                        @endslot
+                    
+                        <div id="floor-insulation-options" class="w-full">
+                            @component('cooperation.frontend.layouts.components.alpine-select')
+                                <select id="element_{{ $floorInsulation->id }}" class="form-input"
                                         name="element[{{ $floorInsulation->id }}]">
                                     @foreach($floorInsulation->values()->orderBy('order')->get() as $elementValue)
                                         <option data-calculate-value="{{$elementValue->calculate_value}}"
                                                 @if(old('element.' . $floorInsulation->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $floorInsulation->id), 'element_value_id')) == $elementValue->id) selected="selected"
-                                                @endif value="{{ $elementValue->id }}">{{ $elementValue->value }}</option>
+                                                @endif value="{{ $elementValue->id }}">
+                                            {{ $elementValue->value }}
+                                        </option>
                                     @endforeach
                                 </select>
-                            </div>
-                        @endcomponent
+                            @endcomponent
+                        </div>
                     @endcomponent
                 </div>
             </div>
@@ -38,120 +50,169 @@
         @include('cooperation.tool.includes.savings-alert', ['buildingElement' => 'floor-insulation'])
 
         <div id="hideable">
-
             <div id="answers">
-
-                <div class="row">
-                    <div class="col-sm-12">
+                <div class="flex flex-row flex-wrap w-full">
+                    <div class="w-full">
                         <div id="has-no-crawlspace">
-                            @component('cooperation.tool.components.step-question', ['id' => 'building_elements.extra.crawlspace', 'translation' => 'floor-insulation.has-crawlspace', 'required' => false])
+                            @component('cooperation.tool.components.step-question', [
+                                'id' => 'building_elements.extra.crawlspace',
+                                'translation' => 'floor-insulation.has-crawlspace', 'required' => false
+                            ])
+                                @slot('sourceSlot')
+                                    @include('cooperation.tool.components.source-list', [
+                                        'inputType' => 'select',
+                                        'inputValues' => __('woningdossier.cooperation.option'),
+                                        'userInputValues' => $buildingElementsOrderedOnInputSourceCredibility,
+                                        'userInputColumn' => 'extra.has_crawlspace'
+                                    ])
+                                @endslot
 
-                                @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsOrderedOnInputSourceCredibility ,'userInputColumn' => 'extra.has_crawlspace'])
-                                    <select id="has_crawlspace" class="form-control"
+                                @component('cooperation.frontend.layouts.components.alpine-select')
+                                    <select id="has_crawlspace" class="form-input"
                                             name="building_elements[extra][has_crawlspace]">
                                         @foreach(__('woningdossier.cooperation.option') as $i => $option)
                                             <option @if(old('building_elements.extra.has_crawlspace', Hoomdossier::getMostCredibleValueFromCollection($buildingElementsOrderedOnInputSourceCredibility, 'extra.has_crawlspace')) == $i) selected="selected"
-                                                    @endif value="{{ $i }}">{{ $option }}</option>
+                                                    @endif value="{{ $i }}">
+                                                {{ $option }}
+                                            </option>
                                         @endforeach
-                                    </select>@endcomponent
-
+                                    </select>
+                                @endcomponent
                             @endcomponent
 
-
-                            <div id="crawlspace-unknown-error" class="help-block" style="display: none;">
-                                <div class="alert alert-warning show" role="alert">
-                                    <p>{{\App\Helpers\Translation::translate('floor-insulation.crawlspace.unknown-error.title')}}</p>
-                                </div>
+                            <div id="crawlspace-unknown-error" style="display: none;">
+                                @component('cooperation.frontend.layouts.parts.alert', [
+                                    'color' => 'yellow', 'dismissible' => false
+                                ])
+                                    <p class="text-yellow">
+                                        @lang('floor-insulation.crawlspace.unknown-error.title')
+                                    </p>
+                                @endcomponent
                             </div>
-
                         </div>
                     </div>
-
-
                 </div>
                 <div id="crawlspace-wrapper" class="crawlspace-accessible">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
+                    <div class="flex flex-row flex-wrap w-full">
+                        <div class="w-full md:w-1/2 md:pr-3">
                             <div id="has-crawlspace-access">
-                                @component('cooperation.tool.components.step-question', ['id' => 'building_elements.extra.access', 'translation' => 'floor-insulation.crawlspace-access', 'required' => false])
+                                @component('cooperation.tool.components.step-question', [
+                                    'id' => 'building_elements.extra.access',
+                                    'translation' => 'floor-insulation.crawlspace-access', 'required' => false
+                                ])
+                                    @slot('sourceSlot')
+                                        @include('cooperation.tool.components.source-list', [
+                                            'inputType' => 'select',
+                                            'inputValues' => __('woningdossier.cooperation.option'),
+                                            'userInputValues' => $buildingElementsOrderedOnInputSourceCredibility,
+                                            'userInputColumn' => 'extra.access'
+                                        ])
+                                    @endslot
 
-                                    @component('cooperation.tool.components.input-group',
-                                    ['inputType' => 'select', 'inputValues' => __('woningdossier.cooperation.option'), 'userInputValues' => $buildingElementsOrderedOnInputSourceCredibility ,'userInputColumn' => 'extra.access'])
-                                        <select id="crawlspace_access" class="form-control"
+                                    @component('cooperation.frontend.layouts.components.alpine-select')
+                                        <select id="crawlspace_access" class="form-input"
                                                 name="building_elements[extra][access]">
                                             @foreach(__('woningdossier.cooperation.option') as $i => $option)
                                                 <option @if(old('building_elements.extra.access', Hoomdossier::getMostCredibleValueFromCollection($buildingElementsOrderedOnInputSourceCredibility, 'extra.access')) == $i) selected="selected"
-                                                        @endif value="{{ $i }}">{{ $option }}</option>
+                                                        @endif value="{{ $i }}">
+                                                    {{ $option }}
+                                                </option>
                                             @endforeach
-                                        </select>@endcomponent
+                                        </select>
+                                    @endcomponent
                                 @endcomponent
 
-                                <div id="crawlspace-no-access-error" class="help-block" style="display: none;">
-                                    <div class="alert alert-warning show" role="alert">
-                                        <p>{{\App\Helpers\Translation::translate('floor-insulation.crawlspace-access.no-access.title')}}</p>
-                                    </div>
+                                <div id="crawlspace-no-access-error" style="display: none;">
+                                    @component('cooperation.frontend.layouts.parts.alert', [
+                                        'color' => 'yellow', 'dismissible' => false
+                                    ])
+                                        <p class="text-yellow">
+                                            @lang('floor-insulation.crawlspace-access.no-access.title')
+                                        </p>
+                                    @endcomponent
                                 </div>
-
                             </div>
                         </div>
 
+                        <div class="w-full md:w-1/2 md:pl-3">
+                            @component('cooperation.tool.components.step-question', [
+                                'id' => 'building_elements.element_value_id',
+                                'translation' => 'floor-insulation.crawlspace-height', 'required' => false
+                            ])
+                                @slot('sourceSlot')
+                                    @include('cooperation.tool.components.source-list', [
+                                        'inputType' => 'select', 'inputValues' => $crawlspace->values,
+                                        'userInputValues' => $buildingElementsOrderedOnInputSourceCredibility,
+                                        'userInputColumn' => 'element_value_id'
+                                    ])
+                                @endslot
 
-                        <div class="col-sm-12 col-md-6">
-                            @component('cooperation.tool.components.step-question',
-                             ['id' => 'building_elements.element_value_id', 'translation' => 'floor-insulation.crawlspace-height', 'required' => false])
-
-                                @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'select', 'inputValues' => $crawlspace->values, 'userInputValues' => $buildingElementsOrderedOnInputSourceCredibility ,'userInputColumn' => 'element_value_id'])
-                                    <select id="crawlspace_height" class="form-control"
+                                @component('cooperation.frontend.layouts.components.alpine-select')
+                                    <select id="crawlspace_height" class="form-input"
                                             name="building_elements[element_value_id]">
                                         @foreach($crawlspace->values as $crawlHeight)
                                             <option @if(old('crawlspace_height', Hoomdossier::getMostCredibleValueFromCollection($buildingElementsOrderedOnInputSourceCredibility, 'element_value_id')) == $crawlHeight->id) selected="selected"
-                                                    @endif value="{{ $crawlHeight->id }}">{{ $crawlHeight->value }}</option>
+                                                    @endif value="{{ $crawlHeight->id }}">
+                                                {{ $crawlHeight->value }}
+                                            </option>
                                         @endforeach
-                                    </select>@endcomponent
-
-
-
+                                    </select>
+                                @endcomponent
                             @endcomponent
-
                         </div>
                     </div>
-                    <div class="row crawlspace-accessible">
-                        <div class="col-sm-6">
+                    <div class="flex flex-row flex-wrap w-full crawlspace-accessible">
+                        <div class="w-full sm:w-1/2 sm:pr-3">
+                            @component('cooperation.tool.components.step-question', [
+                                'id' => 'building_features.floor_surface', 'translation' => 'floor-insulation.surface',
+                                'required' => true
+                            ])
+                                @slot('sourceSlot')
+                                    @include('cooperation.tool.components.source-list', [
+                                        'inputType' => 'input',
+                                        'userInputValues' => $buildingFeaturesOrderedOnInputSourceCredibility,
+                                        'userInputColumn' => 'floor_surface', 'needsFormat' => true
+                                    ])
+                                @endslot
 
-                            @component('cooperation.tool.components.step-question', ['id' => 'building_features.floor_surface', 'translation' => 'floor-insulation.surface', 'required' => true])
-                                @component('cooperation.tool.components.input-group',
-                                ['inputType' => 'input', 'userInputValues' => $buildingFeaturesOrderedOnInputSourceCredibility, 'userInputColumn' => 'floor_surface', 'needsFormat' => true])
-                                    <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                                    <input id="floor_surface" type="text" name="building_features[floor_surface]" required="required"
-                                           value="{{ \App\Helpers\NumberFormatter::format(old('building_features.floor_surface', Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnInputSourceCredibility, 'floor_surface')),1) }}"
-                                           class="form-control">
-                                @endcomponent
+                                <span class="input-group-prepend">@lang('general.unit.square-meters.title')</span>
+                                <input id="floor_surface" type="text" name="building_features[floor_surface]" required="required"
+                                       value="{{ \App\Helpers\NumberFormatter::format(old('building_features.floor_surface', Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnInputSourceCredibility, 'floor_surface')),1) }}"
+                                       class="form-input">
                             @endcomponent
                         </div>
-                        <div class="col-sm-6">
-                            @component('cooperation.tool.components.step-question', ['id' => 'building_features.insulation_surface', 'translation' => 'floor-insulation.insulation-surface', 'required' => true])
-                                @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'input', 'userInputValues' => $buildingFeaturesOrderedOnInputSourceCredibility, 'userInputColumn' => 'insulation_surface', 'needsFormat' => true])
-                                    <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
-                                    <input id="insulation_floor_surface" type="text" required="required"
-                                           name="building_features[insulation_surface]"
-                                           value="{{ \App\Helpers\NumberFormatter::format(old('building_features.insulation_surface', Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnInputSourceCredibility, 'insulation_surface')),1) }}"
-                                           class="form-control">
-                                @endcomponent
+                        <div class="w-full sm:w-1/2 sm:pl-3">
+                            @component('cooperation.tool.components.step-question', [
+                                'id' => 'building_features.insulation_surface',
+                                'translation' => 'floor-insulation.insulation-surface', 'required' => true
+                            ])
+                                @slot('sourceSlot')
+                                    @include('cooperation.tool.components.source-list', [
+                                        'inputType' => 'input',
+                                        'userInputValues' => $buildingFeaturesOrderedOnInputSourceCredibility,
+                                        'userInputColumn' => 'insulation_surface', 'needsFormat' => true
+                                    ])
+                                @endslot
+                                <span class="input-group-prepend">@lang('general.unit.square-meters.title')</span>
+                                <input id="insulation_floor_surface" type="text" required="required"
+                                       name="building_features[insulation_surface]"
+                                       value="{{ \App\Helpers\NumberFormatter::format(old('building_features.insulation_surface', Hoomdossier::getMostCredibleValueFromCollection($buildingFeaturesOrderedOnInputSourceCredibility, 'insulation_surface')),1) }}"
+                                       class="form-input">
                             @endcomponent
                         </div>
                     </div>
                 </div>
 
-
-                <div class="row crawlspace-accessible">
-                    <div class="col-sm-12 col-md-8 col-md-offset-2">
-                        <div class="alert alert-info show" role="alert">
-                            <p>{{\App\Helpers\Translation::translate('floor-insulation.insulation-advice.text.title')}}</p>
-                            <p id="insulation-advice"></p>
-                        </div>
+                <div class="flex flex-row flex-wrap w-full crawlspace-accessible">
+                    <div class="w-full md:w-8/12 md:ml-2/12">
+                        @component('cooperation.frontend.layouts.parts.alert', [
+                            'color' => 'blue-800', 'dismissible' => false,
+                        ])
+                            <p class="text-blue-800">
+                                @lang('floor-insulation.insulation-advice.text.title')
+                            </p>
+                            <p class="text-blue-800" id="insulation-advice"></p>
+                        @endcomponent
                     </div>
                 </div>
 
@@ -162,26 +223,30 @@
                         'id' => 'indication-for-costs'
                     ])
 
-                    <div id="costs" class="row">
-                        <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.gas', ['translation' => 'floor-insulation.index.costs.gas'])
+                    <div id="costs" class="flex flex-row flex-wrap w-full sm:pad-x-6">
+                        <div class="w-full sm:w-1/3">
+                            @include('cooperation.layouts.indication-for-costs.gas', [
+                                'translation' => 'floor-insulation.index.costs.gas'
+                            ])
                         </div>
-                        <div class="col-sm-4">
-                            @include('cooperation.layouts.indication-for-costs.co2', ['translation' => 'floor-insulation.index.costs.co2'])
+                        <div class="w-full sm:w-1/3">
+                            @include('cooperation.layouts.indication-for-costs.co2', [
+                                'translation' => 'floor-insulation.index.costs.co2'
+                            ])
                         </div>
-                        <div class="col-sm-4">
+                        <div class="w-full sm:w-1/3">
                             @include('cooperation.layouts.indication-for-costs.savings-in-euro',[
                                 'translation' => 'floor-insulation.index.savings-in-euro'
                             ])
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-4">
+                    <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
+                        <div class="w-full sm:w-1/3">
                             @include('cooperation.layouts.indication-for-costs.indicative-costs',[
                                 'translation' => 'floor-insulation.index.indicative-costs'
                             ])
                         </div>
-                        <div class="col-sm-4">
+                        <div class="w-full sm:w-1/3">
                             @include('cooperation.layouts.indication-for-costs.comparable-rent',[
                                 'translation' => 'floor-insulation.index.comparable-rent'
                             ])
@@ -190,39 +255,36 @@
                 </div>
             </div>
 
-            <div class="row d-none" id="no-crawlspace-error">
-                <div class="col-md-12">
-                    <div class="alert alert-danger" role="alert">
-                        <p>{{ \App\Helpers\Translation::translate('floor-insulation.has-crawlspace.no-crawlspace.title') }}</p>
-                    </div>
+            <div class="flex flex-row flex-wrap w-full hidden" id="no-crawlspace-error">
+                <div class="w-full">
+                    @component('cooperation.frontend.layouts.parts.alert', [
+                        'color' => 'red', 'dismissible' => false,
+                    ])
+                        <p class="text-red">
+                            @lang('floor-insulation.has-crawlspace.no-crawlspace.title')
+                        </p>
+                    @endcomponent
                 </div>
             </div>
         </div>
-
 
         @include('cooperation.tool.includes.comment', [
              'translation' => 'floor-insulation.index.specific-situation'
         ])
 
+        @component('cooperation.tool.components.panel', [
+            'label' => __('default.buttons.download'),
+        ])
+            <ol>
+                <li><a download=""
+                       href="{{asset('storage/hoomdossier-assets/Maatregelblad_Vloerisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Vloerisolatie.pdf')))))}}</a>
+                </li>
+                <li><a download=""
+                       href="{{asset('storage/hoomdossier-assets/Maatregelblad_Bodemisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Bodemisolatie.pdf')))))}}</a>
+                </li>
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">@lang('default.buttons.download')</div>
-                    <div class="panel-body">
-                        <ol>
-                            <li><a download=""
-                                   href="{{asset('storage/hoomdossier-assets/Maatregelblad_Vloerisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Vloerisolatie.pdf')))))}}</a>
-                            </li>
-                            <li><a download=""
-                                   href="{{asset('storage/hoomdossier-assets/Maatregelblad_Bodemisolatie.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Bodemisolatie.pdf')))))}}</a>
-                            </li>
-
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
+            </ol>
+        @endcomponent
     </form>
 @endsection
 
@@ -236,10 +298,11 @@
 
             function formChange() {
 
-                var form = $(this).closest("form").serialize();
+                let $form = $('#floor-insulation-form');
+                let form = $form.serialize();
                 $.ajax({
                     type: "POST",
-                    url: '{{ route('cooperation.tool.floor-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',
+                    url: '{{ route('cooperation.tool.floor-insulation.calculate', compact('cooperation')) }}',
                     data: form,
                     success: function (data) {
 
@@ -324,24 +387,22 @@
                     $(".crawlspace-accessible").hide();
                     $("#has-no-crawlspace").hide();
                     $("#no-crawlspace-error").hide();
-                    $('#floor-insulation-info-alert').find('.alert').addClass('hide');
+                    $('#floor-insulation-info-alert').find('.alert').hide()
                 } else {
                     if ((elementCalculateValue === 3 || elementCalculateValue === 4 || elementCalculateValue === 5)/* && interestedCalculateValue <= 2*/) {
                         // insulation already present and there's interest
                         $('#hideable').hide();
-                        $('#floor-insulation-info-alert').find('.alert').removeClass('hide');
+                        $('#floor-insulation-info-alert').find('.alert').show();
                     } else {
                         $('#hideable').show();
                         //$("#has-no-crawlspace").show();
                         //crawlspaceOptions();
-                        $('#floor-insulation-info-alert').find('.alert').addClass('hide');
+                        $('#floor-insulation-info-alert').find('.alert').hide();
                     }
                 }
             }
 
-            //$('form').find('*').filter(':input:visible:first').trigger('change');
-            $('.panel-body form').find('*').filter(':input:visible:first').trigger('change');
-
+            $('.form-input:visible:enabled').first().trigger('change');
         });
 
         $('#floor_surface').on('change', function () {

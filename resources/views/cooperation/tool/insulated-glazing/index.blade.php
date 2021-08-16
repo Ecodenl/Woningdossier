@@ -13,7 +13,7 @@
         9 => 'hrpp-glass-frames',
     ];
     ?>
-    <form method="POST"
+    <form method="POST" id="insulated-glazing-form"
           action="{{ route('cooperation.tool.insulated-glazing.store', compact('cooperation')) }}">
         @csrf
 
@@ -33,7 +33,7 @@
                     )->get();
                 ?>
 
-                <div class="flex flex-row flex-wrap w-full">
+                <div class="flex flex-row flex-wrap w-full" id="glass-question-{{$measureApplication->id}}">
                     <div class="w-full">
                         {{-- since there is no title / subtitle for the hr3p --}}
                         @if(array_key_exists($measureApplication->id, $titles))
@@ -486,10 +486,11 @@
 
             $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function () {
 
-                var form = $(this).closest("form").serialize();
+                let $form = $('#insulated-glazing-form');
+                let form = $form.serialize();
                 $.ajax({
                     type: "POST",
-                    url: '{{ route('cooperation.tool.insulated-glazing.calculate', [ 'cooperation' => $cooperation ]) }}',
+                    url: '{{ route('cooperation.tool.insulated-glazing.calculate', compact('cooperation')) }}',
                     data: form,
                     success: function (data) {
 
@@ -530,7 +531,7 @@
                 var userInterestCalculateValue = userInterest.find('option:selected').data('calculate-value');
 
                 // div that holds the inputs (m2 and windows)
-                var valueElements = userInterest.parents('.row').first().find('.values');
+                var valueElements = userInterest.parents('[id*=glass-question-]').first().find('.values');
 
                 if (userInterestCalculateValue === 4 || userInterestCalculateValue === 5) {
                     valueElements.hide();
@@ -545,8 +546,7 @@
             $('.user-interest').trigger('change');
 
             // Trigger the change event so it will load the data
-            //$('form').find('*').filter(':input:visible:first').trigger('change');
-            $('.panel-body form').find('*').filter(':input:visible:first').trigger('change');
+            $('.form-input:visible:enabled').first().trigger('change');
         });
 
     </script>

@@ -34,7 +34,7 @@ class ChangeMeasureApplicationIdOnUserActionPlanAdvicesTable extends Migration
 
         // and drop the measure_application_ids
         Schema::table('user_action_plan_advices', function (Blueprint $table) {
-//            $table->dropForeign(['measure_application_id']);
+            $table->dropForeign(['measure_application_id']);
             $table->dropColumn('measure_application_id');
         });
     }

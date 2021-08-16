@@ -149,7 +149,7 @@ class UserActionPlanAdviceService
                         $savingsGas = is_null($advice->savings_gas) ? 0 : NumberFormatter::round($advice->savings_gas);
                         $savingsElectricity = is_null($advice->savings_electricity) ? 0 : NumberFormatter::round($advice->savings_electricity);
 
-                        $sortedAdvices[$year][$step->name][$advice->measureApplication->short] = [
+                        $sortedAdvices[$year][$step->name][$advice->userActionPlanAdvisable->short] = [
                             'interested' => $advice->planned,
                             'advice_id' => $advice->id,
                             'warning' => $advice->warning,
@@ -190,10 +190,10 @@ class UserActionPlanAdviceService
             $pitchedRoofMeasureApplications = ['roof-insulation-pitched-replace-tiles', 'roof-insulation-pitched-inside'];
 
             // check the current advice its measure application, this way we can determine which roofType we have to check
-            if (in_array($advice->measureApplication->short, $pitchedRoofMeasureApplications)) {
+            if (in_array($advice->userActionPlanAdvisable->short, $pitchedRoofMeasureApplications)) {
                 $roofType = RoofType::findByShort('pitched');
             }
-            if (in_array($advice->measureApplication->short, $flatRoofMeasureApplications)) {
+            if (in_array($advice->userActionPlanAdvisable->short, $flatRoofMeasureApplications)) {
                 $roofType = RoofType::findByShort('flat');
             }
 

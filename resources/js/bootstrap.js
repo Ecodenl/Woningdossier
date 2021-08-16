@@ -55,6 +55,17 @@ if (token) {
 // });
 
 /**
+ * Define functions that will be used throughout the whole application, that
+ * are also required by Alpine.
+ */
+window.triggerEvent = function (element, eventName) {
+    if (element && element.nodeType === Node.ELEMENT_NODE && eventName) {
+        let event = new Event(eventName, { bubbles: true });
+        element.dispatchEvent(event);
+    }
+}
+
+/**
  * Set up Alpine JS with extra data functions that can be used throughout
  * the whole application.
  */

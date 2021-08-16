@@ -17,7 +17,10 @@
                 'inputName' => "filledInAnswers.{$topLeft->id}",
              ])
                 @slot('sourceSlot')
-
+                    @include('cooperation.sub-step-templates.parts.source-slot-values', [
+                        'values' => $filledInAnswersForAllInputSources[$topLeft->id],
+                        'toolQuestion' => $topLeft,
+                    ])
                 @endslot
 
                 @slot('modalBodySlot')
@@ -38,7 +41,10 @@
                     'inputName' => "filledInAnswers.{$topRightFirst->id}",
                  ])
                     @slot('sourceSlot')
-                        @include('cooperation.sub-step-templates.parts.source-slot-values', ['values' => $filledInAnswersForAllInputSources[$topRightFirst->id]])
+                        @include('cooperation.sub-step-templates.parts.source-slot-values', [
+                            'values' => $filledInAnswersForAllInputSources[$topRightFirst->id],
+                            'toolQuestion' => $topRightFirst,
+                        ])
                     @endslot
 
                     @slot('modalBodySlot')
@@ -57,7 +63,10 @@
                         'inputName' => "filledInAnswers.{$topRightSecond->id}",
                     ])
                     @slot('sourceSlot')
-                            @include('cooperation.sub-step-templates.parts.source-slot-values', ['values' => $filledInAnswersForAllInputSources[$topRightSecond->id]])
+                        @include('cooperation.sub-step-templates.parts.source-slot-values', [
+                            'values' => $filledInAnswersForAllInputSources[$topRightSecond->id],
+                            'toolQuestion' => $topRightSecond,
+                        ])
                     @endslot
 
                     @slot('modalBodySlot')
@@ -79,7 +88,10 @@
                 'inputName' => "filledInAnswers.{$bottomLeft->id}",
             ])
                 @slot('sourceSlot')
-                    @include('cooperation.sub-step-templates.parts.source-slot-values', ['values' => $filledInAnswersForAllInputSources[$bottomLeft->id]])
+                    @include('cooperation.sub-step-templates.parts.source-slot-values', [
+                        'values' => $filledInAnswersForAllInputSources[$bottomLeft->id],
+                        'toolQuestion' => $bottomLeft,
+                    ])
                 @endslot
 
                 @slot('modalBodySlot')

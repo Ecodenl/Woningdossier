@@ -8,7 +8,10 @@
                 'inputName' => "filledInAnswers.{$toolQuestion->id}",
             ])
                 @slot('sourceSlot')
-                    @include('cooperation.sub-step-templates.parts.source-slot-values', ['values' => $filledInAnswersForAllInputSources[$toolQuestion->id]])
+                    @include('cooperation.sub-step-templates.parts.source-slot-values', [
+                        'values' => $filledInAnswersForAllInputSources[$toolQuestion->id],
+                        'toolQuestion' => $toolQuestion,
+                    ])
                 @endslot
 
                 @slot('modalBodySlot')

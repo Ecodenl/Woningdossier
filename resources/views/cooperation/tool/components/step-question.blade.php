@@ -33,7 +33,8 @@
     'label' => $label,
     'id' => $id,
     'modalId' => $id . '-info',
-    'class' => ($required ? 'required' : ''),
+    'class' => ($required ? 'required' : '') . ' ' . ($class ?? ''),
+    'inputGroupClass' => $inputGroupClass ?? '',
     'withInputSource' => $withInputSource,
 ])
     @if(! empty($sourceSlot))

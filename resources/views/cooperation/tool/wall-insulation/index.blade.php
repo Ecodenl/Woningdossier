@@ -452,25 +452,22 @@
                  'translation' => 'wall-insulation.index.specific-situation'
             ])
 
-            <div class="flex flex-row flex-wrap w-full border border-solid border-green rounded-lg">
-                <div class="flex flex-row flex-wrap w-full items-center bg-green text-white h-11 px-5 rounded-lg">
-                    @lang('default.buttons.download')
-                </div>
-                <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 py-8 rounded-b-lg">
-                    <ol class="list-decimal ml-8">
-                        <li><a download=""
-                               href="{{asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')}}">
-                                {{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf'))))) }}
-                            </a>
-                        </li>
-                        <li><a download=""
-                               href="{{asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')}}">
-                                {{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf'))))) }}
-                            </a>
-                        </li>
-                    </ol>
-                </div>
-            </div>
+            @component('cooperation.tool.components.panel', [
+                'label' => __('default.buttons.download'),
+            ])
+                <ol class="list-decimal ml-8">
+                    <li><a download=""
+                           href="{{asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')}}">
+                            {{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf'))))) }}
+                        </a>
+                    </li>
+                    <li><a download=""
+                           href="{{asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')}}">
+                            {{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf'))))) }}
+                        </a>
+                    </li>
+                </ol>
+            @endcomponent
         </div>
     </form>
 @endsection

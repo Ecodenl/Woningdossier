@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <div class="input-group @error(($inputName ?? '')) form-error @enderror">
+    <div class="input-group {{ $inputGroupClass ?? '' }} @error(($inputName ?? '')) form-error @enderror">
         {{ $slot }}
         @error(($inputName ?? ''))
         <p class="form-error-label">

@@ -3,7 +3,7 @@
         $humanReadableAnswer = null;
 
         $json = json_decode($answer, true);
-        if (is_null($json)) {
+        if (is_null($json) || !is_array($json)) {
             $humanReadableAnswer = $answer;
         } else {
             $formatted = [];

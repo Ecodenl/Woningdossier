@@ -216,10 +216,10 @@
         <div class="flex flex-row flex-wrap w-full system-performance">
             <div class="w-full md:w-8/12 md:ml-2/12">
                 @component('cooperation.frontend.layouts.parts.alert', [
-                    'color' => 'blue-800',
+                    'color' => 'yellow',
                     'dismissible' => false
                 ])
-                    <p id="performance-text" class="text-blue-800"></p>
+                    <p id="performance-text" class="text-yellow"></p>
                 @endcomponent
             </div>
         </div>
@@ -286,8 +286,8 @@
                             let $systemText = $(".system-performance .alert #performance-text");
 
                             $("#performance-text").html("<strong>" + data.performance.text + "</strong>");
-                            $systemAlert.removeClass('text-red border-red text-blue-800 border-blue-800 text-yellow border-yellow text-green border-green').addClass(`text-${data.performance.alert} border-${data.performance.alert}`);
-                            $systemText.removeClass('text-red text-blue-800 text-yellow text-green').addClass(`text-${data.performance.alert}`);
+                            $systemAlert.removeClass('text-red border-red text-yellow border-yellow text-green border-green').addClass(`text-${data.performance.alert} border-${data.performance.alert}`);
+                            $systemText.removeClass('text-red text-yellow text-green').addClass(`text-${data.performance.alert}`);
 
                             $(".system-performance").show();
                         } else {

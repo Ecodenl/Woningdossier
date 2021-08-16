@@ -38,15 +38,22 @@
                         {{-- since there is no title / subtitle for the hr3p --}}
                         @if(array_key_exists($measureApplication->id, $titles))
                             @include('cooperation.tool.includes.section-title', [
-                              'translation' => 'insulated-glazing.subtitles.'.$measureApplication->short,
+                                'translation' => 'insulated-glazing.subtitles.'.$measureApplication->short,
                                 'id' => 'insulated-glazing-subtitles-'.$measureApplication->short
                             ])
-
                         @endif
 
-                        @component('cooperation.tool.components.step-question', ['id' => 'user_interests.'.$measureApplication->id, 'translation' => 'insulated-glazing.'.$measureApplication->short.'.title', 'required' => false])
+                        @component('cooperation.tool.components.step-question', [
+                            'id' => 'user_interests.'.$measureApplication->id, 
+                            'translation' => 'insulated-glazing.'.$measureApplication->short.'.title', 
+                            'required' => false
+                        ])
 
-                            @component('cooperation.tool.components.input-group', ['inputType' => 'select', 'inputValues' => $interests, 'userInputValues' => $userInterestsForMe->where('interested_in_id', $measureApplication->id),  'userInputColumn' => 'interest_id'])
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'select', 'inputValues' => $interests,
+                                'userInputValues' => $userInterestsForMe->where('interested_in_id', $measureApplication->id),
+                                'userInputColumn' => 'interest_id'
+                            ])
                                 <input type="hidden"
                                        name="user_interests[{{ $measureApplication->id }}][interested_in_type]"
                                        value="{{get_class($measureApplication)}}">
@@ -72,8 +79,6 @@
                                         </option>
                                     @endforeach
                                 </select>
-                            @endcomponent
-
                         @endcomponent
 
                     </div>
@@ -83,8 +88,11 @@
 
                         <div class="w-full sm:w-1/4">
                             @component('cooperation.tool.components.step-question', ['id' => 'building_insulated_glazings.' . $measureApplication->id . '.insulating_glazing_id', 'translation' => 'insulated-glazing.'.$measureApplication->short.'.current-glass', 'required' => false])
-                                @component('cooperation.tool.components.input-group',
-                                ['inputType' => 'select', 'inputValues' => $insulatedGlazings, 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'insulating_glazing_id'])
+                                @include('cooperation.tool.components.source-list', [
+                                    'inputType' => 'select', 'inputValues' => $insulatedGlazings,
+                                    'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe,
+                                    'userInputColumn' => 'insulating_glazing_id'
+                                ])
                                     <select class="form-control"
                                             name="building_insulated_glazings[{{ $measureApplication->id }}][insulating_glazing_id]">
                                         @foreach($insulatedGlazings as $insulateGlazing)
@@ -93,8 +101,6 @@
                                             {{--<option @if($insulateGlazing->id == old('building_insulated_glazings.' . $measureApplication->id . '.insulated_glazing_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->insulating_glazing_id == $insulateGlazing->id)) selected @endif value="{{ $insulateGlazing->id }}">{{ $insulateGlazing->name }}</option>--}}
                                         @endforeach
                                     </select>
-                                @endcomponent
-
                             @endcomponent
 
                         </div>
@@ -102,8 +108,11 @@
                             @component('cooperation.tool.components.step-question',
                             ['id' => 'building_insulated_glazings.' . $measureApplication->id . '.building_heating_id', 'translation' => 'insulated-glazing.'.$measureApplication->short.'.rooms-heated', 'required' => false])
 
-                                @component('cooperation.tool.components.input-group',
-                                ['inputType' => 'select', 'inputValues' => $heatings, 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'building_heating_id'])
+                                @include('cooperation.tool.components.source-list', [
+                                    'inputType' => 'select', 'inputValues' => $heatings,
+                                    'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe,
+                                    'userInputColumn' => 'building_heating_id'
+                                ])
                                     <select class="form-control"
                                             name="building_insulated_glazings[{{ $measureApplication->id }}][building_heating_id]">
                                         @foreach($heatings as $heating)
@@ -112,8 +121,6 @@
                                             {{--<option @if($heating->id == old('building_insulated_glazings.' . $measureApplication->id . '.building_heating_id') || (array_key_exists($measureApplication->id, $buildingInsulatedGlazings) && $buildingInsulatedGlazings[$measureApplication->id]->building_heating_id == $heating->id)) selected="selected" @endif value="{{ $heating->id }}">{{ $heating->name }}</option>--}}
                                         @endforeach
                                     </select>
-                                @endcomponent
-
                             @endcomponent
 
                         </div>
@@ -125,15 +132,16 @@
                             ])
                                 <span> *</span>
 
-                                @component('cooperation.tool.components.input-group',
-                                ['inputType' => 'input', 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'm2'])
+                                @include('cooperation.tool.components.source-list', [
+                                    'inputType' => 'input',
+                                    'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe,
+                                    'userInputColumn' => 'm2'
+                                ])
                                     <input type="text"
                                            name="building_insulated_glazings[{{ $measureApplication->id }}][m2]"
                                            value="{{ old('building_insulated_glazings.'.$measureApplication->id.'.m2', Hoomdossier::getMostCredibleValueFromCollection($buildingInsulatedGlazingsOrderedOnInputSourceCredibility, 'm2')) }}"
                                            class="form-control">
                                     {{--<input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][m2]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.m2', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->m2 : '') }}" class="form-control">--}}
-                                @endcomponent
-
                             @endcomponent
 
                         </div>
@@ -147,14 +155,16 @@
                             ])
                                 <span> *</span>
 
-                                @component('cooperation.tool.components.input-group',
-                                ['inputType' => 'input', 'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe ,'userInputColumn' => 'windows'])
+                                @include('cooperation.tool.components.source-list',[
+                                    'inputType' => 'input',
+                                    'userInputValues' => $currentMeasureBuildingInsulatedGlazingForMe,
+                                    'userInputColumn' => 'windows'
+                                ])
                                     <input type="text"
                                            name="building_insulated_glazings[{{ $measureApplication->id }}][windows]"
                                            value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.windows', Hoomdossier::getMostCredibleValueFromCollection($buildingInsulatedGlazingsOrderedOnInputSourceCredibility, 'windows')) }}"
                                            class="form-control">
                                     {{--<input type="text" name="building_insulated_glazings[{{ $measureApplication->id }}][windows]" value="{{ old('building_insulated_glazings.' . $measureApplication->id . '.windows', array_key_exists($measureApplication->id, $buildingInsulatedGlazings) ? $buildingInsulatedGlazings[$measureApplication->id]->windows : '') }}" class="form-control">--}}
-                                @endcomponent
                             @endcomponent
                         </div>
                     </div>
@@ -177,13 +187,14 @@
                 <div class="w-full">
                     @component('cooperation.tool.components.step-question', ['id' => 'building_features.window_surface', 'translation' => 'insulated-glazing.windows-surface', 'required' => false])
 
-                        @component('cooperation.tool.components.input-group',
-                       ['inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe, 'userInputColumn' => 'window_surface'])
+                        @include('cooperation.tool.components.source-list', [
+                            'inputType' => 'input', 'userInputValues' => $buildingFeaturesForMe,
+                            'userInputColumn' => 'window_surface'
+                        ])
                             <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.square-meters.title')}}</span>
                             <input type="text" name="building_features[window_surface]"
                                    value="{{ old('building_features.window_surface', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'window_surface')) }}"
                                    class="form-control">
-                        @endcomponent
                     @endcomponent
 
                 </div>
@@ -193,8 +204,11 @@
             <div class="w-full">
                 @component('cooperation.tool.components.step-question', ['id' => 'building_elements.'.$frames->id, 'translation' => 'insulated-glazing.paint-work.which-frames', 'required' => false])
 
-                    @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'select', 'inputValues' => $frames->values()->orderBy('order')->get(), 'userInputValues' => $building->getBuildingElementsForMe('frames'), 'userInputColumn' => 'element_value_id'])
+                    @include('cooperation.tool.components.source-list', [
+                        'inputType' => 'select', 'inputValues' => $frames->values()->orderBy('order')->get(),
+                        'userInputValues' => $building->getBuildingElementsForMe('frames'),
+                        'userInputColumn' => 'element_value_id'
+                    ])
                         <select class="form-control" name="building_elements[{{$frames->id}}]">
                             @foreach($frames->values()->orderBy('order')->get() as $frameValue)
                                 <option @if(old('building_elements.'.$frames->id, \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingElements()->where('element_id', $frames->id), 'element_value_id')) == $frameValue->id) selected="selected"
@@ -202,8 +216,6 @@
                                 {{--<option @if($frameValue->id == old('building_elements.frames')  || ($building->getBuildingElement('frames') instanceof \App\Models\BuildingElement && $building->getBuildingElement('frames')->element_value_id == $frameValue->id)) selected @endif value="{{ $frameValue->id }}">{{ $frameValue->value }}</option>--}}
                             @endforeach
                         </select>
-                    @endcomponent
-
                 @endcomponent
 
             </div>
@@ -278,13 +290,15 @@
                 @component('cooperation.tool.components.step-question',
                 ['id' => 'building_paintwork_statuses.last_painted_year', 'translation' => 'insulated-glazing.paint-work.last-paintjob', 'required' => false])
 
-                    @component('cooperation.tool.components.input-group',
-                           ['inputType' => 'input', 'userInputValues' => $buildingPaintworkStatusesOrderedOnInputSourceCredibility ,'userInputColumn' => 'last_painted_year'])
+                    @include('cooperation.tool.components.source-list', [
+                           'inputType' => 'input',
+                           'userInputValues' => $buildingPaintworkStatusesOrderedOnInputSourceCredibility,
+                           'userInputColumn' => 'last_painted_year'
+                       ])
                         <span class="input-group-addon">{{\App\Helpers\Translation::translate('general.unit.year.title')}}</span>
                         <input type="text" name="building_paintwork_statuses[last_painted_year]"
                                class="form-control"
                                value="{{ old('building_paintwork_statuses.last_painted_year', Hoomdossier::getMostCredibleValueFromCollection($buildingPaintworkStatusesOrderedOnInputSourceCredibility, 'last_painted_year')) }}">
-                    @endcomponent
                 @endcomponent
 
             </div>
@@ -292,16 +306,17 @@
                 @component('cooperation.tool.components.step-question',
                 ['id' => 'building_paintwork_statuses.paintwork_status_id', 'translation' => 'insulated-glazing.paint-work.paint-damage-visible', 'required' => false])
 
-                    @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'select', 'inputValues' => $paintworkStatuses, 'userInputValues' => $buildingPaintworkStatusesOrderedOnInputSourceCredibility, 'userInputColumn' => 'paintwork_status_id'])
+                    @include('cooperation.tool.components.source-list', [
+                        'inputType' => 'select', 'inputValues' => $paintworkStatuses,
+                        'userInputValues' => $buildingPaintworkStatusesOrderedOnInputSourceCredibility,
+                        'userInputColumn' => 'paintwork_status_id'
+                    ])
                         <select class="form-control" name="building_paintwork_statuses[paintwork_status_id]">
                             @foreach($paintworkStatuses as $paintworkStatus)
                                 <option @if($paintworkStatus->id == old('building_paintwork_statuses.paintwork_status_id', Hoomdossier::getMostCredibleValueFromCollection($buildingPaintworkStatusesOrderedOnInputSourceCredibility, 'paintwork_status_id'))) selected
                                         @endif value="{{ $paintworkStatus->id }}">{{ $paintworkStatus->name }}</option>
                             @endforeach
                         </select>
-                    @endcomponent
-
                 @endcomponent
 
             </div>
@@ -311,8 +326,11 @@
             <div class="w-full">
                 @component('cooperation.tool.components.step-question', ['id' => 'building_paintwork_statuses.wood_rot_status_id', 'translation' => 'insulated-glazing.paint-work.wood-rot-visible', 'required' => false])
 
-                    @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'select', 'inputValues' => $woodRotStatuses, 'userInputValues' => $buildingPaintworkStatusesOrderedOnInputSourceCredibility, 'userInputColumn' => 'wood_rot_status_id'])
+                    @include('cooperation.tool.components.source-list', [
+                        'inputType' => 'select', 'inputValues' => $woodRotStatuses,
+                        'userInputValues' => $buildingPaintworkStatusesOrderedOnInputSourceCredibility,
+                        'userInputColumn' => 'wood_rot_status_id'
+                    ])
                         <select class="form-control" name="building_paintwork_statuses[wood_rot_status_id]">
                             @foreach($woodRotStatuses as $woodRotStatus)
                                 <option @if($woodRotStatus->id == old('building_paintwork_statuses.wood_rot_status_id', Hoomdossier::getMostCredibleValueFromCollection($buildingPaintworkStatusesOrderedOnInputSourceCredibility, 'wood_rot_status_id'))) selected
@@ -320,8 +338,6 @@
                                 {{--<option @if($woodRotStatus->id == old('building_paintwork_statuses.wood_rot_status_id') || ($building->currentPaintworkStatus instanceof \App\Models\BuildingPaintworkStatus && $building->currentPaintworkStatus->wood_rot_status_id == $woodRotStatus->id) ) selected @endif value="{{ $woodRotStatus->id }}">{{ $woodRotStatus->name }}</option>--}}
                             @endforeach
                         </select>
-                    @endcomponent
-
                 @endcomponent
 
             </div>

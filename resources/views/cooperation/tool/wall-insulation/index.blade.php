@@ -393,13 +393,14 @@
             <div id="taking-into-account">
                 <hr>
                 @include('cooperation.tool.includes.section-title', ['translation' => 'wall-insulation.taking-into-account.title', 'id' => 'taking-into-account'])
-                <span>@lang('wall-insulation.taking-into-account.sub-title.title')</span>
+                <p>@lang('wall-insulation.taking-into-account.sub-title.title')</p>
 
                 <div class="flex flex-row flex-wrap w-full">
                     <div class="w-full sm:w-1/2 sm:pr-3">
                         @component('cooperation.tool.components.step-question', [
                             'id' => 'repair_joint', 'translation' => 'wall-insulation.taking-into-account.repair-joint',
                             'required' => false, 'label' => '<span id="repair_joint_year">(in 2018)</span>',
+                            'withInputSource' => false,
                         ])
                             <span class="input-group-prepend"><i class="icon-sm icon-moneybag"></i></span>
                             <input type="text" id="repair_joint" class="form-input disabled" disabled=""
@@ -411,6 +412,7 @@
                             'id' => 'clean_brickwork',
                             'translation' => 'wall-insulation.taking-into-account.clean-brickwork', 'required' => false,
                             'label' => '<span id="clean_brickwork_year"></span>',
+                            'withInputSource' => false,
                         ])
                             <span class="input-group-prepend"><i class="icon-sm icon-moneybag"></i></span>
                             <input type="text" id="clean_brickwork" class="form-input disabled" disabled=""
@@ -424,6 +426,7 @@
                             'id' => 'impregnate_wall',
                             'translation' => 'wall-insulation.taking-into-account.impregnate-wall', 'required' => false,
                             'label' => '<span id="impregnate_wall_year"></span>',
+                            'withInputSource' => false,
                         ])
                             <span class="input-group-prepend"><i class="icon-sm icon-moneybag"></i></span>
                             <input type="text" id="impregnate_wall" class="form-input disabled" disabled=""
@@ -435,6 +438,7 @@
                             'id' => 'paint_wall',
                             'translation' => 'wall-insulation.taking-into-account.wall-painting', 'required' => false,
                             'label' => '<span id="paint_wall_year"></span>',
+                            'withInputSource' => false,
                         ])
                             <span class="input-group-prepend"><i class="icon-sm icon-moneybag"></i></span>
                             <input type="text" id="paint_wall" class="form-input disabled" disabled="" value="0">
@@ -448,25 +452,22 @@
                  'translation' => 'wall-insulation.index.specific-situation'
             ])
 
-            <div class="flex flex-row flex-wrap w-full border border-solid border-green rounded-lg">
-                <div class="flex flex-row flex-wrap w-full items-center bg-green text-white h-11 px-5 rounded-lg">
-                    @lang('default.buttons.download')
-                </div>
-                <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 py-8 rounded-b-lg">
-                    <ol class="list-decimal ml-8">
-                        <li><a download=""
-                               href="{{asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')}}">
-                                {{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf'))))) }}
-                            </a>
-                        </li>
-                        <li><a download=""
-                               href="{{asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')}}">
-                                {{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf'))))) }}
-                            </a>
-                        </li>
-                    </ol>
-                </div>
-            </div>
+            @component('cooperation.tool.components.panel', [
+                'label' => __('default.buttons.download'),
+            ])
+                <ol class="list-decimal ml-8">
+                    <li><a download=""
+                           href="{{asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf')}}">
+                            {{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Gevelisolatie.pdf'))))) }}
+                        </a>
+                    </li>
+                    <li><a download=""
+                           href="{{asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf')}}">
+                            {{ ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_Spouwisolatie.pdf'))))) }}
+                        </a>
+                    </li>
+                </ol>
+            @endcomponent
         </div>
     </form>
 @endsection

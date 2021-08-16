@@ -14,6 +14,7 @@
     // set some defaults if not given
     $name = $name ?? $id;
     $required = $required ?? false;
+    $withInputSource = $withInputSource ?? true;
 
     $labelClass = $labelClass ?? ''; if (! empty($labelClass)) { \Log::debug('LABEL CLASS: ' . $labelClass); } // For upgrade, was on label class
     $labelStyling = $labelStyling ?? ''; if (! empty($labelStyling)) {\Log::debug('LABEL STYLING: ' . $labelStyling); } // For upgrade, was on form group div style tag
@@ -24,7 +25,7 @@
     $hasHelpTranslation = isset($translation) ? \App\Helpers\Translation::hasTranslation($translation . '.help') : false;
     $shouldShowHelpIcon =  $hasHelpTranslation && !empty(__($translation . '.help'));
 
-    $label = (isset($translation) ? __($translation . '.title', $translationReplace) : '') . '' . ($label ?? '');
+    $label = (isset($translation) ? __($translation . '.title', $translationReplace) : '') . ' ' . ($label ?? '');
 ?>
 
 @component('cooperation.frontend.layouts.components.form-group', [
@@ -32,7 +33,9 @@
     'label' => $label,
     'id' => $id,
     'modalId' => $id . '-info',
-    'class' => ($required ? 'required' : ''),
+    'class' => ($required ? 'required' : '') . ' ' . ($class ?? ''),
+    'inputGroupClass' => $inputGroupClass ?? '',
+    'withInputSource' => $withInputSource,
 ])
     @if(! empty($sourceSlot))
         @slot('sourceSlot')

@@ -4,6 +4,7 @@
         <div class="w-full @if($loop->iteration > 1) pt-10 @endif">
             @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'form-group-heading',
+                // 'defaultInputSource' => 'resident',
                 'label' => $toolQuestion->name,
                 'inputName' => "filledInAnswers.{$toolQuestion->id}",
             ])

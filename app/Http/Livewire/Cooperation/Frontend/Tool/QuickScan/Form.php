@@ -100,6 +100,8 @@ class Form extends Component
                         // so this means the answer is not found, this means we have to remove the question.
                         if ($answer === null) {
                             $this->toolQuestions = $this->toolQuestions->forget($index);
+                            // and unset the validation for the question.
+                            unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
                         }
                     }
                 }
@@ -109,7 +111,6 @@ class Form extends Component
 
     public function save($nextUrl)
     {
-
         if (!empty($this->rules)) {
             $validator = Validator::make([
                 'filledInAnswers' => $this->filledInAnswers
@@ -179,8 +180,6 @@ class Form extends Component
 
             }
         }
-
-
     }
 
     private function saveToolQuestionValuables(ToolQuestion $toolQuestion, $givenAnswer)

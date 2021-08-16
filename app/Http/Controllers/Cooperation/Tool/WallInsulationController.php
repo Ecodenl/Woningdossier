@@ -33,7 +33,7 @@ class WallInsulationController extends Controller
     public function __construct(Request $request)
     {
         $slug = str_replace('/tool/', '', $request->getRequestUri());
-        $this->step = Step::where('slug', $slug)->first();
+        $this->step = Step::where('slug', $slug)->first() ;
     }
 
     /**

@@ -34405,16 +34405,12 @@ __webpack_require__.r(__webpack_exports__);
   var defaultValue = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
   var activeClass = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'bg-green';
   var disabled = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  var componentName = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-  var livewireModel = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
   return {
     index: -1,
     value: defaultValue,
     inactiveClass: 'bg-gray',
     activeClass: activeClass,
     disabled: disabled,
-    livewireModel: livewireModel,
-    componentName: componentName,
     init: function init() {
       // Ensure the slider gets updated with the default value
       if (this.value > 0) {
@@ -34460,11 +34456,8 @@ __webpack_require__.r(__webpack_exports__);
         var parent = this.$refs['rating-slider'];
         this.index = Array.from(parent.children).indexOf(element);
         this.value = element.getAttribute('data-value');
-        this.setIndexActive(); // TODO: Check if we can do this with window.triggerEvent(element, 'change');
-
-        if (this.livewireModel !== null) {
-          window.livewire.emitTo(this.componentName, 'update', this.livewireModel, this.value, false);
-        }
+        this.$refs['rating-slider-input'].value = this.value;
+        this.setIndexActive();
       }
     },
     selectOptionByValue: function selectOptionByValue(value) {
@@ -34473,6 +34466,11 @@ __webpack_require__.r(__webpack_exports__);
       if (element) {
         this.selectOption(element);
       }
+    },
+    selectOptionByElement: function selectOptionByElement(element) {
+      this.selectOption(element);
+      window.triggerEvent(this.$refs['rating-slider-input'], 'input');
+      window.triggerEvent(this.$refs['rating-slider-input'], 'change');
     },
     setIndexActive: function setIndexActive() {
       var _this = this;
@@ -34654,6 +34652,18 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 /* harmony default export */ __webpack_exports__["default"] = (function () {
   var inputSource = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'no-match';
   return {
@@ -34737,72 +34747,104 @@ __webpack_require__.r(__webpack_exports__);
     },
     setElementValue: function setElementValue(value) {
       if (this.inputGroup) {
-        // Define the input. It cannot be hidden, disabled or readonly
-        var input = this.inputGroup.querySelector('input:not([disabled]):not([readonly]):not([type="hidden"])'); // Not an input?
+        // If the value is JSON, we need to do something slightly different (currently only relevant for rating slider)
+        var parsed = this.parseJson(value);
 
-        if (!input) {
-          // Check if select
-          input = this.inputGroup.querySelector('select:not([disabled]):not([readonly])'); // Check if valid, else we get a textarea
+        if (parsed !== null) {
+          // Set values for each input in the JSON object.
+          for (var _i = 0, _Object$entries = Object.entries(parsed); _i < _Object$entries.length; _i++) {
+            var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+                _short2 = _Object$entries$_i[0],
+                _value = _Object$entries$_i[1];
 
-          input = input ? input : this.inputGroup.querySelector('textarea:not([disabled]):not([readonly])');
-        } // If an input is found...
+            var input = this.inputGroup.querySelector("input:not([disabled]):not([readonly])[type=\"hidden\"][data-short=\"".concat(_short2, "\"]"));
 
-
-        if (input) {
-          var type = input.getAttribute('type'); // No type? Then probably select or textarea. We try the tag
-
-          if (type === null) {
-            type = input.tagName;
+            if (input) {
+              input.value = _value;
+              window.triggerEvent(input, 'input');
+              window.triggerEvent(input, 'change');
+            }
           }
+        } else {
+          // Define the input. It cannot be hidden, disabled or readonly
+          var _input = this.inputGroup.querySelector('input:not([disabled]):not([readonly]):not([type="hidden"])'); // Not an input?
 
-          if (typeof type !== 'undefined') {
-            type = type.toLowerCase();
 
-            switch (type) {
-              case 'text':
-              case 'date':
-              case 'select':
-              case 'textarea':
-              case 'range':
-                // case 'hidden':
-                input.value = value;
-                window.triggerEvent(input, 'input');
-                window.triggerEvent(input, 'change');
-                break;
+          if (!_input) {
+            // Check if select
+            _input = this.inputGroup.querySelector('select:not([disabled]):not([readonly])'); // Check if valid, else we get a textarea
 
-              case 'radio':
-                input = this.inputGroup.querySelector("input[type=\"radio\"][value=\"".concat(value, "\"]"));
+            _input = _input ? _input : this.inputGroup.querySelector('textarea:not([disabled]):not([readonly])');
+          } // If an input is found...
 
-                if (input) {
-                  var checkedInput = this.inputGroup.querySelector('input[type="radio"]:checked');
 
-                  if (checkedInput) {
-                    checkedInput.checked = false;
+          if (_input) {
+            var type = _input.getAttribute('type'); // No type? Then probably select or textarea. We try the tag
+
+
+            if (type === null) {
+              type = _input.tagName;
+            }
+
+            if (typeof type !== 'undefined') {
+              type = type.toLowerCase();
+
+              switch (type) {
+                case 'text':
+                case 'date':
+                case 'select':
+                case 'textarea':
+                case 'range':
+                  _input.value = value;
+                  window.triggerEvent(_input, 'input');
+                  window.triggerEvent(_input, 'change');
+                  break;
+
+                case 'radio':
+                  _input = this.inputGroup.querySelector("input[type=\"radio\"][value=\"".concat(value, "\"]"));
+
+                  if (_input) {
+                    var checkedInput = this.inputGroup.querySelector('input[type="radio"]:checked');
+
+                    if (checkedInput) {
+                      checkedInput.checked = false;
+                    }
+
+                    _input.checked = true;
+                    window.triggerEvent(_input, 'change');
                   }
 
-                  input.checked = true;
-                  window.triggerEvent(input, 'change');
-                }
+                  break;
 
-                break;
+                case "checkbox":
+                  _input = this.inputGroup.querySelector("input[type=\"checkbox\"][value=\"".concat(value, "\"]"));
 
-              case "checkbox":
-                input = this.inputGroup.querySelector("input[type=\"checkbox\"][value=\"".concat(value, "\"]"));
+                  if (_input) {
+                    _input.checked = true;
+                    window.triggerEvent(_input, 'change');
+                  }
 
-                if (input) {
-                  input.checked = true;
-                  window.triggerEvent(input, 'change');
-                }
+                  break;
 
-                break;
-
-              default:
-                // Not a valid input type?
-                break;
+                default:
+                  // Not a valid input type?
+                  break;
+              }
             }
           }
         }
       }
+    },
+    parseJson: function parseJson(value) {
+      var parsed = null;
+
+      try {
+        parsed = JSON.parse(value);
+      } catch (e) {
+        parsed = null;
+      }
+
+      return parsed;
     }
   };
 });
@@ -34889,16 +34931,6 @@ $.ajaxSetup({
     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
   }
 });
-
-window.triggerEvent = function (element, eventName) {
-  if (element && element.nodeType === Node.ELEMENT_NODE && eventName) {
-    var event = new Event(eventName, {
-      bubbles: true
-    });
-    element.dispatchEvent(event);
-  }
-};
-
 var baseUrl = window.location.origin;
 var apiUrl = '/api';
 var getAddressDataUrl = baseUrl + apiUrl + "/address-data";
@@ -35107,6 +35139,20 @@ if (token) {
 //     key: 'your-pusher-key'
 // });
 
+/**
+ * Define functions that will be used throughout the whole application, that
+ * are also required by Alpine.
+ */
+
+
+window.triggerEvent = function (element, eventName) {
+  if (element && element.nodeType === Node.ELEMENT_NODE && eventName) {
+    var event = new Event(eventName, {
+      bubbles: true
+    });
+    element.dispatchEvent(event);
+  }
+};
 /**
  * Set up Alpine JS with extra data functions that can be used throughout
  * the whole application.

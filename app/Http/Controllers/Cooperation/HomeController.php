@@ -53,4 +53,5 @@ class HomeController extends Controller
 
         return view('cooperation.home.index', compact('url'));
     }
+
 }

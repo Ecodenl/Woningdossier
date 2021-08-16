@@ -3,22 +3,19 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Helpers\HoomdossierSession;
-use App\Helpers\QuickScanHelper;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
-use App\Models\Question;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
-use App\Models\User;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Livewire\Component;
-use function Clue\StreamFilter\fun;
 
 class Form extends Component
 {
@@ -45,6 +42,7 @@ class Form extends Component
     public $toolQuestions;
 
     public $filledInAnswers = [];
+    public $filledInAnswersForAllInputSources = [];
 
     public function mount(Step $step, SubStep $subStep)
     {
@@ -69,37 +67,21 @@ class Form extends Component
         return view('livewire.cooperation.frontend.tool.quick-scan.form');
     }
 
-    public function update($field, $value, $triggerUpdate = true)
-    {
-        // If we should, tell Livewire we're updating
-        if ($triggerUpdate) {
-            $oldValue = $this->getPropertyValue($field);
-            $this->updating($field, $oldValue);
-        }
-
-        // Set value the same way that Livewire retrieves its properties
-        $variable = $this->beforeFirstDot($field);
-
-        if ($this->containsDots($field)) {
-            data_set($this->{$variable}, $this->afterFirstDot($field), $value);
-        } else {
-            $this->{$variable} = $value;
-        }
-
-        // If we should, tell Livewire we have updated
-        if ($triggerUpdate) {
-            $this->updated($field, $value);
-        }
-    }
-
     public function updated($field, $value)
     {
         // TODO: Deprecate this dispatch in Livewire V2
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
 
-        // Filter out the questions that do not match the condition
+        $this->setToolQuestions();
+        
+    }
+
+    private function setToolQuestions()
+    {
+        // each request, the toolQuestions will be rehydrated. But not completely (no pivot) so we have to do this each time
         $this->toolQuestions = $this->subStep->toolQuestions()->orderBy('order')->get();
 
+        // Filter out the questions that do not match the condition
         // now collect the given answers
         $answers = collect();
         foreach ($this->toolQuestions as $toolQuestion) {
@@ -109,10 +91,16 @@ class Form extends Component
         foreach ($this->toolQuestions as $index => $toolQuestion) {
             if (!empty($toolQuestion->conditions)) {
                 foreach ($toolQuestion->conditions as $condition) {
-                    $answer = $answers->where($condition['column'], $condition['operator'], $condition['value'])->first();
-                    // so this means the answer is not found, this means we have to remove the question.
-                    if ($answer === null) {
-                        $this->toolQuestions = $this->toolQuestions->forget($index);
+                    // there is a possibility the user fills the form in a unexpected order,
+                    // so we have to check if the field which should match the condition is actually answered.
+                    // may have to change in the future if there is some null condition thing.
+                    if ($answers->where($condition['column'], '!=', null)->count() > 0) {
+                        // now execute the actual condition
+                        $answer = $answers->where($condition['column'], $condition['operator'], $condition['value'])->first();
+                        // so this means the answer is not found, this means we have to remove the question.
+                        if ($answer === null) {
+                            $this->toolQuestions = $this->toolQuestions->forget($index);
+                        }
                     }
                 }
             }
@@ -121,7 +109,18 @@ class Form extends Component
 
     public function save($nextUrl)
     {
-        // $this->validate($this->rules);
+
+        if (!empty($this->rules)) {
+            $validator = Validator::make([
+                'filledInAnswers' => $this->filledInAnswers
+            ], $this->rules);
+
+            if ($validator->fails()) {
+                $this->setToolQuestions();
+            }
+
+            $validator->validate();
+        }
 
         foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
             /** @var ToolQuestion $toolQuestion */
@@ -155,22 +154,33 @@ class Form extends Component
     {
         // base key where every answer is stored
         foreach ($this->toolQuestions as $index => $toolQuestion) {
-            $validationKeys[$index][] = 'filledInAnswers';
-            $validationKeys[$index][] = $toolQuestion->id;
+
+            $this->filledInAnswersForAllInputSources[$toolQuestion->id] = $this->building->getAnswerForAllInputSources($toolQuestion);
 
             $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
-            if ($toolQuestion->toolQuestionType->short == 'rating-slider') {
-                foreach ($toolQuestion->options as $option) {
-                    $this->filledInAnswers[$toolQuestion->id][$option['short']] = $answerForInputSource;
-                    $validationKeys[$index][] = $option['short'];
 
-                }
-            } else {
-                $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
+            switch ($toolQuestion->toolQuestionType->short) {
+                case 'rating-slider':
+                    $filledInAnswerOptions = json_decode($answerForInputSource, true);
+                    foreach ($toolQuestion->options as $option) {
+
+                        $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']] ?? 0;
+                        $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $toolQuestion->validation;
+                    }
+                    break;
+                case 'slider':
+                    // default it when no answer is set, otherwise if the user leaves it default and submit the validation will fail because nothing is set.
+                    $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource ?? $toolQuestion->options['value'];
+                    $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
+                    break;
+                default:
+                    $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
+                    $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
+
             }
-
-            $this->rules[implode('.', $validationKeys[$index])] = $toolQuestion->validation;
         }
+
+
     }
 
     private function saveToolQuestionValuables(ToolQuestion $toolQuestion, $givenAnswer)
@@ -237,7 +247,7 @@ class Form extends Component
         if ($toolQuestion->toolQuestionCustomValues()->exists()) {
             // if so, the given answer contains a short.
             $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($givenAnswer);
-//            $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
+            $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
         }
 
 

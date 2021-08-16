@@ -8,6 +8,7 @@ use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 class ToolQuestion extends Model
@@ -44,6 +45,10 @@ class ToolQuestion extends Model
         'resident' => 'boolean',
     ];
 
+    public function hasOptions(): bool
+    {
+        return  !empty($this->options);
+    }
 
     public function toolQuestionType(): BelongsTo
     {
@@ -83,13 +88,15 @@ class ToolQuestion extends Model
                 ->ordered()
                 ->with('toolQuestionValuables')
                 ->get()
-                ->map(function ($toolQuestion) {
-                    $toolQuestionValuable = $toolQuestion->tool_question_valuable;
-                    $questionValue = $toolQuestionValuable->toArray();
+                ->map(function (ToolQuestionValuable $toolQuestionValuable) {
+                    // so now get the actual morphed model.
+                    $valuable = $toolQuestionValuable->tool_question_valuable;
 
-                    $questionValue['extra'] = $toolQuestion->extra;
-                    $questionValue['name'] = $toolQuestionValuable->name ?? $toolQuestionValuable->value;
-                    $questionValue['value'] = $toolQuestionValuable->id;
+                    $questionValue = Arr::only($valuable->toArray(), ['calculate_value', 'short']);
+                    $questionValue['extra'] = $toolQuestionValuable->extra;
+                    // the humane readable name is either set in the name or value column.
+                    $questionValue['name'] = $valuable->name ?? $valuable->value;
+                    $questionValue['value'] = $valuable->id;
 
                     return $questionValue;
                 });
@@ -100,10 +107,10 @@ class ToolQuestion extends Model
             ->visible()
             ->ordered()
             ->get()
-            ->map(function ($toolQuestion) {
-                $questionValue = $toolQuestion->toArray();
-                $questionValue['name'] = $toolQuestion->name;
-                $questionValue['value'] = $toolQuestion->short;
+            ->map(function ($toolQuestionCustomValue) {
+                $questionValue = $toolQuestionCustomValue->toArray();
+                $questionValue['name'] = $toolQuestionCustomValue->name;
+                $questionValue['value'] = $toolQuestionCustomValue->short;
 
                 return $questionValue;
             });

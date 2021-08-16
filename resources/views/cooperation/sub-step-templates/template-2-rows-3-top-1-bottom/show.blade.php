@@ -11,68 +11,98 @@
     ?>
     <div class="w-full flex flex-wrap">
         @if($topLeft instanceof \App\Models\ToolQuestion)
-        @component('cooperation.frontend.layouts.components.form-group', [
-            'class' => 'form-group-heading w-full lg:w-1/2 lg:pr-3',
-            'label' => $topLeft->name,
-         ])
-            @slot('modalBodySlot')
-                <p>
-                    {!! $topLeft->help_text !!}
-                </p>
-            @endslot
+            @component('cooperation.frontend.layouts.components.form-group', [
+                'class' => 'form-group-heading w-full lg:w-1/2 lg:pr-3',
+                'label' => $topLeft->name,
+                'inputName' => "filledInAnswers.{$topLeft->id}",
+             ])
+                @slot('sourceSlot')
+                    @include('cooperation.sub-step-templates.parts.source-slot-values', [
+                        'values' => $filledInAnswersForAllInputSources[$topLeft->id],
+                        'toolQuestion' => $topLeft,
+                    ])
+                @endslot
 
-            @include("cooperation.tool-question-type-templates.{$topLeft->toolQuestionType->short}.show", ['toolQuestion' => $topLeft])
-        @endcomponent
+                @slot('modalBodySlot')
+                    <p>
+                        {!! $topLeft->help_text !!}
+                    </p>
+                @endslot
+
+                @include("cooperation.tool-question-type-templates.{$topLeft->toolQuestionType->short}.show", ['toolQuestion' => $topLeft])
+            @endcomponent
         @endif
 
         <div class="w-full lg:w-1/2 lg:pl-3">
             @if($topRightFirst instanceof \App\Models\ToolQuestion)
-            @component('cooperation.frontend.layouts.components.form-group', [
-                'class' => 'form-group-heading w-full',
-                'label' => $topRightFirst->name,
-             ])
-                @slot('modalBodySlot')
-                    <p>
-                        {!! $topRightFirst->help_text !!}
-                    </p>
-                @endslot
+                @component('cooperation.frontend.layouts.components.form-group', [
+                    'class' => 'form-group-heading w-full',
+                    'label' => $topRightFirst->name,
+                    'inputName' => "filledInAnswers.{$topRightFirst->id}",
+                 ])
+                    @slot('sourceSlot')
+                        @include('cooperation.sub-step-templates.parts.source-slot-values', [
+                            'values' => $filledInAnswersForAllInputSources[$topRightFirst->id],
+                            'toolQuestion' => $topRightFirst,
+                        ])
+                    @endslot
 
-                @include("cooperation.tool-question-type-templates.{$topRightFirst->toolQuestionType->short}.show", ['toolQuestion' => $topRightFirst])
-            @endcomponent
+                    @slot('modalBodySlot')
+                        <p>
+                            {!! $topRightFirst->help_text !!}
+                        </p>
+                    @endslot
+
+                    @include("cooperation.tool-question-type-templates.{$topRightFirst->toolQuestionType->short}.show", ['toolQuestion' => $topRightFirst])
+                @endcomponent
             @endif
-                @if($topRightSecond instanceof \App\Models\ToolQuestion)
-            @component('cooperation.frontend.layouts.components.form-group', [
-                'class' => 'form-group-heading w-full',
-                'label' => $topRightSecond->name,
-            ])
-                @slot('modalBodySlot')
-                    <p>
-                        {!! $topRightSecond->help_text !!}
-                    </p>
-                @endslot
+            @if($topRightSecond instanceof \App\Models\ToolQuestion)
+                    @component('cooperation.frontend.layouts.components.form-group', [
+                        'class' => 'form-group-heading w-full',
+                        'label' => $topRightSecond->name,
+                        'inputName' => "filledInAnswers.{$topRightSecond->id}",
+                    ])
+                    @slot('sourceSlot')
+                        @include('cooperation.sub-step-templates.parts.source-slot-values', [
+                            'values' => $filledInAnswersForAllInputSources[$topRightSecond->id],
+                            'toolQuestion' => $topRightSecond,
+                        ])
+                    @endslot
 
-                @include("cooperation.tool-question-type-templates.{$topRightSecond->toolQuestionType->short}.show", ['toolQuestion' => $topRightSecond])
-            @endcomponent
-                    @endif
+                    @slot('modalBodySlot')
+                        <p>
+                            {!! $topRightSecond->help_text !!}
+                        </p>
+                    @endslot
+
+                    @include("cooperation.tool-question-type-templates.{$topRightSecond->toolQuestionType->short}.show", ['toolQuestion' => $topRightSecond])
+                @endcomponent
+            @endif
         </div>
     </div>
-        @if($bottomLeft instanceof \App\Models\ToolQuestion)
-    <div class="w-full pt-5">
-        @component('cooperation.frontend.layouts.components.form-group', [
-            'class' => 'form-group-heading w-full',
-            'label' => $bottomLeft->name,
-        ])
-            @slot('modalBodySlot')
-                <p>
-                    {!! $bottomLeft->help_text !!}
-                </p>
-            @endslot
-            <div class="w-1/2">
+    @if($bottomLeft instanceof \App\Models\ToolQuestion)
+        <div class="w-full pt-5">
+            @component('cooperation.frontend.layouts.components.form-group', [
+                'class' => 'form-group-heading w-full',
+                'label' => $bottomLeft->name,
+                'inputName' => "filledInAnswers.{$bottomLeft->id}",
+            ])
+                @slot('sourceSlot')
+                    @include('cooperation.sub-step-templates.parts.source-slot-values', [
+                        'values' => $filledInAnswersForAllInputSources[$bottomLeft->id],
+                        'toolQuestion' => $bottomLeft,
+                    ])
+                @endslot
 
-                @include("cooperation.tool-question-type-templates.{$bottomLeft->toolQuestionType->short}.show", ['toolQuestion' => $bottomLeft])
-            </div>
-        @endcomponent
-    </div>
-        @endif
-
+                @slot('modalBodySlot')
+                    <p>
+                        {!! $bottomLeft->help_text !!}
+                    </p>
+                @endslot
+                <div class="w-1/2">
+                    @include("cooperation.tool-question-type-templates.{$bottomLeft->toolQuestionType->short}.show", ['toolQuestion' => $bottomLeft])
+                </div>
+            @endcomponent
+        </div>
+    @endif
 </div>

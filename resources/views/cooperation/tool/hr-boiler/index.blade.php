@@ -1,90 +1,112 @@
-@extends('cooperation.tool.layout')
+@extends('cooperation.frontend.layouts.tool')
 
-@section('step_title', \App\Helpers\Translation::translate('high-efficiency-boiler.title.title'))
+@section('step_title', __('high-efficiency-boiler.title.title'))
 
-
-@section('step_content')
-    <form  method="POST" action="{{ route('cooperation.tool.high-efficiency-boiler.store', ['cooperation' => $cooperation]) }}">
-        {{ csrf_field() }}
+@section('content')
+    <form  method="POST" id="high-efficiency-boiler-form"
+           action="{{ route('cooperation.tool.high-efficiency-boiler.store', compact('cooperation')) }}">
+        @csrf
         @include('cooperation.tool.includes.interested', [
-            'translation' => 'high-efficiency-boiler.index.interested-in-improvement', 'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
+            'translation' => 'high-efficiency-boiler.index.interested-in-improvement', 
+            'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
         ])
         <div id="start-information">
-            <div class="row">
-                <div class="col-sm-6">
-                    @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.amount_gas', 'translation' => 'high-efficiency-boiler.current-gas-usage', 'required' => false])
-
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsOrderedOnInputSourceCredibility, 'userInputColumn' => 'amount_gas'])
-                            <span class="input-group-addon">m<sup>3</sup></span>
-                            <input type="text" id="amount_gas" name="user_energy_habits[amount_gas]" class="form-control"
-                                   value="{{ old('user_energy_habits.amount_gas', Hoomdossier::getMostCredibleValueFromCollection($userEnergyHabitsOrderedOnInputSourceCredibility, 'amount_gas', 0)) }}">
-                        @endcomponent
-
+            <div class="flex flex-row flex-wrap w-full">
+                <div class="w-full sm:w-1/2 sm:pr-3">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'user_energy_habits.amount_gas',
+                        'translation' => 'high-efficiency-boiler.current-gas-usage', 'required' => false
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'input', 
+                                'userInputValues' => $userEnergyHabitsOrderedOnInputSourceCredibility, 
+                                'userInputColumn' => 'amount_gas'
+                            ])
+                        @endslot
+                        
+                        <span class="input-group-prepend">m<sup>3</sup></span>
+                        <input type="text" id="amount_gas" name="user_energy_habits[amount_gas]" class="form-input"
+                               value="{{ old('user_energy_habits.amount_gas', Hoomdossier::getMostCredibleValueFromCollection($userEnergyHabitsOrderedOnInputSourceCredibility, 'amount_gas', 0)) }}">
                     @endcomponent
-
                 </div>
-                <div class="col-sm-6">
-                    @component('cooperation.tool.components.step-question', ['id' => 'user_energy_habits.resident_count', 'translation' => 'high-efficiency-boiler.resident-count', 'required' => false])
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'input', 'userInputValues' => $userEnergyHabitsOrderedOnInputSourceCredibility, 'userInputColumn' => 'resident_count'])
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input type="text" id="resident_count" name="user_energy_habits[resident_count]" class="form-control"
-                                   value="{{ old('user_energy_habits.resident_count', Hoomdossier::getMostCredibleValueFromCollection($userEnergyHabitsOrderedOnInputSourceCredibility, 'resident_count', 0)) }}">
-                        @endcomponent
+                <div class="w-full sm:w-1/2 sm:pl-3">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'user_energy_habits.resident_count',
+                        'translation' => 'high-efficiency-boiler.resident-count', 'required' => false
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'input',
+                                'userInputValues' => $userEnergyHabitsOrderedOnInputSourceCredibility,
+                                'userInputColumn' => 'resident_count'
+                            ])
+                        @endslot
 
+                        <span class="input-group-prepend"><i class="icon-sm icon-persons-one"></i></span>
+                        <input type="text" id="resident_count" name="user_energy_habits[resident_count]" class="form-input"
+                               value="{{ old('user_energy_habits.resident_count', Hoomdossier::getMostCredibleValueFromCollection($userEnergyHabitsOrderedOnInputSourceCredibility, 'resident_count', 0)) }}">
                     @endcomponent
                 </div>
             </div>
         </div>
         <div id="intro-questions">
-            <div class="row">
-                <div id="boiler-options">
-                    <div class="col-sm-6">
-                        @component('cooperation.tool.components.step-question', ['id' => 'building_services.service_value_id', 'translation' => 'high-efficiency-boiler.boiler-type', 'required' => false])
+            <div class="flex flex-row flex-wrap w-full">
+                <div id="boiler-options" class="w-full sm:w-1/2 sm:pr-3">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'building_services.service_value_id',
+                        'translation' => 'high-efficiency-boiler.boiler-type', 'required' => false
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'select', 'inputValues' => $boilerTypes, 'userInputValues' => $buildingServicesOrderedOnInputSourceCredibility, 'userInputColumn' => 'service_value_id'])
+                        @endslot
 
-                            @component('cooperation.tool.components.input-group',
-                            ['inputType' => 'select', 'inputValues' => $boilerTypes, 'userInputValues' => $buildingServicesOrderedOnInputSourceCredibility, 'userInputColumn' => 'service_value_id'])
-                                <select id="high_efficiency_boiler_id" class="form-control"
-                                        name="building_services[service_value_id]">
-                                    @foreach($boilerTypes as $boilerType)
-                                        <option @if(old('building_services.service_value_id', Hoomdossier::getMostCredibleValueFromCollection($buildingServicesOrderedOnInputSourceCredibility, 'service_value_id')) == $boilerType->id) selected="selected"
-                                                @endif value="{{ $boilerType->id }}">{{ $boilerType->value }}</option>
-                                    @endforeach
-                                </select>
-                            @endcomponent
-
+                        @component('cooperation.frontend.layouts.components.alpine-select')
+                            <select id="high_efficiency_boiler_id" class="form-input"
+                                    name="building_services[service_value_id]">
+                                @foreach($boilerTypes as $boilerType)
+                                    <option @if(old('building_services.service_value_id', Hoomdossier::getMostCredibleValueFromCollection($buildingServicesOrderedOnInputSourceCredibility, 'service_value_id')) == $boilerType->id) selected="selected"
+                                            @endif value="{{ $boilerType->id }}">
+                                        {{ $boilerType->value }}
+                                    </option>
+                                @endforeach
+                            </select>
                         @endcomponent
-
-                    </div>
-
-
+                    @endcomponent
                 </div>
-                <div class="col-sm-6">
-                    @component('cooperation.tool.components.step-question', ['id' => 'building_services.extra.date', 'translation' => 'high-efficiency-boiler.boiler-placed-date', 'required' => true])
-
+                <div class="w-full sm:w-1/2 sm:pl-3">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'building_services.extra.date',
+                        'translation' => 'high-efficiency-boiler.boiler-placed-date',
+                        'required' => true
+                    ])
                         <?php
                             $default = ($installedBoiler instanceof \App\Models\BuildingService && is_array($installedBoiler->extra) && array_key_exists('date', $installedBoiler->extra)) ? $installedBoiler->extra['date'] : '';
                         ?>
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'input',
+                                'userInputValues' => $buildingServicesOrderedOnInputSourceCredibility,
+                                'userInputColumn' => 'extra.date'
+                            ])
+                        @endslot
 
-                        @component('cooperation.tool.components.input-group',
-                        ['inputType' => 'input', 'userInputValues' => $buildingServicesOrderedOnInputSourceCredibility, 'userInputColumn' => 'extra.date'])
-                            <input type="text" required class="form-control"
-                                   value="{{ old('building_services.extra.date', Hoomdossier::getMostCredibleValueFromCollection($buildingServicesOrderedOnInputSourceCredibility, 'extra.date')) }}"
-                                   name="building_services[extra][date]">
-                        @endcomponent
-
+                        <input type="text" required class="form-input"
+                               value="{{ old('building_services.extra.date', Hoomdossier::getMostCredibleValueFromCollection($buildingServicesOrderedOnInputSourceCredibility, 'extra.date')) }}"
+                               name="building_services[extra][date]">
                     @endcomponent
-
-
                 </div>
             </div>
         </div>
-        <div class="row advice">
-            <div class="col-sm-12 col-md-8 col-md-offset-2">
-                <div class="alert alert-info show" role="alert">
-                    <p id="boiler-advice"></p>
-                </div>
+        <div class="flex flex-row flex-wrap w-full advice">
+            <div class="w-full md:w-8/12 md:ml-2/12">
+                @component('cooperation.frontend.layouts.parts.alert', [
+                    'color' => 'blue-800',
+                    'dismissible' => false,
+                ])
+                    <p id="boiler-advice" class="text-blue-800"></p>
+                @endcomponent
             </div>
         </div>
         <div id="indication-for-costs">
@@ -94,60 +116,60 @@
                 'id' => 'indication-for-costs-title'
             ])
 
-            <div id="costs" class="row">
-                <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.gas', ['translation' => 'high-efficiency-boiler.index.costs.gas'])
+            <div id="costs" class="flex flex-row flex-wrap w-full sm:pad-x-6">
+                <div class="w-full sm:w-1/3">
+                    @include('cooperation.layouts.indication-for-costs.gas', [
+                        'translation' => 'high-efficiency-boiler.index.costs.gas'
+                    ])
                 </div>
-                <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.co2', ['translation' => 'high-efficiency-boiler.index.costs.co2'])
+                <div class="w-full sm:w-1/3">
+                    @include('cooperation.layouts.indication-for-costs.co2', [
+                        'translation' => 'high-efficiency-boiler.index.costs.co2'
+                    ])
                 </div>
-                <div class="col-sm-4">
+                <div class="w-full sm:w-1/3">
                     @include('cooperation.layouts.indication-for-costs.savings-in-euro',[
-                                'translation' => 'floor-insulation.index.savings-in-euro'
-                            ])
+                        'translation' => 'floor-insulation.index.savings-in-euro'
+                    ])
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-4">
-                        @component('cooperation.tool.components.step-question', ['id' => 'indicative-replacement', 'translation' => 'high-efficiency-boiler.indication-for-costs.indicative-replacement', 'required' => false])
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                                <input type="text" id="replace_year" class="form-control disabled" disabled="">
-                            </div>
-                        @endcomponent
+            <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
+                <div class="w-full sm:w-1/3">
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'indicative-replacement',
+                        'translation' => 'high-efficiency-boiler.indication-for-costs.indicative-replacement',
+                        'required' => false, 'withInputSource' => false,
+                    ])
+                        <span class="input-group-prepend"><i class="icon-sm icon-timer"></i></span>
+                        <input type="text" id="replace_year" class="form-input disabled" disabled="">
+                    @endcomponent
                 </div>
-                <div class="col-sm-4">
+                <div class="w-full sm:w-1/3">
                     @include('cooperation.layouts.indication-for-costs.indicative-costs',[
-                                'translation' => 'floor-insulation.index.indicative-costs'
-                            ])
+                        'translation' => 'floor-insulation.index.indicative-costs'
+                    ])
                 </div>
-                <div class="col-sm-4">
+                <div class="w-full sm:w-1/3">
                     @include('cooperation.layouts.indication-for-costs.comparable-rent',[
-                                'translation' => 'floor-insulation.index.comparable-rent'
-                            ])
+                        'translation' => 'floor-insulation.index.comparable-rent'
+                    ])
                 </div>
             </div>
         </div>
-
 
         @include('cooperation.tool.includes.comment', [
              'translation' => 'high-efficiency-boiler.index.specific-situation'
          ])
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">{{\App\Helpers\Translation::translate('general.download.title')}}</div>
-                    <div class="panel-body">
-                        <ol>
-                            <li><a download=""
-                                   href="{{asset('storage/hoomdossier-assets/Maatregelblad_CV-ketel.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_CV-ketel.pdf')))))}}</a>
-                            </li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @component('cooperation.tool.components.panel', [
+            'label' => __('default.buttons.download')
+        ])
+            <ol>
+                <li><a download=""
+                       href="{{asset('storage/hoomdossier-assets/Maatregelblad_CV-ketel.pdf')}}">{{ucfirst(strtolower(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/Maatregelblad_CV-ketel.pdf')))))}}</a>
+                </li>
+            </ol>
+        @endcomponent
     </form>
 @endsection
 
@@ -155,14 +177,14 @@
     <script>
         $(document).ready(function () {
 
-
             $("select, input[type=radio], input[type=text]").change(formChange);
 
             function formChange() {
-                var form = $(this).closest("form").serialize();
+                let $form = $('#high-efficiency-boiler-form');
+                let form = $form.serialize();
                 $.ajax({
                     type: "POST",
-                    url: '{{ route('cooperation.tool.high-efficiency-boiler.calculate', [ 'cooperation' => $cooperation ]) }}',
+                    url: '{{ route('cooperation.tool.high-efficiency-boiler.calculate', compact('cooperation')) }}',
                     data: form,
                     success: function (data) {
                         if (data.boiler_advice) {
@@ -199,8 +221,8 @@
                 });
             }
 
-            $('form').find('*').filter(':input:visible:first').trigger('change');
-
+            formChange();
+            // $('.form-input:visible:enabled').first().trigger('change');
         });
     </script>
 @endpush

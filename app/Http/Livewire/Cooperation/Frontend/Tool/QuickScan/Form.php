@@ -100,8 +100,18 @@ class Form extends Component
                         // so this means the answer is not found, this means we have to remove the question.
                         if ($answer === null) {
                             $this->toolQuestions = $this->toolQuestions->forget($index);
+
+                            // We cannot unset the validation, as it may be that the user, for some reason, changes
+                            // their mind. This can cause unexpected behaviour. Instead, we will unset the
+                            // answers the user has given. If the user then changes their mind again, they will
+                            // have to fill in the data again. We don't want to save values to the database
+                            // that are unvalidated (or not relevant).
+
+                            // Normally we'd use $this->reset(), but it doesn't seem like it likes nested items per dot
+                            $this->filledInAnswers[$toolQuestion->id] = null;
+
                             // and unset the validation for the question.
-                            unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
+//                            unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
                         }
                     }
                 }
@@ -164,7 +174,6 @@ class Form extends Component
                 case 'rating-slider':
                     $filledInAnswerOptions = json_decode($answerForInputSource, true);
                     foreach ($toolQuestion->options as $option) {
-
                         $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']] ?? 0;
                         $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $toolQuestion->validation;
                     }
@@ -177,9 +186,12 @@ class Form extends Component
                 default:
                     $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
                     $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
-
+                    break;
             }
         }
+
+        // User's previous values could be defined, which means conditional questions should be hidden
+        $this->setToolQuestions();
     }
 
     private function saveToolQuestionValuables(ToolQuestion $toolQuestion, $givenAnswer)
@@ -199,7 +211,7 @@ class Form extends Component
             // in this case the column holds a extra where value
             $where[ToolQuestionHelper::TABLE_COLUMN[$table]] = $column;
             $column = $savedInParts[2];
-            // the extra column holds a array / json, so we have to transform the answer into a
+            // the extra column holds a array / json, so we have to transform the answer into an array
             if ($savedInParts[2] == 'extra') {
                 // the column to which we actually have to save the data
                 $column = 'extra';

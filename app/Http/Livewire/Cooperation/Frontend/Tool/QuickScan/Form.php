@@ -227,7 +227,6 @@ class Form extends Component
             );
     }
 
-
     private function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
     {
         if (is_array($givenAnswer)) {
@@ -248,7 +247,6 @@ class Form extends Component
             $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($givenAnswer);
             $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
         }
-
 
         $where['input_source_id'] = $this->currentInputSource->id;
         // we have to do this twice, once for the current input source and once for the master input source

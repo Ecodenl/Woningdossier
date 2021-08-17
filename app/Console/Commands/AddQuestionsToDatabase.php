@@ -435,6 +435,23 @@ class AddQuestionsToDatabase extends Command
                             ],
                         ],
                         [
+                            'validation' => ['required', 'exists:building_heatings,id'],
+                            'save_in' => 'user_energy_habits.heating_second_floor',
+                            // was cooperation/tool/general-data/usage.index.heating-habits.heating-second-floor
+                            'translation' => 'Wat is de situatie op de tweede verdieping',
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_values' => $heatings,
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    2 => [],
+                                    3 => [],
+                                    4 => [],
+                                    5 => [],
+                                ],
+                            ],
+                        ],
+                        [
                             'validation' => ['required', 'exists:comfort_level_tap_waters,id'],
                             'save_in' => 'user_energy_habits.water_comfort_id',
                             // was __('cooperation/tool/general-data/usage.index.water-gas.water-comfort.title'),

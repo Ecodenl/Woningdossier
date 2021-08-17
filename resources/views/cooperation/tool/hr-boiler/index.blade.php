@@ -4,7 +4,7 @@
 
 @section('content')
     <form  method="POST" id="high-efficiency-boiler-form"
-           action="{{ route('cooperation.tool.high-efficiency-boiler.store', ['cooperation' => $cooperation]) }}">
+           action="{{ route('cooperation.tool.high-efficiency-boiler.store', compact('cooperation')) }}">
         @csrf
         @include('cooperation.tool.includes.interested', [
             'translation' => 'high-efficiency-boiler.index.interested-in-improvement', 
@@ -138,7 +138,7 @@
                     @component('cooperation.tool.components.step-question', [
                         'id' => 'indicative-replacement',
                         'translation' => 'high-efficiency-boiler.indication-for-costs.indicative-replacement',
-                        'required' => false
+                        'required' => false, 'withInputSource' => false,
                     ])
                         <span class="input-group-prepend"><i class="icon-sm icon-timer"></i></span>
                         <input type="text" id="replace_year" class="form-input disabled" disabled="">

@@ -105,17 +105,17 @@ class Heater
 
                 if ($helpFactor >= 0.84) {
                     $result['performance'] = [
-                        'alert' => 'success',
+                        'alert' => 'green',
                         'text' => __('woningdossier.cooperation.tool.solar-panels.indication-for-costs.performance.ideal'),
                     ];
                 } elseif ($helpFactor < 0.70) {
                     $result['performance'] = [
-                        'alert' => 'danger',
+                        'alert' => 'red',
                         'text' => __('woningdossier.cooperation.tool.solar-panels.indication-for-costs.performance.no-go'),
                     ];
                 } else {
                     $result['performance'] = [
-                        'alert' => 'warning',
+                        'alert' => 'yellow',
                         'text' => __('woningdossier.cooperation.tool.solar-panels.indication-for-costs.performance.possible'),
                     ];
                 }

@@ -401,7 +401,7 @@
                 }
             }
 
-            $('.form-input:visible:enabled').first().trigger('change');
+            formChange();
         });
 
         $('#floor_surface').on('change', function () {

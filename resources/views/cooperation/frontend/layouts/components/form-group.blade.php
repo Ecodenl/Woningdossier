@@ -1,6 +1,6 @@
 <div class="form-group {{ $class ?? '' }}" {!! $attr ?? '' !!}>
     <div class="form-header">
-        <label class="form-label" for="{{ $id ?? '' }}">
+        <label class="form-label @if(! ($withInputSource ?? true)) max-w-16/20 @endif" for="{{ $id ?? '' }}">
             {!! $label ?? '' !!}
         </label>
         <div class="form-end" wire:ignore>

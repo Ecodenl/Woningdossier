@@ -46,10 +46,16 @@ class EnergyLabelsTableSeeder extends Seeder
             ],
         ];
 
-        foreach ($energyLabels as $energyLabel) {
+        foreach ($energyLabels as $order => $energyLabel) {
             \DB::table('energy_labels')->updateOrInsert(
-                ['name' => $energyLabel['name']],
-                $energyLabel
+                [
+                    'name' => $energyLabel['name']
+                ],
+                [
+                    'order' => $order,
+                    'name' => $energyLabel['name'],
+                    'country_code' => $energyLabel['country_code'],
+                ]
             );
         }
     }

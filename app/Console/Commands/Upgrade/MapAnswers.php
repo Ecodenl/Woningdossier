@@ -67,15 +67,14 @@ class MapAnswers extends Command
                 'building_id' => $userEnergyHabit->user->building->id
             ];
 
-            // now map the actual answer;
+            // now map the actual answer.
             if ($cookGas == 1) {
                 $answer = 'gas';
-                $data['tool_question_custom_value_id'] = ToolQuestionCustomValue::findByShort($answer)->id;
             } else {
                 $answer = 'electric';
-                $data['tool_question_custom_value_id'] = ToolQuestionCustomValue::findByShort($answer)->id;
             }
 
+            $data['tool_question_custom_value_id'] = ToolQuestionCustomValue::findByShort($answer)->id;
             $data['answer'] = $answer;
 
             DB::table('tool_question_answers')->insert($data);

@@ -266,8 +266,7 @@
             $("select, input[type=radio], input[type=text]").change(formChange);
 
             function formChange() {
-                let $form = $('#heater-form');
-                let form = $form.serialize();
+                var form = $('#heater-form').serialize();
                 $.ajax({
                     type: "POST",
                     url: '{{ route('cooperation.tool.heater.calculate', compact('cooperation')) }}',

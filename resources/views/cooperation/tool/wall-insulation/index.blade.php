@@ -269,9 +269,13 @@
             <div class="hideable w-full">
                 <div id="advice-help">
                     <div class="w-full md:w-2/3 md:ml-2/12">
-                        @component('cooperation.frontend.layouts.parts.alert', ['color' => 'blue-800', 'dismissible' => false])
-                            <p>@lang('wall-insulation.insulation-advice.text.title')</p>
-                            <p id="insulation-advice"></p>
+                        @component('cooperation.frontend.layouts.parts.alert', [
+                            'color' => 'blue-800', 'dismissible' => false
+                        ])
+                            <p class="text-blue-800">
+                                @lang('wall-insulation.insulation-advice.text.title')
+                            </p>
+                            <p class="text-blue-800" id="insulation-advice"></p>
                         @endcomponent
                     </div>
                 </div>
@@ -342,8 +346,10 @@
             <div class="hideable w-full">
                 <div class="flex flex-row flex-wrap w-full" id="cavity-wall-alert" style="display: none;">
                     <div class="w-full md:w-2/3 md:ml-2/12">
-                        @component('cooperation.frontend.layouts.parts.alert', ['color' => 'red', 'dismissible' => false])
-                            <p>
+                        @component('cooperation.frontend.layouts.parts.alert', [
+                            'color' => 'red', 'dismissible' => false
+                        ])
+                            <p class="text-red">
                                 <strong>@lang('wall-insulation.alerts.description.title')</strong>
                             </p>
                         @endcomponent

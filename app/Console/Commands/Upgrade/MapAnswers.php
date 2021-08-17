@@ -2,9 +2,14 @@
 
 namespace App\Console\Commands\Upgrade;
 
+use App\Models\InputSource;
+use App\Models\Motivation;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use App\Models\User;
 use App\Models\UserEnergyHabit;
+use App\Models\UserMotivation;
+use App\ToolQuestionAnswer;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -43,15 +48,89 @@ class MapAnswers extends Command
     public function handle()
     {
 
+
+        $this->info("Mapping user energy habits...");
+        $this->info('Cook gas field to the tool question answers...');
+//        $this->mapUserEnergyHabits();
+        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
+        $this->mapUserMotivations();
+        
+    }
+
+    private function mapUserMotivations()
+    {
+        $users = User::has('building')
+            ->has('motivations')
+            ->with(['building.user', 'motivations.motivation'])
+            ->limit(500)
+            ->get();
+
+        // let me explain;
+        // in the beginning we saved the order starting from 1, later on we saved the order starting from 0
+        // so that's why there are multiple maps
+        $orderToRatingMapWith0 = [
+            0 => 5,
+            1 => 4,
+            2 => 3,
+            3 => 3
+        ];
+        $orderToRatingMapWith1 = [
+            1 => 5,
+            2 => 4,
+            3 => 3,
+            4 => 3
+        ];
+
+        $motivationToRatingNameMap = [
+            1 => 'comfort',
+            2 => 'renewable',
+            3 => 'lower-monthly-costs',
+            4 => 'investment',
+        ];
+        $motivations = Motivation::all();
+        foreach ($users as $user) {
+            // these do not exist in the user motivations.
+            $answer = [
+                'to-own-taste' => 3,
+                'indoor-climate' => 3,
+            ];
+            $data = [
+                'tool_question_id' => ToolQuestion::findByShort('comfort-priority')->id,
+                'building_id' => $user->building->id,
+                // the user motivations has no input_source_id, so we can do it this way.
+                'input_source_id' => InputSource::findByShort('resident')->id,
+            ];
+            // as default
+            $orderToRatingMap = $orderToRatingMapWith1;
+
+            if ($user->motivations->contains('order', 0)) {
+                $orderToRatingMap = $orderToRatingMapWith0;
+            }
+            foreach ($motivations as $motivation) {
+                $userMotivation = $user->motivations->where('motivation_id', $motivation->id)->first();
+
+                // default the rating value to one, unless we can map it.
+                $rating = 1;
+                if ($userMotivation instanceof UserMotivation) {
+                    $rating = $orderToRatingMap[$userMotivation->order];
+                }
+                $answer[$motivationToRatingNameMap[$motivation->id]] = $rating;
+            }
+
+            $data['answer'] = json_encode($answer);
+            DB::table('tool_question_answers')->insert($data);
+        }
+    }
+
+    private function mapUserEnergyHabits()
+    {
+
         $userEnergyHabits = UserEnergyHabit::allInputSources()
             ->limit(500)
             ->whereHas('user.building')
             ->with('user.building')
             ->get();
-
-        $this->info("Mapping user energy habits...");
-        $this->info('Cook gas field to the tool question answers...');
-
+        
         $bar = $this->output->createProgressBar($userEnergyHabits->count());
         $bar->start();
 

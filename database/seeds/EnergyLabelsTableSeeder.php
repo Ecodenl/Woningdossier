@@ -13,6 +13,10 @@ class EnergyLabelsTableSeeder extends Seeder
     {
         $energyLabels = [
             [
+                'name' => '?',
+                'country_code' => 'nl'
+            ],
+            [
                 'name' => 'A',
                 'country_code' => 'nl',
             ],
@@ -39,10 +43,6 @@ class EnergyLabelsTableSeeder extends Seeder
             [
                 'name' => 'G',
                 'country_code' => 'nl',
-            ],
-            [
-                'name' => '?',
-                'country_code' => 'nl'
             ],
         ];
 

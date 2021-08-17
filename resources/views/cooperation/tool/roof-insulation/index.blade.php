@@ -424,8 +424,7 @@
 
             function formChange() {
 
-                let $form = $('#roof-insulation-form');
-                let form = $form.serialize();
+                let form = $('#roof-insulation-form').serialize();
                 $.ajax({
                     type: "POST",
                     url: '{{ route('cooperation.tool.roof-insulation.calculate', compact('cooperation')) }}',

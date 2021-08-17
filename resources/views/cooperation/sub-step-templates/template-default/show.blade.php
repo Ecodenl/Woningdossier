@@ -4,11 +4,15 @@
         <div class="w-full @if($loop->iteration > 1) pt-10 @endif">
             @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'form-group-heading',
+                // 'defaultInputSource' => 'resident',
                 'label' => $toolQuestion->name,
                 'inputName' => "filledInAnswers.{$toolQuestion->id}",
             ])
                 @slot('sourceSlot')
-                    @include('cooperation.sub-step-templates.parts.source-slot-values', ['values' => $filledInAnswersForAllInputSources[$toolQuestion->id]])
+                    @include('cooperation.sub-step-templates.parts.source-slot-values', [
+                        'values' => $filledInAnswersForAllInputSources[$toolQuestion->id],
+                        'toolQuestion' => $toolQuestion,
+                    ])
                 @endslot
 
                 @slot('modalBodySlot')

@@ -110,15 +110,10 @@ class Building extends Model
         $where = [['input_source_id', '!=', InputSource::findByShort(InputSource::MASTER_SHORT)->id]];
         // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
         if (!is_null($toolQuestion->save_in)) {
-            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion);
+            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);
             $table = $saveIn['table'];
             $column = $saveIn['column'];
-
-            if (Schema::hasColumn($table, 'user_id')) {
-                $where[] = ['user_id', '=', $this->user_id];
-            } else {
-                $where[] = ['building_id', '=', $this->id];
-            }
+            $where = array_merge($saveIn['where'], $where);
 
             $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
 
@@ -130,7 +125,7 @@ class Building extends Model
                 ->with('inputSource')
                 ->where($where)
                 ->get()
-                ->flatMap(function (Model $model) use ($column, $questionValues) {
+                ->flatMap(function (Model $model) use ($column, $questionValues, $table) {
                     // now check if we need to "translate" the answer
                     $answer = $model->getAttribute($column);
 
@@ -157,19 +152,15 @@ class Building extends Model
 
     public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
     {
+
         $answer = null;
         $where[] = ['input_source_id', '=', $inputSource->id];
         // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
         if (!is_null($toolQuestion->save_in)) {
-            $savedIn = ToolQuestionHelper::resolveSaveIn($toolQuestion);
-            $table = $savedIn['table'];
-            $column = $savedIn['column'];
-
-            if (Schema::hasColumn($table, 'user_id')) {
-                $where[] = ['user_id', '=', $this->user_id];
-            } else {
-                $where[] = ['building_id', '=', $this->id];
-            }
+            $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);
+            $table = $saveIn['table'];
+            $column = $saveIn['column'];
+            $where = array_merge($saveIn['where'], $where);
 
             $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
 

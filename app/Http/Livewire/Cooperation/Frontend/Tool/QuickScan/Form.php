@@ -73,7 +73,7 @@ class Form extends Component
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
 
         $this->setToolQuestions();
-
+        
     }
 
     private function setToolQuestions()
@@ -100,6 +100,8 @@ class Form extends Component
                         // so this means the answer is not found, this means we have to remove the question.
                         if ($answer === null) {
                             $this->toolQuestions = $this->toolQuestions->forget($index);
+                            // and unset the validation for the question.
+                            unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
                         }
                     }
                 }
@@ -260,28 +262,5 @@ class Form extends Component
             ->allInputSources()
             ->updateOrCreate($where, $data)
             ->save();
-    }
-
-    public function update($field, $value, $triggerUpdate = true)
-    {
-        // If we should, tell Livewire we're updating
-        if ($triggerUpdate) {
-            $oldValue = $this->getPropertyValue($field);
-            $this->updating($field, $oldValue);
-        }
-
-        // Set value the same way that Livewire retrieves its properties
-        $variable = $this->beforeFirstDot($field);
-
-        if ($this->containsDots($field)) {
-            data_set($this->{$variable}, $this->afterFirstDot($field), $value);
-        } else {
-            $this->{$variable} = $value;
-        }
-
-        // If we should, tell Livewire we have updated
-        if ($triggerUpdate) {
-            $this->updated($field, $value);
-        }
     }
 }

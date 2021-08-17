@@ -25,7 +25,7 @@
     @stack('css')
 
 </head>
-<body>
+<body id="app-body">
 
 @yield('header')
 <?php

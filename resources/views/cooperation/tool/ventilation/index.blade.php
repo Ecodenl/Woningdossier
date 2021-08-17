@@ -1,13 +1,15 @@
-@extends('cooperation.tool.layout')
+@extends('cooperation.frontend.layouts.tool')
 
 @section('step_title', "Ventilatie: " . $buildingVentilation->value)
 
-@section('step_content')
-    <form method="POST" action="{{ route('cooperation.tool.ventilation.store', ['cooperation' => $cooperation]) }}" autocomplete="off">
-        {{ csrf_field() }}
+@section('content')
 
-        <div class="row">
-            <div class="col-sm-12">
+    <form method="POST" id="ventilation-form"
+          action="{{ route('cooperation.tool.ventilation.store', compact('cooperation')) }}" autocomplete="off">
+        @csrf
+
+        <div class="flex flex-row flex-wrap w-full">
+            <div class="w-full">
                 <p style="margin-left: -5px">
                     @lang('cooperation/tool/ventilation.index.intro.'.\Illuminate\Support\Str::slug($buildingVentilation->value))
                 </p>
@@ -21,8 +23,8 @@
 
         @if(in_array($buildingVentilation->calculate_value, [1,2,]))
         <!-- how : natural & mechanic -->
-            <div class="row natural mechanic">
-                <div class="col-sm-12">
+            <div class="flex flex-row flex-wrap w-full natural mechanic">
+                <div class="w-full">
 
                     <?php
                     $ventilations = collect();
@@ -34,41 +36,45 @@
                     }
                     ?>
 
-                    @component('cooperation.tool.components.step-question', ['id' => 'how', 'name' => 'building_ventilations.how', 'translation' => 'cooperation/tool/ventilation.index.how', 'required' => true])
-                        @component('cooperation.tool.components.input-group',
-                  ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'how'])
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'how', 'name' => 'building_ventilations.how',
+                        'translation' => 'cooperation/tool/ventilation.index.how', 'required' => true,
+                        'inputGroupClass' => 'pad-x-3',
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'checkbox', 'inputValues' => $ventilations,
+                                'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'how'
+                            ])
+                        @endslot
 
-                            @foreach($howValues as $howKey => $howValue)
-                                <div class="row" style="margin-left:5px;">
-                                    <div class="col-sm-12">
-                                        <label class="checkbox" style="font-weight: normal;">
-                                            <input type="checkbox"
-                                                   name="building_ventilations[how][]"
-                                                   value="{{ $howKey }}"
-                                                   @if(in_array($howKey, old('building_ventilations.how', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'how', []) ?? [])))
-                                                   checked="checked"
-                                                    @endif
-                                            >
-                                            {{ $howValue }}
-                                        </label></div>
-                                </div>
-                            @endforeach
-
-                        @endcomponent
+                        @foreach($howValues as $howKey => $howValue)
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" id="building-ventilation-how-{{$howKey}}" name="building_ventilations[how][]"
+                                       value="{{ $howKey }}"
+                                       @if(in_array($howKey, old('building_ventilations.how', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'how', []) ?? []))) checked="checked" @endif>
+                                <label for="building-ventilation-how-{{$howKey}}">
+                                    <span class="checkmark"></span>
+                                    <span>{{ $howValue }}</span>
+                                </label>
+                            </div>
+                        @endforeach
                     @endcomponent
-
                 </div>
             </div>
 
             <div class="how-none-warning">
-                <div class="row" id="how-none-alert" style="display: none;">
-                    <div class="col-sm-12 col-md-8 col-md-offset-2">
-                        <div class="alert alert-warning" role="alert">
-                            <p>
+                <div class="flex flex-row flex-wrap w-full" id="how-none-alert" style="display: none;">
+                    <div class="w-full md:w-8/12 md:ml-2/12">
+                        @component('cooperation.frontend.layouts.parts.alert', [
+                            'color' => 'yellow',
+                            'dismissible' => false,
+                        ])
+                            <p class="text-yellow">
                                 <strong>Er is op dit moment mogelijkerwijs onvoldoende ventilatie, het kan zinvol zijn
                                     om dit door een specialist te laten beoordelen.</strong>
                             </p>
-                        </div>
+                        @endcomponent
                     </div>
                 </div>
             </div>
@@ -79,8 +85,8 @@
     <!-- living_situation: natural, mechanic, balanced, decentral -->
         @if(in_array($buildingVentilation->calculate_value, [1,2,3,4,]))
         <!-- living_situation: natural, mechanic, balanced, decentral -->
-            <div class="row natural mechanic balanced decentral">
-                <div class="col-sm-12">
+            <div class="flex flex-row flex-wrap w-full natural mechanic balanced decentral">
+                <div class="w-full">
 
                     <?php
                     /** @var \Illuminate\Support\Collection $ventilations */
@@ -93,9 +99,17 @@
                     }
                     ?>
 
-                    @component('cooperation.tool.components.step-question', ['id' => 'living_situation', 'translation' => 'cooperation/tool/ventilation.index.living-situation'])
-                        @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'living_situation'])
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'living_situation',
+                        'translation' => 'cooperation/tool/ventilation.index.living-situation',
+                        'inputGroupClass' => 'pad-x-3'
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'checkbox', 'inputValues' => $ventilations,
+                                'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'living_situation'
+                            ])
+                        @endslot
                             @foreach($livingSituationValues as $lsKey => $lsValue)
 
                                 <?php
@@ -106,36 +120,30 @@
                                         : 'de living_situation van building ventilations is geen array'
                                 )
                                 ?>
-                                <div class="row" style="margin-left:5px;">
-                                    <div class="col-sm-12">
-                                        <label class="checkbox" style="font-weight: normal;">
-                                            <input type="checkbox"
-                                                   name="building_ventilations[living_situation][]"
-                                                   value="{{ $lsKey }}"
-                                                   <?php
-                                                   // default wont work, null will be returned anyways.
-                                                   $mostCredibleLivingSituation = \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'living_situation') ?? [];
-                                                   ?>
-                                                   @if(in_array($lsKey, old('building_ventilations.living_situation', $mostCredibleLivingSituation)))
-                                                   checked="checked"
-                                                    @endif
-                                            >
-                                            {{ $lsValue }}
-                                        </label>
-                                    </div>
+                                <div class="checkbox-wrapper">
+                                    <?php
+                                    // default wont work, null will be returned anyways.
+                                    $mostCredibleLivingSituation = \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'living_situation') ?? [];
+                                    ?>
+                                    <input type="checkbox" id="building-ventilation-living-situation-{{$lsKey}}" name="building_ventilations[living_situation][]"
+                                           value="{{ $lsKey }}"
+                                           @if(in_array($lsKey, old('building_ventilations.living_situation', $mostCredibleLivingSituation))) checked="checked" @endif>
+                                    <label for="building-ventilation-living-situation-{{$lsKey}}">
+                                        <span class="checkmark"></span>
+                                        <span>{{ $lsValue }}</span>
+                                    </label>
                                 </div>
-
                             @endforeach
-                        @endcomponent
                     @endcomponent
-
                 </div>
             </div>
 
             <div class="living_situation-warning">
-                <div class="row" id="living_situation-alert" style="display: none;">
-                    <div class="col-sm-12 col-md-8 col-md-offset-2">
-                        <div class="alert alert-warning" role="alert">
+                <div class="flex flex-row flex-wrap w-full" id="living_situation-alert" style="display: none;">
+                    <div class="w-full md:w-8/12 md:ml-2/12">
+                        @component('cooperation.frontend.layouts.parts.alert', [
+                            'color' => 'yellow', 'dismissible' => false,
+                        ])
                             <ul>
                                 @foreach(__('cooperation/tool/ventilation.index.living-situation-warnings') as $livingSituationWarningType => $livingSituationWarningTranslation)
                                 <li class="{{$livingSituationWarningType}}" style="display: none;">
@@ -143,7 +151,7 @@
                                 </li>
                                 @endforeach
                             </ul>
-                        </div>
+                        @endcomponent
                     </div>
                 </div>
             </div>
@@ -152,8 +160,8 @@
     <!-- living_situation: mechanic, balanced, decentral -->
         @if(in_array($buildingVentilation->calculate_value, [2,3,4,]))
         <!-- living_situation: natural, mechanic, balanced, decentral -->
-            <div class="row mechanic balanced decentral">
-                <div class="col-sm-12">
+            <div class="flex flex-row flex-wrap w-full mechanic balanced decentral">
+                <div class="w-full">
 
                     <?php
                     /** @var \Illuminate\Support\Collection $ventilations */
@@ -166,37 +174,37 @@
                     }
                     ?>
 
-                    @component('cooperation.tool.components.step-question', ['id' => 'usage', 'translation' => 'cooperation/tool/ventilation.index.usage'])
-                        @component('cooperation.tool.components.input-group',
-                    ['inputType' => 'checkbox', 'inputValues' => $ventilations, 'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'usage'])
-                            @foreach($usageValues as $uKey => $uValue)
+                    @component('cooperation.tool.components.step-question', [
+                        'id' => 'usage', 'translation' => 'cooperation/tool/ventilation.index.usage',
+                    ])
+                        @slot('sourceSlot')
+                            @include('cooperation.tool.components.source-list', [
+                                'inputType' => 'checkbox', 'inputValues' => $ventilations,
+                                'userInputValues' => $myBuildingVentilations ,'userInputColumn' => 'usage'
+                            ])
+                        @endslot
 
-                                <div class="row" style="margin-left:5px;">
-                                    <div class="col-sm-12">
-                                        <label class="checkbox" style="font-weight: normal;">
-                                            <input type="checkbox"
-                                                   name="building_ventilations[usage][]"
-                                                   value="{{ $uKey }}"
-                                                   @if(in_array($uKey, old('building_ventilations.usage', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'usage',[]) ?? [])))
-                                                   checked="checked"
-                                                    @endif
-                                            >
-                                            {{ $uValue }}
-                                        </label>
-                                    </div>
-                                </div>
-
-                            @endforeach
-                        @endcomponent
+                        @foreach($usageValues as $uKey => $uValue)
+                            <div class="checkbox-wrapper pr-3">
+                                <input type="checkbox" id="building-ventilation-usage-{{$uKey}}" name="building_ventilations[usage][]"
+                                       value="{{ $uKey }}"
+                                       @if(in_array($uKey, old('building_ventilations.usage', \App\Helpers\Hoomdossier::getMostCredibleValue($building->buildingVentilations(), 'usage',[]) ?? [])))  checked="checked" @endif>
+                                <label for="building-ventilation-usage-{{$uKey}}">
+                                    <span class="checkmark"></span>
+                                    <span>{{ $uValue }}</span>
+                                </label>
+                            </div>
+                        @endforeach
                     @endcomponent
-
                 </div>
             </div>
 
             <div class="usage-warning">
-                <div class="row" id="usage-alert" style="display: none;">
-                    <div class="col-sm-12 col-md-8 col-md-offset-2">
-                        <div class="alert alert-warning" role="alert">
+                <div class="flex flex-row flex-wrap w-full" id="usage-alert" style="display: none;">
+                    <div class="w-full md:w-8/12 md:ml-2/12">
+                        @component('cooperation.frontend.layouts.parts.alert', [
+                            'color' => 'yellow', 'dismissible' => false,
+                        ])
                             <ul>
                                 @foreach(__('cooperation/tool/ventilation.index.usage-warnings') as $usageWarningType => $usageWarningTranslation)
                                     <li class="{{$usageWarningType}}" style="display: none;">
@@ -204,27 +212,27 @@
                                     </li>
                                 @endforeach
                             </ul>
-                        </div>
+                        @endcomponent
                     </div>
                 </div>
             </div>
         @endif
 
-        <div class="row">
-            <div class="col-sm-12">
+        <div class="flex flex-row flex-wrap w-full">
+            <div class="w-full">
                 <h3>Verbeteropties</h3>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
+        <div class="flex flex-row flex-wrap w-full">
+            <div class="w-full">
                 <p id="improvement"></p>
             </div>
         </div>
-        <div class="row advices">
+        <div class="flex flex-row flex-wrap w-full advices">
 
         </div>
-        <div class="row">
-            <div class="col-sm-12">
+        <div class="flex flex-row flex-wrap w-full">
+            <div class="w-full">
                 <p id="remark"></p>
             </div>
         </div>
@@ -236,26 +244,30 @@
                 'id' => 'indication-for-costs'
             ])
 
-            <div id="costs" class="row">
-                <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.gas', ['translation' => 'cooperation/tool/ventilation.index.costs.gas'])
+            <div id="costs" class="flex flex-row flex-wrap w-full sm:pad-x-6">
+                <div class="w-full sm:w-1/3">
+                    @include('cooperation.layouts.indication-for-costs.gas', [
+                        'translation' => 'cooperation/tool/ventilation.index.costs.gas'
+                    ])
                 </div>
-                <div class="col-sm-4">
-                    @include('cooperation.layouts.indication-for-costs.co2', ['translation' => 'cooperation/tool/ventilation.index.costs.co2'])
+                <div class="w-full sm:w-1/3">
+                    @include('cooperation.layouts.indication-for-costs.co2', [
+                        'translation' => 'cooperation/tool/ventilation.index.costs.co2'
+                    ])
                 </div>
-                <div class="col-sm-4">
+                <div class="w-full sm:w-1/3">
                     @include('cooperation.layouts.indication-for-costs.savings-in-euro', [
                         'translation' => 'cooperation/tool/ventilation.index.savings-in-euro'
                     ])
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-4">
+            <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
+                <div class="w-full sm:w-1/3">
                     @include('cooperation.layouts.indication-for-costs.indicative-costs', [
                         'translation' => 'cooperation/tool/ventilation.index.indicative-costs'
                     ])
                 </div>
-                <div class="col-sm-4">
+                <div class="w-full sm:w-1/3">
                     @include('cooperation.layouts.indication-for-costs.comparable-rent', [
                         'translation' => 'cooperation/tool/ventilation.index.comparable-rent'
                     ])
@@ -269,9 +281,9 @@
                 'id' => 'indication-for-costs'
             ])
 
-            <div class="row">
-                <div class="col-sm-12">
-                    {!! \App\Helpers\Translation::translate('cooperation/tool/ventilation.index.indication-for-costs-other.text') !!}
+            <div class="flex flex-row flex-wrap w-full">
+                <div class="w-full">
+                    {!! __('cooperation/tool/ventilation.index.indication-for-costs-other.text') !!}
                 </div>
             </div>
         </div>
@@ -280,28 +292,22 @@
            'translation' => 'cooperation/tool/ventilation.index.specific-situation'
         ])
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">@lang('default.buttons.download')</div>
-                    <div class="panel-body">
-                        <ol>
-                            @foreach(['Maatregelblad_Ventilatiebox.pdf', 'Maatregelblad_Kierdichting_II.pdf'] as $fileName)
-                                <?php
-                                $link = "storage/hoomdossier-assets/{$fileName}"
-                                ?>
-                                <li>
-                                    <a href="{{asset($link)}}" download="">
-                                        {{ucfirst(strtolower($fileName))}}
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        @component('cooperation.tool.components.panel', [
+            'label' => __('default.buttons.download')
+        ])
+            <ol>
+                @foreach(['Maatregelblad_Ventilatiebox.pdf', 'Maatregelblad_Kierdichting_II.pdf'] as $fileName)
+                    <?php
+                    $link = "storage/hoomdossier-assets/{$fileName}"
+                    ?>
+                    <li>
+                        <a href="{{asset($link)}}" download="">
+                            {{ucfirst(strtolower($fileName))}}
+                        </a>
+                    </li>
+                @endforeach
+            </ol>
+        @endcomponent
     </form>
 
 @endsection
@@ -321,7 +327,7 @@
                     // unset all other values for building_ventilations[how][]
                     // using .indexOf instead of .includes because of Internet Exploder compatibility
                     if (this.value === 'none' && this.checked) {
-                        $(this).parent().parent().parent().parent().find("input[type=checkbox]").not(this).prop('checked', false);
+                        $(this).parents('.input-group').first().find("input[type=checkbox]").not(this).prop('checked', false);
                     } else {
                         $("input[type=checkbox][value=none]").prop('checked', false);
                     }
@@ -372,11 +378,11 @@
             }
 
             function formChange(element) {
-                var form = element.closest("form").serialize();
+                var form = $('#ventilation-form').serialize();
                 var indicationForCosts = $('#indication-for-costs');
                 $.ajax({
                     type: "POST",
-                    url: '{{ route('cooperation.tool.ventilation.calculate', [ 'cooperation' => $cooperation ]) }}',
+                    url: '{{ route('cooperation.tool.ventilation.calculate', compact('cooperation')) }}',
                     data: form,
                     success: function (data) {
                         if (data.hasOwnProperty('improvement')) {
@@ -385,13 +391,13 @@
 
                         if (data.hasOwnProperty('advices') && data.advices.length !== 0) {
                             var advices = $(".advices");
-                            advices.html('<div class="col-sm-9"><strong>Verbetering</strong></div><div class="col-sm-3"><strong>Interesse</strong></div>');
+                            advices.html('<div class="w-full sm:w-3/4"><strong>Verbetering</strong></div><div class="w-full sm:w-1/4"><strong>Interesse</strong></div>');
                             $.each(data.advices, function (i, element) {
                                 var checked = '';
                                 if (element.hasOwnProperty('interest') && element.interest === true) {
                                     checked = ' checked="checked"';
                                 }
-                                advices.append('<div class="col-sm-9">' + element.name + '</div><div class="col-sm-3"><input type="checkbox" name="user_interests[]" value="' + element.id + '"' + checked + '></div>');
+                                advices.append('<div class="w-full sm:w-3/4">' + element.name + '</div><div class="w-full sm:w-1/4"><input type="checkbox" name="user_interests[]" value="' + element.id + '"' + checked + '></div>');
                             });
                             indicationForCosts.show();
                         } else {
@@ -431,10 +437,7 @@
                 });
             }
 
-            $('.panel-body form').find('*').filter(':input:visible:first').trigger('change');
-
+            $('input[type="checkbox"]:visible:enabled').first().trigger('change');
         });
-
-
     </script>
 @endpush

@@ -55,7 +55,7 @@ class HeaterController extends Controller
 
         return view('cooperation.tool.heater.index', compact('building', 'buildingOwner',
             'collectorOrientations', 'typeIds', 'energyHabitsOrderedOnInputSourceCredibility', 'comfortLevels',
-        'heatersOrderedOnInputSourceCredibility'
+            'heatersOrderedOnInputSourceCredibility'
         ));
     }
 

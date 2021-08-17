@@ -34020,7 +34020,7 @@ __webpack_require__.r(__webpack_exports__);
 
           this.select.style.display = 'none'; // Show the new alpine select
 
-          this.$refs['select-input'].style.display = '';
+          this.$refs['select-input-group'].style.display = '';
         }
       }
     },
@@ -34750,7 +34750,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         // If the value is JSON, we need to do something slightly different (currently only relevant for rating slider)
         var parsed = this.parseJson(value);
 
-        if (parsed !== null) {
+        if (parsed !== null && parsed instanceof Object) {
           // Set values for each input in the JSON object.
           for (var _i = 0, _Object$entries = Object.entries(parsed); _i < _Object$entries.length; _i++) {
             var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),

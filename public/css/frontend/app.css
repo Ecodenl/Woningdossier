@@ -1,4 +1,4 @@
-/*! tailwindcss v2.2.7 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v2.2.4 | MIT License | https://tailwindcss.com */
 
 /*! modern-normalize v1.1.0 | MIT License | https://github.com/sindresorhus/modern-normalize */
 
@@ -548,14 +548,6 @@ img,
 video {
   max-width: 100%;
   height: auto;
-}
-
-/**
- * Ensure the default browser behavior of the `hidden` attribute.
- */
-
-[hidden] {
-  display: none;
 }
 
 *, ::before, ::after{
@@ -9665,6 +9657,32 @@ video {
   border-collapse: separate;
 }
 
+#app-body .transform{
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+#app-body .transform-gpu{
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  transform: translate3d(var(--tw-translate-x), var(--tw-translate-y), 0) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+#app-body .transform-none{
+  transform: none;
+}
+
 #app-body .origin-center{
   transform-origin: center;
 }
@@ -9699,32 +9717,6 @@ video {
 
 #app-body .origin-top-left{
   transform-origin: top left;
-}
-
-#app-body .transform{
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-#app-body .transform-gpu{
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  transform: translate3d(var(--tw-translate-x), var(--tw-translate-y), 0) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-#app-body .transform-none{
-  transform: none;
 }
 
 #app-body .translate-x-0{
@@ -15580,10 +15572,6 @@ video {
 
 #app-body .self-stretch{
   align-self: stretch;
-}
-
-#app-body .self-baseline{
-  align-self: baseline;
 }
 
 #app-body .justify-self-auto{
@@ -36017,6 +36005,32 @@ Small example
     border-collapse: separate;
   }
 
+  #app-body .sm\:transform{
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  }
+
+  #app-body .sm\:transform-gpu{
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    transform: translate3d(var(--tw-translate-x), var(--tw-translate-y), 0) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  }
+
+  #app-body .sm\:transform-none{
+    transform: none;
+  }
+
   #app-body .sm\:origin-center{
     transform-origin: center;
   }
@@ -36051,32 +36065,6 @@ Small example
 
   #app-body .sm\:origin-top-left{
     transform-origin: top left;
-  }
-
-  #app-body .sm\:transform{
-    --tw-translate-x: 0;
-    --tw-translate-y: 0;
-    --tw-rotate: 0;
-    --tw-skew-x: 0;
-    --tw-skew-y: 0;
-    --tw-scale-x: 1;
-    --tw-scale-y: 1;
-    transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  }
-
-  #app-body .sm\:transform-gpu{
-    --tw-translate-x: 0;
-    --tw-translate-y: 0;
-    --tw-rotate: 0;
-    --tw-skew-x: 0;
-    --tw-skew-y: 0;
-    --tw-scale-x: 1;
-    --tw-scale-y: 1;
-    transform: translate3d(var(--tw-translate-x), var(--tw-translate-y), 0) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  }
-
-  #app-body .sm\:transform-none{
-    transform: none;
   }
 
   #app-body .sm\:translate-x-0{
@@ -41866,10 +41854,6 @@ Small example
 
   #app-body .sm\:self-stretch{
     align-self: stretch;
-  }
-
-  #app-body .sm\:self-baseline{
-    align-self: baseline;
   }
 
   #app-body .sm\:justify-self-auto{
@@ -52345,66 +52329,6 @@ Small example
     --tw-backdrop-invert: invert(100%);
   }
 
-  #app-body .sm\:backdrop-opacity-0{
-    --tw-backdrop-opacity: opacity(0);
-  }
-
-  #app-body .sm\:backdrop-opacity-5{
-    --tw-backdrop-opacity: opacity(0.05);
-  }
-
-  #app-body .sm\:backdrop-opacity-10{
-    --tw-backdrop-opacity: opacity(0.1);
-  }
-
-  #app-body .sm\:backdrop-opacity-20{
-    --tw-backdrop-opacity: opacity(0.2);
-  }
-
-  #app-body .sm\:backdrop-opacity-25{
-    --tw-backdrop-opacity: opacity(0.25);
-  }
-
-  #app-body .sm\:backdrop-opacity-30{
-    --tw-backdrop-opacity: opacity(0.3);
-  }
-
-  #app-body .sm\:backdrop-opacity-40{
-    --tw-backdrop-opacity: opacity(0.4);
-  }
-
-  #app-body .sm\:backdrop-opacity-50{
-    --tw-backdrop-opacity: opacity(0.5);
-  }
-
-  #app-body .sm\:backdrop-opacity-60{
-    --tw-backdrop-opacity: opacity(0.6);
-  }
-
-  #app-body .sm\:backdrop-opacity-70{
-    --tw-backdrop-opacity: opacity(0.7);
-  }
-
-  #app-body .sm\:backdrop-opacity-75{
-    --tw-backdrop-opacity: opacity(0.75);
-  }
-
-  #app-body .sm\:backdrop-opacity-80{
-    --tw-backdrop-opacity: opacity(0.8);
-  }
-
-  #app-body .sm\:backdrop-opacity-90{
-    --tw-backdrop-opacity: opacity(0.9);
-  }
-
-  #app-body .sm\:backdrop-opacity-95{
-    --tw-backdrop-opacity: opacity(0.95);
-  }
-
-  #app-body .sm\:backdrop-opacity-100{
-    --tw-backdrop-opacity: opacity(1);
-  }
-
   #app-body .sm\:backdrop-saturate-0{
     --tw-backdrop-saturate: saturate(0);
   }
@@ -62212,6 +62136,32 @@ Small example
     border-collapse: separate;
   }
 
+  #app-body .md\:transform{
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  }
+
+  #app-body .md\:transform-gpu{
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    transform: translate3d(var(--tw-translate-x), var(--tw-translate-y), 0) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  }
+
+  #app-body .md\:transform-none{
+    transform: none;
+  }
+
   #app-body .md\:origin-center{
     transform-origin: center;
   }
@@ -62246,32 +62196,6 @@ Small example
 
   #app-body .md\:origin-top-left{
     transform-origin: top left;
-  }
-
-  #app-body .md\:transform{
-    --tw-translate-x: 0;
-    --tw-translate-y: 0;
-    --tw-rotate: 0;
-    --tw-skew-x: 0;
-    --tw-skew-y: 0;
-    --tw-scale-x: 1;
-    --tw-scale-y: 1;
-    transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  }
-
-  #app-body .md\:transform-gpu{
-    --tw-translate-x: 0;
-    --tw-translate-y: 0;
-    --tw-rotate: 0;
-    --tw-skew-x: 0;
-    --tw-skew-y: 0;
-    --tw-scale-x: 1;
-    --tw-scale-y: 1;
-    transform: translate3d(var(--tw-translate-x), var(--tw-translate-y), 0) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  }
-
-  #app-body .md\:transform-none{
-    transform: none;
   }
 
   #app-body .md\:translate-x-0{
@@ -68061,10 +67985,6 @@ Small example
 
   #app-body .md\:self-stretch{
     align-self: stretch;
-  }
-
-  #app-body .md\:self-baseline{
-    align-self: baseline;
   }
 
   #app-body .md\:justify-self-auto{
@@ -78540,66 +78460,6 @@ Small example
     --tw-backdrop-invert: invert(100%);
   }
 
-  #app-body .md\:backdrop-opacity-0{
-    --tw-backdrop-opacity: opacity(0);
-  }
-
-  #app-body .md\:backdrop-opacity-5{
-    --tw-backdrop-opacity: opacity(0.05);
-  }
-
-  #app-body .md\:backdrop-opacity-10{
-    --tw-backdrop-opacity: opacity(0.1);
-  }
-
-  #app-body .md\:backdrop-opacity-20{
-    --tw-backdrop-opacity: opacity(0.2);
-  }
-
-  #app-body .md\:backdrop-opacity-25{
-    --tw-backdrop-opacity: opacity(0.25);
-  }
-
-  #app-body .md\:backdrop-opacity-30{
-    --tw-backdrop-opacity: opacity(0.3);
-  }
-
-  #app-body .md\:backdrop-opacity-40{
-    --tw-backdrop-opacity: opacity(0.4);
-  }
-
-  #app-body .md\:backdrop-opacity-50{
-    --tw-backdrop-opacity: opacity(0.5);
-  }
-
-  #app-body .md\:backdrop-opacity-60{
-    --tw-backdrop-opacity: opacity(0.6);
-  }
-
-  #app-body .md\:backdrop-opacity-70{
-    --tw-backdrop-opacity: opacity(0.7);
-  }
-
-  #app-body .md\:backdrop-opacity-75{
-    --tw-backdrop-opacity: opacity(0.75);
-  }
-
-  #app-body .md\:backdrop-opacity-80{
-    --tw-backdrop-opacity: opacity(0.8);
-  }
-
-  #app-body .md\:backdrop-opacity-90{
-    --tw-backdrop-opacity: opacity(0.9);
-  }
-
-  #app-body .md\:backdrop-opacity-95{
-    --tw-backdrop-opacity: opacity(0.95);
-  }
-
-  #app-body .md\:backdrop-opacity-100{
-    --tw-backdrop-opacity: opacity(1);
-  }
-
   #app-body .md\:backdrop-saturate-0{
     --tw-backdrop-saturate: saturate(0);
   }
@@ -88407,6 +88267,32 @@ Small example
     border-collapse: separate;
   }
 
+  #app-body .lg\:transform{
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  }
+
+  #app-body .lg\:transform-gpu{
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    transform: translate3d(var(--tw-translate-x), var(--tw-translate-y), 0) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  }
+
+  #app-body .lg\:transform-none{
+    transform: none;
+  }
+
   #app-body .lg\:origin-center{
     transform-origin: center;
   }
@@ -88441,32 +88327,6 @@ Small example
 
   #app-body .lg\:origin-top-left{
     transform-origin: top left;
-  }
-
-  #app-body .lg\:transform{
-    --tw-translate-x: 0;
-    --tw-translate-y: 0;
-    --tw-rotate: 0;
-    --tw-skew-x: 0;
-    --tw-skew-y: 0;
-    --tw-scale-x: 1;
-    --tw-scale-y: 1;
-    transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  }
-
-  #app-body .lg\:transform-gpu{
-    --tw-translate-x: 0;
-    --tw-translate-y: 0;
-    --tw-rotate: 0;
-    --tw-skew-x: 0;
-    --tw-skew-y: 0;
-    --tw-scale-x: 1;
-    --tw-scale-y: 1;
-    transform: translate3d(var(--tw-translate-x), var(--tw-translate-y), 0) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  }
-
-  #app-body .lg\:transform-none{
-    transform: none;
   }
 
   #app-body .lg\:translate-x-0{
@@ -94256,10 +94116,6 @@ Small example
 
   #app-body .lg\:self-stretch{
     align-self: stretch;
-  }
-
-  #app-body .lg\:self-baseline{
-    align-self: baseline;
   }
 
   #app-body .lg\:justify-self-auto{
@@ -104735,66 +104591,6 @@ Small example
     --tw-backdrop-invert: invert(100%);
   }
 
-  #app-body .lg\:backdrop-opacity-0{
-    --tw-backdrop-opacity: opacity(0);
-  }
-
-  #app-body .lg\:backdrop-opacity-5{
-    --tw-backdrop-opacity: opacity(0.05);
-  }
-
-  #app-body .lg\:backdrop-opacity-10{
-    --tw-backdrop-opacity: opacity(0.1);
-  }
-
-  #app-body .lg\:backdrop-opacity-20{
-    --tw-backdrop-opacity: opacity(0.2);
-  }
-
-  #app-body .lg\:backdrop-opacity-25{
-    --tw-backdrop-opacity: opacity(0.25);
-  }
-
-  #app-body .lg\:backdrop-opacity-30{
-    --tw-backdrop-opacity: opacity(0.3);
-  }
-
-  #app-body .lg\:backdrop-opacity-40{
-    --tw-backdrop-opacity: opacity(0.4);
-  }
-
-  #app-body .lg\:backdrop-opacity-50{
-    --tw-backdrop-opacity: opacity(0.5);
-  }
-
-  #app-body .lg\:backdrop-opacity-60{
-    --tw-backdrop-opacity: opacity(0.6);
-  }
-
-  #app-body .lg\:backdrop-opacity-70{
-    --tw-backdrop-opacity: opacity(0.7);
-  }
-
-  #app-body .lg\:backdrop-opacity-75{
-    --tw-backdrop-opacity: opacity(0.75);
-  }
-
-  #app-body .lg\:backdrop-opacity-80{
-    --tw-backdrop-opacity: opacity(0.8);
-  }
-
-  #app-body .lg\:backdrop-opacity-90{
-    --tw-backdrop-opacity: opacity(0.9);
-  }
-
-  #app-body .lg\:backdrop-opacity-95{
-    --tw-backdrop-opacity: opacity(0.95);
-  }
-
-  #app-body .lg\:backdrop-opacity-100{
-    --tw-backdrop-opacity: opacity(1);
-  }
-
   #app-body .lg\:backdrop-saturate-0{
     --tw-backdrop-saturate: saturate(0);
   }
@@ -114602,6 +114398,32 @@ Small example
     border-collapse: separate;
   }
 
+  #app-body .xl\:transform{
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  }
+
+  #app-body .xl\:transform-gpu{
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    transform: translate3d(var(--tw-translate-x), var(--tw-translate-y), 0) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  }
+
+  #app-body .xl\:transform-none{
+    transform: none;
+  }
+
   #app-body .xl\:origin-center{
     transform-origin: center;
   }
@@ -114636,32 +114458,6 @@ Small example
 
   #app-body .xl\:origin-top-left{
     transform-origin: top left;
-  }
-
-  #app-body .xl\:transform{
-    --tw-translate-x: 0;
-    --tw-translate-y: 0;
-    --tw-rotate: 0;
-    --tw-skew-x: 0;
-    --tw-skew-y: 0;
-    --tw-scale-x: 1;
-    --tw-scale-y: 1;
-    transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  }
-
-  #app-body .xl\:transform-gpu{
-    --tw-translate-x: 0;
-    --tw-translate-y: 0;
-    --tw-rotate: 0;
-    --tw-skew-x: 0;
-    --tw-skew-y: 0;
-    --tw-scale-x: 1;
-    --tw-scale-y: 1;
-    transform: translate3d(var(--tw-translate-x), var(--tw-translate-y), 0) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  }
-
-  #app-body .xl\:transform-none{
-    transform: none;
   }
 
   #app-body .xl\:translate-x-0{
@@ -120451,10 +120247,6 @@ Small example
 
   #app-body .xl\:self-stretch{
     align-self: stretch;
-  }
-
-  #app-body .xl\:self-baseline{
-    align-self: baseline;
   }
 
   #app-body .xl\:justify-self-auto{
@@ -130930,66 +130722,6 @@ Small example
     --tw-backdrop-invert: invert(100%);
   }
 
-  #app-body .xl\:backdrop-opacity-0{
-    --tw-backdrop-opacity: opacity(0);
-  }
-
-  #app-body .xl\:backdrop-opacity-5{
-    --tw-backdrop-opacity: opacity(0.05);
-  }
-
-  #app-body .xl\:backdrop-opacity-10{
-    --tw-backdrop-opacity: opacity(0.1);
-  }
-
-  #app-body .xl\:backdrop-opacity-20{
-    --tw-backdrop-opacity: opacity(0.2);
-  }
-
-  #app-body .xl\:backdrop-opacity-25{
-    --tw-backdrop-opacity: opacity(0.25);
-  }
-
-  #app-body .xl\:backdrop-opacity-30{
-    --tw-backdrop-opacity: opacity(0.3);
-  }
-
-  #app-body .xl\:backdrop-opacity-40{
-    --tw-backdrop-opacity: opacity(0.4);
-  }
-
-  #app-body .xl\:backdrop-opacity-50{
-    --tw-backdrop-opacity: opacity(0.5);
-  }
-
-  #app-body .xl\:backdrop-opacity-60{
-    --tw-backdrop-opacity: opacity(0.6);
-  }
-
-  #app-body .xl\:backdrop-opacity-70{
-    --tw-backdrop-opacity: opacity(0.7);
-  }
-
-  #app-body .xl\:backdrop-opacity-75{
-    --tw-backdrop-opacity: opacity(0.75);
-  }
-
-  #app-body .xl\:backdrop-opacity-80{
-    --tw-backdrop-opacity: opacity(0.8);
-  }
-
-  #app-body .xl\:backdrop-opacity-90{
-    --tw-backdrop-opacity: opacity(0.9);
-  }
-
-  #app-body .xl\:backdrop-opacity-95{
-    --tw-backdrop-opacity: opacity(0.95);
-  }
-
-  #app-body .xl\:backdrop-opacity-100{
-    --tw-backdrop-opacity: opacity(1);
-  }
-
   #app-body .xl\:backdrop-saturate-0{
     --tw-backdrop-saturate: saturate(0);
   }
@@ -140797,6 +140529,32 @@ Small example
     border-collapse: separate;
   }
 
+  #app-body .\32xl\:transform{
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  }
+
+  #app-body .\32xl\:transform-gpu{
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
+    --tw-rotate: 0;
+    --tw-skew-x: 0;
+    --tw-skew-y: 0;
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+    transform: translate3d(var(--tw-translate-x), var(--tw-translate-y), 0) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  }
+
+  #app-body .\32xl\:transform-none{
+    transform: none;
+  }
+
   #app-body .\32xl\:origin-center{
     transform-origin: center;
   }
@@ -140831,32 +140589,6 @@ Small example
 
   #app-body .\32xl\:origin-top-left{
     transform-origin: top left;
-  }
-
-  #app-body .\32xl\:transform{
-    --tw-translate-x: 0;
-    --tw-translate-y: 0;
-    --tw-rotate: 0;
-    --tw-skew-x: 0;
-    --tw-skew-y: 0;
-    --tw-scale-x: 1;
-    --tw-scale-y: 1;
-    transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  }
-
-  #app-body .\32xl\:transform-gpu{
-    --tw-translate-x: 0;
-    --tw-translate-y: 0;
-    --tw-rotate: 0;
-    --tw-skew-x: 0;
-    --tw-skew-y: 0;
-    --tw-scale-x: 1;
-    --tw-scale-y: 1;
-    transform: translate3d(var(--tw-translate-x), var(--tw-translate-y), 0) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  }
-
-  #app-body .\32xl\:transform-none{
-    transform: none;
   }
 
   #app-body .\32xl\:translate-x-0{
@@ -146646,10 +146378,6 @@ Small example
 
   #app-body .\32xl\:self-stretch{
     align-self: stretch;
-  }
-
-  #app-body .\32xl\:self-baseline{
-    align-self: baseline;
   }
 
   #app-body .\32xl\:justify-self-auto{
@@ -157125,66 +156853,6 @@ Small example
     --tw-backdrop-invert: invert(100%);
   }
 
-  #app-body .\32xl\:backdrop-opacity-0{
-    --tw-backdrop-opacity: opacity(0);
-  }
-
-  #app-body .\32xl\:backdrop-opacity-5{
-    --tw-backdrop-opacity: opacity(0.05);
-  }
-
-  #app-body .\32xl\:backdrop-opacity-10{
-    --tw-backdrop-opacity: opacity(0.1);
-  }
-
-  #app-body .\32xl\:backdrop-opacity-20{
-    --tw-backdrop-opacity: opacity(0.2);
-  }
-
-  #app-body .\32xl\:backdrop-opacity-25{
-    --tw-backdrop-opacity: opacity(0.25);
-  }
-
-  #app-body .\32xl\:backdrop-opacity-30{
-    --tw-backdrop-opacity: opacity(0.3);
-  }
-
-  #app-body .\32xl\:backdrop-opacity-40{
-    --tw-backdrop-opacity: opacity(0.4);
-  }
-
-  #app-body .\32xl\:backdrop-opacity-50{
-    --tw-backdrop-opacity: opacity(0.5);
-  }
-
-  #app-body .\32xl\:backdrop-opacity-60{
-    --tw-backdrop-opacity: opacity(0.6);
-  }
-
-  #app-body .\32xl\:backdrop-opacity-70{
-    --tw-backdrop-opacity: opacity(0.7);
-  }
-
-  #app-body .\32xl\:backdrop-opacity-75{
-    --tw-backdrop-opacity: opacity(0.75);
-  }
-
-  #app-body .\32xl\:backdrop-opacity-80{
-    --tw-backdrop-opacity: opacity(0.8);
-  }
-
-  #app-body .\32xl\:backdrop-opacity-90{
-    --tw-backdrop-opacity: opacity(0.9);
-  }
-
-  #app-body .\32xl\:backdrop-opacity-95{
-    --tw-backdrop-opacity: opacity(0.95);
-  }
-
-  #app-body .\32xl\:backdrop-opacity-100{
-    --tw-backdrop-opacity: opacity(1);
-  }
-
   #app-body .\32xl\:backdrop-saturate-0{
     --tw-backdrop-saturate: saturate(0);
   }
@@ -158543,7 +158211,7 @@ p a {
 
 /* Input styles */
 
-.form-input, .radio-wrapper label, .checkbox-wrapper label, .add-option-wrapper label, .select-wrapper .select-input {
+.form-input, .radio-wrapper label, .checkbox-wrapper label, .add-option-wrapper label {
   position: relative;
   display: flex;
   height: 2.75rem;
@@ -158567,13 +158235,13 @@ p a {
   outline-offset: 2px;
 }
 
-.form-input:hover, .radio-wrapper label:hover, .checkbox-wrapper label:hover, .add-option-wrapper label:hover, .select-wrapper .select-input:hover {
+.form-input:hover, .radio-wrapper label:hover, .checkbox-wrapper label:hover, .add-option-wrapper label:hover {
   --tw-border-opacity: 1;
   border-color: rgba(44, 169, 130, var(--tw-border-opacity));
   --tw-border-opacity: 1;
 }
 
-.form-input:focus, .radio-wrapper label:focus, .checkbox-wrapper label:focus, .add-option-wrapper label:focus, .select-wrapper .select-input:focus {
+.form-input:focus, .radio-wrapper label:focus, .checkbox-wrapper label:focus, .add-option-wrapper label:focus {
   --tw-border-opacity: 1;
   border-color: rgba(44, 169, 130, var(--tw-border-opacity));
   --tw-border-opacity: 1;
@@ -158622,7 +158290,7 @@ textarea.form-input {
   min-height: 2.75rem; /* Height of h-11, base height of input */
 }
 
-.form-input:disabled, .radio-wrapper input[type="radio"]:disabled + label, .checkbox-wrapper input[type="checkbox"]:disabled + label, .select-wrapper .select-input.disabled {
+.form-input:disabled, .radio-wrapper input[type="radio"]:disabled + label, .checkbox-wrapper input[type="checkbox"]:disabled + label {
   cursor: not-allowed;
   --tw-bg-opacity: 1;
   background-color: rgba(240, 241, 242, var(--tw-bg-opacity));
@@ -158806,6 +158474,12 @@ textarea.form-input {
 
 .form-error input[type="text"] + i ~ .form-error-label::before {
   right: 4rem;
+}
+
+/* Rating sliders need a higher margin */
+
+.form-error.rating-slider-wrapper .form-error-label {
+  margin-top: 1rem;
 }
 
 /* Styling for radio and checkbox */
@@ -159177,6 +158851,10 @@ textarea.form-input {
   position: absolute;
   top: 25%;
   right: 1.5rem;
+}
+
+.select-wrapper .input-group-append ~ i:not(.select-icon) {
+  right: 4rem;
 }
 
 /* Select with icon */
@@ -159882,10 +159560,6 @@ textarea.form-input {
 
 .icon-gas {
   content: url('/icons/gas.svg');
-}
-
-.icon-general-measure {
-  content: url('/icons/general-measure.svg');
 }
 
 .icon-glass-double {

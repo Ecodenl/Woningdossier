@@ -367,7 +367,7 @@
                             @component('cooperation.tool.components.step-question', [
                                 'id' => 'indicative-costs-id',
                                 'translation' => 'roof-insulation.'.$roofCat.'.indicative-costs-replacement',
-                                'required' => false, 'withInputGroup' => false,
+                                'required' => false, 'withInputSource' => false,
                             ])
                                 <span class="input-group-prepend"><i class="icon-sm icon-moneybag"></i></span>
                                 <input type="text" id="{{ $roofCat }}_replace_cost"
@@ -380,7 +380,7 @@
                             @component('cooperation.tool.components.step-question', [
                                 'id' => 'indicative-replacement-year-info',
                                 'translation' => 'roof-insulation.'.$roofCat.'.indicative-replacement.year',
-                                'required' => false, 'withInputGroup' => false,
+                                'required' => false, 'withInputSource' => false,
                             ])
                                 <span class="input-group-prepend"><i class="icon-sm icon-timer"></i></span>
                                 <input type="text" id="{{ $roofCat }}_replace_year"

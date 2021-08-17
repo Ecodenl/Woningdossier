@@ -298,12 +298,11 @@
 
             function formChange() {
 
-                let $form = $('#floor-insulation-form');
-                let form = $form.serialize();
+                var formData = $('#floor-insulation-form').serialize();
                 $.ajax({
                     type: "POST",
                     url: '{{ route('cooperation.tool.floor-insulation.calculate', compact('cooperation')) }}',
-                    data: form,
+                    data: formData,
                     success: function (data) {
 
                         if (data.insulation_advice) {

@@ -249,7 +249,7 @@
             $("select, input[type=radio], input[type=text]").change(formChange);
 
             function formChange() {
-                var form = $(this).closest("form").serialize();
+                var form = $('#solar-panels-form').serialize();
                 $.ajax({
                     type: "POST",
                     url: '{{ route('cooperation.tool.solar-panels.calculate', compact('cooperation')) }}',

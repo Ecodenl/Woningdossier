@@ -484,10 +484,10 @@
         $(document).ready(function () {
 
 
-            $("select, input[type=radio], input[type=text], input[type=checkbox]").change(function () {
+            $("select, input[type=radio], input[type=text], input[type=checkbox]").change(formChange())
 
-                let $form = $('#insulated-glazing-form');
-                let form = $form.serialize();
+            function formChange() {
+                let form = $('#insulated-glazing-form').serialize();
                 $.ajax({
                     type: "POST",
                     url: '{{ route('cooperation.tool.insulated-glazing.calculate', compact('cooperation')) }}',
@@ -522,7 +522,7 @@
 
                     }
                 });
-            });
+            }
 
             $('.user-interest').change(function () {
                 // the input field
@@ -546,7 +546,7 @@
             $('.user-interest').trigger('change');
 
             // Trigger the change event so it will load the data
-            $('.form-input:visible:enabled').first().trigger('change');
+            formChange();
         });
 
     </script>

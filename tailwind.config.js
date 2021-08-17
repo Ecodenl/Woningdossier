@@ -50,6 +50,7 @@ const fractionTwelve = {
 };
 
 module.exports = {
+    important: '#app-body',
     purge: [
         './resources/**/*.blade.php',
     ],

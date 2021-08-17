@@ -34020,7 +34020,7 @@ __webpack_require__.r(__webpack_exports__);
 
           this.select.style.display = 'none'; // Show the new alpine select
 
-          this.$refs['select-input'].style.display = '';
+          this.$refs['select-input-group'].style.display = '';
         }
       }
     },

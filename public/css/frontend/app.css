@@ -158211,7 +158211,7 @@ p a {
 
 /* Input styles */
 
-.form-input, .radio-wrapper label, .checkbox-wrapper label, .add-option-wrapper label, .select-wrapper .select-input {
+.form-input, .radio-wrapper label, .checkbox-wrapper label, .add-option-wrapper label {
   position: relative;
   display: flex;
   height: 2.75rem;
@@ -158235,13 +158235,13 @@ p a {
   outline-offset: 2px;
 }
 
-.form-input:hover, .radio-wrapper label:hover, .checkbox-wrapper label:hover, .add-option-wrapper label:hover, .select-wrapper .select-input:hover {
+.form-input:hover, .radio-wrapper label:hover, .checkbox-wrapper label:hover, .add-option-wrapper label:hover {
   --tw-border-opacity: 1;
   border-color: rgba(44, 169, 130, var(--tw-border-opacity));
   --tw-border-opacity: 1;
 }
 
-.form-input:focus, .radio-wrapper label:focus, .checkbox-wrapper label:focus, .add-option-wrapper label:focus, .select-wrapper .select-input:focus {
+.form-input:focus, .radio-wrapper label:focus, .checkbox-wrapper label:focus, .add-option-wrapper label:focus {
   --tw-border-opacity: 1;
   border-color: rgba(44, 169, 130, var(--tw-border-opacity));
   --tw-border-opacity: 1;
@@ -158290,7 +158290,7 @@ textarea.form-input {
   min-height: 2.75rem; /* Height of h-11, base height of input */
 }
 
-.form-input:disabled, .radio-wrapper input[type="radio"]:disabled + label, .checkbox-wrapper input[type="checkbox"]:disabled + label, .select-wrapper .select-input.disabled {
+.form-input:disabled, .radio-wrapper input[type="radio"]:disabled + label, .checkbox-wrapper input[type="checkbox"]:disabled + label {
   cursor: not-allowed;
   --tw-bg-opacity: 1;
   background-color: rgba(240, 241, 242, var(--tw-bg-opacity));
@@ -158851,6 +158851,10 @@ textarea.form-input {
   position: absolute;
   top: 25%;
   right: 1.5rem;
+}
+
+.select-wrapper .input-group-append ~ i:not(.select-icon) {
+  right: 4rem;
 }
 
 /* Select with icon */

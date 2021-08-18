@@ -63,10 +63,9 @@ class MapAnswers extends Command
     private function mapBuildingFeatureBuildingHeatingToBuildingHeatingToolQuestion()
     {
         $buildingFeatures = BuildingFeature::allInputSources()
-            ->limit(500)
             ->whereHas('building')
-            ->with('building')
-            ->whereNotNull('building_heating_application_id')
+            ->with(['building', 'buildingHeatingApplication'])
+            ->limit(500)
             ->get();
 
         $bar = $this->output->createProgressBar($buildingFeatures->count());
@@ -79,30 +78,30 @@ class MapAnswers extends Command
             'low-temperature-heater' => ['low-temperature-heater'],
             'floor-wall-heating' => ['floor-heating'],
         ];
+        $toolQuestion = ToolQuestion::findByShort('building-heating');
         foreach ($buildingFeatures as $buildingFeature) {
+            // we could use whereNotNull, but that would mess up the test case, that can be done when going live.
+            if(!is_null($buildingFeature->building_heating_application_id)) {
+                $data = [
+                    'tool_question_id' => $toolQuestion->id,
+                    'input_source_id' => $buildingFeature->input_source_id,
+                    'building_id' => $buildingFeature->building_id,
+                ];
 
-            $toolQuestion = ToolQuestion::findByShort('building-heating');
+                $buildingHeatingApplicationShort = $buildingFeature->buildingHeatingApplication->short;
 
-//            $cookGas = $userEnergyHabit->cook_gas;
+                // now map the old to the new answers, and create the tool question answers
+                $buildingHeatingValueShorts = $buildingHeatingApplicationMap[$buildingHeatingApplicationShort];
 
-            $data = [
-                'tool_question_id' => $toolQuestion->id,
-                'input_source_id' => $buildingFeatures->input_source_id,
-                'building_id' => $buildingFeature->user->building->id
-            ];
+                // and save each new map
+                foreach ($buildingHeatingValueShorts as $toolQuestionCustomValueShort) {
+                    $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($toolQuestionCustomValueShort);
+                    $data['answer'] = $toolQuestionCustomValue->id;
+                    $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
+                    DB::table('tool_question_answers')->insert($data);
+                }
 
-            // now map the actual answer.
-            if ($cookGas == 1) {
-                $answer = 'gas';
-            } else {
-                $answer = 'electric';
             }
-
-            $data['tool_question_custom_value_id'] = ToolQuestionCustomValue::findByShort($answer)->id;
-            $data['answer'] = $answer;
-
-            DB::table('tool_question_answers')->insert($data);
-
             $bar->advance();
         }
         $bar->finish();

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Models\HasOrder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -28,6 +29,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class EnergyLabel extends Model
 {
+    use HasOrder;
+
     public function buildingFeatures()
     {
         return $this->hasMany(BuildingFeature::class);

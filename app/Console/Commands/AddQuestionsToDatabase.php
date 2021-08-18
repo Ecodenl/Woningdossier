@@ -83,7 +83,7 @@ class AddQuestionsToDatabase extends Command
         $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
         $surfaces = FacadeSurface::orderBy('order')->get();
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
-        $energyLabels = EnergyLabel::all();
+        $energyLabels = EnergyLabel::ordered()->get();
         $comfortLevelsTapWater = ComfortLevelTapWater::where('calculate_value', '<=', 3)->get();
 
         // Insulated glazing

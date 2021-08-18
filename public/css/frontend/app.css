@@ -159714,6 +159714,10 @@ textarea.form-input {
   content: url('/icons/other.svg');
 }
 
+.icon-not-relevant {
+  content: url('/icons/not-relevant.svg');
+}
+
 .icon-paint-job {
   content: url('/icons/paint-job.svg');
 }

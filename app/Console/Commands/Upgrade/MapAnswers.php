@@ -49,39 +49,46 @@ class MapAnswers extends Command
     public function handle()
     {
 
+        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingToolQuestion();
 
         $this->info("Mapping user energy habits...");
         $this->info('Cook gas field to the tool question answers...');
 //        $this->mapUserEnergyHabits();
 //        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
 //        $this->mapUserMotivations();
-        
+
     }
 
     // so this method will map the question "HR CV Ketel" to "wat gebruikt u voor verwarming en warm water"
-    private function mapHrBoilerToHeatSourceToolQuestion()
+    private function mapBuildingFeatureBuildingHeatingToBuildingHeatingToolQuestion()
     {
-
         $buildingFeatures = BuildingFeature::allInputSources()
             ->limit(500)
-            ->whereHas('user.building')
-            ->with('user.building')
+            ->whereHas('building')
+            ->with('building')
             ->whereNotNull('building_heating_application_id')
             ->get();
 
         $bar = $this->output->createProgressBar($buildingFeatures->count());
         $bar->start();
 
-        foreach ($buildingFeatures as $userEnergyHabit) {
 
-            $toolQuestion = ToolQuestion::findByShort('cook-type');
+        $buildingHeatingApplicationMap = [
+            'radiators' => ['radiators'],
+            'radiators-with-floor-heating' => ['radiators', 'floor-heating'],
+            'low-temperature-heater' => ['low-temperature-heater'],
+            'floor-wall-heating' => ['floor-heating'],
+        ];
+        foreach ($buildingFeatures as $buildingFeature) {
 
-            $cookGas = $userEnergyHabit->cook_gas;
+            $toolQuestion = ToolQuestion::findByShort('building-heating');
+
+//            $cookGas = $userEnergyHabit->cook_gas;
 
             $data = [
                 'tool_question_id' => $toolQuestion->id,
-                'input_source_id' => $userEnergyHabit->input_source_id,
-                'building_id' => $userEnergyHabit->user->building->id
+                'input_source_id' => $buildingFeatures->input_source_id,
+                'building_id' => $buildingFeature->user->building->id
             ];
 
             // now map the actual answer.
@@ -174,7 +181,7 @@ class MapAnswers extends Command
             ->whereHas('user.building')
             ->with('user.building')
             ->get();
-        
+
         $bar = $this->output->createProgressBar($userEnergyHabits->count());
         $bar->start();
 

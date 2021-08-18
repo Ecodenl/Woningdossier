@@ -217,7 +217,7 @@ class AddQuestionsToDatabase extends Command
                                         'icon' => 'icon-pointed-roof'
                                     ],
                                     'none' => [
-                                        'icon' => 'icon-other',
+                                        'icon' => 'icon-not-relevant',
                                     ],
                                 ],
                             ],
@@ -850,7 +850,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:element_values,id'],
 //                            'save_in' => "building_features.building_heating_application_id",
-                            'short' => 'heat-source',
+                            'short' => 'building-heating',
                             // was current-state -> hoe word de woning nu verwarmd
                             'translation' => "Hoe is de verwarming",
                             'tool_question_type_id' => $radioIconType->id,
@@ -879,7 +879,7 @@ class AddQuestionsToDatabase extends Command
                                         'icon' => 'icon-air-conditioning-hot',
                                     ],
                                 ],
-                                'low-temp-radiator' => [
+                                'low-temperature-heater' => [
                                     'name' => 'Lage temp. radiatoren',
                                     'extra' => [
                                         'icon' => 'icon-radiator-low-temp',

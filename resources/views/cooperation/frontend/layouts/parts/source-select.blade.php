@@ -6,6 +6,7 @@
         <option value="resident">@lang('cooperation/frontend/shared.input-sources.resident')</option>
         <option value="coach">@lang('cooperation/frontend/shared.input-sources.coach')</option>
         <option value="example-building">@lang('cooperation/frontend/shared.input-sources.example-building')</option>
+        <option value="master">@lang('cooperation/frontend/shared.input-sources.master')</option>
     </select>
 
     <input class="source-select-input select-none" readonly x-ref="source-select-input" x-model="text"

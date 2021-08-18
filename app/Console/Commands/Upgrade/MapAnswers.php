@@ -52,9 +52,15 @@ class MapAnswers extends Command
         $this->info("Mapping user energy habits...");
         $this->info('Cook gas field to the tool question answers...');
 //        $this->mapUserEnergyHabits();
-        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
-        $this->mapUserMotivations();
+//        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
+//        $this->mapUserMotivations();
         
+    }
+
+    // so this method will map the question "HR CV Ketel" to "wat gebruikt u voor verwarming en warm water"
+    private function mapHrBoilerToHeatSourceToolQuestion()
+    {
+
     }
 
     private function mapUserMotivations()

@@ -25,6 +25,8 @@ class AddOrderColumnOnVariousTables extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('energy_labels', function (Blueprint $table) {
+            $table->dropColumn('order');
+        });
     }
 }

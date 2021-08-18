@@ -849,26 +849,46 @@ class AddQuestionsToDatabase extends Command
                     'questions' => [
                         [
                             'validation' => ['required', 'exists:element_values,id'],
-                            'save_in' => "building_features.building_heating_application_id",
+//                            'save_in' => "building_features.building_heating_application_id",
                             'short' => 'heat-source',
                             // was current-state -> hoe word de woning nu verwarmd
                             'translation' => "Hoe is de verwarming",
                             'tool_question_type_id' => $radioIconType->id,
-                            'tool_question_values' => $buildingHeatingApplications,
-                            'extra' => [
-                                'column' => 'short',
-                                'data' => [
-                                    'radiators' => [
+                            'tool_question_custom_values' => [
+                                'radiators' => [
+                                    'name' => 'Radiator',
+                                    'extra' => [
                                         'icon' => 'icon-radiator',
                                     ],
-                                    'radiators-with-floor-heating' => [
-                                        'icon' => 'icon-radiant-floor-heating',
+                                ],
+                                'floor-heating' => [
+                                    'name' => 'Vloerverwarming',
+                                    'extra' => [
+                                        'icon' => 'icon-floor-heating',
                                     ],
-                                    'low-temperature-heater' => [
+                                ],
+                                'wall-heating' => [
+                                    'name' => 'Wandverwarming',
+                                    'extra' => [
+                                        'icon' => 'icon-wall-heating',
+                                    ],
+                                ],
+                                'air-heating' => [
+                                    'name' => 'Hete lucht ',
+                                    'extra' => [
+                                        'icon' => 'icon-air-conditioning-hot',
+                                    ],
+                                ],
+                                'low-temp-radiator' => [
+                                    'name' => 'Lage temp. radiatoren',
+                                    'extra' => [
                                         'icon' => 'icon-radiator-low-temp',
                                     ],
-                                    'floor-wall-heating' => [
-                                        'icon' => 'icon-radiant-wall-heating',
+                                ],
+                                'none' => [
+                                    'name' => 'Anders...',
+                                    'extra' => [
+                                        'icon' => 'icon-other',
                                     ],
                                 ],
                             ],

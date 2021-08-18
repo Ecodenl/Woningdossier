@@ -353,11 +353,11 @@
 .icon-pointed-roof {
     content: url('/icons/pointed-roof.svg');
 }
-.icon-radiant-floor-heating {
-    content: url('/icons/radiant-floor-heating.svg');
+.icon-floor-heating {
+    content: url('/icons/floor-heating.svg');
 }
-.icon-radiant-wall-heating {
-    content: url('/icons/radiant-wall-heating.svg');
+.icon-wall-heating {
+    content: url('/icons/wall-heating.svg');
 }
 .icon-radiator {
     content: url('/icons/radiator.svg');

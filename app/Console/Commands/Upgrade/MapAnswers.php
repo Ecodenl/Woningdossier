@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Upgrade;
 
+use App\Models\BuildingFeature;
 use App\Models\InputSource;
 use App\Models\Motivation;
 use App\Models\ToolQuestion;
@@ -61,6 +62,43 @@ class MapAnswers extends Command
     private function mapHrBoilerToHeatSourceToolQuestion()
     {
 
+        $buildingFeatures = BuildingFeature::allInputSources()
+            ->limit(500)
+            ->whereHas('user.building')
+            ->with('user.building')
+            ->whereNotNull('building_heating_application_id')
+            ->get();
+
+        $bar = $this->output->createProgressBar($buildingFeatures->count());
+        $bar->start();
+
+        foreach ($buildingFeatures as $userEnergyHabit) {
+
+            $toolQuestion = ToolQuestion::findByShort('cook-type');
+
+            $cookGas = $userEnergyHabit->cook_gas;
+
+            $data = [
+                'tool_question_id' => $toolQuestion->id,
+                'input_source_id' => $userEnergyHabit->input_source_id,
+                'building_id' => $userEnergyHabit->user->building->id
+            ];
+
+            // now map the actual answer.
+            if ($cookGas == 1) {
+                $answer = 'gas';
+            } else {
+                $answer = 'electric';
+            }
+
+            $data['tool_question_custom_value_id'] = ToolQuestionCustomValue::findByShort($answer)->id;
+            $data['answer'] = $answer;
+
+            DB::table('tool_question_answers')->insert($data);
+
+            $bar->advance();
+        }
+        $bar->finish();
     }
 
     private function mapUserMotivations()

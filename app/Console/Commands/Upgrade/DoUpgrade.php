@@ -4,6 +4,7 @@ namespace App\Console\Commands\Upgrade;
 
 use App\Console\Commands\AddQuestionsToDatabase;
 use App\Console\Commands\ConvertUuidTranslationsToJson;
+use App\Models\Account;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 
@@ -82,6 +83,25 @@ class DoUpgrade extends Command
                 $this->info("Running $command");
                 Artisan::call($command);
             }
+
+            // Custom closure logic
+            // We only run this on local/accept
+            if (app()->environment(['local', 'accept'])) {
+                $this->info('Adding roles to given emails...');
+                $envEmails = env('EMAILS_TO_GIVE_EXTRA_ROLES');
+                $emails = empty($envEmails) ? [] : explode(',', $envEmails);
+                if (! empty($emails)) {
+                    foreach ($emails as $email) {
+                        $account = Account::whereEmail($email)->first();
+                        if ($account instanceof Account) {
+                            foreach ($account->users as $user) {
+                                $user->assignRole(['cooperation-admin', 'coordinator', 'coach']);
+                            }
+                        }
+                    }
+                }
+            }
+
 
             //if ($this->confirm('Should we clear the cache ?', 'yes')) {
                 $this->info('Cache cleared');

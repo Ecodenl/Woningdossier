@@ -75,6 +75,7 @@ class DoUpgrade extends Command
 
             $afterCommands = [
                 AddQuestionsToDatabase::class,
+                AddMasterInputSource::class,
             ];
 
             foreach ($afterCommands as $command) {

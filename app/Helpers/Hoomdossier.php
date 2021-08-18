@@ -6,6 +6,7 @@ use App\Models\Account;
 use App\Models\InputSource;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
 
 class Hoomdossier
@@ -115,7 +116,7 @@ class Hoomdossier
         // return that.
         $myInputSource = HoomdossierSession::getInputSource(true);
 
-        if ($results->has($myInputSource->short)) {
+        if ($myInputSource instanceof InputSource && $results->has($myInputSource->short)) {
             $value = $results->get($myInputSource->short);
 
             if ((false !== stristr($column, 'surface') && $value <= 0) && ! in_array($column, $valuesThatMayReturnZeroValues)) {
@@ -215,7 +216,7 @@ class Hoomdossier
         $myInputSource = HoomdossierSession::getInputSource(true);
 
         // if the results contain answers from me.
-        if ($results->contains($myInputSource->short)) {
+        if ($myInputSource instanceof InputSource && $results->contains($myInputSource->short)) {
             return $myInputSource->short;
         }
 
@@ -244,6 +245,6 @@ class Hoomdossier
      */
     public static function account()
     {
-        return \Auth::user();
+        return Auth::user();
     }
 }

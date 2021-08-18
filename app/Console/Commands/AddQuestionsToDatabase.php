@@ -850,7 +850,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:element_values,id'],
 //                            'save_in' => "building_features.building_heating_application_id",
-                            'short' => 'building-heating',
+                            'short' => 'building-heating-application',
                             // was current-state -> hoe word de woning nu verwarmd
                             'translation' => "Hoe is de verwarming",
                             'tool_question_type_id' => $radioIconType->id,

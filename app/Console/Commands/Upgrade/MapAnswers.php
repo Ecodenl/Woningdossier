@@ -78,7 +78,7 @@ class MapAnswers extends Command
             'low-temperature-heater' => ['low-temperature-heater'],
             'floor-wall-heating' => ['floor-heating'],
         ];
-        $toolQuestion = ToolQuestion::findByShort('building-heating');
+        $toolQuestion = ToolQuestion::findByShort('building-heating-application');
         foreach ($buildingFeatures as $buildingFeature) {
             // we could use whereNotNull, but that would mess up the test case, that can be done when going live.
             if(!is_null($buildingFeature->building_heating_application_id)) {

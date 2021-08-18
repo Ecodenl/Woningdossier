@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\Arr;
+use App\Helpers\HoomdossierSession;
 use App\Helpers\ToolQuestionHelper;
 use App\Scopes\GetValueScope;
 use App\ToolQuestionAnswer;
@@ -150,10 +151,10 @@ class Building extends Model
         return $answers;
     }
 
-    public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
+    public function getAnswers(InputSource $inputSource, ToolQuestion $toolQuestion)
     {
 
-        $answer = null;
+        $answers = [];
         $where[] = ['input_source_id', '=', $inputSource->id];
         // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
         if (!is_null($toolQuestion->save_in)) {
@@ -167,20 +168,24 @@ class Building extends Model
             // we do a get so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
             $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
         } else {
-            $toolQuestionAnswer = $toolQuestion
+            $toolQuestionAnswers = $toolQuestion
                 ->toolQuestionAnswers()
                 ->allInputSources()
                 ->where($where)
-                ->first();
-            if ($toolQuestionAnswer instanceof ToolQuestionAnswer) {
-                $answer = $toolQuestionAnswer->answer;
-                if ($toolQuestionAnswer->toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
-                    $answer = $toolQuestionAnswer->toolQuestionCustomValue->short;
+                ->get();
+
+            foreach ($toolQuestionAnswers as $toolQuestionAnswer) {
+                if ($toolQuestionAnswer instanceof ToolQuestionAnswer) {
+                    if ($toolQuestionAnswer->toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
+                        $answers[] = $toolQuestionAnswer->toolQuestionCustomValue->short;
+                    } else {
+                        $answers[] = $toolQuestionAnswer->answer;
+                    }
                 }
             }
         }
 
-        return $answer;
+        return $answers;
     }
 
     /**

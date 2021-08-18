@@ -119,6 +119,7 @@ class AddQuestionsToDatabase extends Command
         $roofTypes = RoofType::all();
         $roofTileStatuses = RoofTileStatus::orderBy('order')->get();
         $buildingTypes = BuildingType::all();
+        $checkboxIconType = ToolQuestionType::findByShort('checkbox-icon');
         $radioIconType = ToolQuestionType::findByShort('radio-icon');
         $radioIconSmallType = ToolQuestionType::findByShort('radio-icon-small');
         $radioType = ToolQuestionType::findByShort('radio');
@@ -853,7 +854,7 @@ class AddQuestionsToDatabase extends Command
                             'short' => 'building-heating-application',
                             // was current-state -> hoe word de woning nu verwarmd
                             'translation' => "Hoe is de verwarming",
-                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_type_id' => $checkboxIconType->id,
                             'tool_question_custom_values' => [
                                 'radiators' => [
                                     'name' => 'Radiator',

@@ -36,7 +36,7 @@ class SubStepPolicy
             foreach ($conditions as $condition) {
                 $toolQuestion = ToolQuestion::findByShort($condition['column']);
                 // set the answers inside the collection
-                $answers->push([$condition['column'] => $building->getAnswer($masterInputSource, $toolQuestion)]);
+                $answers->push([$condition['column'] => $building->getAnswers($masterInputSource, $toolQuestion)]);
             }
 
             // first check if the user actually gave an answer, which is mandatory but better to double check

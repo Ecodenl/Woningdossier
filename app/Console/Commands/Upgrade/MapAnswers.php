@@ -49,18 +49,19 @@ class MapAnswers extends Command
     public function handle()
     {
 
-        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingToolQuestion();
 
         $this->info("Mapping user energy habits...");
         $this->info('Cook gas field to the tool question answers...');
 //        $this->mapUserEnergyHabits();
 //        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
+        $this->info('Mapping building heating applications from building features to tool question building heating application');
+        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
 //        $this->mapUserMotivations();
 
     }
 
     // so this method will map the question "HR CV Ketel" to "wat gebruikt u voor verwarming en warm water"
-    private function mapBuildingFeatureBuildingHeatingToBuildingHeatingToolQuestion()
+    private function mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion()
     {
         $buildingFeatures = BuildingFeature::allInputSources()
             ->whereHas('building')

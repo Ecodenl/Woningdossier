@@ -6,7 +6,7 @@
         <div class="radio-wrapper media-wrapper">
             <input type="radio"
                    id="{{$id}}"
-                   wire:model="filledInAnswers.{{$toolQuestion['id']}}"
+                   wire:model="filledInAnswers.{{$toolQuestion['id']}}.*"
                    value="{{$toolQuestionValue['value']}}"
             >
             <label for="{{$id}}">

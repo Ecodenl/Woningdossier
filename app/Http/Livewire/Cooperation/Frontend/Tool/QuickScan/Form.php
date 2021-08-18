@@ -176,8 +176,12 @@ class Form extends Component
                         $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource ?? $toolQuestion->options['value'];
                         $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
                         break;
-                    default:
+                    case 'checkbox-icon':
                         $this->filledInAnswers[$toolQuestion->id][] = $answerForInputSource;
+//                        $this->rules["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->validation;
+                        break;
+                    default:
+                        $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
                         $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
                 }
             }

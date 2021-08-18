@@ -227,8 +227,8 @@ class BuildingDataCopyService
 
                                     $answer = ObjectHelper::getObjectProperty($coachAnswer, $answerColumn);
 
-                                    if (empty($answer)) {
-                                        // Grab the answer of the resident
+                                    if (empty($answer) && ! is_numeric($answer)) {
+                                        // Grab the answer of the resident if answer is TRULY empty
                                         $residentAnswer = static::searchCollectionForValue($values, $residentInputSource,
                                             [
                                                 $whereColumn => $differentiatingValue,
@@ -248,8 +248,8 @@ class BuildingDataCopyService
 
                                 $answer = ObjectHelper::getObjectProperty($coachAnswer, $answerColumn);
 
-                                if (empty($answer)) {
-                                    // Grab the answer of the resident
+                                if (empty($answer) && ! is_numeric($answer)) {
+                                    // Grab the answer of the resident if answer is TRULY empty
                                     $residentAnswer = static::searchCollectionForValue($values, $residentInputSource,
                                         [$whereColumn => $differentiatingValue]);
 
@@ -266,8 +266,8 @@ class BuildingDataCopyService
 
                         $answer = ObjectHelper::getObjectProperty($coachAnswer, $answerColumn);
 
-                        if (empty($answer)) {
-                            // Grab the answer of the resident
+                        if (empty($answer) && ! is_numeric($answer)) {
+                            // Grab the answer of the resident if answer is TRULY empty
                             $residentAnswer = static::searchCollectionForValue($values, $residentInputSource);
 
                             $answer = ObjectHelper::getObjectProperty($residentAnswer, $answerColumn);

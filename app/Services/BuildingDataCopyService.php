@@ -187,99 +187,157 @@ class BuildingDataCopyService
                 ->whereIn('input_source_id', [$coachInputSource->id, $residentInputSource->id])
                 ->get();
 
-            $answerColumns = $tableData['answer_columns'];
-            $whereColumn = $tableData['where_column'] ?? null;
-            $additionalWhereColumn = $tableData['additional_where_column'] ?? null;
+            if ($values->isNotEmpty()) {
+                $answerColumns = $tableData['answer_columns'];
+                $whereColumn = $tableData['where_column'] ?? null;
+                $additionalWhereColumn = $tableData['additional_where_column'] ?? null;
 
-            // TODO: Check if we can refactor this, currently we have the same code 3 times, just slightly
-            // different, based on where and additionalWhere columns.
+                $differentiatingValues = [];
+                $differentiatingSubValues = [];
 
-            // We will loop all the answer columns, as we must check them individually
-            foreach ($answerColumns as $answerColumn) {
+                // Set conditional values
                 if (! is_null($whereColumn)) {
                     // There is a where column. This means multiple values per input source. Let's grab them
-                    $differentiatingValues = $values->pluck($whereColumn)->unique();
+                    $differentiatingValues = $values->pluck($whereColumn)->unique()->toArray();
 
-                    foreach ($differentiatingValues as $differentiatingValue) {
-                        if (! is_null($additionalWhereColumn)) {
-                            // There is an additional column... we need to do another loop
-                            $differentiatingSubValues = $values->where($whereColumn, $differentiatingValue)
-                                ->pluck($additionalWhereColumn)->unique();
+                    if (! is_null($additionalWhereColumn)) {
+                        // There is an additional column... Let's grab these too
+                        foreach ($differentiatingValues as $differentiatingValue) {
+                            $differentiatingSubValues[$differentiatingValue] = $values
+                                ->where($whereColumn, $differentiatingValue)
+                                ->pluck($additionalWhereColumn)->unique()->toArray();
+                        }
+                    }
+                }
 
-                            foreach ($differentiatingSubValues as $differentiatingSubValue) {
+                $masterInputSourceAnswers = [];
+
+                // We will loop all the answer columns, as we must check them individually
+                foreach ($answerColumns as $answerColumn) {
+                    if (! is_null($whereColumn)) {
+                        foreach ($differentiatingValues as $differentiatingValue) {
+                            if (! is_null($additionalWhereColumn)) {
+                                foreach ($differentiatingSubValues[$differentiatingValue] as $differentiatingSubValue) {
+                                    // Grab the answer of the coach
+                                    $coachAnswer = static::searchCollectionForValue($values, $coachInputSource,
+                                        [
+                                            $whereColumn => $differentiatingValue,
+                                            $additionalWhereColumn => $differentiatingSubValue,
+                                        ]);
+
+                                    $answer = ObjectHelper::getObjectProperty($coachAnswer, $answerColumn);
+
+                                    if (empty($answer)) {
+                                        // Grab the answer of the resident
+                                        $residentAnswer = static::searchCollectionForValue($values, $residentInputSource,
+                                            [
+                                                $whereColumn => $differentiatingValue,
+                                                $additionalWhereColumn => $differentiatingSubValue,
+                                            ]);
+
+                                        $answer = ObjectHelper::getObjectProperty($residentAnswer, $answerColumn);
+                                    }
+
+                                    // Build answer structure with where and additional where
+                                    $masterInputSourceAnswers[$answerColumn][$whereColumn][$differentiatingValue][$additionalWhereColumn][$differentiatingSubValue] = $answer;
+                                }
+                            } else {
                                 // Grab the answer of the coach
                                 $coachAnswer = static::searchCollectionForValue($values, $coachInputSource,
-                                    [
-                                        $whereColumn => $differentiatingValue,
-                                        $additionalWhereColumn => $differentiatingSubValue,
-                                    ]);
+                                    [$whereColumn => $differentiatingValue]);
 
                                 $answer = ObjectHelper::getObjectProperty($coachAnswer, $answerColumn);
 
                                 if (empty($answer)) {
                                     // Grab the answer of the resident
                                     $residentAnswer = static::searchCollectionForValue($values, $residentInputSource,
-                                        [
-                                            $whereColumn => $differentiatingValue,
-                                            $additionalWhereColumn => $differentiatingSubValue,
-                                        ]);
+                                        [$whereColumn => $differentiatingValue]);
 
                                     $answer = ObjectHelper::getObjectProperty($residentAnswer, $answerColumn);
                                 }
 
-                                // Update or create the answer for the master input source
-                                DB::table($table)
-                                    ->updateOrInsert([
-                                        $buildingOrUserColumn => $buildingOrUserId,
-                                        $whereColumn => $differentiatingValue,
-                                        $additionalWhereColumn => $differentiatingSubValue,
-                                        'input_source_id' => $masterInputSource->id
-                                    ], [$answerColumn => $answer]);
+                                // Build answer structure with where
+                                $masterInputSourceAnswers[$answerColumn][$whereColumn][$differentiatingValue] = $answer;
                             }
-                        } else {
-                            // Grab the answer of the coach
-                            $coachAnswer = static::searchCollectionForValue($values, $coachInputSource,
-                                [$whereColumn => $differentiatingValue]);
+                        }
+                    } else {
+                        // Grab the answer of the coach
+                        $coachAnswer = static::searchCollectionForValue($values, $coachInputSource);
 
-                            $answer = ObjectHelper::getObjectProperty($coachAnswer, $answerColumn);
+                        $answer = ObjectHelper::getObjectProperty($coachAnswer, $answerColumn);
 
-                            if (empty($answer)) {
-                                // Grab the answer of the resident
-                                $residentAnswer = static::searchCollectionForValue($values, $residentInputSource,
-                                    [$whereColumn => $differentiatingValue]);
+                        if (empty($answer)) {
+                            // Grab the answer of the resident
+                            $residentAnswer = static::searchCollectionForValue($values, $residentInputSource);
 
-                                $answer = ObjectHelper::getObjectProperty($residentAnswer, $answerColumn);
+                            $answer = ObjectHelper::getObjectProperty($residentAnswer, $answerColumn);
+                        }
+
+                        // Build default answer structure
+                        $masterInputSourceAnswers[$answerColumn] = $answer;
+                    }
+                }
+
+                // We now have the structure for the row(s) of answers we need to put under the master input source
+                // Structure is default column => answer
+                // With one where: column => [whereColumn => [whereColumnValue => answer]]
+                // With additional where: column => [whereColumn => [whereColumnValue => additionalWhereColumn => [additionalWhereColumnValue => answer]]]
+
+                // Default logic
+                $baseUpdateOrInsertLogic = [
+                    $buildingOrUserColumn => $buildingOrUserId,
+                    'input_source_id' => $masterInputSource->id
+                ];
+
+                if (is_null($whereColumn)) {
+                    // Default structure, easy pickins!
+                    $answersToInsert = $masterInputSourceAnswers;
+                    DB::table($table)
+                        ->updateOrInsert($baseUpdateOrInsertLogic, $answersToInsert);
+                } else {
+                    if (is_null($additionalWhereColumn)) {
+                        // Only where column
+                        foreach ($differentiatingValues as $differentiatingValue) {
+                            $answersToInsert = [];
+
+                            // Set answers
+                            foreach ($masterInputSourceAnswers as $answerColumn => $answers) {
+                                $answersToInsert[$answerColumn] = $answers[$whereColumn][$differentiatingValue];
                             }
 
-                            // Update or create the answer for the master input source
+                            // Set custom logic for insert
+                            $customLogic = $baseUpdateOrInsertLogic;
+                            $customLogic[$whereColumn] = $differentiatingValue;
+
+                            // Insert for each where
                             DB::table($table)
-                                ->updateOrInsert([
-                                    $buildingOrUserColumn => $buildingOrUserId,
-                                    $whereColumn => $differentiatingValue,
-                                    'input_source_id' => $masterInputSource->id
-                                ], [$answerColumn => $answer]);
+                                ->updateOrInsert($customLogic, $answersToInsert);
+                        }
+                    } else {
+                        // With additional where column
+                        foreach ($differentiatingValues as $differentiatingValue) {
+                            foreach ($differentiatingSubValues[$differentiatingValue] as $differentiatingSubValue) {
+                                $answersToInsert = [];
+
+                                // Set answers
+                                foreach ($masterInputSourceAnswers as $answerColumn => $answers) {
+                                    $answersToInsert[$answerColumn] = $answers[$whereColumn][$differentiatingValue][$additionalWhereColumn][$differentiatingSubValue];
+                                }
+
+                                // Set custom logic for insert
+                                $customLogic = $baseUpdateOrInsertLogic;
+                                $customLogic[$whereColumn] = $differentiatingValue;
+                                $customLogic[$additionalWhereColumn] = $differentiatingSubValue;
+
+                                // Insert for each where & additional where
+                                DB::table($table)
+                                    ->updateOrInsert($customLogic, $answersToInsert);
+                            }
                         }
                     }
-                } else {
-                    // Grab the answer of the coach
-                    $coachAnswer = static::searchCollectionForValue($values, $coachInputSource);
-
-                    $answer = ObjectHelper::getObjectProperty($coachAnswer, $answerColumn);
-
-                    if (empty($answer)) {
-                        // Grab the answer of the resident
-                        $residentAnswer = static::searchCollectionForValue($values, $residentInputSource);
-
-                        $answer = ObjectHelper::getObjectProperty($residentAnswer, $answerColumn);
-                    }
-
-                    // Update or create the answer for the master input source
-                    DB::table($table)
-                        ->updateOrInsert([
-                            $buildingOrUserColumn => $buildingOrUserId,
-                            'input_source_id' => $masterInputSource->id
-                        ], [$answerColumn => $answer]);
                 }
+            } else {
+                Log::alert(__METHOD__ . " -> No values for table {$table} for building {$building->id}!");
             }
         }
     }

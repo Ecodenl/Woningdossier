@@ -256,6 +256,8 @@ class Form extends Component
                 ->delete();
 
             foreach ($givenAnswer as $answer) {
+                $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($answer);
+                $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
                 $data['answer'] = $answer;
                 $toolQuestion->toolQuestionAnswers()->create($data)->replicate()->fill([
                     'input_source_id' => $this->masterInputSource->id

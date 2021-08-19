@@ -51,12 +51,12 @@ class MapAnswers extends Command
 
 
         $this->info("Mapping user energy habits...");
-        $this->info('Cook gas field to the tool question answers...');
+//        $this->info('Cook gas field to the tool question answers...');
 //        $this->mapUserEnergyHabits();
 //        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
-        $this->info('Mapping building heating applications from building features to tool question building heating application');
-        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
 //        $this->mapUserMotivations();
+//        $this->info('Mapping building heating applications from building features to tool question building heating application');
+//        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
 
     }
 

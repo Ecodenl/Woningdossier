@@ -137,16 +137,18 @@ class Building extends Model
                 });
 
         } else {
-            $answers = $toolQuestion
+            $where['building_id'] = $this->id;
+            $toolQuestionAnswers = $toolQuestion
                 ->toolQuestionAnswers()
                 ->allInputSources()
                 ->with('inputSource')
                 ->where($where)
-                ->get()->flatMap(function (ToolQuestionAnswer $toolQuestionAnswer) {
-                    return [
-                        $toolQuestionAnswer->inputSource->short => optional($toolQuestionAnswer->toolQuestionCustomValue)->name ?? $toolQuestionAnswer->answer
-                    ];
-                })->toArray();
+                ->get();
+            foreach ($toolQuestionAnswers as $index => $toolQuestionAnswer) {
+                $answer = optional($toolQuestionAnswer->toolQuestionCustomValue)->name ?? $toolQuestionAnswer->answer;
+                $answers[$toolQuestionAnswer->inputSource->short][$index]['answer'] = $answer;
+                $answers[$toolQuestionAnswer->inputSource->short][$index]['short'] = $toolQuestionAnswer->toolQuestionCustomValue->short ?? null;
+            }
         }
         return $answers;
     }

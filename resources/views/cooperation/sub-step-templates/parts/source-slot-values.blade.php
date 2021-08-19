@@ -33,7 +33,7 @@
         }
     @endphp
 
-    <li class="change-input-value" data-input-source-short="{{$inputSourceShort}}" data-input-value="{{$answerForInputSource['short']}}">
+    <li class="change-input-value" data-input-source-short="{{$inputSourceShort}}" data-input-value="{{$answerForInputSource['value']}}">
         {{\App\Models\InputSource::findByShort($inputSourceShort)->name}}: {{$humanReadableAnswer}}
     </li>
 @endforeach

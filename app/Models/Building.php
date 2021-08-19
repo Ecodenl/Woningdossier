@@ -8,6 +8,7 @@ use App\Helpers\ToolQuestionHelper;
 use App\Scopes\GetValueScope;
 use App\ToolQuestionAnswer;
 use App\Traits\ToolSettingTrait;
+use Highlight\Mode;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -122,19 +123,24 @@ class Building extends Model
             $questionValues = $toolQuestion->getQuestionValues()->pluck('name', 'value');
 
             // we do a get so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
-            $answers = $modelName::allInputSources()
+            $models = $modelName::allInputSources()
                 ->with('inputSource')
                 ->where($where)
-                ->get()
-                ->flatMap(function (Model $model) use ($column, $questionValues, $table) {
-                    // now check if we need to "translate" the answer
-                    $answer = $model->getAttribute($column);
+                ->get();
 
-                    if ($questionValues->isNotEmpty() && !is_null($answer)) {
-                        $answer = $questionValues[$answer];
-                    }
-                    return [$model->inputSource->short => $answer];
-                });
+            /** @var Model $model */
+            foreach ($models as $index => $model) {
+                // now check if we need to "translate" the answer
+                $answer = $model->getAttribute($column);
+
+                if ($questionValues->isNotEmpty() && !is_null($answer)) {
+                    $answer = $questionValues[$answer];
+                }
+                $answers[$model->inputSource->short][$index] = [
+                    'answer' => $answer,
+                    'value' => $model->getAttribute($column)
+                ];
+            }
 
         } else {
             $where['building_id'] = $this->id;
@@ -146,8 +152,10 @@ class Building extends Model
                 ->get();
             foreach ($toolQuestionAnswers as $index => $toolQuestionAnswer) {
                 $answer = optional($toolQuestionAnswer->toolQuestionCustomValue)->name ?? $toolQuestionAnswer->answer;
-                $answers[$toolQuestionAnswer->inputSource->short][$index]['answer'] = $answer;
-                $answers[$toolQuestionAnswer->inputSource->short][$index]['short'] = $toolQuestionAnswer->toolQuestionCustomValue->short ?? null;
+                $answers[$toolQuestionAnswer->inputSource->short][$index] = [
+                    'answer' => $answer,
+                    'value' => $toolQuestionAnswer->toolQuestionCustomValue->short ?? null,
+                ];
             }
         }
         return $answers;

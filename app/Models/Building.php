@@ -185,14 +185,24 @@ class Building extends Model
                 ->where($where)
                 ->get();
 
-            foreach ($toolQuestionAnswers as $toolQuestionAnswer) {
-                if ($toolQuestionAnswer instanceof ToolQuestionAnswer) {
-                    if ($toolQuestionAnswer->toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
-                        $answers[] = $toolQuestionAnswer->toolQuestionCustomValue->short;
-                    } else {
-                        $answers[] = $toolQuestionAnswer->answer;
+            // todo: refactor this to something sensible
+            if ($toolQuestion->toolQuestionType->short == 'checkbox-icon') {
+                foreach ($toolQuestionAnswers as $toolQuestionAnswer) {
+                    if ($toolQuestionAnswer instanceof ToolQuestionAnswer) {
+                        if ($toolQuestionAnswer->toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
+                            $answers[] = $toolQuestionAnswer->toolQuestionCustomValue->short;
+                        } else {
+                            $answers[] = $toolQuestionAnswer->answer;
+                        }
                     }
                 }
+            } else {
+                $answers = $toolQuestionAnswers->flatMap(function (ToolQuestionAnswer $toolQuestionAnswer) {
+                    return [
+                        $toolQuestionAnswer->inputSource->short => optional($toolQuestionAnswer->toolQuestionCustomValue)->name ?? $toolQuestionAnswer->answer
+                    ];
+                })->toArray();
+                dd($answers);
             }
         }
 

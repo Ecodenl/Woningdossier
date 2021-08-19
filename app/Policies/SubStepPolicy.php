@@ -35,10 +35,20 @@ class SubStepPolicy
             $conditions = $subStep->conditions;
             foreach ($conditions as $condition) {
                 $toolQuestion = ToolQuestion::findByShort($condition['column']);
+//                dd($building->getAnswers($masterInputSource, $toolQuestion));
                 // set the answers inside the collection
                 $answers->push([$condition['column'] => $building->getAnswers($masterInputSource, $toolQuestion)]);
             }
 
+            foreach ($answers as $answer) {
+                foreach ($conditions as $condition) {
+                    // now get the given answers for the given question
+                    $givenAnswers = $answer[$condition['column']];
+                    // so now we have to collect it, because we cant use operators stored in var's for a if.. (without eval)
+                    collect();
+                    dd($givenAnswers);
+                }
+            }
             // first check if the user actually gave an answer, which is mandatory but better to double check
             if ($answers->filter()->isNotEmpty()) {
                 foreach ($conditions as $condition) {

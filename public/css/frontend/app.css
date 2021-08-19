@@ -158603,6 +158603,12 @@ p a {
   --tw-text-opacity: 0.5;
 }
 
+.input-group .form-input:hover ~ .input-group-append, .input-group .form-input:focus ~ .input-group-append {
+  --tw-border-opacity: 1;
+  border-color: rgba(44, 169, 130, var(--tw-border-opacity));
+  --tw-border-opacity: 1;
+}
+
 .radio-wrapper, .checkbox-wrapper, .add-option-wrapper {
   margin-bottom: 1.5rem;
 }

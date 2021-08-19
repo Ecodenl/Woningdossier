@@ -849,7 +849,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:element_values,id'],
+                            'validation' => ['required', 'exists:tool_question_custom_values,short'],
 //                            'save_in' => "building_features.building_heating_application_id",
                             'short' => 'building-heating-application',
                             // was current-state -> hoe word de woning nu verwarmd

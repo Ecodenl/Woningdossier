@@ -125,10 +125,11 @@ class Form extends Component
 
         foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
             /** @var ToolQuestion $toolQuestion */
-            $toolQuestion = ToolQuestion::find($toolQuestionId);
+            $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
             if (is_null($toolQuestion->save_in)) {
                 $this->saveToolQuestionCustomValues($toolQuestion, $givenAnswer);
             } else {
+                // this *cant* candle a checkbox / multiselect answer.
                 $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
             }
         }
@@ -158,7 +159,7 @@ class Form extends Component
 
             $this->filledInAnswersForAllInputSources[$toolQuestion->id] = $this->building->getAnswerForAllInputSources($toolQuestion);
 
-            $answersForInputSource = $this->building->getAnswers(InputSource::findByShort('resident'), $toolQuestion);
+            $answersForInputSource = $this->building->getAnswers($this->masterInputSource, $toolQuestion);
 
             foreach ($answersForInputSource as $answerForInputSource) {
                 switch ($toolQuestion->toolQuestionType->short) {
@@ -234,9 +235,6 @@ class Form extends Component
 
     private function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
     {
-        if (is_array($givenAnswer)) {
-            $givenAnswer = json_encode($givenAnswer);
-        }
         $where = [
             'building_id' => $this->building->id,
             'tool_question_id' => $toolQuestion->id,
@@ -244,28 +242,51 @@ class Form extends Component
         $data = [
             'building_id' => $this->building->id,
             'input_source_id' => $this->currentInputSource->id,
-            'answer' => $givenAnswer,
         ];
-        // Try to resolve the id is the question has custom values
-        if ($toolQuestion->toolQuestionCustomValues()->exists()) {
-            // if so, the given answer contains a short.
-            $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($givenAnswer);
-            $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
-        }
 
-        $where['input_source_id'] = $this->currentInputSource->id;
-        // we have to do this twice, once for the current input source and once for the master input source
-        $toolQuestion
-            ->toolQuestionAnswers()
-            ->allInputSources()
-            ->updateOrCreate($where, $data)
-            ->save();
-        $where['input_source_id'] = $this->masterInputSource->id;
-        $data['input_source_id'] = $this->masterInputSource->id;
-        $toolQuestion
-            ->toolQuestionAnswers()
-            ->allInputSources()
-            ->updateOrCreate($where, $data)
-            ->save();
+        // we can't do a update or create, we just have to delete the old answers and create the new one.
+        if ($toolQuestion->toolQuestionType->short == 'checkbox-icon') {
+
+            $toolQuestion->toolQuestionAnswers()
+                ->allInputSources()
+                ->where($where)
+                ->whereIn('input_source_id', [$this->masterInputSource->id, $this->currentInputSource->id])
+                ->delete();
+
+            foreach ($givenAnswer as $answer) {
+                $data['answer'] = $answer;
+                $toolQuestion->toolQuestionAnswers()->create($data)->replicate()->fill([
+                    'input_source_id' => $this->masterInputSource->id
+                ])->save();
+            }
+
+        } else {
+            if (is_array($givenAnswer)) {
+                $givenAnswer = json_encode($givenAnswer);
+            }
+
+            // Try to resolve the id is the question has custom values
+            if ($toolQuestion->toolQuestionCustomValues()->exists()) {
+                // if so, the given answer contains a short.
+                $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($givenAnswer);
+                $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
+            }
+
+            $data['answer'] = $givenAnswer;
+
+            $where['input_source_id'] = $this->currentInputSource->id;
+
+            $toolQuestion
+                ->toolQuestionAnswers()
+                ->allInputSources()
+                ->updateOrCreate($where, $data);
+
+            $where['input_source_id'] = $this->masterInputSource->id;
+            $data['input_source_id'] = $this->masterInputSource->id;
+            $toolQuestion
+                ->toolQuestionAnswers()
+                ->allInputSources()
+                ->updateOrCreate($where, $data);
+        }
     }
 }

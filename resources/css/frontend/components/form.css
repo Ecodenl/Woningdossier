@@ -136,8 +136,10 @@ textarea.form-input {
     @apply border-red text-red;
 }
 
-.form-error .input-group-prepend,
-.form-error .input-group-append {
+.form-error.input-group .input-group-prepend,
+.form-error .input-group .input-group-prepend,
+.form-error.input-group .input-group-append,
+.form-error .input-group .input-group-append {
     @apply border-red;
 }
 

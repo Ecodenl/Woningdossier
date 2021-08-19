@@ -158751,7 +158751,7 @@ textarea.form-input {
   color: rgba(228, 20, 64, var(--tw-text-opacity));
 }
 
-.form-error .input-group-prepend, .form-error .input-group-append {
+.form-error.input-group .input-group-prepend, .form-error .input-group .input-group-prepend, .form-error.input-group .input-group-append, .form-error .input-group .input-group-append {
   --tw-border-opacity: 1;
   border-color: rgba(228, 20, 64, var(--tw-border-opacity));
 }

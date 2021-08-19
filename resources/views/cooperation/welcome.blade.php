@@ -1,43 +1,35 @@
-@extends('cooperation.layouts.app')
+@extends('cooperation.frontend.layouts.app')
 
-@push('css')
-    <!-- Styles -->
-    <style>
-        html, body {
-            background-color: #fff;
-            color: #636b6f;
-            font-weight: 100;
-            height: 100vh;
-            margin: 0;
-        }
+@section('main')
+    <div class="w-full min-h-screen flex justify-center items-center flex-col py-20">
+        <div class="w-1/3 bg-white rounded-3xl p-20 text-center space-y-10">
+            @include('cooperation.frontend.layouts.parts.logo')
+            <h1 class="heading-1">
+                {{ $cooperation->name }}
+            </h1>
+            <h2 class="heading-2">
+                {{ config('app.name') }}
+            </h2>
 
-        .title {
-            font-size: 84px;
-        }
-
-        .links > a {
-            color: #636b6f;
-            padding: 0 25px;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: .1rem;
-            text-decoration: none;
-            text-transform: uppercase;
-        }
-
-        .m-b-md {
-            margin-bottom: 30px;
-        }
-    </style>
-@endpush
-
-@section('content')
-    <div class="container text-center">
-
-        <h1 class="title m-b-md">
-            {{ $cooperation->name }}
-        </h1>
-        <h2>{{ config('app.name') }}</h2>
-
+            <p>
+                <a class="btn btn-purple" href="{{ route('cooperation.auth.login') }}">
+                    @lang('auth.login.form.header')
+                </a>
+                <br><br>
+                @lang('auth.login.no-account')
+                <a href="{{ route('cooperation.register') }}">
+                    @lang('auth.register.form.header')
+                </a>
+            </p>
+        </div>
+        <div class="mt-5 text-center">
+            <a href="{{ route('cooperation.privacy.index') }}" class="text-white">
+                @lang('default.privacy-policy')
+            </a>
+            <span class="text-white">|</span>
+            <a href="{{ route('cooperation.disclaimer.index') }}" class="text-white">
+                @lang('default.terms-and-conditions')
+            </a>
+        </div>
     </div>
 @endsection

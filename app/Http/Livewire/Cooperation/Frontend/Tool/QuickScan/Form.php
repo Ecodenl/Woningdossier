@@ -158,10 +158,9 @@ class Form extends Component
 
             $this->filledInAnswersForAllInputSources[$toolQuestion->id] = $this->building->getAnswerForAllInputSources($toolQuestion);
 
-            $answersForInputSource = $this->building->getAnswers($this->masterInputSource, $toolQuestion);
+            $answersForInputSource = $this->building->getAnswers(InputSource::findByShort('resident'), $toolQuestion);
 
             foreach ($answersForInputSource as $answerForInputSource) {
-
                 switch ($toolQuestion->toolQuestionType->short) {
                     case 'rating-slider':
                         $filledInAnswerOptions = json_decode($answerForInputSource, true);
@@ -178,7 +177,7 @@ class Form extends Component
                         break;
                     case 'checkbox-icon':
                         $this->filledInAnswers[$toolQuestion->id][] = $answerForInputSource;
-//                        $this->rules["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->validation;
+                        $this->rules["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->validation;
                         break;
                     default:
                         $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;

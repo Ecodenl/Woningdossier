@@ -85,7 +85,9 @@ class Form extends Component
         // now collect the given answers
         $answers = collect();
         foreach ($this->toolQuestions as $toolQuestion) {
-            $answers->push([$toolQuestion->short => $this->filledInAnswers[$toolQuestion->id]]);
+            if (isset($this->toolQuestions[$toolQuestion->id])) {
+                $answers->push([$toolQuestion->short => $this->filledInAnswers[$toolQuestion->id]]);
+            }
         }
 
         foreach ($this->toolQuestions as $index => $toolQuestion) {

@@ -86,6 +86,7 @@
                 'class' => 'form-group-heading w-full',
                 'label' => $bottomLeft->name,
                 'inputName' => "filledInAnswers.{$bottomLeft->id}",
+                'inputGroupClass' => 'w-1/2',
             ])
                 @slot('sourceSlot')
                     @include('cooperation.sub-step-templates.parts.source-slot-values', [
@@ -99,9 +100,8 @@
                         {!! $bottomLeft->help_text !!}
                     </p>
                 @endslot
-                <div class="w-1/2">
-                    @include("cooperation.tool-question-type-templates.{$bottomLeft->toolQuestionType->short}.show", ['toolQuestion' => $bottomLeft])
-                </div>
+
+                @include("cooperation.tool-question-type-templates.{$bottomLeft->toolQuestionType->short}.show", ['toolQuestion' => $bottomLeft])
             @endcomponent
         </div>
     @endif

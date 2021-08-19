@@ -14,7 +14,7 @@ class ObjectHelper
      */
     public static function getObjectProperty($object, $property)
     {
-        if(! is_null($object) && $object instanceof \stdClass) {
+        if (! is_null($object) && $object instanceof \stdClass) {
             if (property_exists($object, $property)) {
                 return $object->{$property};
             }

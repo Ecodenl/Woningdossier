@@ -62,6 +62,11 @@
     @apply text-blue-500 text-opacity-50;
 }
 
+.input-group .form-input:hover ~ .input-group-append,
+.input-group .form-input:focus ~ .input-group-append {
+    @apply border-green border-opacity-100;
+}
+
 .radio-wrapper,
 .checkbox-wrapper,
 .add-option-wrapper {
@@ -136,8 +141,10 @@ textarea.form-input {
     @apply border-red text-red;
 }
 
-.form-error .input-group-prepend,
-.form-error .input-group-append {
+.form-error.input-group .input-group-prepend,
+.form-error .input-group .input-group-prepend,
+.form-error.input-group .input-group-append,
+.form-error .input-group .input-group-append {
     @apply border-red;
 }
 

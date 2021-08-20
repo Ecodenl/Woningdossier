@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands\Upgrade;
 
-use App\Helpers\ObjectHelper;
 use App\Models\Building;
 use App\Models\InputSource;
 use Illuminate\Console\Command;
@@ -270,7 +269,7 @@ class AddMasterInputSource extends Command
                                             $additionalWhereColumn => $differentiatingSubValue,
                                         ]);
 
-                                    $answer = ObjectHelper::getObjectProperty($coachAnswer, $answerColumn);
+                                    $answer = $this->getObjectProperty($coachAnswer, $answerColumn);
 
                                     if (empty($answer) && ! is_numeric($answer)) {
                                         // Grab the answer of the resident if answer is TRULY empty
@@ -280,7 +279,7 @@ class AddMasterInputSource extends Command
                                                 $additionalWhereColumn => $differentiatingSubValue,
                                             ]);
 
-                                        $answer = ObjectHelper::getObjectProperty($residentAnswer, $answerColumn);
+                                        $answer = $this->getObjectProperty($residentAnswer, $answerColumn);
                                     }
 
                                     // Build answer structure with where and additional where
@@ -291,14 +290,14 @@ class AddMasterInputSource extends Command
                                 $coachAnswer = $this->searchCollectionForValue($values, $coachInputSource,
                                     [$whereColumn => $differentiatingValue]);
 
-                                $answer = ObjectHelper::getObjectProperty($coachAnswer, $answerColumn);
+                                $answer = $this->getObjectProperty($coachAnswer, $answerColumn);
 
                                 if (empty($answer) && ! is_numeric($answer)) {
                                     // Grab the answer of the resident if answer is TRULY empty
                                     $residentAnswer = $this->searchCollectionForValue($values, $residentInputSource,
                                         [$whereColumn => $differentiatingValue]);
 
-                                    $answer = ObjectHelper::getObjectProperty($residentAnswer, $answerColumn);
+                                    $answer = $this->getObjectProperty($residentAnswer, $answerColumn);
                                 }
 
                                 // Build answer structure with where
@@ -309,13 +308,13 @@ class AddMasterInputSource extends Command
                         // Grab the answer of the coach
                         $coachAnswer = $this->searchCollectionForValue($values, $coachInputSource);
 
-                        $answer = ObjectHelper::getObjectProperty($coachAnswer, $answerColumn);
+                        $answer = $this->getObjectProperty($coachAnswer, $answerColumn);
 
                         if (empty($answer) && ! is_numeric($answer)) {
                             // Grab the answer of the resident if answer is TRULY empty
                             $residentAnswer = $this->searchCollectionForValue($values, $residentInputSource);
 
-                            $answer = ObjectHelper::getObjectProperty($residentAnswer, $answerColumn);
+                            $answer = $this->getObjectProperty($residentAnswer, $answerColumn);
                         }
 
                         // Build default answer structure
@@ -403,5 +402,24 @@ class AddMasterInputSource extends Command
         }
 
         return $search->first();
+    }
+
+    /**
+     * Get the property of an object if it exists, save the countless inline repeated boilerplate code.
+     *
+     * @param $object
+     * @param $property
+     *
+     * @return mixed
+     */
+    public function getObjectProperty($object, $property)
+    {
+        if (! is_null($object) && $object instanceof \stdClass) {
+            if (property_exists($object, $property)) {
+                return $object->{$property};
+            }
+        }
+
+        return null;
     }
 }

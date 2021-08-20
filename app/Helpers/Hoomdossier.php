@@ -116,7 +116,7 @@ class Hoomdossier
         // return that.
         $myInputSource = HoomdossierSession::getInputSource(true);
 
-        if ($myInputSource instanceof InputSource && $results->has($myInputSource->short)) {
+        if ($results->has($myInputSource->short)) {
             $value = $results->get($myInputSource->short);
 
             if ((false !== stristr($column, 'surface') && $value <= 0) && ! in_array($column, $valuesThatMayReturnZeroValues)) {
@@ -216,7 +216,7 @@ class Hoomdossier
         $myInputSource = HoomdossierSession::getInputSource(true);
 
         // if the results contain answers from me.
-        if ($myInputSource instanceof InputSource && $results->contains($myInputSource->short)) {
+        if ($results->contains($myInputSource->short)) {
             return $myInputSource->short;
         }
 

@@ -2,9 +2,13 @@
 
 namespace App\Console\Commands\Upgrade;
 
+use App\Models\Building;
 use App\Models\BuildingFeature;
+use App\Models\BuildingService;
 use App\Models\InputSource;
 use App\Models\Motivation;
+use App\Models\Service;
+use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
@@ -51,6 +55,7 @@ class MapAnswers extends Command
 
 
         $this->info("Mapping user energy habits...");
+        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
 //        $this->info('Cook gas field to the tool question answers...');
 //        $this->mapUserEnergyHabits();
 //        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
@@ -62,7 +67,50 @@ class MapAnswers extends Command
 
     private function mapHrBoilerAndHeatPumpToHeatSourceToolQuestion()
     {
-        
+        $hrBoiler = Service::findByShort('hr-boiler');
+        $heatPump = Service::findByShort('heat-pump');
+        $toolQuestion = ToolQuestion::findByShort('heat-source');
+        $data = ['tool_question_id' => $toolQuestion->id];
+        $buildings = Building::limit(500)->get();
+
+        $hrBoilerMap = [
+            'Aanwezig, recent vervangen' => 'hr-boiler',
+            'Aanwezig, tussen 6 en 13 jaar oud' => 'hr-boiler',
+            'Aanwezig, ouder dan 13 jaar' => 'hr-boiler',
+
+            'Niet aanwezig' => 'none',
+            'Onbekend' => 'none',
+        ];
+        /** @var Building $building */
+        foreach ($buildings as $building) {
+
+            $data['building_id'] = $building->id;
+            // first handle the hr-boiler
+            $buildingServices = $building
+                ->buildingServices()
+                ->allInputSources()
+                ->leftJoin('services as s', 'building_services.service_id', '=', 's.id')
+                ->where('s.short', 'hr-boiler')->get(['building_services.*']);
+
+            foreach ($buildingServices as $buildingService) {
+                if ($buildingService instanceof BuildingService) {
+                    // this means we have to add something on the heat-source toolquestion
+                    $serviceValue = $buildingService->serviceValue;
+                    if (!$serviceValue instanceof ServiceValue) {
+                        $mappedToolQuestionAnswer = $hrBoilerMap['Onbekend'];
+                    } else {
+                        $mappedToolQuestionAnswer = $hrBoilerMap[$serviceValue->value];
+                    }
+
+                    $data['input_source_id'] = $buildingService->input_source_id;
+
+                    $data['tool_question_custom_value_id'] = ToolQuestionCustomValue::findByShort($mappedToolQuestionAnswer)->id;
+                    $data['answer'] = $mappedToolQuestionAnswer;
+
+                    DB::table('tool_question_answers')->insert($data);
+                }
+            }
+        }
     }
 
     // so this method will map the question "HR CV Ketel" to "wat gebruikt u voor verwarming en warm water"

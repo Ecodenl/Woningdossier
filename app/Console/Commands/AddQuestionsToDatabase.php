@@ -804,6 +804,12 @@ class AddQuestionsToDatabase extends Command
                                         'icon' => 'icon-district-heating',
                                     ],
                                 ],
+                                'none' => [
+                                    'name' => 'Anders...',
+                                    'extra' => [
+                                        'icon' => 'icon-other',
+                                    ],
+                                ],
                             ],
                         ],
                     ]

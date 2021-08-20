@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Str as SupportStr;
 
 class Str
 {
@@ -116,5 +117,10 @@ class Str
         }
 
         return false;
+    }
+
+    public static function lcfirst($string)
+    {
+        return SupportStr::lower(SupportStr::substr($string, 0, 1)).SupportStr::substr($string, 1);
     }
 }

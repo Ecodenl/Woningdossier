@@ -83,7 +83,14 @@ class DoUpgrade extends Command
                 Artisan::call($command);
             }
 
-            // Custom closure logic
+            // Custom closure/command logic
+
+            // This processes all buildings, almost 7000 of them! It takes a long time to process, so we won't run it
+            // locally
+            if (! app()->environment('local')) {
+                Artisan::call(AddMasterInputSource::class);
+            }
+
             // We only run this on local/accept
             if (app()->environment(['local', 'accept'])) {
                 $this->info('Adding roles to given emails...');

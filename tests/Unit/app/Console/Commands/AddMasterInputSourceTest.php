@@ -198,4 +198,48 @@ class AddMasterInputSourceTest extends TestCase
             $this->fail('Result for test1 is not an object');
         }
     }
+
+    public static function getObjectPropertyProvider()
+    {
+        return [
+            [
+                (object) [
+                    'id' => 10,
+                    'name' => 'Testcase',
+                    'value' => true,
+                ],
+                'key',
+                null,
+            ],
+            [
+                (object) [
+                    'id' => 10,
+                    'name' => 'Testcase',
+                    'value' => true,
+                ],
+                'name',
+                'Testcase',
+            ],
+            [
+                [
+                    'id' => 10,
+                    'name' => 'Testcase',
+                    'value' => true,
+                ],
+                'name',
+                null,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getObjectPropertyProvider
+     */
+    public function testGetObjectProperty($object, $key, $expected)
+    {
+        // Instantiate new command so we can call the function
+        $command = new AddMasterInputSource();
+
+        $this->assertEquals($expected, $command->getObjectProperty($object, $key));
+    }
 }

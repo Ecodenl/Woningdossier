@@ -162,34 +162,35 @@ class Form extends Component
 
             $this->filledInAnswersForAllInputSources[$toolQuestion->id] = $this->building->getAnswerForAllInputSources($toolQuestion);
 
-            $answersForInputSource = $this->building->getAnswers($this->masterInputSource, $toolQuestion);
+            /** @var array $answerForInputSource */
+            $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
 
-            foreach ($answersForInputSource as $answerForInputSource) {
-                switch ($toolQuestion->toolQuestionType->short) {
-                    case 'rating-slider':
-                        $filledInAnswerOptions = json_decode($answerForInputSource, true);
-                        foreach ($toolQuestion->options as $option) {
+            switch ($toolQuestion->toolQuestionType->short) {
+                case 'rating-slider':
+                    $filledInAnswerOptions = json_decode($answerForInputSource, true);
+                    foreach ($toolQuestion->options as $option) {
 
-                            $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']] ?? 0;
-                            $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $toolQuestion->validation;
-                            $this->attributes["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $option['name'];
-                        }
-                        break;
-                    case 'slider':
-                        // default it when no answer is set, otherwise if the user leaves it default and submit the validation will fail because nothing is set.
-                        $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource ?? $toolQuestion->options['value'];
-                        $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
-                        $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
-                        break;
-                    case 'checkbox-icon':
-                        $this->filledInAnswers[$toolQuestion->id][] = $answerForInputSource;
+                        $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']] ?? 0;
+                        $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $toolQuestion->validation;
+                        $this->attributes["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $option['name'];
+                    }
+                    break;
+                case 'slider':
+                    // default it when no answer is set, otherwise if the user leaves it default and submit the validation will fail because nothing is set.
+                    $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource ?? $toolQuestion->options['value'];
+                    $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
+                    $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
+                    break;
+                case 'checkbox-icon':
+                    foreach ($answerForInputSource as $answer) {
+                        $this->filledInAnswers[$toolQuestion->id][] = $answer;
                         $this->rules["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->validation;
-                        break;
-                    default:
-                        $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
-                        $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
-                        $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
-                }
+                    }
+                    break;
+                default:
+                    $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
+                    $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
+                    $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
             }
         }
     }

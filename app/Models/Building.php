@@ -161,10 +161,10 @@ class Building extends Model
         return $answers;
     }
 
-    public function getAnswers(InputSource $inputSource, ToolQuestion $toolQuestion)
+    public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
     {
 
-        $answers = [];
+        $answer = [];
         $where[] = ['input_source_id', '=', $inputSource->id];
         // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
         if (!is_null($toolQuestion->save_in)) {
@@ -176,7 +176,7 @@ class Building extends Model
             $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
 
             // we do a get so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
-            $answers = $modelName::allInputSources()->where($where)->get()->pluck($column)->toArray();
+            $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->toArray();
         } else {
             $where['building_id'] = $this->id;
             $toolQuestionAnswers = $toolQuestion
@@ -190,23 +190,24 @@ class Building extends Model
                 foreach ($toolQuestionAnswers as $toolQuestionAnswer) {
                     if ($toolQuestionAnswer instanceof ToolQuestionAnswer) {
                         if ($toolQuestionAnswer->toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
-                            $answers[] = $toolQuestionAnswer->toolQuestionCustomValue->short;
+                            $answer[] = $toolQuestionAnswer->toolQuestionCustomValue->short;
                         } else {
-                            $answers[] = $toolQuestionAnswer->answer;
+                            $answer[] = $toolQuestionAnswer->answer;
                         }
                     }
                 }
             } else {
-                $answers = $toolQuestionAnswers->flatMap(function (ToolQuestionAnswer $toolQuestionAnswer) {
-                    return [
-                        $toolQuestionAnswer->inputSource->short => optional($toolQuestionAnswer->toolQuestionCustomValue)->name ?? $toolQuestionAnswer->answer
-                    ];
-                })->toArray();
-                dd($answers);
+                $toolQuestionAnswer = $toolQuestionAnswers->first();
+                if ($toolQuestionAnswer instanceof ToolQuestionAnswer) {
+                    $answer = $toolQuestionAnswer->answer;
+                    if ($toolQuestionAnswer->toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
+                        $answer = $toolQuestionAnswer->toolQuestionCustomValue->short;
+                    }
+                }
             }
         }
 
-        return $answers;
+        return $answer;
     }
 
     /**

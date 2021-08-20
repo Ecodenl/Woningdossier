@@ -176,7 +176,7 @@ class Building extends Model
             $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
 
             // we do a get so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
-            $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->toArray();
+            $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
         } else {
             $where['building_id'] = $this->id;
             $toolQuestionAnswers = $toolQuestion

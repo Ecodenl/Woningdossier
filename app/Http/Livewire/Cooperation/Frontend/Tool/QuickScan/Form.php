@@ -220,6 +220,7 @@ class Form extends Component
                 $givenAnswer = [$savedInParts[3] => $givenAnswer];
             }
         }
+//        dd($givenAnswer);
 
         // we will save it on the model, this way we keep the current events behind them
         $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));

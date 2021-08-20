@@ -778,7 +778,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'exists:tool_question_custom_values,short'],
                             'short' => 'heat-source',
                             'translation' => "Wat gebruikt u voor de verwarming en warm water?",
-                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_type_id' => $checkboxIconType->id,
                             'tool_question_custom_values' => [
                                 'hr-boiler' => [
                                     'name' => 'Gasketel',

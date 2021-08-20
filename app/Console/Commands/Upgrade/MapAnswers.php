@@ -60,6 +60,11 @@ class MapAnswers extends Command
 
     }
 
+    private function mapHrBoilerAndHeatPumpToHeatSourceToolQuestion()
+    {
+        
+    }
+
     // so this method will map the question "HR CV Ketel" to "wat gebruikt u voor verwarming en warm water"
     private function mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion()
     {

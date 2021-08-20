@@ -55,50 +55,60 @@ class MapAnswers extends Command
 
 
         $this->info("Mapping user energy habits...");
-        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
 //        $this->info('Cook gas field to the tool question answers...');
 //        $this->mapUserEnergyHabits();
 //        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
 //        $this->mapUserMotivations();
 //        $this->info('Mapping building heating applications from building features to tool question building heating application');
 //        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
+        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
+        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
 
     }
 
     private function mapHrBoilerAndHeatPumpToHeatSourceToolQuestion()
     {
-        $hrBoiler = Service::findByShort('hr-boiler');
-        $heatPump = Service::findByShort('heat-pump');
         $toolQuestion = ToolQuestion::findByShort('heat-source');
         $data = ['tool_question_id' => $toolQuestion->id];
-        $buildings = Building::limit(500)->get();
+        $buildings = Building::all();
 
+        // the heat pump will actually hjandle the "onbekend" and "niet aanwezig" cases
         $hrBoilerMap = [
             'Aanwezig, recent vervangen' => 'hr-boiler',
             'Aanwezig, tussen 6 en 13 jaar oud' => 'hr-boiler',
             'Aanwezig, ouder dan 13 jaar' => 'hr-boiler',
+        ];
 
-            'Niet aanwezig' => 'none',
-            'Onbekend' => 'none',
+        $heatPumpMap = [
+            2 => ['heat-pump'],
+            3 => ['heat-pump'],
+            4 => ['heat-pump', 'hr-boiler'],
+            5 => ['heat-pump']
         ];
         /** @var Building $building */
+        $bar = $this->output->createProgressBar($buildings->count());
         foreach ($buildings as $building) {
-
+            $bar->advance();
             $data['building_id'] = $building->id;
             // first handle the hr-boiler
-            $buildingServices = $building
+            $buildingServicesHrBoiler = $building
                 ->buildingServices()
                 ->allInputSources()
                 ->leftJoin('services as s', 'building_services.service_id', '=', 's.id')
                 ->where('s.short', 'hr-boiler')->get(['building_services.*']);
 
-            foreach ($buildingServices as $buildingService) {
+            foreach ($buildingServicesHrBoiler as $buildingService) {
                 if ($buildingService instanceof BuildingService) {
                     // this means we have to add something on the heat-source toolquestion
                     $serviceValue = $buildingService->serviceValue;
                     if (!$serviceValue instanceof ServiceValue) {
-                        $mappedToolQuestionAnswer = $hrBoilerMap['Onbekend'];
+                        // so the user did has nothing saved, which only happens on old accounts.
+                        continue;
                     } else {
+                        if (!isset($hrBoilerMap[$serviceValue->value])) {
+                            // so the user did not state he has a hr boiler, thus we can continue.
+                            continue;
+                        }
                         $mappedToolQuestionAnswer = $hrBoilerMap[$serviceValue->value];
                     }
 
@@ -110,7 +120,64 @@ class MapAnswers extends Command
                     DB::table('tool_question_answers')->insert($data);
                 }
             }
+
+            $buildingServicesHeatPump = $building
+                ->buildingServices()
+                ->allInputSources()
+                ->leftJoin('services as s', 'building_services.service_id', '=', 's.id')
+                ->where('s.short', 'heat-pump')->get(['building_services.*']);
+
+            foreach ($buildingServicesHeatPump as $buildingService) {
+                if ($buildingService instanceof BuildingService) {
+                    // this means we have to add something on the heat-source toolquestion
+                    $serviceValue = $buildingService->serviceValue;
+                    if (!$serviceValue instanceof ServiceValue) {
+                        $mappedToolQuestionAnswer = 'none';
+                    } else if ($serviceValue->value == "Geen") {
+                        // check what kinda hr boiler the user has, if he selected onbekend or niet aanwezig we have to set the none option
+                        $buildingServiceHrBoiler = $building
+                            ->buildingServices()
+                            ->forInputSource($buildingService->inputSource)
+                            ->leftJoin('services as s', 'building_services.service_id', '=', 's.id')
+                            ->where('s.short', 'hr-boiler')->first(['building_services.*']);
+
+                        // this means the user said "i dont have a hr-boiler nor a heat-pump, so we will select the "none" option
+                        if (in_array($buildingServiceHrBoiler->serviceValue->value, ['Niet aanwezig', 'Onbekend'])) {
+                            $mappedToolQuestionAnswer = 'none';
+                            $data['input_source_id'] = $buildingService->input_source_id;
+
+                            $data['tool_question_custom_value_id'] = ToolQuestionCustomValue::findByShort($mappedToolQuestionAnswer)->id;
+                            $data['answer'] = $mappedToolQuestionAnswer;
+                            DB::table('tool_question_answers')->insert($data);
+                        } else {
+                            // this means we just go to the next one, if the user has a hr boiler and selected that he has no heat pump we have nothing to insert.
+                            continue;
+                        }
+
+                    } else {
+                        // can contain multiple if there was a hybrid one
+                        $mappedToolQuestionAnswers = $heatPumpMap[$buildingService->serviceValue->calculate_value];
+                        // 4 is a hybrid heat pump, it could be the user also manualy selected he has a hr boiler
+                        // so we have to delete all other rows for the user
+                        if ($buildingService->serviceValue->calculate_value == 4) {
+                            DB::table('tool_question_answers')
+                                ->where('building_id', $building->id)
+                                ->where('input_source_id', $buildingService->input_source_id)
+                                ->where('tool_question_id', $toolQuestion->id)
+                                ->delete();
+                        }
+                        foreach ($mappedToolQuestionAnswers as $mappedToolQuestionAnswer) {
+                            $data['input_source_id'] = $buildingService->input_source_id;
+
+                            $data['tool_question_custom_value_id'] = ToolQuestionCustomValue::findByShort($mappedToolQuestionAnswer)->id;
+                            $data['answer'] = $mappedToolQuestionAnswer;
+                            DB::table('tool_question_answers')->insert($data);
+                        }
+                    }
+                }
+            }
         }
+        $bar->finish();
     }
 
     // so this method will map the question "HR CV Ketel" to "wat gebruikt u voor verwarming en warm water"
@@ -135,7 +202,7 @@ class MapAnswers extends Command
         $toolQuestion = ToolQuestion::findByShort('building-heating-application');
         foreach ($buildingFeatures as $buildingFeature) {
             // we could use whereNotNull, but that would mess up the test case, that can be done when going live.
-            if(!is_null($buildingFeature->building_heating_application_id)) {
+            if (!is_null($buildingFeature->building_heating_application_id)) {
                 $data = [
                     'tool_question_id' => $toolQuestion->id,
                     'input_source_id' => $buildingFeature->input_source_id,

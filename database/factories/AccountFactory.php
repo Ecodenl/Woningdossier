@@ -9,6 +9,8 @@ $factory->define(\App\Models\Account::class, function (Faker $faker) {
     return [
         'email' => $faker->email,
         'password' => $password ?: Hash::make('secret'),
+        'email_verified_at' => now(),
         'active' => true,
+        'is_admin' => mt_rand(0, 1),
     ];
 });

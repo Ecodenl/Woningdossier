@@ -29,6 +29,7 @@ class Form extends Component
     protected $listeners = ['update', 'updated', 'save',];
 
     public $rules;
+    public $attributes;
 
     /** @var Building */
     public $building;
@@ -116,7 +117,7 @@ class Form extends Component
         if (!empty($this->rules)) {
             $validator = Validator::make([
                 'filledInAnswers' => $this->filledInAnswers
-            ], $this->rules);
+            ], $this->rules, [], $this->attributes);
 
             if ($validator->fails()) {
                 $this->setToolQuestions();
@@ -171,12 +172,14 @@ class Form extends Component
 
                             $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']] ?? 0;
                             $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $toolQuestion->validation;
+                            $this->attributes["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $option['name'];
                         }
                         break;
                     case 'slider':
                         // default it when no answer is set, otherwise if the user leaves it default and submit the validation will fail because nothing is set.
                         $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource ?? $toolQuestion->options['value'];
                         $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
+                        $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                         break;
                     case 'checkbox-icon':
                         $this->filledInAnswers[$toolQuestion->id][] = $answerForInputSource;
@@ -185,6 +188,7 @@ class Form extends Component
                     default:
                         $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
                         $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
+                        $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                 }
             }
         }

@@ -6,6 +6,7 @@ use App\Models\Account;
 use App\Models\InputSource;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
 
 class Hoomdossier
@@ -244,6 +245,6 @@ class Hoomdossier
      */
     public static function account()
     {
-        return \Auth::user();
+        return Auth::user();
     }
 }

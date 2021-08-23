@@ -54,6 +54,7 @@ class MapAnswers extends Command
     {
 
 
+        // keep in mind that the order of this map is important!
         $this->info("Mapping user energy habits...");
 //        $this->info('Cook gas field to the tool question answers...');
 //        $this->mapUserEnergyHabits();
@@ -62,7 +63,41 @@ class MapAnswers extends Command
 //        $this->info('Mapping building heating applications from building features to tool question building heating application');
 //        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
         $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
-        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
+//        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
+        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
+        $this->mapHrBoilerPlacedDate();
+    }
+
+    public function mapHrBoilerPlacedDate()
+    {
+        // this method will add a placed date for the boiler.
+        $buildingServicesBoiler = BuildingService::allInputSources()
+            ->with('building', 'inputSource')
+            ->leftJoin('services as s', 'building_services.service_id', '=', 's.id')
+            ->where('s.short', 'boiler')
+            ->get(['building_services.*']);
+
+        $date = null;
+        $year = date('Y');
+        $hrBoilerMap = [
+            'Aanwezig, recent vervangen' => $year - 2,
+            'Aanwezig, tussen 6 en 13 jaar oud' => $year - 10,
+            'Aanwezig, ouder dan 13 jaar' => $year - 13,
+        ];
+
+        foreach ($buildingServicesBoiler as $buildingServiceBoiler) {
+            // now get the hr-boiler, this way we can try do determine the placed date for the user
+
+            /** @var BuildingService $hrBoiler */
+            $hrBoiler = $buildingServiceBoiler->building->buildingServices()->forInputSource($buildingServiceBoiler->inputSource)
+                ->leftJoin('services as s', 'building_services.service_id', '=', 's.id')
+                ->where('s.short', 'hr-boiler')
+                ->first(['building_services.*']);
+
+            if ($hrBoiler->serviceValue instanceof ServiceValue && (!isset($buildingServiceBoiler->extra['date']) || empty($buildingServiceBoiler->extra['date']))) {
+                $buildingServiceBoiler->update(['extra' => ['date' => $hrBoilerMap[$hrBoiler->serviceValue->value]]]);
+            }
+        }
 
     }
 

@@ -177,6 +177,7 @@ class MapAnswers extends Command
                 }
             }
         }
+        // todo: the hr-boiler and heat-pump service should be deleted from the database about now.
         $bar->finish();
     }
 

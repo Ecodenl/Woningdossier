@@ -184,7 +184,7 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // TODO: wat voor type appartament heeft u moet nog komen. Dit moet de vorige vraag aanpassen, gezien de vorige vraag de optie van het type appartement nu al aangeeft
+                // TODO: wat voor type appartement heeft u moet nog komen. Dit moet de vorige vraag aanpassen, gezien de vorige vraag de optie van het type appartement nu al aangeeft
                 'Wat voor dak' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -197,9 +197,6 @@ class AddQuestionsToDatabase extends Command
                             'extra' => [
                                 'column' => 'short',
                                 'data' => [
-                                    'gabled-roof'  => [
-                                        'icon' => 'icon-pointed-roof'
-                                    ],
                                     'pitched' => [
                                         'icon' => 'icon-pitched-roof',
                                     ],
@@ -208,6 +205,9 @@ class AddQuestionsToDatabase extends Command
                                     ],
                                     'flat-pitched-roof'  => [
                                         'icon' => 'icon-flat-pitched-roof'
+                                    ],
+                                    'gabled-roof'  => [
+                                        'icon' => 'icon-pointed-roof'
                                     ],
                                     'rounded-roof' => [
                                         'icon' => 'icon-rounded-roof'

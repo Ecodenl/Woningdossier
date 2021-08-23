@@ -11,6 +11,11 @@ return [
     ],
     'modals' => [
         'info' => 'Informatie',
+        'add-measure' => [
+            'subject' => 'Onderwerp',
+            'price-indication' => 'Prijsindicatie in €',
+            'submit' => 'Voeg maatregel toe',
+        ],
     ],
     'defaults' => [
         'previous' => 'Vorige',

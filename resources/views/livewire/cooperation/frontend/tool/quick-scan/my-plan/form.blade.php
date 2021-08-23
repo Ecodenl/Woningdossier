@@ -5,30 +5,30 @@
             <div class="flex items-center">
                 <div class="w-5 h-5 bg-blue-800 rounded-full mr-3"></div>
                 <h5 class="font-semibold text-base text-blue-800">
-                    In orde
+                    In orde {{-- Todo: Translate this using the constants when they are available --}}
                 </h5>
             </div>
-            <i class="icon-md icon-plus-circle cursor-pointer" x-on:click="toggle()"
+            <i class="icon-md icon-plus-circle clickable" x-on:click="toggle()"
                wire:click="setCategory('{{$CATEGORY_COMPLETE}}')"></i>
         </div>
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
                 <div class="w-5 h-5 bg-green rounded-full mr-3"></div>
                 <h5 class="font-semibold text-base text-green">
-                    Nu aanpakken
+                    Nu aanpakken {{-- Todo: Translate this using the constants when they are available --}}
                 </h5>
             </div>
-            <i class="icon-md icon-plus-circle cursor-pointer" x-on:click="toggle()"
+            <i class="icon-md icon-plus-circle clickable" x-on:click="toggle()"
                wire:click="setCategory('{{$CATEGORY_TO_DO}}')"></i>
         </div>
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
                 <div class="w-5 h-5 bg-yellow rounded-full mr-3"></div>
                 <h5 class="font-semibold text-base text-yellow">
-                    Later uitvoeren
+                    Later uitvoeren {{-- Todo: Translate this using the constants when they are available --}}
                 </h5>
             </div>
-            <i class="icon-md icon-plus-circle cursor-pointer" x-on:click="toggle()"
+            <i class="icon-md icon-plus-circle clickable" x-on:click="toggle()"
                wire:click="setCategory('{{$CATEGORY_LATER}}')"></i>
         </div>
         @component('cooperation.frontend.layouts.components.modal', ['header' => __('cooperation/frontend/tool.form.subject')])
@@ -41,12 +41,12 @@
                        'withInputSource' => false,
                    ])
                         <input class="form-input" wire:model="new_measure.subject" id="new-measure-subject"
-                               placeholder="Placeholder">
+                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.subject')">
                     @endcomponent
                     <div class="w-full flex items-center">
                         <i class="icon-sm icon-info mr-3"></i>
                         <h6 class="heading-6">
-                            Prijsindicatie in €
+                            @lang('cooperation/frontend/shared.modals.add-measure.price-indication')
                         </h6>
                     </div>
                     @component('cooperation.frontend.layouts.components.form-group', [
@@ -56,7 +56,7 @@
                                     'withInputSource' => false,
                                 ])
                         <input class="form-input" wire:model="new_measure.price.from" id="new-measure-price-from"
-                               placeholder="van">
+                               placeholder="@lang('default.from')">
                     @endcomponent
                     @component('cooperation.frontend.layouts.components.form-group', [
                         'inputName' => 'new_measure.price.to',
@@ -65,14 +65,14 @@
                         'withInputSource' => false,
                     ])
                         <input class="form-input" wire:model="new_measure.price.to" id="new-measure-price-to"
-                               placeholder="tot">
+                               placeholder="@lang('default.to')">
                     @endcomponent
                 </div>
                 <div class="w-full border border-gray fixed left-0"></div>
                 <div class="flex flex-wrap justify-center mt-14">
                     <button class="btn btn-purple w-full" type="submit">
                         <i class="icon-xs icon-plus-purple mr-3"></i>
-                        Voeg maatregel toe
+                        @lang('cooperation/frontend/shared.modals.add-measure.submit')
                     </button>
                 </div>
             </form>
@@ -93,7 +93,7 @@
                             <h6 class="heading-6">{{ $card['name'] }}</h6>
                             <p class="-mt-1">
                                 @if(empty($card['price']['from']) && empty($card['price']['to']))
-                                    Zie info
+                                    @lang('cooperation/frontend/tool.my-plan.cards.see-info')
                                 @else
                                     {{ \App\Helpers\NumberFormatter::range($card['price']['from'] ?? '', $card['price']['to'] ?? '', 0, ' - ', '€ ') }}
                                 @endif
@@ -102,18 +102,18 @@
                             @if($subsidy == $SUBSIDY_AVAILABLE)
                                 <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2"
                                      style="width: fit-content; width: -moz-fit-content;">
-                                    Subsidie mogelijk
+                                    Subsidie mogelijk {{-- Todo: Translate using constant --}}
                                 </div>
                             @elseif($subsidy == $SUBSIDY_UNAVAILABLE)
                                 <div class="h-4 rounded-lg text-xs relative text-red p bg-red bg-opacity-10 flex items-center px-2"
                                      style="width: fit-content; width: -moz-fit-content;">
-                                    Geen subsidie
+                                    Geen subsidie {{-- Todo: Translate using constant --}}
                                 </div>
                             @endif
                         </div>
                         <div x-data="modal()" class="absolute right-1 top-1 lg:right-3 lg:top-3">
                             @if(! empty($card['info']))
-                                <i class="icon-md icon-info-light" x-on:click="toggle()"></i>
+                                <i class="icon-md icon-info-light clickable" x-on:click="toggle()"></i>
                                 @component('cooperation.frontend.layouts.components.modal')
                                     {!! $card['info'] !!}
                                 @endcomponent
@@ -124,9 +124,6 @@
                         </p>
                     </div>
                 @endforeach
-                <div class="card-placeholder">
-
-                </div>
             </div>
         @endforeach
     </div>
@@ -140,7 +137,7 @@
                     {{ \App\Helpers\NumberFormatter::prefix($investment, '€ ') }}
                 </span>
                 <p class="-mt-2">
-                    Investering
+                    @lang('cooperation/frontend/tool.my-plan.cards.investment')
                 </p>
             </div>
         </div>
@@ -153,7 +150,7 @@
                     {{ \App\Helpers\NumberFormatter::prefix($yearlySavings, '€ ') }}
                 </span>
                 <p class="-mt-2">
-                    Besparing per jaar
+                    @lang('cooperation/frontend/tool.my-plan.cards.savings')
                 </p>
             </div>
         </div>
@@ -166,43 +163,50 @@
                     {{ \App\Helpers\NumberFormatter::prefix($availableSubsidy, '€ ') }}
                 </span>
                 <p class="-mt-2">
-                    Subsidie mogelijk
+                    Subsidie mogelijk {{-- Todo: Translate using constant --}}
                 </p>
             </div>
         </div>
+        {{-- Todo: Check rating slider translations --}}
         <div class="w-full flex flex-wrap items-center pr-3">
-            @include('cooperation.frontend.layouts.parts.rating-slider', ['label' => 'Comfort', 'default' => 5, 'disabled' => true])
+            @include('cooperation.frontend.layouts.parts.rating-slider', [
+                'label' => 'Comfort', 'default' => 5, 'disabled' => true
+            ])
         </div>
         <div class="w-full flex flex-wrap items-center">
-            @include('cooperation.frontend.layouts.parts.rating-slider', ['label' => 'Duurzaamheid', 'default' => 4, 'disabled' => true])
+            @include('cooperation.frontend.layouts.parts.rating-slider', [
+                'label' => 'Duurzaamheid', 'default' => 4, 'disabled' => true
+            ])
         </div>
         <div class="w-full flex flex-wrap items-center">
-            @include('cooperation.frontend.layouts.parts.rating-slider', ['label' => 'Goede investering', 'default' => 3, 'disabled' => true])
+            @include('cooperation.frontend.layouts.parts.rating-slider', [
+                'label' => 'Goede investering', 'default' => 3, 'disabled' => true
+            ])
         </div>
     </div>
     <div class="w-full flex flex-wrap bg-blue-100 pb-8 px-3 lg:px-8 items-center">
         @component('cooperation.frontend.layouts.components.form-group', [
-            'label' => 'Opmerkingen bewoner',
+            'label' => __('cooperation/frontend/tool.my-plan.comments.resident'),
             'class' => 'w-full md:w-1/2 md:pr-3',
             'withInputSource' => false,
             'id' => 'comments-resident',
             'inputName' => 'comments.resident'
         ])
             <textarea id="comments-resident" class="form-input" name="comments[resident]"
-                      placeholder="Type hier uw opmerkingen..."></textarea>
+                      placeholder="@lang('default.form.input.comment-placeholder')"></textarea>
             <button class="btn btn-purple absolute right-3 bottom-7">
                 @lang('default.buttons.save')
             </button>
         @endcomponent
         @component('cooperation.frontend.layouts.components.form-group', [
-            'label' => 'Opmerkingen coach',
+            'label' => __('cooperation/frontend/tool.my-plan.comments.coach'),
             'class' => 'w-full md:w-1/2 md:pl-3',
             'withInputSource' => false,
             'id' => 'comments-coach',
             'inputName' => 'comments.coach'
         ])
             <textarea id="comments-coach" class="form-input" name="comments[coach]"
-                      placeholder="Type hier uw opmerkingen..."></textarea>
+                      placeholder="lang('default.form.input.comment-placeholder')"></textarea>
             <button class="btn btn-purple absolute right-3 bottom-7">
                 @lang('default.buttons.save')
             </button>

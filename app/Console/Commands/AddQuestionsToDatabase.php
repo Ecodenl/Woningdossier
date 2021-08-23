@@ -29,6 +29,7 @@ use App\Models\ToolQuestionValuable;
 use App\Models\WoodRotStatus;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -65,11 +66,11 @@ class AddQuestionsToDatabase extends Command
      */
     public function handle()
     {
-        \Schema::disableForeignKeyConstraints();
+        Schema::disableForeignKeyConstraints();
         ToolQuestionValuable::truncate();
         ToolQuestion::truncate();
         ToolQuestionCustomValue::truncate();
-        \Schema::enableForeignKeyConstraints();
+        Schema::enableForeignKeyConstraints();
         // General data - Elements (that are not queried later on step basis)
         $livingRoomsWindows = Element::findByShort('living-rooms-windows');
         $sleepingRoomsWindows = Element::findByShort('sleeping-rooms-windows');
@@ -116,7 +117,7 @@ class AddQuestionsToDatabase extends Command
 
         // Roof insulation
         $roofInsulation = Element::findByShort('roof-insulation');
-        $roofTypes = RoofType::all();
+        $roofTypes = RoofType::orderBy('order')->get();
         $roofTileStatuses = RoofTileStatus::orderBy('order')->get();
         $buildingTypes = BuildingType::all();
         $radioIconType = ToolQuestionType::findByShort('radio-icon');
@@ -1145,6 +1146,7 @@ class AddQuestionsToDatabase extends Command
                                 if (isset($extra['column'])) {
                                     $extraData = $extra['data'][$toolQuestionValue->{$extra['column']}];
                                 }
+
                                 $toolQuestion->toolQuestionValuables()->create([
                                     'order' => $toolQuestionValueOrder,
                                     'show' => true,

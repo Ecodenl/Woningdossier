@@ -14,28 +14,28 @@ class RoofTypesTableSeeder extends Seeder
     {
         $roofTypes = [
             [
-                'name' => 'Puntdak',
-                'order' => 0,
-                'calculate_value' => 2,
-                'short' => 'gabled-roof',
-            ],
-            [
                 'name' => 'Hellend dak',
-                'order' => 1,
+                'order' => 0,
                 'calculate_value' => 1,
                 'short' => 'pitched',
             ],
             [
                 'name' => 'Plat dak',
-                'order' => 2,
+                'order' => 1,
                 'calculate_value' => 3,
                 'short' => 'flat',
             ],
             [
                 'name' => 'Plat + hellend dak',
-                'order' => 3,
+                'order' => 2,
                 'calculate_value' => 4,
                 'short' => 'flat-pitched-roof',
+            ],
+            [
+                'name' => 'Puntdak',
+                'order' => 3,
+                'calculate_value' => 2,
+                'short' => 'gabled-roof',
             ],
             [
                 'name' => 'Afgerond dak',

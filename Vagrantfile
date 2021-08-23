@@ -20,6 +20,9 @@ end
 
 Vagrant.configure(2) do |config|
 
+    config.vm.box = "ubuntu/bionic64"
+    #config.vm.box_version = "20200130.1.0"
+    config.vm.box_version = "20210818.0.0"
     config.vm.provider :virtualbox do |v|
         v.name = "woondossier.vm"
         v.customize [
@@ -31,8 +34,8 @@ Vagrant.configure(2) do |config|
         ]
     end
 
-    config.vm.box = "ubuntu/xenial64"
-    config.vm.box_url = "https://app.vagrantup.com/ubuntu/boxes/xenial64/versions/20180215.0.0/providers/virtualbox.box"
+    #config.vm.box = "ubuntu/xenial64"
+    #config.vm.box_url = "https://app.vagrantup.com/ubuntu/boxes/xenial64/versions/20180215.0.0/providers/virtualbox.box"
 
     config.vm.network :private_network, ip: "192.168.10.99"
     config.ssh.forward_agent = true

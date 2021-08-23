@@ -44,8 +44,7 @@
 .form-input,
 .radio-wrapper label,
 .checkbox-wrapper label,
-.add-option-wrapper label,
-.select-wrapper .select-input {
+.add-option-wrapper label {
     @apply flex items-center w-full cursor-pointer h-11 rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm outline-none max-w-full bg-white leading-10 relative;
 
     @apply hover:border-green hover:border-opacity-100;
@@ -61,6 +60,11 @@
 
 .form-input::placeholder {
     @apply text-blue-500 text-opacity-50;
+}
+
+.input-group .form-input:hover ~ .input-group-append,
+.input-group .form-input:focus ~ .input-group-append {
+    @apply border-green border-opacity-100;
 }
 
 .radio-wrapper,
@@ -82,8 +86,7 @@ textarea.form-input {
 
 .form-input:disabled,
 .radio-wrapper input[type="radio"]:disabled + label,
-.checkbox-wrapper input[type="checkbox"]:disabled + label,
-.select-wrapper .select-input.disabled {
+.checkbox-wrapper input[type="checkbox"]:disabled + label {
     @apply cursor-not-allowed bg-blue-100 bg-opacity-50;
 }
 
@@ -138,8 +141,10 @@ textarea.form-input {
     @apply border-red text-red;
 }
 
-.form-error .input-group-prepend,
-.form-error .input-group-append {
+.form-error.input-group .input-group-prepend,
+.form-error .input-group .input-group-prepend,
+.form-error.input-group .input-group-append,
+.form-error .input-group .input-group-append {
     @apply border-red;
 }
 
@@ -163,6 +168,11 @@ textarea.form-input {
 /* Ensure we move the cross more to the left if an icon is present */
 .form-error input[type="text"] + i ~ .form-error-label::before {
     @apply right-16;
+}
+
+/* Rating sliders need a higher margin */
+.form-error.rating-slider-wrapper .form-error-label {
+    @apply mt-4;
 }
 
 /* Styling for radio and checkbox */
@@ -344,6 +354,10 @@ textarea.form-input {
     @apply absolute right-6 top-5/20 pointer-events-none;
 }
 
+.select-wrapper .input-group-append ~ i:not(.select-icon) {
+    @apply right-16;
+}
+
 /* Select with icon */
 .select-wrapper .select-icon {
     @apply h-12 w-12 z-10 absolute left-6 top-1/20 pointer-events-none;
@@ -401,6 +415,12 @@ textarea.form-input {
 }
 .source-example-building {
     @apply border border-opacity-0 border-orange bg-orange bg-opacity-10 text-orange;
+
+    @apply hover:border-opacity-100;
+    @apply focus:border-opacity-100;
+}
+.source-master {
+    @apply border border-opacity-0 border-red bg-red bg-opacity-10 text-red;
 
     @apply hover:border-opacity-100;
     @apply focus:border-opacity-100;

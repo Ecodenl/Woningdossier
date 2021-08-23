@@ -6,11 +6,9 @@
 - name: mysql | Install MySQL Packages
   become: yes
   become_user: root
-  apt: pkg={{ item }} state=latest
-  with_items:
-    - mysql-server
-    - mysql-client
-    - python-mysqldb
+  apt:
+    pkg: ['mysql-server', 'mysql-client', 'python-mysqldb']
+    state: latest
 
 - name: mysql | Update root password for all root accounts
   mysql_user: name=root host={{ item }} check_implicit_admin=yes password={{ mysql.root_password }} login_user=root login_password={{ mysql.root_password }}

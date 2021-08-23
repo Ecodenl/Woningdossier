@@ -84,7 +84,7 @@ export default (inputSource = 'no-match') => ({
         if (this.inputGroup) {
             // If the value is JSON, we need to do something slightly different (currently only relevant for rating slider)
             let parsed = this.parseJson(value);
-            if (parsed !== null) {
+            if (parsed !== null && parsed instanceof Object) {
                 // Set values for each input in the JSON object.
                 for (const [short, value] of Object.entries(parsed)) {
                     let input = this.inputGroup.querySelector(`input:not([disabled]):not([readonly])[type="hidden"][data-short="${short}"]`);

@@ -43,7 +43,9 @@ class Form extends Component
 
     public $toolQuestions;
 
-    public $filledInAnswers = [];
+    public $filledInAnswers = [
+        25 => [],
+    ];
     public $filledInAnswersForAllInputSources = [];
 
     public function mount(Step $step, SubStep $subStep)
@@ -66,7 +68,6 @@ class Form extends Component
 
     public function render()
     {
-        \Illuminate\Support\Facades\Log::debug(json_encode($this->filledInAnswers));
         return view('livewire.cooperation.frontend.tool.quick-scan.form');
     }
 
@@ -75,7 +76,8 @@ class Form extends Component
         // TODO: Deprecate this dispatch in Livewire V2
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
 
-//        $this->setToolQuestions();
+        $this->setToolQuestions();
+        \Illuminate\Support\Facades\Log::debug(json_encode($this->filledInAnswers));
 
     }
 
@@ -88,9 +90,7 @@ class Form extends Component
         // now collect the given answers
         $answers = collect();
         foreach ($this->toolQuestions as $toolQuestion) {
-            if (isset($this->toolQuestions[$toolQuestion->id])) {
-                $answers->push([$toolQuestion->short => $this->filledInAnswers[$toolQuestion->id]]);
-            }
+            $answers->push([$toolQuestion->short => $this->filledInAnswers[$toolQuestion->id]]);
         }
 
         foreach ($this->toolQuestions as $index => $toolQuestion) {

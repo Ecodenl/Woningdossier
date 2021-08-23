@@ -44,7 +44,7 @@ class Form extends Component
     ];
 
     protected $listeners = [
-        'cardMoved' => 'cardMoved',
+        'cardMoved',
     ];
 
     public function mount()
@@ -221,13 +221,28 @@ class Form extends Component
         $this->category = $category;
     }
 
-    public function cardMoved($fromCategory, $toCategory, $id)
+    public function cardMoved($fromCategory, $toCategory, $id, $order)
     {
+        // Get the original card object
         $card = $this->cards[$fromCategory][$id] ?? null;
+        // Remove card from the original category
         unset($this->cards[$fromCategory][$id]);
 
+        // If the card is set...
         if (! empty($card)) {
-            $this->cards[$toCategory][$id] = $card;
+            // Get the cards for the new category
+            $cards = $this->cards[$toCategory];
+
+            // Split cards at order
+            $firstPart = array_slice($cards, 0, $order, true);
+            $secondPart = array_slice($cards, $order, null, true);
+
+            // Insert card at position
+            $firstPart[$id] = $card;
+            // Rebuild
+            $cards = $firstPart + $secondPart;
+
+            $this->cards[$toCategory] = $cards;
         }
 
         $this->recalculate();

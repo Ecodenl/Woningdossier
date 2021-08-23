@@ -133,6 +133,11 @@ class MapAnswers extends Command
                     $serviceValue = $buildingService->serviceValue;
                     if (!$serviceValue instanceof ServiceValue) {
                         $mappedToolQuestionAnswer = 'none';
+                        $data['input_source_id'] = $buildingService->input_source_id;
+
+                        $data['tool_question_custom_value_id'] = ToolQuestionCustomValue::findByShort($mappedToolQuestionAnswer)->id;
+                        $data['answer'] = $mappedToolQuestionAnswer;
+                        DB::table('tool_question_answers')->insert($data);
                     } else if ($serviceValue->value == "Geen") {
                         // check what kinda hr boiler the user has, if he selected onbekend or niet aanwezig we have to set the none option
                         $buildingServiceHrBoiler = $building

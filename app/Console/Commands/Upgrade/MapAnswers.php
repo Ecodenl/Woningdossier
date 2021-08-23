@@ -184,6 +184,7 @@ class MapAnswers extends Command
         }
         // todo: the hr-boiler and heat-pump service should be deleted from the database about now.
         $bar->finish();
+        $this->output->newLine();
     }
 
     // so this method will map the question "HR CV Ketel" to "wat gebruikt u voor verwarming en warm water"
@@ -232,6 +233,7 @@ class MapAnswers extends Command
             $bar->advance();
         }
         $bar->finish();
+        $this->output->newLine();
     }
 
     private function mapUserMotivations()
@@ -338,5 +340,6 @@ class MapAnswers extends Command
             $bar->advance();
         }
         $bar->finish();
+        $this->output->newLine();
     }
 }

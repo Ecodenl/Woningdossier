@@ -8,6 +8,7 @@ use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
+use App\Models\Log;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
@@ -65,6 +66,7 @@ class Form extends Component
 
     public function render()
     {
+        \Illuminate\Support\Facades\Log::debug(json_encode($this->filledInAnswers));
         return view('livewire.cooperation.frontend.tool.quick-scan.form');
     }
 
@@ -73,7 +75,7 @@ class Form extends Component
         // TODO: Deprecate this dispatch in Livewire V2
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
 
-        $this->setToolQuestions();
+//        $this->setToolQuestions();
 
     }
 
@@ -220,7 +222,6 @@ class Form extends Component
                 $givenAnswer = [$savedInParts[3] => $givenAnswer];
             }
         }
-//        dd($givenAnswer);
 
         // we will save it on the model, this way we keep the current events behind them
         $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));

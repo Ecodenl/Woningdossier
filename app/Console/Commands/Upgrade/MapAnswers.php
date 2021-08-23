@@ -94,8 +94,13 @@ class MapAnswers extends Command
                 ->where('s.short', 'hr-boiler')
                 ->first(['building_services.*']);
 
-            if ($hrBoiler->serviceValue instanceof ServiceValue && (!isset($buildingServiceBoiler->extra['date']) || empty($buildingServiceBoiler->extra['date']))) {
-                $buildingServiceBoiler->update(['extra' => ['date' => $hrBoilerMap[$hrBoiler->serviceValue->value]]]);
+            if (
+                $hrBoiler instanceof BuildingService &&
+                $hrBoiler->serviceValue instanceof ServiceValue && (
+                    !isset($buildingServiceBoiler->extra['date']) || empty($buildingServiceBoiler->extra['date'])
+                )
+            ) {
+                $buildingServiceBoiler->update(['extra' => ['date' => $hrBoilerMap[$hrBoiler->serviceValue->value] ?? null]]);
             }
         }
 

@@ -166,12 +166,13 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
 
             Route::group(['namespace' => 'Frontend\Tool', 'as' => 'frontend.tool.'], function () {
-                Route::get('quick-scan/{step}/{subStep}', 'QuickScanController@index')
-                    ->name('quick-scan.index')
-                    ->middleware('checks-conditions-for-sub-steps');
+                Route::as('quick-scan.')->prefix('quick-scan')->group(function () {
+                    Route::get('{step}/{subStep}', 'QuickScanController@index')
+                        ->name('index')
+                        ->middleware('checks-conditions-for-sub-steps');
 
-
-                Route::get('quick-scan/woonplan', 'QuickScan\\MyPlanController@index')->name('my-plan.index');
+                    Route::get('woonplan', 'QuickScan\\MyPlanController@index')->name('my-plan.index');
+                });
             });
 
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {

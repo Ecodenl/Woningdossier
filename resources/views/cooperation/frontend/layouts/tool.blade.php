@@ -6,15 +6,18 @@
         @if(\App\Helpers\Blade\RouteLogic::inQuickScanTool(Route::currentRouteName()))
             {{-- Step progress --}}
             @include('cooperation.frontend.layouts.parts.sub-nav')
-            {{-- Progress bar --}}
-            <div class="w-full bg-gray h-2">
-                @php
-                $total = $total ?? 100;
-                $current = $current ?? 100;
-                $width = 100 / $total * $current;
-            @endphp{{-- Define style-width based on step progress divided by total steps --}}
-                <div class="h-full bg-purple" style="width: {{$width}}%"></div>
-            </div>
+
+            @if(! \App\Helpers\Blade\RouteLogic::inMyPlan(Route::currentRouteName()))
+                {{-- Progress bar --}}
+                <div class="w-full bg-gray h-2">
+                    @php
+                        $total = $total ?? 100;
+                        $current = $current ?? 100;
+                        $width = 100 / $total * $current;
+                    @endphp{{-- Define style-width based on step progress divided by total steps --}}
+                    <div class="h-full bg-purple" style="width: {{$width}}%"></div>
+                </div>
+            @endif
         @endif
     </div>
 @endsection

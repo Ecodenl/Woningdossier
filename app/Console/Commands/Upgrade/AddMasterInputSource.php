@@ -330,7 +330,7 @@ class AddMasterInputSource extends Command
                 // Default logic
                 $baseUpdateOrInsertLogic = [
                     $buildingOrUserColumn => $buildingOrUserId,
-                    'input_source_id' => $masterInputSource->id
+                    'input_source_id' => $masterInputSource->id,
                 ];
 
                 if (is_null($whereColumn)) {

@@ -41,4 +41,28 @@ class StrTest extends TestCase
     {
         $this->assertEquals($expected, Str::lcfirst($value));
     }
+
+    public static function isValidJsonProvider()
+    {
+        return [
+            ['{"has_crawlspace":"yes","access":"yes"}', true, true],
+            ['{"has_crawlspace":"yes","access":"yes"}', false, true],
+            [12, false, true],
+            [12, true, false],
+            [null, false, false],
+            ['null', true, false],
+            ['NotJson', true, false],
+            ['{"can_edit":"true"}', false, true],
+            ['"thisIsJsonButWeWantFalse"', true, false],
+            ['"thisIsJsonAndWeWantTrue"', false, true],
+        ];
+    }
+
+    /**
+     * @dataProvider isValidJsonProvider
+     */
+    public function testIsValidJson($value, $arrayOnly, $expected)
+    {
+        $this->assertEquals($expected, Str::isValidJson($value, $arrayOnly));
+    }
 }

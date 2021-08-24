@@ -2,10 +2,10 @@
     @php
         $humanReadableAnswer = null;
 
-        $json = json_decode($answer, true);
-        if (is_null($json) || !is_array($json)) {
+        if (! \App\Helpers\Str::isValidJson($answer)) {
             $humanReadableAnswer = $answer;
         } else {
+            $json = json_decode($answer, true);
             $formatted = [];
 
             // We try to build the input source names based off the options, but if they aren't available,

@@ -156,7 +156,7 @@ trait GetMyValuesTrait
     /**
      * Get a input source name.
      *
-     * @return InputSource name
+     * @return string name
      */
     public function getInputSourceName()
     {

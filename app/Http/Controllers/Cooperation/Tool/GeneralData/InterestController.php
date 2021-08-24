@@ -66,7 +66,7 @@ class InterestController extends Controller
         $services = Service::orderBy('order')->get();
 
         $interests = Interest::orderBy('order')->get();
-
+        
         // because the $steps is loaded with view composers and will be overwritten
         $filteredSteps = $steps;
 

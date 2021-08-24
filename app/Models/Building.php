@@ -106,6 +106,11 @@ class Building extends Model
         'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension', 'is_active',
     ];
 
+    public function toolQuestionAnswers(): HasMany
+    {
+        return $this->hasMany(ToolQuestionAnswer::class);
+    }
+
     public function getAnswerForAllInputSources(ToolQuestion $toolQuestion)
     {
         $answers = null;

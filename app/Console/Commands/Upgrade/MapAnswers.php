@@ -54,16 +54,16 @@ class MapAnswers extends Command
     {
         ToolQuestionAnswer::truncate();
         // keep in mind that the order of this map is important!
-        $this->info('Cook gas field to the tool question answers...');
-        $this->mapUserEnergyHabits();
+//        $this->info('Cook gas field to the tool question answers...');
+//        $this->mapUserEnergyHabits();
         $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
         $this->mapUserMotivations();
-        $this->info('Mapping building heating applications from building features to tool question building heating application');
-        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
-        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
-        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
-        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
-        $this->mapHrBoilerPlacedDate();
+//        $this->info('Mapping building heating applications from building features to tool question building heating application');
+//        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
+//        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
+//        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
+//        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
+//        $this->mapHrBoilerPlacedDate();
     }
 
     public function mapHrBoilerPlacedDate()
@@ -281,8 +281,8 @@ class MapAnswers extends Command
     private function mapUserMotivations()
     {
         $users = User::has('building')
-            ->has('motivations')
-            ->with(['building.user', 'motivations.motivation'])
+            ->where('id', 1)
+            ->with(['building.user'])
             ->get();
 
         // let me explain;
@@ -307,7 +307,7 @@ class MapAnswers extends Command
             3 => 'lower-monthly-costs',
             4 => 'investment',
         ];
-        $motivations = Motivation::all();
+        $motivations = DB::table('motivations')->get();
         foreach ($users as $user) {
             // these do not exist in the user motivations.
             $answer = [
@@ -323,15 +323,16 @@ class MapAnswers extends Command
             // as default
             $orderToRatingMap = $orderToRatingMapWith1;
 
-            if ($user->motivations->contains('order', 0)) {
+            $userMotivations = DB::table('user_motivations')->where('user_id', $user->id)->get();
+            if ($userMotivations->contains('order', 0)) {
                 $orderToRatingMap = $orderToRatingMapWith0;
             }
             foreach ($motivations as $motivation) {
-                $userMotivation = $user->motivations->where('motivation_id', $motivation->id)->first();
+                $userMotivation = $userMotivations->where('motivation_id', $motivation->id)->first();
 
                 // default the rating value to one, unless we can map it.
                 $rating = 1;
-                if ($userMotivation instanceof UserMotivation) {
+                if ($userMotivation instanceof \stdClass) {
                     $rating = $orderToRatingMap[$userMotivation->order];
                 }
                 $answer[$motivationToRatingNameMap[$motivation->id]] = $rating;

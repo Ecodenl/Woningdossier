@@ -169,10 +169,10 @@ class AddQuestionsToDatabase extends Command
                                         'icon' => 'icon-apartment-ground-floor-between', // TODO: See below
                                     ],
                                     8 => [
-                                        'icon' => 'icon-upstairs-apartment-between',
+                                        'icon' => 'icon-upstairs-apartment-corner',
                                     ],
                                     9 => [
-                                        'icon' => 'icon-upstairs-apartment-corner',
+                                        'icon' => 'icon-upstairs-apartment-between',
                                     ],
                                     10 => [
                                         'icon' => 'icon-apartment-mid-floor-between', // TODO: See below

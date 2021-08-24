@@ -539,7 +539,7 @@ class AddQuestionsToDatabase extends Command
 
                     ]
                 ],
-                'Welke zaken vind u belangenrijk?' => [
+                'Welke zaken vind u belangrijk?' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [

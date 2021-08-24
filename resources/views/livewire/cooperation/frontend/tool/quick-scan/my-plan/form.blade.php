@@ -3,8 +3,7 @@
     <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 mb-3 px-3 lg:px-8" x-data="modal()">
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
-                <div class="w-5 h-5 bg-blue-800 rounded-full mr-3"></div>
-                <h5 class="font-semibold text-base text-blue-800">
+                <h5 class="heading-">
                     In orde {{-- Todo: Translate this using the constants when they are available --}}
                 </h5>
             </div>
@@ -13,8 +12,7 @@
         </div>
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
-                <div class="w-5 h-5 bg-green rounded-full mr-3"></div>
-                <h5 class="font-semibold text-base text-green">
+                <h5 class="heading-5">
                     Nu aanpakken {{-- Todo: Translate this using the constants when they are available --}}
                 </h5>
             </div>
@@ -23,8 +21,7 @@
         </div>
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
-                <div class="w-5 h-5 bg-yellow rounded-full mr-3"></div>
-                <h5 class="font-semibold text-base text-yellow">
+                <h5 class="heading-5">
                     Later uitvoeren {{-- Todo: Translate this using the constants when they are available --}}
                 </h5>
             </div>

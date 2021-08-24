@@ -98,6 +98,7 @@
                                     {{ \App\Helpers\NumberFormatter::range($card['price']['from'] ?? '', $card['price']['to'] ?? '', 0, ' - ', '€ ') }}
                                 @endif
                             </p>
+<!--
                             <?php $subsidy = $card['subsidy'] ?? ''; ?>
                             @if($subsidy == $SUBSIDY_AVAILABLE)
                                 <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2"
@@ -110,6 +111,7 @@
                                     Geen subsidie {{-- Todo: Translate using constant --}}
                                 </div>
                             @endif
+-->
                         </div>
                         <div x-data="modal()" class="absolute right-1 top-1 lg:right-3 lg:top-3">
                             @if(! empty($card['info']))
@@ -155,6 +157,7 @@
             </div>
         </div>
         <div class="w-full flex flex-wrap items-center space-x-3">
+<!--
             <div class="rounded-full bg-blue bg-opacity-10 w-8 h-8 flex justify-center items-center">
                 <i class="icon-sm icon-savings"></i>
             </div>
@@ -166,6 +169,7 @@
                     Subsidie mogelijk {{-- Todo: Translate using constant --}}
                 </p>
             </div>
+-->
         </div>
         {{-- Todo: Check rating slider translations --}}
         <div class="w-full flex flex-wrap items-center pr-3">

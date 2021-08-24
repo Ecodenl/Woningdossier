@@ -266,9 +266,9 @@ class Form extends Component
             $maxInvestment += $to;
             $savings += $card['savings'] ?? 0;
 
-            if ($card['subsidy'] === $this->SUBSIDY_AVAILABLE) {
-                $subsidy += ($to - $from) * $subsidyPercentage;
-            }
+//            if ($card['subsidy'] === $this->SUBSIDY_AVAILABLE) {
+//                $subsidy += ($to - $from) * $subsidyPercentage;
+//            }
         }
 
         $this->investment = ($maxInvestment + $minInvestment) / 2;

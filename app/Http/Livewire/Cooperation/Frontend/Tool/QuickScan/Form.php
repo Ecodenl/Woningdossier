@@ -112,7 +112,13 @@ class Form extends Component
                             $this->filledInAnswers[$toolQuestion->id] = null;
 
                             // and unset the validation for the question.
-                            unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
+                            if ($toolQuestion->hasOptions()) {
+                                foreach ($toolQuestion->options as $option) {
+                                    unset($this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"]);
+                                }
+                            } else {
+                                unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
+                            }
                         }
                     }
                 }

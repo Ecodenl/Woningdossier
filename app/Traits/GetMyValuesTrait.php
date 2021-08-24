@@ -49,8 +49,6 @@ trait GetMyValuesTrait
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $data = $this->getAttributes();
 
-        $changes = $this->getDirty();
-        $changes['input_source_id'] = $masterInputSource->id;
         $data['input_source_id'] = $masterInputSource->id;
         unset($data['id']);
 

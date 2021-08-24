@@ -957,7 +957,7 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => "building_services.{$ventilation->id}.service_value_id",
                             'short' => 'ventilation-type',
                             // was current-state -> hoe word het huis geventileerd
-                            'translation' => "Heeft u ventilatie?",
+                            'translation' => "Hoe wordt uw woning nu geventileerd?",
                             'tool_question_type_id' => $radioType->id,
                             'tool_question_values' => $ventilation->values()->orderBy('order')->get(),
                             'extra' => [

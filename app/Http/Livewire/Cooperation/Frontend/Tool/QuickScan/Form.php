@@ -90,6 +90,8 @@ class Form extends Component
         }
 
         foreach ($this->toolQuestions as $index => $toolQuestion) {
+            $this->setValidationForToolQuestion($toolQuestion);
+
             if (!empty($toolQuestion->conditions)) {
                 foreach ($toolQuestion->conditions as $condition) {
                     // there is a possibility the user fills the form in a unexpected order,
@@ -102,17 +104,15 @@ class Form extends Component
                         if ($answer === null) {
                             $this->toolQuestions = $this->toolQuestions->forget($index);
 
-                            // We cannot unset the validation, as it may be that the user, for some reason, changes
-                            // their mind. This can cause unexpected behaviour. Instead, we will unset the
-                            // answers the user has given. If the user then changes their mind again, they will
-                            // have to fill in the data again. We don't want to save values to the database
+                            // We will unset the answers the user has given. If the user then changes their mind, they
+                            // will have to fill in the data again. We don't want to save values to the database
                             // that are unvalidated (or not relevant).
 
                             // Normally we'd use $this->reset(), but it doesn't seem like it likes nested items per dot
                             $this->filledInAnswers[$toolQuestion->id] = null;
 
                             // and unset the validation for the question.
-//                            unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
+                            unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
                         }
                     }
                 }
@@ -171,24 +171,22 @@ class Form extends Component
 
             $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
 
+            // We don't have to set rules here, as that's done in the setToolQuestions function which gets called
             switch ($toolQuestion->toolQuestionType->short) {
                 case 'rating-slider':
                     $filledInAnswerOptions = json_decode($answerForInputSource, true);
                     foreach ($toolQuestion->options as $option) {
                         $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']] ?? 0;
-                        $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $toolQuestion->validation;
                         $this->attributes["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $option['name'];
                     }
                     break;
                 case 'slider':
                     // default it when no answer is set, otherwise if the user leaves it default and submit the validation will fail because nothing is set.
                     $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource ?? $toolQuestion->options['value'];
-                    $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
                     $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                     break;
                 default:
                     $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
-                    $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
                     $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                     break;
             }
@@ -196,6 +194,17 @@ class Form extends Component
 
         // User's previous values could be defined, which means conditional questions should be hidden
         $this->setToolQuestions();
+    }
+
+    private function setValidationForToolQuestion(ToolQuestion $toolQuestion)
+    {
+        if ($toolQuestion->hasOptions()) {
+            foreach ($toolQuestion->options as $option) {
+                $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $toolQuestion->validation;
+            }
+        } else {
+            $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
+        }
     }
 
     private function saveToolQuestionValuables(ToolQuestion $toolQuestion, $givenAnswer)

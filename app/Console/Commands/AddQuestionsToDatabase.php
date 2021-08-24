@@ -398,7 +398,7 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => 'user_energy_habits.thermostat_high',
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-high',
                             'tool_question_type_id' => $sliderType->id,
-                            'options' => ['min' => 10, 'max' => 30, 'value' => 22, 'step' => 1],
+                            'options' => ['min' => 10, 'max' => 30, 'value' => 20, 'step' => 1],
                             'unit_of_measure' => '°',
                         ],
                         [
@@ -406,7 +406,7 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => 'user_energy_habits.thermostat_low',
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-low',
                             'tool_question_type_id' => $sliderType->id,
-                            'options' => ['min' => 10, 'max' => 30, 'value' => 12, 'step' => 1],
+                            'options' => ['min' => 10, 'max' => 30, 'value' => 16, 'step' => 1],
                             'unit_of_measure' => '°',
                         ],
                         [

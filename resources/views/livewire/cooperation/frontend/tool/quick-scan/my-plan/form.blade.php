@@ -47,22 +47,38 @@
                         </h6>
                     </div>
                     @component('cooperation.frontend.layouts.components.form-group', [
-                                    'inputName' => 'new_measure.price.from',
-                                    'class' => 'w-1/2 pr-1',
-                                    'id' => 'new-measure-price-from',
-                                    'withInputSource' => false,
-                                ])
+                        'inputName' => 'new_measure.price.from',
+                        'class' => 'w-1/2 pr-1 mb-4',
+                        'id' => 'new-measure-price-from',
+                        'withInputSource' => false,
+                    ])
                         <input class="form-input" wire:model="new_measure.price.from" id="new-measure-price-from"
                                placeholder="@lang('default.from')">
                     @endcomponent
                     @component('cooperation.frontend.layouts.components.form-group', [
                         'inputName' => 'new_measure.price.to',
-                        'class' => 'w-1/2 pl-1',
+                        'class' => 'w-1/2 pl-1 mb-4',
                         'id' => 'new-measure-price-to',
                         'withInputSource' => false,
                     ])
                         <input class="form-input" wire:model="new_measure.price.to" id="new-measure-price-to"
                                placeholder="@lang('default.to')">
+                    @endcomponent
+                    <div class="w-full flex items-center">
+                        <i class="icon-sm icon-info mr-3"></i>
+                        <h6 class="heading-6">
+                            @lang('cooperation/frontend/shared.modals.add-measure.expected-savings')
+                        </h6>
+                    </div>
+                    @component('cooperation.frontend.layouts.components.form-group', [
+                        'inputName' => 'new_measure.expected_savings',
+                        'class' => 'w-full mb-4',
+                        'id' => 'new-measure-expected-savings',
+                        'withInputSource' => false,
+                    ])
+                        <input class="form-input" wire:model="new_measure.expected_savings"
+                               id="new-measure-expected-savings"
+                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.expected-savings')">
                     @endcomponent
                 </div>
                 <div class="w-full border border-gray fixed left-0"></div>

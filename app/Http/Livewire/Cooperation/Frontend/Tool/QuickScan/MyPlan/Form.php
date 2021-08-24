@@ -41,6 +41,7 @@ class Form extends Component
         'new_measure.subject' => 'required',
         'new_measure.price.from' => 'required|numeric|min:0',
         'new_measure.price.to' => 'required|numeric|gt:new_measure.price.from',
+        'new_measure.expected_savings' => 'nullable|numeric',
     ];
 
     protected $listeners = [
@@ -208,7 +209,7 @@ class Form extends Component
             'icon' => 'icon-tools',
             'price' => $measureData['price'],
             'subsidy' => $this->SUBSIDY_UNKNOWN,
-            'savings' => $measureData['price']['from'] + ($measureData['price']['to'] / 10),
+            'savings' => $measureData['expected_savings'] ?? 0,
         ];
 
         $this->dispatchBrowserEvent('close-modal');

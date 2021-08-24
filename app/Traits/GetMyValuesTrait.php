@@ -5,8 +5,6 @@ namespace App\Traits;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\InputSource;
-use App\Models\Log;
-use Illuminate\Support\Facades\Log as Logger;
 use App\Models\User;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Builder;
@@ -49,23 +47,30 @@ trait GetMyValuesTrait
     protected function saveForMasterInputSource()
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $data = $this->getAttributes();
+
         $changes = $this->getDirty();
         $changes['input_source_id'] = $masterInputSource->id;
+        $data['input_source_id'] = $masterInputSource->id;
+        unset($data['id']);
 
         $wheres = [
             'input_source_id' => $masterInputSource->id,
         ];
-        if ($this->hasAttribute('user_id')){
-            $wheres['user_id'] = $this->getAttribute('user_id');
-        }
-        if ($this->hasAttribute('building_id')){
-            $wheres['building_id'] = $this->getAttribute('building_id');
+
+        $crucialRelationCombinationIds = [
+            'user_id', 'building_id', 'tool_question_id', 'element_id', 'service_id',
+        ];
+        foreach($crucialRelationCombinationIds as $crucialRelationCombinationId){
+            if ($this->hasAttribute($crucialRelationCombinationId)) {
+                $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
+            }
         }
 
         ($this)::allInputSources()
                ->updateOrCreate(
                    $wheres,
-                   $changes
+                   $data,
                );
     }
 

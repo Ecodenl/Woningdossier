@@ -132,6 +132,7 @@ class AddQuestionsToDatabase extends Command
         $template2rows1top2bottom = SubStepTemplate::findByShort('template-2-rows-1-top-2-bottom');
         $template2rows3top1bottom = SubStepTemplate::findByShort('template-2-rows-3-top-1-bottom');
         $templateCustomChanges = SubStepTemplate::findByShort('template-custom-changes');
+        $templateSummary = SubStepTemplate::findByShort('template-summary');
 
         $structure = [
             'building-data' => [
@@ -322,6 +323,9 @@ class AddQuestionsToDatabase extends Command
 //                            'tool_question_type_id' => $textareaType->id,
 //                        ],
                     ]
+                ],
+                'Samenvatting woninggegevens' => [
+                    'sub_step_template_id' => $templateSummary->id,
                 ],
             ],
             'usage-quick-scan' => [
@@ -523,6 +527,9 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
+                'Samenvatting bewoners-gebruik' => [
+                    'sub_step_template_id' => $templateSummary->id,
+                ],
             ],
             'living-requirements' => [
                 'Hoelang blijven wonen' => [
@@ -599,6 +606,9 @@ class AddQuestionsToDatabase extends Command
                     // note: dit is een custom vraag, zie slide 18
                     'sub_step_template_id' => $templateCustomChanges->id,
 //                            'options' => ['min' => 1, 'max' => 10, 'value' => 5, 'step' => 1],
+                ],
+                'Samenvatting woonwensen' => [
+                    'sub_step_template_id' => $templateSummary->id,
                 ],
             ],
             'residential-status' => [
@@ -1066,6 +1076,9 @@ class AddQuestionsToDatabase extends Command
                             ],
                         ],
                     ]
+                ],
+                'Samenvatting woonstatus' => [
+                    'sub_step_template_id' => $templateSummary->id,
                 ],
             ],
         ];

@@ -29,6 +29,7 @@ use App\Models\ToolQuestionValuable;
 use App\Models\WoodRotStatus;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -65,11 +66,11 @@ class AddQuestionsToDatabase extends Command
      */
     public function handle()
     {
-        \Schema::disableForeignKeyConstraints();
+        Schema::disableForeignKeyConstraints();
         ToolQuestionValuable::truncate();
         ToolQuestion::truncate();
         ToolQuestionCustomValue::truncate();
-        \Schema::enableForeignKeyConstraints();
+        Schema::enableForeignKeyConstraints();
         // General data - Elements (that are not queried later on step basis)
         $livingRoomsWindows = Element::findByShort('living-rooms-windows');
         $sleepingRoomsWindows = Element::findByShort('sleeping-rooms-windows');
@@ -114,7 +115,7 @@ class AddQuestionsToDatabase extends Command
 
         // Roof insulation
         $roofInsulation = Element::findByShort('roof-insulation');
-        $roofTypes = RoofType::all();
+        $roofTypes = RoofType::orderBy('order')->get();
         $roofTileStatuses = RoofTileStatus::orderBy('order')->get();
         $buildingTypes = BuildingType::all();
         $checkboxIconType = ToolQuestionType::findByShort('checkbox-icon');
@@ -167,10 +168,10 @@ class AddQuestionsToDatabase extends Command
                                         'icon' => 'icon-apartment-ground-floor-between', // TODO: See below
                                     ],
                                     8 => [
-                                        'icon' => 'icon-upstairs-apartment-between',
+                                        'icon' => 'icon-upstairs-apartment-corner',
                                     ],
                                     9 => [
-                                        'icon' => 'icon-upstairs-apartment-corner',
+                                        'icon' => 'icon-upstairs-apartment-between',
                                     ],
                                     10 => [
                                         'icon' => 'icon-apartment-mid-floor-between', // TODO: See below
@@ -183,7 +184,7 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // TODO: wat voor type appartament heeft u moet nog komen. Dit moet de vorige vraag aanpassen, gezien de vorige vraag de optie van het type appartement nu al aangeeft
+                // TODO: wat voor type appartement heeft u moet nog komen. Dit moet de vorige vraag aanpassen, gezien de vorige vraag de optie van het type appartement nu al aangeeft
                 'Wat voor dak' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -196,9 +197,6 @@ class AddQuestionsToDatabase extends Command
                             'extra' => [
                                 'column' => 'short',
                                 'data' => [
-                                    'gabled-roof'  => [
-                                        'icon' => 'icon-pointed-roof'
-                                    ],
                                     'pitched' => [
                                         'icon' => 'icon-pitched-roof',
                                     ],
@@ -207,6 +205,9 @@ class AddQuestionsToDatabase extends Command
                                     ],
                                     'flat-pitched-roof'  => [
                                         'icon' => 'icon-flat-pitched-roof'
+                                    ],
+                                    'gabled-roof'  => [
+                                        'icon' => 'icon-pointed-roof'
                                     ],
                                     'rounded-roof' => [
                                         'icon' => 'icon-rounded-roof'
@@ -231,14 +232,14 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => 'building_features.build_year',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.build-year',
                             'tool_question_type_id' => $sliderType->id,
-                            'options' => ['min' => 1900, 'max' => date('Y'), 'value' => 1930, 'step' => 10],
+                            'options' => ['min' => 1900, 'max' => date('Y'), 'value' => 1930, 'step' => 1],
                         ],
                         [
                             'validation' => ['numeric', 'between:1,5'],
                             'save_in' => 'building_features.building_layers',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.building-layers',
                             'tool_question_type_id' => $sliderType->id,
-                            'options' => ['min' => 1, 'max' => 10, 'value' => 4, 'step' => 1],
+                            'options' => ['min' => 1, 'max' => 6, 'value' => 3, 'step' => 1],
                         ],
                     ]
                 ],
@@ -392,7 +393,7 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => 'user_energy_habits.thermostat_high',
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-high',
                             'tool_question_type_id' => $sliderType->id,
-                            'options' => ['min' => 10, 'max' => 30, 'value' => 22, 'step' => 1],
+                            'options' => ['min' => 10, 'max' => 30, 'value' => 20, 'step' => 1],
                             'unit_of_measure' => '°',
                         ],
                         [
@@ -400,7 +401,7 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => 'user_energy_habits.thermostat_low',
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-low',
                             'tool_question_type_id' => $sliderType->id,
-                            'options' => ['min' => 10, 'max' => 30, 'value' => 12, 'step' => 1],
+                            'options' => ['min' => 10, 'max' => 30, 'value' => 16, 'step' => 1],
                             'unit_of_measure' => '°',
                         ],
                         [
@@ -537,7 +538,7 @@ class AddQuestionsToDatabase extends Command
 
                     ]
                 ],
-                'Welke zaken vind u belangenrijk?' => [
+                'Welke zaken vind u belangrijk?' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -714,7 +715,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_elements.{$livingRoomsWindows->id}.element_value_id",
                             'short' => 'current-living-rooms-windows',
-                            'translation' => "Welke glasisolatie heeft u op de eerste woonlaag",
+                            'translation' => "Welke glassoort heeft u in de woonruimtes",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $livingRoomsWindows->values()->orderBy('order')->get(),
                             'extra' => [
@@ -745,7 +746,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_elements.{$sleepingRoomsWindows->id}.element_value_id",
                             'short' => 'current-living-rooms-windows',
-                            'translation' => "Welke glasisolatie heeft u op de tweede woonlaag",
+                            'translation' => "Welke glassoort heeft u in de slaapruimtes",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $sleepingRoomsWindows->values()->orderBy('order')->get(),
                             'extra' => [
@@ -980,7 +981,7 @@ class AddQuestionsToDatabase extends Command
                             'save_in' => "building_services.{$ventilation->id}.service_value_id",
                             'short' => 'ventilation-type',
                             // was current-state -> hoe word het huis geventileerd
-                            'translation' => "Heeft u ventilatie?",
+                            'translation' => "Hoe wordt uw woning nu geventileerd?",
                             'tool_question_type_id' => $radioType->id,
                             'tool_question_values' => $ventilation->values()->orderBy('order')->get(),
                             'extra' => [
@@ -1169,6 +1170,7 @@ class AddQuestionsToDatabase extends Command
                                 if (isset($extra['column'])) {
                                     $extraData = $extra['data'][$toolQuestionValue->{$extra['column']}];
                                 }
+
                                 $toolQuestion->toolQuestionValuables()->create([
                                     'order' => $toolQuestionValueOrder,
                                     'show' => true,

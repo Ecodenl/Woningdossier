@@ -46,11 +46,11 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
         Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
 
-        Route::group(['namespace' => 'Auth'], function () {
+        Route::group(['namespace' => 'Auth',], function () {
             Route::get('check-existing-mail', 'RegisterController@checkExistingEmail')->name('check-existing-email');
             Route::post('connect-existing-account', 'RegisterController@connectExistingAccount')->name('connect-existing-account');
 
-            Route::get('register', 'RegisterController@showRegistrationForm')->name('register');
+            Route::get('register', 'RegisterController@showRegistrationForm')->name('register')->middleware('guest');
             Route::post('register', 'RegisterController@register');
 
             Route::group(['as' => 'auth.'], function () {
@@ -60,7 +60,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::get('email/verify/{id}/{hash}', 'VerificationController@verify')->name('verification.verify');
                 Route::post('email/resend', 'VerificationController@resend')->name('verification.resend');
 
-                Route::get('login', 'LoginController@showLoginForm')->name('login');
+                Route::get('login', 'LoginController@showLoginForm')->name('login')->middleware('guest');
                 Route::post('login', 'LoginController@login');
 //
                 Route::post('logout', 'LoginController@logout')->name('logout');

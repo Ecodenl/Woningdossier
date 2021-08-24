@@ -14,16 +14,14 @@
 
             // We try to build the input source names based off the options, but if they aren't available,
             // we will use the shorts provided
-            if ($toolQuestion->hasOptions()) {
-
-                // not every option contains additional answers, only some do.
-                if ($toolQuestion->toolQuestionType->short === 'rating-slider') {
-                    foreach ($toolQuestion->options as $option) {
-                        $formatted[$option['short']] = "{$option['name']}: {$json[$option['short']]}";
-                    }
-                    // Follow order of input source
-                    $formatted = array_merge($json, $formatted);
+            // TODO: Check how often a check is done for rating-slider, perhaps change this to a function to
+            // check if a tool question has "sub questions"
+            if ($toolQuestion->toolQuestionType->short === 'rating-slider') {
+                foreach ($toolQuestion->options as $option) {
+                    $formatted[$option['short']] = "{$option['name']}: {$json[$option['short']]}";
                 }
+                // Follow order of input source
+                $formatted = array_merge($json, $formatted);
             } else {
                 foreach ($json as $short => $value) {
                     $formatted[$short] = "${short}: {$value}";

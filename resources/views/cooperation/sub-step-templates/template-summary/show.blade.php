@@ -32,6 +32,8 @@
                 {{-- We loop twice to first get all answers. We need the answers to ensure whether or not the tool question should be shown --}}
                 @foreach($subStepToSummarize->toolQuestions as $toolQuestionToSummarize)
                     @php
+                        // Answers will contain an array of arrays of all answers for the tool question in this sub step,
+                        // in which the nested array will be short => answer based
                         $answers->push([$toolQuestionToSummarize->short => $building->getAnswer($masterInputSource, $toolQuestionToSummarize)]);
                     @endphp
                 @endforeach
@@ -56,13 +58,14 @@
                     @endphp
                     @if ($showToolQuestion)
                         <div class="flex flex-row flex-wrap w-full">
-                            <div class="@if($toolQuestionToSummarize->toolQuestionType->short === 'rating-slider') w-1/2 pb-1 border-b border-blue-500 border-opacity-20 @else w-full @endif">
+                            <div class="@if($toolQuestionToSummarize->toolQuestionType->short === 'rating-slider') w-full @else w-1/2 @endif">
                                 <a href="{{ $subStepRoute }}" class="no-underline">
                                     <h4 class="heading-4">
                                         - {{ $toolQuestionToSummarize->name }}
                                     </h4>
                                 </a>
                             </div>
+
                             @if($toolQuestionToSummarize->toolQuestionType->short === 'rating-slider')
                                 @foreach($toolQuestionToSummarize->options as $option)
                                     <div class="w-1/2">
@@ -71,15 +74,35 @@
                                         </h5>
                                     </div>
                                     <div class="w-1/2 text-right">
-                                        <p>
+                                        <p class="font-semibold">
 
                                         </p>
                                     </div>
                                 @endforeach
                             @else
                                 <div class="w-1/2 text-right">
-                                    <p>
-                                        {{ '$answer' }}
+                                    <p class="font-semibold">
+                                        @php
+                                            $humanReadableAnswer = __('cooperation/frontend/tool.no-answer-given');
+                                            $answer = $answers->where($toolQuestionToSummarize->short, '!=', null)->first();
+
+                                            if (! empty($answer)) {
+                                                $answerValue = $answer[$toolQuestionToSummarize->short];
+                                                $questionValues = $toolQuestionToSummarize->getQuestionValues();
+
+                                                if ($questionValues->isNotEmpty()) {
+                                                    $questionValue = $questionValues->where('value', '=', $answerValue)->first();
+
+                                                    if (! empty($questionValue)) {
+                                                        $humanReadableAnswer = $questionValue['name'];
+                                                    }
+                                                } else {
+                                                    // If there are no question values, then it's user input
+                                                    $humanReadableAnswer = $answerValue;
+                                                }
+                                            }
+                                        @endphp
+                                        {{ $humanReadableAnswer }}
                                     </p>
                                 </div>
                             @endif

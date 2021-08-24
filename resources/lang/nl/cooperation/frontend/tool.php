@@ -10,6 +10,7 @@ return [
     ],
 
     'my-plan' => [
+        'label' => 'Woonplan',
         'title' => 'Uw geadviseerde Woonplan',
         'help' => 'Wilt u iets aanpassen? Sleep dan de maatregelen naar de gewenste kolom',
         'categories' => [

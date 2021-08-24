@@ -17,6 +17,8 @@
     <div class="border border-blue-500 border-opacity-50 h-1/2"></div>
     <div class="flex items-center justify-start h-full">
         <i class="icon-sm icon-house-dark mr-1"></i>
-        <span class="text-blue">Woonplan</span>
+        <span class="text-blue">
+            @lang('cooperation/frontend/tool.my-plan.label')
+        </span>
     </div>
 </div>

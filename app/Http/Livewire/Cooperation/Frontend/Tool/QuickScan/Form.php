@@ -111,13 +111,21 @@ class Form extends Component
                             // Normally we'd use $this->reset(), but it doesn't seem like it likes nested items per dot
                             $this->filledInAnswers[$toolQuestion->id] = null;
 
-                            // and unset the validation for the question.
-                            if ($toolQuestion->hasOptions()) {
-                                foreach ($toolQuestion->options as $option) {
-                                    unset($this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"]);
-                                }
-                            } else {
-                                unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
+                            // and unset the validation for the question based on type.
+                            switch ($toolQuestion->toolQuestionType->short) {
+                                case 'rating-slider':
+                                    foreach ($toolQuestion->options as $option) {
+                                        unset($this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"]);
+                                    }
+                                    break;
+
+                                case 'checkbox-icon':
+                                    unset($this->rules["filledInAnswers.{$toolQuestion->id}.*"]);
+                                    break;
+
+                                default:
+                                    unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
+                                    break;
                             }
                         }
                     }
@@ -204,12 +212,20 @@ class Form extends Component
 
     private function setValidationForToolQuestion(ToolQuestion $toolQuestion)
     {
-        if ($toolQuestion->hasOptions()) {
-            foreach ($toolQuestion->options as $option) {
-                $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $toolQuestion->validation;
-            }
-        } else {
-            $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
+        switch ($toolQuestion->toolQuestionType->short) {
+            case 'rating-slider':
+                foreach ($toolQuestion->options as $option) {
+                    $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $toolQuestion->validation;
+                }
+                break;
+
+            case 'checkbox-icon':
+                $this->rules["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->validation;
+                break;
+
+            default:
+                $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
+                break;
         }
     }
 

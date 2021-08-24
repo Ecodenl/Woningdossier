@@ -61,10 +61,10 @@ class MapAnswers extends Command
 //        $this->info('Mapping building heating applications from building features to tool question building heating application');
 //        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
 //        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
-//        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
+        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
 //        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
 //        $this->mapHrBoilerPlacedDate();
-        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
+//        $this->mapBuildingFeatureBuildingHeatingToBuild ingHeatingApplicationToolQuestion();
     }
 
     public function mapHrBoilerPlacedDate()

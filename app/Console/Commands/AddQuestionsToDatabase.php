@@ -96,8 +96,6 @@ class AddQuestionsToDatabase extends Command
         $woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
         // High efficiency boiler
-        // NOTE: building element hr-boiler tells us if it's there
-        $hrBoiler = Service::findByShort('hr-boiler');
         $boiler = Service::findByShort('boiler');
 
         // Solar panels

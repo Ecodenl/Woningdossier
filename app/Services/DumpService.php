@@ -585,9 +585,10 @@ class DumpService
                                 }
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer ?? '';
                                 break;
-                            case 'building-heating-application':
-                                $buildingHeatingApplications = $building->getAnswer($inputSource, ToolQuestion::findByShort('building-heating-application'));
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = ToolQuestionCustomValue::whereIn('short', $buildingHeatingApplications)
+                            default:
+                                $answers = $building->getAnswer($inputSource, ToolQuestion::findByShort($column));
+                                // this will alow us to translates the answers
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = ToolQuestionCustomValue::whereIn('short', $answers)
                                         ->get()
                                         ->pluck('name')
                                         ->implode(', ') ?? '';

@@ -64,7 +64,6 @@ class ToolHelper
         $livingRoomsWindows = Element::findByShort('living-rooms-windows');
         $sleepingRoomsWindows = Element::findByShort('sleeping-rooms-windows');
         // General data - Services (that are not queried later on step basis)
-        $heatPump = Service::findByShort('heat-pump');
         $ventilation = Service::findByShort(
             'house-ventilation'
         );
@@ -125,8 +124,7 @@ class ToolHelper
         ];
 
         // High efficiency boiler
-        // NOTE: building element hr-boiler tells us if it's there
-        $hrBoiler = Service::findByShort('hr-boiler');
+        // NOTE: building element tells us if it's there
         $boiler = Service::findByShort('boiler');
 
         // Solar panels
@@ -304,14 +302,13 @@ class ToolHelper
                         ),
                     ],
 
-                    'service.' . $hrBoiler->id => [
-                        'label' => $hrBoiler->name,
+
+                    'tool_question_answers.heat-source' => [
+                        'label' => ToolQuestion::findByShort('heat-source')->name,
                         'type' => 'select',
-                        'options' => static::createOptions(
-                            $hrBoiler->values()->orderBy('order')->get(),
-                            'value'
-                        ),
+                        'options' => ToolQuestion::findByShort('heat-source')->getQuestionValues()->pluck('name', 'short')->toArray()
                     ],
+
                     'service.' . $boiler->id . '.service_value_id' => [
                         'label' => __('boiler.boiler-type.title'),
                         'type' => 'select',
@@ -326,15 +323,6 @@ class ToolHelper
                         ),
                         'type' => 'select',
                         'options' => ToolQuestion::findByShort('building-heating-application')->getQuestionValues()->pluck('name', 'short')->toArray()
-                    ],
-
-                    'service.' . $heatPump->id => [
-                        'label' => $heatPump->name,
-                        'type' => 'select',
-                        'options' => static::createOptions(
-                            $heatPump->values()->orderBy('order')->get(),
-                            'value'
-                        ),
                     ],
 
                     'service.' . $solarPanels->id . '.extra.value' => [
@@ -825,7 +813,7 @@ class ToolHelper
                         'high-efficiency-boiler'
                     )->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $hrBoiler->name . ': ' . __(
+                        'label' => 'HR CV Ketel: ' . __(
                                 'high-efficiency-boiler.index.interested-in-improvement.title'
                             ),
                         'type' => 'select',

@@ -55,7 +55,6 @@ class ToolHelperOld
         $livingRoomsWindows = Element::findByShort('living-rooms-windows');
         $sleepingRoomsWindows = Element::findByShort('sleeping-rooms-windows');
         // General data - Services (that are not queried later on step basis)
-        $heatPump = Service::findByShort('heat-pump');
         $ventilation = Service::findByShort('house-ventilation');
         $buildingHeatingApplications = BuildingHeatingApplication::orderBy('order')->get();
 
@@ -101,8 +100,6 @@ class ToolHelperOld
         ];
 
         // High efficiency boiler
-        // NOTE: building element hr-boiler tells us if it's there
-        $hrBoiler = Service::findByShort('hr-boiler');
         $boiler = Service::findByShort('boiler');
 
         // Solar panels
@@ -376,7 +373,7 @@ class ToolHelperOld
                 '-' => [
                     $stepUserInterestKey.Step::findByShort('high-efficiency-boiler')->id.'.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $hrBoiler->name.': '.__('high-efficiency-boiler.index.interested-in-improvement.title'),
+                        'label' => 'HR CV Ketel: '.__('high-efficiency-boiler.index.interested-in-improvement.title'),
                         'type' => 'select',
                         'options' => $interestOptions,
                     ],

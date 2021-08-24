@@ -9,7 +9,7 @@
 
             @if(! \App\Helpers\Blade\RouteLogic::inMyPlan(Route::currentRouteName()))
                 {{-- Progress bar --}}
-                <div class="w-full bg-gray h-2">
+                <div class="w-full bg-gray h-2 relative z-40 -mt-1">
                     @php
                         $total = $total ?? 100;
                         $current = $current ?? 100;

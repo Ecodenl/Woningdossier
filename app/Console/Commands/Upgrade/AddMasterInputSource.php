@@ -210,6 +210,13 @@ class AddMasterInputSource extends Command
                     'answer',
                 ],
             ],
+            'tool_question_answers' => [
+                'where_column' => 'tool_question_id',
+                'answer_columns' => [
+                    'tool_question_custom_value_id',
+                    'answer',
+                ],
+            ],
         ];
 
         // Get the input sources

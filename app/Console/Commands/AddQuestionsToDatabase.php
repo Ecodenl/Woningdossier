@@ -936,8 +936,12 @@ class AddQuestionsToDatabase extends Command
                     'conditions' => [
                         [
                             'column' => 'heat-source',
-                            'operator' => '=',
                             'value' => 'heat-pump',
+                        ],
+                        [
+                            'column' => 'cook-type',
+                            'condition' => '=',
+                            'value' => 'gas',
                         ]
                     ],
                     'questions' => [

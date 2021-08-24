@@ -13,6 +13,7 @@ use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -43,9 +44,7 @@ class Form extends Component
 
     public $toolQuestions;
 
-    public $filledInAnswers = [
-        25 => [],
-    ];
+    public $filledInAnswers = [];
     public $filledInAnswersForAllInputSources = [];
 
     public function mount(Step $step, SubStep $subStep)
@@ -77,7 +76,6 @@ class Form extends Component
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
 
         $this->setToolQuestions();
-        \Illuminate\Support\Facades\Log::debug(json_encode($this->filledInAnswers));
 
     }
 
@@ -207,9 +205,11 @@ class Form extends Component
                     $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                     break;
                 case 'checkbox-icon':
+                    /** @var Collection $questionValues */
                     foreach ($answerForInputSource as $answer) {
                         $this->filledInAnswers[$toolQuestion->id][] = $answer;
                     }
+                    $this->attributes["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->name;
                     break;
                 default:
                     $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;

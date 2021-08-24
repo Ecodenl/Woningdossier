@@ -128,7 +128,7 @@ class Str
     {
         $json = json_decode($value, true);
 
-        // There could be json strings or numeric values, we don't want them to be valid if $arrayOnly is true.
+        // There could be JSON strings or numeric values, we don't want them to be valid if $arrayOnly is true.
         return ! is_null($json) && ($arrayOnly === false || ($arrayOnly === true && is_array($json)));
     }
 }

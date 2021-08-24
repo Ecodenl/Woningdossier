@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Upgrade;
 
+use App\Helpers\Str;
 use App\Models\Building;
 use App\Models\InputSource;
 use Illuminate\Console\Command;
@@ -271,7 +272,9 @@ class AddMasterInputSource extends Command
 
                                     $answer = $this->getObjectProperty($coachAnswer, $answerColumn);
 
-                                    if (empty($answer) && ! is_numeric($answer)) {
+                                    $isValidJson = Str::isValidJson($answer);
+
+                                    if ((empty($answer) && ! is_numeric($answer)) || $isValidJson) {
                                         // Grab the answer of the resident if answer is TRULY empty
                                         $residentAnswer = $this->searchCollectionForValue($values, $residentInputSource,
                                             [
@@ -279,7 +282,14 @@ class AddMasterInputSource extends Command
                                                 $additionalWhereColumn => $differentiatingSubValue,
                                             ]);
 
-                                        $answer = $this->getObjectProperty($residentAnswer, $answerColumn);
+                                        $tempAnswer = $this->getObjectProperty($residentAnswer, $answerColumn);
+
+                                        // If it's valid JSON, we will check the resident keys for potential extra values
+                                        if ($isValidJson) {
+                                            $answer = $this->compareJsonKeys($answer, $tempAnswer);
+                                        } else {
+                                            $answer = $tempAnswer;
+                                        }
                                     }
 
                                     // Build answer structure with where and additional where
@@ -292,12 +302,21 @@ class AddMasterInputSource extends Command
 
                                 $answer = $this->getObjectProperty($coachAnswer, $answerColumn);
 
-                                if (empty($answer) && ! is_numeric($answer)) {
+                                $isValidJson = Str::isValidJson($answer);
+
+                                if ((empty($answer) && ! is_numeric($answer)) || $isValidJson) {
                                     // Grab the answer of the resident if answer is TRULY empty
                                     $residentAnswer = $this->searchCollectionForValue($values, $residentInputSource,
                                         [$whereColumn => $differentiatingValue]);
 
-                                    $answer = $this->getObjectProperty($residentAnswer, $answerColumn);
+                                    $tempAnswer = $this->getObjectProperty($residentAnswer, $answerColumn);
+
+                                    // If it's valid JSON, we will check the resident keys for potential extra values
+                                    if ($isValidJson) {
+                                        $answer = $this->compareJsonKeys($answer, $tempAnswer);
+                                    } else {
+                                        $answer = $tempAnswer;
+                                    }
                                 }
 
                                 // Build answer structure with where
@@ -310,11 +329,20 @@ class AddMasterInputSource extends Command
 
                         $answer = $this->getObjectProperty($coachAnswer, $answerColumn);
 
-                        if (empty($answer) && ! is_numeric($answer)) {
+                        $isValidJson = Str::isValidJson($answer);
+
+                        if ((empty($answer) && ! is_numeric($answer)) || $isValidJson) {
                             // Grab the answer of the resident if answer is TRULY empty
                             $residentAnswer = $this->searchCollectionForValue($values, $residentInputSource);
 
-                            $answer = $this->getObjectProperty($residentAnswer, $answerColumn);
+                            $tempAnswer = $this->getObjectProperty($residentAnswer, $answerColumn);
+
+                            // If it's valid JSON, we will check the resident keys for potential extra values
+                            if ($isValidJson) {
+                                $answer = $this->compareJsonKeys($answer, $tempAnswer);
+                            } else {
+                                $answer = $tempAnswer;
+                            }
                         }
 
                         // Build default answer structure
@@ -421,5 +449,25 @@ class AddMasterInputSource extends Command
         }
 
         return null;
+    }
+
+    /**
+     * @param $coachJson
+     * @param $residentJson
+     *
+     * @return string
+     */
+    public function compareJsonKeys($coachJson, $residentJson): string
+    {
+        $coachOptions = json_decode($coachJson, true);
+        $residentOptions = json_decode($residentJson, true);
+
+        foreach($residentOptions as $key => $value) {
+            if (! array_key_exists($key, $coachOptions)) {
+                $coachOptions[$key] = $value;
+            }
+        }
+
+        return json_encode($coachOptions);
     }
 }

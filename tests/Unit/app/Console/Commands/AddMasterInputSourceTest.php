@@ -242,4 +242,24 @@ class AddMasterInputSourceTest extends TestCase
 
         $this->assertEquals($expected, $command->getObjectProperty($object, $key));
     }
+
+    public static function compareJsonKeysProvider()
+    {
+        return [
+            ['{"has_crawlspace":"yes","access":"no"}', '{"has_crawlspace":"no"}', '{"has_crawlspace":"yes","access":"no"}'],
+            ['{"has_crawlspace":"no"}', '{"has_crawlspace":"yes","access":"yes"}', '{"has_crawlspace":"no","access":"yes"}'],
+            ['{"has_crawlspace":"yes","access":"no"}', '{"has_crawlspace":"no","access":"yes"}', '{"has_crawlspace":"yes","access":"no"}'],
+        ];
+    }
+
+    /**
+     * @dataProvider compareJsonKeysProvider
+     */
+    public function testCompareJsonKeys($coachJson, $residentJson, $expected)
+    {
+        // Instantiate new command so we can call the function
+        $command = new AddMasterInputSource();
+
+        $this->assertEquals($expected, $command->compareJsonKeys($coachJson, $residentJson));
+    }
 }

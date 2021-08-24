@@ -29,6 +29,7 @@ use App\Models\ToolQuestionValuable;
 use App\Models\WoodRotStatus;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -65,11 +66,11 @@ class AddQuestionsToDatabase extends Command
      */
     public function handle()
     {
-        \Schema::disableForeignKeyConstraints();
+        Schema::disableForeignKeyConstraints();
         ToolQuestionValuable::truncate();
         ToolQuestion::truncate();
         ToolQuestionCustomValue::truncate();
-        \Schema::enableForeignKeyConstraints();
+        Schema::enableForeignKeyConstraints();
         // General data - Elements (that are not queried later on step basis)
         $livingRoomsWindows = Element::findByShort('living-rooms-windows');
         $sleepingRoomsWindows = Element::findByShort('sleeping-rooms-windows');
@@ -116,7 +117,7 @@ class AddQuestionsToDatabase extends Command
 
         // Roof insulation
         $roofInsulation = Element::findByShort('roof-insulation');
-        $roofTypes = RoofType::all();
+        $roofTypes = RoofType::orderBy('order')->get();
         $roofTileStatuses = RoofTileStatus::orderBy('order')->get();
         $buildingTypes = BuildingType::all();
         $radioIconType = ToolQuestionType::findByShort('radio-icon');
@@ -184,7 +185,7 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // TODO: wat voor type appartament heeft u moet nog komen. Dit moet de vorige vraag aanpassen, gezien de vorige vraag de optie van het type appartement nu al aangeeft
+                // TODO: wat voor type appartement heeft u moet nog komen. Dit moet de vorige vraag aanpassen, gezien de vorige vraag de optie van het type appartement nu al aangeeft
                 'Wat voor dak' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -197,9 +198,6 @@ class AddQuestionsToDatabase extends Command
                             'extra' => [
                                 'column' => 'short',
                                 'data' => [
-                                    'gabled-roof'  => [
-                                        'icon' => 'icon-pointed-roof'
-                                    ],
                                     'pitched' => [
                                         'icon' => 'icon-pitched-roof',
                                     ],
@@ -208,6 +206,9 @@ class AddQuestionsToDatabase extends Command
                                     ],
                                     'flat-pitched-roof'  => [
                                         'icon' => 'icon-flat-pitched-roof'
+                                    ],
+                                    'gabled-roof'  => [
+                                        'icon' => 'icon-pointed-roof'
                                     ],
                                     'rounded-roof' => [
                                         'icon' => 'icon-rounded-roof'
@@ -538,7 +539,7 @@ class AddQuestionsToDatabase extends Command
 
                     ]
                 ],
-                'Welke zaken vind u belangenrijk?' => [
+                'Welke zaken vind u belangrijk?' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -1145,6 +1146,7 @@ class AddQuestionsToDatabase extends Command
                                 if (isset($extra['column'])) {
                                     $extraData = $extra['data'][$toolQuestionValue->{$extra['column']}];
                                 }
+
                                 $toolQuestion->toolQuestionValuables()->create([
                                     'order' => $toolQuestionValueOrder,
                                     'show' => true,

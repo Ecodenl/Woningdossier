@@ -6,17 +6,13 @@ use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingService;
 use App\Models\InputSource;
-use App\Models\Motivation;
-use App\Models\Service;
 use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
-use App\Models\UserMotivation;
 use App\ToolQuestionAnswer;
 use Illuminate\Console\Command;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class MapAnswers extends Command
@@ -52,19 +48,17 @@ class MapAnswers extends Command
      */
     public function handle()
     {
-        ToolQuestionAnswer::truncate();
         // keep in mind that the order of this map is important!
-//        $this->info('Cook gas field to the tool question answers...');
-//        $this->mapUserEnergyHabits();
+        $this->info('Cook gas field to the tool question answers...');
+        $this->mapUserEnergyHabits();
         $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
-//        $this->mapUserMotivations();
-//        $this->info('Mapping building heating applications from building features to tool question building heating application');
-//        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
-//        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
+        $this->mapUserMotivations();
+        $this->info('Mapping building heating applications from building features to tool question building heating application');
+        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
+        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
         $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
-//        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
-//        $this->mapHrBoilerPlacedDate();
-//        $this->mapBuildingFeatureBuildingHeatingToBuild ingHeatingApplicationToolQuestion();
+        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
+        $this->mapHrBoilerPlacedDate();
     }
 
     public function mapHrBoilerPlacedDate()
@@ -282,7 +276,6 @@ class MapAnswers extends Command
     private function mapUserMotivations()
     {
         $users = User::has('building')
-            ->where('id', 1)
             ->with(['building.user'])
             ->get();
 

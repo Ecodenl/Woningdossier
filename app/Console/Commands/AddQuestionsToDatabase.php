@@ -716,7 +716,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_elements.{$livingRoomsWindows->id}.element_value_id",
                             'short' => 'current-living-rooms-windows',
-                            'translation' => "Welke glasisolatie heeft u op de eerste woonlaag",
+                            'translation' => "Welke glassoort heeft u in de woonruimtes",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $livingRoomsWindows->values()->orderBy('order')->get(),
                             'extra' => [
@@ -747,7 +747,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_elements.{$sleepingRoomsWindows->id}.element_value_id",
                             'short' => 'current-living-rooms-windows',
-                            'translation' => "Welke glasisolatie heeft u op de tweede woonlaag",
+                            'translation' => "Welke glassoort heeft u in de slaapruimtes",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $sleepingRoomsWindows->values()->orderBy('order')->get(),
                             'extra' => [

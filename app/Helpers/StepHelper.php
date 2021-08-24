@@ -114,7 +114,7 @@ class StepHelper
      *
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
-    public static function getUnfinishedchildrenForStep(
+    public static function getUnfinishedChildrenForStep(
         Step $step,
         Building $building,
         InputSource $inputSource
@@ -162,7 +162,7 @@ class StepHelper
         $nonCompletedSteps = collect();
         // when there is a substep try to redirect them to the next sub step
         if ($subStep instanceof Step) {
-            $nonCompletedSteps = static::getUnfinishedchildrenForStep($parentStep,
+            $nonCompletedSteps = static::getUnfinishedChildrenForStep($parentStep,
                 $building, $inputSource);
         }
 

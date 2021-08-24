@@ -57,13 +57,14 @@ class MapAnswers extends Command
 //        $this->info('Cook gas field to the tool question answers...');
 //        $this->mapUserEnergyHabits();
         $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
-        $this->mapUserMotivations();
+//        $this->mapUserMotivations();
 //        $this->info('Mapping building heating applications from building features to tool question building heating application');
 //        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
 //        $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
 //        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
 //        $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
 //        $this->mapHrBoilerPlacedDate();
+        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
     }
 
     public function mapHrBoilerPlacedDate()
@@ -235,7 +236,7 @@ class MapAnswers extends Command
     {
         $buildingFeatures = BuildingFeature::allInputSources()
             ->whereHas('building')
-            ->with(['building', 'buildingHeatingApplication'])
+            ->with(['building'])
             ->get();
 
         $bar = $this->output->createProgressBar($buildingFeatures->count());
@@ -258,8 +259,8 @@ class MapAnswers extends Command
                     'building_id' => $buildingFeature->building_id,
                 ];
 
-                $buildingHeatingApplicationShort = $buildingFeature->buildingHeatingApplication->short;
-
+                $buildingHeatingApplicationShort = DB::table('building_heating_applications')
+                    ->find($buildingFeature->building_heating_application_id)->short;
                 // now map the old to the new answers, and create the tool question answers
                 $buildingHeatingValueShorts = $buildingHeatingApplicationMap[$buildingHeatingApplicationShort];
 

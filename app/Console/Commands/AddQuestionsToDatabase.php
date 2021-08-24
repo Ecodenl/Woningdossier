@@ -856,7 +856,6 @@ class AddQuestionsToDatabase extends Command
                     'questions' => [
                         [
                             'validation' => ['required', 'exists:tool_question_custom_values,short'],
-//                            'save_in' => "building_features.building_heating_application_id",
                             'short' => 'building-heating-application',
                             // was current-state -> hoe word de woning nu verwarmd
                             'translation' => "Hoe is de verwarming",

@@ -31,7 +31,7 @@ class UserService
                         'buildingFeatures' => function ($query) use ($inputSource) {
                             $query->forInputSource($inputSource)
                                 ->with([
-                                    'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
+                                    'roofType', 'energyLabel', 'damagedPaintwork', 'plasteredSurface',
                                     'contaminatedWallJoints', 'wallJoints',
                                 ]);
                         },

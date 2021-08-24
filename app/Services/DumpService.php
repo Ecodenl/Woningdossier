@@ -47,6 +47,7 @@ use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
 use App\Models\ToolQuestion;
+use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
 use Illuminate\Support\Arr;
@@ -334,9 +335,6 @@ class DumpService
                                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->name : '';
                                     }
                                     break;
-                                case 'building_heating_application_id':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = optional($buildingFeature->buildingHeatingApplication)->name;
-                                    break;
                                 case 'facade_plastered_painted':
                                     $possibleAnswers = [
                                         1 => \App\Helpers\Translation::translate('general.options.yes.title'),
@@ -586,6 +584,13 @@ class DumpService
                                     $answer = __('woningdossier.cooperation.radiobutton.yes');
                                 }
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer ?? '';
+                                break;
+                            case 'building-heating-application':
+                                $buildingHeatingApplications = $building->getAnswer($inputSource, ToolQuestion::findByShort('building-heating-application'));
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = ToolQuestionCustomValue::whereIn('short', $buildingHeatingApplications)
+                                        ->get()
+                                        ->pluck('name')
+                                        ->implode(', ') ?? '';
                                 break;
                         }
                         break;

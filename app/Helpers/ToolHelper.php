@@ -25,6 +25,7 @@ use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
 use App\Models\SubStepTemplate;
+use App\Models\ToolQuestion;
 use App\Models\ToolQuestionType;
 use App\Models\Ventilation;
 use App\Models\WoodRotStatus;
@@ -319,14 +320,12 @@ class ToolHelper
                             'value'
                         ),
                     ],
-                    'building_features.building_heating_application_id' => [
+                    'tool_question_answers.building-heating-application' => [
                         'label' => __(
                             'cooperation/tool/general-data/current-state.index.building-heating-applications.title'
                         ),
                         'type' => 'select',
-                        'options' => static::createOptions(
-                            $buildingHeatingApplications
-                        ),
+                        'options' => ToolQuestion::findByShort('building-heating-application')->getQuestionValues()->pluck('name', 'short')->toArray()
                     ],
 
                     'service.' . $heatPump->id => [

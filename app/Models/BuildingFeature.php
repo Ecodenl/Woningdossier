@@ -92,7 +92,6 @@ class BuildingFeature extends Model
     use ToolSettingTrait;
 
     protected $fillable = [
-        'building_heating_application_id',
         'element_values',
         'plastered_wall_surface',
         'building_type_id',
@@ -130,11 +129,6 @@ class BuildingFeature extends Model
     public function plasteredSurface()
     {
         return $this->belongsTo(FacadePlasteredSurface::class, 'facade_plastered_surface_id', 'id');
-    }
-
-    public function buildingHeatingApplication()
-    {
-        return $this->belongsTo(BuildingHeatingApplication::class);
     }
 
     /**

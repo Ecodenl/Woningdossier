@@ -155,14 +155,6 @@ class ToolHelperOld
                         'type' => 'select',
                         'options' => static::createOptions($comfortLevelsTapWater),
                     ],
-                    'user_energy_habits.cook_gas' => [
-                        'label' => __('cooperation/tool/general-data/usage.index.water-gas.cook-gas.title'),
-                        'type' => 'select',
-                        'options' => [
-                            1 => __('woningdossier.cooperation.radiobutton.yes'),
-                            2 => __('woningdossier.cooperation.radiobutton.no'),
-                        ],
-                    ],
                 ],
                 // interests come later on
             ],

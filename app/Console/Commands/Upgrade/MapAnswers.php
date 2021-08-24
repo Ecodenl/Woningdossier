@@ -52,18 +52,16 @@ class MapAnswers extends Command
      */
     public function handle()
     {
-
-
+        ToolQuestionAnswer::truncate();
         // keep in mind that the order of this map is important!
-        $this->info("Mapping user energy habits...");
-//        $this->info('Cook gas field to the tool question answers...');
-//        $this->mapUserEnergyHabits();
-//        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
-//        $this->mapUserMotivations();
-//        $this->info('Mapping building heating applications from building features to tool question building heating application');
-//        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
+        $this->info('Cook gas field to the tool question answers...');
+        $this->mapUserEnergyHabits();
+        $this->info("Mapping the user motivations to the welke zaken vind u belangrijke rating slider style...");
+        $this->mapUserMotivations();
+        $this->info('Mapping building heating applications from building features to tool question building heating application');
+        $this->mapBuildingFeatureBuildingHeatingToBuildingHeatingApplicationToolQuestion();
         $this->info('Mapping hr-boiler and heat-pump service to heat-source tool question...');
-//        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
+        $this->mapHrBoilerAndHeatPumpToHeatSourceToolQuestion();
         $this->info('Mapping boiler placed date (for users who haven\'t defined one)');
         $this->mapHrBoilerPlacedDate();
     }
@@ -84,7 +82,9 @@ class MapAnswers extends Command
             'Aanwezig, tussen 6 en 13 jaar oud' => $year - 10,
             'Aanwezig, ouder dan 13 jaar' => $year - 13,
         ];
+        $bar = $this->output->createProgressBar($buildingServicesBoiler->count());
 
+        $bar->start();
         foreach ($buildingServicesBoiler as $buildingServiceBoiler) {
             // now get the hr-boiler, this way we can try do determine the placed date for the user
 
@@ -102,8 +102,11 @@ class MapAnswers extends Command
             ) {
                 $buildingServiceBoiler->update(['extra' => ['date' => $hrBoilerMap[$hrBoiler->serviceValue->value] ?? null]]);
             }
+            $bar->advance();
         }
 
+        $bar->finish();
+        $this->output->newLine();
     }
 
     private function mapHrBoilerAndHeatPumpToHeatSourceToolQuestion()
@@ -233,7 +236,6 @@ class MapAnswers extends Command
         $buildingFeatures = BuildingFeature::allInputSources()
             ->whereHas('building')
             ->with(['building', 'buildingHeatingApplication'])
-            ->limit(500)
             ->get();
 
         $bar = $this->output->createProgressBar($buildingFeatures->count());
@@ -281,7 +283,6 @@ class MapAnswers extends Command
         $users = User::has('building')
             ->has('motivations')
             ->with(['building.user', 'motivations.motivation'])
-            ->limit(500)
             ->get();
 
         // let me explain;
@@ -345,7 +346,6 @@ class MapAnswers extends Command
     {
 
         $userEnergyHabits = UserEnergyHabit::allInputSources()
-            ->limit(500)
             ->whereHas('user.building')
             ->with('user.building')
             ->get();

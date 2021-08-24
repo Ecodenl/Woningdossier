@@ -418,7 +418,7 @@ class ToolHelper
                             $comfortLevelsTapWater
                         ),
                     ],
-                    'user_energy_habits.cook_gas' => [
+                    'tool_question_answers.cook-type' => [
                         'label' => __(
                             'cooperation/tool/general-data/usage.index.water-gas.cook-gas.title'
                         ),

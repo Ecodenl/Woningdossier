@@ -482,7 +482,9 @@
     <script>
         $(document).ready(function () {
 
-            $("select, input[type=radio], input[type=text]").change(function () {
+            $("select, input[type=radio], input[type=text]").change(formChange());
+
+            function formChange() {
                 if ($('.is-painted').is(':checked')) {
                     $('#painted-options').show();
                     $('#surfaces').show()
@@ -491,8 +493,7 @@
                     // $('#surfaces').hide()
                 }
 
-                let $form = $('#wall-insulation-form');
-                let form = $form.serialize();
+                let form = $('#wall-insulation-form').serialize();
                 $.ajax({
                     type: "POST",
                     url: '{{ route('cooperation.tool.wall-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',
@@ -581,10 +582,10 @@
                         @endif
                     }
                 })
-            });
-            // Trigger the change event so it will load the data
-            $('.form-input:visible:enabled').first().trigger('change');
+            }
 
+            // Trigger the change event so it will load the data
+            formChange();
         });
 
         $('#wall_surface').on('change', function () {

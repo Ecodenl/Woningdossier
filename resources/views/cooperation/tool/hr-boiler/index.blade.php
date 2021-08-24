@@ -180,8 +180,7 @@
             $("select, input[type=radio], input[type=text]").change(formChange);
 
             function formChange() {
-                let $form = $('#high-efficiency-boiler-form');
-                let form = $form.serialize();
+                let form = $('#high-efficiency-boiler-form').serialize();
                 $.ajax({
                     type: "POST",
                     url: '{{ route('cooperation.tool.high-efficiency-boiler.calculate', compact('cooperation')) }}',

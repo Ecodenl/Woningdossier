@@ -46,11 +46,11 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
         Route::get('switch-language/{locale}', 'UserLanguageController@switchLanguage')->name('switch-language');
 
-        Route::group(['namespace' => 'Auth'], function () {
+        Route::group(['namespace' => 'Auth',], function () {
             Route::get('check-existing-mail', 'RegisterController@checkExistingEmail')->name('check-existing-email');
             Route::post('connect-existing-account', 'RegisterController@connectExistingAccount')->name('connect-existing-account');
 
-            Route::get('register', 'RegisterController@showRegistrationForm')->name('register');
+            Route::get('register', 'RegisterController@showRegistrationForm')->name('register')->middleware('guest');
             Route::post('register', 'RegisterController@register');
 
             Route::group(['as' => 'auth.'], function () {
@@ -60,7 +60,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::get('email/verify/{id}/{hash}', 'VerificationController@verify')->name('verification.verify');
                 Route::post('email/resend', 'VerificationController@resend')->name('verification.resend');
 
-                Route::get('login', 'LoginController@showLoginForm')->name('login');
+                Route::get('login', 'LoginController@showLoginForm')->name('login')->middleware('guest');
                 Route::post('login', 'LoginController@login');
 //
                 Route::post('logout', 'LoginController@logout')->name('logout');
@@ -84,6 +84,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::get('{token}', 'RecoverOldEmailController@recover')->name('recover');
         });
 
+        Route::resource('privacy', 'PrivacyController')->only('index');
+        Route::resource('disclaimer', 'DisclaimController')->only('index');
+
         // group can be accessed by everyone that's authorized and has a role in its session
         Route::group(['middleware' => ['auth', 'current-role:resident|cooperation-admin|coordinator|coach|super-admin|superuser', 'verified']], function () {
             Route::get('messages/count', 'MessagesController@getTotalUnreadMessageCount')->name('message.get-total-unread-message-count');
@@ -98,9 +101,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
             }
             Route::get('home', 'HomeController@index')->name('home')->middleware('deny-if-filling-for-other-building');
-
-            Route::resource('privacy', 'PrivacyController')->only('index');
-            Route::resource('disclaimer', 'DisclaimController')->only('index');
 
             Route::group(['prefix' => 'file-storage', 'as' => 'file-storage.'], function () {
                 Route::post('{fileType}', 'FileStorageController@store')

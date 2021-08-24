@@ -71,8 +71,10 @@
                             'dismissible' => false,
                         ])
                             <p class="text-yellow">
-                                <strong>Er is op dit moment mogelijkerwijs onvoldoende ventilatie, het kan zinvol zijn
-                                    om dit door een specialist te laten beoordelen.</strong>
+                                <strong>
+                                    Er is op dit moment mogelijkerwijs onvoldoende ventilatie, het kan zinvol zijn
+                                    om dit door een specialist te laten beoordelen.
+                                </strong>
                             </p>
                         @endcomponent
                     </div>
@@ -218,20 +220,20 @@
             </div>
         @endif
 
-        <div class="flex flex-row flex-wrap w-full">
+        <div class="flex flex-row flex-wrap w-full mt-4">
             <div class="w-full">
-                <h3>Verbeteropties</h3>
+                <h3 class="heading-3">Verbeteropties</h3>
             </div>
         </div>
-        <div class="flex flex-row flex-wrap w-full">
+        <div class="flex flex-row flex-wrap w-full mb-4">
             <div class="w-full">
                 <p id="improvement"></p>
             </div>
         </div>
-        <div class="flex flex-row flex-wrap w-full advices">
+        <div class="flex flex-row flex-wrap w-full my-4 advices">
 
         </div>
-        <div class="flex flex-row flex-wrap w-full">
+        <div class="flex flex-row flex-wrap w-full my-4">
             <div class="w-full">
                 <p id="remark"></p>
             </div>
@@ -275,7 +277,7 @@
             </div>
         </div>
 
-        <div id="costs-other">
+        <div id="costs-other" class="mt-4">
             @include('cooperation.tool.includes.section-title', [
                 'translation' => 'cooperation/tool/ventilation.index.indication-for-costs-other',
                 'id' => 'indication-for-costs'
@@ -344,7 +346,7 @@
                 // hide by default
                 $('#how-none-alert').hide();
 
-                $('input[name^="building_ventilations[how]"]').filter(':visible').map(function () {
+                $('input[name^="building_ventilations[how]"]').filter(':enabled').map(function () {
                     if (this.value === 'none' && this.checked && this.name.indexOf('[how]') !== -1) {
                         // Show the alert
                         $('#how-none-alert').show();
@@ -353,7 +355,7 @@
 
                 // living_situation
                 $('#living_situation-alert').hide();
-                $('input[name^="building_ventilations[living_situation]"]').filter(':visible').map(function () {
+                $('input[name^="building_ventilations[living_situation]"]').filter(':enabled').map(function () {
                     var selector = $("#living_situation-alert ul li." + this.value);
                     selector.hide();
                     if (this.checked) {
@@ -366,7 +368,7 @@
                 // usage
                 // living_situation
                 $('#usage-alert').hide();
-                $('input[name^="building_ventilations[usage]"]').filter(':visible').map(function () {
+                $('input[name^="building_ventilations[usage]"]').filter(':enabled').map(function () {
                     var selector = $("#usage-alert ul li." + this.value);
                     selector.hide();
                     if (this.checked) {
@@ -437,7 +439,7 @@
                 });
             }
 
-            $('input[type="checkbox"]:visible:enabled').first().trigger('change');
+            $('input[type="checkbox"]:enabled').first().trigger('change');
         });
     </script>
 @endpush

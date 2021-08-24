@@ -5,14 +5,70 @@ namespace App\Traits;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\InputSource;
+use App\Models\Log;
+use Illuminate\Support\Facades\Log as Logger;
 use App\Models\User;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 
 trait GetMyValuesTrait
 {
+
+    /**
+     * boot this trait
+     * (https://www.archybold.com/blog/post/booting-eloquent-model-traits)
+     */
+    public static function bootGetMyValuesTrait()
+    {
+        static::saved(function (Model $model) {
+            // might be handy to prevent getting into an infinite loop (-:>
+            if (($model->inputSource->short ?? '') !== InputSource::MASTER_SHORT) {
+                $model->saveForMasterInputSource();
+            }
+        });
+    }
+
+    /**
+     * Returns if this model has a particular attribute.
+     * This should be done on the database table as this is also used during
+     * creation in which attributes may not be set.
+     *
+     * @param  string  $attribute
+     *
+     * @return bool
+     */
+    public function hasAttribute(string $attribute): bool
+    {
+        return (Schema::hasColumn($this->getTable(), $attribute));
+    }
+
+    protected function saveForMasterInputSource()
+    {
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $changes = $this->getDirty();
+        $changes['input_source_id'] = $masterInputSource->id;
+
+        $wheres = [
+            'input_source_id' => $masterInputSource->id,
+        ];
+        if ($this->hasAttribute('user_id')){
+            $wheres['user_id'] = $this->getAttribute('user_id');
+        }
+        if ($this->hasAttribute('building_id')){
+            $wheres['building_id'] = $this->getAttribute('building_id');
+        }
+
+        ($this)::allInputSources()
+               ->updateOrCreate(
+                   $wheres,
+                   $changes
+               );
+    }
+
     /**
      * Scope all the available input for a user.
      *
@@ -26,7 +82,9 @@ trait GetMyValuesTrait
 
         return $query->withoutGlobalScope(GetValueScope::class)
                      ->where($whereUserOrBuildingId)
-                     ->join('input_sources', $this->getTable().'.input_source_id', '=', 'input_sources.id')
+                     ->join('input_sources',
+                         $this->getTable().'.input_source_id', '=',
+                         'input_sources.id')
                      ->orderBy('input_sources.order', 'ASC')
                      ->select([$this->getTable().'.*']);
     }
@@ -56,9 +114,12 @@ trait GetMyValuesTrait
      *
      * @return Builder
      */
-    public function scopeForInputSource(Builder $query, InputSource $inputSource)
-    {
-        return $query->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id);
+    public function scopeForInputSource(
+        Builder $query,
+        InputSource $inputSource
+    ) {
+        return $query->withoutGlobalScope(GetValueScope::class)->where('input_source_id',
+            $inputSource->id);
     }
 
     /**
@@ -84,11 +145,11 @@ trait GetMyValuesTrait
     /**
      * Method to only scope the resident input source.
      *
-     * @deprecated
-     *
      * @param $query
      *
      * @return mixed
+     * @deprecated
+     *
      */
     public function scopeResidentInput($query)
     {
@@ -101,10 +162,11 @@ trait GetMyValuesTrait
      * Check on a collection that comes from the forMe() scope if it contains a
      * Coach input source.
      */
-    public static function hasCoachInputSource(Collection $inputSourcesForMe): bool
-    {
+    public static function hasCoachInputSource(Collection $inputSourcesForMe
+    ): bool {
         $coachInputSource = InputSource::findByShort('coach');
-        if ($inputSourcesForMe->contains('input_source_id', $coachInputSource->id)) {
+        if ($inputSourcesForMe->contains('input_source_id',
+            $coachInputSource->id)) {
             return true;
         }
 
@@ -116,10 +178,11 @@ trait GetMyValuesTrait
      * resident input source.
      *tom.
      */
-    public static function hasResidentInputSource(Collection $inputSourcesForMe): bool
-    {
+    public static function hasResidentInputSource(Collection $inputSourcesForMe
+    ): bool {
         $residentInputSource = InputSource::findByShort('resident');
-        if ($inputSourcesForMe->contains('input_source_id', $residentInputSource->id)) {
+        if ($inputSourcesForMe->contains('input_source_id',
+            $residentInputSource->id)) {
             return true;
         }
 
@@ -135,7 +198,8 @@ trait GetMyValuesTrait
     {
         $coachInputSource = InputSource::findByShort('coach');
         if (self::hasCoachInputSource($inputSourcesForMe)) {
-            return $inputSourcesForMe->where('input_source_id', $coachInputSource->id)->first();
+            return $inputSourcesForMe->where('input_source_id',
+                $coachInputSource->id)->first();
         }
     }
 
@@ -149,7 +213,8 @@ trait GetMyValuesTrait
         $residentInputSource = InputSource::findByShort('resident');
 
         if (self::hasResidentInputSource($inputSourcesForMe)) {
-            return $inputSourcesForMe->where('input_source_id', $residentInputSource->id)->first();
+            return $inputSourcesForMe->where('input_source_id',
+                $residentInputSource->id)->first();
         }
     }
 

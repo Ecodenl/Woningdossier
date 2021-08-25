@@ -78,7 +78,7 @@ class RoofInsulationHelper extends ToolHelper
                         // take the array $roofCat array
                         $actionPlanAdvice = new UserActionPlanAdvice($results[$roofCat]);
                         $actionPlanAdvice->year = $advicedYear;
-                        $actionPlanAdvice->costs = $results[$roofCat]['cost_indication'];
+                        $actionPlanAdvice->costs = ['from' => $results[$roofCat]['cost_indication']];
                     }
 
                     if ($actionPlanAdvice instanceof UserActionPlanAdvice) {

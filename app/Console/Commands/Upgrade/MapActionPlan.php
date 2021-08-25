@@ -48,10 +48,10 @@ class MapActionPlan extends Command
      */
     public function handle()
     {
+        $this->info('Converting cost from int to JSON...');
+        $this->convertUserActionPlanAdvicesCostToJson();
         $this->info('Mapping categories for user_action_plan_advices...');
         $this->mapUserActionPlanAdvices();
-//        $this->info('Converting cost from int to JSON...');
-//        $this->convertUserActionPlanAdvicesCostToJson();
     }
 
     public function mapUserActionPlanAdvices()

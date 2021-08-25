@@ -169,7 +169,7 @@ class UserActionPlanAdviceService
                             'measure' => $advice->userActionPlanAdvisable->measure_name,
                             'measure_short' => $advice->userActionPlanAdvisable->short,                    // In the table the costs are indexed based on the advice year
                             // Now re-index costs based on user planned year in the personal plan
-                            'costs' => NumberFormatter::round(Calculator::indexCosts($advice->costs, $costYear)),
+                            'costs' => NumberFormatter::round(Calculator::indexCosts($advice->costs['from'] ?? 0, $costYear)),
                             'savings_gas' => Number::isNegative($savingsGas) ? 0 : $savingsGas,
                             'savings_electricity' => Number::isNegative($savingsElectricity) ? 0 : $savingsElectricity,
                             'savings_money' => $savingsMoney,
@@ -363,7 +363,7 @@ class UserActionPlanAdviceService
             $energySavingForVentilation = $energySaving['ventilation'];
 
             foreach ($energySavingForVentilation as $measureShort => $advice) {
-                if (empty($advice->costs) && empty($advice->savings_gas) && empty($advice->savings_electricity) && empty($advice->savings_money)) {
+                if (empty(($advice->costs['from'] ?? null)) && empty($advice->savings_gas) && empty($advice->savings_electricity) && empty($advice->savings_money)) {
                     // this will have to change in the near future for the pdf.
                     $categorizedActionPlan['energy_saving']['ventilation'][$measureShort]['warning'] = static::getWarning('ventilation');
                 }

@@ -875,7 +875,7 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // TODO: Meer/andere opties in design dan in datbase
+                // TODO: Meer/andere opties in design dan in database
                 'Zonnenboiler' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -920,7 +920,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_services.{$heatPump->id}.service_value_id",
                             'short' => 'heat-pump-type',
-                            'translation' => "Heeft u een warmptepomp",
+                            'translation' => "Heeft u een warmptepomp?",
                             'tool_question_type_id' => $radioType->id,
                             'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
                             'extra' => [
@@ -985,6 +985,61 @@ class AddQuestionsToDatabase extends Command
                                     2 => [],
                                     3 => [],
                                     4 => [],
+                                ],
+                            ],
+                        ],
+                    ]
+                ],
+                'Aanvullende ventilatievragen' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'conditions' => [
+                        [
+                            'column' => 'ventilation-type',
+                            'operator' => '!=',
+                            'value' => 20, // Natuurlijke ventilatie
+                        ]
+                    ],
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'boolean'],
+                            'save_in' => "building_services.{$ventilation->id}.extra.demand_driven",
+                            'short' => 'ventilation-demand-driven',
+                            // was current-state -> Vraaggestuurde regeling
+                            'translation' => "Heeft u vraaggestuurde regeling?",
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_custom_values' => [
+                                true => [
+                                    'name' => __('woningdossier.cooperation.radiobutton.yes'),
+                                    'extra' => [],
+                                ],
+                                false => [
+                                    'name' => __('woningdossier.cooperation.radiobutton.no'),
+                                    'extra' => [],
+                                ],
+                            ],
+                        ],
+                        [
+                            'save_in' => "building_services.{$ventilation->id}.extra.heat_recovery",
+                            'validation' => ['required', 'boolean'],
+                            'short' => 'ventilation-heat-recovery',
+                            // was current-state -> Met warmte terugwinning
+                            'translation' => "Heeft u warmte terugwinning?",
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_custom_values' => [
+                                true => [
+                                    'name' => __('woningdossier.cooperation.radiobutton.yes'),
+                                    'extra' => [],
+                                ],
+                                false => [
+                                    'name' => __('woningdossier.cooperation.radiobutton.no'),
+                                    'extra' => [],
+                                ],
+                            ],
+                            'conditions' => [
+                                [
+                                    'column' => 'ventilation-type',
+                                    'operator' => '!=',
+                                    'value' => 21, // Mechanische ventilatie
                                 ],
                             ],
                         ],

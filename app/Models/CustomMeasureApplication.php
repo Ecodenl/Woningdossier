@@ -13,10 +13,9 @@ class CustomMeasureApplication extends Model
 
     public $translatable = ['name', 'info'];
 
-    protected $fillable = ['building_id', 'input_source_id', 'name', 'info', 'extra', 'costs', 'savings_money'];
+    protected $fillable = ['building_id', 'input_source_id', 'name'];
 
     protected $casts = [
-        'costs' => 'array',
         'extra' => 'array'
     ];
 }

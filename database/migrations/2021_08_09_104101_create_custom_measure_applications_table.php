@@ -15,13 +15,14 @@ class CreateCustomMeasureApplicationsTable extends Migration
     {
         Schema::create('custom_measure_applications', function (Blueprint $table) {
             $table->bigIncrements('id');
+
+            $table->json('name');
+
             $table->unsignedInteger('building_id');
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('cascade');
 
             $table->unsignedInteger('input_source_id');
             $table->foreign('input_source_id')->references('id')->on('input_sources')->onDelete('cascade');
-
-            $table->json('name');
 
             $table->timestamps();
         });

@@ -12,12 +12,14 @@ class CustomChanges extends Component
 {
     public $customMeasureApplications;
     public $masterInputSource;
+    public $currentInputSource;
     public $building;
 
     public function mount()
     {
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
         $this->setCustomMeasureApplications();
 
@@ -35,7 +37,7 @@ class CustomChanges extends Component
             if (!is_null($customMeasureApplication['id'])) {
                 CustomMeasureApplication::where('id', $customMeasureApplication['id'])
                     ->where('building_id', $this->building->id)
-                    ->where('input_source_id', $this->masterInputSource->id)
+                    ->where('input_source_id', $this->currentInputSource->id)
                     ->update($customMeasureApplication);
             } else {
 

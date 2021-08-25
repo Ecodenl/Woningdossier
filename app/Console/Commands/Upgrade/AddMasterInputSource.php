@@ -281,7 +281,7 @@ class AddMasterInputSource extends Command
 
                                     $isValidJson = Str::isValidJson($answer);
 
-                                    if ((empty($answer) && ! is_numeric($answer)) || $isValidJson) {
+                                    if ((empty($answer) && ! is_numeric($answer)) || $isValidJson || $answer === 'null') {
                                         // Grab the answer of the resident if answer is TRULY empty
                                         $residentAnswer = $this->searchCollectionForValue($values, $residentInputSource,
                                             [
@@ -311,7 +311,7 @@ class AddMasterInputSource extends Command
 
                                 $isValidJson = Str::isValidJson($answer);
 
-                                if ((empty($answer) && ! is_numeric($answer)) || $isValidJson) {
+                                if ((empty($answer) && ! is_numeric($answer)) || $isValidJson || $answer === 'null') {
                                     // Grab the answer of the resident if answer is TRULY empty
                                     $residentAnswer = $this->searchCollectionForValue($values, $residentInputSource,
                                         [$whereColumn => $differentiatingValue]);
@@ -338,7 +338,7 @@ class AddMasterInputSource extends Command
 
                         $isValidJson = Str::isValidJson($answer);
 
-                        if ((empty($answer) && ! is_numeric($answer)) || $isValidJson) {
+                        if ((empty($answer) && ! is_numeric($answer)) || $isValidJson || $answer === 'null') {
                             // Grab the answer of the resident if answer is TRULY empty
                             $residentAnswer = $this->searchCollectionForValue($values, $residentInputSource);
 

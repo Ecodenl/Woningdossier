@@ -266,12 +266,12 @@ class Form extends Component
                 [$column => $givenAnswer]
             );
 
-        $where['input_source_id'] = $this->masterInputSource->id;
-        $modelName::allInputSources()
-            ->updateOrCreate(
-                $where,
-                [$column => $givenAnswer]
-            );
+//        $where['input_source_id'] = $this->masterInputSource->id;
+//        $modelName::allInputSources()
+//            ->updateOrCreate(
+//                $where,
+//                [$column => $givenAnswer]
+//            );
     }
 
     private function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
@@ -302,12 +302,12 @@ class Form extends Component
             ->allInputSources()
             ->updateOrCreate($where, $data)
             ->save();
-        $where['input_source_id'] = $this->masterInputSource->id;
-        $data['input_source_id'] = $this->masterInputSource->id;
-        $toolQuestion
-            ->toolQuestionAnswers()
-            ->allInputSources()
-            ->updateOrCreate($where, $data)
-            ->save();
+//        $where['input_source_id'] = $this->masterInputSource->id;
+//        $data['input_source_id'] = $this->masterInputSource->id;
+//        $toolQuestion
+//            ->toolQuestionAnswers()
+//            ->allInputSources()
+//            ->updateOrCreate($where, $data)
+//            ->save();
     }
 }

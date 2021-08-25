@@ -7,7 +7,7 @@
                 {{ $header ?? __('cooperation/frontend/shared.modals.info') }}
             </h6>
             <div class="modal-close" x-on:click="close()">
-                <i class="icon-md icon-close-circle-light"></i>
+                <i class="icon-md icon-close-circle-light clickable"></i>
             </div>
         </div>
         <div class="modal-body">

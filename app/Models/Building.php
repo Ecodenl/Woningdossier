@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-use function Clue\StreamFilter\fun;
 
 /**
  * App\Models\Building
@@ -109,6 +108,11 @@ class Building extends Model
     public function toolQuestionAnswers(): HasMany
     {
         return $this->hasMany(ToolQuestionAnswer::class);
+    }
+
+    public function customMeasureApplications(): HasMany
+    {
+        return $this->hasMany(CustomMeasureApplication::class);
     }
 
     public function getAnswerForAllInputSources(ToolQuestion $toolQuestion)

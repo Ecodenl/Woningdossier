@@ -43,7 +43,7 @@ export default (initiallyOpen = false) => ({
                 let optionDropdown = this.$refs['select-options'];
                 // Loop options to build
                 // Note: we cannot use forEach, as options is a HTML collection, which is not an array
-                for(let i = 0; i < this.options.length; i++) {
+                for (let i = 0; i < this.options.length; i++) {
                     this.buildOption(optionDropdown, this.options[i]);
                 }
 

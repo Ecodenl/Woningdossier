@@ -15,7 +15,7 @@ class UserActionPlanAdviceObserver
     {
         $buildingOwner = $userActionPlanAdvice->user;
         $step = $userActionPlanAdvice->step;
-        $measureApplication = $userActionPlanAdvice->measureApplication;
+        $measureApplication = $userActionPlanAdvice->userActionPlanAdvisable;
         $inputSource = $userActionPlanAdvice->inputSource;
         $planned = false;
 

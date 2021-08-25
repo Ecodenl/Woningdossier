@@ -6,6 +6,7 @@ use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * App\Models\UserActionPlanAdvice
@@ -93,14 +94,14 @@ class UserActionPlanAdvice extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function measureApplication()
-    {
-        return $this->belongsTo(MeasureApplication::class);
-    }
-
     public function step()
     {
         return $this->belongsTo(Step::class);
+    }
+
+    public function userActionPlanAdvisable(): MorphTo
+    {
+        return $this->morphTo();
     }
 
     /**

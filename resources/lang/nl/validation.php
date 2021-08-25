@@ -210,6 +210,7 @@ return [
         'new_measure.subject' => 'Onderwerp',
         'new_measure.price.from' => 'Prijsindicatie van',
         'new_measure.price.to' => 'Prijsindicatie tot',
+        'new_measure.expected_savings' => 'Verwachte besparing',
 
 
         'account.current_password' => 'huidig wachtwoord',

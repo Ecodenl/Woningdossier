@@ -596,7 +596,6 @@ class AddQuestionsToDatabase extends Command
                 'Welke zaken vervangen' => [
                     // note: dit is een custom vraag, zie slide 18
                     'sub_step_template_id' => $templateCustomChanges->id,
-//                            'options' => ['min' => 1, 'max' => 10, 'value' => 5, 'step' => 1],
                 ],
             ],
             'residential-status' => [

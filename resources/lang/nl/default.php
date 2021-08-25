@@ -15,6 +15,7 @@ return [
     'form' => [
         'input' => [
             'comment' => 'Toelichting op de specifieke situatie',
+            'comment-placeholder' => 'Type hier uw opmerkingen...',
         ],
     ],
 
@@ -22,6 +23,8 @@ return [
     'no' => 'Nee',
     'start' => 'Start',
     'caution' => 'Let op!',
+    'from' => 'van',
+    'to' => 'tot',
 
     'progress' => [
         'not-completed' => ':step - deze stap is nog niet afgerond',

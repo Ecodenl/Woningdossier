@@ -291,9 +291,15 @@ class AddMasterInputSource extends Command
 
                                         $tempAnswer = $this->getObjectProperty($residentAnswer, $answerColumn);
 
-                                        // If it's valid JSON, we will check the resident keys for potential extra values
+                                        // If the coach answer is valid JSON, we will check the resident keys for
+                                        // potential extra values
                                         if ($isValidJson) {
-                                            $answer = $this->compareJsonKeys($answer, $tempAnswer);
+                                            // We can't check resident answers if the resident answer is not
+                                            // valid JSON, however. So we won't do anything, as the answer
+                                            // is already more valid from the coach side
+                                            if (Str::isValidJson($tempAnswer)) {
+                                                $answer = $this->compareJsonKeys($answer, $tempAnswer);
+                                            }
                                         } else {
                                             $answer = $tempAnswer;
                                         }
@@ -318,9 +324,15 @@ class AddMasterInputSource extends Command
 
                                     $tempAnswer = $this->getObjectProperty($residentAnswer, $answerColumn);
 
-                                    // If it's valid JSON, we will check the resident keys for potential extra values
+                                    // If the coach answer is valid JSON, we will check the resident keys for
+                                    // potential extra values
                                     if ($isValidJson) {
-                                        $answer = $this->compareJsonKeys($answer, $tempAnswer);
+                                        // We can't check resident answers if the resident answer is not
+                                        // valid JSON, however. So we won't do anything, as the answer
+                                        // is already more valid from the coach side
+                                        if (Str::isValidJson($tempAnswer)) {
+                                            $answer = $this->compareJsonKeys($answer, $tempAnswer);
+                                        }
                                     } else {
                                         $answer = $tempAnswer;
                                     }
@@ -344,9 +356,15 @@ class AddMasterInputSource extends Command
 
                             $tempAnswer = $this->getObjectProperty($residentAnswer, $answerColumn);
 
-                            // If it's valid JSON, we will check the resident keys for potential extra values
+                            // If the coach answer is valid JSON, we will check the resident keys for
+                            // potential extra values
                             if ($isValidJson) {
-                                $answer = $this->compareJsonKeys($answer, $tempAnswer);
+                                // We can't check resident answers if the resident answer is not
+                                // valid JSON, however. So we won't do anything, as the answer
+                                // is already more valid from the coach side
+                                if (Str::isValidJson($tempAnswer)) {
+                                    $answer = $this->compareJsonKeys($answer, $tempAnswer);
+                                }
                             } else {
                                 $answer = $tempAnswer;
                             }
@@ -459,6 +477,8 @@ class AddMasterInputSource extends Command
     }
 
     /**
+     * Check if the values of the resident, to see if they have extra keys the coach's answer doesn't have
+     *
      * @param $coachJson
      * @param $residentJson
      *

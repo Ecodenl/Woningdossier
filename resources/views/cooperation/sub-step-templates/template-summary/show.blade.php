@@ -14,7 +14,12 @@
         {{-- Only display sub steps that are valid to the user --}}
         @can('show', $subStepToSummarize)
             @php
-                $subStepRoute = route('cooperation.frontend.tool.quick-scan.index', ['step' => $step, 'subStep' => $subStepToSummarize]);
+              Log::debug("{$step->slug} {$subStepToSummarize->slug}");
+            try {
+                $subStepRoute = route('cooperation.frontend.tool.quick-scan.index', ['step' => $step->slug, 'subStep' => $subStepToSummarize->slug]);
+            } catch (Exception $exception) {
+                Log::debug("Exception!: {$step->slug} {$subStepToSummarize->slug}");
+            }
             @endphp
             <div class="flex flex-row flex-wrap w-full space-y-4">
                 <a href="{{ $subStepRoute }}"

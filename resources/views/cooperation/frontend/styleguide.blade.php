@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{ mix('css/frontend/app.css') }}">
     <title>Hoomdossier styleguide</title>
 </head>
-<body>
+<body id="app-body">
 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-8 flex flex-wrap space-y-20">
     <!-- Typography -->
     <div class="w-full">

@@ -18,6 +18,19 @@ use Carbon\Carbon;
 
 class UserActionPlanAdviceService
 {
+    const CATEGORY_COMPLETE = 'complete';
+    const CATEGORY_TO_DO = 'to-do';
+    const CATEGORY_LATER = 'later';
+
+    public static function getCategories(): array
+    {
+        return [
+            self::CATEGORY_COMPLETE => self::CATEGORY_COMPLETE,
+            self::CATEGORY_TO_DO => self::CATEGORY_TO_DO,
+            self::CATEGORY_LATER => self::CATEGORY_LATER,
+        ];
+    }
+
     /**
      * Method to delete the user action plan advices for a given user, input source and step.
      *

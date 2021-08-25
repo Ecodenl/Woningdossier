@@ -66,6 +66,7 @@ class UserActionPlanAdvice extends Model
         'user_id', 'measure_application_id', // old
         'costs', 'savings_gas', 'savings_electricity', 'savings_money',
         'year', 'planned', 'planned_year', 'input_source_id',
+        'category',
     ];
 
     /**

@@ -219,7 +219,7 @@ class UserActionPlanAdviceService
         } elseif (in_array($step->short, ['floor-insulation', 'wall-insulation'])) {
             $elementShort = array_search($step->short, StepHelper::ELEMENT_TO_SHORT);
 
-            if ($user->building->getBuildingElement($elementShort, $advice->inputSource)->elementValue->calculate_value >= 3) {
+            if (optional($user->building->getBuildingElement($elementShort, $advice->inputSource)->elementValue)->calculate_value >= 3) {
                 $savingsMoney = 'ntb.';
             }
         }

@@ -8,7 +8,6 @@ use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
 use App\Models\CompletedSubStep;
 use App\Models\InputSource;
-use App\Models\Log;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
@@ -278,12 +277,12 @@ class Form extends Component
                 [$column => $givenAnswer]
             );
 
-        $where['input_source_id'] = $this->masterInputSource->id;
-        $modelName::allInputSources()
-            ->updateOrCreate(
-                $where,
-                [$column => $givenAnswer]
-            );
+//        $where['input_source_id'] = $this->masterInputSource->id;
+//        $modelName::allInputSources()
+//            ->updateOrCreate(
+//                $where,
+//                [$column => $givenAnswer]
+//            );
     }
 
     private function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
@@ -323,25 +322,24 @@ class Form extends Component
             // Try to resolve the id is the question has custom values
             if ($toolQuestion->toolQuestionCustomValues()->exists()) {
                 // if so, the given answer contains a short.
-                $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($givenAnswer);
+                $toolQuestionCustomValue               = ToolQuestionCustomValue::findByShort($givenAnswer);
                 $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
             }
 
-            $data['answer'] = $givenAnswer;
-
+            $data['answer']           = $givenAnswer;
             $where['input_source_id'] = $this->currentInputSource->id;
-
+            // we have to do this twice, once for the current input source and once for the master input source
             $toolQuestion
                 ->toolQuestionAnswers()
                 ->allInputSources()
                 ->updateOrCreate($where, $data);
-
-            $where['input_source_id'] = $this->masterInputSource->id;
-            $data['input_source_id'] = $this->masterInputSource->id;
-            $toolQuestion
-                ->toolQuestionAnswers()
-                ->allInputSources()
-                ->updateOrCreate($where, $data);
+//        $where['input_source_id'] = $this->masterInputSource->id;
+//        $data['input_source_id'] = $this->masterInputSource->id;
+//        $toolQuestion
+//            ->toolQuestionAnswers()
+//            ->allInputSources()
+//            ->updateOrCreate($where, $data)
+//            ->save();
         }
     }
 }

@@ -170,8 +170,8 @@ class UserService
         $data['extension'] = $data['house_number_extension'] ?? null;
 
         $features = new BuildingFeature([
-            'surface' => empty($picoAddressData['surface']) ? null : $picoAddressData['surface'],
-            'build_year' => empty($picoAddressData['build_year']) ? null : $picoAddressData['build_year'],
+            'surface' => $picoAddressData['surface'] ?? null,
+            'build_year' => $picoAddressData['build_year'] ?? null,
         ]);
 
         // create the building for the user

@@ -84,7 +84,7 @@ class RoofInsulationHelper extends ToolHelper
                     if ($actionPlanAdvice instanceof UserActionPlanAdvice) {
                         $actionPlanAdvice->input_source_id = $this->inputSource->id;
                         $actionPlanAdvice->user()->associate($this->user);
-                        $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                        $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($step);
                         $actionPlanAdvice->save();
                     }
@@ -120,7 +120,7 @@ class RoofInsulationHelper extends ToolHelper
                     $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
                     $actionPlanAdvice->input_source_id = $this->inputSource->id;
                     $actionPlanAdvice->user()->associate($this->user);
-                    $actionPlanAdvice->measureApplication()->associate($zincReplaceMeasure);
+                    $actionPlanAdvice->userActionPlanAdvisable()->associate($zincReplaceMeasure);
                     $actionPlanAdvice->step()->associate($step);
                     $actionPlanAdvice->save();
                 }
@@ -144,7 +144,7 @@ class RoofInsulationHelper extends ToolHelper
                         $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
                         $actionPlanAdvice->input_source_id = $this->inputSource->id;
                         $actionPlanAdvice->user()->associate($this->user);
-                        $actionPlanAdvice->measureApplication()->associate($replaceMeasure);
+                        $actionPlanAdvice->userActionPlanAdvisable()->associate($replaceMeasure);
                         $actionPlanAdvice->step()->associate($step);
                         $actionPlanAdvice->save();
                     }
@@ -170,7 +170,7 @@ class RoofInsulationHelper extends ToolHelper
                     $actionPlanAdvice = new UserActionPlanAdvice(compact('costs', 'year'));
                     $actionPlanAdvice->input_source_id = $this->inputSource->id;
                     $actionPlanAdvice->user()->associate($this->user);
-                    $actionPlanAdvice->measureApplication()->associate($replaceMeasure);
+                    $actionPlanAdvice->userActionPlanAdvisable()->associate($replaceMeasure);
                     $actionPlanAdvice->step()->associate($step);
                     $actionPlanAdvice->save();
                 }

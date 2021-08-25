@@ -4,11 +4,13 @@
     <div class="w-full">
         <div class="w-full flex flex-wrap justify-between mb-5">
             <h4 class="heading-4">
-                Uw geadviseerde Woonplan
+                @lang('cooperation/frontend/tool.my-plan.title')
             </h4>
-            <p>Wilt u iets aanpassen? Sleep dan de maatregelen naar de gewenste kolom</p>
+            <p>
+                @lang('cooperation/frontend/tool.my-plan.help')
+            </p>
         </div>
 
-        @livewire('frontend.housing-plan')
+        @livewire('cooperation.frontend.tool.quick-scan.my-plan.form')
     </div>
 @endsection

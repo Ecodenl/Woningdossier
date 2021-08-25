@@ -119,7 +119,7 @@ class InsulatedGlazingHelper extends ToolHelper
                     $actionPlanAdvice = new UserActionPlanAdvice($data);
                     $actionPlanAdvice->input_source_id = $this->inputSource->id;
                     $actionPlanAdvice->user()->associate($this->user);
-                    $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                    $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);
                     $actionPlanAdvice->save();
                 }
@@ -138,7 +138,7 @@ class InsulatedGlazingHelper extends ToolHelper
                     $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
                     $actionPlanAdvice->input_source_id = $this->inputSource->id;
                     $actionPlanAdvice->user()->associate($this->user);
-                    $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                    $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);
                     $actionPlanAdvice->save();
                 }

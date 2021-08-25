@@ -101,7 +101,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
                 $actionPlanAdvice->costs = $results['cost_indication'];
                 $actionPlanAdvice->year = $results['replace_year'];
                 $actionPlanAdvice->user()->associate($this->user);
-                $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
                 $actionPlanAdvice->save();
             }

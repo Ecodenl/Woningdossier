@@ -74,7 +74,7 @@ class Form extends Component
         $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
 
         $this->setToolQuestions();
-        
+
     }
 
     private function setToolQuestions()

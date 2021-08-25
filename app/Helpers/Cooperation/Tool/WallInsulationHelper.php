@@ -90,13 +90,13 @@ class WallInsulationHelper extends ToolHelper
         UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
-            $measureApplication = MeasureApplication::where('measure_name->nl', $results['insulation_advice'])->first(['measure_applications.*']);
+            $measureApplication = MeasureApplication::where('measure_name->nl', $results['insulation_advice'])->first();
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->input_source_id = $this->inputSource->id;
                 $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
                 $actionPlanAdvice->user()->associate($this->user);
-                $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
                 $actionPlanAdvice->save();
             }
@@ -116,7 +116,7 @@ class WallInsulationHelper extends ToolHelper
                     $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
                     $actionPlanAdvice->input_source_id = $this->inputSource->id;
                     $actionPlanAdvice->user()->associate($this->user);
-                    $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                    $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);
                     $actionPlanAdvice->save();
                 }

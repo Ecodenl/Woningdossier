@@ -18,6 +18,8 @@ class CreateCustomMeasureApplicationsTable extends Migration
 
             $table->json('name');
 
+            $table->uuid('hash');
+
             $table->unsignedInteger('building_id');
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('cascade');
 

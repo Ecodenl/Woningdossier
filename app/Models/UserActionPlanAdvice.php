@@ -63,7 +63,7 @@ class UserActionPlanAdvice extends Model
     protected $table = 'user_action_plan_advices';
 
     public $fillable = [
-        'user_id', 'measure_application_id', // old
+        'category', 'user_id', 'user_action_plan_advisable_type', 'user_action_plan_advisable_id', 'costs',
         'costs', 'savings_gas', 'savings_electricity', 'savings_money',
         'year', 'planned', 'planned_year', 'input_source_id',
     ];

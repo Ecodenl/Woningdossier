@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
+use function Composer\Autoload\includeFile;
 
 trait GetMyValuesTrait
 {
@@ -47,7 +48,7 @@ trait GetMyValuesTrait
     protected function saveForMasterInputSource()
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-        $data = $this->getAttributes();
+        $data = $this->attributesToArray();
 
         $data['input_source_id'] = $masterInputSource->id;
         unset($data['id']);
@@ -58,6 +59,7 @@ trait GetMyValuesTrait
 
         $crucialRelationCombinationIds = [
             'user_id', 'building_id', 'tool_question_id', 'element_id', 'service_id',
+            'hash', 'user_action_plan_advisable_id', 'user_action_plan_advisable_type'
         ];
         foreach($crucialRelationCombinationIds as $crucialRelationCombinationId){
             if ($this->hasAttribute($crucialRelationCombinationId)) {

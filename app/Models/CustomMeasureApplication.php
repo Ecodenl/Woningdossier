@@ -11,11 +11,16 @@ class CustomMeasureApplication extends Model
 {
     use HasTranslations, GetMyValuesTrait, GetValueTrait;
 
-    public $translatable = ['name', 'info'];
+    public $translatable = ['name'];
 
-    protected $fillable = ['building_id', 'input_source_id', 'name'];
+    protected $fillable = ['building_id', 'input_source_id', 'name', 'hash'];
 
     protected $casts = [
         'extra' => 'array'
     ];
+
+    public function userActionPlanAdvices()
+    {
+        return $this->morphMany(UserActionPlanAdvice::class, 'user_action_plan_advisable');
+    }
 }

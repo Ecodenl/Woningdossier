@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Models\MeasureApplication;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Services\UserActionPlanAdviceService;
@@ -15,32 +16,36 @@ class UserActionPlanAdviceObserver
     {
         $buildingOwner = $userActionPlanAdvice->user;
         $step = $userActionPlanAdvice->step;
-        $measureApplication = $userActionPlanAdvice->userActionPlanAdvisable;
+        $userActionPlanAdvisable = $userActionPlanAdvice->userActionPlanAdvisable;
         $inputSource = $userActionPlanAdvice->inputSource;
         $planned = false;
 
-        // set the default user interest on the step.
-        $userInterest = $buildingOwner->userInterestsForSpecificType(get_class($step), $step->id, $inputSource)->with('interest')->first();
-        // try to obtain a specific interest on the measure application
-        $userInterestOnMeasureApplication = $buildingOwner
-            ->userInterestsForSpecificType(get_class($measureApplication), $measureApplication->id, $inputSource)
-            ->with('interest')
-            ->first();
+        if ($userActionPlanAdvisable instanceof MeasureApplication) {
 
-        // when thats available use that.
-        if ($userInterestOnMeasureApplication instanceof UserInterest) {
-            $userInterest = $userInterestOnMeasureApplication;
-        }
 
-        // Ja op korte termijn, ja op termijn and more informatie
-        if ($userInterest->interest->calculate_value <= 3) {
-            $planned = true;
-        }
+            // set the default user interest on the step.
+            $userInterest = $buildingOwner->userInterestsForSpecificType(get_class($step), $step->id, $inputSource)->with('interest')->first();
+            // try to obtain a specific interest on the measure application
+            $userInterestOnMeasureApplication = $buildingOwner
+                ->userInterestsForSpecificType(get_class($userActionPlanAdvisable), $userActionPlanAdvisable->id, $inputSource)
+                ->with('interest')
+                ->first();
 
-        $userActionPlanAdvice->planned = $planned;
+            // when thats available use that.
+            if ($userInterestOnMeasureApplication instanceof UserInterest) {
+                $userInterest = $userInterestOnMeasureApplication;
+            }
 
-        if (is_null($userActionPlanAdvice->year)) {
-            $userActionPlanAdvice->year = UserActionPlanAdviceService::getAdviceYear($userActionPlanAdvice);
+            // Ja op korte termijn, ja op termijn and more informatie
+            if ($userInterest->interest->calculate_value <= 3) {
+                $planned = true;
+            }
+
+            $userActionPlanAdvice->planned = $planned;
+
+            if (is_null($userActionPlanAdvice->year)) {
+                $userActionPlanAdvice->year = UserActionPlanAdviceService::getAdviceYear($userActionPlanAdvice);
+            }
         }
     }
 }

@@ -6,13 +6,18 @@ use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
+use App\Models\UserActionPlanAdvice;
+use Cassandra\Custom;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class CustomChanges extends Component
 {
-    public $customMeasureApplications;
+    public $customMeasureApplicationsFormData;
+    public $cooperationMeasureApplications;
     public $masterInputSource;
     public $currentInputSource;
+    public $cooperation;
     public $building;
 
     public function mount()
@@ -20,6 +25,7 @@ class CustomChanges extends Component
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
+        $this->cooperation = HoomdossierSession::getCooperation(true);
 
         $this->setCustomMeasureApplications();
 
@@ -32,20 +38,45 @@ class CustomChanges extends Component
 
     public function save()
     {
-        foreach ($this->customMeasureApplications as $customMeasureApplication) {
+        foreach ($this->customMeasureApplicationsFormData as $customMeasureApplicationFormData) {
 
-            if (!is_null($customMeasureApplication['id'])) {
-                CustomMeasureApplication::where('id', $customMeasureApplication['id'])
-                    ->where('building_id', $this->building->id)
-                    ->where('input_source_id', $this->currentInputSource->id)
-                    ->update($customMeasureApplication);
+            if (!is_null($customMeasureApplicationFormData['hash'])) {
+                /** @var CustomMeasureApplication $customMeasureApplication */
+                $customMeasureApplication = CustomMeasureApplication::forInputSource($this->currentInputSource)
+                    ->where('hash', $customMeasureApplicationFormData['hash'])
+                    ->first();
+                //todo: authorize the id, maybe the user did some arbitrage on the data
+
+                $customMeasureApplication->update(['name' => ['nl' => $customMeasureApplicationFormData['name']]]);
+
             } else {
+                if (!empty($customMeasureApplicationFormData['name'])) {
+                    $hash = Str::uuid();
 
-                CustomMeasureApplication::create(array_merge([
-                    'building_id' => $this->building->id,
-                    'input_source_id' => $this->masterInputSource->id,
+                    $customMeasureApplication = CustomMeasureApplication::create([
+                        'building_id' => $this->building->id,
+                        'input_source_id' => $this->currentInputSource->id,
+                        'name' => ['nl' => $customMeasureApplicationFormData['name']],
+                        'hash' => $hash
+                    ]);
+                }
+            }
+            if (isset($customMeasureApplication) && $customMeasureApplication instanceof CustomMeasureApplication) {
 
-                ], $customMeasureApplication));
+                $customMeasureApplication
+                    ->userActionPlanAdvices()
+                    ->allInputSources()
+                    ->updateOrCreate(
+                        [
+                            'user_id' => $this->building->user->id,
+                            'input_source_id' => $this->currentInputSource->id,
+                        ],
+                        [
+                            'category' => 'to-do',
+                            'costs' => $customMeasureApplication['costs'],
+                            'input_source_id' => $this->currentInputSource->id
+                        ]
+                    );
             }
         }
 
@@ -54,17 +85,24 @@ class CustomChanges extends Component
 
     private function setCustomMeasureApplications()
     {
-        $this->customMeasureApplications = [];
+        $this->customMeasureApplicationsFormData = [];
         $customMeasureApplications = $this->building->customMeasureApplications()->forInputSource($this->masterInputSource)->get();
+        $cooperationMeasureApplications = $this->cooperation->cooperationMeasureApplications;
+
+
         /** @var CustomMeasureApplication $customMeasureApplication */
-        foreach ($customMeasureApplications as $customMeasureApplication) {
-            $this->customMeasureApplications[] = $customMeasureApplication->only(['id', 'name', 'info', 'extra']);
+        foreach ($customMeasureApplications as $index => $customMeasureApplication) {
+            $this->customMeasureApplicationsFormData[$index] = $customMeasureApplication->only(['hash', 'name']);
+            $this->customMeasureApplicationsFormData[$index]['extra'] = ['icon' => 'icon-tools'];
         }
 
-        $this->customMeasureApplications[] = [
-            'id' => null,
+//        foreach ($cooperationMeasureApplications as $cooperationMeasureApplication) {
+//            $this->cooperationMeasureApplications[] = $cooperationMeasureApplication->only(['id', 'name', 'info', 'extra']);
+//        }
+
+        $this->customMeasureApplicationsFormData[] = [
+            'hash' => null,
             'name' => null,
-            'info' => null,
             'extra' => ['icon' => 'icon-tools']
         ];
     }

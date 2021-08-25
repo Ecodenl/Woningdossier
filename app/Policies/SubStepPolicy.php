@@ -33,7 +33,7 @@ class SubStepPolicy
         return ConditionEvaluator::init()
                                  ->building($building)
                                  ->inputSource($masterInputSource)
-                                 ->evaluate($subStep->conditions);
+                                 ->evaluate($subStep->conditions ?? []);
 
 //        if (!empty($subStep->conditions)) {
 //            // we will collect the answers, this way we can query on the collection with the $conditions array.

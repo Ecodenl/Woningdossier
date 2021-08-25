@@ -10,13 +10,13 @@ use Livewire\Component;
 class Form extends Component
 {
     public array $cards = [
-        'complete' => [
+        UserActionPlanAdviceService::CATEGORY_COMPLETE => [
 
         ],
-        'to-do' => [
+        UserActionPlanAdviceService::CATEGORY_TO_DO => [
 
         ],
-        'later' => [
+        UserActionPlanAdviceService::CATEGORY_LATER => [
 
         ],
     ];
@@ -33,9 +33,9 @@ class Form extends Component
     public string $SUBSIDY_UNAVAILABLE = 'unavailable';
     public string $SUBSIDY_UNKNOWN = 'unknown';
 
-    public string $CATEGORY_COMPLETE = 'complete';
-    public string $CATEGORY_TO_DO = 'to-do';
-    public string $CATEGORY_LATER = 'later';
+    public string $CATEGORY_COMPLETE = UserActionPlanAdviceService::CATEGORY_COMPLETE;
+    public string $CATEGORY_TO_DO = UserActionPlanAdviceService::CATEGORY_TO_DO;
+    public string $CATEGORY_LATER = UserActionPlanAdviceService::CATEGORY_LATER;
 
     protected $rules = [
         'new_measure.subject' => 'required',

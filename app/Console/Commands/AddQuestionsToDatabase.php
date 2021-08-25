@@ -990,6 +990,7 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
+                // TODO: These aren't saving correctly
                 'Aanvullende ventilatievragen' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'conditions' => [
@@ -997,6 +998,7 @@ class AddQuestionsToDatabase extends Command
                             'column' => 'ventilation-type',
                             'operator' => '!=',
                             'value' => 20, // Natuurlijke ventilatie
+                            // TODO: Should this be ID? Service_value
                         ]
                     ],
                     'questions' => [
@@ -1040,6 +1042,7 @@ class AddQuestionsToDatabase extends Command
                                     'column' => 'ventilation-type',
                                     'operator' => '!=',
                                     'value' => 21, // Mechanische ventilatie
+                                    // TODO: This isn't validating correctly, also should this be ID? Service_value
                                 ],
                             ],
                         ],

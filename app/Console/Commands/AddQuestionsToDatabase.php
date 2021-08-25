@@ -815,10 +815,12 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'conditions' => [
                         [
-                            'column' => 'heat-source',
-                            'operator' => '=',
-                            'value' => 'hr-boiler',
-                        ]
+                            [
+                                'column' => 'heat-source',
+                                'operator' => '=',
+                                'value' => 'hr-boiler',
+                            ],
+                        ],
                     ],
                     'questions' => [
                         [
@@ -1046,10 +1048,12 @@ class AddQuestionsToDatabase extends Command
                             'tool_question_type_id' => $textType->id,
                             'conditions' => [
                                 [
-                                    'column' => 'has-solar-panels',
-                                    'operator' => '=',
-                                    'value' => 'yes',
-                                ]
+                                    [
+                                        'column' => 'has-solar-panels',
+                                        'operator' => '=',
+                                        'value' => 'yes',
+                                    ]
+                                ],
                             ],
                         ],
                         [
@@ -1061,10 +1065,12 @@ class AddQuestionsToDatabase extends Command
                             'tool_question_type_id' => $textType->id,
                             'conditions' => [
                                 [
-                                    'column' => 'has-solar-panels',
-                                    'operator' => '=',
-                                    'value' => 'yes',
-                                ]
+                                    [
+                                        'column' => 'has-solar-panels',
+                                        'operator' => '=',
+                                        'value' => 'yes',
+                                    ],
+                                ],
                             ],
                         ],
                         [
@@ -1082,10 +1088,12 @@ class AddQuestionsToDatabase extends Command
                             'tool_question_type_id' => $textType->id,
                             'conditions' => [
                                 [
-                                    'column' => 'has-solar-panels',
-                                    'operator' => '=',
-                                    'value' => 'yes',
-                                ]
+                                    [
+                                        'column' => 'has-solar-panels',
+                                        'operator' => '=',
+                                        'value' => 'yes',
+                                    ],
+                                ],
                             ],
                         ],
                     ]

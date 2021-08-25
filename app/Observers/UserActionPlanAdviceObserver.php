@@ -27,20 +27,25 @@ class UserActionPlanAdviceObserver
             ->with('interest')
             ->first();
 
+
         // when thats available use that.
         if ($userInterestOnMeasureApplication instanceof UserInterest) {
             $userInterest = $userInterestOnMeasureApplication;
         }
 
-        // Ja op korte termijn, ja op termijn and more informatie
-        if ($userInterest->interest->calculate_value <= 3) {
-            $planned = true;
-        }
+        // Input source could be master input source, and not have a user interest yet
+        // If it doesn't exist, we can't do anything
+        if ($userInterest instanceof UserInterest) {
+            // Ja op korte termijn, ja op termijn and more informatie
+            if ($userInterest->interest->calculate_value <= 3) {
+                $planned = true;
+            }
 
-        $userActionPlanAdvice->planned = $planned;
+            $userActionPlanAdvice->planned = $planned;
 
-        if (is_null($userActionPlanAdvice->year)) {
-            $userActionPlanAdvice->year = UserActionPlanAdviceService::getAdviceYear($userActionPlanAdvice);
+            if (is_null($userActionPlanAdvice->year)) {
+                $userActionPlanAdvice->year = UserActionPlanAdviceService::getAdviceYear($userActionPlanAdvice);
+            }
         }
     }
 }

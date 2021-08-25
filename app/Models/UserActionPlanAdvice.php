@@ -63,10 +63,11 @@ class UserActionPlanAdvice extends Model
     protected $table = 'user_action_plan_advices';
 
     public $fillable = [
-        'user_id', 'measure_application_id', // old
-        'costs', 'savings_gas', 'savings_electricity', 'savings_money',
-        'year', 'planned', 'planned_year', 'input_source_id',
-        'category',
+        'user_id',
+        'measure_application_id', // old
+        'input_source_id',
+        'user_action_plan_advisable_type', 'user_action_plan_advisable_id', 'category', 'costs',
+        'savings_gas', 'savings_electricity', 'savings_money', 'year', 'planned', 'planned_year', 'step_id',
     ];
 
     /**
@@ -76,6 +77,7 @@ class UserActionPlanAdvice extends Model
      */
     protected $casts = [
         'planned' => 'boolean',
+        'costs' => 'array',
     ];
 
     /**

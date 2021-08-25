@@ -48,71 +48,50 @@ class MapActionPlan extends Command
      */
     public function handle()
     {
-//        $this->info('Mapping categories for user_action_plan_advices...');
-//        $this->mapUserActionPlanAdvices();
-        $this->info('Converting cost from int to JSON...');
-        $this->convertUserActionPlanAdvicesCostToJson();
+        $this->info('Mapping categories for user_action_plan_advices...');
+        $this->mapUserActionPlanAdvices();
+//        $this->info('Converting cost from int to JSON...');
+//        $this->convertUserActionPlanAdvicesCostToJson();
     }
 
     public function mapUserActionPlanAdvices()
     {
         // This will add the category to each row in the user_action_plan_advices table
         $userActionPlanAdvices = UserActionPlanAdvice::allInputSources()
-            ->with('inputSource', 'step', 'user')
             ->get();
 
-        $shortTerm = "Ja, op korte termijn";
-        $term = "Ja, op termijn";
-
-        $categoryMap = [
-            $shortTerm => UserActionPlanAdviceService::CATEGORY_TO_DO,
-            $term => UserActionPlanAdviceService::CATEGORY_LATER,
-            "Misschien, meer informatie gewenst" => UserActionPlanAdviceService::CATEGORY_LATER,
-            "Nee, geen interesse" => UserActionPlanAdviceService::CATEGORY_COMPLETE,
-            "Nee, niet mogelijk / reeds uitgevoerd" => UserActionPlanAdviceService::CATEGORY_COMPLETE,
-        ];
+        $bar = $this->output->createProgressBar($userActionPlanAdvices->count());
+        $bar->start();
 
         foreach ($userActionPlanAdvices as $userActionPlanAdvice) {
-            $user = $userActionPlanAdvice->user;
-
-            $interest = $user->userInterestsForSpecificType(Step::class, $userActionPlanAdvice->step->id, $userActionPlanAdvice->inputSource)
-                ->with('interest')->first()->interest;
-
-            $name = $interest->name;
-            // Get category on name base
-            $category = $categoryMap[$name] ?? UserActionPlanAdviceService::CATEGORY_LATER;
-
-            $year = $userActionPlanAdvice->year;
-            // If it's a term/short term interest, we need to check the year
-            if (($name === $shortTerm || $name === $term) && ! empty($year)) {
-                $now = CarbonImmutable::now();
-
-                // TODO: Check this, maybe they will be interchangeable and we only need the first if
-                switch($name) {
-                    case $shortTerm:
-                        if ($year <= $now->addYears(4)->format('Y')) {
-                            $category = UserActionPlanAdviceService::CATEGORY_TO_DO;
-                        } else {
-                            // TODO: Check this guessed map
-                            $category = UserActionPlanAdviceService::CATEGORY_LATER;
-                        }
-                        break;
-
-                    case $term:
-                        if ($year >= $now->addYears(5)->format('Y')) {
-                            $category = UserActionPlanAdviceService::CATEGORY_LATER;
-                        } else {
-                            // TODO: Check this guessed map
-                            $category = UserActionPlanAdviceService::CATEGORY_TO_DO;
-                        }
-                        break;
+            if ($userActionPlanAdvice->planned) {
+                $category = UserActionPlanAdviceService::CATEGORY_TO_DO;
+                $visible = true;
+            } else {
+                if (! empty($userActionPlanAdvice->planned_year)) {
+                    if ($userActionPlanAdvice->planned_year <= now()->addYears(4)->format('Y')) {
+                        $category = UserActionPlanAdviceService::CATEGORY_TO_DO;
+                        $visible = true;
+                    } else {
+                        $category = UserActionPlanAdviceService::CATEGORY_LATER;
+                        $visible = true;
+                    }
+                } else {
+                    $category = UserActionPlanAdviceService::CATEGORY_LATER;
+                    $visible = false;
                 }
             }
 
             $userActionPlanAdvice->update([
                 'category' => $category,
+                'visible' => $visible,
             ]);
+
+            $bar->advance();
         }
+
+        $bar->finish();
+        $this->output->newLine();
     }
 
     public function convertUserActionPlanAdvicesCostToJson()

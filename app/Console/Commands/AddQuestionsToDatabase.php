@@ -1029,7 +1029,7 @@ class AddQuestionsToDatabase extends Command
                             ],
                         ],
                         [
-                            'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'min:1', 'max:50'],
+                            'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'min:1'],
                             'save_in' => "building_pv_panels.total_installed_power",
                             // was current-state -> Geinstalleerd vermogen (totaal)
                             'translation' => "Totaal vermogen",

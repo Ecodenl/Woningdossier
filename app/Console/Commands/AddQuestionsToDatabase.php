@@ -135,7 +135,6 @@ class AddQuestionsToDatabase extends Command
         $structure = [
             'building-data' => [
                 // sub step name
-                // sub step name
                 'Wat voor woning' => [
                     // question data
                     'sub_step_template_id' => $templateDefault->id,
@@ -935,14 +934,11 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'conditions' => [
                         [
-                            'column' => 'heat-source',
-                            'value' => 'heat-pump',
+                            [
+                                'column' => 'heat-source',
+                                'value' => 'heat-pump',
+                            ],
                         ],
-                        [
-                            'column' => 'cook-type',
-                            'condition' => '=',
-                            'value' => 'gas',
-                        ]
                     ],
                     'questions' => [
                         [

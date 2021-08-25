@@ -22,7 +22,9 @@ class CreateUserActionPlanAdvicesTable extends Migration
             $table->integer('measure_application_id')->unsigned();
             $table->foreign('measure_application_id')->references('id')->on('measure_applications')->onDelete('restrict');
 
-            $table->decimal('costs')->nullable();
+            $table->string('category')->nullable();
+            $table->boolean('visible')->default(false);
+            $table->json('costs')->nullable();
             $table->decimal('savings_gas')->nullable();
             $table->decimal('savings_electricity')->nullable();
             $table->decimal('savings_money')->nullable();

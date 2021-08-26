@@ -3,6 +3,10 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\StepHelper;
+use App\Models\Building;
+use App\Models\MeasureApplication;
+use App\Models\UserActionPlanAdvice;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -21,6 +25,11 @@ class Form extends Component
         ],
     ];
 
+    /** @var Building */
+    public $building;
+
+    public $currentInputSource;
+
     public array $new_measure = [];
     public int $investment = 0;
     public int $yearlySavings = 0;
@@ -33,158 +42,94 @@ class Form extends Component
     public string $SUBSIDY_UNAVAILABLE = 'unavailable';
     public string $SUBSIDY_UNKNOWN = 'unknown';
 
-    public string $CATEGORY_COMPLETE = UserActionPlanAdviceService::CATEGORY_COMPLETE;
-    public string $CATEGORY_TO_DO = UserActionPlanAdviceService::CATEGORY_TO_DO;
-    public string $CATEGORY_LATER = UserActionPlanAdviceService::CATEGORY_LATER;
-
     protected $rules = [
         'new_measure.subject' => 'required',
         'new_measure.price.from' => 'required|numeric|min:0',
         'new_measure.price.to' => 'required|numeric|gt:new_measure.price.from',
-        'new_measure.expected_savings' => 'nullable|numeric',
+//        'new_measure.expected_savings' => 'nullable|numeric',
     ];
 
     protected $listeners = [
         'cardMoved',
     ];
 
+    // TODO: Proper map
+    private $iconMap = [
+        'floor-insulation' => 'icon-floor-insulation-excellent',
+        'bottom-insulation' => 'icon-floor-insulation-good',
+        'floor-insulation-research' => 'icon-floor-insulation-moderate',
+        'cavity-wall-insulation' => 'icon-wall-insulation-excellent',
+        'facade-wall-insulation' => 'icon-wall-insulation-good',
+        'wall-insulation-research' => 'icon-wall-insulation-moderate',
+        'glass-in-lead' => 'icon-glass-single',
+        'hrpp-glass-only' => 'icon-glass-hr-p',
+        'hrpp-glass-frames' => 'icon-glass-hr-dp',
+        'hr3p-frames' => 'icon-glass-hr-tp',
+        'crack-sealing' => 'icon-cracks-seams',
+        'roof-insulation-pitched-inside' => 'icon-pitched-roof',
+        'roof-insulation-pitched-replace-tiles' => 'icon-pitched-roof',
+        'roof-insulation-flat-current' => 'icon-flat-roof',
+        'roof-insulation-flat-replace-current' => 'icon-flat-roof',
+        'high-efficiency-boiler-replace' => 'icon-central-heater',
+        'heater-place-replace' => 'icon-sun-boiler',
+        'solar-panels-place-replace' => 'icon-solar-panels',
+        'repair-joint' => 'icon-tools',
+        'clean-brickwork' => 'icon-tools',
+        'impregnate-wall' => 'icon-hydronic-balance-temperature',
+        'paint-wall' => 'icon-paint-job',
+        'paint-wood-elements' => 'icon-paint-job',
+        'replace-tiles' => 'icon-tools',
+        'replace-roof-insulation' => 'icon-roof-insulation-excellent',
+        'inspect-repair-roofs' => 'icon-tools',
+        'replace-zinc-pitched' => 'icon-pitched-roof',
+        'replace-zinc-flat' => 'icon-flat-roof',
+        'ventilation-balanced-wtw' => 'icon-ventilation',
+        'ventilation-decentral-wtw' => 'icon-ventilation',
+        'ventilation-demand-driven' => 'icon-ventilation',
+    ];
+
     public function mount()
     {
-        // TODO: Find out how to get these from backend data
+        $this->building = HoomdossierSession::getBuilding(true);
+        $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
-        $building = HoomdossierSession::getBuilding(true);
+        $advices = UserActionPlanAdvice::forInputSource($this->currentInputSource)
+            ->where('user_id', $this->building->user->id)
+            ->get();
 
-//        $building->
-
-        $this->cards = [
-            $this->CATEGORY_COMPLETE => [
-                Str::random() => [
-                    'name' => 'Ventilatie (mechanisch)',
-                    'icon' => 'icon-ventilation',
-                    'price' => [
-                        'from' => 500,
-                        'to' => 700,
-                    ],
-                    'subsidy' => $this->SUBSIDY_AVAILABLE,
-                    'savings' => 0,
-                    'info' => 'Ventilatie helpt met het goed doorluchten van het huis.',
-                ],
-                Str::random() => [
-                    'name' => 'Nieuwe keuken',
-                    'icon' => 'icon-kitchen',
-                    'price' => [
-                        'from' => 5000,
-                        'to' => 10000,
-                    ],
-                    'subsidy' => $this->SUBSIDY_UNAVAILABLE,
-                    'savings' => 300,
-                    'info' => 'Een nieuwe keuken geeft jouw huis een betere uitstraling.',
-                ],
-                Str::random() => [
-                    'name' => 'Nieuwe badkamer',
-                    'icon' => 'icon-bathroom',
-                    'price' => [
-                        'from' => 5000,
-                        'to' => 15000,
-                    ],
-                    'subsidy' => $this->SUBSIDY_UNAVAILABLE,
-                    'savings' => 5000,
-                    'info' => 'Een goede badkamer bespaart water.',
-                ],
-                Str::random() => [
-                    'name' => 'Dakkapel',
-                    'icon' => 'icon-dormer',
-                    'price' => [
-                        'from' => 8000,
-                        'to' => 18000,
-                    ],
-                    'subsidy' => $this->SUBSIDY_AVAILABLE,
-                    'savings' => 0,
-                    'info' => 'Een dakkapel zorgt voor veel licht inval.',
-                ],
-            ],
-            $this->CATEGORY_TO_DO => [
-                Str::random() => [
-                    'name' => 'Vloerverwarming',
-                    'icon' => 'icon-radiant-floor-heating',
-                    'price' => [
-                        'from' => 1200,
-                        'to' => 1800,
-                    ],
-                    'subsidy' => $this->SUBSIDY_AVAILABLE,
-                    'savings' => 0,
-                    'info' => 'Vloerverwaming houdt warmte vast.',
-                ],
-                Str::random() => [
-                    'name' => 'Kozijnen vervangen',
-                    'icon' => 'icon-window-frame',
-                    'price' => [
-                        'from' => 2500,
-                        'to' => 2800,
-                    ],
-                    'subsidy' => $this->SUBSIDY_UNAVAILABLE,
-                    'savings' => 1400,
-                    'info' => 'Een nieuw kozijn kan helpen met isolatie.',
-                ],
-                Str::random() => [
-                    'name' => 'Gevelisolatie',
-                    'icon' => 'icon-wall-insulation-excellent',
-                    'price' => [
-                        'from' => 2500,
-                        'to' => 2800,
-                    ],
-                    'subsidy' => $this->SUBSIDY_AVAILABLE,
-                    'savings' => 0,
-                    'info' => 'Goede isolatie, het spreekt voor zich.',
-                ],
-                Str::random() => [
-                    'name' => 'Schilderwerk',
-                    'icon' => 'icon-paint-job',
-                    'price' => [
-                        'from' => null,
-                        'to' => null,
-                    ],
-                    'subsidy' => $this->SUBSIDY_UNAVAILABLE,
-                    'savings' => 1000,
-                    'info' => 'De kosten hangen af van het aantal manuren.',
-                ],
-                Str::random() => [
-                    'name' => 'Vloerisolatie',
-                    'icon' => 'icon-floor-insulation-excellent',
-                    'price' => [
-                        'from' => 1500,
-                        'to' => 2000,
-                    ],
-                    'subsidy' => $this->SUBSIDY_AVAILABLE,
-                    'savings' => 0,
-                    'info' => 'Goede isolatie, het spreekt voor zich.',
-                ],
-            ],
-            $this->CATEGORY_LATER => [
-                Str::random() => [
-                    'name' => 'Dakisolatie',
-                    'icon' => 'icon-roof-insulation-excellent',
-                    'price' => [
-                        'from' => 700,
-                        'to' => 900,
-                    ],
-                    'subsidy' => $this->SUBSIDY_AVAILABLE,
-                    'savings' => 0,
-                    'info' => 'Goede isolatie, het spreekt voor zich.',
-                ],
-                Str::random() => [
-                    'name' => 'Isolerende beglazing',
-                    'icon' => 'icon-glass-hr-p',
-                    'price' => [
-                        'from' => 700,
-                        'to' => 3000,
-                    ],
-                    'subsidy' => $this->SUBSIDY_UNAVAILABLE,
-                    'savings' => 900,
-                    'info' => 'Goede isolatie, het spreekt voor zich.',
-                ],
-            ],
-        ];
+        foreach (UserActionPlanAdviceService::getCategories() as $category) {
+            foreach ($advices->where('category', $category) as $advice) {
+                $advisable = $advice->userActionPlanAdvisable;
+                if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
+                    $this->cards[$category][$advice->id] = [
+                        'name' => Str::limit($advisable->measure_name, 22),
+                        'icon' => $this->iconMap[$advisable->short] ?? 'icon-tools',
+                        'price' => [
+                            'from' => $advice->costs['from'] ?? 0,
+                            'to' => $advice->costs['to'] ?? 0,
+                        ],
+                        // TODO: Subsidy
+                        'subsidy' => $this->SUBSIDY_AVAILABLE,
+                        'savings' => $advice->savings_money,
+                        'info' => $advisable->measure_name,
+                        'route' => StepHelper::buildStepUrl($advisable->step),
+                    ];
+                } else {
+                    $this->cards[$category][$advice->id] = [
+                        'name' => Str::limit($advisable->name, 22),
+                        'icon' => 'icon-tools',
+                        'price' => [
+                            'from' => $advice->costs['from'] ?? 0,
+                            'to' => $advice->costs['to'] ?? 0,
+                        ],
+                        // TODO: Subsidy
+                        'subsidy' => $this->SUBSIDY_UNKNOWN,
+                        'savings' => 0,
+                        'info' => $advisable->name,
+                    ];
+                }
+            }
+        }
 
         $this->recalculate();
     }
@@ -259,7 +204,7 @@ class Form extends Component
         $savings = 0;
         $subsidy = 0;
 
-        foreach ($this->cards[$this->CATEGORY_TO_DO] as $card) {
+        foreach ($this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO] as $card) {
             $from = $card['price']['from'] ?? 0;
             $to = $card['price']['to'] ?? 0;
 

@@ -4,29 +4,29 @@
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
                 <h5 class="heading-5">
-                    @lang("cooperation/frontend/tool.my-plan.categories.{$CATEGORY_COMPLETE}")
+                    @lang("cooperation/frontend/tool.my-plan.categories." . \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE)
                 </h5>
             </div>
             <i class="icon-md icon-plus-circle clickable" x-on:click="toggle()"
-               wire:click="setCategory('{{$CATEGORY_COMPLETE}}')"></i>
+               wire:click="setCategory('{{\App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE}}')"></i>
         </div>
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
                 <h5 class="heading-5">
-                    @lang("cooperation/frontend/tool.my-plan.categories.{$CATEGORY_TO_DO}")
+                    @lang("cooperation/frontend/tool.my-plan.categories." . \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO)
                 </h5>
             </div>
             <i class="icon-md icon-plus-circle clickable" x-on:click="toggle()"
-               wire:click="setCategory('{{$CATEGORY_TO_DO}}')"></i>
+               wire:click="setCategory('{{\App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO}}')"></i>
         </div>
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
                 <h5 class="heading-5">
-                    @lang("cooperation/frontend/tool.my-plan.categories.{$CATEGORY_LATER}")
+                    @lang("cooperation/frontend/tool.my-plan.categories." . \App\Services\UserActionPlanAdviceService::CATEGORY_LATER)
                 </h5>
             </div>
             <i class="icon-md icon-plus-circle clickable" x-on:click="toggle()"
-               wire:click="setCategory('{{$CATEGORY_LATER}}')"></i>
+               wire:click="setCategory('{{\App\Services\UserActionPlanAdviceService::CATEGORY_LATER}}')"></i>
         </div>
         @component('cooperation.frontend.layouts.components.modal', ['header' => __('cooperation/frontend/tool.form.subject')])
             <form wire:submit.prevent="submit()">
@@ -64,6 +64,7 @@
                         <input class="form-input" wire:model="new_measure.price.to" id="new-measure-price-to"
                                placeholder="@lang('default.to')">
                     @endcomponent
+<!--
                     <div class="w-full flex items-center">
                         <i class="icon-sm icon-info mr-3"></i>
                         <h6 class="heading-6">
@@ -80,6 +81,7 @@
                                id="new-measure-expected-savings"
                                placeholder="@lang('cooperation/frontend/shared.modals.add-measure.expected-savings')">
                     @endcomponent
+-->
                 </div>
                 <div class="w-full border border-gray fixed left-0"></div>
                 <div class="flex flex-wrap justify-center mt-14">
@@ -103,7 +105,17 @@
                             <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
                         </div>
                         <div class="info">
-                            <h6 class="heading-6">{{ $card['name'] }}</h6>
+                            @if(! empty($card['route']))
+                                <a href="{{ $card['route'] }}" class="no-underline" draggable="false">
+                                    <h6 class="heading-6 text-purple">
+                                        {{ $card['name'] }}
+                                    </h6>
+                                </a>
+                            @else
+                                <h6 class="heading-6">
+                                    {{ $card['name'] }}
+                                </h6>
+                            @endif
                             <p class="-mt-1">
                                 @if(empty($card['price']['from']) && empty($card['price']['to']))
                                     @lang('cooperation/frontend/tool.my-plan.cards.see-info')

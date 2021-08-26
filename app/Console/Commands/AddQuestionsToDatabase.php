@@ -1020,10 +1020,12 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'conditions' => [
                         [
-                            'column' => 'ventilation-type',
-                            'operator' => '!=',
-                            'value' => 20, // Natuurlijke ventilatie
-                        ]
+                            [
+                                'column' => 'ventilation-type',
+                                'operator' => '!=',
+                                'value' => 20, // Natuurlijke ventilatie
+                            ],
+                        ],
                     ],
                     'questions' => [
                         [
@@ -1063,9 +1065,11 @@ class AddQuestionsToDatabase extends Command
                             ],
                             'conditions' => [
                                 [
-                                    'column' => 'ventilation-type',
-                                    'operator' => '!=',
-                                    'value' => 21, // Mechanische ventilatie
+                                    [
+                                        'column' => 'ventilation-type',
+                                        'operator' => '!=',
+                                        'value' => 21, // Mechanische ventilatie
+                                    ],
                                 ],
                             ],
                         ],

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
+use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
@@ -85,66 +86,62 @@ class Form extends Component
 
         // Filter out the questions that do not match the condition
         // now collect the given answers
-        $answers = collect();
+        $dynamicAnswers = [];
         foreach ($this->toolQuestions as $toolQuestion) {
-            $answers->push([$toolQuestion->short => $this->filledInAnswers[$toolQuestion->id]]);
+            $dynamicAnswers[$toolQuestion->short] = $this->filledInAnswers[$toolQuestion->id];
         }
 
         foreach ($this->toolQuestions as $index => $toolQuestion) {
             $this->setValidationForToolQuestion($toolQuestion);
 
-            if (!empty($toolQuestion->conditions)) {
-                foreach ($toolQuestion->conditions as $condition) {
-                    // There is a possibility that the answer we're looking for is for a tool question not
-                    // on this page. We find it, and add the answer to our list
-                    if ($this->toolQuestions->where('short', $condition['column'])->count() === 0) {
-                        $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
-                        if ($otherSubStepToolQuestion instanceof ToolQuestion) {
-                            $otherSubStepAnswer = $this->building->getAnswer($this->currentInputSource, $otherSubStepToolQuestion);
+            $answers = $dynamicAnswers;
 
-                            $answers->push([$otherSubStepToolQuestion->short => $otherSubStepAnswer]);
-                        }
-                    }
+            if (! empty($toolQuestion->conditions)) {
+                foreach ($toolQuestion->conditions as $conditionSet) {
+                    foreach ($conditionSet as $condition) {
+                        // There is a possibility that the answer we're looking for is for a tool question not
+                        // on this page. We find it, and add the answer to our list
+                        if ($this->toolQuestions->where('short', $condition['column'])->count() === 0) {
+                            $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
+                            if ($otherSubStepToolQuestion instanceof ToolQuestion) {
+                                $otherSubStepAnswer = $this->building->getAnswer($this->currentInputSource,
+                                    $otherSubStepToolQuestion);
 
-                    // there is a possibility the user fills the form in a unexpected order,
-                    // so we have to check if the field which should match the condition is actually answered.
-                    // may have to change in the future if there is some null condition thing.
-                    $answersForColumn = $answers->where($condition['column'], '!=', null);
-                    if ($answersForColumn->count() > 0) {
-                        // The answer for the column exist, let's check if the condition matches
-// TODO: Wip
-
-                        // now execute the actual condition
-                        $answer = $answers->where($condition['column'], $condition['operator'], $condition['value'])->first();
-                        dd($condition['column']);
-                        // so this means the answer is not found, this means we have to remove the question.
-                        if ($answer === null) {
-                            $this->toolQuestions = $this->toolQuestions->forget($index);
-
-                            // We will unset the answers the user has given. If the user then changes their mind, they
-                            // will have to fill in the data again. We don't want to save values to the database
-                            // that are unvalidated (or not relevant).
-
-                            // Normally we'd use $this->reset(), but it doesn't seem like it likes nested items per dot
-                            $this->filledInAnswers[$toolQuestion->id] = null;
-
-                            // and unset the validation for the question based on type.
-                            switch ($toolQuestion->toolQuestionType->short) {
-                                case 'rating-slider':
-                                    foreach ($toolQuestion->options as $option) {
-                                        unset($this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"]);
-                                    }
-                                    break;
-
-                                case 'checkbox-icon':
-                                    unset($this->rules["filledInAnswers.{$toolQuestion->id}.*"]);
-                                    break;
-
-                                default:
-                                    unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
-                                    break;
+                                $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;
                             }
                         }
+                    }
+                }
+
+                $evaluatableAnswers = collect($answers);
+//dd($evaluatableAnswers);
+                $evaluation = ConditionEvaluator::init()->explain()->evaluateCollection($toolQuestion->conditions, $evaluatableAnswers);
+
+                if (! $evaluation) {
+                    $this->toolQuestions = $this->toolQuestions->forget($index);
+
+                    // We will unset the answers the user has given. If the user then changes their mind, they
+                    // will have to fill in the data again. We don't want to save values to the database
+                    // that are unvalidated (or not relevant).
+
+                    // Normally we'd use $this->reset(), but it doesn't seem like it likes nested items per dot
+                    $this->filledInAnswers[$toolQuestion->id] = null;
+
+                    // and unset the validation for the question based on type.
+                    switch ($toolQuestion->toolQuestionType->short) {
+                        case 'rating-slider':
+                            foreach ($toolQuestion->options as $option) {
+                                unset($this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"]);
+                            }
+                            break;
+
+                        case 'checkbox-icon':
+                            unset($this->rules["filledInAnswers.{$toolQuestion->id}.*"]);
+                            break;
+
+                        default:
+                            unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
+                            break;
                     }
                 }
             }
@@ -201,7 +198,7 @@ class Form extends Component
 
             $this->filledInAnswersForAllInputSources[$toolQuestion->id] = $this->building->getAnswerForAllInputSources($toolQuestion);
 
-            /** @var array $answerForInputSource */
+            /** @var array|string $answerForInputSource */
             $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
 
             // We don't have to set rules here, as that's done in the setToolQuestions function which gets called
@@ -264,13 +261,14 @@ class Form extends Component
 
         // We will save it on the model, this way we keep the current events behind them
         $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
-        $where['input_source_id'] = $this->currentInputSource->id;
 
         if (Schema::hasColumn($table, 'user_id')) {
             $where = ['user_id' => $this->building->user_id];
         } else {
             $where = ['building_id' => $this->building->id];
         }
+
+        $where['input_source_id'] = $this->currentInputSource->id;
 
         // This means we have to add some thing to the where
         if (count($savedInParts) > 2) {

@@ -32,6 +32,11 @@ class SubStepTemplatesTableSeeder extends Seeder
                 'short' => 'template-2-rows-3-top-1-bottom',
                 'view' =>  'template-2-rows-3-top-1-bottom',
             ],
+            [
+                'name'  => ['nl' => 'Samenvatting'],
+                'short' => 'template-summary',
+                'view' =>  'template-summary',
+            ],
         ];
 
         foreach ($datas as $data) {

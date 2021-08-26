@@ -162,6 +162,7 @@ class Form extends Component
             $validator->validate();
         }
 
+
         foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
             /** @var ToolQuestion $toolQuestion */
             $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();

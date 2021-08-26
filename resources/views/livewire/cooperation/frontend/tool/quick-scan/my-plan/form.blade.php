@@ -106,7 +106,7 @@
                         </div>
                         <div class="info">
                             @if(! empty($card['route']))
-                                <a href="{{ $card['route'] }}" class="no-underline">
+                                <a href="{{ $card['route'] }}" class="no-underline" draggable="false">
                                     <h6 class="heading-6 text-purple">
                                         {{ $card['name'] }}
                                     </h6>

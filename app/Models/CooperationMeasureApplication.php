@@ -9,8 +9,10 @@ class CooperationMeasureApplication extends Model
 {
     use HasTranslations;
 
-    protected $translatable = ['name'];
+    protected $translatable = ['name', 'info'];
+
     protected $casts = [
-        'costs' => 'json'
+        'costs' => 'json',
+        'extra' => 'icon',
     ];
 }

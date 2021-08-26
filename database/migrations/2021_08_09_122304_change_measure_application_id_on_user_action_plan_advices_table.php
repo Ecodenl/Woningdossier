@@ -47,7 +47,7 @@ class ChangeMeasureApplicationIdOnUserActionPlanAdvicesTable extends Migration
     public function down()
     {
         Schema::table('user_action_plan_advices', function (Blueprint $table) {
-            $table->dropMorphs('measurable');
+//            $table->dropMorphs('measurable');
         });
     }
 }

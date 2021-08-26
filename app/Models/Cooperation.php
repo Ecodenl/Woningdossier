@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Plank\Mediable\Mediable;
 
@@ -61,6 +62,12 @@ class Cooperation extends Model
     public function users()
     {
         return $this->hasMany(User::class);
+    }
+
+
+    public function cooperationMeasureApplications(): HasMany
+    {
+        return $this->hasMany(CooperationMeasureApplication::class, 'id');
     }
 
     public function style()

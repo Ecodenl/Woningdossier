@@ -25,6 +25,7 @@ use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
 use App\Models\SubStepTemplate;
+use App\Models\ToolQuestion;
 use App\Models\ToolQuestionType;
 use App\Models\Ventilation;
 use App\Models\WoodRotStatus;
@@ -63,7 +64,6 @@ class ToolHelper
         $livingRoomsWindows = Element::findByShort('living-rooms-windows');
         $sleepingRoomsWindows = Element::findByShort('sleeping-rooms-windows');
         // General data - Services (that are not queried later on step basis)
-        $heatPump = Service::findByShort('heat-pump');
         $ventilation = Service::findByShort(
             'house-ventilation'
         );
@@ -124,8 +124,7 @@ class ToolHelper
         ];
 
         // High efficiency boiler
-        // NOTE: building element hr-boiler tells us if it's there
-        $hrBoiler = Service::findByShort('hr-boiler');
+        // NOTE: building element tells us if it's there
         $boiler = Service::findByShort('boiler');
 
         // Solar panels
@@ -303,14 +302,13 @@ class ToolHelper
                         ),
                     ],
 
-                    'service.' . $hrBoiler->id => [
-                        'label' => $hrBoiler->name,
+
+                    'tool_question_answers.heat-source' => [
+                        'label' => ToolQuestion::findByShort('heat-source')->name,
                         'type' => 'select',
-                        'options' => static::createOptions(
-                            $hrBoiler->values()->orderBy('order')->get(),
-                            'value'
-                        ),
+                        'options' => ToolQuestion::findByShort('heat-source')->getQuestionValues()->pluck('name', 'short')->toArray()
                     ],
+
                     'service.' . $boiler->id . '.service_value_id' => [
                         'label' => __('boiler.boiler-type.title'),
                         'type' => 'select',
@@ -319,23 +317,12 @@ class ToolHelper
                             'value'
                         ),
                     ],
-                    'building_features.building_heating_application_id' => [
+                    'tool_question_answers.building-heating-application' => [
                         'label' => __(
                             'cooperation/tool/general-data/current-state.index.building-heating-applications.title'
                         ),
                         'type' => 'select',
-                        'options' => static::createOptions(
-                            $buildingHeatingApplications
-                        ),
-                    ],
-
-                    'service.' . $heatPump->id => [
-                        'label' => $heatPump->name,
-                        'type' => 'select',
-                        'options' => static::createOptions(
-                            $heatPump->values()->orderBy('order')->get(),
-                            'value'
-                        ),
+                        'options' => ToolQuestion::findByShort('building-heating-application')->getQuestionValues()->pluck('name', 'short')->toArray()
                     ],
 
                     'service.' . $solarPanels->id . '.extra.value' => [
@@ -418,7 +405,7 @@ class ToolHelper
                             $comfortLevelsTapWater
                         ),
                     ],
-                    'user_energy_habits.cook_gas' => [
+                    'tool_question_answers.cook-type' => [
                         'label' => __(
                             'cooperation/tool/general-data/usage.index.water-gas.cook-gas.title'
                         ),
@@ -826,7 +813,7 @@ class ToolHelper
                         'high-efficiency-boiler'
                     )->id . '.interest_id' => [
                         //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $hrBoiler->name . ': ' . __(
+                        'label' => 'HR CV Ketel: ' . __(
                                 'high-efficiency-boiler.index.interested-in-improvement.title'
                             ),
                         'type' => 'select',

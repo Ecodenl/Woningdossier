@@ -31,7 +31,7 @@ class UserService
                         'buildingFeatures' => function ($query) use ($inputSource) {
                             $query->forInputSource($inputSource)
                                 ->with([
-                                    'roofType', 'energyLabel', 'damagedPaintwork', 'buildingHeatingApplication', 'plasteredSurface',
+                                    'roofType', 'energyLabel', 'damagedPaintwork', 'plasteredSurface',
                                     'contaminatedWallJoints', 'wallJoints',
                                 ]);
                         },
@@ -106,8 +106,9 @@ class UserService
         $user->userInterests()->forInputSource($inputSource)->delete();
         // remove the energy habits from a user
         $user->energyHabit()->forInputSource($inputSource)->delete();
-        // remove the motivations from a user
-        $user->motivations()->delete();
+
+        // remove all the tool question anders for the building
+        $building->toolQuestionAnswers()->forInputSource($inputSource)->delete();
         // remove the progress of the completed questionnaires
         CompletedQuestionnaire::forMe($user)->forInputSource($inputSource)->delete();
     }
@@ -228,8 +229,6 @@ class UserService
         $user->userInterests()->withoutGlobalScopes()->delete();
         // remove the energy habits from a user
         $user->energyHabit()->withoutGlobalScopes()->delete();
-        // remove the motivations from a user
-        $user->motivations()->withoutGlobalScopes()->delete();
         // remove the notification settings
         $user->notificationSettings()->withoutGlobalScopes()->delete();
         // first detach the roles from the user
@@ -238,6 +237,8 @@ class UserService
         // remove the user itself.
         $user->delete();
 
+
+        $building->toolQuestionAnswers()->withoutGlobalScopes()->delete();
         // remove the user itself.
         // if the account has no users anymore then we delete the account itself too.
         if (0 == User::withoutGlobalScopes()->where('account_id',

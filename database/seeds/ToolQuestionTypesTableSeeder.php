@@ -13,6 +13,10 @@ class ToolQuestionTypesTableSeeder extends Seeder
     {
         $datas = [
             [
+                'name'  => ['nl' => 'Meerkeuze met icon'],
+                'short' => 'checkbox-icon'
+            ],
+            [
                 'name'  => ['nl' => 'Keuze met icon'],
                 'short' => 'radio-icon'
             ],

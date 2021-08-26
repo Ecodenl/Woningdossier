@@ -66,6 +66,7 @@ class DoUpgrade extends Command
                 \SubStepTemplatesTableSeeder::class,
                 \InputSourcesTableSeeder::class,
                 \RoofTypesTableSeeder::class,
+                \ComfortLevelTapWatersTableSeeder::class,
                 \EnergyLabelsTableSeeder::class,
             ];
 

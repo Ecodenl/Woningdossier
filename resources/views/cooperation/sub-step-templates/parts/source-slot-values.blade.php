@@ -1,5 +1,9 @@
-@foreach($values as $inputSourceShort => $answer)
+@if(!empty($values))
+@foreach($values as $inputSourceShort => $answersForInputSources)
+    @foreach($answersForInputSources as $answerForInputSource)
     @php
+
+        $answer = $answerForInputSource['answer'];
         $humanReadableAnswer = null;
 
         $json = json_decode($answer, true);
@@ -28,7 +32,9 @@
         }
     @endphp
 
-    <li class="change-input-value" data-input-source-short="{{$inputSourceShort}}" data-input-value="{{$answer}}">
+    <li class="change-input-value" data-input-source-short="{{$inputSourceShort}}" data-input-value="{{$answerForInputSource['value']}}">
         {{\App\Models\InputSource::findByShort($inputSourceShort)->name}}: {{$humanReadableAnswer}}
     </li>
 @endforeach
+@endforeach
+@endif

@@ -136,6 +136,7 @@ class Form extends Component
                             break;
 
                         case 'checkbox-icon':
+                            unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
                             unset($this->rules["filledInAnswers.{$toolQuestion->id}.*"]);
                             break;
 
@@ -224,6 +225,7 @@ class Form extends Component
                     foreach ($answerForInputSource as $answer) {
                         $this->filledInAnswers[$toolQuestion->id][] = $answer;
                     }
+                    $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                     $this->attributes["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->name;
                     break;
                 default:
@@ -247,7 +249,13 @@ class Form extends Component
                 break;
 
             case 'checkbox-icon':
+                // If this is set, it won't validate if nothing is clicked. We check if the validation is required,
+                // and then also set required for the main question
                 $this->rules["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->validation;
+
+                if (in_array('required', $toolQuestion->validation)) {
+                    $this->rules["filledInAnswers.{$toolQuestion->id}"] = ['required'];
+                }
                 break;
 
             default:
@@ -326,6 +334,7 @@ class Form extends Component
             'building_id' => $this->building->id,
             'input_source_id' => $this->currentInputSource->id,
         ];
+//        dd($givenAnswer, $this->filledInAnswers);
 
         // we can't do a update or create, we just have to delete the old answers and create the new one.
         if ($toolQuestion->toolQuestionType->short == 'checkbox-icon') {

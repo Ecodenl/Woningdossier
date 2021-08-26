@@ -990,7 +990,6 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // TODO: These aren't saving correctly, won't save 2 questions to the same JSON column
                 'Aanvullende ventilatievragen' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'conditions' => [
@@ -1041,7 +1040,6 @@ class AddQuestionsToDatabase extends Command
                                     'column' => 'ventilation-type',
                                     'operator' => '!=',
                                     'value' => 21, // Mechanische ventilatie
-                                    // TODO: This isn't validating correctly
                                 ],
                             ],
                         ],

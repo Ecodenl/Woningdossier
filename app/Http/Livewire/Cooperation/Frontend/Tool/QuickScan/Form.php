@@ -94,12 +94,28 @@ class Form extends Component
 
             if (!empty($toolQuestion->conditions)) {
                 foreach ($toolQuestion->conditions as $condition) {
+                    // There is a possibility that the answer we're looking for is for a tool question not
+                    // on this page. We find it, and add the answer to our list
+                    if ($this->toolQuestions->where('short', $condition['column'])->count() === 0) {
+                        $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
+                        if ($otherSubStepToolQuestion instanceof ToolQuestion) {
+                            $otherSubStepAnswer = $this->building->getAnswer($this->currentInputSource, $otherSubStepToolQuestion);
+
+                            $answers->push([$otherSubStepToolQuestion->short => $otherSubStepAnswer]);
+                        }
+                    }
+
                     // there is a possibility the user fills the form in a unexpected order,
                     // so we have to check if the field which should match the condition is actually answered.
                     // may have to change in the future if there is some null condition thing.
-                    if ($answers->where($condition['column'], '!=', null)->count() > 0) {
+                    $answersForColumn = $answers->where($condition['column'], '!=', null);
+                    if ($answersForColumn->count() > 0) {
+                        // The answer for the column exist, let's check if the condition matches
+// TODO: Wip
+
                         // now execute the actual condition
                         $answer = $answers->where($condition['column'], $condition['operator'], $condition['value'])->first();
+                        dd($condition['column']);
                         // so this means the answer is not found, this means we have to remove the question.
                         if ($answer === null) {
                             $this->toolQuestions = $this->toolQuestions->forget($index);

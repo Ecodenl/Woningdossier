@@ -334,7 +334,6 @@ class Form extends Component
             'building_id' => $this->building->id,
             'input_source_id' => $this->currentInputSource->id,
         ];
-//        dd($givenAnswer, $this->filledInAnswers);
 
         // we can't do a update or create, we just have to delete the old answers and create the new one.
         if ($toolQuestion->toolQuestionType->short == 'checkbox-icon') {
@@ -349,6 +348,7 @@ class Form extends Component
                 $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($answer);
                 $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
                 $data['answer'] = $answer;
+                // TODO: Check this, it's saving answers really weirdly
                 $toolQuestion->toolQuestionAnswers()->create($data)->replicate()->fill([
                     'input_source_id' => $this->masterInputSource->id
                 ])->save();

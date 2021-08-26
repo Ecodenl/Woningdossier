@@ -42,7 +42,7 @@
                     {{-- Only display questions that are valid to the user --}}
                     @php
                         $showQuestion = true;
-
+// TODO: Answers for checkbox-icon don't work now
                         if (! empty($toolQuestionToSummarize->conditions)) {
                             $showQuestion = \App\Helpers\Conditions\ConditionEvaluator::init()
                             ->evaluateCollection($toolQuestionToSummarize->conditions, collect($answers));

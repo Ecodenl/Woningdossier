@@ -90,7 +90,16 @@ class DoUpgrade extends Command
             // This processes all buildings, almost 7000 of them! It takes a long time to process, so we won't run it
             // locally
             if (! app()->environment('local')) {
-                Artisan::call(AddMasterInputSource::class);
+                $afterCommands = [
+                    MapAnswers::class,
+                    MapActionPlan::class,
+                    AddMasterInputSource::class,
+                ];
+
+                foreach ($afterCommands as $command) {
+                    $this->info("Running $command");
+                    Artisan::call($command);
+                }
             }
 
             // We only run this on local/accept

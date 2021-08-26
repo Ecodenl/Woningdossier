@@ -47,7 +47,7 @@ trait GetMyValuesTrait
     protected function saveForMasterInputSource()
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-        $data = $this->getAttributes();
+        $data = $this->attributesToArray();
 
         $data['input_source_id'] = $masterInputSource->id;
         unset($data['id']);

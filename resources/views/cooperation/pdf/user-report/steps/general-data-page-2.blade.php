@@ -19,7 +19,7 @@
                     <tr>
                         <td>{{$year}}</td>
                         <td>{{$advice['measure']}}</td>
-                        <td>{{\App\Helpers\NumberFormatter::format($advice['costs'])}}</td>
+                        <td>{{\App\Helpers\NumberFormatter::format($advice['costs']['from'] ?? 0)}}</td>
                         <td>{{\App\Helpers\NumberFormatter::format($advice['savings_money'])}}</td>
                     </tr>
                     @if(array_key_exists('warning', $advice) && is_string($advice['warning']) && !array_key_exists($advice['warning'], $shownWarnings))

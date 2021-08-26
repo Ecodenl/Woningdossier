@@ -94,7 +94,7 @@ class WallInsulationHelper extends ToolHelper
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
                 $actionPlanAdvice->input_source_id = $this->inputSource->id;
-                $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
+                $actionPlanAdvice->costs = ['from' => $results['cost_indication']]; // only outlier
                 $actionPlanAdvice->user()->associate($this->user);
                 $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
@@ -115,6 +115,7 @@ class WallInsulationHelper extends ToolHelper
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
                     $actionPlanAdvice->input_source_id = $this->inputSource->id;
+                    $actionPlanAdvice->costs = ['from' => $results[$key]['costs']]; // only outlier
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);

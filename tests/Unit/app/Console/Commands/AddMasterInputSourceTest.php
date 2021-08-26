@@ -8,6 +8,7 @@ use App\Models\BuildingElement;
 use App\Models\BuildingHeater;
 use App\Models\ElementValue;
 use App\Models\InputSource;
+use App\Models\Step;
 use App\Models\UserInterest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -75,15 +76,21 @@ class AddMasterInputSourceTest extends TestCase
             'element_value_id' => $lessRelevantElementValue->id,
         ]);
 
+        $step = factory(Step::class)->create();
+
         // Create user interests
         $relevantUserInterest = factory(UserInterest::class)->create([
             'user_id' => $building->user->id,
             'input_source_id' => $coachInputSource->id,
+            'interested_in_type' => Step::class,
+            'interested_in_id' => $step->id,
         ]);
 
         $lessRelevantUserInterest = factory(UserInterest::class)->create([
             'user_id' => $building->user->id,
             'input_source_id' => $residentInputSource->id,
+            'interested_in_type' => Step::class,
+            'interested_in_id' => $step->id,
         ]);
 
         // Create building heaters
@@ -109,25 +116,25 @@ class AddMasterInputSourceTest extends TestCase
             ->where('input_source_id', $masterInputSource->id)
             ->first();
         $this->assertNotEquals(null, $newBuildingElement);
-        $this->assertEquals($relevantBuildingElement->element_id, optional($newBuildingElement)->element_id);
-        $this->assertEquals($relevantBuildingElement->element_value_id, optional($newBuildingElement)->element_value_id);
+        $this->assertEquals($relevantBuildingElement->element_id, $newBuildingElement->element_id);
+        $this->assertEquals($relevantBuildingElement->element_value_id, $newBuildingElement->element_value_id);
 
         $newUserInterest = DB::table('user_interests')
             ->where('user_id', $building->user->id)
             ->where('input_source_id', $masterInputSource->id)
             ->first();
         $this->assertNotEquals(null, $newUserInterest);
-        $this->assertEquals($relevantUserInterest->interested_in_type, optional($newUserInterest)->interested_in_type);
-        $this->assertEquals($relevantUserInterest->interested_in_id, optional($newUserInterest)->interested_in_id);
-        $this->assertEquals($relevantUserInterest->interest_id, optional($newUserInterest)->interest_id);
+        $this->assertEquals($relevantUserInterest->interested_in_type, $newUserInterest->interested_in_type);
+        $this->assertEquals($relevantUserInterest->interested_in_id, $newUserInterest->interested_in_id);
+        $this->assertEquals($relevantUserInterest->interest_id, $newUserInterest->interest_id);
 
         $newBuildingHeater = DB::table('building_heaters')
             ->where('building_id', $building->id)
             ->where('input_source_id', $masterInputSource->id)
             ->first();
         $this->assertNotEquals(null, $newBuildingHeater);
-        $this->assertEquals($relevantBuildingHeater->pv_panel_orientation_id, optional($newBuildingHeater)->pv_panel_orientation_id);
-        $this->assertEquals($relevantBuildingHeater->angle, optional($newBuildingHeater)->angle);
+        $this->assertEquals($relevantBuildingHeater->pv_panel_orientation_id, $newBuildingHeater->pv_panel_orientation_id);
+        $this->assertEquals($relevantBuildingHeater->angle, $newBuildingHeater->angle);
     }
 
     public function testSearchCollectionForValue()
@@ -241,5 +248,25 @@ class AddMasterInputSourceTest extends TestCase
         $command = new AddMasterInputSource();
 
         $this->assertEquals($expected, $command->getObjectProperty($object, $key));
+    }
+
+    public static function compareJsonKeysProvider()
+    {
+        return [
+            ['{"has_crawlspace":"yes","access":"no"}', '{"has_crawlspace":"no"}', '{"has_crawlspace":"yes","access":"no"}'],
+            ['{"has_crawlspace":"no"}', '{"has_crawlspace":"yes","access":"yes"}', '{"has_crawlspace":"no","access":"yes"}'],
+            ['{"has_crawlspace":"yes","access":"no"}', '{"has_crawlspace":"no","access":"yes"}', '{"has_crawlspace":"yes","access":"no"}'],
+        ];
+    }
+
+    /**
+     * @dataProvider compareJsonKeysProvider
+     */
+    public function testCompareJsonKeys($coachJson, $residentJson, $expected)
+    {
+        // Instantiate new command so we can call the function
+        $command = new AddMasterInputSource();
+
+        $this->assertEquals($expected, $command->compareJsonKeys($coachJson, $residentJson));
     }
 }

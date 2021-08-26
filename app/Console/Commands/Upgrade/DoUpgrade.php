@@ -66,6 +66,7 @@ class DoUpgrade extends Command
                 \SubStepTemplatesTableSeeder::class,
                 \InputSourcesTableSeeder::class,
                 \RoofTypesTableSeeder::class,
+                \ComfortLevelTapWatersTableSeeder::class,
                 \EnergyLabelsTableSeeder::class,
             ];
 
@@ -88,10 +89,9 @@ class DoUpgrade extends Command
 
             // This processes all buildings, almost 7000 of them! It takes a long time to process, so we won't run it
             // locally
-            // todo: turn on when fixes are done.
-//            if (! app()->environment('local')) {
-//                Artisan::call(AddMasterInputSource::class);
-//            }
+            if (! app()->environment('local')) {
+                Artisan::call(AddMasterInputSource::class);
+            }
 
             // We only run this on local/accept
             if (app()->environment(['local', 'accept'])) {

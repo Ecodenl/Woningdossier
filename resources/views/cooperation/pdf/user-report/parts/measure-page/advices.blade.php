@@ -11,7 +11,7 @@
         @foreach($measures['maintenance'][$stepShort] as $userActionPlanAdvice)
             <tr class="h-20">
                 <td class="w-380">{{$userActionPlanAdvice->userActionPlanAdvisable->measure_name}}</td>
-                <td class="w-150">{{\App\Helpers\NumberFormatter::format($userActionPlanAdvice->costs, 0, true)}} {{\App\Helpers\Hoomdossier::getUnitForColumn('costs')}}</td>
+                <td class="w-150">{{\App\Helpers\NumberFormatter::format($userActionPlanAdvice->costs['from'] ?? 0, 0, true)}} {{\App\Helpers\Hoomdossier::getUnitForColumn('costs')}}</td>
                 <td class="w-100">{{\App\Services\UserActionPlanAdviceService::getYear($userActionPlanAdvice)}}</td>
             </tr>
         @endforeach

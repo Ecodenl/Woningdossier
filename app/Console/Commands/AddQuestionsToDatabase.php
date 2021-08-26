@@ -84,7 +84,7 @@ class AddQuestionsToDatabase extends Command
         $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
         $surfaces = FacadeSurface::orderBy('order')->get();
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
-        $energyLabels = EnergyLabel::all();
+        $energyLabels = EnergyLabel::ordered()->get();
         $comfortLevelsTapWater = ComfortLevelTapWater::where('calculate_value', '<=', 3)->get();
 
         // Insulated glazing
@@ -97,8 +97,6 @@ class AddQuestionsToDatabase extends Command
         $woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
         // High efficiency boiler
-        // NOTE: building element hr-boiler tells us if it's there
-        $hrBoiler = Service::findByShort('hr-boiler');
         $boiler = Service::findByShort('boiler');
 
         // Solar panels
@@ -120,6 +118,7 @@ class AddQuestionsToDatabase extends Command
         $roofTypes = RoofType::orderBy('order')->get();
         $roofTileStatuses = RoofTileStatus::orderBy('order')->get();
         $buildingTypes = BuildingType::all();
+        $checkboxIconType = ToolQuestionType::findByShort('checkbox-icon');
         $radioIconType = ToolQuestionType::findByShort('radio-icon');
         $radioIconSmallType = ToolQuestionType::findByShort('radio-icon-small');
         $radioType = ToolQuestionType::findByShort('radio');
@@ -135,7 +134,6 @@ class AddQuestionsToDatabase extends Command
 
         $structure = [
             'building-data' => [
-                // sub step name
                 // sub step name
                 'Wat voor woning' => [
                     // question data
@@ -218,7 +216,7 @@ class AddQuestionsToDatabase extends Command
                                         'icon' => 'icon-pointed-roof'
                                     ],
                                     'none' => [
-                                        'icon' => 'icon-other',
+                                        'icon' => 'icon-not-relevant',
                                     ],
                                 ],
                             ],
@@ -539,7 +537,7 @@ class AddQuestionsToDatabase extends Command
 
                     ]
                 ],
-                'Welke zaken vind u belangrijk?' => [
+                'Welke zaken vindt u belangrijk?' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -777,7 +775,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'exists:tool_question_custom_values,short'],
                             'short' => 'heat-source',
                             'translation' => "Wat gebruikt u voor de verwarming en warm water?",
-                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_type_id' => $checkboxIconType->id,
                             'tool_question_custom_values' => [
                                 'hr-boiler' => [
                                     'name' => 'Gasketel',
@@ -803,6 +801,12 @@ class AddQuestionsToDatabase extends Command
                                         'icon' => 'icon-district-heating',
                                     ],
                                 ],
+                                'none' => [
+                                    'name' => 'Anders...',
+                                    'extra' => [
+                                        'icon' => 'icon-other',
+                                    ],
+                                ],
                             ],
                         ],
                     ]
@@ -811,10 +815,12 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'conditions' => [
                         [
-                            'column' => 'heat-source',
-                            'operator' => '=',
-                            'value' => 'hr-boiler',
-                        ]
+                            [
+                                'column' => 'heat-source',
+                                'operator' => '=',
+                                'value' => 'hr-boiler',
+                            ],
+                        ],
                     ],
                     'questions' => [
                         [
@@ -848,27 +854,46 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'exists:element_values,id'],
-                            'save_in' => "building_features.building_heating_application_id",
-                            'short' => 'heat-source',
+                            'validation' => ['required', 'exists:tool_question_custom_values,short'],
+                            'short' => 'building-heating-application',
                             // was current-state -> hoe word de woning nu verwarmd
                             'translation' => "Hoe is de verwarming",
-                            'tool_question_type_id' => $radioIconType->id,
-                            'tool_question_values' => $buildingHeatingApplications,
-                            'extra' => [
-                                'column' => 'short',
-                                'data' => [
-                                    'radiators' => [
+                            'tool_question_type_id' => $checkboxIconType->id,
+                            'tool_question_custom_values' => [
+                                'radiators' => [
+                                    'name' => 'Radiator',
+                                    'extra' => [
                                         'icon' => 'icon-radiator',
                                     ],
-                                    'radiators-with-floor-heating' => [
-                                        'icon' => 'icon-radiant-floor-heating',
+                                ],
+                                'floor-heating' => [
+                                    'name' => 'Vloerverwarming',
+                                    'extra' => [
+                                        'icon' => 'icon-floor-heating',
                                     ],
-                                    'low-temperature-heater' => [
+                                ],
+                                'wall-heating' => [
+                                    'name' => 'Wandverwarming',
+                                    'extra' => [
+                                        'icon' => 'icon-wall-heating',
+                                    ],
+                                ],
+                                'air-heating' => [
+                                    'name' => 'Hete lucht ',
+                                    'extra' => [
+                                        'icon' => 'icon-air-conditioning-hot',
+                                    ],
+                                ],
+                                'low-temperature-heater' => [
+                                    'name' => 'Lage temp. radiatoren',
+                                    'extra' => [
                                         'icon' => 'icon-radiator-low-temp',
                                     ],
-                                    'floor-wall-heating' => [
-                                        'icon' => 'icon-radiant-wall-heating',
+                                ],
+                                'none' => [
+                                    'name' => 'Anders...',
+                                    'extra' => [
+                                        'icon' => 'icon-other',
                                     ],
                                 ],
                             ],
@@ -910,10 +935,11 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'conditions' => [
                         [
-                            'column' => 'heat-source',
-                            'operator' => '=',
-                            'value' => 'heat-pump',
-                        ]
+                            [
+                                'column' => 'heat-source',
+                                'value' => 'heat-pump',
+                            ],
+                        ],
                     ],
                     'questions' => [
                         [
@@ -1077,10 +1103,12 @@ class AddQuestionsToDatabase extends Command
                             'tool_question_type_id' => $textType->id,
                             'conditions' => [
                                 [
-                                    'column' => 'has-solar-panels',
-                                    'operator' => '=',
-                                    'value' => 'yes',
-                                ]
+                                    [
+                                        'column' => 'has-solar-panels',
+                                        'operator' => '=',
+                                        'value' => 'yes',
+                                    ]
+                                ],
                             ],
                         ],
                         [
@@ -1092,10 +1120,12 @@ class AddQuestionsToDatabase extends Command
                             'tool_question_type_id' => $textType->id,
                             'conditions' => [
                                 [
-                                    'column' => 'has-solar-panels',
-                                    'operator' => '=',
-                                    'value' => 'yes',
-                                ]
+                                    [
+                                        'column' => 'has-solar-panels',
+                                        'operator' => '=',
+                                        'value' => 'yes',
+                                    ],
+                                ],
                             ],
                         ],
                         [
@@ -1113,10 +1143,12 @@ class AddQuestionsToDatabase extends Command
                             'tool_question_type_id' => $textType->id,
                             'conditions' => [
                                 [
-                                    'column' => 'has-solar-panels',
-                                    'operator' => '=',
-                                    'value' => 'yes',
-                                ]
+                                    [
+                                        'column' => 'has-solar-panels',
+                                        'operator' => '=',
+                                        'value' => 'yes',
+                                    ],
+                                ],
                             ],
                         ],
                     ]

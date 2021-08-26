@@ -58,7 +58,7 @@ class MapActionPlan extends Command
     {
         // This will add the category to each row in the user_action_plan_advices table
         $userActionPlanAdvices = UserActionPlanAdvice::allInputSources()
-                                                     ->whereNotNull('category')
+                                                     ->whereNull('category')
                                                      ->get();
 
         $bar = $this->output->createProgressBar($userActionPlanAdvices->count());

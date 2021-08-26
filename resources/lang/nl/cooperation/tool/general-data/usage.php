@@ -31,7 +31,7 @@ return [
                 'title' => 'Energiegebruik',
             ],
             'gas-usage' => [
-                'title' => 'Wat is het gasgebruik van afgelopen jaar? (in m3 gas per jaar)',
+                'title' => 'Wat is het gasgebruik van het afgelopen jaar?',
                 'help' => 'U kunt dit vinden in de jaarafrekening van uw energieleverancier, opgave over een heel jaar.',
             ],
             'amount-electricity' => [

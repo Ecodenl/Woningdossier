@@ -6,6 +6,7 @@ class Clause
 {
 
     public const EQ = '=';
+    public const NEQ = '!=';
     public const GT = '>';
     public const GTE = '>=';
     public const LT = '<';

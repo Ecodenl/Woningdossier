@@ -221,6 +221,8 @@ class ConditionEvaluator
                 return $values < $value;
             case Clause::LTE:
                 return $values <= $value;
+            case Clause::NEQ:
+                return $values != $value;
             case Clause::EQ:
             default:
                 return $values == $value;

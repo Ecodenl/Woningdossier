@@ -104,6 +104,7 @@ class WallInsulation
             $year = Carbon::now()->year + $wallJointsSurface->term_years;
         }
         $costs = Calculator::calculateMeasureApplicationCosts($measureApplication, $number, $year, false);
+
         $result['impregnate_wall'] = compact('costs', 'year');
 
         // Note: these answer options are hardcoded in template

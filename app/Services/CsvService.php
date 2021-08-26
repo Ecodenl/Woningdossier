@@ -171,7 +171,7 @@ class CsvService
 
             // get the user measures / advices
             foreach ($userActionPlanAdvices as $actionPlanAdvice) {
-                $measureName = $actionPlanAdvice->measureApplication->measure_name;
+                $measureName = $actionPlanAdvice->userActionPlanAdvisable->measure_name;
 
                 $plannedYear = UserActionPlanAdviceService::getYear($actionPlanAdvice);
 

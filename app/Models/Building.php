@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Helpers\Arr;
 use App\Helpers\ToolQuestionHelper;
 use App\Scopes\GetValueScope;
 use App\ToolQuestionAnswer;
@@ -12,10 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-use function Clue\StreamFilter\fun;
 
 /**
  * App\Models\Building
@@ -101,81 +97,140 @@ class Building extends Model
     ];
 
     public $fillable = [
-        'street', 'number', 'city', 'postal_code', 'bag_addressid', 'building_coach_status_id', 'extension', 'is_active',
+        'street',
+        'number',
+        'city',
+        'postal_code',
+        'bag_addressid',
+        'building_coach_status_id',
+        'extension',
+        'is_active',
     ];
+
+    public function toolQuestionAnswers(): HasMany
+    {
+        return $this->hasMany(ToolQuestionAnswer::class);
+    }
+
+    public function customMeasureApplications(): HasMany
+    {
+        return $this->hasMany(CustomMeasureApplication::class);
+    }
 
     public function getAnswerForAllInputSources(ToolQuestion $toolQuestion)
     {
         $answers = null;
-        $where = [['input_source_id', '!=', InputSource::findByShort(InputSource::MASTER_SHORT)->id]];
+        $where   = [
+            [
+                'input_source_id',
+                '!=',
+                InputSource::findByShort(InputSource::MASTER_SHORT)->id,
+            ],
+        ];
         // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
-        if (!is_null($toolQuestion->save_in)) {
+        if ( ! is_null($toolQuestion->save_in)) {
             $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);
-            $table = $saveIn['table'];
+            $table  = $saveIn['table'];
             $column = $saveIn['column'];
-            $where = array_merge($saveIn['where'], $where);
+            $where  = array_merge($saveIn['where'], $where);
 
-            $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
+            $modelName = "App\\Models\\".Str::ucFirst(
+                    Str::camel(Str::singular($table))
+                );
 
             // these contain the human readable answers, we need this because the answer for a yes, no, unknown could be a 1,2,3
-            $questionValues = $toolQuestion->getQuestionValues()->pluck('name', 'value');
+            $questionValues = $toolQuestion->getQuestionValues()->pluck(
+                'name',
+                'value'
+            );
 
             // we do a get so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
-            $answers = $modelName::allInputSources()
-                ->with('inputSource')
-                ->where($where)
-                ->get()
-                ->flatMap(function (Model $model) use ($column, $questionValues, $table) {
-                    // now check if we need to "translate" the answer
-                    $answer = $model->getAttribute($column);
+            $models = $modelName::allInputSources()
+                                ->with('inputSource')
+                                ->where($where)
+                                ->get();
 
-                    if ($questionValues->isNotEmpty() && !is_null($answer)) {
-                        $answer = $questionValues[$answer];
-                    }
-                    return [$model->inputSource->short => $answer];
-                });
+            /** @var Model $model */
+            foreach ($models as $index => $model) {
+                // now check if we need to "translate" the answer
+                $answer = $model->getAttribute($column);
 
+                if ($questionValues->isNotEmpty() && ! is_null($answer)) {
+                    $answer = $questionValues[$answer];
+                }
+                $answers[$model->inputSource->short][$index] = [
+                    'answer' => $answer,
+                    'value'  => $model->getAttribute($column),
+                ];
+            }
         } else {
-            $answers = $toolQuestion
+            $where['building_id'] = $this->id;
+            $toolQuestionAnswers  = $toolQuestion
                 ->toolQuestionAnswers()
                 ->allInputSources()
                 ->with('inputSource')
                 ->where($where)
-                ->get()->flatMap(function (ToolQuestionAnswer $toolQuestionAnswer) {
-                    return [
-                        $toolQuestionAnswer->inputSource->short => optional($toolQuestionAnswer->toolQuestionCustomValue)->name ?? $toolQuestionAnswer->answer
-                    ];
-                })->toArray();
+                ->get();
+            foreach ($toolQuestionAnswers as $index => $toolQuestionAnswer) {
+                $answer                                                   = optional(
+                                                                                $toolQuestionAnswer->toolQuestionCustomValue
+                                                                            )->name ?? $toolQuestionAnswer->answer;
+                $answers[$toolQuestionAnswer->inputSource->short][$index] = [
+                    'answer' => $answer,
+                    'value'  => $toolQuestionAnswer->toolQuestionCustomValue->short ?? null,
+                ];
+            }
         }
+
         return $answers;
     }
 
-    public function getAnswer(InputSource $inputSource, ToolQuestion $toolQuestion)
-    {
-
-        $answer = null;
+    public function getAnswer(
+        InputSource $inputSource,
+        ToolQuestion $toolQuestion
+    ) {
+        $answer  = null;
         $where[] = ['input_source_id', '=', $inputSource->id];
         // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
-        if (!is_null($toolQuestion->save_in)) {
+        if ( ! is_null($toolQuestion->save_in)) {
             $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);
-            $table = $saveIn['table'];
+            $table  = $saveIn['table'];
             $column = $saveIn['column'];
-            $where = array_merge($saveIn['where'], $where);
+            $where  = array_merge($saveIn['where'], $where);
 
-            $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
+            $modelName = "App\\Models\\".Str::ucFirst(
+                    Str::camel(Str::singular($table))
+                );
 
             // we do a get so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
-            $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
+            $answer = $modelName::allInputSources()->where($where)->get(
+            )->pluck($column)->first();
         } else {
-            $toolQuestionAnswer = $toolQuestion
+            $where['building_id'] = $this->id;
+            $toolQuestionAnswers  = $toolQuestion
                 ->toolQuestionAnswers()
                 ->allInputSources()
                 ->where($where)
-                ->first();
-            if ($toolQuestionAnswer instanceof ToolQuestionAnswer) {
-                $answer = $toolQuestionAnswer->answer;
-                if ($toolQuestionAnswer->toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
-                    $answer = $toolQuestionAnswer->toolQuestionCustomValue->short;
+                ->get();
+
+            // todo: refactor this to something sensible
+            if ($toolQuestion->toolQuestionType->short == 'checkbox-icon') {
+                foreach ($toolQuestionAnswers as $toolQuestionAnswer) {
+                    if ($toolQuestionAnswer instanceof ToolQuestionAnswer) {
+                        if ($toolQuestionAnswer->toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
+                            $answer[] = $toolQuestionAnswer->toolQuestionCustomValue->short;
+                        } else {
+                            $answer[] = $toolQuestionAnswer->answer;
+                        }
+                    }
+                }
+            } else {
+                $toolQuestionAnswer = $toolQuestionAnswers->first();
+                if ($toolQuestionAnswer instanceof ToolQuestionAnswer) {
+                    $answer = $toolQuestionAnswer->answer;
+                    if ($toolQuestionAnswer->toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
+                        $answer = $toolQuestionAnswer->toolQuestionCustomValue->short;
+                    }
                 }
             }
         }
@@ -186,9 +241,11 @@ class Building extends Model
     /**
      * Method to check whether a building is the owner of a file.
      */
-    public function isOwnerOfFileStorage(InputSource $inputSource, FileStorage $fileStorage): bool
-    {
-        $fileIsGeneratedByBuilding = $fileStorage->building_id == $this->id;
+    public function isOwnerOfFileStorage(
+        InputSource $inputSource,
+        FileStorage $fileStorage
+    ): bool {
+        $fileIsGeneratedByBuilding           = $fileStorage->building_id == $this->id;
         $fileInputSourceIsCurrentInputSource = $fileStorage->input_source_id == $inputSource->id;
 
         return $fileIsGeneratedByBuilding && $fileInputSourceIsCurrentInputSource;
@@ -202,24 +259,43 @@ class Building extends Model
     /**
      * Scope to return the buildings with most recent information from the building status.
      *
-     * @param Builder $query
+     * @param  Builder  $query
+     *
      * @return Builder
      */
-    public function scopeWithRecentBuildingStatusInformation(Builder $query): Builder
-    {
+    public function scopeWithRecentBuildingStatusInformation(Builder $query
+    ): Builder {
         $recentBuildingStatuses = DB::table('building_statuses')
-            ->selectRaw('building_id, max(created_at) as max_created_at, max(id) AS max_id')
-            ->groupByRaw('building_id');
+                                    ->selectRaw(
+                                        'building_id, max(created_at) as max_created_at, max(id) AS max_id'
+                                    )
+                                    ->groupByRaw('building_id');
 
         return $query->select([
             'buildings.*',
             'translations.translation as status_translation',
             'appointment_date',
-        ])->leftJoin('building_statuses as bs', 'bs.building_id', '=', 'buildings.id')
-            ->rightJoinSub($recentBuildingStatuses, 'bs2', 'bs2.max_id', '=', 'bs.id')
-            ->leftJoin('statuses', 'bs.status_id', '=', 'statuses.id')
-            ->leftJoin('translations', 'statuses.name', '=', 'translations.key')
-            ->where('translations.language', '=', app()->getLocale());
+        ])->leftJoin(
+            'building_statuses as bs',
+            'bs.building_id',
+            '=',
+            'buildings.id'
+        )
+                     ->rightJoinSub(
+                         $recentBuildingStatuses,
+                         'bs2',
+                         'bs2.max_id',
+                         '=',
+                         'bs.id'
+                     )
+                     ->leftJoin('statuses', 'bs.status_id', '=', 'statuses.id')
+                     ->leftJoin(
+                         'translations',
+                         'statuses.name',
+                         '=',
+                         'translations.key'
+                     )
+                     ->where('translations.language', '=', app()->getLocale());
     }
 
     public function stepComments()
@@ -236,12 +312,12 @@ class Building extends Model
     {
         if ($inputSource instanceof InputSource) {
             return $this->completedSteps()
-                    ->forInputSource($inputSource)
-                    ->where('step_id', $step->id)->count() > 0;
+                        ->forInputSource($inputSource)
+                        ->where('step_id', $step->id)->count() > 0;
         }
 
         return $this->completedSteps()
-                ->where('step_id', $step->id)->count() > 0;
+                    ->where('step_id', $step->id)->count() > 0;
     }
 
     /**
@@ -251,7 +327,7 @@ class Building extends Model
      */
     public function hasNotCompleted(Step $step)
     {
-        return !$this->hasCompleted($step);
+        return ! $this->hasCompleted($step);
     }
 
     /**
@@ -339,28 +415,31 @@ class Building extends Model
     {
         // determine fitting example building based on year + house type
         $features = $this->buildingFeatures;
-        if (!$features instanceof BuildingFeature) {
+        if ( ! $features instanceof BuildingFeature) {
             return null;
         }
-        if (!$features->buildingType instanceof BuildingType) {
+        if ( ! $features->buildingType instanceof BuildingType) {
             return null;
         }
         $example = ExampleBuilding::whereNull('cooperation_id')
-            ->where('buiding_type_id', $features->buildingType->id)
-            ->first();
+                                  ->where(
+                                      'buiding_type_id',
+                                      $features->buildingType->id
+                                  )
+                                  ->first();
 
         return $example;
     }
 
     public function getExampleValueForStep(Step $step, $formKey)
     {
-        return $this->getExampleValue($step->slug . '.' . $formKey);
+        return $this->getExampleValue($step->slug.'.'.$formKey);
     }
 
     public function getExampleValue($key)
     {
         $example = $this->getExampleBuilding();
-        if (!$example instanceof ExampleBuilding) {
+        if ( ! $example instanceof ExampleBuilding) {
             return null;
         }
 
@@ -369,7 +448,7 @@ class Building extends Model
 
     public function getBuildYear()
     {
-        if (!$this->buildingFeatures instanceof BuildingFeature) {
+        if ( ! $this->buildingFeatures instanceof BuildingFeature) {
             return null;
         }
 
@@ -385,14 +464,26 @@ class Building extends Model
     {
         if ($inputSource instanceof InputSource) {
             return $this->buildingElements()
-                ->forInputSource($inputSource)
-                ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
-                ->where('e.short', $short)->first(['building_elements.*']);
+                        ->forInputSource($inputSource)
+                        ->leftJoin(
+                            'elements as e',
+                            'building_elements.element_id',
+                            '=',
+                            'e.id'
+                        )
+                        ->where('e.short', $short)->first(
+                    ['building_elements.*']
+                );
         }
 
         return $this->buildingElements()
-            ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
-            ->where('e.short', $short)->first(['building_elements.*']);
+                    ->leftJoin(
+                        'elements as e',
+                        'building_elements.element_id',
+                        '=',
+                        'e.id'
+                    )
+                    ->where('e.short', $short)->first(['building_elements.*']);
     }
 
     /**
@@ -406,26 +497,37 @@ class Building extends Model
     public function getBuildingElementsForMe($short)
     {
         return $this->buildingElements()
-            ->withoutGlobalScope(GetValueScope::class)
-            ->leftJoin('elements as e', 'building_elements.element_id', '=', 'e.id')
-            ->where('e.short', $short)->select(['building_elements.*'])->get();
+                    ->withoutGlobalScope(GetValueScope::class)
+                    ->leftJoin(
+                        'elements as e',
+                        'building_elements.element_id',
+                        '=',
+                        'e.id'
+                    )
+                    ->where('e.short', $short)->select(['building_elements.*']
+            )->get();
     }
 
     /**
-     * @param string $short
+     * @param  string  $short
      *
      * @return BuildingService|null
      */
     public function getBuildingService($short, InputSource $inputSource)
     {
         return $this->buildingServices()
-            ->forInputSource($inputSource)
-            ->leftJoin('services as s', 'building_services.service_id', '=', 's.id')
-            ->where('s.short', $short)->first(['building_services.*']);
+                    ->forInputSource($inputSource)
+                    ->leftJoin(
+                        'services as s',
+                        'building_services.service_id',
+                        '=',
+                        's.id'
+                    )
+                    ->where('s.short', $short)->first(['building_services.*']);
     }
 
     /**
-     * @param string $short
+     * @param  string  $short
      *
      * @return ServiceValue|null
      */
@@ -457,7 +559,9 @@ class Building extends Model
      */
     public function getBuildingType(InputSource $inputSource)
     {
-        $buildingFeature = $this->buildingFeatures()->forInputSource($inputSource)->first();
+        $buildingFeature = $this->buildingFeatures()->forInputSource(
+            $inputSource
+        )->first();
 
         if ($buildingFeature instanceof BuildingFeature) {
             return $buildingFeature->buildingType;
@@ -578,7 +682,7 @@ class Building extends Model
     /**
      * convenient way of setting a status on a building.
      *
-     * @param string|Status $status
+     * @param  string|Status  $status
      *
      * @return void
      */
@@ -587,7 +691,7 @@ class Building extends Model
         $statusModel = $this->resolveStatusModel($status);
 
         $this->buildingStatuses()->create([
-            'status_id' => $statusModel->id,
+            'status_id'        => $statusModel->id,
             'appointment_date' => $this->getAppointmentDate(),
         ]);
     }
@@ -595,14 +699,15 @@ class Building extends Model
     /**
      * convenient way of setting a appointment date on a building.
      *
-     * @param string
+     * @param  string
      *
      * @return void
      */
     public function setAppointmentDate($appointmentDate)
     {
         $this->buildingStatuses()->create([
-            'status_id' => $this->getMostRecentBuildingStatus()->status_id,
+            'status_id'        => $this->getMostRecentBuildingStatus(
+            )->status_id,
             'appointment_date' => $appointmentDate,
         ]);
     }

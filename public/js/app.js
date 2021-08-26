@@ -34085,72 +34085,175 @@ __webpack_require__.r(__webpack_exports__);
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /* harmony default export */ __webpack_exports__["default"] = (function () {
-  var _container;
+  var _container, _draggable;
 
   var supportedClasses = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ['card-wrapper'];
   var hoverColor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'rgba(100, 117, 133, 0.2)';
+  var defaultClass = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'card';
+  var placeholderClass = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'card-placeholder';
   return {
     // Docs: use supportedClasses to define classes in which elements can be dropped
+    // Supported classes should be PARENT classes.
     // Define hoverColor for the background color that gets used when hovering over supported classes
-    // Define extra logic on elements themselves, e.g. switching classes on the dragged object
+    // Define defaultClass as the class the CHILD element has when it's not dragged.
+    // Define placeholderClass as the class the CHILD element has when it gets dragged.
     dragged: null,
+    draggedOrder: -1,
+    lastEntered: null,
+    defaultClass: defaultClass,
+    placeholderClass: placeholderClass,
+    supportedClasses: supportedClasses,
+    ghost: null,
     container: (_container = {}, _defineProperty(_container, 'x-on:drop.prevent', function xOnDropPrevent() {
-      if (!(null === this.dragged)) {
+      if (null !== this.dragged) {
         var eventTarget = this.$event.target;
+        var target = this.getSupportedTarget(eventTarget); // If the dropped target is itself, we don't need to do anything
+
+        if (null !== target && eventTarget !== this.dragged) {
+          var clientX = this.$event.clientX;
+          var clientY = this.$event.clientY;
+          var positionInfo = this.getPosition(target, clientX, clientY); // Just to ensure we're not outside the parent.
+
+          if (positionInfo.position !== 'outside') {
+            // Get ghost position, that's where we're dropping
+            // If it's not there, it's the old position, so we do nothing
+            var ghost = this.getGhost();
+
+            if (ghost) {
+              var ghostParentElement = ghost.parentElement;
+              var order = Array.from(ghostParentElement.children).indexOf(ghost);
+
+              if (order > -1) {
+                var parentElement = this.dragged.parentElement; // Remove dragged item from original parent
+
+                parentElement.removeChild(this.dragged); // Swap ghost with moved card
+
+                ghostParentElement.replaceChild(this.dragged, ghost); // Dispatch the dropped position
+
+                var event = new CustomEvent('item-dragged', {
+                  detail: {
+                    from: parentElement,
+                    to: target,
+                    id: this.dragged.id,
+                    order: order
+                  },
+                  bubbles: true
+                });
+                dispatchEvent(event);
+              }
+            }
+          }
+        }
+      }
+    }), _defineProperty(_container, 'x-on:dragover.prevent', function xOnDragoverPrevent() {
+      // This needs to be prevented, else drop doesn't work
+      // We need the draggable
+      if (null !== this.dragged) {
+        var eventTarget = this.$event.target;
+        var target = this.getSupportedTarget(eventTarget); // getSupportedTarget will check eventTarget. We won't get anything back if eventTarget is an invalid
+        // nodeType. Therefore we don't need to check it multiple times
+
+        if (null !== target) {
+          // We don't need to check anything if it's a ghost
+          if (!eventTarget.classList.contains('draggable-ghost')) {
+            if (eventTarget === this.dragged) {
+              this.clearGhost();
+            } else {
+              var _target = this.getSupportedTarget(eventTarget); // Get coords of where the user is holding the mouse
+
+
+              var clientX = this.$event.clientX;
+              var clientY = this.$event.clientY;
+              var positionInfo = this.getPosition(_target, clientX, clientY);
+              var position = positionInfo.position;
+
+              if (position !== 'outside') {
+                var draggedOrder = this.draggedOrder;
+                var order = positionInfo.order;
+                var isValidPosition = true; // We don't want to build a ghost if the current position is around this.dragged
+
+                if (_target === this.dragged.parentElement && (order === draggedOrder + 1 && position === 'top' || order === draggedOrder - 1 && position === 'bottom' || order > draggedOrder && this.dragged.nextElementSibling === null || order === draggedOrder)) {
+                  isValidPosition = false;
+                }
+
+                if (isValidPosition) {
+                  var ghost = this.ghost;
+
+                  if (null === ghost) {
+                    ghost = this.buildGhost();
+                  }
+
+                  var hoveredChild = Array.from(_target.children)[positionInfo.order];
+                  var beforeOrAfter = positionInfo.position === 'top' ? 'before' : 'after'; // Insert new ghost on given position
+
+                  this.insertElement(ghost, hoveredChild, _target, beforeOrAfter);
+                } else {
+                  this.clearGhost();
+                }
+              }
+            }
+          }
+        }
+      }
+    }), _defineProperty(_container, 'x-on:dragenter', function xOnDragenter() {
+      if (null !== this.dragged) {
+        var eventTarget = this.$event.target;
+        this.lastEntered = eventTarget;
         var target = this.getSupportedTarget(eventTarget);
 
-        if (!(null === target)) {
-          var parentElement = this.dragged.parentElement;
-          parentElement.removeChild(this.dragged);
-          target.appendChild(this.dragged);
-          target.style.backgroundColor = '';
-          var event = new CustomEvent('item-dragged', {
-            detail: {
-              from: parentElement,
-              to: target,
-              id: this.dragged.id
-            },
-            bubbles: true
-          });
-          dispatchEvent(event);
+        if (null !== target) {
+          target.style.backgroundColor = hoverColor;
         }
-
-        this.dragged = null;
-      }
-    }), _defineProperty(_container, 'x-on:dragover.prevent', function xOnDragoverPrevent() {// This needs to be prevented, else drop doesn't work
-    }), _defineProperty(_container, 'x-on:dragenter', function xOnDragenter() {
-      var eventTarget = this.$event.target;
-      var target = this.getSupportedTarget(eventTarget);
-
-      if (!(null === target)) {
-        target.style.backgroundColor = hoverColor;
       }
     }), _defineProperty(_container, 'x-on:dragleave', function xOnDragleave() {
-      var eventTarget = this.$event.target;
-      var target = this.getSupportedTarget(eventTarget);
+      if (null !== this.dragged) {
+        var eventTarget = this.$event.target;
+        var target = this.getSupportedTarget(eventTarget); // Enter triggers before leave. We check the last element that we entered. If it's not set, then we left
+        // the container and it should be reset
 
-      if (!(null === target)) {
-        target.style.backgroundColor = '';
+        if (null !== target && null === this.lastEntered) {
+          target.style.backgroundColor = '';
+        }
+
+        this.lastEntered = null;
       }
     }), _container),
-    draggable: _defineProperty({}, 'x-on:dragstart.self', function xOnDragstartSelf() {
+    draggable: (_draggable = {}, _defineProperty(_draggable, 'x-on:dragstart.self', function xOnDragstartSelf() {
       this.dragged = this.$el;
-    }),
+      this.draggedOrder = Array.from(this.dragged.parentElement.children).indexOf(this.dragged);
+    }), _defineProperty(_draggable, 'x-on:drag', function xOnDrag() {
+      // No need to call this many times, this event triggers on each drag movement
+      if (this.$el.classList.contains(this.defaultClass)) {
+        this.$el.classList.remove(this.defaultClass);
+        this.$el.classList.add(this.placeholderClass);
+      }
+    }), _defineProperty(_draggable, 'x-on:dragend', function xOnDragend() {
+      this.$el.classList.remove(this.placeholderClass);
+      this.$el.classList.add(this.defaultClass); // We dropped. We clear the ghost and backgrounds
+
+      this.clearGhost();
+      this.clearAllBackgrounds(); // Always clear dragged info
+
+      this.dragged = null;
+      this.draggedOrder = -1;
+    }), _draggable),
     getSupportedTarget: function getSupportedTarget(element) {
       var target = null;
+      var supportedClasses = this.supportedClasses;
 
-      if (Array.isArray(supportedClasses) && typeof element.classList !== 'undefined') {
+      if (Array.isArray(supportedClasses) && element && element.nodeType === Node.ELEMENT_NODE) {
+        // Check if the current target is supported
         supportedClasses.forEach(function (className) {
           if (element.classList.contains(className)) {
             target = element;
           }
-        });
+        }); // If it's not, we check if a potential parent is supported
 
         if (null === target) {
           supportedClasses.forEach(function (className) {
             var parent = element.closest('.' + className);
 
-            if (!(null === parent)) {
+            if (null !== parent) {
               target = parent;
             }
           });
@@ -34158,6 +34261,103 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       return target;
+    },
+    getPosition: function getPosition(target, xCoord, yCoord) {
+      // We need to decide whether the element is more related to the upper side or the bottom side
+      // Get bounding rectangle for the target
+      var targetRect = target.getBoundingClientRect(); // We are inside the boundaries!
+
+      if (xCoord >= targetRect.left && xCoord <= targetRect.right && yCoord >= targetRect.top && yCoord <= targetRect.bottom) {
+        // Get the draggable element for info
+        var element = this.dragged;
+
+        if (null !== element) {
+          // let elementRect = element.getBoundingClientRect();
+          // let style = getComputedStyle(element);
+          // Define total height per element
+          // let totalHeight = elementRect.height + parseInt(style['margin-top']) + parseInt(style['margin-bottom']);
+          // Use fixed value for now, cards + margin should always be 108px
+          var totalHeight = 108; // Do some maths to define the exact position within the target
+
+          var exactPositionInTarget = yCoord - targetRect.top;
+          var order = Math.floor(exactPositionInTarget / totalHeight);
+          var posInEl = exactPositionInTarget - order * totalHeight;
+          var position = posInEl > totalHeight / 2 ? 'bottom' : 'top';
+          return {
+            order: order,
+            position: position
+          };
+        }
+      }
+
+      return {
+        order: -1,
+        position: 'outside'
+      };
+    },
+    getGhost: function getGhost() {
+      if (null === this.ghost) {
+        this.ghost = document.querySelector('.draggable-ghost');
+      }
+
+      return this.ghost;
+    },
+    buildGhost: function buildGhost() {
+      // We can't call getGhost because during drag, it doesn't properly update this.ghost and will result in
+      // null
+      var potentialGhost = document.querySelector('.draggable-ghost'); // Check if one exists before we built a new one
+
+      if (potentialGhost) {
+        this.ghost = potentialGhost;
+      } else {
+        var newPlaceholder = document.createElement('div');
+        newPlaceholder.classList.add(this.placeholderClass, 'draggable-ghost');
+        this.ghost = newPlaceholder;
+      }
+
+      return this.ghost;
+    },
+    clearGhost: function clearGhost() {
+      // Remove all ghosts from the document
+      var ghost = document.querySelector('.draggable-ghost');
+
+      if (ghost) {
+        ghost.remove();
+      }
+
+      this.ghost = null;
+    },
+    insertElement: function insertElement(newNode, element, parentElement, beforeOrAfter) {
+      if (newNode !== null) {
+        var referenceNode = null;
+
+        if (element) {
+          // If we insert before, we grab the element. Else, we grab the sibling
+          referenceNode = beforeOrAfter === 'before' ? element : element.nextElementSibling; // If it's the first item, we want it at the top no matter the beforeOrAfter status
+
+          if (element.previousElementSibling === null) {
+            referenceNode = element;
+          }
+        } // We don't need to check for null, because if there's no sibling, insertBefore automatically appends to the end
+
+
+        parentElement.insertBefore(newNode, referenceNode);
+      }
+    },
+    clearAllBackgrounds: function clearAllBackgrounds() {
+      var supportedClasses = this.supportedClasses;
+
+      if (Array.isArray(supportedClasses)) {
+        supportedClasses.forEach(function (className) {
+          var elements = document.getElementsByClassName(className);
+
+          for (var i = 0; i < elements.length; i++) {
+            if (elements[i]) {
+              elements[i].style.backgroundColor = '';
+            }
+          }
+        });
+      }
     }
   };
 });
@@ -35247,13 +35447,13 @@ alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /vagrant/resources/js/app.js */"./resources/js/app.js");
-__webpack_require__(/*! /vagrant/resources/sass/admin/app.scss */"./resources/sass/admin/app.scss");
-__webpack_require__(/*! /vagrant/resources/sass/pdf.scss */"./resources/sass/pdf.scss");
-__webpack_require__(/*! /vagrant/resources/sass/admin/datatables/_responsive_bootstrap.scss */"./resources/sass/admin/datatables/_responsive_bootstrap.scss");
-__webpack_require__(/*! /vagrant/resources/sass/admin/datatables/_responsive_datatables.scss */"./resources/sass/admin/datatables/_responsive_datatables.scss");
-__webpack_require__(/*! /vagrant/resources/sass/admin/datatables/_dataTables_bootstrap.scss */"./resources/sass/admin/datatables/_dataTables_bootstrap.scss");
-module.exports = __webpack_require__(/*! /vagrant/resources/css/frontend/app.css */"./resources/css/frontend/app.css");
+__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/admin/app.scss */"./resources/sass/admin/app.scss");
+__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/pdf.scss */"./resources/sass/pdf.scss");
+__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/admin/datatables/_responsive_bootstrap.scss */"./resources/sass/admin/datatables/_responsive_bootstrap.scss");
+__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/admin/datatables/_responsive_datatables.scss */"./resources/sass/admin/datatables/_responsive_datatables.scss");
+__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/admin/datatables/_dataTables_bootstrap.scss */"./resources/sass/admin/datatables/_dataTables_bootstrap.scss");
+module.exports = __webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/css/frontend/app.css */"./resources/css/frontend/app.css");
 
 
 /***/ })

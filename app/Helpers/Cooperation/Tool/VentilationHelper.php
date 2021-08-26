@@ -47,7 +47,7 @@ class VentilationHelper extends ToolHelper
             if ($measureApplication instanceof MeasureApplication) {
                 if ('crack-sealing' == $measureApplication->short) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results['result']['crack_sealing'] ?? []);
-                    $actionPlanAdvice->costs = $results['result']['crack_sealing']['cost_indication'] ?? null; // only outlier
+                    $actionPlanAdvice->costs = ['from' => $results['result']['crack_sealing']['cost_indication'] ?? null]; // only outlier
                 } else {
                     $actionPlanAdvice = new UserActionPlanAdvice();
                 }
@@ -55,7 +55,7 @@ class VentilationHelper extends ToolHelper
                 $actionPlanAdvice->input_source_id = $this->inputSource->id;
                 $actionPlanAdvice->planned = true;
                 $actionPlanAdvice->user()->associate($this->user);
-                $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
                 $actionPlanAdvice->save();
             }

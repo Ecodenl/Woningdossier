@@ -1,20 +1,22 @@
 <?php
 
-namespace App\Http\Livewire\Frontend;
+namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
 
+use App\Helpers\HoomdossierSession;
+use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
-class HousingPlan extends Component
+class Form extends Component
 {
     public array $cards = [
-        'complete' => [
+        UserActionPlanAdviceService::CATEGORY_COMPLETE => [
 
         ],
-        'to-do' => [
+        UserActionPlanAdviceService::CATEGORY_TO_DO => [
 
         ],
-        'later' => [
+        UserActionPlanAdviceService::CATEGORY_LATER => [
 
         ],
     ];
@@ -31,23 +33,29 @@ class HousingPlan extends Component
     public string $SUBSIDY_UNAVAILABLE = 'unavailable';
     public string $SUBSIDY_UNKNOWN = 'unknown';
 
-    public string $CATEGORY_COMPLETE = 'complete';
-    public string $CATEGORY_TO_DO = 'to-do';
-    public string $CATEGORY_LATER = 'later';
+    public string $CATEGORY_COMPLETE = UserActionPlanAdviceService::CATEGORY_COMPLETE;
+    public string $CATEGORY_TO_DO = UserActionPlanAdviceService::CATEGORY_TO_DO;
+    public string $CATEGORY_LATER = UserActionPlanAdviceService::CATEGORY_LATER;
 
     protected $rules = [
         'new_measure.subject' => 'required',
         'new_measure.price.from' => 'required|numeric|min:0',
         'new_measure.price.to' => 'required|numeric|gt:new_measure.price.from',
+        'new_measure.expected_savings' => 'nullable|numeric',
     ];
 
     protected $listeners = [
-        'cardMoved' => 'cardMoved',
+        'cardMoved',
     ];
 
     public function mount()
     {
         // TODO: Find out how to get these from backend data
+
+        $building = HoomdossierSession::getBuilding(true);
+
+//        $building->
+
         $this->cards = [
             $this->CATEGORY_COMPLETE => [
                 Str::random() => [
@@ -183,7 +191,7 @@ class HousingPlan extends Component
 
     public function render()
     {
-        return view('livewire.frontend.housing-plan');
+        return view('livewire.cooperation.frontend.tool.quick-scan.my-plan.form');
     }
 
     public function updated($field)
@@ -201,7 +209,7 @@ class HousingPlan extends Component
             'icon' => 'icon-tools',
             'price' => $measureData['price'],
             'subsidy' => $this->SUBSIDY_UNKNOWN,
-            'savings' => $measureData['price']['from'] + ($measureData['price']['to'] / 10),
+            'savings' => $measureData['expected_savings'] ?? 0,
         ];
 
         $this->dispatchBrowserEvent('close-modal');
@@ -214,13 +222,28 @@ class HousingPlan extends Component
         $this->category = $category;
     }
 
-    public function cardMoved($fromCategory, $toCategory, $id)
+    public function cardMoved($fromCategory, $toCategory, $id, $order)
     {
+        // Get the original card object
         $card = $this->cards[$fromCategory][$id] ?? null;
+        // Remove card from the original category
         unset($this->cards[$fromCategory][$id]);
 
+        // If the card is set...
         if (! empty($card)) {
-            $this->cards[$toCategory][$id] = $card;
+            // Get the cards for the new category
+            $cards = $this->cards[$toCategory];
+
+            // Split cards at order
+            $firstPart = array_slice($cards, 0, $order, true);
+            $secondPart = array_slice($cards, $order, null, true);
+
+            // Insert card at position
+            $firstPart[$id] = $card;
+            // Rebuild
+            $cards = $firstPart + $secondPart;
+
+            $this->cards[$toCategory] = $cards;
         }
 
         $this->recalculate();
@@ -244,9 +267,9 @@ class HousingPlan extends Component
             $maxInvestment += $to;
             $savings += $card['savings'] ?? 0;
 
-            if ($card['subsidy'] === $this->SUBSIDY_AVAILABLE) {
-                $subsidy += ($to - $from) * $subsidyPercentage;
-            }
+//            if ($card['subsidy'] === $this->SUBSIDY_AVAILABLE) {
+//                $subsidy += ($to - $from) * $subsidyPercentage;
+//            }
         }
 
         $this->investment = ($maxInvestment + $minInvestment) / 2;

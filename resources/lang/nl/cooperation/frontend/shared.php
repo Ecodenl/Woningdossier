@@ -11,6 +11,12 @@ return [
     ],
     'modals' => [
         'info' => 'Informatie',
+        'add-measure' => [
+            'subject' => 'Onderwerp',
+            'price-indication' => 'Prijsindicatie in €',
+            'expected-savings' => 'Verwachte besparing in €',
+            'submit' => 'Voeg maatregel toe',
+        ],
     ],
     'defaults' => [
         'previous' => 'Vorige',

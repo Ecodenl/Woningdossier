@@ -37,7 +37,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             Route::view('18', 'cooperation.frontend.templates.step-18');
             Route::view('23', 'cooperation.frontend.templates.step-23');
         });
-        Route::view('housing-plan', 'cooperation.frontend.templates.housing-plan');
         // TODO END
 
         Route::get('/', function () {
@@ -167,11 +166,13 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
 
             Route::group(['namespace' => 'Frontend\Tool', 'as' => 'frontend.tool.'], function () {
-                Route::get('quick-scan/{step}/{subStep}', 'QuickScanController@index')
-                    ->name('quick-scan.index')
-                    ->middleware('checks-conditions-for-sub-steps');
+                Route::as('quick-scan.')->prefix('quick-scan')->group(function () {
+                    Route::get('{step}/{subStep}', 'QuickScanController@index')
+                        ->name('index')
+                        ->middleware('checks-conditions-for-sub-steps');
 
-                Route::view('housing-plan', 'cooperation.frontend.templates.housing-plan')->name('my-plan.index');
+                    Route::get('woonplan', 'QuickScan\\MyPlanController@index')->name('my-plan.index');
+                });
             });
 
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {

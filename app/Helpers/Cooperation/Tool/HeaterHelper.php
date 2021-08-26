@@ -72,10 +72,10 @@ class HeaterHelper extends ToolHelper
             $measureApplication = MeasureApplication::where('short', 'heater-place-replace')->first();
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
-                $actionPlanAdvice->costs = $results['cost_indication']; // only outlier
+                $actionPlanAdvice->costs = ['from' => $results['cost_indication']]; // only outlier
                 $actionPlanAdvice->input_source_id = $this->inputSource->id;
                 $actionPlanAdvice->user()->associate($this->user);
-                $actionPlanAdvice->measureApplication()->associate($measureApplication);
+                $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
                 $actionPlanAdvice->save();
             }

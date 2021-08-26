@@ -18,6 +18,19 @@ use Carbon\Carbon;
 
 class UserActionPlanAdviceService
 {
+    const CATEGORY_COMPLETE = 'complete';
+    const CATEGORY_TO_DO = 'to-do';
+    const CATEGORY_LATER = 'later';
+
+    public static function getCategories(): array
+    {
+        return [
+            self::CATEGORY_COMPLETE => self::CATEGORY_COMPLETE,
+            self::CATEGORY_TO_DO => self::CATEGORY_TO_DO,
+            self::CATEGORY_LATER => self::CATEGORY_LATER,
+        ];
+    }
+
     /**
      * Method to delete the user action plan advices for a given user, input source and step.
      *
@@ -41,7 +54,7 @@ class UserActionPlanAdviceService
         $adviceYear = null;
         $step = $userActionPlanAdvice->step;
         $buildingOwner = $userActionPlanAdvice->user;
-        $measureApplication = $userActionPlanAdvice->measureApplication;
+        $measureApplication = $userActionPlanAdvice->userActionPlanAdvisable;
 
         // set the default user interest on the step.
         $userInterest = $buildingOwner->userInterestsForSpecificType(get_class($step), $step->id)->with('interest')->first();
@@ -149,14 +162,14 @@ class UserActionPlanAdviceService
                         $savingsGas = is_null($advice->savings_gas) ? 0 : NumberFormatter::round($advice->savings_gas);
                         $savingsElectricity = is_null($advice->savings_electricity) ? 0 : NumberFormatter::round($advice->savings_electricity);
 
-                        $sortedAdvices[$year][$step->name][$advice->measureApplication->short] = [
+                        $sortedAdvices[$year][$step->name][$advice->userActionPlanAdvisable->short] = [
                             'interested' => $advice->planned,
                             'advice_id' => $advice->id,
                             'warning' => $advice->warning,
-                            'measure' => $advice->measureApplication->measure_name,
-                            'measure_short' => $advice->measureApplication->short,                    // In the table the costs are indexed based on the advice year
+                            'measure' => $advice->userActionPlanAdvisable->measure_name,
+                            'measure_short' => $advice->userActionPlanAdvisable->short,                    // In the table the costs are indexed based on the advice year
                             // Now re-index costs based on user planned year in the personal plan
-                            'costs' => NumberFormatter::round(Calculator::indexCosts($advice->costs, $costYear)),
+                            'costs' => NumberFormatter::round(Calculator::indexCosts($advice->costs['from'] ?? 0, $costYear)),
                             'savings_gas' => Number::isNegative($savingsGas) ? 0 : $savingsGas,
                             'savings_electricity' => Number::isNegative($savingsElectricity) ? 0 : $savingsElectricity,
                             'savings_money' => $savingsMoney,
@@ -190,10 +203,10 @@ class UserActionPlanAdviceService
             $pitchedRoofMeasureApplications = ['roof-insulation-pitched-replace-tiles', 'roof-insulation-pitched-inside'];
 
             // check the current advice its measure application, this way we can determine which roofType we have to check
-            if (in_array($advice->measureApplication->short, $pitchedRoofMeasureApplications)) {
+            if (in_array($advice->userActionPlanAdvisable->short, $pitchedRoofMeasureApplications)) {
                 $roofType = RoofType::findByShort('pitched');
             }
-            if (in_array($advice->measureApplication->short, $flatRoofMeasureApplications)) {
+            if (in_array($advice->userActionPlanAdvisable->short, $flatRoofMeasureApplications)) {
                 $roofType = RoofType::findByShort('flat');
             }
 
@@ -206,7 +219,7 @@ class UserActionPlanAdviceService
         } elseif (in_array($step->short, ['floor-insulation', 'wall-insulation'])) {
             $elementShort = array_search($step->short, StepHelper::ELEMENT_TO_SHORT);
 
-            if ($user->building->getBuildingElement($elementShort, $advice->inputSource)->elementValue->calculate_value >= 3) {
+            if (optional($user->building->getBuildingElement($elementShort, $advice->inputSource)->elementValue)->calculate_value >= 3) {
                 $savingsMoney = 'ntb.';
             }
         }
@@ -227,7 +240,8 @@ class UserActionPlanAdviceService
 
         $advices = UserActionPlanAdvice::forInputSource($inputSource)
             ->where('user_id', $user->id)
-            ->with('user.building', 'measureApplication', 'step')
+            ->with('user.building', 'userActionPlanAdvisable', 'step')
+            ->where('user_action_plan_advisable_type', MeasureApplication::class)
             ->orderBy('step_id', 'asc')
             ->orderBy('year', 'asc')
             ->get();
@@ -236,14 +250,14 @@ class UserActionPlanAdviceService
         foreach ($advices as $advice) {
             if ($advice->step instanceof Step) {
                 /** @var MeasureApplication $measureApplication */
-                $measureApplication = $advice->measureApplication;
+                $measureApplication = $advice->userActionPlanAdvisable;
 
                 if (is_null($advice->year)) {
                     $advice->year = self::getAdviceYear($advice);
                 }
 
                 // check if we have to set the $savingsMoney to ntb.
-                if ('energy_saving' == $advice->measureApplication->measure_type) {
+                if ('energy_saving' == $advice->userActionPlanAdvisable->measure_type) {
                     $advice->savings_money = self::checkSavingsMoney($advice, $advice->savings_money);
                 }
 
@@ -349,7 +363,7 @@ class UserActionPlanAdviceService
             $energySavingForVentilation = $energySaving['ventilation'];
 
             foreach ($energySavingForVentilation as $measureShort => $advice) {
-                if (empty($advice->costs) && empty($advice->savings_gas) && empty($advice->savings_electricity) && empty($advice->savings_money)) {
+                if (empty(($advice->costs['from'] ?? null)) && empty($advice->savings_gas) && empty($advice->savings_electricity) && empty($advice->savings_money)) {
                     // this will have to change in the near future for the pdf.
                     $categorizedActionPlan['energy_saving']['ventilation'][$measureShort]['warning'] = static::getWarning('ventilation');
                 }

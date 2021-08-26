@@ -115,7 +115,7 @@ class Form extends Component
 
                 $evaluatableAnswers = collect($answers);
 
-                $evaluation = ConditionEvaluator::init()->explain()->evaluateCollection($toolQuestion->conditions, $evaluatableAnswers);
+                $evaluation = ConditionEvaluator::init()->evaluateCollection($toolQuestion->conditions, $evaluatableAnswers);
 
                 if (! $evaluation) {
                     $this->toolQuestions = $this->toolQuestions->forget($index);
@@ -169,7 +169,7 @@ class Form extends Component
             if (is_null($toolQuestion->save_in)) {
                 $this->saveToolQuestionCustomValues($toolQuestion, $givenAnswer);
             } else {
-                // this *cant* candle a checkbox / multiselect answer.
+                // this *can't* handle a checkbox / multiselect answer.
                 $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
             }
         }

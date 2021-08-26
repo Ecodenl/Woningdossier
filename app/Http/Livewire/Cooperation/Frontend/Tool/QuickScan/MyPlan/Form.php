@@ -106,7 +106,7 @@ class Form extends Component
             $this->CATEGORY_TO_DO => [
                 Str::random() => [
                     'name' => 'Vloerverwarming',
-                    'icon' => 'icon-radiant-floor-heating',
+                    'icon' => 'icon-floor-heating',
                     'price' => [
                         'from' => 1200,
                         'to' => 1800,

@@ -1110,7 +1110,7 @@ class AddQuestionsToDatabase extends Command
                         ],
                         [
                             'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'min:1', 'max:50'],
-                            'save_in' => "building_services.{$solarPanels->id}.service_value_id",
+                            'save_in' => "building_pv_panels.number",
                             'short' => 'solar-panel-count',
                             // was current-state -> hoeveel zonnepanelen zijn er aanwezig
                             'translation' => "Hoeveel zonnepanelen?",

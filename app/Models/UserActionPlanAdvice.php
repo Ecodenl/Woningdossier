@@ -65,7 +65,6 @@ class UserActionPlanAdvice extends Model
 
     public $fillable = [
         'user_id',
-        'measure_application_id', // old
         'input_source_id',
         'user_action_plan_advisable_type', 'user_action_plan_advisable_id', 'category', 'visible', 'costs',
         'savings_gas', 'savings_electricity', 'savings_money', 'year', 'planned', 'planned_year', 'step_id',

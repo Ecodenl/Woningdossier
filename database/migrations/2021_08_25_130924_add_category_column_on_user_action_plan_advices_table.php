@@ -15,7 +15,7 @@ class AddCategoryColumnOnUserActionPlanAdvicesTable extends Migration
     {
         if (! Schema::hasColumn('user_action_plan_advices', 'category')) {
             Schema::table('user_action_plan_advices', function (Blueprint $table) {
-                $table->string('category')->after('user_action_plan_advisable_id')->nullable();
+                $table->string('category')->after('user_action_plan_advisable_id')->nullable()->default(null);
             });
         }
     }

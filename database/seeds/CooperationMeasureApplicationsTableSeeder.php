@@ -16,6 +16,7 @@ class CooperationMeasureApplicationsTableSeeder extends Seeder
                 'name' => ['nl' => 'Waterbesparende gasleiding'],
                 'costs' => ['from' => 50, 'to' => 100],
                 'savings_money' => 100,
+                'extra' => ['icon' => 'icon-tools'],
                 'cooperation_id' => \App\Models\Cooperation::first()->id
             ]
         ];

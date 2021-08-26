@@ -114,7 +114,7 @@ class Form extends Component
                 }
 
                 $evaluatableAnswers = collect($answers);
-//dd($evaluatableAnswers);
+
                 $evaluation = ConditionEvaluator::init()->explain()->evaluateCollection($toolQuestion->conditions, $evaluatableAnswers);
 
                 if (! $evaluation) {

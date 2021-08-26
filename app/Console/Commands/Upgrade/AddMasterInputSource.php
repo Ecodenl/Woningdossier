@@ -91,21 +91,6 @@ class AddMasterInputSource extends Command
                     'interest_id',
                 ],
             ],
-            'user_action_plan_advices' => [
-                'where_column' => 'step_id',
-                'additional_where_column' => 'measure_application_id',
-                'answer_columns' => [
-                    'category',
-                    'visible',
-                    'costs',
-                    'savings_gas',
-                    'savings_electricity',
-                    'savings_money',
-                    'year',
-                    'planned',
-                    'planned_year',
-                ],
-            ],
             'building_features' => [
                 'answer_columns' => [
                     'building_heating_application_id',

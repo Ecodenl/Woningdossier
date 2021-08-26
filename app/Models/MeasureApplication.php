@@ -90,4 +90,9 @@ class MeasureApplication extends Model
 
         return in_array($this->short, $measureShortsThatAreAdvices);
     }
+
+    public function step()
+    {
+        return $this->belongsTo(Step::class);
+    }
 }

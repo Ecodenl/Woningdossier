@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\MeasureApplication;
 use App\Models\UserActionPlanAdvice;
@@ -100,7 +101,6 @@ class Form extends Component
             foreach ($advices->where('category', $category) as $advice) {
                 $advisable = $advice->userActionPlanAdvisable;
                 if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
-
                     $this->cards[$category][$advice->id] = [
                         'name' => Str::limit($advisable->measure_name, 22),
                         'icon' => $this->iconMap[$advisable->short] ?? 'icon-tools',
@@ -112,6 +112,7 @@ class Form extends Component
                         'subsidy' => $this->SUBSIDY_AVAILABLE,
                         'savings' => $advice->savings_money,
                         'info' => $advisable->measure_name,
+                        'route' => StepHelper::buildStepUrl($advisable->step),
                     ];
                 } else {
                     $this->cards[$category][$advice->id] = [
@@ -195,7 +196,6 @@ class Form extends Component
 
     public function recalculate()
     {
-        return;
         // TODO: Get logic for this. This is a guessed placeholder
         $subsidyPercentage = 0.1;
 

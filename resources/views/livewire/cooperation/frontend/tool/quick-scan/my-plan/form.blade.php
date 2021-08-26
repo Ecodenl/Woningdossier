@@ -105,7 +105,17 @@
                             <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
                         </div>
                         <div class="info">
-                            <h6 class="heading-6">{{ $card['name'] }}</h6>
+                            @if(! empty($card['route']))
+                                <a href="{{ $card['route'] }}" class="no-underline">
+                                    <h6 class="heading-6 text-purple">
+                                        {{ $card['name'] }}
+                                    </h6>
+                                </a>
+                            @else
+                                <h6 class="heading-6">
+                                    {{ $card['name'] }}
+                                </h6>
+                            @endif
                             <p class="-mt-1">
                                 @if(empty($card['price']['from']) && empty($card['price']['to']))
                                     @lang('cooperation/frontend/tool.my-plan.cards.see-info')

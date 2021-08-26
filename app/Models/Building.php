@@ -189,7 +189,7 @@ class Building extends Model
         InputSource $inputSource,
         ToolQuestion $toolQuestion
     ) {
-        $answer  = [];
+        $answer  = null;
         $where[] = ['input_source_id', '=', $inputSource->id];
         // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
         if ( ! is_null($toolQuestion->save_in)) {

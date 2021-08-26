@@ -739,7 +739,7 @@ class AddQuestionsToDatabase extends Command
                                         'icon' => 'icon-glass-hr-dp',
                                     ],
                                     3 => [
-                                        'icon' => 'icon-glass-hr-tp', // TODO: Drievoudig glas, is dat hetzelfde als hr+++?
+                                        'icon' => 'icon-glass-hr-tp',
                                     ],
                                 ],
                             ],

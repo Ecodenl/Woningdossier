@@ -13,12 +13,18 @@ class CreateCooperationMeasureApplicationsTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('cooperation_measure_applications');
+
         Schema::create('cooperation_measure_applications', function (Blueprint $table) {
             $table->bigIncrements('id');
 
             $table->json('name');
+            $table->json('info');
+
             $table->json('costs');
             $table->decimal('savings_money');
+
+            $table->json('extra');
 
             $table->unsignedInteger('cooperation_id');
             $table->foreign('cooperation_id')->references('id')->on('cooperations')->onDelete('cascade');

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCategoryColumnOnUserActionPlanAdvicesTable extends Migration
+class AddVisibleColumnToUserActionPlanAdvicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AddCategoryColumnOnUserActionPlanAdvicesTable extends Migration
      */
     public function up()
     {
-        if (! Schema::hasColumn('user_action_plan_advices', 'category')) {
+        if (! Schema::hasColumn('user_action_plan_advices', 'visible')) {
             Schema::table('user_action_plan_advices', function (Blueprint $table) {
-                $table->string('category')->after('user_action_plan_advisable_id')->nullable();
+                $table->boolean('visible')->after('category')->default(false);
             });
         }
     }
@@ -27,9 +27,9 @@ class AddCategoryColumnOnUserActionPlanAdvicesTable extends Migration
      */
     public function down()
     {
-        if (Schema::hasColumn('user_action_plan_advices', 'category')) {
+        if (Schema::hasColumn('user_action_plan_advices', 'visible')) {
             Schema::table('user_action_plan_advices', function (Blueprint $table) {
-               $table->dropColumn('category');
+                $table->dropColumn('visible');
             });
         }
     }

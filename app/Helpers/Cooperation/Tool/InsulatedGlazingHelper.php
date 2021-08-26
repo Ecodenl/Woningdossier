@@ -117,6 +117,7 @@ class InsulatedGlazingHelper extends ToolHelper
 
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($data);
+                    $actionPlanAdvice->costs = ['from' => $data['costs']];
                     $actionPlanAdvice->input_source_id = $this->inputSource->id;
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
@@ -136,6 +137,7 @@ class InsulatedGlazingHelper extends ToolHelper
                 $measureApplication = MeasureApplication::where('short', $measureShort)->first();
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
+                    $actionPlanAdvice->costs = ['from' => $results[$key]['costs']];
                     $actionPlanAdvice->input_source_id = $this->inputSource->id;
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);

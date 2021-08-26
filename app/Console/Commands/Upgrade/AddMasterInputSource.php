@@ -95,6 +95,8 @@ class AddMasterInputSource extends Command
                 'where_column' => 'step_id',
                 'additional_where_column' => 'measure_application_id',
                 'answer_columns' => [
+                    'category',
+                    'visible',
                     'costs',
                     'savings_gas',
                     'savings_electricity',

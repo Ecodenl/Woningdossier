@@ -27,36 +27,29 @@
                 </a>
 
                 @php
-                    $answers = collect([]);
+                    $answers = [];
                 @endphp
                 {{-- We loop twice to first get all answers. We need the answers to ensure whether or not the tool question should be shown --}}
                 @foreach($subStepToSummarize->toolQuestions as $toolQuestionToSummarize)
                     @php
                         // Answers will contain an array of arrays of all answers for the tool question in this sub step,
                         // in which the nested array will be short => answer based
-                        $answers->push([$toolQuestionToSummarize->short => $building->getAnswer($masterInputSource, $toolQuestionToSummarize)]);
+                        $answers[$toolQuestionToSummarize->short] = $building->getAnswer($masterInputSource, $toolQuestionToSummarize);
                     @endphp
                 @endforeach
 
                 @foreach($subStepToSummarize->toolQuestions as $toolQuestionToSummarize)
                     {{-- Only display questions that are valid to the user --}}
                     @php
-                        $showToolQuestion = true;
+                        $showQuestion = true;
 
-                        if (!empty($toolQuestionToSummarize->conditions)) {
-                            foreach ($toolQuestionToSummarize->conditions as $condition) {
-                                if ($answers->where($condition['column'], '!=', null)->count() > 0) {
-                                    // now execute the actual condition
-                                    $answer = $answers->where($condition['column'], $condition['operator'], $condition['value'])->first();
-                                    // so this means the answer is not found, so we don't show the tool question
-                                    if ($answer === null) {
-                                        $showToolQuestion = false;
-                                    }
-                                }
-                            }
+                        if (! empty($toolQuestionToSummarize->conditions)) {
+                            $showQuestion = \App\Helpers\Conditions\ConditionEvaluator::init()
+                            ->evaluateCollection($toolQuestionToSummarize->conditions, collect($answers));
                         }
                     @endphp
-                    @if ($showToolQuestion)
+
+                    @if ($showQuestion)
                         <div class="flex flex-row flex-wrap w-full">
                             <div class="@if($toolQuestionToSummarize->toolQuestionType->short === 'rating-slider') w-full pb-2 @else w-1/2 @endif">
                                 <a href="{{ $subStepRoute }}" class="no-underline">
@@ -77,11 +70,10 @@
                                         <p class="font-semibold">
                                             @php
                                                 $humanReadableAnswer = __('cooperation/frontend/tool.no-answer-given');
-                                                $answer = $answers->where($toolQuestionToSummarize->short, '!=', null)->first();
+                                                $answer = $answers[$toolQuestionToSummarize->short] ?? null;
 
                                                 if (! empty($answer)) {
-                                                    $answerValue = $answer[$toolQuestionToSummarize->short];
-                                                    $humanReadableAnswer = json_decode($answerValue, true)[$option['short']];
+                                                    $humanReadableAnswer = json_decode($answer, true)[$option['short']];
                                                 }
                                             @endphp
 
@@ -94,21 +86,20 @@
                                     <p class="font-semibold">
                                         @php
                                             $humanReadableAnswer = __('cooperation/frontend/tool.no-answer-given');
-                                            $answer = $answers->where($toolQuestionToSummarize->short, '!=', null)->first();
+                                            $answer = $answers[$toolQuestionToSummarize->short] ?? null;
 
                                             if (! empty($answer)) {
-                                                $answerValue = $answer[$toolQuestionToSummarize->short];
                                                 $questionValues = $toolQuestionToSummarize->getQuestionValues();
 
                                                 if ($questionValues->isNotEmpty()) {
-                                                    $questionValue = $questionValues->where('value', '=', $answerValue)->first();
+                                                    $questionValue = $questionValues->where('value', '=', $answer)->first();
 
                                                     if (! empty($questionValue)) {
                                                         $humanReadableAnswer = $questionValue['name'];
                                                     }
                                                 } else {
                                                     // If there are no question values, then it's user input
-                                                    $humanReadableAnswer = $answerValue;
+                                                    $humanReadableAnswer = $answer;
                                                 }
                                             }
                                         @endphp

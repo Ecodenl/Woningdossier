@@ -219,6 +219,8 @@ class Form extends Component
                     break;
                 case 'checkbox-icon':
                     /** @var Collection $questionValues */
+                    $answerForInputSource = $answerForInputSource ?? [];
+                    $this->filledInAnswers[$toolQuestion->id] = [];
                     foreach ($answerForInputSource as $answer) {
                         $this->filledInAnswers[$toolQuestion->id][] = $answer;
                     }

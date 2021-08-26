@@ -95,6 +95,7 @@ class UserService
         $building->currentPaintworkStatus()->forInputSource($inputSource)->delete();
         // remove all progress made in the tool
         $building->completedSteps()->forInputSource($inputSource)->delete();
+        $building->completedSubSteps()->forInputSource($inputSource)->delete();
         // remove the step comments
         $building->stepComments()->forInputSource($inputSource)->delete();
         // remove the answers on the custom questionnaires

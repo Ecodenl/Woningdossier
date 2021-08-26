@@ -4,8 +4,11 @@ namespace App\Traits;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
+use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
+use App\Models\MeasureApplication;
 use App\Models\User;
+use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -59,18 +62,34 @@ trait GetMyValuesTrait
 
         $crucialRelationCombinationIds = [
             'user_id', 'building_id', 'tool_question_id', 'element_id', 'service_id',
-            'hash', 'user_action_plan_advisable_id', 'user_action_plan_advisable_type'
+            'hash',
         ];
+        if ($this instanceof UserActionPlanAdvice){
+            $advisable = $this->userActionPlanAdvisable;
+            if ($advisable instanceof MeasureApplication) {
+                $crucialRelationCombinationIds[] = 'user_action_plan_advisable_id';
+                $crucialRelationCombinationIds[] = 'user_action_plan_advisable_type';
+            }
+            if ($advisable instanceof CustomMeasureApplication){
+                // find sibling of the user one with admin input source
+                $sibling = $advisable->getSibling($masterInputSource);
+                $data['user_action_plan_advisable_id'] = $sibling->id;
+                $wheres['user_action_plan_advisable_id'] = $sibling->id;
+            }
+        }
+
         foreach($crucialRelationCombinationIds as $crucialRelationCombinationId){
             if ($this->hasAttribute($crucialRelationCombinationId)) {
                 $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
             }
         }
 
+        if ($this instanceof UserActionPlanAdvice) {
         Log::debug("wheres:");
         Log::debug($wheres);
         Log::debug("data:");
         Log::debug($data);
+        }
 
         ($this)::allInputSources()
                ->updateOrCreate(

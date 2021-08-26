@@ -235,31 +235,45 @@ class Form extends Component
         $table = $savedInParts[0];
         $column = $savedInParts[1];
 
+        // We will save it on the model, this way we keep the current events behind them
+        $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
+        $where['input_source_id'] = $this->currentInputSource->id;
+
         if (Schema::hasColumn($table, 'user_id')) {
             $where = ['user_id' => $this->building->user_id];
         } else {
             $where = ['building_id' => $this->building->id];
         }
 
-        // this means we have to add some thing to the where
+        // This means we have to add some thing to the where
         if (count($savedInParts) > 2) {
-            // in this case the column holds a extra where value
+            // In this case the column holds a extra where value
             $where[ToolQuestionHelper::TABLE_COLUMN[$table]] = $column;
             $column = $savedInParts[2];
-            // the extra column holds a array / json, so we have to transform the answer into an array
+            // the extra column holds an array / JSON, so we have to transform the answer into an array
             if ($savedInParts[2] == 'extra') {
-                // the column to which we actually have to save the data
+                // The column to which we actually have to save the data
                 $column = 'extra';
-                // in this case, the fourth index holds the json key.
-                $givenAnswer = [$savedInParts[3] => $givenAnswer];
+                // In this case, the fourth index holds the json key.
+                $jsonKey = $savedInParts[3];
+
+                // We fetch the model, because we need to check its JSON values
+                $model = $modelName::allInputSources()->where($where)->first();
+                // If it's valid, we need to check its extra values
+
+                if ($model instanceof $modelName && ! empty($model->{$column}) && is_array($model->{$column})) {
+                    // Get model values, and then set the given key to the given answer
+                    // We must do this, else all answers get overwritten
+                    $tempAnswer = $model->{$column};
+                    $tempAnswer[$jsonKey] = $givenAnswer;
+                    $givenAnswer = $tempAnswer;
+                } else {
+                    $givenAnswer = [$jsonKey => $givenAnswer];
+                }
             }
         }
 
-        // we will save it on the model, this way we keep the current events behind them
-        $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
-
-        $where['input_source_id'] = $this->currentInputSource->id;
-        // now save it for both input sources.
+        // Now save it
         $modelName::allInputSources()
             ->updateOrCreate(
                 $where,

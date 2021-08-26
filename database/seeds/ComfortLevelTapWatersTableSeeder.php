@@ -22,14 +22,14 @@ class ComfortLevelTapWatersTableSeeder extends Seeder
             ],
             [
                 'name' => [
-                    'nl' => 'Comfort',
+                    'nl' => 'Comfortabel',
                 ],
                 'calculate_value' => 2,
                 'order' => 1,
             ],
             [
                 'name' => [
-                    'nl' => 'Comfort plus',
+                    'nl' => 'Extra comfortabel',
                 ],
                 'calculate_value' => 3,
                 'order' => 2,
@@ -37,11 +37,13 @@ class ComfortLevelTapWatersTableSeeder extends Seeder
         ];
 
         foreach ($statuses as $status) {
-            DB::table('comfort_level_tap_waters')->insert([
-                'name' => json_encode($status['name']),
-                'calculate_value' => $status['calculate_value'],
-                'order' => $status['order'],
-            ]);
+            DB::table('comfort_level_tap_waters')->updateOrInsert(
+                ['calculate_value' => $status['calculate_value']],
+                [
+                    'name' => json_encode($status['name']),
+                    'calculate_value' => $status['calculate_value'],
+                    'order' => $status['order'],
+                ]);
         }
     }
 }

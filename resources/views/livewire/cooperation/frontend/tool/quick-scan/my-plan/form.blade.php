@@ -3,8 +3,8 @@
     <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 mb-3 px-3 lg:px-8" x-data="modal()">
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
-                <h5 class="heading-">
-                    In orde {{-- Todo: Translate this using the constants when they are available --}}
+                <h5 class="heading-5">
+                    @lang("cooperation/frontend/tool.my-plan.categories.{$CATEGORY_COMPLETE}")
                 </h5>
             </div>
             <i class="icon-md icon-plus-circle clickable" x-on:click="toggle()"
@@ -13,7 +13,7 @@
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
                 <h5 class="heading-5">
-                    Nu aanpakken {{-- Todo: Translate this using the constants when they are available --}}
+                    @lang("cooperation/frontend/tool.my-plan.categories.{$CATEGORY_TO_DO}")
                 </h5>
             </div>
             <i class="icon-md icon-plus-circle clickable" x-on:click="toggle()"
@@ -22,7 +22,7 @@
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center">
                 <h5 class="heading-5">
-                    Later uitvoeren {{-- Todo: Translate this using the constants when they are available --}}
+                    @lang("cooperation/frontend/tool.my-plan.categories.{$CATEGORY_LATER}")
                 </h5>
             </div>
             <i class="icon-md icon-plus-circle clickable" x-on:click="toggle()"

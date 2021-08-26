@@ -13,9 +13,11 @@ class AddCategoryColumnOnUserActionPlanAdvicesTable extends Migration
      */
     public function up()
     {
-        Schema::table('user_action_plan_advices', function (Blueprint $table) {
-            $table->string('category')->after('user_action_plan_advisable_id');
-        });
+        if (! Schema::hasColumn('user_action_plan_advices', 'category')) {
+            Schema::table('user_action_plan_advices', function (Blueprint $table) {
+                $table->string('category')->after('user_action_plan_advisable_id')->nullable();
+            });
+        }
     }
 
     /**
@@ -25,8 +27,10 @@ class AddCategoryColumnOnUserActionPlanAdvicesTable extends Migration
      */
     public function down()
     {
-        Schema::table('user_action_plan_advices', function (Blueprint $table) {
-           $table->dropColumn('category');
-        });
+        if (Schema::hasColumn('user_action_plan_advices', 'category')) {
+            Schema::table('user_action_plan_advices', function (Blueprint $table) {
+               $table->dropColumn('category');
+            });
+        }
     }
 }

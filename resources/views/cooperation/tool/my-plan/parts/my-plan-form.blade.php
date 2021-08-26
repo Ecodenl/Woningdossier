@@ -41,7 +41,7 @@
                                     <a href="#warning-modal" role="button" class="measure-warning" data-toggle="modal" style="display:none;"><i class="glyphicon glyphicon-warning-sign" role="button" data-toggle="modal" title="" style="color: #ffc107"></i></a>
                                 </td>
                                 <td>
-                                    &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs, 0, true) }}
+                                    &euro; {{ \App\Helpers\NumberFormatter::format($advice->costs['from'] ?? 0, 0, true) }}
                                 </td>
                                 <td>
                                     &euro; {{ \App\Helpers\NumberFormatter::format($advice->savings_money, 0, true) }}

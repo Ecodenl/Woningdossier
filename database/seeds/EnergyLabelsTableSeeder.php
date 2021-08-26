@@ -13,6 +13,10 @@ class EnergyLabelsTableSeeder extends Seeder
     {
         $energyLabels = [
             [
+                'name' => '?',
+                'country_code' => 'nl'
+            ],
+            [
                 'name' => 'A',
                 'country_code' => 'nl',
             ],
@@ -40,16 +44,18 @@ class EnergyLabelsTableSeeder extends Seeder
                 'name' => 'G',
                 'country_code' => 'nl',
             ],
-            [
-                'name' => '?',
-                'country_code' => 'nl'
-            ],
         ];
 
-        foreach ($energyLabels as $energyLabel) {
+        foreach ($energyLabels as $order => $energyLabel) {
             \DB::table('energy_labels')->updateOrInsert(
-                ['name' => $energyLabel['name']],
-                $energyLabel
+                [
+                    'name' => $energyLabel['name']
+                ],
+                [
+                    'order' => $order,
+                    'name' => $energyLabel['name'],
+                    'country_code' => $energyLabel['country_code'],
+                ]
             );
         }
     }

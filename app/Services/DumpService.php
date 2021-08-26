@@ -46,6 +46,8 @@ use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
+use App\Models\ToolQuestion;
+use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
 use Illuminate\Support\Arr;
@@ -333,9 +335,6 @@ class DumpService
                                         $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingFeature->damagedPaintwork instanceof FacadeDamagedPaintwork ? $buildingFeature->damagedPaintwork->name : '';
                                     }
                                     break;
-                                case 'building_heating_application_id':
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = optional($buildingFeature->buildingHeatingApplication)->name;
-                                    break;
                                 case 'facade_plastered_painted':
                                     $possibleAnswers = [
                                         1 => \App\Helpers\Translation::translate('general.options.yes.title'),
@@ -575,6 +574,28 @@ class DumpService
                         }
                         break;
 
+                    case 'tool_question_answers':
+                        $column = $columnOrId;
+                        switch ($column) {
+                            case 'cook-type':
+                                $cookType = $building->getAnswer($inputSource, ToolQuestion::findByShort('cook-type'));
+                                $answer = __('woningdossier.cooperation.radiobutton.no');
+                                if ($cookType == "gas") {
+                                    $answer = __('woningdossier.cooperation.radiobutton.yes');
+                                }
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer ?? '';
+                                break;
+                            default:
+                                $answers = $building->getAnswer($inputSource, ToolQuestion::findByShort($column));
+                                // this will alow us to translates the answers
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = ToolQuestionCustomValue::whereIn('short', $answers)
+                                        ->get()
+                                        ->pluck('name')
+                                        ->implode(', ') ?? '';
+                                break;
+                        }
+                        break;
+
                     // handle the user_energy_habits table and its column
                     case 'user_energy_habits':
                         $column = $columnOrId;
@@ -584,13 +605,6 @@ class DumpService
 
                         if ($userEnergyHabit instanceof UserEnergyHabit) {
                             switch ($column) {
-                                case 'cook_gas':
-                                    $radiobuttonsYesNo = [
-                                        1 => __('woningdossier.cooperation.radiobutton.yes'),
-                                        2 => __('woningdossier.cooperation.radiobutton.no'),
-                                    ];
-                                    $row[$buildingId][$tableWithColumnOrAndIdKey] = $radiobuttonsYesNo[$userEnergyHabit->cook_gas] ?? '';
-                                    break;
                                 case 'renovation_plans':
                                     $renovationPlanAnswerOptions = [
                                         1 => __('cooperation/tool/general-data/interest.index.motivation.renovation-plans.options.yes-within-2-year'),

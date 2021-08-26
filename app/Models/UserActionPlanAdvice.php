@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -63,9 +64,11 @@ class UserActionPlanAdvice extends Model
     protected $table = 'user_action_plan_advices';
 
     public $fillable = [
-        'category', 'user_id', 'user_action_plan_advisable_type', 'user_action_plan_advisable_id', 'costs',
-        'costs', 'savings_gas', 'savings_electricity', 'savings_money',
-        'year', 'planned', 'planned_year', 'input_source_id',
+        'category', 'user_id',
+        'user_action_plan_advisable_type', 'user_action_plan_advisable_id', 'costs',
+        'input_source_id',
+        'user_action_plan_advisable_type', 'user_action_plan_advisable_id', 'category', 'visible', 'costs',
+        'savings_gas', 'savings_electricity', 'savings_money', 'year', 'planned', 'planned_year', 'step_id',
     ];
 
     /**
@@ -75,7 +78,16 @@ class UserActionPlanAdvice extends Model
      */
     protected $casts = [
         'planned' => 'boolean',
+        'visible' => 'boolean',
+        'costs' => 'array',
     ];
+
+    public static function booted()
+    {
+        static::addGlobalScope('visible', function (Builder $builder) {
+            $builder->where('visible', true);
+        });
+    }
 
     /**
      * Scope a query to only include results for the particular step.

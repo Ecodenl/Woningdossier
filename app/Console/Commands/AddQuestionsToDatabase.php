@@ -739,7 +739,7 @@ class AddQuestionsToDatabase extends Command
                                         'icon' => 'icon-glass-hr-dp',
                                     ],
                                     3 => [
-                                        'icon' => 'icon-glass-hr-tp', // TODO: Drievoudig glas, is dat hetzelfde als hr+++?
+                                        'icon' => 'icon-glass-hr-tp',
                                     ],
                                 ],
                             ],
@@ -910,7 +910,7 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // TODO: Meer/andere opties in design dan in datbase
+                // TODO: Meer/andere opties in design dan in database
                 'Zonnenboiler' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -956,7 +956,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_services.{$heatPump->id}.service_value_id",
                             'short' => 'heat-pump-type',
-                            'translation' => "Heeft u een warmptepomp",
+                            'translation' => "Heeft u een warmptepomp?",
                             'tool_question_type_id' => $radioType->id,
                             'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
                             'extra' => [
@@ -1026,6 +1026,65 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
+                'Aanvullende ventilatievragen' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'ventilation-type',
+                                'operator' => '!=',
+                                'value' => 20, // Natuurlijke ventilatie
+                            ],
+                        ],
+                    ],
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'boolean'],
+                            'save_in' => "building_services.{$ventilation->id}.extra.demand_driven",
+                            'short' => 'ventilation-demand-driven',
+                            // was current-state -> Vraaggestuurde regeling
+                            'translation' => "Heeft u vraaggestuurde regeling?",
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_custom_values' => [
+                                true => [
+                                    'name' => __('woningdossier.cooperation.radiobutton.yes'),
+                                    'extra' => [],
+                                ],
+                                false => [
+                                    'name' => __('woningdossier.cooperation.radiobutton.no'),
+                                    'extra' => [],
+                                ],
+                            ],
+                        ],
+                        [
+                            'save_in' => "building_services.{$ventilation->id}.extra.heat_recovery",
+                            'validation' => ['required', 'boolean'],
+                            'short' => 'ventilation-heat-recovery',
+                            // was current-state -> Met warmte terugwinning
+                            'translation' => "Heeft u warmte terugwinning?",
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_custom_values' => [
+                                true => [
+                                    'name' => __('woningdossier.cooperation.radiobutton.yes'),
+                                    'extra' => [],
+                                ],
+                                false => [
+                                    'name' => __('woningdossier.cooperation.radiobutton.no'),
+                                    'extra' => [],
+                                ],
+                            ],
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'ventilation-type',
+                                        'operator' => '!=',
+                                        'value' => 21, // Mechanische ventilatie
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
+                ],
                 'Zonnepanelen' => [
                     'sub_step_template_id' => $template2rows3top1bottom->id,
                     'questions' => [
@@ -1051,7 +1110,7 @@ class AddQuestionsToDatabase extends Command
                         ],
                         [
                             'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'min:1', 'max:50'],
-                            'save_in' => "building_services.{$solarPanels->id}.service_value_id",
+                            'save_in' => "building_pv_panels.number",
                             'short' => 'solar-panel-count',
                             // was current-state -> hoeveel zonnepanelen zijn er aanwezig
                             'translation' => "Hoeveel zonnepanelen?",
@@ -1067,7 +1126,7 @@ class AddQuestionsToDatabase extends Command
                             ],
                         ],
                         [
-                            'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'min:1', 'max:50'],
+                            'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'min:1'],
                             'save_in' => "building_pv_panels.total_installed_power",
                             // was current-state -> Geinstalleerd vermogen (totaal)
                             'translation' => "Totaal vermogen",

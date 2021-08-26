@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
+use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
@@ -85,50 +86,63 @@ class Form extends Component
 
         // Filter out the questions that do not match the condition
         // now collect the given answers
-        $answers = collect();
+        $dynamicAnswers = [];
         foreach ($this->toolQuestions as $toolQuestion) {
-            $answers->push([$toolQuestion->short => $this->filledInAnswers[$toolQuestion->id]]);
+            $dynamicAnswers[$toolQuestion->short] = $this->filledInAnswers[$toolQuestion->id];
         }
 
         foreach ($this->toolQuestions as $index => $toolQuestion) {
             $this->setValidationForToolQuestion($toolQuestion);
 
-            if (!empty($toolQuestion->conditions)) {
-                foreach ($toolQuestion->conditions as $condition) {
-                    // there is a possibility the user fills the form in a unexpected order,
-                    // so we have to check if the field which should match the condition is actually answered.
-                    // may have to change in the future if there is some null condition thing.
-                    if ($answers->where($condition['column'], '!=', null)->count() > 0) {
-                        // now execute the actual condition
-                        $answer = $answers->where($condition['column'], $condition['operator'], $condition['value'])->first();
-                        // so this means the answer is not found, this means we have to remove the question.
-                        if ($answer === null) {
-                            $this->toolQuestions = $this->toolQuestions->forget($index);
+            $answers = $dynamicAnswers;
 
-                            // We will unset the answers the user has given. If the user then changes their mind, they
-                            // will have to fill in the data again. We don't want to save values to the database
-                            // that are unvalidated (or not relevant).
+            if (! empty($toolQuestion->conditions)) {
+                foreach ($toolQuestion->conditions as $conditionSet) {
+                    foreach ($conditionSet as $condition) {
+                        // There is a possibility that the answer we're looking for is for a tool question not
+                        // on this page. We find it, and add the answer to our list
+                        if ($this->toolQuestions->where('short', $condition['column'])->count() === 0) {
+                            $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
+                            if ($otherSubStepToolQuestion instanceof ToolQuestion) {
+                                $otherSubStepAnswer = $this->building->getAnswer($this->currentInputSource,
+                                    $otherSubStepToolQuestion);
 
-                            // Normally we'd use $this->reset(), but it doesn't seem like it likes nested items per dot
-                            $this->filledInAnswers[$toolQuestion->id] = null;
-
-                            // and unset the validation for the question based on type.
-                            switch ($toolQuestion->toolQuestionType->short) {
-                                case 'rating-slider':
-                                    foreach ($toolQuestion->options as $option) {
-                                        unset($this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"]);
-                                    }
-                                    break;
-
-                                case 'checkbox-icon':
-                                    unset($this->rules["filledInAnswers.{$toolQuestion->id}.*"]);
-                                    break;
-
-                                default:
-                                    unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
-                                    break;
+                                $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;
                             }
                         }
+                    }
+                }
+
+                $evaluatableAnswers = collect($answers);
+
+                $evaluation = ConditionEvaluator::init()->evaluateCollection($toolQuestion->conditions, $evaluatableAnswers);
+
+                if (! $evaluation) {
+                    $this->toolQuestions = $this->toolQuestions->forget($index);
+
+                    // We will unset the answers the user has given. If the user then changes their mind, they
+                    // will have to fill in the data again. We don't want to save values to the database
+                    // that are unvalidated (or not relevant).
+
+                    // Normally we'd use $this->reset(), but it doesn't seem like it likes nested items per dot
+                    $this->filledInAnswers[$toolQuestion->id] = null;
+
+                    // and unset the validation for the question based on type.
+                    switch ($toolQuestion->toolQuestionType->short) {
+                        case 'rating-slider':
+                            foreach ($toolQuestion->options as $option) {
+                                unset($this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"]);
+                            }
+                            break;
+
+                        case 'checkbox-icon':
+                            unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
+                            unset($this->rules["filledInAnswers.{$toolQuestion->id}.*"]);
+                            break;
+
+                        default:
+                            unset($this->rules["filledInAnswers.{$toolQuestion->id}"]);
+                            break;
                     }
                 }
             }
@@ -156,7 +170,7 @@ class Form extends Component
             if (is_null($toolQuestion->save_in)) {
                 $this->saveToolQuestionCustomValues($toolQuestion, $givenAnswer);
             } else {
-                // this *cant* candle a checkbox / multiselect answer.
+                // this *can't* handle a checkbox / multiselect answer.
                 $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
             }
         }
@@ -186,7 +200,7 @@ class Form extends Component
 
             $this->filledInAnswersForAllInputSources[$toolQuestion->id] = $this->building->getAnswerForAllInputSources($toolQuestion);
 
-            /** @var array $answerForInputSource */
+            /** @var array|string $answerForInputSource */
             $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
 
             // We don't have to set rules here, as that's done in the setToolQuestions function which gets called
@@ -211,6 +225,7 @@ class Form extends Component
                     foreach ($answerForInputSource as $answer) {
                         $this->filledInAnswers[$toolQuestion->id][] = $answer;
                     }
+                    $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                     $this->attributes["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->name;
                     break;
                 default:
@@ -234,7 +249,13 @@ class Form extends Component
                 break;
 
             case 'checkbox-icon':
+                // If this is set, it won't validate if nothing is clicked. We check if the validation is required,
+                // and then also set required for the main question
                 $this->rules["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->validation;
+
+                if (in_array('required', $toolQuestion->validation)) {
+                    $this->rules["filledInAnswers.{$toolQuestion->id}"] = ['required'];
+                }
                 break;
 
             default:
@@ -249,31 +270,46 @@ class Form extends Component
         $table = $savedInParts[0];
         $column = $savedInParts[1];
 
+        // We will save it on the model, this way we keep the current events behind them
+        $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
+
         if (Schema::hasColumn($table, 'user_id')) {
             $where = ['user_id' => $this->building->user_id];
         } else {
             $where = ['building_id' => $this->building->id];
         }
 
-        // this means we have to add some thing to the where
+        $where['input_source_id'] = $this->currentInputSource->id;
+
+        // This means we have to add some thing to the where
         if (count($savedInParts) > 2) {
-            // in this case the column holds a extra where value
+            // In this case the column holds a extra where value
             $where[ToolQuestionHelper::TABLE_COLUMN[$table]] = $column;
             $column = $savedInParts[2];
-            // the extra column holds a array / json, so we have to transform the answer into an array
+            // the extra column holds an array / JSON, so we have to transform the answer into an array
             if ($savedInParts[2] == 'extra') {
-                // the column to which we actually have to save the data
+                // The column to which we actually have to save the data
                 $column = 'extra';
-                // in this case, the fourth index holds the json key.
-                $givenAnswer = [$savedInParts[3] => $givenAnswer];
+                // In this case, the fourth index holds the json key.
+                $jsonKey = $savedInParts[3];
+
+                // We fetch the model, because we need to check its JSON values
+                $model = $modelName::allInputSources()->where($where)->first();
+                // If it's valid, we need to check its extra values
+
+                if ($model instanceof $modelName && ! empty($model->{$column}) && is_array($model->{$column})) {
+                    // Get model values, and then set the given key to the given answer
+                    // We must do this, else all answers get overwritten
+                    $tempAnswer = $model->{$column};
+                    $tempAnswer[$jsonKey] = $givenAnswer;
+                    $givenAnswer = $tempAnswer;
+                } else {
+                    $givenAnswer = [$jsonKey => $givenAnswer];
+                }
             }
         }
 
-        // we will save it on the model, this way we keep the current events behind them
-        $modelName = "App\\Models\\" . Str::ucFirst(Str::camel(Str::singular($table)));
-
-        $where['input_source_id'] = $this->currentInputSource->id;
-        // now save it for both input sources.
+        // Now save it
         $modelName::allInputSources()
             ->updateOrCreate(
                 $where,
@@ -312,6 +348,7 @@ class Form extends Component
                 $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($answer);
                 $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
                 $data['answer'] = $answer;
+                // TODO: Check this, it's saving answers really weirdly
                 $toolQuestion->toolQuestionAnswers()->create($data)->replicate()->fill([
                     'input_source_id' => $this->masterInputSource->id
                 ])->save();

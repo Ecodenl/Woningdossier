@@ -8,6 +8,7 @@ use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\UserActionPlanAdvice;
 use Cassandra\Custom;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -61,7 +62,10 @@ class CustomChanges extends Component
                     ]);
                 }
             }
-            if (isset($customMeasureApplication) && $customMeasureApplication instanceof CustomMeasureApplication) {
+            // the default "voeg onderdeel toe" also holds data, but the name will be empty. So when name empty; do not save
+            if (!empty($customMeasureApplicationFormData['name']) && (
+                isset($customMeasureApplication) && $customMeasureApplication instanceof CustomMeasureApplication
+            )) {
 
                 $customMeasureApplication
                     ->userActionPlanAdvices()
@@ -73,7 +77,7 @@ class CustomChanges extends Component
                         ],
                         [
                             'category' => 'to-do',
-                            'costs' => $customMeasureApplication['costs'],
+                            'costs' => $customMeasureApplicationFormData['costs'] ?? null,
                             'input_source_id' => $this->currentInputSource->id
                         ]
                     );
@@ -94,6 +98,13 @@ class CustomChanges extends Component
         foreach ($customMeasureApplications as $index => $customMeasureApplication) {
             $this->customMeasureApplicationsFormData[$index] = $customMeasureApplication->only(['hash', 'name']);
             $this->customMeasureApplicationsFormData[$index]['extra'] = ['icon' => 'icon-tools'];
+
+//            dd($customMeasureApplication->userActionPlanAdvices()->forInputSource($this->masterInputSource)->get(), $customMeasureApplication);
+            $userActionPlanAdvice = $customMeasureApplication->userActionPlanAdvices()->forInputSource($this->masterInputSource)->first();
+//            dd();
+            if ($userActionPlanAdvice instanceof UserActionPlanAdvice) {
+                $this->customMeasureApplicationsFormData[$index]['costs'] = $userActionPlanAdvice->costs;
+            }
         }
 
 //        foreach ($cooperationMeasureApplications as $cooperationMeasureApplication) {

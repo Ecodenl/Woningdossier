@@ -2,13 +2,10 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\UserActionPlanAdvice;
-use Cassandra\Custom;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -91,25 +88,21 @@ class CustomChanges extends Component
     {
         $this->customMeasureApplicationsFormData = [];
         $customMeasureApplications = $this->building->customMeasureApplications()->forInputSource($this->masterInputSource)->get();
+        // zijn opties die cooperatie heeft toegevoegd. Seeder nog niet ok, dus nog niet meenemen.
         $cooperationMeasureApplications = $this->cooperation->cooperationMeasureApplications;
-
 
         /** @var CustomMeasureApplication $customMeasureApplication */
         foreach ($customMeasureApplications as $index => $customMeasureApplication) {
             $this->customMeasureApplicationsFormData[$index] = $customMeasureApplication->only(['hash', 'name']);
             $this->customMeasureApplicationsFormData[$index]['extra'] = ['icon' => 'icon-tools'];
 
-//            dd($customMeasureApplication->userActionPlanAdvices()->forInputSource($this->masterInputSource)->get(), $customMeasureApplication);
+            // is null, maar moet niet
             $userActionPlanAdvice = $customMeasureApplication->userActionPlanAdvices()->forInputSource($this->masterInputSource)->first();
 //            dd();
-            if ($userActionPlanAdvice instanceof UserActionPlanAdvice) {
+            if ($userActionPlanAdvice instanceof UserActionPlanAdvice) { // kan niet, moet er altijd zijn. If moet weg.
                 $this->customMeasureApplicationsFormData[$index]['costs'] = $userActionPlanAdvice->costs;
             }
         }
-
-//        foreach ($cooperationMeasureApplications as $cooperationMeasureApplication) {
-//            $this->cooperationMeasureApplications[] = $cooperationMeasureApplication->only(['id', 'name', 'info', 'extra']);
-//        }
 
         $this->customMeasureApplicationsFormData[] = [
             'hash' => null,

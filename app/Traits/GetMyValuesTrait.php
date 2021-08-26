@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 trait GetMyValuesTrait
@@ -65,6 +66,11 @@ trait GetMyValuesTrait
                 $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
             }
         }
+
+        Log::debug("wheres:");
+        Log::debug($wheres);
+        Log::debug("data:");
+        Log::debug($data);
 
         ($this)::allInputSources()
                ->updateOrCreate(

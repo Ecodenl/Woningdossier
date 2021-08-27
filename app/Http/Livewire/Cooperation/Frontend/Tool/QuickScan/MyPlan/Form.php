@@ -170,41 +170,6 @@ class Form extends Component
         ],
     ];
 
-    // TODO: Proper map
-    private $iconMap = [
-        'floor-insulation' => 'icon-floor-insulation-excellent',
-        'bottom-insulation' => 'icon-floor-insulation-good',
-        'floor-insulation-research' => 'icon-floor-insulation-moderate',
-        'cavity-wall-insulation' => 'icon-wall-insulation-excellent',
-        'facade-wall-insulation' => 'icon-wall-insulation-good',
-        'wall-insulation-research' => 'icon-wall-insulation-moderate',
-        'glass-in-lead' => 'icon-glass-single',
-        'hrpp-glass-only' => 'icon-glass-hr-p',
-        'hrpp-glass-frames' => 'icon-glass-hr-dp',
-        'hr3p-frames' => 'icon-glass-hr-tp',
-        'crack-sealing' => 'icon-cracks-seams',
-        'roof-insulation-pitched-inside' => 'icon-pitched-roof',
-        'roof-insulation-pitched-replace-tiles' => 'icon-pitched-roof',
-        'roof-insulation-flat-current' => 'icon-flat-roof',
-        'roof-insulation-flat-replace-current' => 'icon-flat-roof',
-        'high-efficiency-boiler-replace' => 'icon-central-heater',
-        'heater-place-replace' => 'icon-sun-boiler',
-        'solar-panels-place-replace' => 'icon-solar-panels',
-        'repair-joint' => 'icon-tools',
-        'clean-brickwork' => 'icon-tools',
-        'impregnate-wall' => 'icon-hydronic-balance-temperature',
-        'paint-wall' => 'icon-paint-job',
-        'paint-wood-elements' => 'icon-paint-job',
-        'replace-tiles' => 'icon-tools',
-        'replace-roof-insulation' => 'icon-roof-insulation-excellent',
-        'inspect-repair-roofs' => 'icon-tools',
-        'replace-zinc-pitched' => 'icon-pitched-roof',
-        'replace-zinc-flat' => 'icon-flat-roof',
-        'ventilation-balanced-wtw' => 'icon-ventilation',
-        'ventilation-decentral-wtw' => 'icon-ventilation',
-        'ventilation-demand-driven' => 'icon-ventilation',
-    ];
-
     public function mount()
     {
         $this->building = HoomdossierSession::getBuilding(true);
@@ -221,7 +186,7 @@ class Form extends Component
                 if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
                     $this->cards[$category][$advice->id] = [
                         'name' => Str::limit($advisable->measure_name, 22),
-                        'icon' => $this->iconMap[$advisable->short] ?? 'icon-tools',
+                        'icon' => $advisable->configurations['icon'] ?? 'icon-tools',
                         'price' => [
                             'from' => $advice->costs['from'] ?? 0,
                             'to' => $advice->costs['to'] ?? 0,

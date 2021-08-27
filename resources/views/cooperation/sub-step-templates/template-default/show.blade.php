@@ -1,11 +1,25 @@
 <div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-{{$toolQuestions->count() > 1 ? 10 : 5}} ">
     @foreach($toolQuestions as $toolQuestion)
 
+        <?php
+        switch($toolQuestion->short) {
+            case 'building-type':
+                $rawAnswer = $building->getAnswer($masterInputSource, \App\Models\ToolQuestion::findByShort('building-type-category'));
+                $humanReadableAnswer = Str::lower(
+                    \App\Models\BuildingType::find($rawAnswer)->name
+                );
+
+                break;
+            default:
+                $humanReadableAnswer = null;
+        }
+        ?>
         <div class="w-full @if($loop->iteration > 1) pt-10 @endif">
             @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'form-group-heading',
                 // 'defaultInputSource' => 'resident',
-                'label' => $toolQuestion->name,
+                // so we give the option to replace something in the question title
+                'label' => __($toolQuestion->name, ['name' => $humanReadableAnswer]),
                 'inputName' => "filledInAnswers.{$toolQuestion->id}",
             ])
                 @slot('sourceSlot')

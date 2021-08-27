@@ -150,6 +150,18 @@ class AddQuestionsToDatabase extends Command
                             'extra' => [
                                 'column' => 'short',
                                 'data' => [
+                                    'detached-house' => [
+                                        'icon' => 'icon-detached-house',
+                                    ],
+                                    '2-homes-under-1-roof' => [
+                                        'icon' => 'icon-two-under-one-roof',
+                                    ],
+                                    'corner-house' => [
+                                        'icon' => 'icon-end-of-terrace-house',
+                                    ],
+                                    'terraced-house' => [
+                                        'icon' => 'icon-mid-terrace-house',
+                                    ],
                                     'apartment' => [
                                         'icon' => 'icon-apartment-mid-floor-between',
                                     ],
@@ -163,6 +175,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
+                            'short' => 'building-type',
                             'validation' => ['required', 'exists:building_types,id'],
                             'save_in' => 'building_features.building_type_id',
                             'translation' => "Wat voor soort :name heeft u",
@@ -184,10 +197,10 @@ class AddQuestionsToDatabase extends Command
                                         'icon' => 'icon-mid-terrace-house',
                                     ],
                                     6 => [
-                                        'icon' => 'icon-apartment-ground-floor-corner', // TODO: See below
+                                        'icon' => 'icon-apartment-ground-floor-corner',
                                     ],
                                     7 => [
-                                        'icon' => 'icon-apartment-ground-floor-between', // TODO: See below
+                                        'icon' => 'icon-apartment-ground-floor-between',
                                     ],
                                     8 => [
                                         'icon' => 'icon-upstairs-apartment-corner',

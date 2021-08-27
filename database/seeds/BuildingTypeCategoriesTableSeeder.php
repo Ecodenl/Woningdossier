@@ -26,7 +26,7 @@ class BuildingTypeCategoriesTableSeeder extends Seeder
             ],
             [
                 'name' => [
-                    'nl' => 'Tussenwoning'
+                    'nl' => 'Vrijstaand'
                 ],
                 'short' => 'detached-house'
             ],

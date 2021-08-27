@@ -112,7 +112,11 @@ class UserActionPlanAdvice extends Model
 
     public function userActionPlanAdvisable(): MorphTo
     {
-        return $this->morphTo();
+        if ($this->user_action_plan_advisable_type === MeasureApplication::class) {
+            return $this->morphTo();
+        } else {
+            return $this->morphTo()->allInputSources();
+        }
     }
 
     /**

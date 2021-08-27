@@ -7,6 +7,7 @@ use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Models\BuildingHeating;
 use App\Models\BuildingHeatingApplication;
 use App\Models\BuildingType;
+use App\Models\BuildingTypeCategory;
 use App\Models\ComfortLevelTapWater;
 use App\Models\Element;
 use App\Models\EnergyLabel;
@@ -136,6 +137,27 @@ class AddQuestionsToDatabase extends Command
         $structure = [
             'building-data' => [
                 // sub step name
+                'Woning type' => [
+                    // question data
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:building_type_categories,id'],
+                            'short' => 'building-type-category',
+                            'translation' => 'Wat voor soort woning heeft u?',
+                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_values' => BuildingTypeCategory::all(),
+                            'extra' => [
+                                'column' => 'short',
+                                'data' => [
+                                    'apartment' => [
+                                        'icon' => 'icon-apartment-mid-floor-between',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
+                ],
                 'Wat voor woning' => [
                     // question data
                     'sub_step_template_id' => $templateDefault->id,
@@ -143,7 +165,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:building_types,id'],
                             'save_in' => 'building_features.building_type_id',
-                            'translation' => 'cooperation/tool/general-data/building-characteristics.index.building-type',
+                            'translation' => "Wat voor soort :name heeft u",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $buildingTypes,
                             'extra' => [
@@ -184,7 +206,6 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // TODO: wat voor type appartement heeft u moet nog komen. Dit moet de vorige vraag aanpassen, gezien de vorige vraag de optie van het type appartement nu al aangeeft
                 'Wat voor dak' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [

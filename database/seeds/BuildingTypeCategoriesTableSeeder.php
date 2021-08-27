@@ -11,16 +11,40 @@ class BuildingTypeCategoriesTableSeeder extends Seeder
      */
     public function run()
     {
-        $buildingTYpeCategories = [
+        $buildingTypeCategories = [
             [
                 'name' => [
                     'nl' => 'Appartement'
                 ],
                 'short' => 'apartment'
             ],
+            [
+                'name' => [
+                    'nl' => 'Hoekwoning'
+                ],
+                'short' => 'corner-house'
+            ],
+            [
+                'name' => [
+                    'nl' => 'Tussenwoning'
+                ],
+                'short' => 'detached-house'
+            ],
+            [
+                'name' => [
+                    'nl' => '2 onder 1 kap',
+                ],
+                'short' => '2-homes-under-1-roof'
+            ],
+            [
+                'name' => [
+                    'nl' => 'Tussenwoning'
+                ],
+                'short' => 'terraced-house'
+            ],
         ];
 
-        foreach ($buildingTYpeCategories as $buildingTypeCategory) {
+        foreach ($buildingTypeCategories as $buildingTypeCategory) {
             DB::table('building_type_categories')->updateOrInsert(
                 [
                     'short' => $buildingTypeCategory['short']

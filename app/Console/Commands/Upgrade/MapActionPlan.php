@@ -52,7 +52,7 @@ class MapActionPlan extends Command
         // This will add the category to each row in the user_action_plan_advices table
         $userActionPlanAdvices = UserActionPlanAdvice::allInputSources()
                                                      ->whereNull('category')
-                                                     ->get();
+                                                     ->cursor();
 
         $bar = $this->output->createProgressBar($userActionPlanAdvices->count());
         $bar->start();
@@ -92,7 +92,7 @@ class MapActionPlan extends Command
     {
         // This will convert the numeric cost to JSON
         $userActionPlanAdvices = UserActionPlanAdvice::allInputSources()
-            ->get();
+            ->cursor();
 
         // We expect a DECIMAL column. This means we can't just set it to json
         // We do 2 things: we alter the table to TEXT so we can set the cost, and then

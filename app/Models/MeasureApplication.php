@@ -52,6 +52,10 @@ class MeasureApplication extends Model
         'measure_name', 'cost_unit', 'maintenance_unit',
     ];
 
+    protected $casts = [
+        'configurations' => 'array',
+    ];
+
     /**
      * @param string $short
      *

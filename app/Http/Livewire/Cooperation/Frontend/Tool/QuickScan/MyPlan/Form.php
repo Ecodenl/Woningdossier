@@ -33,9 +33,16 @@ class Form extends Component
     public $currentInputSource;
 
     public array $new_measure = [];
-    public int $investment = 0;
-    public int $yearlySavings = 0;
-    public int $availableSubsidy = 0;
+
+    // Details
+    public $expectedInvestment = 0;
+    public $yearlySavings = 0;
+    public $availableSubsidy = 0;
+
+    // Sliders
+    public $comfort = 0;
+    public $renewable = 0;
+    public $investment = 0;
 
     public string $category = '';
 
@@ -53,6 +60,114 @@ class Form extends Component
 
     protected $listeners = [
         'cardMoved',
+    ];
+
+    private $calculationMap = [
+        'comfort' => [
+            [
+                'condition' => [
+                    'to' => 10,
+                ],
+                'value' => 1,
+            ],
+            [
+                'condition' => [
+                    'from' => 10,
+                    'to' => 15,
+                ],
+                'value' => 2,
+            ],
+            [
+                'condition' => [
+                    'from' => 15,
+                    'to' => 20,
+                ],
+                'value' => 3,
+            ],
+            [
+                'condition' => [
+                    'from' => 20,
+                    'to' => 25,
+                ],
+                'value' => 4,
+            ],
+            [
+                'condition' => [
+                    'from' => 25,
+                ],
+                'value' => 5,
+            ],
+        ],
+        'renewable' => [
+            [
+                'condition' => [
+                    'to' => 15,
+                ],
+                'value' => 1,
+            ],
+            [
+                'condition' => [
+                    'from' => 15,
+                    'to' => 30,
+                ],
+                'value' => 2,
+            ],
+            [
+                'condition' => [
+                    'from' => 30,
+                    'to' => 45,
+                ],
+                'value' => 3,
+            ],
+            [
+                'condition' => [
+                    'from' => 45,
+                    'to' => 60,
+                ],
+                'value' => 4,
+            ],
+            [
+                'condition' => [
+                    'from' => 60,
+                ],
+                'value' => 5,
+            ],
+        ],
+        'investment' => [
+            [
+                'condition' => [
+                    'to' => 0.5,
+                ],
+                'value' => 1,
+            ],
+            [
+                'condition' => [
+                    'from' => 0.5,
+                    'to' => 2.5,
+                ],
+                'value' => 2,
+            ],
+            [
+                'condition' => [
+                    'from' => 2.5,
+                    'to' => 4.5,
+                ],
+                'value' => 3,
+            ],
+            [
+                'condition' => [
+                    'from' => 4.5,
+                    'to' => 6.5,
+                ],
+                'value' => 4,
+            ],
+            [
+                'condition' => [
+                    'from' => 6.5,
+                ],
+                'value' => 5,
+            ],
+        ],
     ];
 
     // TODO: Proper map
@@ -199,6 +314,25 @@ class Form extends Component
 
     public function recalculate()
     {
+        // Comfort logic
+        // TODO: Calculations
+        // TEMPORARY RANDOM CALC
+        $percentage = mt_rand(0, 26);
+        $this->evaluateCalculationResult('comfort', $percentage);
+
+        // Renewable logic
+        // TODO: Calculations
+        // TEMPORARY RANDOM CALC
+        $percentage = mt_rand(0, 100);
+        $this->evaluateCalculationResult('renewable', $percentage);
+
+        // Investment logic
+        // TODO: Calculations
+        // TEMPORARY RANDOM CALC
+        $percentage = mt_rand(0, 10);
+        $this->evaluateCalculationResult('investment', $percentage);
+
+
         // TODO: Get logic for this. This is a guessed placeholder
         $subsidyPercentage = 0.1;
 
@@ -220,8 +354,41 @@ class Form extends Component
 //            }
         }
 
-        $this->investment = ($maxInvestment + $minInvestment) / 2;
+        $this->expectedInvestment = ($maxInvestment + $minInvestment) / 2;
         $this->yearlySavings = $savings;
         $this->availableSubsidy = $subsidy;
+    }
+
+    public function evaluateCalculationResult($field, $calculation)
+    {
+        // TODO: This will most likely come from the database at one point
+        $calculationConditions = $this->calculationMap[$field];
+        $value = 0;
+        foreach ($calculationConditions as $calculationCondition) {
+            $condition = $calculationCondition['condition'];
+            // Upper range only
+            if (empty($condition['from']) && ! empty($condition['to'])) {
+                if ($calculation < $condition['to']) {
+                    $value = $calculationCondition['value'];
+                    break;
+                }
+            } // Full range
+            elseif (! empty($condition['from']) && ! empty($condition['to'])) {
+                if ($calculation >= $condition['from'] && $calculation < $condition['to']) {
+                    $value = $calculationCondition['value'];
+                    break;
+                }
+            } // Bottom range only
+            elseif (! empty($condition['from']) && empty($condition['to'])) {
+                if ($calculation >= $condition['from']) {
+                    $value = $calculationCondition['value'];
+                    break;
+                }
+            }
+        }
+
+        $this->{$field} = $value;
+        // TODO: Deprecate this dispatch in Livewire V2 (IF POSSIBLE)
+        $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
     }
 }

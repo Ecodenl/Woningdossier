@@ -161,7 +161,7 @@
             </div>
             <div class="flex flex-col justify-center">
                 <span class="text-orange text-sm font-bold">
-                    {{ \App\Helpers\NumberFormatter::prefix($investment, '€ ') }}
+                    {{ \App\Helpers\NumberFormatter::prefix($expectedInvestment, '€ ') }}
                 </span>
                 <p class="-mt-2">
                     @lang('cooperation/frontend/tool.my-plan.cards.investment')
@@ -199,17 +199,20 @@
         {{-- Todo: Check rating slider translations --}}
         <div class="w-full flex flex-wrap items-center pr-3">
             @include('cooperation.frontend.layouts.parts.rating-slider', [
-                'label' => 'Comfort', 'default' => 5, 'disabled' => true
+                'label' => 'Comfort', 'disabled' => true, 'default' => $comfort,
+                'livewire' => true, 'inputName' => 'comfort',
             ])
         </div>
         <div class="w-full flex flex-wrap items-center">
             @include('cooperation.frontend.layouts.parts.rating-slider', [
-                'label' => 'Duurzaamheid', 'default' => 4, 'disabled' => true
+                'label' => 'Duurzaamheid', 'disabled' => true, 'default' => $renewable,
+                'livewire' => true, 'inputName' => 'renewable',
             ])
         </div>
         <div class="w-full flex flex-wrap items-center">
             @include('cooperation.frontend.layouts.parts.rating-slider', [
-                'label' => 'Goede investering', 'default' => 3, 'disabled' => true
+                'label' => 'Goede investering', 'disabled' => true, 'default' => $investment,
+                'livewire' => true, 'inputName' => 'investment',
             ])
         </div>
     </div>
@@ -235,7 +238,7 @@
             'inputName' => 'comments.coach'
         ])
             <textarea id="comments-coach" class="form-input" name="comments[coach]"
-                      placeholder="lang('default.form.input.comment-placeholder')"></textarea>
+                      placeholder="@lang('default.form.input.comment-placeholder')"></textarea>
             <button class="btn btn-purple absolute right-3 bottom-7">
                 @lang('default.buttons.save')
             </button>

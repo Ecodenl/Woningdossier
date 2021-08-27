@@ -187,8 +187,11 @@ class Form extends Component
         $this->category = $category;
     }
 
-    public function cardMoved($fromCategory, $toCategory, $id, $order)
+    public function cardMoved($fromCategory, $toCategory, $id, $newOrder)
     {
+        // Disclaimer: We have to do it like this, because JavaScript re-sorts arrays / objects to given numeric
+        // keys, so we must ENSURE the order is 100% valid from top to bottom
+
         // Get the original card object
         $cardData = Arr::where($this->cards[$fromCategory], function ($card, $order) use ($id) {
             return $card['id'] == $id;
@@ -197,26 +200,39 @@ class Form extends Component
         // Structure: order => card
         if (! empty($cardData)) {
             $oldOrder = array_key_first($cardData);
+            $movedCard = $cardData[$oldOrder];
 
             // Remove card from the original category
             unset($this->cards[$fromCategory][$oldOrder]);
 
-            $card = $cardData[$oldOrder];
+            // Re-index the order for the old category
+            $oldCards = $this->cards[$fromCategory];
+            $newCards = [];
 
-            // Get the cards for the new category
-            $cards = $this->cards[$toCategory];
-
-            $count = count($cards);
-            dd($count);
-            // We start from the top, so we don't overwrite everything
-            for ($i = $count; $i > $order; $i--) {
-                // Move cards one up
-                $cards[$i + 1] = $card[$i];
+            $loop = 0;
+            foreach ($oldCards as $card) {
+                $newCards[$loop] = $card;
+                ++$loop;
             }
-dd($cards);
-            $cards[$order] = $card;
+            $this->cards[$fromCategory] = $newCards;
 
-            $this->cards[$toCategory] = $cards;
+            // Add moved card into new category
+            $oldCards = $this->cards[$toCategory];
+            $newCards = [];
+
+            $loop = 0;
+            foreach($oldCards as $order => $card) {
+                if ($loop == $newOrder) {
+                    $newCards[$loop] = $movedCard;
+                    $newCards[$loop + 1] = $card;
+                } elseif($loop > $newOrder) {
+                    $newCards[$loop + 1] = $card;
+                } else {
+                    $newCards[$loop] = $card;
+                }
+                ++$loop;
+            }
+            $this->cards[$toCategory] = $newCards;
 
             $this->updateAdvice($id, ['category' => $toCategory]);
 
@@ -224,19 +240,6 @@ dd($cards);
             $this->reorder($toCategory);
             if ($fromCategory !== $toCategory) {
                 $this->reorder($fromCategory);
-
-                // We also want to reorder the cards from the old category
-                $cards = $this->cards[$fromCategory];
-
-                $count = count($cards);
-                // We start from the top, so we don't overwrite everything
-                for ($i = $oldOrder; $i < $count; $i++) {
-                    // Move cards one down
-                    $cards[$i] = $card[$i + 1];
-                }
-                unset($cards[$count]);
-
-                $this->cards[$fromCategory] = $cards;
             }
 
             $this->recalculate();

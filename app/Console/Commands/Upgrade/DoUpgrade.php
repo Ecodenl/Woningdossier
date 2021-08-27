@@ -5,6 +5,7 @@ namespace App\Console\Commands\Upgrade;
 use App\Console\Commands\AddQuestionsToDatabase;
 use App\Console\Commands\ConvertUuidTranslationsToJson;
 use App\Models\Account;
+use App\Models\BuildingTypeCategory;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 
@@ -68,6 +69,10 @@ class DoUpgrade extends Command
                 \RoofTypesTableSeeder::class,
                 \ComfortLevelTapWatersTableSeeder::class,
                 \EnergyLabelsTableSeeder::class,
+
+                // order is important, categories before types.
+                \BuildingTypeCategoriesTableSeeder::class,
+                \BuildingTypesTableSeeder::class,
             ];
 
             foreach ($seeders as $seeder) {

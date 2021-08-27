@@ -111,13 +111,9 @@ class Form extends Component
                 $advisable = $advice->userActionPlanAdvisable;
                 if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
                     $this->cards[$category][$order] = [
-                        'id' => $advice->id,
                         'name' => Str::limit($advisable->measure_name, 22),
                         'icon' => $this->iconMap[$advisable->short] ?? 'icon-tools',
-                        'price' => [
-                            'from' => $advice->costs['from'] ?? 0,
-                            'to' => $advice->costs['to'] ?? 0,
-                        ],
+
                         // TODO: Subsidy
                         'subsidy' => $this->SUBSIDY_AVAILABLE,
                         'savings' => $advice->savings_money,
@@ -133,19 +129,19 @@ class Form extends Component
                     }
 
                     $this->cards[$category][$order] = [
-                        'id' => $advice->id,
                         'name' => Str::limit($advisable->name, 22),
                         'icon' => 'icon-tools',
-                        'price' => [
-                            'from' => $advice->costs['from'] ?? 0,
-                            'to' => $advice->costs['to'] ?? 0,
-                        ],
                         // TODO: Subsidy
                         'subsidy' => $this->SUBSIDY_UNKNOWN,
                         'savings' => 0,
                         'info' => $advisable->name,
                     ];
                 }
+                $this->cards[$category][$order]['id'] = $advice->id;
+                $this->cards[$category][$order]['price'] = [
+                    'from' => $advice->costs['from'] ?? 0,
+                    'to' => $advice->costs['to'] ?? 0,
+                ];
 
                 ++$order;
             }

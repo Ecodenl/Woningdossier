@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\VisibleScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
@@ -85,9 +86,7 @@ class UserActionPlanAdvice extends Model
     {
         parent::boot();
 
-        static::addGlobalScope('visible', function (Builder $builder) {
-            $builder->where('visible', true);
-        });
+        static::addGlobalScope(new VisibleScope());
     }
 
     /**

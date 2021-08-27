@@ -299,31 +299,38 @@ class Form extends Component
 
     public function updateAdvice($id, array $update)
     {
-        // TODO: logic!
-//        // Get moved advice (will be for master input source)
-//        $advice = UserActionPlanAdvice::allInputSources()
-//            ->find($id);
+        // Get moved advice (will be for master input source)
+        $advice = UserActionPlanAdvice::allInputSources()
+            ->find($id);
 
+        // If it's a custom measure, we need to get the sibling because the custom measure also has an input source
+        if ($advice->user_action_plan_advisable_type === CustomMeasureApplication::class) {
+            $advisable = $advice->userActionPlanAdvisable()->forInputSource($this->masterInputSource)->first();
+            if ($advisable instanceof CustomMeasureApplication) {
+                $advisableId = optional($advisable->getSibling($this->currentInputSource))->id;
+            }
+        } else {
+            $advisableId = $advice->user_action_plan_advisable_id;
+        }
 
-        // Update for master input source
-        UserActionPlanAdvice::allInputSources()
-            ->find($id)->update($update);
+        $myAdvice = null;
+        if (! empty($advisableId)) {
+            // Get MY advice
+            $myAdvice = UserActionPlanAdvice::forInputSource($this->currentInputSource)
+                ->where('user_id', $this->building->user->id)
+                ->where('user_action_plan_advisable_type', $advice->user_action_plan_advisable_type)
+                ->where('user_action_plan_advisable_id', $advisableId)
+                ->where('step_id', $advice->step_id)
+                ->first();
+        }
 
-
-//        // Get MY advice (trait will update the master one also, so we must fetch the model)
-//        $myAdvice = UserActionPlanAdvice::forInputSource($this->currentInputSource)
-//            ->where('user_id', $this->building->user->id)
-//            ->where('user_action_plan_advisable_type', $advice->user_action_plan_advisable_type)
-//            ->where('user_action_plan_advisable_id', $advice->user_action_plan_advisable_id)
-//            ->where('step_id', $advice->step_id)
-//            ->first();
-//
-//        // We can't update or create because if it doesn't exist we must replicate
-//        if ($myAdvice instanceof UserActionPlanAdvice) {
-//            $myAdvice->update($update);
-//        } else {
-//            $update['input_source_id'] = $this->currentInputSource->id;
-//            $myAdvice = $advice->replicate()->fill($update)->save();
-//        }
+        // If my advice exists, we update my advice, and the trait will handle the rest for the master input source
+        if ($myAdvice instanceof UserActionPlanAdvice) {
+            $myAdvice->update($update);
+        } else {
+            // Otherwise we will update master ourselves (advice could be from the coach if the user is a resident
+            // or vice versa)
+            $advice->update($update);
+        }
     }
 }

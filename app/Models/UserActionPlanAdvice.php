@@ -81,8 +81,10 @@ class UserActionPlanAdvice extends Model
         'costs' => 'array',
     ];
 
-    public static function booted()
+    public static function boot()
     {
+        parent::boot();
+
         static::addGlobalScope('visible', function (Builder $builder) {
             $builder->where('visible', true);
         });
@@ -112,11 +114,7 @@ class UserActionPlanAdvice extends Model
 
     public function userActionPlanAdvisable(): MorphTo
     {
-        if ($this->user_action_plan_advisable_type === MeasureApplication::class) {
-            return $this->morphTo();
-        } else {
-            return $this->morphTo()->allInputSources();
-        }
+        return $this->morphTo();
     }
 
     /**

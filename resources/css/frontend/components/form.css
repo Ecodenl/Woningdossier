@@ -42,9 +42,9 @@
 
 /* Input styles */
 .form-input,
-.radio-wrapper label,
-.checkbox-wrapper label,
-.add-option-wrapper label {
+.radio-wrapper > label,
+.checkbox-wrapper > label,
+.add-option-wrapper > label {
     @apply flex items-center w-full cursor-pointer h-11 rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm outline-none max-w-full bg-white leading-10 relative;
 
     @apply hover:border-green hover:border-opacity-100;

@@ -1,4 +1,5 @@
 <div class="w-full grid grid-rows-2 grid-cols-4 grid-flow-row justify-items-center">
+    {{-- TODO: Make this cooperation measure applications --}}
     <div class="checkbox-wrapper media-wrapper">
         <input type="checkbox" id="changes-kitchen" name="changes" value="kitchen">
         <label for="changes-kitchen">
@@ -19,7 +20,7 @@
                     <i class="@if($loop->last) icon-plus-circle @else{{$customMeasureApplicationFormData['extra']['icon']}} @endif"></i>
                 </span>
                 @if(!$loop->last)
-                    <span class="checkmark"></span>
+                    <span class="checkmark" x-on:click.stop></span>
                 @else
                     <span>@lang('cooperation/frontend/tool.form.add-option')</span>
                 @endif

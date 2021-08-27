@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Models\Building;
+use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserActionPlanAdvice;
 use App\Services\UserActionPlanAdviceService;
@@ -28,6 +29,7 @@ class Form extends Component
     /** @var Building */
     public $building;
 
+    public $masterInputSource;
     public $currentInputSource;
 
     public array $new_measure = [];
@@ -91,9 +93,10 @@ class Form extends Component
     public function mount()
     {
         $this->building = HoomdossierSession::getBuilding(true);
+        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
-        $advices = UserActionPlanAdvice::forInputSource($this->currentInputSource)
+        $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
             ->where('user_id', $this->building->user->id)
             ->get();
 

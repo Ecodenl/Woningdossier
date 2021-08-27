@@ -158543,7 +158543,7 @@ p a {
 
 /* Input styles */
 
-.form-input, .radio-wrapper label, .checkbox-wrapper label, .add-option-wrapper label {
+.form-input, .radio-wrapper > label, .checkbox-wrapper > label, .add-option-wrapper > label {
   position: relative;
   display: flex;
   height: 2.75rem;
@@ -158567,13 +158567,13 @@ p a {
   outline-offset: 2px;
 }
 
-.form-input:hover, .radio-wrapper label:hover, .checkbox-wrapper label:hover, .add-option-wrapper label:hover {
+.form-input:hover, .radio-wrapper > label:hover, .checkbox-wrapper > label:hover, .add-option-wrapper > label:hover {
   --tw-border-opacity: 1;
   border-color: rgba(44, 169, 130, var(--tw-border-opacity));
   --tw-border-opacity: 1;
 }
 
-.form-input:focus, .radio-wrapper label:focus, .checkbox-wrapper label:focus, .add-option-wrapper label:focus {
+.form-input:focus, .radio-wrapper > label:focus, .checkbox-wrapper > label:focus, .add-option-wrapper > label:focus {
   --tw-border-opacity: 1;
   border-color: rgba(44, 169, 130, var(--tw-border-opacity));
   --tw-border-opacity: 1;

@@ -35447,13 +35447,13 @@ alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/js/app.js */"./resources/js/app.js");
-__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/admin/app.scss */"./resources/sass/admin/app.scss");
-__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/pdf.scss */"./resources/sass/pdf.scss");
-__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/admin/datatables/_responsive_bootstrap.scss */"./resources/sass/admin/datatables/_responsive_bootstrap.scss");
-__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/admin/datatables/_responsive_datatables.scss */"./resources/sass/admin/datatables/_responsive_datatables.scss");
-__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/admin/datatables/_dataTables_bootstrap.scss */"./resources/sass/admin/datatables/_dataTables_bootstrap.scss");
-module.exports = __webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/css/frontend/app.css */"./resources/css/frontend/app.css");
+__webpack_require__(/*! /vagrant/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /vagrant/resources/sass/admin/app.scss */"./resources/sass/admin/app.scss");
+__webpack_require__(/*! /vagrant/resources/sass/pdf.scss */"./resources/sass/pdf.scss");
+__webpack_require__(/*! /vagrant/resources/sass/admin/datatables/_responsive_bootstrap.scss */"./resources/sass/admin/datatables/_responsive_bootstrap.scss");
+__webpack_require__(/*! /vagrant/resources/sass/admin/datatables/_responsive_datatables.scss */"./resources/sass/admin/datatables/_responsive_datatables.scss");
+__webpack_require__(/*! /vagrant/resources/sass/admin/datatables/_dataTables_bootstrap.scss */"./resources/sass/admin/datatables/_dataTables_bootstrap.scss");
+module.exports = __webpack_require__(/*! /vagrant/resources/css/frontend/app.css */"./resources/css/frontend/app.css");
 
 
 /***/ })

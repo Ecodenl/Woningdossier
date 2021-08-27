@@ -98,8 +98,8 @@
          x-on:item-dragged.window="livewire.emit('cardMoved', $event.detail.from.getAttribute('data-category'), $event.detail.to.getAttribute('data-category'), $event.detail.id, $event.detail.order)">
         @foreach($cards as $cardCategory => $cardCollection)
             <div class="card-wrapper" x-bind="container" data-category="{{$cardCategory}}">
-                @foreach($cardCollection as $id => $card)
-                    <div class="card" id="{{ $id }}"
+                @foreach($cardCollection as $order => $card)
+                    <div class="card" id="{{ $card['id'] }}"
                          x-bind="draggable" draggable="true">
                         <div class="icon-wrapper">
                             <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>

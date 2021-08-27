@@ -205,10 +205,12 @@ class Form extends Component
             // Remove card from the original category
             unset($this->cards[$fromCategory][$oldOrder]);
 
-            // Re-index the order for the old category
+            // Reorder the old category
             $oldCards = $this->cards[$fromCategory];
             $newCards = [];
 
+            // Simple reorder: we just set values to the loop iteration (in index form), because the moved
+            // card is already removed
             $loop = 0;
             foreach ($oldCards as $card) {
                 $newCards[$loop] = $card;
@@ -220,17 +222,28 @@ class Form extends Component
             $oldCards = $this->cards[$toCategory];
             $newCards = [];
 
-            $loop = 0;
-            foreach($oldCards as $order => $card) {
-                if ($loop == $newOrder) {
-                    $newCards[$loop] = $movedCard;
-                    $newCards[$loop + 1] = $card;
-                } elseif($loop > $newOrder) {
-                    $newCards[$loop + 1] = $card;
-                } else {
-                    $newCards[$loop] = $card;
+            // If the new order is above the max order, we just append it
+            if ($newOrder > count($oldCards) - 1) {
+                $newCards = $oldCards;
+                $newCards[$newOrder] = $movedCard;
+            } else {
+                // The logic here is simple but important to know:
+                // We loop through the cards by indexable loop iteration. We check if that iteration is equal to the
+                // new order. If it that's the case, the moved card must be inserted there, and the current card
+                // must be placed one higher. If the iteration is above new order, they need to be placed one higher.
+                // Otherwise, they can stay in their position.
+                $loop = 0;
+                foreach($oldCards as $card) {
+                    if ($loop == $newOrder) {
+                        $newCards[$loop] = $movedCard;
+                        $newCards[$loop + 1] = $card;
+                    } elseif($loop > $newOrder) {
+                        $newCards[$loop + 1] = $card;
+                    } else {
+                        $newCards[$loop] = $card;
+                    }
+                    ++$loop;
                 }
-                ++$loop;
             }
             $this->cards[$toCategory] = $newCards;
 

@@ -2,18 +2,11 @@
 
 namespace App\Console\Commands\Upgrade;
 
-use App\Models\MeasureApplication;
-use App\Models\Step;
-use App\Models\Translation;
 use App\Models\UserActionPlanAdvice;
 use App\Services\UserActionPlanAdviceService;
-use Carbon\Carbon;
-use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
 
 class MapActionPlan extends Command
 {

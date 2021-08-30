@@ -5,10 +5,12 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Models\Building;
+use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserActionPlanAdvice;
 use App\Services\UserActionPlanAdviceService;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -176,21 +178,21 @@ class Form extends Component
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
-        $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
-            ->where('user_id', $this->building->user->id)
-            ->get();
-
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
-            foreach ($advices->where('category', $category) as $advice) {
+            $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
+                ->where('user_id', $this->building->user->id)
+                ->where('category', $category)
+                ->orderBy('order')
+                ->get();
+
+            // Order in the DB could not be linear. For safe use, we set the order ourselves
+            $order = 0;
+            foreach ($advices as $advice) {
                 $advisable = $advice->userActionPlanAdvisable;
                 if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
-                    $this->cards[$category][$advice->id] = [
+                    $this->cards[$category][$order] = [
                         'name' => Str::limit($advisable->measure_name, 22),
                         'icon' => $advisable->configurations['icon'] ?? 'icon-tools',
-                        'price' => [
-                            'from' => $advice->costs['from'] ?? 0,
-                            'to' => $advice->costs['to'] ?? 0,
-                        ],
                         // TODO: Subsidy
                         'subsidy' => $this->SUBSIDY_AVAILABLE,
                         'savings' => $advice->savings_money,
@@ -198,19 +200,29 @@ class Form extends Component
                         'route' => StepHelper::buildStepUrl($advisable->step),
                     ];
                 } else {
-                    $this->cards[$category][$advice->id] = [
+                    // Custom measure has input source so we must fetch the advisable from the master input source
+                    if ($advice->user_action_plan_advisable_type === CustomMeasureApplication::class) {
+                        $advisable = $advice->userActionPlanAdvisable()
+                            ->forInputSource($this->masterInputSource)
+                            ->first();
+                    }
+
+                    $this->cards[$category][$order] = [
                         'name' => Str::limit($advisable->name, 22),
                         'icon' => 'icon-tools',
-                        'price' => [
-                            'from' => $advice->costs['from'] ?? 0,
-                            'to' => $advice->costs['to'] ?? 0,
-                        ],
                         // TODO: Subsidy
                         'subsidy' => $this->SUBSIDY_UNKNOWN,
                         'savings' => 0,
                         'info' => $advisable->name,
                     ];
                 }
+                $this->cards[$category][$order]['id'] = $advice->id;
+                $this->cards[$category][$order]['price'] = [
+                    'from' => $advice->costs['from'] ?? 0,
+                    'to' => $advice->costs['to'] ?? 0,
+                ];
+
+                ++$order;
             }
         }
 
@@ -250,31 +262,76 @@ class Form extends Component
         $this->category = $category;
     }
 
-    public function cardMoved($fromCategory, $toCategory, $id, $order)
+    public function cardMoved($fromCategory, $toCategory, $id, $newOrder)
     {
+        // Disclaimer: We have to do it like this, because JavaScript re-sorts arrays / objects to given numeric
+        // keys, so we must ENSURE the order is 100% valid from top to bottom
+
         // Get the original card object
-        $card = $this->cards[$fromCategory][$id] ?? null;
-        // Remove card from the original category
-        unset($this->cards[$fromCategory][$id]);
+        $cardData = Arr::where($this->cards[$fromCategory], function ($card, $order) use ($id) {
+            return $card['id'] == $id;
+        });
 
-        // If the card is set...
-        if (! empty($card)) {
-            // Get the cards for the new category
-            $cards = $this->cards[$toCategory];
+        // Structure: order => card
+        if (! empty($cardData)) {
+            $oldOrder = array_key_first($cardData);
+            $movedCard = $cardData[$oldOrder];
 
-            // Split cards at order
-            $firstPart = array_slice($cards, 0, $order, true);
-            $secondPart = array_slice($cards, $order, null, true);
+            // Remove card from the original category
+            unset($this->cards[$fromCategory][$oldOrder]);
 
-            // Insert card at position
-            $firstPart[$id] = $card;
-            // Rebuild
-            $cards = $firstPart + $secondPart;
+            // Reorder the old category
+            $oldCards = $this->cards[$fromCategory];
+            $newCards = [];
 
-            $this->cards[$toCategory] = $cards;
+            // Simple reorder: we just set values to the loop iteration (in index form), because the moved
+            // card is already removed
+            $loop = 0;
+            foreach ($oldCards as $card) {
+                $newCards[$loop] = $card;
+                ++$loop;
+            }
+            $this->cards[$fromCategory] = $newCards;
+
+            // Add moved card into new category
+            $oldCards = $this->cards[$toCategory];
+            $newCards = [];
+
+            // If the new order is above the max order, we just append it
+            if ($newOrder > count($oldCards) - 1) {
+                $newCards = $oldCards;
+                $newCards[$newOrder] = $movedCard;
+            } else {
+                // The logic here is simple but important to know:
+                // We loop through the cards by indexable loop iteration. We check if that iteration is equal to the
+                // new order. If it that's the case, the moved card must be inserted there, and the current card
+                // must be placed one higher. If the iteration is above new order, they need to be placed one higher.
+                // Otherwise, they can stay in their position.
+                $loop = 0;
+                foreach($oldCards as $card) {
+                    if ($loop == $newOrder) {
+                        $newCards[$loop] = $movedCard;
+                        $newCards[$loop + 1] = $card;
+                    } elseif($loop > $newOrder) {
+                        $newCards[$loop + 1] = $card;
+                    } else {
+                        $newCards[$loop] = $card;
+                    }
+                    ++$loop;
+                }
+            }
+            $this->cards[$toCategory] = $newCards;
+
+            $this->updateAdvice($id, ['category' => $toCategory]);
+
+            // Reorder in DB also
+            $this->reorder($toCategory);
+            if ($fromCategory !== $toCategory) {
+                $this->reorder($fromCategory);
+            }
+
+            $this->recalculate();
         }
-
-        $this->recalculate();
     }
 
     public function recalculate()
@@ -322,6 +379,53 @@ class Form extends Component
         $this->expectedInvestment = ($maxInvestment + $minInvestment) / 2;
         $this->yearlySavings = $savings;
         $this->availableSubsidy = $subsidy;
+    }
+
+    public function reorder($category)
+    {
+        // Reorder for each card in the list. We don't need to check invisible items, so we don't have to check
+        // any other cards
+        foreach ($this->cards[$category] as $order => $card)
+        {
+            $this->updateAdvice($card['id'], ['order' => $order]);
+        }
+    }
+
+    public function updateAdvice($id, array $update)
+    {
+        // Get moved advice (will be for master input source)
+        $advice = UserActionPlanAdvice::allInputSources()
+            ->find($id);
+
+        // If it's a custom measure, we need to get the sibling because the custom measure also has an input source
+        if ($advice->user_action_plan_advisable_type === CustomMeasureApplication::class) {
+            $advisable = $advice->userActionPlanAdvisable()->forInputSource($this->masterInputSource)->first();
+            if ($advisable instanceof CustomMeasureApplication) {
+                $advisableId = optional($advisable->getSibling($this->currentInputSource))->id;
+            }
+        } else {
+            $advisableId = $advice->user_action_plan_advisable_id;
+        }
+
+        $myAdvice = null;
+        if (! empty($advisableId)) {
+            // Get MY advice
+            $myAdvice = UserActionPlanAdvice::forInputSource($this->currentInputSource)
+                ->where('user_id', $this->building->user->id)
+                ->where('user_action_plan_advisable_type', $advice->user_action_plan_advisable_type)
+                ->where('user_action_plan_advisable_id', $advisableId)
+                ->where('step_id', $advice->step_id)
+                ->first();
+        }
+
+        // If my advice exists, we update my advice, and the trait will handle the rest for the master input source
+        if ($myAdvice instanceof UserActionPlanAdvice) {
+            $myAdvice->update($update);
+        } else {
+            // Otherwise we will update master ourselves (advice could be from the coach if the user is a resident
+            // or vice versa)
+            $advice->update($update);
+        }
     }
 
     public function evaluateCalculationResult($field, $calculation)

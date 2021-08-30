@@ -26,7 +26,6 @@ class CustomChanges extends Component
         $this->cooperation = HoomdossierSession::getCooperation(true);
 
         $this->setCustomMeasureApplications();
-
     }
 
     public function render()
@@ -87,8 +86,10 @@ class CustomChanges extends Component
     private function setCustomMeasureApplications()
     {
         $this->customMeasureApplicationsFormData = [];
+        // Retrieve the user's custom measures
         $customMeasureApplications = $this->building->customMeasureApplications()->forInputSource($this->masterInputSource)->get();
-        // zijn opties die cooperatie heeft toegevoegd. Seeder nog niet ok, dus nog niet meenemen.
+        // Retrieve the cooperation's custom measures
+        // TODO: Seeder not yet set, WIP
         $cooperationMeasureApplications = $this->cooperation->cooperationMeasureApplications;
 
         /** @var CustomMeasureApplication $customMeasureApplication */
@@ -96,14 +97,11 @@ class CustomChanges extends Component
             $this->customMeasureApplicationsFormData[$index] = $customMeasureApplication->only(['hash', 'name']);
             $this->customMeasureApplicationsFormData[$index]['extra'] = ['icon' => 'icon-tools'];
 
-            // is null, maar moet niet
             $userActionPlanAdvice = $customMeasureApplication->userActionPlanAdvices()->forInputSource($this->masterInputSource)->first();
-//            dd();
-            if ($userActionPlanAdvice instanceof UserActionPlanAdvice) { // kan niet, moet er altijd zijn. If moet weg.
-                $this->customMeasureApplicationsFormData[$index]['costs'] = $userActionPlanAdvice->costs;
-            }
+            $this->customMeasureApplicationsFormData[$index]['costs'] = $userActionPlanAdvice->costs;
         }
 
+        // Append the option to add a new application
         $this->customMeasureApplicationsFormData[] = [
             'hash' => null,
             'name' => null,

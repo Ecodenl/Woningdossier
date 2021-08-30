@@ -140,7 +140,7 @@ class MapAnswers extends Command
                     // this means we have to add something on the heat-source toolquestion
                     $serviceValue = $buildingService->serviceValue;
                     if (!$serviceValue instanceof ServiceValue) {
-                        // so the user did has nothing saved, which only happens on old accounts.
+                        // so the user had nothing saved, which only happens on old accounts.
                         continue;
                     } else {
                         if (!isset($hrBoilerMap[$serviceValue->value])) {

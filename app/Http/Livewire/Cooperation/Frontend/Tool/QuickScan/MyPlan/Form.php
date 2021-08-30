@@ -171,17 +171,47 @@ class Form extends Component
 
         $measureData = $this->validate($this->rules)['custom_measure_application'];
 
+        // Create custom measure
+        $customMeasureApplication = CustomMeasureApplication::create([
+            'building_id' => $this->building->id,
+            'input_source_id' => $this->currentInputSource->id,
+            'hash' => Str::uuid(),
+            'name' => ['nl' => $measureData['name']],
+        ]);
+
+        // Get order based on current total (we don't have to add or subtract since count gives us the total, which
+        // is equal to indexable order + 1)
+        $order = count($this->cards[$this->category]);
+
+        // Build user advice
+        $advice = $customMeasureApplication
+            ->userActionPlanAdvices()
+            ->create(
+                [
+                    'user_id' => $this->building->user->id,
+                    'input_source_id' => $this->currentInputSource->id,
+                    'category' => $this->category,
+                    'visible' => true,
+                    'order' => $order,
+                    'costs' => $measureData['costs'],
+                    'savings_money' => $measureData['savings_money'] ?? 0,
+                ],
+            );
+
         // Append card
-        $this->cards[$this->category][Str::random()] = [
-            'name' => $measureData['name'],
+        $this->cards[$this->category][$order] = [
+            'id' => $advice->id,
+            'name' => $customMeasureApplication->name,
+            'info' => $customMeasureApplication->name,
             'icon' => 'icon-tools',
-            'costs' => $measureData['costs'],
+            'costs' => $advice->costs,
             'subsidy' => $this->SUBSIDY_UNKNOWN,
-            'savings' => $measureData['savings_money'] ?? 0,
+            'savings' => $advice->savings_money ?? 0,
         ];
 
         $this->dispatchBrowserEvent('close-modal');
-        $this->reset('custom_measure_application');
+        // Reset the modal
+        $this->custom_measure_application = [];
 
         $this->recalculate();
     }

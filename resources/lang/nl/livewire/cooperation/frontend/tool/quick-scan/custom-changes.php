@@ -5,7 +5,6 @@ return [
     'save' => 'Voeg maatregel toe',
     'update' => 'Maatregel bijwerken',
     'name' => [
-        'title' => 'Onderwerp',
         'placeholder' => 'Nieuwe vloer, WC, tochtstrips..'
     ],
     'costs' => [

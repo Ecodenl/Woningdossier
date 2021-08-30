@@ -27,7 +27,7 @@
 
                 <span>{{$customMeasureApplicationFormData['name']}}</span>
             </label>
-            @component('cooperation.frontend.layouts.components.modal', ['header' => __('livewire/cooperation/frontend/tool/quick-scan/custom-changes.name.title')])
+            @component('cooperation.frontend.layouts.components.modal', ['header' => __('cooperation/frontend/tool.form.subject')])
                 <div class="flex flex-wrap mb-5">
                     @component('cooperation.frontend.layouts.components.form-group', [
                        'inputName' => 'new_measure.subject',
@@ -35,7 +35,8 @@
                        'id' => 'new-measure-subject',
                        'withInputSource' => false,
                    ])
-                        <input class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.name" id="new-measure-subject"
+                        <input class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.name"
+                               id="new-measure-subject"
 
                                placeholder="@lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.name.placeholder')">
                     @endcomponent
@@ -51,7 +52,8 @@
                        'id' => 'new-measure-price-from',
                        'withInputSource' => false,
                    ])
-                        <input class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.costs.from"  id="new-measure-price-from" placeholder="van">
+                        <input class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.costs.from"
+                               id="new-measure-price-from" placeholder="@lang('default.from')">
                     @endcomponent
                     @component('cooperation.frontend.layouts.components.form-group', [
                         'inputName' => 'new_measure.price.to',
@@ -59,12 +61,13 @@
                         'id' => 'new-measure-price-to',
                         'withInputSource' => false,
                     ])
-                            <input class="form-input"  wire:model="customMeasureApplicationsFormData.{{$index}}.costs.to" id="new-measure-price-to" placeholder="tot">
+                        <input class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.costs.to"
+                               id="new-measure-price-to" placeholder="@lang('default.to')">
                     @endcomponent
                 </div>
                 <div class="w-full border border-gray fixed left-0"></div>
                 <div class="flex flex-wrap justify-center mt-14">
-                    <button x-on:click="toggle()" wire:click="save" class="btn btn-purple w-full">
+                    <button x-on:click="toggle()" wire:click="save({{$index}})" class="btn btn-purple w-full">
                         <i class="icon-xs icon-plus-purple mr-3"></i>
                         @if($loop->last)
                             @lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.save')

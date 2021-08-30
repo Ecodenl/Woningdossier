@@ -10,6 +10,7 @@ use App\Models\MeasureApplication;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
+use App\Scopes\VisibleScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -63,13 +64,13 @@ trait GetMyValuesTrait
             'user_id', 'building_id', 'tool_question_id', 'element_id', 'service_id',
             'hash',
         ];
-        if ($this instanceof UserActionPlanAdvice){
+        if ($this instanceof UserActionPlanAdvice) {
             $advisable = $this->userActionPlanAdvisable;
             if ($advisable instanceof MeasureApplication) {
                 $crucialRelationCombinationIds[] = 'user_action_plan_advisable_id';
                 $crucialRelationCombinationIds[] = 'user_action_plan_advisable_type';
             }
-            if ($advisable instanceof CustomMeasureApplication){
+            if ($advisable instanceof CustomMeasureApplication) {
                 // find sibling of the user one with admin input source
                 $sibling = $advisable->getSibling($masterInputSource);
                 $data['user_action_plan_advisable_id'] = $sibling->id;
@@ -77,17 +78,18 @@ trait GetMyValuesTrait
             }
         }
 
-        foreach($crucialRelationCombinationIds as $crucialRelationCombinationId){
+        foreach ($crucialRelationCombinationIds as $crucialRelationCombinationId) {
             if ($this->hasAttribute($crucialRelationCombinationId)) {
                 $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
             }
         }
 
-        ($this)::allInputSources()
-               ->updateOrCreate(
-                   $wheres,
-                   $data,
-               );
+        ($this)::withoutGlobalScope(VisibleScope::class)
+            ->allInputSources()
+            ->updateOrCreate(
+                $wheres,
+                $data,
+            );
     }
 
     /**
@@ -102,12 +104,12 @@ trait GetMyValuesTrait
         $whereUserOrBuildingId = $this->determineWhereColumn($user);
 
         return $query->withoutGlobalScope(GetValueScope::class)
-                     ->where($whereUserOrBuildingId)
-                     ->join('input_sources',
-                         $this->getTable().'.input_source_id', '=',
-                         'input_sources.id')
-                     ->orderBy('input_sources.order', 'ASC')
-                     ->select([$this->getTable().'.*']);
+            ->where($whereUserOrBuildingId)
+            ->join('input_sources',
+                $this->getTable() . '.input_source_id', '=',
+                'input_sources.id')
+            ->orderBy('input_sources.order', 'ASC')
+            ->select([$this->getTable() . '.*']);
     }
 
     public function scopeForBuilding(Builder $query, Building $building)
@@ -138,7 +140,8 @@ trait GetMyValuesTrait
     public function scopeForInputSource(
         Builder $query,
         InputSource $inputSource
-    ) {
+    )
+    {
         return $query->withoutGlobalScope(GetValueScope::class)->where('input_source_id',
             $inputSource->id);
     }
@@ -183,11 +186,10 @@ trait GetMyValuesTrait
      * Check on a collection that comes from the forMe() scope if it contains a
      * Coach input source.
      */
-    public static function hasCoachInputSource(Collection $inputSourcesForMe
-    ): bool {
+    public static function hasCoachInputSource(Collection $inputSourcesForMe): bool
+    {
         $coachInputSource = InputSource::findByShort('coach');
-        if ($inputSourcesForMe->contains('input_source_id',
-            $coachInputSource->id)) {
+        if ($inputSourcesForMe->contains('input_source_id', $coachInputSource->id)) {
             return true;
         }
 
@@ -199,11 +201,10 @@ trait GetMyValuesTrait
      * resident input source.
      *tom.
      */
-    public static function hasResidentInputSource(Collection $inputSourcesForMe
-    ): bool {
+    public static function hasResidentInputSource(Collection $inputSourcesForMe): bool
+    {
         $residentInputSource = InputSource::findByShort('resident');
-        if ($inputSourcesForMe->contains('input_source_id',
-            $residentInputSource->id)) {
+        if ($inputSourcesForMe->contains('input_source_id', $residentInputSource->id)) {
             return true;
         }
 

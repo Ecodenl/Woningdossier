@@ -2,7 +2,9 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
+use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Conditions\ConditionEvaluator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
@@ -44,6 +46,7 @@ class Form extends Component
 
     public $toolQuestions;
 
+    public bool $dirty;
     public $filledInAnswers = [];
     public $filledInAnswersForAllInputSources = [];
 
@@ -77,6 +80,7 @@ class Form extends Component
 
         $this->setToolQuestions();
 
+        $this->dirty = true;
     }
 
     private function setToolQuestions()
@@ -163,18 +167,23 @@ class Form extends Component
             $validator->validate();
         }
 
-
-        foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
-            /** @var ToolQuestion $toolQuestion */
-            $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
-            if (is_null($toolQuestion->save_in)) {
-                $this->saveToolQuestionCustomValues($toolQuestion, $givenAnswer);
-            } else {
-                // this *can't* handle a checkbox / multiselect answer.
-                $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
+        // Answers have been updated, we save them and dispatch a recalculate
+        if ($this->dirty) {
+            foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
+                /** @var ToolQuestion $toolQuestion */
+                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
+                if (is_null($toolQuestion->save_in)) {
+                    $this->saveToolQuestionCustomValues($toolQuestion, $givenAnswer);
+                } else {
+                    // this *can't* handle a checkbox / multiselect answer.
+                    $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
+                }
             }
+
+            StepDataHasBeenChanged::dispatch($this->step, $this->building, Hoomdossier::user());
         }
 
+        // TODO: @bodhi what is the use of this line
         $this->toolQuestions = $this->subStep->toolQuestions;
 
         // now mark the sub step as complete
@@ -237,6 +246,8 @@ class Form extends Component
 
         // User's previous values could be defined, which means conditional questions should be hidden
         $this->setToolQuestions();
+
+        $this->dirty = false;
     }
 
     private function setValidationForToolQuestion(ToolQuestion $toolQuestion)

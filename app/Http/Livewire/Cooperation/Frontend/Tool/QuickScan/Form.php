@@ -259,7 +259,7 @@ class Form extends Component
                 break;
 
             default:
-            $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
+                $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
                 break;
         }
     }

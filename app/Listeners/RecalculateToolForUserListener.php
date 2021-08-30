@@ -45,7 +45,7 @@ class RecalculateToolForUserListener
             $inputSource = HoomdossierSession::getInputSource(true);
 
             // Theres nothing to recalculate if the user did not complete the main step.
-            if ($event->building->hasCompleted(Step::findByShort('general-data'))) {
+            if ($event->building->hasCompletedQuickScan()) {
                 $userId = $event->building->user->id;
                 Artisan::call(RecalculateForUser::class, ['--user' => [$userId], '--input-source' => [$inputSource->short]]);
 

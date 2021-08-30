@@ -232,11 +232,11 @@ class CustomChanges extends Component
 
             $costs = $userActionPlanAdvice->costs;
             $this->customMeasureApplicationsFormData[$index]['costs'] = [
-                'from' => NumberFormatter::format($costs['from'] ?? '', 1),
-                'to' => NumberFormatter::format($costs['to'] ?? '', 1),
+                'from' => NumberFormatter::format($costs['from'] ?? '', 1, true),
+                'to' => NumberFormatter::format($costs['to'] ?? '', 1, true),
             ];
 
-            $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::format($userActionPlanAdvice->savings_money, 1);
+            $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::format($userActionPlanAdvice->savings_money, 1, true);
 
             if ($userActionPlanAdvice->visible) {
                 $this->selectedMeasureApplications[] = (string) $index;

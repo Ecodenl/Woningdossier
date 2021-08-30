@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\CustomMeasureApplication;
@@ -113,10 +114,8 @@ class Form extends Component
                     $this->cards[$category][$order] = [
                         'name' => Str::limit($advisable->measure_name, 22),
                         'icon' => $this->iconMap[$advisable->short] ?? 'icon-tools',
-
                         // TODO: Subsidy
                         'subsidy' => $this->SUBSIDY_AVAILABLE,
-                        'savings' => $advice->savings_money,
                         'info' => $advisable->measure_name,
                         'route' => StepHelper::buildStepUrl($advisable->step),
                     ];
@@ -133,15 +132,16 @@ class Form extends Component
                         'icon' => 'icon-tools',
                         // TODO: Subsidy
                         'subsidy' => $this->SUBSIDY_UNKNOWN,
-                        'savings' => 0,
                         'info' => $advisable->name,
                     ];
                 }
+
                 $this->cards[$category][$order]['id'] = $advice->id;
                 $this->cards[$category][$order]['costs'] = [
                     'from' => $advice->costs['from'] ?? 0,
                     'to' => $advice->costs['to'] ?? 0,
                 ];
+                $this->cards[$category][$order]['savings'] = $advice->savings_money ?? 0;
 
                 ++$order;
             }
@@ -162,6 +162,13 @@ class Form extends Component
 
     public function submit()
     {
+        // Before we can validate, we must convert human format to proper format
+        $costs = $this->custom_measure_application['costs'] ?? [];
+        $costs['from'] = NumberFormatter::mathableFormat($costs['from'] ?? '', 2);
+        $costs['to'] = NumberFormatter::mathableFormat($costs['to'] ?? '', 2);
+        $this->custom_measure_application['costs'] = $costs;
+        $this->custom_measure_application['savings_money'] = NumberFormatter::mathableFormat($this->custom_measure_application['savings_money'] ?? 0, 2);
+
         $measureData = $this->validate($this->rules)['custom_measure_application'];
 
         // Append card
@@ -174,6 +181,7 @@ class Form extends Component
         ];
 
         $this->dispatchBrowserEvent('close-modal');
+        $this->reset('custom_measure_application');
 
         $this->recalculate();
     }
@@ -229,11 +237,11 @@ class Form extends Component
                 // must be placed one higher. If the iteration is above new order, they need to be placed one higher.
                 // Otherwise, they can stay in their position.
                 $loop = 0;
-                foreach($oldCards as $card) {
+                foreach ($oldCards as $card) {
                     if ($loop == $newOrder) {
                         $newCards[$loop] = $movedCard;
                         $newCards[$loop + 1] = $card;
-                    } elseif($loop > $newOrder) {
+                    } elseif ($loop > $newOrder) {
                         $newCards[$loop + 1] = $card;
                     } else {
                         $newCards[$loop] = $card;
@@ -287,8 +295,7 @@ class Form extends Component
     {
         // Reorder for each card in the list. We don't need to check invisible items, so we don't have to check
         // any other cards
-        foreach ($this->cards[$category] as $order => $card)
-        {
+        foreach ($this->cards[$category] as $order => $card) {
             $this->updateAdvice($card['id'], ['order' => $order]);
         }
     }

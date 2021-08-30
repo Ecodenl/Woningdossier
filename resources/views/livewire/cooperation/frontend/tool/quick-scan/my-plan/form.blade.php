@@ -32,9 +32,9 @@
             <form wire:submit.prevent="submit()">
                 <div class="flex flex-wrap mb-5">
                     @component('cooperation.frontend.layouts.components.form-group', [
-                       'inputName' => 'custom_measure_application.subject',
+                       'inputName' => 'custom_measure_application.name',
                        'class' => 'w-full -mt-4 mb-4',
-                       'id' => 'custom-measure-application-subject',
+                       'id' => 'custom-measure-application-name',
                        'withInputSource' => false,
                    ])
                         <input class="form-input" wire:model="custom_measure_application.name" id="custom-measure-application-name"
@@ -118,7 +118,7 @@
                                 @if(empty($card['costs']['from']) && empty($card['costs']['to']))
                                     @lang('cooperation/frontend/tool.my-plan.cards.see-info')
                                 @else
-                                    {{ \App\Helpers\NumberFormatter::range($card['costs']['from'] ?? '', $card['costs']['to'] ?? '', 0, ' - ', '€ ') }}
+                                    {{ \App\Helpers\NumberFormatter::range($card['costs']['from'], $card['costs']['to'], 0, ' - ', '€ ') }}
                                 @endif
                             </p>
 <!--
@@ -145,7 +145,7 @@
                             @endif
                         </div>
                         <p class="font-bold absolute right-1 bottom-1 lg:right-3 lg:bottom-3">
-                            {{ \App\Helpers\NumberFormatter::prefix($card['savings'] ?? 0, '€ ') }}
+                            {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($card['savings'], 1, true) , '€ ') }}
                         </p>
                     </div>
                 @endforeach
@@ -159,7 +159,7 @@
             </div>
             <div class="flex flex-col justify-center">
                 <span class="text-orange text-sm font-bold">
-                    {{ \App\Helpers\NumberFormatter::prefix($investment, '€ ') }}
+                    {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($investment, 0), '€ ') }}
                 </span>
                 <p class="-mt-2">
                     @lang('cooperation/frontend/tool.my-plan.cards.investment')

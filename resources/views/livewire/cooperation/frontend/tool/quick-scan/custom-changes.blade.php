@@ -21,11 +21,10 @@
                 </span>
                 @if(!$loop->last)
                     <span class="checkmark" x-on:click.stop></span>
+                    <span>{{$customMeasureApplicationFormData['name']}}</span>
                 @else
                     <span>@lang('cooperation/frontend/tool.form.add-option')</span>
                 @endif
-
-                <span>{{$customMeasureApplicationFormData['name']}}</span>
             </label>
             @component('cooperation.frontend.layouts.components.modal', ['header' => __('cooperation/frontend/tool.form.subject')])
                 <div class="flex flex-wrap mb-5">
@@ -70,7 +69,7 @@
                         </h6>
                     </div>
                     @component('cooperation.frontend.layouts.components.form-group', [
-                        'inputName' => 'customMeasureApplicationsFormData.savings_money',
+                        'inputName' => "customMeasureApplicationsFormData.{$index}.savings_money",
                         'class' => 'w-full mb-4',
                         'id' => 'custom-measure-application-savings-money',
                         'withInputSource' => false,

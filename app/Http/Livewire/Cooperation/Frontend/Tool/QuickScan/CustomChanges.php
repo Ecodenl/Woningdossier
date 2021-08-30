@@ -82,15 +82,19 @@ class CustomChanges extends Component
             $costs['from'] = NumberFormatter::mathableFormat($costs['from'] ?? '', 2);
             $costs['to'] = NumberFormatter::mathableFormat($costs['to'] ?? '', 2);
             $this->customMeasureApplicationsFormData[$index]['costs'] = $costs;
+            $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::mathableFormat($measure['savings_money'] ?? 0, 2);
 
             $measureData = $this->validate($customRules, [], $customAttributes);
+
+            // It validated, let's re-fetch the measure so the values are correct
+            $measure = $this->customMeasureApplicationsFormData[$index];
 
             // Set update data for user action plan advice
             $updateData = [
                 'category' => 'to-do',
                 'costs' => $measure['costs'] ?? null,
                 'input_source_id' => $this->currentInputSource->id,
-                'savings_money' => $measure['savings_money'] ?? null,
+                'savings_money' => $measure['savings_money'] ?? 0,
             ];
 
             // If a hash and ID are set, then a measure has been edited

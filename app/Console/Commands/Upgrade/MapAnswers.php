@@ -110,7 +110,7 @@ class MapAnswers extends Command
         $data = ['tool_question_id' => $toolQuestion->id];
         $buildings = Building::all();
 
-        // the heat pump will actually hjandle the "onbekend" and "niet aanwezig" cases
+        // the heat pump will actually handle the "onbekend" and "niet aanwezig" cases
         $hrBoilerMap = [
             'Aanwezig, recent vervangen' => 'hr-boiler',
             'Aanwezig, tussen 6 en 13 jaar oud' => 'hr-boiler',
@@ -140,7 +140,7 @@ class MapAnswers extends Command
                     // this means we have to add something on the heat-source toolquestion
                     $serviceValue = $buildingService->serviceValue;
                     if (!$serviceValue instanceof ServiceValue) {
-                        // so the user did has nothing saved, which only happens on old accounts.
+                        // so the user had nothing saved, which only happens on old accounts.
                         continue;
                     } else {
                         if (!isset($hrBoilerMap[$serviceValue->value])) {
@@ -200,7 +200,7 @@ class MapAnswers extends Command
                     } else {
                         // can contain multiple if there was a hybrid one
                         $mappedToolQuestionAnswers = $heatPumpMap[$buildingService->serviceValue->calculate_value];
-                        // 4 is a hybrid heat pump, it could be the user also manualy selected he has a hr boiler
+                        // 4 is a hybrid heat pump, it could be the user also manually selected he has a hr boiler
                         // so we have to delete all other rows for the user
                         if ($buildingService->serviceValue->calculate_value == 4) {
                             DB::table('tool_question_answers')
@@ -361,7 +361,7 @@ class MapAnswers extends Command
             ];
 
             // now map the actual answer.
-            if ($cookGas == 1) {
+            if ($cookGas == 1 || $cookGas == 0) {
                 $answer = 'gas';
             } else {
                 $answer = 'electric';

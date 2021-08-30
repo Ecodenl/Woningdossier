@@ -26,7 +26,7 @@ class CustomChanges extends Component
         'customMeasureApplicationsFormData.*.name' => 'required',
         'customMeasureApplicationsFormData.*.costs.from' => 'required|numeric|min:0',
         'customMeasureApplicationsFormData.*.costs.to' => 'required|numeric|gt:customMeasureApplicationsFormData.*.costs.from',
-//        'customMeasureApplicationsFormData.*.expected_savings' => 'nullable|numeric',
+        'customMeasureApplicationsFormData.*.savings_money' => 'nullable|numeric',
     ];
 
     public array $attributes;
@@ -45,6 +45,7 @@ class CustomChanges extends Component
             'customMeasureApplicationsFormData.*.name' => $globalAttributeTranslations['custom_measure_application.name'],
             'customMeasureApplicationsFormData.*.costs.from' => $globalAttributeTranslations['custom_measure_application.costs.from'],
             'customMeasureApplicationsFormData.*.costs.to' => $globalAttributeTranslations['custom_measure_application.costs.to'],
+            'customMeasureApplicationsFormData.*.savings_money' => $globalAttributeTranslations['custom_measure_application.savings_money'],
         ];
 
         $this->setCustomMeasureApplications();
@@ -88,7 +89,8 @@ class CustomChanges extends Component
             $updateData = [
                 'category' => 'to-do',
                 'costs' => $measure['costs'] ?? null,
-                'input_source_id' => $this->currentInputSource->id
+                'input_source_id' => $this->currentInputSource->id,
+                'savings_money' => $measure['savings_money'] ?? null,
             ];
 
             // If a hash and ID are set, then a measure has been edited
@@ -171,6 +173,8 @@ class CustomChanges extends Component
                 'from' => NumberFormatter::format($costs['from'] ?? '', 1),
                 'to' => NumberFormatter::format($costs['to'] ?? '', 1),
             ];
+
+            $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::format($userActionPlanAdvice->savings_money, 1);
         }
 
         // Append the option to add a new application
@@ -178,7 +182,12 @@ class CustomChanges extends Component
             'id' => null,
             'hash' => null,
             'name' => null,
-            'extra' => ['icon' => 'icon-tools']
+            'costs' => [
+                'from' => null,
+                'to' => null,
+            ],
+            'savings_money' => null,
+            'extra' => ['icon' => 'icon-tools'],
         ];
     }
 }

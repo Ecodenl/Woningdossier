@@ -64,24 +64,22 @@
                         <input class="form-input" wire:model="custom_measure_application.costs.to" id="custom-measure-application-costs-to"
                                placeholder="@lang('default.to')">
                     @endcomponent
-<!--
                     <div class="w-full flex items-center">
                         <i class="icon-sm icon-info mr-3"></i>
                         <h6 class="heading-6">
-                            @lang('cooperation/frontend/shared.modals.add-measure.expected-savings')
+                            @lang('cooperation/frontend/shared.modals.add-measure.savings-money')
                         </h6>
                     </div>
                     @component('cooperation.frontend.layouts.components.form-group', [
-                        'inputName' => 'custom_measure_application.expected_savings',
+                        'inputName' => 'custom_measure_application.savings_money',
                         'class' => 'w-full mb-4',
-                        'id' => 'custom-measure-application-expected-savings',
+                        'id' => 'custom-measure-application-savings-money',
                         'withInputSource' => false,
                     ])
-                        <input class="form-input" wire:model="custom_measure_application.expected_savings"
-                               id="custom-measure-application-expected-savings"
-                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.expected-savings')">
+                        <input class="form-input" wire:model="custom_measure_application.savings_money"
+                               id="custom-measure-application-savings-money"
+                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.savings-money')">
                     @endcomponent
--->
                 </div>
                 <div class="w-full border border-gray fixed left-0"></div>
                 <div class="flex flex-wrap justify-center mt-14">

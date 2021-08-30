@@ -210,7 +210,7 @@ return [
         'custom_measure_application.name' => 'Onderwerp',
         'custom_measure_application.costs.from' => 'Kosten van',
         'custom_measure_application.costs.to' => 'Kosten tot',
-        'custom_measure_application.expected_savings' => 'Verwachte besparing',
+        'custom_measure_application.savings_money' => 'Verwachte besparing',
 
         'account.current_password' => 'huidig wachtwoord',
         'account.password' => 'wachtwoord',

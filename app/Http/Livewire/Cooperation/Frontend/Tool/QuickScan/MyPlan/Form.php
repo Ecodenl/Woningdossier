@@ -50,7 +50,7 @@ class Form extends Component
         'custom_measure_application.name' => 'required',
         'custom_measure_application.costs.from' => 'required|numeric|min:0',
         'custom_measure_application.costs.to' => 'required|numeric|gt:custom_measure_application.costs.from',
-//        'custom_measure_application.expected_savings' => 'nullable|numeric',
+        'custom_measure_application.savings_money' => 'nullable|numeric',
     ];
 
     protected $listeners = [
@@ -170,7 +170,7 @@ class Form extends Component
             'icon' => 'icon-tools',
             'costs' => $measureData['costs'],
             'subsidy' => $this->SUBSIDY_UNKNOWN,
-            'savings' => $measureData['expected_savings'] ?? 0,
+            'savings' => $measureData['savings_money'] ?? 0,
         ];
 
         $this->dispatchBrowserEvent('close-modal');

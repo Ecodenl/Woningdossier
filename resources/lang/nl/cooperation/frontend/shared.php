@@ -15,7 +15,7 @@ return [
             'subject' => 'Onderwerp',
             'placeholder' => 'Nieuwe vloer, WC, tochtstrips..',
             'costs' => 'Kosten in €',
-            'expected-savings' => 'Verwachte besparing in €',
+            'savings-money' => 'Verwachte besparing in €',
             'save' => 'Voeg maatregel toe',
             'update' => 'Werk maatregel bij',
         ],

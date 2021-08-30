@@ -56,12 +56,28 @@
                     @endcomponent
                     @component('cooperation.frontend.layouts.components.form-group', [
                         'inputName' => "customMeasureApplicationsFormData.{$index}.costs.to",
-                        'class' => 'w-1/2 pl-1',
+                        'class' => 'w-1/2 pl-1 mb-4',
                         'id' => 'custom-measure-application-costs-to',
                         'withInputSource' => false,
                     ])
                         <input class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.costs.to"
                                id="custom-measure-application-costs-to" placeholder="@lang('default.to')">
+                    @endcomponent
+                    <div class="w-full flex items-center">
+                        <i class="icon-sm icon-info mr-3"></i>
+                        <h6 class="heading-6">
+                            @lang('cooperation/frontend/shared.modals.add-measure.savings-money')
+                        </h6>
+                    </div>
+                    @component('cooperation.frontend.layouts.components.form-group', [
+                        'inputName' => 'customMeasureApplicationsFormData.savings_money',
+                        'class' => 'w-full mb-4',
+                        'id' => 'custom-measure-application-savings-money',
+                        'withInputSource' => false,
+                    ])
+                        <input class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.savings_money"
+                               id="custom-measure-application-savings-money"
+                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.savings-money')">
                     @endcomponent
                 </div>
                 <div class="w-full border border-gray fixed left-0"></div>

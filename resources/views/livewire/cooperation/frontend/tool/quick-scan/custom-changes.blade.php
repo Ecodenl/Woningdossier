@@ -30,7 +30,7 @@
             @component('cooperation.frontend.layouts.components.modal', ['header' => __('cooperation/frontend/tool.form.subject')])
                 <div class="flex flex-wrap mb-5">
                     @component('cooperation.frontend.layouts.components.form-group', [
-                       'inputName' => 'new_measure.subject',
+                       'inputName' => "customMeasureApplicationsFormData.{$index}.subject",
                        'class' => 'w-full -mt-4 mb-4',
                        'id' => 'new-measure-subject',
                        'withInputSource' => false,
@@ -38,16 +38,16 @@
                         <input class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.name"
                                id="new-measure-subject"
 
-                               placeholder="@lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.name.placeholder')">
+                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.placeholder')">
                     @endcomponent
                     <div class="w-full flex items-center">
                         <i class="icon-sm icon-info mr-3"></i>
                         <h6 class="heading-6">
-                            @lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.costs.title')
+                            @lang('cooperation/frontend/shared.modals.add-measure.costs')
                         </h6>
                     </div>
                     @component('cooperation.frontend.layouts.components.form-group', [
-                       'inputName' => 'new_measure.price.from',
+                       'inputName' => "customMeasureApplicationsFormData.{$index}.costs.from",
                        'class' => 'w-1/2 pr-1',
                        'id' => 'new-measure-price-from',
                        'withInputSource' => false,
@@ -56,7 +56,7 @@
                                id="new-measure-price-from" placeholder="@lang('default.from')">
                     @endcomponent
                     @component('cooperation.frontend.layouts.components.form-group', [
-                        'inputName' => 'new_measure.price.to',
+                        'inputName' => "customMeasureApplicationsFormData.{$index}.costs.to",
                         'class' => 'w-1/2 pl-1',
                         'id' => 'new-measure-price-to',
                         'withInputSource' => false,
@@ -67,12 +67,12 @@
                 </div>
                 <div class="w-full border border-gray fixed left-0"></div>
                 <div class="flex flex-wrap justify-center mt-14">
-                    <button x-on:click="toggle()" wire:click="save({{$index}})" class="btn btn-purple w-full">
+                    <button wire:click="save({{$index}})" class="btn btn-purple w-full">
                         <i class="icon-xs icon-plus-purple mr-3"></i>
                         @if($loop->last)
-                            @lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.save')
+                            @lang('cooperation/frontend/shared.modals.add-measure.save')
                         @else
-                            @lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.update')
+                            @lang('cooperation/frontend/shared.modals.add-measure.update')
                         @endif
                     </button>
                 </div>

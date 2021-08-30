@@ -34,7 +34,7 @@ class Form extends Component
     public $masterInputSource;
     public $currentInputSource;
 
-    public array $new_measure = [];
+    public array $custom_measure_application = [];
     public int $investment = 0;
     public int $yearlySavings = 0;
     public int $availableSubsidy = 0;
@@ -47,10 +47,10 @@ class Form extends Component
     public string $SUBSIDY_UNKNOWN = 'unknown';
 
     protected $rules = [
-        'new_measure.subject' => 'required',
-        'new_measure.price.from' => 'required|numeric|min:0',
-        'new_measure.price.to' => 'required|numeric|gt:new_measure.price.from',
-//        'new_measure.expected_savings' => 'nullable|numeric',
+        'custom_measure_application.name' => 'required',
+        'custom_measure_application.costs.from' => 'required|numeric|min:0',
+        'custom_measure_application.costs.to' => 'required|numeric|gt:custom_measure_application.costs.from',
+//        'custom_measure_application.expected_savings' => 'nullable|numeric',
     ];
 
     protected $listeners = [
@@ -138,7 +138,7 @@ class Form extends Component
                     ];
                 }
                 $this->cards[$category][$order]['id'] = $advice->id;
-                $this->cards[$category][$order]['price'] = [
+                $this->cards[$category][$order]['costs'] = [
                     'from' => $advice->costs['from'] ?? 0,
                     'to' => $advice->costs['to'] ?? 0,
                 ];
@@ -162,13 +162,13 @@ class Form extends Component
 
     public function submit()
     {
-        $measureData = $this->validate($this->rules)['new_measure'];
+        $measureData = $this->validate($this->rules)['custom_measure_application'];
 
         // Append card
         $this->cards[$this->category][Str::random()] = [
-            'name' => $measureData['subject'],
+            'name' => $measureData['name'],
             'icon' => 'icon-tools',
-            'price' => $measureData['price'],
+            'costs' => $measureData['costs'],
             'subsidy' => $this->SUBSIDY_UNKNOWN,
             'savings' => $measureData['expected_savings'] ?? 0,
         ];
@@ -266,8 +266,8 @@ class Form extends Component
         $subsidy = 0;
 
         foreach ($this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO] as $card) {
-            $from = $card['price']['from'] ?? 0;
-            $to = $card['price']['to'] ?? 0;
+            $from = $card['costs']['from'] ?? 0;
+            $to = $card['costs']['to'] ?? 0;
 
             $minInvestment += $from;
             $maxInvestment += $to;

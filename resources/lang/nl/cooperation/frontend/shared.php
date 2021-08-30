@@ -13,9 +13,11 @@ return [
         'info' => 'Informatie',
         'add-measure' => [
             'subject' => 'Onderwerp',
-            'price-indication' => 'Prijsindicatie in €',
+            'placeholder' => 'Nieuwe vloer, WC, tochtstrips..',
+            'costs' => 'Kosten in €',
             'expected-savings' => 'Verwachte besparing in €',
-            'submit' => 'Voeg maatregel toe',
+            'save' => 'Voeg maatregel toe',
+            'update' => 'Werk maatregel bij',
         ],
     ],
     'defaults' => [

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\VisibleScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use App\Traits\ToolSettingTrait;
@@ -66,7 +67,7 @@ class UserActionPlanAdvice extends Model
     public $fillable = [
         'user_id',
         'input_source_id',
-        'user_action_plan_advisable_type', 'user_action_plan_advisable_id', 'category', 'visible', 'costs',
+        'user_action_plan_advisable_type', 'user_action_plan_advisable_id', 'category', 'visible', 'order', 'costs',
         'savings_gas', 'savings_electricity', 'savings_money', 'year', 'planned', 'planned_year', 'step_id',
     ];
 
@@ -81,11 +82,11 @@ class UserActionPlanAdvice extends Model
         'costs' => 'array',
     ];
 
-    public static function booted()
+    public static function boot()
     {
-        static::addGlobalScope('visible', function (Builder $builder) {
-            $builder->where('visible', true);
-        });
+        parent::boot();
+
+        static::addGlobalScope(new VisibleScope());
     }
 
     /**
@@ -112,11 +113,7 @@ class UserActionPlanAdvice extends Model
 
     public function userActionPlanAdvisable(): MorphTo
     {
-        if ($this->user_action_plan_advisable_type === MeasureApplication::class) {
-            return $this->morphTo();
-        } else {
-            return $this->morphTo()->allInputSources();
-        }
+        return $this->morphTo();
     }
 
     /**

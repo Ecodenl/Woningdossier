@@ -30,14 +30,13 @@
             @component('cooperation.frontend.layouts.components.modal', ['header' => __('cooperation/frontend/tool.form.subject')])
                 <div class="flex flex-wrap mb-5">
                     @component('cooperation.frontend.layouts.components.form-group', [
-                       'inputName' => "customMeasureApplicationsFormData.{$index}.subject",
+                       'inputName' => "customMeasureApplicationsFormData.{$index}.name",
                        'class' => 'w-full -mt-4 mb-4',
-                       'id' => 'new-measure-subject',
+                       'id' => 'custom-measure-application-name',
                        'withInputSource' => false,
                    ])
                         <input class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.name"
-                               id="new-measure-subject"
-
+                               id="custom-measure-application-name"
                                placeholder="@lang('cooperation/frontend/shared.modals.add-measure.placeholder')">
                     @endcomponent
                     <div class="w-full flex items-center">
@@ -49,20 +48,20 @@
                     @component('cooperation.frontend.layouts.components.form-group', [
                        'inputName' => "customMeasureApplicationsFormData.{$index}.costs.from",
                        'class' => 'w-1/2 pr-1',
-                       'id' => 'new-measure-price-from',
+                       'id' => 'custom-measure-application-costs-from',
                        'withInputSource' => false,
                    ])
                         <input class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.costs.from"
-                               id="new-measure-price-from" placeholder="@lang('default.from')">
+                               id="custom-measure-application-costs-from" placeholder="@lang('default.from')">
                     @endcomponent
                     @component('cooperation.frontend.layouts.components.form-group', [
                         'inputName' => "customMeasureApplicationsFormData.{$index}.costs.to",
                         'class' => 'w-1/2 pl-1',
-                        'id' => 'new-measure-price-to',
+                        'id' => 'custom-measure-application-costs-to',
                         'withInputSource' => false,
                     ])
                         <input class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.costs.to"
-                               id="new-measure-price-to" placeholder="@lang('default.to')">
+                               id="custom-measure-application-costs-to" placeholder="@lang('default.to')">
                     @endcomponent
                 </div>
                 <div class="w-full border border-gray fixed left-0"></div>

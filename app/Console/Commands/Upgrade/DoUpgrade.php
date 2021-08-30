@@ -68,6 +68,7 @@ class DoUpgrade extends Command
                 \RoofTypesTableSeeder::class,
                 \ComfortLevelTapWatersTableSeeder::class,
                 \EnergyLabelsTableSeeder::class,
+                \CooperationMeasureApplicationsTableSeeder::class,
             ];
 
             foreach ($seeders as $seeder) {

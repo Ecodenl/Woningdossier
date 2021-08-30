@@ -115,6 +115,7 @@
                                 </h6>
                             @endif
                             <p class="-mt-1">
+                                {{-- This also triggers if both values are 0 --}}
                                 @if(empty($card['costs']['from']) && empty($card['costs']['to']))
                                     @lang('cooperation/frontend/tool.my-plan.cards.see-info')
                                 @else

@@ -186,18 +186,12 @@ class Form extends Component
         // TODO: @bodhi what is the use of this line
         $this->toolQuestions = $this->subStep->toolQuestions;
 
-        // now mark the sub step as complete
+        // Now mark the sub step as complete
         CompletedSubStep::firstOrCreate([
             'sub_step_id' => $this->subStep->id,
             'building_id' => $this->building->id,
             'input_source_id' => $this->currentInputSource->id
         ]);
-
-        $lastSubStepForStep = $this->step->subSteps()->orderByDesc('order')->first();
-        // last substep is done, now we can complete the main step
-        if ($this->subStep->id === $lastSubStepForStep->id) {
-            StepHelper::complete($this->step, $this->building, $this->currentInputSource);
-        }
 
         return redirect()->to($nextUrl);
     }

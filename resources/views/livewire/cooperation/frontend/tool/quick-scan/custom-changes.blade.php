@@ -3,7 +3,7 @@
     @foreach($cooperationMeasureApplicationsFormData as $index => $customMeasureApplicationFormData)
         <div class="checkbox-wrapper media-wrapper">
             <input type="checkbox" id="cooperation-measure-{{$index}}" value="{{ $index }}"
-                   wire:model="selectedMeasureApplications.cooperationMeasureApplications">
+                   wire:model="selectedCooperationMeasureApplications">
             <label for="cooperation-measure-{{$index}}">
                 <span class="media-icon-wrapper">
                     <i class="{{ $customMeasureApplicationFormData['extra']['icon'] }}"></i>
@@ -16,7 +16,7 @@
     @foreach($customMeasureApplicationsFormData as $index => $customMeasureApplicationFormData)
         <div class="@if($loop->last) add-option-wrapper @else checkbox-wrapper @endif media-wrapper" x-data="modal()">
             @if(!$loop->last)
-                <input type="checkbox" id="custom-measure-{{$index}}" value="{{ $index }}" wire:model="selectedMeasureApplications.customMeasureApplications">
+                <input type="checkbox" id="custom-measure-{{$index}}" value="{{ $index }}" wire:model="selectedCustomMeasureApplications">
             @endif
             <label for="custom-measure-{{$index}}" x-on:click="toggle()">
                 <span class="media-icon-wrapper">

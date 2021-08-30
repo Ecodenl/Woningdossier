@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
+use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
@@ -66,15 +67,15 @@ trait GetMyValuesTrait
         ];
         if ($this instanceof UserActionPlanAdvice) {
             $advisable = $this->userActionPlanAdvisable;
-            if ($advisable instanceof MeasureApplication) {
+            if ($advisable instanceof MeasureApplication || $advisable instanceof CooperationMeasureApplication) {
                 $crucialRelationCombinationIds[] = 'user_action_plan_advisable_id';
                 $crucialRelationCombinationIds[] = 'user_action_plan_advisable_type';
-            }
-            if ($advisable instanceof CustomMeasureApplication) {
+            } elseif ($advisable instanceof CustomMeasureApplication) {
                 // find sibling of the user one with admin input source
                 $sibling = $advisable->getSibling($masterInputSource);
                 $data['user_action_plan_advisable_id'] = $sibling->id;
                 $wheres['user_action_plan_advisable_id'] = $sibling->id;
+                $crucialRelationCombinationIds[] = 'user_action_plan_advisable_type';
             }
         }
 

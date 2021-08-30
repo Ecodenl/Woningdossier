@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\HoomdossierSession;
 use App\Models\Notification;
 use App\Models\Step;
@@ -46,7 +47,8 @@ class RecalculateToolForUserListener
             // Theres nothing to recalculate if the user did not complete the main step.
             if ($event->building->hasCompleted(Step::findByShort('general-data'))) {
                 $userId = $event->building->user->id;
-                Artisan::call('tool:recalculate', ['--user' => [$userId], '--input-source' => [$inputSource->short]]);
+                Artisan::call(RecalculateForUser::class, ['--user' => [$userId], '--input-source' => [$inputSource->short]]);
+
             }
         }
     }

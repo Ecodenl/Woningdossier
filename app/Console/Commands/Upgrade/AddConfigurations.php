@@ -207,7 +207,7 @@ class AddConfigurations extends Command
                         'short' => 'repair-joint',
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0,
                         'icon' => 'icon-tools',
                     ],
                 ],
@@ -216,7 +216,7 @@ class AddConfigurations extends Command
                         'short' => 'clean-brickwork',
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0,
                         'icon' => 'icon-tools',
                     ],
                 ],
@@ -225,7 +225,7 @@ class AddConfigurations extends Command
                         'short' => 'impregnate-wall',
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0,
                         'icon' => 'icon-hydronic-balance-temperature',
                     ],
                 ],
@@ -234,7 +234,7 @@ class AddConfigurations extends Command
                         'short' => 'paint-wall',
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0,
                         'icon' => 'icon-paint-job',
                     ],
                 ],
@@ -243,7 +243,7 @@ class AddConfigurations extends Command
                         'short' => 'paint-wood-elements',
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0,
                         'icon' => 'icon-paint-job',
                     ],
                 ],
@@ -252,7 +252,7 @@ class AddConfigurations extends Command
                         'short' => 'replace-tiles',
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0,
                         'icon' => 'icon-tools',
                     ],
                 ],
@@ -261,7 +261,7 @@ class AddConfigurations extends Command
                         'short' => 'replace-roof-insulation',
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0,
                         'icon' => 'icon-roof-insulation-excellent',
                     ],
                 ],
@@ -270,7 +270,7 @@ class AddConfigurations extends Command
                         'short' => 'inspect-repair-roofs',
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0,
                         'icon' => 'icon-tools',
                     ],
                 ],
@@ -279,7 +279,7 @@ class AddConfigurations extends Command
                         'short' => 'replace-zinc-pitched',
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0,
                         'icon' => 'icon-pitched-roof',
                     ],
                 ],
@@ -288,7 +288,7 @@ class AddConfigurations extends Command
                         'short' => 'replace-zinc-flat',
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0,
                         'icon' => 'icon-flat-roof',
                     ],
                 ],
@@ -358,7 +358,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Onbekend',
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0,
                     ],
                 ],
                 [
@@ -398,7 +398,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Niet van toepassing',
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0,
                     ],
                 ],
                 [
@@ -406,7 +406,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Ja, in goede staat', // Kierdichting
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 3,
                     ],
                 ],
                 [
@@ -414,7 +414,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Ja, in slechte staat', // Kierdichting
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 1,
                     ],
                 ],
                 [
@@ -422,7 +422,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Nee', // Kierdichting
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0,
                     ],
                 ],
                 [
@@ -430,7 +430,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Alleen houten kozijnen', // Kozijnen
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0, // No relevance
                     ],
                 ],
                 [
@@ -438,7 +438,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Houten kozijnen en enkele andere kozijnen (bijvoorbeeld kunststof of aluminium)', // Kozijnen
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0, // No relevance
                     ],
                 ],
                 [
@@ -446,7 +446,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Enkele houten kozijnen, voornamelijk kunststof en of aluminium', // Kozijnen
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0, // No relevance
                     ],
                 ],
                 [
@@ -454,7 +454,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Geen houten kozijnen', // Kozijnen
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0, // No relevance
                     ],
                 ],
                 [
@@ -462,7 +462,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Overig', // Kozijnen
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0, // No relevance
                     ],
                 ],
                 [
@@ -470,7 +470,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Dakranden / boeidelen', // Houten bouwdelen
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0, // No relevance
                     ],
                 ],
                 [
@@ -478,7 +478,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Dakkapellen', // Houten bouwdelen
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0, // No relevance
                     ],
                 ],
                 [
@@ -486,7 +486,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Gevelbekleding', // Houten bouwdelen
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0, // No relevance
                     ],
                 ],
                 [
@@ -494,7 +494,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Best hoog (meer dan 45 cm)', // Kruipruimte
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0, // No relevance
                     ],
                 ],
                 [
@@ -502,7 +502,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Laag (tussen 30 en 45 cm)', // Kruipruimte
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0, // No relevance
                     ],
                 ],
                 [
@@ -510,7 +510,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Heel laag (minder dan 30 cm)', // Kruipruimte
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0, // No relevance
                     ],
                 ],
             ],
@@ -520,7 +520,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Geen', // Zonneboiler
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0,
                     ],
                 ],
                 [
@@ -528,7 +528,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Voor warm tapwater', // Zonneboiler
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 3,
                     ],
                 ],
                 [
@@ -536,7 +536,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Voor verwarming', // Zonneboiler
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 1,
                     ],
                 ],
                 [
@@ -544,7 +544,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Voor verwarming en warm tapwater', // Zonneboiler
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 3,
                     ],
                 ],
                 [
@@ -552,7 +552,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Aanwezig, recent vervangen', // HR CV Ketel
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0, // Removed
                     ],
                 ],
                 [
@@ -560,7 +560,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Aanwezig, tussen 6 en 13 jaar oud', // HR CV Ketel
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0, // Removed
                     ],
                 ],
                 [
@@ -568,7 +568,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Aanwezig, ouder dan 13 jaar', // HR CV Ketel
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0, // Removed
                     ],
                 ],
                 [
@@ -576,7 +576,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Niet aanwezig', // HR CV Ketel
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0, // Removed
                     ],
                 ],
                 [
@@ -584,7 +584,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Onbekend', // HR CV Ketel
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0, // Removed
                     ],
                 ],
                 [
@@ -664,7 +664,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Geen', // Warmtepomp
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 0,
                     ],
                 ],
                 [
@@ -672,7 +672,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Volledige warmtepomp buitenlucht', // Warmtepomp
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 3,
                     ],
                 ],
                 [
@@ -680,15 +680,15 @@ class AddConfigurations extends Command
                         'value->nl' => 'Volledige warmtepomp bodem', // Warmtepomp
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 3,
                     ],
-                ],
+                ],x
                 [
                     'wheres' => [
                         'value->nl' => 'Hybride warmtepomp', // Warmtepomp
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 2,
                     ],
                 ],
                 [
@@ -696,7 +696,7 @@ class AddConfigurations extends Command
                         'value->nl' => 'Collectieve warmtepomp', // Warmtepomp
                     ],
                     'configurations' => [
-                        'comfort' => 0, // TODO: NO COMFORT
+                        'comfort' => 2,
                     ],
                 ],
             ],

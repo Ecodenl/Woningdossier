@@ -13,8 +13,8 @@ class CooperationMeasureApplication extends Model
     protected $translatable = ['name', 'info'];
 
     protected $casts = [
-        'costs' => 'json',
-        'extra' => 'icon',
+        'costs' => 'array',
+        'extra' => 'array',
     ];
 
     public function userActionPlanAdvices()
@@ -26,5 +26,10 @@ class CooperationMeasureApplication extends Model
             UserActionPlanAdvice::class,
             'user_action_plan_advisable'
         )->withoutGlobalScope(VisibleScope::class);
+    }
+
+    public function cooperation()
+    {
+        return $this->belongsTo(Cooperation::class);
     }
 }

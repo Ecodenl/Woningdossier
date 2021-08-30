@@ -1,23 +1,26 @@
 <div class="w-full grid grid-rows-2 grid-cols-4 grid-flow-row justify-items-center">
     {{-- TODO: Make this cooperation measure applications --}}
-    <div class="checkbox-wrapper media-wrapper">
-        <input type="checkbox" id="changes-kitchen" name="changes" value="kitchen">
-        <label for="changes-kitchen">
-            <span class="media-icon-wrapper">
-                <i class="icon-kitchen"></i>
-            </span>
-            <span class="checkmark"></span>
-            <span>Keuken</span>
-        </label>
-    </div>
+    @foreach($cooperationMeasureApplicationsFormData as $index => $customMeasureApplicationFormData)
+        <div class="checkbox-wrapper media-wrapper">
+            <input type="checkbox" id="cooperation-measure-{{$index}}" value="{{ $index }}"
+                   wire:model="selectedMeasureApplications.cooperationMeasureApplications">
+            <label for="cooperation-measure-{{$index}}">
+                <span class="media-icon-wrapper">
+                    <i class="{{ $customMeasureApplicationFormData['extra']['icon'] }}"></i>
+                </span>
+                <span class="checkmark"></span>
+                <span>{{ $customMeasureApplicationFormData['name'] }}</span>
+            </label>
+        </div>
+    @endforeach
     @foreach($customMeasureApplicationsFormData as $index => $customMeasureApplicationFormData)
         <div class="@if($loop->last) add-option-wrapper @else checkbox-wrapper @endif media-wrapper" x-data="modal()">
             @if(!$loop->last)
-                <input type="checkbox" id="custom-measure-{{$index}}" value="{{ $index }}" wire:model="selectedMeasureApplications">
+                <input type="checkbox" id="custom-measure-{{$index}}" value="{{ $index }}" wire:model="selectedMeasureApplications.customMeasureApplications">
             @endif
             <label for="custom-measure-{{$index}}" x-on:click="toggle()">
                 <span class="media-icon-wrapper">
-                    <i class="@if($loop->last) icon-plus-circle @else{{$customMeasureApplicationFormData['extra']['icon']}} @endif"></i>
+                    <i class="@if($loop->last) icon-plus-circle @else {{$customMeasureApplicationFormData['extra']['icon']}} @endif"></i>
                 </span>
                 @if(!$loop->last)
                     <span class="checkmark" x-on:click.stop></span>

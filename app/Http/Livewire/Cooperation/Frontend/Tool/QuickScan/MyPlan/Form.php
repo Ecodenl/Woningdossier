@@ -125,15 +125,24 @@ class Form extends Component
                         $advisable = $advice->userActionPlanAdvisable()
                             ->forInputSource($this->masterInputSource)
                             ->first();
-                    }
 
-                    $this->cards[$category][$order] = [
-                        'name' => Str::limit($advisable->name, 22),
-                        'icon' => 'icon-tools',
-                        // TODO: Subsidy
-                        'subsidy' => $this->SUBSIDY_UNKNOWN,
-                        'info' => $advisable->name,
-                    ];
+                        $this->cards[$category][$order] = [
+                            'name' => Str::limit($advisable->name, 22),
+                            'icon' => 'icon-tools',
+                            // TODO: Subsidy
+                            'subsidy' => $this->SUBSIDY_UNKNOWN,
+                            'info' => $advisable->name,
+                        ];
+                    } else {
+                        // CooperationMeasureApplication
+                        $this->cards[$category][$order] = [
+                            'name' => Str::limit($advisable->name, 22),
+                            'icon' => $advisable->extra['icon'] ?? 'icon-tools',
+                            // TODO: Subsidy
+                            'subsidy' => $this->SUBSIDY_UNKNOWN,
+                            'info' => $advisable->info,
+                        ];
+                    }
                 }
 
                 $this->cards[$category][$order]['id'] = $advice->id;

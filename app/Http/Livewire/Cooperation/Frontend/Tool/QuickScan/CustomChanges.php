@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
+use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\UserActionPlanAdvice;
@@ -15,8 +16,11 @@ use Livewire\Component;
 class CustomChanges extends Component
 {
     public $customMeasureApplicationsFormData;
-    public $cooperationMeasureApplications;
-    public array $selectedMeasureApplications = [];
+    public $cooperationMeasureApplicationsFormData;
+    public array $selectedMeasureApplications = [
+        'customMeasureApplications' => [],
+        'cooperationMeasureApplications' => [],
+    ];
     public array $previousSelectedState = [];
 
     public $masterInputSource;
@@ -64,21 +68,28 @@ class CustomChanges extends Component
         // We don't need to handle updates to the customMeasureApplicationsFormData
         // Only for the selectedMeasureApplications
 
+        // The value does not indicate whether we have a cooperation or custom measure
+        // We compare
+        $isCooperationMeasure = $this->selectedMeasureApplications['cooperationMeasureApplications'] === $value;
+
+        $key = $isCooperationMeasure ? 'cooperationMeasureApplications' : 'customMeasureApplications';
+
         // Let's diff with previous values, to define which index has changed
-        $added = array_diff($value, $this->previousSelectedState);
-        $removed = array_diff($this->previousSelectedState, $value);
+        $added = array_diff($value, $this->previousSelectedState[$key]);
+        $removed = array_diff($this->previousSelectedState[$key], $value);
 
         $index = empty ($added) ? Arr::first($removed) : Arr::first($added);
         // If removed is not empty, it's not visible, if it is empty, it is visible
         $visible = empty ($removed);
 
-        $measure = $this->customMeasureApplicationsFormData[$index] ?? null;
+        $measure = $isCooperationMeasure ? $this->cooperationMeasureApplicationsFormData[$index] ?? null
+            : $this->customMeasureApplicationsFormData[$index] ?? null;
 
         if (! empty($measure)) {
             // Can be both a CustomMeasure or a CooperationMeasure so we base the model on whether there's a
             // hash or not
 
-            if (! is_null($measure['hash'])) {
+            if (! empty($measure['hash'])) {
                 $masterCustomMeasureApplication = CustomMeasureApplication::forInputSource($this->masterInputSource)
                     ->where('hash', $measure['hash'])
                     ->where('id', $measure['id'])
@@ -106,7 +117,34 @@ class CustomChanges extends Component
                     }
                 }
             } else {
-                // Cooperation measure, WIP TODO
+                $cooperationMeasureApplication = CooperationMeasureApplication::find($measure['id']);
+
+                // No bogged data
+                if ($cooperationMeasureApplication instanceof CooperationMeasureApplication) {
+                    // Make action plan advice for user, or update it, with the measure data and the set visibility
+                    $userActionPlanAdvice = $cooperationMeasureApplication->userActionPlanAdvices()
+                        ->forInputSource($this->currentInputSource)
+                        ->where('user_id', $this->building->user->id)
+                        ->first();
+
+                    // We can't updateOrCreate, because we don't want to interfere with potential user
+                    // settings, e.g. category
+                    if ($userActionPlanAdvice instanceof UserActionPlanAdvice) {
+                        $userActionPlanAdvice->update([
+                            'visible' => $visible,
+                        ]);
+                    } else {
+                        $cooperationMeasureApplication->userActionPlanAdvices()
+                            ->create([
+                                'user_id' => $this->building->user->id,
+                                'input_source_id' => $this->currentInputSource->id,
+                                'category' => 'to-do',
+                                'costs' => $cooperationMeasureApplication->costs,
+                                'savings_money' => $cooperationMeasureApplication->savings_money,
+                                'visible' => $visible,
+                            ]);
+                    }
+                }
             }
         }
 
@@ -219,16 +257,44 @@ class CustomChanges extends Component
         $this->customMeasureApplicationsFormData = [];
         // Retrieve the user's custom measures
         $customMeasureApplications = $this->building->customMeasureApplications()->forInputSource($this->masterInputSource)->get();
+
+        $this->cooperationMeasureApplicationsFormData = [];
         // Retrieve the cooperation's custom measures
-        // TODO: Seeder not yet set, WIP
         $cooperationMeasureApplications = $this->cooperation->cooperationMeasureApplications;
 
+        // Set the cooperation measures
+        /** @var \App\Models\CooperationMeasureApplication $cooperationMeasureApplication */
+        foreach ($cooperationMeasureApplications as $index => $cooperationMeasureApplication) {
+            $this->cooperationMeasureApplicationsFormData[$index] = $cooperationMeasureApplication->only(['id', 'name', 'extra']);
+
+            $costs = $cooperationMeasureApplication->costs;
+            $this->cooperationMeasureApplicationsFormData[$index]['costs'] = [
+                'from' => NumberFormatter::format($costs['from'] ?? '', 1),
+                'to' => NumberFormatter::format($costs['to'] ?? '', 1),
+            ];
+
+            $this->cooperationMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::format($cooperationMeasureApplication->savings_money, 1);
+
+            // Let's see if a userActionPlanAdvice exists, so we know if it should be checked
+            $userActionPlanAdvice = $cooperationMeasureApplication->userActionPlanAdvices()
+                ->forInputSource($this->masterInputSource)
+                ->where('user_id', $this->building->user->id)
+                ->first();
+
+            if ($userActionPlanAdvice instanceof UserActionPlanAdvice && $userActionPlanAdvice->visible) {
+                $this->selectedMeasureApplications['cooperationMeasureApplications'][] = (string) $index;
+            }
+        }
+
+        // Set the custom measures
         /** @var CustomMeasureApplication $customMeasureApplication */
         foreach ($customMeasureApplications as $index => $customMeasureApplication) {
             $this->customMeasureApplicationsFormData[$index] = $customMeasureApplication->only(['id', 'hash', 'name']);
             $this->customMeasureApplicationsFormData[$index]['extra'] = ['icon' => 'icon-tools'];
 
-            $userActionPlanAdvice = $customMeasureApplication->userActionPlanAdvices()->forInputSource($this->masterInputSource)->first();
+            $userActionPlanAdvice = $customMeasureApplication->userActionPlanAdvices()
+                ->forInputSource($this->masterInputSource)
+                ->first();
 
             $costs = $userActionPlanAdvice->costs;
             $this->customMeasureApplicationsFormData[$index]['costs'] = [
@@ -239,7 +305,7 @@ class CustomChanges extends Component
             $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::format($userActionPlanAdvice->savings_money, 1);
 
             if ($userActionPlanAdvice->visible) {
-                $this->selectedMeasureApplications[] = (string) $index;
+                $this->selectedMeasureApplications['customMeasureApplications'][] = (string) $index;
             }
         }
 

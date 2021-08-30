@@ -682,7 +682,7 @@ class AddConfigurations extends Command
                     'configurations' => [
                         'comfort' => 3,
                     ],
-                ],x
+                ],
                 [
                     'wheres' => [
                         'value->nl' => 'Hybride warmtepomp', // Warmtepomp

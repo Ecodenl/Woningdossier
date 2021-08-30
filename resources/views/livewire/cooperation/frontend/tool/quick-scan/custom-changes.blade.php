@@ -13,7 +13,7 @@
     @foreach($customMeasureApplicationsFormData as $index => $customMeasureApplicationFormData)
         <div class="@if($loop->last) add-option-wrapper @else checkbox-wrapper @endif media-wrapper" x-data="modal()">
             @if(!$loop->last)
-                <input type="checkbox" id="custom-measure-{{$index}}" value="attic-room">
+                <input type="checkbox" id="custom-measure-{{$index}}" value="{{ $index }}" wire:model="selectedMeasureApplications">
             @endif
             <label for="custom-measure-{{$index}}" x-on:click="toggle()">
                 <span class="media-icon-wrapper">

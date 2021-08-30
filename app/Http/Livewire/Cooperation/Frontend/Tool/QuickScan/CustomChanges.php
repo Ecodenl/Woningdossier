@@ -8,6 +8,7 @@ use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\VisibleScope;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -15,6 +16,8 @@ class CustomChanges extends Component
 {
     public $customMeasureApplicationsFormData;
     public $cooperationMeasureApplications;
+    public array $selectedMeasureApplications = [];
+    public array $previousSelectedState = [];
 
     public $masterInputSource;
     public $currentInputSource;
@@ -54,6 +57,61 @@ class CustomChanges extends Component
     public function render()
     {
         return view('livewire.cooperation.frontend.tool.quick-scan.custom-changes');
+    }
+
+    public function updatedSelectedMeasureApplications($value)
+    {
+        // We don't need to handle updates to the customMeasureApplicationsFormData
+        // Only for the selectedMeasureApplications
+
+        // Let's diff with previous values, to define which index has changed
+        $added = array_diff($value, $this->previousSelectedState);
+        $removed = array_diff($this->previousSelectedState, $value);
+
+        $index = empty ($added) ? Arr::first($removed) : Arr::first($added);
+        // If removed is not empty, it's not visible, if it is empty, it is visible
+        $visible = empty ($removed);
+
+        $measure = $this->customMeasureApplicationsFormData[$index] ?? null;
+
+        if (! empty($measure)) {
+            // Can be both a CustomMeasure or a CooperationMeasure so we base the model on whether there's a
+            // hash or not
+
+            if (! is_null($measure['hash'])) {
+                $masterCustomMeasureApplication = CustomMeasureApplication::forInputSource($this->masterInputSource)
+                    ->where('hash', $measure['hash'])
+                    ->where('id', $measure['id'])
+                    ->first();
+
+                if ($masterCustomMeasureApplication instanceof CustomMeasureApplication) {
+                    $customMeasureApplication = $masterCustomMeasureApplication->getSibling($this->currentInputSource);
+
+                    // There is a chance the measure is from the coach, so if that's the case we will just update
+                    // the master input source
+                    if ($customMeasureApplication instanceof CustomMeasureApplication) {
+                        $customMeasureApplication->userActionPlanAdvices()
+                            ->forInputSource($this->currentInputSource)
+                            ->first()
+                            ->update([
+                                'visible' => $visible,
+                            ]);
+                    } else {
+                        $masterCustomMeasureApplication->userActionPlanAdvices()
+                            ->forInputSource($this->masterInputSource)
+                            ->first()
+                            ->update([
+                                'visible' => $visible,
+                            ]);
+                    }
+                }
+            } else {
+                // Cooperation measure, WIP TODO
+            }
+        }
+
+        // Update selected state
+        $this->previousSelectedState = $this->selectedMeasureApplications;
     }
 
     public function save($index)
@@ -117,7 +175,7 @@ class CustomChanges extends Component
                             'hash' => $masterCustomMeasureApplication->hash,
                         ],
                         [
-                            'name' => ['nl' => $measure['name']]
+                            'name' => ['nl' => $measure['name']],
                         ],
                     );
                 }
@@ -128,7 +186,7 @@ class CustomChanges extends Component
                     'building_id' => $this->building->id,
                     'input_source_id' => $this->currentInputSource->id,
                     'name' => ['nl' => $measure['name']],
-                    'hash' => $hash
+                    'hash' => $hash,
                 ]);
 
                 $updateData['visible'] = true;
@@ -179,6 +237,10 @@ class CustomChanges extends Component
             ];
 
             $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::format($userActionPlanAdvice->savings_money, 1);
+
+            if ($userActionPlanAdvice->visible) {
+                $this->selectedMeasureApplications[] = (string) $index;
+            }
         }
 
         // Append the option to add a new application
@@ -193,5 +255,8 @@ class CustomChanges extends Component
             'savings_money' => null,
             'extra' => ['icon' => 'icon-tools'],
         ];
+
+        // We're done, let's define our selected state
+        $this->previousSelectedState = $this->selectedMeasureApplications;
     }
 }

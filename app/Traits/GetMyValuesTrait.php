@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 trait GetMyValuesTrait
@@ -82,13 +81,6 @@ trait GetMyValuesTrait
             if ($this->hasAttribute($crucialRelationCombinationId)) {
                 $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
             }
-        }
-
-        if ($this instanceof UserActionPlanAdvice) {
-        Log::debug("wheres:");
-        Log::debug($wheres);
-        Log::debug("data:");
-        Log::debug($data);
         }
 
         ($this)::allInputSources()

@@ -14,7 +14,9 @@
         {{-- Only display sub steps that are valid to the user --}}
         @can('show', $subStepToSummarize)
             @php
-                $subStepRoute = route('cooperation.frontend.tool.quick-scan.index', ['cooperation' => $cooperation, 'step' => $step, 'subStep' => $subStepToSummarize]);
+                $subStepRoute = route('cooperation.frontend.tool.quick-scan.index', [
+                    'cooperation' => $cooperation, 'step' => $step, 'subStep' => $subStepToSummarize
+                ]);
             @endphp
             <div class="flex flex-row flex-wrap w-full space-y-4">
                 <a href="{{ $subStepRoute }}"
@@ -42,7 +44,7 @@
                     {{-- Only display questions that are valid to the user --}}
                     @php
                         $showQuestion = true;
-// TODO: Answers for checkbox-icon don't work now
+
                         if (! empty($toolQuestionToSummarize->conditions)) {
                             $showQuestion = \App\Helpers\Conditions\ConditionEvaluator::init()
                             ->evaluateCollection($toolQuestionToSummarize->conditions, collect($answers));
@@ -92,10 +94,20 @@
                                                 $questionValues = $toolQuestionToSummarize->getQuestionValues();
 
                                                 if ($questionValues->isNotEmpty()) {
-                                                    $questionValue = $questionValues->where('value', '=', $answer)->first();
+                                                    $humanReadableAnswers = [];
 
-                                                    if (! empty($questionValue)) {
-                                                        $humanReadableAnswer = $questionValue['name'];
+                                                    $answer = is_array($answer) ? $answer : [$answer];
+
+                                                    foreach ($answer as $subAnswer) {
+                                                        $questionValue = $questionValues->where('value', '=', $subAnswer)->first();
+
+                                                        if (! empty($questionValue)) {
+                                                            $humanReadableAnswers[] = $questionValue['name'];
+                                                        }
+                                                    }
+
+                                                    if (! empty($humanReadableAnswers)) {
+                                                        $humanReadableAnswer = implode(', ', $humanReadableAnswers);
                                                     }
                                                 } else {
                                                     // If there are no question values, then it's user input
@@ -103,6 +115,7 @@
                                                 }
                                             }
                                         @endphp
+
                                         {{ $humanReadableAnswer }}
                                     </p>
                                 </div>

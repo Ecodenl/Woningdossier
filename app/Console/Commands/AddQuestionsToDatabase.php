@@ -322,6 +322,17 @@ class AddQuestionsToDatabase extends Command
 //                        ],
                     ]
                 ],
+                'Toelichting woninggegevens' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => 'step_comments.comment',
+                            'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment.title',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                    ],
+                ],
                 'Samenvatting woninggegevens' => [
                     'sub_step_template_id' => $templateSummary->id,
                 ],
@@ -525,6 +536,17 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
+                'Toelichting bewoners-gebruik' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => 'step_comments.comment',
+                            'translation' => 'cooperation/tool/general-data/usage.index.comment.title',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                    ],
+                ],
                 'Samenvatting bewoners-gebruik' => [
                     'sub_step_template_id' => $templateSummary->id,
                 ],
@@ -603,6 +625,17 @@ class AddQuestionsToDatabase extends Command
                 'Welke zaken vervangen' => [
                     // note: dit is een custom vraag, zie slide 18
                     'sub_step_template_id' => $templateCustomChanges->id,
+                ],
+                'Toelichting woonwensen' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => 'step_comments.comment',
+                            'translation' => 'cooperation/tool/general-data/interest.index.comment.title',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                    ],
                 ],
                 'Samenvatting woonwensen' => [
                     'sub_step_template_id' => $templateSummary->id,
@@ -1166,6 +1199,23 @@ class AddQuestionsToDatabase extends Command
                             ],
                         ],
                     ]
+                ],
+                'Toelichting woninggegevens' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => 'step_comments.comment',
+                            'translation' => 'cooperation/tool/general-data/current-state.index.comment.element.title',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => 'step_comments.comment',
+                            'translation' => 'cooperation/tool/general-data/current-state.index.comment.service.title',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                    ],
                 ],
                 'Samenvatting woonstatus' => [
                     'sub_step_template_id' => $templateSummary->id,

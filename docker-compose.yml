@@ -25,6 +25,7 @@ services:
       - hoomdossier
 
   mysql:
+    platform: linux/x86_64
     image: mysql:5.7.29
     container_name: mysql
     restart: unless-stopped
@@ -57,6 +58,7 @@ services:
       - hoomdossier
 
   redis:
+    platform: linux/x86_64
     image: redis:alpine
     container_name: redis
     restart: unless-stopped
@@ -114,6 +116,7 @@ services:
       - hoomdossier
 
   mailhog:
+    platform: linux/x86_64
     image: mailhog/mailhog:latest
     container_name: mailhog
     ports:

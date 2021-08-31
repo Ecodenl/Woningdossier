@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Events\StepDataHasBeenChanged;
+use App\Helpers\Hoomdossier;
 use App\Helpers\StepHelper;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
@@ -44,6 +46,12 @@ class CompletedSubStep extends Model
                     if (empty ($diff)) {
                         // The sub step that has been completed finished up the set, so we complete the main step
                         StepHelper::complete($step, $building, $inputSource);
+
+                        // Trigger a recalculate if the tool is now complete
+                        // TODO: Refactor this
+                        if ($building->hasCompletedQuickScan()) {
+                            StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
+                        }
                     } else {
                         // We didn't fill in each sub step. But, it might be that there's sub steps with conditions
                         // that we didn't get. Let's check
@@ -59,6 +67,12 @@ class CompletedSubStep extends Model
                         if ($cantSee === $leftoverSubSteps->count()) {
                             // Conditions "passed", so we complete!
                             StepHelper::complete($step, $building, $inputSource);
+
+                            // Trigger a recalculate if the tool is now complete
+                            // TODO: Refactor this
+                            if ($building->hasCompletedQuickScan()) {
+                                StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
+                            }
                         }
                     }
                 }

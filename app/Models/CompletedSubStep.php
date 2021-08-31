@@ -39,9 +39,27 @@ class CompletedSubStep extends Model
 
                     $allSubStepIds = $step->subSteps()->pluck('id')->toArray();
 
-                    if (empty (array_diff($allSubStepIds, $allCompletedSubStepIds))) {
+                    $diff = array_diff($allSubStepIds, $allCompletedSubStepIds);
+
+                    if (empty ($diff)) {
                         // The sub step that has been completed finished up the set, so we complete the main step
                         StepHelper::complete($step, $building, $inputSource);
+                    } else {
+                        // We didn't fill in each sub step. But, it might be that there's sub steps with conditions
+                        // that we didn't get. Let's check
+                        $leftoverSubSteps = SubStep::findMany($diff);
+
+                        $cantSee = 0;
+                        foreach ($leftoverSubSteps as $subStep) {
+                            if (! $building->user->account->can('show', $subStep)) {
+                                ++$cantSee;
+                            }
+                        }
+
+                        if ($cantSee === $leftoverSubSteps->count()) {
+                            // Conditions "passed", so we complete!
+                            StepHelper::complete($step, $building, $inputSource);
+                        }
                     }
                 }
             }

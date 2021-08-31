@@ -956,7 +956,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_services.{$heatPump->id}.service_value_id",
                             'short' => 'heat-pump-type',
-                            'translation' => "Heeft u een warmptepomp?",
+                            'translation' => "Heeft u een warmtepomp?",
                             'tool_question_type_id' => $radioType->id,
                             'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
                             'extra' => [

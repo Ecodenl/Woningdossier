@@ -305,7 +305,7 @@ class ToolHelper
 
                     'tool_question_answers.heat-source' => [
                         'label' => ToolQuestion::findByShort('heat-source')->name,
-                        'type' => 'select',
+                        'type' => 'multiselect',
                         'options' => ToolQuestion::findByShort('heat-source')->getQuestionValues()->pluck('name', 'short')->toArray()
                     ],
 

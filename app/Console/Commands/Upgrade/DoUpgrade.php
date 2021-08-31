@@ -95,6 +95,7 @@ class DoUpgrade extends Command
                     MapAnswers::class,
                     MapActionPlan::class,
                     AddMasterInputSource::class,
+                    ConvertExampleBuildingContents::class,
                 ];
 
                 foreach ($afterCommands as $command) {

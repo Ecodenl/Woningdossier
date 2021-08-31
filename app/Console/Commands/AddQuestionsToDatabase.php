@@ -308,7 +308,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['numeric', 'min:20', 'max:999999'],
+                            'validation' => ['required', 'numeric', 'min:20', 'max:999999'],
                             'save_in' => 'building_features.surface',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface',
                             'tool_question_type_id' => $textType->id,

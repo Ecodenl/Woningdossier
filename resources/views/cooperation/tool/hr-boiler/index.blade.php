@@ -177,7 +177,7 @@
     <script>
         $(document).ready(function () {
 
-            $("select, input[type=radio], input[type=text]").change(formChange);
+            $("select, input[type=radio], input[type=text]").change(() => formChange());
 
             function formChange() {
                 let form = $('#high-efficiency-boiler-form').serialize();

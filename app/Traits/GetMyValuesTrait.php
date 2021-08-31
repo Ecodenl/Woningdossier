@@ -62,7 +62,7 @@ trait GetMyValuesTrait
         ];
 
         $crucialRelationCombinationIds = [
-            'user_id', 'building_id', 'tool_question_id', 'element_id', 'service_id',
+            'user_id', 'building_id', 'tool_question_id', 'tool_question_custom_value_id', 'element_id', 'service_id',
             'hash', 'sub_step_id',
         ];
         if ($this instanceof UserActionPlanAdvice) {

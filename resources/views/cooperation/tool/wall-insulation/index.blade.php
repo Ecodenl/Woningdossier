@@ -482,7 +482,7 @@
     <script>
         $(document).ready(function () {
 
-            $("select, input[type=radio], input[type=text]").change(formChange());
+            $("select, input[type=radio], input[type=text]").change(() => formChange());
 
             function formChange() {
                 if ($('.is-painted').is(':checked')) {
@@ -496,7 +496,7 @@
                 let form = $('#wall-insulation-form').serialize();
                 $.ajax({
                     type: "POST",
-                    url: '{{ route('cooperation.tool.wall-insulation.calculate', [ 'cooperation' => $cooperation ]) }}',
+                    url: '{{ route('cooperation.tool.wall-insulation.calculate', compact('cooperation')) }}',
                     data: form,
                     success: function (data) {
 

@@ -32,62 +32,60 @@
             <form wire:submit.prevent="submit()">
                 <div class="flex flex-wrap mb-5">
                     @component('cooperation.frontend.layouts.components.form-group', [
-                       'inputName' => 'new_measure.subject',
+                       'inputName' => 'custom_measure_application.name',
                        'class' => 'w-full -mt-4 mb-4',
-                       'id' => 'new-measure-subject',
+                       'id' => 'custom-measure-application-name',
                        'withInputSource' => false,
                    ])
-                        <input class="form-input" wire:model="new_measure.subject" id="new-measure-subject"
-                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.subject')">
+                        <input class="form-input" wire:model="custom_measure_application.name" id="custom-measure-application-name"
+                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.placeholder')">
                     @endcomponent
                     <div class="w-full flex items-center">
                         <i class="icon-sm icon-info mr-3"></i>
                         <h6 class="heading-6">
-                            @lang('cooperation/frontend/shared.modals.add-measure.price-indication')
+                            @lang('cooperation/frontend/shared.modals.add-measure.costs')
                         </h6>
                     </div>
                     @component('cooperation.frontend.layouts.components.form-group', [
-                        'inputName' => 'new_measure.price.from',
+                        'inputName' => 'custom_measure_application.costs.from',
                         'class' => 'w-1/2 pr-1 mb-4',
-                        'id' => 'new-measure-price-from',
+                        'id' => 'custom-measure-application-costs-from',
                         'withInputSource' => false,
                     ])
-                        <input class="form-input" wire:model="new_measure.price.from" id="new-measure-price-from"
+                        <input class="form-input" wire:model="custom_measure_application.costs.from" id="custom-measure-application-costs-from"
                                placeholder="@lang('default.from')">
                     @endcomponent
                     @component('cooperation.frontend.layouts.components.form-group', [
-                        'inputName' => 'new_measure.price.to',
+                        'inputName' => 'custom_measure_application.costs.to',
                         'class' => 'w-1/2 pl-1 mb-4',
-                        'id' => 'new-measure-price-to',
+                        'id' => 'custom-measure-application-costs-to',
                         'withInputSource' => false,
                     ])
-                        <input class="form-input" wire:model="new_measure.price.to" id="new-measure-price-to"
+                        <input class="form-input" wire:model="custom_measure_application.costs.to" id="custom-measure-application-costs-to"
                                placeholder="@lang('default.to')">
                     @endcomponent
-<!--
                     <div class="w-full flex items-center">
                         <i class="icon-sm icon-info mr-3"></i>
                         <h6 class="heading-6">
-                            @lang('cooperation/frontend/shared.modals.add-measure.expected-savings')
+                            @lang('cooperation/frontend/shared.modals.add-measure.savings-money')
                         </h6>
                     </div>
                     @component('cooperation.frontend.layouts.components.form-group', [
-                        'inputName' => 'new_measure.expected_savings',
+                        'inputName' => 'custom_measure_application.savings_money',
                         'class' => 'w-full mb-4',
-                        'id' => 'new-measure-expected-savings',
+                        'id' => 'custom-measure-application-savings-money',
                         'withInputSource' => false,
                     ])
-                        <input class="form-input" wire:model="new_measure.expected_savings"
-                               id="new-measure-expected-savings"
-                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.expected-savings')">
+                        <input class="form-input" wire:model="custom_measure_application.savings_money"
+                               id="custom-measure-application-savings-money"
+                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.savings-money')">
                     @endcomponent
--->
                 </div>
                 <div class="w-full border border-gray fixed left-0"></div>
                 <div class="flex flex-wrap justify-center mt-14">
                     <button class="btn btn-purple w-full" type="submit">
                         <i class="icon-xs icon-plus-purple mr-3"></i>
-                        @lang('cooperation/frontend/shared.modals.add-measure.submit')
+                        @lang('cooperation/frontend/shared.modals.add-measure.save')
                     </button>
                 </div>
             </form>
@@ -117,10 +115,11 @@
                                 </h6>
                             @endif
                             <p class="-mt-1">
-                                @if(empty($card['price']['from']) && empty($card['price']['to']))
+                                {{-- This also triggers if both values are 0 --}}
+                                @if(empty($card['costs']['from']) && empty($card['costs']['to']))
                                     @lang('cooperation/frontend/tool.my-plan.cards.see-info')
                                 @else
-                                    {{ \App\Helpers\NumberFormatter::range($card['price']['from'] ?? '', $card['price']['to'] ?? '', 0, ' - ', '€ ') }}
+                                    {{ \App\Helpers\NumberFormatter::range($card['costs']['from'], $card['costs']['to'], 0, ' - ', '€ ') }}
                                 @endif
                             </p>
 <!--
@@ -147,7 +146,7 @@
                             @endif
                         </div>
                         <p class="font-bold absolute right-1 bottom-1 lg:right-3 lg:bottom-3">
-                            {{ \App\Helpers\NumberFormatter::prefix($card['savings'] ?? 0, '€ ') }}
+                            {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($card['savings'], 1) , '€ ') }}
                         </p>
                     </div>
                 @endforeach
@@ -161,7 +160,7 @@
             </div>
             <div class="flex flex-col justify-center">
                 <span class="text-orange text-sm font-bold">
-                    {{ \App\Helpers\NumberFormatter::prefix($investment, '€ ') }}
+                    {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($investment, 0), '€ ') }}
                 </span>
                 <p class="-mt-2">
                     @lang('cooperation/frontend/tool.my-plan.cards.investment')

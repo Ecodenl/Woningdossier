@@ -1,14 +1,8 @@
 <?php
 
 return [
-    // TODO: Check this in relation with the tool.my-plan translations
-    'save' => 'Voeg maatregel toe',
-    'update' => 'Maatregel bijwerken',
-    'name' => [
-        'title' => 'Onderwerp',
-        'placeholder' => 'Nieuwe vloer, WC, tochtstrips..'
-    ],
-    'costs' => [
-        'title' => 'Kosten'
+    'question' => [
+        'label' => 'Welke zaken zou u willen veranderen aan uw woning?',
+        'help' => 'Hier kunt u bestaande maatregelen selecteren die u extra zou willen aanpassen aan uw woning. U kunt ook zelf maatregelen toevoegen of bewerken die u zelf aan zou willen passen.',
     ],
 ];

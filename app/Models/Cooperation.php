@@ -67,7 +67,7 @@ class Cooperation extends Model
 
     public function cooperationMeasureApplications(): HasMany
     {
-        return $this->hasMany(CooperationMeasureApplication::class, 'id');
+        return $this->hasMany(CooperationMeasureApplication::class);
     }
 
     public function style()

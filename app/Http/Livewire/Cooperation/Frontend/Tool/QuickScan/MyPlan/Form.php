@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\CustomMeasureApplication;
@@ -34,7 +35,7 @@ class Form extends Component
     public $masterInputSource;
     public $currentInputSource;
 
-    public array $new_measure = [];
+    public array $custom_measure_application = [];
     public int $investment = 0;
     public int $yearlySavings = 0;
     public int $availableSubsidy = 0;
@@ -47,10 +48,10 @@ class Form extends Component
     public string $SUBSIDY_UNKNOWN = 'unknown';
 
     protected $rules = [
-        'new_measure.subject' => 'required',
-        'new_measure.price.from' => 'required|numeric|min:0',
-        'new_measure.price.to' => 'required|numeric|gt:new_measure.price.from',
-//        'new_measure.expected_savings' => 'nullable|numeric',
+        'custom_measure_application.name' => 'required',
+        'custom_measure_application.costs.from' => 'required|numeric|min:0',
+        'custom_measure_application.costs.to' => 'required|numeric|gt:custom_measure_application.costs.from',
+        'custom_measure_application.savings_money' => 'nullable|numeric',
     ];
 
     protected $listeners = [
@@ -113,10 +114,8 @@ class Form extends Component
                     $this->cards[$category][$order] = [
                         'name' => Str::limit($advisable->measure_name, 22),
                         'icon' => $this->iconMap[$advisable->short] ?? 'icon-tools',
-
                         // TODO: Subsidy
                         'subsidy' => $this->SUBSIDY_AVAILABLE,
-                        'savings' => $advice->savings_money,
                         'info' => $advisable->measure_name,
                         'route' => StepHelper::buildStepUrl($advisable->step),
                     ];
@@ -126,22 +125,32 @@ class Form extends Component
                         $advisable = $advice->userActionPlanAdvisable()
                             ->forInputSource($this->masterInputSource)
                             ->first();
-                    }
 
-                    $this->cards[$category][$order] = [
-                        'name' => Str::limit($advisable->name, 22),
-                        'icon' => 'icon-tools',
-                        // TODO: Subsidy
-                        'subsidy' => $this->SUBSIDY_UNKNOWN,
-                        'savings' => 0,
-                        'info' => $advisable->name,
-                    ];
+                        $this->cards[$category][$order] = [
+                            'name' => Str::limit($advisable->name, 22),
+                            'icon' => 'icon-tools',
+                            // TODO: Subsidy
+                            'subsidy' => $this->SUBSIDY_UNKNOWN,
+                            'info' => $advisable->name,
+                        ];
+                    } else {
+                        // CooperationMeasureApplication
+                        $this->cards[$category][$order] = [
+                            'name' => Str::limit($advisable->name, 22),
+                            'icon' => $advisable->extra['icon'] ?? 'icon-tools',
+                            // TODO: Subsidy
+                            'subsidy' => $this->SUBSIDY_UNKNOWN,
+                            'info' => $advisable->info,
+                        ];
+                    }
                 }
+
                 $this->cards[$category][$order]['id'] = $advice->id;
-                $this->cards[$category][$order]['price'] = [
+                $this->cards[$category][$order]['costs'] = [
                     'from' => $advice->costs['from'] ?? 0,
                     'to' => $advice->costs['to'] ?? 0,
                 ];
+                $this->cards[$category][$order]['savings'] = $advice->savings_money ?? 0;
 
                 ++$order;
             }
@@ -162,18 +171,56 @@ class Form extends Component
 
     public function submit()
     {
-        $measureData = $this->validate($this->rules)['new_measure'];
+        // Before we can validate, we must convert human format to proper format
+        $costs = $this->custom_measure_application['costs'] ?? [];
+        $costs['from'] = NumberFormatter::mathableFormat($costs['from'] ?? '', 2);
+        $costs['to'] = NumberFormatter::mathableFormat($costs['to'] ?? '', 2);
+        $this->custom_measure_application['costs'] = $costs;
+        $this->custom_measure_application['savings_money'] = NumberFormatter::mathableFormat($this->custom_measure_application['savings_money'] ?? 0, 2);
+
+        $measureData = $this->validate($this->rules)['custom_measure_application'];
+
+        // Create custom measure
+        $customMeasureApplication = CustomMeasureApplication::create([
+            'building_id' => $this->building->id,
+            'input_source_id' => $this->currentInputSource->id,
+            'hash' => Str::uuid(),
+            'name' => ['nl' => $measureData['name']],
+        ]);
+
+        // Get order based on current total (we don't have to add or subtract since count gives us the total, which
+        // is equal to indexable order + 1)
+        $order = count($this->cards[$this->category]);
+
+        // Build user advice
+        $advice = $customMeasureApplication
+            ->userActionPlanAdvices()
+            ->create(
+                [
+                    'user_id' => $this->building->user->id,
+                    'input_source_id' => $this->currentInputSource->id,
+                    'category' => $this->category,
+                    'visible' => true,
+                    'order' => $order,
+                    'costs' => $measureData['costs'],
+                    'savings_money' => $measureData['savings_money'] ?? 0,
+                ],
+            );
 
         // Append card
-        $this->cards[$this->category][Str::random()] = [
-            'name' => $measureData['subject'],
+        $this->cards[$this->category][$order] = [
+            'id' => $advice->id,
+            'name' => $customMeasureApplication->name,
+            'info' => $customMeasureApplication->name,
             'icon' => 'icon-tools',
-            'price' => $measureData['price'],
+            'costs' => $advice->costs,
             'subsidy' => $this->SUBSIDY_UNKNOWN,
-            'savings' => $measureData['expected_savings'] ?? 0,
+            'savings' => $advice->savings_money ?? 0,
         ];
 
         $this->dispatchBrowserEvent('close-modal');
+        // Reset the modal
+        $this->custom_measure_application = [];
 
         $this->recalculate();
     }
@@ -229,11 +276,11 @@ class Form extends Component
                 // must be placed one higher. If the iteration is above new order, they need to be placed one higher.
                 // Otherwise, they can stay in their position.
                 $loop = 0;
-                foreach($oldCards as $card) {
+                foreach ($oldCards as $card) {
                     if ($loop == $newOrder) {
                         $newCards[$loop] = $movedCard;
                         $newCards[$loop + 1] = $card;
-                    } elseif($loop > $newOrder) {
+                    } elseif ($loop > $newOrder) {
                         $newCards[$loop + 1] = $card;
                     } else {
                         $newCards[$loop] = $card;
@@ -266,8 +313,8 @@ class Form extends Component
         $subsidy = 0;
 
         foreach ($this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO] as $card) {
-            $from = $card['price']['from'] ?? 0;
-            $to = $card['price']['to'] ?? 0;
+            $from = $card['costs']['from'] ?? 0;
+            $to = $card['costs']['to'] ?? 0;
 
             $minInvestment += $from;
             $maxInvestment += $to;
@@ -287,8 +334,7 @@ class Form extends Component
     {
         // Reorder for each card in the list. We don't need to check invisible items, so we don't have to check
         // any other cards
-        foreach ($this->cards[$category] as $order => $card)
-        {
+        foreach ($this->cards[$category] as $order => $card) {
             $this->updateAdvice($card['id'], ['order' => $order]);
         }
     }

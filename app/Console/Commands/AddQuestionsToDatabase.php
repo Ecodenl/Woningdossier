@@ -1145,7 +1145,7 @@ class AddQuestionsToDatabase extends Command
                         ],
                         [
                             'validation' => [
-                                "required_if:has_solar_panels,yes",
+                                'nullable',
                                 'numeric',
                                 'between:1900,' . date('Y')
                             ],

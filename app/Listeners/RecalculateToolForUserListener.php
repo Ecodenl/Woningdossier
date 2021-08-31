@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\HoomdossierSession;
 use App\Models\Notification;
 use App\Models\Step;
@@ -28,25 +29,33 @@ class RecalculateToolForUserListener
     public function handle($event)
     {
         $stepsWhichNeedRecalculation = [
+            // Algemene gegevens
             'building-characteristics',
             'current-state',
             'usage',
             'interest',
 
+            // Quick scan (Replaces algemene gegevens so must trigger a recalculate!)
+            'building-data',
+            'usage-quick-scan',
+            'living-requirements',
+            'residential-status',
+
+            // Expert tool relevant steps
             'high-efficiency-boiler',
             'solar-panels',
             'heater',
         ];
 
         if (in_array($event->step->short, $stepsWhichNeedRecalculation)) {
-            // currently this listener will only be triggered on a event thats dispatched while NOT running in the cli
+            // Currently this listener will only be triggered on a event that's dispatched while NOT running in the cli
             // so we can safely access the input source from the session
             $inputSource = HoomdossierSession::getInputSource(true);
 
             // Theres nothing to recalculate if the user did not complete the main step.
-            if ($event->building->hasCompleted(Step::findByShort('general-data'))) {
+            if ($event->building->hasCompletedQuickScan()) {
                 $userId = $event->building->user->id;
-                Artisan::call('tool:recalculate', ['--user' => [$userId], '--input-source' => [$inputSource->short]]);
+                Artisan::call(RecalculateForUser::class, ['--user' => [$userId], '--input-source' => [$inputSource->short]]);
             }
         }
     }

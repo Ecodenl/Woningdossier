@@ -88,7 +88,8 @@ class RecalculateForUser extends Command
                     ->forInputSource($inputSource)
                     ->whereHas('step', function ($query) {
                         $query
-                            ->whereNotIn('steps.short', ['general-data', 'heat-pump'])
+                            ->whereNotIn('steps.short', ['general-data', 'heat-pump', 'building-data',
+                                'usage-quick-scan', 'living-requirements', 'residential-status'])
                             ->whereNull('parent_id');
                     })
                     ->get();

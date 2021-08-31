@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Scopes\GetValueScope;
 use App\ToolQuestionAnswer;
@@ -318,6 +319,23 @@ class Building extends Model
 
         return $this->completedSteps()
                     ->where('step_id', $step->id)->count() > 0;
+    }
+
+    /**
+     * Check if all quick scan steps have been completed
+     *
+     * @return bool
+     */
+    public function hasCompletedQuickScan(): bool
+    {
+        $quickScanSteps = Step::whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS)->get();
+        foreach ($quickScanSteps as $quickScanStep) {
+            if (! $this->hasCompleted($quickScanStep)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

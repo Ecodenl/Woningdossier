@@ -1,5 +1,4 @@
 <div class="w-full grid grid-rows-2 grid-cols-4 grid-flow-row justify-items-center">
-    {{-- TODO: Make this cooperation measure applications --}}
     @foreach($cooperationMeasureApplicationsFormData as $index => $customMeasureApplicationFormData)
         <div class="checkbox-wrapper media-wrapper">
             <input type="checkbox" id="cooperation-measure-{{$index}}" value="{{ $index }}"

@@ -133,6 +133,11 @@ class AddQuestionsToDatabase extends Command
         $templateCustomChanges = SubStepTemplate::findByShort('template-custom-changes');
         $templateSummary = SubStepTemplate::findByShort('template-summary');
 
+        $stepBuildingData = Step::findByShort('building-data');
+        $stepUsageQuickScan = Step::findByShort('usage-quick-scan');
+        $stepLivingRequirements = Step::findByShort('living-requirements');
+        $stepResidentialStatus = Step::findByShort('residential-status');
+
         $structure = [
             'building-data' => [
                 // sub step name
@@ -327,7 +332,8 @@ class AddQuestionsToDatabase extends Command
                     'questions' => [
                         [
                             'validation' => ['nullable', 'string'],
-                            'save_in' => 'step_comments.comment',
+                            'save_in' => "step_comments.{$stepBuildingData->id}.comment",
+                            'short' => 'building-data-comment',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment',
                             'tool_question_type_id' => $textareaType->id,
                         ],
@@ -541,7 +547,8 @@ class AddQuestionsToDatabase extends Command
                     'questions' => [
                         [
                             'validation' => ['nullable', 'string'],
-                            'save_in' => 'step_comments.comment',
+                            'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",
+                            'short' => 'usage-quick-scan-comment',
                             'translation' => 'cooperation/tool/general-data/usage.index.comment',
                             'tool_question_type_id' => $textareaType->id,
                         ],
@@ -631,7 +638,8 @@ class AddQuestionsToDatabase extends Command
                     'questions' => [
                         [
                             'validation' => ['nullable', 'string'],
-                            'save_in' => 'step_comments.comment',
+                            'save_in' => "step_comments.{$stepLivingRequirements->id}.comment",
+                            'short' => 'living-requirements-comment',
                             'translation' => 'cooperation/tool/general-data/interest.index.comment',
                             'tool_question_type_id' => $textareaType->id,
                         ],
@@ -1066,7 +1074,7 @@ class AddQuestionsToDatabase extends Command
                             [
                                 'column' => 'ventilation-type',
                                 'operator' => '!=',
-                                'value' => 20, // Natuurlijke ventilatie
+                                'value' => 20, // Natuurlijke ventilatie TODO: Convert to DB statement
                             ],
                         ],
                     ],
@@ -1111,7 +1119,7 @@ class AddQuestionsToDatabase extends Command
                                     [
                                         'column' => 'ventilation-type',
                                         'operator' => '!=',
-                                        'value' => 21, // Mechanische ventilatie
+                                        'value' => 21, // Mechanische ventilatie TODO: Convert to DB statement
                                     ],
                                 ],
                             ],
@@ -1200,18 +1208,20 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                'Toelichting woninggegevens' => [
+                'Toelichting woonstatus' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
                             'validation' => ['nullable', 'string'],
-                            'save_in' => 'step_comments.comment',
+                            'save_in' => "step_comments.{$stepResidentialStatus->id}_element.comment",
+                            'short' => 'residential-status-element-comment',
                             'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
                             'tool_question_type_id' => $textareaType->id,
                         ],
                         [
                             'validation' => ['nullable', 'string'],
-                            'save_in' => 'step_comments.comment',
+                            'save_in' => "step_comments.{$stepResidentialStatus->id}_service.comment",
+                            'short' => 'residential-status-service-comment',
                             'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
                             'tool_question_type_id' => $textareaType->id,
                         ],
@@ -1293,7 +1303,6 @@ class AddQuestionsToDatabase extends Command
 
                         if (isset($questionData['tool_question_values'])) {
                             $extra = $questionData['extra'] ?? [];
-
 
                             foreach ($questionData['tool_question_values'] as $toolQuestionValueOrder => $toolQuestionValue) {
                                 if (isset($extra['column'])) {

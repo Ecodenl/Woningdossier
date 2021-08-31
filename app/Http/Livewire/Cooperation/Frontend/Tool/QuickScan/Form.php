@@ -222,8 +222,8 @@ class Form extends Component
                     $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                     break;
                 case 'checkbox-icon':
-                    /** @var Collection $questionValues */
-                    $answerForInputSource = $answerForInputSource ?? [];
+                    /** @var array $answerForInputSource */
+                    $answerForInputSource = $answerForInputSource ?? $toolQuestion->options['value'] ?? [];
                     $this->filledInAnswers[$toolQuestion->id] = [];
                     foreach ($answerForInputSource as $answer) {
                         $this->filledInAnswers[$toolQuestion->id][] = $answer;

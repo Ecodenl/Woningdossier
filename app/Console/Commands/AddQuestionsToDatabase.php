@@ -827,6 +827,7 @@ class AddQuestionsToDatabase extends Command
                             'short' => 'heat-source',
                             'translation' => "Wat gebruikt u voor de verwarming en warm water?",
                             'tool_question_type_id' => $checkboxIconType->id,
+                            'options' => ['value' => ['hr-boiler'],],
                             'tool_question_custom_values' => [
                                 'hr-boiler' => [
                                     'name' => 'Gasketel',
@@ -1185,7 +1186,7 @@ class AddQuestionsToDatabase extends Command
                         ],
                         [
                             'validation' => [
-                                "required_if:has_solar_panels,yes",
+                                'nullable',
                                 'numeric',
                                 'between:1900,' . date('Y')
                             ],

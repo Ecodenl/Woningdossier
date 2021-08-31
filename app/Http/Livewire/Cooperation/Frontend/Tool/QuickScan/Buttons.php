@@ -2,7 +2,9 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
+use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
+use App\Models\Building;
 use App\Models\Step;
 use App\Models\SubStep;
 use Illuminate\Http\Request;
@@ -11,6 +13,8 @@ use Livewire\Component;
 class Buttons extends Component
 {
     private $account;
+    /** @var Building */
+    public $building;
     public $step;
     public $nextStep;
     public $previousStep;
@@ -19,11 +23,15 @@ class Buttons extends Component
     public $nextSubStep;
     public $previousSubStep;
 
+    public $firstIncompleteStep = null;
+    public $firstIncompleteSubStep = null;
+
     public $toolQuestions;
 
     public function mount(Request $request, Step $step, SubStep $subStep)
     {
         $this->account = $request->user();
+        $this->building = HoomdossierSession::getBuilding(true);
 
         $subStep->load(['toolQuestions', 'subStepTemplate']);
 
@@ -63,7 +71,7 @@ class Buttons extends Component
             if ($firstSubStepForStep->id === $this->subStep->id) {
                 $this->previousStep = $this->step->previousQuickScan();
 
-                // the first one cant have a previous one
+                // the first one can't have a previous one
                 if ($this->previousStep instanceof Step) {
                     // the previous step is a different one, so we should get the last sub step of the previous step
                     $this->previousSubStep = $this->previousStep->subSteps()->orderByDesc('order')->first();
@@ -86,11 +94,27 @@ class Buttons extends Component
         $lastSubStepForStep = $this->step->subSteps()->orderByDesc('order')->first();
         if ($lastSubStepForStep->id === $this->subStep->id) {
             $this->nextStep = $this->step->nextQuickScan();
-            // the last cant have a next one
+            // the last can't have a next one
             if ($this->nextStep instanceof Step) {
                 // the previous step is a different one, so we should get the first sub step of the previous step
                 $this->nextSubStep = $this->nextStep->subSteps()->first();
             }
+        }
+
+        if (! $this->nextStep instanceof Step) {
+            // No next step set, let's see if there are any steps left incomplete
+
+            $irrelevantSteps = $this->building->completedSteps()->pluck('step_id')->toArray();
+            $irrelevantSteps[] = $this->step->id;
+            $this->firstIncompleteStep = Step::quickScan()
+                ->whereNotIn('id', $irrelevantSteps)
+                ->orderBy('order')
+                ->first();
+        }
+
+        // There are incomplete steps left, set the sub step
+        if ($this->firstIncompleteStep instanceof Step) {
+            $this->firstIncompleteSubStep = $this->firstIncompleteStep->subSteps()->orderBy('order')->first();
         }
     }
 }

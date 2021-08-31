@@ -71,7 +71,7 @@
 }
 
 .dropdown-wrapper .dropdown {
-    @apply w-48 absolute rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm bg-white z-50 top-full filter drop-shadow-xl divide-y divide-blue-500 py-2;
+    @apply w-48 absolute rounded-lg border border-blue-500 border-opacity-50 text-blue-500 text-sm bg-white z-100 top-full filter drop-shadow-xl divide-y divide-blue-500 py-2;
     min-height: 3rem; /* h-12, height of 1 option. Displays better when no options are available */
 }
 

@@ -484,7 +484,7 @@
         $(document).ready(function () {
 
 
-            $("select, input[type=radio], input[type=text], input[type=checkbox]").change(formChange())
+            $("select, input[type=radio], input[type=text], input[type=checkbox]").change(() => formChange())
 
             function formChange() {
                 let form = $('#insulated-glazing-form').serialize();

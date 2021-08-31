@@ -94,6 +94,7 @@ class DoUpgrade extends Command
                 $afterCommands = [
                     MapAnswers::class,
                     MapActionPlan::class,
+                    MapComments::class,
                     AddMasterInputSource::class,
                 ];
 

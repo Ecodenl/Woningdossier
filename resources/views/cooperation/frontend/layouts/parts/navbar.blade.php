@@ -1,5 +1,5 @@
 {{-- Nav bar --}}
-<div class="flex flex-wrap flex-row justify-between items-center w-full bg-white h-12 px-5 xl:px-20 relative z-40 shadow-lg">
+<div class="flex flex-wrap flex-row justify-between items-center w-full bg-white h-12 px-5 xl:px-20 relative z-100 shadow-lg">
     <div class="flex flex-row flex-wrap justify-between items-center space-x-4">
         {{-- TODO: Check if this should be interchangable per cooperation --}}
         <a href="{{ route('cooperation.welcome') }}">

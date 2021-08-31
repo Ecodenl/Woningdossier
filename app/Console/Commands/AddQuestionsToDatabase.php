@@ -313,7 +313,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['numeric', 'min:20', 'max:999999'],
+                            'validation' => ['required', 'numeric', 'min:20', 'max:999999'],
                             'save_in' => 'building_features.surface',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface',
                             'tool_question_type_id' => $textType->id,
@@ -997,7 +997,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_services.{$heatPump->id}.service_value_id",
                             'short' => 'heat-pump-type',
-                            'translation' => "Heeft u een warmptepomp?",
+                            'translation' => "Heeft u een warmtepomp?",
                             'tool_question_type_id' => $radioType->id,
                             'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
                             'extra' => [

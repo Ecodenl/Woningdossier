@@ -420,7 +420,7 @@
 
             //$('select[name*=element_value_id]').trigger('change');
 
-            $('#main-tab form input, select').change(formChange)
+            $('#main-tab form input, select').change(() => formChange())
 
             function formChange() {
 

@@ -338,13 +338,6 @@ class Form extends Component
                 $where,
                 [$column => $givenAnswer]
             );
-
-//        $where['input_source_id'] = $this->masterInputSource->id;
-//        $modelName::allInputSources()
-//            ->updateOrCreate(
-//                $where,
-//                [$column => $givenAnswer]
-//            );
     }
 
     private function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
@@ -371,10 +364,7 @@ class Form extends Component
                 $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($answer);
                 $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
                 $data['answer'] = $answer;
-                // TODO: Check this, it's saving answers really weirdly
-                $toolQuestion->toolQuestionAnswers()->create($data)->replicate()->fill([
-                    'input_source_id' => $this->masterInputSource->id
-                ])->save();
+                $toolQuestion->toolQuestionAnswers()->create($data);
             }
 
         } else {
@@ -396,12 +386,6 @@ class Form extends Component
                 ->toolQuestionAnswers()
                 ->allInputSources()
                 ->updateOrCreate($where, $data);
-//        $where['input_source_id'] = $this->masterInputSource->id;
-//        $data['input_source_id'] = $this->masterInputSource->id;
-//        $toolQuestion
-//            ->toolQuestionAnswers()
-//            ->allInputSources()
-//            ->updateOrCreate($where, $data);
         }
     }
 }

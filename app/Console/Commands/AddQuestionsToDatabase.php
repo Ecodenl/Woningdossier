@@ -328,7 +328,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => 'step_comments.comment',
-                            'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment.title',
+                            'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment',
                             'tool_question_type_id' => $textareaType->id,
                         ],
                     ],
@@ -542,7 +542,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => 'step_comments.comment',
-                            'translation' => 'cooperation/tool/general-data/usage.index.comment.title',
+                            'translation' => 'cooperation/tool/general-data/usage.index.comment',
                             'tool_question_type_id' => $textareaType->id,
                         ],
                     ],
@@ -632,7 +632,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => 'step_comments.comment',
-                            'translation' => 'cooperation/tool/general-data/interest.index.comment.title',
+                            'translation' => 'cooperation/tool/general-data/interest.index.comment',
                             'tool_question_type_id' => $textareaType->id,
                         ],
                     ],
@@ -1206,13 +1206,13 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => 'step_comments.comment',
-                            'translation' => 'cooperation/tool/general-data/current-state.index.comment.element.title',
+                            'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
                             'tool_question_type_id' => $textareaType->id,
                         ],
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => 'step_comments.comment',
-                            'translation' => 'cooperation/tool/general-data/current-state.index.comment.service.title',
+                            'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
                             'tool_question_type_id' => $textareaType->id,
                         ],
                     ],

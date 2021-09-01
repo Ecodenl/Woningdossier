@@ -29,7 +29,15 @@
         </a>
     @endif
 
-    <button type="button" wire:click="$emitTo('cooperation.frontend.tool.quick-scan.form', 'save', '{{$nextUrl}}')"
+
+    <button type="button"
+            {{-- Because a questionnaire is simply saved using an old school controller, we update the action, which
+            will handle redirecting us correctly to the questionnaire... TODO: Refactor this, no time for it now --}}
+            @if(\App\Helpers\Blade\RouteLogic::inQuestionnaire(Route::currentRouteName()))
+            x-data x-on:click="let form = document.querySelector('#questionnaire-form-{{$questionnaire->id}}'); let action = form.getAttribute('action'); action += '?nextUrl={{$nextUrl}}'; form.setAttribute('action', action); form.submit();"
+            @else
+            wire:click="$emitTo('cooperation.frontend.tool.quick-scan.form', 'save', '{{$nextUrl}}')"
+            @endif
             class="btn btn-purple flex items-center ml-1">
         @lang('cooperation/frontend/shared.defaults.next')
         <i class="icon-xs icon-arrow-right-bold-purple ml-5"></i>

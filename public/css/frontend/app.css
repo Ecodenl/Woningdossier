@@ -157998,7 +157998,7 @@ a:focus {
 
 /* Hyperlink in paragraph */
 
-p a {
+p a, a.in-text {
   font-weight: 500;
   --tw-text-opacity: 1;
   color: rgba(98, 33, 145, var(--tw-text-opacity));

@@ -51,7 +51,9 @@
                                         {{$building->city}}
                                     </td>
                                     <td>
-                                        {{$mostRecentBuildingStatus->status->name}}
+                                        @if($mostRecentBuildingStatus instanceof \App\Models\BuildingStatus)
+                                            {{$mostRecentBuildingStatus->status->name}}
+                                        @endif
                                     </td>
                                 </tr>
                         @endforeach

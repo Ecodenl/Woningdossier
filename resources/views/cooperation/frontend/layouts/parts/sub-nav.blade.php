@@ -26,6 +26,11 @@
             <div class="step-divider-line"></div>
         @endif
         @if($hasQuestionnaires)
+            @php
+                // For styling, within the questionnaire, it might be a questionnaire within the set of steps, but could
+                // also be at the end. We check this later
+                $isLastStep = $loop->last;
+            @endphp
             @foreach($questionnaires as $questionnaire)
                 <a href="{{ route('cooperation.frontend.tool.quick-scan.questionnaires.index', compact('step', 'questionnaire')) }}"
                    class="no-underline">
@@ -44,7 +49,7 @@
                     </div>
                 </a>
 
-                @if(! $loop->last)
+                @if(! $loop->last || ! $isLastStep)
                     <div class="step-divider-line"></div>
                 @endif
             @endforeach

@@ -160,7 +160,7 @@ trait GetMyValuesTrait
         $currentTable = $this->table ?? $this->getTable();
 
         // determine which column we should use.
-        if (\Schema::hasColumn($currentTable, 'building_id')) {
+        if (Schema::hasColumn($currentTable, 'building_id')) {
             return [['building_id', '=', $building->id]];
         } else {
             return [['user_id', '=', $building->user_id]];

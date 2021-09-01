@@ -160,11 +160,7 @@ class Step extends Model
 
     public function hasQuestionnaires()
     {
-        if ($this->questionnaires()->count() > 0) {
-            return true;
-        }
-
-        return false;
+        return $this->questionnaires()->count() > 0;
     }
 
     public function scopeOrdered(Builder $query)

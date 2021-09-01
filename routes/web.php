@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 /** @noinspection PhpParamsInspection */
 
 /*
@@ -164,14 +166,17 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::post('', 'ImportController@copy')->name('copy');
             });
 
-
             Route::group(['namespace' => 'Frontend\Tool', 'as' => 'frontend.tool.'], function () {
                 Route::as('quick-scan.')->prefix('quick-scan')->group(function () {
+                    Route::get('woonplan', 'QuickScan\\MyPlanController@index')->name('my-plan.index');
+
+                    Route::get('{step}/vragenlijst/{questionnaire}', 'QuickScan\\QuestionnaireController@index')
+                        ->name('questionnaires.index');
+
+                    // Define this route as last to not match above routes as step/sub step combo
                     Route::get('{step}/{subStep}', 'QuickScanController@index')
                         ->name('index')
                         ->middleware('checks-conditions-for-sub-steps');
-
-                    Route::get('woonplan', 'QuickScan\\MyPlanController@index')->name('my-plan.index');
                 });
             });
 

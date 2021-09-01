@@ -17,6 +17,7 @@ class CreateCustomMeasureApplicationsTable extends Migration
             $table->bigIncrements('id');
 
             $table->json('name');
+            $table->json('info');
 
             $table->uuid('hash');
 

@@ -157998,7 +157998,7 @@ a:focus {
 
 /* Hyperlink in paragraph */
 
-p a {
+p a, a.in-text {
   font-weight: 500;
   --tw-text-opacity: 1;
   color: rgba(98, 33, 145, var(--tw-text-opacity));
@@ -158645,6 +158645,10 @@ textarea.form-input {
   --tw-bg-opacity: 1;
   background-color: rgba(240, 241, 242, var(--tw-bg-opacity));
   --tw-bg-opacity: 0.5;
+}
+
+.form-error .slider-wrapper {
+  margin-bottom: 2rem;
 }
 
 .slider {

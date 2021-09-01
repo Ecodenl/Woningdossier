@@ -90,6 +90,10 @@ textarea.form-input {
     @apply cursor-not-allowed bg-blue-100 bg-opacity-50;
 }
 
+.form-error .slider-wrapper {
+    @apply mb-8;
+}
+
 .slider {
     @apply w-full h-1 outline-none appearance-none;
     --slider-before: theme('colors.green');

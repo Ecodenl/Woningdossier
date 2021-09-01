@@ -6,6 +6,7 @@ use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
@@ -238,7 +239,7 @@ class Form extends Component
                     break;
                 case 'slider':
                     // default it when no answer is set, otherwise if the user leaves it default and submit the validation will fail because nothing is set.
-                    $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource ?? $toolQuestion->options['value'];
+                    $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::format($answerForInputSource ?? $toolQuestion->options['value'], 0);
                     $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                     break;
                 case 'checkbox-icon':

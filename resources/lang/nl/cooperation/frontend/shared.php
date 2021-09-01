@@ -7,7 +7,7 @@ return [
         'resident' => 'Bewoner',
         'coach' => 'Coach',
         'example-building' => 'Voorbeeldwoning',
-        'Master' => 'Master',
+        'master' => 'Master',
     ],
     'modals' => [
         'info' => 'Informatie',

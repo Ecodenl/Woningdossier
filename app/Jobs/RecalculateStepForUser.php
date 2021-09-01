@@ -42,9 +42,13 @@ class RecalculateStepForUser implements ShouldQueue
     {
         Log::debug('Recalculating step: '.$this->step->name);
         $stepClass = 'App\\Helpers\\Cooperation\Tool\\'.Str::singular(Str::studly($this->step->short)).'Helper';
-        /** @var ToolHelper $stepHelperClass */
-        $stepHelperClass = new $stepClass($this->user, $this->inputSource);
-        $stepHelperClass->createValues()->createAdvices();
+
+        // Some steps don't have tool helpers. Let's check if it exists first
+        if (class_exists($stepClass)) {
+            /** @var ToolHelper $stepHelperClass */
+            $stepHelperClass = new $stepClass($this->user, $this->inputSource);
+            $stepHelperClass->createValues()->createAdvices();
+        }
     }
 
 

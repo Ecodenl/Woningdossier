@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\KeyFigures\FloorInsulation\Temperature as FloorInsulationTemperature;
 use App\Helpers\KeyFigures\WallInsulation\Temperature as WallInsulationTemperature;
+use App\Scopes\VisibleScope;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 
@@ -98,5 +99,16 @@ class MeasureApplication extends Model
     public function step()
     {
         return $this->belongsTo(Step::class);
+    }
+
+    public function userActionPlanAdvices()
+    {
+        // We need to retrieve this without the visible tag
+        // The visible tag defines whether it should be shown on my plan or not, but for other locations
+        // (e.g. the question that adds them) it just defines if it's checked or not
+        return $this->morphMany(
+            UserActionPlanAdvice::class,
+            'user_action_plan_advisable'
+        )->withoutGlobalScope(VisibleScope::class);
     }
 }

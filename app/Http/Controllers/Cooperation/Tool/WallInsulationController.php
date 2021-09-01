@@ -10,7 +10,6 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\WallInsulationRequest;
-use App\Jobs\RecalculateStepForUser;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;

@@ -16,7 +16,11 @@
     if ($nextStep instanceof \App\Models\Step && $nextSubStep instanceof \App\Models\SubStep) {
         $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['step' => $nextStepKey, 'subStep' => $nextSubStepKey]);
     } else {
-        $nextUrl = route('cooperation.frontend.tool.quick-scan.my-plan.index');
+        if ($firstIncompleteStep instanceof \App\Models\Step && $firstIncompleteSubStep instanceof \App\Models\SubStep) {
+            $nextUrl = route('cooperation.frontend.tool.quick-scan.index', ['step' => $firstIncompleteStep, 'subStep' => $firstIncompleteSubStep]);
+        } else {
+            $nextUrl = route('cooperation.frontend.tool.quick-scan.my-plan.index');
+        }
     }
     ?>
     @if($previousStep instanceof \App\Models\Step || $previousSubStep instanceof \App\Models\SubStep)

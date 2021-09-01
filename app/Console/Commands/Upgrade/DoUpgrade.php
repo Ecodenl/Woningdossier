@@ -68,6 +68,7 @@ class DoUpgrade extends Command
                 \RoofTypesTableSeeder::class,
                 \ComfortLevelTapWatersTableSeeder::class,
                 \EnergyLabelsTableSeeder::class,
+                \CooperationMeasureApplicationsTableSeeder::class,
             ];
 
             foreach ($seeders as $seeder) {
@@ -94,7 +95,9 @@ class DoUpgrade extends Command
                 $afterCommands = [
                     MapAnswers::class,
                     MapActionPlan::class,
+                    MapComments::class,
                     AddMasterInputSource::class,
+                    ConvertExampleBuildingContents::class,
                 ];
 
                 foreach ($afterCommands as $command) {

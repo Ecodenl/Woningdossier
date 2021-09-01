@@ -12,23 +12,28 @@ use App\Models\ElementValue;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
-use App\Models\Log;
 use App\Models\Service;
+use App\Models\ToolQuestion;
+use App\Models\ToolQuestionCustomValue;
 use App\Scopes\GetValueScope;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class ExampleBuildingService
 {
-    public static function apply(ExampleBuilding $exampleBuilding, $buildYear, Building $building)
-    {
-        $inputSource = InputSource::findByShort('example-building');
+    public static function apply(
+        ExampleBuilding $exampleBuilding,
+        $buildYear,
+        Building $building
+    ) {
+        $inputSource   = InputSource::findByShort('example-building');
         $buildingOwner = $building->user;
 
         // Clear the current example building data
         self::log('Lookup '.$exampleBuilding->name.' for '.$buildYear);
         $contents = $exampleBuilding->getContentForYear($buildYear);
 //        dd($exampleBuilding->name, $contents, $buildYear);
-        if (! $contents instanceof ExampleBuildingContent) {
+        if ( ! $contents instanceof ExampleBuildingContent) {
             // There's nothing to apply
             self::log('No data to apply');
 
@@ -44,7 +49,9 @@ class ExampleBuildingService
         $exampleData = $contents->content;
 
 //        dd($exampleData);
-        self::log('Applying Example Building '.$exampleBuilding->name.' ('.$exampleBuilding->id.', '.$contents->build_year.')');
+        self::log(
+            'Applying Example Building '.$exampleBuilding->name.' ('.$exampleBuilding->id.', '.$contents->build_year.')'
+        );
 
         self::clearExampleBuilding($building);
 
@@ -64,63 +71,103 @@ class ExampleBuildingService
                         continue;
                     }
                     if ('user_energy_habits' == $columnOrTable) {
-                        $buildingOwner->energyHabit()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $values);
+                        $buildingOwner->energyHabit()->forInputSource(
+                            $inputSource
+                        )->updateOrCreate(
+                            ['input_source_id' => $inputSource->id],
+                            $values
+                        );
                     }
                     if ('element' == $columnOrTable) {
                         // process elements
                         if (is_array($values)) {
                             foreach ($values as $elementId => $elementValueData) {
-                                $extra = null;
+                                $extra         = null;
                                 $elementValues = [];
                                 if (is_array($elementValueData)) {
-                                    if (! array_key_exists('element_value_id', $elementValueData)) {
+                                    if ( ! array_key_exists(
+                                        'element_value_id',
+                                        $elementValueData
+                                    )) {
                                         // perhaps a nested array (e.g. wood elements)
                                         foreach ($elementValueData as $elementValueDataItem) {
-                                            if (is_array($elementValueDataItem) && array_key_exists('element_value_id', $elementValueDataItem)) {
-                                                $d = ['element_value_id' => (int) $elementValueDataItem['element_value_id']];
-                                                if (array_key_exists('extra', $elementValueDataItem)) {
+                                            if (is_array(
+                                                    $elementValueDataItem
+                                                ) && array_key_exists(
+                                                    'element_value_id',
+                                                    $elementValueDataItem
+                                                )) {
+                                                $d = ['element_value_id' => (int)$elementValueDataItem['element_value_id']];
+                                                if (array_key_exists(
+                                                    'extra',
+                                                    $elementValueDataItem
+                                                )) {
                                                     $d['extra'] = $elementValueDataItem['extra'];
                                                 }
                                                 $elementValues[] = $d;
                                             } else {
-                                                $elementValues[] = ['element_value_id' => (int) $elementValueDataItem];
+                                                $elementValues[] = ['element_value_id' => (int)$elementValueDataItem];
                                             }
                                         }
                                     } else {
-                                        if (array_key_exists('element_value_id', $elementValueData)) {
-                                            $d = ['element_value_id' => (int) $elementValueData['element_value_id']];
-                                            if (array_key_exists('extra', $elementValueData)) {
+                                        if (array_key_exists(
+                                            'element_value_id',
+                                            $elementValueData
+                                        )) {
+                                            $d = ['element_value_id' => (int)$elementValueData['element_value_id']];
+                                            if (array_key_exists(
+                                                'extra',
+                                                $elementValueData
+                                            )) {
                                                 $d['extra'] = $elementValueData['extra'];
                                             }
                                             $elementValues[] = $d;
                                         } else {
-                                            $elementValues[] = ['element_value_id' => (int) $elementValueData];
+                                            $elementValues[] = ['element_value_id' => (int)$elementValueData];
                                         }
                                     }
                                 } else {
-                                    $elementValues[] = ['element_value_id' => (int) $elementValueData];
+                                    $elementValues[] = ['element_value_id' => (int)$elementValueData];
                                 }
 
                                 $element = Element::find($elementId);
                                 if ($element instanceof Element) {
                                     foreach ($elementValues as $elementValue) {
-                                        $extra = array_key_exists('extra', $elementValue) ? $elementValue['extra'] : null;
-                                        $buildingElement = new BuildingElement(['extra' => $extra]);
-                                        $buildingElement->inputSource()->associate($inputSource);
-                                        $buildingElement->element()->associate($element);
-                                        $buildingElement->building()->associate($building);
+                                        $extra           = array_key_exists(
+                                            'extra',
+                                            $elementValue
+                                        ) ? $elementValue['extra'] : null;
+                                        $buildingElement = new BuildingElement(
+                                            ['extra' => $extra]
+                                        );
+                                        $buildingElement->inputSource(
+                                        )->associate($inputSource);
+                                        $buildingElement->element()->associate(
+                                            $element
+                                        );
+                                        $buildingElement->building()->associate(
+                                            $building
+                                        );
 
                                         if (isset($elementValue['element_value_id'])) {
-                                            $elementValue = $element->values()->where('id',
-                                                $elementValue['element_value_id'])->first();
+                                            $elementValue = $element->values(
+                                            )->where(
+                                                'id',
+                                                $elementValue['element_value_id']
+                                            )->first();
 
                                             if ($elementValue instanceof ElementValue) {
-                                                $buildingElement->elementValue()->associate($elementValue);
+                                                $buildingElement->elementValue(
+                                                )->associate($elementValue);
                                             }
                                         }
 
                                         $buildingElement->save();
-                                        self::log('Update or creating building element '.json_encode($buildingElement->toArray()));
+                                        self::log(
+                                            'Update or creating building element '.json_encode(
+                                                $buildingElement->toArray()
+                                            )
+                                        );
                                     }
                                 }
                             }
@@ -131,7 +178,10 @@ class ExampleBuildingService
                         $building
                             ->buildingVentilations()
                             ->forInputSource($inputSource)
-                            ->updateOrCreate(['input_source_id' => $inputSource->id], $values);
+                            ->updateOrCreate(
+                                ['input_source_id' => $inputSource->id],
+                                $values
+                            );
                     }
 
                     if ('service' == $columnOrTable) {
@@ -141,25 +191,33 @@ class ExampleBuildingService
                                 $extra = null;
                                 // note: in the case of solar panels the service_value_id can be null!!
                                 if (is_array($serviceValueData)) {
-                                    if (! array_key_exists('service_value_id', $serviceValueData)) {
-                                        self::log('Service ID '.$serviceId.': no service_value_id -> service_value_id set to NULL');
+                                    if ( ! array_key_exists(
+                                        'service_value_id',
+                                        $serviceValueData
+                                    )) {
+                                        self::log(
+                                            'Service ID '.$serviceId.': no service_value_id -> service_value_id set to NULL'
+                                        );
                                         $serviceValueId = null;
                                     } else {
-                                        $serviceValueId = (int) $serviceValueData['service_value_id'];
+                                        $serviceValueId = (int)$serviceValueData['service_value_id'];
                                     }
-                                    if (array_key_exists('extra', $serviceValueData)) {
+                                    if (array_key_exists(
+                                        'extra',
+                                        $serviceValueData
+                                    )) {
                                         $extra = $serviceValueData['extra'];
                                     }
                                 } else {
-                                    $serviceValueId = (int) $serviceValueData;
+                                    $serviceValueId = (int)$serviceValueData;
                                 }
                                 $service = Service::find($serviceId);
                                 if ($service instanceof Service) {
-                                    // try to obtain a existing service
-                                    $existingBuildingService = BuildingService::withoutGlobalScope(GetValueScope::class)
-                                        ->forMe()
-                                        ->where('input_source_id', $inputSource->id)
-                                        ->where('service_id', $serviceId)->first();
+                                    // try to obtain an existing service
+                                    $existingBuildingService = BuildingService::forMe($building->user)
+                                        ->forInputSource($inputSource)
+                                        ->where('service_id', $serviceId)
+                                        ->first();
 
                                     // see if it already exists, if so we need to add data to that service
 
@@ -168,10 +226,16 @@ class ExampleBuildingService
                                     if ($existingBuildingService instanceof BuildingService) {
                                         $buildingService = $existingBuildingService;
                                     } else {
-                                        $buildingService = new BuildingService();
-                                        $buildingService->inputSource()->associate($inputSource);
-                                        $buildingService->service()->associate($service);
-                                        $buildingService->building()->associate($building);
+                                        $buildingService = new BuildingService(
+                                        );
+                                        $buildingService->inputSource(
+                                        )->associate($inputSource);
+                                        $buildingService->service()->associate(
+                                            $service
+                                        );
+                                        $buildingService->building()->associate(
+                                            $building
+                                        );
                                     }
 
                                     if (is_array($extra)) {
@@ -181,14 +245,21 @@ class ExampleBuildingService
                                         $buildingService->extra = $extra;
                                     }
 
-                                    if (! is_null($serviceValueId)) {
-                                        $serviceValue = $service->values()->where('id', $serviceValueId)->first();
-                                        $buildingService->serviceValue()->associate($serviceValue);
+                                    if ( ! is_null($serviceValueId)) {
+                                        $serviceValue = $service->values(
+                                        )->where('id', $serviceValueId)->first(
+                                        );
+                                        $buildingService->serviceValue(
+                                        )->associate($serviceValue);
                                     }
 
                                     $buildingService->save();
 
-                                    self::log('Update or creating building service '.json_encode($buildingService->toArray()));
+                                    self::log(
+                                        'Update or creating building service '.json_encode(
+                                            $buildingService->toArray()
+                                        )
+                                    );
                                 }
                             }
                         }
@@ -197,15 +268,28 @@ class ExampleBuildingService
                         $features = array_replace_recursive($features, $values);
                     }
                     if ('building_paintwork_statuses' == $columnOrTable) {
-                        $statusId = Arr::get($values, 'paintwork_status_id');
-                        $woodRotStatusId = Arr::get($values, 'wood_rot_status_id');
+                        $statusId        = Arr::get(
+                            $values,
+                            'paintwork_status_id'
+                        );
+                        $woodRotStatusId = Arr::get(
+                            $values,
+                            'wood_rot_status_id'
+                        );
 
                         if (empty($statusId) || empty($woodRotStatusId)) {
-                            self::log('Skipping paintwork status as the paint or wood rot (or both) status is empty');
+                            self::log(
+                                'Skipping paintwork status as the paint or wood rot (or both) status is empty'
+                            );
                             continue;
                         }
 
-                        $building->currentPaintworkStatus()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $values);
+                        $building->currentPaintworkStatus()->forInputSource(
+                            $inputSource
+                        )->updateOrCreate(
+                            ['input_source_id' => $inputSource->id],
+                            $values
+                        );
                         //continue;
                     }
                     if ('building_insulated_glazings' == $columnOrTable) {
@@ -215,37 +299,114 @@ class ExampleBuildingService
                             // the value was stored inside the insulated_glazing_id key, however this changed to insulating_glazing_id.
                             // recent updated example buildings will have the new key, old ones wont.
                             // so if the insulating_glazing_id does not exist, we will set the old one.
-                            if (! array_key_exists('insulating_glazing_id', $glazingData)) {
+                            if ( ! array_key_exists(
+                                'insulating_glazing_id',
+                                $glazingData
+                            )) {
                                 $glazingData['insulating_glazing_id'] = $glazingData['insulated_glazing_id'];
                             }
 
-                            $building->currentInsulatedGlazing()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $glazingData);
+                            $building->currentInsulatedGlazing(
+                            )->forInputSource($inputSource)->updateOrCreate(
+                                ['input_source_id' => $inputSource->id],
+                                $glazingData
+                            );
 
-                            self::log('Update or creating building insulated glazing '.json_encode(
-                                    $building->currentInsulatedGlazing()->forInputSource($inputSource)->first()->toArray()
-                            ));
+                            self::log(
+                                'Update or creating building insulated glazing '.json_encode(
+                                    $building->currentInsulatedGlazing(
+                                    )->forInputSource($inputSource)->first(
+                                    )->toArray()
+                                )
+                            );
                         }
                     }
                     if ('building_roof_types' == $columnOrTable) {
                         foreach ($values as $roofTypeId => $buildingRoofTypeData) {
                             $buildingRoofTypeData['roof_type_id'] = $roofTypeId;
 
-                            if (isset($buildingRoofTypeData['roof_surface']) && (int) $buildingRoofTypeData['roof_surface'] > 0) {
-                                $building->roofTypes()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $buildingRoofTypeData);
+                            if (isset($buildingRoofTypeData['roof_surface']) && (int)$buildingRoofTypeData['roof_surface'] > 0) {
+                                $building->roofTypes()->forInputSource(
+                                    $inputSource
+                                )->updateOrCreate(
+                                    ['input_source_id' => $inputSource->id],
+                                    $buildingRoofTypeData
+                                );
 
-                                self::log('Update or creating building rooftype '.json_encode($building->roofTypes()->forInputSource($inputSource)->first()->toArray()));
+                                self::log(
+                                    'Update or creating building rooftype '.json_encode(
+                                        $building->roofTypes()->forInputSource(
+                                            $inputSource
+                                        )->first()->toArray()
+                                    )
+                                );
                             } else {
-                                self::log('Not saving building rooftype because surface is 0');
+                                self::log(
+                                    'Not saving building rooftype because surface is 0'
+                                );
                             }
                         }
                     }
                     if ('building_pv_panels' == $columnOrTable) {
-                        $building->pvPanels()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $values);
-                        self::log('Update or creating building pv_panels '.json_encode($building->pvPanels()->forInputSource($inputSource)->first()->toArray()));
+                        $building->pvPanels()->forInputSource(
+                            $inputSource
+                        )->updateOrCreate(
+                            ['input_source_id' => $inputSource->id],
+                            $values
+                        );
+                        self::log(
+                            'Update or creating building pv_panels '.json_encode(
+                                $building->pvPanels()->forInputSource(
+                                    $inputSource
+                                )->first()->toArray()
+                            )
+                        );
                     }
                     if ('building_heaters' == $columnOrTable) {
-                        $building->heater()->forInputSource($inputSource)->updateOrCreate(['input_source_id' => $inputSource->id], $values);
-                        self::log('Update or creating building heater '.json_encode($building->heater()->forInputSource($inputSource)->first()->toArray()));
+                        $building->heater()->forInputSource(
+                            $inputSource
+                        )->updateOrCreate(
+                            ['input_source_id' => $inputSource->id],
+                            $values
+                        );
+                        self::log(
+                            'Update or creating building heater '.json_encode(
+                                $building->heater()->forInputSource(
+                                    $inputSource
+                                )->first()->toArray()
+                            )
+                        );
+                    }
+                    if ('tool_question_answers' == $columnOrTable) {
+                        foreach ($values as $questionShort => $answers) {
+                            if ( ! is_array($answers)) {
+                                $answers = [$answers];
+                            }
+                            /** @var ToolQuestion $toolQuestion */
+                            $toolQuestion = ToolQuestion::findByShort(
+                                $questionShort
+                            );
+                            if ($toolQuestion instanceof ToolQuestion) {
+                                foreach ($answers as $answer) {
+                                    $customValue = $toolQuestion->toolQuestionCustomValues(
+                                    )->where('short', '=', $answer)->first();
+                                    $input       = ['answer' => $answer];
+                                    if ($customValue instanceof ToolQuestionCustomValue) {
+                                        $input['tool_question_custom_value_id'] = $customValue->id;
+                                    }
+
+                                    $building->toolQuestionAnswers()
+                                             ->forInputSource($inputSource)
+                                             ->updateOrCreate(
+                                                 [
+                                                     'input_source_id'  => $inputSource->id,
+                                                     'tool_question_id' => $toolQuestion->id,
+                                                 ],
+                                                 $input
+                                             );
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -253,13 +414,23 @@ class ExampleBuildingService
 
         self::log('processing features '.json_encode($features));
         $buildingFeatures = new BuildingFeature($features);
-        $buildingFeatures->buildingType()->associate($exampleBuilding->buildingType);
+        $buildingFeatures->buildingType()->associate(
+            $exampleBuilding->buildingType
+        );
         $buildingFeatures->inputSource()->associate($inputSource);
         $buildingFeatures->building()->associate($building);
         $buildingFeatures->save();
-        self::log('Update or creating building features '.json_encode($buildingFeatures->toArray()));
+        self::log(
+            'Update or creating building features '.json_encode(
+                $buildingFeatures->toArray()
+            )
+        );
 
-        ExampleBuildingChanged::dispatch($building, $oldExampleBuilding, $exampleBuilding);
+        ExampleBuildingChanged::dispatch(
+            $building,
+            $oldExampleBuilding,
+            $exampleBuilding
+        );
     }
 
     public static function clearExampleBuilding(Building $building)
@@ -267,12 +438,15 @@ class ExampleBuildingService
         /** @var InputSource $inputSource */
         $inputSource = InputSource::findByShort('example-building');
 
-        return BuildingDataService::clearBuildingFromInputSource($building, $inputSource);
+        return BuildingDataService::clearBuildingFromInputSource(
+            $building,
+            $inputSource
+        );
     }
 
     protected static function log($text)
     {
-        \Log::debug(__CLASS__.' '.$text);
+        Log::debug(__CLASS__.' '.$text);
     }
 
     /*

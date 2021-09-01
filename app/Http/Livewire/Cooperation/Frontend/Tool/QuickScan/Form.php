@@ -2,7 +2,9 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
+use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Conditions\ConditionEvaluator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
@@ -44,6 +46,7 @@ class Form extends Component
 
     public $toolQuestions;
 
+    public bool $dirty;
     public $filledInAnswers = [];
     public $filledInAnswersForAllInputSources = [];
 
@@ -77,6 +80,7 @@ class Form extends Component
 
         $this->setToolQuestions();
 
+        $this->dirty = true;
     }
 
     private function setToolQuestions()
@@ -163,32 +167,31 @@ class Form extends Component
             $validator->validate();
         }
 
-
-        foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
-            /** @var ToolQuestion $toolQuestion */
-            $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
-            if (is_null($toolQuestion->save_in)) {
-                $this->saveToolQuestionCustomValues($toolQuestion, $givenAnswer);
-            } else {
-                // this *can't* handle a checkbox / multiselect answer.
-                $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
+        // Answers have been updated, we save them and dispatch a recalculate
+        if ($this->dirty) {
+            foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
+                /** @var ToolQuestion $toolQuestion */
+                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
+                if (is_null($toolQuestion->save_in)) {
+                    $this->saveToolQuestionCustomValues($toolQuestion, $givenAnswer);
+                } else {
+                    // this *can't* handle a checkbox / multiselect answer.
+                    $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
+                }
             }
+
+            StepDataHasBeenChanged::dispatch($this->step, $this->building, Hoomdossier::user());
         }
 
+        // TODO: @bodhi what is the use of this line
         $this->toolQuestions = $this->subStep->toolQuestions;
 
-        // now mark the sub step as complete
+        // Now mark the sub step as complete
         CompletedSubStep::firstOrCreate([
             'sub_step_id' => $this->subStep->id,
             'building_id' => $this->building->id,
             'input_source_id' => $this->currentInputSource->id
         ]);
-
-        $lastSubStepForStep = $this->step->subSteps()->orderByDesc('order')->first();
-        // last substep is done, now we can complete the main step
-        if ($this->subStep->id === $lastSubStepForStep->id) {
-            StepHelper::complete($this->step, $this->building, $this->currentInputSource);
-        }
 
         return redirect()->to($nextUrl);
     }
@@ -219,8 +222,8 @@ class Form extends Component
                     $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                     break;
                 case 'checkbox-icon':
-                    /** @var Collection $questionValues */
-                    $answerForInputSource = $answerForInputSource ?? [];
+                    /** @var array $answerForInputSource */
+                    $answerForInputSource = $answerForInputSource ?? $toolQuestion->options['value'] ?? [];
                     $this->filledInAnswers[$toolQuestion->id] = [];
                     foreach ($answerForInputSource as $answer) {
                         $this->filledInAnswers[$toolQuestion->id][] = $answer;
@@ -237,6 +240,8 @@ class Form extends Component
 
         // User's previous values could be defined, which means conditional questions should be hidden
         $this->setToolQuestions();
+
+        $this->dirty = false;
     }
 
     private function setValidationForToolQuestion(ToolQuestion $toolQuestion)
@@ -259,7 +264,7 @@ class Form extends Component
                 break;
 
             default:
-            $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
+                $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
                 break;
         }
     }
@@ -283,8 +288,26 @@ class Form extends Component
 
         // This means we have to add some thing to the where
         if (count($savedInParts) > 2) {
-            // In this case the column holds a extra where value
-            $where[ToolQuestionHelper::TABLE_COLUMN[$table]] = $column;
+            // In this case the column holds extra where values
+
+            // There's 2 cases. Either it's a single value, or a set of columns
+            if (Str::contains($column, '_')) {
+                // Set of columns, we set the wheres based on the order of values
+                $columns = ToolQuestionHelper::TABLE_COLUMN[$table];
+                $values = explode('_', $column);
+
+                // Currently only for step_comments that can have a short
+                foreach ($values as $index => $value) {
+                    $where[$columns[$index]] = $value;
+                }
+            } else {
+                // Just a value, but the short table could be an array. We grab the first
+                $columns = ToolQuestionHelper::TABLE_COLUMN[$table];
+                $columnForWhere = is_array($columns) ? $columns[0] : $columns;
+
+                $where[$columnForWhere] = $column;
+            }
+
             $column = $savedInParts[2];
             // the extra column holds an array / JSON, so we have to transform the answer into an array
             if ($savedInParts[2] == 'extra') {
@@ -315,13 +338,6 @@ class Form extends Component
                 $where,
                 [$column => $givenAnswer]
             );
-
-//        $where['input_source_id'] = $this->masterInputSource->id;
-//        $modelName::allInputSources()
-//            ->updateOrCreate(
-//                $where,
-//                [$column => $givenAnswer]
-//            );
     }
 
     private function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
@@ -348,10 +364,7 @@ class Form extends Component
                 $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($answer);
                 $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
                 $data['answer'] = $answer;
-                // TODO: Check this, it's saving answers really weirdly
-                $toolQuestion->toolQuestionAnswers()->create($data)->replicate()->fill([
-                    'input_source_id' => $this->masterInputSource->id
-                ])->save();
+                $toolQuestion->toolQuestionAnswers()->create($data);
             }
 
         } else {
@@ -373,12 +386,6 @@ class Form extends Component
                 ->toolQuestionAnswers()
                 ->allInputSources()
                 ->updateOrCreate($where, $data);
-//        $where['input_source_id'] = $this->masterInputSource->id;
-//        $data['input_source_id'] = $this->masterInputSource->id;
-//        $toolQuestion
-//            ->toolQuestionAnswers()
-//            ->allInputSources()
-//            ->updateOrCreate($where, $data);
         }
     }
 }

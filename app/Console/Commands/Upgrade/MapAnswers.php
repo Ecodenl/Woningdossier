@@ -261,7 +261,7 @@ class MapAnswers extends Command
                 // and save each new map
                 foreach ($buildingHeatingValueShorts as $toolQuestionCustomValueShort) {
                     $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($toolQuestionCustomValueShort);
-                    $data['answer'] = $toolQuestionCustomValue->id;
+                    $data['answer'] = $toolQuestionCustomValue->short;
                     $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
                     DB::table('tool_question_answers')->insert($data);
                 }

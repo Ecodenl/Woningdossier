@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Arr;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Scopes\GetValueScope;
@@ -181,6 +182,13 @@ class Building extends Model
                     'answer' => $answer,
                     'value'  => $toolQuestionAnswer->toolQuestionCustomValue->short ?? null,
                 ];
+            }
+        }
+
+        // As last step, we want to clean up empty values
+        foreach ($answers ?? [] as $short => $answer) {
+            if (empty($answer) || (is_array($answer) && Arr::isWholeArrayEmpty($answer))) {
+                unset($answers[$short]);
             }
         }
 

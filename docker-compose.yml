@@ -94,7 +94,8 @@ services:
       - 3000:3000
       - 3001:3001
     working_dir: /var/www/html
-    entrypoint: ['npm']
+#    entrypoint: ['npm']
+#    Disable this, so it doesn't automatically run npm in this container, we run node here too
     networks:
       - hoomdossier
 

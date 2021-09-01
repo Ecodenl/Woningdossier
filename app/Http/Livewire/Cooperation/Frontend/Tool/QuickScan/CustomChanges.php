@@ -29,6 +29,7 @@ class CustomChanges extends Component
 
     protected array $rules = [
         'customMeasureApplicationsFormData.*.name' => 'required',
+        'customMeasureApplicationsFormData.*.info' => 'required',
         'customMeasureApplicationsFormData.*.costs.from' => 'required|numeric|min:0',
         'customMeasureApplicationsFormData.*.costs.to' => 'required|numeric|gt:customMeasureApplicationsFormData.*.costs.from',
         'customMeasureApplicationsFormData.*.savings_money' => 'nullable|numeric',
@@ -48,6 +49,7 @@ class CustomChanges extends Component
 
         $this->attributes = [
             'customMeasureApplicationsFormData.*.name' => $globalAttributeTranslations['custom_measure_application.name'],
+            'customMeasureApplicationsFormData.*.info' => $globalAttributeTranslations['custom_measure_application.info'],
             'customMeasureApplicationsFormData.*.costs.from' => $globalAttributeTranslations['custom_measure_application.costs.from'],
             'customMeasureApplicationsFormData.*.costs.to' => $globalAttributeTranslations['custom_measure_application.costs.to'],
             'customMeasureApplicationsFormData.*.savings_money' => $globalAttributeTranslations['custom_measure_application.savings_money'],
@@ -180,10 +182,10 @@ class CustomChanges extends Component
 
             // Before we can validate, we must convert human format to proper format
             $costs = $measure['costs'] ?? [];
-            $costs['from'] = NumberFormatter::mathableFormat($costs['from'] ?? '', 2);
-            $costs['to'] = NumberFormatter::mathableFormat($costs['to'] ?? '', 2);
+            $costs['from'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['from'] ?? ''), 2);
+            $costs['to'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['to'] ?? ''), 2);
             $this->customMeasureApplicationsFormData[$index]['costs'] = $costs;
-            $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::mathableFormat($measure['savings_money'] ?? 0, 2);
+            $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::mathableFormat(str_replace('.', '', $measure['savings_money'] ?? 0), 2);
 
             $measureData = $this->validate($customRules, [], $customAttributes);
 
@@ -219,6 +221,7 @@ class CustomChanges extends Component
                         ],
                         [
                             'name' => ['nl' => $measure['name']],
+                            'info' => ['nl' => $measure['info']],
                         ],
                     );
                 }
@@ -229,6 +232,7 @@ class CustomChanges extends Component
                     'building_id' => $this->building->id,
                     'input_source_id' => $this->currentInputSource->id,
                     'name' => ['nl' => $measure['name']],
+                    'info' => ['nl' => $measure['info']],
                     'hash' => $hash,
                 ]);
 
@@ -294,7 +298,7 @@ class CustomChanges extends Component
         // Set the custom measures
         /** @var CustomMeasureApplication $customMeasureApplication */
         foreach ($customMeasureApplications as $index => $customMeasureApplication) {
-            $this->customMeasureApplicationsFormData[$index] = $customMeasureApplication->only(['id', 'hash', 'name']);
+            $this->customMeasureApplicationsFormData[$index] = $customMeasureApplication->only(['id', 'hash', 'name', 'info',]);
             $this->customMeasureApplicationsFormData[$index]['extra'] = ['icon' => 'icon-tools'];
 
             $userActionPlanAdvice = $customMeasureApplication->userActionPlanAdvices()
@@ -319,6 +323,7 @@ class CustomChanges extends Component
             'id' => null,
             'hash' => null,
             'name' => null,
+            'info' => null,
             'costs' => [
                 'from' => null,
                 'to' => null,

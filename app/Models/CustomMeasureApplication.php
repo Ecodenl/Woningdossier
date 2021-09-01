@@ -13,9 +13,13 @@ class CustomMeasureApplication extends Model
 {
     use HasTranslations, GetMyValuesTrait, GetValueTrait;
 
-    public $translatable = ['name'];
+    public $translatable = [
+        'name', 'info',
+    ];
 
-    protected $fillable = ['building_id', 'input_source_id', 'name', 'hash'];
+    protected $fillable = [
+        'building_id', 'input_source_id', 'name', 'hash', 'info',
+    ];
 
     protected $casts = [
         'extra' => 'array',

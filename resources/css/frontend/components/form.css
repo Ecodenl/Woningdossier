@@ -419,6 +419,12 @@ textarea.form-input {
     @apply hover:border-opacity-100;
     @apply focus:border-opacity-100;
 }
+.source-cooperation {
+    @apply border border-opacity-0 border-yellow bg-yellow bg-opacity-10 text-yellow;
+
+    @apply hover:border-opacity-100;
+    @apply focus:border-opacity-100;
+}
 .source-master {
     @apply border border-opacity-0 border-red bg-red bg-opacity-10 text-red;
 

@@ -12,10 +12,10 @@ use App\Models\ElementValue;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
-use App\Models\Log;
 use App\Models\Service;
 use App\Scopes\GetValueScope;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class ExampleBuildingService
 {
@@ -272,7 +272,7 @@ class ExampleBuildingService
 
     protected static function log($text)
     {
-        \Log::debug(__CLASS__.' '.$text);
+        Log::debug(__CLASS__.' '.$text);
     }
 
     /*

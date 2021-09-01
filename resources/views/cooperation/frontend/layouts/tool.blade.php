@@ -11,10 +11,12 @@
                 {{-- Progress bar --}}
                 <div class="w-full bg-gray h-2 relative z-40 -mt-1">
                     @php
+                        // $total and $current get injected in the QuickScanController via the ViewServiceProvider
                         $total = $total ?? 100;
                         $current = $current ?? 100;
                         $width = 100 / $total * $current;
-                    @endphp{{-- Define style-width based on step progress divided by total steps --}}
+                    @endphp
+                    {{-- Define style-width based on step progress divided by total steps --}}
                     <div class="h-full bg-purple" style="width: {{$width}}%"></div>
                 </div>
             @endif

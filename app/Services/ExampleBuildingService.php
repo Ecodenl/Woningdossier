@@ -15,7 +15,6 @@ use App\Models\InputSource;
 use App\Models\Service;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
-use App\Scopes\GetValueScope;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
@@ -24,9 +23,10 @@ class ExampleBuildingService
     public static function apply(
         ExampleBuilding $exampleBuilding,
         $buildYear,
-        Building $building
+        Building $building,
+        ?InputSource $inputSource = null
     ) {
-        $inputSource   = InputSource::findByShort('example-building');
+        $inputSource   = $inputSource ?? InputSource::findByShort('example-building');
         $buildingOwner = $building->user;
 
         // Clear the current example building data
@@ -53,7 +53,7 @@ class ExampleBuildingService
             'Applying Example Building '.$exampleBuilding->name.' ('.$exampleBuilding->id.', '.$contents->build_year.')'
         );
 
-        self::clearExampleBuilding($building);
+        self::clearExampleBuilding($building, $inputSource);
 
         $features = [];
 
@@ -433,10 +433,10 @@ class ExampleBuildingService
         );
     }
 
-    public static function clearExampleBuilding(Building $building)
+    public static function clearExampleBuilding(Building $building, ?InputSource $inputSource = null)
     {
         /** @var InputSource $inputSource */
-        $inputSource = InputSource::findByShort('example-building');
+        $inputSource = $inputSource ?? InputSource::findByShort('example-building');
 
         return BuildingDataService::clearBuildingFromInputSource(
             $building,

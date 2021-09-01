@@ -106,7 +106,7 @@ class Str
     }
 
     /**
-     * Check if the given answer is a empty answer, its considered empty when its in the array.
+     * Check if the given answer is an empty answer, its considered empty when it's in the array.
      *
      * @param $answer
      */

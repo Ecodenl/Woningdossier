@@ -38,7 +38,24 @@
                    ])
                         <input class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.name"
                                id="custom-measure-application-name"
-                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.placeholder')">
+                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.subject-placeholder')">
+                    @endcomponent
+                    <div class="w-full flex items-center">
+                        <i class="icon-sm icon-info mr-3"></i>
+                        <h6 class="heading-6">
+                            @lang('cooperation/frontend/shared.modals.add-measure.info')
+                        </h6>
+                    </div>
+                    @component('cooperation.frontend.layouts.components.form-group', [
+                       'inputName' => "customMeasureApplicationsFormData.{$index}.info",
+                       'class' => 'w-full mb-4',
+                       'id' => 'custom-measure-application-info',
+                       'withInputSource' => false,
+                   ])
+                        <textarea class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.info"
+                               id="custom-measure-application-info"
+                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.info-placeholder')"
+                        ></textarea>
                     @endcomponent
                     <div class="w-full flex items-center">
                         <i class="icon-sm icon-info mr-3"></i>
@@ -48,7 +65,7 @@
                     </div>
                     @component('cooperation.frontend.layouts.components.form-group', [
                        'inputName' => "customMeasureApplicationsFormData.{$index}.costs.from",
-                       'class' => 'w-1/2 pr-1',
+                       'class' => 'w-1/2 pr-1 mb-4',
                        'id' => 'custom-measure-application-costs-from',
                        'withInputSource' => false,
                    ])

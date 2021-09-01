@@ -409,9 +409,10 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'numeric', 'min:10', 'max:30'],
+                            'validation' => ['required', 'numeric', 'min:10', 'max:30', 'gt:thermostat_low'],
                             'save_in' => 'user_energy_habits.thermostat_high',
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-high',
+                            'short' => 'thermostat-high',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 10, 'max' => 30, 'value' => 20, 'step' => 1],
                             'unit_of_measure' => '°',
@@ -420,6 +421,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'numeric', 'min:10', 'max:30'],
                             'save_in' => 'user_energy_habits.thermostat_low',
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-low',
+                            'short' => 'thermostat-low',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 10, 'max' => 30, 'value' => 16, 'step' => 1],
                             'unit_of_measure' => '°',
@@ -534,7 +536,7 @@ class AddQuestionsToDatabase extends Command
                             'unit_of_measure' => __('general.unit.cubic-meters.title'),
                         ],
                         [
-                            'validation' => ['required', 'numeric', 'min:0', 'max:10000'],
+                            'validation' => ['required', 'numeric', 'min:-10000', 'max:10000'],
                             'save_in' => 'user_energy_habits.amount_electricity',
                             'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.amount-electricity',
                             'tool_question_type_id' => $textType->id,
@@ -568,10 +570,13 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'numeric', 'min:1', 'max:10'],
                             'translation' => 'Hoeveel jaar denkt u hier nog te blijven wonen',
                             'tool_question_type_id' => $sliderType->id,
-                            'options' => ['min' => 1, 'max' => 10, 'value' => 7, 'step' => 1],
+                            'options' => [
+                                'min' => 1, 'max' => 10,
+                                'max_label' => 'cooperation/frontend/tool.form.questions.values.more-than',
+                                'value' => 7, 'step' => 1,
+                            ],
                         ],
-
-                    ]
+                    ],
                 ],
                 'Welke zaken vindt u belangrijk?' => [
                     'sub_step_template_id' => $templateDefault->id,

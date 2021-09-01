@@ -17,6 +17,13 @@
                     {{ session('status') }}
                 @endcomponent
             @endif
+            @if($errors->has('cooperation'))
+                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'red'])
+                    @foreach($errors->get('cooperation') as $message)
+                        {{ $message }}
+                    @endforeach
+                @endcomponent
+            @endif
             <form class="w-full flex flex-wrap justify-center" method="POST"
                   action="{{ route('cooperation.auth.login') }}">
                 @csrf

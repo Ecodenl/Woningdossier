@@ -56,6 +56,7 @@ class Form extends Component
 
     protected $rules = [
         'custom_measure_application.name' => 'required',
+        'custom_measure_application.info' => 'required',
         'custom_measure_application.costs.from' => 'required|numeric|min:0',
         'custom_measure_application.costs.to' => 'required|numeric|gt:custom_measure_application.costs.from',
         'custom_measure_application.savings_money' => 'nullable|numeric',
@@ -205,24 +206,15 @@ class Form extends Component
                         $advisable = $advice->userActionPlanAdvisable()
                             ->forInputSource($this->masterInputSource)
                             ->first();
-
-                        $this->cards[$category][$order] = [
-                            'name' => Str::limit($advisable->name, 22),
-                            'icon' => 'icon-tools',
-                            // TODO: Subsidy
-                            'subsidy' => $this->SUBSIDY_UNKNOWN,
-                            'info' => $advisable->name,
-                        ];
-                    } else {
-                        // CooperationMeasureApplication
-                        $this->cards[$category][$order] = [
-                            'name' => Str::limit($advisable->name, 22),
-                            'icon' => $advisable->extra['icon'] ?? 'icon-tools',
-                            // TODO: Subsidy
-                            'subsidy' => $this->SUBSIDY_UNKNOWN,
-                            'info' => $advisable->info,
-                        ];
                     }
+
+                    $this->cards[$category][$order] = [
+                        'name' => Str::limit($advisable->name, 22),
+                        'icon' => $advisable->extra['icon'] ?? 'icon-tools',
+                        // TODO: Subsidy
+                        'subsidy' => $this->SUBSIDY_UNKNOWN,
+                        'info' => $advisable->info,
+                    ];
                 }
 
                 $this->cards[$category][$order]['id'] = $advice->id;
@@ -253,10 +245,10 @@ class Form extends Component
     {
         // Before we can validate, we must convert human format to proper format
         $costs = $this->custom_measure_application['costs'] ?? [];
-        $costs['from'] = NumberFormatter::mathableFormat($costs['from'] ?? '', 2);
-        $costs['to'] = NumberFormatter::mathableFormat($costs['to'] ?? '', 2);
+        $costs['from'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['from'] ?? ''), 2);
+        $costs['to'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['to'] ?? ''), 2);
         $this->custom_measure_application['costs'] = $costs;
-        $this->custom_measure_application['savings_money'] = NumberFormatter::mathableFormat($this->custom_measure_application['savings_money'] ?? 0, 2);
+        $this->custom_measure_application['savings_money'] = NumberFormatter::mathableFormat(str_replace('.', '', $this->custom_measure_application['savings_money'] ?? 0), 2);
 
         $measureData = $this->validate($this->rules)['custom_measure_application'];
 
@@ -266,6 +258,7 @@ class Form extends Component
             'input_source_id' => $this->currentInputSource->id,
             'hash' => Str::uuid(),
             'name' => ['nl' => $measureData['name']],
+            'info' => ['nl' => $measureData['info']],
         ]);
 
         // Get order based on current total (we don't have to add or subtract since count gives us the total, which
@@ -291,7 +284,7 @@ class Form extends Component
         $this->cards[$this->category][$order] = [
             'id' => $advice->id,
             'name' => $customMeasureApplication->name,
-            'info' => $customMeasureApplication->name,
+            'info' => $customMeasureApplication->info,
             'icon' => 'icon-tools',
             'costs' => $advice->costs,
             'subsidy' => $this->SUBSIDY_UNKNOWN,

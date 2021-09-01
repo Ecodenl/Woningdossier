@@ -11,16 +11,26 @@
                 {{ config('app.name') }}
             </h2>
 
-            <p>
-                <a class="btn btn-purple" href="{{ route('cooperation.auth.login') }}">
-                    @lang('auth.login.form.header')
-                </a>
-                <br><br>
-                @lang('auth.login.no-account')
-                <a href="{{ route('cooperation.register') }}">
-                    @lang('auth.register.form.header')
-                </a>
-            </p>
+            @if(\Illuminate\Support\Facades\Auth::guest())
+                <p>
+                    <a class="btn btn-purple" href="{{ route('cooperation.auth.login') }}">
+                        @lang('auth.login.form.header')
+                    </a>
+                    <br><br>
+                    @lang('auth.login.no-account')
+                    <a href="{{ route('cooperation.register') }}">
+                        @lang('auth.register.form.header')
+                    </a>
+                </p>
+            @elseif(\Illuminate\Support\Facades\Auth::check())
+                <div class="w-full flex flex-row flex-wrap justify-center">
+                    <a class="btn btn-purple w-full xl:w-1/4 flex items-center justify-center mt-5"
+                       href="{{ route('cooperation.home') }}">
+                        @lang('default.start')
+                        <i class="icon-sm icon-arrow-right-circle ml-5"></i>
+                    </a>
+                </div>
+            @endif
         </div>
         <div class="mt-5 text-center">
             <a href="{{ route('cooperation.privacy.index') }}" class="text-white">

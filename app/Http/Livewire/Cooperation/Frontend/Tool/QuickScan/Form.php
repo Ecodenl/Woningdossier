@@ -6,6 +6,7 @@ use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
@@ -160,11 +161,32 @@ class Form extends Component
                 'filledInAnswers' => $this->filledInAnswers
             ], $this->rules, [], $this->attributes);
 
+            // Translate values also
+            $defaultValues = __('validation.values.defaults');
+
+            foreach ($this->filledInAnswers as $toolQuestionId => $answer) {
+                $validator->addCustomValues([
+                    "filledInAnswers.{$toolQuestionId}" => $defaultValues,
+                ]);
+            }
+
             if ($validator->fails()) {
                 $this->setToolQuestions();
             }
 
             $validator->validate();
+        }
+
+        // Turns out, default values exist! We need to check if the tool questions have answers, else
+        // they might not save...
+        if (! $this->dirty) {
+            foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
+                $toolQuestion = ToolQuestion::find($toolQuestionId);
+                if (is_null($this->building->getAnswer($this->currentInputSource, $toolQuestion))) {
+                    $this->dirty = true;
+                    break;
+                }
+            }
         }
 
         // Answers have been updated, we save them and dispatch a recalculate
@@ -211,14 +233,17 @@ class Form extends Component
                 case 'rating-slider':
                     $filledInAnswerOptions = json_decode($answerForInputSource, true);
                     foreach ($toolQuestion->options as $option) {
-
-                        $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']] ?? 0;
+                        $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']] ?? $option['value'] ?? 0;
                         $this->attributes["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $option['name'];
                     }
                     break;
                 case 'slider':
-                    // default it when no answer is set, otherwise if the user leaves it default and submit the validation will fail because nothing is set.
-                    $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource ?? $toolQuestion->options['value'];
+                    // Default is required here when no answer is set, otherwise if the user leaves it default
+                    // and submits, the validation will fail because nothing is set.
+
+                    // Format answer to remove leading decimals
+                    $this->filledInAnswers[$toolQuestion->id] = str_replace('.', '',
+                        NumberFormatter::format($answerForInputSource ?? $toolQuestion->options['value']));
                     $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                     break;
                 case 'checkbox-icon':
@@ -249,14 +274,14 @@ class Form extends Component
         switch ($toolQuestion->toolQuestionType->short) {
             case 'rating-slider':
                 foreach ($toolQuestion->options as $option) {
-                    $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $toolQuestion->validation;
+                    $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $this->prepareValidationRule($toolQuestion->validation);
                 }
                 break;
 
             case 'checkbox-icon':
                 // If this is set, it won't validate if nothing is clicked. We check if the validation is required,
                 // and then also set required for the main question
-                $this->rules["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->validation;
+                $this->rules["filledInAnswers.{$toolQuestion->id}.*"] = $this->prepareValidationRule($toolQuestion->validation);
 
                 if (in_array('required', $toolQuestion->validation)) {
                     $this->rules["filledInAnswers.{$toolQuestion->id}"] = ['required'];
@@ -264,9 +289,39 @@ class Form extends Component
                 break;
 
             default:
-                $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
+                $this->rules["filledInAnswers.{$toolQuestion->id}"] = $this->prepareValidationRule($toolQuestion->validation);
                 break;
         }
+    }
+
+    private function prepareValidationRule(array $validation): array
+    {
+        // We need to check if the validation contains shorts to other tool questions, so we can set the ID
+
+        foreach ($validation as $index => $rule) {
+            // Short is always on the right side of a colon
+            if (Str::contains($rule, ':')) {
+                $ruleParams = explode(':', $rule);
+                // But can contain extra params
+
+                if (! empty($ruleParams[1])) {
+                    $short = Str::contains($ruleParams[1], ',') ? explode(',', $ruleParams[1])[0]
+                        : $ruleParams[1];
+
+                    if (! empty($short)) {
+                        $toolQuestion = ToolQuestion::findByShort($short);
+                        $toolQuestion = $toolQuestion instanceof ToolQuestion ? $toolQuestion : ToolQuestion::findByShort(Str::kebab(Str::camel($short)));
+
+                        if ($toolQuestion instanceof ToolQuestion) {
+                            $validation[$index] = $ruleParams[0] . ':' . str_replace($short,
+                                    "filledInAnswers.{$toolQuestion->id}", $ruleParams[1]);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $validation;
     }
 
     private function saveToolQuestionValuables(ToolQuestion $toolQuestion, $givenAnswer)

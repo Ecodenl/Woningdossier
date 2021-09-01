@@ -536,7 +536,7 @@ class AddQuestionsToDatabase extends Command
                             'unit_of_measure' => __('general.unit.cubic-meters.title'),
                         ],
                         [
-                            'validation' => ['required', 'numeric', 'min:0', 'max:10000'],
+                            'validation' => ['required', 'numeric', 'min:-10000', 'max:10000'],
                             'save_in' => 'user_energy_habits.amount_electricity',
                             'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.amount-electricity',
                             'tool_question_type_id' => $textType->id,

@@ -570,10 +570,13 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'numeric', 'min:1', 'max:10'],
                             'translation' => 'Hoeveel jaar denkt u hier nog te blijven wonen',
                             'tool_question_type_id' => $sliderType->id,
-                            'options' => ['min' => 1, 'max' => 10, 'value' => 7, 'step' => 1],
+                            'options' => [
+                                'min' => 1, 'max' => 10,
+                                'max_label' => 'cooperation/frontend/tool.form.questions.values.more-than',
+                                'value' => 7, 'step' => 1,
+                            ],
                         ],
-
-                    ]
+                    ],
                 ],
                 'Welke zaken vindt u belangrijk?' => [
                     'sub_step_template_id' => $templateDefault->id,

@@ -1,6 +1,8 @@
 @php
     $min = $toolQuestion->options['min'];
     $max = $toolQuestion->options['max'];
+    $maxLabel = $toolQuestion->options['max_label'] ?? null;
+    $maxLabel = is_null($maxLabel) ? $max : __($maxLabel, ['value' => $max]);
 
     $step = $toolQuestion->options['step'];
     $unit = $toolQuestion->unit_of_measure;
@@ -20,6 +22,6 @@
         </div>
     </div>
     <p class="w-1/12 flex justify-start pl-5">
-        {{$max}}{!! $unit !!}
+        {{$maxLabel}}{!! $unit !!}
     </p>
 </div>

@@ -38,7 +38,24 @@
                        'withInputSource' => false,
                    ])
                         <input class="form-input" wire:model="custom_measure_application.name" id="custom-measure-application-name"
-                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.placeholder')">
+                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.subject-placeholder')">
+                    @endcomponent
+                    <div class="w-full flex items-center">
+                        <i class="icon-sm icon-info mr-3"></i>
+                        <h6 class="heading-6">
+                            @lang('cooperation/frontend/shared.modals.add-measure.info')
+                        </h6>
+                    </div>
+                    @component('cooperation.frontend.layouts.components.form-group', [
+                       'inputName' => "custom_measure_application.info",
+                       'class' => 'w-full mb-4',
+                       'id' => 'custom-measure-application-info',
+                       'withInputSource' => false,
+                   ])
+                        <textarea class="form-input" wire:model="custom_measure_application.info"
+                                  id="custom-measure-application-info"
+                                  placeholder="@lang('cooperation/frontend/shared.modals.add-measure.info-placeholder')"
+                        ></textarea>
                     @endcomponent
                     <div class="w-full flex items-center">
                         <i class="icon-sm icon-info mr-3"></i>

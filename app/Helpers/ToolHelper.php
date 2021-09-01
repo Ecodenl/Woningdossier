@@ -406,16 +406,9 @@ class ToolHelper
                         ),
                     ],
                     'tool_question_answers.cook-type' => [
-                        'label' => __(
-                            'cooperation/tool/general-data/usage.index.water-gas.cook-gas.title'
-                        ),
+                        'label' => ToolQuestion::findByShort('cook-type')->name,
                         'type' => 'select',
-                        'options' => [
-                            1 => __(
-                                'woningdossier.cooperation.radiobutton.yes'
-                            ),
-                            2 => __('woningdossier.cooperation.radiobutton.no'),
-                        ],
+                        'options' => ToolQuestion::findByShort('cook-type')->getQuestionValues()->pluck('name', 'short')->toArray()
                     ],
                     'user_energy_habits.thermostat_high' => [
                         'label' => __(

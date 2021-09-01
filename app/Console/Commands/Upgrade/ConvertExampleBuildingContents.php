@@ -81,18 +81,17 @@ class ConvertExampleBuildingContents extends Command
                 $answer = 'electric';
             }
 
-            $valueId = ToolQuestionCustomValue::findByShort($answer)->id;
             $this->info(
                 sprintf(
                     "%s: %s --> %s: %s",
                     $cookGasKey,
                     $cookGas,
                     $newKey,
-                    $valueId
+                    $answer
                 )
             );
             Arr::pull($contents, $cookGasKey);
-            Arr::set($contents, $newKey, $valueId);
+            Arr::set($contents, $newKey, $answer);
         }
 
         return $contents;

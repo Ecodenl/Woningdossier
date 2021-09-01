@@ -8,6 +8,12 @@ return [
         'subject' => 'Onderwerp',
         'other' => 'Anders',
         'add-option' => 'Voeg onderdeel toe',
+
+        'questions' => [
+            'values' => [
+                'more-than' => 'Meer dan :value jaar',
+            ],
+        ],
     ],
 
     'my-plan' => [

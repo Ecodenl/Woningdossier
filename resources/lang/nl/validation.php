@@ -208,6 +208,7 @@ return [
 
         // New measure
         'custom_measure_application.name' => 'Onderwerp',
+        'custom_measure_application.info' => 'Beschrijving',
         'custom_measure_application.costs.from' => 'Kosten van',
         'custom_measure_application.costs.to' => 'Kosten tot',
         'custom_measure_application.savings_money' => 'Verwachte besparing',
@@ -267,5 +268,11 @@ return [
         // solar panels
         'building_pv_panels.number' => __('solar-panels.number.title'),
         'building_pv_panels.peak_power' => __('solar-panels.peak-power.title'),
+    ],
+
+    'values' => [
+        'defaults' => [
+            'yes' => 'Ja',
+        ],
     ],
 ];

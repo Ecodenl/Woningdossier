@@ -92,7 +92,8 @@ class Buttons extends Component
                 if ($this->previousStep instanceof Step) {
                     if ($this->previousStep->questionnaires()->active()->count() > 0) {
                         // There are questionnaires we need to look at
-                        $this->previousQuestionnaire = $this->previousQuestionnaire->active()->orderByDesc('order')->first();
+                        $this->previousQuestionnaire = $this->previousStep->questionnaires()->active()
+                            ->orderByDesc('order')->first();
                     } else {
                         // the previous step is a different one, so we should get the last sub step of the previous step
                         $this->previousSubStep = $this->previousStep->subSteps()->orderByDesc('order')->first();
@@ -106,7 +107,7 @@ class Buttons extends Component
                 $this->subStep = $this->previousSubStep;
                 $this->setPreviousStep();
             }
-        } elseif($this->questionnaire instanceof Questionnaire) {
+        } elseif ($this->questionnaire instanceof Questionnaire) {
             // We're currently in a questionnaire. We need to check if the previous button will be another questionnaire
             // or a quick scan step
             $potentialQuestionnaire = $this->step->questionnaires()->active()
@@ -144,11 +145,11 @@ class Buttons extends Component
                     // the last can't have a next one
                     if ($this->nextStep instanceof Step) {
                         // the previous step is a different one, so we should get the first sub step of the previous step
-                        $this->nextSubStep = $this->nextStep->subSteps()->first();
+                        $this->nextSubStep = $this->nextStep->subSteps()->orderBy('order')->first();
                     }
                 }
             }
-        } elseif($this->questionnaire instanceof Questionnaire) {
+        } elseif ($this->questionnaire instanceof Questionnaire) {
             // We're currently in a questionnaire. We need to check if the next button will be another questionnaire
             $potentialQuestionnaire = $this->step->questionnaires()->active()
                 ->where('order', '>', $this->questionnaire->order)
@@ -162,7 +163,7 @@ class Buttons extends Component
                 // the last can't have a next one
                 if ($this->nextStep instanceof Step) {
                     // the previous step is a different one, so we should get the first sub step of the previous step
-                    $this->nextSubStep = $this->nextStep->subSteps()->first();
+                    $this->nextSubStep = $this->nextStep->subSteps()->orderBy('order')->first();
                 }
             }
         }

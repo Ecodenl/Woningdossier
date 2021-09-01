@@ -167,6 +167,18 @@ class Form extends Component
             $validator->validate();
         }
 
+        // Turns out, default values exist! We need to check if the tool questions have answers, else
+        // they might not save...
+        if (! $this->dirty) {
+            foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
+                $toolQuestion = ToolQuestion::find($toolQuestionId);
+                if (is_null($this->building->getAnswer($this->currentInputSource, $toolQuestion))) {
+                    $this->dirty = true;
+                    break;
+                }
+            }
+        }
+
         // Answers have been updated, we save them and dispatch a recalculate
         if ($this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
@@ -211,8 +223,7 @@ class Form extends Component
                 case 'rating-slider':
                     $filledInAnswerOptions = json_decode($answerForInputSource, true);
                     foreach ($toolQuestion->options as $option) {
-
-                        $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']] ?? 0;
+                        $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']] ?? $option['value'] ?? 0;
                         $this->attributes["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $option['name'];
                     }
                     break;

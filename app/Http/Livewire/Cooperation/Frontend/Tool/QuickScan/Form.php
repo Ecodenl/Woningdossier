@@ -238,8 +238,12 @@ class Form extends Component
                     }
                     break;
                 case 'slider':
-                    // default it when no answer is set, otherwise if the user leaves it default and submit the validation will fail because nothing is set.
-                    $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::format($answerForInputSource ?? $toolQuestion->options['value'], 0);
+                    // Default is required here when no answer is set, otherwise if the user leaves it default
+                    // and submits, the validation will fail because nothing is set.
+
+                    // Format answer to remove leading decimals
+                    $this->filledInAnswers[$toolQuestion->id] = str_replace('.', '',
+                        NumberFormatter::format($answerForInputSource ?? $toolQuestion->options['value']));
                     $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                     break;
                 case 'checkbox-icon':

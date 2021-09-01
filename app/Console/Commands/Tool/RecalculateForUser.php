@@ -5,12 +5,16 @@ namespace App\Console\Commands\Tool;
 use App\Helpers\Queue;
 use App\Jobs\ProcessRecalculate;
 use App\Jobs\RecalculateStepForUser;
+use App\Models\Building;
 use App\Models\CompletedStep;
 use App\Models\Cooperation;
+use App\Models\ExampleBuilding;
 use App\Models\InputSource;
 use App\Models\Notification;
 use App\Models\Step;
+use App\Models\ToolQuestion;
 use App\Models\User;
+use App\Services\ExampleBuildingService;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
@@ -68,7 +72,8 @@ class RecalculateForUser extends Command
         $bar->setMessage('Queuing up the recalculate..');
 
         // default
-        $inputSourcesToRecalculate = ['resident', 'coach'];
+        //$inputSourcesToRecalculate = ['resident', 'coach'];
+        $inputSourcesToRecalculate = [ InputSource::MASTER_SHORT ];
 
         if (! empty($this->option('input-source'))) {
             $inputSourcesToRecalculate = $this->option('input-source');
@@ -80,6 +85,33 @@ class RecalculateForUser extends Command
         /** @var User $user */
         foreach ($users as $user) {
             $bar->advance(1);
+
+            $building = $user->building;
+            $exampleBuilding = $building->exampleBuilding;
+            if ($exampleBuilding instanceof ExampleBuilding) {
+                // Note: dependent on the session for scoping input source id
+                // No other way as building does not contain an input source id
+                $buildingFeature = $building->buildingFeatures;
+
+                ExampleBuildingService::apply(
+                    $exampleBuilding,
+                    $buildingFeature->build_year,
+                    $building
+                );
+                // if it's the first time, also fill the master input source.
+                if ($this->isFirstTimeToolIsFilled($building)) {
+                    ExampleBuildingService::apply(
+                        $exampleBuilding,
+                        $buildingFeature->build_year,
+                        $buildingFeature->building,
+                        InputSource::findByShort(InputSource::MASTER_SHORT)
+                    );
+                }
+            }
+
+
+
+
 
             foreach ($inputSources as $inputSource) {
 
@@ -119,5 +151,15 @@ class RecalculateForUser extends Command
             }
         }
         $bar->finish();
+    }
+
+    private function isFirstTimeToolIsFilled(Building $building)
+    {
+        return true;
+
+//        $inputSource      = InputSource::findByShort(InputSource::MASTER_SHORT);
+//        $cookTypeQuestion = ToolQuestion::findByShort('cook-type');
+//
+//        return is_null($building->getAnswer($inputSource, $cookTypeQuestion));
     }
 }

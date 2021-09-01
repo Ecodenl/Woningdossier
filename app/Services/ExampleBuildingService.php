@@ -7,12 +7,14 @@ use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\BuildingService;
+use App\Models\CompletedStep;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
 use App\Models\Service;
+use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use Illuminate\Support\Arr;
@@ -50,7 +52,7 @@ class ExampleBuildingService
 
 //        dd($exampleData);
         self::log(
-            'Applying Example Building '.$exampleBuilding->name.' ('.$exampleBuilding->id.', '.$contents->build_year.')'
+            'Applying Example Building '.$exampleBuilding->name.' ('.$exampleBuilding->id.', '.$contents->build_year.') for input source ' . $inputSource->name
         );
 
         self::clearExampleBuilding($building, $inputSource);
@@ -266,6 +268,12 @@ class ExampleBuildingService
                     }
                     if ('building_features' == $columnOrTable) {
                         $features = array_replace_recursive($features, $values);
+                        if(empty($features['surface'] ?? null)){
+                            unset($features['surface']);
+                        }
+                        if (empty($features['build_year'] ?? null)){
+                            unset($features['build_year']);
+                        }
                     }
                     if ('building_paintwork_statuses' == $columnOrTable) {
                         $statusId        = Arr::get(
@@ -425,6 +433,19 @@ class ExampleBuildingService
                 $buildingFeatures->toArray()
             )
         );
+
+        // Get all expert tool steps and complete them for this building + input source
+        $stepsToComplete = Step::whereDoesntHave('parentStep')
+            ->whereDoesntHave('subSteps')
+            ->get();
+
+        foreach($stepsToComplete as $stepToComplete){
+            CompletedStep::updateOrCreate([
+                'step_id' => $stepToComplete->id,
+                'input_source' => $inputSource->id,
+                'building_id' => $building->id,
+            ]);
+        }
 
         ExampleBuildingChanged::dispatch(
             $building,

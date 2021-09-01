@@ -409,9 +409,10 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'numeric', 'min:10', 'max:30'],
+                            'validation' => ['required', 'numeric', 'min:10', 'max:30', 'gt:thermostat_low'],
                             'save_in' => 'user_energy_habits.thermostat_high',
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-high',
+                            'short' => 'thermostat-high',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 10, 'max' => 30, 'value' => 20, 'step' => 1],
                             'unit_of_measure' => '°',
@@ -420,6 +421,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'numeric', 'min:10', 'max:30'],
                             'save_in' => 'user_energy_habits.thermostat_low',
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-low',
+                            'short' => 'thermostat-low',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 10, 'max' => 30, 'value' => 16, 'step' => 1],
                             'unit_of_measure' => '°',

@@ -269,4 +269,10 @@ return [
         'building_pv_panels.number' => __('solar-panels.number.title'),
         'building_pv_panels.peak_power' => __('solar-panels.peak-power.title'),
     ],
+
+    'values' => [
+        'defaults' => [
+            'yes' => 'Ja',
+        ],
+    ],
 ];

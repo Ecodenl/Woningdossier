@@ -13,6 +13,7 @@ use App\Models\Building;
 use App\Models\BuildingType;
 use App\Models\CompletedSubStep;
 use App\Models\ExampleBuilding;
+use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
@@ -487,6 +488,9 @@ class Form extends Component
         if (array_key_exists('building_type_id', $changes)){
             $buildingType = BuildingType::find((int) $changes['building_type_id']);
         }
+        else {
+            $buildingType = $buildingFeature->buildingType;
+        }
 
         if (!$buildingType instanceof BuildingType){
             return null;
@@ -519,9 +523,15 @@ class Form extends Component
             $oldContents = $exampleBuilding->getContentForYear($currentBuildYearValue);
             $newContents = $exampleBuilding->getContentForYear($new);
 
-            if ($oldContents->id !== $newContents->id) {
+            if ($oldContents instanceof ExampleBuildingContent){
+                if ($oldContents->id !== $newContents->id) {
+                    return $exampleBuilding;
+                }
+            }
+            else {
                 return $exampleBuilding;
             }
+
         }
 
         return null;
@@ -534,15 +544,22 @@ class Form extends Component
             // change example building, let the observer do the rest
             $this->building->exampleBuilding()->associate($exampleBuilding)->save();
         }
+
+        // For the example building input source it could be that the build year isn't set.
+        // If so we use the build_year from the current input source
+        //$buildYear = $this->building->buildingFeatures->build_year ?? $this->building->buildingFeatures()->forInputSource($this->currentInputSource)->first()->build_year;
+        $buildYear = $this->building->buildingFeatures()->forInputSource($this->currentInputSource)->first()->build_year;
+
         // manually trigger
         ExampleBuildingService::apply(
             $exampleBuilding,
-            $this->building->buildingFeatures->build_year,
+            $buildYear,
             $this->building
         );
         ExampleBuildingService::apply(
             $exampleBuilding,
-            $this->building->buildingFeatures->build_year,
+            //$this->building->buildingFeatures->build_year,
+            $buildYear,
             $this->building,
             $this->currentInputSource
         );

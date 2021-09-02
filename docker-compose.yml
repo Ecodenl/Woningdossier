@@ -11,7 +11,7 @@ services:
       args:
         - NGINXUSER=${NGINXUSER:-www-data}
         - NGINXGROUP=${NGINXGROUP:-www-data}
-    container_name: nginx
+    container_name: hoomdossier_nginx
     ports:
       - 8888:80
     volumes:
@@ -27,7 +27,7 @@ services:
   mysql:
     platform: linux/x86_64
     image: mysql:5.7.29
-    container_name: mysql
+    container_name: hoomdossier_mysql
     restart: unless-stopped
     tty: true
     ports:
@@ -51,7 +51,7 @@ services:
       args:
         - PHPUSER=${PHPUSER:-www-data}
         - PHPGROUP=${PHPGROUP:-www-data}
-    container_name: php
+    container_name: hoomdossier_php
     volumes:
       - ./:/var/www/html:delegated
     networks:
@@ -60,7 +60,7 @@ services:
   redis:
     platform: linux/x86_64
     image: redis:alpine
-    container_name: redis
+    container_name: hoomdossier_redis
     restart: unless-stopped
     ports:
       - 6379:6379
@@ -74,7 +74,7 @@ services:
       args:
         - PHPUSER=${PHPUSER:-www-data}
         - PHPGROUP=${PHPGROUP:-www-data}
-    container_name: composer
+    container_name: hoomdossier_composer
     volumes:
       - ./:/var/www/html
     working_dir: /var/www/html
@@ -87,7 +87,7 @@ services:
 
   npm:
     image: node:13.7
-    container_name: npm
+    container_name: hoomdossier_npm
     volumes:
       - ./:/var/www/html
     ports:
@@ -106,7 +106,7 @@ services:
       args:
         - PHPUSER=${PHPUSER:-www-data}
         - PHPGROUP=${PHPGROUP:-www-data}
-    container_name: artisan
+    container_name: hoomdossier_artisan
     volumes:
       - ./:/var/www/html:delegated
     depends_on:
@@ -119,7 +119,7 @@ services:
   mailhog:
     platform: linux/x86_64
     image: mailhog/mailhog:latest
-    container_name: mailhog
+    container_name: hoomdossier_mailhog
     ports:
       - 1025:1025
       - 8025:8025

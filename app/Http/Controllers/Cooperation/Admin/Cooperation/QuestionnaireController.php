@@ -32,18 +32,20 @@ class QuestionnaireController extends Controller
     {
         $this->authorize('update', $questionnaire);
 
-        $steps = Step::withoutChildren()->expert()->orderBy('order')->get();
+        $expertSteps = Step::withoutChildren()->expert()->orderBy('order')->get();
+        $quickScanSteps = Step::withoutChildren()->quickScan()->orderBy('order')->get();
 
-        return view('cooperation.admin.cooperation.questionnaires.questionnaire-editor', compact('questionnaire', 'steps'));
+        return view('cooperation.admin.cooperation.questionnaires.questionnaire-editor', compact('questionnaire', 'expertSteps', 'quickScanSteps'));
     }
 
     public function create()
     {
         $this->authorize('create', Questionnaire::class);
 
-        $steps = Step::withoutChildren()->expert()->orderBy('order')->get();
+        $expertSteps = Step::withoutChildren()->expert()->orderBy('order')->get();
+        $quickScanSteps = Step::withoutChildren()->quickScan()->orderBy('order')->get();
 
-        return view('cooperation.admin.cooperation.questionnaires.create', compact('steps'));
+        return view('cooperation.admin.cooperation.questionnaires.create', compact('expertSteps', 'quickScanSteps'));
     }
 
     /**

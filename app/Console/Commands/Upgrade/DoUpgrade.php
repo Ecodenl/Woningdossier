@@ -97,6 +97,7 @@ class DoUpgrade extends Command
                     MapComments::class,
                     AddMasterInputSource::class,
                     ConvertExampleBuildingContents::class,
+                    UpdateCompletedStepsForMasterInputSource::class,
                 ];
 
                 foreach ($afterCommands as $command) {

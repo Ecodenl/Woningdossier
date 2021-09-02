@@ -13,6 +13,7 @@ use App\Models\Building;
 use App\Models\BuildingType;
 use App\Models\CompletedSubStep;
 use App\Models\ExampleBuilding;
+use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
@@ -522,9 +523,15 @@ class Form extends Component
             $oldContents = $exampleBuilding->getContentForYear($currentBuildYearValue);
             $newContents = $exampleBuilding->getContentForYear($new);
 
-            if ($oldContents->id !== $newContents->id) {
+            if ($oldContents instanceof ExampleBuildingContent){
+                if ($oldContents->id !== $newContents->id) {
+                    return $exampleBuilding;
+                }
+            }
+            else {
                 return $exampleBuilding;
             }
+
         }
 
         return null;

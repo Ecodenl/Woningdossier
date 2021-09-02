@@ -45,7 +45,7 @@ class WoningdossierServiceProvider extends ServiceProvider
         UserActionPlanAdvice::observe(UserActionPlanAdviceObserver::class);
         PrivateMessageView::observe(PrivateMessageViewObserver::class);
         Building::observe(BuildingObserver::class);
-        BuildingFeature::observe(BuildingFeatureObserver::class);
+        //BuildingFeature::observe(BuildingFeatureObserver::class);
         User::observe(UserObserver::class);
         Account::observe(AccountObserver::class);
         Translation::observe(TranslationObserver::class);

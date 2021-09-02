@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Events\ExampleBuildingChanged;
+use App\Helpers\HoomdossierSession;
+use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\BuildingService;
-use App\Models\CompletedStep;
+use App\Models\CompletedSubStep;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\ExampleBuilding;
@@ -22,17 +24,32 @@ use Illuminate\Support\Facades\Log;
 
 class ExampleBuildingService
 {
+    /**
+     * Apply an example building on the given building.
+     *
+     *
+     *
+     * @param  ExampleBuilding  $exampleBuilding
+     * @param  int $buildYear Build year for selecting the appropriate example building content
+     * @param  Building  $building Target building to apply to
+     * @param  InputSource|null  $inputSource
+     * @param  InputSource|null  $initiatingInputSource The input source starting this action.
+     */
     public static function apply(
         ExampleBuilding $exampleBuilding,
         $buildYear,
         Building $building,
-        ?InputSource $inputSource = null
+        ?InputSource $inputSource = null,
+        ?InputSource $initiatingInputSource = null
     ) {
         $inputSource   = $inputSource ?? InputSource::findByShort('example-building');
+        // unless stated differently: compare to master input values
+        $initiatingInputSource = $initiatingInputSource ?? InputSource::findByShort(InputSource::MASTER_SHORT);
+        //self::log($exampleBuilding->id . ", " . $buildYear . ", " . $building->id . ", " . $inputSource->name . ", " . $initiatingInputSource->name);
         $buildingOwner = $building->user;
 
         // Clear the current example building data
-        self::log('Lookup '.$exampleBuilding->name.' for '.$buildYear);
+        self::log('Lookup '.$exampleBuilding->name.' for '.$buildYear . " (" . $inputSource->name . ")");
         $contents = $exampleBuilding->getContentForYear($buildYear);
 //        dd($exampleBuilding->name, $contents, $buildYear);
         if ( ! $contents instanceof ExampleBuildingContent) {
@@ -50,10 +67,59 @@ class ExampleBuildingService
         // traverse the contents:
         $exampleData = $contents->content;
 
-//        dd($exampleData);
+        // new: merge-like behavior
+        if ($exampleBuilding->isSpecific()){
+            $genericExampleBuilding = ExampleBuilding::generic()->where(
+                'building_type_id',
+                $exampleBuilding->building_type_id,
+            )->first();
+            self::log("Example building is specific. Generic counterpart is " . $genericExampleBuilding->name);
+            $genericContent = $genericExampleBuilding->getContentForYear($buildYear);
+            if ($genericContent instanceof ExampleBuildingContent){
+                self::log("We merge the contents");
+                $exampleData = array_replace_recursive($exampleData, $genericContent->content);
+            }
+        }
+
         self::log(
             'Applying Example Building '.$exampleBuilding->name.' ('.$exampleBuilding->id.', '.$contents->build_year.') for input source ' . $inputSource->name
         );
+
+        $oldFeatures = [];
+
+        // important!
+        // A generic example building can be set, while the rest of the
+        // quick scan isn't filled yet. Thing is: if nothing has been changed
+        // by the user just yet (so the user is filling the tool for the first
+        // time from front to back) data will have been set from the first
+        // (generic) example building. When selecting a specific example
+        // building, we want to override the values ONLY if nothing has been
+        // changed further in the tool by the user. Therefore we check if
+        // no substeps > 4 have been completed.
+        $userAlreadyStartedFilling = $building->completedSubSteps()
+                                              ->forInputSource($initiatingInputSource)
+                                              ->where('sub_step_id', '>', 4)
+                                              ->count() > 0;
+
+        // Don't do this for the example building, otherwise it might get the old values from other input sources
+        // which is unwanted.
+        if ($inputSource->short !== InputSource::EXAMPLE_BUILDING && $userAlreadyStartedFilling) {
+            self::log("User already started filling in the tool. We merge that data.");
+            // Save the features for later. We merge this with the example building contents.
+            // Note that $oldFeatures *might* be null in the highly unlikely case.
+            /** @var BuildingFeature|null $currentInputSourceFeatures */
+            $currentInputSourceFeatures = $building->buildingFeatures(
+            )->forInputSource($initiatingInputSource)->first();
+
+            if ($currentInputSourceFeatures instanceof BuildingFeature) {
+                $oldFeatures = $currentInputSourceFeatures->attributesToArray();
+                // filter out null values
+                $oldFeatures = array_filter(
+                    $oldFeatures,
+                    fn($item) => ! is_null($item)
+                );
+            }
+        }
 
         self::clearExampleBuilding($building, $inputSource);
 
@@ -420,7 +486,11 @@ class ExampleBuildingService
             }
         }
 
-        self::log('processing features '.json_encode($features));
+//        self::log('processing features '.json_encode($features));
+
+        // replace particular features with the old features.
+        $features = array_replace_recursive($features, $oldFeatures);
+
         $buildingFeatures = new BuildingFeature($features);
         $buildingFeatures->buildingType()->associate(
             $exampleBuilding->buildingType
@@ -440,11 +510,7 @@ class ExampleBuildingService
             ->get();
 
         foreach($stepsToComplete as $stepToComplete){
-            CompletedStep::updateOrCreate([
-                'step_id' => $stepToComplete->id,
-                'input_source' => $inputSource->id,
-                'building_id' => $building->id,
-            ]);
+            StepHelper::complete($stepToComplete, $building, $inputSource);
         }
 
         ExampleBuildingChanged::dispatch(

@@ -86,33 +86,6 @@ class RecalculateForUser extends Command
         foreach ($users as $user) {
             $bar->advance(1);
 
-            $building = $user->building;
-            $exampleBuilding = $building->exampleBuilding;
-            if ($exampleBuilding instanceof ExampleBuilding) {
-                // Note: dependent on the session for scoping input source id
-                // No other way as building does not contain an input source id
-                $buildingFeature = $building->buildingFeatures;
-
-                ExampleBuildingService::apply(
-                    $exampleBuilding,
-                    $buildingFeature->build_year,
-                    $building
-                );
-                // if it's the first time, also fill the master input source.
-                if ($this->isFirstTimeToolIsFilled($building)) {
-                    ExampleBuildingService::apply(
-                        $exampleBuilding,
-                        $buildingFeature->build_year,
-                        $buildingFeature->building,
-                        InputSource::findByShort(InputSource::MASTER_SHORT)
-                    );
-                }
-            }
-
-
-
-
-
             foreach ($inputSources as $inputSource) {
 
                 $completedSteps = $user->building

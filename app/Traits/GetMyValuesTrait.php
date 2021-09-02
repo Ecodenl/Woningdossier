@@ -16,7 +16,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 trait GetMyValuesTrait
 {
@@ -28,8 +30,9 @@ trait GetMyValuesTrait
     public static function bootGetMyValuesTrait()
     {
         static::saved(function (Model $model) {
+            Log::debug(get_class($model) . "::saved (" . ($model->inputSource->short ?? '') . ")");
             // might be handy to prevent getting into an infinite loop (-:>
-            if (($model->inputSource->short ?? '') !== InputSource::MASTER_SHORT) {
+            if (!in_array(($model->inputSource->short ?? ''), [ InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING])) {
                 $model->saveForMasterInputSource();
             }
         });

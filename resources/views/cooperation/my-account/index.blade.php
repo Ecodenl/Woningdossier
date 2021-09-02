@@ -1,516 +1,456 @@
-@extends('cooperation.my-account.layouts.app')
+@extends('cooperation.frontend.layouts.tool')
 
-@section('my_account_content')
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">@lang('my-account.index.header')</div>
+{{--@section('step_title', __('wall-insulation.title.title'))--}}
+
+@section('content')
+    <div class="w-full flex flex-row flex-wrap">
+        <div class="w-full space-y-10">
+            <div class="flex flex-row flex-wrap w-full border border-solid border-blue-500 border-opacity-50 rounded-lg">
+                <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 h-11 rounded-lg">
+                    @lang('my-account.index.header')
                 </div>
+            </div>
 
-                <form class="has-address-data" method="POST"
-                      action="{{ route('cooperation.my-account.settings.update') }}"
-                      autocomplete="off">
-                    {{ method_field('PUT')  }}
-                    {{ csrf_field() }}
+            <form class="has-address-data" method="POST"
+                  action="{{ route('cooperation.my-account.settings.update') }}"
+                  autocomplete="off">
+                @method('PUT')
+                @csrf
 
-                    <input type="hidden" id="addressid" name="building[addressid]" value="{{$building->bag_addressid}}">
+                <input type="hidden" id="addressid" name="building[addressid]" value="{{$building->bag_addressid}}">
 
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            @lang('my-account.settings.index.header')
-                        </div>
-
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    {{\App\Helpers\Translation::translate('my-account.settings.index.text')}}
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <div class="col-sm-6">
-
-
-                                    <div class="form-group{{ $errors->has('user.first_name') ? ' has-error' : '' }}">
-                                        <label for="first_name"
-                                               class="control-label">@lang('my-account.settings.index.form.user.first-name')</label>
-
-
-                                        <input id="first_name" type="text" class="form-control" name="user[first_name]"
-                                               value="{{ old('user.first_name', $user->first_name) }}" required
-                                               autofocus>
-
-                                        @if ($errors->has('user.first_name'))
-                                            <span class="help-block">
-                                        <strong>{{ $errors->first('user.first_name') }}</strong>
-                                    </span>
-                                        @endif
-                                    </div>
-
-                                </div>
-                                <div class="col-sm-6">
-
-
-                                    <div class="form-group{{ $errors->has('user.last_name') ? ' has-error' : '' }}">
-                                        <label for="last_name"
-                                               class="control-label">@lang('my-account.settings.index.form.user.last-name')</label>
-
-                                        <input id="last_name" type="text" class="form-control" name="user[last_name]"
-                                               value="{{ old('last_name', $user->last_name) }}" required autofocus>
-
-                                        @if ($errors->has('user.last_name'))
-                                            <span class="help-block">
-                                        <strong>{{ $errors->first('user.last_name') }}</strong>
-                                    </span>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-sm-6">
-
-
-                                    <div class="form-group{{ $errors->has('user.phone_number') ? ' has-error' : '' }}">
-                                        <label for="phone_number"
-                                               class="control-label">@lang('my-account.settings.index.form.user.phone_number')</label>
-
-
-                                        <input id="phone_number" type="text" class="form-control"
-                                               name="user[phone_number]"
-                                               value="{{ old('phone_number', $user->phone_number) }}" autofocus>
-
-                                        @if ($errors->has('user.phone_number'))
-                                            <span class="help-block">
-                                        <strong>{{ $errors->first('user.phone_number') }}</strong>
-                                    </span>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-sm-12">
-                                    <h3>@lang('my-account.settings.index.header-building')</h3>
-                                </div>
-
-                                <div class="col-sm-4">
-
-                                    <div class="form-group{{ $errors->has('building.postal_code') ? ' has-error' : '' }}">
-                                        <label for="building.postal_code" class="control-label">
-                                            @lang('my-account.settings.index.form.building.postal-code')
-                                        </label>
-                                        <input type="text" class="form-control" name="building[postal_code]"
-                                               id="postal_code"
-                                               value="{{ old('building.postal_code', $building->postal_code) }}"
-                                               required autofocus>
-
-                                        @if ($errors->has('building.postal_code'))
-                                            <span class="help-block">
-                                                <strong>{{ $errors->first('building.postal_code') }}</strong>
-                                            </span>
-                                        @endif
-                                    </div>
-                                </div>
-
-
-                                <div class="col-sm-4">
-                                    <div class="form-group{{ $errors->has('building.house_number') ? ' has-error' : '' }}">
-                                        <label for="building.number"
-                                               class="control-label">@lang('my-account.settings.index.form.building.number')</label>
-
-                                        <input type="text" class="form-control" name="building[house_number]"
-                                               id="number"
-                                               value="{{ old('building.house_number', $building->number) }}" required
-                                               autofocus>
-
-                                        @if ($errors->has('building.house_number'))
-                                            <span class="help-block">
-                                                <strong>{{ $errors->first('building.house_number') }}</strong>
-                                            </span>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <div class="form-group{{ $errors->has('building.extension') ? ' has-error' : '' }}">
-                                        <label for="building.extension" class="control-label">
-                                            @lang('my-account.settings.index.form.building.extension')
-                                        </label>
-
-                                        <input type="text" class="form-control" name="building[extension]"
-                                               id="house_number_extension"
-                                               value="{{ old('building.extension', $building->extension) }}" autofocus>
-
-                                        @if ($errors->has('building.extension'))
-                                            <span class="help-block">
-                                                <strong>{{ $errors->first('building.extension') }}</strong>
-                                            </span>
-                                        @endif
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-                                <div class="col-sm-6">
-
-
-                                    <div class="form-group{{ $errors->has('building.street') ? ' has-error' : '' }}">
-                                        <label for="street"
-                                               class="control-label">@lang('my-account.settings.index.form.building.street')</label>
-
-                                        <input type="text" class="form-control" name="building[street]" id="street"
-                                               value="{{ old('building.street', $building->street) }}" required
-                                               autofocus>
-
-                                        @if ($errors->has('building.street'))
-                                            <span class="help-block">
-                                    <strong>{{ $errors->first('building.street') }}</strong>
-                                </span>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-6">
-
-
-                                    <div class="form-group{{ $errors->has('building.city') ? ' has-error' : '' }}">
-                                        <label for="building.city"
-                                               class="control-label">@lang('my-account.settings.index.form.building.city')</label>
-
-                                        <input type="text" class="form-control" name="building[city]" id="city"
-                                               value="{{ old('building.city', $building->city) }}" required autofocus>
-
-                                        @if ($errors->has('building.city'))
-                                            <span class="help-block">
-                                        <strong>{{ $errors->first('building.city') }}</strong>
-                                    </span>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-
-                            <hr>
-                            <div class="row">
-                                <div class="form-group">
-                                    <div class="col-sm-12">
-                                        <button type="submit" class="btn btn-primary">
-                                            @lang('my-account.settings.index.form.submit')
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="flex flex-row flex-wrap w-full border border-solid border-blue-500 border-opacity-50 rounded-lg">
+                    <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 h-11 rounded-t-lg border-b border-solid border-blue-500 border-opacity-50">
+                        @lang('my-account.settings.index.header')
                     </div>
-                </form>
 
-                <form method="POST" action="{{ route('cooperation.my-account.hoom-settings.update', $account->id) }}"
-                      autocomplete="off">
-                    {{ method_field('PUT')  }}
-                    {{ csrf_field() }}
-
-
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            {{\App\Helpers\Translation::translate('my-account.hoom-settings.index.header')}}
-                        </div>
-
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <p>{{\App\Helpers\Translation::translate('my-account.hoom-settings.index.text')}}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6">
-
-
-                                    <div class="form-group{{ $errors->has('account.email') ? ' has-error' : '' }}">
-                                        <label for="email"
-                                               class="control-label">@lang('my-account.hoom-settings.index.form.account.e-mail')</label>
-
-
-                                        <input id="email" type="email" class="form-control" name="account[email]"
-                                               value="{{ old('account.email', $account->email) }}" required autofocus>
-
-                                        @if ($errors->has('account.email'))
-                                            <span class="help-block">
-                                        <strong>{{ $errors->first('account.email') }}</strong>
-                                    </span>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-12">
-                                    <h3>@lang('my-account.hoom-settings.index.header-password')</h3>
-                                </div>
-                                <div class="col-sm-12">
-                                    <div class="form-group{{ $errors->has('account.current_password') ? ' has-error' : '' }}">
-                                        <label for="current_password"
-                                               class="control-label">@lang('my-account.hoom-settings.index.form.account.current-password')</label>
-
-
-                                        <input id="current_password" type="password" class="form-control"
-                                               name="account[current_password]">
-
-                                        @if ($errors->has('account.current_password'))
-                                            <span class="help-block">
-                                        <strong>{{ $errors->first('account.current_password') }}</strong>
-                                    </span>
-                                        @endif
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group{{ $errors->has('account.password') ? ' has-error' : '' }}">
-                                        <label for="password"
-                                               class="control-label">@lang('my-account.hoom-settings.index.form.account.new-password')</label>
-
-
-                                        <input id="password" type="password" class="form-control"
-                                               name="account[password]">
-
-                                        @if ($errors->has('account.password'))
-                                            <span class="help-block">
-                                        <strong>{{ $errors->first('account.password') }}</strong>
-                                    </span>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <div class="form-group{{ $errors->has('account.password') || $errors->has('account.password_confirmation') ? ' has-error' : '' }}">
-                                        <label for="password-confirm"
-                                               class="control-label">@lang('my-account.hoom-settings.index.form.account.new-password-confirmation')</label>
-
-
-                                        <input id="password-confirm" type="password" class="form-control"
-                                               name="account[password_confirmation]">
-                                        @if ($errors->has('account.password') || $errors->has('account.password_confirmation'))
-                                            <span class="help-block">
-                                    <strong>{{ $errors->first('account.password') }}</strong>
-                                    <strong>{{ $errors->first('account.password_confirmation') }}</strong>
-                                </span>
-                                        @endif
-                                    </div>
-                                </div>
-
-                            </div>
-                            <!-- password change section -->
-
-                            <hr>
-                            <div class="row">
-                                <div class="form-group">
-                                    <div class="col-sm-12">
-                                        <button type="submit" class="btn btn-primary">
-                                            @lang('my-account.hoom-settings.index.form.submit')
-                                        </button>
-                                    </div>
-                                </div>
+                    <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 py-8 rounded-b-lg">
+                        <div class="w-full flex flex-row flex-wrap">
+                            <div class="w-full">
+                                @lang('my-account.settings.index.text')
                             </div>
                         </div>
-                    </div>
-                </form>
-
-
-                <div id="reset-modal" class="modal fade" role="dialog">
-                    <div class="modal-dialog">
-
-                        <!-- Modal content-->
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">@lang('my-account.settings.reset-file.modal.title')</h4>
+                        <br>
+                        <div class="w-full flex flex-row flex-wrap">
+                            <div class="w-full sm:w-1/2 sm:pr-3">
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                    'withInputSource' => false,
+                                    'label' => __('my-account.settings.index.form.user.first-name'),
+                                    'inputName' => 'users.first_name',
+                                    'id' => 'first_name',
+                                ])
+                                    <input id="first_name" type="text" class="form-input" name="user[first_name]"
+                                           value="{{ old('user.first_name', $user->first_name) }}" required
+                                           autofocus>
+                                @endcomponent
                             </div>
-                            <div class="modal-body">
-                                @lang('my-account.settings.reset-file.modal.text')
-                            </div>
-                            <div class="modal-footer">
-                                <form class="form-horizontal" method="POST"
-                                      action="{{ route('cooperation.my-account.settings.reset-file', ['cooperation' => $cooperation]) }}">
-                                    {{ csrf_field() }}
-                                    <input type="hidden" name="input_sources[id][]"
-                                           value="{{\App\Models\InputSource::findByShort('resident')->id}}">
-                                    <button type="button"
-                                            class="reset-account pull-left btn btn-warning">@lang('my-account.settings.reset-file.modal.reset-resident')</button>
-                                </form>
-                                <form class="form-horizontal" method="POST"
-                                      action="{{ route('cooperation.my-account.settings.reset-file', ['cooperation' => $cooperation]) }}">
-                                    {{ csrf_field() }}
-                                    <input type="hidden" name="input_sources[id][]"
-                                           value="{{\App\Models\InputSource::findByShort('resident')->id}}">
-                                    <input type="hidden" name="input_sources[id][]"
-                                           value="{{\App\Models\InputSource::findByShort('coach')->id}}">
-                                    <button type="button"
-                                            class="reset-account btn btn-warning">@lang('my-account.settings.reset-file.modal.reset-both')</button>
-                                </form>
+                            <div class="w-full sm:w-1/2 sm:pl-3">
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                    'withInputSource' => false,
+                                    'label' => __('my-account.settings.index.form.user.last-name'),
+                                    'inputName' => 'users.last_name',
+                                    'id' => 'last_name',
+                                ])
+                                    <input id="last_name" type="text" class="form-input" name="user[last_name]"
+                                           value="{{ old('last_name', $user->last_name) }}" required autofocus>
+                                @endcomponent
                             </div>
                         </div>
 
+                        <div class="w-full flex flex-row flex-wrap">
+                            <div class="w-full sm:w-1/2 sm:pr-3">
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                    'withInputSource' => false,
+                                    'label' => __('my-account.settings.index.form.user.phone_number'),
+                                    'inputName' => 'users.phone_number',
+                                    'id' => 'phone_number',
+                                ])
+                                    <input id="phone_number" type="text" class="form-input"
+                                           name="user[phone_number]"
+                                           value="{{ old('phone_number', $user->phone_number) }}" autofocus>
+                                @endcomponent
+                            </div>
+                        </div>
+
+                        <div class="w-full flex flex-row flex-wrap mt-5">
+                            <div class="w-full">
+                                <h4 class="heading-4">
+                                    @lang('my-account.settings.index.header-building')
+                                </h4>
+                            </div>
+
+                            <div class="w-full sm:w-1/3 sm:pr-3">
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                    'withInputSource' => false,
+                                    'label' => __('my-account.settings.index.form.building.postal-code'),
+                                    'inputName' => 'building.postal_code',
+                                    'id' => 'postal_code',
+                                ])
+                                    <input type="text" class="form-input" name="building[postal_code]"
+                                           id="postal_code"
+                                           value="{{ old('building.postal_code', $building->postal_code) }}"
+                                           required autofocus>
+                                @endcomponent
+                            </div>
+
+                            <div class="w-full sm:w-1/3 sm:px-3">
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                    'withInputSource' => false,
+                                    'label' => __('my-account.settings.index.form.building.number'),
+                                    'inputName' => 'building.number',
+                                    'id' => 'number',
+                                ])
+                                    <input type="text" class="form-input" name="building[house_number]"
+                                           id="number"
+                                           value="{{ old('building.house_number', $building->number) }}" required
+                                           autofocus>
+                                @endcomponent
+                            </div>
+
+                            <div class="w-full sm:w-1/3 sm:pl-3">
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                    'withInputSource' => false,
+                                    'label' => __('my-account.settings.index.form.building.extension'),
+                                    'inputName' => 'building.extension',
+                                    'id' => 'extension',
+                                ])
+                                    <input type="text" class="form-input" name="building[extension]"
+                                           id="house_number_extension"
+                                           value="{{ old('building.extension', $building->extension) }}" autofocus>
+                                @endcomponent
+                            </div>
+                        </div>
+
+                        <div class="w-full flex flex-row flex-wrap">
+                            <div class="w-full sm:w-1/2 sm:pr-3">
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                    'withInputSource' => false,
+                                    'label' => __('my-account.settings.index.form.building.street'),
+                                    'inputName' => 'building.street',
+                                    'id' => 'street',
+                                ])
+                                    <input type="text" class="form-input" name="building[street]" id="street"
+                                           value="{{ old('building.street', $building->street) }}" required
+                                           autofocus>
+                                @endcomponent
+                            </div>
+
+                            <div class="w-full sm:w-1/2 sm:pl-3">
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                    'withInputSource' => false,
+                                    'label' => __('my-account.settings.index.form.building.city'),
+                                    'inputName' => 'building.city',
+                                    'id' => 'city',
+                                ])
+                                    <input type="text" class="form-input" name="building[city]" id="city"
+                                           value="{{ old('building.city', $building->city) }}" required autofocus>
+                                @endcomponent
+                            </div>
+                        </div>
+
+                        <hr class="w-full">
+
+                        <div class="w-full flex flex-row flex-wrap">
+                            <div class="form-group">
+                                <div class="w-full">
+                                    <button type="submit" class="btn btn-green">
+                                        @lang('my-account.settings.index.form.submit')
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </form>
 
-                <div class="panel panel-default">
-                    <div class="panel-heading">@lang('my-account.settings.reset-file.header')</div>
+            <form method="POST" action="{{ route('cooperation.my-account.hoom-settings.update', $account->id) }}"
+                  autocomplete="off">
+                @method('PUT')
+                @csrf
 
-                    <div class="panel-body">
+                <div class="flex flex-row flex-wrap w-full border border-solid border-blue-500 border-opacity-50 rounded-lg">
+                    <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 h-11 rounded-t-lg border-b border-solid border-blue-500 border-opacity-50">
+                        @lang('my-account.hoom-settings.index.header')
+                    </div>
+
+                    <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 py-8 rounded-b-lg">
+                        <div class="w-full flex flex-row flex-wrap">
+                            <div class="w-full">
+                                <p>@lang('my-account.hoom-settings.index.text')</p>
+                            </div>
+                        </div>
+                        <div class="w-full flex flex-row flex-wrap">
+                            <div class="w-full sm:w-1/2 sm:pr-3">
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                    'withInputSource' => false,
+                                    'label' => __('my-account.hoom-settings.index.form.account.e-mail'),
+                                    'inputName' => 'account.email',
+                                    'id' => 'email',
+                                ])
+                                    <input id="email" type="email" class="form-input" name="account[email]"
+                                           value="{{ old('account.email', $account->email) }}" required autofocus>
+                                @endcomponent
+                            </div>
+
+                            <div class="w-full mt-5">
+                                <h4 class="heading-4">
+                                    @lang('my-account.hoom-settings.index.header-password')
+                                </h4>
+                            </div>
+                            <div class="w-full">
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                    'withInputSource' => false,
+                                    'label' => __('my-account.hoom-settings.index.form.account.current-password'),
+                                    'inputName' => 'account.current_password',
+                                    'id' => 'current_password',
+                                ])
+                                    <input id="current_password" type="password" class="form-input"
+                                           name="account[current_password]">
+                                @endcomponent
+                            </div>
+                            <div class="w-full sm:w-1/2 sm:pr-3">
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                    'withInputSource' => false,
+                                    'label' => __('my-account.hoom-settings.index.form.account.new-password'),
+                                    'inputName' => 'account.password',
+                                    'id' => 'password',
+                                ])
+                                    <input id="password" type="password" class="form-input"
+                                           name="account[password]">
+                                @endcomponent
+                            </div>
+
+                            <div class="w-full sm:w-1/2 sm:pl-3">
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                    'withInputSource' => false,
+                                    'label' => __('my-account.hoom-settings.index.form.account.new-password-confirmation'),
+                                    'inputName' => 'account.password_confirmation',
+                                    'id' => 'password-confirm',
+                                ])
+                                    <input id="password-confirm" type="password" class="form-input"
+                                           name="account[password_confirmation]">
+                                @endcomponent
+                            </div>
+
+                        </div>
+                        <!-- password change section -->
+
+                        <hr class="w-full">
+
+                        <div class="w-full flex flex-row flex-wrap">
+                            <div class="form-group">
+                                <div class="w-full">
+                                    <button type="submit" class="btn btn-green">
+                                        @lang('my-account.hoom-settings.index.form.submit')
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="flex flex-row flex-wrap w-full border border-solid border-blue-500 border-opacity-50 rounded-lg">
+                <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 h-11 rounded-t-lg border-b border-solid border-blue-500 border-opacity-50">
+                    @lang('my-account.settings.reset-file.header')
+                </div>
+
+                <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 py-8 rounded-b-lg" x-data="modal()">
+                    <p class="w-full">
                         @lang('my-account.settings.reset-file.description')
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <label for="reset-file"
-                                       class="control-label">@lang('my-account.settings.reset-file.label')</label>
+                    </p>
 
-                                <a data-toggle="modal" data-target="#reset-modal" class="btn btn-danger">
-                                    @lang('my-account.settings.reset-file.submit')
-                                </a>
+                    @component('cooperation.frontend.layouts.components.form-group', [
+                        'withInputSource' => false,
+                        'label' => __('my-account.settings.reset-file.label'),
+                        'id' => 'reset-file',
+                    ])
+                        <a class="btn btn-red" x-on:click="toggle()">
+                            @lang('my-account.settings.reset-file.submit')
+                        </a>
+                    @endcomponent
+
+                    @component('cooperation.frontend.layouts.components.modal', [
+                        'header' => __('my-account.settings.reset-file.modal.title'),
+                    ])
+                        <p>
+                            @lang('my-account.settings.reset-file.modal.text')
+                        </p>
+
+                        <div class="w-full mt-3 space-y-3">
+                            <form method="POST"
+                                  action="{{ route('cooperation.my-account.settings.reset-file', compact('cooperation')) }}">
+                                @csrf
+                                <input type="hidden" name="input_sources[id][]"
+                                       value="{{\App\Models\InputSource::findByShort('resident')->id}}">
+                                <button type="button"
+                                        class="reset-account btn btn-red">
+                                    @lang('my-account.settings.reset-file.modal.reset-resident')
+                                </button>
+                            </form>
+                            <form method="POST"
+                                  action="{{ route('cooperation.my-account.settings.reset-file', compact('cooperation')) }}">
+                                @csrf
+                                <input type="hidden" name="input_sources[id][]"
+                                       value="{{\App\Models\InputSource::findByShort('resident')->id}}">
+                                <input type="hidden" name="input_sources[id][]"
+                                       value="{{\App\Models\InputSource::findByShort('coach')->id}}">
+                                <button type="button"
+                                        class="reset-account btn btn-red">
+                                    @lang('my-account.settings.reset-file.modal.reset-both')
+                                </button>
+                            </form>
+                        </div>
+                    @endcomponent
+                </div>
+            </div>
+
+            @can('delete-own-account')
+                <div class="flex flex-row flex-wrap w-full border border-solid border-blue-500 border-opacity-50 rounded-lg">
+                    <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 h-11 rounded-t-lg border-b border-solid border-blue-500 border-opacity-50">@lang('my-account.settings.destroy.header')</div>
+
+                    <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 py-8 rounded-b-lg">
+                        <form method="POST"
+                              action="{{ route('cooperation.my-account.settings.destroy', ['cooperation' => $cooperation]) }}">
+                            @method('DELETE')
+                            @csrf
+
+                            <div class="w-full flex flex-row flex-wrap">
+                                <div class="w-full">
+                                    @component('cooperation.frontend.layouts.components.form-group', [
+                                        'withInputSource' => false,
+                                        'label' => __('my-account.settings.destroy.label'),
+                                        'id' => 'delete-account',
+                                        'class' => '-mt-4',
+                                    ])
+                                        <button type="submit" id="delete-account" class="btn btn-red">
+                                            @lang('my-account.settings.destroy.submit')
+                                        </button>
+                                    @endcomponent
+                                </div>
                             </div>
+                        </form>
+                    </div>
+                </div>
+            @endcan
+
+            {{-- Notification settings --}}
+            <div class="flex flex-row flex-wrap w-full border border-solid border-blue-500 border-opacity-50 rounded-lg">
+                <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 h-11 rounded-t-lg border-b border-solid border-blue-500 border-opacity-50">
+                    @lang('my-account.notification-settings.index.header')
+                </div>
+
+                <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 py-8 rounded-b-lg">
+                    <div class="w-full flex flex-row flex-wrap">
+                        <div class="w-full">
+                            <table id="table"
+                                   class="table table-striped table-responsive table-bordered compact nowrap">
+                                <thead>
+                                <tr>
+                                    <th>@lang('my-account.notification-settings.index.table.columns.name')</th>
+                                    <th>@lang('my-account.notification-settings.index.table.columns.interval')</th>
+                                    <th>@lang('my-account.notification-settings.index.table.columns.last-notified-at')</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($notificationSettings as $i => $notificationSetting)
+                                    <tr>
+                                        <td>{{ $notificationSetting->type->name }}</td>
+                                        <td>
+
+                                            <form action="{{route('cooperation.my-account.notification-settings.update', $notificationSetting->id)}}"
+                                                  method="post">
+                                                @method('PUT')
+                                                @csrf
+                                                <select name="notification_setting[{{$notificationSetting->id}}][interval_id]"
+                                                        class="form-input change-interval">
+                                                    @foreach($notificationIntervals as $notificationInterval)
+                                                        <option @if(old('notification_setting.interval_id', $notificationSetting->interval_id) == $notificationInterval->id) selected="selected"
+                                                                @endif value="{{$notificationInterval->id}}">
+                                                            {{$notificationInterval->name}}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </form>
+                                        </td>
+                                        <td>{{ is_null($notificationSetting->last_notified_at) ? __('my-account.notification-settings.index.table.never-sent') : $notificationSetting->last_notified_at->format('Y-m-d') }}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                @can('delete-own-account')
-                    <div class="panel panel-default">
-                        <div class="panel-heading">@lang('my-account.settings.destroy.header')</div>
+            {{--Access--}}
+            <div class="flex flex-row flex-wrap w-full border border-solid border-blue-500 border-opacity-50 rounded-lg">
+                <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 h-11 rounded-t-lg border-b border-solid border-blue-500 border-opacity-50">
+                    @lang('my-account.access.index.header')
+                </div>
 
-                        <div class="panel-body">
-                            <form method="POST"
-                                  action="{{ route('cooperation.my-account.settings.destroy', ['cooperation' => $cooperation]) }}">
-                                {{ method_field('DELETE') }}
-                                {{ csrf_field() }}
-
-                                <div class="row">
-                                    <div class="col-sm-12">
-
-
-                                        <div class="form-group">
-                                            <label for="delete-account"
-                                                   class="control-label">@lang('my-account.settings.destroy.label')</label>
-
-                                            <button type="submit" id="delete-account" class="btn btn-danger">
-                                                @lang('my-account.settings.destroy.submit')
-                                            </button>
-                                        </div>
+                <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 py-8 rounded-b-lg">
+                    <div class="w-full flex flex-row flex-wrap">
+                        <div class="w-full">
+                            <form id="allow-access-form"
+                                  action="{{route('cooperation.my-account.access.allow-access')}}"
+                                  method="post">
+                                @csrf
+                                @component('cooperation.frontend.layouts.components.form-group', [
+                                    'withInputSource' => false,
+                                    'inputName' => 'allow_access',
+                                    'class' => '-mt-4',
+                                ])
+                                    <div class="checkbox-wrapper">
+                                        <input id="allow-access" name="allow_access" type="checkbox" value="1"
+                                               @if(old('allow_access') && old('allow_access') == '1' || $user->allowedAccess()) checked="checked" @endif>
+                                        <label for="allow-access">
+                                            <span class="checkmark"></span>
+                                            <span>
+                                                @lang('my-account.access.index.form.allow_access', ['cooperation' => \App\Helpers\HoomdossierSession::getCooperation(true)->name])
+                                            </span>
+                                        </label>
                                     </div>
-                                </div>
+                                    <p class="text-left">
+                                        @lang('my-account.access.index.text-allow-access')
+                                    </p>
+                                @endcomponent
                             </form>
                         </div>
                     </div>
-                @endcan
-
-                {{-- Notification settings --}}
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        @lang('my-account.notification-settings.index.header')
-                    </div>
-
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <table id="table"
-                                       class="table table-striped table-responsive table-bordered compact nowrap">
-                                    <thead>
+                    <div class="w-full flex flex-row flex-wrap mt-5">
+                        <div class="w-full">
+                            <table id="table"
+                                   class="table table-striped table-responsive table-bordered compact nowrap">
+                                <thead>
+                                <tr>
+                                    <th>@lang('my-account.access.index.table.columns.coach')</th>
+                                    <th>@lang('my-account.access.index.table.columns.actions')</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($buildingPermissions as $i => $buildingPermission)
+                                    <form id="revoke-access-{{$buildingPermission->id}}"
+                                          action="{{route('cooperation.messages.participants.revoke-access')}}"
+                                          method="post">
+                                        @csrf
+                                        <input type="hidden" name="user_id"
+                                               value="{{$buildingPermission->user_id}}">
+                                        <input type="hidden" name="building_owner_id"
+                                               value="{{$buildingPermission->building_id}}">
+                                    </form>
                                     <tr>
-                                        <th>@lang('my-account.notification-settings.index.table.columns.name')</th>
-                                        <th>@lang('my-account.notification-settings.index.table.columns.interval')</th>
-                                        <th>@lang('my-account.notification-settings.index.table.columns.last-notified-at')</th>
+                                        <td>{{ $buildingPermission->user->getFullName() }}</td>
+                                        <td>
+                                            <a data-form-id="revoke-access-{{$buildingPermission->id}}"
+                                               class="revoke-access btn btn-red">
+                                                <i class="glyphicon glyphicon-trash"></i>
+                                            </a>
+                                        </td>
                                     </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($notificationSettings as $i => $notificationSetting)
-                                        <tr>
-                                            <td>{{ $notificationSetting->type->name }}</td>
-                                            <td>
-
-                                                <form action="{{route('cooperation.my-account.notification-settings.update', $notificationSetting->id)}}"
-                                                      method="post">
-                                                    {{csrf_field()}}
-                                                    {{method_field('put')}}
-                                                    <select name="notification_setting[{{$notificationSetting->id}}][interval_id]"
-                                                            class="form-control change-interval">
-                                                        @foreach($notificationIntervals as $notificationInterval)
-                                                            <option @if(old('notification_setting.interval_id', $notificationSetting->interval_id) == $notificationInterval->id) selected="selected"
-                                                                    @endif value="{{$notificationInterval->id}}">{{$notificationInterval->name}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </form>
-                                            </td>
-                                            <td>{{ is_null($notificationSetting->last_notified_at) ? __('my-account.notification-settings.index.table.never-sent') : $notificationSetting->last_notified_at->format('Y-m-d') }}</td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{--Access--}}
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        @lang('my-account.access.index.header')
-                    </div>
-
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <form id="allow-access-form"
-                                      action="{{route('cooperation.my-account.access.allow-access')}}"
-                                      method="post">
-                                    {{csrf_field()}}
-                                    <div class="form-group {{ $errors->has('allow_access') ? ' has-error' : '' }}">
-                                        <label for="allow_access">
-                                            <input id="allow_access" name="allow_access" type="checkbox"
-                                                   @if(old('allow_access') && old('allow_access') == 'on' || $user->allowedAccess())
-                                                   checked="checked"
-                                                    @endif>
-                                            @lang('my-account.access.index.form.allow_access', ['cooperation' => \App\Helpers\HoomdossierSession::getCooperation(true)->name])
-                                        </label>
-                                        @if ($errors->has('allow_access'))
-                                            <span class="help-block">
-                                <strong>{{ $errors->first('allow_access') }}</strong>
-                            </span>
-                                        @endif
-                                        <p>@lang('my-account.access.index.text-allow-access')</p>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <table id="table"
-                                       class="table table-striped table-responsive table-bordered compact nowrap">
-                                    <thead>
-                                    <tr>
-                                        <th>@lang('my-account.access.index.table.columns.coach')</th>
-                                        <th>@lang('my-account.access.index.table.columns.actions')</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($buildingPermissions as $i => $buildingPermission)
-                                        <form id="revoke-access-{{$buildingPermission->id}}"
-                                              action="{{route('cooperation.messages.participants.revoke-access')}}"
-                                              method="post">
-                                            {{csrf_field()}}
-                                            <input type="hidden" name="user_id"
-                                                   value="{{$buildingPermission->user_id}}">
-                                            <input type="hidden" name="building_owner_id"
-                                                   value="{{$buildingPermission->building_id}}">
-                                        </form>
-                                        <tr>
-                                            <td>{{ $buildingPermission->user->getFullName() }}</td>
-                                            <td>
-                                                <a data-form-id="revoke-access-{{$buildingPermission->id}}"
-                                                   class="revoke-access btn btn-danger"><i
-                                                            class="glyphicon glyphicon-trash"></i></a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                                @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -554,11 +494,6 @@
             $('.reset-account').click(function (event) {
                 if (confirm(areYouSure)) {
                     $(this).closest('form').submit();
-                } else {
-                    // so the opened modal will close.
-                    $('.modal').modal('hide');
-                    event.preventDefault();
-                    return false;
                 }
             });
 

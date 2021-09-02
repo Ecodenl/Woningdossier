@@ -111,10 +111,18 @@ class MapActionPlan extends Command
             $costs = $userActionPlanAdvice->costs;
 
             if (! is_array($costs)) {
-                $newCosts = [
-                    'from' => null,
-                    'to' => $costs,
-                ];
+                if ($costs < 0){
+                    $newCosts = [
+                        'from' => $costs,
+                        'to' => null,
+                    ];
+                }
+                else {
+                    $newCosts = [
+                        'from' => null,
+                        'to'   => $costs,
+                    ];
+                }
 
                 $userActionPlanAdvice->update([
                     'costs' => $newCosts,

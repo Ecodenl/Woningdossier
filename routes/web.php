@@ -200,7 +200,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 //                    });
 //                });
 
-                Route::group(['middleware' => 'filled-step:general-data'], function () {
+//                Route::group(['middleware' => 'filled-step:general-data'], function () {
                     // Heat pump: info for now
                     Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']])
                         ->middleware('step-disabled:heat-pump');
@@ -251,7 +251,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         Route::resource('', 'HeaterController', ['only' => ['index', 'store']]);
                         Route::post('calculate', 'HeaterController@calculate')->name('calculate');
                     });
-                });
+//                });
 
                 Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');
                 Route::post('my-plan/comment', 'MyPlanController@storeComment')

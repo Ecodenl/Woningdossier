@@ -107,6 +107,7 @@ class Building extends Model
         'building_coach_status_id',
         'extension',
         'is_active',
+        'example_building_id',
     ];
 
     public function toolQuestionAnswers(): HasMany

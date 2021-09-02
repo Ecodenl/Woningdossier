@@ -160446,7 +160446,18 @@ ul.progress-list li a img.no-border {
   border-style: none;
 }
 
-/* Tailwind */
+.panel-chat-body {
+  overflow-y: scroll;
+  max-height: 250px;
+}
+
+.panel-chat-body .left {
+  margin-right: 250px;
+}
+
+.panel-chat-body .right {
+  margin-left: 250px;
+}/* Tailwind */
 
 /* Base CSS */
 

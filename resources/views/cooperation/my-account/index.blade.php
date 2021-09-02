@@ -1,7 +1,5 @@
 @extends('cooperation.frontend.layouts.tool')
 
-{{--@section('step_title', __('wall-insulation.title.title'))--}}
-
 @section('content')
     <div class="w-full flex flex-row flex-wrap">
         <div class="w-full space-y-10">

@@ -16,15 +16,11 @@ class MyPlanController extends Controller
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
 
-        $irrelevantSteps = $building->completedSteps()->pluck('step_id')->toArray();
-        $firstIncompleteStep = Step::quickScan()
-            ->whereNotIn('id', $irrelevantSteps)
-            ->orderBy('order')
-            ->first();
+        $firstIncompleteStep = $building->getFirstIncompleteStep();
 
         // There are incomplete steps left, set the sub step
         if ($firstIncompleteStep instanceof Step) {
-            $firstIncompleteSubStep = $firstIncompleteStep->subSteps()->orderBy('order')->first();
+            $firstIncompleteSubStep = $building->getFirstIncompleteSubStep($firstIncompleteStep);
 
             if ($firstIncompleteSubStep instanceof SubStep) {
                 return redirect()->route('cooperation.frontend.tool.quick-scan.index', [

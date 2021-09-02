@@ -175,7 +175,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 });
             });
 
-            Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
+            Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool', 'middleware' => 'ensure-quick-scan-completed'], function () {
 
 
                 Route::get('/', 'ToolController@index')->name('index');
@@ -187,18 +187,18 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::resource('example-building', 'ExampleBuildingController')->only('store');
                 Route::resource('building-type', 'BuildingTypeController')->only('store');
 
-                Route::group(['as' => 'general-data.', 'prefix' => 'general-data'], function () {
-                    Route::get('', 'GeneralDataController@index')->name('index');
-
-                    Route::group(['namespace' => 'GeneralData'], function () {
-                        Route::resource('gebouw-kenmerken', 'BuildingCharacteristicsController')->only(['index', 'store'])->names('building-characteristics');
-                        Route::get('get-qualified-example-buildings', 'BuildingCharacteristicsController@qualifiedExampleBuildings')->name('building-characteristics.qualified-example-buildings');
-
-                        Route::resource('huidige-staat', 'CurrentStateController')->names('current-state')->only(['index', 'store']);
-                        Route::resource('gebruik', 'UsageController')->only(['index', 'store'])->names('usage');
-                        Route::resource('interesse', 'InterestController')->only(['index', 'store'])->names('interest');
-                    });
-                });
+//                Route::group(['as' => 'general-data.', 'prefix' => 'general-data'], function () {
+//                    Route::get('', 'GeneralDataController@index')->name('index');
+//
+//                    Route::group(['namespace' => 'GeneralData'], function () {
+//                        Route::resource('gebouw-kenmerken', 'BuildingCharacteristicsController')->only(['index', 'store'])->names('building-characteristics');
+//                        Route::get('get-qualified-example-buildings', 'BuildingCharacteristicsController@qualifiedExampleBuildings')->name('building-characteristics.qualified-example-buildings');
+//
+//                        Route::resource('huidige-staat', 'CurrentStateController')->names('current-state')->only(['index', 'store']);
+//                        Route::resource('gebruik', 'UsageController')->only(['index', 'store'])->names('usage');
+//                        Route::resource('interesse', 'InterestController')->only(['index', 'store'])->names('interest');
+//                    });
+//                });
 
                 Route::group(['middleware' => 'filled-step:general-data'], function () {
                     // Heat pump: info for now

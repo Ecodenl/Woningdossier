@@ -20,6 +20,9 @@ class InterestController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
+        // For safety
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user->load('stepInterests');
         $steps = $cooperation->getActiveOrderedSteps();
@@ -78,6 +81,9 @@ class InterestController extends Controller
 
     public function store(InterestFormRequest $request)
     {
+        // For safety
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);

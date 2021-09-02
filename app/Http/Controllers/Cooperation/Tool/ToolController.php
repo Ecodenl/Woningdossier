@@ -14,6 +14,7 @@ class ToolController extends Controller
      */
     public function index()
     {
-        return redirect(route('cooperation.tool.general-data.index'));
+        return redirect()->route('cooperation.tool.ventilation.index');
+//        return redirect(route('cooperation.tool.general-data.index'));
     }
 }

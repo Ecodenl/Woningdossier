@@ -18,6 +18,7 @@ use App\Models\RoofType;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
+use App\Scopes\VisibleScope;
 use App\Services\ModelService;
 use App\Services\UserActionPlanAdviceService;
 use Carbon\Carbon;
@@ -34,6 +35,15 @@ class RoofInsulationHelper extends ToolHelper
         $step = Step::findByShort('roof-insulation');
 
         $buildingRoofTypeData = $this->getValues('building_roof_types');
+
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
+
+        $oldAdvices = UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
+            ->forMe($this->user)
+            ->forInputSource($masterInputSource)
+            ->forStep($step)
+            ->get();
+
         // Remove old results
         UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
@@ -86,6 +96,13 @@ class RoofInsulationHelper extends ToolHelper
                         $actionPlanAdvice->user()->associate($this->user);
                         $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($step);
+
+                        $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
+                            ->where('user_action_plan_advisable_id', '=', $measureApplication->id)->first();
+                        if ($oldAdvice instanceof UserActionPlanAdvice && ! is_null($oldAdvice->category)) {
+                            $actionPlanAdvice->category = $oldAdvice->catergory;
+                        }
+
                         $actionPlanAdvice->save();
                     }
                 }

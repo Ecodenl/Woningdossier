@@ -51,10 +51,10 @@ class UserActionPlanAdviceObserver
             }
         }
 
-        if(!$userActionPlanAdvice->isDirty('visible')){
+        if (! $userActionPlanAdvice->isDirty('visible')) {
             $userActionPlanAdvice->visible = true;
         }
-        if (!$userActionPlanAdvice->isDirty('category')){
+        if (! $userActionPlanAdvice->isDirty('category') || is_null($userActionPlanAdvice->category)) {
             $userActionPlanAdvice->category = UserActionPlanAdviceService::CATEGORY_TO_DO;
         }
     }

@@ -12,6 +12,7 @@ use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserEnergyHabit;
 use App\Scopes\GetValueScope;
+use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 
 class HighEfficiencyBoilerHelper extends ToolHelper
@@ -90,6 +91,14 @@ class HighEfficiencyBoilerHelper extends ToolHelper
 
         $step = Step::findByShort('high-efficiency-boiler');
 
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
+
+        $oldAdvices = UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
+            ->forMe($this->user)
+            ->forInputSource($masterInputSource)
+            ->forStep($step)
+            ->get();
+
         // remove old results
         UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
@@ -103,6 +112,12 @@ class HighEfficiencyBoilerHelper extends ToolHelper
                 $actionPlanAdvice->user()->associate($this->user);
                 $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
+
+                $oldAdvice = $oldAdvices->where('userActionPlanAdvisable', '!=', null)->first();
+                if ($oldAdvice instanceof UserActionPlanAdvice) {
+                    $actionPlanAdvice->category = $oldAdvice->catergory;
+                }
+
                 $actionPlanAdvice->save();
             }
         }

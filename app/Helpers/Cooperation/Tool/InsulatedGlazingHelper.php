@@ -15,6 +15,7 @@ use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
+use App\Scopes\VisibleScope;
 use App\Services\ModelService;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Collection;
@@ -107,6 +108,14 @@ class InsulatedGlazingHelper extends ToolHelper
         $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
         $results = InsulatedGlazing::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
 
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
+
+        $oldAdvices = UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
+            ->forMe($this->user)
+            ->forInputSource($masterInputSource)
+            ->forStep($step)
+            ->get();
+
         // remove old results
         UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
@@ -122,6 +131,18 @@ class InsulatedGlazingHelper extends ToolHelper
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);
+
+                    $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
+                        ->where('user_action_plan_advisable_id', '=', $measureApplication->id)->first();
+                    \Log::debug('OLD');
+                    if ($oldAdvice instanceof UserActionPlanAdvice && ! is_null($oldAdvice->category)) {
+                        \Log::debug('OLD VALID');
+                        \Log::debug($oldAdvice);
+                        \Log::debug($oldAdvice->category);
+                        $actionPlanAdvice->category = $oldAdvice->catergory;
+                        // TODO: FIND OUT WHY THIS ISN'T SETTING THE CATEGORY
+                    }
+\Log::debug($actionPlanAdvice->category);
                     $actionPlanAdvice->save();
                 }
             }

@@ -14,6 +14,7 @@ use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
+use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 
 class FloorInsulationHelper extends ToolHelper
@@ -99,6 +100,14 @@ class FloorInsulationHelper extends ToolHelper
         $floorInsulationElement = Element::findByShort('floor-insulation');
         $step = Step::findByShort('floor-insulation');
 
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
+
+        $oldAdvices = UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
+            ->forMe($this->user)
+            ->forInputSource($masterInputSource)
+            ->forStep($step)
+            ->get();
+
         UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         $elementData = $this->getValues('element');
@@ -123,6 +132,13 @@ class FloorInsulationHelper extends ToolHelper
                         $actionPlanAdvice->user()->associate($this->user);
                         $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($step);
+
+                        $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '!=', MeasureApplication::class)
+                            ->where('user_action_plan_advisable_id', '=', $measureApplication->id)->first();
+                        if ($oldAdvice instanceof UserActionPlanAdvice) {
+                            $actionPlanAdvice->category = $oldAdvice->catergory;
+                        }
+
                         $actionPlanAdvice->save();
                     }
                 }

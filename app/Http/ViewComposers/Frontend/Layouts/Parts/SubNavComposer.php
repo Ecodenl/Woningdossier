@@ -2,6 +2,7 @@
 
 namespace App\Http\ViewComposers\Frontend\Layouts\Parts;
 
+use App\Helpers\Blade\RouteLogic;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Models\Step;
@@ -25,5 +26,9 @@ class SubNavComposer
 
         $view->with('currentStep', $this->request->route('step'));
         $view->with('building', HoomdossierSession::getBuilding(true));
+
+        if (RouteLogic::inQuestionnaire($this->request->route())) {
+            $view->with('currentQuestionnaire', $this->request->route('questionnaire'));
+        }
     }
 }

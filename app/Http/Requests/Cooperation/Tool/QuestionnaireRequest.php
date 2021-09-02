@@ -5,12 +5,15 @@ namespace App\Http\Requests\Cooperation\Tool;
 use App\Models\Question;
 use App\Services\QuestionnaireService;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Validator;
 
 class QuestionnaireRequest extends FormRequest
 {
     protected $redirect;
+
+    protected $questions;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -19,7 +22,19 @@ class QuestionnaireRequest extends FormRequest
      */
     public function authorize()
     {
-        return \Auth::check();
+        return Auth::check();
+    }
+
+    public function prepareForValidation()
+    {
+        $request = $this->request;
+        $this->questions = $request->get('questions');
+
+        if ($request->has('nextUrl')) {
+            $this->redirect = url()->previous();
+        } else {
+            $this->redirect = url()->previous().'/'.$this->request->get('tab_id', 'main-tab');
+        }
     }
 
     /**
@@ -29,8 +44,7 @@ class QuestionnaireRequest extends FormRequest
      */
     public function attributes()
     {
-        $request = $this->request;
-        $questions = $request->get('questions');
+        $questions = $this->questions;
 
         $attributes = [];
 
@@ -54,8 +68,6 @@ class QuestionnaireRequest extends FormRequest
      */
     public function makeRules()
     {
-        $this->redirect = url()->previous().'/'.$this->request->get('tab_id', 'main-tab');
-
         $questions = $this->get('questions');
         $validationRules = [];
 

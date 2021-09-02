@@ -159372,6 +159372,26 @@ textarea.form-input {
   --tw-border-opacity: 1;
 }
 
+.source-cooperation {
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgba(255, 189, 90, var(--tw-border-opacity));
+  --tw-border-opacity: 0;
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 189, 90, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.1;
+  --tw-text-opacity: 1;
+  color: rgba(255, 189, 90, var(--tw-text-opacity));
+}
+
+.source-cooperation:hover {
+  --tw-border-opacity: 1;
+}
+
+.source-cooperation:focus {
+  --tw-border-opacity: 1;
+}
+
 .source-master {
   border-width: 1px;
   --tw-border-opacity: 1;

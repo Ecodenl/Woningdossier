@@ -24,6 +24,8 @@ use App\Observers\TranslationObserver;
 use App\Observers\UserActionPlanAdviceObserver;
 use App\Observers\UserObserver;
 use Illuminate\Auth\SessionGuard;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
 
@@ -46,10 +48,10 @@ class WoningdossierServiceProvider extends ServiceProvider
         Account::observe(AccountObserver::class);
         Translation::observe(TranslationObserver::class);
 
-        \View::creator('cooperation.tool.*', ToolComposer::class);
-        \View::creator('*', CooperationComposer::class);
-        \View::creator('cooperation.admin.*', AdminComposer::class);
-        //\View::creator('cooperation.my-account.*', MyAccountComposer::class);
+        View::creator('cooperation.tool.*', ToolComposer::class);
+        View::creator('*', CooperationComposer::class);
+        View::creator('cooperation.admin.*', AdminComposer::class);
+        //View::creator('cooperation.my-account.*', MyAccountComposer::class);
 
         SessionGuard::macro('account', function () {
             return auth()->user();
@@ -75,8 +77,8 @@ class WoningdossierServiceProvider extends ServiceProvider
 
         $this->app->bind('Cooperation', function () {
             $cooperation = null;
-            if (\Session::has('cooperation')) {
-                $c = \Session::get('cooperation');
+            if (Session::has('cooperation')) {
+                $c = Session::get('cooperation');
                 $cooperation = \App\Helpers\Cache\Cooperation::find($c);
             }
 
@@ -85,9 +87,9 @@ class WoningdossierServiceProvider extends ServiceProvider
 
         $this->app->bind('CooperationStyle', function () {
             $cooperationStyle = null;
-            if (\Session::has('cooperation')) {
+            if (Session::has('cooperation')) {
                 // we know this as we've cached it earlier
-                $c = \Session::get('cooperation');
+                $c = Session::get('cooperation');
 
                 $cooperationStyle = \App\Helpers\Cache\Cooperation::getStyle($c);
             }

@@ -63,11 +63,20 @@
                                         <div class="form-group">
                                             <label for="step-id">Na stap:</label>
                                             <select name="questionnaire[step_id]" class="form-control" id="step-id">
-                                                @foreach($steps as $i => $step)
+                                                @php $order = 1; @endphp
+                                                @foreach($quickScanSteps as $step)
                                                     <option value="{{ $step->id }}"
                                                             @if(old('questionnaire.step_id', $questionnaire->step_id) == $step->id) selected="selected" @endif>
-                                                        {{ $i+1 }}: {{ $step->name }}
+                                                        {{ $order }}: {{ $step->name }} (quick-scan)
                                                     </option>
+                                                    @php ++$order; @endphp
+                                                @endforeach
+                                                @foreach($expertSteps as $step)
+                                                    <option value="{{ $step->id }}"
+                                                            @if(old('questionnaire.step_id', $questionnaire->step_id) == $step->id) selected="selected" @endif>
+                                                        {{ $order }}: {{ $step->name }} (expert)
+                                                    </option>
+                                                    @php ++$order; @endphp
                                                 @endforeach
                                             </select>
                                         </div>

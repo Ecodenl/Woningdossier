@@ -238,7 +238,7 @@ class StepHelper
 
         // if the user has no steps left where they do not have any interest in, redirect them to their plan
         return [
-            'url' => route('cooperation.tool.my-plan.index'), 'tab_id' => '',
+            'url' => route('cooperation.frontend.tool.quick-scan.my-plan.index'), 'tab_id' => '',
         ];
     }
 

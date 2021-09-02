@@ -240,7 +240,7 @@ class FileStorageController extends Controller
 
     private function getRedirectUrl(InputSource $inputSource)
     {
-        $url = route('cooperation.tool.my-plan.index').'#download-section';
+        $url = route('cooperation.frontend.tool.quick-scan.my-plan.index').'#download-section';
         if (InputSource::COOPERATION_SHORT == $inputSource->short) {
             $url = route('cooperation.admin.cooperation.reports.index');
         }

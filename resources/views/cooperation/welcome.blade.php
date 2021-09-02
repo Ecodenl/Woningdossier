@@ -32,14 +32,6 @@
                 </div>
             @endif
         </div>
-        <div class="mt-5 text-center">
-            <a href="{{ route('cooperation.privacy.index') }}" class="text-white">
-                @lang('default.privacy-policy')
-            </a>
-            <span class="text-white">|</span>
-            <a href="{{ route('cooperation.disclaimer.index') }}" class="text-white">
-                @lang('default.terms-and-conditions')
-            </a>
-        </div>
+        @include('cooperation.frontend.shared.parts.privacy-disclaimer')
     </div>
 @endsection

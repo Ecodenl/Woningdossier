@@ -13,6 +13,7 @@ use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Sanctum\Sanctum;
@@ -63,7 +64,7 @@ class AppServiceProvider extends ServiceProvider
             }, $boolean);
         });
 
-        \Queue::before(function (JobProcessing $event) {
+        Queue::before(function (JobProcessing $event) {
             $payload = $event->job->payload();
             /** @var RecalculateStepForUser $command */
             $command = unserialize($payload['data']['command']);
@@ -74,7 +75,7 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        \Queue::after(function (JobProcessed $event) {
+        Queue::after(function (JobProcessed $event) {
             $payload = $event->job->payload();
             /** @var RecalculateStepForUser $command */
             $command = unserialize($payload['data']['command']);

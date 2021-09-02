@@ -40,6 +40,7 @@ return [
     'new-message' => 'Nieuwe berichten',
 
     'privacy-policy' => 'Privacybeleid',
+    'disclaimer' => 'Disclaimer',
     'terms-and-conditions' => 'Algemene voorwaarden',
 
     'language' => 'Taal',

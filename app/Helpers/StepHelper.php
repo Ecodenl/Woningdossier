@@ -255,7 +255,7 @@ class StepHelper
      */
     public static function complete(Step $step, Building $building, InputSource $inputSource)
     {
-        CompletedStep::firstOrCreate([
+        CompletedStep::allInputSources()->firstOrCreate([
             'step_id' => $step->id,
             'input_source_id' => $inputSource->id,
             'building_id' => $building->id,

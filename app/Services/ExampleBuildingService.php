@@ -3,13 +3,11 @@
 namespace App\Services;
 
 use App\Events\ExampleBuildingChanged;
-use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\BuildingService;
-use App\Models\CompletedSubStep;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\ExampleBuilding;

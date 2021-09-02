@@ -487,6 +487,9 @@ class Form extends Component
         if (array_key_exists('building_type_id', $changes)){
             $buildingType = BuildingType::find((int) $changes['building_type_id']);
         }
+        else {
+            $buildingType = $buildingFeature->buildingType;
+        }
 
         if (!$buildingType instanceof BuildingType){
             return null;

@@ -343,8 +343,7 @@
                 <div class="flex flex-row flex-wrap w-full items-center bg-white px-5 py-8 rounded-b-lg">
                     <div class="w-full flex flex-row flex-wrap">
                         <div class="w-full">
-                            <table id="table"
-                                   class="table table-striped table-responsive table-bordered compact nowrap">
+                            <table id="table" class="table fancy-table">
                                 <thead>
                                 <tr>
                                     <th>@lang('my-account.notification-settings.index.table.columns.name')</th>
@@ -359,18 +358,20 @@
                                         <td>
 
                                             <form action="{{route('cooperation.my-account.notification-settings.update', $notificationSetting->id)}}"
-                                                  method="post">
+                                                  method="post" id="change-interval-form">
                                                 @method('PUT')
                                                 @csrf
-                                                <select name="notification_setting[{{$notificationSetting->id}}][interval_id]"
-                                                        class="form-input change-interval">
-                                                    @foreach($notificationIntervals as $notificationInterval)
-                                                        <option @if(old('notification_setting.interval_id', $notificationSetting->interval_id) == $notificationInterval->id) selected="selected"
-                                                                @endif value="{{$notificationInterval->id}}">
-                                                            {{$notificationInterval->name}}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
+                                                @component('cooperation.frontend.layouts.components.alpine-select')
+                                                    <select name="notification_setting[{{$notificationSetting->id}}][interval_id]"
+                                                            class="form-input change-interval">
+                                                        @foreach($notificationIntervals as $notificationInterval)
+                                                            <option @if(old('notification_setting.interval_id', $notificationSetting->interval_id) == $notificationInterval->id) selected="selected"
+                                                                    @endif value="{{$notificationInterval->id}}">
+                                                                {{$notificationInterval->name}}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                @endcomponent
                                             </form>
                                         </td>
                                         <td>{{ is_null($notificationSetting->last_notified_at) ? __('my-account.notification-settings.index.table.never-sent') : $notificationSetting->last_notified_at->format('Y-m-d') }}</td>
@@ -420,8 +421,7 @@
                     </div>
                     <div class="w-full flex flex-row flex-wrap mt-5">
                         <div class="w-full">
-                            <table id="table"
-                                   class="table table-striped table-responsive table-bordered compact nowrap">
+                            <table id="table" class="table fancy-table">
                                 <thead>
                                 <tr>
                                     <th>@lang('my-account.access.index.table.columns.coach')</th>
@@ -464,7 +464,7 @@
     <script>
         $(document).ready(function () {
             $('.change-interval').change(function () {
-                $(this).parent().submit();
+                $(this).parents('#change-interval-form').first().submit();
             });
 
             $('.revoke-access').click(function () {

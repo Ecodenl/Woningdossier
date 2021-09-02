@@ -1,4 +1,4 @@
-<div x-data="alpineSelect(!!'{{$initiallyOpen ?? false}}')" x-ref="select-wrapper" class="select-wrapper w-inherit">
+<div x-data="alpineSelect(!!'{{$initiallyOpen ?? false}}')" x-ref="select-wrapper" class="select-wrapper">
     {{-- Expect at least a select with options --}}
     {{ $slot }}
 

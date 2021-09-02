@@ -4,7 +4,6 @@ namespace App\Console\Commands\Upgrade;
 
 use App\Models\BuildingHeatingApplication;
 use App\Models\ExampleBuildingContent;
-use App\Models\ToolQuestionCustomValue;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 
@@ -63,7 +62,7 @@ class ConvertExampleBuildingContents extends Command
     {
         $this->line("Checking cook_gas");
         $cookGasKey = 'general-data.usage.user_energy_habits.cook_gas';
-        $newKey     = 'tool_question_answers.cook-type';
+        $newKey     = 'general-data.usage.tool_question_answers.cook-type';
 
         $cookGas = data_get(
             $contents,
@@ -101,7 +100,7 @@ class ConvertExampleBuildingContents extends Command
     {
         $this->line("Checking building heating application");
         $bhKey  = 'general-data.current-state.building_features.building_heating_application_id';
-        $newKey = 'tool_question_answers.building-heating-application';
+        $newKey = 'general-data.current-state.tool_question_answers.building-heating-application';
 
         $bhid = data_get(
             $contents,
@@ -113,9 +112,10 @@ class ConvertExampleBuildingContents extends Command
                 Arr::pull($contents, $bhKey);
             } else {
                 $heatingApplication = BuildingHeatingApplication::find($bhid);
-                $valueId            = ToolQuestionCustomValue::findByShort(
-                    $heatingApplication->short
-                )->id;
+                $value = $heatingApplication->short;
+//                $valueId            = ToolQuestionCustomValue::findByShort(
+//                    $heatingApplication->short
+//                )->id;
 
                 $this->info(
                     sprintf(
@@ -123,11 +123,11 @@ class ConvertExampleBuildingContents extends Command
                         $bhKey,
                         $bhid,
                         $newKey,
-                        $valueId
+                        $value
                     )
                 );
                 Arr::pull($contents, $bhKey);
-                Arr::set($contents, $newKey, $valueId);
+                Arr::set($contents, $newKey, $value);
             }
         }
 
@@ -138,7 +138,7 @@ class ConvertExampleBuildingContents extends Command
     {
         $this->line("Checking boiler");
         $boilerKey = 'general-data.current-state.service.4';
-        $newKey    = 'tool_question_answers.heat-source';
+        $newKey    = 'general-data.current-statee.tool_question_answers.heat-source';
 
         $boiler = data_get($contents, $boilerKey, self::NOT_PRESENT);
 
@@ -147,9 +147,10 @@ class ConvertExampleBuildingContents extends Command
 
             if ($boiler >= 10 && $boiler <= 12) {
                 // aanwezig, ..
-                $valueId = ToolQuestionCustomValue::findByShort(
-                    'hr-boiler'
-                )->id;
+//                $valueId = ToolQuestionCustomValue::findByShort(
+//                    'hr-boiler'
+//                )->id;
+                $value = 'hr-boiler';
 
                 $this->info(
                     sprintf(
@@ -157,11 +158,11 @@ class ConvertExampleBuildingContents extends Command
                         $boilerKey,
                         $boiler,
                         $newKey,
-                        $valueId
+                        $value
                     )
                 );
                 Arr::pull($contents, $boilerKey);
-                Arr::set($contents, $newKey, $valueId);
+                Arr::set($contents, $newKey, $value);
             } else {
                 Arr::pull($contents, $boilerKey);
             }
@@ -174,7 +175,7 @@ class ConvertExampleBuildingContents extends Command
     {
         $this->line("Checking heat pump");
         $heatPumpKey = 'general-data.current-state.service.8';
-        $newKey      = 'tool_question_answers.heat-source';
+        $newKey      = 'general-data.current-state.tool_question_answers.heat-source';
 
         $heatPump = data_get($contents, $heatPumpKey, self::NOT_PRESENT);
 
@@ -195,9 +196,10 @@ class ConvertExampleBuildingContents extends Command
                 $heatSource = Arr::pull($contents, $newKey);
 
                 foreach ($heatPumpMap[$heatPump] as $short) {
-                    $valueId = ToolQuestionCustomValue::findByShort($short)->id;
+                    //$valueId = ToolQuestionCustomValue::findByShort($short)->id;
 
-                    $heatSource[] = $valueId;
+                    //$heatSource[] = $valueId;
+                    $heatSource[]= $short;
                 }
                 $heatSource = array_unique($heatSource);
 

@@ -62,17 +62,17 @@ class RoofInsulationHelper extends ToolHelper
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = null;
 
-                    $interest = Interest::find($this->getValues('user_interests.interest_id'));
-
-                    if (1 == $interest->calculate_value) {
-                        // on short term: this year
-                        $advicedYear = Carbon::now()->year;
-                    } elseif (2 == $interest->calculate_value) {
-                        // on term: this year + 5
-                        $advicedYear = Carbon::now()->year + 5;
-                    } else {
+//                    $interest = Interest::find($this->getValues('user_interests.interest_id'));
+//
+//                    if (1 == $interest->calculate_value) {
+//                        // on short term: this year
+//                        $advicedYear = Carbon::now()->year;
+//                    } elseif (2 == $interest->calculate_value) {
+//                        // on term: this year + 5
+//                        $advicedYear = Carbon::now()->year + 5;
+//                    } else {
                         $advicedYear = $results[$roofCat]['replace']['year'];
-                    }
+//                    }
 
                     if (isset($results[$roofCat]['cost_indication']) && $results[$roofCat]['cost_indication'] > 0) {
                         // take the array $roofCat array

@@ -10,13 +10,17 @@ use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
+use App\Models\BuildingType;
 use App\Models\CompletedSubStep;
+use App\Models\ExampleBuilding;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use App\Services\ExampleBuildingService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -387,12 +391,39 @@ class Form extends Component
             }
         }
 
+        // Detect if the example building will be changing. If so, apply it.
+        // I hear you thinking: wouldn't this be better off in an observer?
+        // The answer is: No. Unless you want to trigger an infinite loop
+        // as applying the example building will delete and recreate records,
+        // which will trigger the observer, which will start applying the
+        // example building, which will delete and recreate records, which will
+        // trigger the observer.. ah well: you get the idea.
+        $exampleBuilding = null;
+        if (in_array($table, ['building_features']) && in_array($column, ['build_year', 'building_type_id'])){
+            // set the boolean to the appropriate value. Example building will
+            // be applied AFTER saving the current form (for getting the
+            // appropriate values).
+            Log::debug($table . "." . $column . " has changed");
+            $exampleBuilding = $this->getExampleBuildingIfChangeIsNeeded([$column => $givenAnswer]);
+            if ($exampleBuilding instanceof ExampleBuilding){
+                Log::debug("Example building should be (re)applied!");
+            }
+            else {
+                Log::debug("No change in example building contents");
+            }
+        }
+
         // Now save it
         $modelName::allInputSources()
             ->updateOrCreate(
                 $where,
                 [$column => $givenAnswer]
             );
+
+        if ($exampleBuilding instanceof ExampleBuilding){
+            // Apply the example building
+            $this->retriggerExampleBuildingApplication($exampleBuilding);
+        }
     }
 
     private function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
@@ -442,5 +473,78 @@ class Form extends Component
                 ->allInputSources()
                 ->updateOrCreate($where, $data);
         }
+    }
+
+    protected function getExampleBuildingIfChangeIsNeeded(array $changes)
+    {
+        // objects for first checks
+        $buildingFeature = $this->building->buildingFeatures;
+
+        // current values for comparison later on
+        $currentExampleBuildingId = $this->building->example_building_id;
+        $currentBuildYearValue = (int) $buildingFeature->build_year;
+
+        if (array_key_exists('building_type_id', $changes)){
+            $buildingType = BuildingType::find((int) $changes['building_type_id']);
+        }
+
+        if (!$buildingType instanceof BuildingType){
+            return null;
+        }
+
+        $exampleBuilding = ExampleBuilding::generic()->where(
+            'building_type_id',
+            $buildingType->id
+        )->first();
+
+        if (!$exampleBuilding instanceof ExampleBuilding){
+            // No example building, so can't change then.
+            return null;
+        }
+
+        if ($exampleBuilding->id !== $currentExampleBuildingId){
+            // We know the change is sure
+            return $exampleBuilding;
+        }
+
+        if (array_key_exists('build_year', $changes)){
+            $new = (int) $changes['build_year'];
+            if ($currentBuildYearValue === $new){
+                return null;
+            }
+
+            // if the build_year is dirty:
+            // check the combination of example_building_id with new build_year
+            // against the combination of example_building_id with old build_year
+            $oldContents = $exampleBuilding->getContentForYear($currentBuildYearValue);
+            $newContents = $exampleBuilding->getContentForYear($new);
+
+            if ($oldContents->id !== $newContents->id) {
+                return $exampleBuilding;
+            }
+        }
+
+        return null;
+    }
+
+    private function retriggerExampleBuildingApplication(ExampleBuilding $exampleBuilding){
+        Log::debug(__METHOD__);
+        if ($this->building->example_building_id !== $exampleBuilding->id){
+            Log::debug("Example building ID changes");
+            // change example building, let the observer do the rest
+            $this->building->exampleBuilding()->associate($exampleBuilding)->save();
+        }
+        // manually trigger
+        ExampleBuildingService::apply(
+            $exampleBuilding,
+            $this->building->buildingFeatures->build_year,
+            $this->building
+        );
+        ExampleBuildingService::apply(
+            $exampleBuilding,
+            $this->building->buildingFeatures->build_year,
+            $this->building,
+            $this->currentInputSource
+        );
     }
 }

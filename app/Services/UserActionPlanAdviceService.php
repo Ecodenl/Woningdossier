@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
+use App\Scopes\VisibleScope;
 use Carbon\Carbon;
 
 class UserActionPlanAdviceService
@@ -38,7 +39,10 @@ class UserActionPlanAdviceService
      */
     public static function clearForStep(User $user, InputSource $inputSource, Step $step)
     {
-        UserActionPlanAdvice::forMe($user)
+        $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
+        UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
+            ->forMe($user)
             ->forInputSource($inputSource)
             ->forStep($step)
             ->delete();

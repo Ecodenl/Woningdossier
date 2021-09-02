@@ -22,6 +22,11 @@ class QuickScanComposer
         $step = $this->request->route('step');
         $subStep = $this->request->route('subStep');
 
+        // TODO: Most likely this will make place for a questionnaire to add to the total count / step set
+        if (is_null($subStep)) {
+            $subStep = $step->subSteps()->orderByDesc('order')->first();
+        }
+
         $total = Step::quickScan()
             ->leftJoin('sub_steps', 'steps.id', '=', 'sub_steps.step_id')
             ->count();

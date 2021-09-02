@@ -51,12 +51,13 @@ class RecalculateToolForUserListener
         if (in_array($event->step->short, $stepsWhichNeedRecalculation)) {
             // Currently this listener will only be triggered on a event that's dispatched while NOT running in the cli
             // so we can safely access the input source from the session
-            $inputSource = HoomdossierSession::getInputSource(true);
+            //$inputSource = HoomdossierSession::getInputSource(true);
 
             // Theres nothing to recalculate if the user did not complete the main step.
             if ($event->building->hasCompletedQuickScan()) {
                 $userId = $event->building->user->id;
-                Artisan::call(RecalculateForUser::class, ['--user' => [$userId], '--input-source' => [$inputSource->short]]);
+                //Artisan::call(RecalculateForUser::class, ['--user' => [$userId], '--input-source' => [$inputSource->short]]);
+                Artisan::call(RecalculateForUser::class, ['--user' => [$userId],]);
             }
         }
     }

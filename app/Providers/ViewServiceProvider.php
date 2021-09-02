@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Http\ViewComposers\Frontend\Layouts\Parts\SubNavComposer;
 use App\Http\ViewComposers\Frontend\Tool\QuickScanComposer;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class ViewServiceProvider extends ServiceProvider
@@ -26,8 +27,14 @@ class ViewServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        \View::creator('cooperation.frontend.layouts.parts.sub-nav', SubNavComposer::class);
-        \View::creator('cooperation.frontend.tool.quick-scan.index', QuickScanComposer::class);
+        View::creator('cooperation.frontend.layouts.parts.sub-nav', SubNavComposer::class);
+        View::creator(
+            [
+                'cooperation.frontend.tool.quick-scan.index',
+                'cooperation.frontend.tool.quick-scan.questionnaires.index',
+            ],
+            QuickScanComposer::class
+        );
 
         // https://stackoverflow.com/questions/38135455/how-to-have-one-time-push-in-laravel-blade
         // TODO: Deprecate this to @once when this is updated to Laravel 7.25

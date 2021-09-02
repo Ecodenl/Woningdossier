@@ -66,7 +66,7 @@ class SolarPanelHelper extends ToolHelper
                 $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
                     ->where('user_action_plan_advisable_id', '=', $measureApplication->id)->first();
                 if ($oldAdvice instanceof UserActionPlanAdvice && ! is_null($oldAdvice->category)) {
-                    $actionPlanAdvice->category = $oldAdvice->catergory;
+                    $actionPlanAdvice->category = $oldAdvice->category;
                 }
 
                 $actionPlanAdvice->save();

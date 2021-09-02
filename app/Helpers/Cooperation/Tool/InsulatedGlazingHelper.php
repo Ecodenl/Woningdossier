@@ -134,15 +134,9 @@ class InsulatedGlazingHelper extends ToolHelper
 
                     $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
                         ->where('user_action_plan_advisable_id', '=', $measureApplication->id)->first();
-                    \Log::debug('OLD');
                     if ($oldAdvice instanceof UserActionPlanAdvice && ! is_null($oldAdvice->category)) {
-                        \Log::debug('OLD VALID');
-                        \Log::debug($oldAdvice);
-                        \Log::debug($oldAdvice->category);
-                        $actionPlanAdvice->category = $oldAdvice->catergory;
-                        // TODO: FIND OUT WHY THIS ISN'T SETTING THE CATEGORY
+                        $actionPlanAdvice->category = $oldAdvice->category;
                     }
-\Log::debug($actionPlanAdvice->category);
                     $actionPlanAdvice->save();
                 }
             }

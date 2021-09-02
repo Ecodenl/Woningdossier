@@ -115,7 +115,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
 
                 $oldAdvice = $oldAdvices->where('userActionPlanAdvisable', '!=', null)->first();
                 if ($oldAdvice instanceof UserActionPlanAdvice) {
-                    $actionPlanAdvice->category = $oldAdvice->catergory;
+                    $actionPlanAdvice->category = $oldAdvice->category;
                 }
 
                 $actionPlanAdvice->save();

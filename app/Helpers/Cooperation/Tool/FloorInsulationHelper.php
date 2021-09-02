@@ -136,7 +136,7 @@ class FloorInsulationHelper extends ToolHelper
                         $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '!=', MeasureApplication::class)
                             ->where('user_action_plan_advisable_id', '=', $measureApplication->id)->first();
                         if ($oldAdvice instanceof UserActionPlanAdvice) {
-                            $actionPlanAdvice->category = $oldAdvice->catergory;
+                            $actionPlanAdvice->category = $oldAdvice->category;
                         }
 
                         $actionPlanAdvice->save();

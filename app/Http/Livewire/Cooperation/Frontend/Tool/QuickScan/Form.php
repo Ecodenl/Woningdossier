@@ -544,15 +544,22 @@ class Form extends Component
             // change example building, let the observer do the rest
             $this->building->exampleBuilding()->associate($exampleBuilding)->save();
         }
+
+        // For the example building input source it could be that the build year isn't set.
+        // If so we use the build_year from the current input source
+        //$buildYear = $this->building->buildingFeatures->build_year ?? $this->building->buildingFeatures()->forInputSource($this->currentInputSource)->first()->build_year;
+        $buildYear = $this->building->buildingFeatures()->forInputSource($this->currentInputSource)->first()->build_year;
+
         // manually trigger
         ExampleBuildingService::apply(
             $exampleBuilding,
-            $this->building->buildingFeatures->build_year,
+            $buildYear,
             $this->building
         );
         ExampleBuildingService::apply(
             $exampleBuilding,
-            $this->building->buildingFeatures->build_year,
+            //$this->building->buildingFeatures->build_year,
+            $buildYear,
             $this->building,
             $this->currentInputSource
         );

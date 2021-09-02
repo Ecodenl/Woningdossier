@@ -403,9 +403,9 @@
                                     'class' => '-mt-4',
                                 ])
                                     <div class="checkbox-wrapper">
-                                        <input id="allow-access" name="allow_access" type="checkbox" value="1"
+                                        <input id="allow_access" name="allow_access" type="checkbox" value="1"
                                                @if(old('allow_access') && old('allow_access') == '1' || $user->allowedAccess()) checked="checked" @endif>
-                                        <label for="allow-access">
+                                        <label for="allow_access">
                                             <span class="checkmark"></span>
                                             <span>
                                                 @lang('my-account.access.index.form.allow_access', ['cooperation' => \App\Helpers\HoomdossierSession::getCooperation(true)->name])
@@ -443,8 +443,8 @@
                                         <td>{{ $buildingPermission->user->getFullName() }}</td>
                                         <td>
                                             <a data-form-id="revoke-access-{{$buildingPermission->id}}"
-                                               class="revoke-access btn btn-red">
-                                                <i class="glyphicon glyphicon-trash"></i>
+                                               class="revoke-access btn btn-orange flex items-center justify-center w-10">
+                                                <i class="icon-sm icon-error-cross"></i>
                                             </a>
                                         </td>
                                     </tr>

@@ -139,8 +139,8 @@ class Form extends Component
 
                 $this->cards[$category][$order]['id'] = $advice->id;
                 $this->cards[$category][$order]['costs'] = [
-                    'from' => $advice->costs['from'] ?? 0,
-                    'to' => $advice->costs['to'] ?? 0,
+                    'from' => $advice->costs['from'] ?? null,
+                    'to' => $advice->costs['to'] ?? null,
                 ];
                 $this->cards[$category][$order]['savings'] = $advice->savings_money ?? 0;
 

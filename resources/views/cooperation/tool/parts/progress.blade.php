@@ -46,9 +46,9 @@
         </li>
     @endforeach
 
-    <li class="inline-block px-1">
-        <a class="no-border" href="{{ route('cooperation.tool.my-plan.index', ['cooperation' => $cooperation]) }}">
-            <img class="no-border" src="{{ asset('images/icons/my-plan.png') }}"/>
-        </a>
-    </li>
+{{--    <li class="inline-block px-1">--}}
+{{--        <a class="no-border" href="{{ route('cooperation.tool.my-plan.index', ['cooperation' => $cooperation]) }}">--}}
+{{--            <img class="no-border" src="{{ asset('images/icons/my-plan.png') }}"/>--}}
+{{--        </a>--}}
+{{--    </li>--}}
 </ul>

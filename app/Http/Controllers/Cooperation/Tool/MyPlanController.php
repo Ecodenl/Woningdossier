@@ -18,6 +18,9 @@ class MyPlanController extends Controller
 {
     public function index()
     {
+        // For safety
+        die();
+
         $inputSource = HoomdossierSession::getInputSource(true);
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
@@ -69,6 +72,9 @@ class MyPlanController extends Controller
      */
     public function storeComment(MyPlanRequest $request)
     {
+        // For safety
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
@@ -86,6 +92,9 @@ class MyPlanController extends Controller
 
     public function store(Request $request)
     {
+        // For safety
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $buildingOwner = $building->user;

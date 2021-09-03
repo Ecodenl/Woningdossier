@@ -28,10 +28,10 @@ class ExampleBuildingService
      *
      *
      * @param  ExampleBuilding  $exampleBuilding
-     * @param  int $buildYear Build year for selecting the appropriate example building content
-     * @param  Building  $building Target building to apply to
+     * @param  int  $buildYear  Build year for selecting the appropriate example building content
+     * @param  Building  $building  Target building to apply to
      * @param  InputSource|null  $inputSource
-     * @param  InputSource|null  $initiatingInputSource The input source starting this action.
+     * @param  InputSource|null  $initiatingInputSource  The input source starting this action.
      */
     public static function apply(
         ExampleBuilding $exampleBuilding,
@@ -40,14 +40,20 @@ class ExampleBuildingService
         ?InputSource $inputSource = null,
         ?InputSource $initiatingInputSource = null
     ) {
-        $inputSource   = $inputSource ?? InputSource::findByShort('example-building');
+        $inputSource = $inputSource ?? InputSource::findByShort(
+                'example-building'
+            );
         // unless stated differently: compare to master input values
-        $initiatingInputSource = $initiatingInputSource ?? InputSource::findByShort(InputSource::MASTER_SHORT);
+        $initiatingInputSource = $initiatingInputSource ?? InputSource::findByShort(
+                InputSource::MASTER_SHORT
+            );
         //self::log($exampleBuilding->id . ", " . $buildYear . ", " . $building->id . ", " . $inputSource->name . ", " . $initiatingInputSource->name);
         $buildingOwner = $building->user;
 
         // Clear the current example building data
-        self::log('Lookup '.$exampleBuilding->name.' for '.$buildYear . " (" . $inputSource->name . ")");
+        self::log(
+            'Lookup '.$exampleBuilding->name.' for '.$buildYear." (".$inputSource->name.")"
+        );
         $contents = $exampleBuilding->getContentForYear($buildYear);
 //        dd($exampleBuilding->name, $contents, $buildYear);
         if ( ! $contents instanceof ExampleBuildingContent) {
@@ -66,21 +72,28 @@ class ExampleBuildingService
         $exampleData = $contents->content;
 
         // new: merge-like behavior
-        if ($exampleBuilding->isSpecific()){
+        if ($exampleBuilding->isSpecific()) {
             $genericExampleBuilding = ExampleBuilding::generic()->where(
                 'building_type_id',
                 $exampleBuilding->building_type_id,
             )->first();
-            self::log("Example building is specific. Generic counterpart is " . $genericExampleBuilding->name);
-            $genericContent = $genericExampleBuilding->getContentForYear($buildYear);
-            if ($genericContent instanceof ExampleBuildingContent){
+            self::log(
+                "Example building is specific. Generic counterpart is ".$genericExampleBuilding->name
+            );
+            $genericContent = $genericExampleBuilding->getContentForYear(
+                $buildYear
+            );
+            if ($genericContent instanceof ExampleBuildingContent) {
                 self::log("We merge the contents");
-                $exampleData = array_replace_recursive($exampleData, $genericContent->content);
+                $exampleData = array_replace_recursive(
+                    $exampleData,
+                    $genericContent->content
+                );
             }
         }
 
         self::log(
-            'Applying Example Building '.$exampleBuilding->name.' ('.$exampleBuilding->id.', '.$contents->build_year.') for input source ' . $inputSource->name
+            'Applying Example Building '.$exampleBuilding->name.' ('.$exampleBuilding->id.', '.$contents->build_year.') for input source '.$inputSource->name
         );
 
         $oldFeatures = [];
@@ -95,14 +108,18 @@ class ExampleBuildingService
         // changed further in the tool by the user. Therefore we check if
         // no substeps > 4 have been completed.
         $userAlreadyStartedFilling = $building->completedSubSteps()
-                                              ->forInputSource($initiatingInputSource)
+                                              ->forInputSource(
+                                                  $initiatingInputSource
+                                              )
                                               ->where('sub_step_id', '>', 4)
                                               ->count() > 0;
 
         // Don't do this for the example building, otherwise it might get the old values from other input sources
         // which is unwanted.
-        if ($inputSource->short !== InputSource::EXAMPLE_BUILDING && $userAlreadyStartedFilling) {
-            self::log("User already started filling in the tool. We merge that data.");
+        if ($inputSource->short !== InputSource::EXAMPLE_BUILDING) {
+            self::log(
+                "User already started filling in the tool. We merge that data."
+            );
             // Save the features for later. We merge this with the example building contents.
             // Note that $oldFeatures *might* be null in the highly unlikely case.
             /** @var BuildingFeature|null $currentInputSourceFeatures */
@@ -110,12 +127,20 @@ class ExampleBuildingService
             )->forInputSource($initiatingInputSource)->first();
 
             if ($currentInputSourceFeatures instanceof BuildingFeature) {
-                $oldFeatures = $currentInputSourceFeatures->attributesToArray();
-                // filter out null values
-                $oldFeatures = array_filter(
-                    $oldFeatures,
-                    fn($item) => ! is_null($item)
-                );
+                if ($userAlreadyStartedFilling) {
+                    $oldFeatures = $currentInputSourceFeatures->attributesToArray(
+                    );
+                    // filter out null values
+                    $oldFeatures = array_filter(
+                        $oldFeatures,
+                        fn($item) => ! is_null($item)
+                    );
+                } else {
+                    $oldFeatures = [
+                        'build_year' => $currentInputSourceFeatures->build_year,
+                        'surface'    => $currentInputSourceFeatures->surface,
+                    ];
+                }
             }
         }
 
@@ -280,10 +305,18 @@ class ExampleBuildingService
                                 $service = Service::find($serviceId);
                                 if ($service instanceof Service) {
                                     // try to obtain an existing service
-                                    $existingBuildingService = BuildingService::forMe($building->user)
-                                        ->forInputSource($inputSource)
-                                        ->where('service_id', $serviceId)
-                                        ->first();
+                                    $existingBuildingService = BuildingService::forMe(
+                                        $building->user
+                                    )
+                                                                              ->forInputSource(
+                                                                                  $inputSource
+                                                                              )
+                                                                              ->where(
+                                                                                  'service_id',
+                                                                                  $serviceId
+                                                                              )
+                                                                              ->first(
+                                                                              );
 
                                     // see if it already exists, if so we need to add data to that service
 
@@ -496,6 +529,7 @@ class ExampleBuildingService
         $buildingFeatures->inputSource()->associate($inputSource);
         $buildingFeatures->building()->associate($building);
         $buildingFeatures->save();
+
         self::log(
             'Update or creating building features '.json_encode(
                 $buildingFeatures->toArray()
@@ -504,10 +538,10 @@ class ExampleBuildingService
 
         // Get all expert tool steps and complete them for this building + input source
         $stepsToComplete = Step::whereDoesntHave('parentStep')
-            ->whereDoesntHave('subSteps')
-            ->get();
+                               ->whereDoesntHave('subSteps')
+                               ->get();
 
-        foreach($stepsToComplete as $stepToComplete){
+        foreach ($stepsToComplete as $stepToComplete) {
             StepHelper::complete($stepToComplete, $building, $inputSource);
         }
 
@@ -518,10 +552,14 @@ class ExampleBuildingService
         );
     }
 
-    public static function clearExampleBuilding(Building $building, ?InputSource $inputSource = null)
-    {
+    public static function clearExampleBuilding(
+        Building $building,
+        ?InputSource $inputSource = null
+    ) {
         /** @var InputSource $inputSource */
-        $inputSource = $inputSource ?? InputSource::findByShort('example-building');
+        $inputSource = $inputSource ?? InputSource::findByShort(
+                'example-building'
+            );
 
         return BuildingDataService::clearBuildingFromInputSource(
             $building,

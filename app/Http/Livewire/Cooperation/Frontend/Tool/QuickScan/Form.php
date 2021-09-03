@@ -404,7 +404,9 @@ class Form extends Component
             // set the boolean to the appropriate value. Example building will
             // be applied AFTER saving the current form (for getting the
             // appropriate values).
-            Log::debug($table . "." . $column . " has changed");
+            Log::debug($table . "." . $column . " has changed:");
+            Log::debug([$column => $givenAnswer]);
+
             $exampleBuilding = $this->getExampleBuildingIfChangeIsNeeded([$column => $givenAnswer]);
             if ($exampleBuilding instanceof ExampleBuilding){
                 Log::debug("Example building should be (re)applied!");
@@ -540,7 +542,7 @@ class Form extends Component
     private function retriggerExampleBuildingApplication(ExampleBuilding $exampleBuilding){
         Log::debug(__METHOD__);
         if ($this->building->example_building_id !== $exampleBuilding->id){
-            Log::debug("Example building ID changes");
+            Log::debug("Example building ID changes (" . $this->building->example_building_id . " -> " . $exampleBuilding->id . ")");
             // change example building, let the observer do the rest
             $this->building->exampleBuilding()->associate($exampleBuilding)->save();
         }

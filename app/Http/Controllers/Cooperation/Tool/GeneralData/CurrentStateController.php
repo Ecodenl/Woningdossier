@@ -24,6 +24,9 @@ class CurrentStateController extends Controller
 {
     public function index()
     {
+        // For safety
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $userInterestsForMe = UserInterest::forMe()->get();
@@ -53,6 +56,9 @@ class CurrentStateController extends Controller
 
     public function store(CurrentStateFormRequest $request)
     {
+        // For safety
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);

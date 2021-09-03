@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\StepHelper;
+use App\Scopes\NoGeneralDataScope;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
@@ -56,6 +57,13 @@ class Step extends Model
     protected $translatable = [
         'name'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new NoGeneralDataScope());
+    }
 
     public function getRouteKeyName()
     {

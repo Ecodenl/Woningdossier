@@ -159135,6 +159135,11 @@ textarea.form-input {
 
 /* Custom Alpine select */
 
+.select-wrapper {
+  position: relative;
+  width: inherit;
+}
+
 .select-wrapper .select-dropdown {
   position: absolute;
   top: 100%;
@@ -159695,7 +159700,67 @@ textarea.form-input {
   padding-right: 0.75rem;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem
-}/* Icons */
+}.table {
+  width: 100%;
+}
+
+.table.fancy-table {
+  table-layout: fixed;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgba(100, 117, 133, var(--tw-border-opacity));
+  --tw-border-opacity: 0.5;
+  /* Can't add rounded corners (rounded-lg), border is staying square, TODO */
+}
+
+.table.fancy-table thead tr th {
+  --tw-bg-opacity: 1;
+  background-color: rgba(100, 117, 133, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.25;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  text-align: left;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  --tw-text-opacity: 1;
+  color: rgba(100, 117, 133, var(--tw-text-opacity));
+}
+
+.table.fancy-table tbody > :not([hidden]) ~ :not([hidden]) {
+  --tw-divide-y-reverse: 0;
+  border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
+  border-bottom-width: calc(1px * var(--tw-divide-y-reverse));
+  --tw-divide-opacity: 1;
+  border-color: rgba(100, 117, 133, var(--tw-divide-opacity));
+  --tw-divide-opacity: 0.5;
+}
+
+.table.fancy-table tbody tr:nth-of-type(even) {
+  --tw-bg-opacity: 1;
+  background-color: rgba(205, 210, 215, var(--tw-bg-opacity));
+}
+
+.table.fancy-table tbody tr td {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 300;
+  --tw-text-opacity: 1;
+  color: rgba(100, 117, 133, var(--tw-text-opacity));
+}
+
+
+
+
+
+/* Icons */
 
 .icon-xs {
   height: 0.5rem;
@@ -160401,7 +160466,18 @@ ul.progress-list li a img.no-border {
   border-style: none;
 }
 
-/* Tailwind */
+.panel-chat-body {
+  overflow-y: scroll;
+  max-height: 250px;
+}
+
+.panel-chat-body .left {
+  margin-right: 250px;
+}
+
+.panel-chat-body .right {
+  margin-left: 250px;
+}/* Tailwind */
 
 /* Base CSS */
 

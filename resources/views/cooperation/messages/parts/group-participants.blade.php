@@ -1,25 +1,25 @@
 @if(isset($isPublic))
     @if($isPublic)
         <div class="pubic-notification">
-            <span class="label label-danger">Deze chat is publiek.</span>
+            <span class="inline text-sm text-red font-bold px-1 py-2 bg-red bg-opacity-50 rounded-lg">Deze chat is publiek.</span>
         </div>
     @else
         <div class="pubic-notification">
-            <span class="label label-warning">Deze chat is prive.</span>
+            <span class="inline text-sm text-yellow font-bold px-1 py-2 bg-yellow bg-opacity-50 rounded-lg">Deze chat is prive.</span>
         </div>
     @endif
 @endif
-<div class="group-members">
+<div class="flex">
     @foreach($groupParticipants as $groupParticipant)
         @if($groupParticipant instanceof \App\Models\User)
-        <div class="group-member">
-            <span class="label label-primary @cannot('remove-participant-from-chat', $groupParticipant) not-removable-user @endcan @can('remove-participant-from-chat', $groupParticipant) @if(!$groupParticipant->buildings->contains('id', $buildingId)) is-removable-user @endif @endcan">
+        <div class="group-member mr-1">
+            <span class="inline text-sm text-blue-500 font-bold bg-green bg-opacity-50 px-1 py-2 rounded-lg flex items-center @cannot('remove-participant-from-chat', $groupParticipant) not-removable-user cursor-not-allowed @endcan @can('remove-participant-from-chat', $groupParticipant) @if(!$groupParticipant->buildings->contains('id', $buildingId)) is-removable-user cursor-pointer @endif @endcan">
                 {{$groupParticipant->getFullName()}}
                 @can('remove-participant-from-chat', $groupParticipant)
                     {{-- If the group participant is the owner of the building, we cant cick him out. --}}
                     {{--todo: needs review, this still uses the buildings relationship, it could be changed to just ->building->id--}}
                     @if(!$groupParticipant->buildings->contains('id', $buildingId))
-                        <span data-building-owner-id="{{$buildingId}}" data-user-id="{{$groupParticipant->id}}" class="glyphicon glyphicon-remove"></span>
+                        <span data-building-owner-id="{{$buildingId}}" data-user-id="{{$groupParticipant->id}}" class="icon-sm icon-error-cross ml-2 mr-1"></span>
                     @endif
                 @endcan
             </span>

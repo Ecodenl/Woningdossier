@@ -170,18 +170,12 @@ class Buttons extends Component
 
         if (! $this->nextStep instanceof Step) {
             // No next step set, let's see if there are any steps left incomplete
-
-            $irrelevantSteps = $this->building->completedSteps()->pluck('step_id')->toArray();
-            $irrelevantSteps[] = $this->step->id;
-            $this->firstIncompleteStep = Step::quickScan()
-                ->whereNotIn('id', $irrelevantSteps)
-                ->orderBy('order')
-                ->first();
+            $this->firstIncompleteStep = $this->building->getFirstIncompleteStep([$this->step->id]);
         }
 
         // There are incomplete steps left, set the sub step
         if ($this->firstIncompleteStep instanceof Step) {
-            $this->firstIncompleteSubStep = $this->firstIncompleteStep->subSteps()->orderBy('order')->first();
+            $this->firstIncompleteSubStep = $this->building->getFirstIncompleteSubStep($this->firstIncompleteStep);
         }
     }
 }

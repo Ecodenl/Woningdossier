@@ -741,4 +741,34 @@ class Building extends Model
     {
         return optional($this->getMostRecentBuildingStatus())->appointment_date;
     }
+
+    public function getFirstIncompleteStep(array $extraStepsToIgnore = []): ?Step
+    {
+        $irrelevantSteps = $this->completedSteps()->pluck('step_id')->toArray();
+        $irrelevantSteps = array_merge($irrelevantSteps, $extraStepsToIgnore);
+
+        return Step::quickScan()
+            ->whereNotIn('id', $irrelevantSteps)
+            ->orderBy('order')
+            ->first();
+    }
+
+    public function getFirstIncompleteSubStep(Step $step, array $extraSubStepsToIgnore = []): ?SubStep
+    {
+        $irrelevantSubSteps = $this->completedSubSteps()->pluck('sub_step_id')->toArray();
+        $irrelevantSubSteps = array_merge($irrelevantSubSteps, $extraSubStepsToIgnore);
+
+        $firstIncompleteSubStep = $step->subSteps()
+            ->whereNotIn('id', $irrelevantSubSteps)
+            ->orderBy('order')
+            ->first();
+
+        if (! $firstIncompleteSubStep instanceof SubStep) {
+            $firstIncompleteSubStep = $step->subSteps()
+                ->orderBy('order')
+                ->first();
+        }
+
+        return $firstIncompleteSubStep;
+    }
 }

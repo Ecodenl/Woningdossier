@@ -11,6 +11,7 @@ use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
+use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 
 class HeaterHelper extends ToolHelper
@@ -65,6 +66,14 @@ class HeaterHelper extends ToolHelper
         $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
         $results = Heater::calculate($this->building, $userEnergyHabit, $this->getValues());
 
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
+
+        $oldAdvices = UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
+            ->forMe($this->user)
+            ->forInputSource($masterInputSource)
+            ->forStep($step)
+            ->get();
+
         // remove old results
         UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
@@ -77,6 +86,13 @@ class HeaterHelper extends ToolHelper
                 $actionPlanAdvice->user()->associate($this->user);
                 $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
+
+                $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
+                    ->where('user_action_plan_advisable_id', '=', $measureApplication->id)->first();
+                if ($oldAdvice instanceof UserActionPlanAdvice && ! is_null($oldAdvice->category)) {
+                    $actionPlanAdvice->category = $oldAdvice->category;
+                }
+
                 $actionPlanAdvice->save();
             }
         }

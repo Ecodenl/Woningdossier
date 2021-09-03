@@ -44,7 +44,7 @@
                                 @php $advisables = []; @endphp
                                 @foreach($building->user->actionPlanAdvices()->forInputSource($masterInputSource)->get() as $advice)
                                     @php
-                                        if ($advice->user_action_plan_advisable_type === 'App\Models\CustomMeasureApplication') {
+                                        if ($advice->user_action_plan_advisable_type === \App\Models\CustomMeasureApplication::class) {
                                             $advisable = $advice->userActionPlanAdvisable()
                                                 ->forInputSource($this->masterInputSource)
                                                 ->first();
@@ -52,10 +52,11 @@
                                             $advisable = $advice->userActionPlanAdvisable;
                                         }
 
-                                    $advisables[] = $advisable->name;
+                                        if ($advisable instanceof \App\Models\CustomMeasureApplication || $advisable instanceof \App\Models\CooperationMeasureApplication) {
+                                            $advisables[] = $advisable->name;
+                                        }
                                     @endphp
                                 @endforeach
-
                                 {{ implode(', ', $advisables) }}
                             </p>
                         </div>

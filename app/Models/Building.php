@@ -283,7 +283,7 @@ class Building extends Model
 
         return $query->select([
             'buildings.*',
-            'translations.translation as status_translation',
+            'statuses.name as status_name_json',
             'appointment_date',
         ])->leftJoin(
             'building_statuses as bs',
@@ -298,14 +298,7 @@ class Building extends Model
                          '=',
                          'bs.id'
                      )
-                     ->leftJoin('statuses', 'bs.status_id', '=', 'statuses.id')
-                     ->leftJoin(
-                         'translations',
-                         'statuses.name',
-                         '=',
-                         'translations.key'
-                     )
-                     ->where('translations.language', '=', app()->getLocale());
+                     ->leftJoin('statuses', 'bs.status_id', '=', 'statuses.id');
     }
 
     public function stepComments()

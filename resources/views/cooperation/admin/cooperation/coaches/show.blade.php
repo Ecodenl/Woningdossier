@@ -68,7 +68,7 @@
                                     {{$building->city}}
                                 </td>
                                 <td>
-                                    {{$building->status_translation}}
+                                    {{ $building->status }}
                                 </td>
                                 <td data-sort="{{$appointmentDateStrotime}}">
                                     {{$appointmentDateFormatted ?? '-'}}

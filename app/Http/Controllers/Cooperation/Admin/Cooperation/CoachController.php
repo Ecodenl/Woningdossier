@@ -49,6 +49,8 @@ class CoachController extends Controller
             ->with('user')
             ->get();
 
+        $buildings = $buildings->pullTranslationFromJson('status_name_json', 'status');
+
         $roles = $userToShow->roles->pluck('human_readable_name')->toArray();
 
         return view('cooperation.admin.cooperation.coaches.show', compact(

@@ -292,8 +292,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     Route::group(['prefix' => 'tool', 'as' => 'tool.'], function () {
                         Route::get('fill-for-user/{building}', 'ToolController@fillForUser')->name('fill-for-user');
-                        Route::get('observe-tool-for-user/{building}', 'ToolController@observeToolForUser')
-                            ->name('observe-tool-for-user');
+//                        Route::get('observe-tool-for-user/{building}', 'ToolController@observeToolForUser')
+//                            ->name('observe-tool-for-user');
                     });
 
                     Route::post('message', 'MessagesController@sendMessage')->name('send-message');

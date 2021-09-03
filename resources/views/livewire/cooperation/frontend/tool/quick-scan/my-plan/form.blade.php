@@ -251,7 +251,7 @@
             'inputName' => 'comments.coach'
         ])
             <textarea id="comments-coach" class="form-input" name="comments[coach]"
-                      placeholder="lang('default.form.input.comment-placeholder')"></textarea>
+                      placeholder="@lang('default.form.input.comment-placeholder')"></textarea>
             <button class="btn btn-purple absolute right-3 bottom-7">
                 @lang('default.buttons.save')
             </button>

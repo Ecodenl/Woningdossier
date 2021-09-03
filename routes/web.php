@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Cooperation\Frontend\Tool\QuickScanController;
 
 /** @noinspection PhpParamsInspection */
 
@@ -168,6 +169,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
             Route::group(['namespace' => 'Frontend\Tool', 'as' => 'frontend.tool.'], function () {
                 Route::as('quick-scan.')->prefix('quick-scan')->group(function () {
+                    Route::get('', [QuickScanController::class, 'start'])->name('start');
                     Route::get('woonplan', 'QuickScan\\MyPlanController@index')->name('my-plan.index');
 
                     Route::get('{step}/vragenlijst/{questionnaire}', 'QuickScan\\QuestionnaireController@index')
@@ -292,8 +294,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     Route::group(['prefix' => 'tool', 'as' => 'tool.'], function () {
                         Route::get('fill-for-user/{building}', 'ToolController@fillForUser')->name('fill-for-user');
-//                        Route::get('observe-tool-for-user/{building}', 'ToolController@observeToolForUser')
-//                            ->name('observe-tool-for-user');
+                        Route::get('observe-tool-for-user/{building}', 'ToolController@observeToolForUser')
+                            ->name('observe-tool-for-user');
                     });
 
                     Route::post('message', 'MessagesController@sendMessage')->name('send-message');

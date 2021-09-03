@@ -28,10 +28,10 @@
                             </button>
                         @endcan
                         @can('access-building', $building)
-{{--                            <a href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building'))}}" id="observe-building" class="btn btn-primary">--}}
-{{--                                @lang('cooperation/admin/buildings.show.observe-building.label')--}}
-{{--                                @lang('cooperation/admin/buildings.show.observe-building.button')--}}
-{{--                            </a>--}}
+                            <a href="{{route('cooperation.admin.tool.observe-tool-for-user', compact('building'))}}" id="observe-building" class="btn btn-primary">
+                                @lang('cooperation/admin/buildings.show.observe-building.label')
+                                @lang('cooperation/admin/buildings.show.observe-building.button')
+                            </a>
                             @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('coach'))
                                 <a href="{{route('cooperation.admin.tool.fill-for-user', compact('building'))}}"
                                    id="edit-building" class="btn btn-warning">

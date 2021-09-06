@@ -159493,8 +159493,7 @@ textarea.form-input {
   --tw-border-opacity: 1;
   border-color: rgba(100, 117, 133, var(--tw-border-opacity));
   --tw-border-opacity: 0.5;
-  min-width: 1px;
-  max-width: 50px;
+  max-width: 2.5%;
 }
 
 /* Modals */

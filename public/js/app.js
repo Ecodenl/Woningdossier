@@ -35289,19 +35289,19 @@ function removeError(input) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var mobile_drag_drop__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! mobile-drag-drop */ "./node_modules/mobile-drag-drop/index.min.js");
-/* harmony import */ var mobile_drag_drop__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(mobile_drag_drop__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/module.esm.js");
-/* harmony import */ var _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./alpine-scripts/alpine-select.js */ "./resources/js/alpine-scripts/alpine-select.js");
-/* harmony import */ var _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./alpine-scripts/source-select.js */ "./resources/js/alpine-scripts/source-select.js");
-/* harmony import */ var _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./alpine-scripts/modal.js */ "./resources/js/alpine-scripts/modal.js");
-/* harmony import */ var _alpine_scripts_rating_slider_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./alpine-scripts/rating-slider.js */ "./resources/js/alpine-scripts/rating-slider.js");
-/* harmony import */ var _alpine_scripts_slider_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./alpine-scripts/slider.js */ "./resources/js/alpine-scripts/slider.js");
-/* harmony import */ var _alpine_scripts_register_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./alpine-scripts/register.js */ "./resources/js/alpine-scripts/register.js");
-/* harmony import */ var _alpine_scripts_picoAddress_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./alpine-scripts/picoAddress.js */ "./resources/js/alpine-scripts/picoAddress.js");
-/* harmony import */ var _alpine_scripts_draggables_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./alpine-scripts/draggables.js */ "./resources/js/alpine-scripts/draggables.js");
-/* harmony import */ var _alpine_scripts_dropdown_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./alpine-scripts/dropdown.js */ "./resources/js/alpine-scripts/dropdown.js");
-/* harmony import */ var _alpine_scripts_tabs_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./alpine-scripts/tabs.js */ "./resources/js/alpine-scripts/tabs.js");
+/* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/module.esm.js");
+/* harmony import */ var _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./alpine-scripts/alpine-select.js */ "./resources/js/alpine-scripts/alpine-select.js");
+/* harmony import */ var _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./alpine-scripts/source-select.js */ "./resources/js/alpine-scripts/source-select.js");
+/* harmony import */ var _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./alpine-scripts/modal.js */ "./resources/js/alpine-scripts/modal.js");
+/* harmony import */ var _alpine_scripts_rating_slider_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./alpine-scripts/rating-slider.js */ "./resources/js/alpine-scripts/rating-slider.js");
+/* harmony import */ var _alpine_scripts_slider_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./alpine-scripts/slider.js */ "./resources/js/alpine-scripts/slider.js");
+/* harmony import */ var _alpine_scripts_register_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./alpine-scripts/register.js */ "./resources/js/alpine-scripts/register.js");
+/* harmony import */ var _alpine_scripts_picoAddress_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./alpine-scripts/picoAddress.js */ "./resources/js/alpine-scripts/picoAddress.js");
+/* harmony import */ var _alpine_scripts_draggables_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./alpine-scripts/draggables.js */ "./resources/js/alpine-scripts/draggables.js");
+/* harmony import */ var _alpine_scripts_dropdown_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./alpine-scripts/dropdown.js */ "./resources/js/alpine-scripts/dropdown.js");
+/* harmony import */ var _alpine_scripts_tabs_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./alpine-scripts/tabs.js */ "./resources/js/alpine-scripts/tabs.js");
+/* harmony import */ var mobile_drag_drop__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! mobile-drag-drop */ "./node_modules/mobile-drag-drop/index.min.js");
+/* harmony import */ var mobile_drag_drop__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(mobile_drag_drop__WEBPACK_IMPORTED_MODULE_11__);
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -35369,14 +35369,6 @@ window.triggerEvent = function (element, eventName) {
   }
 };
 /**
- * Set up mobile-drag-drop to allow touch events on native HTML 5 desktop drag events
- */
-
-
- // Settings
-
-Object(mobile_drag_drop__WEBPACK_IMPORTED_MODULE_0__["polyfill"])({});
-/**
  * Set up Alpine JS with extra data functions that can be used throughout
  * the whole application.
  */
@@ -35392,18 +35384,26 @@ Object(mobile_drag_drop__WEBPACK_IMPORTED_MODULE_0__["polyfill"])({});
 
 
 
-alpinejs__WEBPACK_IMPORTED_MODULE_1__["default"].data('alpineSelect', _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_2__["default"]);
-alpinejs__WEBPACK_IMPORTED_MODULE_1__["default"].data('sourceSelect', _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_3__["default"]);
-alpinejs__WEBPACK_IMPORTED_MODULE_1__["default"].data('modal', _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_4__["default"]);
-alpinejs__WEBPACK_IMPORTED_MODULE_1__["default"].data('ratingSlider', _alpine_scripts_rating_slider_js__WEBPACK_IMPORTED_MODULE_5__["default"]);
-alpinejs__WEBPACK_IMPORTED_MODULE_1__["default"].data('slider', _alpine_scripts_slider_js__WEBPACK_IMPORTED_MODULE_6__["default"]);
-alpinejs__WEBPACK_IMPORTED_MODULE_1__["default"].data('register', _alpine_scripts_register_js__WEBPACK_IMPORTED_MODULE_7__["default"]);
-alpinejs__WEBPACK_IMPORTED_MODULE_1__["default"].data('picoAddress', _alpine_scripts_picoAddress_js__WEBPACK_IMPORTED_MODULE_8__["default"]);
-alpinejs__WEBPACK_IMPORTED_MODULE_1__["default"].data('draggables', _alpine_scripts_draggables_js__WEBPACK_IMPORTED_MODULE_9__["default"]);
-alpinejs__WEBPACK_IMPORTED_MODULE_1__["default"].data('dropdown', _alpine_scripts_dropdown_js__WEBPACK_IMPORTED_MODULE_10__["default"]);
-alpinejs__WEBPACK_IMPORTED_MODULE_1__["default"].data('tabs', _alpine_scripts_tabs_js__WEBPACK_IMPORTED_MODULE_11__["default"]);
-window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_1__["default"];
-alpinejs__WEBPACK_IMPORTED_MODULE_1__["default"].start();
+
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('alpineSelect', _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('sourceSelect', _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_2__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('modal', _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_3__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('ratingSlider', _alpine_scripts_rating_slider_js__WEBPACK_IMPORTED_MODULE_4__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('slider', _alpine_scripts_slider_js__WEBPACK_IMPORTED_MODULE_5__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('register', _alpine_scripts_register_js__WEBPACK_IMPORTED_MODULE_6__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('picoAddress', _alpine_scripts_picoAddress_js__WEBPACK_IMPORTED_MODULE_7__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('draggables', _alpine_scripts_draggables_js__WEBPACK_IMPORTED_MODULE_8__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('dropdown', _alpine_scripts_dropdown_js__WEBPACK_IMPORTED_MODULE_9__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('tabs', _alpine_scripts_tabs_js__WEBPACK_IMPORTED_MODULE_10__["default"]);
+window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
+/**
+ * Set up mobile-drag-drop to allow touch events on native HTML 5 desktop drag events
+ */
+
+ // Init & Settings
+
+Object(mobile_drag_drop__WEBPACK_IMPORTED_MODULE_11__["polyfill"])({});
 
 /***/ }),
 

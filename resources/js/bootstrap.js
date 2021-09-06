@@ -66,16 +66,6 @@ window.triggerEvent = function (element, eventName) {
 }
 
 /**
- * Set up mobile-drag-drop to allow touch events on native HTML 5 desktop drag events
- */
-import {polyfill} from "mobile-drag-drop";
-
-// Init & Settings
-polyfill({
-
-});
-
-/**
  * Set up Alpine JS with extra data functions that can be used throughout
  * the whole application.
  */
@@ -105,3 +95,13 @@ Alpine.data('tabs', tabs);
 window.Alpine = Alpine;
 
 Alpine.start();
+
+/**
+ * Set up mobile-drag-drop to allow touch events on native HTML 5 desktop drag events
+ */
+import {polyfill} from "mobile-drag-drop";
+
+// Init & Settings
+polyfill({
+
+});

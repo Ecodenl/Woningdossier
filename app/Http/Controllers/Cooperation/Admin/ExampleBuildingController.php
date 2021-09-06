@@ -143,7 +143,7 @@ class ExampleBuildingController extends Controller
             return false === stristr($key, 'user_interests');
         };
 
-        foreach (Arr::except($contentStructure, 'general-data') as $stepShort => $structureWithinStep) {
+        foreach (Arr::except($contentStructure, ['general-data', 'insulated-glazing', 'ventilation',]) as $stepShort => $structureWithinStep) {
             $contentStructure[$stepShort]['-'] = array_filter($structureWithinStep['-'], $filterOutUserInterests, ARRAY_FILTER_USE_KEY);
         }
 

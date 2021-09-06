@@ -1,7 +1,7 @@
 <div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-{{$toolQuestions->count() > 1 ? 10 : 5}} ">
     @foreach($toolQuestions as $toolQuestion)
         @php
-            $disabled = ! is_null($toolQuestion->forSpecificInputSource) && $toolQuestion->forSpecificInputSource->short !== $currentInputSource->short;
+            $disabled = ! $building->user->account->can('answer', $toolQuestion);
         @endphp
         <div class="w-full @if($loop->iteration > 1) pt-10 @endif">
             @component('cooperation.frontend.layouts.components.form-group', [

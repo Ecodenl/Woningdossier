@@ -194,9 +194,17 @@ class Form extends Component
         if (! $this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
                 $toolQuestion = ToolQuestion::find($toolQuestionId);
-                if (is_null($this->building->getAnswer($this->currentInputSource, $toolQuestion))) {
-                    $this->dirty = true;
-                    break;
+
+                // Define if we should check this question...
+                if ($this->building->user->account->can('answer', $toolQuestion)) {
+                    $currentAnswer = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->currentInputSource, $toolQuestion);
+                    $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+
+                    // Master input source is important. Ensure both are set
+                    if (is_null($currentAnswer) || is_null($masterAnswer)) {
+                        $this->dirty = true;
+                        break;
+                    }
                 }
             }
         }
@@ -204,13 +212,16 @@ class Form extends Component
         // Answers have been updated, we save them and dispatch a recalculate
         if ($this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
+                // Define if we should answer this question...
                 /** @var ToolQuestion $toolQuestion */
                 $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
-                if (is_null($toolQuestion->save_in)) {
-                    $this->saveToolQuestionCustomValues($toolQuestion, $givenAnswer);
-                } else {
-                    // this *can't* handle a checkbox / multiselect answer.
-                    $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
+                if ($this->building->user->account->can('answer', $toolQuestion)) {
+                    if (is_null($toolQuestion->save_in)) {
+                        $this->saveToolQuestionCustomValues($toolQuestion, $givenAnswer);
+                    } else {
+                        // this *can't* handle a checkbox / multiselect answer.
+                        $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
+                    }
                 }
             }
 

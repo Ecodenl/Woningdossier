@@ -56,7 +56,10 @@
                 this.querySelector('.form-error-label').remove();
             }, {once: true});
         }
-    })
+    });
+
+    // Handle Polyfill for IOS 10
+    window.addEventListener( 'touchmove', function() {});
 </script>
 @stack('js')
 </body>

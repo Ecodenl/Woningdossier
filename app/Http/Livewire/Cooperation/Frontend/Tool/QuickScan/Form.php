@@ -46,6 +46,8 @@ class Form extends Component
 
     public $masterInputSource;
     public $currentInputSource;
+    public $residentInputSource;
+    public $coachInputSource;
 
     public $step;
     public $subStep;
@@ -60,15 +62,20 @@ class Form extends Component
     {
         $subStep->load(['toolQuestions', 'subStepTemplate']);
 
-        // set default steps, the checks will come later on.
         $this->step = $step;
         $this->subStep = $subStep;
+
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $this->currentInputSource = HoomdossierSession::getInputSource(true);
+        $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT
+            ? $this->currentInputSource
+            : InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT
+            ? $this->currentInputSource
+            : InputSource::findByShort(InputSource::COACH_SHORT);
 
         $this->toolQuestions = $subStep->toolQuestions()->orderBy('order')->get();
-
-        $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
         $this->setFilledInAnswers();
     }
@@ -231,7 +238,7 @@ class Form extends Component
             $this->filledInAnswersForAllInputSources[$toolQuestion->id] = $this->building->getAnswerForAllInputSources($toolQuestion);
 
             /** @var array|string $answerForInputSource */
-            $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+            $answerForInputSource = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->masterInputSource, $toolQuestion);
 
             // We don't have to set rules here, as that's done in the setToolQuestions function which gets called
             switch ($toolQuestion->toolQuestionType->short) {

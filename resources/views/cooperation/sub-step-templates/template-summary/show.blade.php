@@ -1,8 +1,8 @@
-<div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-5">
-    <div class="w-full">
-        <h2 class="heading-2">
+<div class="w-full space-y-2">
+    <div class="w-full mb-4">
+        <h4 class="heading-4">
             {{ $subStep->name }}
-        </h2>
+        </h4>
     </div>
 
     @php
@@ -18,29 +18,20 @@
                     'cooperation' => $cooperation, 'step' => $step, 'subStep' => $subStepToSummarize
                 ]);
             @endphp
-            <div class="flex flex-row flex-wrap w-full space-y-4">
-                <a href="{{ $subStepRoute }}"
-                   class="no-underline my-4">
-                    <div class="w-full">
-                        <h3 class="heading-3 text-purple">
-                            {{ $subStepToSummarize->name }}
-                        </h3>
-                    </div>
-                </a>
-
+            <div class="flex flex-row flex-wrap w-full space-y-2">
                 {{-- Custom changes has no tool questions, it's basically a whole other story --}}
                 @if($subStepToSummarize->slug === 'welke-zaken-vervangen')
                     <div class="flex flex-row flex-wrap w-full">
                         <div class="w-1/2">
                             <a href="{{ $subStepRoute }}" class="no-underline">
-                                <h4 class="heading-4">
-                                    - @lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.question.label')
-                                </h4>
+                                <h6 class="heading-6">
+                                    @lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.question.label'):
+                                </h6>
                             </a>
                         </div>
 
-                        <div class="w-1/2 text-right">
-                            <p class="font-semibold">
+                        <div class="w-1/2">
+                            <p>
                                 @php $advisables = []; @endphp
                                 @foreach($building->user->actionPlanAdvices()->forInputSource($masterInputSource)->get() as $advice)
                                     @php
@@ -87,23 +78,23 @@
 
                         @if ($showQuestion)
                             <div class="flex flex-row flex-wrap w-full">
-                                <div class="@if($toolQuestionToSummarize->toolQuestionType->short === 'rating-slider') w-full pb-2 @else w-1/2 @endif">
+                                <div class="@if($toolQuestionToSummarize->toolQuestionType->short === 'rating-slider') w-full @else w-1/2 @endif">
                                     <a href="{{ $subStepRoute }}" class="no-underline">
-                                        <h4 class="heading-4">
-                                            - {{ $toolQuestionToSummarize->name }}
-                                        </h4>
+                                        <h6 class="heading-6">
+                                            {{ $toolQuestionToSummarize->name }}:
+                                        </h6>
                                     </a>
                                 </div>
 
                                 @if($toolQuestionToSummarize->toolQuestionType->short === 'rating-slider')
                                     @foreach($toolQuestionToSummarize->options as $option)
-                                        <div class="w-1/2">
-                                            <h5 class="heading-5">
-                                                - {{ $option['name'] }}
-                                            </h5>
+                                        <div class="w-1/2 pl-2">
+                                            <h6 class="heading-6">
+                                                {{ $option['name'] }}:
+                                            </h6>
                                         </div>
-                                        <div class="w-1/2 text-right">
-                                            <p class="font-semibold">
+                                        <div class="w-1/2">
+                                            <p>
                                                 @php
                                                     $humanReadableAnswer = __('cooperation/frontend/tool.no-answer-given');
                                                     $answer = $answers[$toolQuestionToSummarize->short] ?? null;
@@ -118,8 +109,8 @@
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="w-1/2 text-right">
-                                        <p class="font-semibold">
+                                    <div class="w-1/2">
+                                        <p>
                                             @php
                                                 $humanReadableAnswer = __('cooperation/frontend/tool.no-answer-given');
                                                 $answer = $answers[$toolQuestionToSummarize->short] ?? null;

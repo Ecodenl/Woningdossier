@@ -115,6 +115,7 @@
             <div class="card-wrapper" x-bind="container" data-category="{{$cardCategory}}">
                 @foreach($cardCollection as $order => $card)
                     <div class="card" id="{{ $card['id'] }}"
+                        {{-- TODO: See if undefined draggable (on tablet, caused by polyfill) can be resolved --}}
                          x-bind="draggable" draggable="true">
                         <div class="icon-wrapper">
                             <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>

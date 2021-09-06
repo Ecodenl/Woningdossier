@@ -51,6 +51,11 @@
     @apply focus:border-green focus:border-opacity-100;
 }
 
+.radio-wrapper > label,
+.checkbox-wrapper > label {
+    @apply leading-5;
+}
+
 .form-input {
     @apply flex-auto;
 
@@ -269,27 +274,27 @@ textarea.form-input {
     @apply h-40 w-40;
 }
 
-.media-wrapper label {
+.media-wrapper > label {
     @apply w-full h-full p-0;
 }
 
-.media-wrapper label .media-icon-wrapper {
+.media-wrapper > label .media-icon-wrapper {
     @apply w-full h-full absolute inset-0 flex justify-center items-center;
 }
 
-.media-wrapper label .media-icon-wrapper i {
+.media-wrapper > label .media-icon-wrapper i {
     @apply w-full h-7/10 p-4 -mt-4;
 }
 
-.add-option-wrapper.media-wrapper label .media-icon-wrapper i {
+.add-option-wrapper.media-wrapper > label .media-icon-wrapper i {
     @apply h-1/2 w-1/2;
 }
 
-.media-wrapper label .checkmark {
+.media-wrapper > label .checkmark {
     @apply absolute m-0 top-2 right-2;
 }
 
-.media-wrapper label span:not(.checkmark):not(.media-icon-wrapper) {
+.media-wrapper > label span:not(.checkmark):not(.media-icon-wrapper) {
     @apply absolute bottom-2 inset-x-0 text-center leading-5;
 }
 
@@ -298,12 +303,12 @@ textarea.form-input {
     @apply h-24 w-24;
 }
 
-.media-wrapper.media-wrapper-small label .media-icon-wrapper i {
+.media-wrapper.media-wrapper-small > label .media-icon-wrapper i {
     @apply h-9/10 mt-0;
 }
 
 /* Potential text spans are hidden */
-.media-wrapper.media-wrapper-small label span:not(.checkmark):not(.media-icon-wrapper) {
+.media-wrapper.media-wrapper-small > label span:not(.checkmark):not(.media-icon-wrapper) {
     @apply hidden;
 }
 

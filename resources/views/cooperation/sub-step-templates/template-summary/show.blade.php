@@ -25,13 +25,14 @@
                         <div class="w-1/2">
                             <a href="{{ $subStepRoute }}" class="no-underline">
                                 <h6 class="heading-6">
-                                    @lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.question.label'):
+                                    @lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.question.label')
+                                    :
                                 </h6>
                             </a>
                         </div>
 
                         <div class="w-1/2">
-                            <p>
+                            <p class="flex items-center">
                                 @php $advisables = []; @endphp
                                 @foreach($building->user->actionPlanAdvices()->forInputSource($masterInputSource)->get() as $advice)
                                     @php
@@ -43,18 +44,27 @@
                                             $advisable = $advice->userActionPlanAdvisable;
                                         }
 
-                                        if ($advisable instanceof \App\Models\CustomMeasureApplication || $advisable instanceof \App\Models\CooperationMeasureApplication) {
+                                        if ($advisable instanceof \App\Models\CustomMeasureApplication) {
                                             $advisables[] = $advisable->name;
+                                        } elseif($advisable instanceof \App\Models\CooperationMeasureApplication) {
+                                            $advisableToAppend = $advisable->name;
+
+                                            if (! empty($advisable->extra['icon'])) {
+                                                $advisableToAppend .= '<i class="ml-1 w-8 h-8 '. $advisable->extra['icon'] . '"></i>';
+                                            }
+
+                                            $advisables[] = $advisableToAppend;
                                         }
                                     @endphp
                                 @endforeach
-                                {{ implode(', ', $advisables) }}
+                                {!! implode(', ', $advisables) !!}
                             </p>
                         </div>
                     </div>
                 @else
                     @php
                         $answers = [];
+                        $stepComments = [];
                     @endphp
                     {{-- We loop twice to first get all answers. We need the answers to ensure whether or not the tool question should be shown --}}
                     @foreach($subStepToSummarize->toolQuestions as $toolQuestionToSummarize)
@@ -74,6 +84,12 @@
                                 $showQuestion = \App\Helpers\Conditions\ConditionEvaluator::init()
                                 ->evaluateCollection($toolQuestionToSummarize->conditions, collect($answers));
                             }
+
+                            // Comments come at the end, and have exceptional logic...
+                            if (\Illuminate\Support\Str::contains($toolQuestionToSummarize->short, 'comment')) {
+                                $stepComments[] = $toolQuestionToSummarize;
+                                $showQuestion = false;
+                            }
                         @endphp
 
                         @if ($showQuestion)
@@ -89,12 +105,14 @@
                                 @if($toolQuestionToSummarize->toolQuestionType->short === 'rating-slider')
                                     @foreach($toolQuestionToSummarize->options as $option)
                                         <div class="w-1/2 pl-2">
-                                            <h6 class="heading-6">
-                                                {{ $option['name'] }}:
-                                            </h6>
+                                            <a href="{{ $subStepRoute }}" class="no-underline">
+                                                <h6 class="heading-6">
+                                                    {{ $option['name'] }}:
+                                                </h6>
+                                            </a>
                                         </div>
                                         <div class="w-1/2">
-                                            <p>
+                                            <p class="flex items-center">
                                                 @php
                                                     $humanReadableAnswer = __('cooperation/frontend/tool.no-answer-given');
                                                     $answer = $answers[$toolQuestionToSummarize->short] ?? null;
@@ -110,7 +128,7 @@
                                     @endforeach
                                 @else
                                     <div class="w-1/2">
-                                        <p>
+                                        <p class="flex items-center">
                                             @php
                                                 $humanReadableAnswer = __('cooperation/frontend/tool.no-answer-given');
                                                 $answer = $answers[$toolQuestionToSummarize->short] ?? null;
@@ -127,7 +145,13 @@
                                                             $questionValue = $questionValues->where('value', '=', $subAnswer)->first();
 
                                                             if (! empty($questionValue)) {
-                                                                $humanReadableAnswers[] = $questionValue['name'];
+                                                                $answerToAppend = $questionValue['name'];
+
+                                                                if (! empty($questionValue['extra']['icon'])) {
+                                                                    $answerToAppend .= '<i class="ml-1 w-8 h-8 ' . $questionValue['extra']['icon'] . '"></i>';
+                                                                }
+
+                                                                $humanReadableAnswers[] = $answerToAppend;
                                                             }
                                                         }
 
@@ -141,7 +165,7 @@
                                                 }
                                             @endphp
 
-                                            {{ $humanReadableAnswer }}
+                                            {!! $humanReadableAnswer !!}
                                         </p>
                                     </div>
                                 @endif

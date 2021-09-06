@@ -70,7 +70,7 @@
                         @php
                             // Answers will contain an array of arrays of all answers for the tool question in this sub step,
                             // in which the nested array will be short => answer based
-                            $answers[$toolQuestionToSummarize->short] = $building->getAnswer($masterInputSource, $toolQuestionToSummarize);
+                            $answers[$toolQuestionToSummarize->short] = $building->getAnswer(($toolQuestionToSummarize->forSpecificInputSource ?? $masterInputSource), $toolQuestionToSummarize);
                         @endphp
                     @endforeach
 
@@ -89,6 +89,7 @@
                                 $stepComments[] = [
                                     'question' => $toolQuestionToSummarize,
                                     'route' => $subStepRoute,
+                                    'answer' => $answers[$toolQuestionToSummarize->short],
                                 ];
                                 $showQuestion = false;
                             }
@@ -179,41 +180,22 @@
         @endcan
     @endforeach
 
-    @foreach($stepComments as $stepCommentData)
-        @php
-            $stepCommentToolQuestion = $stepCommentData['question'];
-            $subStepRoute = $stepCommentData['route'];
-
-            $saveIn = \App\Helpers\ToolQuestionHelper::resolveSaveIn($stepCommentToolQuestion, $building);
-            $residentInputSource = \App\Models\InputSource::findByShort(\App\Models\InputSource::RESIDENT_SHORT);
-            $coachInputSource = \App\Models\InputSource::findByShort(\App\Models\InputSource::COACH_SHORT);
-
-            $residentStepComment = \App\Models\StepComment::forInputSource($residentInputSource)
-                ->where($saveIn['where'])
-                ->first();
-            $coachStepComment = \App\Models\StepComment::forInputSource($coachInputSource)
-                ->where($saveIn['where'])
-                ->first();
-        @endphp
-        <div class="flex flex-row flex-wrap w-full">
-            @component('cooperation.frontend.layouts.components.form-group', [
-                'label' => $stepCommentToolQuestion->name . ' (' . __('cooperation/frontend/shared.input-sources.resident') . ')',
-                'route' => $subStepRoute,
-                'class' => 'w-full md:w-1/2 md:pr-3',
-                'withInputSource' => false,
-            ])
-                <textarea class="form-input" disabled
-                >{{ optional($residentStepComment)->comment }}</textarea>
-            @endcomponent
-            @component('cooperation.frontend.layouts.components.form-group', [
-                'label' => $stepCommentToolQuestion->name . ' (' . __('cooperation/frontend/shared.input-sources.coach') . ')',
-                'route' => $subStepRoute,
-                'class' => 'w-full md:w-1/2 md:pl-3',
-                'withInputSource' => false,
-            ])
-                <textarea class="form-input" disabled
-                >{{ optional($coachStepComment)->comment }}</textarea>
-            @endcomponent
-        </div>
-    @endforeach
+    <div class="flex flex-row flex-wrap w-full">
+        @foreach($stepComments as $stepCommentData)
+            @php
+                $stepCommentToolQuestion = $stepCommentData['question'];
+                $subStepRoute = $stepCommentData['route'];
+                $answer = $stepCommentData['answer'];
+            @endphp
+                @component('cooperation.frontend.layouts.components.form-group', [
+                    'label' => $stepCommentToolQuestion->name . " ({$stepCommentToolQuestion->forSpecificInputSource->name})",
+                    'route' => $subStepRoute,
+                    'class' => 'w-full sm:w-1/2 ' . ($loop->iteration % 2 === 0 ? 'sm:pl-3' : 'sm:pr-3'),
+                    'withInputSource' => false,
+                ])
+                    <textarea class="form-input" disabled
+                    >{{ $answer }}</textarea>
+                @endcomponent
+        @endforeach
+    </div>
 </div>

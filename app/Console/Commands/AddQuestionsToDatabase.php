@@ -337,7 +337,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => "step_comments.{$stepBuildingData->id}.comment",
-                            'for_specific_input_source' => $residentInputSource->id,
+                            'for_specific_input_source_id' => $residentInputSource->id,
                             'short' => 'building-data-comment-resident',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment',
                             'tool_question_type_id' => $textareaType->id,
@@ -345,7 +345,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => "step_comments.{$stepBuildingData->id}.comment",
-                            'for_specific_input_source' => $coachInputSource->id,
+                            'for_specific_input_source_id' => $coachInputSource->id,
                             'short' => 'building-data-comment-coach',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment',
                             'tool_question_type_id' => $textareaType->id,
@@ -563,7 +563,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",
-                            'for_specific_input_source' => $residentInputSource->id,
+                            'for_specific_input_source_id' => $residentInputSource->id,
                             'short' => 'usage-quick-scan-comment-resident',
                             'translation' => 'cooperation/tool/general-data/usage.index.comment',
                             'tool_question_type_id' => $textareaType->id,
@@ -571,7 +571,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",
-                            'for_specific_input_source' => $coachInputSource->id,
+                            'for_specific_input_source_id' => $coachInputSource->id,
                             'short' => 'usage-quick-scan-comment-coach',
                             'translation' => 'cooperation/tool/general-data/usage.index.comment',
                             'tool_question_type_id' => $textareaType->id,
@@ -666,7 +666,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => "step_comments.{$stepLivingRequirements->id}.comment",
-                            'for_specific_input_source' => $residentInputSource->id,
+                            'for_specific_input_source_id' => $residentInputSource->id,
                             'short' => 'living-requirements-comment-resident',
                             'translation' => 'cooperation/tool/general-data/interest.index.comment',
                             'tool_question_type_id' => $textareaType->id,
@@ -674,7 +674,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => "step_comments.{$stepLivingRequirements->id}.comment",
-                            'for_specific_input_source' => $coachInputSource->id,
+                            'for_specific_input_source_id' => $coachInputSource->id,
                             'short' => 'living-requirements-comment-coach',
                             'translation' => 'cooperation/tool/general-data/interest.index.comment',
                             'tool_question_type_id' => $textareaType->id,
@@ -1251,7 +1251,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => "step_comments.{$stepResidentialStatus->id}_element.comment",
-                            'for_specific_input_source' => $residentInputSource->id,
+                            'for_specific_input_source_id' => $residentInputSource->id,
                             'short' => 'residential-status-element-comment-resident',
                             'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
                             'tool_question_type_id' => $textareaType->id,
@@ -1259,7 +1259,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => "step_comments.{$stepResidentialStatus->id}_element.comment",
-                            'for_specific_input_source' => $coachInputSource->id,
+                            'for_specific_input_source_id' => $coachInputSource->id,
                             'short' => 'residential-status-element-comment-coach',
                             'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
                             'tool_question_type_id' => $textareaType->id,
@@ -1267,7 +1267,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => "step_comments.{$stepResidentialStatus->id}_service.comment",
-                            'for_specific_input_source' => $residentInputSource->id,
+                            'for_specific_input_source_id' => $residentInputSource->id,
                             'short' => 'residential-status-service-comment-resident',
                             'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
                             'tool_question_type_id' => $textareaType->id,
@@ -1275,7 +1275,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => "step_comments.{$stepResidentialStatus->id}_service.comment",
-                            'for_specific_input_source' => $coachInputSource->id,
+                            'for_specific_input_source_id' => $coachInputSource->id,
                             'short' => 'residential-status-service-comment-coach',
                             'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
                             'tool_question_type_id' => $textareaType->id,

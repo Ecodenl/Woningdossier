@@ -201,20 +201,17 @@ class Building extends Model
     ) {
         $answer  = null;
         $where[] = ['input_source_id', '=', $inputSource->id];
-        // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
+        // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)
         if ( ! is_null($toolQuestion->save_in)) {
             $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);
             $table  = $saveIn['table'];
             $column = $saveIn['column'];
             $where  = array_merge($saveIn['where'], $where);
 
-            $modelName = "App\\Models\\".Str::ucFirst(
-                    Str::camel(Str::singular($table))
-                );
+            $modelName = "App\\Models\\".Str::ucFirst(Str::camel(Str::singular($table)));
 
-            // we do a get so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
-            $answer = $modelName::allInputSources()->where($where)->get(
-            )->pluck($column)->first();
+            // we do a get, so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
+            $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
         } else {
             $where['building_id'] = $this->id;
             $toolQuestionAnswers  = $toolQuestion

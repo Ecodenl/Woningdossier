@@ -297,11 +297,10 @@ class Form extends Component
 
     public function recalculate()
     {
-        // TODO: Get logic for this. This is a guessed placeholder
+        // TODO: Get logic for subsidy.
         $subsidyPercentage = 0.1;
 
-        $minInvestment = 0;
-        $maxInvestment = 0;
+        $investment = 0;
         $savings = 0;
         $subsidy = 0;
 
@@ -309,8 +308,14 @@ class Form extends Component
             $from = $card['costs']['from'] ?? 0;
             $to = $card['costs']['to'] ?? 0;
 
-            $minInvestment += $from;
-            $maxInvestment += $to;
+            if ($from <= 0 && $to > 0) {
+                $investment += $to;
+            } elseif ($to <= 0 && $from > 0) {
+                $investment += $from;
+            } elseif ($from > 0 && $to > 0) {
+                $investment += (($from + $to) / 2);
+            }
+
             $savings += $card['savings'] ?? 0;
 
 //            if ($card['subsidy'] === $this->SUBSIDY_AVAILABLE) {
@@ -318,7 +323,7 @@ class Form extends Component
 //            }
         }
 
-        $this->investment = ($maxInvestment + $minInvestment) / 2;
+        $this->investment = $investment;
         $this->yearlySavings = $savings;
         $this->availableSubsidy = $subsidy;
     }

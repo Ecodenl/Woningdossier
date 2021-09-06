@@ -245,7 +245,8 @@
                       @if($disableResident) disabled @endif
                       placeholder="@lang('default.form.input.comment-placeholder')"></textarea>
             <button class="btn btn-purple absolute right-3 bottom-7" @if($disableResident) disabled @endif
-                    wire:click="saveComment('{{\App\Models\InputSource::RESIDENT_SHORT}}')">
+                    wire:click="saveComment('{{\App\Models\InputSource::RESIDENT_SHORT}}')"
+                    wire:loading.attr="disabled" wire:target="saveComment">
                 @lang('default.buttons.save')
             </button>
         @endcomponent
@@ -260,7 +261,8 @@
                       @if($disableCoach) disabled @endif
                       placeholder="@lang('default.form.input.comment-placeholder')"></textarea>
             <button class="btn btn-purple absolute right-3 bottom-7" @if($disableCoach) disabled @endif
-                    wire:click="saveComment('{{\App\Models\InputSource::COACH_SHORT}}')">
+                    wire:click="saveComment('{{\App\Models\InputSource::COACH_SHORT}}')"
+                    wire:loading.attr="disabled" wire:target="saveComment">
                 @lang('default.buttons.save')
             </button>
         @endcomponent

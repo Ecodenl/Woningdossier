@@ -33,6 +33,10 @@ a.in-text {
 }
 .btn:disabled {
     @apply cursor-not-allowed bg-gray text-white pointer-events-none;
+
+    @apply hover:bg-gray hover:bg-opacity-100 hover:text-white hover:shadow-none;
+    @apply focus:bg-gray focus:bg-opacity-100 focus:text-white focus:shadow-none;
+    @apply active:bg-gray active:bg-opacity-100 active:text-white active:shadow-none;
 }
 .btn-purple {
     @apply bg-purple-100 bg-opacity-100 text-purple;

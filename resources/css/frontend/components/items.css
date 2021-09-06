@@ -2,8 +2,7 @@
 .step-divider-line {
     @apply border border-blue-500 border-opacity-50 w-full;
 
-    min-width: 1px;
-    max-width: 50px;
+    max-width: 2.5%;
 }
 
 /* Modals */

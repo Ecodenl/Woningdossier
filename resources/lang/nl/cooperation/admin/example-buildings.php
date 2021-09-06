@@ -35,6 +35,7 @@ return [
         'field-value' => 'Waarde',
         'update' => 'Opslaan',
         'general-data' => 'Algemene gegevens',
+        'interest-in-measure' => 'Interesse in :item',
     ],
     'store' => [
         'success' => 'Voorbeeld woning toegevoegd',

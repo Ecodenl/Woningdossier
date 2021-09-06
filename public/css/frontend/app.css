@@ -158064,6 +158064,36 @@ p a, a.in-text {
   color: rgba(255, 255, 255, var(--tw-text-opacity));
 }
 
+.btn:disabled:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(205, 210, 215, var(--tw-bg-opacity));
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  color: rgba(255, 255, 255, var(--tw-text-opacity));
+  --tw-shadow: 0 0 #0000;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.btn:disabled:focus {
+  --tw-bg-opacity: 1;
+  background-color: rgba(205, 210, 215, var(--tw-bg-opacity));
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  color: rgba(255, 255, 255, var(--tw-text-opacity));
+  --tw-shadow: 0 0 #0000;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.btn:disabled:active {
+  --tw-bg-opacity: 1;
+  background-color: rgba(205, 210, 215, var(--tw-bg-opacity));
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  color: rgba(255, 255, 255, var(--tw-text-opacity));
+  --tw-shadow: 0 0 #0000;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
 .btn-purple {
   --tw-bg-opacity: 1;
   background-color: rgba(225, 220, 242, var(--tw-bg-opacity));
@@ -159467,8 +159497,7 @@ textarea.form-input {
   --tw-border-opacity: 1;
   border-color: rgba(100, 117, 133, var(--tw-border-opacity));
   --tw-border-opacity: 0.5;
-  min-width: 1px;
-  max-width: 50px;
+  max-width: 2.5%;
 }
 
 /* Modals */

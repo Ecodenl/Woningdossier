@@ -115,6 +115,7 @@
             <div class="card-wrapper" x-bind="container" data-category="{{$cardCategory}}">
                 @foreach($cardCollection as $order => $card)
                     <div class="card" id="{{ $card['id'] }}"
+                        {{-- TODO: See if undefined draggable (on tablet, caused by polyfill) can be resolved --}}
                          x-bind="draggable" draggable="true">
                         <div class="icon-wrapper">
                             <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
@@ -163,7 +164,7 @@
                             @endif
                         </div>
                         <p class="font-bold absolute right-1 bottom-1 lg:right-3 lg:bottom-3">
-                            {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($card['savings'], 1) , '€ ') }}
+                            {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($card['savings'], 0, true) , '€ ') }}
                         </p>
                     </div>
                 @endforeach
@@ -230,6 +231,10 @@
         </div>
     </div>
     <div class="w-full flex flex-wrap bg-blue-100 pb-8 px-3 lg:px-8 items-center">
+        @php
+            $disableResident = $currentInputSource->short !== $residentInputSource->short;
+            $disableCoach = $currentInputSource->short !== $coachInputSource->short;
+        @endphp
         @component('cooperation.frontend.layouts.components.form-group', [
             'label' => __('cooperation/frontend/tool.my-plan.comments.resident'),
             'class' => 'w-full md:w-1/2 md:pr-3',
@@ -237,9 +242,12 @@
             'id' => 'comments-resident',
             'inputName' => 'comments.resident'
         ])
-            <textarea id="comments-resident" class="form-input" name="comments[resident]"
+            <textarea id="comments-resident" class="form-input" wire:model="residentCommentText"
+                      @if($disableResident) disabled @endif
                       placeholder="@lang('default.form.input.comment-placeholder')"></textarea>
-            <button class="btn btn-purple absolute right-3 bottom-7">
+            <button class="btn btn-purple absolute right-3 bottom-7" @if($disableResident) disabled @endif
+                    wire:click="saveComment('{{\App\Models\InputSource::RESIDENT_SHORT}}')"
+                    wire:loading.attr="disabled" wire:target="saveComment">
                 @lang('default.buttons.save')
             </button>
         @endcomponent
@@ -250,9 +258,12 @@
             'id' => 'comments-coach',
             'inputName' => 'comments.coach'
         ])
-            <textarea id="comments-coach" class="form-input" name="comments[coach]"
+            <textarea id="comments-coach" class="form-input" wire:model="coachCommentText"
+                      @if($disableCoach) disabled @endif
                       placeholder="@lang('default.form.input.comment-placeholder')"></textarea>
-            <button class="btn btn-purple absolute right-3 bottom-7">
+            <button class="btn btn-purple absolute right-3 bottom-7" @if($disableCoach) disabled @endif
+                    wire:click="saveComment('{{\App\Models\InputSource::COACH_SHORT}}')"
+                    wire:loading.attr="disabled" wire:target="saveComment">
                 @lang('default.buttons.save')
             </button>
         @endcomponent

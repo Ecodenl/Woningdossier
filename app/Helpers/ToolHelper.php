@@ -1080,7 +1080,7 @@ class ToolHelper
                     = [
                     //'label' => 'Interest in '.$measureApplication->measure_name,
                     'label' => __(
-                        'general.change-interested.title',
+                        'cooperation/admin/example-buildings.form.interest-in-measure',
                         ['item' => $measureApplication->measure_name]
                     ),
                     'type' => 'select',
@@ -1348,7 +1348,7 @@ class ToolHelper
                 'options' => $interestOptions,
             ];
         }
-
+//dd($structure);
         // when a content key is set, we will try to retrieve the specific content from the structure.
         if (!is_null($contentKey)) {
             $contentKeyData = explode('.', $contentKey, 3);

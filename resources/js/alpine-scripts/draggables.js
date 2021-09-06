@@ -119,7 +119,7 @@ export default (supportedClasses = ['card-wrapper'], hoverColor = 'rgba(100, 117
                 }
             }
         },
-        ['x-on:dragenter']() {
+        ['x-on:dragenter.prevent']() {
             if (null !== this.dragged) {
                 let eventTarget = this.$event.target;
                 this.lastEntered = eventTarget;

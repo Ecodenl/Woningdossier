@@ -25,6 +25,7 @@
         "vue-template-compiler": "^2.6.14"
     },
     "dependencies": {
-        "alpinejs": "^3.2.1"
+        "alpinejs": "^3.2.1",
+        "mobile-drag-drop": "^2.3.0-rc.2"
     }
 }

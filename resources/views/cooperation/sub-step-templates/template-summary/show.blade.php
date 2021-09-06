@@ -7,6 +7,7 @@
 
     @php
         $subStepsToSummarize = $step->subSteps()->where('id', '!=', $subStep->id)->orderBy('order')->get();
+        $stepComments = [];
     @endphp
 
     {{-- Loop all sub steps except for the current (summary) step --}}
@@ -63,7 +64,6 @@
                 @else
                     @php
                         $answers = [];
-                        $stepComments = [];
                     @endphp
                     {{-- We loop twice to first get all answers. We need the answers to ensure whether or not the tool question should be shown --}}
                     @foreach($subStepToSummarize->toolQuestions as $toolQuestionToSummarize)
@@ -176,4 +176,36 @@
         @endcan
     @endforeach
 
+    @foreach($stepComments as $stepCommentToolQuestion)
+        @php
+            $saveIn = \App\Helpers\ToolQuestionHelper::resolveSaveIn($stepCommentToolQuestion, $building);
+            $residentInputSource = \App\Models\InputSource::findByShort(\App\Models\InputSource::RESIDENT_SHORT);
+            $coachInputSource = \App\Models\InputSource::findByShort(\App\Models\InputSource::COACH_SHORT);
+
+            $residentStepComment = \App\Models\StepComment::forInputSource($residentInputSource)
+                ->where($saveIn['where'])
+                ->first();
+            $coachStepComment = \App\Models\StepComment::forInputSource($coachInputSource)
+                ->where($saveIn['where'])
+                ->first();
+        @endphp
+        <div class="flex flex-row flex-wrap w-full">
+            @component('cooperation.frontend.layouts.components.form-group', [
+               'label' => $stepCommentToolQuestion->name . ' (' . __('cooperation/frontend/shared.input-sources.resident') . ')',
+               'class' => 'w-full md:w-1/2 md:pr-3',
+               'withInputSource' => false,
+            ])
+                <textarea class="form-input" disabled
+                >{{ optional($residentStepComment)->comment }}</textarea>
+            @endcomponent
+            @component('cooperation.frontend.layouts.components.form-group', [
+               'label' => $stepCommentToolQuestion->name . ' (' . __('cooperation/frontend/shared.input-sources.coach') . ')',
+               'class' => 'w-full md:w-1/2 md:pl-3',
+               'withInputSource' => false,
+            ])
+                <textarea class="form-input" disabled
+                >{{ optional($coachStepComment)->comment }}</textarea>
+            @endcomponent
+        </div>
+    @endforeach
 </div>

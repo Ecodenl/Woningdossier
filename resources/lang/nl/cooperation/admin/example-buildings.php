@@ -34,6 +34,7 @@ return [
         'field-name' => 'Veldnaam',
         'field-value' => 'Waarde',
         'update' => 'Opslaan',
+        'general-data' => 'Algemene gegevens',
     ],
     'store' => [
         'success' => 'Voorbeeld woning toegevoegd',

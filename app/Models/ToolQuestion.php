@@ -75,6 +75,10 @@ class ToolQuestion extends Model
         return $this->hasMany(ToolQuestionCustomValue::class);
     }
 
+    public function forSpecificInputSource(): BelongsTo
+    {
+        return $this->belongsTo(InputSource::class);
+    }
 
     /**
      * Method to return the question values  (morphed models / the options for the question)

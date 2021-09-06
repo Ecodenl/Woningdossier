@@ -25,8 +25,7 @@
                         <div class="w-1/2">
                             <a href="{{ $subStepRoute }}" class="no-underline">
                                 <h6 class="heading-6">
-                                    @lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.question.label')
-                                    :
+                                    @lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.question.label'):
                                 </h6>
                             </a>
                         </div>

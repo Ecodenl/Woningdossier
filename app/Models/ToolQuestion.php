@@ -29,6 +29,7 @@ class ToolQuestion extends Model
         'help_text',
         'tool_question_type_id',
         'save_in',
+        'for_input_source',
         'unit_of_measure',
         'options',
         'validation',

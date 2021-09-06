@@ -204,13 +204,6 @@ class AddMasterInputSource extends Command
                     'answer',
                 ],
             ],
-            'step_comments' => [
-                'where_column' => 'step_id',
-                'additional_where_column' => 'short',
-                'answer_columns' => [
-                    'comment',
-                ],
-            ],
         ];
 
         // Get the input sources

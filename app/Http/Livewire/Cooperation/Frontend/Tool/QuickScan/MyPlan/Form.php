@@ -10,6 +10,7 @@ use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserActionPlanAdviceComments;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -34,6 +35,8 @@ class Form extends Component
 
     public $masterInputSource;
     public $currentInputSource;
+    public $residentInputSource;
+    public $coachInputSource;
 
     public array $custom_measure_application = [];
     public int $investment = 0;
@@ -41,6 +44,13 @@ class Form extends Component
     public int $availableSubsidy = 0;
 
     public string $category = '';
+
+    /** @var null|UserActionPlanAdviceComments */
+    public $residentComment;
+    public string $residentCommentText = '';
+    /** @var null|UserActionPlanAdviceComments */
+    public $coachComment;
+    public string $coachCommentText = '';
 
     // TODO: Move this to a constant helper when this is retrieved from backend
     public string $SUBSIDY_AVAILABLE = 'available';
@@ -97,9 +107,26 @@ class Form extends Component
     public function mount()
     {
         $this->building = HoomdossierSession::getBuilding(true);
+        // Set needed input sources
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
+        $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT
+            ? $this->currentInputSource
+            : InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT
+            ? $this->currentInputSource
+            : InputSource::findByShort(InputSource::COACH_SHORT);
 
+        // Set comments
+        $this->residentComment = UserActionPlanAdviceComments::forInputSource($this->residentInputSource)
+            ->where('user_id', $this->building->user->id)->first();
+        $this->residentCommentText = $this->residentComment instanceof UserActionPlanAdviceComments ? $this->residentComment->comment : '';
+
+        $this->coachComment = UserActionPlanAdviceComments::forInputSource($this->coachInputSource)
+            ->where('user_id', $this->building->user->id)->first();
+        $this->coachCommentText = $this->coachComment instanceof UserActionPlanAdviceComments ? $this->coachComment->comment : '';
+
+        // Set cards
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                 ->where('user_id', $this->building->user->id)
@@ -107,7 +134,7 @@ class Form extends Component
                 ->orderBy('order')
                 ->get();
 
-            // Order in the DB could not be linear. For safe use, we set the order ourselves
+            // Order in the DB could have gaps or duplicates. For safe use, we set the order ourselves
             $order = 0;
             foreach ($advices as $advice) {
                 $advisable = $advice->userActionPlanAdvisable;
@@ -371,6 +398,29 @@ class Form extends Component
             // Otherwise we will update master ourselves (advice could be from the coach if the user is a resident
             // or vice versa)
             $advice->update($update);
+        }
+    }
+
+    public function saveComment(string $sourceShort)
+    {
+        if ($sourceShort === InputSource::RESIDENT_SHORT || $sourceShort === InputSource::COACH_SHORT) {
+            $commentShort = "{$sourceShort}Comment";
+            $commentText = $this->{"{$sourceShort}CommentText"};
+            $inputSource = $this->{"{$sourceShort}InputSource"};
+
+            if ($inputSource->short === $this->currentInputSource->short) {
+                if ($this->{$commentShort} instanceof UserActionPlanAdviceComments) {
+                    $this->{$commentShort}->update([
+                        'comment' => $commentText,
+                    ]);
+                } else {
+                    $this->{$commentShort} = UserActionPlanAdviceComments::create([
+                        'user_id' => $this->building->user->id,
+                        'input_source_id' => $inputSource,
+                        'comment' => $commentText,
+                    ]);
+                }
+            }
         }
     }
 }

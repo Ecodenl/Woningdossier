@@ -86,7 +86,10 @@
 
                             // Comments come at the end, and have exceptional logic...
                             if (\Illuminate\Support\Str::contains($toolQuestionToSummarize->short, 'comment')) {
-                                $stepComments[] = $toolQuestionToSummarize;
+                                $stepComments[] = [
+                                    'question' => $toolQuestionToSummarize,
+                                    'route' => $subStepRoute,
+                                ];
                                 $showQuestion = false;
                             }
                         @endphp
@@ -176,8 +179,11 @@
         @endcan
     @endforeach
 
-    @foreach($stepComments as $stepCommentToolQuestion)
+    @foreach($stepComments as $stepCommentData)
         @php
+            $stepCommentToolQuestion = $stepCommentData['question'];
+            $subStepRoute = $stepCommentData['route'];
+
             $saveIn = \App\Helpers\ToolQuestionHelper::resolveSaveIn($stepCommentToolQuestion, $building);
             $residentInputSource = \App\Models\InputSource::findByShort(\App\Models\InputSource::RESIDENT_SHORT);
             $coachInputSource = \App\Models\InputSource::findByShort(\App\Models\InputSource::COACH_SHORT);
@@ -191,17 +197,19 @@
         @endphp
         <div class="flex flex-row flex-wrap w-full">
             @component('cooperation.frontend.layouts.components.form-group', [
-               'label' => $stepCommentToolQuestion->name . ' (' . __('cooperation/frontend/shared.input-sources.resident') . ')',
-               'class' => 'w-full md:w-1/2 md:pr-3',
-               'withInputSource' => false,
+                'label' => $stepCommentToolQuestion->name . ' (' . __('cooperation/frontend/shared.input-sources.resident') . ')',
+                'route' => $subStepRoute,
+                'class' => 'w-full md:w-1/2 md:pr-3',
+                'withInputSource' => false,
             ])
                 <textarea class="form-input" disabled
                 >{{ optional($residentStepComment)->comment }}</textarea>
             @endcomponent
             @component('cooperation.frontend.layouts.components.form-group', [
-               'label' => $stepCommentToolQuestion->name . ' (' . __('cooperation/frontend/shared.input-sources.coach') . ')',
-               'class' => 'w-full md:w-1/2 md:pl-3',
-               'withInputSource' => false,
+                'label' => $stepCommentToolQuestion->name . ' (' . __('cooperation/frontend/shared.input-sources.coach') . ')',
+                'route' => $subStepRoute,
+                'class' => 'w-full md:w-1/2 md:pl-3',
+                'withInputSource' => false,
             ])
                 <textarea class="form-input" disabled
                 >{{ optional($coachStepComment)->comment }}</textarea>

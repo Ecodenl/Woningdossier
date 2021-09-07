@@ -188,7 +188,7 @@
                 $answer = $stepCommentData['answer'];
             @endphp
                 @component('cooperation.frontend.layouts.components.form-group', [
-                    'label' => $stepCommentToolQuestion->name . " ({$stepCommentToolQuestion->forSpecificInputSource->name})",
+                    'label' => $stepCommentToolQuestion->name ?? '' . " (" . ($stepCommentToolQuestion->forSpecificInputSource->name ?? '') . ")",
                     'route' => $subStepRoute,
                     'class' => 'w-full sm:w-1/2 ' . ($loop->iteration % 2 === 0 ? 'sm:pl-3' : 'sm:pr-3'),
                     'withInputSource' => false,

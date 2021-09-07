@@ -158005,23 +158005,6 @@ p a, a.in-text {
   text-decoration: none;
 }
 
-.clickable {
-  cursor: pointer;
-  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
-
-.clickable:hover {
-  opacity: 0.6;
-}
-
-.clickable:focus {
-  opacity: 0.6;
-}
-
 /* Buttons */
 
 .btn {
@@ -158517,6 +158500,31 @@ p a, a.in-text {
   background-color: rgba(44, 169, 130, var(--tw-bg-opacity));
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity));
+}
+
+/* Extra items */
+
+.clickable {
+  cursor: pointer;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.clickable:hover {
+  opacity: 0.6;
+}
+
+.clickable:focus {
+  opacity: 0.6;
+}
+
+/* Purely to remove opacity when focusing on inputs */
+
+.has-btn:focus ~ button {
+  opacity: 0.2;
 }/* Form groups and its children */
 
 .form-group {

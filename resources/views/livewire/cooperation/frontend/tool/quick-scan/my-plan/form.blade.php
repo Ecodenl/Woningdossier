@@ -242,7 +242,7 @@
             'id' => 'comments-resident',
             'inputName' => 'comments.resident'
         ])
-            <textarea id="comments-resident" class="form-input" wire:model="residentCommentText"
+            <textarea id="comments-resident" class="form-input has-btn" wire:model="residentCommentText"
                       @if($disableResident) disabled @endif
                       placeholder="@lang('default.form.input.comment-placeholder')"></textarea>
             <button class="btn btn-purple absolute right-3 bottom-7" @if($disableResident) disabled @endif
@@ -258,7 +258,7 @@
             'id' => 'comments-coach',
             'inputName' => 'comments.coach'
         ])
-            <textarea id="comments-coach" class="form-input" wire:model="coachCommentText"
+            <textarea id="comments-coach" class="form-input has-btn" wire:model="coachCommentText"
                       @if($disableCoach) disabled @endif
                       placeholder="@lang('default.form.input.comment-placeholder')"></textarea>
             <button class="btn btn-purple absolute right-3 bottom-7" @if($disableCoach) disabled @endif

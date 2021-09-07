@@ -416,7 +416,7 @@ class Form extends Component
                 } else {
                     $this->{$commentShort} = UserActionPlanAdviceComments::create([
                         'user_id' => $this->building->user->id,
-                        'input_source_id' => $inputSource,
+                        'input_source_id' => $inputSource->id,
                         'comment' => $commentText,
                     ]);
                 }

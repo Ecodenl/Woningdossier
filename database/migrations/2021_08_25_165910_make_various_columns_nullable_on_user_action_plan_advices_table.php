@@ -16,6 +16,11 @@ class MakeVariousColumnsNullableOnUserActionPlanAdvicesTable extends Migration
         Schema::table('user_action_plan_advices', function (Blueprint $table) {
             $table->unsignedInteger('step_id')->nullable()->default(null)->change();
         });
+
+        // Almost the same table. Sshhhh....
+        Schema::table('user_action_plan_advices_comments', function (Blueprint $table) {
+            $table->text('comment')->nullable()->change();
+        });
     }
 
     /**

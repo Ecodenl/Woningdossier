@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Cooperation\Frontend\Tool\QuickScan;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
+use App\Models\InputSource;
+use App\Models\Notification;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Http\Controllers\Controller;
@@ -30,6 +32,9 @@ class MyPlanController extends Controller
             }
         }
 
-        return view('cooperation.frontend.tool.quick-scan.my-plan.index');
+        $notification = Notification::activeNotifications($building,
+            InputSource::findByShort(InputSource::MASTER_SHORT))->first();
+
+        return view('cooperation.frontend.tool.quick-scan.my-plan.index', compact('notification'));
     }
 }

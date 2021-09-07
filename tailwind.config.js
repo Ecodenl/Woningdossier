@@ -171,6 +171,9 @@ module.exports = {
             borderRadius: {
                 ...fractionTen,
                 '1/2': '50%',
+            },
+            animation: {
+                'spin-slow': 'spin 2s linear infinite',
             }
         },
         colors: {

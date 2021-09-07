@@ -13207,6 +13207,12 @@ video {
   }
 }
 
+@keyframes spin{
+  to{
+    transform: rotate(360deg);
+  }
+}
+
 #app-body .animate-none{
   -webkit-animation: none;
           animation: none;
@@ -13230,6 +13236,11 @@ video {
 #app-body .animate-bounce{
   -webkit-animation: bounce 1s infinite;
           animation: bounce 1s infinite;
+}
+
+#app-body .animate-spin-slow{
+  -webkit-animation: spin 2s linear infinite;
+          animation: spin 2s linear infinite;
 }
 
 #app-body .cursor-auto{
@@ -39518,6 +39529,11 @@ Small example
             animation: bounce 1s infinite;
   }
 
+  #app-body .sm\:animate-spin-slow{
+    -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+  }
+
   #app-body .sm\:cursor-auto{
     cursor: auto;
   }
@@ -65711,6 +65727,11 @@ Small example
   #app-body .md\:animate-bounce{
     -webkit-animation: bounce 1s infinite;
             animation: bounce 1s infinite;
+  }
+
+  #app-body .md\:animate-spin-slow{
+    -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
   }
 
   #app-body .md\:cursor-auto{
@@ -91908,6 +91929,11 @@ Small example
             animation: bounce 1s infinite;
   }
 
+  #app-body .lg\:animate-spin-slow{
+    -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+  }
+
   #app-body .lg\:cursor-auto{
     cursor: auto;
   }
@@ -118101,6 +118127,11 @@ Small example
   #app-body .xl\:animate-bounce{
     -webkit-animation: bounce 1s infinite;
             animation: bounce 1s infinite;
+  }
+
+  #app-body .xl\:animate-spin-slow{
+    -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
   }
 
   #app-body .xl\:cursor-auto{
@@ -144298,6 +144329,11 @@ Small example
             animation: bounce 1s infinite;
   }
 
+  #app-body .\32xl\:animate-spin-slow{
+    -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+  }
+
   #app-body .\32xl\:cursor-auto{
     cursor: auto;
   }
@@ -160396,6 +160432,10 @@ textarea.form-input {
 
 .icon-ventilation {
   content: url('/icons/ventilation.svg');
+}
+
+.icon-ventilation-fan {
+  content: url('/icons/ventilation-fan.svg');
 }
 
 .icon-wall-insulation-excellent {

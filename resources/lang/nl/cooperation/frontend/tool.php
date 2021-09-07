@@ -37,5 +37,6 @@ return [
             'resident' => 'Opmerkingen bewoner',
             'coach' => 'Opmerkingen coach',
         ],
+        'loading' => 'Woonplan wordt berekend...',
     ],
 ];

@@ -99,8 +99,10 @@ class RoofInsulationHelper extends ToolHelper
 
                         $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
                             ->where('user_action_plan_advisable_id', '=', $measureApplication->id)->first();
-                        if ($oldAdvice instanceof UserActionPlanAdvice && ! is_null($oldAdvice->category)) {
+                        if ($oldAdvice instanceof UserActionPlanAdvice) {
                             $actionPlanAdvice->category = $oldAdvice->category;
+                            $actionPlanAdvice->visible = $oldAdvice->visible;
+                            $actionPlanAdvice->order = $oldAdvice->order;
                         }
 
                         $actionPlanAdvice->save();
@@ -140,6 +142,15 @@ class RoofInsulationHelper extends ToolHelper
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->userActionPlanAdvisable()->associate($zincReplaceMeasure);
                     $actionPlanAdvice->step()->associate($step);
+
+                    $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
+                        ->where('user_action_plan_advisable_id', '=', $zincReplaceMeasure->id)->first();
+                    if ($oldAdvice instanceof UserActionPlanAdvice) {
+                        $actionPlanAdvice->category = $oldAdvice->category;
+                        $actionPlanAdvice->visible = $oldAdvice->visible;
+                        $actionPlanAdvice->order = $oldAdvice->order;
+                    }
+
                     $actionPlanAdvice->save();
                 }
             }
@@ -165,6 +176,15 @@ class RoofInsulationHelper extends ToolHelper
                         $actionPlanAdvice->user()->associate($this->user);
                         $actionPlanAdvice->userActionPlanAdvisable()->associate($replaceMeasure);
                         $actionPlanAdvice->step()->associate($step);
+
+                        $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
+                            ->where('user_action_plan_advisable_id', '=', $replaceMeasure->id)->first();
+                        if ($oldAdvice instanceof UserActionPlanAdvice) {
+                            $actionPlanAdvice->category = $oldAdvice->category;
+                            $actionPlanAdvice->visible = $oldAdvice->visible;
+                            $actionPlanAdvice->order = $oldAdvice->order;
+                        }
+
                         $actionPlanAdvice->save();
                     }
                 }
@@ -192,6 +212,15 @@ class RoofInsulationHelper extends ToolHelper
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->userActionPlanAdvisable()->associate($replaceMeasure);
                     $actionPlanAdvice->step()->associate($step);
+
+                    $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
+                        ->where('user_action_plan_advisable_id', '=', $replaceMeasure->id)->first();
+                    if ($oldAdvice instanceof UserActionPlanAdvice) {
+                        $actionPlanAdvice->category = $oldAdvice->category;
+                        $actionPlanAdvice->visible = $oldAdvice->visible;
+                        $actionPlanAdvice->order = $oldAdvice->order;
+                    }
+
                     $actionPlanAdvice->save();
                 }
             }

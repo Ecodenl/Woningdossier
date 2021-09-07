@@ -8,6 +8,7 @@ use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
@@ -90,7 +91,19 @@ trait GetMyValuesTrait
 
             foreach ($crucialRelationCombinationIds as $crucialRelationCombinationId) {
                 if ($this->hasAttribute($crucialRelationCombinationId)) {
-                    $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
+                    $shouldAdd = $crucialRelationCombinationId !== 'tool_question_custom_value_id';
+
+                    if (! $shouldAdd) {
+                        // Conditional logic, tool_question_custom_value_id should only be evaluated if the
+                        // question is a checkbox
+                        if (! empty($data['tool_question_id']) && ($toolQuestion = ToolQuestion::find($data['tool_question_id'])) instanceof ToolQuestion) {
+                            $shouldAdd = $toolQuestion->toolQuestionType->short === 'checkbox-icon';
+                        }
+                    }
+
+                    if ($shouldAdd) {
+                        $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
+                    }
                 }
             }
 

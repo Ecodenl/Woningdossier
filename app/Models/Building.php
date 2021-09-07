@@ -122,12 +122,14 @@ class Building extends Model
 
     public function getAnswerForAllInputSources(ToolQuestion $toolQuestion)
     {
+        $inputSources = InputSource::all();
+
         $answers = null;
         $where   = [
             [
                 'input_source_id',
                 '!=',
-                InputSource::findByShort(InputSource::MASTER_SHORT)->id,
+                $inputSources->where('short', InputSource::MASTER_SHORT)->first()->id,
             ],
         ];
         // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
@@ -153,17 +155,16 @@ class Building extends Model
                                 ->where($where)
                                 ->get();
 
-            /** @var Model $model */
-            foreach ($models as $index => $model) {
-                // now check if we need to "translate" the answer
-                $answer = $model->getAttribute($column);
+            // We pluck, as pluck handles dot notation for sub-values such as in JSON
+            $values = $models->pluck($column, 'input_source_id');
 
-                if ($questionValues->isNotEmpty() && ! is_null($answer)) {
-                    $answer = $questionValues[$answer];
-                }
-                $answers[$model->inputSource->short][$index] = [
+            // We still loop though, to ensure we get human-readable answers
+            foreach ($values as $inputSourceId => $value) {
+                $answer = $questionValues->isNotEmpty() && ! is_null($value) ? $questionValues[$value] : $value;
+
+                $answers[$inputSources->where('id', $inputSourceId)->first()->short][] = [
                     'answer' => $answer,
-                    'value'  => $model->getAttribute($column),
+                    'value'  => $value,
                 ];
             }
         } else {
@@ -201,20 +202,17 @@ class Building extends Model
     ) {
         $answer  = null;
         $where[] = ['input_source_id', '=', $inputSource->id];
-        // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
+        // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)
         if ( ! is_null($toolQuestion->save_in)) {
             $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);
             $table  = $saveIn['table'];
             $column = $saveIn['column'];
             $where  = array_merge($saveIn['where'], $where);
 
-            $modelName = "App\\Models\\".Str::ucFirst(
-                    Str::camel(Str::singular($table))
-                );
+            $modelName = "App\\Models\\".Str::ucFirst(Str::camel(Str::singular($table)));
 
-            // we do a get so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
-            $answer = $modelName::allInputSources()->where($where)->get(
-            )->pluck($column)->first();
+            // we do a get, so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
+            $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
         } else {
             $where['building_id'] = $this->id;
             $toolQuestionAnswers  = $toolQuestion

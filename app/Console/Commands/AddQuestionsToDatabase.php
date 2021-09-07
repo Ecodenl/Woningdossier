@@ -13,6 +13,7 @@ use App\Models\EnergyLabel;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
+use App\Models\InputSource;
 use App\Models\InsulatingGlazing;
 use App\Models\PaintworkStatus;
 use App\Models\RoofTileStatus;
@@ -126,6 +127,9 @@ class AddQuestionsToDatabase extends Command
         $sliderType = ToolQuestionType::findByShort('slider');
         $textareaType = ToolQuestionType::findByShort('textarea');
         $measurePriorityType = ToolQuestionType::findByShort('rating-slider');
+
+        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
         $templateDefault = SubStepTemplate::findByShort('template-default');
         $template2rows1top2bottom = SubStepTemplate::findByShort('template-2-rows-1-top-2-bottom');
@@ -333,7 +337,16 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => "step_comments.{$stepBuildingData->id}.comment",
-                            'short' => 'building-data-comment',
+                            'for_specific_input_source_id' => $residentInputSource->id,
+                            'short' => 'building-data-comment-resident',
+                            'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => "step_comments.{$stepBuildingData->id}.comment",
+                            'for_specific_input_source_id' => $coachInputSource->id,
+                            'short' => 'building-data-comment-coach',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment',
                             'tool_question_type_id' => $textareaType->id,
                         ],
@@ -550,7 +563,16 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",
-                            'short' => 'usage-quick-scan-comment',
+                            'for_specific_input_source_id' => $residentInputSource->id,
+                            'short' => 'usage-quick-scan-comment-resident',
+                            'translation' => 'cooperation/tool/general-data/usage.index.comment',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",
+                            'for_specific_input_source_id' => $coachInputSource->id,
+                            'short' => 'usage-quick-scan-comment-coach',
                             'translation' => 'cooperation/tool/general-data/usage.index.comment',
                             'tool_question_type_id' => $textareaType->id,
                         ],
@@ -644,7 +666,16 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => "step_comments.{$stepLivingRequirements->id}.comment",
-                            'short' => 'living-requirements-comment',
+                            'for_specific_input_source_id' => $residentInputSource->id,
+                            'short' => 'living-requirements-comment-resident',
+                            'translation' => 'cooperation/tool/general-data/interest.index.comment',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => "step_comments.{$stepLivingRequirements->id}.comment",
+                            'for_specific_input_source_id' => $coachInputSource->id,
+                            'short' => 'living-requirements-comment-coach',
                             'translation' => 'cooperation/tool/general-data/interest.index.comment',
                             'tool_question_type_id' => $textareaType->id,
                         ],
@@ -1156,7 +1187,7 @@ class AddQuestionsToDatabase extends Command
                             ],
                         ],
                         [
-                            'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'min:1', 'max:50'],
+                            'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'integer', 'min:1', 'max:50'],
                             'save_in' => "building_pv_panels.number",
                             'short' => 'solar-panel-count',
                             // was current-state -> hoeveel zonnepanelen zijn er aanwezig
@@ -1193,6 +1224,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => [
                                 'nullable',
                                 'numeric',
+                                'integer',
                                 'between:1900,' . date('Y')
                             ],
                             'save_in' => "building_services.{$solarPanels->id}.extra.year",
@@ -1220,14 +1252,32 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => "step_comments.{$stepResidentialStatus->id}_element.comment",
-                            'short' => 'residential-status-element-comment',
+                            'for_specific_input_source_id' => $residentInputSource->id,
+                            'short' => 'residential-status-element-comment-resident',
+                            'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => "step_comments.{$stepResidentialStatus->id}_element.comment",
+                            'for_specific_input_source_id' => $coachInputSource->id,
+                            'short' => 'residential-status-element-comment-coach',
                             'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
                             'tool_question_type_id' => $textareaType->id,
                         ],
                         [
                             'validation' => ['nullable', 'string'],
                             'save_in' => "step_comments.{$stepResidentialStatus->id}_service.comment",
-                            'short' => 'residential-status-service-comment',
+                            'for_specific_input_source_id' => $residentInputSource->id,
+                            'short' => 'residential-status-service-comment-resident',
+                            'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => "step_comments.{$stepResidentialStatus->id}_service.comment",
+                            'for_specific_input_source_id' => $coachInputSource->id,
+                            'short' => 'residential-status-service-comment-coach',
                             'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
                             'tool_question_type_id' => $textareaType->id,
                         ],
@@ -1278,6 +1328,7 @@ class AddQuestionsToDatabase extends Command
                             'nl' => $help,
                         ];
                         // when the short is not set, we will use the column name as this describes it clearly
+                        // TODO: Bad practice, also causes inconsistent behaviour for snake/kebab case
                         if (!isset($questionData['short'])) {
                             $questionData['short'] = last(explode('.', $questionData['save_in']));
                         }

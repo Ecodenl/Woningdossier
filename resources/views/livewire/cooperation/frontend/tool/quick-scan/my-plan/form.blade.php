@@ -230,7 +230,8 @@
             ])
         </div>
     </div>
-    <div class="w-full flex flex-wrap bg-blue-100 pb-8 px-3 lg:px-8 items-center">
+    <div class="w-full flex flex-wrap bg-blue-100 pb-8 px-3 lg:px-8"
+         x-data="adaptiveInputs(128)" {{-- 128px === 8rem, default height for textareas --}}>
         @php
             $disableResident = $currentInputSource->short !== $residentInputSource->short;
             $disableCoach = $currentInputSource->short !== $coachInputSource->short;
@@ -242,8 +243,8 @@
             'id' => 'comments-resident',
             'inputName' => 'comments.resident'
         ])
-            <textarea id="comments-resident" class="form-input" wire:model="residentCommentText"
-                      @if($disableResident) disabled @endif
+            <textarea id="comments-resident" class="form-input has-btn" wire:model="residentCommentText"
+                      @if($disableResident) disabled @endif x-bind="typable" wire:ignore
                       placeholder="@lang('default.form.input.comment-placeholder')"></textarea>
             <button class="btn btn-purple absolute right-3 bottom-7" @if($disableResident) disabled @endif
                     wire:click="saveComment('{{\App\Models\InputSource::RESIDENT_SHORT}}')"
@@ -258,8 +259,8 @@
             'id' => 'comments-coach',
             'inputName' => 'comments.coach'
         ])
-            <textarea id="comments-coach" class="form-input" wire:model="coachCommentText"
-                      @if($disableCoach) disabled @endif
+            <textarea id="comments-coach" class="form-input has-btn" wire:model="coachCommentText"
+                      @if($disableCoach) disabled @endif x-bind="typable" wire:ignore
                       placeholder="@lang('default.form.input.comment-placeholder')"></textarea>
             <button class="btn btn-purple absolute right-3 bottom-7" @if($disableCoach) disabled @endif
                     wire:click="saveComment('{{\App\Models\InputSource::COACH_SHORT}}')"

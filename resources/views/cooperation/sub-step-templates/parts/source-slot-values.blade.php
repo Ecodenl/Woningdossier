@@ -2,12 +2,25 @@
     @foreach($values as $inputSourceShort => $answersForInputSources)
         @foreach($answersForInputSources as $answerForInputSource)
             @php
-
+                $value = $answerForInputSource['value'];
                 $answer = $answerForInputSource['answer'];
                 $humanReadableAnswer = null;
 
                 if (! \App\Helpers\Str::isValidJson($answer)) {
-                    $humanReadableAnswer = $answer;
+                    if ($toolQuestion->toolQuestionType->short === 'slider') {
+                        $value = \App\Helpers\NumberFormatter::format($value, 0);
+                        $humanReadableAnswer = \App\Helpers\NumberFormatter::format($answer, 0);
+                    } elseif(\App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
+                        $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
+                        $value = \App\Helpers\NumberFormatter::format($value, $isInteger ? 0 : 1);
+                        $humanReadableAnswer = \App\Helpers\NumberFormatter::format($answer, $isInteger ? 0 : 1);
+                        if ($isInteger) {
+                            $value = str_replace('.', '', $value);
+                            $humanReadableAnswer = str_replace('.', '', $humanReadableAnswer);
+                        }
+                    } else {
+                        $humanReadableAnswer = $answer;
+                    }
                 } else {
                     $json = json_decode($answer, true);
                     $formatted = [];
@@ -33,7 +46,7 @@
             @endphp
 
             <li class="change-input-value" data-input-source-short="{{$inputSourceShort}}"
-                data-input-value="{{$answerForInputSource['value']}}">
+                data-input-value="{{$value}}">
                 {{\App\Models\InputSource::findByShort($inputSourceShort)->name}}: {{$humanReadableAnswer}}
             </li>
         @endforeach

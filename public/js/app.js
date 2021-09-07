@@ -33973,6 +33973,52 @@ module.exports = function(module) {
 
 /***/ }),
 
+/***/ "./resources/js/alpine-scripts/adaptive-input.js":
+/*!*******************************************************!*\
+  !*** ./resources/js/alpine-scripts/adaptive-input.js ***!
+  \*******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  var _typable;
+
+  var defaultHeight = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+  return {
+    defaultHeight: defaultHeight,
+    init: function init() {
+      var _this = this;
+
+      document.addEventListener('DOMContentLoaded', function () {
+        // Set height on init
+        _this.setHeight(_this.$refs['typable']);
+      });
+
+      if (isNaN(this.defaultHeight)) {
+        this.defaultHeight = 0;
+      }
+    },
+    typable: (_typable = {}, _defineProperty(_typable, 'x-ref', 'typable'), _defineProperty(_typable, 'x-on:input', function xOnInput() {
+      this.setHeight(this.$el);
+    }), _typable),
+    setHeight: function setHeight(element) {
+      // Compute the height difference which is caused by border and outline
+      var outerHeight = parseInt(window.getComputedStyle(element).height, 10);
+      var diff = outerHeight - element.clientHeight; // Reset height to handle shrinking
+
+      element.style.height = 0; // Set new height
+
+      element.style.height = Math.max(this.defaultHeight, element.scrollHeight + diff) + 'px';
+    }
+  };
+});
+
+/***/ }),
+
 /***/ "./resources/js/alpine-scripts/alpine-select.js":
 /*!******************************************************!*\
   !*** ./resources/js/alpine-scripts/alpine-select.js ***!
@@ -35300,8 +35346,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _alpine_scripts_draggables_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./alpine-scripts/draggables.js */ "./resources/js/alpine-scripts/draggables.js");
 /* harmony import */ var _alpine_scripts_dropdown_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./alpine-scripts/dropdown.js */ "./resources/js/alpine-scripts/dropdown.js");
 /* harmony import */ var _alpine_scripts_tabs_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./alpine-scripts/tabs.js */ "./resources/js/alpine-scripts/tabs.js");
-/* harmony import */ var mobile_drag_drop__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! mobile-drag-drop */ "./node_modules/mobile-drag-drop/index.min.js");
-/* harmony import */ var mobile_drag_drop__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(mobile_drag_drop__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var _alpine_scripts_adaptive_input_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./alpine-scripts/adaptive-input.js */ "./resources/js/alpine-scripts/adaptive-input.js");
+/* harmony import */ var mobile_drag_drop__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! mobile-drag-drop */ "./node_modules/mobile-drag-drop/index.min.js");
+/* harmony import */ var mobile_drag_drop__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(mobile_drag_drop__WEBPACK_IMPORTED_MODULE_12__);
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -35385,6 +35432,7 @@ window.triggerEvent = function (element, eventName) {
 
 
 
+
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('alpineSelect', _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('sourceSelect', _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_2__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('modal', _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_3__["default"]);
@@ -35395,6 +35443,7 @@ alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('picoAddress', _alpine_scr
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('draggables', _alpine_scripts_draggables_js__WEBPACK_IMPORTED_MODULE_8__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('dropdown', _alpine_scripts_dropdown_js__WEBPACK_IMPORTED_MODULE_9__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('tabs', _alpine_scripts_tabs_js__WEBPACK_IMPORTED_MODULE_10__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('adaptiveInputs', _alpine_scripts_adaptive_input_js__WEBPACK_IMPORTED_MODULE_11__["default"]);
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 /**
@@ -35403,7 +35452,7 @@ alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 
  // Init & Settings
 
-Object(mobile_drag_drop__WEBPACK_IMPORTED_MODULE_11__["polyfill"])({});
+Object(mobile_drag_drop__WEBPACK_IMPORTED_MODULE_12__["polyfill"])({});
 
 /***/ }),
 

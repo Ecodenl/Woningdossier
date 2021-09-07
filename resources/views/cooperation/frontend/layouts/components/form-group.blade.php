@@ -1,8 +1,14 @@
 <div class="form-group {{ $class ?? '' }}" {!! $attr ?? '' !!}>
     <div class="form-header">
-        <label class="form-label @if(! ($withInputSource ?? true)) max-w-16/20 @endif" for="{{ $id ?? '' }}">
-            {!! $label ?? '' !!}
-        </label>
+        @if(! empty($route))
+            <a href="{{$route}}" class="no-underline">
+                @endif
+                <label class="form-label @if(! ($withInputSource ?? true)) max-w-16/20 @endif @if(! empty($route)) cursor-pointer @endif" for="{{ $id ?? '' }}">
+                    {!! $label ?? '' !!}
+                </label>
+                @if(! empty($route))
+            </a>
+        @endif
         <div class="form-end" wire:ignore>
             @if(($withInputSource ?? true))
                 @include('cooperation.frontend.layouts.parts.source-select')

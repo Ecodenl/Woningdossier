@@ -65,4 +65,38 @@ class StrTest extends TestCase
     {
         $this->assertEquals($expected, Str::isValidJson($value, $arrayOnly));
     }
+
+    public static function arrContainsProvider()
+    {
+        return [
+            [[], null, false, false],
+            [[], 'null', false, false],
+            [[], 'null', true, false],
+            [[], null, true, false],
+            [['test'], null, false, false],
+            [['test'], null, true, false],
+            [['test'], 'null', false, false],
+            [['test'], 'null', true, false],
+            [['test'], 'test', false, true],
+            [['test', 'hoomdossier'], 'hoom', false, true],
+            [['test', 'hoomdossier'], 'Hoom', false, false],
+            [['test', 'hoomdossier'], 'Hoom', true, true],
+            [['test', 'HoomDossier'], 'Hoom', false, true],
+            [['test', 'HoomDossier'], 'Hoom', true, true],
+            [['test', 'HoomDossier'], 'hoom', true, true],
+            [['test', '1 2 3'], '1 2 3', false, true],
+            [['test', '1 2 3'], '1', true, true],
+            [['test', '1 2 3'], ' ', false, true],
+            [['test', '1 2 3aAF4,C&(!#$'], 'af4,', true, true],
+            [['test', '1 2 3aAF4,C&(!#$'], 'af4,', false, false],
+        ];
+    }
+
+    /**
+     * @dataProvider arrContainsProvider
+     */
+    public function testArrContains($array, $needle, $ignoreCase, $expected)
+    {
+        $this->assertEquals($expected, Str::arrContains($array, $needle, $ignoreCase));
+    }
 }

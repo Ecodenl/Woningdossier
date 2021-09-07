@@ -29,6 +29,7 @@ class ToolQuestion extends Model
         'help_text',
         'tool_question_type_id',
         'save_in',
+        'for_specific_input_source_id',
         'unit_of_measure',
         'options',
         'validation',
@@ -74,6 +75,10 @@ class ToolQuestion extends Model
         return $this->hasMany(ToolQuestionCustomValue::class);
     }
 
+    public function forSpecificInputSource(): BelongsTo
+    {
+        return $this->belongsTo(InputSource::class);
+    }
 
     /**
      * Method to return the question values  (morphed models / the options for the question)

@@ -30,13 +30,14 @@
     @endif
 
 
-    <button type="button"
+    <button type="button" x-data
             {{-- Because a questionnaire is simply saved using an old school controller, we update the action, which
             will handle redirecting us correctly to the questionnaire... TODO: Refactor this, no time for it now --}}
             @if(\App\Helpers\Blade\RouteLogic::inQuestionnaire(Route::currentRouteName()))
-            x-data x-on:click="let form = document.querySelector('#questionnaire-form-{{$questionnaire->id}}'); let action = form.getAttribute('action'); action += '?nextUrl={{$nextUrl}}'; form.setAttribute('action', action); form.submit();"
+            x-on:click="$el.setAttribute('disabled', true); let form = document.querySelector('#questionnaire-form-{{$questionnaire->id}}'); let action = form.getAttribute('action'); action += '?nextUrl={{$nextUrl}}'; form.setAttribute('action', action); form.submit();"
             @else
             wire:click="$emitTo('cooperation.frontend.tool.quick-scan.form', 'save', '{{$nextUrl}}')"
+            x-on:click="$el.setAttribute('disabled', true);"
             @endif
             class="btn btn-purple flex items-center ml-1">
         @lang('cooperation/frontend/shared.defaults.next')

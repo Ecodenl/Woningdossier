@@ -18,6 +18,7 @@ use App\Models\Role;
 use App\Models\Step;
 use App\Models\User;
 use App\Scopes\GetValueScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class CsvService
@@ -84,21 +85,22 @@ class CsvService
         // new array for the userdata
         $rows = [];
 
-        $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
-        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+//        $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+//        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+        $inputSourceForDump = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-        $generalDataStep = Step::findByShort('general-data');
+        //$generalDataStep = Step::findByShort('general-data');
         foreach ($users as $key => $user) {
             // for each user reset the input source back to the base input source.
-            $inputSourceForDump = $inputSource;
+            //$inputSourceForDump = $inputSource;
 
             // well in every case there is an exception on the rule
             // normally we would pick the given input source
             // but when coach input is available we use the coach input source for that particular user
             // coach input is available when he has completed the general data step
-            if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
-                $inputSourceForDump = $coachInputSource;
-            }
+//            if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
+//                $inputSourceForDump = $coachInputSource;
+//            }
 
             /** @var Building $building */
             $building = $user->building;
@@ -162,8 +164,10 @@ class CsvService
             $userActionPlanAdvices = $user
                 ->actionPlanAdvices()
                 ->forInputSource($inputSourceForDump)
-                ->leftJoin('measure_applications', 'user_action_plan_advices.measure_application_id', '=', 'measure_applications.id')
+                //->leftJoin('measure_applications', 'user_action_plan_advices.measure_application_id', '=', 'measure_applications.id')
+                ->leftJoin('measure_applications', 'user_action_plan_advices.user_action_plan_advisable_id', '=', 'measure_applications.id')
                 ->leftJoin('steps', 'measure_applications.step_id', '=', 'steps.id')
+                ->where('user_action_plan_advices.user_action_plan_advisable_type', '=', MeasureApplication::class)
                 ->orderBy('steps.order')
                 ->orderBy('measure_applications.measure_type')
                 ->select(['user_action_plan_advices.*'])
@@ -196,7 +200,7 @@ class CsvService
     {
         if ($anonymize) {
             return [
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
+                //__('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.allow-access'),
@@ -208,7 +212,7 @@ class CsvService
             ];
         } else {
             return [
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
+                //__('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
 
@@ -238,9 +242,11 @@ class CsvService
     {
         $cooperation = $questionnaire->cooperation;
         $rows = [];
-        $residentRole = Role::findByName('resident');
+//        $residentRole = Role::findByName('resident');
+//
+//        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
-        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+        $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         $headers = self::getBaseHeaders($anonymize);
 
@@ -254,15 +260,15 @@ class CsvService
          */
         foreach ($users as $user) {
             // reset it for each user.
-            $inputSource = $residentRole->inputSource;
+            //$inputSource = $residentRole->inputSource;
             $building = $user->building;
             if ($building instanceof Building) {
                 // normally we would pick the given input source
                 // but when coach input is available we use the coach input source for that particular user
                 // coach input is available when he has completed the questionnaire
-                if ($user->hasCompletedQuestionnaire($questionnaire, $coachInputSource)) {
-                    $inputSource = $coachInputSource;
-                }
+//                if ($user->hasCompletedQuestionnaire($questionnaire, $coachInputSource)) {
+//                    $inputSource = $coachInputSource;
+//                }
 
                 /** @var Collection $conversationRequestsForBuilding */
                 $createdAt = optional($user->created_at)->format('Y-m-d');
@@ -289,7 +295,7 @@ class CsvService
                 $city = $building->city;
                 $postalCode = $building->postal_code;
 
-                // get the building features from the resident
+                // get the building features from the master input source
                 $buildingFeatures = $building
                     ->buildingFeatures()
                     ->forInputSource($inputSource)
@@ -301,12 +307,12 @@ class CsvService
                 // set the personal user info only if the user has question answers.
                 if ($anonymize) {
                     $rows[$building->id] = [
-                        $inputSource->name, $createdAt, $buildingStatus, $allowAccess, $postalCode, $city,
+                        $createdAt, $buildingStatus, $allowAccess, $postalCode, $city,
                         $buildingType, $buildYear,
                     ];
                 } else {
                     $rows[$building->id] = [
-                        $inputSource->name, $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
+                        $createdAt, $buildingStatus, $allowAccess, $connectedCoachNames,
                         $firstName, $lastName, $email, $phoneNumber,
                         $street, trim($number.' '.$extension), $postalCode, $city,
                         $buildingType, $buildYear,
@@ -378,44 +384,56 @@ class CsvService
      */
     public static function totalReport(Cooperation $cooperation, bool $anonymized): array
     {
-        $generalDataStep = Step::findByShort('general-data');
-        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+        //$generalDataStep = Step::findByShort('general-data');
+        // General data is replaced by 4 steps. All 4 should be filled, but
+        // this cannot be easily queried like so. Therefor, we take the last
+        // step (if filled, it's most likely the quick scan has been completed)
+        // to perform the first filtering.
 
-        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        // We double check quick scan completion later on.
+        $lastQuickScanStep = Step::findByShort('residential-status');
 
-        // Get all users with a building and the general data completed step
+        //$coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+
+        //$residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
+        // Get all users with a building and who have completed the quick scan
+        // steps
         $users = $cooperation->users()
-            ->whereHas('building', function ($query) use ($generalDataStep) {
-                $query->withoutGlobalScope(GetValueScope::class);
-            })
-            ->with(['building' => function ($query) use ($generalDataStep) {
-                $query->withoutGlobalScope(GetValueScope::class)
-                    ->with(['completedSteps' => function ($query) use ($generalDataStep) {
-                        $query->withoutGlobalScope(GetValueScope::class)
-                            ->where('step_id', $generalDataStep->id);
+            ->whereHas('building')
+            ->with(['building' => function ($query) use ($lastQuickScanStep, $masterInputSource) {
+                    $query->with(['completedSteps' => function ($query) use ($lastQuickScanStep, $masterInputSource) {
+                        $query->withoutGlobalScope(GetValueScope::class)->where('input_source_id', '=', $masterInputSource)
+                            ->where('step_id', $lastQuickScanStep->id);
                     }]);
             }])->get();
 
-        $coachIds = [];
-        $residentIds = [];
-        // We first check each user
-        foreach ($users as $user) {
-            // we eager loaded the completed steps from the coach, so if its not empty we use that
-            if ($user->building->completedSteps->contains('input_source_id', $coachInputSource->id)) {
-                $coachIds[] = $user->id;
-            } else {
-                $residentIds[] = $user->id;
-            }
-        }
+        $users = $users->filter(fn($u) => $u->building->hasCompletedQuickScan());
 
-        // We separate users based on ID and eager load the collection with most relations;
-        $residents = UserService::eagerLoadUserData($users->whereIn('id', $residentIds), $residentInputSource);
-        $coaches = UserService::eagerLoadUserData($users->whereIn('id', $coachIds), $coachInputSource);
+//        $coachIds = [];
+//        $residentIds = [];
+//        // We first check each user
+//        foreach ($users as $user) {
+//            // we eager loaded the completed steps from the coach, so if its not empty we use that
+//            if ($user->building->completedSteps->contains('input_source_id', $coachInputSource->id)) {
+//                $coachIds[] = $user->id;
+//            } else {
+//                $residentIds[] = $user->id;
+//            }
+//        }
+//
+//        // We separate users based on ID and eager load the collection with most relations;
+//        $residents = UserService::eagerLoadUserData($users->whereIn('id', $residentIds), $residentInputSource);
+//        $coaches = UserService::eagerLoadUserData($users->whereIn('id', $coachIds), $coachInputSource);
+
+        $users = UserService::eagerLoadUserData($users, $masterInputSource);
 
         $headers = DumpService::getStructureForTotalDumpService($anonymized);
 
         // Then we merge
-        $users = $residents->merge($coaches);
+        //$users = $residents->merge($coaches);
         $rows[] = $headers;
 
         /**
@@ -426,7 +444,8 @@ class CsvService
         foreach ($users as $user) {
             // A user that's within this dump will always have a building, a user without a building within this application is like a fish without its water.
             // but sometimes a building does not have any building features, so in that case we will default to the resident its input source
-            $inputSource = $user->building->buildingFeatures->inputSource ?? $residentInputSource;
+            //$inputSource = $user->building->buildingFeatures->inputSource ?? $residentInputSource;
+            $inputSource = $masterInputSource;
 
             $rows[$user->building->id] = DumpService::totalDump($headers, $cooperation, $user, $inputSource, $anonymized, false)['user-data'];
         }

@@ -158676,6 +158676,7 @@ p a, a.in-text {
 
 textarea.form-input {
   height: 8rem;
+  resize: none;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   line-height: 24px;

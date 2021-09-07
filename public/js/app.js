@@ -34098,9 +34098,9 @@ __webpack_require__.r(__webpack_exports__);
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /* harmony default export */ __webpack_exports__["default"] = (function () {
-  var _container, _draggable;
+  var _container, _draggable, _trash;
 
-  var supportedClasses = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ['card-wrapper'];
+  var supportedClasses = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ['card-wrapper', 'trash'];
   var hoverColor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'rgba(100, 117, 133, 0.2)';
   var defaultClass = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'card';
   var placeholderClass = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'card-placeholder';
@@ -34117,6 +34117,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     placeholderClass: placeholderClass,
     supportedClasses: supportedClasses,
     ghost: null,
+    hoverColor: hoverColor,
+    trashColor: 'rgba(228, 20, 64, 0.3)',
     container: (_container = {}, _defineProperty(_container, 'x-on:drop.prevent', function xOnDropPrevent() {
       if (null !== this.dragged) {
         var eventTarget = this.$event.target;
@@ -34143,7 +34145,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
                 ghostParentElement.replaceChild(this.dragged, ghost); // Dispatch the dropped position
 
-                var event = new CustomEvent('item-dragged', {
+                var event = new CustomEvent('draggable-dragged', {
                   detail: {
                     from: parentElement,
                     to: target,
@@ -34215,7 +34217,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         var target = this.getSupportedTarget(eventTarget);
 
         if (null !== target) {
-          target.style.backgroundColor = hoverColor;
+          target.style.backgroundColor = this.hoverColor;
         }
       }
     }), _defineProperty(_container, 'x-on:dragleave', function xOnDragleave() {
@@ -34250,6 +34252,49 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.dragged = null;
       this.draggedOrder = -1;
     }), _draggable),
+    trash: (_trash = {}, _defineProperty(_trash, 'x-on:dragenter.prevent', function xOnDragenterPrevent() {
+      if (null !== this.dragged) {
+        var eventTarget = this.$event.target;
+        this.lastEntered = eventTarget;
+        var target = this.getSupportedTarget(eventTarget);
+
+        if (null !== target) {
+          target.style.backgroundColor = this.trashColor;
+          target.style.transform = 'scale(1.2)';
+        }
+      }
+    }), _defineProperty(_trash, 'x-on:dragleave', function xOnDragleave() {
+      if (null !== this.dragged) {
+        var eventTarget = this.$event.target;
+        var target = this.getSupportedTarget(eventTarget); // Enter triggers before leave. We check the last element that we entered. If it's not set, then we left
+        // the container and it should be reset
+
+        if (null !== target && null === this.lastEntered) {
+          target.style.backgroundColor = '';
+          target.style.transform = 'scale(1)';
+        }
+
+        this.lastEntered = null;
+      }
+    }), _defineProperty(_trash, 'x-on:dragover.prevent', function xOnDragoverPrevent() {// This needs to be prevented, else drop doesn't work
+    }), _defineProperty(_trash, 'x-on:drop.prevent', function xOnDropPrevent() {
+      if (null !== this.dragged) {
+        var eventTarget = this.$event.target;
+        var target = this.getSupportedTarget(eventTarget);
+        var parentElement = this.dragged.parentElement; // Remove dragged item from original parent
+
+        parentElement.removeChild(this.dragged); // Dispatch the item was removed position
+
+        var event = new CustomEvent('draggable-trashed', {
+          detail: {
+            from: parentElement,
+            id: this.dragged.id
+          },
+          bubbles: true
+        });
+        dispatchEvent(event);
+      }
+    }), _trash),
     getSupportedTarget: function getSupportedTarget(element) {
       var target = null;
       var supportedClasses = this.supportedClasses;

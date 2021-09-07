@@ -1,4 +1,4 @@
-export default (supportedClasses = ['card-wrapper'], hoverColor = 'rgba(100, 117, 133, 0.2)', defaultClass = 'card', placeholderClass = 'card-placeholder') => ({
+export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba(100, 117, 133, 0.2)', defaultClass = 'card', placeholderClass = 'card-placeholder') => ({
     // Docs: use supportedClasses to define classes in which elements can be dropped
     // Supported classes should be PARENT classes.
     // Define hoverColor for the background color that gets used when hovering over supported classes
@@ -11,6 +11,8 @@ export default (supportedClasses = ['card-wrapper'], hoverColor = 'rgba(100, 117
     placeholderClass: placeholderClass,
     supportedClasses: supportedClasses,
     ghost: null,
+    hoverColor: hoverColor,
+    trashColor: 'rgba(228, 20, 64, 0.3)',
 
     container: {
         ['x-on:drop.prevent']() {
@@ -45,7 +47,7 @@ export default (supportedClasses = ['card-wrapper'], hoverColor = 'rgba(100, 117
                                 ghostParentElement.replaceChild(this.dragged, ghost);
 
                                 // Dispatch the dropped position
-                                let event = new CustomEvent('item-dragged', {
+                                let event = new CustomEvent('draggable-dragged', {
                                     detail: {
                                         from: parentElement,
                                         to: target,
@@ -126,7 +128,7 @@ export default (supportedClasses = ['card-wrapper'], hoverColor = 'rgba(100, 117
                 let target = this.getSupportedTarget(eventTarget);
 
                 if (null !== target) {
-                    target.style.backgroundColor = hoverColor;
+                    target.style.backgroundColor = this.hoverColor;
                 }
             }
         },
@@ -168,6 +170,58 @@ export default (supportedClasses = ['card-wrapper'], hoverColor = 'rgba(100, 117
             this.dragged = null;
             this.draggedOrder = -1;
         }
+    },
+    trash: {
+        ['x-on:dragenter.prevent']() {
+            if (null !== this.dragged) {
+                let eventTarget = this.$event.target;
+                this.lastEntered = eventTarget;
+                let target = this.getSupportedTarget(eventTarget);
+
+                if (null !== target) {
+                    target.style.backgroundColor = this.trashColor;
+                    target.style.transform = 'scale(1.2)';
+                }
+            }
+        },
+        ['x-on:dragleave']() {
+            if (null !== this.dragged) {
+                let eventTarget = this.$event.target;
+                let target = this.getSupportedTarget(eventTarget);
+
+                // Enter triggers before leave. We check the last element that we entered. If it's not set, then we left
+                // the container and it should be reset
+                if (null !== target && null === this.lastEntered) {
+                    target.style.backgroundColor = '';
+                    target.style.transform = 'scale(1)';
+                }
+
+                this.lastEntered = null
+            }
+        },
+        ['x-on:dragover.prevent']() {
+            // This needs to be prevented, else drop doesn't work
+        },
+        ['x-on:drop.prevent']() {
+            if (null !== this.dragged) {
+                let eventTarget = this.$event.target;
+                let target = this.getSupportedTarget(eventTarget);
+
+                let parentElement = this.dragged.parentElement;
+                // Remove dragged item from original parent
+                parentElement.removeChild(this.dragged);
+
+                // Dispatch the item was removed position
+                let event = new CustomEvent('draggable-trashed', {
+                    detail: {
+                        from: parentElement,
+                        id: this.dragged.id,
+                    },
+                    bubbles: true,
+                });
+                dispatchEvent(event);
+            }
+        },
     },
     getSupportedTarget(element) {
         let target = null;

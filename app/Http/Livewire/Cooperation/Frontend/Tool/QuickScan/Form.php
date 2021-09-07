@@ -168,6 +168,13 @@ class Form extends Component
 
     public function save($nextUrl)
     {
+        // Before we can validate (and save), we must reset the formatting from text to mathable
+        foreach ($this->toolQuestions as $toolQuestion) {
+            if ($toolQuestion->toolQuestionType->short === 'text') {
+                $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::mathableFormat($this->filledInAnswers[$toolQuestion->id], 2);
+            }
+        }
+
         if (!empty($this->rules)) {
             $validator = Validator::make([
                 'filledInAnswers' => $this->filledInAnswers
@@ -183,6 +190,13 @@ class Form extends Component
             }
 
             if ($validator->fails()) {
+                // Validator failed, let's put it back as the user format
+                foreach ($this->toolQuestions as $toolQuestion) {
+                    if ($toolQuestion->toolQuestionType->short === 'text') {
+                        $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::format($this->filledInAnswers[$toolQuestion->id], 1);
+                    }
+                }
+
                 $this->setToolQuestions();
             }
 
@@ -280,6 +294,14 @@ class Form extends Component
                     $this->attributes["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->name;
                     break;
                 default:
+                    // Check if question type is text, so we can format it if it's numeric
+                    if ($toolQuestion->toolQuestionType->short === 'text') {
+                        // It is text, so let's check if it's numeric, so we can format
+                        if (\App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
+                            $answerForInputSource = NumberFormatter::format($answerForInputSource, 1);
+                        }
+                    }
+
                     $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
                     $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                     break;

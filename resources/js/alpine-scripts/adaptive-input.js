@@ -1,10 +1,15 @@
-export default () => ({
+export default (defaultHeight = 0) => ({
+    defaultHeight: defaultHeight,
 
     init() {
         document.addEventListener('DOMContentLoaded', () => {
             // Set height on init
             this.setHeight(this.$refs['typable']);
         });
+
+        if (isNaN(this.defaultHeight)) {
+            this.defaultHeight = 0;
+        }
     },
     typable: {
         ['x-ref']: 'typable',
@@ -21,6 +26,6 @@ export default () => ({
         element.style.height = 0;
 
         // Set new height
-        element.style.height = element.scrollHeight + diff + 'px';
+        element.style.height = Math.max(this.defaultHeight, element.scrollHeight + diff) + 'px';
     }
 });

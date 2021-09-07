@@ -230,7 +230,8 @@
             ])
         </div>
     </div>
-    <div class="w-full flex flex-wrap bg-blue-100 pb-8 px-3 lg:px-8" x-data="adaptiveInputs">
+    <div class="w-full flex flex-wrap bg-blue-100 pb-8 px-3 lg:px-8"
+         x-data="adaptiveInputs(128)" {{-- 128px === 8rem, default height for textareas --}}>
         @php
             $disableResident = $currentInputSource->short !== $residentInputSource->short;
             $disableCoach = $currentInputSource->short !== $coachInputSource->short;

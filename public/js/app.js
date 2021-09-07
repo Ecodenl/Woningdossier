@@ -33987,7 +33987,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 /* harmony default export */ __webpack_exports__["default"] = (function () {
   var _typable;
 
+  var defaultHeight = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
   return {
+    defaultHeight: defaultHeight,
     init: function init() {
       var _this = this;
 
@@ -33995,6 +33997,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         // Set height on init
         _this.setHeight(_this.$refs['typable']);
       });
+
+      if (isNaN(this.defaultHeight)) {
+        this.defaultHeight = 0;
+      }
     },
     typable: (_typable = {}, _defineProperty(_typable, 'x-ref', 'typable'), _defineProperty(_typable, 'x-on:input', function xOnInput() {
       this.setHeight(this.$el);
@@ -34006,7 +34012,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       element.style.height = 0; // Set new height
 
-      element.style.height = element.scrollHeight + diff + 'px';
+      element.style.height = Math.max(this.defaultHeight, element.scrollHeight + diff) + 'px';
     }
   };
 });

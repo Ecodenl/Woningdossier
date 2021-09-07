@@ -157965,7 +157965,7 @@ hr {
 
 /* Paragraph */
 
-p {
+p, .as-text {
   font-size: 14px;
   line-height: 24px;
   font-weight: 300;

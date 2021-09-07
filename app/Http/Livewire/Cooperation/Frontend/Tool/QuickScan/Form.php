@@ -170,8 +170,8 @@ class Form extends Component
     {
         // Before we can validate (and save), we must reset the formatting from text to mathable
         foreach ($this->toolQuestions as $toolQuestion) {
-            if ($toolQuestion->toolQuestionType->short === 'text') {
-                $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::mathableFormat($this->filledInAnswers[$toolQuestion->id], 2);
+            if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric') && ! \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer')) {
+                $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::mathableFormat(str_replace('.', '', $this->filledInAnswers[$toolQuestion->id]), 2);
             }
         }
 
@@ -192,8 +192,12 @@ class Form extends Component
             if ($validator->fails()) {
                 // Validator failed, let's put it back as the user format
                 foreach ($this->toolQuestions as $toolQuestion) {
-                    if ($toolQuestion->toolQuestionType->short === 'text') {
-                        $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::format($this->filledInAnswers[$toolQuestion->id], 1);
+                    if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
+                        $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
+                        $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::format($this->filledInAnswers[$toolQuestion->id], $isInteger ? 0 : 1);
+                        if ($isInteger) {
+                            $this->filledInAnswers[$toolQuestion->id] = str_replace('.', '', $this->filledInAnswers[$toolQuestion->id]);
+                        }
                     }
                 }
 
@@ -295,10 +299,11 @@ class Form extends Component
                     break;
                 default:
                     // Check if question type is text, so we can format it if it's numeric
-                    if ($toolQuestion->toolQuestionType->short === 'text') {
-                        // It is text, so let's check if it's numeric, so we can format
-                        if (\App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
-                            $answerForInputSource = NumberFormatter::format($answerForInputSource, 1);
+                    if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
+                        $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
+                        $answerForInputSource = NumberFormatter::format($answerForInputSource, $isInteger ? 0 : 1);
+                        if ($isInteger) {
+                            $answerForInputSource = str_replace('.', '', $answerForInputSource);
                         }
                     }
 

@@ -1187,7 +1187,7 @@ class AddQuestionsToDatabase extends Command
                             ],
                         ],
                         [
-                            'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'min:1', 'max:50'],
+                            'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'integer', 'min:1', 'max:50'],
                             'save_in' => "building_pv_panels.number",
                             'short' => 'solar-panel-count',
                             // was current-state -> hoeveel zonnepanelen zijn er aanwezig
@@ -1224,6 +1224,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => [
                                 'nullable',
                                 'numeric',
+                                'integer',
                                 'between:1900,' . date('Y')
                             ],
                             'save_in' => "building_services.{$solarPanels->id}.extra.year",

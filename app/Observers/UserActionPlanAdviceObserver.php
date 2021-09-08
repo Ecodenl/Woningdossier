@@ -52,10 +52,14 @@ class UserActionPlanAdviceObserver
         }
 
         if (! $userActionPlanAdvice->isDirty('visible')) {
-            $userActionPlanAdvice->visible = true;
+            // Visibility isn't set. Let's define it
+
+            UserActionPlanAdviceService::setAdviceVisibility($userActionPlanAdvice);
         }
         if (! $userActionPlanAdvice->isDirty('category') || is_null($userActionPlanAdvice->category)) {
-            $userActionPlanAdvice->category = UserActionPlanAdviceService::CATEGORY_TO_DO;
+            // Category isn't set. Let's define it.
+
+            UserActionPlanAdviceService::setAdviceCategory($userActionPlanAdvice);
         }
     }
 }

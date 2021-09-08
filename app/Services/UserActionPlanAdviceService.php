@@ -7,6 +7,7 @@ use App\Helpers\Number;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Models\InputSource;
+use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\RoofType;
 use App\Models\Step;
@@ -17,6 +18,7 @@ use App\Scopes\GetValueScope;
 use App\Scopes\VisibleScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserActionPlanAdviceService
 {
@@ -406,7 +408,7 @@ class UserActionPlanAdviceService
     /**
      * Set properties from old advices on another advice
      *
-     * @param  \App\Models\UserActionPlanAdvice  $advice
+     * @param  \App\Models\UserActionPlanAdvice  $userActionPlanAdvice
      * @param  \App\Models\MeasureApplication  $measureApplication
      * @param  \Illuminate\Database\Eloquent\Collection  $oldAdvices
      */
@@ -420,5 +422,101 @@ class UserActionPlanAdviceService
             $userActionPlanAdvice->visible = $oldAdvice->visible;
             $userActionPlanAdvice->order = $oldAdvice->order;
         }
+    }
+
+    /**
+     * Set the visibility of a user action plan advice
+     *
+     * @param  \App\Models\UserActionPlanAdvice  $userActionPlanAdvice
+     */
+    public static function setAdviceVisibility(UserActionPlanAdvice $userActionPlanAdvice)
+    {
+        // It's always going to be visible by default. Further logic follows.
+        $visible = true;
+
+        $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
+
+        if ($advisable instanceof MeasureApplication) {
+            // Interest map based on calculate_value
+            $interestMap = [
+                1 => true,
+                2 => true,
+                3 => true,
+                4 => false,
+                5 => true,
+            ];
+            // Define visible based on example building interest if available
+            $interest = static::getExampleBuildingInterestForMeasure($userActionPlanAdvice->user, $advisable);
+            if ($interest instanceof Interest) {
+                $visible = $interestMap[$interest->calculate_value];
+            } elseif ($advisable->measure_type === MeasureApplication::MAINTENANCE) {
+                // Else if it's maintenance, change logic. We never show maintenance, with 2 exceptions (of course...)
+                $visible = false;
+
+                $shorts = ['replace-tiles', 'replace-roof-insulation'];
+
+                // Logic is simple for these 2 exceptions. If it's within 5 years, then we _do_ show it
+                if (in_array($advisable->short, $shorts) && ! is_null($userActionPlanAdvice->year)) {
+                    $visible = $userActionPlanAdvice->year - now()->format('Y') <= 5;
+                }
+            }
+        }
+
+        $userActionPlanAdvice->visible = $visible;
+    }
+
+    /**
+     * Set the category of a user action plan advice
+     *
+     * @param  \App\Models\UserActionPlanAdvice  $userActionPlanAdvice
+     */
+    public static function setAdviceCategory(UserActionPlanAdvice $userActionPlanAdvice)
+    {
+        // The logic for a category is a bit more complex than visibility. We define to-do as default
+        $category = static::CATEGORY_TO_DO;
+
+        $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
+
+        if ($advisable instanceof MeasureApplication) {
+            // Interest map based on calculate_value
+            $interestMap = [
+                1 => static::CATEGORY_TO_DO,
+                2 => static::CATEGORY_LATER,
+                3 => static::CATEGORY_LATER,
+                4 => static::CATEGORY_COMPLETE, // Shouldn't be visible
+                5 => static::CATEGORY_COMPLETE,
+            ];
+
+            // Define category based on example building interest if available
+            $interest = static::getExampleBuildingInterestForMeasure($userActionPlanAdvice->user, $advisable);
+            if ($interest instanceof Interest) {
+                $category = $interestMap[$interest->calculate_value];
+            } else {
+                 // No interest defined. We need to check if the measure is available for the user...
+
+                // TODO: Map measure to user context.
+            }
+        }
+
+        $userActionPlanAdvice->category = $category;
+    }
+
+    public static function getExampleBuildingInterestForMeasure(User $user, MeasureApplication $measureApplication)
+    {
+        // Let's get the example building input source. We need this for interests
+        $exampleBuildingInputSource = InputSource::findByShort(InputSource::EXAMPLE_BUILDING);
+
+        $userInterest = UserInterest::forInputSource($exampleBuildingInputSource)
+            ->where('user_id', $user->id)
+            ->has('interest')
+            ->whereHasMorph('interestedIn',
+                MeasureApplication::class,
+                function (Builder $query) use ($measureApplication) {
+                    $query->where('id', $measureApplication->id);
+                }
+            )
+            ->first();
+
+        return optional($userInterest)->interest;
     }
 }

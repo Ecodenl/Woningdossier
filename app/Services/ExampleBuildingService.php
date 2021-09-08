@@ -17,6 +17,7 @@ use App\Models\Service;
 use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use App\Models\UserInterest;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
@@ -488,8 +489,16 @@ class ExampleBuildingService
                                 $interestId = $interest['interest_id'] ?? null;
 
                                 if (!is_null($interestId)){
-                                    self::log("Setting interest ");
-
+                                    self::log("Building " . $building->id . " Setting interest for user " . $building->user->id . " for " . $modelClass . " (" . $id . ") to " . $interestId);
+                                    $userInterest = new UserInterest([
+                                        'input_source_id' => $inputSource->id,
+                                        'interested_in_type' => $modelClass,
+                                        'interested_in_id' => $id,
+                                        'interest_id' => $interestId,
+                                    ]);
+                                    $building->user->userInterests()
+                                                   ->allInputSources()
+                                                   ->save($userInterest);
                                 }
                             }
                         }

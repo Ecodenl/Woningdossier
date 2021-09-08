@@ -77,7 +77,8 @@ class UserActionPlanAdviceService
         $measureApplication = $userActionPlanAdvice->userActionPlanAdvisable;
 
         // set the default user interest on the step.
-        $userInterest = $buildingOwner->userInterestsForSpecificType(get_class($step), $step->id)->with('interest')->first();
+        $userInterest = $buildingOwner->userInterestsForSpecificType(get_class($step),
+            $step->id)->with('interest')->first();
 
         // try to obtain a specific interest on the measure application
         $userInterestOnMeasureApplication = $buildingOwner
@@ -168,7 +169,8 @@ class UserActionPlanAdviceService
                         }
 
                         if ('ntb.' !== $savingsMoney) {
-                            $savingsMoney = is_null($advice->savings_money) ? 0 : NumberFormatter::round(Calculator::indexCosts($advice->savings_money, $costYear));
+                            $savingsMoney = is_null($advice->savings_money) ? 0 : NumberFormatter::round(Calculator::indexCosts($advice->savings_money,
+                                $costYear));
                             $savingsMoney = Number::isNegative($savingsMoney) ? 0 : $savingsMoney;
                         }
 
@@ -187,9 +189,11 @@ class UserActionPlanAdviceService
                             'advice_id' => $advice->id,
                             'warning' => $advice->warning,
                             'measure' => $advice->userActionPlanAdvisable->measure_name,
-                            'measure_short' => $advice->userActionPlanAdvisable->short,                    // In the table the costs are indexed based on the advice year
+                            'measure_short' => $advice->userActionPlanAdvisable->short,
+                            // In the table the costs are indexed based on the advice year
                             // Now re-index costs based on user planned year in the personal plan
-                            'costs' => NumberFormatter::round(Calculator::indexCosts($advice->costs['from'] ?? 0, $costYear)),
+                            'costs' => NumberFormatter::round(Calculator::indexCosts($advice->costs['from'] ?? 0,
+                                $costYear)),
                             'savings_gas' => Number::isNegative($savingsGas) ? 0 : $savingsGas,
                             'savings_electricity' => Number::isNegative($savingsElectricity) ? 0 : $savingsElectricity,
                             'savings_money' => $savingsMoney,
@@ -206,7 +210,8 @@ class UserActionPlanAdviceService
 
     /**
      * Check if can return the savings money or have to return "ntb."
-     * We do this when the selected insulation is "Matige isolatie (tot 8 cm isolatie)" or higher also known als calculate_value >= 3.
+     * We do this when the selected insulation is "Matige isolatie (tot 8 cm isolatie)" or higher also known als
+     * calculate_value >= 3.
      *
      * @param $savingsMoney
      *
@@ -220,7 +225,9 @@ class UserActionPlanAdviceService
         if ('roof-insulation' == $step->short) {
             // the energy saving measure application shorts.
             $flatRoofMeasureApplications = ['roof-insulation-flat-replace-current', 'roof-insulation-flat-current'];
-            $pitchedRoofMeasureApplications = ['roof-insulation-pitched-replace-tiles', 'roof-insulation-pitched-inside'];
+            $pitchedRoofMeasureApplications = [
+                'roof-insulation-pitched-replace-tiles', 'roof-insulation-pitched-inside',
+            ];
 
             // check the current advice its measure application, this way we can determine which roofType we have to check
             if (in_array($advice->userActionPlanAdvisable->short, $pitchedRoofMeasureApplications)) {
@@ -231,7 +238,8 @@ class UserActionPlanAdviceService
             }
 
             // get the right matching roof type.
-            $buildingRoofType = $user->building->roofTypes()->forInputSource($advice->inputSource)->where('roof_type_id', $roofType->id)->first();
+            $buildingRoofType = $user->building->roofTypes()->forInputSource($advice->inputSource)->where('roof_type_id',
+                $roofType->id)->first();
 
             if ($buildingRoofType->elementValue->calculate_value >= 3) {
                 $savingsMoney = 'ntb.';
@@ -239,7 +247,9 @@ class UserActionPlanAdviceService
         } elseif (in_array($step->short, ['floor-insulation', 'wall-insulation'])) {
             $elementShort = array_search($step->short, StepHelper::ELEMENT_TO_SHORT);
 
-            if (optional($user->building->getBuildingElement($elementShort, $advice->inputSource)->elementValue)->calculate_value >= 3) {
+            if (optional($user->building->getBuildingElement($elementShort,
+                    $advice->inputSource)->elementValue)->calculate_value >= 3
+            ) {
                 $savingsMoney = 'ntb.';
             }
         }
@@ -250,7 +260,7 @@ class UserActionPlanAdviceService
     /**
      * Get the action plan categorized under measure type.
      *
-     * @param bool $withAdvices
+     * @param  bool  $withAdvices
      *
      * @return array
      */
@@ -354,7 +364,7 @@ class UserActionPlanAdviceService
                     // set warning
                     $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = static::getWarning('roof-insulation.check-order');
                     $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] = static::getWarning('roof-insulation.check-order');
-                // both were planned, so check whether the planned year is the same
+                    // both were planned, so check whether the planned year is the same
                 } elseif ($energySavingRoofInsulationFlatReplaceCurrentYear !== $maintenanceReplaceRoofInsulationYear) {
                     // set warning
                     $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = static::getWarning('roof-insulation.planned-year');
@@ -370,7 +380,7 @@ class UserActionPlanAdviceService
                     // set warning
                     $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = static::getWarning('roof-insulation.check-order');
                     $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = static::getWarning('roof-insulation.check-order');
-                // both were planned, so check whether the planned year is the same
+                    // both were planned, so check whether the planned year is the same
                 } elseif ($energySavingRoofInsulationPitchedReplaceTilesYear !== $maintenanceReplaceTilesYear) {
                     // set warning
                     $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = static::getWarning('roof-insulation.planned-year');
@@ -400,15 +410,15 @@ class UserActionPlanAdviceService
      * @param  \App\Models\MeasureApplication  $measureApplication
      * @param  \Illuminate\Database\Eloquent\Collection  $oldAdvices
      */
-    public static function checkOldAdvices(UserActionPlanAdvice $advice, MeasureApplication $measureApplication, Collection $oldAdvices)
+    public static function checkOldAdvices(UserActionPlanAdvice $userActionPlanAdvice, MeasureApplication $measureApplication, Collection $oldAdvices)
     {
         $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
             ->where('user_action_plan_advisable_id', '=', $measureApplication->id)->first();
         // This measure was set before. We ensure they stay
         if ($oldAdvice instanceof UserActionPlanAdvice) {
-            $advice->category = $oldAdvice->category;
-            $advice->visible = $oldAdvice->visible;
-            $advice->order = $oldAdvice->order;
+            $userActionPlanAdvice->category = $oldAdvice->category;
+            $userActionPlanAdvice->visible = $oldAdvice->visible;
+            $userActionPlanAdvice->order = $oldAdvice->order;
         }
     }
 }

@@ -1348,7 +1348,7 @@ class ToolHelper
                 'options' => $interestOptions,
             ];
         }
-//dd($structure);
+
         // when a content key is set, we will try to retrieve the specific content from the structure.
         if (!is_null($contentKey)) {
             $contentKeyData = explode('.', $contentKey, 3);

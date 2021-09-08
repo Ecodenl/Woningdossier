@@ -6,19 +6,15 @@ use App\Helpers\FileFormats\CsvHelper;
 use App\Helpers\NumberFormatter;
 use App\Helpers\Translation;
 use App\Models\Building;
-use App\Models\BuildingCoachStatus;
-use App\Models\BuildingFeature;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\Question;
 use App\Models\Questionnaire;
 use App\Models\QuestionOption;
-use App\Models\Role;
 use App\Models\Step;
 use App\Models\User;
 use App\Scopes\GetValueScope;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -37,7 +33,6 @@ class CsvService
 
         if ($anonymize) {
             $csvHeaders = [
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
 
@@ -49,7 +44,6 @@ class CsvService
             ];
         } else {
             $csvHeaders = [
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.coach-appointment-date'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
@@ -86,23 +80,10 @@ class CsvService
         // new array for the userdata
         $rows = [];
 
-//        $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
-//        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
         $inputSourceForDump = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         //$generalDataStep = Step::findByShort('general-data');
         foreach ($users as $key => $user) {
-            // for each user reset the input source back to the base input source.
-            //$inputSourceForDump = $inputSource;
-
-            // well in every case there is an exception on the rule
-            // normally we would pick the given input source
-            // but when coach input is available we use the coach input source for that particular user
-            // coach input is available when he has completed the general data step
-//            if ($user->building->hasCompleted($generalDataStep, $coachInputSource)) {
-//                $inputSourceForDump = $coachInputSource;
-//            }
-
             /** @var Building $building */
             $building = $user->building;
 
@@ -143,13 +124,13 @@ class CsvService
             if ($anonymize) {
                 // set the personal userinfo
                 $row[$key] = [
-                    $inputSourceForDump->name, $createdAt, $buildingStatus, $postalCode, $city,
+                    $createdAt, $buildingStatus, $postalCode, $city,
                     $buildingType, $buildYear, $exampleBuilding,
                 ];
             } else {
                 // set the personal userinfo
                 $row[$key] = [
-                    $inputSourceForDump->name, $createdAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
+                    $createdAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
                     $firstName, $lastName, $email, $phoneNumber,
                     $street, trim($number.' '.$extension), $postalCode, $city,
                     $buildingType, $buildYear, $exampleBuilding,
@@ -164,6 +145,7 @@ class CsvService
             // get the action plan advices for the user, but only for the resident his input source
             $userActionPlanAdvices = $user
                 ->actionPlanAdvices()
+                //->withoutGlobalScope(VisibleScope::class)
                 ->forInputSource($inputSourceForDump)
                 //->leftJoin('measure_applications', 'user_action_plan_advices.measure_application_id', '=', 'measure_applications.id')
                 ->leftJoin('measure_applications', 'user_action_plan_advices.user_action_plan_advisable_id', '=', 'measure_applications.id')
@@ -179,14 +161,12 @@ class CsvService
                 $measureName = $actionPlanAdvice->userActionPlanAdvisable->measure_name;
 
                 $plannedYear = UserActionPlanAdviceService::getYear($actionPlanAdvice);
-
                 // fill the measure with the planned year
                 $row[$key][$measureName] = $plannedYear;
             }
 
             $rows = $row;
         }
-
         array_unshift($rows, $csvHeaders);
 
         return $rows;

@@ -80,13 +80,7 @@ class HeaterHelper extends ToolHelper
                 $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
 
-                $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
-                    ->where('user_action_plan_advisable_id', '=', $measureApplication->id)->first();
-                if ($oldAdvice instanceof UserActionPlanAdvice) {
-                    $actionPlanAdvice->category = $oldAdvice->category;
-                    $actionPlanAdvice->visible = $oldAdvice->visible;
-                    $actionPlanAdvice->order = $oldAdvice->order;
-                }
+                UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
 
                 $actionPlanAdvice->save();
             }

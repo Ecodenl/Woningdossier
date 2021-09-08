@@ -392,4 +392,23 @@ class UserActionPlanAdviceService
 
         return $categorizedActionPlan;
     }
+
+    /**
+     * Set properties from old advices on another advice
+     *
+     * @param  \App\Models\UserActionPlanAdvice  $advice
+     * @param  \App\Models\MeasureApplication  $measureApplication
+     * @param  \Illuminate\Database\Eloquent\Collection  $oldAdvices
+     */
+    public static function checkOldAdvices(UserActionPlanAdvice $advice, MeasureApplication $measureApplication, Collection $oldAdvices)
+    {
+        $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
+            ->where('user_action_plan_advisable_id', '=', $measureApplication->id)->first();
+        // This measure was set before. We ensure they stay
+        if ($oldAdvice instanceof UserActionPlanAdvice) {
+            $advice->category = $oldAdvice->category;
+            $advice->visible = $oldAdvice->visible;
+            $advice->order = $oldAdvice->order;
+        }
+    }
 }

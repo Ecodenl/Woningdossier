@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\Conditions\Clause;
 use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Models\BuildingHeating;
@@ -905,6 +906,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             [
                                 'column' => 'heat-source',
+                                'operator' => Clause::CONTAINS,
                                 'value' => 'heat-pump',
                             ],
                         ],
@@ -949,6 +951,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             [
                                 'column' => 'heat-source',
+                                'operator' => Clause::CONTAINS,
                                 'value' => 'hr-boiler',
                             ],
                         ],
@@ -1115,7 +1118,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             [
                                 'column' => 'ventilation-type',
-                                'operator' => '!=',
+                                'operator' => Clause::NEQ,
                                 'value' => $ventilation->values()->where('calculate_value', 1)->first()->id, // Natuurlijke ventilatie
                             ],
                         ],
@@ -1160,7 +1163,7 @@ class AddQuestionsToDatabase extends Command
                                 [
                                     [
                                         'column' => 'ventilation-type',
-                                        'operator' => '!=',
+                                        'operator' => Clause::NEQ,
                                         'value' => $ventilation->values()->where('calculate_value', 2)->first()->id, // Mechanische ventilatie
                                     ],
                                 ],
@@ -1202,7 +1205,7 @@ class AddQuestionsToDatabase extends Command
                                 [
                                     [
                                         'column' => 'has-solar-panels',
-                                        'operator' => '=',
+                                        'operator' => Clause::EQ,
                                         'value' => 'yes',
                                     ]
                                 ],
@@ -1219,7 +1222,7 @@ class AddQuestionsToDatabase extends Command
                                 [
                                     [
                                         'column' => 'has-solar-panels',
-                                        'operator' => '=',
+                                        'operator' => Clause::EQ,
                                         'value' => 'yes',
                                     ],
                                 ],
@@ -1242,7 +1245,7 @@ class AddQuestionsToDatabase extends Command
                                 [
                                     [
                                         'column' => 'has-solar-panels',
-                                        'operator' => '=',
+                                        'operator' => Clause::EQ,
                                         'value' => 'yes',
                                     ],
                                 ],

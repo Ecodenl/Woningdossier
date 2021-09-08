@@ -899,6 +899,50 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
+                'Warmtepomp' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'heat-source',
+                                'value' => 'heat-pump',
+                            ],
+                        ],
+                    ],
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:element_values,id'],
+                            'save_in' => "building_services.{$heatPump->id}.service_value_id",
+                            'short' => 'heat-pump-type',
+                            'translation' => "Heeft u een warmtepomp?",
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    1 => [],
+                                    2 => [],
+                                    3 => [],
+                                    4 => [],
+                                    5 => [],
+                                ],
+                            ],
+                        ],
+                        [
+                            'validation' => [
+                                // required when the heat pump is available
+                                "required_if:building_services.{$heatPump->id}.service_value_id,!=,".$heater->values()->where('calculate_value', 1)->first()->id,
+                                'numeric',
+                                'integer',
+                                'between:1900,' . date('Y')
+                            ],
+                            'short' => 'heat-pump-placed-date',
+                            'placeholder' => 'Voer een jaartal in',
+                            'translation' => "Wanneer is de warmtepomp geplaatst?",
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                    ]
+                ],
                 'Gasketel vragen' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'conditions' => [
@@ -1019,49 +1063,6 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                'Warmtepomp' => [
-                    'sub_step_template_id' => $templateDefault->id,
-                    'conditions' => [
-                        [
-                            [
-                                'column' => 'heat-source',
-                                'value' => 'heat-pump',
-                            ],
-                        ],
-                    ],
-                    'questions' => [
-                        [
-                            'validation' => ['required', 'exists:element_values,id'],
-                            'save_in' => "building_services.{$heatPump->id}.service_value_id",
-                            'short' => 'heat-pump-type',
-                            'translation' => "Heeft u een warmtepomp?",
-                            'tool_question_type_id' => $radioType->id,
-                            'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
-                            'extra' => [
-                                'column' => 'calculate_value',
-                                'data' => [
-                                    1 => [],
-                                    2 => [],
-                                    3 => [],
-                                    4 => [],
-                                    5 => [],
-                                ],
-                            ],
-                        ],
-                        [
-                            'validation' => [
-                                // required when the heat pump is available
-                                "required_if:building_services.{$heatPump->id}.service_value_id,!=,".$heater->values()->where('calculate_value', 1)->first()->id,
-                                'numeric',
-                                'between:1900,' . date('Y')
-                            ],
-                            'short' => 'heat-pump-placed-date',
-                            'placeholder' => 'Voer een jaartal in',
-                            'translation' => "Wanneer is de warmtepomp geplaatst?",
-                            'tool_question_type_id' => $textType->id,
-                        ],
-                    ]
-                ],
                 'Ventilatie' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -1111,7 +1112,7 @@ class AddQuestionsToDatabase extends Command
                             [
                                 'column' => 'ventilation-type',
                                 'operator' => '!=',
-                                'value' => 20, // Natuurlijke ventilatie TODO: Convert to DB statement
+                                'value' => $ventilation->values()->where('calculate_value', 1)->first()->id, // Natuurlijke ventilatie
                             ],
                         ],
                     ],
@@ -1156,7 +1157,7 @@ class AddQuestionsToDatabase extends Command
                                     [
                                         'column' => 'ventilation-type',
                                         'operator' => '!=',
-                                        'value' => 21, // Mechanische ventilatie TODO: Convert to DB statement
+                                        'value' => $ventilation->values()->where('calculate_value', 2)->first()->id, // Mechanische ventilatie
                                     ],
                                 ],
                             ],

@@ -80,7 +80,7 @@ class Form extends Component
     ];
 
     protected $listeners = [
-        'cardMoved', 'cardTrashed',
+        'cardMoved', 'cardTrashed', 'addHiddenCardToBoard',
     ];
 
     // TODO: Proper map
@@ -369,6 +369,7 @@ class Form extends Component
     {
         // Get moved advice (will be for master input source)
         $advice = UserActionPlanAdvice::allInputSources()
+            ->withoutGlobalScope(VisibleScope::class)
             ->find($id);
 
         // If it's a custom measure, we need to get the sibling because the custom measure also has an input source

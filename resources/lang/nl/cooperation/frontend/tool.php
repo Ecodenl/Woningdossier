@@ -26,6 +26,10 @@ return [
             \App\Services\UserActionPlanAdviceService::CATEGORY_LATER => 'Later uitvoeren',
         ],
         'cards' => [
+            'hidden' => [
+                'title' => 'Verborgen maatregelen',
+                'help' => 'Klik op een maatregel om deze weer toe te voegen aan het woonplan.',
+            ],
             'see-info' => 'Zie info',
             'subsidy' => [
                 // Todo when constants are available

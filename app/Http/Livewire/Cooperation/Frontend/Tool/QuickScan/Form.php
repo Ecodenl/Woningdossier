@@ -611,12 +611,21 @@ class Form extends Component
             $buildYear,
             $this->building
         );
-        ExampleBuildingService::apply(
-            $exampleBuilding,
-            //$this->building->buildingFeatures->build_year,
-            $buildYear,
-            $this->building,
-            $this->currentInputSource
-        );
+
+        $exampleBuildingShouldOverrideUserData = $this->building
+                                                     ->completedSubSteps()
+                                                     ->forInputSource(InputSource::MASTER_SHORT)
+                                                     ->where('sub_step_id', '>', 3)
+                                                     ->count() <= 0;
+
+        if ($exampleBuildingShouldOverrideUserData) {
+            ExampleBuildingService::apply(
+                $exampleBuilding,
+                //$this->building->buildingFeatures->build_year,
+                $buildYear,
+                $this->building,
+                $this->currentInputSource
+            );
+        }
     }
 }

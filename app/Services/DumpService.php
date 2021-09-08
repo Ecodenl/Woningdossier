@@ -50,6 +50,7 @@ use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
+use App\Scopes\NoGeneralDataScope;
 use Illuminate\Support\Arr;
 
 class DumpService
@@ -149,10 +150,10 @@ class DumpService
                         if ($prefixValuesWithStep) {
                             $subStepName = null;
                             if ('-' !== $subStep) {
-                                $subStepName = optional(Step::findByShort($subStep))->name;
+                                $subStepName = optional(Step::findByShort($subStep))->name ?? '';
                             }
 
-                            $headers[$stepShort.'.'.$subStep.'.'.$tableWithColumnOrAndId] = self::makeHeaderText($step->name, $subStepName, $labelWithEuroNormalization);
+                            $headers[$stepShort.'.'.$subStep.'.'.$tableWithColumnOrAndId] = self::makeHeaderText($step->name ?? 'Algemeen', $subStepName, $labelWithEuroNormalization);
                         } else {
                             $headers[$stepShort.'.'.$subStep.'.'.$tableWithColumnOrAndId] = $labelWithEuroNormalization;
                         }

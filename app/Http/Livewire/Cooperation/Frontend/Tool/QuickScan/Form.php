@@ -46,6 +46,8 @@ class Form extends Component
 
     public $masterInputSource;
     public $currentInputSource;
+    public $residentInputSource;
+    public $coachInputSource;
 
     public $step;
     public $subStep;
@@ -60,15 +62,20 @@ class Form extends Component
     {
         $subStep->load(['toolQuestions', 'subStepTemplate']);
 
-        // set default steps, the checks will come later on.
         $this->step = $step;
         $this->subStep = $subStep;
+
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $this->currentInputSource = HoomdossierSession::getInputSource(true);
+        $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT
+            ? $this->currentInputSource
+            : InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT
+            ? $this->currentInputSource
+            : InputSource::findByShort(InputSource::COACH_SHORT);
 
         $this->toolQuestions = $subStep->toolQuestions()->orderBy('order')->get();
-
-        $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
         $this->setFilledInAnswers();
     }
@@ -161,6 +168,13 @@ class Form extends Component
 
     public function save($nextUrl)
     {
+        // Before we can validate (and save), we must reset the formatting from text to mathable
+        foreach ($this->toolQuestions as $toolQuestion) {
+            if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric') && ! \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer')) {
+                $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::mathableFormat(str_replace('.', '', $this->filledInAnswers[$toolQuestion->id]), 2);
+            }
+        }
+
         if (!empty($this->rules)) {
             $validator = Validator::make([
                 'filledInAnswers' => $this->filledInAnswers
@@ -176,6 +190,17 @@ class Form extends Component
             }
 
             if ($validator->fails()) {
+                // Validator failed, let's put it back as the user format
+                foreach ($this->toolQuestions as $toolQuestion) {
+                    if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
+                        $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
+                        $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::format($this->filledInAnswers[$toolQuestion->id], $isInteger ? 0 : 1);
+                        if ($isInteger) {
+                            $this->filledInAnswers[$toolQuestion->id] = str_replace('.', '', $this->filledInAnswers[$toolQuestion->id]);
+                        }
+                    }
+                }
+
                 $this->setToolQuestions();
             }
 
@@ -187,9 +212,17 @@ class Form extends Component
         if (! $this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
                 $toolQuestion = ToolQuestion::find($toolQuestionId);
-                if (is_null($this->building->getAnswer($this->currentInputSource, $toolQuestion))) {
-                    $this->dirty = true;
-                    break;
+
+                // Define if we should check this question...
+                if ($this->building->user->account->can('answer', $toolQuestion)) {
+                    $currentAnswer = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->currentInputSource, $toolQuestion);
+                    $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+
+                    // Master input source is important. Ensure both are set
+                    if (is_null($currentAnswer) || is_null($masterAnswer)) {
+                        $this->dirty = true;
+                        break;
+                    }
                 }
             }
         }
@@ -197,13 +230,16 @@ class Form extends Component
         // Answers have been updated, we save them and dispatch a recalculate
         if ($this->dirty) {
             foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
+                // Define if we should answer this question...
                 /** @var ToolQuestion $toolQuestion */
                 $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
-                if (is_null($toolQuestion->save_in)) {
-                    $this->saveToolQuestionCustomValues($toolQuestion, $givenAnswer);
-                } else {
-                    // this *can't* handle a checkbox / multiselect answer.
-                    $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
+                if ($this->building->user->account->can('answer', $toolQuestion)) {
+                    if (is_null($toolQuestion->save_in)) {
+                        $this->saveToolQuestionCustomValues($toolQuestion, $givenAnswer);
+                    } else {
+                        // this *can't* handle a checkbox / multiselect answer.
+                        $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
+                    }
                 }
             }
 
@@ -231,7 +267,7 @@ class Form extends Component
             $this->filledInAnswersForAllInputSources[$toolQuestion->id] = $this->building->getAnswerForAllInputSources($toolQuestion);
 
             /** @var array|string $answerForInputSource */
-            $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+            $answerForInputSource = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->masterInputSource, $toolQuestion);
 
             // We don't have to set rules here, as that's done in the setToolQuestions function which gets called
             switch ($toolQuestion->toolQuestionType->short) {
@@ -262,6 +298,15 @@ class Form extends Component
                     $this->attributes["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->name;
                     break;
                 default:
+                    // Check if question type is text, so we can format it if it's numeric
+                    if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
+                        $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
+                        $answerForInputSource = NumberFormatter::format($answerForInputSource, $isInteger ? 0 : 1);
+                        if ($isInteger) {
+                            $answerForInputSource = str_replace('.', '', $answerForInputSource);
+                        }
+                    }
+
                     $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
                     $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                     break;

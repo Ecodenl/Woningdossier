@@ -1,12 +1,13 @@
-<div class="w-full divide-y-2 divide-blue-500 divide-opacity-20 space-y-5">
-    <div class="w-full">
-        <h2 class="heading-2">
+<div class="w-full space-y-2">
+    <div class="w-full mb-4">
+        <h4 class="heading-4">
             {{ $subStep->name }}
-        </h2>
+        </h4>
     </div>
 
     @php
         $subStepsToSummarize = $step->subSteps()->where('id', '!=', $subStep->id)->orderBy('order')->get();
+        $stepComments = [];
     @endphp
 
     {{-- Loop all sub steps except for the current (summary) step --}}
@@ -18,29 +19,20 @@
                     'cooperation' => $cooperation, 'step' => $step, 'subStep' => $subStepToSummarize
                 ]);
             @endphp
-            <div class="flex flex-row flex-wrap w-full space-y-4">
-                <a href="{{ $subStepRoute }}"
-                   class="no-underline my-4">
-                    <div class="w-full">
-                        <h3 class="heading-3 text-purple">
-                            {{ $subStepToSummarize->name }}
-                        </h3>
-                    </div>
-                </a>
-
+            <div class="flex flex-row flex-wrap w-full space-y-2">
                 {{-- Custom changes has no tool questions, it's basically a whole other story --}}
                 @if($subStepToSummarize->slug === 'welke-zaken-vervangen')
                     <div class="flex flex-row flex-wrap w-full">
                         <div class="w-1/2">
                             <a href="{{ $subStepRoute }}" class="no-underline">
-                                <h4 class="heading-4">
-                                    - @lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.question.label')
-                                </h4>
+                                <h6 class="as-text font-bold">
+                                    @lang('livewire/cooperation/frontend/tool/quick-scan/custom-changes.question.label'):
+                                </h6>
                             </a>
                         </div>
 
-                        <div class="w-1/2 text-right">
-                            <p class="font-semibold">
+                        <div class="w-1/2">
+                            <p class="flex items-center">
                                 @php $advisables = []; @endphp
                                 @foreach($building->user->actionPlanAdvices()->forInputSource($masterInputSource)->get() as $advice)
                                     @php
@@ -52,12 +44,20 @@
                                             $advisable = $advice->userActionPlanAdvisable;
                                         }
 
-                                        if ($advisable instanceof \App\Models\CustomMeasureApplication || $advisable instanceof \App\Models\CooperationMeasureApplication) {
+                                        if ($advisable instanceof \App\Models\CustomMeasureApplication) {
                                             $advisables[] = $advisable->name;
+                                        } elseif($advisable instanceof \App\Models\CooperationMeasureApplication) {
+                                            $advisableToAppend = $advisable->name;
+
+                                            if (! empty($advisable->extra['icon'])) {
+                                                $advisableToAppend .= '<i class="ml-1 w-8 h-8 '. $advisable->extra['icon'] . '"></i>';
+                                            }
+
+                                            $advisables[] = $advisableToAppend;
                                         }
                                     @endphp
                                 @endforeach
-                                {{ implode(', ', $advisables) }}
+                                {!! implode(', ', $advisables) !!}
                             </p>
                         </div>
                     </div>
@@ -70,7 +70,7 @@
                         @php
                             // Answers will contain an array of arrays of all answers for the tool question in this sub step,
                             // in which the nested array will be short => answer based
-                            $answers[$toolQuestionToSummarize->short] = $building->getAnswer($masterInputSource, $toolQuestionToSummarize);
+                            $answers[$toolQuestionToSummarize->short] = $building->getAnswer(($toolQuestionToSummarize->forSpecificInputSource ?? $masterInputSource), $toolQuestionToSummarize);
                         @endphp
                     @endforeach
 
@@ -83,27 +83,39 @@
                                 $showQuestion = \App\Helpers\Conditions\ConditionEvaluator::init()
                                 ->evaluateCollection($toolQuestionToSummarize->conditions, collect($answers));
                             }
+
+                            // Comments come at the end, and have exceptional logic...
+                            if (\Illuminate\Support\Str::contains($toolQuestionToSummarize->short, 'comment')) {
+                                $stepComments[] = [
+                                    'question' => $toolQuestionToSummarize,
+                                    'route' => $subStepRoute,
+                                    'answer' => $answers[$toolQuestionToSummarize->short],
+                                ];
+                                $showQuestion = false;
+                            }
                         @endphp
 
                         @if ($showQuestion)
                             <div class="flex flex-row flex-wrap w-full">
-                                <div class="@if($toolQuestionToSummarize->toolQuestionType->short === 'rating-slider') w-full pb-2 @else w-1/2 @endif">
+                                <div class="@if($toolQuestionToSummarize->toolQuestionType->short === 'rating-slider') w-full @else w-1/2 @endif">
                                     <a href="{{ $subStepRoute }}" class="no-underline">
-                                        <h4 class="heading-4">
-                                            - {{ $toolQuestionToSummarize->name }}
-                                        </h4>
+                                        <h6 class="as-text font-bold">
+                                            {{ $toolQuestionToSummarize->name }}:
+                                        </h6>
                                     </a>
                                 </div>
 
                                 @if($toolQuestionToSummarize->toolQuestionType->short === 'rating-slider')
                                     @foreach($toolQuestionToSummarize->options as $option)
-                                        <div class="w-1/2">
-                                            <h5 class="heading-5">
-                                                - {{ $option['name'] }}
-                                            </h5>
+                                        <div class="w-1/2 pl-2">
+                                            <a href="{{ $subStepRoute }}" class="no-underline">
+                                                <h6 class="as-text font-bold">
+                                                    {{ $option['name'] }}:
+                                                </h6>
+                                            </a>
                                         </div>
-                                        <div class="w-1/2 text-right">
-                                            <p class="font-semibold">
+                                        <div class="w-1/2">
+                                            <p class="flex items-center">
                                                 @php
                                                     $humanReadableAnswer = __('cooperation/frontend/tool.no-answer-given');
                                                     $answer = $answers[$toolQuestionToSummarize->short] ?? null;
@@ -118,8 +130,8 @@
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="w-1/2 text-right">
-                                        <p class="font-semibold">
+                                    <div class="w-1/2">
+                                        <p class="flex items-center">
                                             @php
                                                 $humanReadableAnswer = __('cooperation/frontend/tool.no-answer-given');
                                                 $answer = $answers[$toolQuestionToSummarize->short] ?? null;
@@ -136,7 +148,13 @@
                                                             $questionValue = $questionValues->where('value', '=', $subAnswer)->first();
 
                                                             if (! empty($questionValue)) {
-                                                                $humanReadableAnswers[] = $questionValue['name'];
+                                                                $answerToAppend = $questionValue['name'];
+
+                                                                if (! empty($questionValue['extra']['icon'])) {
+                                                                    $answerToAppend .= '<i class="ml-1 w-8 h-8 ' . $questionValue['extra']['icon'] . '"></i>';
+                                                                }
+
+                                                                $humanReadableAnswers[] = $answerToAppend;
                                                             }
                                                         }
 
@@ -150,7 +168,7 @@
                                                 }
                                             @endphp
 
-                                            {{ $humanReadableAnswer }}
+                                            {!! $humanReadableAnswer !!}
                                         </p>
                                     </div>
                                 @endif
@@ -162,4 +180,22 @@
         @endcan
     @endforeach
 
+    <div class="flex flex-row flex-wrap w-full">
+        @foreach($stepComments as $stepCommentData)
+            @php
+                $stepCommentToolQuestion = $stepCommentData['question'];
+                $subStepRoute = $stepCommentData['route'];
+                $answer = $stepCommentData['answer'];
+            @endphp
+                @component('cooperation.frontend.layouts.components.form-group', [
+                    'label' => $stepCommentToolQuestion->name ?? '' . " (" . ($stepCommentToolQuestion->forSpecificInputSource->name ?? '') . ")",
+                    'route' => $subStepRoute,
+                    'class' => 'w-full sm:w-1/2 ' . ($loop->iteration % 2 === 0 ? 'sm:pl-3' : 'sm:pr-3'),
+                    'withInputSource' => false,
+                ])
+                    <textarea class="form-input" disabled
+                    >{{ $answer }}</textarea>
+                @endcomponent
+        @endforeach
+    </div>
 </div>

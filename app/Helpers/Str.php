@@ -131,4 +131,34 @@ class Str
         // There could be JSON strings or numeric values, we don't want them to be valid if $arrayOnly is true.
         return ! is_null($json) && ($arrayOnly === false || ($arrayOnly === true && is_array($json)));
     }
+
+    /**
+     * Check if a needle is somewhere (partially) in an array.
+     *
+     * @param  array  $array
+     * @param  $needle
+     * @param  bool  $ignoreCase
+     *
+     * @return bool
+     */
+    public static function arrContains(array $array, $needle, bool $ignoreCase = false)
+    {
+        $needle = $ignoreCase ? strtolower($needle) : $needle;
+
+        if (! empty($array)) {
+            // Dot to remove recursion
+            $array = Arr::dot($array);
+
+            foreach ($array as $key => $value) {
+                if (is_string($value)) {
+                    $value = $ignoreCase ? strtolower($value) : $value;
+                    if (SupportStr::contains($value, $needle)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
 }

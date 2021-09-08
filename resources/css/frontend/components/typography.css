@@ -19,6 +19,7 @@
 }
 
 /* Paragraph */
-p {
+p,
+.as-text {
     @apply text-blue-500 font-light text-sm;
 }

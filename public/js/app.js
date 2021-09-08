@@ -33973,6 +33973,52 @@ module.exports = function(module) {
 
 /***/ }),
 
+/***/ "./resources/js/alpine-scripts/adaptive-input.js":
+/*!*******************************************************!*\
+  !*** ./resources/js/alpine-scripts/adaptive-input.js ***!
+  \*******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  var _typable;
+
+  var defaultHeight = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+  return {
+    defaultHeight: defaultHeight,
+    init: function init() {
+      var _this = this;
+
+      document.addEventListener('DOMContentLoaded', function () {
+        // Set height on init
+        _this.setHeight(_this.$refs['typable']);
+      });
+
+      if (isNaN(this.defaultHeight)) {
+        this.defaultHeight = 0;
+      }
+    },
+    typable: (_typable = {}, _defineProperty(_typable, 'x-ref', 'typable'), _defineProperty(_typable, 'x-on:input', function xOnInput() {
+      this.setHeight(this.$el);
+    }), _typable),
+    setHeight: function setHeight(element) {
+      // Compute the height difference which is caused by border and outline
+      var outerHeight = parseInt(window.getComputedStyle(element).height, 10);
+      var diff = outerHeight - element.clientHeight; // Reset height to handle shrinking
+
+      element.style.height = 0; // Set new height
+
+      element.style.height = Math.max(this.defaultHeight, element.scrollHeight + diff) + 'px';
+    }
+  };
+});
+
+/***/ }),
+
 /***/ "./resources/js/alpine-scripts/alpine-select.js":
 /*!******************************************************!*\
   !*** ./resources/js/alpine-scripts/alpine-select.js ***!
@@ -34098,9 +34144,9 @@ __webpack_require__.r(__webpack_exports__);
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /* harmony default export */ __webpack_exports__["default"] = (function () {
-  var _container, _draggable;
+  var _container, _draggable, _trash;
 
-  var supportedClasses = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ['card-wrapper'];
+  var supportedClasses = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ['card-wrapper', 'trash'];
   var hoverColor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'rgba(100, 117, 133, 0.2)';
   var defaultClass = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'card';
   var placeholderClass = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'card-placeholder';
@@ -34117,6 +34163,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     placeholderClass: placeholderClass,
     supportedClasses: supportedClasses,
     ghost: null,
+    hoverColor: hoverColor,
+    trashColor: 'rgba(228, 20, 64, 0.3)',
     container: (_container = {}, _defineProperty(_container, 'x-on:drop.prevent', function xOnDropPrevent() {
       if (null !== this.dragged) {
         var eventTarget = this.$event.target;
@@ -34143,7 +34191,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
                 ghostParentElement.replaceChild(this.dragged, ghost); // Dispatch the dropped position
 
-                var event = new CustomEvent('item-dragged', {
+                var event = new CustomEvent('draggable-dragged', {
                   detail: {
                     from: parentElement,
                     to: target,
@@ -34215,7 +34263,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         var target = this.getSupportedTarget(eventTarget);
 
         if (null !== target) {
-          target.style.backgroundColor = hoverColor;
+          target.style.backgroundColor = this.hoverColor;
         }
       }
     }), _defineProperty(_container, 'x-on:dragleave', function xOnDragleave() {
@@ -34250,6 +34298,49 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.dragged = null;
       this.draggedOrder = -1;
     }), _draggable),
+    trash: (_trash = {}, _defineProperty(_trash, 'x-on:dragenter.prevent', function xOnDragenterPrevent() {
+      if (null !== this.dragged) {
+        var eventTarget = this.$event.target;
+        this.lastEntered = eventTarget;
+        var target = this.getSupportedTarget(eventTarget);
+
+        if (null !== target) {
+          target.style.backgroundColor = this.trashColor;
+          target.style.transform = 'scale(1.2)';
+        }
+      }
+    }), _defineProperty(_trash, 'x-on:dragleave', function xOnDragleave() {
+      if (null !== this.dragged) {
+        var eventTarget = this.$event.target;
+        var target = this.getSupportedTarget(eventTarget); // Enter triggers before leave. We check the last element that we entered. If it's not set, then we left
+        // the container and it should be reset
+
+        if (null !== target && null === this.lastEntered) {
+          target.style.backgroundColor = '';
+          target.style.transform = 'scale(1)';
+        }
+
+        this.lastEntered = null;
+      }
+    }), _defineProperty(_trash, 'x-on:dragover.prevent', function xOnDragoverPrevent() {// This needs to be prevented, else drop doesn't work
+    }), _defineProperty(_trash, 'x-on:drop.prevent', function xOnDropPrevent() {
+      if (null !== this.dragged) {
+        var eventTarget = this.$event.target;
+        var target = this.getSupportedTarget(eventTarget);
+        var parentElement = this.dragged.parentElement; // Remove dragged item from original parent
+
+        parentElement.removeChild(this.dragged); // Dispatch the item was removed position
+
+        var event = new CustomEvent('draggable-trashed', {
+          detail: {
+            from: parentElement,
+            id: this.dragged.id
+          },
+          bubbles: true
+        });
+        dispatchEvent(event);
+      }
+    }), _trash),
     getSupportedTarget: function getSupportedTarget(element) {
       var target = null;
       var supportedClasses = this.supportedClasses;
@@ -35300,8 +35391,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _alpine_scripts_draggables_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./alpine-scripts/draggables.js */ "./resources/js/alpine-scripts/draggables.js");
 /* harmony import */ var _alpine_scripts_dropdown_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./alpine-scripts/dropdown.js */ "./resources/js/alpine-scripts/dropdown.js");
 /* harmony import */ var _alpine_scripts_tabs_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./alpine-scripts/tabs.js */ "./resources/js/alpine-scripts/tabs.js");
-/* harmony import */ var mobile_drag_drop__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! mobile-drag-drop */ "./node_modules/mobile-drag-drop/index.min.js");
-/* harmony import */ var mobile_drag_drop__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(mobile_drag_drop__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var _alpine_scripts_adaptive_input_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./alpine-scripts/adaptive-input.js */ "./resources/js/alpine-scripts/adaptive-input.js");
+/* harmony import */ var mobile_drag_drop__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! mobile-drag-drop */ "./node_modules/mobile-drag-drop/index.min.js");
+/* harmony import */ var mobile_drag_drop__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(mobile_drag_drop__WEBPACK_IMPORTED_MODULE_12__);
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -35385,6 +35477,7 @@ window.triggerEvent = function (element, eventName) {
 
 
 
+
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('alpineSelect', _alpine_scripts_alpine_select_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('sourceSelect', _alpine_scripts_source_select_js__WEBPACK_IMPORTED_MODULE_2__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('modal', _alpine_scripts_modal_js__WEBPACK_IMPORTED_MODULE_3__["default"]);
@@ -35395,6 +35488,7 @@ alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('picoAddress', _alpine_scr
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('draggables', _alpine_scripts_draggables_js__WEBPACK_IMPORTED_MODULE_8__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('dropdown', _alpine_scripts_dropdown_js__WEBPACK_IMPORTED_MODULE_9__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('tabs', _alpine_scripts_tabs_js__WEBPACK_IMPORTED_MODULE_10__["default"]);
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('adaptiveInputs', _alpine_scripts_adaptive_input_js__WEBPACK_IMPORTED_MODULE_11__["default"]);
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 /**
@@ -35403,7 +35497,7 @@ alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 
  // Init & Settings
 
-Object(mobile_drag_drop__WEBPACK_IMPORTED_MODULE_11__["polyfill"])({});
+Object(mobile_drag_drop__WEBPACK_IMPORTED_MODULE_12__["polyfill"])({});
 
 /***/ }),
 
@@ -35469,13 +35563,13 @@ Object(mobile_drag_drop__WEBPACK_IMPORTED_MODULE_11__["polyfill"])({});
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /var/www/html/resources/js/app.js */"./resources/js/app.js");
-__webpack_require__(/*! /var/www/html/resources/sass/admin/app.scss */"./resources/sass/admin/app.scss");
-__webpack_require__(/*! /var/www/html/resources/sass/pdf.scss */"./resources/sass/pdf.scss");
-__webpack_require__(/*! /var/www/html/resources/sass/admin/datatables/_responsive_bootstrap.scss */"./resources/sass/admin/datatables/_responsive_bootstrap.scss");
-__webpack_require__(/*! /var/www/html/resources/sass/admin/datatables/_responsive_datatables.scss */"./resources/sass/admin/datatables/_responsive_datatables.scss");
-__webpack_require__(/*! /var/www/html/resources/sass/admin/datatables/_dataTables_bootstrap.scss */"./resources/sass/admin/datatables/_dataTables_bootstrap.scss");
-module.exports = __webpack_require__(/*! /var/www/html/resources/css/frontend/app.css */"./resources/css/frontend/app.css");
+__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/admin/app.scss */"./resources/sass/admin/app.scss");
+__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/pdf.scss */"./resources/sass/pdf.scss");
+__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/admin/datatables/_responsive_bootstrap.scss */"./resources/sass/admin/datatables/_responsive_bootstrap.scss");
+__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/admin/datatables/_responsive_datatables.scss */"./resources/sass/admin/datatables/_responsive_datatables.scss");
+__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/admin/datatables/_dataTables_bootstrap.scss */"./resources/sass/admin/datatables/_dataTables_bootstrap.scss");
+module.exports = __webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/css/frontend/app.css */"./resources/css/frontend/app.css");
 
 
 /***/ })

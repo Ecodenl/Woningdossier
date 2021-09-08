@@ -80,6 +80,7 @@ import picoAddress from './alpine-scripts/picoAddress.js';
 import draggables from './alpine-scripts/draggables.js';
 import dropdown from './alpine-scripts/dropdown.js';
 import tabs from './alpine-scripts/tabs.js';
+import adaptiveInputs from './alpine-scripts/adaptive-input.js';
 
 Alpine.data('alpineSelect', alpineSelect);
 Alpine.data('sourceSelect', sourceSelect);
@@ -91,6 +92,7 @@ Alpine.data('picoAddress', picoAddress);
 Alpine.data('draggables', draggables);
 Alpine.data('dropdown', dropdown);
 Alpine.data('tabs', tabs);
+Alpine.data('adaptiveInputs', adaptiveInputs);
 
 window.Alpine = Alpine;
 

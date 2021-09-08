@@ -1,4 +1,4 @@
-/*! tailwindcss v2.2.9 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v2.2.10 | MIT License | https://tailwindcss.com */
 
 /*! modern-normalize v1.1.0 | MIT License | https://github.com/sindresorhus/modern-normalize */
 
@@ -13207,6 +13207,12 @@ video {
   }
 }
 
+@keyframes spin{
+  to{
+    transform: rotate(360deg);
+  }
+}
+
 #app-body .animate-none{
   -webkit-animation: none;
           animation: none;
@@ -13230,6 +13236,11 @@ video {
 #app-body .animate-bounce{
   -webkit-animation: bounce 1s infinite;
           animation: bounce 1s infinite;
+}
+
+#app-body .animate-spin-slow{
+  -webkit-animation: spin 2s linear infinite;
+          animation: spin 2s linear infinite;
 }
 
 #app-body .cursor-auto{
@@ -39518,6 +39529,11 @@ Small example
             animation: bounce 1s infinite;
   }
 
+  #app-body .sm\:animate-spin-slow{
+    -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+  }
+
   #app-body .sm\:cursor-auto{
     cursor: auto;
   }
@@ -65711,6 +65727,11 @@ Small example
   #app-body .md\:animate-bounce{
     -webkit-animation: bounce 1s infinite;
             animation: bounce 1s infinite;
+  }
+
+  #app-body .md\:animate-spin-slow{
+    -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
   }
 
   #app-body .md\:cursor-auto{
@@ -91908,6 +91929,11 @@ Small example
             animation: bounce 1s infinite;
   }
 
+  #app-body .lg\:animate-spin-slow{
+    -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+  }
+
   #app-body .lg\:cursor-auto{
     cursor: auto;
   }
@@ -118101,6 +118127,11 @@ Small example
   #app-body .xl\:animate-bounce{
     -webkit-animation: bounce 1s infinite;
             animation: bounce 1s infinite;
+  }
+
+  #app-body .xl\:animate-spin-slow{
+    -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
   }
 
   #app-body .xl\:cursor-auto{
@@ -144298,6 +144329,11 @@ Small example
             animation: bounce 1s infinite;
   }
 
+  #app-body .\32xl\:animate-spin-slow{
+    -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+  }
+
   #app-body .\32xl\:cursor-auto{
     cursor: auto;
   }
@@ -157965,7 +158001,7 @@ hr {
 
 /* Paragraph */
 
-p {
+p, .as-text {
   font-size: 14px;
   line-height: 24px;
   font-weight: 300;
@@ -158003,23 +158039,6 @@ p a, a.in-text {
   --tw-text-opacity: 1;
   color: rgba(98, 33, 145, var(--tw-text-opacity));
   text-decoration: none;
-}
-
-.clickable {
-  cursor: pointer;
-  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
-
-.clickable:hover {
-  opacity: 0.6;
-}
-
-.clickable:focus {
-  opacity: 0.6;
 }
 
 /* Buttons */
@@ -158517,6 +158536,31 @@ p a, a.in-text {
   background-color: rgba(44, 169, 130, var(--tw-bg-opacity));
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity));
+}
+
+/* Extra items */
+
+.clickable {
+  cursor: pointer;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.clickable:hover {
+  opacity: 0.6;
+}
+
+.clickable:focus {
+  opacity: 0.6;
+}
+
+/* Purely to remove opacity when focusing on inputs */
+
+.has-btn:focus ~ button {
+  opacity: 0.2;
 }/* Form groups and its children */
 
 .form-group {
@@ -158621,6 +158665,10 @@ p a, a.in-text {
   --tw-border-opacity: 1;
 }
 
+.radio-wrapper > label, .checkbox-wrapper > label {
+  line-height: 1.25rem;
+}
+
 .form-input {
   flex: 1 1 auto;
   width: 1%;
@@ -158664,6 +158712,7 @@ p a, a.in-text {
 
 textarea.form-input {
   height: 8rem;
+  resize: none;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   line-height: 24px;
@@ -159021,13 +159070,13 @@ textarea.form-input {
   width: 10rem;
 }
 
-.media-wrapper label {
+.media-wrapper > label {
   height: 100%;
   width: 100%;
   padding: 0px;
 }
 
-.media-wrapper label .media-icon-wrapper {
+.media-wrapper > label .media-icon-wrapper {
   position: absolute;
   top: 0px;
   right: 0px;
@@ -159040,26 +159089,26 @@ textarea.form-input {
   justify-content: center;
 }
 
-.media-wrapper label .media-icon-wrapper i {
+.media-wrapper > label .media-icon-wrapper i {
   margin-top: -1rem;
   height: 70%;
   width: 100%;
   padding: 1rem;
 }
 
-.add-option-wrapper.media-wrapper label .media-icon-wrapper i {
+.add-option-wrapper.media-wrapper > label .media-icon-wrapper i {
   height: 50%;
   width: 50%;
 }
 
-.media-wrapper label .checkmark {
+.media-wrapper > label .checkmark {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
   margin: 0px;
 }
 
-.media-wrapper label span:not(.checkmark):not(.media-icon-wrapper) {
+.media-wrapper > label span:not(.checkmark):not(.media-icon-wrapper) {
   position: absolute;
   left: 0px;
   right: 0px;
@@ -159075,14 +159124,14 @@ textarea.form-input {
   width: 6rem;
 }
 
-.media-wrapper.media-wrapper-small label .media-icon-wrapper i {
+.media-wrapper.media-wrapper-small > label .media-icon-wrapper i {
   margin-top: 0px;
   height: 90%;
 }
 
 /* Potential text spans are hidden */
 
-.media-wrapper.media-wrapper-small label span:not(.checkmark):not(.media-icon-wrapper) {
+.media-wrapper.media-wrapper-small > label span:not(.checkmark):not(.media-icon-wrapper) {
   display: none;
 }
 
@@ -160396,6 +160445,10 @@ textarea.form-input {
 
 .icon-ventilation {
   content: url('/icons/ventilation.svg');
+}
+
+.icon-ventilation-fan {
+  content: url('/icons/ventilation-fan.svg');
 }
 
 .icon-wall-insulation-excellent {

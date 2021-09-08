@@ -25,7 +25,7 @@ class CreateStepCommentsTable extends Migration
             $table->unsignedInteger('step_id');
             $table->foreign('step_id')->references('id')->on('steps')->onDelete(null);
 
-            $table->longText('comment');
+            $table->longText('comment')->nullable();
 
             $table->timestamps();
         });

@@ -108,68 +108,74 @@
             </form>
         @endcomponent
     </div>
-    <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 px-3 lg:px-8"
-         x-data="draggables()"
-         x-on:item-dragged.window="livewire.emit('cardMoved', $event.detail.from.getAttribute('data-category'), $event.detail.to.getAttribute('data-category'), $event.detail.id, $event.detail.order)">
-        @foreach($cards as $cardCategory => $cardCollection)
-            <div class="card-wrapper" x-bind="container" data-category="{{$cardCategory}}">
-                @foreach($cardCollection as $order => $card)
-                    <div class="card" id="{{ $card['id'] }}"
-                        {{-- TODO: See if undefined draggable (on tablet, caused by polyfill) can be resolved --}}
-                         x-bind="draggable" draggable="true">
-                        <div class="icon-wrapper">
-                            <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
-                        </div>
-                        <div class="info">
-                            @if(! empty($card['route']))
-                                <a href="{{ $card['route'] }}" class="no-underline" draggable="false">
-                                    <h6 class="heading-6 text-purple">
+    <div class="w-full flex flex-wrap flex-row justify-center items-center">
+        <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 px-3 lg:px-8"
+             x-data="draggables()"
+             x-on:draggable-dragged.window="livewire.emit('cardMoved', $event.detail.from.getAttribute('data-category'), $event.detail.to.getAttribute('data-category'), $event.detail.id, $event.detail.order)"
+             x-on:draggable-trashed.window="livewire.emit('cardTrashed', $event.detail.from.getAttribute('data-category'), $event.detail.id)">
+            @foreach($cards as $cardCategory => $cardCollection)
+                <div class="card-wrapper" x-bind="container" data-category="{{$cardCategory}}">
+                    @foreach($cardCollection as $order => $card)
+                        <div class="card" id="{{ $card['id'] }}"
+                            {{-- TODO: See if undefined draggable (on tablet, caused by polyfill) can be resolved --}}
+                             x-bind="draggable" draggable="true">
+                            <div class="icon-wrapper">
+                                <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
+                            </div>
+                            <div class="info">
+                                @if(! empty($card['route']))
+                                    <a href="{{ $card['route'] }}" class="no-underline" draggable="false">
+                                        <h6 class="heading-6 text-purple">
+                                            {{ $card['name'] }}
+                                        </h6>
+                                    </a>
+                                @else
+                                    <h6 class="heading-6">
                                         {{ $card['name'] }}
                                     </h6>
-                                </a>
-                            @else
-                                <h6 class="heading-6">
-                                    {{ $card['name'] }}
-                                </h6>
-                            @endif
-                            <p class="-mt-1">
-                                {{-- This also triggers if both values are 0 --}}
-                                @if(empty($card['costs']['from']) && empty($card['costs']['to']))
-                                    @lang('cooperation/frontend/tool.my-plan.cards.see-info')
-                                @else
-                                    {{ \App\Helpers\NumberFormatter::range($card['costs']['from'], $card['costs']['to'], 0, ' - ', '€ ') }}
                                 @endif
+                                <p class="-mt-1">
+                                    {{-- This also triggers if both values are 0 --}}
+                                    @if(empty($card['costs']['from']) && empty($card['costs']['to']))
+                                        @lang('cooperation/frontend/tool.my-plan.cards.see-info')
+                                    @else
+                                        {{ \App\Helpers\NumberFormatter::range($card['costs']['from'], $card['costs']['to'], 0, ' - ', '€ ') }}
+                                    @endif
+                                </p>
+    <!--
+                                <?php $subsidy = $card['subsidy'] ?? ''; ?>
+                                @if($subsidy == $SUBSIDY_AVAILABLE)
+                                    <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2"
+                                         style="width: fit-content; width: -moz-fit-content;">
+                                        Subsidie mogelijk {{-- Todo: Translate using constant --}}
+                                    </div>
+                                @elseif($subsidy == $SUBSIDY_UNAVAILABLE)
+                                    <div class="h-4 rounded-lg text-xs relative text-red p bg-red bg-opacity-10 flex items-center px-2"
+                                         style="width: fit-content; width: -moz-fit-content;">
+                                        Geen subsidie {{-- Todo: Translate using constant --}}
+                                    </div>
+                                @endif
+    -->
+                            </div>
+                            <div x-data="modal()" class="absolute right-1 top-1 lg:right-3 lg:top-3">
+                                @if(! empty($card['info']))
+                                    <i class="icon-md icon-info-light clickable" x-on:click="toggle()"></i>
+                                    @component('cooperation.frontend.layouts.components.modal')
+                                        {!! $card['info'] !!}
+                                    @endcomponent
+                                @endif
+                            </div>
+                            <p class="font-bold absolute right-1 bottom-1 lg:right-3 lg:bottom-3">
+                                {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($card['savings'], 0, true) , '€ ') }}
                             </p>
-<!--
-                            <?php $subsidy = $card['subsidy'] ?? ''; ?>
-                            @if($subsidy == $SUBSIDY_AVAILABLE)
-                                <div class="h-4 rounded-lg text-xs relative text-green p bg-green bg-opacity-10 flex items-center px-2"
-                                     style="width: fit-content; width: -moz-fit-content;">
-                                    Subsidie mogelijk {{-- Todo: Translate using constant --}}
-                                </div>
-                            @elseif($subsidy == $SUBSIDY_UNAVAILABLE)
-                                <div class="h-4 rounded-lg text-xs relative text-red p bg-red bg-opacity-10 flex items-center px-2"
-                                     style="width: fit-content; width: -moz-fit-content;">
-                                    Geen subsidie {{-- Todo: Translate using constant --}}
-                                </div>
-                            @endif
--->
                         </div>
-                        <div x-data="modal()" class="absolute right-1 top-1 lg:right-3 lg:top-3">
-                            @if(! empty($card['info']))
-                                <i class="icon-md icon-info-light clickable" x-on:click="toggle()"></i>
-                                @component('cooperation.frontend.layouts.components.modal')
-                                    {!! $card['info'] !!}
-                                @endcomponent
-                            @endif
-                        </div>
-                        <p class="font-bold absolute right-1 bottom-1 lg:right-3 lg:bottom-3">
-                            {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($card['savings'], 0, true) , '€ ') }}
-                        </p>
-                    </div>
-                @endforeach
-            </div>
-        @endforeach
+                    @endforeach
+                </div>
+            @endforeach
+        </div>
+{{--        <div class="w-full flex flex-wrap flex-row justify-center items-center py-8 mt-5">--}}
+{{--            <i class="icon-xl icon-error-cross p-4 rounded-lg transition delay-500 trash" x-bind="trash"></i>--}}
+{{--        </div>--}}
     </div>
     <div class="w-full grid grid-rows-2 grid-cols-3 lg:grid-rows-1 lg:grid-cols-6 grid-flow-row gap-3 mt-5 px-3 py-8 lg:px-8 content-center border-t-2 border-b-2 border-blue-500 border-opacity-10">
         <div class="w-full flex flex-wrap items-center space-x-3">
@@ -230,7 +236,8 @@
             ])
         </div>
     </div>
-    <div class="w-full flex flex-wrap bg-blue-100 pb-8 px-3 lg:px-8 items-center">
+    <div class="w-full flex flex-wrap bg-blue-100 pb-8 px-3 lg:px-8"
+         x-data="adaptiveInputs(128)" {{-- 128px === 8rem, default height for textareas --}}>
         @php
             $disableResident = $currentInputSource->short !== $residentInputSource->short;
             $disableCoach = $currentInputSource->short !== $coachInputSource->short;
@@ -242,8 +249,8 @@
             'id' => 'comments-resident',
             'inputName' => 'comments.resident'
         ])
-            <textarea id="comments-resident" class="form-input" wire:model="residentCommentText"
-                      @if($disableResident) disabled @endif
+            <textarea id="comments-resident" class="form-input has-btn" wire:model="residentCommentText"
+                      @if($disableResident) disabled @endif x-bind="typable" wire:ignore
                       placeholder="@lang('default.form.input.comment-placeholder')"></textarea>
             <button class="btn btn-purple absolute right-3 bottom-7" @if($disableResident) disabled @endif
                     wire:click="saveComment('{{\App\Models\InputSource::RESIDENT_SHORT}}')"
@@ -258,8 +265,8 @@
             'id' => 'comments-coach',
             'inputName' => 'comments.coach'
         ])
-            <textarea id="comments-coach" class="form-input" wire:model="coachCommentText"
-                      @if($disableCoach) disabled @endif
+            <textarea id="comments-coach" class="form-input has-btn" wire:model="coachCommentText"
+                      @if($disableCoach) disabled @endif x-bind="typable" wire:ignore
                       placeholder="@lang('default.form.input.comment-placeholder')"></textarea>
             <button class="btn btn-purple absolute right-3 bottom-7" @if($disableCoach) disabled @endif
                     wire:click="saveComment('{{\App\Models\InputSource::COACH_SHORT}}')"

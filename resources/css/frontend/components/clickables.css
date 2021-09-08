@@ -12,13 +12,6 @@ a.in-text {
     @apply text-purple no-underline font-medium;
 }
 
-.clickable {
-    @apply cursor-pointer transition;
-
-    @apply hover:opacity-60;
-    @apply focus:opacity-60;
-}
-
 /* Buttons */
 .btn {
     @apply px-6 py-2 rounded-lg font-bold cursor-pointer transition outline-none no-underline text-sm inline-block;
@@ -127,4 +120,17 @@ a.in-text {
 }
 .nav-tabs li.active a {
     @apply text-white bg-green;
+}
+
+/* Extra items */
+.clickable {
+    @apply cursor-pointer transition;
+
+    @apply hover:opacity-60;
+    @apply focus:opacity-60;
+}
+
+/* Purely to remove opacity when focusing on inputs */
+.has-btn:focus ~ button {
+    @apply opacity-20;
 }

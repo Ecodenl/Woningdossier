@@ -66,7 +66,7 @@ class Form extends Component
     ];
 
     protected $listeners = [
-        'cardMoved',
+        'cardMoved', 'cardTrashed',
     ];
 
     // TODO: Proper map
@@ -322,6 +322,22 @@ class Form extends Component
         }
     }
 
+    public function cardTrashed($fromCategory, $id)
+    {
+        // Get the original card object
+        $cardData = Arr::where($this->cards[$fromCategory], function ($card, $order) use ($id) {
+            return $card['id'] == $id;
+        });
+
+        if (! empty($cardData)) {
+            $oldOrder = array_key_first($cardData);
+            $movedCard = $cardData[$oldOrder];
+
+            \Log::debug($oldOrder);
+            \Log::debug($movedCard);
+        }
+    }
+
     public function recalculate()
     {
         // TODO: Get logic for subsidy.
@@ -416,7 +432,7 @@ class Form extends Component
                 } else {
                     $this->{$commentShort} = UserActionPlanAdviceComments::create([
                         'user_id' => $this->building->user->id,
-                        'input_source_id' => $inputSource,
+                        'input_source_id' => $inputSource->id,
                         'comment' => $commentText,
                     ]);
                 }

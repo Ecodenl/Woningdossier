@@ -39,6 +39,7 @@
             wire:click="$emitTo('cooperation.frontend.tool.quick-scan.form', 'save', '{{$nextUrl}}')"
             x-on:click="$el.setAttribute('disabled', true);"
             @endif
+            x-on:validation-failed.window="$el.removeAttribute('disabled');"
             class="btn btn-purple flex items-center ml-1">
         @lang('cooperation/frontend/shared.defaults.next')
         <i class="icon-xs icon-arrow-right-bold-purple ml-5"></i>

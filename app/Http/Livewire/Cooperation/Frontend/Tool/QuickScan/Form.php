@@ -202,6 +202,8 @@ class Form extends Component
                 }
 
                 $this->setToolQuestions();
+
+                $this->dispatchBrowserEvent('validation-failed');
             }
 
             $validator->validate();

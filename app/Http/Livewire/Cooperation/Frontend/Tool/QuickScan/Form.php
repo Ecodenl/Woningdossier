@@ -10,6 +10,7 @@ use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
+use App\Models\BuildingFeature;
 use App\Models\BuildingType;
 use App\Models\CompletedSubStep;
 use App\Models\ExampleBuilding;
@@ -530,57 +531,62 @@ class Form extends Component
         // objects for first checks
         $buildingFeature = $this->building->buildingFeatures;
 
-        // current values for comparison later on
-        $currentExampleBuildingId = $this->building->example_building_id;
-        $currentBuildYearValue = (int) $buildingFeature->build_year;
+        // We need this to do stuff
+        if ($buildingFeature instanceof BuildingFeature && ! is_null($buildingFeature->build_year)) {
+            // current values for comparison later on
+            $currentExampleBuildingId = $this->building->example_building_id;
+            $currentBuildYearValue =  (int) $buildingFeature->build_year;
 
-        if (array_key_exists('building_type_id', $changes)){
-            $buildingType = BuildingType::find((int) $changes['building_type_id']);
-        }
-        else {
-            $buildingType = $buildingFeature->buildingType;
-        }
+            if (array_key_exists('building_type_id', $changes)){
+                $buildingType = BuildingType::find((int) $changes['building_type_id']);
+            }
+            else {
+                $buildingType = $buildingFeature->buildingType;
+            }
 
-        if (!$buildingType instanceof BuildingType){
-            return null;
-        }
-
-        $exampleBuilding = ExampleBuilding::generic()->where(
-            'building_type_id',
-            $buildingType->id
-        )->first();
-
-        if (!$exampleBuilding instanceof ExampleBuilding){
-            // No example building, so can't change then.
-            return null;
-        }
-
-        if ($exampleBuilding->id !== $currentExampleBuildingId){
-            // We know the change is sure
-            return $exampleBuilding;
-        }
-
-        if (array_key_exists('build_year', $changes)){
-            $new = (int) $changes['build_year'];
-            if ($currentBuildYearValue === $new){
+            if (!$buildingType instanceof BuildingType){
                 return null;
             }
 
-            // if the build_year is dirty:
-            // check the combination of example_building_id with new build_year
-            // against the combination of example_building_id with old build_year
-            $oldContents = $exampleBuilding->getContentForYear($currentBuildYearValue);
-            $newContents = $exampleBuilding->getContentForYear($new);
+            $exampleBuilding = ExampleBuilding::generic()->where(
+                'building_type_id',
+                $buildingType->id
+            )->first();
 
-            if ($oldContents instanceof ExampleBuildingContent){
-                if ($oldContents->id !== $newContents->id) {
-                    return $exampleBuilding;
-                }
+            if (!$exampleBuilding instanceof ExampleBuilding){
+                // No example building, so can't change then.
+                return null;
             }
-            else {
+
+            if ($exampleBuilding->id !== $currentExampleBuildingId){
+                // We know the change is sure
                 return $exampleBuilding;
             }
 
+            if (array_key_exists('build_year', $changes)){
+                $new = (int) $changes['build_year'];
+                if ($currentBuildYearValue === $new){
+                    return null;
+                }
+
+                // if the build_year is dirty:
+                // check the combination of example_building_id with new build_year
+                // against the combination of example_building_id with old build_year
+                $oldContents = $exampleBuilding->getContentForYear($currentBuildYearValue);
+                $newContents = $exampleBuilding->getContentForYear($new);
+
+                if ($oldContents instanceof ExampleBuildingContent){
+                    if ($oldContents->id !== $newContents->id) {
+                        return $exampleBuilding;
+                    }
+                }
+                else {
+                    return $exampleBuilding;
+                }
+
+            }
+        } else {
+            Log::debug( "Building feature undefined, or build year not set for building {$this->building->id}");
         }
 
         return null;

@@ -38,14 +38,7 @@ class RoofInsulationHelper extends ToolHelper
 
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
 
-        $oldAdvices = UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
-            ->forMe($this->user)
-            ->forInputSource($masterInputSource)
-            ->forStep($step)
-            ->get();
-
-        // Remove old results
-        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+        $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         $roofTypeIds = $this->getValues('building_roof_type_ids');
         foreach ($roofTypeIds as $roofTypeId) {

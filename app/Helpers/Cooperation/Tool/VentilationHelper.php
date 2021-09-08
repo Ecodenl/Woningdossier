@@ -41,13 +41,7 @@ class VentilationHelper extends ToolHelper
 
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
 
-        $oldAdvices = UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
-            ->forMe($this->user)
-            ->forInputSource($masterInputSource)
-            ->forStep($step)
-            ->get();
-
-        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+        $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         $interestsInMeasureApplications = $this->getValues('user_interests');
         $relevantAdvices = collect($results['advices'])->whereIn('id', $interestsInMeasureApplications);

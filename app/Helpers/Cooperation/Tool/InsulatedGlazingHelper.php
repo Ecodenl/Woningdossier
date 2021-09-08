@@ -110,14 +110,7 @@ class InsulatedGlazingHelper extends ToolHelper
 
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
 
-        $oldAdvices = UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
-            ->forMe($this->user)
-            ->forInputSource($masterInputSource)
-            ->forStep($step)
-            ->get();
-
-        // remove old results
-        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+        $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         foreach ($results['measure'] as $measureId => $data) {
             if (array_key_exists('costs', $data) && $data['costs'] > 0) {

@@ -68,14 +68,7 @@ class HeaterHelper extends ToolHelper
 
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
 
-        $oldAdvices = UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
-            ->forMe($this->user)
-            ->forInputSource($masterInputSource)
-            ->forStep($step)
-            ->get();
-
-        // remove old results
-        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+        $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'heater-place-replace')->first();

@@ -16,6 +16,7 @@ use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Scopes\VisibleScope;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 
 class UserActionPlanAdviceService
 {
@@ -35,17 +36,32 @@ class UserActionPlanAdviceService
     /**
      * Method to delete the user action plan advices for a given user, input source and step.
      *
-     * @throws \Exception
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\InputSource  $inputSource
+     * @param  \App\Models\Step  $step
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public static function clearForStep(User $user, InputSource $inputSource, Step $step)
+    public static function clearForStep(User $user, InputSource $inputSource, Step $step): Collection
     {
+        // TODO: ensure correct input source is passed, or remove variable and ALWAYS use master
         $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
+        // Get old advices
+        $oldAdvices = UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
+            ->forMe($user)
+            ->forInputSource($inputSource)
+            ->forStep($step)
+            ->get();
+
+        // Delete old advices
         UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
             ->forMe($user)
             ->forInputSource($inputSource)
             ->forStep($step)
             ->delete();
+
+        return $oldAdvices;
     }
 
     /**

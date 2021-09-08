@@ -482,6 +482,18 @@ class ExampleBuildingService
                             )
                         );
                     }
+                    if ('user_interests' == $columnOrTable){
+                        foreach($values as $modelClass => $modelInterest){
+                            foreach($modelInterest as $id => $interest){
+                                $interestId = $interest['interest_id'] ?? null;
+
+                                if (!is_null($interestId)){
+                                    self::log("Setting interest ");
+
+                                }
+                            }
+                        }
+                    }
                     if ('tool_question_answers' == $columnOrTable) {
                         foreach ($values as $questionShort => $answers) {
                             if ( ! is_array($answers)) {

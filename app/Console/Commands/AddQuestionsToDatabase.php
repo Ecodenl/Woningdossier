@@ -949,7 +949,6 @@ class AddQuestionsToDatabase extends Command
                         [
                             [
                                 'column' => 'heat-source',
-                                'operator' => '=',
                                 'value' => 'hr-boiler',
                             ],
                         ],
@@ -974,7 +973,12 @@ class AddQuestionsToDatabase extends Command
                             ],
                         ],
                         [
-                            'validation' => ['nullable', 'numeric', 'between:1970,'.date('Y'),],
+                            'validation' => [
+                                'nullable',
+                                'numeric',
+                                'integer',
+                                'between:1970,'.date('Y'),
+                            ],
                             'save_in' => "building_services.{$boiler->id}.extra.date",
                             'short' => 'boiler-placed-date',
                             'translation' => "Wanneer is de gasketel geplaatst",
@@ -1233,7 +1237,6 @@ class AddQuestionsToDatabase extends Command
                             // was current-state -> Geinstalleerd vermogen (totaal)
                             'translation' => "Wanneer zijn de zonnepanelen geplaatst",
                             'placeholder' => 'Voer een jaartal in',
-                            'unit_of_measure' => 'WP',
                             'tool_question_type_id' => $textType->id,
                             'conditions' => [
                                 [

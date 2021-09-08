@@ -11,7 +11,9 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
+use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -19,6 +21,18 @@ use Livewire\Component;
 class Form extends Component
 {
     public array $cards = [
+        UserActionPlanAdviceService::CATEGORY_COMPLETE => [
+
+        ],
+        UserActionPlanAdviceService::CATEGORY_TO_DO => [
+
+        ],
+        UserActionPlanAdviceService::CATEGORY_LATER => [
+
+        ],
+    ];
+
+    public array $hiddenCards = [
         UserActionPlanAdviceService::CATEGORY_COMPLETE => [
 
         ],
@@ -134,47 +148,10 @@ class Form extends Component
                 ->orderBy('order')
                 ->get();
 
-            // Order in the DB could have gaps or duplicates. For safe use, we set the order ourselves
-            $order = 0;
-            foreach ($advices as $advice) {
-                $advisable = $advice->userActionPlanAdvisable;
-                if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
-                    $this->cards[$category][$order] = [
-                        'name' => Str::limit($advisable->measure_name, 22),
-                        'icon' => $this->iconMap[$advisable->short] ?? 'icon-tools',
-                        // TODO: Subsidy
-                        'subsidy' => $this->SUBSIDY_AVAILABLE,
-                        'info' => $advisable->measure_name,
-                        'route' => StepHelper::buildStepUrl($advisable->step),
-                    ];
-                } else {
-                    // Custom measure has input source so we must fetch the advisable from the master input source
-                    if ($advice->user_action_plan_advisable_type === CustomMeasureApplication::class) {
-                        $advisable = $advice->userActionPlanAdvisable()
-                            ->forInputSource($this->masterInputSource)
-                            ->first();
-                    }
-
-                    $this->cards[$category][$order] = [
-                        'name' => Str::limit($advisable->name, 22),
-                        'icon' => $advisable->extra['icon'] ?? 'icon-tools',
-                        // TODO: Subsidy
-                        'subsidy' => $this->SUBSIDY_UNKNOWN,
-                        'info' => $advisable->info,
-                    ];
-                }
-
-                $this->cards[$category][$order]['id'] = $advice->id;
-                $this->cards[$category][$order]['costs'] = [
-                    'from' => $advice->costs['from'] ?? null,
-                    'to' => $advice->costs['to'] ?? null,
-                ];
-                $this->cards[$category][$order]['savings'] = $advice->savings_money ?? 0;
-
-                ++$order;
-            }
+            $this->cards = array_merge($this->cards, $this->convertAdvicesToCards($advices, $category));
         }
 
+        $this->loadHiddenCards();
         $this->recalculate();
     }
 
@@ -444,5 +421,67 @@ class Form extends Component
                 }
             }
         }
+    }
+
+    private function loadHiddenCards()
+    {
+        foreach (UserActionPlanAdviceService::getCategories() as $category) {
+            $hiddenAdvices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
+                ->withoutGlobalScope(VisibleScope::class)
+                ->where('user_id', $this->building->user->id)
+                ->where('category', $category)
+                ->where('visible', false)
+                ->orderBy('order')
+                ->get();
+
+            $this->hiddenCards = array_merge($this->hiddenCards, $this->convertAdvicesToCards($hiddenAdvices, $category));
+        }
+    }
+
+    private function convertAdvicesToCards(Collection $advices, string $category): array
+    {
+        $cards = [];
+
+        // Order in the DB could have gaps or duplicates. For safe use, we set the order ourselves
+        $order = 0;
+        foreach ($advices as $advice) {
+            $advisable = $advice->userActionPlanAdvisable;
+            if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
+                $cards[$category][$order] = [
+                    'name' => Str::limit($advisable->measure_name, 22),
+                    'icon' => $this->iconMap[$advisable->short] ?? 'icon-tools',
+                    // TODO: Subsidy
+                    'subsidy' => $this->SUBSIDY_AVAILABLE,
+                    'info' => $advisable->measure_name,
+                    'route' => StepHelper::buildStepUrl($advisable->step),
+                ];
+            } else {
+                // Custom measure has input source so we must fetch the advisable from the master input source
+                if ($advice->user_action_plan_advisable_type === CustomMeasureApplication::class) {
+                    $advisable = $advice->userActionPlanAdvisable()
+                        ->forInputSource($this->masterInputSource)
+                        ->first();
+                }
+
+                $cards[$category][$order] = [
+                    'name' => Str::limit($advisable->name, 22),
+                    'icon' => $advisable->extra['icon'] ?? 'icon-tools',
+                    // TODO: Subsidy
+                    'subsidy' => $this->SUBSIDY_UNKNOWN,
+                    'info' => $advisable->info,
+                ];
+            }
+
+            $cards[$category][$order]['id'] = $advice->id;
+            $cards[$category][$order]['costs'] = [
+                'from' => $advice->costs['from'] ?? null,
+                'to' => $advice->costs['to'] ?? null,
+            ];
+            $cards[$category][$order]['savings'] = $advice->savings_money ?? 0;
+
+            ++$order;
+        }
+
+        return $cards;
     }
 }

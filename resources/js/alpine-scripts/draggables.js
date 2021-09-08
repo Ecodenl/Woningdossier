@@ -175,7 +175,6 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
         ['x-on:dragenter.prevent']() {
             if (null !== this.dragged) {
                 let eventTarget = this.$event.target;
-                this.lastEntered = eventTarget;
                 let target = this.getSupportedTarget(eventTarget);
 
                 if (null !== target) {
@@ -189,14 +188,12 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
                 let eventTarget = this.$event.target;
                 let target = this.getSupportedTarget(eventTarget);
 
-                // Enter triggers before leave. We check the last element that we entered. If it's not set, then we left
-                // the container and it should be reset
-                if (null !== target && null === this.lastEntered) {
+                // Unlike the containers, we don't need to be picky about the hover. There's no
+                // children.
+                if (null !== target) {
                     target.style.backgroundColor = '';
                     target.style.transform = 'scale(1)';
                 }
-
-                this.lastEntered = null
             }
         },
         ['x-on:dragover.prevent']() {
@@ -207,19 +204,24 @@ export default (supportedClasses = ['card-wrapper', 'trash'], hoverColor = 'rgba
                 let eventTarget = this.$event.target;
                 let target = this.getSupportedTarget(eventTarget);
 
-                let parentElement = this.dragged.parentElement;
-                // Remove dragged item from original parent
-                parentElement.removeChild(this.dragged);
+                if (null !== target) {
+                    target.style.backgroundColor = '';
+                    target.style.transform = 'scale(1)';
 
-                // Dispatch the item was removed position
-                let event = new CustomEvent('draggable-trashed', {
-                    detail: {
-                        from: parentElement,
-                        id: this.dragged.id,
-                    },
-                    bubbles: true,
-                });
-                dispatchEvent(event);
+                    let parentElement = this.dragged.parentElement;
+                    // Remove dragged item from original parent
+                    parentElement.removeChild(this.dragged);
+
+                    // Dispatch the item was removed position
+                    let event = new CustomEvent('draggable-trashed', {
+                        detail: {
+                            from: parentElement,
+                            id: this.dragged.id,
+                        },
+                        bubbles: true,
+                    });
+                    dispatchEvent(event);
+                }
             }
         },
     },

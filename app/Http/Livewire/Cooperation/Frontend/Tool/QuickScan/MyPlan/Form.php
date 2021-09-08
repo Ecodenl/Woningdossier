@@ -333,8 +333,14 @@ class Form extends Component
             $oldOrder = array_key_first($cardData);
             $movedCard = $cardData[$oldOrder];
 
-            \Log::debug($oldOrder);
-            \Log::debug($movedCard);
+            // Remove card from the list
+            unset($this->cards[$fromCategory][$oldOrder]);
+
+            // Set invisible
+            $userActionPlanAdvice = UserActionPlanAdvice::allInputSources()->find($id);
+            if ($userActionPlanAdvice instanceof UserActionPlanAdvice) {
+                $userActionPlanAdvice->update(['visible' => false]);
+            }
         }
     }
 

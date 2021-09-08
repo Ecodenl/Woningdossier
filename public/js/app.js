@@ -34301,7 +34301,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     trash: (_trash = {}, _defineProperty(_trash, 'x-on:dragenter.prevent', function xOnDragenterPrevent() {
       if (null !== this.dragged) {
         var eventTarget = this.$event.target;
-        this.lastEntered = eventTarget;
         var target = this.getSupportedTarget(eventTarget);
 
         if (null !== target) {
@@ -34312,33 +34311,36 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }), _defineProperty(_trash, 'x-on:dragleave', function xOnDragleave() {
       if (null !== this.dragged) {
         var eventTarget = this.$event.target;
-        var target = this.getSupportedTarget(eventTarget); // Enter triggers before leave. We check the last element that we entered. If it's not set, then we left
-        // the container and it should be reset
+        var target = this.getSupportedTarget(eventTarget); // Unlike the containers, we don't need to be picky about the hover. There's no
+        // children.
 
-        if (null !== target && null === this.lastEntered) {
+        if (null !== target) {
           target.style.backgroundColor = '';
           target.style.transform = 'scale(1)';
         }
-
-        this.lastEntered = null;
       }
     }), _defineProperty(_trash, 'x-on:dragover.prevent', function xOnDragoverPrevent() {// This needs to be prevented, else drop doesn't work
     }), _defineProperty(_trash, 'x-on:drop.prevent', function xOnDropPrevent() {
       if (null !== this.dragged) {
         var eventTarget = this.$event.target;
         var target = this.getSupportedTarget(eventTarget);
-        var parentElement = this.dragged.parentElement; // Remove dragged item from original parent
 
-        parentElement.removeChild(this.dragged); // Dispatch the item was removed position
+        if (null !== target) {
+          target.style.backgroundColor = '';
+          target.style.transform = 'scale(1)';
+          var parentElement = this.dragged.parentElement; // Remove dragged item from original parent
 
-        var event = new CustomEvent('draggable-trashed', {
-          detail: {
-            from: parentElement,
-            id: this.dragged.id
-          },
-          bubbles: true
-        });
-        dispatchEvent(event);
+          parentElement.removeChild(this.dragged); // Dispatch the item was removed position
+
+          var event = new CustomEvent('draggable-trashed', {
+            detail: {
+              from: parentElement,
+              id: this.dragged.id
+            },
+            bubbles: true
+          });
+          dispatchEvent(event);
+        }
       }
     }), _trash),
     getSupportedTarget: function getSupportedTarget(element) {
@@ -35563,13 +35565,13 @@ Object(mobile_drag_drop__WEBPACK_IMPORTED_MODULE_12__["polyfill"])({});
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/js/app.js */"./resources/js/app.js");
-__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/admin/app.scss */"./resources/sass/admin/app.scss");
-__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/pdf.scss */"./resources/sass/pdf.scss");
-__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/admin/datatables/_responsive_bootstrap.scss */"./resources/sass/admin/datatables/_responsive_bootstrap.scss");
-__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/admin/datatables/_responsive_datatables.scss */"./resources/sass/admin/datatables/_responsive_datatables.scss");
-__webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/sass/admin/datatables/_dataTables_bootstrap.scss */"./resources/sass/admin/datatables/_dataTables_bootstrap.scss");
-module.exports = __webpack_require__(/*! /Users/pvankouteren/WeDesignIt/PhpStormProjects/Woningdossier/resources/css/frontend/app.css */"./resources/css/frontend/app.css");
+__webpack_require__(/*! /var/www/html/resources/js/app.js */"./resources/js/app.js");
+__webpack_require__(/*! /var/www/html/resources/sass/admin/app.scss */"./resources/sass/admin/app.scss");
+__webpack_require__(/*! /var/www/html/resources/sass/pdf.scss */"./resources/sass/pdf.scss");
+__webpack_require__(/*! /var/www/html/resources/sass/admin/datatables/_responsive_bootstrap.scss */"./resources/sass/admin/datatables/_responsive_bootstrap.scss");
+__webpack_require__(/*! /var/www/html/resources/sass/admin/datatables/_responsive_datatables.scss */"./resources/sass/admin/datatables/_responsive_datatables.scss");
+__webpack_require__(/*! /var/www/html/resources/sass/admin/datatables/_dataTables_bootstrap.scss */"./resources/sass/admin/datatables/_dataTables_bootstrap.scss");
+module.exports = __webpack_require__(/*! /var/www/html/resources/css/frontend/app.css */"./resources/css/frontend/app.css");
 
 
 /***/ })

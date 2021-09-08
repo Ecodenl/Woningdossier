@@ -108,11 +108,11 @@
             </form>
         @endcomponent
     </div>
-    <div class="w-full flex flex-wrap flex-row justify-center items-center">
-        <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 px-3 lg:px-8"
-             x-data="draggables()"
-             x-on:draggable-dragged.window="livewire.emit('cardMoved', $event.detail.from.getAttribute('data-category'), $event.detail.to.getAttribute('data-category'), $event.detail.id, $event.detail.order)"
-             x-on:draggable-trashed.window="livewire.emit('cardTrashed', $event.detail.from.getAttribute('data-category'), $event.detail.id)">
+    <div class="w-full flex flex-wrap flex-row justify-center items-center"
+         x-data="draggables()"
+         x-on:draggable-dragged.window="livewire.emit('cardMoved', $event.detail.from.getAttribute('data-category'), $event.detail.to.getAttribute('data-category'), $event.detail.id, $event.detail.order)"
+         x-on:draggable-trashed.window="livewire.emit('cardTrashed', $event.detail.from.getAttribute('data-category'), $event.detail.id)">
+        <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 px-3 lg:px-8">
             @foreach($cards as $cardCategory => $cardCollection)
                 <div class="card-wrapper" x-bind="container" data-category="{{$cardCategory}}">
                     @foreach($cardCollection as $order => $card)
@@ -173,9 +173,9 @@
                 </div>
             @endforeach
         </div>
-{{--        <div class="w-full flex flex-wrap flex-row justify-center items-center py-8 mt-5">--}}
-{{--            <i class="icon-xl icon-error-cross p-4 rounded-lg transition delay-500 trash" x-bind="trash"></i>--}}
-{{--        </div>--}}
+        <div class="w-full flex flex-wrap flex-row justify-center items-center py-8 mt-5">
+            <i class="icon-xl icon-error-cross p-4 rounded-lg transition duration-500 trash" x-bind="trash"></i>
+        </div>
     </div>
     <div class="w-full grid grid-rows-2 grid-cols-3 lg:grid-rows-1 lg:grid-cols-6 grid-flow-row gap-3 mt-5 px-3 py-8 lg:px-8 content-center border-t-2 border-b-2 border-blue-500 border-opacity-10">
         <div class="w-full flex flex-wrap items-center space-x-3">

@@ -308,16 +308,18 @@ class Form extends Component
 
         if (! empty($cardData)) {
             $oldOrder = array_key_first($cardData);
-            $movedCard = $cardData[$oldOrder];
+            $trashedCard = $cardData[$oldOrder];
 
             // Remove card from the list
             unset($this->cards[$fromCategory][$oldOrder]);
 
+            // Add card to hidden cards
+            $this->hiddenCards[$fromCategory][] = $trashedCard;
+
             // Set invisible
-            $userActionPlanAdvice = UserActionPlanAdvice::allInputSources()->find($id);
-            if ($userActionPlanAdvice instanceof UserActionPlanAdvice) {
-                $userActionPlanAdvice->update(['visible' => false]);
-            }
+            $this->updateAdvice($id, ['visible' => false]);
+
+            $this->recalculate();
         }
     }
 
@@ -420,6 +422,32 @@ class Form extends Component
                     ]);
                 }
             }
+        }
+    }
+
+    public function addHiddenCardToBoard($category, $id)
+    {
+        $cardData = Arr::where($this->hiddenCards[$category], function ($card, $order) use ($id) {
+            return $card['id'] == $id;
+        });
+
+        if (! empty($cardData)) {
+            $oldOrder = array_key_first($cardData);
+            $addedCard = $cardData[$oldOrder];
+
+            // Remove card from the original category
+            unset($this->hiddenCards[$category][$oldOrder]);
+
+            // Add moved card into new category
+            $cards = $this->cards[$category];
+            $newOrder = count($cards);
+            $cards[$newOrder] = $addedCard;
+            $this->cards[$category] = $cards;
+
+            // Set visible and on new place
+            $this->updateAdvice($id, ['visible' => true, 'order' => $newOrder]);
+
+            $this->recalculate();
         }
     }
 

@@ -238,14 +238,14 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['numeric', 'between:1900,' . date('Y')],
+                            'validation' => ['numeric', 'integer', 'between:1900,' . date('Y')],
                             'save_in' => 'building_features.build_year',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.build-year',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 1900, 'max' => date('Y'), 'value' => 1930, 'step' => 1],
                         ],
                         [
-                            'validation' => ['numeric', 'between:1,5'],
+                            'validation' => ['numeric', 'integer', 'between:1,5'],
                             'save_in' => 'building_features.building_layers',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.building-layers',
                             'tool_question_type_id' => $sliderType->id,

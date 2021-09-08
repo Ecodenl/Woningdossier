@@ -20,6 +20,7 @@ use App\Models\User;
 use App\Scopes\GetValueScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class CsvService
 {
@@ -323,24 +324,21 @@ class CsvService
                 // note the order, this is important.
                 // otherwise the data will be retrieved in a different order each time and that will result in mixed data in the rows
                 $questionAnswersForCurrentQuestionnaire =
-                    \DB::table('questionnaires')
+                    DB::table('questionnaires')
                         ->where('questionnaires.id', $questionnaire->id)
                         ->join('questions', 'questionnaires.id', '=', 'questions.questionnaire_id')
                         // this may cause weird results, but meh
                         ->whereNull('questions.deleted_at')
-                        ->leftJoin('translations', function ($leftJoin) {
-                            $leftJoin->on('questions.name', '=', 'translations.key')
-                                ->where('language', '=', app()->getLocale());
-                        })
                         ->leftJoin('questions_answers',
                             function ($leftJoin) use ($building, $inputSource) {
                                 $leftJoin->on('questions.id', '=', 'questions_answers.question_id')
                                     ->where('questions_answers.input_source_id', $inputSource->id)
                                     ->where('questions_answers.building_id', '=', $building->id);
                             })
-                        ->select('questions_answers.answer', 'questions.id as question_id', 'translations.translation as question_name', 'questions.deleted_at')
+                        ->select('questions_answers.answer', 'questions.id as question_id', 'questions.name as question_name', 'questions.deleted_at')
                         ->orderBy('questions.order')
-                        ->get();
+                        ->get()->pullTranslationFromJson('question_name');
+
 
                 foreach ($questionAnswersForCurrentQuestionnaire as $questionAnswerForCurrentQuestionnaire) {
                     $answer = $questionAnswerForCurrentQuestionnaire->answer;

@@ -793,14 +793,14 @@ class AddQuestionsToDatabase extends Command
                     ]
                 ],
                 // TODO: Niet van toepassing is niet zichtbaar in het design
-                'Glasisolatie eerste woonlaag' => [
+                'Glasisolatie' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
                             'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_elements.{$livingRoomsWindows->id}.element_value_id",
-                            'short' => 'current-living-rooms-windows',
-                            'translation' => "Welke glassoort heeft u in de woonruimtes",
+                            'short' => 'least-insulating-glass-type',
+                            'translation' => "Wat is de minst isolerende glassoort in het huis?",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $livingRoomsWindows->values()->orderBy('order')->get(),
                             'extra' => [
@@ -817,37 +817,6 @@ class AddQuestionsToDatabase extends Command
                                     ],
                                     3 => [
                                         'icon' => 'icon-glass-hr-tp',
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ]
-                ],
-                // TODO: Meer glas opties in design dan in de database
-                'Glasisolatie tweede woonlaag' => [
-                    'sub_step_template_id' => $templateDefault->id,
-                    'questions' => [
-                        [
-                            'validation' => ['required', 'exists:element_values,id'],
-                            'save_in' => "building_elements.{$sleepingRoomsWindows->id}.element_value_id",
-                            'short' => 'current-living-rooms-windows',
-                            'translation' => "Welke glassoort heeft u in de slaapruimtes",
-                            'tool_question_type_id' => $radioIconType->id,
-                            'tool_question_values' => $sleepingRoomsWindows->values()->orderBy('order')->get(),
-                            'extra' => [
-                                'column' => 'order',
-                                'data' => [
-                                    0 => [
-                                        'icon' => 'icon-glass-single',
-                                    ],
-                                    1 => [
-                                        'icon' => 'icon-glass-double',
-                                    ],
-                                    2 => [
-                                        'icon' => 'icon-glass-hr-dp',
-                                    ],
-                                    3 => [
-                                        'icon' => 'icon-glass-hr-tp', // TODO: Drievoudig glas, is dat hetzelfde als hr+++?
                                     ],
                                 ],
                             ],

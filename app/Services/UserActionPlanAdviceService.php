@@ -496,7 +496,7 @@ class UserActionPlanAdviceService
 
             // Define category based on example building interest if available
             $interest = static::getInterestForMeasure($userActionPlanAdvice->user, $advisable);
-            if (false){//$interest instanceof Interest) {
+            if ($interest instanceof Interest) {
                 $category = $interestMap[$interest->calculate_value];
             } else {
                 // No interest defined. We need to check if the measure is available for the user...

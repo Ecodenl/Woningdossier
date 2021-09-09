@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\Conditions\Clause;
 use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Models\BuildingHeating;
@@ -237,14 +238,14 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['numeric', 'between:1900,' . date('Y')],
+                            'validation' => ['numeric', 'integer', 'between:1900,' . date('Y')],
                             'save_in' => 'building_features.build_year',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.build-year',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 1900, 'max' => date('Y'), 'value' => 1930, 'step' => 1],
                         ],
                         [
-                            'validation' => ['numeric', 'between:1,5'],
+                            'validation' => ['numeric', 'integer', 'between:1,5'],
                             'save_in' => 'building_features.building_layers',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.building-layers',
                             'tool_question_type_id' => $sliderType->id,
@@ -868,13 +869,58 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
+                'Warmtepomp' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
+                        ],
+                    ],
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:element_values,id'],
+                            'save_in' => "building_services.{$heatPump->id}.service_value_id",
+                            'short' => 'heat-pump-type',
+                            'translation' => "Heeft u een warmtepomp?",
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    1 => [],
+                                    2 => [],
+                                    3 => [],
+                                    4 => [],
+                                    5 => [],
+                                ],
+                            ],
+                        ],
+                        [
+                            'validation' => [
+                                // required when the heat pump is available
+                                "required_if:building_services.{$heatPump->id}.service_value_id,!=,".$heater->values()->where('calculate_value', 1)->first()->id,
+                                'numeric',
+                                'integer',
+                                'between:1900,' . date('Y')
+                            ],
+                            'short' => 'heat-pump-placed-date',
+                            'placeholder' => 'Voer een jaartal in',
+                            'translation' => "Wanneer is de warmtepomp geplaatst?",
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                    ]
+                ],
                 'Gasketel vragen' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'conditions' => [
                         [
                             [
                                 'column' => 'heat-source',
-                                'operator' => '=',
+                                'operator' => Clause::CONTAINS,
                                 'value' => 'hr-boiler',
                             ],
                         ],
@@ -899,7 +945,12 @@ class AddQuestionsToDatabase extends Command
                             ],
                         ],
                         [
-                            'validation' => ['nullable', 'numeric', 'between:1970,'.date('Y'),],
+                            'validation' => [
+                                'nullable',
+                                'numeric',
+                                'integer',
+                                'between:1970,'.date('Y'),
+                            ],
                             'save_in' => "building_services.{$boiler->id}.extra.date",
                             'short' => 'boiler-placed-date',
                             'translation' => "Wanneer is de gasketel geplaatst",
@@ -988,49 +1039,6 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                'Warmtepomp' => [
-                    'sub_step_template_id' => $templateDefault->id,
-                    'conditions' => [
-                        [
-                            [
-                                'column' => 'heat-source',
-                                'value' => 'heat-pump',
-                            ],
-                        ],
-                    ],
-                    'questions' => [
-                        [
-                            'validation' => ['required', 'exists:element_values,id'],
-                            'save_in' => "building_services.{$heatPump->id}.service_value_id",
-                            'short' => 'heat-pump-type',
-                            'translation' => "Heeft u een warmtepomp?",
-                            'tool_question_type_id' => $radioType->id,
-                            'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
-                            'extra' => [
-                                'column' => 'calculate_value',
-                                'data' => [
-                                    1 => [],
-                                    2 => [],
-                                    3 => [],
-                                    4 => [],
-                                    5 => [],
-                                ],
-                            ],
-                        ],
-                        [
-                            'validation' => [
-                                // required when the heat pump is available
-                                "required_if:building_services.{$heatPump->id}.service_value_id,!=,".$heater->values()->where('calculate_value', 1)->first()->id,
-                                'numeric',
-                                'between:1900,' . date('Y')
-                            ],
-                            'short' => 'heat-pump-placed-date',
-                            'placeholder' => 'Voer een jaartal in',
-                            'translation' => "Wanneer is de warmtepomp geplaatst?",
-                            'tool_question_type_id' => $textType->id,
-                        ],
-                    ]
-                ],
                 'Ventilatie' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -1079,8 +1087,8 @@ class AddQuestionsToDatabase extends Command
                         [
                             [
                                 'column' => 'ventilation-type',
-                                'operator' => '!=',
-                                'value' => 20, // Natuurlijke ventilatie TODO: Convert to DB statement
+                                'operator' => Clause::NEQ,
+                                'value' => $ventilation->values()->where('calculate_value', 1)->first()->id, // Natuurlijke ventilatie
                             ],
                         ],
                     ],
@@ -1124,8 +1132,8 @@ class AddQuestionsToDatabase extends Command
                                 [
                                     [
                                         'column' => 'ventilation-type',
-                                        'operator' => '!=',
-                                        'value' => 21, // Mechanische ventilatie TODO: Convert to DB statement
+                                        'operator' => Clause::NEQ,
+                                        'value' => $ventilation->values()->where('calculate_value', 2)->first()->id, // Mechanische ventilatie
                                     ],
                                 ],
                             ],
@@ -1166,7 +1174,7 @@ class AddQuestionsToDatabase extends Command
                                 [
                                     [
                                         'column' => 'has-solar-panels',
-                                        'operator' => '=',
+                                        'operator' => Clause::EQ,
                                         'value' => 'yes',
                                     ]
                                 ],
@@ -1183,7 +1191,7 @@ class AddQuestionsToDatabase extends Command
                                 [
                                     [
                                         'column' => 'has-solar-panels',
-                                        'operator' => '=',
+                                        'operator' => Clause::EQ,
                                         'value' => 'yes',
                                     ],
                                 ],
@@ -1201,13 +1209,12 @@ class AddQuestionsToDatabase extends Command
                             // was current-state -> Geinstalleerd vermogen (totaal)
                             'translation' => "Wanneer zijn de zonnepanelen geplaatst",
                             'placeholder' => 'Voer een jaartal in',
-                            'unit_of_measure' => 'WP',
                             'tool_question_type_id' => $textType->id,
                             'conditions' => [
                                 [
                                     [
                                         'column' => 'has-solar-panels',
-                                        'operator' => '=',
+                                        'operator' => Clause::EQ,
                                         'value' => 'yes',
                                     ],
                                 ],

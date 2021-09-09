@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\Arr;
 use App\Helpers\Calculator;
 use App\Helpers\Number;
 use App\Helpers\NumberFormatter;
@@ -495,7 +496,7 @@ class UserActionPlanAdviceService
 
             // Define category based on example building interest if available
             $interest = static::getInterestForMeasure($userActionPlanAdvice->user, $advisable);
-            if ($interest instanceof Interest) {
+            if (false){//$interest instanceof Interest) {
                 $category = $interestMap[$interest->calculate_value];
             } else {
                 // No interest defined. We need to check if the measure is available for the user...
@@ -561,13 +562,26 @@ class UserActionPlanAdviceService
                 'ventilation-demand-driven' => 'ventilation',
             ];
 
-            switch ($categorization) {
+            $logicShort = $categorization[$measureApplication->short];
+            switch ($logicShort) {
                 case 'insulation':
-                    $relevantQuestion = ToolQuestion::findByShort('current-floor-insulation');
+                    // Multiple types of insulation, we check based on measure which question is relevant
+                    $floorShorts = ['floor-insulation', 'bottom-insulation', 'floor-insulation-research'];
+                    $wallShorts = ['cavity-wall-insulation', 'facade-wall-insulation', 'wall-insulation-research'];
+                    $roofShorts = [
+                        'roof-insulation-pitched-inside', 'roof-insulation-pitched-replace-tiles',
+                        'roof-insulation-flat-current', 'roof-insulation-flat-replace-current',
+                    ];
+
+                    // Define tool question based on the measure short
+                    $toolQuestionShort = in_array($measureApplication->short, $floorShorts) ? 'current-floor-insulation'
+                        : (in_array($measureApplication->short, $wallShorts) ? 'current-wall-insulation'
+                            : 'current-roof-insulation');
+
+                    $relevantQuestion = ToolQuestion::findByShort($toolQuestionShort);
                     if ($relevantQuestion instanceof ToolQuestion) {
                         $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
                         $elementValue = ElementValue::find($answer);
-
                         if ($elementValue instanceof ElementValue) {
                             // If the value is 1 or 2 (onbekend, geen), we want it in to-do
                             // If it's "niet van toepassing" it should be hidden, so we don't worry about it
@@ -595,7 +609,7 @@ class UserActionPlanAdviceService
                     if (! empty($answers)) {
                         // Sort by order
                         asort($answers);
-                        $lowestOrder = array_key_first($answers);
+                        $lowestOrder = Arr::first($answers);
                         // Ensure it's numeric. Never leave anything to chance
                         $lowestOrder = is_numeric($lowestOrder) ? $lowestOrder : 0;
 
@@ -633,7 +647,6 @@ class UserActionPlanAdviceService
 
                                 if (is_numeric($answer)) {
                                     $diff = now()->format('Y') - $answer;
-
                                     // If it's not 10 years old, it's complete
                                     // If it's between 10 and 13, it's later
                                     // If it's older than 13 years, it's to-do

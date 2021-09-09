@@ -324,7 +324,7 @@ class AddQuestionsToDatabase extends Command
                             'tool_question_type_id' => $textType->id,
                         ],
 //                        [
-//                             todo: find the right column to save this at, this is "zijn er nog bijzonderheden oevr de woning"
+//                             todo: find the right column to save this at, this is "zijn er nog bijzonderheden over de woning"
 //                            'validation' => ['numeric', 'min:20', 'max:999999'],
 //                            'save_in' => 'building_features.surface',
 //                            'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface',
@@ -756,7 +756,6 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // TODO: Niet van toepassing is niet zichtbaar in het design
                 'Dakisolatie' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -793,8 +792,37 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // TODO: Niet van toepassing is niet zichtbaar in het design
-                'Glasisolatie' => [
+//                'Glasisolatie' => [
+//                    'sub_step_template_id' => $templateDefault->id,
+//                    'questions' => [
+//                        [
+//                            'validation' => ['required', 'exists:element_values,id'],
+//                            'save_in' => "building_elements.{$livingRoomsWindows->id}.element_value_id",
+//                            'short' => 'least-insulating-glass-type',
+//                            'translation' => "Wat is de minst isolerende glassoort in het huis?",
+//                            'tool_question_type_id' => $radioIconType->id,
+//                            'tool_question_values' => $livingRoomsWindows->values()->orderBy('order')->get(),
+//                            'extra' => [
+//                                'column' => 'order',
+//                                'data' => [
+//                                    0 => [
+//                                        'icon' => 'icon-glass-single',
+//                                    ],
+//                                    1 => [
+//                                        'icon' => 'icon-glass-double',
+//                                    ],
+//                                    2 => [
+//                                        'icon' => 'icon-glass-hr-dp',
+//                                    ],
+//                                    3 => [
+//                                        'icon' => 'icon-glass-hr-tp',
+//                                    ],
+//                                ],
+//                            ],
+//                        ],
+//                    ]
+//                ],
+                'Glasisolatie eerste woonlaag' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
@@ -824,7 +852,36 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // TODO: Meer glas opties in design dan in de database
+                'Glasisolatie tweede woonlaag' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:element_values,id'],
+                            'save_in' => "building_elements.{$sleepingRoomsWindows->id}.element_value_id",
+                            'short' => 'current-living-rooms-windows',
+                            'translation' => "Welke glassoort heeft u in de slaapruimtes",
+                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_values' => $sleepingRoomsWindows->values()->orderBy('order')->get(),
+                            'extra' => [
+                                'column' => 'order',
+                                'data' => [
+                                    0 => [
+                                        'icon' => 'icon-glass-single',
+                                    ],
+                                    1 => [
+                                        'icon' => 'icon-glass-double',
+                                    ],
+                                    2 => [
+                                        'icon' => 'icon-glass-hr-dp',
+                                    ],
+                                    3 => [
+                                        'icon' => 'icon-glass-hr-tp',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
+                ],
                 'Verwarming' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -1008,7 +1065,6 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // TODO: Meer/andere opties in design dan in database
                 'Zonnenboiler' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -1060,7 +1116,6 @@ class AddQuestionsToDatabase extends Command
                                 ],
                             ],
                         ],
-                        // TODO: Andere opties in design dan in database
                         [
                             'save_in' => "building_elements.{$crackSealing->id}.element_value_id",
                             'validation' => ['required', "exists:element_values,id",],

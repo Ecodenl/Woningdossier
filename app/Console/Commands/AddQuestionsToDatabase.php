@@ -240,6 +240,7 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
+                            // TODO: Date is static, should be dynamic... (counts for other questions too)
                             'validation' => ['numeric', 'integer', 'between:1900,' . date('Y')],
                             'save_in' => 'building_features.build_year',
                             'short' => 'build-year',
@@ -873,7 +874,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_elements.{$sleepingRoomsWindows->id}.element_value_id",
-                            'short' => 'current-living-rooms-windows',
+                            'short' => 'current-sleeping-rooms-windows',
                             'translation' => "Welke glassoort heeft u in de slaapruimtes?",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $sleepingRoomsWindows->values()->orderBy('order')->get(),

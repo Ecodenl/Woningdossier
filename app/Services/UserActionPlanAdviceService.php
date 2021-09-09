@@ -6,11 +6,16 @@ use App\Helpers\Calculator;
 use App\Helpers\Number;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
+use App\Models\Building;
+use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\RoofType;
+use App\Models\ServiceValue;
 use App\Models\Step;
+use App\Models\ToolQuestion;
+use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserInterest;
@@ -19,6 +24,7 @@ use App\Scopes\VisibleScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceService
 {
@@ -446,7 +452,7 @@ class UserActionPlanAdviceService
                 5 => true,
             ];
             // Define visible based on example building interest if available
-            $interest = static::getExampleBuildingInterestForMeasure($userActionPlanAdvice->user, $advisable);
+            $interest = static::getInterestForMeasure($userActionPlanAdvice->user, $advisable);
             if ($interest instanceof Interest) {
                 $visible = $interestMap[$interest->calculate_value];
             } elseif ($advisable->measure_type === MeasureApplication::MAINTENANCE) {
@@ -488,25 +494,29 @@ class UserActionPlanAdviceService
             ];
 
             // Define category based on example building interest if available
-            $interest = static::getExampleBuildingInterestForMeasure($userActionPlanAdvice->user, $advisable);
+            $interest = static::getInterestForMeasure($userActionPlanAdvice->user, $advisable);
             if ($interest instanceof Interest) {
                 $category = $interestMap[$interest->calculate_value];
             } else {
-                 // No interest defined. We need to check if the measure is available for the user...
+                // No interest defined. We need to check if the measure is available for the user...
+                $building = $userActionPlanAdvice->user->building;
 
-                // TODO: Map measure to user context.
+                // Chance of a building not being set is small, but not impossible!
+                if ($building instanceof Building) {
+                    $category = static::getCategoryFromMeasure($building, $advisable);
+                }
             }
         }
 
         $userActionPlanAdvice->category = $category;
     }
 
-    public static function getExampleBuildingInterestForMeasure(User $user, MeasureApplication $measureApplication)
+    public static function getInterestForMeasure(User $user, MeasureApplication $measureApplication)
     {
-        // Let's get the example building input source. We need this for interests
-        $exampleBuildingInputSource = InputSource::findByShort(InputSource::EXAMPLE_BUILDING);
+        // Let's get the master input source. We need this for interests
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-        $userInterest = UserInterest::forInputSource($exampleBuildingInputSource)
+        $userInterest = UserInterest::forInputSource($masterInputSource)
             ->where('user_id', $user->id)
             ->has('interest')
             ->whereHasMorph('interestedIn',
@@ -518,5 +528,226 @@ class UserActionPlanAdviceService
             ->first();
 
         return optional($userInterest)->interest;
+    }
+
+    public static function getCategoryFromMeasure(Building $building, MeasureApplication $measureApplication): string
+    {
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
+        // We only allow energy saving measures
+        if ($measureApplication->measure_type === MeasureApplication::ENERGY_SAVING) {
+            // Measures have their own category logic...
+            $categorization = [
+                'floor-insulation' => 'insulation',
+                'bottom-insulation' => 'insulation',
+                'floor-insulation-research' => 'insulation',
+                'cavity-wall-insulation' => 'insulation',
+                'facade-wall-insulation' => 'insulation',
+                'wall-insulation-research' => 'insulation',
+                'glass-in-lead' => 'glass',
+                'hrpp-glass-only' => 'glass',
+                'hrpp-glass-frames' => 'glass',
+                'hr3p-frames' => 'glass',
+                'crack-sealing' => 'crack-sealing',
+                'roof-insulation-pitched-inside' => 'insulation',
+                'roof-insulation-pitched-replace-tiles' => 'insulation',
+                'roof-insulation-flat-current' => 'insulation',
+                'roof-insulation-flat-replace-current' => 'insulation',
+                'high-efficiency-boiler-replace' => 'hr-boiler',
+                'heater-place-replace' => 'sun-boiler',
+                'solar-panels-place-replace' => 'solar-panels',
+                'ventilation-balanced-wtw' => 'ventilation',
+                'ventilation-decentral-wtw' => 'ventilation',
+                'ventilation-demand-driven' => 'ventilation',
+            ];
+
+            switch ($categorization) {
+                case 'insulation':
+                    $relevantQuestion = ToolQuestion::findByShort('current-floor-insulation');
+                    if ($relevantQuestion instanceof ToolQuestion) {
+                        $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
+                        $elementValue = ElementValue::find($answer);
+
+                        if ($elementValue instanceof ElementValue) {
+                            // If the value is 1 or 2 (onbekend, geen), we want it in to-do
+                            // If it's "niet van toepassing" it should be hidden, so we don't worry about it
+                            $category = $elementValue->calculate_value > 2 ? static::CATEGORY_COMPLETE
+                                : static::CATEGORY_TO_DO;
+                        }
+                    }
+                    break;
+
+                case 'glass':
+                    $relevantQuestions = ToolQuestion::findByShorts([
+                        'current-living-rooms-windows', 'current-sleeping-rooms-windows',
+                    ]);
+                    $answers = [];
+                    foreach ($relevantQuestions as $relevantQuestion) {
+                        $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
+                        $elementValue = ElementValue::find($answer);
+
+                        if ($elementValue instanceof ElementValue) {
+                            // Glass has no calculate value... we use the order
+                            $answers[$relevantQuestion->short] = $elementValue->order;
+                        }
+                    }
+
+                    if (! empty($answers)) {
+                        // Sort by order
+                        asort($answers);
+                        $lowestOrder = array_key_first($answers);
+                        // Ensure it's numeric. Never leave anything to chance
+                        $lowestOrder = is_numeric($lowestOrder) ? $lowestOrder : 0;
+
+                        // We grab the lowest order. If this is "dubbelglas" or worse, we need to add it to to-do
+                        // We don't need to check the second value. If the value is better than "dubbelglas", then
+                        // it's complete
+                        $category = $lowestOrder > 1 ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
+                    }
+                    break;
+
+                case 'crack-sealing':
+                    $relevantQuestion = ToolQuestion::findByShort('crack-sealing-type');
+                    if ($relevantQuestion instanceof ToolQuestion) {
+                        $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
+                        $elementValue = ElementValue::find($answer);
+
+                        if ($elementValue instanceof ElementValue) {
+                            // If available, it's complete. Calculate value 1 and 2 are "ja".
+                            $category = $elementValue->calculate_value > 2 ? static::CATEGORY_TO_DO
+                                : static::CATEGORY_COMPLETE;
+                        }
+                    }
+                    break;
+
+                case 'hr-boiler':
+                    // We first need to check if HR-boiler has been selected as option
+                    $hasBoilerQuestion = ToolQuestion::findByShort('heat-source');
+                    if ($hasBoilerQuestion instanceof ToolQuestion) {
+                        $answer = $building->getAnswer($masterInputSource, $hasBoilerQuestion);
+                        if (is_array($answer) && in_array('hr-boiler', $answer)) {
+                            // The user has a boiler, let's see if there's an age for it
+                            $ageQuestion = ToolQuestion::findByShort('boiler-placed-date');
+                            if ($ageQuestion instanceof ToolQuestion) {
+                                $answer = $building->getAnswer($masterInputSource, $ageQuestion);
+
+                                if (is_numeric($answer)) {
+                                    $diff = now()->format('Y') - $answer;
+
+                                    // If it's not 10 years old, it's complete
+                                    // If it's between 10 and 13, it's later
+                                    // If it's older than 13 years, it's to-do
+                                    $category = $diff < 10 ? static::CATEGORY_COMPLETE
+                                        : ($diff >= 13 ? static::CATEGORY_TO_DO : static::CATEGORY_LATER);
+                                } else {
+                                    // No placing date available. We will assume it's fine
+                                    $category = static::CATEGORY_COMPLETE;
+                                }
+                            }
+                        }
+                    }
+                    break;
+
+                case 'sun-boiler':
+                    $hasSunBoilerQuestion = ToolQuestion::findByShort('heater-type');
+                    if ($hasSunBoilerQuestion instanceof ToolQuestion) {
+                        $answer = $building->getAnswer($masterInputSource, $hasSunBoilerQuestion);
+                        $serviceValue = ServiceValue::find($answer);
+
+                        if ($serviceValue instanceof ServiceValue) {
+                            // If the value is 1 (geen), we want it in to-do
+                            $category = $serviceValue->calculate_value > 1 ? static::CATEGORY_COMPLETE
+                                : static::CATEGORY_TO_DO;
+                        }
+                    }
+                    break;
+
+                case 'solar-panels':
+                    // We first need to check if the user has solar panels
+                    $hasPanelsQuestion = ToolQuestion::findByShort('has-solar-panels');
+                    if ($hasPanelsQuestion instanceof ToolQuestion) {
+                        $answer = $building->getAnswer($masterInputSource, $hasPanelsQuestion);
+                        $toolQuestionCustomValue = $hasPanelsQuestion->toolQuestionCustomValues()
+                            ->where('short', $answer)
+                            ->first();
+
+                        if ($toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
+                            if ($toolQuestionCustomValue->short === 'no') {
+                                // No panels
+                                $category = static::CATEGORY_TO_DO;
+                            } else {
+                                // The user has solar panels, let's see if there's an age for it
+                                $ageQuestion = ToolQuestion::findByShort('solar-panels-placed-date');
+                                if ($ageQuestion instanceof ToolQuestion) {
+                                    $answer = $building->getAnswer($masterInputSource, $ageQuestion);
+
+                                    if (is_numeric($answer)) {
+                                        $diff = now()->format('Y') - $answer;
+
+                                        // If it's not 25 years old, it's complete
+                                        // Else it's to-do
+                                        $category = $diff < 25 ? static::CATEGORY_COMPLETE : static::CATEGORY_TO_DO;
+                                    } else {
+                                        // No placing date available. We will assume it's fine
+                                        $category = static::CATEGORY_COMPLETE;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+
+                case 'ventilation':
+                    $relevantQuestion = ToolQuestion::findByShort('ventilation-type');
+                    if ($relevantQuestion instanceof ToolQuestion) {
+                        $answer = $building->getAnswer($masterInputSource, $relevantQuestion);
+                        $serviceValue = ServiceValue::find($answer);
+
+                        if ($serviceValue instanceof ServiceValue) {
+                            // Logic for ventilation is based on the type.
+                            switch ($serviceValue->calculate_value) {
+                                case 1:
+                                    // Natural ventilation, always to do
+                                    $category = static::CATEGORY_TO_DO;
+                                    break;
+
+                                case 2:
+                                    // Mechanical ventilation, only has one measure (demand-driven)
+                                    // We check the current demand-driven logic. If it's true, it's complete
+                                    // (Logically then the measure won't be added, but we still want to categorize
+                                    // as properly as possible)
+                                    $demandDrivenQuestion = ToolQuestion::findByShort('ventilation-demand-driven');
+                                    if ($demandDrivenQuestion instanceof ToolQuestion) {
+                                        $answer = $building->getAnswer($masterInputSource, $demandDrivenQuestion);
+                                        // False and null and 0 are empty. We check if it's empty, because then we
+                                        // assume it's no
+                                        $category = empty($answer) ? static::CATEGORY_TO_DO : static::CATEGORY_COMPLETE;
+                                    }
+                                    break;
+
+                                case 3:
+                                case 4:
+                                    // Balanced and decentral ventilation have a measure for heat recovery
+                                    // We can apply the same logic
+                                    $heatRecoveryQuestion = ToolQuestion::findByShort('ventilation-heat-recovery');
+                                    if ($heatRecoveryQuestion instanceof ToolQuestion) {
+                                        $answer = $building->getAnswer($masterInputSource, $heatRecoveryQuestion);
+                                        // False and null and 0 are empty. We check if it's empty, because then we
+                                        // assume it's no
+                                        $category = empty($answer) ? static::CATEGORY_TO_DO : static::CATEGORY_COMPLETE;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+
+        // If the category is empty, we just add it to to-do. This is the safest bet
+        $category = empty($category) ? static::CATEGORY_TO_DO : $category;
+
+        Log::debug("Mapped category {$category} for measure application {$measureApplication->short}");
+        return $category;
     }
 }

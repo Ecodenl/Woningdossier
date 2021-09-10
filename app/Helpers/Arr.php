@@ -27,10 +27,10 @@ class Arr extends \Illuminate\Support\Arr
     public static function isWholeArrayEmpty(array $array): bool
     {
         // Dot it, so we don't need unnecessary loops and a recursive stuff.
-        $array = \Illuminate\Support\Arr::dot($array);
+        $array = static::dot($array);
 
         foreach ($array as $key => $value) {
-            if (! Str::isConsideredEmptyAnswer($value)) {
+            if (! Str::isConsideredEmptyAnswer($value) && ! empty($value)) {
                 return false;
             }
         }

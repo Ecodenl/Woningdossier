@@ -39,7 +39,7 @@ trait GetMyValuesTrait
 //                )."::saved (".($model->inputSource->short ?? '').")"
 //            );
             // might be handy to prevent getting into an infinite loop (-:>
-            if (!in_array(($model->inputSource->short ?? ''), [ InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING])) {
+            if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING])) {
                 $model->saveForMasterInputSource();
             }
         });

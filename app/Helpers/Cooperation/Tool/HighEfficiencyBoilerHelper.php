@@ -17,14 +17,6 @@ use App\Services\UserActionPlanAdviceService;
 
 class HighEfficiencyBoilerHelper extends ToolHelper
 {
-    /**
-     * Method to clear all the saved data for the step, except for the comments.
-     *
-     * @param Building    $building
-     * @param InputSource $inputSource
-     * @param array       $buildingFeatureData
-     * @param array       $buildingElementData
-     */
     public function saveValues(): ToolHelper
     {
         $service = Service::findByShort('boiler');
@@ -93,14 +85,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
 
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
 
-        $oldAdvices = UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
-            ->forMe($this->user)
-            ->forInputSource($masterInputSource)
-            ->forStep($step)
-            ->get();
-
-        // remove old results
-        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+        $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'high-efficiency-boiler-replace')->first();
@@ -113,13 +98,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
                 $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
 
-                $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
-                    ->where('user_action_plan_advisable_id', '=', $measureApplication->id)->first();
-                if ($oldAdvice instanceof UserActionPlanAdvice) {
-                    $actionPlanAdvice->category = $oldAdvice->category;
-                    $actionPlanAdvice->visible = $oldAdvice->visible;
-                    $actionPlanAdvice->order = $oldAdvice->order;
-                }
+                UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
 
                 $actionPlanAdvice->save();
             }

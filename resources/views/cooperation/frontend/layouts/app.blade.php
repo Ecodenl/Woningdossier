@@ -46,6 +46,8 @@
 <script src="{{ mix('js/hoomdossier.js') }}"></script>
 
 <script>
+    window.inQuickScan = {{ \App\Helpers\Blade\RouteLogic::inQuickScanTool(Route::currentRouteName()) }};
+
     document.addEventListener('DOMContentLoaded', function () {
         // Bind simple function to remove errors when clicked
         let formErrors = document.getElementsByClassName('form-error');

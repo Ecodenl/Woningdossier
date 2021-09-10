@@ -21,6 +21,8 @@ export default (inputSource = 'no-match') => ({
         // Get children injected by PHP
         let children = this.$refs['source-select-options'].children;
 
+        let masterAnswers = [];
+
         // If there's no children, then there's no answers
         if (children.length === 0) {
             this.disabled = true;
@@ -37,10 +39,18 @@ export default (inputSource = 'no-match') => ({
                 if (short === null) {
                     this.disabled = true;
                     inputSource = null;
+                } else if (short === 'master') {
+                    // TODO: Remove this when the tool is logical again
+                    masterAnswers.push(children[i].getAttribute('data-input-value'));
+                    children[i].remove();
+
+                    if (children.length === 0) {
+                        this.disabled = true;
+                        inputSource = null;
+                    }
                 }
             }
         }
-
 
         // Fetch related input group
         let formGroup = this.$refs['source-select-wrapper'].closest('.form-group');
@@ -55,6 +65,20 @@ export default (inputSource = 'no-match') => ({
             this.$refs['source-select-input'].classList.add('disabled');
             this.open = false;
         }
+
+        // TODO: Remove this when the tool is logical again
+        document.addEventListener('DOMContentLoaded', function () {
+            if (! window.inQuickScan) {
+                // We're not in the quick scan, time to define logic to make JS carry half the tool
+                let loop = 0;
+                masterAnswers.forEach(answer => {
+                    let shouldClear = loop === 0;
+                    this.setElementValue(answer, shouldClear);
+
+                    ++loop;
+                });
+            }
+        });
     },
     toggle() {
         // If not disabled, we will handle the click
@@ -80,7 +104,7 @@ export default (inputSource = 'no-match') => ({
         this.text = this.text.trim();
         this.open = false;
     },
-    setElementValue(value) {
+    setElementValue(value, clear = false) {
         if (this.inputGroup) {
             // If the value is JSON, we need to do something slightly different (currently only relevant for rating slider)
             let parsed = this.parseJson(value);
@@ -141,6 +165,22 @@ export default (inputSource = 'no-match') => ({
                             case "checkbox":
                                 input = this.inputGroup.querySelector(`input[type="checkbox"][value="${value}"]`);
                                 if (input) {
+                                    if (clear) {
+                                        if (input.hasAttribute('wire:model')) {
+                                            // Livewire, clear all for wire:model
+                                            let wireModel = input.getAttribute('wire:model');
+                                            let items = document.querySelectorAll(`input[type="checkbox"][wire\\:model="${wireModel}"]`);
+                                            for (let i = 0; i < items.length; i++) {
+                                                items[i].checked = false;
+                                            }
+                                        } else {
+                                            let name = input.getAttribute('name');
+                                            let items = document.querySelectorAll(`input[type="checkbox"][name="${name}"]`);
+                                            for (let i = 0; i < items.length; i++) {
+                                                items[i].checked = false;
+                                            }
+                                        }
+                                    }
                                     input.checked = true;
                                     window.triggerEvent(input, 'change');
                                 }

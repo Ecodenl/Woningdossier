@@ -121,9 +121,6 @@ class UserService
                 $building->number
             );
 
-            $data['bag_addressid'] = $picoAddressData['id'] ?? $data['addressid'] ?? '';
-            $data['extension']     = $data['house_number_extension'] ?? null;
-
             if ( ! empty(($picoAddressData['id'] ?? null))) {
                 $building->update(['bag_addressid' => $picoAddressData['id']]);
             }

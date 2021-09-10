@@ -614,7 +614,7 @@ class Form extends Component
 
         $exampleBuildingShouldOverrideUserData = $this->building
                                                      ->completedSubSteps()
-                                                     ->forInputSource(InputSource::MASTER_SHORT)
+                                                     ->forInputSource(InputSource::findByShort(InputSource::MASTER_SHORT))
                                                      ->where('sub_step_id', '>', 3)
                                                      ->count() <= 0;
 

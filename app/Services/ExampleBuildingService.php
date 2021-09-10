@@ -149,6 +149,8 @@ class ExampleBuildingService
 
         $features = [];
 
+        Log::debug($exampleBuilding);
+
         foreach ($exampleData as $stepSlug => $dataForStep) {
             self::log('=====');
             self::log('Processing '.$stepSlug);
@@ -454,6 +456,8 @@ class ExampleBuildingService
                         }
                     }
                     if ('building_pv_panels' == $columnOrTable) {
+                        Log::debug($columnOrTable);
+                        Log::debug($values);
                         $building->pvPanels()->forInputSource(
                             $inputSource
                         )->updateOrCreate(

@@ -22,8 +22,4 @@ return [
             'update' => 'Werk maatregel bij',
         ],
     ],
-    'defaults' => [
-        'previous' => 'Vorige',
-        'next' => 'Volgende',
-    ],
 ];

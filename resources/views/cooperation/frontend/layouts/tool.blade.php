@@ -102,7 +102,7 @@
                                         @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index', 'cooperation.tool.heat-pump.index']))
                                             @lang('default.buttons.next-page')
                                         @else
-                                            @lang('default.buttons.next')
+                                            @lang('default.buttons.save')
                                         @endif
                                     </button>
                                 @elseif(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']) && $buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
@@ -143,7 +143,9 @@
                                             ?>
                                             @if($previousStep instanceof \App\Models\Step)
                                                 <a class="btn btn-green float-left"
-                                                   href="{{$previousUrl}}">@lang('default.buttons.prev')</a>
+                                                   href="{{$previousUrl}}">
+                                                    @lang('default.buttons.cancel')
+                                                </a>
                                             @endif
                                         </div>
                                         @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')
@@ -156,7 +158,7 @@
                                         @else
                                         <div class="w-full sm:w-1/2">
                                             <button class="float-right btn btn-purple submit-main-form">
-                                                @lang('default.buttons.next')
+                                                @lang('default.buttons.save')
                                             </button>
                                         </div>
                                     @endif

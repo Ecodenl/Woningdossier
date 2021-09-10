@@ -406,11 +406,12 @@ textarea.form-input {
     @apply bg-white bg-opacity-100 px-2 py-1 rounded absolute top-6 right-0 z-60 filter drop-shadow-xl;
     min-height: 1.25rem;
     min-width: 9rem;
+    /* Css absolute position hack to make the dropdown stretch to content */
     margin-left: -100vw;
 }
 
 .source-select-wrapper .source-select-dropdown .source-select-option {
-    @apply w-full h-5 rounded-lg flex items-center px-1 mb-1 cursor-pointer overflow-hidden;
+    @apply w-full h-5 rounded-lg flex items-center px-1 mb-1 cursor-pointer overflow-hidden font-normal text-xs;
 }
 
 /* Source colors - Naming is important, as these get used to define the color on the main 'button' too */

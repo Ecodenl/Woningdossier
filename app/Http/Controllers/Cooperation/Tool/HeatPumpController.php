@@ -56,7 +56,9 @@ class HeatPumpController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
-
+        $building->update([
+            'has_answered_expert_question' => true,
+        ]);
         $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
         $url = $nextStep['url'];
 

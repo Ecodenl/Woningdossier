@@ -158001,13 +158001,21 @@ hr {
 
 /* Paragraph */
 
-p, .as-text {
+p, .as-text, ul li, ol li {
   font-size: 14px;
   line-height: 24px;
   font-weight: 300;
   --tw-text-opacity: 1;
   color: rgba(100, 117, 133, var(--tw-text-opacity));
-}/* Hyperlink */
+}
+
+/* Lists */
+
+ul, ol {
+  list-style-type: disc;
+  padding-left: 0.75rem;
+}
+/* Hyperlink */
 
 a {
   cursor: pointer;
@@ -159378,6 +159386,7 @@ textarea.form-input {
   --tw-drop-shadow: drop-shadow(0 20px 13px rgba(0, 0, 0, 0.03)) drop-shadow(0 8px 5px rgba(0, 0, 0, 0.08));
   min-height: 1.25rem;
   min-width: 9rem;
+  /* Css absolute position hack to make the dropdown stretch to content */
   margin-left: -100vw;
 }
 
@@ -159392,6 +159401,9 @@ textarea.form-input {
   border-radius: 0.5rem;
   padding-left: 0.25rem;
   padding-right: 0.25rem;
+  font-size: 10px;
+  line-height: 10px;
+  font-weight: 400;
 }
 
 /* Source colors - Naming is important, as these get used to define the color on the main 'button' too */
@@ -159735,6 +159747,7 @@ textarea.form-input {
   top: 100%;
   z-index: 100;
   width: 12rem;
+  list-style-type: none;
 }
 
 .dropdown-wrapper .dropdown > :not([hidden]) ~ :not([hidden]) {
@@ -159755,6 +159768,7 @@ textarea.form-input {
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+  padding-left: 0px;
   font-size: 14px;
   line-height: 24px;
   --tw-text-opacity: 1;

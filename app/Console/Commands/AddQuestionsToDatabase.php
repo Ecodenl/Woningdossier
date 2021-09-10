@@ -1133,38 +1133,6 @@ class AddQuestionsToDatabase extends Command
                             ],
                         ],
                         [
-                            'save_in' => "building_elements.{$crackSealing->id}.element_value_id",
-                            'validation' => ['required', "exists:element_values,id",],
-                            'short' => 'crack-sealing-type',
-                            // was current-state -> zijn de ramen en deuren voorzien van kierdichting
-                            'translation' => "Heeft u kierdichting?",
-                            'tool_question_type_id' => $radioType->id,
-                            'tool_question_values' => $crackSealing->values()->orderBy('order')->get(),
-                            'extra' => [
-                                'column' => 'calculate_value',
-                                'data' => [
-                                    1 => [],
-                                    2 => [],
-                                    3 => [],
-                                    4 => [],
-                                ],
-                            ],
-                        ],
-                    ]
-                ],
-                'Aanvullende ventilatievragen' => [
-                    'sub_step_template_id' => $templateDefault->id,
-                    'conditions' => [
-                        [
-                            [
-                                'column' => 'ventilation-type',
-                                'operator' => Clause::NEQ,
-                                'value' => $ventilation->values()->where('calculate_value', 1)->first()->id, // Natuurlijke ventilatie
-                            ],
-                        ],
-                    ],
-                    'questions' => [
-                        [
                             'validation' => ['required', 'boolean'],
                             'save_in' => "building_services.{$ventilation->id}.extra.demand_driven",
                             'short' => 'ventilation-demand-driven',
@@ -1179,6 +1147,15 @@ class AddQuestionsToDatabase extends Command
                                 false => [
                                     'name' => __('woningdossier.cooperation.radiobutton.no'),
                                     'extra' => [],
+                                ],
+                            ],
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'ventilation-type',
+                                        'operator' => Clause::NEQ,
+                                        'value' => $ventilation->values()->where('calculate_value', 1)->first()->id, // Natuurlijke ventilatie
+                                    ],
                                 ],
                             ],
                         ],
@@ -1204,8 +1181,36 @@ class AddQuestionsToDatabase extends Command
                                     [
                                         'column' => 'ventilation-type',
                                         'operator' => Clause::NEQ,
+                                        'value' => $ventilation->values()->where('calculate_value', 1)->first()->id, // Natuurlijke ventilatie
+                                    ],
+                                    [
+                                        'column' => 'ventilation-type',
+                                        'operator' => Clause::NEQ,
                                         'value' => $ventilation->values()->where('calculate_value', 2)->first()->id, // Mechanische ventilatie
                                     ],
+                                ],
+                            ],
+                        ],
+                    ]
+                ],
+                'Kierdichting' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'save_in' => "building_elements.{$crackSealing->id}.element_value_id",
+                            'validation' => ['required', "exists:element_values,id",],
+                            'short' => 'crack-sealing-type',
+                            // was current-state -> zijn de ramen en deuren voorzien van kierdichting
+                            'translation' => "Heeft u kierdichting?",
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_values' => $crackSealing->values()->orderBy('order')->get(),
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    1 => [],
+                                    2 => [],
+                                    3 => [],
+                                    4 => [],
                                 ],
                             ],
                         ],

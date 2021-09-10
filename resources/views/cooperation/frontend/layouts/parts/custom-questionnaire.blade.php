@@ -12,7 +12,7 @@
             @if(!\App\helpers\HoomdossierSession::isUserObserving())
                 <button id="submit-custom-questionnaire-{{$questionnaire->id}}"
                         data-questionnaire-id="{{$questionnaire->id}}" class="float-right btn btn-purple">
-                    @lang('default.buttons.next')
+                    @lang('default.buttons.save')
                 </button>
             @endif
         </div>

@@ -102,7 +102,7 @@
                                         @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index', 'cooperation.tool.heat-pump.index']))
                                             @lang('default.buttons.next-page')
                                         @else
-                                            @lang('default.buttons.next')
+                                            @lang('default.buttons.save')
                                         @endif
                                     </button>
                                 @elseif(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']) && $buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
@@ -135,16 +135,22 @@
                                                 $previousStep = $steps->where('order', '<', $currentSubStep->order ?? $currentStep->order)->last();
                                             }
 
-                                            if ($currentSubStep instanceof \App\Models\Step && $previousStep instanceof \App\Models\Step) {
-                                                $previousUrl = route("cooperation.tool.{$currentStep->short}.{$previousStep->short}.index");
-                                            } elseif ($previousStep instanceof \App\Models\Step) {
-                                                $previousUrl = route("cooperation.tool.{$previousStep->short}.index");
-                                            }
+//                                            if ($currentSubStep instanceof \App\Models\Step && $previousStep instanceof \App\Models\Step) {
+//                                                $previousUrl = route("cooperation.tool.{$currentStep->short}.{$previousStep->short}.index");
+//                                            } elseif ($previousStep instanceof \App\Models\Step) {
+//                                                $previousUrl = route("cooperation.tool.{$previousStep->short}.index");
+//                                            }
                                             ?>
-                                            @if($previousStep instanceof \App\Models\Step)
-                                                <a class="btn btn-green float-left"
-                                                   href="{{$previousUrl}}">@lang('default.buttons.prev')</a>
-                                            @endif
+{{--                                            @if($previousStep instanceof \App\Models\Step)--}}
+{{--                                                <a class="btn btn-green float-left"--}}
+{{--                                                   href="{{$previousUrl}}">--}}
+{{--                                                    @lang('default.buttons.previous')--}}
+{{--                                                </a>--}}
+{{--                                            @endif--}}
+                                            <a class="btn btn-green float-left"
+                                               href="{{ route('cooperation.frontend.tool.quick-scan.my-plan.index') }}">
+                                                @lang('default.buttons.cancel')
+                                            </a>
                                         </div>
                                         @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')
                                             @lang('default.buttons.next-page')
@@ -156,7 +162,7 @@
                                         @else
                                         <div class="w-full sm:w-1/2">
                                             <button class="float-right btn btn-purple submit-main-form">
-                                                @lang('default.buttons.next')
+                                                @lang('default.buttons.save')
                                             </button>
                                         </div>
                                     @endif
@@ -176,19 +182,6 @@
 @if(\App\Helpers\Blade\RouteLogic::inExpertTool(Route::currentRouteName()))
     @push('js')
         <script>
-{{-- TODO: Check the usages of these scripts --}}
-
-            function removeErrors()
-            {
-                $('.has-error').removeClass('has-error');
-                $('.help-block').remove()
-            }
-            function addError(input, message) {
-                {{-- TODO:These are also within the app.js, check if these are needed here --}}
-                var helpBlock = '<span class="help-block"></span>';
-                input.parents('.form-group').addClass('has-error');
-                input.parents('.form-group').append($(helpBlock).append('<strong>' + message + '</strong>'));
-            }
 
             function removeError(input) {
                 input.parents('.has-error').removeClass('has-error');

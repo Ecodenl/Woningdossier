@@ -1,4 +1,4 @@
-/*! tailwindcss v2.2.10 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v2.2.9 | MIT License | https://tailwindcss.com */
 
 /*! modern-normalize v1.1.0 | MIT License | https://github.com/sindresorhus/modern-normalize */
 
@@ -158001,13 +158001,21 @@ hr {
 
 /* Paragraph */
 
-p, .as-text {
+p, .as-text, ul li, ol li {
   font-size: 14px;
   line-height: 24px;
   font-weight: 300;
   --tw-text-opacity: 1;
   color: rgba(100, 117, 133, var(--tw-text-opacity));
-}/* Hyperlink */
+}
+
+/* Lists */
+
+ul, ol {
+  list-style-type: disc;
+  padding-left: 0.75rem;
+}
+/* Hyperlink */
 
 a {
   cursor: pointer;

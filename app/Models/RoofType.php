@@ -36,6 +36,10 @@ class RoofType extends Model
     use HasShortTrait,
         HasTranslations;
 
+    const SECONDARY_ROOF_TYPE_SHORTS = [
+        'pitched', 'flat', 'none',
+    ];
+
     protected $translatable = [
         'name',
     ];

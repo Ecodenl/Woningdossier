@@ -471,8 +471,23 @@ class ExampleBuildingService
                         }
                     }
                     if ('building_pv_panels' == $columnOrTable) {
-                        Log::debug($columnOrTable);
-                        Log::debug($values);
+
+                        $toolQuestion = ToolQuestion::findByShort('has-solar-panels');
+                        if ((int) ($values['number'] ?? 0) > 0){
+                            /** @var ToolQuestion $toolQuestion */
+                            // set to  yes
+                            $toolQuestionCustomValue = $toolQuestion->toolQuestionCustomValues()->where('short', '=', 'yes')->first();
+                            $building->toolQuestionAnswers()
+                                     ->forInputSource($inputSource)
+                                     ->updateOrCreate([
+                                         'tool_question_id' => $toolQuestion->id,
+                                         'input_source_id' => $inputSource->id,
+                                     ], [
+                                         'tool_question_custom_value_id' => $toolQuestionCustomValue->id,
+                                         'answer' => $toolQuestionCustomValue->short,
+                                     ]);
+                        }
+
                         $building->pvPanels()->forInputSource(
                             $inputSource
                         )->updateOrCreate(

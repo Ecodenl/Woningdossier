@@ -4,9 +4,11 @@ namespace App\Traits;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
+use App\Models\BuildingInsulatedGlazing;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
+use App\Models\InsulatingGlazing;
 use App\Models\MeasureApplication;
 use App\Models\ToolQuestion;
 use App\Models\User;
@@ -79,6 +81,8 @@ trait GetMyValuesTrait
                 'user_id', 'building_id', 'tool_question_id', 'tool_question_custom_value_id', 'element_id', 'service_id',
                 'hash', 'sub_step_id', 'short', 'step_id', 'interested_in_type', 'interested_in_id',
             ];
+            $crucialRelationCombinationIds = array_merge($crucialRelationCombinationIds, $this->crucialRelations ?? []);
+
             if ($this instanceof UserActionPlanAdvice) {
                 $advisable = $this->userActionPlanAdvisable;
                 if ($advisable instanceof MeasureApplication || $advisable instanceof CooperationMeasureApplication) {
@@ -109,6 +113,12 @@ trait GetMyValuesTrait
                         $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
                     }
                 }
+            }
+
+            if ($this instanceof BuildingInsulatedGlazing){
+                Log::debug(__METHOD__);
+                Log::debug($wheres);
+                Log::debug($data);
             }
 
             ($this)::withoutGlobalScope(VisibleScope::class)

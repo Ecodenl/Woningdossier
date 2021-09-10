@@ -416,15 +416,20 @@ class ExampleBuildingService
 
                             $building->currentInsulatedGlazing(
                             )->forInputSource($inputSource)->updateOrCreate(
-                                ['input_source_id' => $inputSource->id],
+                                [
+                                    'input_source_id' => $inputSource->id,
+                                    'measure_application_id' => $glazingData['measure_application_id'],
+                                ],
                                 $glazingData
                             );
 
                             self::log(
                                 'Update or creating building insulated glazing '.json_encode(
-                                    $building->currentInsulatedGlazing(
-                                    )->forInputSource($inputSource)->first(
-                                    )->toArray()
+                                    $building->currentInsulatedGlazing()
+                                             ->forInputSource($inputSource)
+                                             ->where('measure_application_id', '=', $glazingData['measure_application_id'])
+                                             ->first()
+                                             ->toArray()
                                 )
                             );
                         }
@@ -585,6 +590,8 @@ class ExampleBuildingService
         $inputSource = $inputSource ?? InputSource::findByShort(
                 'example-building'
             );
+
+        Log::debug("Clearing example building for input source " . $inputSource->short);
 
         return BuildingDataService::clearBuildingFromInputSource(
             $building,

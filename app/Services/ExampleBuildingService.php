@@ -17,6 +17,7 @@ use App\Models\Service;
 use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
@@ -98,6 +99,7 @@ class ExampleBuildingService
         );
 
         $oldFeatures = [];
+        $oldHabits = [];
 
         // important!
         // A generic example building can be set, while the rest of the
@@ -143,6 +145,12 @@ class ExampleBuildingService
                     ];
                 }
             }
+
+            // Copy over some habits
+            $currentHabits = $buildingOwner->energyHabit()->forInputSource($initiatingInputSource)->first();
+            if ($currentHabits instanceof UserEnergyHabit){
+                $oldHabits = $currentHabits->only('amount_gas', 'amount_electricity', 'amount_water');
+            }
         }
 
         self::clearExampleBuilding($building, $inputSource);
@@ -164,10 +172,12 @@ class ExampleBuildingService
                         self::log('Skipping '.$columnOrTable.' (empty)');
                         continue;
                     }
+
                     if ('user_energy_habits' == $columnOrTable) {
-                        $buildingOwner->energyHabit()->forInputSource(
-                            $inputSource
-                        )->updateOrCreate(
+                        $values = array_replace_recursive($values, $oldHabits);
+                        $buildingOwner->energyHabit()
+                                ->forInputSource($inputSource)
+                                ->updateOrCreate(
                             ['input_source_id' => $inputSource->id],
                             $values
                         );

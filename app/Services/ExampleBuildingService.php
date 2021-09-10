@@ -17,6 +17,7 @@ use App\Models\Service;
 use App\Models\Step;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use App\Models\UserEnergyHabit;
 use App\Models\UserInterest;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
@@ -98,6 +99,7 @@ class ExampleBuildingService
         );
 
         $oldFeatures = [];
+        $oldHabits = [];
 
         // important!
         // A generic example building can be set, while the rest of the
@@ -143,11 +145,19 @@ class ExampleBuildingService
                     ];
                 }
             }
+
+            // Copy over some habits
+            $currentHabits = $buildingOwner->energyHabit()->forInputSource($initiatingInputSource)->first();
+            if ($currentHabits instanceof UserEnergyHabit){
+                $oldHabits = $currentHabits->only('amount_gas', 'amount_electricity', 'amount_water');
+            }
         }
 
         self::clearExampleBuilding($building, $inputSource);
 
         $features = [];
+
+        Log::debug($exampleBuilding);
 
         foreach ($exampleData as $stepSlug => $dataForStep) {
             self::log('=====');
@@ -162,10 +172,12 @@ class ExampleBuildingService
                         self::log('Skipping '.$columnOrTable.' (empty)');
                         continue;
                     }
+
                     if ('user_energy_habits' == $columnOrTable) {
-                        $buildingOwner->energyHabit()->forInputSource(
-                            $inputSource
-                        )->updateOrCreate(
+                        $values = array_replace_recursive($values, $oldHabits);
+                        $buildingOwner->energyHabit()
+                                ->forInputSource($inputSource)
+                                ->updateOrCreate(
                             ['input_source_id' => $inputSource->id],
                             $values
                         );
@@ -414,15 +426,20 @@ class ExampleBuildingService
 
                             $building->currentInsulatedGlazing(
                             )->forInputSource($inputSource)->updateOrCreate(
-                                ['input_source_id' => $inputSource->id],
+                                [
+                                    'input_source_id' => $inputSource->id,
+                                    'measure_application_id' => $glazingData['measure_application_id'],
+                                ],
                                 $glazingData
                             );
 
                             self::log(
                                 'Update or creating building insulated glazing '.json_encode(
-                                    $building->currentInsulatedGlazing(
-                                    )->forInputSource($inputSource)->first(
-                                    )->toArray()
+                                    $building->currentInsulatedGlazing()
+                                             ->forInputSource($inputSource)
+                                             ->where('measure_application_id', '=', $glazingData['measure_application_id'])
+                                             ->first()
+                                             ->toArray()
                                 )
                             );
                         }
@@ -454,6 +471,23 @@ class ExampleBuildingService
                         }
                     }
                     if ('building_pv_panels' == $columnOrTable) {
+
+                        $toolQuestion = ToolQuestion::findByShort('has-solar-panels');
+                        if ((int) ($values['number'] ?? 0) > 0){
+                            /** @var ToolQuestion $toolQuestion */
+                            // set to  yes
+                            $toolQuestionCustomValue = $toolQuestion->toolQuestionCustomValues()->where('short', '=', 'yes')->first();
+                            $building->toolQuestionAnswers()
+                                     ->forInputSource($inputSource)
+                                     ->updateOrCreate([
+                                         'tool_question_id' => $toolQuestion->id,
+                                         'input_source_id' => $inputSource->id,
+                                     ], [
+                                         'tool_question_custom_value_id' => $toolQuestionCustomValue->id,
+                                         'answer' => $toolQuestionCustomValue->short,
+                                     ]);
+                        }
+
                         $building->pvPanels()->forInputSource(
                             $inputSource
                         )->updateOrCreate(
@@ -581,6 +615,8 @@ class ExampleBuildingService
         $inputSource = $inputSource ?? InputSource::findByShort(
                 'example-building'
             );
+
+        Log::debug("Clearing example building for input source " . $inputSource->short);
 
         return BuildingDataService::clearBuildingFromInputSource(
             $building,

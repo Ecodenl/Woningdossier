@@ -4,9 +4,11 @@ namespace App\Traits;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
+use App\Models\BuildingInsulatedGlazing;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
+use App\Models\InsulatingGlazing;
 use App\Models\MeasureApplication;
 use App\Models\ToolQuestion;
 use App\Models\User;
@@ -31,13 +33,13 @@ trait GetMyValuesTrait
     public static function bootGetMyValuesTrait()
     {
         static::saved(function (Model $model) {
-            Log::debug(
-                get_class(
-                    $model
-                )."::saved (".($model->inputSource->short ?? '').")"
-            );
+//            Log::debug(
+//                get_class(
+//                    $model
+//                )."::saved (".($model->inputSource->short ?? '').")"
+//            );
             // might be handy to prevent getting into an infinite loop (-:>
-            if (!in_array(($model->inputSource->short ?? ''), [ InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING])) {
+            if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING])) {
                 $model->saveForMasterInputSource();
             }
         });
@@ -79,17 +81,25 @@ trait GetMyValuesTrait
                 'user_id', 'building_id', 'tool_question_id', 'tool_question_custom_value_id', 'element_id', 'service_id',
                 'hash', 'sub_step_id', 'short', 'step_id', 'interested_in_type', 'interested_in_id',
             ];
+            $crucialRelationCombinationIds = array_merge($crucialRelationCombinationIds, $this->crucialRelations ?? []);
+
             if ($this instanceof UserActionPlanAdvice) {
                 $advisable = $this->userActionPlanAdvisable;
                 if ($advisable instanceof MeasureApplication || $advisable instanceof CooperationMeasureApplication) {
                     $crucialRelationCombinationIds[] = 'user_action_plan_advisable_id';
                     $crucialRelationCombinationIds[] = 'user_action_plan_advisable_type';
-                } elseif ($advisable instanceof CustomMeasureApplication) {
-                    // find sibling of the user one with admin input source
-                    $sibling = $advisable->getSibling($masterInputSource);
-                    $data['user_action_plan_advisable_id'] = $sibling->id;
-                    $wheres['user_action_plan_advisable_id'] = $sibling->id;
-                    $crucialRelationCombinationIds[] = 'user_action_plan_advisable_type';
+                } else {
+                    $advisable = $this->userActionPlanAdvisable()
+                        ->forInputSource($this->inputSource)
+                        ->first();
+
+                    if ($advisable instanceof CustomMeasureApplication) {
+                        // find sibling of the user one with admin input source
+                        $sibling = $advisable->getSibling($masterInputSource);
+                        $data['user_action_plan_advisable_id'] = $sibling->id;
+                        $wheres['user_action_plan_advisable_id'] = $sibling->id;
+                        $crucialRelationCombinationIds[] = 'user_action_plan_advisable_type';
+                    }
                 }
             }
 
@@ -109,6 +119,12 @@ trait GetMyValuesTrait
                         $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
                     }
                 }
+            }
+
+            if ($this instanceof BuildingInsulatedGlazing){
+                Log::debug(__METHOD__);
+                Log::debug($wheres);
+                Log::debug($data);
             }
 
             ($this)::withoutGlobalScope(VisibleScope::class)

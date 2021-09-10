@@ -38,14 +38,7 @@ class RoofInsulationHelper extends ToolHelper
 
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
 
-        $oldAdvices = UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
-            ->forMe($this->user)
-            ->forInputSource($masterInputSource)
-            ->forStep($step)
-            ->get();
-
-        // Remove old results
-        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+        $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         $roofTypeIds = $this->getValues('building_roof_type_ids');
         foreach ($roofTypeIds as $roofTypeId) {
@@ -97,13 +90,7 @@ class RoofInsulationHelper extends ToolHelper
                         $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($step);
 
-                        $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
-                            ->where('user_action_plan_advisable_id', '=', $measureApplication->id)->first();
-                        if ($oldAdvice instanceof UserActionPlanAdvice) {
-                            $actionPlanAdvice->category = $oldAdvice->category;
-                            $actionPlanAdvice->visible = $oldAdvice->visible;
-                            $actionPlanAdvice->order = $oldAdvice->order;
-                        }
+                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
 
                         $actionPlanAdvice->save();
                     }
@@ -143,13 +130,7 @@ class RoofInsulationHelper extends ToolHelper
                     $actionPlanAdvice->userActionPlanAdvisable()->associate($zincReplaceMeasure);
                     $actionPlanAdvice->step()->associate($step);
 
-                    $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
-                        ->where('user_action_plan_advisable_id', '=', $zincReplaceMeasure->id)->first();
-                    if ($oldAdvice instanceof UserActionPlanAdvice) {
-                        $actionPlanAdvice->category = $oldAdvice->category;
-                        $actionPlanAdvice->visible = $oldAdvice->visible;
-                        $actionPlanAdvice->order = $oldAdvice->order;
-                    }
+                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $zincReplaceMeasure, $oldAdvices);
 
                     $actionPlanAdvice->save();
                 }
@@ -177,13 +158,7 @@ class RoofInsulationHelper extends ToolHelper
                         $actionPlanAdvice->userActionPlanAdvisable()->associate($replaceMeasure);
                         $actionPlanAdvice->step()->associate($step);
 
-                        $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
-                            ->where('user_action_plan_advisable_id', '=', $replaceMeasure->id)->first();
-                        if ($oldAdvice instanceof UserActionPlanAdvice) {
-                            $actionPlanAdvice->category = $oldAdvice->category;
-                            $actionPlanAdvice->visible = $oldAdvice->visible;
-                            $actionPlanAdvice->order = $oldAdvice->order;
-                        }
+                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $replaceMeasure, $oldAdvices);
 
                         $actionPlanAdvice->save();
                     }
@@ -213,13 +188,7 @@ class RoofInsulationHelper extends ToolHelper
                     $actionPlanAdvice->userActionPlanAdvisable()->associate($replaceMeasure);
                     $actionPlanAdvice->step()->associate($step);
 
-                    $oldAdvice = $oldAdvices->where('user_action_plan_advisable_type', '=', MeasureApplication::class)
-                        ->where('user_action_plan_advisable_id', '=', $replaceMeasure->id)->first();
-                    if ($oldAdvice instanceof UserActionPlanAdvice) {
-                        $actionPlanAdvice->category = $oldAdvice->category;
-                        $actionPlanAdvice->visible = $oldAdvice->visible;
-                        $actionPlanAdvice->order = $oldAdvice->order;
-                    }
+                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $replaceMeasure, $oldAdvices);
 
                     $actionPlanAdvice->save();
                 }

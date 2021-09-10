@@ -19,6 +19,15 @@
 }
 
 /* Paragraph */
-p {
+p,
+.as-text,
+ul li,
+ol li {
     @apply text-blue-500 font-light text-sm;
+}
+
+/* Lists */
+ul,
+ol {
+    @apply list-disc pl-3;
 }

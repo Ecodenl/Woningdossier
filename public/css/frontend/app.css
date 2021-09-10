@@ -13207,6 +13207,12 @@ video {
   }
 }
 
+@keyframes spin{
+  to{
+    transform: rotate(360deg);
+  }
+}
+
 #app-body .animate-none{
   -webkit-animation: none;
           animation: none;
@@ -13230,6 +13236,11 @@ video {
 #app-body .animate-bounce{
   -webkit-animation: bounce 1s infinite;
           animation: bounce 1s infinite;
+}
+
+#app-body .animate-spin-slow{
+  -webkit-animation: spin 2s linear infinite;
+          animation: spin 2s linear infinite;
 }
 
 #app-body .cursor-auto{
@@ -39518,6 +39529,11 @@ Small example
             animation: bounce 1s infinite;
   }
 
+  #app-body .sm\:animate-spin-slow{
+    -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+  }
+
   #app-body .sm\:cursor-auto{
     cursor: auto;
   }
@@ -65711,6 +65727,11 @@ Small example
   #app-body .md\:animate-bounce{
     -webkit-animation: bounce 1s infinite;
             animation: bounce 1s infinite;
+  }
+
+  #app-body .md\:animate-spin-slow{
+    -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
   }
 
   #app-body .md\:cursor-auto{
@@ -91908,6 +91929,11 @@ Small example
             animation: bounce 1s infinite;
   }
 
+  #app-body .lg\:animate-spin-slow{
+    -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+  }
+
   #app-body .lg\:cursor-auto{
     cursor: auto;
   }
@@ -118101,6 +118127,11 @@ Small example
   #app-body .xl\:animate-bounce{
     -webkit-animation: bounce 1s infinite;
             animation: bounce 1s infinite;
+  }
+
+  #app-body .xl\:animate-spin-slow{
+    -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
   }
 
   #app-body .xl\:cursor-auto{
@@ -144298,6 +144329,11 @@ Small example
             animation: bounce 1s infinite;
   }
 
+  #app-body .\32xl\:animate-spin-slow{
+    -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+  }
+
   #app-body .\32xl\:cursor-auto{
     cursor: auto;
   }
@@ -157965,13 +158001,21 @@ hr {
 
 /* Paragraph */
 
-p {
+p, .as-text, ul li, ol li {
   font-size: 14px;
   line-height: 24px;
   font-weight: 300;
   --tw-text-opacity: 1;
   color: rgba(100, 117, 133, var(--tw-text-opacity));
-}/* Hyperlink */
+}
+
+/* Lists */
+
+ul, ol {
+  list-style-type: disc;
+  padding-left: 0.75rem;
+}
+/* Hyperlink */
 
 a {
   cursor: pointer;
@@ -158003,23 +158047,6 @@ p a, a.in-text {
   --tw-text-opacity: 1;
   color: rgba(98, 33, 145, var(--tw-text-opacity));
   text-decoration: none;
-}
-
-.clickable {
-  cursor: pointer;
-  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
-
-.clickable:hover {
-  opacity: 0.6;
-}
-
-.clickable:focus {
-  opacity: 0.6;
 }
 
 /* Buttons */
@@ -158062,6 +158089,36 @@ p a, a.in-text {
   background-color: rgba(205, 210, 215, var(--tw-bg-opacity));
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity));
+}
+
+.btn:disabled:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(205, 210, 215, var(--tw-bg-opacity));
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  color: rgba(255, 255, 255, var(--tw-text-opacity));
+  --tw-shadow: 0 0 #0000;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.btn:disabled:focus {
+  --tw-bg-opacity: 1;
+  background-color: rgba(205, 210, 215, var(--tw-bg-opacity));
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  color: rgba(255, 255, 255, var(--tw-text-opacity));
+  --tw-shadow: 0 0 #0000;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.btn:disabled:active {
+  --tw-bg-opacity: 1;
+  background-color: rgba(205, 210, 215, var(--tw-bg-opacity));
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  color: rgba(255, 255, 255, var(--tw-text-opacity));
+  --tw-shadow: 0 0 #0000;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
 .btn-purple {
@@ -158487,6 +158544,31 @@ p a, a.in-text {
   background-color: rgba(44, 169, 130, var(--tw-bg-opacity));
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity));
+}
+
+/* Extra items */
+
+.clickable {
+  cursor: pointer;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.clickable:hover {
+  opacity: 0.6;
+}
+
+.clickable:focus {
+  opacity: 0.6;
+}
+
+/* Purely to remove opacity when focusing on inputs */
+
+.has-btn:focus ~ button {
+  opacity: 0.2;
 }/* Form groups and its children */
 
 .form-group {
@@ -158591,6 +158673,10 @@ p a, a.in-text {
   --tw-border-opacity: 1;
 }
 
+.radio-wrapper > label, .checkbox-wrapper > label {
+  line-height: 1.25rem;
+}
+
 .form-input {
   flex: 1 1 auto;
   width: 1%;
@@ -158634,6 +158720,7 @@ p a, a.in-text {
 
 textarea.form-input {
   height: 8rem;
+  resize: none;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   line-height: 24px;
@@ -158991,13 +159078,13 @@ textarea.form-input {
   width: 10rem;
 }
 
-.media-wrapper label {
+.media-wrapper > label {
   height: 100%;
   width: 100%;
   padding: 0px;
 }
 
-.media-wrapper label .media-icon-wrapper {
+.media-wrapper > label .media-icon-wrapper {
   position: absolute;
   top: 0px;
   right: 0px;
@@ -159010,26 +159097,26 @@ textarea.form-input {
   justify-content: center;
 }
 
-.media-wrapper label .media-icon-wrapper i {
+.media-wrapper > label .media-icon-wrapper i {
   margin-top: -1rem;
   height: 70%;
   width: 100%;
   padding: 1rem;
 }
 
-.add-option-wrapper.media-wrapper label .media-icon-wrapper i {
+.add-option-wrapper.media-wrapper > label .media-icon-wrapper i {
   height: 50%;
   width: 50%;
 }
 
-.media-wrapper label .checkmark {
+.media-wrapper > label .checkmark {
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
   margin: 0px;
 }
 
-.media-wrapper label span:not(.checkmark):not(.media-icon-wrapper) {
+.media-wrapper > label span:not(.checkmark):not(.media-icon-wrapper) {
   position: absolute;
   left: 0px;
   right: 0px;
@@ -159045,14 +159132,14 @@ textarea.form-input {
   width: 6rem;
 }
 
-.media-wrapper.media-wrapper-small label .media-icon-wrapper i {
+.media-wrapper.media-wrapper-small > label .media-icon-wrapper i {
   margin-top: 0px;
   height: 90%;
 }
 
 /* Potential text spans are hidden */
 
-.media-wrapper.media-wrapper-small label span:not(.checkmark):not(.media-icon-wrapper) {
+.media-wrapper.media-wrapper-small > label span:not(.checkmark):not(.media-icon-wrapper) {
   display: none;
 }
 
@@ -159134,6 +159221,11 @@ textarea.form-input {
 }
 
 /* Custom Alpine select */
+
+.select-wrapper {
+  position: relative;
+  width: inherit;
+}
 
 .select-wrapper .select-dropdown {
   position: absolute;
@@ -159294,6 +159386,7 @@ textarea.form-input {
   --tw-drop-shadow: drop-shadow(0 20px 13px rgba(0, 0, 0, 0.03)) drop-shadow(0 8px 5px rgba(0, 0, 0, 0.08));
   min-height: 1.25rem;
   min-width: 9rem;
+  /* Css absolute position hack to make the dropdown stretch to content */
   margin-left: -100vw;
 }
 
@@ -159308,6 +159401,9 @@ textarea.form-input {
   border-radius: 0.5rem;
   padding-left: 0.25rem;
   padding-right: 0.25rem;
+  font-size: 10px;
+  line-height: 10px;
+  font-weight: 400;
 }
 
 /* Source colors - Naming is important, as these get used to define the color on the main 'button' too */
@@ -159458,8 +159554,7 @@ textarea.form-input {
   --tw-border-opacity: 1;
   border-color: rgba(100, 117, 133, var(--tw-border-opacity));
   --tw-border-opacity: 0.5;
-  min-width: 1px;
-  max-width: 50px;
+  max-width: 2.5%;
 }
 
 /* Modals */
@@ -159652,6 +159747,7 @@ textarea.form-input {
   top: 100%;
   z-index: 100;
   width: 12rem;
+  list-style-type: none;
 }
 
 .dropdown-wrapper .dropdown > :not([hidden]) ~ :not([hidden]) {
@@ -159672,6 +159768,7 @@ textarea.form-input {
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+  padding-left: 0px;
   font-size: 14px;
   line-height: 24px;
   --tw-text-opacity: 1;
@@ -159695,7 +159792,67 @@ textarea.form-input {
   padding-right: 0.75rem;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem
-}/* Icons */
+}.table {
+  width: 100%;
+}
+
+.table.fancy-table {
+  table-layout: fixed;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgba(100, 117, 133, var(--tw-border-opacity));
+  --tw-border-opacity: 0.5;
+  /* Can't add rounded corners (rounded-lg), border is staying square, TODO */
+}
+
+.table.fancy-table thead tr th {
+  --tw-bg-opacity: 1;
+  background-color: rgba(100, 117, 133, var(--tw-bg-opacity));
+  --tw-bg-opacity: 0.25;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  text-align: left;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  --tw-text-opacity: 1;
+  color: rgba(100, 117, 133, var(--tw-text-opacity));
+}
+
+.table.fancy-table tbody > :not([hidden]) ~ :not([hidden]) {
+  --tw-divide-y-reverse: 0;
+  border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
+  border-bottom-width: calc(1px * var(--tw-divide-y-reverse));
+  --tw-divide-opacity: 1;
+  border-color: rgba(100, 117, 133, var(--tw-divide-opacity));
+  --tw-divide-opacity: 0.5;
+}
+
+.table.fancy-table tbody tr:nth-of-type(even) {
+  --tw-bg-opacity: 1;
+  background-color: rgba(205, 210, 215, var(--tw-bg-opacity));
+}
+
+.table.fancy-table tbody tr td {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 300;
+  --tw-text-opacity: 1;
+  color: rgba(100, 117, 133, var(--tw-text-opacity));
+}
+
+
+
+
+
+/* Icons */
 
 .icon-xs {
   height: 0.5rem;
@@ -160304,6 +160461,10 @@ textarea.form-input {
   content: url('/icons/ventilation.svg');
 }
 
+.icon-ventilation-fan {
+  content: url('/icons/ventilation-fan.svg');
+}
+
 .icon-wall-insulation-excellent {
   content: url('/icons/wall-insulation-excellent.svg');
 }
@@ -160401,7 +160562,18 @@ ul.progress-list li a img.no-border {
   border-style: none;
 }
 
-/* Tailwind */
+.panel-chat-body {
+  overflow-y: scroll;
+  max-height: 250px;
+}
+
+.panel-chat-body .left {
+  margin-right: 250px;
+}
+
+.panel-chat-body .right {
+  margin-left: 250px;
+}/* Tailwind */
 
 /* Base CSS */
 

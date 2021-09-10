@@ -183,6 +183,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         App\Providers\WoningdossierServiceProvider::class,
+        App\Providers\MacroServiceProvider::class,
         //\Ecodenl\PicoWrapper\PicoServiceProvider::class,
         App\Providers\ViewServiceProvider::class,
     ],

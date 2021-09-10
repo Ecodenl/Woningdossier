@@ -51,11 +51,15 @@ class UserActionPlanAdviceObserver
             }
         }
 
-        if(!$userActionPlanAdvice->isDirty('visible')){
-            $userActionPlanAdvice->visible = true;
+        if (! $userActionPlanAdvice->isDirty('visible')) {
+            // Visibility isn't set. Let's define it
+
+            UserActionPlanAdviceService::setAdviceVisibility($userActionPlanAdvice);
         }
-        if (!$userActionPlanAdvice->isDirty('category')){
-            $userActionPlanAdvice->category = UserActionPlanAdviceService::CATEGORY_TO_DO;
+        if (! $userActionPlanAdvice->isDirty('category') || is_null($userActionPlanAdvice->category)) {
+            // Category isn't set. Let's define it.
+
+            UserActionPlanAdviceService::setAdviceCategory($userActionPlanAdvice);
         }
     }
 }

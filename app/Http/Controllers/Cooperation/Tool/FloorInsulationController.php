@@ -112,6 +112,9 @@ class FloorInsulationController extends Controller
             ->createAdvices();
 
         StepHelper::complete($this->step, $building, $inputSource);
+        $building->update([
+            'has_answered_expert_question' => true,
+        ]);
         StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
 
         $nextStep = StepHelper::getNextStep($building, $inputSource, $this->step);

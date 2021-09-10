@@ -58,9 +58,9 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class UserActionPlanAdvice extends Model
 {
-    use GetValueTrait;
-    use GetMyValuesTrait;
-    use ToolSettingTrait;
+    use GetValueTrait,
+        GetMyValuesTrait,
+        ToolSettingTrait;
 
     protected $table = 'user_action_plan_advices';
 

@@ -98,6 +98,8 @@ class DoUpgrade extends Command
                     MapComments::class,
                     AddMasterInputSource::class,
                     ConvertExampleBuildingContents::class,
+                    UpdateCompletedStepsForMasterInputSource::class,
+                    FixTranslations::class, // Reset translations which have changed
                 ];
 
                 foreach ($afterCommands as $command) {
@@ -116,6 +118,7 @@ class DoUpgrade extends Command
                         $account = Account::whereEmail($email)->first();
                         if ($account instanceof Account) {
                             foreach ($account->users as $user) {
+                                $this->info("Assigning roles to user " . $user->id);
                                 $user->assignRole(['cooperation-admin', 'coordinator', 'coach']);
                             }
                         }

@@ -9,6 +9,7 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class VerificationController extends Controller
 {
@@ -73,10 +74,12 @@ class VerificationController extends Controller
         $account = Account::find($request->route('id'));
 
         if (! hash_equals((string) $request->route('id'), (string) $account->getKey())) {
+            Log::error(__METHOD__ . " !hash equals");
             throw new AuthorizationException;
         }
 
         if (! hash_equals((string) $request->route('hash'), sha1($account->getEmailForVerification()))) {
+            Log::error(__METHOD__ ." sha1 mismatch");
             throw new AuthorizationException;
         }
 

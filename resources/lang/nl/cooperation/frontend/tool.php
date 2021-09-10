@@ -18,14 +18,25 @@ return [
 
     'my-plan' => [
         'label' => 'Woonplan',
-        'title' => 'Uw geadviseerde Woonplan',
+        'title' => [
+            'quick-scan' => 'Uw quickscan Woonplan',
+            'expert' => 'Uw Woonplan',
+        ],
         'help' => 'Wilt u iets aanpassen? Sleep dan de maatregelen naar de gewenste kolom',
+        'info' => [
+            'quick-scan' => '<p>Voor een gedetailleerd advies, kunt u de verdiepingsvragen invullen. U kunt ook de hulp van een <a href=":link">energiecoach</a> inroepen.</p>',
+            'expert' => '<p>U kunt hulp van een <a href=":link">energiecoach</a> aanvragen voor extra advies</p>',
+        ],
         'categories' => [
             \App\Services\UserActionPlanAdviceService::CATEGORY_COMPLETE => 'In orde',
             \App\Services\UserActionPlanAdviceService::CATEGORY_TO_DO => 'Nu aanpakken',
             \App\Services\UserActionPlanAdviceService::CATEGORY_LATER => 'Later uitvoeren',
         ],
         'cards' => [
+            'hidden' => [
+                'title' => 'Verborgen maatregelen',
+                'help' => 'Klik op een maatregel om deze weer toe te voegen aan het woonplan.',
+            ],
             'see-info' => 'Zie info',
             'subsidy' => [
                 // Todo when constants are available
@@ -37,5 +48,6 @@ return [
             'resident' => 'Opmerkingen bewoner',
             'coach' => 'Opmerkingen coach',
         ],
+        'loading' => 'Woonplan wordt berekend...',
     ],
 ];

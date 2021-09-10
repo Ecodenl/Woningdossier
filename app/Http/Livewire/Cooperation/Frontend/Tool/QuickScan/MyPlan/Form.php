@@ -10,8 +10,11 @@ use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserActionPlanAdviceComments;
+use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
-use Illuminate\Support\Arr;
+use Illuminate\Database\Eloquent\Collection;
+use App\Helpers\Arr;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -29,11 +32,25 @@ class Form extends Component
         ],
     ];
 
+    public array $hiddenCards = [
+        UserActionPlanAdviceService::CATEGORY_COMPLETE => [
+
+        ],
+        UserActionPlanAdviceService::CATEGORY_TO_DO => [
+
+        ],
+        UserActionPlanAdviceService::CATEGORY_LATER => [
+
+        ],
+    ];
+
     /** @var Building */
     public $building;
 
     public $masterInputSource;
     public $currentInputSource;
+    public $residentInputSource;
+    public $coachInputSource;
 
     public array $custom_measure_application = [];
 
@@ -49,6 +66,13 @@ class Form extends Component
 
     public string $category = '';
 
+    /** @var null|UserActionPlanAdviceComments */
+    public $residentComment;
+    public string $residentCommentText = '';
+    /** @var null|UserActionPlanAdviceComments */
+    public $coachComment;
+    public string $coachCommentText = '';
+
     // TODO: Move this to a constant helper when this is retrieved from backend
     public string $SUBSIDY_AVAILABLE = 'available';
     public string $SUBSIDY_UNAVAILABLE = 'unavailable';
@@ -63,7 +87,7 @@ class Form extends Component
     ];
 
     protected $listeners = [
-        'cardMoved',
+        'cardMoved', 'cardTrashed', 'addHiddenCardToBoard',
     ];
 
     private $calculationMap = [
@@ -174,12 +198,29 @@ class Form extends Component
         ],
     ];
 
-    public function mount()
+    public function mount(Building $building)
     {
-        $this->building = HoomdossierSession::getBuilding(true);
+        $this->building = $building;
+        // Set needed input sources
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
+        $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT
+            ? $this->currentInputSource
+            : InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT
+            ? $this->currentInputSource
+            : InputSource::findByShort(InputSource::COACH_SHORT);
 
+        // Set comments
+        $this->residentComment = UserActionPlanAdviceComments::forInputSource($this->residentInputSource)
+            ->where('user_id', $this->building->user->id)->first();
+        $this->residentCommentText = $this->residentComment instanceof UserActionPlanAdviceComments ? $this->residentComment->comment : '';
+
+        $this->coachComment = UserActionPlanAdviceComments::forInputSource($this->coachInputSource)
+            ->where('user_id', $this->building->user->id)->first();
+        $this->coachCommentText = $this->coachComment instanceof UserActionPlanAdviceComments ? $this->coachComment->comment : '';
+
+        // Set cards
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                 ->where('user_id', $this->building->user->id)
@@ -187,47 +228,10 @@ class Form extends Component
                 ->orderBy('order')
                 ->get();
 
-            // Order in the DB could not be linear. For safe use, we set the order ourselves
-            $order = 0;
-            foreach ($advices as $advice) {
-                $advisable = $advice->userActionPlanAdvisable;
-                if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
-                    $this->cards[$category][$order] = [
-                        'name' => Str::limit($advisable->measure_name, 22),
-                        'icon' => $advisable->configurations['icon'] ?? 'icon-tools',
-                        // TODO: Subsidy
-                        'subsidy' => $this->SUBSIDY_AVAILABLE,
-                        'info' => $advisable->measure_name,
-                        'route' => StepHelper::buildStepUrl($advisable->step),
-                    ];
-                } else {
-                    // Custom measure has input source so we must fetch the advisable from the master input source
-                    if ($advice->user_action_plan_advisable_type === CustomMeasureApplication::class) {
-                        $advisable = $advice->userActionPlanAdvisable()
-                            ->forInputSource($this->masterInputSource)
-                            ->first();
-                    }
-
-                    $this->cards[$category][$order] = [
-                        'name' => Str::limit($advisable->name, 22),
-                        'icon' => $advisable->extra['icon'] ?? 'icon-tools',
-                        // TODO: Subsidy
-                        'subsidy' => $this->SUBSIDY_UNKNOWN,
-                        'info' => $advisable->info,
-                    ];
-                }
-
-                $this->cards[$category][$order]['id'] = $advice->id;
-                $this->cards[$category][$order]['costs'] = [
-                    'from' => $advice->costs['from'] ?? 0,
-                    'to' => $advice->costs['to'] ?? 0,
-                ];
-                $this->cards[$category][$order]['savings'] = $advice->savings_money ?? 0;
-
-                ++$order;
-            }
+            $this->cards = array_merge($this->cards, $this->convertAdvicesToCards($advices, $category));
         }
 
+        $this->loadHiddenCards();
         $this->recalculate();
     }
 
@@ -375,6 +379,30 @@ class Form extends Component
         }
     }
 
+    public function cardTrashed($fromCategory, $id)
+    {
+        // Get the original card object
+        $cardData = Arr::where($this->cards[$fromCategory], function ($card, $order) use ($id) {
+            return $card['id'] == $id;
+        });
+
+        if (! empty($cardData)) {
+            $oldOrder = array_key_first($cardData);
+            $trashedCard = $cardData[$oldOrder];
+
+            // Remove card from the list
+            unset($this->cards[$fromCategory][$oldOrder]);
+
+            // Add card to hidden cards
+            $this->hiddenCards[$fromCategory][] = $trashedCard;
+
+            // Set invisible
+            $this->updateAdvice($id, ['visible' => false]);
+
+            $this->recalculate();
+        }
+    }
+
     public function recalculate()
     {
         // Comfort logic
@@ -396,11 +424,10 @@ class Form extends Component
         $this->evaluateCalculationResult('investment', $percentage);
 
 
-        // TODO: Get logic for this. This is a guessed placeholder
+        // TODO: Get logic for subsidy.
         $subsidyPercentage = 0.1;
 
-        $minInvestment = 0;
-        $maxInvestment = 0;
+        $investment = 0;
         $savings = 0;
         $subsidy = 0;
 
@@ -408,8 +435,14 @@ class Form extends Component
             $from = $card['costs']['from'] ?? 0;
             $to = $card['costs']['to'] ?? 0;
 
-            $minInvestment += $from;
-            $maxInvestment += $to;
+            if ($from <= 0 && $to > 0) {
+                $investment += $to;
+            } elseif ($to <= 0 && $from > 0) {
+                $investment += $from;
+            } elseif ($from > 0 && $to > 0) {
+                $investment += (($from + $to) / 2);
+            }
+
             $savings += $card['savings'] ?? 0;
 
 //            if ($card['subsidy'] === $this->SUBSIDY_AVAILABLE) {
@@ -435,6 +468,7 @@ class Form extends Component
     {
         // Get moved advice (will be for master input source)
         $advice = UserActionPlanAdvice::allInputSources()
+            ->withoutGlobalScope(VisibleScope::class)
             ->find($id);
 
         // If it's a custom measure, we need to get the sibling because the custom measure also has an input source
@@ -466,6 +500,117 @@ class Form extends Component
             // or vice versa)
             $advice->update($update);
         }
+    }
+
+    public function saveComment(string $sourceShort)
+    {
+        if ($sourceShort === InputSource::RESIDENT_SHORT || $sourceShort === InputSource::COACH_SHORT) {
+            $commentShort = "{$sourceShort}Comment";
+            $commentText = $this->{"{$sourceShort}CommentText"};
+            $inputSource = $this->{"{$sourceShort}InputSource"};
+
+            if ($inputSource->short === $this->currentInputSource->short) {
+                if ($this->{$commentShort} instanceof UserActionPlanAdviceComments) {
+                    $this->{$commentShort}->update([
+                        'comment' => $commentText,
+                    ]);
+                } else {
+                    $this->{$commentShort} = UserActionPlanAdviceComments::create([
+                        'user_id' => $this->building->user->id,
+                        'input_source_id' => $inputSource->id,
+                        'comment' => $commentText,
+                    ]);
+                }
+            }
+        }
+    }
+
+    public function addHiddenCardToBoard($category, $id)
+    {
+        $cardData = Arr::where($this->hiddenCards[$category], function ($card, $order) use ($id) {
+            return $card['id'] == $id;
+        });
+
+        if (! empty($cardData)) {
+            $oldOrder = array_key_first($cardData);
+            $addedCard = $cardData[$oldOrder];
+
+            // Remove card from the original category
+            unset($this->hiddenCards[$category][$oldOrder]);
+
+            // Add moved card into new category
+            $cards = $this->cards[$category];
+            $newOrder = count($cards);
+            $cards[$newOrder] = $addedCard;
+            $this->cards[$category] = $cards;
+
+            // Set visible and on new place
+            $this->updateAdvice($id, ['visible' => true, 'order' => $newOrder]);
+
+            $this->recalculate();
+        }
+    }
+
+    private function loadHiddenCards()
+    {
+        foreach (UserActionPlanAdviceService::getCategories() as $category) {
+            $hiddenAdvices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
+                ->withoutGlobalScope(VisibleScope::class)
+                ->where('user_id', $this->building->user->id)
+                ->where('category', $category)
+                ->where('visible', false)
+                ->orderBy('order')
+                ->get();
+
+            $this->hiddenCards = array_merge($this->hiddenCards, $this->convertAdvicesToCards($hiddenAdvices, $category));
+        }
+    }
+
+    private function convertAdvicesToCards(Collection $advices, string $category): array
+    {
+        $cards = [];
+
+        // Order in the DB could have gaps or duplicates. For safe use, we set the order ourselves
+        $order = 0;
+        foreach ($advices as $advice) {
+            $advisable = $advice->userActionPlanAdvisable;
+            if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
+                $cards[$category][$order] = [
+                    'name' => Str::limit($advisable->measure_name, 22),
+                    'icon' => configurations['icon'] ?? 'icon-tools',
+                    // TODO: Subsidy
+                    'subsidy' => $this->SUBSIDY_AVAILABLE,
+                    'info' => $advisable->measure_name,
+                    'route' => StepHelper::buildStepUrl($advisable->step),
+                ];
+            } else {
+                // Custom measure has input source so we must fetch the advisable from the master input source
+                if ($advice->user_action_plan_advisable_type === CustomMeasureApplication::class) {
+                    $advisable = $advice->userActionPlanAdvisable()
+                        ->forInputSource($this->masterInputSource)
+                        ->first();
+                }
+
+                $cards[$category][$order] = [
+                    'name' => Str::limit($advisable->name, 22),
+                    'icon' => $advisable->extra['icon'] ?? 'icon-tools',
+                    // TODO: Subsidy
+                    'subsidy' => $this->SUBSIDY_UNKNOWN,
+                    'info' => $advisable->info,
+                ];
+            }
+
+            $cards[$category][$order]['id'] = $advice->id;
+            $cards[$category][$order]['costs'] = [
+                'from' => $advice->costs['from'] ?? null,
+                'to' => $advice->costs['to'] ?? null,
+            ];
+            $cards[$category][$order]['savings'] = $advice->savings_money ?? 0;
+
+            ++$order;
+        }
+
+        return $cards;
     }
 
     public function evaluateCalculationResult($field, $calculation)

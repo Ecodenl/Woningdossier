@@ -4,12 +4,16 @@ namespace App\Traits;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
+use App\Models\BuildingInsulatedGlazing;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
+use App\Models\InsulatingGlazing;
 use App\Models\MeasureApplication;
+use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Scopes\VisibleScope;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,7 +22,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 trait GetMyValuesTrait
 {
@@ -30,9 +33,13 @@ trait GetMyValuesTrait
     public static function bootGetMyValuesTrait()
     {
         static::saved(function (Model $model) {
-            Log::debug(get_class($model) . "::saved (" . ($model->inputSource->short ?? '') . ")");
+//            Log::debug(
+//                get_class(
+//                    $model
+//                )."::saved (".($model->inputSource->short ?? '').")"
+//            );
             // might be handy to prevent getting into an infinite loop (-:>
-            if (!in_array(($model->inputSource->short ?? ''), [ InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING])) {
+            if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING])) {
                 $model->saveForMasterInputSource();
             }
         });
@@ -54,46 +61,80 @@ trait GetMyValuesTrait
 
     protected function saveForMasterInputSource()
     {
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-        $data = $this->attributesToArray();
-
-        $data['input_source_id'] = $masterInputSource->id;
-        unset($data['id']);
-
-        $wheres = [
-            'input_source_id' => $masterInputSource->id,
+        $tablesToIgnore = [
+            'user_action_plan_advice_comments', 'step_comments',
         ];
 
-        $crucialRelationCombinationIds = [
-            'user_id', 'building_id', 'tool_question_id', 'tool_question_custom_value_id', 'element_id', 'service_id',
-            'hash', 'sub_step_id', 'short', 'step_id',
-        ];
-        if ($this instanceof UserActionPlanAdvice) {
-            $advisable = $this->userActionPlanAdvisable;
-            if ($advisable instanceof MeasureApplication || $advisable instanceof CooperationMeasureApplication) {
-                $crucialRelationCombinationIds[] = 'user_action_plan_advisable_id';
-                $crucialRelationCombinationIds[] = 'user_action_plan_advisable_type';
-            } elseif ($advisable instanceof CustomMeasureApplication) {
-                // find sibling of the user one with admin input source
-                $sibling = $advisable->getSibling($masterInputSource);
-                $data['user_action_plan_advisable_id'] = $sibling->id;
-                $wheres['user_action_plan_advisable_id'] = $sibling->id;
-                $crucialRelationCombinationIds[] = 'user_action_plan_advisable_type';
+        // Sometimes we won't need the master input source, so we will ignore these
+        if (! in_array($this->getTable(), $tablesToIgnore)) {
+            $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+            $data = $this->attributesToArray();
+
+            $data['input_source_id'] = $masterInputSource->id;
+            unset($data['id']);
+
+            $wheres = [
+                'input_source_id' => $masterInputSource->id,
+            ];
+
+            $crucialRelationCombinationIds = [
+                'user_id', 'building_id', 'tool_question_id', 'tool_question_custom_value_id', 'element_id', 'service_id',
+                'hash', 'sub_step_id', 'short', 'step_id', 'interested_in_type', 'interested_in_id',
+            ];
+            $crucialRelationCombinationIds = array_merge($crucialRelationCombinationIds, $this->crucialRelations ?? []);
+
+            if ($this instanceof UserActionPlanAdvice) {
+                $advisable = $this->userActionPlanAdvisable;
+                if ($advisable instanceof MeasureApplication || $advisable instanceof CooperationMeasureApplication) {
+                    $crucialRelationCombinationIds[] = 'user_action_plan_advisable_id';
+                    $crucialRelationCombinationIds[] = 'user_action_plan_advisable_type';
+                } else {
+                    $advisable = $this->userActionPlanAdvisable()
+                        ->forInputSource($this->inputSource)
+                        ->first();
+
+                    if ($advisable instanceof CustomMeasureApplication) {
+                        // find sibling of the user one with admin input source
+                        $sibling = $advisable->getSibling($masterInputSource);
+                        $data['user_action_plan_advisable_id'] = $sibling->id;
+                        $wheres['user_action_plan_advisable_id'] = $sibling->id;
+                        $crucialRelationCombinationIds[] = 'user_action_plan_advisable_type';
+                    }
+                }
             }
+
+            foreach ($crucialRelationCombinationIds as $crucialRelationCombinationId) {
+                if ($this->hasAttribute($crucialRelationCombinationId)) {
+                    $shouldAdd = $crucialRelationCombinationId !== 'tool_question_custom_value_id';
+
+                    if (! $shouldAdd) {
+                        // Conditional logic, tool_question_custom_value_id should only be evaluated if the
+                        // question is a checkbox
+                        if (! empty($data['tool_question_id']) && ($toolQuestion = ToolQuestion::find($data['tool_question_id'])) instanceof ToolQuestion) {
+                            $shouldAdd = $toolQuestion->toolQuestionType->short === 'checkbox-icon';
+                        }
+                    }
+
+                    if ($shouldAdd) {
+                        $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
+                    }
+                }
+            }
+
+            if ($this instanceof BuildingInsulatedGlazing){
+                Log::debug(__METHOD__);
+                Log::debug($wheres);
+                Log::debug($data);
+            }
+
+            ($this)::withoutGlobalScope(VisibleScope::class)
+                ->allInputSources()
+                ->updateOrCreate(
+                    $wheres,
+                    $data,
+                );
         }
 
-        foreach ($crucialRelationCombinationIds as $crucialRelationCombinationId) {
-            if ($this->hasAttribute($crucialRelationCombinationId)) {
-                $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
-            }
-        }
-
-        ($this)::withoutGlobalScope(VisibleScope::class)
-            ->allInputSources()
-            ->updateOrCreate(
-                $wheres,
-                $data,
-            );
     }
 
     /**

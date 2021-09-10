@@ -64,6 +64,11 @@ class UserInterest extends Model
         return $this->belongsTo(Interest::class);
     }
 
+    public function interestedIn()
+    {
+        return $this->morphTo();
+    }
+
     public function getInterestsInServices()
     {
         $interests = [];

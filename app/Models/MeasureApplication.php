@@ -49,6 +49,9 @@ class MeasureApplication extends Model
 {
     use HasTranslations;
 
+    const ENERGY_SAVING = 'energy_saving';
+    const MAINTENANCE = 'maintenance';
+
     protected $translatable = [
         'measure_name', 'cost_unit', 'maintenance_unit',
     ];

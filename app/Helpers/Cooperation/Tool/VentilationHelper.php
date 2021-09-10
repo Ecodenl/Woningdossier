@@ -7,6 +7,8 @@ use App\Models\BuildingVentilation;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
+use App\Models\InputSource;
+use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 
 class VentilationHelper extends ToolHelper
@@ -37,8 +39,11 @@ class VentilationHelper extends ToolHelper
 
         $results = Ventilation::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
 
-        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
+        $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+
+        // TODO: CHECK HOW TO HANDLE THIS (INTERESTS ARE IRRELEVANT...)
         $interestsInMeasureApplications = $this->getValues('user_interests');
         $relevantAdvices = collect($results['advices'])->whereIn('id', $interestsInMeasureApplications);
 
@@ -57,6 +62,9 @@ class VentilationHelper extends ToolHelper
                 $actionPlanAdvice->user()->associate($this->user);
                 $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
+
+                UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+
                 $actionPlanAdvice->save();
             }
         }

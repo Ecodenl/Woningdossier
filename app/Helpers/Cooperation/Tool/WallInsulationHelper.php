@@ -13,6 +13,7 @@ use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
+use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 
 class WallInsulationHelper extends ToolHelper
@@ -74,11 +75,7 @@ class WallInsulationHelper extends ToolHelper
     /**
      * Save the advices for the wall insulation page.
      *
-     * @param Building    $building
-     * @param InputSource $inputSource
-     * @param array       $saveData
-     *
-     * @throws \Exception
+     * @return \App\Helpers\Cooperation\Tool\ToolHelper
      */
     public function createAdvices(): ToolHelper
     {
@@ -87,7 +84,9 @@ class WallInsulationHelper extends ToolHelper
 
         $step = Step::findByShort('wall-insulation');
 
-        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
+
+        $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('measure_name->nl', $results['insulation_advice'])->first();
@@ -98,6 +97,9 @@ class WallInsulationHelper extends ToolHelper
                 $actionPlanAdvice->user()->associate($this->user);
                 $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
+
+                UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+
                 $actionPlanAdvice->save();
             }
         }
@@ -119,6 +121,9 @@ class WallInsulationHelper extends ToolHelper
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);
+
+                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+
                     $actionPlanAdvice->save();
                 }
             }

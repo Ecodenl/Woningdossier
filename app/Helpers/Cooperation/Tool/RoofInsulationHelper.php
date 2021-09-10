@@ -18,6 +18,7 @@ use App\Models\RoofType;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
+use App\Scopes\VisibleScope;
 use App\Services\ModelService;
 use App\Services\UserActionPlanAdviceService;
 use Carbon\Carbon;
@@ -34,8 +35,10 @@ class RoofInsulationHelper extends ToolHelper
         $step = Step::findByShort('roof-insulation');
 
         $buildingRoofTypeData = $this->getValues('building_roof_types');
-        // Remove old results
-        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
+
+        $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         $roofTypeIds = $this->getValues('building_roof_type_ids');
         foreach ($roofTypeIds as $roofTypeId) {
@@ -86,6 +89,9 @@ class RoofInsulationHelper extends ToolHelper
                         $actionPlanAdvice->user()->associate($this->user);
                         $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($step);
+
+                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+
                         $actionPlanAdvice->save();
                     }
                 }
@@ -123,6 +129,9 @@ class RoofInsulationHelper extends ToolHelper
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->userActionPlanAdvisable()->associate($zincReplaceMeasure);
                     $actionPlanAdvice->step()->associate($step);
+
+                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $zincReplaceMeasure, $oldAdvices);
+
                     $actionPlanAdvice->save();
                 }
             }
@@ -148,6 +157,9 @@ class RoofInsulationHelper extends ToolHelper
                         $actionPlanAdvice->user()->associate($this->user);
                         $actionPlanAdvice->userActionPlanAdvisable()->associate($replaceMeasure);
                         $actionPlanAdvice->step()->associate($step);
+
+                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $replaceMeasure, $oldAdvices);
+
                         $actionPlanAdvice->save();
                     }
                 }
@@ -175,6 +187,9 @@ class RoofInsulationHelper extends ToolHelper
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->userActionPlanAdvisable()->associate($replaceMeasure);
                     $actionPlanAdvice->step()->associate($step);
+
+                    UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $replaceMeasure, $oldAdvices);
+
                     $actionPlanAdvice->save();
                 }
             }

@@ -1080,7 +1080,7 @@ class ToolHelper
                     = [
                     //'label' => 'Interest in '.$measureApplication->measure_name,
                     'label' => __(
-                        'general.change-interested.title',
+                        'cooperation/admin/example-buildings.form.interest-in-measure',
                         ['item' => $measureApplication->measure_name]
                     ),
                     'type' => 'select',

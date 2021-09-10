@@ -22,6 +22,9 @@ class BuildingCharacteristicsController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
+        // For safety
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
@@ -49,6 +52,9 @@ class BuildingCharacteristicsController extends Controller
 
     public function store(BuildingCharacteristicsFormRequest $request)
     {
+        // For safety
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $step = Step::findByShort('building-characteristics');

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Models\HasTranslations;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -61,5 +62,10 @@ class SubStep extends Model
         return $this->belongsToMany(ToolQuestion::class, 'sub_step_tool_questions')
             ->orderBy('order')
             ->withPivot('order');
+    }
+
+    public function scopeOrdered(Builder $query)
+    {
+        return $query->orderBy('order');
     }
 }

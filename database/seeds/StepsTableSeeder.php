@@ -1,5 +1,6 @@
 <?php
 
+use App\Scopes\NoGeneralDataScope;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -189,7 +190,7 @@ class StepsTableSeeder extends Seeder
             ];
 
             if (isset($step['parent_short'])) {
-                $parent = \App\Models\Step::whereShort($step['parent_short'])->first();
+                $parent = \App\Models\Step::withoutGlobalScope(NoGeneralDataScope::class)->whereShort($step['parent_short'])->first();
                 $insertStepData['parent_id'] = $parent->id;
             }
 

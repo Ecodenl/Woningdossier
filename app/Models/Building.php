@@ -342,7 +342,7 @@ class Building extends Model
 
     public function hasAnsweredExpertQuestion(): bool
     {
-        return $this->has_answered_expert_question;
+        return $this->has_answered_expert_question ?? false;
     }
 
     /**

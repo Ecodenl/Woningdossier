@@ -18,7 +18,7 @@ class MakeVariousColumnsNullableOnUserActionPlanAdvicesTable extends Migration
         });
 
         // Almost the same table. Sshhhh....
-        Schema::table('user_action_plan_advices_comments', function (Blueprint $table) {
+        Schema::table('user_action_plan_advice_comments', function (Blueprint $table) {
             $table->text('comment')->nullable()->change();
         });
     }

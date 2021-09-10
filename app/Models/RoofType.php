@@ -36,6 +36,14 @@ class RoofType extends Model
     use HasShortTrait,
         HasTranslations;
 
+    const PRIMARY_TO_SECONDARY_MAP = [
+        'pitched' => 'pitched',
+        'flat' => 'flat',
+        'none' => 'none',
+        'gabled-roof' => 'pitched',
+        'rounded-roof' => 'pitched',
+        'straw-roof' => 'pitched',
+    ];
     const SECONDARY_ROOF_TYPE_SHORTS = [
         'pitched', 'flat', 'none',
     ];

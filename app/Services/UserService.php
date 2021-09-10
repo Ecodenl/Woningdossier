@@ -72,6 +72,7 @@ class UserService
      */
     public static function resetUser(User $user, InputSource $inputSource)
     {
+        Log::debug(__METHOD__ . " " . $user->id . " for input source " . $inputSource->short);
         // only remove the example building id from the building
         $building = $user->building;
         $building->example_building_id = null;
@@ -112,6 +113,30 @@ class UserService
         $building->toolQuestionAnswers()->forInputSource($inputSource)->delete();
         // remove the progress of the completed questionnaires
         CompletedQuestionnaire::forMe($user)->forInputSource($inputSource)->delete();
+
+        if (!in_array($inputSource->short, [InputSource::MASTER_SHORT,])) {
+            // re-query pico
+            $picoAddressData = PicoHelper::getAddressData(
+                $building->postal_code,
+                $building->number
+            );
+
+            $data['bag_addressid'] = $picoAddressData['id'] ?? $data['addressid'] ?? '';
+            $data['extension']     = $data['house_number_extension'] ?? null;
+
+            if ( ! empty(($picoAddressData['id'] ?? null))) {
+                $building->update(['bag_addressid' => $picoAddressData['id']]);
+            }
+
+            $features = new BuildingFeature([
+                'surface'         => $picoAddressData['surface'] ?? null,
+                'build_year'      => $picoAddressData['build_year'] ?? null,
+                'input_source_id' => $inputSource->id,
+            ]);
+            $features->building()->associate(
+                $building
+            )->save();
+        }
     }
 
     /**

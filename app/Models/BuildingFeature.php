@@ -126,7 +126,7 @@ class BuildingFeature extends Model
             if ($primaryRoofType instanceof RoofType) {
                 $building = $buildingFeature->building;
 
-                if ($building->roofTypes()->count === 0) {
+                if ($building->roofTypes()->count() === 0) {
                     // No roof types defined yet. Let's set them.
                     $roofTypeMap = [
                         'pitched' => 'pitched',
@@ -138,7 +138,7 @@ class BuildingFeature extends Model
                     ];
 
                     $roofTypeToLink = RoofType::findByShort($roofTypeMap[$primaryRoofType->short]);
-                    $building->roofTypes()->associate($roofTypeToLink);
+                    $building->roofTypes()->create(['roof_type_id' => $roofTypeToLink->id]);
                 }
             }
         });

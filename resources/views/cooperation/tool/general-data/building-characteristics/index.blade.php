@@ -237,7 +237,6 @@
 
 @push('js')
     <script>
-
         $(document).ready(function () {
 
             var getQualifiedExampleBuildingsRoute = '{{route('cooperation.tool.general-data.building-characteristics.qualified-example-buildings')}}';
@@ -276,7 +275,9 @@
                             var errorMessage = $.parseJSON(request.responseText);
                             $.each(errorMessage.errors, function (fieldName, message) {
                                 var input = $('input[id=' + fieldName + ']');
-                                addError(input, message)
+                                var helpBlock = '<span class="help-block"></span>';
+                                input.parent().parent().addClass('has-error');
+                                input.parent().append($(helpBlock).append('<strong>' + message + '</strong>'));
                             });
                         },
                         dataType: 'json'

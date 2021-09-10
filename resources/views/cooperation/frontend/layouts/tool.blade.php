@@ -178,19 +178,6 @@
 @if(\App\Helpers\Blade\RouteLogic::inExpertTool(Route::currentRouteName()))
     @push('js')
         <script>
-{{-- TODO: Check the usages of these scripts --}}
-
-            function removeErrors()
-            {
-                $('.has-error').removeClass('has-error');
-                $('.help-block').remove()
-            }
-            function addError(input, message) {
-                {{-- TODO:These are also within the app.js, check if these are needed here --}}
-                var helpBlock = '<span class="help-block"></span>';
-                input.parents('.form-group').addClass('has-error');
-                input.parents('.form-group').append($(helpBlock).append('<strong>' + message + '</strong>'));
-            }
 
             function removeError(input) {
                 input.parents('.has-error').removeClass('has-error');

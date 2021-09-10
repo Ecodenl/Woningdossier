@@ -35358,12 +35358,6 @@ $("#postal_code, #number, #house_number_extension").focusout(function () {
   });
 });
 
-function addError(input, message) {
-  var helpBlock = '<span class="help-block"></span>';
-  input.parent().parent().addClass('has-error');
-  input.parent().append($(helpBlock).append('<strong>' + message + '</strong>'));
-}
-
 function removeError(input) {
   input.parents('.has-error').removeClass('has-error');
   input.next('.help-block').remove();

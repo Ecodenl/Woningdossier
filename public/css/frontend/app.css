@@ -159747,6 +159747,7 @@ textarea.form-input {
   top: 100%;
   z-index: 100;
   width: 12rem;
+  list-style-type: none;
 }
 
 .dropdown-wrapper .dropdown > :not([hidden]) ~ :not([hidden]) {
@@ -159767,6 +159768,7 @@ textarea.form-input {
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+  padding-left: 0px;
   font-size: 14px;
   line-height: 24px;
   --tw-text-opacity: 1;

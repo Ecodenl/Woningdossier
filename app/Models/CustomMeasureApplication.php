@@ -11,7 +11,9 @@ use Spatie\Translatable\HasTranslations;
 
 class CustomMeasureApplication extends Model
 {
-    use HasTranslations, GetMyValuesTrait, GetValueTrait;
+    use HasTranslations,
+        GetMyValuesTrait,
+        GetValueTrait;
 
     public $translatable = [
         'name', 'info',

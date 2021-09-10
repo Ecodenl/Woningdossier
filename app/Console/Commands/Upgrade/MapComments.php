@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Upgrade;
 
 use App\Models\Step;
+use App\Scopes\NoGeneralDataScope;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -68,8 +69,8 @@ class MapComments extends Command
 
         foreach ($commentMap as $commentMapData) {
             // Get relevant steps
-            $fromStep = Step::findByShort($commentMapData['fromStep']);
-            $toStep = Step::findByShort($commentMapData['toStep']);
+            $fromStep = Step::withoutGlobalScope(NoGeneralDataScope::class)->findByShort($commentMapData['fromStep']);
+            $toStep = Step::withoutGlobalScope(NoGeneralDataScope::class)->findByShort($commentMapData['toStep']);
 
             // If it's not an array, it's null. We will wrap it in an array to keep the code concise
             $shorts = is_array($commentMapData['commentShort']) ? $commentMapData['commentShort'] : [$commentMapData['commentShort']];

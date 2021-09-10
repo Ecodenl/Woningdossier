@@ -96,6 +96,9 @@ class VentilationController extends Controller
 
         StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
         StepHelper::complete($step, $building, $inputSource);
+        $building->update([
+            'has_answered_expert_question' => true,
+        ]);
         StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
         $nextStep = StepHelper::getNextStep($building, $inputSource, $step);
         $url = $nextStep['url'];

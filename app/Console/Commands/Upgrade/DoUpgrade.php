@@ -98,6 +98,7 @@ class DoUpgrade extends Command
                     AddMasterInputSource::class,
                     ConvertExampleBuildingContents::class,
                     UpdateCompletedStepsForMasterInputSource::class,
+                    FixTranslations::class, // Reset translations which have changed
                 ];
 
                 foreach ($afterCommands as $command) {

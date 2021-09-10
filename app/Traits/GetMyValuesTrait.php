@@ -84,12 +84,18 @@ trait GetMyValuesTrait
                 if ($advisable instanceof MeasureApplication || $advisable instanceof CooperationMeasureApplication) {
                     $crucialRelationCombinationIds[] = 'user_action_plan_advisable_id';
                     $crucialRelationCombinationIds[] = 'user_action_plan_advisable_type';
-                } elseif ($advisable instanceof CustomMeasureApplication) {
-                    // find sibling of the user one with admin input source
-                    $sibling = $advisable->getSibling($masterInputSource);
-                    $data['user_action_plan_advisable_id'] = $sibling->id;
-                    $wheres['user_action_plan_advisable_id'] = $sibling->id;
-                    $crucialRelationCombinationIds[] = 'user_action_plan_advisable_type';
+                } else {
+                    $advisable = $this->userActionPlanAdvisable()
+                        ->forInputSource($this->inputSource)
+                        ->first();
+
+                    if ($advisable instanceof CustomMeasureApplication) {
+                        // find sibling of the user one with admin input source
+                        $sibling = $advisable->getSibling($masterInputSource);
+                        $data['user_action_plan_advisable_id'] = $sibling->id;
+                        $wheres['user_action_plan_advisable_id'] = $sibling->id;
+                        $crucialRelationCombinationIds[] = 'user_action_plan_advisable_type';
+                    }
                 }
             }
 

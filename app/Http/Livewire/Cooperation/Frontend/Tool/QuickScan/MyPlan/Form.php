@@ -405,25 +405,6 @@ class Form extends Component
 
     public function recalculate()
     {
-        // Comfort logic
-        // TODO: Calculations
-        // TEMPORARY RANDOM CALC
-        $percentage = mt_rand(0, 26);
-        $this->evaluateCalculationResult('comfort', $percentage);
-
-        // Renewable logic
-        // TODO: Calculations
-        // TEMPORARY RANDOM CALC
-        $percentage = mt_rand(0, 100);
-        $this->evaluateCalculationResult('renewable', $percentage);
-
-        // Investment logic
-        // TODO: Calculations
-        // TEMPORARY RANDOM CALC
-        $percentage = mt_rand(0, 10);
-        $this->evaluateCalculationResult('investment', $percentage);
-
-
         // TODO: Get logic for subsidy.
         $subsidyPercentage = 0.1;
 
@@ -450,7 +431,32 @@ class Form extends Component
 //            }
         }
 
-        $this->expectedInvestment = ($maxInvestment + $minInvestment) / 2;
+        $investment = NumberFormatter::round($investment);
+        $savings = NumberFormatter::round($savings);
+
+        // Comfort logic
+        // TODO: Calculations
+        // TEMPORARY RANDOM CALC
+        $percentage = mt_rand(0, 100);
+        $this->evaluateCalculationResult('comfort', $percentage);
+
+        // Renewable logic
+        // TODO: Calculations
+        // TEMPORARY RANDOM CALC
+        $percentage = mt_rand(0, 100);
+        $this->evaluateCalculationResult('renewable', $percentage);
+
+        // Investment logic
+        // TODO: Calculations
+        // TEMPORARY RANDOM CALC
+        $investmentPercentage = (max(1, $savings) / $investment) * 100;
+        $this->evaluateCalculationResult('investment', $investmentPercentage);
+
+
+
+        // Todo: Yannick is this ok?
+        //$this->expectedInvestment = ($maxInvestment + $minInvestment) / 2;
+        $this->expectedInvestment = $investment;
         $this->yearlySavings = $savings;
         $this->availableSubsidy = $subsidy;
     }
@@ -577,7 +583,7 @@ class Form extends Component
             if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
                 $cards[$category][$order] = [
                     'name' => Str::limit($advisable->measure_name, 22),
-                    'icon' => configurations['icon'] ?? 'icon-tools',
+                    'icon' => $configurations['icon'] ?? 'icon-tools',
                     // TODO: Subsidy
                     'subsidy' => $this->SUBSIDY_AVAILABLE,
                     'info' => $advisable->measure_name,

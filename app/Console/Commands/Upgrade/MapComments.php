@@ -69,8 +69,8 @@ class MapComments extends Command
 
         foreach ($commentMap as $commentMapData) {
             // Get relevant steps
-            $fromStep = Step::withoutGlobalScope(NoGeneralDataScope::class)->findByShort($commentMapData['fromStep']);
-            $toStep = Step::withoutGlobalScope(NoGeneralDataScope::class)->findByShort($commentMapData['toStep']);
+            $fromStep = Step::withoutGlobalScope(NoGeneralDataScope::class)->where('short', $commentMapData['fromStep'])->first();
+            $toStep = Step::withoutGlobalScope(NoGeneralDataScope::class)->where('short', $commentMapData['toStep'])->first();
 
             // If it's not an array, it's null. We will wrap it in an array to keep the code concise
             $shorts = is_array($commentMapData['commentShort']) ? $commentMapData['commentShort'] : [$commentMapData['commentShort']];

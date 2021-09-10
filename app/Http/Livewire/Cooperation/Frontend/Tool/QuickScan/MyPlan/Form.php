@@ -104,9 +104,9 @@ class Form extends Component
         'ventilation-demand-driven' => 'icon-ventilation',
     ];
 
-    public function mount()
+    public function mount(Building $building)
     {
-        $this->building = HoomdossierSession::getBuilding(true);
+        $this->building = $building;
         // Set needed input sources
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);

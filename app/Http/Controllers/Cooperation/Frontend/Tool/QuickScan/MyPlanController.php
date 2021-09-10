@@ -35,6 +35,6 @@ class MyPlanController extends Controller
         $notification = Notification::activeNotifications($building,
             InputSource::findByShort(InputSource::MASTER_SHORT))->first();
 
-        return view('cooperation.frontend.tool.quick-scan.my-plan.index', compact('notification'));
+        return view('cooperation.frontend.tool.quick-scan.my-plan.index', compact('building', 'notification'));
     }
 }

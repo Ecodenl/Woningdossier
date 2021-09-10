@@ -91,12 +91,8 @@ use Illuminate\Support\Str;
  */
 class Building extends Model
 {
-    use SoftDeletes;
-    use ToolSettingTrait;
-
-    protected $casts = [
-        'is_active' => 'boolean',
-    ];
+    use SoftDeletes,
+        ToolSettingTrait;
 
     public $fillable = [
         'street',
@@ -108,6 +104,12 @@ class Building extends Model
         'extension',
         'is_active',
         'example_building_id',
+        'has_answered_expert_question',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'has_answered_expert_question' => 'boolean',
     ];
 
     public function toolQuestionAnswers(): HasMany
@@ -336,6 +338,11 @@ class Building extends Model
         }
 
         return true;
+    }
+
+    public function hasAnsweredExpertQuestion(): bool
+    {
+        return $this->has_answered_expert_question;
     }
 
     /**

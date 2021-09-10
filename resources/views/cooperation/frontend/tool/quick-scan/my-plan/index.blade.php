@@ -7,16 +7,20 @@
         @include('cooperation.frontend.shared.parts.loader', ['label' => __('cooperation/frontend/tool.my-plan.loading')])
     @else
         <div class="w-full">
+            @php $langShort = $building->hasAnsweredExpertQuestion() ? 'expert' : 'quick-scan'; @endphp
             <div class="w-full flex flex-wrap justify-between mb-5">
                 <h4 class="heading-4">
-                    @lang('cooperation/frontend/tool.my-plan.title')
+                    {!! __("cooperation/frontend/tool.my-plan.title.{$langShort}") !!}
                 </h4>
                 <p>
                     @lang('cooperation/frontend/tool.my-plan.help')
                 </p>
             </div>
+            <div class="w-full flex flex-wrap mb-5">
+                {!! __("cooperation/frontend/tool.my-plan.info.{$langShort}", ['link' => '#']) !!}
+            </div>
 
-            @livewire('cooperation.frontend.tool.quick-scan.my-plan.form')
+            @livewire('cooperation.frontend.tool.quick-scan.my-plan.form', compact('building'))
         </div>
     @endif
 @endsection

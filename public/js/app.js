@@ -35034,20 +35034,16 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         this.$refs['source-select-input'].classList.add('disabled');
         this.open = false;
       } // TODO: Remove this when the tool is logical again
-console.log(window.inQuickScan);
-let context = this;
-      document.addEventListener('DOMContentLoaded', function () {
-        var _this = this;
-          console.log(window.inQuickScan);
 
+
+      var context = this;
+      document.addEventListener('DOMContentLoaded', function () {
         if (!window.inQuickScan) {
           // We're not in the quick scan, time to define logic to make JS carry half the tool
           var loop = 0;
           masterAnswers.forEach(function (answer) {
             var shouldClear = loop === 0;
-
             context.setElementValue(answer, shouldClear);
-
             ++loop;
           });
         }

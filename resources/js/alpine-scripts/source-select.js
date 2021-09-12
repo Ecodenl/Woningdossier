@@ -67,13 +67,14 @@ export default (inputSource = 'no-match') => ({
         }
 
         // TODO: Remove this when the tool is logical again
+        let context = this;
         document.addEventListener('DOMContentLoaded', function () {
             if (! window.inQuickScan) {
                 // We're not in the quick scan, time to define logic to make JS carry half the tool
                 let loop = 0;
                 masterAnswers.forEach(answer => {
                     let shouldClear = loop === 0;
-                    this.setElementValue(answer, shouldClear);
+                    context.setElementValue(answer, shouldClear);
 
                     ++loop;
                 });

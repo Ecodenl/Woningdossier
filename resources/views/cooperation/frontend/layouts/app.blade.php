@@ -49,7 +49,8 @@
     @php
         $inQuickScan = \App\Helpers\Blade\RouteLogic::inQuickScanTool(Route::currentRouteName()) & ! \App\Helpers\Blade\RouteLogic::inQuestionnaire(Route::currentRouteName());
     @endphp
-    window.inQuickScan = {{ (bool) $inQuickScan }};
+    {{-- We use @json so we get a proper boolean into JavaScript --}}
+    window.inQuickScan = @json((bool) $inQuickScan);
 
     document.addEventListener('DOMContentLoaded', function () {
         // Bind simple function to remove errors when clicked

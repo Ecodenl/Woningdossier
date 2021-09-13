@@ -64,11 +64,11 @@
                     </a>
                 </p>
             @endif
-            <p>
-                <a class="text-blue" href="{{ route('cooperation.tool.ventilation.index') }}">
-                    @lang('cooperation/frontend/layouts.navbar.advise')
-                </a>
-            </p>
+{{--            <p>--}}
+{{--                <a class="text-blue" href="{{ route('cooperation.tool.ventilation.index') }}">--}}
+{{--                    @lang('cooperation/frontend/layouts.navbar.advise')--}}
+{{--                </a>--}}
+{{--            </p>--}}
         @endif
 
         @if (!\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())

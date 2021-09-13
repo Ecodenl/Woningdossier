@@ -80,11 +80,7 @@ class Questionnaire extends Model
      */
     public function isActive(): bool
     {
-        if ($this->is_active) {
-            return true;
-        }
-
-        return false;
+        return $this->is_active;
     }
 
     public function isNotActive()

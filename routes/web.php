@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Cooperation\Frontend\Tool\QuickScanController;
+
 /** @noinspection PhpParamsInspection */
 
 /*
@@ -164,18 +167,22 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::post('', 'ImportController@copy')->name('copy');
             });
 
-
             Route::group(['namespace' => 'Frontend\Tool', 'as' => 'frontend.tool.'], function () {
                 Route::as('quick-scan.')->prefix('quick-scan')->group(function () {
+                    Route::get('', [QuickScanController::class, 'start'])->name('start');
+                    Route::get('woonplan', 'QuickScan\\MyPlanController@index')->name('my-plan.index');
+
+                    Route::get('{step}/vragenlijst/{questionnaire}', 'QuickScan\\QuestionnaireController@index')
+                        ->name('questionnaires.index');
+
+                    // Define this route as last to not match above routes as step/sub step combo
                     Route::get('{step}/{subStep}', 'QuickScanController@index')
                         ->name('index')
                         ->middleware('checks-conditions-for-sub-steps');
-
-                    Route::get('woonplan', 'QuickScan\\MyPlanController@index')->name('my-plan.index');
                 });
             });
 
-            Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool'], function () {
+            Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool', 'middleware' => 'ensure-quick-scan-completed'], function () {
 
 
                 Route::get('/', 'ToolController@index')->name('index');
@@ -187,20 +194,20 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                 Route::resource('example-building', 'ExampleBuildingController')->only('store');
                 Route::resource('building-type', 'BuildingTypeController')->only('store');
 
-                Route::group(['as' => 'general-data.', 'prefix' => 'general-data'], function () {
-                    Route::get('', 'GeneralDataController@index')->name('index');
+//                Route::group(['as' => 'general-data.', 'prefix' => 'general-data'], function () {
+//                    Route::get('', 'GeneralDataController@index')->name('index');
+//
+//                    Route::group(['namespace' => 'GeneralData'], function () {
+//                        Route::resource('gebouw-kenmerken', 'BuildingCharacteristicsController')->only(['index', 'store'])->names('building-characteristics');
+//                        Route::get('get-qualified-example-buildings', 'BuildingCharacteristicsController@qualifiedExampleBuildings')->name('building-characteristics.qualified-example-buildings');
+//
+//                        Route::resource('huidige-staat', 'CurrentStateController')->names('current-state')->only(['index', 'store']);
+//                        Route::resource('gebruik', 'UsageController')->only(['index', 'store'])->names('usage');
+//                        Route::resource('interesse', 'InterestController')->only(['index', 'store'])->names('interest');
+//                    });
+//                });
 
-                    Route::group(['namespace' => 'GeneralData'], function () {
-                        Route::resource('gebouw-kenmerken', 'BuildingCharacteristicsController')->only(['index', 'store'])->names('building-characteristics');
-                        Route::get('get-qualified-example-buildings', 'BuildingCharacteristicsController@qualifiedExampleBuildings')->name('building-characteristics.qualified-example-buildings');
-
-                        Route::resource('huidige-staat', 'CurrentStateController')->names('current-state')->only(['index', 'store']);
-                        Route::resource('gebruik', 'UsageController')->only(['index', 'store'])->names('usage');
-                        Route::resource('interesse', 'InterestController')->only(['index', 'store'])->names('interest');
-                    });
-                });
-
-                Route::group(['middleware' => 'filled-step:general-data'], function () {
+//                Route::group(['middleware' => 'filled-step:general-data'], function () {
                     // Heat pump: info for now
                     Route::resource('heat-pump', 'HeatPumpController', ['only' => ['index', 'store']])
                         ->middleware('step-disabled:heat-pump');
@@ -251,13 +258,13 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         Route::resource('', 'HeaterController', ['only' => ['index', 'store']]);
                         Route::post('calculate', 'HeaterController@calculate')->name('calculate');
                     });
-                });
+//                });
 
-                Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');
-                Route::post('my-plan/comment', 'MyPlanController@storeComment')
-                    ->middleware('deny-if-observing-building')
-                    ->name('my-plan.store-comment');
-                Route::post('my-plan/store', 'MyPlanController@store')->name('my-plan.store');
+//                Route::get('my-plan', 'MyPlanController@index')->name('my-plan.index');
+//                Route::post('my-plan/comment', 'MyPlanController@storeComment')
+//                    ->middleware('deny-if-observing-building')
+//                    ->name('my-plan.store-comment');
+//                Route::post('my-plan/store', 'MyPlanController@store')->name('my-plan.store');
 //                Route::get('my-plan/export', 'MyPlanController@export')->name('my-plan.export');
             });
 

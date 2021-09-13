@@ -3,11 +3,18 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Models\Building;
+use App\Models\CustomMeasureApplication;
+use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserActionPlanAdvice;
+use App\Models\UserActionPlanAdviceComments;
+use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
+use Illuminate\Database\Eloquent\Collection;
+use App\Helpers\Arr;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -25,17 +32,39 @@ class Form extends Component
         ],
     ];
 
+    public array $hiddenCards = [
+        UserActionPlanAdviceService::CATEGORY_COMPLETE => [
+
+        ],
+        UserActionPlanAdviceService::CATEGORY_TO_DO => [
+
+        ],
+        UserActionPlanAdviceService::CATEGORY_LATER => [
+
+        ],
+    ];
+
     /** @var Building */
     public $building;
 
+    public $masterInputSource;
     public $currentInputSource;
+    public $residentInputSource;
+    public $coachInputSource;
 
-    public array $new_measure = [];
+    public array $custom_measure_application = [];
     public int $investment = 0;
     public int $yearlySavings = 0;
     public int $availableSubsidy = 0;
 
     public string $category = '';
+
+    /** @var null|UserActionPlanAdviceComments */
+    public $residentComment;
+    public string $residentCommentText = '';
+    /** @var null|UserActionPlanAdviceComments */
+    public $coachComment;
+    public string $coachCommentText = '';
 
     // TODO: Move this to a constant helper when this is retrieved from backend
     public string $SUBSIDY_AVAILABLE = 'available';
@@ -43,14 +72,15 @@ class Form extends Component
     public string $SUBSIDY_UNKNOWN = 'unknown';
 
     protected $rules = [
-        'new_measure.subject' => 'required',
-        'new_measure.price.from' => 'required|numeric|min:0',
-        'new_measure.price.to' => 'required|numeric|gt:new_measure.price.from',
-//        'new_measure.expected_savings' => 'nullable|numeric',
+        'custom_measure_application.name' => 'required',
+        'custom_measure_application.info' => 'required',
+        'custom_measure_application.costs.from' => 'required|numeric|min:0',
+        'custom_measure_application.costs.to' => 'required|numeric|gt:custom_measure_application.costs.from',
+        'custom_measure_application.savings_money' => 'nullable|numeric',
     ];
 
     protected $listeners = [
-        'cardMoved',
+        'cardMoved', 'cardTrashed', 'addHiddenCardToBoard',
     ];
 
     // TODO: Proper map
@@ -88,49 +118,40 @@ class Form extends Component
         'ventilation-demand-driven' => 'icon-ventilation',
     ];
 
-    public function mount()
+    public function mount(Building $building)
     {
-        $this->building = HoomdossierSession::getBuilding(true);
+        $this->building = $building;
+        // Set needed input sources
+        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $this->currentInputSource = HoomdossierSession::getInputSource(true);
+        $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT
+            ? $this->currentInputSource
+            : InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT
+            ? $this->currentInputSource
+            : InputSource::findByShort(InputSource::COACH_SHORT);
 
-        $advices = UserActionPlanAdvice::forInputSource($this->currentInputSource)
-            ->where('user_id', $this->building->user->id)
-            ->get();
+        // Set comments
+        $this->residentComment = UserActionPlanAdviceComments::forInputSource($this->residentInputSource)
+            ->where('user_id', $this->building->user->id)->first();
+        $this->residentCommentText = $this->residentComment instanceof UserActionPlanAdviceComments ? $this->residentComment->comment : '';
 
+        $this->coachComment = UserActionPlanAdviceComments::forInputSource($this->coachInputSource)
+            ->where('user_id', $this->building->user->id)->first();
+        $this->coachCommentText = $this->coachComment instanceof UserActionPlanAdviceComments ? $this->coachComment->comment : '';
+
+        // Set cards
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
-            foreach ($advices->where('category', $category) as $advice) {
-                $advisable = $advice->userActionPlanAdvisable;
-                if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
-                    $this->cards[$category][$advice->id] = [
-                        'name' => Str::limit($advisable->measure_name, 22),
-                        'icon' => $this->iconMap[$advisable->short] ?? 'icon-tools',
-                        'price' => [
-                            'from' => $advice->costs['from'] ?? 0,
-                            'to' => $advice->costs['to'] ?? 0,
-                        ],
-                        // TODO: Subsidy
-                        'subsidy' => $this->SUBSIDY_AVAILABLE,
-                        'savings' => $advice->savings_money,
-                        'info' => $advisable->measure_name,
-                        'route' => StepHelper::buildStepUrl($advisable->step),
-                    ];
-                } else {
-                    $this->cards[$category][$advice->id] = [
-                        'name' => Str::limit($advisable->name, 22),
-                        'icon' => 'icon-tools',
-                        'price' => [
-                            'from' => $advice->costs['from'] ?? 0,
-                            'to' => $advice->costs['to'] ?? 0,
-                        ],
-                        // TODO: Subsidy
-                        'subsidy' => $this->SUBSIDY_UNKNOWN,
-                        'savings' => 0,
-                        'info' => $advisable->name,
-                    ];
-                }
-            }
+            $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
+                ->where('user_id', $this->building->user->id)
+                ->where('category', $category)
+                ->orderBy('order')
+                ->get();
+
+            $this->cards = array_merge($this->cards, $this->convertAdvicesToCards($advices, $category));
         }
 
+        $this->loadHiddenCards();
         $this->recalculate();
     }
 
@@ -146,18 +167,57 @@ class Form extends Component
 
     public function submit()
     {
-        $measureData = $this->validate($this->rules)['new_measure'];
+        // Before we can validate, we must convert human format to proper format
+        $costs = $this->custom_measure_application['costs'] ?? [];
+        $costs['from'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['from'] ?? ''), 2);
+        $costs['to'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['to'] ?? ''), 2);
+        $this->custom_measure_application['costs'] = $costs;
+        $this->custom_measure_application['savings_money'] = NumberFormatter::mathableFormat(str_replace('.', '', $this->custom_measure_application['savings_money'] ?? 0), 2);
+
+        $measureData = $this->validate($this->rules)['custom_measure_application'];
+
+        // Create custom measure
+        $customMeasureApplication = CustomMeasureApplication::create([
+            'building_id' => $this->building->id,
+            'input_source_id' => $this->currentInputSource->id,
+            'hash' => Str::uuid(),
+            'name' => ['nl' => $measureData['name']],
+            'info' => ['nl' => $measureData['info']],
+        ]);
+
+        // Get order based on current total (we don't have to add or subtract since count gives us the total, which
+        // is equal to indexable order + 1)
+        $order = count($this->cards[$this->category]);
+
+        // Build user advice
+        $advice = $customMeasureApplication
+            ->userActionPlanAdvices()
+            ->create(
+                [
+                    'user_id' => $this->building->user->id,
+                    'input_source_id' => $this->currentInputSource->id,
+                    'category' => $this->category,
+                    'visible' => true,
+                    'order' => $order,
+                    'costs' => $measureData['costs'],
+                    'savings_money' => $measureData['savings_money'] ?? 0,
+                ],
+            );
 
         // Append card
-        $this->cards[$this->category][Str::random()] = [
-            'name' => $measureData['subject'],
+        $this->cards[$this->category][$order] = [
+            'id' => $advice->id,
+            'name' => $customMeasureApplication->name,
+            'info' => $customMeasureApplication->info,
             'icon' => 'icon-tools',
-            'price' => $measureData['price'],
+            'costs' => $advice->costs,
             'subsidy' => $this->SUBSIDY_UNKNOWN,
-            'savings' => $measureData['expected_savings'] ?? 0,
+            'savings' => $advice->savings_money ?? 0,
         ];
 
         $this->dispatchBrowserEvent('close-modal');
+        // Reset the modal
+        $this->custom_measure_application = [];
 
         $this->recalculate();
     }
@@ -167,49 +227,123 @@ class Form extends Component
         $this->category = $category;
     }
 
-    public function cardMoved($fromCategory, $toCategory, $id, $order)
+    public function cardMoved($fromCategory, $toCategory, $id, $newOrder)
+    {
+        // Disclaimer: We have to do it like this, because JavaScript re-sorts arrays / objects to given numeric
+        // keys, so we must ENSURE the order is 100% valid from top to bottom
+
+        // Get the original card object
+        $cardData = Arr::where($this->cards[$fromCategory], function ($card, $order) use ($id) {
+            return $card['id'] == $id;
+        });
+
+        // Structure: order => card
+        if (! empty($cardData)) {
+            $oldOrder = array_key_first($cardData);
+            $movedCard = $cardData[$oldOrder];
+
+            // Remove card from the original category
+            unset($this->cards[$fromCategory][$oldOrder]);
+
+            // Reorder the old category
+            $oldCards = $this->cards[$fromCategory];
+            $newCards = [];
+
+            // Simple reorder: we just set values to the loop iteration (in index form), because the moved
+            // card is already removed
+            $loop = 0;
+            foreach ($oldCards as $card) {
+                $newCards[$loop] = $card;
+                ++$loop;
+            }
+            $this->cards[$fromCategory] = $newCards;
+
+            // Add moved card into new category
+            $oldCards = $this->cards[$toCategory];
+            $newCards = [];
+
+            // If the new order is above the max order, we just append it
+            if ($newOrder > count($oldCards) - 1) {
+                $newCards = $oldCards;
+                $newCards[$newOrder] = $movedCard;
+            } else {
+                // The logic here is simple but important to know:
+                // We loop through the cards by indexable loop iteration. We check if that iteration is equal to the
+                // new order. If it that's the case, the moved card must be inserted there, and the current card
+                // must be placed one higher. If the iteration is above new order, they need to be placed one higher.
+                // Otherwise, they can stay in their position.
+                $loop = 0;
+                foreach ($oldCards as $card) {
+                    if ($loop == $newOrder) {
+                        $newCards[$loop] = $movedCard;
+                        $newCards[$loop + 1] = $card;
+                    } elseif ($loop > $newOrder) {
+                        $newCards[$loop + 1] = $card;
+                    } else {
+                        $newCards[$loop] = $card;
+                    }
+                    ++$loop;
+                }
+            }
+            $this->cards[$toCategory] = $newCards;
+
+            $this->updateAdvice($id, ['category' => $toCategory]);
+
+            // Reorder in DB also
+            $this->reorder($toCategory);
+            if ($fromCategory !== $toCategory) {
+                $this->reorder($fromCategory);
+            }
+
+            $this->recalculate();
+        }
+    }
+
+    public function cardTrashed($fromCategory, $id)
     {
         // Get the original card object
-        $card = $this->cards[$fromCategory][$id] ?? null;
-        // Remove card from the original category
-        unset($this->cards[$fromCategory][$id]);
+        $cardData = Arr::where($this->cards[$fromCategory], function ($card, $order) use ($id) {
+            return $card['id'] == $id;
+        });
 
-        // If the card is set...
-        if (! empty($card)) {
-            // Get the cards for the new category
-            $cards = $this->cards[$toCategory];
+        if (! empty($cardData)) {
+            $oldOrder = array_key_first($cardData);
+            $trashedCard = $cardData[$oldOrder];
 
-            // Split cards at order
-            $firstPart = array_slice($cards, 0, $order, true);
-            $secondPart = array_slice($cards, $order, null, true);
+            // Remove card from the list
+            unset($this->cards[$fromCategory][$oldOrder]);
 
-            // Insert card at position
-            $firstPart[$id] = $card;
-            // Rebuild
-            $cards = $firstPart + $secondPart;
+            // Add card to hidden cards
+            $this->hiddenCards[$fromCategory][] = $trashedCard;
 
-            $this->cards[$toCategory] = $cards;
+            // Set invisible
+            $this->updateAdvice($id, ['visible' => false]);
+
+            $this->recalculate();
         }
-
-        $this->recalculate();
     }
 
     public function recalculate()
     {
-        // TODO: Get logic for this. This is a guessed placeholder
+        // TODO: Get logic for subsidy.
         $subsidyPercentage = 0.1;
 
-        $minInvestment = 0;
-        $maxInvestment = 0;
+        $investment = 0;
         $savings = 0;
         $subsidy = 0;
 
         foreach ($this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO] as $card) {
-            $from = $card['price']['from'] ?? 0;
-            $to = $card['price']['to'] ?? 0;
+            $from = $card['costs']['from'] ?? 0;
+            $to = $card['costs']['to'] ?? 0;
 
-            $minInvestment += $from;
-            $maxInvestment += $to;
+            if ($from <= 0 && $to > 0) {
+                $investment += $to;
+            } elseif ($to <= 0 && $from > 0) {
+                $investment += $from;
+            } elseif ($from > 0 && $to > 0) {
+                $investment += (($from + $to) / 2);
+            }
+
             $savings += $card['savings'] ?? 0;
 
 //            if ($card['subsidy'] === $this->SUBSIDY_AVAILABLE) {
@@ -217,8 +351,166 @@ class Form extends Component
 //            }
         }
 
-        $this->investment = ($maxInvestment + $minInvestment) / 2;
+        $this->investment = $investment;
         $this->yearlySavings = $savings;
         $this->availableSubsidy = $subsidy;
+    }
+
+    public function reorder($category)
+    {
+        // Reorder for each card in the list. We don't need to check invisible items, so we don't have to check
+        // any other cards
+        foreach ($this->cards[$category] as $order => $card) {
+            $this->updateAdvice($card['id'], ['order' => $order]);
+        }
+    }
+
+    public function updateAdvice($id, array $update)
+    {
+        // Get moved advice (will be for master input source)
+        $advice = UserActionPlanAdvice::allInputSources()
+            ->withoutGlobalScope(VisibleScope::class)
+            ->find($id);
+
+        // If it's a custom measure, we need to get the sibling because the custom measure also has an input source
+        if ($advice->user_action_plan_advisable_type === CustomMeasureApplication::class) {
+            $advisable = $advice->userActionPlanAdvisable()->forInputSource($this->masterInputSource)->first();
+            if ($advisable instanceof CustomMeasureApplication) {
+                $advisableId = optional($advisable->getSibling($this->currentInputSource))->id;
+            }
+        } else {
+            $advisableId = $advice->user_action_plan_advisable_id;
+        }
+
+        $myAdvice = null;
+        if (! empty($advisableId)) {
+            // Get MY advice
+            $myAdvice = UserActionPlanAdvice::forInputSource($this->currentInputSource)
+                ->where('user_id', $this->building->user->id)
+                ->where('user_action_plan_advisable_type', $advice->user_action_plan_advisable_type)
+                ->where('user_action_plan_advisable_id', $advisableId)
+                ->where('step_id', $advice->step_id)
+                ->first();
+        }
+
+        // If my advice exists, we update my advice, and the trait will handle the rest for the master input source
+        if ($myAdvice instanceof UserActionPlanAdvice) {
+            $myAdvice->update($update);
+        } else {
+            // Otherwise we will update master ourselves (advice could be from the coach if the user is a resident
+            // or vice versa)
+            $advice->update($update);
+        }
+    }
+
+    public function saveComment(string $sourceShort)
+    {
+        if ($sourceShort === InputSource::RESIDENT_SHORT || $sourceShort === InputSource::COACH_SHORT) {
+            $commentShort = "{$sourceShort}Comment";
+            $commentText = $this->{"{$sourceShort}CommentText"};
+            $inputSource = $this->{"{$sourceShort}InputSource"};
+
+            if ($inputSource->short === $this->currentInputSource->short) {
+                if ($this->{$commentShort} instanceof UserActionPlanAdviceComments) {
+                    $this->{$commentShort}->update([
+                        'comment' => $commentText,
+                    ]);
+                } else {
+                    $this->{$commentShort} = UserActionPlanAdviceComments::create([
+                        'user_id' => $this->building->user->id,
+                        'input_source_id' => $inputSource->id,
+                        'comment' => $commentText,
+                    ]);
+                }
+            }
+        }
+    }
+
+    public function addHiddenCardToBoard($category, $id)
+    {
+        $cardData = Arr::where($this->hiddenCards[$category], function ($card, $order) use ($id) {
+            return $card['id'] == $id;
+        });
+
+        if (! empty($cardData)) {
+            $oldOrder = array_key_first($cardData);
+            $addedCard = $cardData[$oldOrder];
+
+            // Remove card from the original category
+            unset($this->hiddenCards[$category][$oldOrder]);
+
+            // Add moved card into new category
+            $cards = $this->cards[$category];
+            $newOrder = count($cards);
+            $cards[$newOrder] = $addedCard;
+            $this->cards[$category] = $cards;
+
+            // Set visible and on new place
+            $this->updateAdvice($id, ['visible' => true, 'order' => $newOrder]);
+
+            $this->recalculate();
+        }
+    }
+
+    private function loadHiddenCards()
+    {
+        foreach (UserActionPlanAdviceService::getCategories() as $category) {
+            $hiddenAdvices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
+                ->withoutGlobalScope(VisibleScope::class)
+                ->where('user_id', $this->building->user->id)
+                ->where('category', $category)
+                ->where('visible', false)
+                ->orderBy('order')
+                ->get();
+
+            $this->hiddenCards = array_merge($this->hiddenCards, $this->convertAdvicesToCards($hiddenAdvices, $category));
+        }
+    }
+
+    private function convertAdvicesToCards(Collection $advices, string $category): array
+    {
+        $cards = [];
+
+        // Order in the DB could have gaps or duplicates. For safe use, we set the order ourselves
+        $order = 0;
+        foreach ($advices as $advice) {
+            $advisable = $advice->userActionPlanAdvisable;
+            if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
+                $cards[$category][$order] = [
+                    'name' => Str::limit($advisable->measure_name, 22),
+                    'icon' => $this->iconMap[$advisable->short] ?? 'icon-tools',
+                    // TODO: Subsidy
+                    'subsidy' => $this->SUBSIDY_AVAILABLE,
+                    'info' => $advisable->measure_name,
+                    'route' => StepHelper::buildStepUrl($advisable->step),
+                ];
+            } else {
+                // Custom measure has input source so we must fetch the advisable from the master input source
+                if ($advice->user_action_plan_advisable_type === CustomMeasureApplication::class) {
+                    $advisable = $advice->userActionPlanAdvisable()
+                        ->forInputSource($this->masterInputSource)
+                        ->first();
+                }
+
+                $cards[$category][$order] = [
+                    'name' => Str::limit($advisable->name, 22),
+                    'icon' => $advisable->extra['icon'] ?? 'icon-tools',
+                    // TODO: Subsidy
+                    'subsidy' => $this->SUBSIDY_UNKNOWN,
+                    'info' => $advisable->info,
+                ];
+            }
+
+            $cards[$category][$order]['id'] = $advice->id;
+            $cards[$category][$order]['costs'] = [
+                'from' => $advice->costs['from'] ?? null,
+                'to' => $advice->costs['to'] ?? null,
+            ];
+            $cards[$category][$order]['savings'] = $advice->savings_money ?? 0;
+
+            ++$order;
+        }
+
+        return $cards;
     }
 }

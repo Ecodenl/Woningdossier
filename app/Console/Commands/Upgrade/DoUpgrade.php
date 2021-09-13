@@ -69,10 +69,11 @@ class DoUpgrade extends Command
                 \RoofTypesTableSeeder::class,
                 \ComfortLevelTapWatersTableSeeder::class,
                 \EnergyLabelsTableSeeder::class,
-
+                \CooperationMeasureApplicationsTableSeeder::class,
                 // order is important, categories before types.
                 \BuildingTypeCategoriesTableSeeder::class,
                 \BuildingTypesTableSeeder::class,
+
             ];
 
             foreach ($seeders as $seeder) {
@@ -98,7 +99,11 @@ class DoUpgrade extends Command
                 $afterCommands = [
                     MapAnswers::class,
                     MapActionPlan::class,
+                    MapComments::class,
                     AddMasterInputSource::class,
+                    ConvertExampleBuildingContents::class,
+                    UpdateCompletedStepsForMasterInputSource::class,
+                    FixTranslations::class, // Reset translations which have changed
                 ];
 
                 foreach ($afterCommands as $command) {
@@ -117,6 +122,7 @@ class DoUpgrade extends Command
                         $account = Account::whereEmail($email)->first();
                         if ($account instanceof Account) {
                             foreach ($account->users as $user) {
+                                $this->info("Assigning roles to user " . $user->id);
                                 $user->assignRole(['cooperation-admin', 'coordinator', 'coach']);
                             }
                         }

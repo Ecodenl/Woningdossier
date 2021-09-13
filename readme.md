@@ -24,7 +24,7 @@ you run it is a matter of taste.
 
 Options:
 - [Vagrant + ansible](docs/setup/vagrant-ansible.md)
-- Docker (will follow later)
+- [Docker](docs/setup/docker.md)
 - Homestead
 
 ### The application

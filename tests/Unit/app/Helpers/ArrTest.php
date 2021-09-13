@@ -49,6 +49,37 @@ class ArrTest extends TestCase
                 ],
                 true,
             ],
+            [
+                [
+                    'Bewoner' => [
+                        'element' => 'null',
+                    ],
+                    'Coach' => [
+                        'service' => '0.00',
+                    ],
+                ],
+                true,
+            ],
+            [
+                [
+                    'key' => [],
+                    'key2' => ['value'],
+                ],
+                false,
+            ],
+            [
+                [
+                    'key' => [],
+                    'key2' => ['subKey' => []],
+                ],
+                true,
+            ],
+            [
+                [
+                    'key' => [],
+                ],
+                true,
+            ],
         ];
     }
 

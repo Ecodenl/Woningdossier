@@ -6,10 +6,11 @@ return [
         'store' => 'Aanmaken',
         'update' => 'Update',
         'destroy' => 'Verwijderen',
-        'next' => 'Opslaan',
         'next-page' => 'Volgende pagina',
-        'prev' => 'Vorige',
+        'next' => 'Volgende',
+        'previous' => 'Vorige',
         'save' => 'Opslaan',
+        'cancel' => 'Annuleren',
     ],
 
     'form' => [
@@ -40,6 +41,7 @@ return [
     'new-message' => 'Nieuwe berichten',
 
     'privacy-policy' => 'Privacybeleid',
+    'disclaimer' => 'Disclaimer',
     'terms-and-conditions' => 'Algemene voorwaarden',
 
     'language' => 'Taal',

@@ -17,6 +17,13 @@
                     {{ session('status') }}
                 @endcomponent
             @endif
+            @if($errors->has('cooperation'))
+                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'red'])
+                    @foreach($errors->get('cooperation') as $message)
+                        {{ $message }}
+                    @endforeach
+                @endcomponent
+            @endif
             <form class="w-full flex flex-wrap justify-center" method="POST"
                   action="{{ route('cooperation.auth.login') }}">
                 @csrf
@@ -60,14 +67,6 @@
                 </a>
             </p>
         </div>
-        <div class="mt-5 text-center">
-            <a href="{{ route('cooperation.privacy.index') }}" class="text-white">
-                @lang('default.privacy-policy')
-            </a>
-            <span class="text-white">|</span>
-            <a href="{{ route('cooperation.disclaimer.index') }}" class="text-white">
-                @lang('default.terms-and-conditions')
-            </a>
-        </div>
+        @include('cooperation.frontend.shared.parts.privacy-disclaimer')
     </div>
 @endsection

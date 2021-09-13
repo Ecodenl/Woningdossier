@@ -50,3 +50,4 @@ _ide_helper.php
 .php_cs.cache
 /storage/app/exports/
 /.phpunit.result.cache
+/mysql

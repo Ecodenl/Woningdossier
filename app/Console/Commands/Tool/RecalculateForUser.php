@@ -5,12 +5,16 @@ namespace App\Console\Commands\Tool;
 use App\Helpers\Queue;
 use App\Jobs\ProcessRecalculate;
 use App\Jobs\RecalculateStepForUser;
+use App\Models\Building;
 use App\Models\CompletedStep;
 use App\Models\Cooperation;
+use App\Models\ExampleBuilding;
 use App\Models\InputSource;
 use App\Models\Notification;
 use App\Models\Step;
+use App\Models\ToolQuestion;
 use App\Models\User;
+use App\Services\ExampleBuildingService;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
@@ -68,7 +72,8 @@ class RecalculateForUser extends Command
         $bar->setMessage('Queuing up the recalculate..');
 
         // default
-        $inputSourcesToRecalculate = ['resident', 'coach'];
+        //$inputSourcesToRecalculate = ['resident', 'coach'];
+        $inputSourcesToRecalculate = [ InputSource::MASTER_SHORT ];
 
         if (! empty($this->option('input-source'))) {
             $inputSourcesToRecalculate = $this->option('input-source');
@@ -88,7 +93,8 @@ class RecalculateForUser extends Command
                     ->forInputSource($inputSource)
                     ->whereHas('step', function ($query) {
                         $query
-                            ->whereNotIn('steps.short', ['general-data', 'heat-pump'])
+                            ->whereNotIn('steps.short', ['general-data', 'heat-pump', 'building-data',
+                                'usage-quick-scan', 'living-requirements', 'residential-status'])
                             ->whereNull('parent_id');
                     })
                     ->get();
@@ -118,5 +124,15 @@ class RecalculateForUser extends Command
             }
         }
         $bar->finish();
+    }
+
+    private function isFirstTimeToolIsFilled(Building $building)
+    {
+        return true;
+
+//        $inputSource      = InputSource::findByShort(InputSource::MASTER_SHORT);
+//        $cookTypeQuestion = ToolQuestion::findByShort('cook-type');
+//
+//        return is_null($building->getAnswer($inputSource, $cookTypeQuestion));
     }
 }

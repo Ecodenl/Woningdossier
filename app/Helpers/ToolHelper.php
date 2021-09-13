@@ -305,7 +305,7 @@ class ToolHelper
 
                     'tool_question_answers.heat-source' => [
                         'label' => ToolQuestion::findByShort('heat-source')->name,
-                        'type' => 'select',
+                        'type' => 'multiselect',
                         'options' => ToolQuestion::findByShort('heat-source')->getQuestionValues()->pluck('name', 'short')->toArray()
                     ],
 
@@ -406,16 +406,9 @@ class ToolHelper
                         ),
                     ],
                     'tool_question_answers.cook-type' => [
-                        'label' => __(
-                            'cooperation/tool/general-data/usage.index.water-gas.cook-gas.title'
-                        ),
+                        'label' => ToolQuestion::findByShort('cook-type')->name,
                         'type' => 'select',
-                        'options' => [
-                            1 => __(
-                                'woningdossier.cooperation.radiobutton.yes'
-                            ),
-                            2 => __('woningdossier.cooperation.radiobutton.no'),
-                        ],
+                        'options' => ToolQuestion::findByShort('cook-type')->getQuestionValues()->pluck('name', 'short')->toArray()
                     ],
                     'user_energy_habits.thermostat_high' => [
                         'label' => __(
@@ -1087,7 +1080,7 @@ class ToolHelper
                     = [
                     //'label' => 'Interest in '.$measureApplication->measure_name,
                     'label' => __(
-                        'general.change-interested.title',
+                        'cooperation/admin/example-buildings.form.interest-in-measure',
                         ['item' => $measureApplication->measure_name]
                     ),
                     'type' => 'select',

@@ -32,7 +32,7 @@ class UserActionPlanAdviceObserver
                 ->with('interest')
                 ->first();
 
-            // when  thats available use that.
+            // when  that's available: use that.
             if ($userInterestOnMeasureApplication instanceof UserInterest) {
                 $userInterest = $userInterestOnMeasureApplication;
             }
@@ -49,6 +49,17 @@ class UserActionPlanAdviceObserver
             if (is_null($userActionPlanAdvice->year)) {
                 $userActionPlanAdvice->year = UserActionPlanAdviceService::getAdviceYear($userActionPlanAdvice);
             }
+        }
+
+        if (! $userActionPlanAdvice->isDirty('visible')) {
+            // Visibility isn't set. Let's define it
+
+            UserActionPlanAdviceService::setAdviceVisibility($userActionPlanAdvice);
+        }
+        if (! $userActionPlanAdvice->isDirty('category') || is_null($userActionPlanAdvice->category)) {
+            // Category isn't set. Let's define it.
+
+            UserActionPlanAdviceService::setAdviceCategory($userActionPlanAdvice);
         }
     }
 }

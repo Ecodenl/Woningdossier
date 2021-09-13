@@ -11,6 +11,7 @@ use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
+use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 
 class HeaterHelper extends ToolHelper
@@ -65,8 +66,9 @@ class HeaterHelper extends ToolHelper
         $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
         $results = Heater::calculate($this->building, $userEnergyHabit, $this->getValues());
 
-        // remove old results
-        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
+
+        $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'heater-place-replace')->first();
@@ -77,6 +79,9 @@ class HeaterHelper extends ToolHelper
                 $actionPlanAdvice->user()->associate($this->user);
                 $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                 $actionPlanAdvice->step()->associate($step);
+
+                UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+
                 $actionPlanAdvice->save();
             }
         }

@@ -20,7 +20,7 @@ class QuestionnaireController extends Controller
     public function store(Cooperation $cooperation, QuestionnaireRequest $request)
     {
         $building = HoomdossierSession::getBuilding(true);
-        $questions = $request->get('questions');
+        $questions = $request->input('questions');
 
         $questionnaireId = $request->get('questionnaire_id');
         $questionnaire = Questionnaire::find($questionnaireId);
@@ -52,6 +52,10 @@ class QuestionnaireController extends Controller
         }
 
         $building->user->completeQuestionnaire($questionnaire);
+
+        if ($request->has('nextUrl')) {
+            return redirect($request->input('nextUrl'));
+        }
 
         $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $questionnaire->step, $questionnaire);
         $url = $nextStep['url'];

@@ -14,6 +14,7 @@ use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
+use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 
 class FloorInsulationHelper extends ToolHelper
@@ -99,7 +100,9 @@ class FloorInsulationHelper extends ToolHelper
         $floorInsulationElement = Element::findByShort('floor-insulation');
         $step = Step::findByShort('floor-insulation');
 
-        UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
+
+        $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         $elementData = $this->getValues('element');
 
@@ -123,6 +126,9 @@ class FloorInsulationHelper extends ToolHelper
                         $actionPlanAdvice->user()->associate($this->user);
                         $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                         $actionPlanAdvice->step()->associate($step);
+
+                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+
                         $actionPlanAdvice->save();
                     }
                 }

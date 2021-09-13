@@ -449,6 +449,9 @@
 .icon-ventilation {
     content: url('/icons/ventilation.svg');
 }
+.icon-ventilation-fan {
+    content: url('/icons/ventilation-fan.svg');
+}
 .icon-wall-insulation-excellent {
     content: url('/icons/wall-insulation-excellent.svg');
 }

@@ -7,15 +7,9 @@ a {
 }
 
 /* Hyperlink in paragraph */
-p a {
+p a,
+a.in-text {
     @apply text-purple no-underline font-medium;
-}
-
-.clickable {
-    @apply cursor-pointer transition;
-
-    @apply hover:opacity-60;
-    @apply focus:opacity-60;
 }
 
 /* Buttons */
@@ -32,6 +26,10 @@ p a {
 }
 .btn:disabled {
     @apply cursor-not-allowed bg-gray text-white pointer-events-none;
+
+    @apply hover:bg-gray hover:bg-opacity-100 hover:text-white hover:shadow-none;
+    @apply focus:bg-gray focus:bg-opacity-100 focus:text-white focus:shadow-none;
+    @apply active:bg-gray active:bg-opacity-100 active:text-white active:shadow-none;
 }
 .btn-purple {
     @apply bg-purple-100 bg-opacity-100 text-purple;
@@ -122,4 +120,17 @@ p a {
 }
 .nav-tabs li.active a {
     @apply text-white bg-green;
+}
+
+/* Extra items */
+.clickable {
+    @apply cursor-pointer transition;
+
+    @apply hover:opacity-60;
+    @apply focus:opacity-60;
+}
+
+/* Purely to remove opacity when focusing on inputs */
+.has-btn:focus ~ button {
+    @apply opacity-20;
 }

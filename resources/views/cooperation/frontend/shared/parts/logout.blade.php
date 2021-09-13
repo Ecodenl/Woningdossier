@@ -1,4 +1,4 @@
-<a href="{{ route('cooperation.auth.logout', ['cooperation' => $cooperation]) }}"
+<a href="{{ route('cooperation.auth.logout', ['cooperation' => $cooperation]) }}" class="in-text"
    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
     @lang('auth.logout.form.header')
 </a>

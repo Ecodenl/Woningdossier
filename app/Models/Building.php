@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Helpers\Arr;
+use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Scopes\GetValueScope;
 use App\ToolQuestionAnswer;
@@ -89,12 +91,8 @@ use Illuminate\Support\Str;
  */
 class Building extends Model
 {
-    use SoftDeletes;
-    use ToolSettingTrait;
-
-    protected $casts = [
-        'is_active' => 'boolean',
-    ];
+    use SoftDeletes,
+        ToolSettingTrait;
 
     public $fillable = [
         'street',
@@ -105,6 +103,13 @@ class Building extends Model
         'building_coach_status_id',
         'extension',
         'is_active',
+        'example_building_id',
+        'has_answered_expert_question',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'has_answered_expert_question' => 'boolean',
     ];
 
     public function toolQuestionAnswers(): HasMany
@@ -119,12 +124,14 @@ class Building extends Model
 
     public function getAnswerForAllInputSources(ToolQuestion $toolQuestion)
     {
+        $inputSources = InputSource::all();
+
         $answers = null;
         $where   = [
             [
                 'input_source_id',
                 '!=',
-                InputSource::findByShort(InputSource::MASTER_SHORT)->id,
+                $inputSources->where('short', InputSource::MASTER_SHORT)->first()->id,
             ],
         ];
         // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
@@ -150,17 +157,16 @@ class Building extends Model
                                 ->where($where)
                                 ->get();
 
-            /** @var Model $model */
-            foreach ($models as $index => $model) {
-                // now check if we need to "translate" the answer
-                $answer = $model->getAttribute($column);
+            // We pluck, as pluck handles dot notation for sub-values such as in JSON
+            $values = $models->pluck($column, 'input_source_id');
 
-                if ($questionValues->isNotEmpty() && ! is_null($answer)) {
-                    $answer = $questionValues[$answer];
-                }
-                $answers[$model->inputSource->short][$index] = [
+            // We still loop though, to ensure we get human-readable answers
+            foreach ($values as $inputSourceId => $value) {
+                $answer = $questionValues->isNotEmpty() && ! is_null($value) ? $questionValues[$value] : $value;
+
+                $answers[$inputSources->where('id', $inputSourceId)->first()->short][] = [
                     'answer' => $answer,
-                    'value'  => $model->getAttribute($column),
+                    'value'  => $value,
                 ];
             }
         } else {
@@ -182,6 +188,13 @@ class Building extends Model
             }
         }
 
+        // As last step, we want to clean up empty values
+        foreach ($answers ?? [] as $short => $answer) {
+            if (empty($answer) || (is_array($answer) && Arr::isWholeArrayEmpty($answer))) {
+                unset($answers[$short]);
+            }
+        }
+
         return $answers;
     }
 
@@ -191,20 +204,17 @@ class Building extends Model
     ) {
         $answer  = null;
         $where[] = ['input_source_id', '=', $inputSource->id];
-        // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
+        // this means we should get the answer the "traditional way", in another table (not from the tool_question_answers)
         if ( ! is_null($toolQuestion->save_in)) {
             $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);
             $table  = $saveIn['table'];
             $column = $saveIn['column'];
             $where  = array_merge($saveIn['where'], $where);
 
-            $modelName = "App\\Models\\".Str::ucFirst(
-                    Str::camel(Str::singular($table))
-                );
+            $modelName = "App\\Models\\".Str::ucFirst(Str::camel(Str::singular($table)));
 
-            // we do a get so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
-            $answer = $modelName::allInputSources()->where($where)->get(
-            )->pluck($column)->first();
+            // we do a get, so we can make use of pluck on the collection, pluck can use dotted notation eg; extra.date
+            $answer = $modelName::allInputSources()->where($where)->get()->pluck($column)->first();
         } else {
             $where['building_id'] = $this->id;
             $toolQuestionAnswers  = $toolQuestion
@@ -273,7 +283,7 @@ class Building extends Model
 
         return $query->select([
             'buildings.*',
-            'translations.translation as status_translation',
+            'statuses.name as status_name_json',
             'appointment_date',
         ])->leftJoin(
             'building_statuses as bs',
@@ -288,14 +298,7 @@ class Building extends Model
                          '=',
                          'bs.id'
                      )
-                     ->leftJoin('statuses', 'bs.status_id', '=', 'statuses.id')
-                     ->leftJoin(
-                         'translations',
-                         'statuses.name',
-                         '=',
-                         'translations.key'
-                     )
-                     ->where('translations.language', '=', app()->getLocale());
+                     ->leftJoin('statuses', 'bs.status_id', '=', 'statuses.id');
     }
 
     public function stepComments()
@@ -318,6 +321,28 @@ class Building extends Model
 
         return $this->completedSteps()
                     ->where('step_id', $step->id)->count() > 0;
+    }
+
+    /**
+     * Check if all quick scan steps have been completed
+     *
+     * @return bool
+     */
+    public function hasCompletedQuickScan(): bool
+    {
+        $quickScanSteps = Step::whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS)->get();
+        foreach ($quickScanSteps as $quickScanStep) {
+            if (! $this->hasCompleted($quickScanStep)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function hasAnsweredExpertQuestion(): bool
+    {
+        return $this->has_answered_expert_question ?? false;
     }
 
     /**
@@ -720,5 +745,35 @@ class Building extends Model
     public function getAppointmentDate()
     {
         return optional($this->getMostRecentBuildingStatus())->appointment_date;
+    }
+
+    public function getFirstIncompleteStep(array $extraStepsToIgnore = []): ?Step
+    {
+        $irrelevantSteps = $this->completedSteps()->pluck('step_id')->toArray();
+        $irrelevantSteps = array_merge($irrelevantSteps, $extraStepsToIgnore);
+
+        return Step::quickScan()
+            ->whereNotIn('id', $irrelevantSteps)
+            ->orderBy('order')
+            ->first();
+    }
+
+    public function getFirstIncompleteSubStep(Step $step, array $extraSubStepsToIgnore = []): ?SubStep
+    {
+        $irrelevantSubSteps = $this->completedSubSteps()->pluck('sub_step_id')->toArray();
+        $irrelevantSubSteps = array_merge($irrelevantSubSteps, $extraSubStepsToIgnore);
+
+        $firstIncompleteSubStep = $step->subSteps()
+            ->whereNotIn('id', $irrelevantSubSteps)
+            ->orderBy('order')
+            ->first();
+
+        if (! $firstIncompleteSubStep instanceof SubStep) {
+            $firstIncompleteSubStep = $step->subSteps()
+                ->orderBy('order')
+                ->first();
+        }
+
+        return $firstIncompleteSubStep;
     }
 }

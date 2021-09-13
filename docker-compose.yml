@@ -1,0 +1,127 @@
+version: '3'
+
+networks:
+  hoomdossier:
+
+services:
+  site:
+    build:
+      context: .
+      dockerfile: docker/nginx.dockerfile
+      args:
+        - NGINXUSER=${NGINXUSER:-www-data}
+        - NGINXGROUP=${NGINXGROUP:-www-data}
+    container_name: hoomdossier_nginx
+    ports:
+      - 8888:80
+    volumes:
+      - ./:/var/www/html:delegated
+    depends_on:
+      - php
+      - redis
+      - mysql
+      - mailhog
+    networks:
+      - hoomdossier
+
+  mysql:
+    platform: linux/x86_64
+    image: mysql:5.7.29
+    container_name: hoomdossier_mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - hoomdossier
+
+  php:
+    build:
+      context: .
+      dockerfile: docker/php.dockerfile
+      args:
+        - PHPUSER=${PHPUSER:-www-data}
+        - PHPGROUP=${PHPGROUP:-www-data}
+    container_name: hoomdossier_php
+    volumes:
+      - ./:/var/www/html:delegated
+    networks:
+      - hoomdossier
+
+  redis:
+    platform: linux/x86_64
+    image: redis:alpine
+    container_name: hoomdossier_redis
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    networks:
+      - hoomdossier
+
+  composer:
+    build:
+      context: .
+      dockerfile: docker/composer.dockerfile
+      args:
+        - PHPUSER=${PHPUSER:-www-data}
+        - PHPGROUP=${PHPGROUP:-www-data}
+    container_name: hoomdossier_composer
+    volumes:
+      - ./:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - php
+    user: ${PHPUSER:-www-data}
+    entrypoint: ['composer', '--ignore-platform-reqs']
+    networks:
+      - hoomdossier
+
+  npm:
+    image: node:13.7
+    container_name: hoomdossier_npm
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - 3000:3000
+      - 3001:3001
+    working_dir: /var/www/html
+#    entrypoint: ['npm']
+#    Disable this, so it doesn't automatically run npm in this container, we run node here too
+    networks:
+      - hoomdossier
+
+  artisan:
+    build:
+      context: .
+      dockerfile: docker/php.dockerfile
+      args:
+        - PHPUSER=${PHPUSER:-www-data}
+        - PHPGROUP=${PHPGROUP:-www-data}
+    container_name: hoomdossier_artisan
+    volumes:
+      - ./:/var/www/html:delegated
+    depends_on:
+      - mysql
+    working_dir: /var/www/html
+    entrypoint: ['php', '/var/www/html/artisan']
+    networks:
+      - hoomdossier
+
+  mailhog:
+    platform: linux/x86_64
+    image: mailhog/mailhog:latest
+    container_name: hoomdossier_mailhog
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - hoomdossier

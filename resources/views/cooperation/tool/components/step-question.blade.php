@@ -16,9 +16,6 @@
     $required = $required ?? false;
     $withInputSource = $withInputSource ?? true;
 
-    $labelClass = $labelClass ?? ''; if (! empty($labelClass)) { \Log::debug('LABEL CLASS: ' . $labelClass); } // For upgrade, was on label class
-    $labelStyling = $labelStyling ?? ''; if (! empty($labelStyling)) {\Log::debug('LABEL STYLING: ' . $labelStyling); } // For upgrade, was on form group div style tag
-
     $translationReplace = $translationReplace ?? [];
 
     // we show the help icon when there is a text available and its not empty

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\Conditions\Clause;
 use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Models\BuildingHeating;
@@ -14,6 +15,7 @@ use App\Models\EnergyLabel;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
+use App\Models\InputSource;
 use App\Models\InsulatingGlazing;
 use App\Models\PaintworkStatus;
 use App\Models\RoofTileStatus;
@@ -128,11 +130,19 @@ class AddQuestionsToDatabase extends Command
         $textareaType = ToolQuestionType::findByShort('textarea');
         $measurePriorityType = ToolQuestionType::findByShort('rating-slider');
 
+        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
+
         $templateDefault = SubStepTemplate::findByShort('template-default');
         $template2rows1top2bottom = SubStepTemplate::findByShort('template-2-rows-1-top-2-bottom');
         $template2rows3top1bottom = SubStepTemplate::findByShort('template-2-rows-3-top-1-bottom');
         $templateCustomChanges = SubStepTemplate::findByShort('template-custom-changes');
         $templateSummary = SubStepTemplate::findByShort('template-summary');
+
+        $stepBuildingData = Step::findByShort('building-data');
+        $stepUsageQuickScan = Step::findByShort('usage-quick-scan');
+        $stepLivingRequirements = Step::findByShort('living-requirements');
+        $stepResidentialStatus = Step::findByShort('residential-status');
 
         $structure = [
             'building-data' => [
@@ -175,9 +185,9 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'short' => 'building-type',
                             'validation' => ['required', 'exists:building_types,id'],
                             'save_in' => 'building_features.building_type_id',
+                            'short' => 'building-type',
                             'translation' => "Wat voor soort :name heeft u",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $buildingTypes,
@@ -225,6 +235,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:roof_types,id'],
                             'save_in' => 'building_features.roof_type_id',
+                            'short' => 'roof-type',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.roof-type',
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $roofTypes,
@@ -262,15 +273,18 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['numeric', 'between:1900,' . date('Y')],
+                            // TODO: Date is static, should be dynamic... (counts for other questions too)
+                            'validation' => ['numeric', 'integer', 'between:1900,' . date('Y')],
                             'save_in' => 'building_features.build_year',
+                            'short' => 'build-year',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.build-year',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 1900, 'max' => date('Y'), 'value' => 1930, 'step' => 1],
                         ],
                         [
-                            'validation' => ['numeric', 'between:1,5'],
+                            'validation' => ['numeric', 'integer', 'between:1,5'],
                             'save_in' => 'building_features.building_layers',
+                            'short' => 'building-layers',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.building-layers',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 1, 'max' => 6, 'value' => 3, 'step' => 1],
@@ -283,6 +297,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['numeric', 'in:1,2,0'],
                             'save_in' => 'building_features.monument',
+                            'short' => 'monument',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.monument',
                             'tool_question_type_id' => $radioType->id,
                             'tool_question_custom_values' => [
@@ -303,6 +318,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['numeric', 'exists:energy_labels,id'],
                             'save_in' => 'building_features.energy_label_id',
+                            'short' => 'energy-label',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.energy-label',
                             'tool_question_type_id' => $radioIconSmallType->id,
                             'tool_question_values' => $energyLabels,
@@ -342,19 +358,41 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['numeric', 'min:20', 'max:999999'],
+                            'validation' => ['required', 'numeric', 'min:20', 'max:999999'],
                             'save_in' => 'building_features.surface',
+                            'short' => 'surface',
                             'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface',
                             'tool_question_type_id' => $textType->id,
                         ],
 //                        [
-//                             todo: find the right column to save this at, this is "zijn er nog bijzonderheden oevr de woning"
+//                             todo: find the right column to save this at, this is "zijn er nog bijzonderheden over de woning"
 //                            'validation' => ['numeric', 'min:20', 'max:999999'],
 //                            'save_in' => 'building_features.surface',
 //                            'translation' => 'cooperation/tool/general-data/building-characteristics.index.surface',
 //                            'tool_question_type_id' => $textareaType->id,
 //                        ],
                     ]
+                ],
+                'Toelichting woninggegevens' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => "step_comments.{$stepBuildingData->id}.comment",
+                            'for_specific_input_source_id' => $residentInputSource->id,
+                            'short' => 'building-data-comment-resident',
+                            'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => "step_comments.{$stepBuildingData->id}.comment",
+                            'for_specific_input_source_id' => $coachInputSource->id,
+                            'short' => 'building-data-comment-coach',
+                            'translation' => 'cooperation/tool/general-data/building-characteristics.index.comment',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                    ],
                 ],
                 'Samenvatting woninggegevens' => [
                     'sub_step_template_id' => $templateSummary->id,
@@ -367,7 +405,8 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required'],
                             'save_in' => 'user_energy_habits.resident_count',
-                            'translation' => 'Hoeveel mensen wonen er in de woning',
+                            'short' => 'resident-count',
+                            'translation' => 'Hoeveel mensen wonen er in de woning?',
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_custom_values' => [
                                 1 => [
@@ -426,9 +465,10 @@ class AddQuestionsToDatabase extends Command
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
-                            'validation' => ['required', 'numeric', 'min:10', 'max:30'],
+                            'validation' => ['required', 'numeric', 'min:10', 'max:30', 'gt:thermostat_low'],
                             'save_in' => 'user_energy_habits.thermostat_high',
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-high',
+                            'short' => 'thermostat-high',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 10, 'max' => 30, 'value' => 20, 'step' => 1],
                             'unit_of_measure' => '°',
@@ -437,6 +477,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'numeric', 'min:10', 'max:30'],
                             'save_in' => 'user_energy_habits.thermostat_low',
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.thermostat-low',
+                            'short' => 'thermostat-low',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 10, 'max' => 30, 'value' => 16, 'step' => 1],
                             'unit_of_measure' => '°',
@@ -445,6 +486,7 @@ class AddQuestionsToDatabase extends Command
 
                             'validation' => ['required', 'numeric', 'between:1,24'],
                             'save_in' => 'user_energy_habits.hours_high',
+                            'short' => 'hours-high',
                             'translation' => 'cooperation/tool/general-data/usage.index.heating-habits.hours-high',
                             'tool_question_type_id' => $sliderType->id,
                             'options' => ['min' => 0, 'max' => 24, 'value' => 12, 'step' => 1],
@@ -457,8 +499,9 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:building_heatings,id'],
                             'save_in' => 'user_energy_habits.heating_first_floor',
+                            'short' => 'heating-first-floor',
                             // was cooperation/tool/general-data/usage.index.heating-habits.heating-first-floor
-                            'translation' => 'Wat is de situatie op de eerste verdieping',
+                            'translation' => 'Wat is de situatie op de eerste verdieping?',
                             'tool_question_type_id' => $radioType->id,
                             'tool_question_values' => $heatings,
                             'extra' => [
@@ -474,8 +517,9 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:building_heatings,id'],
                             'save_in' => 'user_energy_habits.heating_second_floor',
+                            'short' => 'heating-second-floor',
                             // was cooperation/tool/general-data/usage.index.heating-habits.heating-second-floor
-                            'translation' => 'Wat is de situatie op de tweede verdieping',
+                            'translation' => 'Wat is de situatie op de tweede verdieping?',
                             'tool_question_type_id' => $radioType->id,
                             'tool_question_values' => $heatings,
                             'extra' => [
@@ -491,8 +535,9 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:comfort_level_tap_waters,id'],
                             'save_in' => 'user_energy_habits.water_comfort_id',
+                            'short' => 'water-comfort',
                             // was __('cooperation/tool/general-data/usage.index.water-gas.water-comfort.title'),
-                            'translation' => 'Wat is het comfortniveau voor het gebruik van warm tapwater',
+                            'translation' => 'Wat is het comfortniveau voor het gebruik van warm tapwater?',
                             'tool_question_type_id' => $radioType->id,
                             'tool_question_values' => $comfortLevelsTapWater,
                         ],
@@ -546,18 +591,41 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'numeric', 'min:0', 'max:10000'],
                             'save_in' => 'user_energy_habits.amount_gas',
+                            'short' => 'amount-gas',
                             'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.gas-usage',
                             'tool_question_type_id' => $textType->id,
                             'unit_of_measure' => __('general.unit.cubic-meters.title'),
                         ],
                         [
-                            'validation' => ['required', 'numeric', 'min:0', 'max:10000'],
+                            'validation' => ['required', 'numeric', 'min:-10000', 'max:10000'],
                             'save_in' => 'user_energy_habits.amount_electricity',
+                            'short' => 'amount-electricity',
                             'translation' => 'cooperation/tool/general-data/usage.index.energy-usage.amount-electricity',
                             'tool_question_type_id' => $textType->id,
                             'unit_of_measure' => 'kWh'
                         ],
                     ]
+                ],
+                'Toelichting bewoners-gebruik' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",
+                            'for_specific_input_source_id' => $residentInputSource->id,
+                            'short' => 'usage-quick-scan-comment-resident',
+                            'translation' => 'cooperation/tool/general-data/usage.index.comment',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => "step_comments.{$stepUsageQuickScan->id}.comment",
+                            'for_specific_input_source_id' => $coachInputSource->id,
+                            'short' => 'usage-quick-scan-comment-coach',
+                            'translation' => 'cooperation/tool/general-data/usage.index.comment',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                    ],
                 ],
                 'Samenvatting bewoners-gebruik' => [
                     'sub_step_template_id' => $templateSummary->id,
@@ -571,12 +639,15 @@ class AddQuestionsToDatabase extends Command
                             // note: new question
                             'short' => 'remaining-living-years',
                             'validation' => ['required', 'numeric', 'min:1', 'max:10'],
-                            'translation' => 'Hoeveel jaar denkt u hier nog te blijven wonen',
+                            'translation' => 'Hoeveel jaar denkt u hier nog te blijven wonen?',
                             'tool_question_type_id' => $sliderType->id,
-                            'options' => ['min' => 1, 'max' => 10, 'value' => 7, 'step' => 1],
+                            'options' => [
+                                'min' => 1, 'max' => 10,
+                                'max_label' => 'cooperation/frontend/tool.form.questions.values.more-than',
+                                'value' => 7, 'step' => 1,
+                            ],
                         ],
-
-                    ]
+                    ],
                 ],
                 'Welke zaken vindt u belangrijk?' => [
                     'sub_step_template_id' => $templateDefault->id,
@@ -638,6 +709,27 @@ class AddQuestionsToDatabase extends Command
                     // note: dit is een custom vraag, zie slide 18
                     'sub_step_template_id' => $templateCustomChanges->id,
                 ],
+                'Toelichting woonwensen' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => "step_comments.{$stepLivingRequirements->id}.comment",
+                            'for_specific_input_source_id' => $residentInputSource->id,
+                            'short' => 'living-requirements-comment-resident',
+                            'translation' => 'cooperation/tool/general-data/interest.index.comment',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => "step_comments.{$stepLivingRequirements->id}.comment",
+                            'for_specific_input_source_id' => $coachInputSource->id,
+                            'short' => 'living-requirements-comment-coach',
+                            'translation' => 'cooperation/tool/general-data/interest.index.comment',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                    ],
+                ],
                 'Samenvatting woonwensen' => [
                     'sub_step_template_id' => $templateSummary->id,
                 ],
@@ -650,7 +742,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_elements.{$wallInsulation->id}.element_value_id",
                             'short' => 'current-wall-insulation',
-                            'translation' => "Wat is de staat van de muurisolatie",
+                            'translation' => "Wat is de staat van de muurisolatie?",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $wallInsulation->values()->orderBy('order')->get(),
                             'extra' => [
@@ -683,7 +775,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_elements.{$floorInsulation->id}.element_value_id",
                             'short' => 'current-floor-insulation',
-                            'translation' => "Wat is de staat van de vloerisolatie",
+                            'translation' => "Wat is de staat van de vloerisolatie?",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $floorInsulation->values()->orderBy('order')->get(),
                             'extra' => [
@@ -712,7 +804,6 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // TODO: Niet van toepassing is niet zichtbaar in het design
                 'Dakisolatie' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -720,7 +811,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_elements.{$roofInsulation->id}.element_value_id",
                             'short' => 'current-roof-insulation',
-                            'translation' => "Wat is de staat van de dakisolatie",
+                            'translation' => "Wat is de staat van de dakisolatie?",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $roofInsulation->values()->orderBy('order')->get(),
                             'extra' => [
@@ -749,7 +840,37 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // TODO: Niet van toepassing is niet zichtbaar in het design
+                // TODO: Decided to do this later, or different. Might need to make changes after production release
+//                'Glasisolatie' => [
+//                    'sub_step_template_id' => $templateDefault->id,
+//                    'questions' => [
+//                        [
+//                            'validation' => ['required', 'exists:element_values,id'],
+//                            'save_in' => "building_elements.{$livingRoomsWindows->id}.element_value_id",
+//                            'short' => 'least-insulating-glass-type',
+//                            'translation' => "Wat is de minst isolerende glassoort in het huis?",
+//                            'tool_question_type_id' => $radioIconType->id,
+//                            'tool_question_values' => $livingRoomsWindows->values()->orderBy('order')->get(),
+//                            'extra' => [
+//                                'column' => 'order',
+//                                'data' => [
+//                                    0 => [
+//                                        'icon' => 'icon-glass-single',
+//                                    ],
+//                                    1 => [
+//                                        'icon' => 'icon-glass-double',
+//                                    ],
+//                                    2 => [
+//                                        'icon' => 'icon-glass-hr-dp',
+//                                    ],
+//                                    3 => [
+//                                        'icon' => 'icon-glass-hr-tp',
+//                                    ],
+//                                ],
+//                            ],
+//                        ],
+//                    ]
+//                ],
                 'Glasisolatie eerste woonlaag' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -757,7 +878,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_elements.{$livingRoomsWindows->id}.element_value_id",
                             'short' => 'current-living-rooms-windows',
-                            'translation' => "Welke glassoort heeft u in de woonruimtes",
+                            'translation' => "Welke glassoort heeft u in de leefruimtes?",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $livingRoomsWindows->values()->orderBy('order')->get(),
                             'extra' => [
@@ -780,15 +901,14 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // TODO: Meer glas opties in design dan in de database
                 'Glasisolatie tweede woonlaag' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
                         [
                             'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_elements.{$sleepingRoomsWindows->id}.element_value_id",
-                            'short' => 'current-living-rooms-windows',
-                            'translation' => "Welke glassoort heeft u in de slaapruimtes",
+                            'short' => 'current-sleeping-rooms-windows',
+                            'translation' => "Welke glassoort heeft u in de slaapruimtes?",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $sleepingRoomsWindows->values()->orderBy('order')->get(),
                             'extra' => [
@@ -804,14 +924,13 @@ class AddQuestionsToDatabase extends Command
                                         'icon' => 'icon-glass-hr-dp',
                                     ],
                                     3 => [
-                                        'icon' => 'icon-glass-hr-tp', // TODO: Drievoudig glas, is dat hetzelfde als hr+++?
+                                        'icon' => 'icon-glass-hr-tp',
                                     ],
                                 ],
                             ],
                         ],
                     ]
                 ],
-                // TODO: Meer glas opties in design dan in de database
                 'Verwarming' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -820,6 +939,7 @@ class AddQuestionsToDatabase extends Command
                             'short' => 'heat-source',
                             'translation' => "Wat gebruikt u voor de verwarming en warm water?",
                             'tool_question_type_id' => $checkboxIconType->id,
+                            'options' => ['value' => ['hr-boiler'],],
                             'tool_question_custom_values' => [
                                 'hr-boiler' => [
                                     'name' => 'Gasketel',
@@ -855,13 +975,58 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
+                'Warmtepomp' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'heat-source',
+                                'operator' => Clause::CONTAINS,
+                                'value' => 'heat-pump',
+                            ],
+                        ],
+                    ],
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:element_values,id'],
+                            'save_in' => "building_services.{$heatPump->id}.service_value_id",
+                            'short' => 'heat-pump-type',
+                            'translation' => "Heeft u een warmtepomp?",
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    1 => [],
+                                    2 => [],
+                                    3 => [],
+                                    4 => [],
+                                    5 => [],
+                                ],
+                            ],
+                        ],
+                        [
+                            'validation' => [
+                                // required when the heat pump is available
+                                "required_if:building_services.{$heatPump->id}.service_value_id,!=,".$heater->values()->where('calculate_value', 1)->first()->id,
+                                'numeric',
+                                'integer',
+                                'between:1900,' . date('Y')
+                            ],
+                            'short' => 'heat-pump-placed-date',
+                            'placeholder' => 'Voer een jaartal in',
+                            'translation' => "Wanneer is de warmtepomp geplaatst?",
+                            'tool_question_type_id' => $textType->id,
+                        ],
+                    ]
+                ],
                 'Gasketel vragen' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'conditions' => [
                         [
                             [
                                 'column' => 'heat-source',
-                                'operator' => '=',
+                                'operator' => Clause::CONTAINS,
                                 'value' => 'hr-boiler',
                             ],
                         ],
@@ -886,10 +1051,15 @@ class AddQuestionsToDatabase extends Command
                             ],
                         ],
                         [
-                            'validation' => ['nullable', 'numeric', 'between:1970,'.date('Y'),],
+                            'validation' => [
+                                'nullable',
+                                'numeric',
+                                'integer',
+                                'between:1970,'.date('Y'),
+                            ],
                             'save_in' => "building_services.{$boiler->id}.extra.date",
                             'short' => 'boiler-placed-date',
-                            'translation' => "Wanneer is de gasketel geplaatst",
+                            'translation' => "Wanneer is de gasketel geplaatst?",
                             'tool_question_type_id' => $textType->id,
                         ],
                     ]
@@ -901,7 +1071,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'exists:tool_question_custom_values,short'],
                             'short' => 'building-heating-application',
                             // was current-state -> hoe word de woning nu verwarmd
-                            'translation' => "Hoe is de verwarming",
+                            'translation' => "Hoe is de verwarming?",
                             'tool_question_type_id' => $checkboxIconType->id,
                             'tool_question_custom_values' => [
                                 'radiators' => [
@@ -944,7 +1114,6 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                // TODO: Meer/andere opties in design dan in database
                 'Zonnenboiler' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -952,7 +1121,7 @@ class AddQuestionsToDatabase extends Command
                             'validation' => ['required', 'exists:element_values,id'],
                             'save_in' => "building_services.{$heater->id}.service_value_id",
                             'short' => 'heater-type',
-                            'translation' => "Heeft u een zonneboiler",
+                            'translation' => "Heeft u een zonneboiler?",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $heater->values()->orderBy('order')->get(),
                             'extra' => [
@@ -972,49 +1141,6 @@ class AddQuestionsToDatabase extends Command
                                     ],
                                 ],
                             ],
-                        ],
-                    ]
-                ],
-                'Warmtepomp' => [
-                    'sub_step_template_id' => $templateDefault->id,
-                    'conditions' => [
-                        [
-                            [
-                                'column' => 'heat-source',
-                                'value' => 'heat-pump',
-                            ],
-                        ],
-                    ],
-                    'questions' => [
-                        [
-                            'validation' => ['required', 'exists:element_values,id'],
-                            'save_in' => "building_services.{$heatPump->id}.service_value_id",
-                            'short' => 'heat-pump-type',
-                            'translation' => "Heeft u een warmptepomp?",
-                            'tool_question_type_id' => $radioType->id,
-                            'tool_question_values' => $heatPump->values()->orderBy('order')->get(),
-                            'extra' => [
-                                'column' => 'calculate_value',
-                                'data' => [
-                                    1 => [],
-                                    2 => [],
-                                    3 => [],
-                                    4 => [],
-                                    5 => [],
-                                ],
-                            ],
-                        ],
-                        [
-                            'validation' => [
-                                // required when the heat pump is available
-                                "required_if:building_services.{$heatPump->id}.service_value_id,!=,".$heater->values()->where('calculate_value', 1)->first()->id,
-                                'numeric',
-                                'between:1900,' . date('Y')
-                            ],
-                            'short' => 'heat-pump-placed-date',
-                            'placeholder' => 'Voer een jaartal in',
-                            'translation' => "Wanneer is de warmtepomp geplaatst?",
-                            'tool_question_type_id' => $textType->id,
                         ],
                     ]
                 ],
@@ -1039,39 +1165,6 @@ class AddQuestionsToDatabase extends Command
                                 ],
                             ],
                         ],
-                        // TODO: Andere opties in design dan in database
-                        [
-                            'save_in' => "building_elements.{$crackSealing->id}.element_value_id",
-                            'validation' => ['required', "exists:element_values,id",],
-                            'short' => 'crack-sealing-type',
-                            // was current-state -> zijn de ramen en deuren voorzien van kierdichting
-                            'translation' => "Heeft u kierdichting?",
-                            'tool_question_type_id' => $radioType->id,
-                            'tool_question_values' => $crackSealing->values()->orderBy('order')->get(),
-                            'extra' => [
-                                'column' => 'calculate_value',
-                                'data' => [
-                                    1 => [],
-                                    2 => [],
-                                    3 => [],
-                                    4 => [],
-                                ],
-                            ],
-                        ],
-                    ]
-                ],
-                'Aanvullende ventilatievragen' => [
-                    'sub_step_template_id' => $templateDefault->id,
-                    'conditions' => [
-                        [
-                            [
-                                'column' => 'ventilation-type',
-                                'operator' => '!=',
-                                'value' => 20, // Natuurlijke ventilatie
-                            ],
-                        ],
-                    ],
-                    'questions' => [
                         [
                             'validation' => ['required', 'boolean'],
                             'save_in' => "building_services.{$ventilation->id}.extra.demand_driven",
@@ -1087,6 +1180,15 @@ class AddQuestionsToDatabase extends Command
                                 false => [
                                     'name' => __('woningdossier.cooperation.radiobutton.no'),
                                     'extra' => [],
+                                ],
+                            ],
+                            'conditions' => [
+                                [
+                                    [
+                                        'column' => 'ventilation-type',
+                                        'operator' => Clause::NEQ,
+                                        'value' => $ventilation->values()->where('calculate_value', 1)->first()->id, // Natuurlijke ventilatie
+                                    ],
                                 ],
                             ],
                         ],
@@ -1111,9 +1213,37 @@ class AddQuestionsToDatabase extends Command
                                 [
                                     [
                                         'column' => 'ventilation-type',
-                                        'operator' => '!=',
-                                        'value' => 21, // Mechanische ventilatie
+                                        'operator' => Clause::NEQ,
+                                        'value' => $ventilation->values()->where('calculate_value', 1)->first()->id, // Natuurlijke ventilatie
                                     ],
+                                    [
+                                        'column' => 'ventilation-type',
+                                        'operator' => Clause::NEQ,
+                                        'value' => $ventilation->values()->where('calculate_value', 2)->first()->id, // Mechanische ventilatie
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
+                ],
+                'Kierdichting' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'save_in' => "building_elements.{$crackSealing->id}.element_value_id",
+                            'validation' => ['required', "exists:element_values,id",],
+                            'short' => 'crack-sealing-type',
+                            // was current-state -> zijn de ramen en deuren voorzien van kierdichting
+                            'translation' => "Heeft u kierdichting?",
+                            'tool_question_type_id' => $radioType->id,
+                            'tool_question_values' => $crackSealing->values()->orderBy('order')->get(),
+                            'extra' => [
+                                'column' => 'calculate_value',
+                                'data' => [
+                                    1 => [],
+                                    2 => [],
+                                    3 => [],
+                                    4 => [],
                                 ],
                             ],
                         ],
@@ -1125,7 +1255,7 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ['required', 'exists:tool_question_custom_values,short'],
                             'short' => 'has-solar-panels',
-                            'translation' => "Heeft u zonnepanelen",
+                            'translation' => "Heeft u zonnepanelen?",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_custom_values' => [
                                 'yes' => [
@@ -1143,7 +1273,7 @@ class AddQuestionsToDatabase extends Command
                             ],
                         ],
                         [
-                            'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'min:1', 'max:50'],
+                            'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'integer', 'min:1', 'max:50'],
                             'save_in' => "building_pv_panels.number",
                             'short' => 'solar-panel-count',
                             // was current-state -> hoeveel zonnepanelen zijn er aanwezig
@@ -1153,7 +1283,7 @@ class AddQuestionsToDatabase extends Command
                                 [
                                     [
                                         'column' => 'has-solar-panels',
-                                        'operator' => '=',
+                                        'operator' => Clause::EQ,
                                         'value' => 'yes',
                                     ]
                                 ],
@@ -1162,15 +1292,16 @@ class AddQuestionsToDatabase extends Command
                         [
                             'validation' => ["required_if:has_solar_panels,yes", 'numeric', 'min:1'],
                             'save_in' => "building_pv_panels.total_installed_power",
+                            'short' => 'total-installed-power',
                             // was current-state -> Geinstalleerd vermogen (totaal)
-                            'translation' => "Totaal vermogen",
+                            'translation' => "Totaal vermogen?",
                             'unit_of_measure' => 'WP',
                             'tool_question_type_id' => $textType->id,
                             'conditions' => [
                                 [
                                     [
                                         'column' => 'has-solar-panels',
-                                        'operator' => '=',
+                                        'operator' => Clause::EQ,
                                         'value' => 'yes',
                                     ],
                                 ],
@@ -1178,28 +1309,65 @@ class AddQuestionsToDatabase extends Command
                         ],
                         [
                             'validation' => [
-                                "required_if:has_solar_panels,yes",
+                                'nullable',
                                 'numeric',
+                                'integer',
                                 'between:1900,' . date('Y')
                             ],
                             'save_in' => "building_services.{$solarPanels->id}.extra.year",
                             'short' => 'solar-panels-placed-date',
                             // was current-state -> Geinstalleerd vermogen (totaal)
-                            'translation' => "Wanneer zijn de zonnepanelen geplaatst",
+                            'translation' => "Wanneer zijn de zonnepanelen geplaatst?",
                             'placeholder' => 'Voer een jaartal in',
-                            'unit_of_measure' => 'WP',
                             'tool_question_type_id' => $textType->id,
                             'conditions' => [
                                 [
                                     [
                                         'column' => 'has-solar-panels',
-                                        'operator' => '=',
+                                        'operator' => Clause::EQ,
                                         'value' => 'yes',
                                     ],
                                 ],
                             ],
                         ],
                     ]
+                ],
+                'Toelichting woonstatus' => [
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => "step_comments.{$stepResidentialStatus->id}_element.comment",
+                            'for_specific_input_source_id' => $residentInputSource->id,
+                            'short' => 'residential-status-element-comment-resident',
+                            'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => "step_comments.{$stepResidentialStatus->id}_element.comment",
+                            'for_specific_input_source_id' => $coachInputSource->id,
+                            'short' => 'residential-status-element-comment-coach',
+                            'translation' => 'cooperation/tool/general-data/current-state.index.comment.element',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => "step_comments.{$stepResidentialStatus->id}_service.comment",
+                            'for_specific_input_source_id' => $residentInputSource->id,
+                            'short' => 'residential-status-service-comment-resident',
+                            'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                        [
+                            'validation' => ['nullable', 'string'],
+                            'save_in' => "step_comments.{$stepResidentialStatus->id}_service.comment",
+                            'for_specific_input_source_id' => $coachInputSource->id,
+                            'short' => 'residential-status-service-comment-coach',
+                            'translation' => 'cooperation/tool/general-data/current-state.index.comment.service',
+                            'tool_question_type_id' => $textareaType->id,
+                        ],
+                    ],
                 ],
                 'Samenvatting woonstatus' => [
                     'sub_step_template_id' => $templateSummary->id,
@@ -1245,10 +1413,7 @@ class AddQuestionsToDatabase extends Command
                         $questionData['help_text'] = [
                             'nl' => $help,
                         ];
-                        // when the short is not set, we will use the column name as this describes it clearly
-                        if (!isset($questionData['short'])) {
-                            $questionData['short'] = last(explode('.', $questionData['save_in']));
-                        }
+
                         /** @var ToolQuestion $toolQuestion */
                         $toolQuestion = ToolQuestion::create(
                             Arr::except($questionData, ['tool_question_values', 'tool_question_custom_values', 'extra'])
@@ -1277,7 +1442,6 @@ class AddQuestionsToDatabase extends Command
 
                         if (isset($questionData['tool_question_values'])) {
                             $extra = $questionData['extra'] ?? [];
-
 
                             foreach ($questionData['tool_question_values'] as $toolQuestionValueOrder => $toolQuestionValue) {
                                 if (isset($extra['column'])) {

@@ -7,19 +7,19 @@ return [
         'resident' => 'Bewoner',
         'coach' => 'Coach',
         'example-building' => 'Voorbeeldwoning',
-        'Master' => 'Master',
+        'master' => 'Master',
     ],
     'modals' => [
         'info' => 'Informatie',
         'add-measure' => [
             'subject' => 'Onderwerp',
-            'price-indication' => 'Prijsindicatie in €',
-            'expected-savings' => 'Verwachte besparing in €',
-            'submit' => 'Voeg maatregel toe',
+            'subject-placeholder' => 'Nieuwe vloer, WC, tochtstrips..',
+            'info' => 'Beschrijving',
+            'info-placeholder' => 'Beschrijving over de maatregel',
+            'costs' => 'Kosten in €',
+            'savings-money' => 'Verwachte besparing in €',
+            'save' => 'Voeg maatregel toe',
+            'update' => 'Werk maatregel bij',
         ],
-    ],
-    'defaults' => [
-        'previous' => 'Vorige',
-        'next' => 'Volgende',
     ],
 ];

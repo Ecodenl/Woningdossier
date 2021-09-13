@@ -13,9 +13,16 @@ class AddOrderColumnOnVariousTables extends Migration
      */
     public function up()
     {
-        Schema::table('energy_labels', function (Blueprint $table) {
-            $table->integer('order')->after('calculate_value');
-        });
+        if (! Schema::hasColumn('energy_labels', 'order')) {
+            Schema::table('energy_labels', function (Blueprint $table) {
+                $table->integer('order')->after('calculate_value');
+            });
+        }
+        if (! Schema::hasColumn('user_action_plan_advices', 'order')) {
+            Schema::table('user_action_plan_advices', function (Blueprint $table) {
+                $table->integer('order')->after('user_action_plan_advisable_id')->default(0);
+            });
+        }
     }
 
     /**
@@ -25,8 +32,15 @@ class AddOrderColumnOnVariousTables extends Migration
      */
     public function down()
     {
-        Schema::table('energy_labels', function (Blueprint $table) {
-            $table->dropColumn('order');
-        });
+        if (Schema::hasColumn('energy_labels', 'order')) {
+            Schema::table('energy_labels', function (Blueprint $table) {
+                $table->dropColumn('order');
+            });
+        }
+        if (Schema::hasColumn('user_action_plan_advices', 'order')) {
+            Schema::table('user_action_plan_advices', function (Blueprint $table) {
+                $table->dropColumn('order');
+            });
+        }
     }
 }

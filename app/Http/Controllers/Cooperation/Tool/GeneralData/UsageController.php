@@ -17,6 +17,9 @@ class UsageController extends Controller
 {
     public function index()
     {
+        // For safety
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
@@ -36,6 +39,9 @@ class UsageController extends Controller
 
     public function store(UsageFormRequest $request)
     {
+        // For safety
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);

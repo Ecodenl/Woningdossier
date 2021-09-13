@@ -16,6 +16,9 @@ class GeneralDataController extends Controller
      */
     public function index()
     {
+        // For safety
+        die();
+
         $building = HoomdossierSession::getBuilding(true);
 
         // in short: when all the substeps are finished redirect to interest page

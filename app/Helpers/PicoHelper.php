@@ -70,6 +70,7 @@ class PicoHelper
                 'build_year' => $option['bouwjaar'] ?? '',
                 'surface' => $option['adresopp'] ?? '',
             ];
+            Log::debug($result);
         }
 
         return $result;

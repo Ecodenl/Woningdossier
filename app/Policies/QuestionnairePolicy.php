@@ -31,7 +31,7 @@ class QuestionnairePolicy
     public function setActiveStatus(Account $account, Questionnaire $questionnaire)
     {
         // same logic (for now)
-        return $this->edit($account, $questionnaire);
+        return $this->update($account, $questionnaire);
     }
 
     /**

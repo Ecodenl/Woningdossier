@@ -69,7 +69,7 @@ window.triggerEvent = function (element, eventName) {
  * Set up Alpine JS with extra data functions that can be used throughout
  * the whole application.
  */
-import Alpine from 'alpinejs'
+import Alpine from 'alpinejs';
 import alpineSelect from './alpine-scripts/alpine-select.js';
 import sourceSelect from './alpine-scripts/source-select.js';
 import modal from './alpine-scripts/modal.js';
@@ -80,18 +80,30 @@ import picoAddress from './alpine-scripts/picoAddress.js';
 import draggables from './alpine-scripts/draggables.js';
 import dropdown from './alpine-scripts/dropdown.js';
 import tabs from './alpine-scripts/tabs.js';
+import adaptiveInputs from './alpine-scripts/adaptive-input.js';
 
-Alpine.data('alpineSelect', alpineSelect)
-Alpine.data('sourceSelect', sourceSelect)
-Alpine.data('modal', modal)
-Alpine.data('ratingSlider', ratingSlider)
-Alpine.data('slider', slider)
-Alpine.data('register', register)
-Alpine.data('picoAddress', picoAddress)
-Alpine.data('draggables', draggables)
-Alpine.data('dropdown', dropdown)
-Alpine.data('tabs', tabs)
+Alpine.data('alpineSelect', alpineSelect);
+Alpine.data('sourceSelect', sourceSelect);
+Alpine.data('modal', modal);
+Alpine.data('ratingSlider', ratingSlider);
+Alpine.data('slider', slider);
+Alpine.data('register', register);
+Alpine.data('picoAddress', picoAddress);
+Alpine.data('draggables', draggables);
+Alpine.data('dropdown', dropdown);
+Alpine.data('tabs', tabs);
+Alpine.data('adaptiveInputs', adaptiveInputs);
 
-window.Alpine = Alpine
+window.Alpine = Alpine;
 
 Alpine.start();
+
+/**
+ * Set up mobile-drag-drop to allow touch events on native HTML 5 desktop drag events
+ */
+import {polyfill} from "mobile-drag-drop";
+
+// Init & Settings
+polyfill({
+
+});

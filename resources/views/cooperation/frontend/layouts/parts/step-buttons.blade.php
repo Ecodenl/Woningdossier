@@ -3,10 +3,10 @@
     <div class="w-1/2 flex flex-wrap justify-center">
         <a href="" class="btn btn-outline-purple flex items-center mr-1">
             <i class="icon-xs icon-arrow-left-bold-purple mr-5"></i>
-            @lang('cooperation/frontend/shared.defaults.previous')
+            @lang('default.buttons.previous')
         </a>
         <a href="" class="btn btn-purple flex items-center ml-1">
-            @lang('cooperation/frontend/shared.defaults.next')
+            @lang('default.buttons.next')
             <i class="icon-xs icon-arrow-right-bold-purple ml-5"></i>
         </a>
     </div>

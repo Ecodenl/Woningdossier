@@ -678,8 +678,6 @@ return [
                 'hours' => 'uren',
             ],
 
-            'title' => 'Basisadvies',
-
             'general-data' => [
                 'title' => 'Algemene gegevens',
                 'coach-input' => [

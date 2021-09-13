@@ -2,18 +2,27 @@
 
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan;
 
+use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Conditions\ConditionEvaluator;
+use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
+use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
+use App\Models\BuildingFeature;
+use App\Models\BuildingType;
 use App\Models\CompletedSubStep;
+use App\Models\ExampleBuilding;
+use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
+use App\Services\ExampleBuildingService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -38,12 +47,15 @@ class Form extends Component
 
     public $masterInputSource;
     public $currentInputSource;
+    public $residentInputSource;
+    public $coachInputSource;
 
     public $step;
     public $subStep;
 
     public $toolQuestions;
 
+    public bool $dirty;
     public $filledInAnswers = [];
     public $filledInAnswersForAllInputSources = [];
 
@@ -51,15 +63,20 @@ class Form extends Component
     {
         $subStep->load(['toolQuestions', 'subStepTemplate']);
 
-        // set default steps, the checks will come later on.
         $this->step = $step;
         $this->subStep = $subStep;
+
         $this->building = HoomdossierSession::getBuilding(true);
         $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $this->currentInputSource = HoomdossierSession::getInputSource(true);
+        $this->residentInputSource = $this->currentInputSource->short === InputSource::RESIDENT_SHORT
+            ? $this->currentInputSource
+            : InputSource::findByShort(InputSource::RESIDENT_SHORT);
+        $this->coachInputSource = $this->currentInputSource->short === InputSource::COACH_SHORT
+            ? $this->currentInputSource
+            : InputSource::findByShort(InputSource::COACH_SHORT);
 
         $this->toolQuestions = $subStep->toolQuestions()->orderBy('order')->get();
-
-        $this->currentInputSource = HoomdossierSession::getInputSource(true);
 
         $this->setFilledInAnswers();
     }
@@ -77,6 +94,7 @@ class Form extends Component
 
         $this->setToolQuestions();
 
+        $this->dirty = true;
     }
 
     private function setToolQuestions()
@@ -151,44 +169,95 @@ class Form extends Component
 
     public function save($nextUrl)
     {
+        // Before we can validate (and save), we must reset the formatting from text to mathable
+        foreach ($this->toolQuestions as $toolQuestion) {
+            if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric') && ! \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer')) {
+                $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::mathableFormat(str_replace('.', '', $this->filledInAnswers[$toolQuestion->id]), 2);
+            }
+        }
+
         if (!empty($this->rules)) {
             $validator = Validator::make([
                 'filledInAnswers' => $this->filledInAnswers
             ], $this->rules, [], $this->attributes);
 
+            // Translate values also
+            $defaultValues = __('validation.values.defaults');
+
+            foreach ($this->filledInAnswers as $toolQuestionId => $answer) {
+                $validator->addCustomValues([
+                    "filledInAnswers.{$toolQuestionId}" => $defaultValues,
+                ]);
+            }
+
             if ($validator->fails()) {
+                // Validator failed, let's put it back as the user format
+                foreach ($this->toolQuestions as $toolQuestion) {
+                    if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
+                        $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
+                        $this->filledInAnswers[$toolQuestion->id] = NumberFormatter::format($this->filledInAnswers[$toolQuestion->id], $isInteger ? 0 : 1);
+                        if ($isInteger) {
+                            $this->filledInAnswers[$toolQuestion->id] = str_replace('.', '', $this->filledInAnswers[$toolQuestion->id]);
+                        }
+                    }
+                }
+
                 $this->setToolQuestions();
+
+                $this->dispatchBrowserEvent('validation-failed');
             }
 
             $validator->validate();
         }
 
+        // Turns out, default values exist! We need to check if the tool questions have answers, else
+        // they might not save...
+        if (! $this->dirty) {
+            foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
+                $toolQuestion = ToolQuestion::find($toolQuestionId);
 
-        foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
-            /** @var ToolQuestion $toolQuestion */
-            $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
-            if (is_null($toolQuestion->save_in)) {
-                $this->saveToolQuestionCustomValues($toolQuestion, $givenAnswer);
-            } else {
-                // this *can't* handle a checkbox / multiselect answer.
-                $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
+                // Define if we should check this question...
+                if ($this->building->user->account->can('answer', $toolQuestion)) {
+                    $currentAnswer = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->currentInputSource, $toolQuestion);
+                    $masterAnswer = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+
+                    // Master input source is important. Ensure both are set
+                    if (is_null($currentAnswer) || is_null($masterAnswer)) {
+                        $this->dirty = true;
+                        break;
+                    }
+                }
             }
         }
 
+        // Answers have been updated, we save them and dispatch a recalculate
+        if ($this->dirty) {
+            foreach ($this->filledInAnswers as $toolQuestionId => $givenAnswer) {
+                // Define if we should answer this question...
+                /** @var ToolQuestion $toolQuestion */
+                $toolQuestion = ToolQuestion::where('id', $toolQuestionId)->with('toolQuestionType')->first();
+                if ($this->building->user->account->can('answer', $toolQuestion)) {
+                    if (is_null($toolQuestion->save_in)) {
+                        $this->saveToolQuestionCustomValues($toolQuestion, $givenAnswer);
+                    } else {
+                        // this *can't* handle a checkbox / multiselect answer.
+                        $this->saveToolQuestionValuables($toolQuestion, $givenAnswer);
+                    }
+                }
+            }
+
+            StepDataHasBeenChanged::dispatch($this->step, $this->building, Hoomdossier::user());
+        }
+
+        // TODO: @bodhi what is the use of this line
         $this->toolQuestions = $this->subStep->toolQuestions;
 
-        // now mark the sub step as complete
+        // Now mark the sub step as complete
         CompletedSubStep::firstOrCreate([
             'sub_step_id' => $this->subStep->id,
             'building_id' => $this->building->id,
             'input_source_id' => $this->currentInputSource->id
         ]);
-
-        $lastSubStepForStep = $this->step->subSteps()->orderByDesc('order')->first();
-        // last substep is done, now we can complete the main step
-        if ($this->subStep->id === $lastSubStepForStep->id) {
-            StepHelper::complete($this->step, $this->building, $this->currentInputSource);
-        }
 
         return redirect()->to($nextUrl);
     }
@@ -201,26 +270,29 @@ class Form extends Component
             $this->filledInAnswersForAllInputSources[$toolQuestion->id] = $this->building->getAnswerForAllInputSources($toolQuestion);
 
             /** @var array|string $answerForInputSource */
-            $answerForInputSource = $this->building->getAnswer($this->masterInputSource, $toolQuestion);
+            $answerForInputSource = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->masterInputSource, $toolQuestion);
 
             // We don't have to set rules here, as that's done in the setToolQuestions function which gets called
             switch ($toolQuestion->toolQuestionType->short) {
                 case 'rating-slider':
                     $filledInAnswerOptions = json_decode($answerForInputSource, true);
                     foreach ($toolQuestion->options as $option) {
-
-                        $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']] ?? 0;
+                        $this->filledInAnswers[$toolQuestion->id][$option['short']] = $filledInAnswerOptions[$option['short']] ?? $option['value'] ?? 0;
                         $this->attributes["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $option['name'];
                     }
                     break;
                 case 'slider':
-                    // default it when no answer is set, otherwise if the user leaves it default and submit the validation will fail because nothing is set.
-                    $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource ?? $toolQuestion->options['value'];
+                    // Default is required here when no answer is set, otherwise if the user leaves it default
+                    // and submits, the validation will fail because nothing is set.
+
+                    // Format answer to remove leading decimals
+                    $this->filledInAnswers[$toolQuestion->id] = str_replace('.', '',
+                        NumberFormatter::format($answerForInputSource ?? $toolQuestion->options['value']));
                     $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                     break;
                 case 'checkbox-icon':
-                    /** @var Collection $questionValues */
-                    $answerForInputSource = $answerForInputSource ?? [];
+                    /** @var array $answerForInputSource */
+                    $answerForInputSource = $answerForInputSource ?? $toolQuestion->options['value'] ?? [];
                     $this->filledInAnswers[$toolQuestion->id] = [];
                     foreach ($answerForInputSource as $answer) {
                         $this->filledInAnswers[$toolQuestion->id][] = $answer;
@@ -229,6 +301,15 @@ class Form extends Component
                     $this->attributes["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->name;
                     break;
                 default:
+                    // Check if question type is text, so we can format it if it's numeric
+                    if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric')) {
+                        $isInteger = \App\Helpers\Str::arrContains($toolQuestion->validation, 'integer');
+                        $answerForInputSource = NumberFormatter::format($answerForInputSource, $isInteger ? 0 : 1);
+                        if ($isInteger) {
+                            $answerForInputSource = str_replace('.', '', $answerForInputSource);
+                        }
+                    }
+
                     $this->filledInAnswers[$toolQuestion->id] = $answerForInputSource;
                     $this->attributes["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->name;
                     break;
@@ -237,6 +318,8 @@ class Form extends Component
 
         // User's previous values could be defined, which means conditional questions should be hidden
         $this->setToolQuestions();
+
+        $this->dirty = false;
     }
 
     private function setValidationForToolQuestion(ToolQuestion $toolQuestion)
@@ -244,14 +327,14 @@ class Form extends Component
         switch ($toolQuestion->toolQuestionType->short) {
             case 'rating-slider':
                 foreach ($toolQuestion->options as $option) {
-                    $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $toolQuestion->validation;
+                    $this->rules["filledInAnswers.{$toolQuestion->id}.{$option['short']}"] = $this->prepareValidationRule($toolQuestion->validation);
                 }
                 break;
 
             case 'checkbox-icon':
                 // If this is set, it won't validate if nothing is clicked. We check if the validation is required,
                 // and then also set required for the main question
-                $this->rules["filledInAnswers.{$toolQuestion->id}.*"] = $toolQuestion->validation;
+                $this->rules["filledInAnswers.{$toolQuestion->id}.*"] = $this->prepareValidationRule($toolQuestion->validation);
 
                 if (in_array('required', $toolQuestion->validation)) {
                     $this->rules["filledInAnswers.{$toolQuestion->id}"] = ['required'];
@@ -259,9 +342,39 @@ class Form extends Component
                 break;
 
             default:
-            $this->rules["filledInAnswers.{$toolQuestion->id}"] = $toolQuestion->validation;
+                $this->rules["filledInAnswers.{$toolQuestion->id}"] = $this->prepareValidationRule($toolQuestion->validation);
                 break;
         }
+    }
+
+    private function prepareValidationRule(array $validation): array
+    {
+        // We need to check if the validation contains shorts to other tool questions, so we can set the ID
+
+        foreach ($validation as $index => $rule) {
+            // Short is always on the right side of a colon
+            if (Str::contains($rule, ':')) {
+                $ruleParams = explode(':', $rule);
+                // But can contain extra params
+
+                if (! empty($ruleParams[1])) {
+                    $short = Str::contains($ruleParams[1], ',') ? explode(',', $ruleParams[1])[0]
+                        : $ruleParams[1];
+
+                    if (! empty($short)) {
+                        $toolQuestion = ToolQuestion::findByShort($short);
+                        $toolQuestion = $toolQuestion instanceof ToolQuestion ? $toolQuestion : ToolQuestion::findByShort(Str::kebab(Str::camel($short)));
+
+                        if ($toolQuestion instanceof ToolQuestion) {
+                            $validation[$index] = $ruleParams[0] . ':' . str_replace($short,
+                                    "filledInAnswers.{$toolQuestion->id}", $ruleParams[1]);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $validation;
     }
 
     private function saveToolQuestionValuables(ToolQuestion $toolQuestion, $givenAnswer)
@@ -283,8 +396,26 @@ class Form extends Component
 
         // This means we have to add some thing to the where
         if (count($savedInParts) > 2) {
-            // In this case the column holds a extra where value
-            $where[ToolQuestionHelper::TABLE_COLUMN[$table]] = $column;
+            // In this case the column holds extra where values
+
+            // There's 2 cases. Either it's a single value, or a set of columns
+            if (Str::contains($column, '_')) {
+                // Set of columns, we set the wheres based on the order of values
+                $columns = ToolQuestionHelper::TABLE_COLUMN[$table];
+                $values = explode('_', $column);
+
+                // Currently only for step_comments that can have a short
+                foreach ($values as $index => $value) {
+                    $where[$columns[$index]] = $value;
+                }
+            } else {
+                // Just a value, but the short table could be an array. We grab the first
+                $columns = ToolQuestionHelper::TABLE_COLUMN[$table];
+                $columnForWhere = is_array($columns) ? $columns[0] : $columns;
+
+                $where[$columnForWhere] = $column;
+            }
+
             $column = $savedInParts[2];
             // the extra column holds an array / JSON, so we have to transform the answer into an array
             if ($savedInParts[2] == 'extra') {
@@ -309,6 +440,30 @@ class Form extends Component
             }
         }
 
+        // Detect if the example building will be changing. If so, apply it.
+        // I hear you thinking: wouldn't this be better off in an observer?
+        // The answer is: No. Unless you want to trigger an infinite loop
+        // as applying the example building will delete and recreate records,
+        // which will trigger the observer, which will start applying the
+        // example building, which will delete and recreate records, which will
+        // trigger the observer.. ah well: you get the idea.
+        $exampleBuilding = null;
+        if (in_array($table, ['building_features']) && in_array($column, ['build_year', 'building_type_id'])){
+            // set the boolean to the appropriate value. Example building will
+            // be applied AFTER saving the current form (for getting the
+            // appropriate values).
+            Log::debug($table . "." . $column . " has changed:");
+            Log::debug([$column => $givenAnswer]);
+
+            $exampleBuilding = $this->getExampleBuildingIfChangeIsNeeded([$column => $givenAnswer]);
+            if ($exampleBuilding instanceof ExampleBuilding){
+                Log::debug("Example building should be (re)applied!");
+            }
+            else {
+                Log::debug("No change in example building contents");
+            }
+        }
+
         // Now save it
         $modelName::allInputSources()
             ->updateOrCreate(
@@ -316,12 +471,10 @@ class Form extends Component
                 [$column => $givenAnswer]
             );
 
-//        $where['input_source_id'] = $this->masterInputSource->id;
-//        $modelName::allInputSources()
-//            ->updateOrCreate(
-//                $where,
-//                [$column => $givenAnswer]
-//            );
+        if ($exampleBuilding instanceof ExampleBuilding){
+            // Apply the example building
+            $this->retriggerExampleBuildingApplication($exampleBuilding);
+        }
     }
 
     private function saveToolQuestionCustomValues(ToolQuestion $toolQuestion, $givenAnswer)
@@ -348,10 +501,7 @@ class Form extends Component
                 $toolQuestionCustomValue = ToolQuestionCustomValue::findByShort($answer);
                 $data['tool_question_custom_value_id'] = $toolQuestionCustomValue->id;
                 $data['answer'] = $answer;
-                // TODO: Check this, it's saving answers really weirdly
-                $toolQuestion->toolQuestionAnswers()->create($data)->replicate()->fill([
-                    'input_source_id' => $this->masterInputSource->id
-                ])->save();
+                $toolQuestion->toolQuestionAnswers()->create($data);
             }
 
         } else {
@@ -373,12 +523,109 @@ class Form extends Component
                 ->toolQuestionAnswers()
                 ->allInputSources()
                 ->updateOrCreate($where, $data);
-//        $where['input_source_id'] = $this->masterInputSource->id;
-//        $data['input_source_id'] = $this->masterInputSource->id;
-//        $toolQuestion
-//            ->toolQuestionAnswers()
-//            ->allInputSources()
-//            ->updateOrCreate($where, $data);
+        }
+    }
+
+    protected function getExampleBuildingIfChangeIsNeeded(array $changes)
+    {
+        // objects for first checks
+        $buildingFeature = $this->building->buildingFeatures;
+
+        // We need this to do stuff
+        if ($buildingFeature instanceof BuildingFeature && ! is_null($buildingFeature->build_year)) {
+            // current values for comparison later on
+            $currentExampleBuildingId = $this->building->example_building_id;
+            $currentBuildYearValue =  (int) $buildingFeature->build_year;
+
+            if (array_key_exists('building_type_id', $changes)){
+                $buildingType = BuildingType::find((int) $changes['building_type_id']);
+            }
+            else {
+                $buildingType = $buildingFeature->buildingType;
+            }
+
+            if (!$buildingType instanceof BuildingType){
+                return null;
+            }
+
+            $exampleBuilding = ExampleBuilding::generic()->where(
+                'building_type_id',
+                $buildingType->id
+            )->first();
+
+            if (!$exampleBuilding instanceof ExampleBuilding){
+                // No example building, so can't change then.
+                return null;
+            }
+
+            if ($exampleBuilding->id !== $currentExampleBuildingId){
+                // We know the change is sure
+                return $exampleBuilding;
+            }
+
+            if (array_key_exists('build_year', $changes)){
+                $new = (int) $changes['build_year'];
+                if ($currentBuildYearValue === $new){
+                    return null;
+                }
+
+                // if the build_year is dirty:
+                // check the combination of example_building_id with new build_year
+                // against the combination of example_building_id with old build_year
+                $oldContents = $exampleBuilding->getContentForYear($currentBuildYearValue);
+                $newContents = $exampleBuilding->getContentForYear($new);
+
+                if ($oldContents instanceof ExampleBuildingContent){
+                    if ($oldContents->id !== $newContents->id) {
+                        return $exampleBuilding;
+                    }
+                }
+                else {
+                    return $exampleBuilding;
+                }
+
+            }
+        } else {
+            Log::debug( "Building feature undefined, or build year not set for building {$this->building->id}");
+        }
+
+        return null;
+    }
+
+    private function retriggerExampleBuildingApplication(ExampleBuilding $exampleBuilding){
+        Log::debug(__METHOD__);
+        if ($this->building->example_building_id !== $exampleBuilding->id){
+            Log::debug("Example building ID changes (" . $this->building->example_building_id . " -> " . $exampleBuilding->id . ")");
+            // change example building, let the observer do the rest
+            $this->building->exampleBuilding()->associate($exampleBuilding)->save();
+        }
+
+        // For the example building input source it could be that the build year isn't set.
+        // If so we use the build_year from the current input source
+        //$buildYear = $this->building->buildingFeatures->build_year ?? $this->building->buildingFeatures()->forInputSource($this->currentInputSource)->first()->build_year;
+        $buildYear = $this->building->buildingFeatures()->forInputSource($this->currentInputSource)->first()->build_year;
+
+        // manually trigger
+        ExampleBuildingService::apply(
+            $exampleBuilding,
+            $buildYear,
+            $this->building
+        );
+
+        $exampleBuildingShouldOverrideUserData = $this->building
+                                                     ->completedSubSteps()
+                                                     ->forInputSource(InputSource::findByShort(InputSource::MASTER_SHORT))
+                                                     ->where('sub_step_id', '>', 3)
+                                                     ->count() <= 0;
+
+        if ($exampleBuildingShouldOverrideUserData) {
+            ExampleBuildingService::apply(
+                $exampleBuilding,
+                //$this->building->buildingFeatures->build_year,
+                $buildYear,
+                $this->building,
+                $this->currentInputSource
+            );
         }
     }
 }

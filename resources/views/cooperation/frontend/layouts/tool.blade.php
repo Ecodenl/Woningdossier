@@ -11,10 +11,12 @@
                 {{-- Progress bar --}}
                 <div class="w-full bg-gray h-2 relative z-40 -mt-1">
                     @php
+                        // $total and $current get injected in the QuickScanController via the ViewServiceProvider
                         $total = $total ?? 100;
                         $current = $current ?? 100;
                         $width = 100 / $total * $current;
-                    @endphp{{-- Define style-width based on step progress divided by total steps --}}
+                    @endphp
+                    {{-- Define style-width based on step progress divided by total steps --}}
                     <div class="h-full bg-purple" style="width: {{$width}}%"></div>
                 </div>
             @endif
@@ -29,54 +31,65 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20">
         @if(\App\Helpers\Blade\RouteLogic::inExpertTool(Route::currentRouteName()))
             {{-- Expert tool has a card-wrapper around the content --}}
-            <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
-                @include('cooperation.tool.includes.top-alerts')
-                @include('cooperation.tool.parts.progress')
-            </div>
+{{--            <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">--}}
+{{--                @include('cooperation.tool.includes.top-alerts')--}}
+{{--                @include('cooperation.tool.parts.progress')--}}
+{{--            </div>--}}
 
-            <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
-                <div class="flex flex-row flex-wrap w-full" x-data="tabs()">
-                    @if($currentSubStep instanceof \App\Models\Step)
-                        <h2 class="heading-2">
-                            {{$currentStep->name}}
-                        </h2>
-                    @endif
-                    <ul class="nav-tabs mt-5" x-ref="nav-tabs">
-                        @if(isset($currentStep))
-                            <?php $subStepsForStep = $cooperation->getchildrenForStep($currentStep); ?>
-                            @if($subStepsForStep->isEmpty())
-                                <li class="active @if($building->hasCompleted($currentStep)) completed @endif">
-                                    <a href="{{route("cooperation.tool.{$currentStep->short}.index")}}">
-                                        {{$currentStep->name}}
-                                    </a>
-                                </li>
-                            @endif
-                            @foreach($subStepsForStep as $subStep)
-                                <li class="@if($subStep->short == $currentSubStep->short) active @endif @if($building->hasCompleted($subStep)) completed @endif">
-                                    <a href="{{route("cooperation.tool.{$currentStep->short}.{$subStep->short}.index")}}">
-                                        {{$subStep->name}}
-                                    </a>
-                                </li>
-                            @endforeach
-                        @endif
+{{--            <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">--}}
+{{--                <div class="flex flex-row flex-wrap w-full" x-data="tabs()">--}}
+{{--                    @if($currentSubStep instanceof \App\Models\Step)--}}
+{{--                        <h2 class="heading-2">--}}
+{{--                            {{$currentStep->name}}--}}
+{{--                        </h2>--}}
+{{--                    @endif--}}
+{{--                    <ul class="nav-tabs mt-5" x-ref="nav-tabs">--}}
+{{--                        @if(isset($currentStep))--}}
+{{--                            @php --}}
+{{--                                $subStepsForStep = $cooperation->getchildrenForStep($currentStep);--}}
+{{--                            @endphp--}}
+{{--                            @if($subStepsForStep->isEmpty())--}}
+{{--                                <li class="active @if($building->hasCompleted($currentStep)) completed @endif">--}}
+{{--                                    <a href="{{route("cooperation.tool.{$currentStep->short}.index")}}">--}}
+{{--                                        {{$currentStep->name}}--}}
+{{--                                    </a>--}}
+{{--                                </li>--}}
+{{--                            @endif--}}
+{{--                            @foreach($subStepsForStep as $subStep)--}}
+{{--                                <li class="@if($subStep->short == $currentSubStep->short) active @endif @if($building->hasCompleted($subStep)) completed @endif">--}}
+{{--                                    <a href="{{route("cooperation.tool.{$currentStep->short}.{$subStep->short}.index")}}">--}}
+{{--                                        {{$subStep->name}}--}}
+{{--                                    </a>--}}
+{{--                                </li>--}}
+{{--                            @endforeach--}}
+{{--                        @endif--}}
 
+{{--                        @if(isset($currentStep) && $currentStep->hasQuestionnaires())--}}
+{{--                            @foreach($currentStep->questionnaires as $questionnaire)--}}
+
+{{--                                @if($questionnaire->isActive())--}}
+{{--                                    <li class="@if($buildingOwner->hasCompletedQuestionnaire($questionnaire)) completed @endif">--}}
+{{--                                        <a href="#questionnaire-{{$questionnaire->id}}" x-bind="tab">--}}
+{{--                                            {{$questionnaire->name}}--}}
+{{--                                        </a>--}}
+{{--                                    </li>--}}
+{{--                                @endif--}}
+{{--                            @endforeach--}}
+{{--                        @endif--}}
+{{--                    </ul>--}}
+
+                    <div class="w-full border border-solid border-blue-500 border-opacity-50 rounded-b-lg rounded-t-lg tab-content"
+                        x-ref="tab-content">
                         @if(isset($currentStep) && $currentStep->hasQuestionnaires())
                             @foreach($currentStep->questionnaires as $questionnaire)
-
                                 @if($questionnaire->isActive())
-                                    <li class="@if($buildingOwner->hasCompletedQuestionnaire($questionnaire)) completed @endif">
-                                        <a href="#questionnaire-{{$questionnaire->id}}" x-bind="tab">
-                                            {{$questionnaire->name}}
-                                        </a>
-                                    </li>
+                                    @include('cooperation.frontend.layouts.parts.custom-questionnaire', [
+                                        'questionnaire' => $questionnaire, 'isTab' => true
+                                    ])
                                 @endif
                             @endforeach
                         @endif
-                    </ul>
 
-                    <div class="w-full border border-solid border-blue-500 border-opacity-50 rounded-b-lg rounded-tr-lg tab-content"
-                        x-ref="tab-content">
-                        @include('cooperation.frontend.layouts.parts.custom-questionnaire')
 
                         <div class="w-full divide-y divide-blue-500 divide-opacity-50" id="main-tab" x-ref="main-tab">
                             <div class="px-4 py-8">
@@ -89,7 +102,7 @@
                                         @if(in_array(Route::currentRouteName(), ['cooperation.tool.ventilation-information.index', 'cooperation.tool.heat-pump.index']))
                                             @lang('default.buttons.next-page')
                                         @else
-                                            @lang('default.buttons.next')
+                                            @lang('default.buttons.save')
                                         @endif
                                     </button>
                                 @elseif(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']) && $buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
@@ -122,31 +135,37 @@
                                                 $previousStep = $steps->where('order', '<', $currentSubStep->order ?? $currentStep->order)->last();
                                             }
 
-                                            if ($currentSubStep instanceof \App\Models\Step && $previousStep instanceof \App\Models\Step) {
-                                                $previousUrl = route("cooperation.tool.{$currentStep->short}.{$previousStep->short}.index");
-                                            } elseif ($previousStep instanceof \App\Models\Step) {
-                                                $previousUrl = route("cooperation.tool.{$previousStep->short}.index");
-                                            }
+//                                            if ($currentSubStep instanceof \App\Models\Step && $previousStep instanceof \App\Models\Step) {
+//                                                $previousUrl = route("cooperation.tool.{$currentStep->short}.{$previousStep->short}.index");
+//                                            } elseif ($previousStep instanceof \App\Models\Step) {
+//                                                $previousUrl = route("cooperation.tool.{$previousStep->short}.index");
+//                                            }
                                             ?>
-                                            @if($previousStep instanceof \App\Models\Step)
-                                                <a class="btn btn-green float-left"
-                                                   href="{{$previousUrl}}">@lang('default.buttons.prev')</a>
-                                            @endif
-                                        </div>
-{{--                                        @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')--}}
-{{--                                            @lang('default.buttons.next-page')--}}
-{{--                                            <div class="w-full sm:w-1/2">--}}
-{{--                                                <a href="" class="float-right btn btn-purple submit-main-form">--}}
-{{--                                                    @lang('default.buttons.next-page')--}}
+{{--                                            @if($previousStep instanceof \App\Models\Step)--}}
+{{--                                                <a class="btn btn-green float-left"--}}
+{{--                                                   href="{{$previousUrl}}">--}}
+{{--                                                    @lang('default.buttons.previous')--}}
 {{--                                                </a>--}}
-{{--                                            </div>--}}
-{{--                                        @else--}}
+{{--                                            @endif--}}
+                                            <a class="btn btn-green float-left"
+                                               href="{{ route('cooperation.frontend.tool.quick-scan.my-plan.index') }}">
+                                                @lang('default.buttons.cancel')
+                                            </a>
+                                        </div>
+                                        @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')
+                                            @lang('default.buttons.next-page')
+                                            <div class="w-full sm:w-1/2">
+                                                <a href="" class="float-right btn btn-purple submit-main-form">
+                                                    @lang('default.buttons.next-page')
+                                                </a>
+                                            </div>
+                                        @else
                                         <div class="w-full sm:w-1/2">
                                             <button class="float-right btn btn-purple submit-main-form">
-                                                @lang('default.buttons.next')
+                                                @lang('default.buttons.save')
                                             </button>
                                         </div>
-{{--                                    @endif--}}
+                                    @endif
                                     </div>
                             </div>
                             @endif
@@ -163,19 +182,6 @@
 @if(\App\Helpers\Blade\RouteLogic::inExpertTool(Route::currentRouteName()))
     @push('js')
         <script>
-{{-- TODO: Check the usages of these scripts --}}
-
-            function removeErrors()
-            {
-                $('.has-error').removeClass('has-error');
-                $('.help-block').remove()
-            }
-            function addError(input, message) {
-                {{-- TODO:These are also within the app.js, check if these are needed here --}}
-                var helpBlock = '<span class="help-block"></span>';
-                input.parents('.form-group').addClass('has-error');
-                input.parents('.form-group').append($(helpBlock).append('<strong>' + message + '</strong>'));
-            }
 
             function removeError(input) {
                 input.parents('.has-error').removeClass('has-error');

@@ -610,7 +610,7 @@ class Form extends Component
             if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
                 $cards[$category][$order] = [
                     'name' => Str::limit($advisable->measure_name, 22),
-                    'icon' => $configurations['icon'] ?? 'icon-tools',
+                    'icon' => $advisable->configurations['icon'] ?? 'icon-tools',
                     // TODO: Subsidy
                     'subsidy' => $this->SUBSIDY_AVAILABLE,
                     'info' => $advisable->measure_name,

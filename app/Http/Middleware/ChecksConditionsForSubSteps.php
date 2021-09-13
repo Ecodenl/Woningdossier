@@ -2,15 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use App\Helpers\Hoomdossier;
-use App\Helpers\HoomdossierSession;
 use App\Helpers\QuickScanHelper;
-use App\Models\BuildingType;
-use App\Models\InputSource;
 use App\Models\SubStep;
-use App\Models\ToolQuestion;
 use Closure;
-use Illuminate\Support\Facades\Log;
 
 class ChecksConditionsForSubSteps
 {
@@ -27,7 +21,6 @@ class ChecksConditionsForSubSteps
         $subStep = $request->route('subStep');
 
         $returnToNextStep = $request->user()->cannot('show', $subStep);
-
 
         if ($returnToNextStep) {
             // this indeed only covers the next step

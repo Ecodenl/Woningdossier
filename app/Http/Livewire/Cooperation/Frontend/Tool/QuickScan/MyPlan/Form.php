@@ -642,10 +642,10 @@ class Form extends Component
 
             $cards[$category][$order]['id'] = $advice->id;
             $cards[$category][$order]['costs'] = [
-                'from' => $advice->costs['from'] ?? null,
-                'to' => $advice->costs['to'] ?? null,
+                'from' => empty($advice->costs['from']) ? null : NumberFormatter::round($advice->costs['from']),
+                'to' =>  empty($advice->costs['to']) ? null : NumberFormatter::round($advice->costs['to']),
             ];
-            $cards[$category][$order]['savings'] = $advice->savings_money ?? 0;
+            $cards[$category][$order]['savings'] = NumberFormatter::round($advice->savings_money ?? 0);
 
             ++$order;
         }

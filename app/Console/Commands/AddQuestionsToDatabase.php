@@ -69,6 +69,8 @@ class AddQuestionsToDatabase extends Command
     public function handle()
     {
         Schema::disableForeignKeyConstraints();
+        // TODO: Shouldn't this truncate sub steps too?
+        // TODO: And really, shouldn't this be an updateOrCreate?
         ToolQuestionValuable::truncate();
         ToolQuestion::truncate();
         ToolQuestionCustomValue::truncate();

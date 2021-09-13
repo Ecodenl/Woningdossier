@@ -48,4 +48,9 @@ class ServiceValue extends Model
     {
         return $this->hasOne(KeyFigureBoilerEfficiency::class);
     }
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
 }

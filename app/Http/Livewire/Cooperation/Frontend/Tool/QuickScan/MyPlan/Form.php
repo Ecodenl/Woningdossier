@@ -10,7 +10,6 @@ use App\Models\Building;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
-use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Scopes\VisibleScope;
@@ -226,7 +225,7 @@ class Form extends Component
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                 ->where('user_id', $this->building->user->id)
-                ->where('category', $category)
+                ->category($category)
                 ->orderBy('order')
                 ->get();
 
@@ -445,7 +444,7 @@ class Form extends Component
         // ---------------------------------------------------------------------
         // sustainability
         // ---------------------------------------------------------------------
-        $package = $this->cards[UserActionPlanAdviceService::CATEGORY_COMPLETE];
+        $package = $this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO];
         $package = array_merge($package, $this->cards[UserActionPlanAdviceService::CATEGORY_COMPLETE]);
         $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                                        ->whereIn('id', \Illuminate\Support\Arr::pluck($package, 'id'))
@@ -477,11 +476,8 @@ class Form extends Component
         // ---------------------------------------------------------------------
         // comfort
         // ---------------------------------------------------------------------
-        // Comfort logic
-        // TODO: Calculations
-        // TEMPORARY RANDOM CALC
-        $percentage = mt_rand(0, 100);
-        $this->evaluateCalculationResult('comfort', $percentage);
+        $comfort = UserActionPlanAdviceService::getComfortForBuilding($this->building);
+        $this->evaluateCalculationResult('comfort', $comfort);
 
         $this->expectedInvestment = $investment;
         $this->yearlySavings = $savings;
@@ -597,7 +593,7 @@ class Form extends Component
             $hiddenAdvices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                 ->withoutGlobalScope(VisibleScope::class)
                 ->where('user_id', $this->building->user->id)
-                ->where('category', $category)
+                ->category($category)
                 ->where('visible', false)
                 ->orderBy('order')
                 ->get();

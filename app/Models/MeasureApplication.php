@@ -67,6 +67,7 @@ class MeasureApplication extends Model
      */
     public static function byShort($short)
     {
+        // TODO: Convert to shortTrait
         return self::where('short', '=', $short)->first();
     }
 

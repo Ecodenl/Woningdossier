@@ -117,8 +117,8 @@ class InsulatedGlazing
             'year' => null,
         ];
 
-        $frames = Element::where('short', 'frames')->first();
-        $woodElements = Element::where('short', 'wood-elements')->first();
+        $frames = Element::findByShort('frames')->first();
+        $woodElements = Element::findByShort('wood-elements')->first();
         $buildingElements = $calculateData['building_elements'] ?? [];
         $framesValueId = 0;
 

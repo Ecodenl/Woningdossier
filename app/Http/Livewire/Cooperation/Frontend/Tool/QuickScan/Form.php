@@ -7,6 +7,7 @@ use App\Helpers\Conditions\ConditionEvaluator;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\NumberFormatter;
+use App\Helpers\QuestionValues\QuestionValue;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Models\Building;
@@ -77,7 +78,6 @@ class Form extends Component
             : InputSource::findByShort(InputSource::COACH_SHORT);
 
         $this->toolQuestions = $subStep->toolQuestions()->orderBy('order')->get();
-
         $this->setFilledInAnswers();
     }
 

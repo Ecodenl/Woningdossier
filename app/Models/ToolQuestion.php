@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class ToolQuestion extends Model
 {
@@ -119,5 +120,7 @@ class ToolQuestion extends Model
 
                 return $questionValue;
             });
+
+
     }
 }

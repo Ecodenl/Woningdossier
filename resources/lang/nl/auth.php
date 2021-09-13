@@ -25,7 +25,7 @@ return [
             'header' => 'Registreren',
             'email' => 'E-mailadres',
             'email-exists' => 'Het e-mailadres is al geregistreerd, wij hebben nog een aantal gegevens van uw nodig. U kunt hierna inloggen met uw E-mailadres en huidige wachtwoord.',
-            'already-member' => 'U bent a lid van deze coöperatie, ga naar de <strong><a href='.url('login').'>Login pagina</a></strong>',
+            'already-member' => 'U bent al lid van deze coöperatie, ga naar de <strong><a href='.url('login').'>Login pagina</a></strong>',
             'connect' => 'Koppelen aan deze coöperatie',
             'first-name' => 'Voornaam',
             'last-name' => 'Achternaam',

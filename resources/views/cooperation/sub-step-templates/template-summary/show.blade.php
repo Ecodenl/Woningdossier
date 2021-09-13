@@ -7,7 +7,6 @@
 
     @php
         $subStepsToSummarize = $step->subSteps()->where('id', '!=', $subStep->id)->orderBy('order')->get();
-        $stepComments = [];
     @endphp
 
     {{-- Loop all sub steps except for the current (summary) step --}}
@@ -86,11 +85,6 @@
 
                             // Comments come at the end, and have exceptional logic...
                             if (\Illuminate\Support\Str::contains($toolQuestionToSummarize->short, 'comment')) {
-                                $stepComments[] = [
-                                    'question' => $toolQuestionToSummarize,
-                                    'route' => $subStepRoute,
-                                    'answer' => $answers[$toolQuestionToSummarize->short],
-                                ];
                                 $showQuestion = false;
                             }
                         @endphp
@@ -192,20 +186,33 @@
     @endforeach
 
     <div class="flex flex-row flex-wrap w-full">
-        @foreach($stepComments as $stepCommentData)
+        @foreach($toolQuestions as $toolQuestion)
             @php
-                $stepCommentToolQuestion = $stepCommentData['question'];
-                $subStepRoute = $stepCommentData['route'];
-                $answer = $stepCommentData['answer'];
+                $disabled = ! $building->user->account->can('answer', $toolQuestion);
             @endphp
                 @component('cooperation.frontend.layouts.components.form-group', [
-                    'label' => $stepCommentToolQuestion->name ?? '' . " (" . ($stepCommentToolQuestion->forSpecificInputSource->name ?? '') . ")",
-                    'route' => $subStepRoute,
+                    'label' => $toolQuestion->name . (is_null($toolQuestion->forSpecificInputSource) ? '' : " ({$toolQuestion->forSpecificInputSource->name})"),
                     'class' => 'w-full sm:w-1/2 ' . ($loop->iteration % 2 === 0 ? 'sm:pl-3' : 'sm:pr-3'),
-                    'withInputSource' => false,
+                    'withInputSource' => ! $disabled,
+                    'id' => "filledInAnswers-{$toolQuestion->id}",
+                    'inputName' => "filledInAnswers.{$toolQuestion->id}",
                 ])
-                    <textarea class="form-input" disabled
-                    >{{ $answer }}</textarea>
+                    @slot('sourceSlot')
+                        @include('cooperation.sub-step-templates.parts.source-slot-values', [
+                            'values' => $filledInAnswersForAllInputSources[$toolQuestion->id],
+                            'toolQuestion' => $toolQuestion,
+                        ])
+                    @endslot
+
+                    @slot('modalBodySlot')
+                        <p>
+                            {!! $toolQuestion->help_text !!}
+                        </p>
+                    @endslot
+
+                    @include("cooperation.tool-question-type-templates.{$toolQuestion->toolQuestionType->short}.show", [
+                        'disabled' => $disabled,
+                    ])
                 @endcomponent
         @endforeach
     </div>

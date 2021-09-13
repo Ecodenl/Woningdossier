@@ -573,12 +573,19 @@ class Form extends Component
 
             // Add moved card into new category
             $cards = $this->cards[$category];
-            $newOrder = count($cards);
-            $cards[$newOrder] = $addedCard;
-            $this->cards[$category] = $cards;
+            // Append to end
+            $cards[] = $addedCard;
+            $newCards = [];
+            $loop = 0;
+            foreach ($cards as $card) {
+                $newCards[$loop] = $card;
+                ++$loop;
+            }
+            $this->cards[$category] = $newCards;
 
-            // Set visible and on new place
-            $this->updateAdvice($id, ['visible' => true, 'order' => $newOrder]);
+            // Set visible and order
+            $this->updateAdvice($id, ['visible' => true]);
+            $this->reorder($category);
 
             $this->recalculate();
         }

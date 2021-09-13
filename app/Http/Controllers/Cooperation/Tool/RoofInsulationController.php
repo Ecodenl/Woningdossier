@@ -51,7 +51,7 @@ class RoofInsulationController extends Controller
         $features = $building->buildingFeatures;
         $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
 
-        $roofTypes = RoofType::all();
+        $roofTypes = RoofType::findByShorts(RoofType::SECONDARY_ROOF_TYPE_SHORTS);
 
         $currentRoofTypes = $building->roofTypes;
         $currentRoofTypesForMe = $building->roofTypes()->forMe()->get();

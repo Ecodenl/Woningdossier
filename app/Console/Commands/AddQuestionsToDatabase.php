@@ -215,9 +215,10 @@ class AddQuestionsToDatabase extends Command
                                     'flat' => [
                                         'icon' => 'icon-flat-roof',
                                     ],
-                                    'flat-pitched-roof'  => [
-                                        'icon' => 'icon-flat-pitched-roof'
-                                    ],
+                                    // TODO: For later, when new logic is applied for roof types
+//                                    'flat-pitched-roof'  => [
+//                                        'icon' => 'icon-flat-pitched-roof'
+//                                    ],
                                     'gabled-roof'  => [
                                         'icon' => 'icon-pointed-roof'
                                     ],

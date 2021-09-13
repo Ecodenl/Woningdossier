@@ -7,7 +7,7 @@
             case 'building-type':
                 $rawAnswer = $building->getAnswer($masterInputSource, \App\Models\ToolQuestion::findByShort('building-type-category'));
                 $humanReadableAnswer = Str::lower(
-                    \App\Models\BuildingType::find($rawAnswer)->name
+                    \App\Models\BuildingTypeCategory::find($rawAnswer)->name
                 );
 
                 break;

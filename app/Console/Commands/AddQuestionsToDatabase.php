@@ -70,6 +70,8 @@ class AddQuestionsToDatabase extends Command
     public function handle()
     {
         Schema::disableForeignKeyConstraints();
+        SubStep::truncate();
+        SubStepToolQuestion::truncate();
         ToolQuestionValuable::truncate();
         ToolQuestion::truncate();
         ToolQuestionCustomValue::truncate();
@@ -181,6 +183,14 @@ class AddQuestionsToDatabase extends Command
                     ]
                 ],
                 'Wat voor woning' => [
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'fn',
+                                'value' => 'BuildingType',
+                            ],
+                        ],
+                    ],
                     // question data
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [

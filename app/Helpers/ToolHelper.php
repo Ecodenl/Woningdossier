@@ -880,6 +880,11 @@ class ToolHelper
                         'type' => 'text',
                         'unit' => __('general.unit.cubic-meters.title'),
                     ],
+                    'building_pv_panels.total_installed_power' => [
+                        'label' => __('solar-panels.total-installed-power.label'),
+                        'type' => 'text',
+                        'unit' => __('solar-panels.total-installed-power.placeholder'),
+                    ],
                     'building_pv_panels.peak_power' => [
                         'label' => __('solar-panels.peak-power.title'),
                         'type' => 'select',

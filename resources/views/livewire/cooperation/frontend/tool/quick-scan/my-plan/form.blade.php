@@ -178,7 +178,7 @@
                 {{-- White space --}}
             </div>
             <div class="w-full flex flex-row flex-wrap justify-center items-center">
-                <i class="icon-xl icon-error-cross p-4 rounded-lg transition duration-500 trash" x-bind="trash"></i>
+                <i class="icon-xl icon-trash-can-red p-4 rounded-lg transition duration-500 trash" x-bind="trash"></i>
             </div>
 
             @if(! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))

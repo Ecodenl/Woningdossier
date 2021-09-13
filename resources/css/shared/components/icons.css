@@ -437,6 +437,12 @@
 .icon-tools {
     content: url('/icons/tools.svg');
 }
+.icon-trash-can {
+    content: url('/icons/trash-can.svg');
+}
+.icon-trash-can-red {
+    content: url('/icons/trash-can-red.svg');
+}
 .icon-two-under-one-roof {
     content: url('/icons/two-under-one-roof.svg');
 }

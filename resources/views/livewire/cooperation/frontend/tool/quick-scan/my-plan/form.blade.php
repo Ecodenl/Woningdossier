@@ -178,7 +178,7 @@
                 {{-- White space --}}
             </div>
             <div class="w-full flex flex-row flex-wrap justify-center items-center">
-                <i class="icon-xl icon-error-cross p-4 rounded-lg transition duration-500 trash" x-bind="trash"></i>
+                <i class="icon-xl icon-trash-can-red p-4 rounded-lg transition duration-500 trash" x-bind="trash"></i>
             </div>
 
             @if(! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
@@ -235,7 +235,7 @@
             </div>
             <div class="flex flex-col justify-center">
                 <span class="text-orange text-sm font-bold">
-                    {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($investment, 0), '€ ') }}
+                    {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($expectedInvestment, 0), '€ ') }}
                 </span>
                 <p class="-mt-2">
                     @lang('cooperation/frontend/tool.my-plan.cards.investment')
@@ -273,17 +273,20 @@
         {{-- Todo: Check rating slider translations --}}
         <div class="w-full flex flex-wrap items-center pr-3">
             @include('cooperation.frontend.layouts.parts.rating-slider', [
-                'label' => 'Comfort', 'default' => 5, 'disabled' => true
+                'label' => 'Comfort', 'disabled' => true, 'default' => $comfort,
+                'livewire' => true, 'inputName' => 'comfort',
             ])
         </div>
         <div class="w-full flex flex-wrap items-center">
             @include('cooperation.frontend.layouts.parts.rating-slider', [
-                'label' => 'Duurzaamheid', 'default' => 4, 'disabled' => true
+                'label' => 'Duurzaamheid', 'disabled' => true, 'default' => $renewable,
+                'livewire' => true, 'inputName' => 'renewable',
             ])
         </div>
         <div class="w-full flex flex-wrap items-center">
             @include('cooperation.frontend.layouts.parts.rating-slider', [
-                'label' => 'Goede investering', 'default' => 3, 'disabled' => true
+                'label' => 'Goede investering', 'disabled' => true, 'default' => $investment,
+                'livewire' => true, 'inputName' => 'investment',
             ])
         </div>
     </div>

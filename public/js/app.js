@@ -34720,17 +34720,7 @@ __webpack_require__.r(__webpack_exports__);
     init: function init() {
       // Ensure the slider gets updated with the default value
       if (this.value > 0) {
-        var element = this.$refs['rating-slider'].querySelector("div[data-value=\"".concat(this.value, "\"]"));
-
-        if (element !== null) {
-          // Ensure we can set the value on init, so we temporary enable, even if it's disabled.
-          var tempDisable = this.disabled;
-          this.disabled = false;
-          this.selectOption(element);
-          this.disabled = tempDisable;
-        } else {
-          this.value = 0;
-        }
+        this.selectOptionByValue(this.value);
       } else if (isNaN(this.value)) {
         this.value = 0;
       } // Bind event listener for change
@@ -34758,13 +34748,11 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     selectOption: function selectOption(element) {
-      if (!this.disabled) {
-        var parent = this.$refs['rating-slider'];
-        this.index = Array.from(parent.children).indexOf(element);
-        this.value = element.getAttribute('data-value');
-        this.$refs['rating-slider-input'].value = this.value;
-        this.setIndexActive();
-      }
+      var parent = this.$refs['rating-slider'];
+      this.index = Array.from(parent.children).indexOf(element);
+      this.value = element.getAttribute('data-value');
+      this.$refs['rating-slider-input'].value = this.value;
+      this.setIndexActive();
     },
     selectOptionByValue: function selectOptionByValue(value) {
       var element = this.$refs['rating-slider'].querySelector("div[data-value=\"".concat(value, "\"]"));
@@ -34774,9 +34762,11 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     selectOptionByElement: function selectOptionByElement(element) {
-      this.selectOption(element);
-      window.triggerEvent(this.$refs['rating-slider-input'], 'input');
-      window.triggerEvent(this.$refs['rating-slider-input'], 'change');
+      if (!this.disabled) {
+        this.selectOption(element);
+        window.triggerEvent(this.$refs['rating-slider-input'], 'input');
+        window.triggerEvent(this.$refs['rating-slider-input'], 'change');
+      }
     },
     setIndexActive: function setIndexActive() {
       var _this = this;

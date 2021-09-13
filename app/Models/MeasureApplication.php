@@ -56,6 +56,10 @@ class MeasureApplication extends Model
         'measure_name', 'cost_unit', 'maintenance_unit',
     ];
 
+    protected $casts = [
+        'configurations' => 'array',
+    ];
+
     /**
      * @param string $short
      *
@@ -63,6 +67,7 @@ class MeasureApplication extends Model
      */
     public static function byShort($short)
     {
+        // TODO: Convert to shortTrait
         return self::where('short', '=', $short)->first();
     }
 

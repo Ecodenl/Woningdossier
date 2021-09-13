@@ -79,6 +79,7 @@ class DoUpgrade extends Command
             $afterCommands = [
                 AddQuestionsToDatabase::class,
                 UpdateDataAfterDBUpgrade::class, // last. changes data on the spot
+                AddConfigurations::class,
             ];
 
             foreach ($afterCommands as $command) {

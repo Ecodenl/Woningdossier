@@ -41,4 +41,9 @@ return [
     ],
     'advice-text' => 'Voor het opwekken van uw huidige elektraverbruik heeft u in totaal ca. :number zonnepanelen in optimale oriëntatie nodig.',
     'total-power' => 'Totale Wp vermogen van de installatie: :wp',
+
+    'total-installed-power' => [
+        'label' => 'Totaal geïnstalleerd vermogen',
+        'placeholder' => 'wp',
+    ]
 ];

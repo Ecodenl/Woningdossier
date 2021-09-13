@@ -438,7 +438,7 @@ class Form extends Component
         $investment = NumberFormatter::round($investment);
         $savings = NumberFormatter::round($savings);
 
-        $investmentPercentage = (max(1, $savings) / $investment) * 100;
+        $investmentPercentage = $investment > 0 ? (max(1, $savings) / $investment) * 100 : 0;
         $this->evaluateCalculationResult('investment', $investmentPercentage);
 
         // ---------------------------------------------------------------------

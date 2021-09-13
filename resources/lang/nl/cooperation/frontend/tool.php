@@ -34,7 +34,7 @@ return [
         ],
         'cards' => [
             'hidden' => [
-                'title' => 'Verborgen maatregelen',
+                'title' => 'Maatregelen toevoegen',
                 'help' => 'Klik op een maatregel om deze weer toe te voegen aan het woonplan.',
             ],
             'see-info' => 'Zie info',

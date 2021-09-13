@@ -330,7 +330,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     Route::resource('questionnaires', 'QuestionnaireController')
                         ->middleware('current-role:cooperation-admin');
-                    // not in the cooperation-admin group, probably need to be used for hte coordinator aswell.
+                    // not in the cooperation-admin group, probably need to be used for the coordinator as well.
                     Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire', 'middleware' => ['current-role:cooperation-admin']], function () {
                         Route::delete('delete-question/{questionId}', 'QuestionnaireController@deleteQuestion')->name('delete');
                         Route::delete('delete-option/{questionId}/{optionId}', 'QuestionnaireController@deleteQuestionOption')->name('delete-question-option');
@@ -358,6 +358,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                             Route::get('', 'SettingsController@index')->name('index');
                             Route::post('', 'SettingsController@store')->name('store');
                         });
+
+                        Route::resource('cooperation-measure-applications', 'CooperationMeasureApplicationController')
+                            ->parameter('cooperation-measure-applications', 'cooperationMeasureApplication');
                     });
                 });
 

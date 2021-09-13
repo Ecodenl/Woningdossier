@@ -25,12 +25,13 @@ class RoofTypesTableSeeder extends Seeder
                 'calculate_value' => 3,
                 'short' => 'flat',
             ],
-            [
-                'name' => 'Plat + hellend dak',
-                'order' => 2,
-                'calculate_value' => 4,
-                'short' => 'flat-pitched-roof',
-            ],
+            // TODO: For later, when new logic is applied for roof types
+//            [
+//                'name' => 'Plat + hellend dak',
+//                'order' => 2,
+//                'calculate_value' => 4,
+//                'short' => 'flat-pitched-roof',
+//            ],
             [
                 'name' => 'Puntdak',
                 'order' => 3,

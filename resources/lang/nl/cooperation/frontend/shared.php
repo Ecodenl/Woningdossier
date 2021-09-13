@@ -2,7 +2,7 @@
 
 return [
     'input-sources' => [
-        'view-answers' => 'Antwoorden bekijken',
+        'view-answers' => 'Antwoorden vergelijken',
         'no-answer' => 'Geen gegevens bekend',
         'resident' => 'Bewoner',
         'coach' => 'Coach',

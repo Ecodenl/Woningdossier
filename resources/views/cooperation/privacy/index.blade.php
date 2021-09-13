@@ -3,7 +3,7 @@
 @section('main')
     <div class="w-full min-h-screen flex justify-center items-center flex-col py-20">
         <div class="w-full sm:w-1/2 xl:w-1/3 bg-white rounded-3xl p-20 text-left space-y-4">
-            {!! __('home.privacy.description.title', ['cooperation' => $cooperation->name]) !!}
+            {!! __('home.privacy.description', ['cooperation' => $cooperation->name]) !!}
 
             @if(\Illuminate\Support\Facades\Auth::guest())
                 <p>

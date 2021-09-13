@@ -37,6 +37,10 @@ class ElementValue extends Model
         'value',
     ];
 
+    protected $casts = [
+        'configurations' => 'array',
+    ];
+
     public function element()
     {
         return $this->belongsTo(Element::class);

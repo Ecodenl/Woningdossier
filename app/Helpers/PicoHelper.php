@@ -67,8 +67,8 @@ class PicoHelper
                 'postal_code' => $option['postcode'] ?? '',
                 'house_number_extension' => $houseNumberExtension,
                 'city' => $option['woonplaats'] ?? '',
-                'build_year' => $option['bouwjaar'] ?? '',
-                'surface' => $option['adresopp'] ?? '',
+                'build_year' => $option['bouwjaar'] ?? 1930,
+                'surface' => $option['adresopp'] ?? 0,
             ];
             Log::debug($result);
         }

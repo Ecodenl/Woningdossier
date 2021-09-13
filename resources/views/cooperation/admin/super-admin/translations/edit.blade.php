@@ -28,11 +28,10 @@
                             <button type="submit"
                                     class="btn btn-primary pull-right">@lang('woningdossier.cooperation.admin.super-admin.translations.edit.save')</button>
                         </div>
-                        {{csrf_field()}}
-                        {{method_field('PUT')}}
+                        @csrf
+                        @method('PUT')
                         @foreach($translations as $translation)
-                            <?php // since we dont want the helptexts to show right here.
-                            ?>
+                            <?php // since we don't want the helptexts to show right here. ?>
                             @if($translation->isNotHelpText())
                                 <div class="translations panel panel-default">
                                     <div class="panel-body">
@@ -149,6 +148,7 @@
             plugins: 'code link',
             toolbar: 'code link unlink bold italic underline strikethrough cut copy paste undo redo restoreOriginalText',
             language: 'nl',
+            extended_valid_elements: '#i[class|style]',
             setup: function (editor) {
                 editor.ui.registry.addButton('restoreOriginalText', {
                     text: 'Herstel tekst',

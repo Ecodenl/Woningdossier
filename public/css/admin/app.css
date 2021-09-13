@@ -1,4 +1,639 @@
-@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);@charset "UTF-8";
+@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);/* Icons */
+
+.icon-xs {
+  height: 0.5rem;
+  width: 0.5rem;
+}
+
+.icon-sm {
+  height: 1rem;
+  width: 1rem;
+}
+
+.icon-md {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.icon-lg {
+  height: 3rem;
+  width: 3rem;
+}
+
+.icon-xl {
+  height: 6rem;
+  width: 6rem;
+}
+
+.icon-xxl {
+  height: 8rem;
+  width: 8rem;
+}
+
+.icon-xxxl {
+  height: 9rem;
+  width: 9rem;
+}
+
+.icon-account-circle {
+  content: url('/icons/account-circle.svg');
+}
+
+.icon-air-conditioning {
+  content: url('/icons/air-conditioning.svg');
+}
+
+.icon-air-conditioning-hot {
+  content: url('/icons/air-conditioning-hot.svg');
+}
+
+.icon-apartment-ground-floor-between {
+  content: url('/icons/apartment-ground-floor-between.svg');
+}
+
+.icon-apartment-ground-floor-corner {
+  content: url('/icons/apartment-ground-floor-corner.svg');
+}
+
+.icon-apartment-mid-floor-between {
+  content: url('/icons/apartment-mid-floor-between.svg');
+}
+
+.icon-apartment-mid-floor-corner {
+  content: url('/icons/apartment-mid-floor-corner.svg');
+}
+
+.icon-apartment-upper-floor-between {
+  content: url('/icons/apartment-upper-floor-between.svg');
+}
+
+.icon-apartment-upper-floor-corner {
+  content: url('/icons/apartment-upper-floor-corner.svg');
+}
+
+.icon-arrow-down {
+  content: url('/icons/arrow-down.svg');
+}
+
+.icon-arrow-left {
+  content: url('/icons/arrow-left.svg');
+}
+
+.icon-arrow-left-bold {
+  content: url('/icons/arrow-left-bold.svg');
+}
+
+.icon-arrow-left-bold-purple {
+  content: url('/icons/arrow-left-bold-purple.svg');
+}
+
+.icon-arrow-left-circle {
+  content: url('/icons/arrow-left-circle.svg');
+}
+
+.icon-arrow-right {
+  content: url('/icons/arrow-right.svg');
+}
+
+.icon-arrow-right-bold {
+  content: url('/icons/arrow-right-bold.svg');
+}
+
+.icon-arrow-right-bold-purple {
+  content: url('/icons/arrow-right-bold-purple.svg');
+}
+
+.icon-arrow-right-circle {
+  content: url('/icons/arrow-right-circle.svg');
+}
+
+.icon-arrow-up {
+  content: url('/icons/arrow-up.svg');
+}
+
+.icon-arrow-left-right {
+  content: url('/icons/arrow-left-right.svg');
+}
+
+.icon-arrow-left-right-white {
+  content: url('/icons/arrow-left-right-white.svg');
+}
+
+.icon-attic-room {
+  content: url('/icons/attic-room.svg');
+}
+
+.icon-bathroom {
+  content: url('/icons/bathroom.svg');
+}
+
+.icon-building-heat {
+  content: url('/icons/building-heat.svg');
+}
+
+.icon-central-heater {
+  content: url('/icons/central-heater.svg');
+}
+
+.icon-central-heater-electric {
+  content: url('/icons/central-heater-electric.svg');
+}
+
+.icon-central-heater-gas {
+  content: url('/icons/central-heater-gas.svg');
+}
+
+.icon-chat {
+  content: url('/icons/chat.svg');
+}
+
+.icon-chat-alert {
+  content: url('/icons/chat-alert.svg');
+}
+
+.icon-check-circle {
+  content: url('/icons/check-circle.svg');
+}
+
+.icon-check-circle-green {
+  content: url('/icons/check-circle-green.svg');
+}
+
+.icon-check-circle-dark {
+  content: url('/icons/check-circle-dark.svg');
+}
+
+.icon-check-circle-purple {
+  content: url('/icons/check-circle-purple.svg');
+}
+
+.icon-district-heating {
+  content: url('/icons/district-heating.svg');
+}
+
+.icon-close-circle {
+  content: url('/icons/close-circle.svg');
+}
+
+.icon-close-circle-light {
+  content: url('/icons/close-circle-light.svg');
+}
+
+.icon-co2 {
+  content: url('/icons/co2.svg');
+}
+
+.icon-cracks-seams {
+  content: url('/icons/cracks-seams.svg');
+}
+
+.icon-curtains {
+  content: url('/icons/curtains.svg');
+}
+
+.icon-detached-house {
+  content: url('/icons/detached-house.svg');
+}
+
+.icon-dishwasher {
+  content: url('/icons/dishwasher.svg');
+}
+
+.icon-dormer {
+  content: url('/icons/dormer.svg');
+}
+
+.icon-dot-blue {
+  content: url('/icons/dot-blue.svg');
+}
+
+.icon-dot-green {
+  content: url('/icons/dot-green.svg');
+}
+
+.icon-dot-yellow {
+  content: url('/icons/dot-yellow.svg');
+}
+
+.icon-dryer {
+  content: url('/icons/dryer.svg');
+}
+
+.icon-electric {
+  content: url('/icons/electric.svg');
+}
+
+.icon-end-of-terrace-house {
+  content: url('/icons/end-of-terrace-house.svg');
+}
+
+.icon-error-cross {
+  content: url('/icons/error-cross.svg');
+}
+
+.icon-flat-pitched-roof {
+  content: url('/icons/flat-pitched-roof.svg');
+}
+
+.icon-flat-roof {
+  content: url('/icons/flat-roof.svg');
+}
+
+.icon-floor-insulation-excellent {
+  content: url('/icons/floor-insulation-excellent.svg');
+}
+
+.icon-floor-insulation-good {
+  content: url('/icons/floor-insulation-good.svg');
+}
+
+.icon-floor-insulation-moderate {
+  content: url('/icons/floor-insulation-moderate.svg');
+}
+
+.icon-floor-insulation-none {
+  content: url('/icons/floor-insulation-none.svg');
+}
+
+.icon-gas {
+  content: url('/icons/gas.svg');
+}
+
+.icon-glass-double {
+  content: url('/icons/glass-double.svg');
+}
+
+.icon-glass-hr-tp {
+  content: url('/icons/glass-hr-tp.svg');
+}
+
+.icon-glass-hr-dp {
+  content: url('/icons/glass-hr-dp.svg');
+}
+
+.icon-glass-hr-p {
+  content: url('/icons/glass-hr-p.svg');
+}
+
+.icon-glass-hr {
+  content: url('/icons/glass-hr.svg');
+}
+
+.icon-glass-single {
+  content: url('/icons/glass-single.svg');
+}
+
+.icon-heat-pump {
+  content: url('/icons/heat-pump.svg');
+}
+
+.icon-hide {
+  content: url('/icons/hide.svg');
+}
+
+.icon-hoom-logo {
+  content: url('/icons/hoom-logo.svg');
+}
+
+.icon-hoomdossier {
+  content: url('/icons/hoomdossier.svg');
+}
+
+.icon-hoomdossier-white {
+  content: url('/icons/hoomdossier-white.svg');
+}
+
+.icon-house {
+  content: url('/icons/house.svg');
+}
+
+.icon-house-dark {
+  content: url('/icons/house-dark.svg');
+}
+
+.icon-house-light {
+  content: url('/icons/house-light.svg');
+}
+
+.icon-house-purple {
+  content: url('/icons/house-purple.svg');
+}
+
+.icon-hydronic-balance-temperature {
+  content: url('/icons/hydronic-balance-temperature.svg');
+}
+
+.icon-illumination {
+  content: url('/icons/illumination.svg');
+}
+
+.icon-illumination-shine {
+  content: url('/icons/illumination-shine.svg');
+}
+
+.icon-induction {
+  content: url('/icons/induction.svg');
+}
+
+.icon-info {
+  content: url('/icons/info.svg');
+}
+
+.icon-info-light {
+  content: url('/icons/info-light.svg');
+}
+
+.icon-infrared {
+  content: url('/icons/infrared.svg');
+}
+
+.icon-infrared-heater {
+  content: url('/icons/infrared-heater.svg');
+}
+
+.icon-kitchen {
+  content: url('/icons/kitchen.svg');
+}
+
+.icon-label-a {
+  content: url('/icons/label-a.svg');
+}
+
+.icon-label-b {
+  content: url('/icons/label-b.svg');
+}
+
+.icon-label-c {
+  content: url('/icons/label-c.svg');
+}
+
+.icon-label-d {
+  content: url('/icons/label-d.svg');
+}
+
+.icon-label-e {
+  content: url('/icons/label-e.svg');
+}
+
+.icon-label-f {
+  content: url('/icons/label-f.svg');
+}
+
+.icon-label-g {
+  content: url('/icons/label-g.svg');
+}
+
+.icon-label-unknown {
+  content: url('/icons/label-unknown.svg');
+}
+
+.icon-mail {
+  content: url('/icons/mail.svg');
+}
+
+.icon-mail-green {
+  content: url('/icons/mail-green.svg');
+}
+
+.icon-mid-terrace-house {
+  content: url('/icons/mid-terrace-house.svg');
+}
+
+.icon-moneybag {
+  content: url('/icons/moneybag.svg');
+}
+
+.icon-moneybag-orange {
+  content: url('/icons/moneybag-orange.svg');
+}
+
+.icon-other {
+  content: url('/icons/other.svg');
+}
+
+.icon-not-relevant {
+  content: url('/icons/not-relevant.svg');
+}
+
+.icon-paint-job {
+  content: url('/icons/paint-job.svg');
+}
+
+.icon-persons-five {
+  content: url('/icons/persons-five.svg');
+}
+
+.icon-persons-four {
+  content: url('/icons/persons-four.svg');
+}
+
+.icon-persons-more-than-seven {
+  content: url('/icons/persons-more-than-seven.svg');
+}
+
+.icon-persons-one {
+  content: url('/icons/persons-one.svg');
+}
+
+.icon-persons-seven {
+  content: url('/icons/persons-seven.svg');
+}
+
+.icon-persons-six {
+  content: url('/icons/persons-six.svg');
+}
+
+.icon-persons-three {
+  content: url('/icons/persons-three.svg');
+}
+
+.icon-persons-two {
+  content: url('/icons/persons-two.svg');
+}
+
+.icon-piggybank {
+  content: url('/icons/piggybank.svg');
+}
+
+.icon-piggybank-green {
+  content: url('/icons/piggybank-green.svg');
+}
+
+.icon-pipes {
+  content: url('/icons/pipes.svg');
+}
+
+.icon-pitched-roof {
+  content: url('/icons/pitched-roof.svg');
+}
+
+.icon-plug {
+  content: url('/icons/plug.svg');
+}
+
+.icon-plus-circle {
+  content: url('/icons/plus-circle.svg');
+}
+
+.icon-plus-purple {
+  content: url('/icons/plus-purple.svg');
+}
+
+.icon-pointed-roof {
+  content: url('/icons/pointed-roof.svg');
+}
+
+.icon-floor-heating {
+  content: url('/icons/floor-heating.svg');
+}
+
+.icon-wall-heating {
+  content: url('/icons/wall-heating.svg');
+}
+
+.icon-radiator {
+  content: url('/icons/radiator.svg');
+}
+
+.icon-radiator-foil {
+  content: url('/icons/radiator-foil.svg');
+}
+
+.icon-radiator-low-temp {
+  content: url('/icons/radiator-low-temp.svg');
+}
+
+.icon-roof-insulation-excellent {
+  content: url('/icons/roof-insulation-excellent.svg');
+}
+
+.icon-roof-insulation-good {
+  content: url('/icons/roof-insulation-good.svg');
+}
+
+.icon-roof-insulation-moderate {
+  content: url('/icons/roof-insulation-moderate.svg');
+}
+
+.icon-roof-insulation-none {
+  content: url('/icons/roof-insulation-none.svg');
+}
+
+.icon-rounded-roof {
+  content: url('/icons/rounded-roof.svg');
+}
+
+.icon-savings {
+  content: url('/icons/savings.svg');
+}
+
+.icon-show {
+  content: url('/icons/show.svg');
+}
+
+.icon-shower-head {
+  content: url('/icons/shower-head.svg');
+}
+
+.icon-solar-panels {
+  content: url('/icons/solar-panels.svg');
+}
+
+.icon-solar-panels-none {
+  content: url('/icons/solar-panels-none.svg');
+}
+
+.icon-sun-boiler {
+  content: url('/icons/sun-boiler.svg');
+}
+
+.icon-sun-boiler-both {
+  content: url('/icons/sun-boiler-both.svg');
+}
+
+.icon-sun-boiler-heating {
+  content: url('/icons/sun-boiler-heating.svg');
+}
+
+.icon-sun-boiler-hot-water {
+  content: url('/icons/sun-boiler-hot-water.svg');
+}
+
+.icon-sun-boiler-none {
+  content: url('/icons/sun-boiler-none.svg');
+}
+
+.icon-sunroom {
+  content: url('/icons/sunroom.svg');
+}
+
+.icon-sustainability {
+  content: url('/icons/sustainability.svg');
+}
+
+.icon-switch {
+  content: url('/icons/switch.svg');
+}
+
+.icon-thermostat {
+  content: url('/icons/thermostat.svg');
+}
+
+.icon-temperature {
+  content: url('/icons/temperature.svg');
+}
+
+.icon-timer {
+  content: url('/icons/timer.svg');
+}
+
+.icon-tools {
+  content: url('/icons/tools.svg');
+}
+
+.icon-two-under-one-roof {
+  content: url('/icons/two-under-one-roof.svg');
+}
+
+.icon-upstairs-apartment-between {
+  content: url('/icons/upstairs-apartment-between.svg');
+}
+
+.icon-upstairs-apartment-corner {
+  content: url('/icons/upstairs-apartment-corner.svg');
+}
+
+.icon-ventilation {
+  content: url('/icons/ventilation.svg');
+}
+
+.icon-ventilation-fan {
+  content: url('/icons/ventilation-fan.svg');
+}
+
+.icon-wall-insulation-excellent {
+  content: url('/icons/wall-insulation-excellent.svg');
+}
+
+.icon-wall-insulation-good {
+  content: url('/icons/wall-insulation-good.svg');
+}
+
+.icon-wall-insulation-moderate {
+  content: url('/icons/wall-insulation-moderate.svg');
+}
+
+.icon-wall-insulation-none {
+  content: url('/icons/wall-insulation-none.svg');
+}
+
+.icon-washing-machine {
+  content: url('/icons/washing-machine.svg');
+}
+
+.icon-window-frame {
+  content: url('/icons/window-frame.svg');
+}@charset "UTF-8";
 /*!
  * Bootstrap v3.4.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 Twitter, Inc.

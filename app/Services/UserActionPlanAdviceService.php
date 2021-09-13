@@ -849,7 +849,6 @@ class UserActionPlanAdviceService
             ->get();
         foreach ($buildingElements as $buildingElement) {
             $elementValue = $buildingElement->elementValue;
-
             if ($elementValue instanceof ElementValue && $elementValue->element instanceof Element) {
                 $measureShorts = $serviceOrElementToMeasure[$elementValue->element->short] ?? [];
                 $measure = $advicesForComfort->whereIn('short', $measureShorts)
@@ -863,7 +862,7 @@ class UserActionPlanAdviceService
         $glassBuildingElements = BuildingElement::forBuilding($building)
             ->forInputSource($masterInputSource)
             ->whereHas('element', function (Builder $query) {
-                $query->whereIn('short', ['living-rooms-window', 'sleeping-rooms-window']);
+                $query->whereIn('short', ['living-rooms-windows', 'sleeping-rooms-windows']);
             })
             ->get();
         $glassMeasure = $advicesForComfort->whereIn('short', $serviceOrElementToMeasure['glass'])->first();
@@ -874,14 +873,17 @@ class UserActionPlanAdviceService
 
             // TODO: Check this logic
             foreach ($glassBuildingElements as $buildingElement) {
-                $math = $buildingElement->short === 'living-room-windows' ? 0.6 : 0.4;
-
-                $glassComfort += ($buildingElement->configurations['comfort'] ?? 0) * $math;
+                $elementValue = $buildingElement->elementValue;
+                if ($elementValue instanceof ElementValue && $elementValue->element instanceof Element) {
+                    $math = $elementValue->element->short === 'living-rooms-windows' ? 0.6 : 0.4;
+                    $glassComfort += ($elementValue->configurations['comfort'] ?? 0) * $math;
+                }
             }
+            // Properly round
+            $glassComfort = NumberFormatter::round($glassComfort, 1);
 
             $comfort += $glassComfort;
         }
-
         return $comfort;
     }
 }

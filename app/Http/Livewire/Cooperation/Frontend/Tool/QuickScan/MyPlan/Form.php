@@ -483,8 +483,6 @@ class Form extends Component
         $percentage = mt_rand(0, 100);
         $this->evaluateCalculationResult('comfort', $percentage);
 
-        // Todo: Yannick is this ok?
-        //$this->expectedInvestment = ($maxInvestment + $minInvestment) / 2;
         $this->expectedInvestment = $investment;
         $this->yearlySavings = $savings;
         $this->availableSubsidy = $subsidy;

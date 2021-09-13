@@ -7,6 +7,7 @@ use App\Models\Building;
 use App\Models\Step;
 use App\Models\SubStep;
 use Closure;
+use Illuminate\Support\Facades\Route;
 
 class EnsureQuickScanCompleted
 {
@@ -20,6 +21,11 @@ class EnsureQuickScanCompleted
     public function handle($request, Closure $next)
     {
         $building = HoomdossierSession::getBuilding(true);
+
+        if (Route::currentRouteName() === 'cooperation.tool.questionnaire.store') {
+            // A questionnaire is the only exception on this rule
+            return $next($request);
+        }
 
         if ($building instanceof Building) {
             if ($building->hasCompletedQuickScan()) {

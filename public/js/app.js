@@ -34980,7 +34980,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       this.disabled = select.hasAttribute('disabled'); // Prepare list items for Alpine!
       // Get children injected by PHP
 
-      var children = this.$refs['source-select-options'].children; // If there's no children, then there's no answers
+      var children = this.$refs['source-select-options'].children;
+      var masterAnswers = []; // If there's no children, then there's no answers
 
       if (children.length === 0) {
         this.disabled = true;
@@ -34997,6 +34998,15 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
           if (_short === null) {
             this.disabled = true;
             inputSource = null;
+          } else if (_short === 'master') {
+            // TODO: Remove this when the tool is logical again
+            masterAnswers.push(children[i].getAttribute('data-input-value'));
+            children[i].remove();
+
+            if (children.length === 0) {
+              this.disabled = true;
+              inputSource = null;
+            }
           }
         }
       } // Fetch related input group
@@ -35013,7 +35023,21 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       if (this.disabled) {
         this.$refs['source-select-input'].classList.add('disabled');
         this.open = false;
-      }
+      } // TODO: Remove this when the tool is logical again
+
+
+      var context = this;
+      document.addEventListener('DOMContentLoaded', function () {
+        if (!window.inQuickScan) {
+          // We're not in the quick scan, time to define logic to make JS carry half the tool
+          var loop = 0;
+          masterAnswers.forEach(function (answer) {
+            var shouldClear = loop === 0;
+            context.setElementValue(answer, shouldClear);
+            ++loop;
+          });
+        }
+      });
     },
     toggle: function toggle() {
       // If not disabled, we will handle the click
@@ -35042,6 +35066,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       this.open = false;
     },
     setElementValue: function setElementValue(value) {
+      var clear = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
       if (this.inputGroup) {
         // If the value is JSON, we need to do something slightly different (currently only relevant for rating slider)
         var parsed = this.parseJson(value);
@@ -35116,6 +35142,27 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
                   _input = this.inputGroup.querySelector("input[type=\"checkbox\"][value=\"".concat(value, "\"]"));
 
                   if (_input) {
+                    if (clear) {
+                      if (_input.hasAttribute('wire:model')) {
+                        // Livewire, clear all for wire:model
+                        var wireModel = _input.getAttribute('wire:model');
+
+                        var items = document.querySelectorAll("input[type=\"checkbox\"][wire\\:model=\"".concat(wireModel, "\"]"));
+
+                        for (var i = 0; i < items.length; i++) {
+                          items[i].checked = false;
+                        }
+                      } else {
+                        var name = _input.getAttribute('name');
+
+                        var _items = document.querySelectorAll("input[type=\"checkbox\"][name=\"".concat(name, "\"]"));
+
+                        for (var _i2 = 0; _i2 < _items.length; _i2++) {
+                          _items[_i2].checked = false;
+                        }
+                      }
+                    }
+
                     _input.checked = true;
                     window.triggerEvent(_input, 'change');
                   }

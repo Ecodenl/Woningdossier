@@ -3,12 +3,14 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Models\Building;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
+use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
 use App\Scopes\VisibleScope;
@@ -405,6 +407,9 @@ class Form extends Component
 
     public function recalculate()
     {
+        // ---------------------------------------------------------------------
+        // investment
+        // ---------------------------------------------------------------------
         // TODO: Get logic for subsidy.
         $subsidyPercentage = 0.1;
 
@@ -434,25 +439,49 @@ class Form extends Component
         $investment = NumberFormatter::round($investment);
         $savings = NumberFormatter::round($savings);
 
+        $investmentPercentage = (max(1, $savings) / $investment) * 100;
+        $this->evaluateCalculationResult('investment', $investmentPercentage);
+
+        // ---------------------------------------------------------------------
+        // sustainability
+        // ---------------------------------------------------------------------
+        $package = $this->cards[UserActionPlanAdviceService::CATEGORY_COMPLETE];
+        $package = array_merge($package, $this->cards[UserActionPlanAdviceService::CATEGORY_COMPLETE]);
+        $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
+                                       ->whereIn('id', \Illuminate\Support\Arr::pluck($package, 'id'))
+                                       ->get();
+        $totalGasSavings = $advices->sum('savings_gas');
+        $totalElectricitySavings = $advices->sum('savings_electricity');
+
+        $habits = $this->building->user
+            ->energyHabit()
+            ->forInputSource($this->masterInputSource)
+            ->get();
+        $usageGas = $habits->get('amount_gas');
+        $usageElectricity = $habits->get('amount_electricity');
+
+        // calculate to kg. (set gas and electricity to same unit)
+        $co2Reductions = ($totalGasSavings * Kengetallen::CO2_SAVING_GAS) +
+                         ($totalElectricitySavings * Kengetallen::CO2_SAVINGS_ELECTRICITY);
+
+        $co2Current = ($usageGas * Kengetallen::CO2_SAVING_GAS) +
+                      ($usageElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY);
+
+        // percentage = (reduction / current) * 100
+        // just ensure $co2Current is min. 1
+        // just ensure max percentage = 100.
+        $renewablePercentage = min(($co2Reductions / max(1,$co2Current)) * 100,100);
+
+        $this->evaluateCalculationResult('renewable', $renewablePercentage);
+
+        // ---------------------------------------------------------------------
+        // comfort
+        // ---------------------------------------------------------------------
         // Comfort logic
         // TODO: Calculations
         // TEMPORARY RANDOM CALC
         $percentage = mt_rand(0, 100);
         $this->evaluateCalculationResult('comfort', $percentage);
-
-        // Renewable logic
-        // TODO: Calculations
-        // TEMPORARY RANDOM CALC
-        $percentage = mt_rand(0, 100);
-        $this->evaluateCalculationResult('renewable', $percentage);
-
-        // Investment logic
-        // TODO: Calculations
-        // TEMPORARY RANDOM CALC
-        $investmentPercentage = (max(1, $savings) / $investment) * 100;
-        $this->evaluateCalculationResult('investment', $investmentPercentage);
-
-
 
         // Todo: Yannick is this ok?
         //$this->expectedInvestment = ($maxInvestment + $minInvestment) / 2;

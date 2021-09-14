@@ -116,6 +116,25 @@ class BuildingFeature extends Model
         'energy_label_id',
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($buildingFeature) {
+            $primaryRoofType = $buildingFeature->roofType;
+
+            if ($primaryRoofType instanceof RoofType) {
+                $building = $buildingFeature->building;
+
+                if ($building->roofTypes()->count() === 0) {
+                    // No roof types defined yet. Let's set them.
+                    $roofTypeToLink = RoofType::findByShort(RoofType::PRIMARY_TO_SECONDARY_MAP[$primaryRoofType->short]);
+                    $building->roofTypes()->create(['roof_type_id' => $roofTypeToLink->id]);
+                }
+            }
+        });
+    }
+
     public function building()
     {
         return $this->belongsTo(Building::class);

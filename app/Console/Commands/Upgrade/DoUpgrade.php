@@ -70,10 +70,10 @@ class DoUpgrade extends Command
                 \ComfortLevelTapWatersTableSeeder::class,
                 \EnergyLabelsTableSeeder::class,
                 \CooperationMeasureApplicationsTableSeeder::class,
+                \MeasureApplicationsTableSeeder::class,
                 // order is important, categories before types.
                 \BuildingTypeCategoriesTableSeeder::class,
                 \BuildingTypesTableSeeder::class,
-
             ];
 
             foreach ($seeders as $seeder) {
@@ -84,6 +84,7 @@ class DoUpgrade extends Command
             $afterCommands = [
                 AddQuestionsToDatabase::class,
                 UpdateDataAfterDBUpgrade::class, // last. changes data on the spot
+                AddConfigurations::class,
             ];
 
             foreach ($afterCommands as $command) {

@@ -8,16 +8,7 @@ export default (defaultValue = 0, activeClass = 'bg-green', disabled = false) =>
     init() {
         // Ensure the slider gets updated with the default value
         if (this.value > 0) {
-            let element = this.$refs['rating-slider'].querySelector(`div[data-value="${this.value}"]`);
-            if (element !== null) {
-                // Ensure we can set the value on init, so we temporary enable, even if it's disabled.
-                let tempDisable = this.disabled;
-                this.disabled = false;
-                this.selectOption(element);
-                this.disabled = tempDisable;
-            } else {
-                this.value = 0;
-            }
+            this.selectOptionByValue(this.value);
         } else if(isNaN(this.value)) {
             this.value = 0;
         }
@@ -44,13 +35,11 @@ export default (defaultValue = 0, activeClass = 'bg-green', disabled = false) =>
         }
     },
     selectOption(element) {
-        if (!this.disabled) {
-            let parent = this.$refs['rating-slider'];
-            this.index = Array.from(parent.children).indexOf(element);
-            this.value = element.getAttribute('data-value');
-            this.$refs['rating-slider-input'].value = this.value;
-            this.setIndexActive();
-        }
+        let parent = this.$refs['rating-slider'];
+        this.index = Array.from(parent.children).indexOf(element);
+        this.value = element.getAttribute('data-value');
+        this.$refs['rating-slider-input'].value = this.value;
+        this.setIndexActive();
     },
     selectOptionByValue(value) {
         let element = this.$refs['rating-slider'].querySelector(`div[data-value="${value}"]`);
@@ -59,9 +48,11 @@ export default (defaultValue = 0, activeClass = 'bg-green', disabled = false) =>
         }
     },
     selectOptionByElement(element) {
-        this.selectOption(element);
-        window.triggerEvent(this.$refs['rating-slider-input'], 'input');
-        window.triggerEvent(this.$refs['rating-slider-input'], 'change');
+        if (!this.disabled) {
+            this.selectOption(element);
+            window.triggerEvent(this.$refs['rating-slider-input'], 'input');
+            window.triggerEvent(this.$refs['rating-slider-input'], 'change');
+        }
     },
     setIndexActive() {
         this.setAllGray();

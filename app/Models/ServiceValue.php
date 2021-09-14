@@ -39,17 +39,18 @@ class ServiceValue extends Model
         'value',
     ];
 
+    protected $casts = [
+        'is_default' => 'boolean',
+        'configurations' => 'array',
+    ];
+
     public function keyFigureBoilerEfficiency()
     {
         return $this->hasOne(KeyFigureBoilerEfficiency::class);
     }
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'is_default' => 'boolean',
-    ];
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
 }

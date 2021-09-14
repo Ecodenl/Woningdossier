@@ -15,7 +15,7 @@ return [
             'title' => 'Contact over :measure_application_name',
             'are-you-sure' => 'Weet u zeker dat u de Coöperatie geen toegang wilt geven tot uw dossier?',
             'message' => 'Nadere toelichting op uw vraag',
-            'submit' => 'Opsturen <span class="glyphicon glyphicon-envelope"></span>',
+            'submit' => 'Opsturen <span class="icon-sm icon-mail ml-1"></span>',
             'allow-access' => 'Ik geef toestemming aan :cooperation om de gegevens uit mijn Hoomdossier in te zien en in overleg met mij deze gegevens aan te passen.',
 
             'selected-option' => 'Waar kunnen we u bij helpen?:',

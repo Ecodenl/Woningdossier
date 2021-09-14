@@ -116,6 +116,11 @@ class UserActionPlanAdvice extends Model
         return $this->morphTo();
     }
 
+    public function scopeCategory(Builder $query, string $category)
+    {
+        return $query->where('category', $category);
+    }
+
     /**
      * Check whether someone is interested in the measure.
      */

@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Cooperation\Frontend\Tool\QuickScan\MyPlan;
 
 use App\Helpers\HoomdossierSession;
+use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Models\Building;
@@ -53,9 +54,16 @@ class Form extends Component
     public $coachInputSource;
 
     public array $custom_measure_application = [];
-    public int $investment = 0;
-    public int $yearlySavings = 0;
-    public int $availableSubsidy = 0;
+
+    // Details
+    public $expectedInvestment = 0;
+    public $yearlySavings = 0;
+    public $availableSubsidy = 0;
+
+    // Sliders
+    public $comfort = 0;
+    public $renewable = 0;
+    public $investment = 0;
 
     public string $category = '';
 
@@ -83,39 +91,112 @@ class Form extends Component
         'cardMoved', 'cardTrashed', 'addHiddenCardToBoard',
     ];
 
-    // TODO: Proper map
-    private $iconMap = [
-        'floor-insulation' => 'icon-floor-insulation-excellent',
-        'bottom-insulation' => 'icon-floor-insulation-good',
-        'floor-insulation-research' => 'icon-floor-insulation-moderate',
-        'cavity-wall-insulation' => 'icon-wall-insulation-excellent',
-        'facade-wall-insulation' => 'icon-wall-insulation-good',
-        'wall-insulation-research' => 'icon-wall-insulation-moderate',
-        'glass-in-lead' => 'icon-glass-single',
-        'hrpp-glass-only' => 'icon-glass-hr-p',
-        'hrpp-glass-frames' => 'icon-glass-hr-dp',
-        'hr3p-frames' => 'icon-glass-hr-tp',
-        'crack-sealing' => 'icon-cracks-seams',
-        'roof-insulation-pitched-inside' => 'icon-pitched-roof',
-        'roof-insulation-pitched-replace-tiles' => 'icon-pitched-roof',
-        'roof-insulation-flat-current' => 'icon-flat-roof',
-        'roof-insulation-flat-replace-current' => 'icon-flat-roof',
-        'high-efficiency-boiler-replace' => 'icon-central-heater',
-        'heater-place-replace' => 'icon-sun-boiler',
-        'solar-panels-place-replace' => 'icon-solar-panels',
-        'repair-joint' => 'icon-tools',
-        'clean-brickwork' => 'icon-tools',
-        'impregnate-wall' => 'icon-hydronic-balance-temperature',
-        'paint-wall' => 'icon-paint-job',
-        'paint-wood-elements' => 'icon-paint-job',
-        'replace-tiles' => 'icon-tools',
-        'replace-roof-insulation' => 'icon-roof-insulation-excellent',
-        'inspect-repair-roofs' => 'icon-tools',
-        'replace-zinc-pitched' => 'icon-pitched-roof',
-        'replace-zinc-flat' => 'icon-flat-roof',
-        'ventilation-balanced-wtw' => 'icon-ventilation',
-        'ventilation-decentral-wtw' => 'icon-ventilation',
-        'ventilation-demand-driven' => 'icon-ventilation',
+    private $calculationMap = [
+        'comfort' => [
+            [
+                'condition' => [
+                    'to' => 10,
+                ],
+                'value' => 1,
+            ],
+            [
+                'condition' => [
+                    'from' => 10,
+                    'to' => 15,
+                ],
+                'value' => 2,
+            ],
+            [
+                'condition' => [
+                    'from' => 15,
+                    'to' => 20,
+                ],
+                'value' => 3,
+            ],
+            [
+                'condition' => [
+                    'from' => 20,
+                    'to' => 25,
+                ],
+                'value' => 4,
+            ],
+            [
+                'condition' => [
+                    'from' => 25,
+                ],
+                'value' => 5,
+            ],
+        ],
+        'renewable' => [
+            [
+                'condition' => [
+                    'to' => 15,
+                ],
+                'value' => 1,
+            ],
+            [
+                'condition' => [
+                    'from' => 15,
+                    'to' => 30,
+                ],
+                'value' => 2,
+            ],
+            [
+                'condition' => [
+                    'from' => 30,
+                    'to' => 45,
+                ],
+                'value' => 3,
+            ],
+            [
+                'condition' => [
+                    'from' => 45,
+                    'to' => 60,
+                ],
+                'value' => 4,
+            ],
+            [
+                'condition' => [
+                    'from' => 60,
+                ],
+                'value' => 5,
+            ],
+        ],
+        'investment' => [
+            [
+                'condition' => [
+                    'to' => 0.5,
+                ],
+                'value' => 1,
+            ],
+            [
+                'condition' => [
+                    'from' => 0.5,
+                    'to' => 2.5,
+                ],
+                'value' => 2,
+            ],
+            [
+                'condition' => [
+                    'from' => 2.5,
+                    'to' => 4.5,
+                ],
+                'value' => 3,
+            ],
+            [
+                'condition' => [
+                    'from' => 4.5,
+                    'to' => 6.5,
+                ],
+                'value' => 4,
+            ],
+            [
+                'condition' => [
+                    'from' => 6.5,
+                ],
+                'value' => 5,
+            ],
+        ],
     ];
 
     public function mount(Building $building)
@@ -144,7 +225,7 @@ class Form extends Component
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                 ->where('user_id', $this->building->user->id)
-                ->where('category', $category)
+                ->category($category)
                 ->orderBy('order')
                 ->get();
 
@@ -325,6 +406,9 @@ class Form extends Component
 
     public function recalculate()
     {
+        // ---------------------------------------------------------------------
+        // investment
+        // ---------------------------------------------------------------------
         // TODO: Get logic for subsidy.
         $subsidyPercentage = 0.1;
 
@@ -351,7 +435,51 @@ class Form extends Component
 //            }
         }
 
-        $this->investment = $investment;
+        $investment = NumberFormatter::round($investment);
+        $savings = NumberFormatter::round($savings);
+
+        $investmentPercentage = $investment > 0 ? (max(1, $savings) / $investment) * 100 : 0;
+        $this->evaluateCalculationResult('investment', $investmentPercentage);
+
+        // ---------------------------------------------------------------------
+        // sustainability
+        // ---------------------------------------------------------------------
+        $package = $this->cards[UserActionPlanAdviceService::CATEGORY_TO_DO];
+        $package = array_merge($package, $this->cards[UserActionPlanAdviceService::CATEGORY_COMPLETE]);
+        $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
+                                       ->whereIn('id', \Illuminate\Support\Arr::pluck($package, 'id'))
+                                       ->get();
+        $totalGasSavings = $advices->sum('savings_gas');
+        $totalElectricitySavings = $advices->sum('savings_electricity');
+
+        $habits = $this->building->user
+            ->energyHabit()
+            ->forInputSource($this->masterInputSource)
+            ->get();
+        $usageGas = $habits->get('amount_gas');
+        $usageElectricity = $habits->get('amount_electricity');
+
+        // calculate to kg. (set gas and electricity to same unit)
+        $co2Reductions = ($totalGasSavings * Kengetallen::CO2_SAVING_GAS) +
+                         ($totalElectricitySavings * Kengetallen::CO2_SAVINGS_ELECTRICITY);
+
+        $co2Current = ($usageGas * Kengetallen::CO2_SAVING_GAS) +
+                      ($usageElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY);
+
+        // percentage = (reduction / current) * 100
+        // just ensure $co2Current is min. 1
+        // just ensure max percentage = 100.
+        $renewablePercentage = min(($co2Reductions / max(1,$co2Current)) * 100,100);
+
+        $this->evaluateCalculationResult('renewable', $renewablePercentage);
+
+        // ---------------------------------------------------------------------
+        // comfort
+        // ---------------------------------------------------------------------
+        $comfort = UserActionPlanAdviceService::getComfortForBuilding($this->building);
+        $this->evaluateCalculationResult('comfort', $comfort);
+
+        $this->expectedInvestment = $investment;
         $this->yearlySavings = $savings;
         $this->availableSubsidy = $subsidy;
     }
@@ -441,12 +569,19 @@ class Form extends Component
 
             // Add moved card into new category
             $cards = $this->cards[$category];
-            $newOrder = count($cards);
-            $cards[$newOrder] = $addedCard;
-            $this->cards[$category] = $cards;
+            // Append to end
+            $cards[] = $addedCard;
+            $newCards = [];
+            $loop = 0;
+            foreach ($cards as $card) {
+                $newCards[$loop] = $card;
+                ++$loop;
+            }
+            $this->cards[$category] = $newCards;
 
-            // Set visible and on new place
-            $this->updateAdvice($id, ['visible' => true, 'order' => $newOrder]);
+            // Set visible and order
+            $this->updateAdvice($id, ['visible' => true]);
+            $this->reorder($category);
 
             $this->recalculate();
         }
@@ -458,7 +593,7 @@ class Form extends Component
             $hiddenAdvices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                 ->withoutGlobalScope(VisibleScope::class)
                 ->where('user_id', $this->building->user->id)
-                ->where('category', $category)
+                ->category($category)
                 ->where('visible', false)
                 ->orderBy('order')
                 ->get();
@@ -477,11 +612,11 @@ class Form extends Component
             $advisable = $advice->userActionPlanAdvisable;
             if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
                 $cards[$category][$order] = [
-                    'name' => Str::limit($advisable->measure_name, 22),
-                    'icon' => $this->iconMap[$advisable->short] ?? 'icon-tools',
+                    'name' => Str::limit($advisable->measure_name, 57),
+                    'icon' => $advisable->configurations['icon'] ?? 'icon-tools',
                     // TODO: Subsidy
                     'subsidy' => $this->SUBSIDY_AVAILABLE,
-                    'info' => $advisable->measure_name,
+                    'info' => nl2br($advisable->measure_info),
                     'route' => StepHelper::buildStepUrl($advisable->step),
                 ];
             } else {
@@ -493,24 +628,57 @@ class Form extends Component
                 }
 
                 $cards[$category][$order] = [
-                    'name' => Str::limit($advisable->name, 22),
+                    'name' => Str::limit($advisable->name, 57),
                     'icon' => $advisable->extra['icon'] ?? 'icon-tools',
                     // TODO: Subsidy
                     'subsidy' => $this->SUBSIDY_UNKNOWN,
-                    'info' => $advisable->info,
+                    'info' => nl2br($advisable->info),
                 ];
             }
 
             $cards[$category][$order]['id'] = $advice->id;
             $cards[$category][$order]['costs'] = [
-                'from' => $advice->costs['from'] ?? null,
-                'to' => $advice->costs['to'] ?? null,
+                'from' => empty($advice->costs['from']) ? null : NumberFormatter::round($advice->costs['from']),
+                'to' =>  empty($advice->costs['to']) ? null : NumberFormatter::round($advice->costs['to']),
             ];
-            $cards[$category][$order]['savings'] = $advice->savings_money ?? 0;
+            $cards[$category][$order]['savings'] = NumberFormatter::round($advice->savings_money ?? 0);
 
             ++$order;
         }
 
         return $cards;
+    }
+
+    public function evaluateCalculationResult($field, $calculation)
+    {
+        // TODO: This will most likely come from the database at one point
+        $calculationConditions = $this->calculationMap[$field];
+        $value = 0;
+        foreach ($calculationConditions as $calculationCondition) {
+            $condition = $calculationCondition['condition'];
+            // Upper range only
+            if (empty($condition['from']) && ! empty($condition['to'])) {
+                if ($calculation < $condition['to']) {
+                    $value = $calculationCondition['value'];
+                    break;
+                }
+            } // Full range
+            elseif (! empty($condition['from']) && ! empty($condition['to'])) {
+                if ($calculation >= $condition['from'] && $calculation < $condition['to']) {
+                    $value = $calculationCondition['value'];
+                    break;
+                }
+            } // Bottom range only
+            elseif (! empty($condition['from']) && empty($condition['to'])) {
+                if ($calculation >= $condition['from']) {
+                    $value = $calculationCondition['value'];
+                    break;
+                }
+            }
+        }
+
+        $this->{$field} = $value;
+        // TODO: Deprecate this dispatch in Livewire V2 (IF POSSIBLE)
+        $this->dispatchBrowserEvent('element:updated', ['field' => $field, 'value' => $value]);
     }
 }

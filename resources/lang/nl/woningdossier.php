@@ -84,6 +84,7 @@ return [
                     'questionnaires' => 'Vragenlijsten',
                     'key-figures' => 'Kengetallen',
                     'translations' => 'Vertalingen',
+                    'tool-questions' => 'Quick scan vertalingen',
                     'example-buildings' => 'Voorbeeldwoningen',
                 ],
                 'index' => [
@@ -132,7 +133,7 @@ return [
                         ],
                     ],
                     'edit' => [
-                        'header' => 'Alle vragen die vertaalbaar zijn op de stap :step_name',
+                        'header' => 'Alle vragen die vertaalbaar zijn op de stap :step_name. <br><span class="text-danger">Let op! Eventuele iconen worden niet in de editor getoond, wel in de broncode.</span>',
                         'sub-question' => 'Laat sub-vragen zien',
                         'question' => 'Vraag in taal: :locale',
                         'help' => 'Helptext in taal: :locale',

@@ -168,6 +168,10 @@ return [
             'confirmed' => 'Wachtwoord bevestiging komt niet overheen.',
         ],
     ],
+    'custom-rules' => [
+        'language-required' => 'Er moet op het minst 1 vertaling zijn in :locale voor :attribute',
+    ],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -192,6 +196,9 @@ return [
     // note, when a key needs a wildcard add it to the custom array.
     // A wildcard wont work in the attributes array but will in the custom array, needs more work but at least we dont need to hardcode the * numbers.
     'attributes' => [
+        'nl' => 'Nederlands',
+        'en' => 'Engels',
+
         'email' => 'E-mailadres',
         'password' => 'Wachtwoord',
 
@@ -216,6 +223,13 @@ return [
         'account.current_password' => 'huidig wachtwoord',
         'account.password' => 'wachtwoord',
         'account.password_confirmation' => 'wachtwoord bevestigen',
+
+        // Measure applications
+        'measure_applications.measure_name' => 'Naam',
+        'measure_applications.measure_name.*' => 'Naam',
+        'measure_applications.measure_info' => 'Info',
+        'measure_applications.measure_info.*' => 'Info',
+        'measure_applications.configurations.icon' => 'Icoon',
 
         // general data
         'building_features.building_layers' => __('cooperation/tool/general-data/building-characteristics.index.building-layers.title'),
@@ -268,6 +282,16 @@ return [
         // solar panels
         'building_pv_panels.number' => __('solar-panels.number.title'),
         'building_pv_panels.peak_power' => __('solar-panels.peak-power.title'),
+
+        // Cooperation measure applications
+        'cooperation_measure_applications.name' => 'Naam',
+        'cooperation_measure_applications.name.*' => 'Naam',
+        'cooperation_measure_applications.info' => 'Info',
+        'cooperation_measure_applications.info.*' => 'Info',
+        'cooperation_measure_applications.costs.from' => 'Investering vanaf',
+        'cooperation_measure_applications.costs.to' => 'Investering tot',
+        'cooperation_measure_applications.savings_money' => 'Besparing',
+        'cooperation_measure_applications.extra.icon' => 'Icoon',
     ],
 
     'values' => [

@@ -70,6 +70,7 @@ class AddQuestionsToDatabase extends Command
     public function handle()
     {
         Schema::disableForeignKeyConstraints();
+        // TODO: And really, shouldn't this be an updateOrCreate?
         SubStep::truncate();
         SubStepToolQuestion::truncate();
         ToolQuestionValuable::truncate();
@@ -258,9 +259,10 @@ class AddQuestionsToDatabase extends Command
                                     'flat' => [
                                         'icon' => 'icon-flat-roof',
                                     ],
-                                    'flat-pitched-roof'  => [
-                                        'icon' => 'icon-flat-pitched-roof'
-                                    ],
+                                    // TODO: For later, when new logic is applied for roof types
+//                                    'flat-pitched-roof'  => [
+//                                        'icon' => 'icon-flat-pitched-roof'
+//                                    ],
                                     'gabled-roof'  => [
                                         'icon' => 'icon-pointed-roof'
                                     ],
@@ -383,8 +385,8 @@ class AddQuestionsToDatabase extends Command
 //                        ],
                     ]
                 ],
-                'Toelichting woninggegevens' => [
-                    'sub_step_template_id' => $templateDefault->id,
+                'Samenvatting woninggegevens' => [
+                    'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
                         [
                             'validation' => ['nullable', 'string'],
@@ -403,9 +405,6 @@ class AddQuestionsToDatabase extends Command
                             'tool_question_type_id' => $textareaType->id,
                         ],
                     ],
-                ],
-                'Samenvatting woninggegevens' => [
-                    'sub_step_template_id' => $templateSummary->id,
                 ],
             ],
             'usage-quick-scan' => [
@@ -616,8 +615,8 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                'Toelichting bewoners-gebruik' => [
-                    'sub_step_template_id' => $templateDefault->id,
+                'Samenvatting bewoners-gebruik' => [
+                    'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
                         [
                             'validation' => ['nullable', 'string'],
@@ -636,9 +635,6 @@ class AddQuestionsToDatabase extends Command
                             'tool_question_type_id' => $textareaType->id,
                         ],
                     ],
-                ],
-                'Samenvatting bewoners-gebruik' => [
-                    'sub_step_template_id' => $templateSummary->id,
                 ],
             ],
             'living-requirements' => [
@@ -719,8 +715,8 @@ class AddQuestionsToDatabase extends Command
                     // note: dit is een custom vraag, zie slide 18
                     'sub_step_template_id' => $templateCustomChanges->id,
                 ],
-                'Toelichting woonwensen' => [
-                    'sub_step_template_id' => $templateDefault->id,
+                'Samenvatting woonwensen' => [
+                    'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
                         [
                             'validation' => ['nullable', 'string'],
@@ -739,9 +735,6 @@ class AddQuestionsToDatabase extends Command
                             'tool_question_type_id' => $textareaType->id,
                         ],
                     ],
-                ],
-                'Samenvatting woonwensen' => [
-                    'sub_step_template_id' => $templateSummary->id,
                 ],
             ],
             'residential-status' => [
@@ -1342,8 +1335,8 @@ class AddQuestionsToDatabase extends Command
                         ],
                     ]
                 ],
-                'Toelichting woonstatus' => [
-                    'sub_step_template_id' => $templateDefault->id,
+                'Samenvatting woonstatus' => [
+                    'sub_step_template_id' => $templateSummary->id,
                     'questions' => [
                         [
                             'validation' => ['nullable', 'string'],
@@ -1378,9 +1371,6 @@ class AddQuestionsToDatabase extends Command
                             'tool_question_type_id' => $textareaType->id,
                         ],
                     ],
-                ],
-                'Samenvatting woonstatus' => [
-                    'sub_step_template_id' => $templateSummary->id,
                 ],
             ],
         ];

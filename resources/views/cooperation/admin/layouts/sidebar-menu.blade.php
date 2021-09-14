@@ -46,11 +46,16 @@
                                 @lang('woningdossier.cooperation.admin.super-admin.side-nav.example-buildings')
                             </a>
                         </li>
-                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.steps.index'])) active @endif">
-                            <a href="{{route('cooperation.admin.cooperation.cooperation-admin.steps.index')}}">
-                                @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.step')
+                        <li class="list-group-item @if(\Illuminate\Support\Str::startsWith(Route::currentRouteName(), 'cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications')) active @endif">
+                            <a href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index')}}">
+                                @lang('cooperation/admin/shared.sidebar.cooperation-measure-applications')
                             </a>
                         </li>
+{{--                        <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.steps.index'])) active @endif">--}}
+{{--                            <a href="{{route('cooperation.admin.cooperation.cooperation-admin.steps.index')}}">--}}
+{{--                                @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.step')--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
                         <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.cooperation.cooperation-admin.settings.index'])) active @endif">
                             <a href="{{route('cooperation.admin.cooperation.cooperation-admin.settings.index')}}">
                                 @lang('woningdossier.cooperation.admin.cooperation.cooperation-admin.side-nav.settings')
@@ -189,6 +194,14 @@
                                 </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.translations.index', 'cooperation.admin.super-admin.translations.edit'])) active @endif">
                                     <a href="{{route('cooperation.admin.super-admin.translations.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.translations')</a>
+                                </li>
+                                <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.tool-questions.index', 'cooperation.admin.super-admin.tool-questions.edit'])) active @endif">
+                                    <a href="{{route('cooperation.admin.super-admin.tool-questions.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.tool-questions')</a>
+                                </li>
+                                <li class="list-group-item @if(Str::startsWith(Route::currentRouteName(), 'cooperation.admin.super-admin.measure-applications')) active @endif">
+                                    <a href="{{route('cooperation.admin.super-admin.measure-applications.index')}}">
+                                        @lang('cooperation/admin/shared.sidebar.measure-applications')
+                                    </a>
                                 </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.example-buildings.index', 'cooperation.admin.example-buildings.edit', 'cooperation.admin.example-buildings.create'])) active @endif">
                                     <a href="{{route('cooperation.admin.example-buildings.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.example-buildings')</a>

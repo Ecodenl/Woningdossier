@@ -8,12 +8,10 @@ use App\Models\BuildingInsulatedGlazing;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
-use App\Models\InsulatingGlazing;
 use App\Models\MeasureApplication;
 use App\Models\ToolQuestion;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserInterest;
 use App\Scopes\GetValueScope;
 use App\Scopes\VisibleScope;
 use Illuminate\Database\Eloquent\Builder;
@@ -157,9 +155,18 @@ trait GetMyValuesTrait
             ->select([$this->getTable() . '.*']);
     }
 
-    public function scopeForBuilding(Builder $query, Building $building)
+    public function scopeForBuilding(Builder $query, $building)
     {
-        return $query->where('building_id', $building->id);
+        $id = $building instanceof Building ? $building->id : $building;
+
+        return $query->where('building_id', $id);
+    }
+
+    public function scopeForUser(Builder $query, $user)
+    {
+        $id = $user instanceof User ? $user->id : $user;
+
+        return $query->where('user_id', $id);
     }
 
     public function scopeAllInputSources(Builder $query)

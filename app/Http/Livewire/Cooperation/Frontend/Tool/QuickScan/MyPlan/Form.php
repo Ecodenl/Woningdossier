@@ -438,7 +438,8 @@ class Form extends Component
         $investment = NumberFormatter::round($investment);
         $savings = NumberFormatter::round($savings);
 
-        $investmentPercentage = $investment > 0 ? (max(1, $savings) / $investment) * 100 : 0;
+        // Investment cannot be 0!
+        $investmentPercentage = max(1, $savings) / max(1, $investment) * 100;
         $this->evaluateCalculationResult('investment', $investmentPercentage);
 
         // ---------------------------------------------------------------------
@@ -469,7 +470,7 @@ class Form extends Component
         // percentage = (reduction / current) * 100
         // just ensure $co2Current is min. 1
         // just ensure max percentage = 100.
-        $renewablePercentage = min(($co2Reductions / max(1,$co2Current)) * 100,100);
+        $renewablePercentage = min(($co2Reductions / max(1, $co2Current)) * 100,100);
 
         $this->evaluateCalculationResult('renewable', $renewablePercentage);
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cooperation\Admin\Cooperation\CooperationAdmin;
 use App\Helpers\Cache\Cooperation as CooperationCache;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin\CooperationMeasureApplicationFormRequest;
 use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
 use App\Models\Step;
@@ -24,18 +25,30 @@ class CooperationMeasureApplicationController extends Controller
         return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.create');
     }
 
-    public function store(Cooperation $cooperation)
+    public function store(CooperationMeasureApplicationFormRequest $request, Cooperation $cooperation)
     {
+        $measureData = $request->validated()['cooperation_measure_applications'];
+        $measureData['cooperation_id'] = $cooperation->id;
 
+        CooperationMeasureApplication::create($measureData);
+
+        return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index')
+            ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.store.success'));
     }
+
     public function edit(Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication)
     {
-        return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.edit');
+        return view('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.edit', compact('cooperationMeasureApplication'));
     }
 
-    public function update(Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication)
+    public function update(CooperationMeasureApplicationFormRequest $request, Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication)
     {
+        $measureData = $request->validated()['cooperation_measure_applications'];
 
+        $cooperationMeasureApplication->update($measureData);
+
+        return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index')
+            ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.update.success'));
     }
 
     public function destroy(Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication)

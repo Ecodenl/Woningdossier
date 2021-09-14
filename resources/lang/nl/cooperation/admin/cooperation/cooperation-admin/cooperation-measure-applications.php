@@ -16,16 +16,17 @@ return [
         'label' => 'Aanmaken',
     ],
     'store' => [
-
+        'success' => 'Maatregel succesvol aangemaakt',
     ],
     'edit' => [
         'label' => 'Bewerken',
     ],
     'update' => [
-
+        'success' => 'Maatregel succesvol bijgewerkt',
     ],
     'destroy' => [
         'label' => 'Verwijderen',
         'warning' => 'Weet je zeker dat je deze maatregel wilt verwijderen?',
+        'success' => 'Maatregel succesvol verwijderd',
     ],
 ];

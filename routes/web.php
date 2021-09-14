@@ -360,6 +360,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         });
 
                         Route::resource('cooperation-measure-applications', 'CooperationMeasureApplicationController')
+                            ->except(['show'])
                             ->parameter('cooperation-measure-applications', 'cooperationMeasureApplication');
                     });
                 });

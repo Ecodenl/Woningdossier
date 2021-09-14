@@ -27,14 +27,20 @@
                                     <i class="icon-lg {{$cooperationMeasureApplication->extra['icon'] ?? 'icon-tools'}}"></i>
                                 </td>
                                 <td>
-                                    <a class="btn btn-success"
+                                    <a class="btn btn-success" style="display: table-cell;"
                                        href="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.edit', compact('cooperationMeasureApplication'))}}">
                                         @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.edit.label')
                                     </a>
 
-                                    <button data-measure-id="{{$cooperationMeasureApplication->id}}" type="button" class="destroy btn btn-danger">
-                                        @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.destroy.label')
-                                    </button>
+                                    <form action="{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.destroy', compact('cooperationMeasureApplication'))}}"
+                                          method="post" class="pl-10" style="display: table-cell;">
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button class="destroy btn btn-danger" type="submit">
+                                            @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.destroy.label')
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach
@@ -52,18 +58,8 @@
         $(document).ready(function () {
             $('#table').dataTable();
 
-            let destroyRoute = '{{route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.edit', ['cooperationMeasureApplication' => ':measureId'])}}';
-
             $(document).on('click', '.destroy', function (event) {
-                if (confirm('@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.destroy.warning')')) {
-                    $.ajax({
-                        url: destroyRoute.replace(':measureId', $(this).data('measure-id')),
-                        method: 'delete',
-                        success: function () {
-                            window.location.reload();
-                        }
-                    });
-                } else {
+                if (! confirm('@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.destroy.warning')')) {
                     event.preventDefault();
                     return false;
                 }

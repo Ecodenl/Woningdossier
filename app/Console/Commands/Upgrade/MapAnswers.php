@@ -11,7 +11,7 @@ use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use App\Models\UserEnergyHabit;
-use App\ToolQuestionAnswer;
+use App\Models\ToolQuestionAnswer;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 

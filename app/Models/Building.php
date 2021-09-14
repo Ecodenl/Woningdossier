@@ -6,7 +6,7 @@ use App\Helpers\Arr;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Scopes\GetValueScope;
-use App\ToolQuestionAnswer;
+use App\Models\ToolQuestionAnswer;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

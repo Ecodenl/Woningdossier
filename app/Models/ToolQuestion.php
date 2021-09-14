@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\ToolQuestionAnswer;
+use App\Models\ToolQuestionAnswer;
 use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;

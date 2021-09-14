@@ -95,34 +95,34 @@ class Form extends Component
         'comfort' => [
             [
                 'condition' => [
-                    'to' => 10,
+                    'to' => 5,
                 ],
                 'value' => 1,
+            ],
+            [
+                'condition' => [
+                    'from' => 5,
+                    'to' => 10,
+                ],
+                'value' => 2,
             ],
             [
                 'condition' => [
                     'from' => 10,
                     'to' => 15,
                 ],
-                'value' => 2,
+                'value' => 3,
             ],
             [
                 'condition' => [
                     'from' => 15,
                     'to' => 20,
                 ],
-                'value' => 3,
-            ],
-            [
-                'condition' => [
-                    'from' => 20,
-                    'to' => 25,
-                ],
                 'value' => 4,
             ],
             [
                 'condition' => [
-                    'from' => 25,
+                    'from' => 20,
                 ],
                 'value' => 5,
             ],

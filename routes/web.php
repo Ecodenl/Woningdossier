@@ -377,6 +377,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     Route::resource('clients', 'ClientController');
 
+                    Route::resource('tool-questions', 'ToolQuestionController')
+                        ->parameter('tool-questions', 'toolQuestion')
+                        ->only(['index', 'edit', 'update']);
 
                     Route::prefix('{client}/api')->namespace('Client')->as('clients.personal-access-tokens.')->group(function () {
                         Route::get('', 'PersonalAccessTokenController@index')->name('index');

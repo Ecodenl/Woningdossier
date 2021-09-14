@@ -8,7 +8,8 @@ use App\Models\InputSource;
 use App\Models\ToolQuestion;
 use Illuminate\Support\Collection;
 
-class BuildingType implements ShouldReturnQuestionValues {
+class BuildingType implements ShouldReturnQuestionValues
+{
 
     public static function getQuestionValues(Collection $questionValues, Building $building, InputSource $inputSource): Collection
     {

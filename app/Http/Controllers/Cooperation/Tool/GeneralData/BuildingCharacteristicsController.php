@@ -22,7 +22,7 @@ class BuildingCharacteristicsController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        // For safety
+        // Route is disabled. Die if they somehow still manage to get here
         die();
 
         $building = HoomdossierSession::getBuilding(true);
@@ -52,7 +52,7 @@ class BuildingCharacteristicsController extends Controller
 
     public function store(BuildingCharacteristicsFormRequest $request)
     {
-        // For safety
+        // Route is disabled. Die if they somehow still manage to get here
         die();
 
         $building = HoomdossierSession::getBuilding(true);

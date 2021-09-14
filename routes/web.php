@@ -346,10 +346,11 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     /* section for the cooperation-admin */
                     Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['current-role:cooperation-admin|super-admin']], function () {
-                        Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
-                            Route::get('', 'StepController@index')->name('index');
-                            Route::post('set-active', 'StepController@setActive')->name('set-active');
-                        });
+                        // TODO: Figure this out
+//                        Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
+//                            Route::get('', 'StepController@index')->name('index');
+//                            Route::post('set-active', 'StepController@setActive')->name('set-active');
+//                        });
 
                         // needs to be the last route due to the param
                         Route::get('home', 'CooperationAdminController@index')->name('index');

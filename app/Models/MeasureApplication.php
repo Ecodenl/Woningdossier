@@ -53,7 +53,11 @@ class MeasureApplication extends Model
     const MAINTENANCE = 'maintenance';
 
     protected $translatable = [
-        'measure_name', 'cost_unit', 'maintenance_unit',
+        'measure_name', 'measure_info', 'cost_unit', 'maintenance_unit',
+    ];
+
+    protected $fillable = [
+        'measure_name', 'measure_info',
     ];
 
     protected $casts = [

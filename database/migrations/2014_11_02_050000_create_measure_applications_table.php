@@ -17,6 +17,7 @@ class CreateMeasureApplicationsTable extends Migration
             $table->increments('id');
             $table->enum('measure_type', ['energy_saving', 'maintenance']);
             $table->json('measure_name');
+            $table->json('measure_info')->nullable();
             $table->string('short');
             $table->enum('application', ['place', 'replace', 'remove', 'repair']);
             $table->double('costs', 8, 2);

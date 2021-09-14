@@ -616,7 +616,7 @@ class Form extends Component
                     'icon' => $advisable->configurations['icon'] ?? 'icon-tools',
                     // TODO: Subsidy
                     'subsidy' => $this->SUBSIDY_AVAILABLE,
-                    'info' => $advisable->measure_name,
+                    'info' => nl2br($advisable->measure_info),
                     'route' => StepHelper::buildStepUrl($advisable->step),
                 ];
             } else {
@@ -632,7 +632,7 @@ class Form extends Component
                     'icon' => $advisable->extra['icon'] ?? 'icon-tools',
                     // TODO: Subsidy
                     'subsidy' => $this->SUBSIDY_UNKNOWN,
-                    'info' => $advisable->info,
+                    'info' => nl2br($advisable->info),
                 ];
             }
 

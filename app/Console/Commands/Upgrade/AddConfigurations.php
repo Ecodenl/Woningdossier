@@ -320,6 +320,7 @@ class AddConfigurations extends Command
                     ],
                 ],
             ],
+            // TODO: Add these to seeder
             'element_values' => [
                 [
                     'wheres' => [
@@ -514,6 +515,7 @@ class AddConfigurations extends Command
                     ],
                 ],
             ],
+            // TODO: Add these to seeder
             'service_values' => [
                 [
                     'wheres' => [

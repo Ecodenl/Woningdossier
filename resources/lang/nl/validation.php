@@ -224,6 +224,13 @@ return [
         'account.password' => 'wachtwoord',
         'account.password_confirmation' => 'wachtwoord bevestigen',
 
+        // Measure applications
+        'measure_applications.measure_name' => 'Naam',
+        'measure_applications.measure_name.*' => 'Naam',
+        'measure_applications.measure_info' => 'Info',
+        'measure_applications.measure_info.*' => 'Info',
+        'measure_applications.configurations.icon' => 'Icoon',
+
         // general data
         'building_features.building_layers' => __('cooperation/tool/general-data/building-characteristics.index.building-layers.title'),
         'building_features.surface' => __('cooperation/tool/general-data/building-characteristics.index.surface.title'),

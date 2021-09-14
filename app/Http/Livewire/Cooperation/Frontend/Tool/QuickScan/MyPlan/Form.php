@@ -612,11 +612,11 @@ class Form extends Component
             $advisable = $advice->userActionPlanAdvisable;
             if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
                 $cards[$category][$order] = [
-                    'name' => Str::limit($advisable->measure_name, 22),
+                    'name' => Str::limit($advisable->measure_name, 57),
                     'icon' => $advisable->configurations['icon'] ?? 'icon-tools',
                     // TODO: Subsidy
                     'subsidy' => $this->SUBSIDY_AVAILABLE,
-                    'info' => $advisable->measure_name,
+                    'info' => nl2br($advisable->measure_info),
                     'route' => StepHelper::buildStepUrl($advisable->step),
                 ];
             } else {
@@ -628,11 +628,11 @@ class Form extends Component
                 }
 
                 $cards[$category][$order] = [
-                    'name' => Str::limit($advisable->name, 22),
+                    'name' => Str::limit($advisable->name, 57),
                     'icon' => $advisable->extra['icon'] ?? 'icon-tools',
                     // TODO: Subsidy
                     'subsidy' => $this->SUBSIDY_UNKNOWN,
-                    'info' => $advisable->info,
+                    'info' => nl2br($advisable->info),
                 ];
             }
 

@@ -125,12 +125,12 @@
                             <div class="info">
                                 @if(! empty($card['route']))
                                     <a href="{{ $card['route'] }}" class="no-underline" draggable="false">
-                                        <h6 class="heading-6 text-purple">
+                                        <h6 class="heading-6 text-purple max-w-17/20">
                                             {{ $card['name'] }}
                                         </h6>
                                     </a>
                                 @else
-                                    <h6 class="heading-6">
+                                    <h6 class="heading-6 max-w-17/20">
                                         {{ $card['name'] }}
                                     </h6>
                                 @endif
@@ -157,7 +157,8 @@
                                 @endif
     -->
                             </div>
-                            <div x-data="modal()" class="absolute right-1 top-1 lg:right-3 lg:top-3">
+                            <div x-data="modal()" class="absolute right-1 top-1 lg:right-3 lg:top-3"
+                                 draggable="true" x-on:dragstart.prevent.stop>
                                 @if(! empty($card['info']))
                                     <i class="icon-md icon-info-light clickable" x-on:click="toggle()"></i>
                                     @component('cooperation.frontend.layouts.components.modal')
@@ -202,7 +203,7 @@
                                                     <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
                                                 </div>
                                                 <div class="info">
-                                                    <h6 class="heading-6">
+                                                    <h6 class="heading-6 max-w-17/20">
                                                         {{ $card['name'] }}
                                                     </h6>
                                                     <p class="-mt-1">

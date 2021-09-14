@@ -69,6 +69,7 @@ class DoUpgrade extends Command
                 \ComfortLevelTapWatersTableSeeder::class,
                 \EnergyLabelsTableSeeder::class,
                 \CooperationMeasureApplicationsTableSeeder::class,
+                \MeasureApplicationsTableSeeder::class,
             ];
 
             foreach ($seeders as $seeder) {

@@ -125,12 +125,12 @@
                             <div class="info">
                                 @if(! empty($card['route']))
                                     <a href="{{ $card['route'] }}" class="no-underline" draggable="false">
-                                        <h6 class="heading-6 text-purple">
+                                        <h6 class="heading-6 text-purple max-w-17/20">
                                             {{ $card['name'] }}
                                         </h6>
                                     </a>
                                 @else
-                                    <h6 class="heading-6">
+                                    <h6 class="heading-6 max-w-17/20">
                                         {{ $card['name'] }}
                                     </h6>
                                 @endif
@@ -202,7 +202,7 @@
                                                     <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
                                                 </div>
                                                 <div class="info">
-                                                    <h6 class="heading-6">
+                                                    <h6 class="heading-6 max-w-17/20">
                                                         {{ $card['name'] }}
                                                     </h6>
                                                     <p class="-mt-1">

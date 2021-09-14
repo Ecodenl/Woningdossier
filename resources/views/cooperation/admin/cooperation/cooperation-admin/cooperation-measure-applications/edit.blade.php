@@ -3,9 +3,10 @@
 @section('content')
     <section class="section">
         <div class="container">
-            <form action="{{ route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.store') }}"
+            <form action="{{ route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.update', compact('cooperationMeasureApplication')) }}"
                   method="post">
                 @csrf
+                @method('PUT')
 
                 <div class="row">
                     <div class="col-sm-6">
@@ -15,7 +16,7 @@
                     </div>
                     <div class="col-sm-6">
                         <button type="submit"  class="btn btn-primary pull-right">
-                            @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.create.title')
+                            @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.edit.title')
                         </button>
                     </div>
                 </div>
@@ -34,7 +35,7 @@
                                                     <span class="input-group-addon">{{$locale}}</span>
                                                     <input type="text" class="form-control" id="name-{{$locale}}"
                                                            name="cooperation_measure_applications[name][{{$locale}}]"
-                                                           value="{{ old("cooperation_measure_applications.name.{$locale}")}}"
+                                                           value="{{ old("cooperation_measure_applications.name.{$locale}", $cooperationMeasureApplication->getTranslation('name', $locale))}}"
                                                            placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.name.placeholder')">
                                                 </div>
                                             </div>
@@ -51,7 +52,7 @@
                                                     <textarea class="form-control" id="info-{{$locale}}"
                                                            name="cooperation_measure_applications[info][{{$locale}}]"
                                                            placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.info.placeholder')"
-                                                    >{{ old("cooperation_measure_applications.info.{$locale}")}}</textarea>
+                                                    >{{ old("cooperation_measure_applications.info.{$locale}", $cooperationMeasureApplication->getTranslation('info', $locale))}}</textarea>
                                                 </div>
                                             </div>
                                         @endforeach
@@ -67,7 +68,7 @@
                                                 <span class="input-group-addon"><i class="icon-sm icon-moneybag"></i></span>
                                                 <input type="text" class="form-control" id="costs-from"
                                                        name="cooperation_measure_applications[costs][from]"
-                                                       value="{{ old("cooperation_measure_applications.costs.from")}}"
+                                                       value="{{ old("cooperation_measure_applications.costs.from", $cooperationMeasureApplication->costs['from'] ?? '')}}"
                                                        placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.costs-from.placeholder')">
                                             </div>
                                         </div>
@@ -81,7 +82,7 @@
                                                 <span class="input-group-addon"><i class="icon-sm icon-moneybag"></i></span>
                                                 <input type="text" class="form-control" id="costs-to"
                                                        name="cooperation_measure_applications[costs][to]"
-                                                       value="{{ old("cooperation_measure_applications.costs.to")}}"
+                                                       value="{{ old("cooperation_measure_applications.costs.to", $cooperationMeasureApplication->costs['to'] ?? '')}}"
                                                        placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.costs-to.placeholder')">
                                             </div>
                                         </div>
@@ -97,7 +98,7 @@
                                                 <span class="input-group-addon"><i class="icon-sm icon-moneybag"></i></span>
                                                 <input type="text" class="form-control" id="savings-money"
                                                        name="cooperation_measure_applications[savings_money]"
-                                                       value="{{ old("cooperation_measure_applications.savings_money")}}"
+                                                       value="{{ old("cooperation_measure_applications.savings_money", $cooperationMeasureApplication->savings_money)}}"
                                                        placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.savings.placeholder')">
                                             </div>
                                         </div>
@@ -115,7 +116,7 @@
                                                     @php
                                                         $iconName = "icon-" . str_replace(".{$file->getExtension()}", '', $file->getBasename());
                                                     @endphp
-                                                    <option @if(old('cooperation_measure_applications.extra.icon') === $iconName) selected @endif>
+                                                    <option @if(old('cooperation_measure_applications.extra.icon', $cooperationMeasureApplication->extra['icon'] ?? '') === $iconName) selected @endif>
                                                         {{ $iconName }}
                                                     </option>
                                                 @endforeach

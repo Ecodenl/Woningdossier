@@ -18,7 +18,7 @@ class MyPlanController extends Controller
 {
     public function index()
     {
-        // For safety
+        // Route is disabled. Die if they somehow still manage to get here
         die();
 
         $inputSource = HoomdossierSession::getInputSource(true);
@@ -72,7 +72,7 @@ class MyPlanController extends Controller
      */
     public function storeComment(MyPlanRequest $request)
     {
-        // For safety
+        // Route is disabled. Die if they somehow still manage to get here
         die();
 
         $building = HoomdossierSession::getBuilding(true);
@@ -92,7 +92,7 @@ class MyPlanController extends Controller
 
     public function store(Request $request)
     {
-        // For safety
+        // Route is disabled. Die if they somehow still manage to get here
         die();
 
         $building = HoomdossierSession::getBuilding(true);

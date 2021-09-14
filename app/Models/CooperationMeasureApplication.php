@@ -12,6 +12,10 @@ class CooperationMeasureApplication extends Model
 
     protected $translatable = ['name', 'info'];
 
+    protected $fillable = [
+        'name', 'info', 'costs', 'savings_money', 'extra', 'cooperation_id',
+    ];
+
     protected $casts = [
         'costs' => 'array',
         'extra' => 'array',

@@ -28,19 +28,8 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             });
         }
 
-
-        // TODO: Figure out how to handle these routes; Move to frontend.php?
         Route::view('styleguide', 'cooperation.frontend.styleguide');
         Route::view('input-guide', 'cooperation.frontend.input-guide');
-        Route::prefix('step')->group(function () {
-            Route::view('7', 'cooperation.frontend.templates.step-7');
-            Route::view('9', 'cooperation.frontend.templates.step-9');
-            Route::view('11', 'cooperation.frontend.templates.step-11');
-            Route::view('12', 'cooperation.frontend.templates.step-12');
-            Route::view('18', 'cooperation.frontend.templates.step-18');
-            Route::view('23', 'cooperation.frontend.templates.step-23');
-        });
-        // TODO END
 
         Route::get('/', function () {
             return view('cooperation.welcome');
@@ -341,7 +330,7 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     Route::resource('questionnaires', 'QuestionnaireController')
                         ->middleware('current-role:cooperation-admin');
-                    // not in the cooperation-admin group, probably need to be used for hte coordinator aswell.
+                    // not in the cooperation-admin group, probably need to be used for the coordinator as well.
                     Route::group(['as' => 'questionnaires.', 'prefix' => 'questionnaire', 'middleware' => ['current-role:cooperation-admin']], function () {
                         Route::delete('delete-question/{questionId}', 'QuestionnaireController@deleteQuestion')->name('delete');
                         Route::delete('delete-option/{questionId}/{optionId}', 'QuestionnaireController@deleteQuestionOption')->name('delete-question-option');
@@ -357,10 +346,11 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 
                     /* section for the cooperation-admin */
                     Route::group(['prefix' => 'cooperation-admin', 'as' => 'cooperation-admin.', 'namespace' => 'CooperationAdmin', 'middleware' => ['current-role:cooperation-admin|super-admin']], function () {
-                        Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
-                            Route::get('', 'StepController@index')->name('index');
-                            Route::post('set-active', 'StepController@setActive')->name('set-active');
-                        });
+                        // TODO: Figure this out
+//                        Route::group(['prefix' => 'steps', 'as' => 'steps.'], function () {
+//                            Route::get('', 'StepController@index')->name('index');
+//                            Route::post('set-active', 'StepController@setActive')->name('set-active');
+//                        });
 
                         // needs to be the last route due to the param
                         Route::get('home', 'CooperationAdminController@index')->name('index');
@@ -369,6 +359,10 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                             Route::get('', 'SettingsController@index')->name('index');
                             Route::post('', 'SettingsController@store')->name('store');
                         });
+
+                        Route::resource('cooperation-measure-applications', 'CooperationMeasureApplicationController')
+                            ->except(['show'])
+                            ->parameter('cooperation-measure-applications', 'cooperationMeasureApplication');
                     });
                 });
 

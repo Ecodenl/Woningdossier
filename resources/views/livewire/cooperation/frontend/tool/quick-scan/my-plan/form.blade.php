@@ -157,7 +157,8 @@
                                 @endif
     -->
                             </div>
-                            <div x-data="modal()" class="absolute right-1 top-1 lg:right-3 lg:top-3">
+                            <div x-data="modal()" class="absolute right-1 top-1 lg:right-3 lg:top-3"
+                                 draggable="true" x-on:dragstart.prevent.stop>
                                 @if(! empty($card['info']))
                                     <i class="icon-md icon-info-light clickable" x-on:click="toggle()"></i>
                                     @component('cooperation.frontend.layouts.components.modal')

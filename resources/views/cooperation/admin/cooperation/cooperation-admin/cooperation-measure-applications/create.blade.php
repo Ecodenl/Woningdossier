@@ -23,9 +23,9 @@
                     <div class="col-md-12">
                         <div class="panel">
                             <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        @foreach(config('hoomdossier.supported_locales') as $locale)
+                                @foreach(config('hoomdossier.supported_locales') as $locale)
+                                    <div class="row">
+                                        <div class="col-xs-12">
                                             <div class="form-group {{ $errors->has('cooperation_measure_applications.name.*') ? ' has-error' : '' }}">
                                                 <label for="name-{{$locale}}">
                                                     @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.name.label')
@@ -38,10 +38,10 @@
                                                            placeholder="@lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.name.placeholder')">
                                                 </div>
                                             </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-12">
+                                    <div class="row">
+                                        <div class="col-xs-12">
                                             <div class="form-group {{ $errors->has('cooperation_measure_applications.info.*') ? ' has-error' : '' }}">
                                                 <label for="info-{{$locale}}">
                                                     @lang('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.form.info.label')
@@ -54,9 +54,9 @@
                                                     >{{ old("cooperation_measure_applications.info.{$locale}")}}</textarea>
                                                 </div>
                                             </div>
-                                        @endforeach
+                                        </div>
                                     </div>
-                                </div>
+                                @endforeach
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group {{ $errors->has('cooperation_measure_applications.costs.from') ? ' has-error' : '' }}">
@@ -138,13 +138,13 @@
 @push('js')
     <script>
         $(document).ready(() => {
-            let $icon = $('#icon');
+            var $icon = $('#icon');
             $icon.select2();
 
             $icon.change(function () {
-                let $iconPreview = $('#icon-preview');
+                var $iconPreview = $('#icon-preview');
                 $iconPreview.removeClass();
-                let icon = $(this).val();
+                var icon = $(this).val();
                 $iconPreview.addClass(`icon-lg ${icon}`);
             });
 

@@ -16,7 +16,7 @@ class GeneralDataController extends Controller
      */
     public function index()
     {
-        // For safety
+        // Route is disabled. Die if they somehow still manage to get here
         die();
 
         $building = HoomdossierSession::getBuilding(true);

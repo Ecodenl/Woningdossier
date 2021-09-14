@@ -20,7 +20,7 @@ class InterestController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
-        // For safety
+        // Route is disabled. Die if they somehow still manage to get here
         die();
 
         $building = HoomdossierSession::getBuilding(true);
@@ -81,7 +81,7 @@ class InterestController extends Controller
 
     public function store(InterestFormRequest $request)
     {
-        // For safety
+        // Route is disabled. Die if they somehow still manage to get here
         die();
 
         $building = HoomdossierSession::getBuilding(true);

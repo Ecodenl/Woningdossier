@@ -55,7 +55,7 @@
                             </label>
                             <select class="form-control" id="icon"
                                     name="measure_applications[configurations][icon]">
-                                @foreach(\Illuminate\Support\Facades\File::allFiles(public_path('icons')) as $file)
+                                @foreach(File::allFiles(public_path('icons')) as $file)
                                     @php
                                         $iconName = "icon-" . str_replace(".{$file->getExtension()}", '', $file->getBasename());
                                     @endphp

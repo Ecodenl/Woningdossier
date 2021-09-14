@@ -193,6 +193,11 @@
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.super-admin.tool-questions.index', 'cooperation.admin.super-admin.tool-questions.edit'])) active @endif">
                                     <a href="{{route('cooperation.admin.super-admin.tool-questions.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.tool-questions')</a>
                                 </li>
+                                <li class="list-group-item @if(\Illuminate\Support\Str::startsWith(Route::currentRouteName(), 'cooperation.admin.super-admin.measure-applications')) active @endif">
+                                    <a href="{{route('cooperation.admin.super-admin.measure-applications.index')}}">
+                                        @lang('cooperation/admin/shared.sidebar.measure-applications')
+                                    </a>
+                                </li>
                                 <li class="list-group-item @if(in_array(Route::currentRouteName(), ['cooperation.admin.example-buildings.index', 'cooperation.admin.example-buildings.edit', 'cooperation.admin.example-buildings.create'])) active @endif">
                                     <a href="{{route('cooperation.admin.example-buildings.index')}}">@lang('woningdossier.cooperation.admin.super-admin.side-nav.example-buildings')</a>
                                 </li>

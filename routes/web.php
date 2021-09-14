@@ -381,6 +381,10 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
                         ->parameter('tool-questions', 'toolQuestion')
                         ->only(['index', 'edit', 'update']);
 
+                    Route::resource('measure-applications', 'MeasureApplicationController')
+                        ->parameter('measure-applications', 'measureApplication')
+                        ->only(['index', 'edit', 'update']);
+
                     Route::prefix('{client}/api')->namespace('Client')->as('clients.personal-access-tokens.')->group(function () {
                         Route::get('', 'PersonalAccessTokenController@index')->name('index');
                         Route::post('', 'PersonalAccessTokenController@store')->name('store');

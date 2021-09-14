@@ -7,6 +7,9 @@
 
     $step = $step ?? 1;
     $unit = $unit ?? '';
+
+    // TODO: Check if this is up-to-date with slider/show from the tool question templates, currently unused as
+    // standalone part
 @endphp
 <div class="flex flex-wrap items-center w-full mt-12 slider-wrapper" x-data="slider()">
     <p class="w-1/12 flex justify-end pr-5">{{$min}}{!! $unit !!}</p>

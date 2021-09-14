@@ -168,6 +168,10 @@ return [
             'confirmed' => 'Wachtwoord bevestiging komt niet overheen.',
         ],
     ],
+    'custom-rules' => [
+        'language-required' => 'Er moet op het minst 1 vertaling zijn in :locale voor :attribute',
+    ],
+
 
     /*
     |--------------------------------------------------------------------------
@@ -192,6 +196,9 @@ return [
     // note, when a key needs a wildcard add it to the custom array.
     // A wildcard wont work in the attributes array but will in the custom array, needs more work but at least we dont need to hardcode the * numbers.
     'attributes' => [
+        'nl' => 'Nederlands',
+        'en' => 'Engels',
+
         'email' => 'E-mailadres',
         'password' => 'Wachtwoord',
 
@@ -275,6 +282,16 @@ return [
         // solar panels
         'building_pv_panels.number' => __('solar-panels.number.title'),
         'building_pv_panels.peak_power' => __('solar-panels.peak-power.title'),
+
+        // Cooperation measure applications
+        'cooperation_measure_applications.name' => 'Naam',
+        'cooperation_measure_applications.name.*' => 'Naam',
+        'cooperation_measure_applications.info' => 'Info',
+        'cooperation_measure_applications.info.*' => 'Info',
+        'cooperation_measure_applications.costs.from' => 'Investering vanaf',
+        'cooperation_measure_applications.costs.to' => 'Investering tot',
+        'cooperation_measure_applications.savings_money' => 'Besparing',
+        'cooperation_measure_applications.extra.icon' => 'Icoon',
     ],
 
     'values' => [

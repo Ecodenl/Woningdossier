@@ -13,6 +13,8 @@ class StepController extends Controller
 {
     public function index(Cooperation $cooperation)
     {
+        // Route is disabled. Die if they somehow still manage to get here
+        die();
 
         // since the general-data always need to be the first step and is always needed
         $steps = $cooperation
@@ -31,6 +33,9 @@ class StepController extends Controller
      */
     public function setActive(Request $request, Cooperation $cooperation)
     {
+        // Route is disabled. Die if they somehow still manage to get here
+        die();
+        
         $stepId = $request->get('step_id');
         $active = 'true' == $request->get('step_active') ? true : false;
 

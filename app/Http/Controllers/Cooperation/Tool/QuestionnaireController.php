@@ -21,7 +21,7 @@ class QuestionnaireController extends Controller
     {
         $building = HoomdossierSession::getBuilding(true);
         $questions = $request->input('questions');
-\Log::debug($questions);
+
         $questionnaireId = $request->get('questionnaire_id');
         $questionnaire = Questionnaire::find($questionnaireId);
 
@@ -34,7 +34,7 @@ class QuestionnaireController extends Controller
 
                 // if its an array we will implode it, so we can explode it later on
                 $answer = is_array($questionAnswer) ? implode('|', $questionAnswer) : $questionAnswer;
-                \Log::debug($answer);
+
                 // check if the answer is not empty
                 if (! empty($answer)) {
                     QuestionsAnswer::updateOrCreate(

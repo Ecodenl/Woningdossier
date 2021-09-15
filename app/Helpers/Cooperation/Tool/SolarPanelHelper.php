@@ -70,20 +70,10 @@ class SolarPanelHelper extends ToolHelper
         $buildingPvPanels = $this->building->pvPanels()->forInputSource($this->inputSource)->first();
         $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
 
-        $userInterestsForSolarPanels = $this
-            ->user
-            ->userInterestsForSpecificType(Step::class, Step::findByShort('solar-panels')->id, $this->inputSource)
-            ->first();
-
         $this->setValues([
             'building_pv_panels' => $buildingPvPanels instanceof BuildingPvPanel ? $buildingPvPanels->toArray() : [],
             'user_energy_habits' => [
                 'amount_electricity' => $userEnergyHabit->amount_electricity ?? null,
-            ],
-            'user_interests' => [
-                'interested_in_id' => optional($userInterestsForSolarPanels)->interested_in_id,
-                'interested_in_type' => Step::class,
-                'interest_id' => optional($userInterestsForSolarPanels)->interest_id,
             ],
         ]);
 

@@ -7,10 +7,12 @@ use App\Helpers\Kengetallen;
 use App\Helpers\KeyFigures\PvPanels\KeyFigures;
 use App\Helpers\Translation;
 use App\Models\Building;
-use App\Models\Interest;
+use App\Models\InputSource;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
+use App\Models\ToolQuestion;
+use App\Models\ToolQuestionCustomValue;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -44,7 +46,6 @@ class SolarPanel
         $orientationId = $buildingPvPanels['pv_panel_orientation_id'] ?? 0;
         $angle = $buildingPvPanels['angle'] ?? 0;
 
-        $userInterests = $calculateData['user_interests'] ?? [];
         $orientation = PvPanelOrientation::find($orientationId);
 
         $locationFactor = KeyFigures::getLocationFactor($building->postal_code);
@@ -74,14 +75,38 @@ class SolarPanel
             $result['cost_indication'] = $wp * KeyFigures::COST_WP;
             $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
-            $interest = Interest::find($userInterests['interest_id']);
+            // TODO: Almost duplicate code of UserActionPlanAdviceService, refactor
+            $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+            $hasPanelsQuestion = ToolQuestion::findByShort('has-solar-panels');
+            if ($hasPanelsQuestion instanceof ToolQuestion) {
+                $answer = $building->getAnswer($masterInputSource, $hasPanelsQuestion);
+                $toolQuestionCustomValue = $hasPanelsQuestion->toolQuestionCustomValues()
+                    ->where('short', $answer)
+                    ->first();
 
-            if (isset($interest) && $interest instanceof Interest) {
-                $currentYear = Carbon::now()->year;
-                if (1 == $interest->calculate_value) {
-                    $result['year'] = $currentYear;
-                } elseif (2 == $interest->calculate_value) {
-                    $result['year'] = $currentYear + 5;
+                if ($toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
+                    $currentYear = Carbon::now()->year;
+
+                    if ($toolQuestionCustomValue->short === 'no') {
+                        // No panels
+                        $result['year'] = $currentYear;
+                    } else {
+                        // The user has solar panels, let's see if there's an age for it
+                        $ageQuestion = ToolQuestion::findByShort('solar-panels-placed-date');
+                        if ($ageQuestion instanceof ToolQuestion) {
+                            $answer = $building->getAnswer($masterInputSource, $ageQuestion);
+
+                            if (is_numeric($answer)) {
+                                $diff = now()->format('Y') - $answer;
+
+                                // If it's not 25 years old
+                                $result['year'] = $diff < 25 ? $currentYear + 5 : $currentYear;
+                            } else {
+                                // No placing date available. We will assume it's fine
+                                $result['year'] = $currentYear;
+                            }
+                        }
+                    }
                 }
             }
         }

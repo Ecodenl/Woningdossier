@@ -201,6 +201,8 @@ return [
 
     'aliases' => [
         'MediaHelper' => \App\Helpers\MediaHelper::class,
+        'RoleHelper' => \App\Helpers\RoleHelper::class,
+        'RouteLogic' => \App\Helpers\Blade\RouteLogic::class,
 //        'NumberFormatter' => \App\Helpers\NumberFormatter::class, // We cannot alias NumberFormatter due to the native PHP class (https://www.php.net/manual/en/class.numberformatter.php)
         'Hoomdossier' => \App\Helpers\Hoomdossier::class,
         'App' => Illuminate\Support\Facades\App::class,

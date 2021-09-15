@@ -3,11 +3,11 @@
 @section('header')
     <div class="w-full">
         @include('cooperation.frontend.layouts.parts.navbar')
-        @if(\App\Helpers\Blade\RouteLogic::inQuickScanTool(Route::currentRouteName()))
+        @if(RouteLogic::inQuickScanTool(Route::currentRouteName()))
             {{-- Step progress --}}
             @include('cooperation.frontend.layouts.parts.sub-nav')
 
-            @if(! \App\Helpers\Blade\RouteLogic::inMyPlan(Route::currentRouteName()))
+            @if(! RouteLogic::inMyPlan(Route::currentRouteName()))
                 {{-- Progress bar --}}
                 <div class="w-full bg-gray h-2 relative z-40 -mt-1">
                     @php
@@ -29,12 +29,14 @@
 
 @section('main')
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20">
-        @if(\App\Helpers\Blade\RouteLogic::inExpertTool(Route::currentRouteName()))
+        @if(RouteLogic::inExpertTool(Route::currentRouteName()))
             {{-- Expert tool has a card-wrapper around the content --}}
-{{--            <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">--}}
-{{--                @include('cooperation.tool.includes.top-alerts')--}}
-{{--                @include('cooperation.tool.parts.progress')--}}
-{{--            </div>--}}
+            @if(! Hoomdossier::user()->hasRoleAndIsCurrentRole(RoleHelper::ROLE_RESIDENT))
+                <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
+{{--                    @include('cooperation.tool.includes.top-alerts')--}}
+                    @include('cooperation.tool.parts.progress')
+                </div>
+            @endif
 
 {{--            <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">--}}
 {{--                <div class="flex flex-row flex-wrap w-full" x-data="tabs()">--}}
@@ -179,7 +181,7 @@
     </div>
 @endsection
 
-@if(\App\Helpers\Blade\RouteLogic::inExpertTool(Route::currentRouteName()))
+@if(RouteLogic::inExpertTool(Route::currentRouteName()))
     @push('js')
         <script>
 

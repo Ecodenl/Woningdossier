@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\FloorInsulation;
 use App\Events\StepDataHasBeenChanged;
-use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -16,7 +15,6 @@ use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\Step;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
 use Illuminate\Http\Request;
 
 class FloorInsulationController extends Controller
@@ -99,9 +97,6 @@ class FloorInsulationController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
-
-        $userInterests = $request->input('user_interests');
-        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);

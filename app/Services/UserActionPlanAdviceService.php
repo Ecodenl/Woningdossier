@@ -442,6 +442,14 @@ class UserActionPlanAdviceService
      */
     public static function setAdviceVisibility(UserActionPlanAdvice $userActionPlanAdvice)
     {
+        $building = $userActionPlanAdvice->user->building;
+
+        // Chance of a building not being set is small, but not impossible!
+        if ($building instanceof Building && $building->hasAnsweredExpertQuestion()) {
+            // We don't need to check further, if the building has answered an expert question, then it will be shown
+            return true;
+        }
+
         // It's always going to be visible by default. Further logic follows.
         $visible = true;
 

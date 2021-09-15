@@ -31,14 +31,14 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20">
         @if(RouteLogic::inExpertTool(Route::currentRouteName()))
             {{-- Expert tool has a card-wrapper around the content --}}
-            @if(! Hoomdossier::user()->hasRoleAndIsCurrentRole(RoleHelper::ROLE_RESIDENT))
+            @if(Auth::check() && ! Hoomdossier::user()->hasRoleAndIsCurrentRole(RoleHelper::ROLE_RESIDENT))
                 <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
 {{--                    @include('cooperation.tool.includes.top-alerts')--}}
                     @include('cooperation.tool.parts.progress')
                 </div>
             @endif
 
-{{--            <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">--}}
+            <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
 {{--                <div class="flex flex-row flex-wrap w-full" x-data="tabs()">--}}
 {{--                    @if($currentSubStep instanceof \App\Models\Step)--}}
 {{--                        <h2 class="heading-2">--}}
@@ -47,7 +47,7 @@
 {{--                    @endif--}}
 {{--                    <ul class="nav-tabs mt-5" x-ref="nav-tabs">--}}
 {{--                        @if(isset($currentStep))--}}
-{{--                            @php --}}
+{{--                            @php--}}
 {{--                                $subStepsForStep = $cooperation->getchildrenForStep($currentStep);--}}
 {{--                            @endphp--}}
 {{--                            @if($subStepsForStep->isEmpty())--}}
@@ -107,7 +107,7 @@
                                             @lang('default.buttons.save')
                                         @endif
                                     </button>
-                                @elseif(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']) && $buildingHasCompletedGeneralData && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
+                                @elseif(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']) && $buildingHasCompletedGeneralData && Auth::check() && Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
                                     <form action="{{route('cooperation.file-storage.store', ['fileType' => $pdfReportFileType->short])}}"
                                           method="post">
                                         @csrf
@@ -155,25 +155,24 @@
                                             </a>
                                         </div>
                                         @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')
-                                            @lang('default.buttons.next-page')
                                             <div class="w-full sm:w-1/2">
                                                 <a href="" class="float-right btn btn-purple submit-main-form">
                                                     @lang('default.buttons.next-page')
                                                 </a>
                                             </div>
                                         @else
-                                        <div class="w-full sm:w-1/2">
-                                            <button class="float-right btn btn-purple submit-main-form">
-                                                @lang('default.buttons.save')
-                                            </button>
-                                        </div>
-                                    @endif
+                                            <div class="w-full sm:w-1/2">
+                                                <button class="float-right btn btn-purple submit-main-form">
+                                                    @lang('default.buttons.save')
+                                                </button>
+                                            </div>
+                                        @endif
                                     </div>
+                                @endif
                             </div>
-                            @endif
                         </div>
                     </div>
-                </div>
+{{--                </div>--}}
             </div>
         @else
             @yield('content')

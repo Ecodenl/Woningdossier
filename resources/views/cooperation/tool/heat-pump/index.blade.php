@@ -1,41 +1,37 @@
-@extends('cooperation.tool.layout')
+@extends('cooperation.frontend.layouts.tool')
+
 
 @section('step_title')
-    {!!  \App\Helpers\Translation::translate('heat-pump.title.title') !!}
+    {!!  __('heat-pump.title.title') !!}
 @endsection
 
-
-@section('step_content')
-    <form  method="POST" action="{{ route('cooperation.tool.heat-pump.store', ['cooperation' => $cooperation]) }}">
-        {{ csrf_field() }}
-        <div id="start-information">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            {!! \App\Helpers\Translation::translate('heat-pump.description.title') !!}
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">@lang('woningdossier.cooperation.tool.heat-pump-information.downloads.title')</div>
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        {!! \App\Helpers\Translation::translate('woningdossier.cooperation.tool.heat-pump-information.downloads.title') !!}
-                                    </div>
-                                </div>
-                                <ol>
-                                    <li><a download=""
-                                           href="{{asset('storage/hoomdossier-assets/Maatregelblad_Warmtepomp.pdf')}}">{{ucfirst(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/maatregelblad_warmtepomp.pdf'))))}}</a>
-                                    </li>
-                                </ol>
-                            </div>
+@section('content')
+    <form  method="POST" action="{{ route('cooperation.tool.heat-pump.store', compact('cooperation')) }}">
+        @csrf
+        <div id="start-information" class="mb-4">
+            <div class="flex flex-wrap flex-row w-full">
+                <div class="w-full">
+                    <div class="flex flex-wrap flex-row w-full">
+                        <div class="w-full">
+                            {!! __('heat-pump.description.title') !!}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        @component('cooperation.tool.components.panel', [
+            'label' => __('default.buttons.download'),
+        ])
+            <ol>
+                <li>
+                    <a download=""
+                       href="{{asset('storage/hoomdossier-assets/Maatregelblad_Warmtepomp.pdf')}}">
+                        {{ucfirst(str_replace(['-', '_'], ' ', basename(asset('storage/hoomdossier-assets/maatregelblad_warmtepomp.pdf'))))}}
+                    </a>
+                </li>
+            </ol>
+        @endcomponent
     </form>
 @endsection
 

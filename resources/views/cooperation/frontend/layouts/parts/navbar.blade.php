@@ -6,13 +6,13 @@
             <i class="icon-hoomdossier"></i>
         </a>
         @auth
-            @if (\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
+            @if (Auth::check() && Hoomdossier::user()->isFillingToolForOtherBuilding())
                 <a href="{{route('cooperation.admin.stop-session')}}" class="btn btn-yellow">
                     @lang('cooperation/frontend/layouts.navbar.stop-session')
                 </a>
             @endif
             {{-- only show the "back to cooperation button when the user is an admin without resident role AND we're on the settings page AND there's only one --}}
-            @if(\App\Helpers\Hoomdossier::user()->can('access-admin') && !\App\Helpers\Hoomdossier::user()->hasRole('resident') && \App\Helpers\Hoomdossier::user()->getRoleNames()->count() <= 1 && !\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
+            @if(Auth::check() && Hoomdossier::user()->can('access-admin') && ! Hoomdossier::user()->hasRole('resident') && Hoomdossier::user()->getRoleNames()->count() <= 1 && ! Hoomdossier::user()->isFillingToolForOtherBuilding())
                 <a href="{{ route('cooperation.admin.index') }}" class="btn btn-green">
                     @lang('cooperation/frontend/layouts.navbar.back-to-cooperation')
                 </a>
@@ -56,8 +56,8 @@
         @endif
     </div>
     <div class="flex flex-row justify-end items-center space-x-4">
-        @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('resident'))
-            @if (!\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
+        @if(Auth::check() && Hoomdossier::user()->hasRoleAndIsCurrentRole('resident'))
+            @if (! Hoomdossier::user()->isFillingToolForOtherBuilding())
                 <p>
                     <a href="{{ route('cooperation.home') }}">
                         @lang('default.start')
@@ -71,13 +71,13 @@
 {{--            </p>--}}
         @endif
 
-        @if (!\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
-            @if(\App\Helpers\Hoomdossier::user()->getRoleNames()->count() > 1 && \App\Helpers\HoomdossierSession::hasRole())
+        @if (Auth::check() && ! Hoomdossier::user()->isFillingToolForOtherBuilding())
+            @if(Hoomdossier::user()->getRoleNames()->count() > 1 && \App\Helpers\HoomdossierSession::hasRole())
                 @component('cooperation.frontend.layouts.components.dropdown', [
                     'label' => __('cooperation/frontend/layouts.navbar.current-role') . \Spatie\Permission\Models\Role::find(\App\Helpers\HoomdossierSession::getRole())->human_readable_name,
                     'class' => 'in-text',
                 ])
-                    @foreach(\App\Helpers\Hoomdossier::user()->roles()->orderBy('level', 'DESC')->get() as $role)
+                    @foreach(Hoomdossier::user()->roles()->orderBy('level', 'DESC')->get() as $role)
                         <li>
                             <a href="{{ route('cooperation.admin.switch-role', ['role' => $role->name]) }}"
                                class="in-text">

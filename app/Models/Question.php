@@ -132,6 +132,9 @@ class Question extends Model
      */
     public function questionAnswers()
     {
+        // If you're wondering why this is resulting in specific answers, or maybe you want a specific answer, but
+        // you're getting a ton of answers, check view composers to see if these might be set to only be for
+        // the current building
         return $this->hasMany(QuestionsAnswer::class);
     }
 
@@ -142,7 +145,7 @@ class Question extends Model
      */
     public function questionAnswersForMe()
     {
-        // only there for eager loading, user in the App\Http\ViewComposers\ToolCompsoser
+        // only there for eager loading, user in the App\Http\ViewComposers\ToolComposer
         return $this->questionAnswers()->forMe();
     }
 

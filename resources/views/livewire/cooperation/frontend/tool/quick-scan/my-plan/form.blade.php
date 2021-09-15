@@ -174,12 +174,12 @@
                 </div>
             @endforeach
         </div>
-        <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 py-8 mt-5">
+        <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 -mb-5">
             <div class="w-full">
                 {{-- White space --}}
             </div>
             <div class="w-full flex flex-row flex-wrap justify-center items-center">
-                <i class="icon-xl icon-trash-can-red p-4 rounded-lg transition duration-500 trash" x-bind="trash"></i>
+                <i class="w-20 h-20 icon-trash-can-red p-4 rounded-lg transition duration-500 trash" x-bind="trash"></i>
             </div>
 
             @if(! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))

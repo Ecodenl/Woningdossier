@@ -80,14 +80,11 @@ class HeaterController extends Controller
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
 
-        $userInterests = $request->input('user_interests');
-        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
-
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         (new HeaterHelper($user, $inputSource))
-            ->setValues($request->only('user_interests', 'building_heaters', 'user_energy_habits'))
+            ->setValues($request->only('building_heaters', 'user_energy_habits'))
             ->saveValues()
             ->createAdvices();
 

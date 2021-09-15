@@ -9,11 +9,12 @@ use App\Helpers\KeyFigures\Heater\KeyFigures;
 use App\Models\Building;
 use App\Models\ComfortLevelTapWater;
 use App\Models\HeaterComponentCost;
-use App\Models\Interest;
+use App\Models\InputSource;
 use App\Models\KeyFigureConsumptionTapWater;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
+use App\Models\ToolQuestion;
 use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
 
@@ -42,7 +43,6 @@ class Heater
 
         $comfortLevelId = $calculateData['user_energy_habits']['water_comfort_id'] ?? 0;
         $comfortLevel = ComfortLevelTapWater::find($comfortLevelId);
-        $userInterests = $calculateData['user_interests'] ?? [];
 
         if ($energyHabit instanceof UserEnergyHabit && $comfortLevel instanceof ComfortLevelTapWater) {
             $consumption = KeyFigures::getCurrentConsumption($energyHabit, $comfortLevel);
@@ -92,14 +92,26 @@ class Heater
 
                 $result['interest_comparable'] = number_format(BankInterestCalculator::getComparableInterest($result['cost_indication'], $result['savings_money']), 1);
 
-                $interest = Interest::find($userInterests['interest_id']);
+                // TODO: Almost duplicate code of UserActionPlanAdviceService, refactor
+                $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+                $hasBoilerQuestion = ToolQuestion::findByShort('heat-source');
+                if ($hasBoilerQuestion instanceof ToolQuestion) {
+                    $answer = $building->getAnswer($masterInputSource, $hasBoilerQuestion);
+                    if (is_array($answer) && in_array('hr-boiler', $answer)) {
+                        // The user has a boiler, let's see if there's an age for it
+                        $ageQuestion = ToolQuestion::findByShort('boiler-placed-date');
+                        if ($ageQuestion instanceof ToolQuestion) {
+                            $answer = $building->getAnswer($masterInputSource, $ageQuestion);
 
-                if (isset($interest) && $interest instanceof Interest) {
-                    $currentYear = Carbon::now()->year;
-                    if (1 == $interest->calculate_value) {
-                        $result['year'] = $currentYear;
-                    } elseif (2 == $interest->calculate_value) {
-                        $result['year'] = $currentYear + 5;
+                            if (is_numeric($answer)) {
+                                $currentYear = Carbon::now()->year;
+                                $diff = now()->format('Y') - $answer;
+                                // If it's not 10 years old, it's complete
+                                // If it's between 10 and 13, it's later
+                                // If it's older than 13 years, it's to-do
+                                $result['year'] = $diff >= 10 && $diff < 13 ? $currentYear + 5 : $currentYear;
+                            }
+                        }
                     }
                 }
 

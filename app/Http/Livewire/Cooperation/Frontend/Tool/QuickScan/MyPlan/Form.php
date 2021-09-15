@@ -12,6 +12,7 @@ use App\Models\InputSource;
 use App\Models\MeasureApplication;
 use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
+use App\Models\UserEnergyHabit;
 use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Database\Eloquent\Collection;
@@ -95,34 +96,34 @@ class Form extends Component
         'comfort' => [
             [
                 'condition' => [
-                    'to' => 10,
+                    'to' => 5,
                 ],
                 'value' => 1,
+            ],
+            [
+                'condition' => [
+                    'from' => 5,
+                    'to' => 10,
+                ],
+                'value' => 2,
             ],
             [
                 'condition' => [
                     'from' => 10,
                     'to' => 15,
                 ],
-                'value' => 2,
+                'value' => 3,
             ],
             [
                 'condition' => [
                     'from' => 15,
                     'to' => 20,
                 ],
-                'value' => 3,
-            ],
-            [
-                'condition' => [
-                    'from' => 20,
-                    'to' => 25,
-                ],
                 'value' => 4,
             ],
             [
                 'condition' => [
-                    'from' => 25,
+                    'from' => 20,
                 ],
                 'value' => 5,
             ],
@@ -438,7 +439,8 @@ class Form extends Component
         $investment = NumberFormatter::round($investment);
         $savings = NumberFormatter::round($savings);
 
-        $investmentPercentage = $investment > 0 ? (max(1, $savings) / $investment) * 100 : 0;
+        // Investment cannot be 0!
+        $investmentPercentage = $savings / max(1, $investment) * 100;
         $this->evaluateCalculationResult('investment', $investmentPercentage);
 
         // ---------------------------------------------------------------------
@@ -452,25 +454,33 @@ class Form extends Component
         $totalGasSavings = $advices->sum('savings_gas');
         $totalElectricitySavings = $advices->sum('savings_electricity');
 
-        $habits = $this->building->user
+        $habit = $this->building->user
             ->energyHabit()
             ->forInputSource($this->masterInputSource)
-            ->get();
-        $usageGas = $habits->get('amount_gas');
-        $usageElectricity = $habits->get('amount_electricity');
+            ->first();
+
+        $usageGas = null;
+        $usageElectricity = null;
+
+        if ($habit instanceof UserEnergyHabit) {
+            $usageGas = $habit->amount_gas;
+            $usageElectricity = $habit->amount_electricity;
+        }
 
         // calculate to kg. (set gas and electricity to same unit)
-        $co2Reductions = ($totalGasSavings * Kengetallen::CO2_SAVING_GAS) +
-                         ($totalElectricitySavings * Kengetallen::CO2_SAVINGS_ELECTRICITY);
+        $co2Reductions = $totalGasSavings * Kengetallen::CO2_SAVING_GAS +
+                         $totalElectricitySavings * Kengetallen::CO2_SAVINGS_ELECTRICITY;
 
-        $co2Current = ($usageGas * Kengetallen::CO2_SAVING_GAS) +
-                      ($usageElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY);
+        $co2Current = $usageGas * Kengetallen::CO2_SAVING_GAS +
+                      $usageElectricity * Kengetallen::CO2_SAVINGS_ELECTRICITY;
 
-        // percentage = (reduction / current) * 100
+        // To calculate the new percentage, we need the new situation
+        $co2New = $co2Current - $co2Reductions;
+
+        // percentage = (new - old) / current * -1 * 100
+        // * -1, because if it's a reduction, we will get a negative value
         // just ensure $co2Current is min. 1
-        // just ensure max percentage = 100.
-        $renewablePercentage = min(($co2Reductions / max(1,$co2Current)) * 100,100);
-
+        $renewablePercentage = ($co2New - $co2Current) / max(1, $co2Current) * -1 * 100;
         $this->evaluateCalculationResult('renewable', $renewablePercentage);
 
         // ---------------------------------------------------------------------

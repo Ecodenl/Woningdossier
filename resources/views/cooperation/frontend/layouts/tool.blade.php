@@ -155,22 +155,21 @@
                                             </a>
                                         </div>
                                         @if(Route::currentRouteName() === 'cooperation.tool.heat-pump.index')
-                                            @lang('default.buttons.next-page')
                                             <div class="w-full sm:w-1/2">
                                                 <a href="" class="float-right btn btn-purple submit-main-form">
                                                     @lang('default.buttons.next-page')
                                                 </a>
                                             </div>
                                         @else
-                                        <div class="w-full sm:w-1/2">
-                                            <button class="float-right btn btn-purple submit-main-form">
-                                                @lang('default.buttons.save')
-                                            </button>
-                                        </div>
-                                    @endif
+                                            <div class="w-full sm:w-1/2">
+                                                <button class="float-right btn btn-purple submit-main-form">
+                                                    @lang('default.buttons.save')
+                                                </button>
+                                            </div>
+                                        @endif
                                     </div>
+                                @endif
                             </div>
-                            @endif
                         </div>
                     </div>
 {{--                </div>--}}

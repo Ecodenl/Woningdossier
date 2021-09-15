@@ -3,6 +3,7 @@
 namespace App\Http\ViewComposers\Frontend\Tool;
 
 use App\Helpers\StepHelper;
+use App\Models\Questionnaire;
 use App\Models\Step;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -56,5 +57,19 @@ class QuickScanComposer
 
         $view->with('current', $current);
         $view->with('total', $total);
+
+        // Additional logic to set question answers if a questionnaire is available
+        $questionnaire = $this->request->route('questionnaire');
+        if ($questionnaire instanceof Questionnaire) {
+            $questionnaire->load(['questions' => function ($query) {
+                $query->orderBy('order')
+                    ->with(['questionAnswers' => function ($query) {
+                        $query->where('building_id', \App\Helpers\HoomdossierSession::getBuilding());
+                    }])
+                    ->with('questionAnswersForMe');
+            }]);
+
+            $view->with('questionnaire', $questionnaire);
+        }
     }
 }

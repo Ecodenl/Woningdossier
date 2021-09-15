@@ -9,6 +9,7 @@ use App\Http\Requests\Cooperation\Admin\Cooperation\CooperationAdmin\Cooperation
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\CooperationMeasureApplication;
+use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\User;
@@ -81,10 +82,14 @@ class CooperationMeasureApplicationController extends Controller
                     'name' => $cooperationMeasureApplication->name,
                     'info' => $cooperationMeasureApplication->info,
                     'hash' => $hash,
-
                 ];
+                foreach ($inputSourceIds as $inputSourceId) {
+                    $createData['input_source_id'] = $inputSourceId;
 
+                    CustomMeasureApplication::create($createData);
+                }
 
+                $processedUserIds[] = $user->id;
             }
         }
 

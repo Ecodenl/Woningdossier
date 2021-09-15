@@ -271,7 +271,8 @@ class CustomChanges extends Component
     {
         $this->customMeasureApplicationsFormData = [];
         // Retrieve the user's custom measures
-        $customMeasureApplications = $this->building->customMeasureApplications()->forInputSource($this->masterInputSource)->get();
+        $customMeasureApplications = $this->building->customMeasureApplications()
+            ->forInputSource($this->masterInputSource)->get();
 
         $this->cooperationMeasureApplicationsFormData = [];
         // Retrieve the cooperation's custom measures

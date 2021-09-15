@@ -18,13 +18,14 @@ $disabled = \App\Helpers\HoomdossierSession::isUserObserving();
         </div>
     @endforeach
     @foreach($customMeasureApplicationsFormData as $index => $customMeasureApplicationFormData)
-        <div class="@if($loop->last) add-option-wrapper @else checkbox-wrapper @endif media-wrapper" x-data="modal()">
+        <div class="@if($loop->last) add-option-wrapper @else checkbox-wrapper @endif media-wrapper"
+             @if(! \App\Helpers\HoomdossierSession::isUserObserving()) x-data="modal()" @endif>
             @if(!$loop->last)
                 <input type="checkbox" id="custom-measure-{{$index}}" value="{{ $index }}" wire:model="selectedCustomMeasureApplications"
                        @if($disabled) disabled="disabled" @endif>
 
             @endif
-            <label for="custom-measure-{{$index}}">
+            <label for="custom-measure-{{$index}}" x-on:click="toggle()">
                 <span class="media-icon-wrapper">
                     <i class="@if($loop->last) icon-plus-circle @else {{$customMeasureApplicationFormData['extra']['icon']}} @endif"></i>
                 </span>

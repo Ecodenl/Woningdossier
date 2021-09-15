@@ -5,12 +5,9 @@
 @section('content')
     <form method="POST" id="roof-insulation-form"
           action="{{ route('cooperation.tool.roof-insulation.store', compact('cooperation')) }}">
-
         @csrf
-        @include('cooperation.tool.includes.interested', [
-            'translation' => 'roof-insulation.index.interested-in-improvement',
-            'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
-        ])
+
+
         <div class="flex flex-row flex-wrap w-full">
             <div id="current-situation" class="w-full">
 

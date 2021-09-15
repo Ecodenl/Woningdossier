@@ -1,13 +1,14 @@
 @extends('cooperation.tool.layout')
 
-@section('step_title', \App\Helpers\Translation::translate('ventilation-information.title.title'))
+@section('step_title', __('ventilation-information.title.title'))
 
 @section('step_content')
     <form class="form-horizontal" method="POST" action="{{ route('cooperation.tool.ventilation-information.store', ['cooperation' => $cooperation]) }}">
-        {{ csrf_field() }}
+        @csrf
+
         <div class="row">
             <div class="col-sm-12">
-                <p style="margin-left: -5px">{!! \App\Helpers\Translation::translate('ventilation-information.description.title') !!}</p>
+                <p style="margin-left: -5px">{!! __('ventilation-information.description.title') !!}</p>
             </div>
         </div>
 

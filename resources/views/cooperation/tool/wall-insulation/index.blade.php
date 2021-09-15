@@ -8,10 +8,6 @@
         @csrf
 
         <div id="intro">
-            @include('cooperation.tool.includes.interested', [
-                'translation' => 'wall-insulation.index.interested-in-improvement', 
-                'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
-            ])
             <div class="flex flex-row flex-wrap w-full">
                 <div class="w-full">
                     <?php // todo: something seems off with the name ?>

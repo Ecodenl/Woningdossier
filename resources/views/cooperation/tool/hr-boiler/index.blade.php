@@ -6,10 +6,7 @@
     <form  method="POST" id="high-efficiency-boiler-form"
            action="{{ route('cooperation.tool.high-efficiency-boiler.store', compact('cooperation')) }}">
         @csrf
-        @include('cooperation.tool.includes.interested', [
-            'translation' => 'high-efficiency-boiler.index.interested-in-improvement', 
-            'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
-        ])
+
         <div id="start-information">
             <div class="flex flex-row flex-wrap w-full">
                 <div class="w-full sm:w-1/2 sm:pr-3">

@@ -1,8 +1,13 @@
+@php
+$disabled = \App\Helpers\HoomdossierSession::isUserObserving();
+@endphp
 <div class="w-full grid grid-rows-2 grid-cols-4 grid-flow-row justify-items-center">
     @foreach($cooperationMeasureApplicationsFormData as $index => $customMeasureApplicationFormData)
         <div class="checkbox-wrapper media-wrapper">
             <input type="checkbox" id="cooperation-measure-{{$index}}" value="{{ $index }}"
-                   wire:model="selectedCooperationMeasureApplications">
+                   wire:model="selectedCooperationMeasureApplications"
+            @if($disabled) disabled="disabled" @endif
+            >
             <label for="cooperation-measure-{{$index}}">
                 <span class="media-icon-wrapper">
                     <i class="{{ $customMeasureApplicationFormData['extra']['icon'] }}"></i>
@@ -15,9 +20,11 @@
     @foreach($customMeasureApplicationsFormData as $index => $customMeasureApplicationFormData)
         <div class="@if($loop->last) add-option-wrapper @else checkbox-wrapper @endif media-wrapper" x-data="modal()">
             @if(!$loop->last)
-                <input type="checkbox" id="custom-measure-{{$index}}" value="{{ $index }}" wire:model="selectedCustomMeasureApplications">
+                <input type="checkbox" id="custom-measure-{{$index}}" value="{{ $index }}" wire:model="selectedCustomMeasureApplications"
+                       @if($disabled) disabled="disabled" @endif>
+
             @endif
-            <label for="custom-measure-{{$index}}" x-on:click="toggle()">
+            <label for="custom-measure-{{$index}}">
                 <span class="media-icon-wrapper">
                     <i class="@if($loop->last) icon-plus-circle @else {{$customMeasureApplicationFormData['extra']['icon']}} @endif"></i>
                 </span>
@@ -38,7 +45,9 @@
                    ])
                         <input class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.name"
                                id="custom-measure-application-name"
-                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.subject-placeholder')">
+                               placeholder="@lang('cooperation/frontend/shared.modals.add-measure.subject-placeholder')"
+                               @if($disabled) disabled="disabled" @endif
+                        >
                     @endcomponent
                     <div class="w-full flex items-center">
                         <i class="icon-sm icon-info mr-3"></i>
@@ -55,6 +64,7 @@
                         <textarea class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.info"
                                id="custom-measure-application-info"
                                placeholder="@lang('cooperation/frontend/shared.modals.add-measure.info-placeholder')"
+                                  @if($disabled) disabled="disabled" @endif
                         ></textarea>
                     @endcomponent
                     <div class="w-full flex items-center">
@@ -70,6 +80,7 @@
                        'withInputSource' => false,
                    ])
                         <input class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.costs.from"
+                               @if($disabled) disabled="disabled" @endif
                                id="custom-measure-application-costs-from" placeholder="@lang('default.from')">
                     @endcomponent
                     @component('cooperation.frontend.layouts.components.form-group', [
@@ -79,6 +90,7 @@
                         'withInputSource' => false,
                     ])
                         <input class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.costs.to"
+                               @if($disabled) disabled="disabled" @endif
                                id="custom-measure-application-costs-to" placeholder="@lang('default.to')">
                     @endcomponent
                     <div class="w-full flex items-center">
@@ -95,6 +107,7 @@
                     ])
                         <input class="form-input" wire:model="customMeasureApplicationsFormData.{{$index}}.savings_money"
                                id="custom-measure-application-savings-money"
+                               @if($disabled) disabled="disabled" @endif
                                placeholder="@lang('cooperation/frontend/shared.modals.add-measure.savings-money')">
                     @endcomponent
                 </div>

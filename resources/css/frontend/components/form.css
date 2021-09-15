@@ -91,9 +91,13 @@ textarea.form-input {
 
 .form-input:disabled,
 .radio-wrapper input[type="radio"]:disabled + label,
-.radio-wrapper input[type="range"]:disabled + label,
 .checkbox-wrapper input[type="checkbox"]:disabled + label {
     @apply cursor-not-allowed bg-blue-100 bg-opacity-50;
+}
+
+.slider:disabled::-moz-range-thumb,
+.slider:disabled::-webkit-slider-thumb {
+    @apply cursor-not-allowed bg-blue-100 bg-opacity-100;
 }
 
 .form-error .slider-wrapper {

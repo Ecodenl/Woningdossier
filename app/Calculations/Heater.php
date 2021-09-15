@@ -14,6 +14,7 @@ use App\Models\KeyFigureConsumptionTapWater;
 use App\Models\PvPanelLocationFactor;
 use App\Models\PvPanelOrientation;
 use App\Models\PvPanelYield;
+use App\Models\ServiceValue;
 use App\Models\ToolQuestion;
 use App\Models\UserEnergyHabit;
 use Carbon\Carbon;
@@ -94,24 +95,15 @@ class Heater
 
                 // TODO: Almost duplicate code of UserActionPlanAdviceService, refactor
                 $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-                $hasBoilerQuestion = ToolQuestion::findByShort('heat-source');
-                if ($hasBoilerQuestion instanceof ToolQuestion) {
-                    $answer = $building->getAnswer($masterInputSource, $hasBoilerQuestion);
-                    if (is_array($answer) && in_array('hr-boiler', $answer)) {
-                        // The user has a boiler, let's see if there's an age for it
-                        $ageQuestion = ToolQuestion::findByShort('boiler-placed-date');
-                        if ($ageQuestion instanceof ToolQuestion) {
-                            $answer = $building->getAnswer($masterInputSource, $ageQuestion);
+                $hasSunBoilerQuestion = ToolQuestion::findByShort('heater-type');
+                if ($hasSunBoilerQuestion instanceof ToolQuestion) {
+                    $answer = $building->getAnswer($masterInputSource, $hasSunBoilerQuestion);
+                    $serviceValue = ServiceValue::find($answer);
 
-                            if (is_numeric($answer)) {
-                                $currentYear = Carbon::now()->year;
-                                $diff = now()->format('Y') - $answer;
-                                // If it's not 10 years old, it's complete
-                                // If it's between 10 and 13, it's later
-                                // If it's older than 13 years, it's to-do
-                                $result['year'] = $diff >= 10 && $diff < 13 ? $currentYear + 5 : $currentYear;
-                            }
-                        }
+                    if ($serviceValue instanceof ServiceValue) {
+                        $currentYear = Carbon::now()->year;
+                        // If the value is 1 (geen), we want it in to-do
+                        $result['year'] = $serviceValue->calculate_value > 1 ? $currentYear + 5 : $currentYear;
                     }
                 }
 

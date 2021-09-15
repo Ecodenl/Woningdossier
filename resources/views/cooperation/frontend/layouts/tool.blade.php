@@ -38,7 +38,7 @@
                 </div>
             @endif
 
-{{--            <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">--}}
+            <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
 {{--                <div class="flex flex-row flex-wrap w-full" x-data="tabs()">--}}
 {{--                    @if($currentSubStep instanceof \App\Models\Step)--}}
 {{--                        <h2 class="heading-2">--}}
@@ -47,7 +47,7 @@
 {{--                    @endif--}}
 {{--                    <ul class="nav-tabs mt-5" x-ref="nav-tabs">--}}
 {{--                        @if(isset($currentStep))--}}
-{{--                            @php --}}
+{{--                            @php--}}
 {{--                                $subStepsForStep = $cooperation->getchildrenForStep($currentStep);--}}
 {{--                            @endphp--}}
 {{--                            @if($subStepsForStep->isEmpty())--}}
@@ -173,7 +173,7 @@
                             @endif
                         </div>
                     </div>
-                </div>
+{{--                </div>--}}
             </div>
         @else
             @yield('content')

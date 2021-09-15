@@ -16,11 +16,9 @@ use App\Models\BuildingFeature;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
-use App\Models\Interest;
 use App\Models\Step;
 use App\Scopes\GetValueScope;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
 use Illuminate\Http\Request;
 
 class WallInsulationController extends Controller
@@ -63,11 +61,9 @@ class WallInsulationController extends Controller
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
         $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
 
-        $interests = Interest::orderBy('order')->get();
-
         return view('cooperation.tool.wall-insulation.index', compact(
              'building', 'facadeInsulation', 'buildingFeaturesOrderedOnCredibility',
-            'surfaces', 'buildingFeature', 'interests', 'typeIds',
+            'surfaces', 'buildingFeature', 'typeIds',
             'facadePlasteredSurfaces', 'facadeDamages', 'buildingFeaturesForMe',
             'buildingElements', 'buildingFeaturesRelationShip'
         ));
@@ -85,9 +81,6 @@ class WallInsulationController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
-
-        $userInterests = $request->input('user_interests');
-        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);

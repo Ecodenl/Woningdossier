@@ -55,36 +55,11 @@ class InsulatedGlazingFormRequest extends FormRequest
     {
         $big = 'building_insulated_glazings.';
 
-        foreach ($this->get('user_interests') as $measureApplicationId => $userInterest) {
-            // when the user his interest level is high enough, we should add rules. Otherwise there is no need to validate the fields.
-
-            // when interest is yes, the field is required
-            // when no interest, its not required. The field should be empty, but the field can still be filled. So validate.
-            if ($this->isUserInterested($userInterest['interest_id'])) {
-                $validator->addRules([
-                    $big.$measureApplicationId.'.m2' => 'required|numeric|min:1',
-                    $big.$measureApplicationId.'.windows' => 'required|numeric|min:1',
-                ]);
-            } else {
-                $validator->addRules([
-                    $big.$measureApplicationId.'.m2' => 'nullable|numeric|min:1',
-                    $big.$measureApplicationId.'.windows' => 'nullable|numeric|min:1',
-                ]);
-            }
+        foreach ($this->get('building_insulated_glazings') as $measureApplicationId => $bigData) {
+            $validator->addRules([
+                $big.$measureApplicationId.'.m2' => 'nullable|numeric|min:1',
+                $big.$measureApplicationId.'.windows' => 'nullable|numeric|min:1',
+            ]);
         }
-    }
-
-    /**
-     * Check whether the user has interest in the particular measure.
-     *
-     * @param $userInterest
-     *
-     * @return bool
-     */
-    public function isUserInterested($userInterest)
-    {
-        $noInterestIds = Interest::where('calculate_value', 4)->orWhere('calculate_value', 5)->select('id')->get()->pluck('id')->toArray();
-
-        return ! in_array($userInterest, $noInterestIds);
     }
 }

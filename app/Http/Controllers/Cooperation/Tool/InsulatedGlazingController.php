@@ -16,14 +16,11 @@ use App\Models\BuildingHeating;
 use App\Models\BuildingInsulatedGlazing;
 use App\Models\Element;
 use App\Models\InsulatingGlazing;
-use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
 use App\Models\Step;
-use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
 use Illuminate\Http\Request;
 
 class InsulatedGlazingController extends Controller
@@ -52,8 +49,6 @@ class InsulatedGlazingController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
-        $interests = Interest::orderBy('order')->get();
-
         $buildingPaintworkStatusesOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
             $building->currentPaintworkStatus()
         )->get();
@@ -77,7 +72,6 @@ class InsulatedGlazingController extends Controller
         $buildingInsulatedGlazingsForMe = [];
 
         $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
-        $userInterests = [];
 
         foreach ($measureApplicationShorts as $measureApplicationShort) {
             $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
@@ -94,32 +88,18 @@ class InsulatedGlazingController extends Controller
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
                 }
 
-                // get interests for the measure
-                $measureInterestId = Hoomdossier::getMostCredibleValue(
-                    $buildingOwner->userInterestsForSpecificType(MeasureApplication::class, $measureApplication->id), 'interest_id'
-                );
-
-                // when there is no interest found and the short is for hrpp glass, then we will set the interest given for the step insulated glazing.
-                if (is_null($measureInterestId) && in_array($measureApplicationShort, ['hrpp-glass-only'])) {
-                    $measureInterestId = Hoomdossier::getMostCredibleValue(
-                        $buildingOwner->userInterestsForSpecificType(Step::class, $this->step->id), 'interest_id'
-                    );
-                }
-
-                $userInterests[$measureApplication->id] = $measureInterestId;
-
                 $measureApplications[] = $measureApplication;
             }
         }
 
         $myBuildingElements = BuildingElement::forMe()->get();
-        $userInterestsForMe = UserInterest::forMe()->where('interested_in_type', MeasureApplication::class)->get();
 
         return view('cooperation.tool.insulated-glazing.index', compact(
-            'building', 'interests', 'myBuildingElements', 'buildingOwner', 'userInterestsForMe',
+            'building', 'myBuildingElements', 'buildingOwner',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
-            'userInterests', 'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
-            'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe', 'buildingPaintworkStatusesOrderedOnInputSourceCredibility'
+            'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
+            'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe',
+            'buildingPaintworkStatusesOrderedOnInputSourceCredibility',
         ));
     }
 
@@ -144,24 +124,11 @@ class InsulatedGlazingController extends Controller
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
 
-        $userInterests = $request->input('user_interests');
-        $interests = collect();
-        foreach ($userInterests as $interestInId => $userInterest) {
-            // so we can determine the highest interest level later on.
-            $interests->push(Interest::find($userInterest['interest_id']));
-            UserInterestService::save($user, $inputSource, $userInterest['interested_in_type'], $interestInId, $userInterest['interest_id']);
-        }
-
-        // get the highest interest level (which is the lowst calculate value.)
-        $highestInterestLevelInterestId = $interests->unique('id')->min('calculate_value');
-        // we have to update the step interest based on the interest for the measure application.
-        UserInterestService::save($user, $inputSource, Step::class, Step::findByShort('insulated-glazing')->id, $highestInterestLevelInterestId);
-
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         (new InsulatedGlazingHelper($user, $inputSource))
-            ->setValues($request->only('user_interests', 'building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses'))
+            ->setValues($request->only('building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses'))
             ->saveValues()
             ->createAdvices();
 

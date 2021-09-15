@@ -107,7 +107,7 @@
                                             @lang('default.buttons.save')
                                         @endif
                                     </button>
-                                @elseif(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']) && $buildingHasCompletedGeneralData && Auth::check() Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
+                                @elseif(in_array(Route::currentRouteName(), ['cooperation.tool.my-plan.index']) && $buildingHasCompletedGeneralData && Auth::check() && Hoomdossier::user()->hasRoleAndIsCurrentRole(['coach', 'resident', 'coordinator', 'cooperation-admin']))
                                     <form action="{{route('cooperation.file-storage.store', ['fileType' => $pdfReportFileType->short])}}"
                                           method="post">
                                         @csrf

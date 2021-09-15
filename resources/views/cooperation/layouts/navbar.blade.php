@@ -19,11 +19,11 @@
         <div class="collapse navbar-collapse" id="app-navbar-collapse">
         @auth
             <ul class="nav navbar-nav">
-                @if (\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
+                @if (Auth::check() && Hoomdossier::user()->isFillingToolForOtherBuilding())
                     <a href="{{route('cooperation.admin.stop-session')}}" class="btn btn-warning navbar-btn">Stop sessie</a>
                 @endif
                 {{-- only show the "back to cooperation button when the user is an admin without resident role AND we're on the settings page AND there's only one --}}
-                @if(\App\Helpers\Hoomdossier::user()->can('access-admin') && !\App\Helpers\Hoomdossier::user()->hasRole('resident') && \App\Helpers\Hoomdossier::user()->getRoleNames()->count() <= 1 && !\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
+                @if(Auth::check() && Hoomdossier::user()->can('access-admin') && ! Hoomdossier::user()->hasRole('resident') && Hoomdossier::user()->getRoleNames()->count() <= 1 && ! Hoomdossier::user()->isFillingToolForOtherBuilding())
                     <a href="{{ route('cooperation.admin.index') }}" class="btn btn-success navbar-btn">Naar coöperatie omgeving</a>
                 @endif
             </ul>
@@ -76,8 +76,8 @@
                 @else
 
                     {{-- for residents only show 'Start' and 'Basisadvies' --}}
-                    @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole('resident'))
-                        @if (!\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
+                    @if(Auth::check() && Hoomdossier::user()->hasRoleAndIsCurrentRole('resident'))
+                        @if (! Hoomdossier::user()->isFillingToolForOtherBuilding())
                         <li>
                             <a href="{{url('/home')}}">@lang('woningdossier.cooperation.navbar.start')</a>
                         </li>
@@ -89,12 +89,12 @@
                         </li>
                     @endif
 
-                    @if (!\App\Helpers\Hoomdossier::user()->isFillingToolForOtherBuilding())
+                    @if (Auth::check() && ! \Hoomdossier::user()->isFillingToolForOtherBuilding())
 
                         <?php
                             $messageUrl = route('cooperation.my-account.messages.index');
 
-                            if(\App\Helpers\Hoomdossier::user()->can('access-admin') && \App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin'])) {
+                            if(Auth::check() && Hoomdossier::user()->can('access-admin') && Hoomdossier::user()->hasRoleAndIsCurrentRole(['coordinator', 'coach', 'cooperation-admin'])) {
                                 $messageUrl = route('cooperation.admin.messages.index');
                             }
                         ?>
@@ -106,7 +106,7 @@
 
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
-                                    {{ \App\Helpers\Hoomdossier::user()->first_name }} {{ \App\Helpers\Hoomdossier::user()->last_name }}<span class="caret"></span>
+                                    {{ optional(Hoomdossier::user())->first_name }} {{ optional(Hoomdossier::user())->last_name }}<span class="caret"></span>
                                 </a>
 
                                 <ul class="dropdown-menu">

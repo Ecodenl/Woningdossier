@@ -13,6 +13,7 @@ use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\User;
+use App\Models\UserActionPlanAdvice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -73,8 +74,9 @@ class CooperationMeasureApplicationController extends Controller
             $user = $advice->user;
             if (! in_array($user->id, $processedUserIds) && $user->building instanceof Building) {
                 // Get all advices for this user id
-                $advicesForUserId = $advices->where('user_id', $user->id)->get();
-                $inputSourceIds = $advicesForUserId->where('input_source_id', '!=', $masterInputSource->id)->pluck('input_source_id');
+                $advicesForUserId = $advices->where('user_id', $user->id);
+                $inputSourceIds = $advicesForUserId->where('input_source_id', '!=', $masterInputSource->id)
+                    ->pluck('input_source_id');
 
                 $hash = Str::uuid();
                 $createData = [
@@ -86,15 +88,40 @@ class CooperationMeasureApplicationController extends Controller
                 foreach ($inputSourceIds as $inputSourceId) {
                     $createData['input_source_id'] = $inputSourceId;
 
-                    CustomMeasureApplication::create($createData);
+                    // Create a custom measure with the data of the cooperation measure
+                    $customMeasure = CustomMeasureApplication::create($createData);
+                    $adviceForInputSource = $advicesForUserId->where('input_source_id', $inputSourceId)->first();
+                    if ($adviceForInputSource instanceof UserActionPlanAdvice) {
+                        // Update the advice from the cooperation measure to the custom measure
+                        $adviceForInputSource->update([
+                            'user_action_plan_advisable_type' => CustomMeasureApplication::class,
+                            'user_action_plan_advisable_id' => $customMeasure->id,
+                        ]);
+                    }
+                }
+
+                // The master updates the custom measure automatically, but it doesn't update
+                // the user action plan advice. It instead generates a new one. We delete the old advice if it
+                // exists.
+                $adviceForMaster = UserActionPlanAdvice::forUser($user)
+                    ->forInputSource($masterInputSource)
+                    ->whereHasMorph('userActionPlanAdvisable', CooperationMeasureApplication::class,
+                        function ($query) use ($cooperationMeasureApplication) {
+                            $query->where('id', $cooperationMeasureApplication->id);
+                        }
+                    )
+                    ->first();
+
+                if ($adviceForMaster instanceof UserActionPlanAdvice) {
+                    $adviceForMaster->delete();
                 }
 
                 $processedUserIds[] = $user->id;
             }
         }
 
-
-//        $cooperationMeasureApplication->delete();
+        // Finally, delete the measure
+        $cooperationMeasureApplication->delete();
 
         return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index')
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.destroy.success'));

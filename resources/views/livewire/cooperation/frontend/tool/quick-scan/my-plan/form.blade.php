@@ -297,8 +297,8 @@
     <div class="w-full flex flex-wrap bg-blue-100 pb-8 px-3 lg:px-8"
          x-data="adaptiveInputs(128)" {{-- 128px === 8rem, default height for textareas --}}>
         @php
-            $disableResident = $currentInputSource->short !== $residentInputSource->short;
-            $disableCoach = $currentInputSource->short !== $coachInputSource->short;
+            $disableResident = \App\Helpers\HoomdossierSession::isUserObserving() || $currentInputSource->short !== $residentInputSource->short;
+            $disableCoach = \App\Helpers\HoomdossierSession::isUserObserving() || $currentInputSource->short !== $coachInputSource->short;
         @endphp
         @component('cooperation.frontend.layouts.components.form-group', [
             'label' => __('cooperation/frontend/tool.my-plan.comments.resident'),

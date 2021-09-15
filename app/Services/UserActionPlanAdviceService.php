@@ -456,20 +456,8 @@ class UserActionPlanAdviceService
         $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
 
         if ($advisable instanceof MeasureApplication) {
-            // Interest map based on calculate_value
-            $interestMap = [
-                1 => true,
-                2 => true,
-                3 => true,
-                4 => false,
-                5 => true,
-            ];
-            // Define visible based on example building interest if available
-            $interest = static::getInterestForMeasure($userActionPlanAdvice->user, $advisable);
-            if ($interest instanceof Interest) {
-                $visible = $interestMap[$interest->calculate_value];
-            } elseif ($advisable->measure_type === MeasureApplication::MAINTENANCE) {
-                // Else if it's maintenance, change logic. We never show maintenance, with 2 exceptions (of course...)
+           if ($advisable->measure_type === MeasureApplication::MAINTENANCE) {
+                // If it's maintenance, change logic. We never show maintenance, with 2 exceptions (of course...)
                 $visible = false;
 
                 $shorts = ['replace-tiles', 'replace-roof-insulation'];
@@ -497,50 +485,15 @@ class UserActionPlanAdviceService
         $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
 
         if ($advisable instanceof MeasureApplication) {
-            // Interest map based on calculate_value
-            $interestMap = [
-                1 => static::CATEGORY_TO_DO,
-                2 => static::CATEGORY_LATER,
-                3 => static::CATEGORY_LATER,
-                4 => static::CATEGORY_COMPLETE, // Shouldn't be visible
-                5 => static::CATEGORY_COMPLETE,
-            ];
+            $building = $userActionPlanAdvice->user->building;
 
-            // Define category based on example building interest if available
-            $interest = static::getInterestForMeasure($userActionPlanAdvice->user, $advisable);
-            if ($interest instanceof Interest) {
-                $category = $interestMap[$interest->calculate_value];
-            } else {
-                // No interest defined. We need to check if the measure is available for the user...
-                $building = $userActionPlanAdvice->user->building;
-
-                // Chance of a building not being set is small, but not impossible!
-                if ($building instanceof Building) {
-                    $category = static::getCategoryFromMeasure($building, $advisable);
-                }
+            // Chance of a building not being set is small, but not impossible!
+            if ($building instanceof Building) {
+                $category = static::getCategoryFromMeasure($building, $advisable);
             }
         }
 
         $userActionPlanAdvice->category = $category;
-    }
-
-    public static function getInterestForMeasure(User $user, MeasureApplication $measureApplication)
-    {
-        // Let's get the master input source. We need this for interests
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-
-        $userInterest = UserInterest::forInputSource($masterInputSource)
-            ->where('user_id', $user->id)
-            ->has('interest')
-            ->whereHasMorph('interestedIn',
-                MeasureApplication::class,
-                function (Builder $query) use ($measureApplication) {
-                    $query->where('id', $measureApplication->id);
-                }
-            )
-            ->first();
-
-        return optional($userInterest)->interest;
     }
 
     public static function getCategoryFromMeasure(Building $building, MeasureApplication $measureApplication): string

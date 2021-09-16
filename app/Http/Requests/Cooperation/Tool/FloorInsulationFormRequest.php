@@ -39,6 +39,7 @@ class FloorInsulationFormRequest extends FormRequest
         $noDatabaseSelectOptions = ['yes', 'no', 'unknown'];
 
         return [
+            'considerables.is_considering' => ['required', Rule::in([0, 1])],
             'element' => ['exists:element_values,id', new ValidateElementKey('floor-insulation')],
             'building_elements.extra.access' => ['nullable', 'alpha', Rule::in($noDatabaseSelectOptions)],
             'building_elements.extra.has_crawlspace' => ['nullable', 'alpha', Rule::in($noDatabaseSelectOptions)],

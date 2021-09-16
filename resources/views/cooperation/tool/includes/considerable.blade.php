@@ -18,7 +18,7 @@
                         ->wherePivot('input_source_id', \App\Models\InputSource::findByShort('master')->id)
                         ->first();
                 @endphp
-                <select id="considerable" class="form-input" name="considerables[is_considerable]">
+                <select id="considerable" class="form-input" name="considerables[is_considering]">
                     @foreach(["Nee", "Ja"] as $boolean => $considerableText)
                         <option value="{{ $boolean }}"
                                 @if($considerable instanceof Illuminate\Database\Eloquent\Model

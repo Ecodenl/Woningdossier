@@ -15,6 +15,7 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\Step;
+use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
 use Illuminate\Http\Request;
@@ -102,6 +103,8 @@ class FloorInsulationController extends Controller
 //        $userInterests = $request->input('user_interests');
 //        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
 
+        ConsiderableService::save($this->step, $user, $inputSource, $request->validated()['considerables']);
+
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
@@ -111,6 +114,7 @@ class FloorInsulationController extends Controller
             ->createAdvices();
 
         StepHelper::complete($this->step, $building, $inputSource);
+
         $building->update([
             'has_answered_expert_question' => true,
         ]);

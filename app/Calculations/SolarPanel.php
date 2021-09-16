@@ -87,7 +87,7 @@ class SolarPanel
                 if ($toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
                     $currentYear = Carbon::now()->year;
 
-                    if ($toolQuestionCustomValue->short === 'no') {
+                    if ($toolQuestionCustomValue->short == 'no') {
                         // No panels
                         $result['year'] = $currentYear;
                     } else {

@@ -95,7 +95,7 @@ class SolarPanel
                         $ageQuestion = ToolQuestion::findByShort('solar-panels-placed-date');
                         if ($ageQuestion instanceof ToolQuestion) {
                             $answer = $building->getAnswer($masterInputSource, $ageQuestion);
-
+                            // if its numeric its probably a year.
                             if (is_numeric($answer)) {
                                 $diff = now()->format('Y') - $answer;
 

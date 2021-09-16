@@ -108,8 +108,6 @@ class InsulatedGlazingHelper extends ToolHelper
         $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
         $results = InsulatedGlazing::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
 
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
-
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         foreach ($results['measure'] as $measureId => $data) {
@@ -178,22 +176,6 @@ class InsulatedGlazingHelper extends ToolHelper
             'wood_rot_status_id' => $buildingPaintworkStatus->wood_rot_status_id ?? null,
         ];
 
-        $measureApplicationIds = MeasureApplication::whereIn('short', [
-            'hrpp-glass-only',
-            'hrpp-glass-frames',
-            'hr3p-frames',
-            'glass-in-lead',
-        ])->select('id')->get()->pluck('id')->toArray();
-
-        $userInterestsForInsulatedGlazing = $this->user
-            ->userInterests()
-            ->select('interest_id', 'interested_in_id', 'interested_in_type')
-            ->forInputSource($this->inputSource)
-            ->where('interested_in_type', MeasureApplication::class)
-            ->whereIn('interested_in_id', $measureApplicationIds)
-            ->get()
-            ->keyBy('interested_in_id')->toArray();
-
         /** @var Collection $buildingInsulatedGlazings */
         $buildingInsulatedGlazings = $this->building
             ->currentInsulatedGlazing()
@@ -226,7 +208,6 @@ class InsulatedGlazingHelper extends ToolHelper
         $buildingElementsArray[$frames->id] = $buildingFrameElement->element_value_id ?? null;
 
         $this->setValues([
-            'user_interests' => $userInterestsForInsulatedGlazing,
             'building_insulated_glazings' => $buildingInsulatedGlazingArray,
             'building_elements' => $buildingElementsArray,
             'building_features' => ['window_surface' => $buildingFeature->window_surface ?? null],

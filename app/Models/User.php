@@ -6,6 +6,8 @@ use App\Helpers\HoomdossierSession;
 use App\Traits\HasCooperationTrait;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Collection;
 use Spatie\Permission\Traits\HasRoles;
@@ -92,13 +94,29 @@ class User extends Model implements AuthorizableContract
      * @var array
      */
     protected $fillable = [
-      'extra', 'first_name', 'last_name', 'phone_number', 'account_id', 'allow_access',
+        'extra', 'first_name', 'last_name', 'phone_number', 'account_id', 'allow_access',
     ];
 
     protected $casts = [
         'allow_access' => 'boolean',
         'extra' => 'array'
     ];
+
+
+    public function considerable($related): MorphToMany
+    {
+        return $this->morphedByMany($related, 'considerable', 'considerables')->withPivot('is_considering');
+    }
+
+    public function considerableStep(Step $step): Step
+    {
+        return $this->considerable(get_class($step))->wherePivot('considerable_id', $step->id)->first();
+    }
+
+    public function considerableMeasureApplication(MeasureApplication $measureApplication): MeasureApplication
+    {
+        return $this->considerable(get_class($measureApplication))->wherePivot('considerable_id', $measureApplication->id)->first();
+    }
 
     public function allowedAccess(): bool
     {
@@ -151,7 +169,7 @@ class User extends Model implements AuthorizableContract
 
         $userSelectedInterestedId = $this->user->userInterestsForSpecificType($interestedInType, $interestedInId)->first()->interest_id;
 
-        return ! in_array($userSelectedInterestedId, $noInterestIds);
+        return !in_array($userSelectedInterestedId, $noInterestIds);
     }
 
     /**
@@ -219,7 +237,7 @@ class User extends Model implements AuthorizableContract
      */
     public function getAccountProperty($property)
     {
-        \Log::debug('Account property '.$property.' is accessed via User!');
+        \Log::debug('Account property ' . $property . ' is accessed via User!');
         if ($this->account instanceof Account) {
             return $this->account->$property;
         }
@@ -418,7 +436,7 @@ class User extends Model implements AuthorizableContract
      */
     public function isNotRemovedFromBuildingCoachStatus($buildingId): bool
     {
-        return ! $this->isRemovedFromBuildingCoachStatus($buildingId);
+        return !$this->isRemovedFromBuildingCoachStatus($buildingId);
     }
 
     /**
@@ -446,7 +464,7 @@ class User extends Model implements AuthorizableContract
      */
     public function hasNotRole($roles): bool
     {
-        return ! $this->hasRole($roles);
+        return !$this->hasRole($roles);
     }
 
     /**
@@ -506,7 +524,7 @@ class User extends Model implements AuthorizableContract
      */
     public function hasNotMultipleRoles(): bool
     {
-        return ! $this->hasMultipleRoles();
+        return !$this->hasMultipleRoles();
     }
 
     /**

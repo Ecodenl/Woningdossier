@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Cooperation\Tool;
 
 use App\Http\Requests\DecimalReplacementTrait;
-use App\Models\Interest;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
@@ -36,7 +35,6 @@ class InsulatedGlazingFormRequest extends FormRequest
     public function rules()
     {
         $max = Carbon::now()->year;
-        /** @var Collection $noInterests */
 
         // m2 and window rules in the withValidator
         $rules = [

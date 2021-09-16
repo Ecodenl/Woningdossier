@@ -68,7 +68,6 @@ class FloorInsulationController extends Controller
             $building->buildingFeatures()
         )->get();
 
-
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation', 'buildingInsulationForMe', 'buildingElementsOrderedOnInputSourceCredibility',
             'crawlspace', 'buildingCrawlspace', 'typeIds', 'buildingFeaturesOrderedOnInputSourceCredibility',
@@ -100,8 +99,8 @@ class FloorInsulationController extends Controller
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
 
-        $userInterests = $request->input('user_interests');
-        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+//        $userInterests = $request->input('user_interests');
+//        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);

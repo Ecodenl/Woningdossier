@@ -192,7 +192,6 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
 //
 //                        Route::resource('huidige-staat', 'CurrentStateController')->names('current-state')->only(['index', 'store']);
 //                        Route::resource('gebruik', 'UsageController')->only(['index', 'store'])->names('usage');
-//                        Route::resource('interesse', 'InterestController')->only(['index', 'store'])->names('interest');
 //                    });
 //                });
 

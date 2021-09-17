@@ -22,6 +22,7 @@ use App\Models\PaintworkStatus;
 use App\Models\Step;
 use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
+use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
 use App\Services\UserInterestService;
 use Illuminate\Http\Request;
@@ -75,7 +76,6 @@ class InsulatedGlazingController extends Controller
         $buildingInsulatedGlazingsForMe = [];
 
         $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
-        $userInterests = [];
 
         foreach ($measureApplicationShorts as $measureApplicationShort) {
             $measureApplication = MeasureApplication::where('short', $measureApplicationShort)->first();
@@ -92,31 +92,17 @@ class InsulatedGlazingController extends Controller
                     $buildingInsulatedGlazings[$measureApplication->id] = $currentInsulatedGlazing;
                 }
 
-                // get interests for the measure
-                $measureInterestId = Hoomdossier::getMostCredibleValue(
-                    $buildingOwner->userInterestsForSpecificType(MeasureApplication::class, $measureApplication->id), 'interest_id'
-                );
-
-                // when there is no interest found and the short is for hrpp glass, then we will set the interest given for the step insulated glazing.
-                if (is_null($measureInterestId) && in_array($measureApplicationShort, ['hrpp-glass-only'])) {
-                    $measureInterestId = Hoomdossier::getMostCredibleValue(
-                        $buildingOwner->userInterestsForSpecificType(Step::class, $this->step->id), 'interest_id'
-                    );
-                }
-
-                $userInterests[$measureApplication->id] = $measureInterestId;
 
                 $measureApplications[] = $measureApplication;
             }
         }
 
         $myBuildingElements = BuildingElement::forMe()->get();
-        $userInterestsForMe = UserInterest::forMe()->where('interested_in_type', MeasureApplication::class)->get();
 
         return view('cooperation.tool.insulated-glazing.index', compact(
             'building', 'myBuildingElements', 'buildingOwner',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
-            'userInterests', 'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
+            'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
             'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe', 'buildingPaintworkStatusesOrderedOnInputSourceCredibility'
         ));
     }
@@ -142,18 +128,11 @@ class InsulatedGlazingController extends Controller
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
 
-        $userInterests = $request->input('user_interests');
-        $interests = collect();
-        foreach ($userInterests as $interestInId => $userInterest) {
-            // so we can determine the highest interest level later on.
-            $interests->push(Interest::find($userInterest['interest_id']));
-            UserInterestService::save($user, $inputSource, $userInterest['interested_in_type'], $interestInId, $userInterest['interest_id']);
-        }
 
-        // get the highest interest level (which is the lowst calculate value.)
-        $highestInterestLevelInterestId = $interests->unique('id')->min('calculate_value');
-        // we have to update the step interest based on the interest for the measure application.
-        UserInterestService::save($user, $inputSource, Step::class, Step::findByShort('insulated-glazing')->id, $highestInterestLevelInterestId);
+        foreach ($request->validated()['considerables'] as $considerableId => $considerableData) {
+            // so we can determine the highest interest level later on.
+            ConsiderableService::save(MeasureApplication::findOrFail($considerableId), $user, $inputSource, $considerableData);
+        }
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);

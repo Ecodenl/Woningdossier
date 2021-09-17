@@ -28,8 +28,10 @@
                 <div class="radio-wrapper pr-3">
                     <input type="radio" id="{{$uuid}}"
                            name="considerables[{{$considerable->id}}][is_considering]" value="{{$boolean}}"
-                           @if($considerablePivot instanceof Illuminate\Database\Eloquent\Model
-                            && $considerablePivot->pivot->is_considering == $boolean)
+                           @if(
+                            old("considerables.{$considerable->id}.is_considering",
+                            $considerablePivot instanceof Illuminate\Database\Eloquent\Model ?
+                             $considerablePivot->pivot->is_considering : 1) == $boolean)
                            checked
                             @endif
                     >

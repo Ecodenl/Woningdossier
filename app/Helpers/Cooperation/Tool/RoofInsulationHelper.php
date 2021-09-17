@@ -11,14 +11,12 @@ use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingRoofType;
 use App\Models\InputSource;
-use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
-use App\Scopes\VisibleScope;
 use App\Services\ModelService;
 use App\Services\UserActionPlanAdviceService;
 use Carbon\Carbon;
@@ -35,8 +33,6 @@ class RoofInsulationHelper extends ToolHelper
         $step = Step::findByShort('roof-insulation');
 
         $buildingRoofTypeData = $this->getValues('building_roof_types');
-
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
 
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
@@ -65,17 +61,7 @@ class RoofInsulationHelper extends ToolHelper
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = null;
 
-//                    $interest = Interest::find($this->getValues('user_interests.interest_id'));
-//
-//                    if (1 == $interest->calculate_value) {
-//                        // on short term: this year
-//                        $advicedYear = Carbon::now()->year;
-//                    } elseif (2 == $interest->calculate_value) {
-//                        // on term: this year + 5
-//                        $advicedYear = Carbon::now()->year + 5;
-//                    } else {
                         $advicedYear = $results[$roofCat]['replace']['year'];
-//                    }
 
                     if (isset($results[$roofCat]['cost_indication']) && $results[$roofCat]['cost_indication'] > 0) {
                         // take the array $roofCat array
@@ -279,13 +265,6 @@ class RoofInsulationHelper extends ToolHelper
 
         $step = Step::findByShort('roof-insulation');
         $this->setValues([
-            'user_interests' => [
-                'interest_id' => optional(
-                    $this->user->userInterestsForSpecificType(Step::class, $step->id, $this->inputSource)->first()
-                )->interest_id,
-                'interested_in_type' => Step::class,
-                'interested_in_id' => $step->id,
-            ],
             'building_roof_types' => $buildingRoofTypesArray,
             'building_roof_type_ids' => $buildingRoofTypeIds,
             'building_features' => [

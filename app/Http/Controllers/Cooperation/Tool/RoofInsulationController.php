@@ -12,13 +12,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\RoofInsulationFormRequest;
 use App\Models\Building;
 use App\Models\BuildingHeating;
-use App\Models\BuildingRoofType;
 use App\Models\Element;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Step;
+use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -116,8 +115,7 @@ class RoofInsulationController extends Controller
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
 
-        $userInterests = $request->input('user_interests');
-        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+        ConsiderableService::save($this->step, $user, $inputSource, $request->validated()['considerables'][$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);

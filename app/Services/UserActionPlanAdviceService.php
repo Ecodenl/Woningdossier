@@ -49,9 +49,9 @@ class UserActionPlanAdviceService
     /**
      * Method to delete the user action plan advices for a given user, input source and step.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\InputSource  $inputSource
-     * @param  \App\Models\Step  $step
+     * @param \App\Models\User $user
+     * @param \App\Models\InputSource $inputSource
+     * @param \App\Models\Step $step
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -104,7 +104,7 @@ class UserActionPlanAdviceService
             $userInterest = $userInterestOnMeasureApplication;
         }
 
-        if (! $userInterest instanceof UserInterest) {
+        if (!$userInterest instanceof UserInterest) {
             return $adviceYear;
         }
         if (1 == $userInterest->interest->calculate_value) {
@@ -177,7 +177,7 @@ class UserActionPlanAdviceService
                         } else {
                             $costYear = $year;
                         }
-                        if (! array_key_exists($year, $sortedAdvices)) {
+                        if (!array_key_exists($year, $sortedAdvices)) {
                             $sortedAdvices[$year] = [];
                         }
 
@@ -190,7 +190,7 @@ class UserActionPlanAdviceService
                         // get step from advice
                         $step = $advice->step;
 
-                        if (! array_key_exists($step->name, $sortedAdvices[$year])) {
+                        if (!array_key_exists($step->name, $sortedAdvices[$year])) {
                             $sortedAdvices[$year][$step->name] = [];
                         }
 
@@ -273,7 +273,7 @@ class UserActionPlanAdviceService
     /**
      * Get the action plan categorized under measure type.
      *
-     * @param  bool  $withAdvices
+     * @param bool $withAdvices
      *
      * @return array
      */
@@ -305,7 +305,7 @@ class UserActionPlanAdviceService
                 }
 
                 // if advices are not desirable and the measureApplication is not an advice it will be added to the result
-                if (! $withAdvices && ! $measureApplication->isAdvice()) {
+                if (!$withAdvices && !$measureApplication->isAdvice()) {
                     $result[$measureApplication->measure_type][$advice->step->slug][$measureApplication->short] = $advice;
                 }
 
@@ -373,7 +373,7 @@ class UserActionPlanAdviceService
                 $energySavingRoofInsulationFlatReplaceCurrentYear = $energySavingForRoofInsulation['roof-insulation-flat-replace-current']['planned_year'];
                 $maintenanceReplaceRoofInsulationYear = $maintenanceForRoofInsulation['replace-roof-insulation']['planned_year'];
 
-                if (! $maintenanceForRoofInsulation['replace-roof-insulation']['planned']) {
+                if (!$maintenanceForRoofInsulation['replace-roof-insulation']['planned']) {
                     // set warning
                     $categorizedActionPlan['maintenance']['roof-insulation']['replace-roof-insulation']['warning'] = static::getWarning('roof-insulation.check-order');
                     $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-flat-replace-current']['warning'] = static::getWarning('roof-insulation.check-order');
@@ -389,7 +389,7 @@ class UserActionPlanAdviceService
             if (isset($energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']) && $energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['planned']) {
                 $energySavingRoofInsulationPitchedReplaceTilesYear = $energySavingForRoofInsulation['roof-insulation-pitched-replace-tiles']['planned_year'];
                 $maintenanceReplaceTilesYear = $maintenanceForRoofInsulation['replace-tiles']['planned_year'];
-                if (! $maintenanceForRoofInsulation['replace-tiles']['planned']) {
+                if (!$maintenanceForRoofInsulation['replace-tiles']['planned']) {
                     // set warning
                     $categorizedActionPlan['maintenance']['roof-insulation']['replace-tiles']['warning'] = static::getWarning('roof-insulation.check-order');
                     $categorizedActionPlan['energy_saving']['roof-insulation']['roof-insulation-pitched-replace-tiles']['warning'] = static::getWarning('roof-insulation.check-order');
@@ -419,9 +419,9 @@ class UserActionPlanAdviceService
     /**
      * Set properties from old advices on another advice
      *
-     * @param  \App\Models\UserActionPlanAdvice  $userActionPlanAdvice
-     * @param  \App\Models\MeasureApplication  $measureApplication
-     * @param  \Illuminate\Database\Eloquent\Collection  $oldAdvices
+     * @param \App\Models\UserActionPlanAdvice $userActionPlanAdvice
+     * @param \App\Models\MeasureApplication $measureApplication
+     * @param \Illuminate\Database\Eloquent\Collection $oldAdvices
      */
     public static function checkOldAdvices(UserActionPlanAdvice $userActionPlanAdvice, MeasureApplication $measureApplication, Collection $oldAdvices)
     {
@@ -438,7 +438,7 @@ class UserActionPlanAdviceService
     /**
      * Set the visibility of a user action plan advice
      *
-     * @param  \App\Models\UserActionPlanAdvice  $userActionPlanAdvice
+     * @param \App\Models\UserActionPlanAdvice $userActionPlanAdvice
      */
     public static function setAdviceVisibility(UserActionPlanAdvice $userActionPlanAdvice)
     {
@@ -446,48 +446,35 @@ class UserActionPlanAdviceService
 
         // Chance of a building not being set is small, but not impossible!
         if ($building instanceof Building && $building->hasAnsweredExpertQuestion()) {
-            // We don't need to check further, if the building has answered an expert question, then it will be shown
-            return true;
-        }
+            // we don't need to check further, if the building has answered an expert question, then it will be shown
+            $visible = true;
+        } else {
+            // It's always going to be visible by default. Further logic follows.
+            $visible = true;
 
-        // It's always going to be visible by default. Further logic follows.
-        $visible = true;
+            $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
 
-        $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
+            if ($advisable instanceof MeasureApplication) {
+                if ($advisable->measure_type === MeasureApplication::MAINTENANCE) {
+                    // If it's maintenance, change logic. We never show maintenance, with 2 exceptions (of course...)
+                    $visible = false;
 
-        if ($advisable instanceof MeasureApplication) {
-            // Interest map based on calculate_value
-            $interestMap = [
-                1 => true,
-                2 => true,
-                3 => true,
-                4 => false,
-                5 => true,
-            ];
-            // Define visible based on example building interest if available
-            $interest = static::getInterestForMeasure($userActionPlanAdvice->user, $advisable);
-            if ($interest instanceof Interest) {
-                $visible = $interestMap[$interest->calculate_value];
-            } elseif ($advisable->measure_type === MeasureApplication::MAINTENANCE) {
-                // Else if it's maintenance, change logic. We never show maintenance, with 2 exceptions (of course...)
-                $visible = false;
+                    $shorts = ['replace-tiles', 'replace-roof-insulation'];
 
-                $shorts = ['replace-tiles', 'replace-roof-insulation'];
-
-                // Logic is simple for these 2 exceptions. If it's within 5 years, then we _do_ show it
-                if (in_array($advisable->short, $shorts) && ! is_null($userActionPlanAdvice->year)) {
-                    $visible = $userActionPlanAdvice->year - now()->format('Y') <= 5;
+                    // Logic is simple for these 2 exceptions. If it's within 5 years, then we _do_ show it
+                    if (in_array($advisable->short, $shorts) && !is_null($userActionPlanAdvice->year)) {
+                        $visible = $userActionPlanAdvice->year - now()->format('Y') <= 5;
+                    }
                 }
             }
         }
-
         $userActionPlanAdvice->visible = $visible;
     }
 
     /**
      * Set the category of a user action plan advice
      *
-     * @param  \App\Models\UserActionPlanAdvice  $userActionPlanAdvice
+     * @param \App\Models\UserActionPlanAdvice $userActionPlanAdvice
      */
     public static function setAdviceCategory(UserActionPlanAdvice $userActionPlanAdvice)
     {
@@ -497,50 +484,15 @@ class UserActionPlanAdviceService
         $advisable = $userActionPlanAdvice->userActionPlanAdvisable;
 
         if ($advisable instanceof MeasureApplication) {
-            // Interest map based on calculate_value
-            $interestMap = [
-                1 => static::CATEGORY_TO_DO,
-                2 => static::CATEGORY_LATER,
-                3 => static::CATEGORY_LATER,
-                4 => static::CATEGORY_COMPLETE, // Shouldn't be visible
-                5 => static::CATEGORY_COMPLETE,
-            ];
+            $building = $userActionPlanAdvice->user->building;
 
-            // Define category based on example building interest if available
-            $interest = static::getInterestForMeasure($userActionPlanAdvice->user, $advisable);
-            if ($interest instanceof Interest) {
-                $category = $interestMap[$interest->calculate_value];
-            } else {
-                // No interest defined. We need to check if the measure is available for the user...
-                $building = $userActionPlanAdvice->user->building;
-
-                // Chance of a building not being set is small, but not impossible!
-                if ($building instanceof Building) {
-                    $category = static::getCategoryFromMeasure($building, $advisable);
-                }
+            // Chance of a building not being set is small, but not impossible!
+            if ($building instanceof Building) {
+                $category = static::getCategoryFromMeasure($building, $advisable);
             }
         }
 
         $userActionPlanAdvice->category = $category;
-    }
-
-    public static function getInterestForMeasure(User $user, MeasureApplication $measureApplication)
-    {
-        // Let's get the master input source. We need this for interests
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-
-        $userInterest = UserInterest::forInputSource($masterInputSource)
-            ->where('user_id', $user->id)
-            ->has('interest')
-            ->whereHasMorph('interestedIn',
-                MeasureApplication::class,
-                function (Builder $query) use ($measureApplication) {
-                    $query->where('id', $measureApplication->id);
-                }
-            )
-            ->first();
-
-        return optional($userInterest)->interest;
     }
 
     public static function getCategoryFromMeasure(Building $building, MeasureApplication $measureApplication): string
@@ -618,7 +570,7 @@ class UserActionPlanAdviceService
                         }
                     }
 
-                    if (! empty($answers)) {
+                    if (!empty($answers)) {
                         // Sort by order
                         asort($answers);
                         $lowestOrder = Arr::first($answers);
@@ -844,7 +796,7 @@ class UserActionPlanAdviceService
             } elseif (($service = $buildingService->service) instanceof Service && $service->short === 'total-sun-panels') {
                 // Solar panels don't have service values. We just check if there's a measure to replace solar panels
                 if (($measure = $advicesForComfort->where('short', 'solar-panels-place-replace')->first()) instanceof MeasureApplication) {
-                   $comfort += $measure->configurations['comfort'] ?? 0;
+                    $comfort += $measure->configurations['comfort'] ?? 0;
                 }
             }
         }

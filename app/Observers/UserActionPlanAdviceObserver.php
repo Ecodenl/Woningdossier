@@ -53,7 +53,6 @@ class UserActionPlanAdviceObserver
 
         if (! $userActionPlanAdvice->isDirty('visible')) {
             // Visibility isn't set. Let's define it
-
             UserActionPlanAdviceService::setAdviceVisibility($userActionPlanAdvice);
         }
         if (! $userActionPlanAdvice->isDirty('category') || is_null($userActionPlanAdvice->category)) {

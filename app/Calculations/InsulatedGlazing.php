@@ -12,7 +12,6 @@ use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\InsulatingGlazing;
-use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
 use App\Models\WoodRotStatus;
@@ -40,7 +39,7 @@ class InsulatedGlazing
 
         foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazingsData) {
             $measureApplication = MeasureApplication::find($measureApplicationId);
-            if ($building->user->considers($measureApplication)) {
+            if ($building->user->considers($measureApplication, $inputSource)) {
 
                 $buildingHeatingId = array_key_exists('building_heating_id', $buildingInsulatedGlazingsData) ? $buildingInsulatedGlazingsData['building_heating_id'] : 0;
                 $buildingHeating = BuildingHeating::find($buildingHeatingId);

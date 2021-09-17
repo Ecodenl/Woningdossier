@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Support\Collection;
+use PhpParser\Node\Expr\AssignOp\Mod;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -105,7 +106,8 @@ class User extends Model implements AuthorizableContract
 
     public function considerables($related): MorphToMany
     {
-        return $this->morphedByMany($related, 'considerable', 'considerables')->withPivot('is_considering');
+        return $this->morphedByMany($related, 'considerable', 'considerables')
+            ->withPivot(['is_considering', 'input_source_id']);
     }
 
     /**
@@ -115,6 +117,18 @@ class User extends Model implements AuthorizableContract
     public function considerablesForModel(Model $related): MorphToMany
     {
         return $this->considerables($related->getMorphClass())->wherePivot('considerable_id', $related->id);
+    }
+
+    public function considers(Model $model, InputSource $inputSource)
+    {
+        $considerableModel =  $this->considerablesForModel($model)
+            ->wherePivot('input_source_id', $inputSource->id)
+            ->first();
+
+        if ($considerableModel instanceof Model) {
+            return $considerableModel->pivot->is_considering;
+        }
+        return false;
     }
 
     public function allowedAccess(): bool

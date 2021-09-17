@@ -103,19 +103,18 @@ class User extends Model implements AuthorizableContract
     ];
 
 
-    public function considerable($related): MorphToMany
+    public function considerables($related): MorphToMany
     {
         return $this->morphedByMany($related, 'considerable', 'considerables')->withPivot('is_considering');
     }
 
-    public function considerableStep(Step $step): Step
+    /**
+     * @param Model $related
+     * @return MorphToMany
+     */
+    public function considerablesForModel(Model $related): MorphToMany
     {
-        return $this->considerable(get_class($step))->wherePivot('considerable_id', $step->id)->first();
-    }
-
-    public function considerableMeasureApplication(MeasureApplication $measureApplication): MeasureApplication
-    {
-        return $this->considerable(get_class($measureApplication))->wherePivot('considerable_id', $measureApplication->id)->first();
+        return $this->considerables($related->getMorphClass())->wherePivot('considerable_id', $related->id);
     }
 
     public function allowedAccess(): bool

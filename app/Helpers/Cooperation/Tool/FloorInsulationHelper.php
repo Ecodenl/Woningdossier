@@ -100,8 +100,6 @@ class FloorInsulationHelper extends ToolHelper
         $floorInsulationElement = Element::findByShort('floor-insulation');
         $step = Step::findByShort('floor-insulation');
 
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
-
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         $elementData = $this->getValues('element');

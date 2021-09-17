@@ -18,7 +18,7 @@ class ConsiderableService
         // todo; log more data, whether he's considering it or not yadadad
 
         $considerableData['input_source_id'] = $inputSource->id;
-        $user->considerables($considerable->getMorphClass())->sync([
+        $user->considerables($considerable->getMorphClass())->syncWithoutDetaching([
             $considerable->id => $considerableData
         ]);
 

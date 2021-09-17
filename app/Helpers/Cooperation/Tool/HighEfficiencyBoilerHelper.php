@@ -83,8 +83,6 @@ class HighEfficiencyBoilerHelper extends ToolHelper
 
         $step = Step::findByShort('high-efficiency-boiler');
 
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
-
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {

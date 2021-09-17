@@ -31,6 +31,7 @@ trait GetMyValuesTrait
     public static function bootGetMyValuesTrait()
     {
         static::saved(function (Model $model) {
+            dd('bier');
 //            Log::debug(
 //                get_class(
 //                    $model

@@ -14,11 +14,11 @@ class ConsiderableService
      */
     public static function save(Model $considerable, User $user, InputSource $inputSource, $considerableData)
     {
-
         Log::debug('Saving the user considerable');
         // todo; log more data, whether he's considering it or not yadadad
 
-        $user->considerable(get_class($considerable))->sync([
+        $considerableData['input_source_id'] = $inputSource->id;
+        $user->considerables($considerable->getMorphClass())->sync([
             $considerable->id => $considerableData
         ]);
 

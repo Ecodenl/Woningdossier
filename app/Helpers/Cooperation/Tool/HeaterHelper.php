@@ -11,7 +11,6 @@ use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
-use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 
 class HeaterHelper extends ToolHelper
@@ -39,20 +38,11 @@ class HeaterHelper extends ToolHelper
     {
         $buildingHeater = $this->building->heater()->forInputSource($this->inputSource)->first();
         $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
-        $userInterestsForHeater = $this
-            ->user
-            ->userInterestsForSpecificType(Step::class, Step::findByShort('heater')->id, $this->inputSource)
-            ->first();
 
         $this->setValues([
             'building_heaters' => $buildingHeater instanceof BuildingHeater ? $buildingHeater->toArray() : [],
             'user_energy_habits' => [
                 'water_comfort_id' => $userEnergyHabit->water_comfort_id ?? null,
-            ],
-            'user_interests' => [
-                'interested_in_id' => optional($userInterestsForHeater)->interested_in_id,
-                'interested_in_type' => Step::class,
-                'interest_id' => optional($userInterestsForHeater)->interest_id,
             ],
         ]);
 
@@ -65,8 +55,6 @@ class HeaterHelper extends ToolHelper
 
         $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
         $results = Heater::calculate($this->building, $userEnergyHabit, $this->getValues());
-
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
 
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 

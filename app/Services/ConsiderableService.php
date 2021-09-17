@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Considerable;
 use App\Models\InputSource;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -17,10 +18,16 @@ class ConsiderableService
         Log::debug('Saving the user considerable');
         // todo; log more data, whether he's considering it or not yadadad
 
-        $considerableData['input_source_id'] = $inputSource->id;
-        $user->considerables($considerable->getMorphClass())->syncWithoutDetaching([
-            $considerable->id => $considerableData
-        ]);
+        // cant use sync because of the events and nature of eloquent handling pivot tables.
+        Considerable::updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'input_source_id' => $inputSource->id,
+                'considerable_id' => $considerable->id,
+                'considerable_type' => get_class($considerable)
+            ],
+            $considerableData
+        );
 
     }
 }

@@ -128,7 +128,6 @@ class InsulatedGlazingController extends Controller
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
 
-
         foreach ($request->validated()['considerables'] as $considerableId => $considerableData) {
             // so we can determine the highest interest level later on.
             ConsiderableService::save(MeasureApplication::findOrFail($considerableId), $user, $inputSource, $considerableData);
@@ -138,7 +137,7 @@ class InsulatedGlazingController extends Controller
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         (new InsulatedGlazingHelper($user, $inputSource))
-            ->setValues($request->only('user_interests', 'building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses'))
+            ->setValues($request->only('considerables', 'user_interests', 'building_insulated_glazings', 'building_features', 'building_elements', 'building_paintwork_statuses'))
             ->saveValues()
             ->createAdvices();
 

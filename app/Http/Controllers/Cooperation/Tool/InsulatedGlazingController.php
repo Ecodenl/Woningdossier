@@ -52,8 +52,6 @@ class InsulatedGlazingController extends Controller
         $building = HoomdossierSession::getBuilding(true);
         $buildingOwner = $building->user;
 
-        $interests = Interest::orderBy('order')->get();
-
         $buildingPaintworkStatusesOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
             $building->currentPaintworkStatus()
         )->get();
@@ -116,7 +114,7 @@ class InsulatedGlazingController extends Controller
         $userInterestsForMe = UserInterest::forMe()->where('interested_in_type', MeasureApplication::class)->get();
 
         return view('cooperation.tool.insulated-glazing.index', compact(
-            'building', 'interests', 'myBuildingElements', 'buildingOwner', 'userInterestsForMe',
+            'building', 'myBuildingElements', 'buildingOwner',
             'heatings', 'measureApplications', 'insulatedGlazings', 'buildingInsulatedGlazings',
             'userInterests', 'crackSealing', 'frames', 'woodElements', 'buildingFeaturesForMe',
             'paintworkStatuses', 'woodRotStatuses', 'buildingInsulatedGlazingsForMe', 'buildingPaintworkStatusesOrderedOnInputSourceCredibility'

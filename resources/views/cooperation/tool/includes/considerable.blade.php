@@ -1,7 +1,13 @@
 <div class="flex flex-row flex-wrap w-full">
     <div class="w-full">
+        @php
+          $considerableName = $considerable->measure_name ?? $considerable->name;
+            $translation = "Wilt u {$considerableName} laten doorrekenen?";
+        @endphp
         @component('cooperation.tool.components.step-question', [
-                    'id' => 'considerable', 'translation' => "Wilt u deze maatregel laten doorrekenen?",
+                    'id' => 'considerable',
+                    'translation' => $translation,
+                    'class' => 'considerable'
                 ])
 
             @slot('sourceSlot')
@@ -12,7 +18,7 @@
                 ])
             @endslot
             @php
-                $considerable = $buildingOwner
+                $considerablePivot = $buildingOwner
                     ->considerablesForModel($considerable)
                     ->wherePivot('input_source_id', \App\Models\InputSource::findByShort('master')->id)
                     ->first();
@@ -21,9 +27,9 @@
                 @php($uuid = \App\Helpers\Str::uuid())
                 <div class="radio-wrapper pr-3">
                     <input type="radio" id="{{$uuid}}"
-                           name="considerables[is_considering]" value="{{$boolean}}"
-                           @if($considerable instanceof Illuminate\Database\Eloquent\Model
-                            && $considerable->pivot->is_considering == $boolean)
+                           name="considerables[{{$considerable->id}}][is_considering]" value="{{$boolean}}"
+                           @if($considerablePivot instanceof Illuminate\Database\Eloquent\Model
+                            && $considerablePivot->pivot->is_considering == $boolean)
                            checked
                             @endif
                     >

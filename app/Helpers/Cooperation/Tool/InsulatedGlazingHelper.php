@@ -129,10 +129,10 @@ class InsulatedGlazingHelper extends ToolHelper
 
         $keysToMeasure = [
             'paintwork' => 'paint-wood-elements',
-            'crack-sealing' => 'crack-sealing',
+            // moved to ventilation, keeping this commented for future reference
+            // 'crack-sealing' => 'crack-sealing',
         ];
 
-        // todo: no general consideration is asked; what should we do here ?
         foreach ($keysToMeasure as $key => $measureShort) {
             if (isset($results[$key]['costs']) && $results[$key]['costs'] > 0) {
                 $measureApplication = MeasureApplication::where('short', $measureShort)->first();

@@ -42,7 +42,7 @@ class SolarPanelHelper extends ToolHelper
 
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
-        if ($this->getValues("considerables.{$step->id}.is_considering") && isset($results['cost_indication']) && $results['cost_indication'] > 0 ) {
+        if ($this->considers($step) && isset($results['cost_indication']) && $results['cost_indication'] > 0 ) {
             $measureApplication = MeasureApplication::where('short', 'solar-panels-place-replace')->first();
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);

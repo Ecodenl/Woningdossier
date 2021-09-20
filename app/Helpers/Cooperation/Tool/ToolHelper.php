@@ -4,6 +4,7 @@ namespace App\Helpers\Cooperation\Tool;
 
 use App\Models\InputSource;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
 abstract class ToolHelper
@@ -52,6 +53,13 @@ abstract class ToolHelper
         }
 
         return Arr::get($this->values, $key);
+    }
+
+    // check whether the user considers something, this checks the set values from the $values property
+    // so no, its not the same as $user->considers(), and should also be avoided in these helpers.
+    public function considers(Model $model): bool
+    {
+        return $this->getValues("considerables.{$model->id}.is_considering");
     }
 
     /**

@@ -44,7 +44,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
     public function createValues(): ToolHelper
     {
         $boilerService = Service::findByShort('boiler');
-
+        $step = Step::findByShort('floor-insulation');
         $userEnergyHabit = $this
             ->user
             ->energyHabit()
@@ -65,7 +65,13 @@ class HighEfficiencyBoilerHelper extends ToolHelper
             ],
         ];
 
+
         $this->setValues([
+            'considerables' => [
+                $step->id => [
+                    'is_considering' => $this->user->considers($step),
+                ],
+            ],
             'building_services' => $buildingBoilerArray,
             'user_energy_habits' => [
                 'amount_gas' => $userEnergyHabit->amount_gas ?? null,
@@ -85,7 +91,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
 
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
-        if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
+        if ($this->considers($step) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'high-efficiency-boiler-replace')->first();
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);

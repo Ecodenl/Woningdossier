@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Cooperation\Tool;
 
+use App\Helpers\ConsiderableHelper;
 use App\Http\Requests\DecimalReplacementTrait;
 use App\Rules\ValidateElementKey;
 use Illuminate\Foundation\Http\FormRequest;
@@ -39,7 +40,7 @@ class FloorInsulationFormRequest extends FormRequest
         $noDatabaseSelectOptions = ['yes', 'no', 'unknown'];
 
         return [
-            'considerables.is_considering' => ['required', Rule::in([0, 1])],
+            'considerables.*.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],
             'element' => ['exists:element_values,id', new ValidateElementKey('floor-insulation')],
             'building_elements.extra.access' => ['nullable', 'alpha', Rule::in($noDatabaseSelectOptions)],
             'building_elements.extra.has_crawlspace' => ['nullable', 'alpha', Rule::in($noDatabaseSelectOptions)],

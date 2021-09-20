@@ -26,7 +26,7 @@ class HeaterFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'considerables.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],
+            'considerables.*.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],
             'building_heaters.pv_panel_orientation_id' => 'required|numeric|exists:pv_panel_orientations,id',
             'building_heaters.angle' => 'required|numeric|between:20,90',
 

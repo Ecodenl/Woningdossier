@@ -108,9 +108,9 @@ class InsulatedGlazingHelper extends ToolHelper
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         foreach ($results['measure'] as $measureId => $data) {
-            if (array_key_exists('costs', $data) && $data['costs'] > 0) {
-                $measureApplication = MeasureApplication::where('id',
-                    $measureId)->where('step_id', $step->id)->first();
+            $measureApplication = MeasureApplication::where('id', $measureId)->where('step_id', $step->id)->first();
+
+            if ($this->considers($measureApplication) && array_key_exists('costs', $data) && $data['costs'] > 0) {
 
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($data);
@@ -132,6 +132,7 @@ class InsulatedGlazingHelper extends ToolHelper
             'crack-sealing' => 'crack-sealing',
         ];
 
+        // todo: no general consideration is asked; what should we do here ?
         foreach ($keysToMeasure as $key => $measureShort) {
             if (isset($results[$key]['costs']) && $results[$key]['costs'] > 0) {
                 $measureApplication = MeasureApplication::where('short', $measureShort)->first();
@@ -204,7 +205,20 @@ class InsulatedGlazingHelper extends ToolHelper
         $buildingFrameElement = $buildingElements->where('element_id', $frames->id)->first();
         $buildingElementsArray[$frames->id] = $buildingFrameElement->element_value_id ?? null;
 
+
+        $considerablesForMeasures =
+            $this->user
+                ->considerables(MeasureApplication::class)
+                ->wherePivot('input_source_id', $this->inputSource->id)
+                ->get()->keyBy('pivot.considerable_id')
+                ->map(function($considerable) {
+                    return [
+                        'is_considering' => $considerable->pivot->is_considering
+                    ];
+                })->toArray();
+
         $this->setValues([
+            'considerables' => $considerablesForMeasures,
             'building_insulated_glazings' => $buildingInsulatedGlazingArray,
             'building_elements' => $buildingElementsArray,
             'building_features' => ['window_surface' => $buildingFeature->window_surface ?? null],

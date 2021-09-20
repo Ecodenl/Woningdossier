@@ -36,10 +36,16 @@ class HeaterHelper extends ToolHelper
 
     public function createValues(): ToolHelper
     {
+        $step = Step::findByShort('heater');
         $buildingHeater = $this->building->heater()->forInputSource($this->inputSource)->first();
         $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
 
         $this->setValues([
+            'considerables' => [
+                $step->id => [
+                    'is_considering' => $this->user->considers($step),
+                ],
+            ],
             'building_heaters' => $buildingHeater instanceof BuildingHeater ? $buildingHeater->toArray() : [],
             'user_energy_habits' => [
                 'water_comfort_id' => $userEnergyHabit->water_comfort_id ?? null,
@@ -58,7 +64,7 @@ class HeaterHelper extends ToolHelper
 
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
-        if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
+        if ($this->considers($step) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
             $measureApplication = MeasureApplication::where('short', 'heater-place-replace')->first();
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);

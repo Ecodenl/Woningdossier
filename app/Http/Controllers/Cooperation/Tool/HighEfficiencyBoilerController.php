@@ -81,7 +81,7 @@ class HighEfficiencyBoilerController extends Controller
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
 
-        ConsiderableService::save($this->step, $user, $inputSource, $request->validated()['considerables']);
+        ConsiderableService::save($this->step, $user, $inputSource, $request->validated()['considerables'][$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);

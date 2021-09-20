@@ -30,7 +30,7 @@ class HighEfficiencyBoilerFormRequest extends FormRequest
         $max = Carbon::now()->year;
 
         return [
-            'considerables.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],
+            'considerables.*.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],
             'user_energy_habits.amount_gas' => 'required|numeric|min:0|max:10000',
             'user_energy_habits.resident_count' => 'nullable|numeric|min:1|max:8',
             'building_services.service_value_id' => 'exists:service_values,id',

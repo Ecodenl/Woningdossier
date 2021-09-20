@@ -39,7 +39,6 @@ class VentilationHelper extends ToolHelper
 
         $results = Ventilation::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
 
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
@@ -89,6 +88,8 @@ class VentilationHelper extends ToolHelper
             'crack-sealing',
         ];
 
+        $measureApplicationIds = MeasureApplication::whereIn('short', $measures)->pluck('id')->toArray();
+
         $measures = array_flip($measures);
 
         $step = Step::findByShort('ventilation');
@@ -106,8 +107,21 @@ class VentilationHelper extends ToolHelper
             }
         }
 
+
+        $considerablesForMeasures =
+            $this->user
+                ->considerables(MeasureApplication::class)
+                ->wherePivot('input_source_id', $this->inputSource->id)
+                ->wherePivotIn('considerable_id', $measureApplicationIds)
+                ->get()->keyBy('pivot.considerable_id')
+                ->map(function($considerable) {
+                    return [
+                        'is_considering' => $considerable->pivot->is_considering
+                    ];
+                })->toArray();
+
         $this->setValues([
-            'user_interests' => $advices->where('interest', true)->pluck('id')->toArray(),
+            'considerables' => $considerablesForMeasures,
             'building_ventilations' => [
                 'how' => optional($buildingVentilation)->how,
                 'living_situation' => optional($buildingVentilation)->living_situation,

@@ -399,7 +399,7 @@
                                 if (element.hasOwnProperty('interest') && element.interest === true) {
                                     checked = ' checked="checked"';
                                 }
-                                advices.append('<div class="w-full sm:w-3/4">' + element.name + '</div><div class="w-full sm:w-1/4"><input type="checkbox" name="user_interests[]" value="' + element.id + '"' + checked + '></div>');
+                                advices.append('<div class="w-full sm:w-3/4">' + element.name + '</div><div class="w-full sm:w-1/4"><input type="checkbox" name="considerables['+element.id+'][is_considering]" value="1" '+checked+'></div>');
                             });
                             indicationForCosts.show();
                         } else {

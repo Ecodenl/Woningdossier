@@ -206,10 +206,18 @@ class InsulatedGlazingHelper extends ToolHelper
         $buildingElementsArray[$frames->id] = $buildingFrameElement->element_value_id ?? null;
 
 
+        $measureApplicationIds = MeasureApplication::whereIn('short', [
+            'hrpp-glass-only',
+            'hrpp-glass-frames',
+            'hr3p-frames',
+            'glass-in-lead',
+        ])->select('id')->pluck('id');
+
         $considerablesForMeasures =
             $this->user
                 ->considerables(MeasureApplication::class)
                 ->wherePivot('input_source_id', $this->inputSource->id)
+                ->wherePivotIn('considerable_id', $measureApplicationIds)
                 ->get()->keyBy('pivot.considerable_id')
                 ->map(function($considerable) {
                     return [

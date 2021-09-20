@@ -16,40 +16,11 @@ class UserActionPlanAdviceObserver
      */
     public function creating(UserActionPlanAdvice $userActionPlanAdvice)
     {
-        $buildingOwner = $userActionPlanAdvice->user;
-        $step = $userActionPlanAdvice->step;
-        $userActionPlanAdvisable = $userActionPlanAdvice->userActionPlanAdvisable;
-        $inputSource = $userActionPlanAdvice->inputSource;
-        $planned = false;
 
-        if ($userActionPlanAdvisable instanceof MeasureApplication) {
-
-            // set the default user interest on the step.
-            $userInterest = $buildingOwner->userInterestsForSpecificType(get_class($step), $step->id, $inputSource)->with('interest')->first();
-            // try to obtain a specific interest on the measure application
-            $userInterestOnMeasureApplication = $buildingOwner
-                ->userInterestsForSpecificType(get_class($userActionPlanAdvisable), $userActionPlanAdvisable->id, $inputSource)
-                ->with('interest')
-                ->first();
-
-            // when  that's available: use that.
-            if ($userInterestOnMeasureApplication instanceof UserInterest) {
-                $userInterest = $userInterestOnMeasureApplication;
-            }
-
-            // this if is a safe haven
-            if(!$userInterest instanceof Model) {
-                $planned = false;
-            } else if ($userInterest->interest->calculate_value <= 3) {
-                $planned = true;
-            }
-
-            $userActionPlanAdvice->planned = $planned;
-
-            if (is_null($userActionPlanAdvice->year)) {
-                $userActionPlanAdvice->year = UserActionPlanAdviceService::getAdviceYear($userActionPlanAdvice);
-            }
-        }
+        // previously custom logic decided if the advice should be planned or not.
+        // since the "quick scan" we ask the user if he considers the measure, when he considers it an advice will be created
+        // when he considers it it might as well be planned.
+        $userActionPlanAdvice->planned = true;
 
         if (! $userActionPlanAdvice->isDirty('visible')) {
             // Visibility isn't set. Let's define it

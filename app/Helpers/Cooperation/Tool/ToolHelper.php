@@ -59,7 +59,12 @@ abstract class ToolHelper
     // so no, its not the same as $user->considers(), and should also be avoided in these helpers.
     public function considers(Model $model): bool
     {
-        return $this->getValues("considerables.{$model->id}.is_considering");
+        $considers = $this->getValues("considerables.{$model->id}.is_considering");
+        // when not set, it will be null. not set = not considering
+        if (is_null($considers)) {
+            $considers = false;
+        }
+        return $considers;
     }
 
     /**

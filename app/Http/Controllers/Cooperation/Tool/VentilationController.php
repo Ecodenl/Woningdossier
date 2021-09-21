@@ -72,9 +72,10 @@ class VentilationController extends Controller
 
         // the actually checked considerables, so these are considered true
         $considerables = $request->input('considerables', []);
+
         // now get the measure applications the user did not check (so does not consider)
         $notConsiderableMeasureApplications = $step->measureApplications()->whereNotIn('id', array_keys($considerables))->get();
-        // the VentilationHelper needs this format, so we do this first
+        // collect them al into one array, the VentilationHelper expects this format.
         foreach ($notConsiderableMeasureApplications as $measureApplication) {
             $considerables[$measureApplication->id] = ['is_considering' => false];
         }

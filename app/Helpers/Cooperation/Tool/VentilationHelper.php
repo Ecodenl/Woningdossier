@@ -39,16 +39,13 @@ class VentilationHelper extends ToolHelper
 
         $results = Ventilation::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
 
-
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
-        // TODO: CHECK HOW TO HANDLE THIS (INTERESTS ARE IRRELEVANT...)
-        $interestsInMeasureApplications = $this->getValues('user_interests');
-        $relevantAdvices = collect($results['advices'])->whereIn('id', $interestsInMeasureApplications);
+        $considerables = $this->getValues('considerables');
 
-        foreach ($relevantAdvices as $advice) {
-            $measureApplication = MeasureApplication::find($advice['id']);
-            if ($measureApplication instanceof MeasureApplication) {
+        foreach ($considerables as $considerableId => $considerableData) {
+            $measureApplication = MeasureApplication::find($considerableId);
+            if ($this->considers($measureApplication) && $measureApplication instanceof MeasureApplication) {
                 if ('crack-sealing' == $measureApplication->short) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results['result']['crack_sealing'] ?? []);
                     $actionPlanAdvice->costs = ['from' => $results['result']['crack_sealing']['cost_indication'] ?? null]; // only outlier

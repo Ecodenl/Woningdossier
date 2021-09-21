@@ -80,48 +80,28 @@ class VentilationHelper extends ToolHelper
             ->forInputSource($this->inputSource)
             ->first();
 
-        // this is all necessary to build the interest array..
-        $measures = [
-            'ventilation-balanced-wtw',
-            'ventilation-decentral-wtw',
-            'ventilation-demand-driven',
-            'crack-sealing',
-        ];
-
-        $measureApplicationIds = MeasureApplication::whereIn('short', $measures)->pluck('id')->toArray();
-
-        $measures = array_flip($measures);
-
         $step = Step::findByShort('ventilation');
-        $advices = MeasureApplication::where('step_id', '=', $step->id)
-            ->whereIn('short', array_keys($measures))->get();
 
-        $advices->each(function ($advice) {
-            $advice->name = $advice->measure_name;
-        });
-        foreach ($advices as $advice) {
-            // exception for this page..
-            // 3 so the options "meer informatie" is also interested
-            if ($this->user->hasInterestIn($advice, $this->inputSource, 3)) {
-                $advice->interest = true;
-            }
+        $measureApplications = MeasureApplication::where('step_id', '=', $step->id)
+            ->whereIn('short', [
+                'ventilation-balanced-wtw',
+                'ventilation-decentral-wtw',
+                'ventilation-demand-driven',
+                'crack-sealing',
+            ])
+            ->get();
+
+        $considerables = [];
+
+        foreach ($measureApplications as $measureApplication) {
+            $considerables[$measureApplication->id] = [
+                'is_considerable' => $this->user->considers($measureApplication, $this->inputSource),
+                'name' => $measureApplication->measure_name
+            ];
         }
 
-
-        $considerablesForMeasures =
-            $this->user
-                ->considerables(MeasureApplication::class)
-                ->wherePivot('input_source_id', $this->inputSource->id)
-                ->wherePivotIn('considerable_id', $measureApplicationIds)
-                ->get()->keyBy('pivot.considerable_id')
-                ->map(function($considerable) {
-                    return [
-                        'is_considering' => $considerable->pivot->is_considering
-                    ];
-                })->toArray();
-
         $this->setValues([
-            'considerables' => $considerablesForMeasures,
+            'considerables' => $considerables,
             'building_ventilations' => [
                 'how' => optional($buildingVentilation)->how,
                 'living_situation' => optional($buildingVentilation)->living_situation,
@@ -226,7 +206,7 @@ class VentilationHelper extends ToolHelper
 
         $allWarnings = array_merge($allWarnings, self::getHowWarnings(), self::getUsageWarnings(), self::getLivingSituationWarnings());
 
-        if (! is_null($value)) {
+        if (!is_null($value)) {
             return $allWarnings[$value];
         }
 

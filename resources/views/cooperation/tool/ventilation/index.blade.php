@@ -394,7 +394,7 @@
                         console.log(data.considerables);
                         if (data.hasOwnProperty('considerables') && data.considerables.length !== 0) {
                             var advices = $(".advices");
-                            advices.html('<div class="w-full sm:w-3/4"><strong>Verbetering</strong></div><div class="w-full sm:w-1/4"><strong>Interesse</strong></div>');
+                            advices.html('<div class="w-full sm:w-3/4"><strong>Verbetering</strong></div><div class="w-full sm:w-1/4"><strong>Meenemen in berekening ?</strong></div>');
                             $.each(data.considerables, function (considerableId, considerable) {
                                 var checked = '';
                                 if (considerable.hasOwnProperty('is_considerable') && considerable.is_considerable == true) {

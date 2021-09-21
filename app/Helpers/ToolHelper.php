@@ -53,6 +53,17 @@ class ToolHelper
         return $options;
     }
 
+    protected static function considerationOptions($name){
+
+        return [
+            'label' => $name . ': ' . __(
+                    'cooperation/admin/example-buildings.form.is-considering'
+                ),
+            'type' => 'radio',
+            'options' => ConsiderableHelper::getConsiderableValues()
+        ];
+    }
+
     /**
      * @param $contentKey
      *
@@ -71,6 +82,10 @@ class ToolHelper
             'order'
         )->get();
 
+
+        $hrBoilerStep = Step::findByShort('name');
+        $solarPanelStep = Step::findByShort('solar-panels');
+        $heaterStep = Step::findByShort('heater');
         // Wall insulation
         $wallInsulation = Element::findByShort('wall-insulation');
         $facadeDamages = FacadeDamagedPaintwork::orderBy('order')
@@ -147,9 +162,10 @@ class ToolHelper
         $interests = Interest::orderBy('order')->get();
         $interestOptions = static::createOptions($interests);
 
-        $stepUserInterestKey = 'user_interests.' . Step::class . '.';
-        $measureApplicationInterestKey = 'user_interests.'
-            . MeasureApplication::class . '.';
+        $considerableOptions = ConsiderableHelper::getConsiderableValues();
+
+        $measureApplicationConsiderableKey = 'considerables.' . MeasureApplication::class;
+        $stepConsiderableKey = 'considerables.' . Step::class;
 
 
         $radioIconType = ToolQuestionType::findByShort('radio-icon');
@@ -512,14 +528,7 @@ class ToolHelper
 
             'wall-insulation' => [
                 '-' => [
-                    $stepUserInterestKey . $wallInsulation->id . 'interest_id' => [
-                        //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $wallInsulation->name . ': ' . __(
-                                'wall-insulation.index.interested-in-improvement.title'
-                            ),
-                        'type' => 'select',
-                        'options' => $interestOptions,
-                    ],
+                    $stepConsiderableKey . $wallInsulation->id . 'is_considering' => self::considerationOptions($wallInsulation->name),
                     'building_features.cavity_wall' => [
                         'label' => __(
                             'wall-insulation.intro.has-cavity-wall.title'
@@ -709,16 +718,7 @@ class ToolHelper
 
             'floor-insulation' => [
                 '-' => [
-                    $stepUserInterestKey . Step::findByShort(
-                        'floor-insulation'
-                    )->id . '.interest_id' => [
-                        //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $floorInsulation->name . ': ' . __(
-                                'floor-insulation.index.interested-in-improvement.title'
-                            ),
-                        'type' => 'select',
-                        'options' => $interestOptions,
-                    ],
+                    $stepConsiderableKey . $floorInsulation->id . 'is_considering' => self::considerationOptions($floorInsulation->name),
                     'element.' . $crawlspace->id . '.extra.has_crawlspace' => [
                         'label' => __(
                             'floor-insulation.has-crawlspace.title'
@@ -778,16 +778,7 @@ class ToolHelper
 
             'roof-insulation' => [
                 '-' => [
-                    $stepUserInterestKey . Step::findByShort(
-                        'roof-insulation'
-                    )->id . '.interest_id' => [
-                        //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $roofInsulation->name . ': ' . __(
-                                'roof-insulation.index.interested-in-improvement.title'
-                            ),
-                        'type' => 'select',
-                        'options' => $interestOptions,
-                    ],
+                    $stepConsiderableKey . $roofInsulation->id . 'is_considering' => self::considerationOptions($roofInsulation->name),
                     'building_features.roof_type_id' => [
                         'label' => __(
                             'roof-insulation.current-situation.main-roof.title'
@@ -802,16 +793,7 @@ class ToolHelper
 
             'high-efficiency-boiler' => [
                 '-' => [
-                    $stepUserInterestKey . Step::findByShort(
-                        'high-efficiency-boiler'
-                    )->id . '.interest_id' => [
-                        //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => 'HR CV Ketel: ' . __(
-                                'high-efficiency-boiler.index.interested-in-improvement.title'
-                            ),
-                        'type' => 'select',
-                        'options' => $interestOptions,
-                    ],
+                    $stepConsiderableKey . $hrBoilerStep->id . 'is_considering' => self::considerationOptions($hrBoilerStep->name),
                     'user_energy_habits.resident_count' => [
                         'label' => __(
                             'cooperation/tool/high-efficiency-boiler.index.resident-count.title'
@@ -866,15 +848,7 @@ class ToolHelper
             ],
             'solar-panels' => [
                 '-' => [
-                    $stepUserInterestKey . Step::findByShort('solar-panels')->id
-                    . '.interest_id' => [
-                        //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => __(
-                            'solar-panels.index.interested-in-improvement.title'
-                        ),
-                        'type' => 'select',
-                        'options' => $interestOptions,
-                    ],
+                    $stepConsiderableKey . $solarPanelStep->id . 'is_considering' => self::considerationOptions($solarPanelStep->name),
                     'user_energy_habits.amount_electricity' => [
                         'label' => __('solar-panels.electra-usage.title'),
                         'type' => 'text',
@@ -937,15 +911,7 @@ class ToolHelper
 
             'heater' => [
                 '-' => [
-                    $stepUserInterestKey . Step::findByShort('heater')->id
-                    . '.interest_id' => [
-                        //'label' => __('general.change-interested.title', ['item' => $livingRoomsWindows->name]),
-                        'label' => $heater->name . ': ' . __(
-                                'heater.index.interested-in-improvement.title'
-                            ),
-                        'type' => 'select',
-                        'options' => $interestOptions,
-                    ],
+                    $stepConsiderableKey . $heater->id . 'is_considering' => self::considerationOptions($heater->name),
                     'user_energy_habits.water_comfort_id' => [
                         'label' => __(
                             'heater.comfort-level-warm-tap-water.title'
@@ -1008,7 +974,7 @@ class ToolHelper
                 ],
             ],
         ];
-
+ 
         $steps = Step::withoutChildren()->get();
 
         $steps = $steps->keyBy('short')->forget('general-data');
@@ -1022,12 +988,11 @@ class ToolHelper
 
         foreach ($steps as $step) {
 //            <select id="user_interest" class="form-control" name="user_interests[{{$step->id}}][interest_id]">
-            $structure['general-data']['interest'][$stepUserInterestKey
-            . $step->id . '.interest_id']
+            $structure['general-data']['considerables']["{$stepConsiderableKey}.{$step->id}.is_considering"]
                 = [
-                'label' => $step->name,
+                'label' => "Wilt u {$step->name} laten doorrekenen?",
                 'type' => 'select',
-                'options' => $interestOptions,
+                'options' => $considerableOptions,
             ];
         }
         $structure['general-data']['interest']['user_energy_habits.renovation_plans']
@@ -1080,16 +1045,11 @@ class ToolHelper
             $measureApplication = MeasureApplication::where('short', $igShort)
                 ->first();
             if ($measureApplication instanceof MeasureApplication) {
-                $structure['insulated-glazing']['-'][$measureApplicationInterestKey
-                . $measureApplication->id . '.interest_id']
+                $structure['insulated-glazing']['-']["{$measureApplicationConsiderableKey}.{$measureApplication->id}.is_considering"]
                     = [
-                    //'label' => 'Interest in '.$measureApplication->measure_name,
-                    'label' => __(
-                        'cooperation/admin/example-buildings.form.interest-in-measure',
-                        ['item' => $measureApplication->measure_name]
-                    ),
+                    'label' => "Wilt u {$measureApplication->measure_name} laten doorrekenen?",
                     'type' => 'select',
-                    'options' => $interestOptions,
+                    'options' => $considerableOptions,
                 ];
                 $structure['insulated-glazing']['-']['building_insulated_glazings.'
                 . $measureApplication->id . '.insulating_glazing_id']
@@ -1343,15 +1303,14 @@ class ToolHelper
         )->get();
 
         foreach ($measureApplicationsForVentilation as $measureApplication) {
-            $structure['ventilation']['-'][$measureApplicationInterestKey
-            . $measureApplication->id . '.interest_id']
+
+            $structure['ventilation']['-']["{$measureApplicationConsiderableKey}.{$measureApplication->id}.is_considering"]
                 = [
-                //'label' => 'Interest in '.$measureApplication->measure_name,
-//                'label' => __('general.change-interested.title', ['item' => $measureApplication->measure_name]),
-                'label' => $measureApplication->measure_name,
+                'label' => "Wilt u {$measureApplication->measure_name} laten doorrekenen?",
                 'type' => 'select',
-                'options' => $interestOptions,
+                'options' => $considerableOptions,
             ];
+
         }
 
         // when a content key is set, we will try to retrieve the specific content from the structure.

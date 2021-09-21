@@ -10,6 +10,7 @@ use App\Calculations\RoofInsulation;
 use App\Calculations\SolarPanel;
 use App\Calculations\Ventilation;
 use App\Calculations\WallInsulation;
+use App\Helpers\ConsiderableHelper;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Cooperation\Tool\HeaterHelper;
 use App\Helpers\Cooperation\Tool\HighEfficiencyBoilerHelper;
@@ -438,13 +439,15 @@ class DumpService
                         break;
 
                     // handle the user_interest table and its columns.
-                    case 'user_interests':
-                        $interestInType = $tableWithColumnOrAndId[3];
-                        $interestInId = $tableWithColumnOrAndId[4];
+                    case 'considerables':
+                        $considerableModel = $tableWithColumnOrAndId[3];
+                        $considerableId = $tableWithColumnOrAndId[4];
 
-                        $userInterest = $user->userInterestsForSpecificType($interestInType, $interestInId, $inputSource)->first();
+                        // returns a bool, the values are keyed by 0 and 1
+                        $considerable = $considerableModel::find($considerableId);
+                        $considers = $user->considers($considerable, $inputSource);
 
-                        $row[$buildingId][$tableWithColumnOrAndIdKey] = $userInterest->interest->name ?? '';
+                        $row[$buildingId][$tableWithColumnOrAndIdKey] = ConsiderableHelper::getConsiderableValues()[(int) $considers];
                         break;
 
                     // handle the element table.

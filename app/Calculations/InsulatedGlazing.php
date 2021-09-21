@@ -39,8 +39,9 @@ class InsulatedGlazing
 
         foreach ($buildingInsulatedGlazings as $measureApplicationId => $buildingInsulatedGlazingsData) {
             $measureApplication = MeasureApplication::find($measureApplicationId);
+
             // we cant use the $user->considers() because this will also be used on the frontend
-            if ($calculateData['considerables'][$measureApplicationId]['is_considering']) {
+            if (isset($calculateData['considerables'][$measureApplicationId]) && $calculateData['considerables'][$measureApplicationId]['is_considering']) {
 
                 $buildingHeatingId = array_key_exists('building_heating_id', $buildingInsulatedGlazingsData) ? $buildingInsulatedGlazingsData['building_heating_id'] : 0;
                 $buildingHeating = BuildingHeating::find($buildingHeatingId);

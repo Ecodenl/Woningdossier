@@ -43,7 +43,7 @@ class HeaterHelper extends ToolHelper
         $this->setValues([
             'considerables' => [
                 $step->id => [
-                    'is_considering' => $this->user->considers($step),
+                    'is_considering' => $this->user->considers($step, $this->inputSource),
                 ],
             ],
             'building_heaters' => $buildingHeater instanceof BuildingHeater ? $buildingHeater->toArray() : [],

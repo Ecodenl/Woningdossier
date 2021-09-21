@@ -54,7 +54,7 @@ class FloorInsulationHelper extends ToolHelper
         $this->setValues([
             'considerables' => [
                 $step->id => [
-                    'is_considering' => $this->user->considers($step),
+                    'is_considering' => $this->user->considers($step, $this->inputSource),
                 ],
             ],
             'element' => [$floorInsulationElement->id => $floorInsulationElementValueId],

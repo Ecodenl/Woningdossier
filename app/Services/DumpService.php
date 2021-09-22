@@ -73,7 +73,6 @@ class DumpService
     {
         if ($anonymized) {
             $headers = [
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
 
@@ -85,7 +84,6 @@ class DumpService
             ];
         } else {
             $headers = [
-                __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.input-source'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.coach-appointment-date'),
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.status'),
@@ -233,13 +231,11 @@ class DumpService
         if ($anonymized) {
             // set the personal userinfo
             $row[$building->id] = [
-                $inputSource->name,
                 $createdAt, $buildingStatus, $postalCode, $city,
                 $buildingType, $buildYear, $exampleBuilding,
             ];
         } else {
             $row[$building->id] = [
-                $inputSource->name,
                 $createdAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
                 $firstName, $lastName, $email, $phoneNumber,
                 $street, trim($number . ' ' . $extension), $postalCode, $city,

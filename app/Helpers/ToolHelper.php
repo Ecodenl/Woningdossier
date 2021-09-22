@@ -934,7 +934,7 @@ class ToolHelper
             ],
         ];
  
-        $steps = Step::withoutChildren()->get();
+        $steps = Step::withoutChildren()->expert()->get();
 
         $steps = $steps->keyBy('short')->forget('general-data');
         // todo: remove the information pull and if.

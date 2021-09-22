@@ -14,7 +14,6 @@ use App\Models\PvPanelOrientation;
 use App\Models\Step;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
 use Illuminate\Http\Request;
 
 class SolarPanelsController extends Controller

@@ -15,7 +15,6 @@
             $userDoesNotHaveInterestInStep = false;
             if ($step->short != 'general-data') {
                 $userDoesNotHaveInterestInStep = false;
-//                $userDoesNotHaveInterestInStep = !\App\Helpers\StepHelper::hasInterestInStep($buildingOwner, get_class($step), $step->id);
             }
             $currentRouteName = $currentStepIsSubStep ? 'cooperation.tool.' . $step->short . '.' . $currentSubStep->short . '.index' : 'cooperation.tool.' . $step->short . '.index';
             $routeIsCurrentRoute = $currentRouteName == Route::getCurrentRoute()->getName();

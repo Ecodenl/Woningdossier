@@ -87,33 +87,6 @@ class StepHelper
     }
 
     /**
-     * Method to check whether a user has interest in a step.
-     *
-     * @param InputSource $inputSource
-     * @param $interestedInType
-     * @param $interestedInId
-     */
-    public static function hasInterestInStep(User $user, $interestedInType, $interestedInId, $inputSource = null): bool
-    {
-        $noInterestIds = Interest::whereIn('calculate_value', [4, 5])->select('id')->get()->pluck('id')->toArray();
-
-        $userSelectedInterestedId = null;
-        if ($inputSource instanceof InputSource) {
-            $userSelectedUserInterest = $user->userInterestsForSpecificType($interestedInType,
-                $interestedInId, $inputSource)->first();
-        } else {
-            $userSelectedUserInterest = $user->userInterestsForSpecificType($interestedInType,
-                $interestedInId)->first();
-        }
-
-        if ($userSelectedUserInterest instanceof UserInterest) {
-            $userSelectedInterestedId = $userSelectedUserInterest->interest_id;
-        }
-
-        return ! in_array($userSelectedInterestedId, $noInterestIds);
-    }
-
-    /**
      * Method to retrieve the unfinished sub steps of a step for a building.
      *
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection

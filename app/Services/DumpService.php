@@ -139,9 +139,9 @@ class DumpService
                             // we will dot the array, map it so we can add the step name to it
                             $deeperContents = array_map(function ($content) use ($step, $subStep) {
                                 return self::makeHeaderText($step->name, $subStep, $content);
-                            }, Arr::dot($contents, $stepShort.'.'.$subStep.'.calculation.'));
+                            }, Arr::dot($contents, $stepShort . '.' . $subStep . '.calculation.'));
                         } else {
-                            $deeperContents = Arr::dot($contents, $stepShort.'.'.$subStep.'.calculation.');
+                            $deeperContents = Arr::dot($contents, $stepShort . '.' . $subStep . '.calculation.');
                         }
 
                         $headers = array_merge($headers, $deeperContents);
@@ -154,9 +154,9 @@ class DumpService
                                 $subStepName = optional(Step::findByShort($subStep))->name ?? '';
                             }
 
-                            $headers[$stepShort.'.'.$subStep.'.'.$tableWithColumnOrAndId] = self::makeHeaderText($step->name ?? 'Algemeen', $subStepName, $labelWithEuroNormalization);
+                            $headers[$stepShort . '.' . $subStep . '.' . $tableWithColumnOrAndId] = self::makeHeaderText($step->name ?? 'Algemeen', $subStepName, $labelWithEuroNormalization);
                         } else {
-                            $headers[$stepShort.'.'.$subStep.'.'.$tableWithColumnOrAndId] = $labelWithEuroNormalization;
+                            $headers[$stepShort . '.' . $subStep . '.' . $tableWithColumnOrAndId] = $labelWithEuroNormalization;
                         }
                     }
                 }
@@ -174,9 +174,9 @@ class DumpService
      * Method to generate a total dump from a user for a specific input source.
      * This dump collects all possible data for a given user for the tool and returns it in an array.
      *
-     * @param array       $structureForTotalDump | we need the headers to get table and row data, provided from the self::dissectHeaders, using self::getStructureForTotalDumpService
-     * @param Cooperation $cooperation           ,
-     * @param bool        $withConditionalLogic  | when true, it will return the data as happens in the dump. So if an input gets hidden it wont be put in the dump
+     * @param array $structureForTotalDump | we need the headers to get table and row data, provided from the self::dissectHeaders, using self::getStructureForTotalDumpService
+     * @param Cooperation $cooperation ,
+     * @param bool $withConditionalLogic | when true, it will return the data as happens in the dump. So if an input gets hidden it wont be put in the dump
      */
     public static function totalDump(array $structureForTotalDump, Cooperation $cooperation, User $user, InputSource $inputSource, bool $anonymized, bool $withTranslationsForColumns = true, bool $withConditionalLogic = false): array
     {
@@ -242,7 +242,7 @@ class DumpService
                 $inputSource->name,
                 $createdAt, $appointmentDate, $buildingStatus, $allowAccess, $connectedCoachNames,
                 $firstName, $lastName, $email, $phoneNumber,
-                $street, trim($number.' '.$extension) , $postalCode, $city,
+                $street, trim($number . ' ' . $extension), $postalCode, $city,
                 $buildingType, $buildYear, $exampleBuilding,
             ];
         }
@@ -415,13 +415,13 @@ class DumpService
                                         if (in_array($extraKey, ['tiles_condition', 'measure_application_id'])) {
                                             $row[$buildingId][$tableWithColumnOrAndIdKey] = $buildingRoofType->extra[$extraKey] ?? '';
 
-                                            if (! empty($buildingRoofType->extra[$extraKey]) && 'tiles_condition' == $extraKey) {
-                                                $status = RoofTileStatus::find((int) $row[$buildingId][$tableWithColumnOrAndIdKey]);
+                                            if (!empty($buildingRoofType->extra[$extraKey]) && 'tiles_condition' == $extraKey) {
+                                                $status = RoofTileStatus::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
                                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = ($status instanceof RoofTileStatus) ? $status->name : '';
                                             }
                                             // The measure application id, in this case. can be 0, this means the option: "niet" has been chosen the option is not saved as a measure application
                                             if ('measure_application_id' == $extraKey) {
-                                                $measureApplication = MeasureApplication::find((int) $row[$buildingId][$tableWithColumnOrAndIdKey]);
+                                                $measureApplication = MeasureApplication::find((int)$row[$buildingId][$tableWithColumnOrAndIdKey]);
                                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $measureApplication instanceof MeasureApplication ? $measureApplication->measure_name : __('roof-insulation.measure-application.no.title');
                                             }
                                         } else {
@@ -447,7 +447,7 @@ class DumpService
                         $considerable = $considerableModel::find($considerableId);
                         $considers = $user->considers($considerable, $inputSource);
 
-                        $row[$buildingId][$tableWithColumnOrAndIdKey] = ConsiderableHelper::getConsiderableValues()[(int) $considers];
+                        $row[$buildingId][$tableWithColumnOrAndIdKey] = ConsiderableHelper::getConsiderableValues()[(int)$considers];
                         break;
 
                     // handle the element table.
@@ -590,12 +590,19 @@ class DumpService
                                 $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer ?? '';
                                 break;
                             default:
+                                $answer = "";
                                 $answers = $building->getAnswer($inputSource, ToolQuestion::findByShort($column));
-                                // this will alow us to translates the answers
-                                $row[$buildingId][$tableWithColumnOrAndIdKey] = ToolQuestionCustomValue::whereIn('short', $answers)
-                                        ->get()
-                                        ->pluck('name')
-                                        ->implode(', ') ?? '';
+
+                                // this will allow us to translates the answers
+                                // only when its a array, it will be null when no answer is given.
+                                if (is_array($answers)) {
+                                    $answer = ToolQuestionCustomValue::whereIn('short', $answers)
+                                            ->get()
+                                            ->pluck('name')
+                                            ->implode(', ') ?? '';
+                                }
+                                $row[$buildingId][$tableWithColumnOrAndIdKey] = $answer;
+
                                 break;
                         }
                         break;
@@ -768,7 +775,7 @@ class DumpService
             return $value;
         }
 
-        if (! is_numeric($value)) {
+        if (!is_numeric($value)) {
             return $value;
         }
 
@@ -790,9 +797,9 @@ class DumpService
      * Format the output of the given column and value.
      *
      * @param string $column
-     * @param mixed  $value
-     * @param int    $decimals
-     * @param bool   $shouldRound
+     * @param mixed $value
+     * @param int $decimals
+     * @param bool $shouldRound
      *
      * @return float|int|string
      */
@@ -832,7 +839,7 @@ class DumpService
      */
     protected static function isYear($column, $extraValue = '')
     {
-        if (! is_null($column)) {
+        if (!is_null($column)) {
             if (false !== stristr($column, 'year')) {
                 return true;
             }

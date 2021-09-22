@@ -328,11 +328,11 @@ class Building extends Model
      *
      * @return bool
      */
-    public function hasCompletedQuickScan(): bool
+    public function hasCompletedQuickScan(InputSource $inputSource): bool
     {
         $quickScanSteps = Step::whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS)->get();
         foreach ($quickScanSteps as $quickScanStep) {
-            if (! $this->hasCompleted($quickScanStep)) {
+            if (! $this->hasCompleted($quickScanStep, $inputSource)) {
                 return false;
             }
         }

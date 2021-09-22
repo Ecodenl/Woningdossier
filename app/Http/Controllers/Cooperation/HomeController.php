@@ -7,6 +7,7 @@ use App\Helpers\QuickScanHelper;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
+use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
 
@@ -24,7 +25,11 @@ class HomeController extends Controller
         $building = HoomdossierSession::getBuilding(true);
 
         // If the quick scan is complete, we just redirect to my plan
-        if ($building->hasCompletedQuickScan()) {
+
+        // todo: figure out why there is no use of forInputSource master
+
+        // used the resident input source as this keeps the behaviour of the logic beneath in tact. (read above todo)
+        if ($building->hasCompletedQuickScan(HoomdossierSession::getInputSource(true))) {
             $url = route('cooperation.frontend.tool.quick-scan.my-plan.index');
         } else {
             $mostRecentCompletedSubStep = optional($building->completedSubSteps()->orderByDesc('created_at')->first())->subStep;

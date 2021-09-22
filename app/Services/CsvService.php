@@ -383,12 +383,13 @@ class CsvService
             ->whereHas('building')
             ->with(['building' => function ($query) use ($lastQuickScanStep, $masterInputSource) {
                     $query->with(['completedSteps' => function ($query) use ($lastQuickScanStep, $masterInputSource) {
-                        $query->withoutGlobalScope(GetValueScope::class)->where('input_source_id', '=', $masterInputSource)
+                        $query->withoutGlobalScope(GetValueScope::class)
+                            ->where('input_source_id', '=', $masterInputSource)
                             ->where('step_id', $lastQuickScanStep->id);
                     }]);
             }])->get();
 
-        $users = $users->filter(fn($u) => $u->building->hasCompletedQuickScan());
+        $users = $users->filter(fn($u) => $u->building->hasCompletedQuickScan($masterInputSource));
 
 //        $coachIds = [];
 //        $residentIds = [];

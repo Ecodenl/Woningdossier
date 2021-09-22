@@ -71,8 +71,7 @@ class RecalculateForUser extends Command
         $bar->setFormat("%message%\n %current%/%max% [%bar%] %percent:3s%%");
         $bar->setMessage('Queuing up the recalculate..');
 
-        // default
-        //$inputSourcesToRecalculate = ['resident', 'coach'];
+        // default, previously we used resident and coach
         $inputSourcesToRecalculate = [ InputSource::MASTER_SHORT ];
 
         if (! empty($this->option('input-source'))) {

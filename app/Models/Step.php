@@ -65,11 +65,6 @@ class Step extends Model
         static::addGlobalScope(new NoGeneralDataScope());
     }
 
-    public function scopeTest(Builder $q)
-    {
-        dd($q);
-    }
-
     public function getRouteKeyName()
     {
         return 'slug';

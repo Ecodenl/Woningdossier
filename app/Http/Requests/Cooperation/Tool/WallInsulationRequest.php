@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\Cooperation\Tool;
 
+use App\Helpers\ConsiderableHelper;
 use App\Http\Requests\DecimalReplacementTrait;
 use App\Rules\ValidateElementKey;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class WallInsulationRequest extends FormRequest
 {
@@ -35,6 +37,7 @@ class WallInsulationRequest extends FormRequest
     public function rules()
     {
         return [
+            'considerables.*.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],
             // heeft deze woning spouwmuur / huidige staat
             'element' => ['exists:element_values,id', 'required', new ValidateElementKey('wall-insulation')],
             // radio buttons

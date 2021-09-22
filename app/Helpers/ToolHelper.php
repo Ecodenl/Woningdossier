@@ -59,7 +59,7 @@ class ToolHelper
             'label' => $name . ': ' . __(
                     'cooperation/admin/example-buildings.form.is-considering'
                 ),
-            'type' => 'radio',
+            'type' => 'select',
             'options' => ConsiderableHelper::getConsiderableValues()
         ];
     }

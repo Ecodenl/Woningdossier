@@ -19,7 +19,7 @@ class ConsiderableService
         // todo; log more data, whether he's considering it or not yadadad
 
         // cant use sync because of the events and nature of eloquent handling pivot tables.
-        Considerable::updateOrCreate(
+        Considerable::forInputSource($inputSource)->updateOrCreate(
             [
                 'user_id' => $user->id,
                 'input_source_id' => $inputSource->id,

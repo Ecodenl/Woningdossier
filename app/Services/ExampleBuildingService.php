@@ -521,17 +521,10 @@ class ExampleBuildingService
                     if ('considerables' == $columnOrTable){
                         foreach($values as $modelClass => $modelConsideration){
                             foreach($modelConsideration as $id => $considering){
-                                $considering = ($considering == 1);
+//                                $considering = ($considering == 1);
                                 self::log("Building " . $building->id . " Setting consideration for user " . $building->user->id . " for " . $modelClass . " (" . $id . ") to " . ((int) $considering));
-                                $userConsideration = new Considerable([
-                                    'input_source_id' => $inputSource->id,
-                                    'considerable_type' => $modelClass,
-                                    'considerable_id' => $id,
-                                    'is_considering' => $considering,
-                                ]);
-                                $building->user->considerables($modelClass)
-                                    ->forInputSource($inputSource)
-                                    ->save($userConsideration);
+
+                                ConsiderableService::save($modelClass::find($id), $building->user, $inputSource, $considering);
                             }
                         }
                     }

@@ -216,8 +216,7 @@ class StepHelper
         foreach ($nonCompletedSteps as $nonCompletedStep) {
             // when the non completed step is a substep, we can always return it.
             // else we have to check whether the user has interest in the step
-            if ($nonCompletedStep instanceof Step && ($nonCompletedStep->isChild() || self::hasInterestInStep($user,
-                        Step::class, $nonCompletedStep->id))) {
+            if ($nonCompletedStep instanceof Step && $nonCompletedStep->isChild()) {
                 // when its a substep we need to build it again for the sub step
                 if ($nonCompletedStep->isChild()) {
                     $url = static::buildStepUrl($parentStep, $nonCompletedStep);

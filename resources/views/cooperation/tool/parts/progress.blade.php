@@ -1,5 +1,8 @@
 <ul class="progress-list list-none -ml-1 flex flex-row flex-wrap w-full justify-center mt-5">
     <?php
+
+    // FILE SHOULD NOT BE USED ANYMORE
+
     $building = \App\Helpers\HoomdossierSession::getBuilding(true);
     $currentStepIsSubStep = $currentSubStep instanceof \App\Models\Step;
 
@@ -11,7 +14,8 @@
             <?php
             $userDoesNotHaveInterestInStep = false;
             if ($step->short != 'general-data') {
-                $userDoesNotHaveInterestInStep = !\App\Helpers\StepHelper::hasInterestInStep($buildingOwner, get_class($step), $step->id);
+                $userDoesNotHaveInterestInStep = false;
+//                $userDoesNotHaveInterestInStep = !\App\Helpers\StepHelper::hasInterestInStep($buildingOwner, get_class($step), $step->id);
             }
             $currentRouteName = $currentStepIsSubStep ? 'cooperation.tool.' . $step->short . '.' . $currentSubStep->short . '.index' : 'cooperation.tool.' . $step->short . '.index';
             $routeIsCurrentRoute = $currentRouteName == Route::getCurrentRoute()->getName();

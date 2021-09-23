@@ -72,7 +72,7 @@ class RecalculateForUser extends Command
         $bar->setMessage('Queuing up the recalculate..');
 
         // default, previously we used resident and coach
-        $inputSourcesToRecalculate = [ InputSource::MASTER_SHORT ];
+        $inputSourcesToRecalculate = [ InputSource::RESIDENT_SHORT ];
 
         if (! empty($this->option('input-source'))) {
             $inputSourcesToRecalculate = $this->option('input-source');

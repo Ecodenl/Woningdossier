@@ -89,6 +89,11 @@ class UserActionPlanAdvice extends Model
         static::addGlobalScope(new VisibleScope());
     }
 
+    public function scopeWithInvisible(Builder $query)
+    {
+        return $query->withoutGlobalScope(VisibleScope::class);
+    }
+
     /**
      * Scope a query to only include results for the particular step.
      *

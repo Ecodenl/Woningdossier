@@ -7,8 +7,6 @@ use App\Models\BuildingVentilation;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
-use App\Models\InputSource;
-use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 
 class VentilationHelper extends ToolHelper

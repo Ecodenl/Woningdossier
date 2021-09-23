@@ -57,21 +57,27 @@ class UserActionPlanAdviceService
      */
     public static function clearForStep(User $user, InputSource $inputSource, Step $step): Collection
     {
-        // TODO: ensure correct input source is passed, or remove variable and ALWAYS use master
-        $inputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        // so this is kind of a weird one, we have to clear the advices for the given input source
+        // BUT also for the master.
 
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         // Get old advices
-        $oldAdvices = UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
-            ->forMe($user)
-            ->forInputSource($inputSource)
+        $oldAdvices = UserActionPlanAdvice::forUser($user)
+            ->forInputSource($masterInputSource)
             ->forStep($step)
             ->get();
 
-        // Delete old advices
-        UserActionPlanAdvice::withoutGlobalScope(VisibleScope::class)
-            ->forMe($user)
+        // now delete the old advices, the one for the given input source and the master source.
+        UserActionPlanAdvice::forUser($user)
+            ->forInputSource($masterInputSource)
+            ->forStep($step)
+            ->withInvisible()
+            ->delete();
+
+        UserActionPlanAdvice::forUser($user)
             ->forInputSource($inputSource)
             ->forStep($step)
+            ->withInvisible()
             ->delete();
 
         return $oldAdvices;

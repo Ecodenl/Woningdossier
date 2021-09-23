@@ -154,26 +154,11 @@ class ToolHelper
 
         $comfortLevelsTapWater = ComfortLevelTapWater::all();
 
-        $buildingTypes = BuildingType::all();
         $buildingHeatings = BuildingHeating::all();
         $boilerTypes = $boiler->values()->orderBy('order')->get();
 
-        // Common
-        $interests = Interest::orderBy('order')->get();
-        $interestOptions = static::createOptions($interests);
-
-        $considerableOptions = ConsiderableHelper::getConsiderableValues();
-
         $measureApplicationConsiderableKey = 'considerables.' . MeasureApplication::class;
         $stepConsiderableKey = 'considerables.' . Step::class;
-
-
-        $radioIconType = ToolQuestionType::findByShort('radio-icon');
-        $radioType = ToolQuestionType::findByShort('radio');
-        $textType = ToolQuestionType::findByShort('text');
-        $sliderType = ToolQuestionType::findByShort('slider');
-
-        $templateDefault = SubStepTemplate::findByShort('template-default');
 
         $structure = [
             'general-data' => [

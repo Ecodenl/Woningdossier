@@ -30,7 +30,7 @@ class CsvService
     {
         // get the users from the cooperations
         $users = $cooperation->users()->whereHas('buildings')->get();
-
+        
         if ($anonymize) {
             $csvHeaders = [
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
@@ -153,7 +153,6 @@ class CsvService
                 ->orderBy('measure_applications.measure_type')
                 ->select(['user_action_plan_advices.*'])
                 ->get();
-dd($userActionPlanAdvices, $user->id);
             // get the user measures / advices
             foreach ($userActionPlanAdvices as $actionPlanAdvice) {
                 $measureName = $actionPlanAdvice->userActionPlanAdvisable->measure_name;

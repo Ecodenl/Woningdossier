@@ -145,9 +145,7 @@ class CsvService
             // get the action plan advices for the user, but only for the resident his input source
             $userActionPlanAdvices = $user
                 ->actionPlanAdvices()
-                //->withoutGlobalScope(VisibleScope::class)
                 ->forInputSource($inputSourceForDump)
-                //->leftJoin('measure_applications', 'user_action_plan_advices.measure_application_id', '=', 'measure_applications.id')
                 ->leftJoin('measure_applications', 'user_action_plan_advices.user_action_plan_advisable_id', '=', 'measure_applications.id')
                 ->leftJoin('steps', 'measure_applications.step_id', '=', 'steps.id')
                 ->where('user_action_plan_advices.user_action_plan_advisable_type', '=', MeasureApplication::class)
@@ -155,7 +153,7 @@ class CsvService
                 ->orderBy('measure_applications.measure_type')
                 ->select(['user_action_plan_advices.*'])
                 ->get();
-
+dd($userActionPlanAdvices, $user->id);
             // get the user measures / advices
             foreach ($userActionPlanAdvices as $actionPlanAdvice) {
                 $measureName = $actionPlanAdvice->userActionPlanAdvisable->measure_name;

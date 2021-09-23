@@ -356,25 +356,6 @@ class User extends Model implements AuthorizableContract
     }
 
     /**
-     * Returns if a user has interest in a specific model (mostly Step or
-     * MeasureApplication).
-     *
-     * @return bool
-     */
-    public function hasInterestIn(Model $model, InputSource $inputSource = null, int $interestCalculateValue = 2)
-    {
-        $userInterests = $this->userInterestsForSpecificType(get_class($model), $model->id, $inputSource)->with('interest')->get();
-        foreach ($userInterests as $userInterest) {
-            // the $interestCalculateValue is default 2, but due to some exceptions in the app this may be variable.
-            if ($userInterest->interest->calculate_value <= $interestCalculateValue) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Get the human readable role name based on the role name.
      *
      * @param $roleName

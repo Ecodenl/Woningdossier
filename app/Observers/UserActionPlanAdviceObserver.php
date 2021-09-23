@@ -2,12 +2,8 @@
 
 namespace App\Observers;
 
-use App\Models\MeasureApplication;
 use App\Models\UserActionPlanAdvice;
-use App\Models\UserInterest;
 use App\Services\UserActionPlanAdviceService;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 
 class UserActionPlanAdviceObserver
 {

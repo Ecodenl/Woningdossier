@@ -160,7 +160,7 @@ class CsvService
             foreach ($userActionPlanAdvices as $actionPlanAdvice) {
                 $measureName = $actionPlanAdvice->userActionPlanAdvisable->measure_name;
 
-                $plannedYear = UserActionPlanAdviceService::getYear($actionPlanAdvice);
+                $plannedYear = null;
                 // fill the measure with the planned year
                 $row[$key][$measureName] = $plannedYear;
             }

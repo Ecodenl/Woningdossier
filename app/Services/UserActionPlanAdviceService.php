@@ -78,67 +78,6 @@ class UserActionPlanAdviceService
     }
 
     /**
-     * Method to retrieve the advice year based on the step or when available measure interest level.
-     *
-     * @return int|null
-     */
-    public static function getAdviceYear(UserActionPlanAdvice $userActionPlanAdvice)
-    {
-        $adviceYear = null;
-        $step = $userActionPlanAdvice->step;
-        $buildingOwner = $userActionPlanAdvice->user;
-        $measureApplication = $userActionPlanAdvice->userActionPlanAdvisable;
-
-        // set the default user interest on the step.
-        $userInterest = $buildingOwner->userInterestsForSpecificType(get_class($step),
-            $step->id)->with('interest')->first();
-
-        // try to obtain a specific interest on the measure application
-        $userInterestOnMeasureApplication = $buildingOwner
-            ->userInterestsForSpecificType(get_class($measureApplication), $measureApplication->id)
-            ->with('interest')
-            ->first();
-
-        // when thats available use that.
-        if ($userInterestOnMeasureApplication instanceof UserInterest) {
-            $userInterest = $userInterestOnMeasureApplication;
-        }
-
-        if (!$userInterest instanceof UserInterest) {
-            return $adviceYear;
-        }
-        if (1 == $userInterest->interest->calculate_value) {
-            $adviceYear = Carbon::now()->year;
-        }
-        if (2 == $userInterest->interest->calculate_value) {
-            $adviceYear = Carbon::now()->year + 5;
-        }
-
-        return $adviceYear;
-    }
-
-    /**
-     * Method to return a year or string with no year.
-     *
-     * @note this is NOT the same as getAdviceYear.
-     * This will returned the planned_year as first option.
-     *
-     * @return array|int|string|null
-     */
-    public static function getYear(UserActionPlanAdvice $userActionPlanAdvice)
-    {
-        // always try to get the planned year, as this is what de user gave as input
-        $year = $userActionPlanAdvice->planned_year ?? $userActionPlanAdvice->year;
-
-        // when the year is empty try to get one last resort.
-        if (is_null($year)) {
-            $year = UserActionPlanAdviceService::getAdviceYear($userActionPlanAdvice) ?? __('woningdossier.cooperation.tool.my-plan.no-year');
-        }
-
-        return $year;
-    }
-
-    /**
      * Method to return input sources that have an action plan advice, on a building.
      *
      * @return UserActionPlanAdvice[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
@@ -169,7 +108,7 @@ class UserActionPlanAdviceService
                 foreach ($advicesForStep as $advice) {
                     if ($advice->planned) {
                         $savingsMoney = $advice->savings_money;
-                        $year = self::getYear($advice);
+                        $year = 0;
 
                         // if its a string, the $year contains 'geen jaartal'
                         if (is_string($year)) {
@@ -296,7 +235,7 @@ class UserActionPlanAdviceService
                 $measureApplication = $advice->userActionPlanAdvisable;
 
                 if (is_null($advice->year)) {
-                    $advice->year = self::getAdviceYear($advice);
+                    $advice->year = 0;
                 }
 
                 // check if we have to set the $savingsMoney to ntb.

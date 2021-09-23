@@ -14,7 +14,8 @@
                 @include('cooperation.tool.components.source-list', [
                     'inputType' => 'radio',
                     'inputValues' => \App\Helpers\ConsiderableHelper::getConsiderableValues(),
-                    'userInputValues' => $buildingOwner->considerables($considerable)->get(), 'userInputColumn' => 'is_considering'
+                    'userInputValues' => \App\Models\Considerable::forMe($buildingOwner)->get(),
+                    'userInputColumn' => 'is_considering'
                 ])
             @endslot
             @php

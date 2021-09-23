@@ -10,14 +10,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\GeneralData\CurrentStateFormRequest;
 use App\Models\BuildingHeatingApplication;
 use App\Models\Element;
-use App\Models\ElementValue;
-use App\Models\Interest;
 use App\Models\Service;
-use App\Models\ServiceValue;
 use App\Models\Step;
 use App\Models\UserInterest;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
 use Illuminate\Support\Arr;
 
 class CurrentStateController extends Controller

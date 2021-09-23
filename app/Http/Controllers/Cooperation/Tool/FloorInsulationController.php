@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\FloorInsulation;
 use App\Events\StepDataHasBeenChanged;
-use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -15,7 +14,6 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\Step;
-use App\Models\User;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
 use Illuminate\Http\Request;

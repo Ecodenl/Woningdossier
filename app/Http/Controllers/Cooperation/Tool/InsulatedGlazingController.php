@@ -16,15 +16,12 @@ use App\Models\BuildingHeating;
 use App\Models\BuildingInsulatedGlazing;
 use App\Models\Element;
 use App\Models\InsulatingGlazing;
-use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
 use App\Models\Step;
-use App\Models\UserInterest;
 use App\Models\WoodRotStatus;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
 use Illuminate\Http\Request;
 
 class InsulatedGlazingController extends Controller

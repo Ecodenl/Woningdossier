@@ -11,14 +11,11 @@ use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\VentilationFormRequest;
 use App\Models\BuildingService;
-use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\Step;
-use App\Models\UserInterest;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
 use Illuminate\Http\Request;
 
 class VentilationController extends Controller

@@ -16,12 +16,10 @@ use App\Models\BuildingFeature;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
-use App\Models\Interest;
 use App\Models\Step;
 use App\Scopes\GetValueScope;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
 use Illuminate\Http\Request;
 
 class WallInsulationController extends Controller

@@ -168,22 +168,6 @@ class User extends Model implements AuthorizableContract
             ->where('interested_in_id', $interestedInId);
     }
 
-    /**
-     * Method to check whether a user is interested in a step.
-     *
-     * @param $interestedInType
-     * @param $interestedInId
-     *
-     * @return bool
-     */
-    public function isInterestedInStep(InputSource $inputSource, $interestedInType, $interestedInId)
-    {
-        $noInterestIds = Interest::whereIn('calculate_value', [4, 5])->select('id')->get()->pluck('id')->toArray();
-
-        $userSelectedInterestedId = $this->user->userInterestsForSpecificType($interestedInType, $interestedInId)->first()->interest_id;
-
-        return !in_array($userSelectedInterestedId, $noInterestIds);
-    }
 
     /**
      * Return all the interest levels of a user.
@@ -193,30 +177,6 @@ class User extends Model implements AuthorizableContract
     public function interests()
     {
         return $this->hasManyThrough(Interest::class, UserInterest::class, 'user_id', 'id', 'id', 'interest_id');
-    }
-
-    /**
-     * Return all step interests.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function stepInterests()
-    {
-        return $this->morphedByMany(Step::class, 'interested_in', 'user_interests')
-            ->where('user_interests.input_source_id', HoomdossierSession::getInputSourceValue())
-            ->withPivot('interest_id', 'input_source_id');
-    }
-
-    /**
-     * Return all the measure application interests.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
-     */
-    public function measureApplicationInterest()
-    {
-        return $this->morphedByMany(MeasureApplication::class, 'interested_in', 'user_interests')
-            ->where('user_interests.input_source_id', HoomdossierSession::getInputSourceValue())
-            ->withPivot('interest_id', 'input_source_id');
     }
 
     // ------ User -> Account table / model migration stuff -------

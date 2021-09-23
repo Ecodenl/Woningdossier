@@ -53,7 +53,10 @@ class RecalculateToolForUserListener
             // Theres nothing to recalculate if the user did not complete the main step.
             if ($event->building->hasCompletedQuickScan(InputSource::findByShort(InputSource::MASTER_SHORT))) {
                 $userId = $event->building->user->id;
-                // default for recalculate it set at master
+                // default for recalculate it set at resident
+
+                // yes we check for the master, but recalculate the resident.
+                // we always insert / update to resident and retrieve the master.
                 Artisan::call(RecalculateForUser::class, ['--user' => [$userId]]);
             }
         }

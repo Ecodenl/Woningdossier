@@ -41,7 +41,7 @@ class CompletedSubStepObserver
 
                     // Trigger a recalculate if the tool is now complete
                     // TODO: Refactor this
-                    if ($building->hasCompletedQuickScan()) {
+                    if ($building->hasCompletedQuickScan($inputSource)) {
                         StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
                     }
                 } else {
@@ -62,7 +62,7 @@ class CompletedSubStepObserver
 
                         // Trigger a recalculate if the tool is now complete
                         // TODO: Refactor this
-                        if ($building->hasCompletedQuickScan()) {
+                        if ($building->hasCompletedQuickScan($inputSource)) {
                             StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
                         }
                     }

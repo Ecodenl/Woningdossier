@@ -12,8 +12,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\HighEfficiencyBoilerFormRequest;
 use App\Models\Service;
 use App\Models\Step;
+use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
 use Illuminate\Http\Request;
 
 class HighEfficiencyBoilerController extends Controller
@@ -80,15 +80,13 @@ class HighEfficiencyBoilerController extends Controller
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
 
-        // Save the building service
-        $userInterests = $request->input('user_interests');
-        UserInterestService::save($user, $inputSource, Step::class, $this->step->id, $userInterests['interest_id']);
+        ConsiderableService::save($this->step, $user, $inputSource, $request->validated()['considerables'][$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         (new HighEfficiencyBoilerHelper($user, $inputSource))
-            ->setValues($request->only('user_energy_habits', 'building_services'))
+            ->setValues($request->only('user_energy_habits', 'building_services', 'considerables'))
             ->saveValues()
             ->createAdvices();
 

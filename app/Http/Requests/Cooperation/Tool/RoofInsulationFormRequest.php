@@ -2,11 +2,13 @@
 
 namespace App\Http\Requests\Cooperation\Tool;
 
+use App\Helpers\ConsiderableHelper;
 use App\Models\RoofType;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 class RoofInsulationFormRequest extends FormRequest
@@ -56,6 +58,7 @@ class RoofInsulationFormRequest extends FormRequest
     public function rules()
     {
         return [
+            'considerables.*.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],
             'building_roof_type_ids' => 'bail|required|exists:roof_types,id',
             'building_roof_types.*.element_value_id' => 'exists:element_values,id',
             'building_roof_types.*.building_heating_id' => 'exists:building_heatings,id',

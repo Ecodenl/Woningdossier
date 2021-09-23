@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\FloorInsulation;
 use App\Events\StepDataHasBeenChanged;
-use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
@@ -15,8 +14,8 @@ use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Element;
 use App\Models\Step;
+use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
 use Illuminate\Http\Request;
 
 class FloorInsulationController extends Controller
@@ -68,7 +67,6 @@ class FloorInsulationController extends Controller
             $building->buildingFeatures()
         )->get();
 
-
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation', 'buildingInsulationForMe', 'buildingElementsOrderedOnInputSourceCredibility',
             'crawlspace', 'buildingCrawlspace', 'typeIds', 'buildingFeaturesOrderedOnInputSourceCredibility',
@@ -100,8 +98,7 @@ class FloorInsulationController extends Controller
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
 
-        $userInterests = $request->input('user_interests');
-        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+        ConsiderableService::save($this->step, $user, $inputSource, $request->validated()['considerables'][$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
@@ -112,6 +109,7 @@ class FloorInsulationController extends Controller
             ->createAdvices();
 
         StepHelper::complete($this->step, $building, $inputSource);
+
         $building->update([
             'has_answered_expert_question' => true,
         ]);

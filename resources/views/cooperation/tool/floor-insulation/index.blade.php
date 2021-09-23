@@ -7,10 +7,7 @@
           action="{{ route('cooperation.tool.floor-insulation.store', compact('cooperation')) }}">
         @csrf
 
-        @include('cooperation.tool.includes.interested', [
-            'translation' => 'floor-insulation.index.interested-in-improvement', 
-            'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
-        ])
+        @include('cooperation.tool.includes.considerable', ['considerable' => $currentStep])
         <div id="floor-insulation">
             <div class="flex flex-row flex-wrap w-full">
                 <div class="w-full">

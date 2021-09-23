@@ -84,40 +84,15 @@ class WallInsulationHelper extends ToolHelper
 
         $step = Step::findByShort('wall-insulation');
 
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
-
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
-        if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
-            $measureApplication = MeasureApplication::where('measure_name->nl', $results['insulation_advice'])->first();
-            if ($measureApplication instanceof MeasureApplication) {
-                $actionPlanAdvice = new UserActionPlanAdvice($results);
-                $actionPlanAdvice->input_source_id = $this->inputSource->id;
-                $actionPlanAdvice->costs = ['from' => $results['cost_indication']]; // only outlier
-                $actionPlanAdvice->user()->associate($this->user);
-                $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
-                $actionPlanAdvice->step()->associate($step);
-
-                UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
-
-                $actionPlanAdvice->save();
-            }
-        }
-
-        $keysToMeasure = [
-            'paint_wall' => 'paint-wall',
-            'repair_joint' => 'repair-joint',
-            'clean_brickwork' => 'clean-brickwork',
-            'impregnate_wall' => 'impregnate-wall',
-        ];
-
-        foreach ($keysToMeasure as $key => $measureShort) {
-            if (isset($results[$key]['costs']) && $results[$key]['costs'] > 0) {
-                $measureApplication = MeasureApplication::where('short', $measureShort)->first();
+        if ($this->considers($step)) {
+            if (isset($results['insulation_advice']) && isset($results['cost_indication']) && $results['cost_indication'] > 0) {
+                $measureApplication = MeasureApplication::where('measure_name->nl', $results['insulation_advice'])->first();
                 if ($measureApplication instanceof MeasureApplication) {
-                    $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
+                    $actionPlanAdvice = new UserActionPlanAdvice($results);
                     $actionPlanAdvice->input_source_id = $this->inputSource->id;
-                    $actionPlanAdvice->costs = ['from' => $results[$key]['costs']]; // only outlier
+                    $actionPlanAdvice->costs = ['from' => $results['cost_indication']]; // only outlier
                     $actionPlanAdvice->user()->associate($this->user);
                     $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
                     $actionPlanAdvice->step()->associate($step);
@@ -125,6 +100,31 @@ class WallInsulationHelper extends ToolHelper
                     UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
 
                     $actionPlanAdvice->save();
+                }
+            }
+
+            $keysToMeasure = [
+                'paint_wall' => 'paint-wall',
+                'repair_joint' => 'repair-joint',
+                'clean_brickwork' => 'clean-brickwork',
+                'impregnate_wall' => 'impregnate-wall',
+            ];
+
+            foreach ($keysToMeasure as $key => $measureShort) {
+                if (isset($results[$key]['costs']) && $results[$key]['costs'] > 0) {
+                    $measureApplication = MeasureApplication::where('short', $measureShort)->first();
+                    if ($measureApplication instanceof MeasureApplication) {
+                        $actionPlanAdvice = new UserActionPlanAdvice($results[$key]);
+                        $actionPlanAdvice->input_source_id = $this->inputSource->id;
+                        $actionPlanAdvice->costs = ['from' => $results[$key]['costs']]; // only outlier
+                        $actionPlanAdvice->user()->associate($this->user);
+                        $actionPlanAdvice->userActionPlanAdvisable()->associate($measureApplication);
+                        $actionPlanAdvice->step()->associate($step);
+
+                        UserActionPlanAdviceService::checkOldAdvices($actionPlanAdvice, $measureApplication, $oldAdvices);
+
+                        $actionPlanAdvice->save();
+                    }
                 }
             }
         }

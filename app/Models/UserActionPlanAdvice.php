@@ -89,6 +89,11 @@ class UserActionPlanAdvice extends Model
         static::addGlobalScope(new VisibleScope());
     }
 
+    public function scopeWithInvisible(Builder $query)
+    {
+        return $query->withoutGlobalScope(VisibleScope::class);
+    }
+
     /**
      * Scope a query to only include results for the particular step.
      *
@@ -119,17 +124,5 @@ class UserActionPlanAdvice extends Model
     public function scopeCategory(Builder $query, string $category)
     {
         return $query->where('category', $category);
-    }
-
-    /**
-     * Check whether someone is interested in the measure.
-     */
-    public static function hasInterestInMeasure(Building $building, InputSource $inputSource, Step $step): bool
-    {
-        return self::forInputSource($inputSource)
-                ->where('user_id', $building->user_id)
-                ->where('step_id', $step->id)
-                ->where('planned', true)
-                ->first() instanceof UserActionPlanAdvice;
     }
 }

@@ -158734,6 +158734,13 @@ textarea.form-input {
   --tw-bg-opacity: 0.5;
 }
 
+.slider:disabled::-moz-range-thumb, .slider:disabled::-webkit-slider-thumb {
+  cursor: not-allowed;
+  --tw-bg-opacity: 1;
+  background-color: rgba(240, 241, 242, var(--tw-bg-opacity));
+  --tw-bg-opacity: 1;
+}
+
 .form-error .slider-wrapper {
   margin-bottom: 2rem;
 }

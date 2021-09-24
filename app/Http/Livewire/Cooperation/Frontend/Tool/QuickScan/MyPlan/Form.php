@@ -249,6 +249,8 @@ class Form extends Component
 
     public function submit()
     {
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
         // Before we can validate, we must convert human format to proper format
         $costs = $this->custom_measure_application['costs'] ?? [];
         $costs['from'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['from'] ?? ''), 2);
@@ -311,6 +313,8 @@ class Form extends Component
 
     public function cardMoved($fromCategory, $toCategory, $id, $newOrder)
     {
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
         // Disclaimer: We have to do it like this, because JavaScript re-sorts arrays / objects to given numeric
         // keys, so we must ENSURE the order is 100% valid from top to bottom
 
@@ -383,6 +387,8 @@ class Form extends Component
 
     public function cardTrashed($fromCategory, $id)
     {
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
         // Get the original card object
         $cardData = Arr::where($this->cards[$fromCategory], function ($card, $order) use ($id) {
             return $card['id'] == $id;
@@ -543,6 +549,8 @@ class Form extends Component
 
     public function saveComment(string $sourceShort)
     {
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
         if ($sourceShort === InputSource::RESIDENT_SHORT || $sourceShort === InputSource::COACH_SHORT) {
             $commentShort = "{$sourceShort}Comment";
             $commentText = $this->{"{$sourceShort}CommentText"};
@@ -566,6 +574,8 @@ class Form extends Component
 
     public function addHiddenCardToBoard($category, $id)
     {
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
         $cardData = Arr::where($this->hiddenCards[$category], function ($card, $order) use ($id) {
             return $card['id'] == $id;
         });

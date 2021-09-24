@@ -65,6 +65,7 @@ class CustomChanges extends Component
 
     public function updatedSelectedCooperationMeasureApplications($value)
     {
+        abort_if(HoomdossierSession::isUserObserving(), 403);
         $key = 'cooperationMeasureApplications';
 
         // Let's diff with previous values, to define which index has changed
@@ -114,6 +115,8 @@ class CustomChanges extends Component
 
     public function updatedSelectedCustomMeasureApplications($value)
     {
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
         $key = 'customMeasureApplications';
 
         // Let's diff with previous values, to define which index has changed
@@ -161,6 +164,9 @@ class CustomChanges extends Component
 
     public function save($index)
     {
+        // unauth the user if this happens, this means the user is just messing around.
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
         $measure = $this->customMeasureApplicationsFormData[$index] ?? null;
 
         // We don't need to save each and every one every time one is saved, so we save by index
@@ -265,7 +271,8 @@ class CustomChanges extends Component
     {
         $this->customMeasureApplicationsFormData = [];
         // Retrieve the user's custom measures
-        $customMeasureApplications = $this->building->customMeasureApplications()->forInputSource($this->masterInputSource)->get();
+        $customMeasureApplications = $this->building->customMeasureApplications()
+            ->forInputSource($this->masterInputSource)->get();
 
         $this->cooperationMeasureApplicationsFormData = [];
         // Retrieve the cooperation's custom measures

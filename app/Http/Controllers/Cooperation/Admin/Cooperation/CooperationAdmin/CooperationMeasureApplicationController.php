@@ -61,7 +61,7 @@ class CooperationMeasureApplicationController extends Controller
 
     public function destroy(Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication)
     {
-        // first we soft delete it, this makes it impossible for users to add it.
+        // first we soft delete it, this makes it! impossible for users to add it.
         $cooperationMeasureApplication->delete();
 
         MoveCooperationMeasureApplicationToCustomMeasureApplications::dispatch($cooperationMeasureApplication);

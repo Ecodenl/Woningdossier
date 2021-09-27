@@ -1,7 +1,8 @@
 <div class="flex flex-row flex-wrap w-full">
     <div class="w-full">
         @php
-          $considerableName = $considerable->measure_name ?? $considerable->name;
+            $considerableName = $considerable->measure_name ?? $considerable->name;
+            // TODO: Properly translate this
             $translation = "Wilt u {$considerableName} laten doorrekenen?";
         @endphp
         @component('cooperation.tool.components.step-question', [
@@ -26,7 +27,7 @@
             @endphp
             @foreach(\App\Helpers\ConsiderableHelper::getConsiderableValues() as $boolean => $considerableText)
                 @php($uuid = \App\Helpers\Str::uuid())
-                <div class="radio-wrapper pr-3">
+                <div class="radio-wrapper @if($loop->iteration % 2 === 0) pl-3 @else pr-3 @endif">
                     <input type="radio" id="{{$uuid}}"
                            name="considerables[{{$considerable->id}}][is_considering]" value="{{$boolean}}"
                            @if(

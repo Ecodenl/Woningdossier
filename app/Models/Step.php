@@ -171,6 +171,11 @@ class Step extends Model
         return $this->questionnaires()->count() > 0;
     }
 
+    public function hasActiveQuestionnaires()
+    {
+        return $this->questionnaires()->active()->count() > 0;
+    }
+
     public function scopeOrdered(Builder $query)
     {
         return $query->orderBy('order', 'asc');

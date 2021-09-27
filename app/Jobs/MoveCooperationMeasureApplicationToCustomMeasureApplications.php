@@ -53,7 +53,6 @@ class MoveCooperationMeasureApplicationToCustomMeasureApplications implements Sh
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         foreach ($advices as $advice) {
-            Log::debug("Advice ID: {$advice->id}");
             // The master input source makes this a massive pain
             // First we check if we haven't already processed this set
             // We need a valid building for this to work

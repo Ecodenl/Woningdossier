@@ -168,7 +168,7 @@
                                                             $humanReadableAnswer = str_replace('.', '', $humanReadableAnswer);
                                                         }
                                                     } elseif($toolQuestionToSummarize->toolQuestionType->short === 'slider') {
-                                                        $humanReadableAnswer = \App\Helpers\NumberFormatter::format($humanReadableAnswer, 0);
+                                                        $humanReadableAnswer = str_replace('.', '', \App\Helpers\NumberFormatter::format($humanReadableAnswer, 0));
                                                     }
                                                 }
                                             @endphp

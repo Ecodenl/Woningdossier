@@ -7,6 +7,7 @@ use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Models\Building;
+use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
@@ -15,6 +16,7 @@ use App\Models\UserActionPlanAdviceComments;
 use App\Models\UserEnergyHabit;
 use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use App\Helpers\Arr;
 use Illuminate\Support\Str;
@@ -226,9 +228,11 @@ class Form extends Component
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                 ->where('user_id', $this->building->user->id)
+                ->withoutDeletedCooperationMeasureApplications()
                 ->category($category)
                 ->orderBy('order')
                 ->get();
+
 
             $this->cards = array_merge($this->cards, $this->convertAdvicesToCards($advices, $category));
         }
@@ -611,10 +615,9 @@ class Form extends Component
     {
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $hiddenAdvices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
-                ->withoutGlobalScope(VisibleScope::class)
+                ->invisible()
                 ->where('user_id', $this->building->user->id)
                 ->category($category)
-                ->where('visible', false)
                 ->orderBy('order')
                 ->get();
 
@@ -628,8 +631,10 @@ class Form extends Component
 
         // Order in the DB could have gaps or duplicates. For safe use, we set the order ourselves
         $order = 0;
+
         foreach ($advices as $advice) {
             $advisable = $advice->userActionPlanAdvisable;
+
             if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
                 $cards[$category][$order] = [
                     'name' => Str::limit($advisable->measure_name, 57),

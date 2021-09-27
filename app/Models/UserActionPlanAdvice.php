@@ -89,9 +89,36 @@ class UserActionPlanAdvice extends Model
         static::addGlobalScope(new VisibleScope());
     }
 
+    /**
+     * Method to scope the advices without its deleted cooperation measure applications
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeWithoutDeletedCooperationMeasureApplications(Builder $query): Builder
+    {
+        // this works because it boots the cooperation measure application model, which has the soft deletes trait
+        return $query->whereHasMorph('userActionPlanAdvisable', [
+            CooperationMeasureApplication::class,
+            CustomMeasureApplication::class,
+            MeasureApplication::class
+        ]);
+    }
+
     public function scopeWithInvisible(Builder $query)
     {
         return $query->withoutGlobalScope(VisibleScope::class);
+    }
+
+    /**
+     * Method to only scope the invisible rows
+     *
+     * @param Builder $query
+     * @return mixed
+     */
+    public function scopeInvisible(Builder $query): Builder
+    {
+        return $query->withInvisible()->where('visible', false);
     }
 
     /**

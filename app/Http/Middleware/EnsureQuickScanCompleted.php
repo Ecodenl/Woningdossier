@@ -28,7 +28,7 @@ class EnsureQuickScanCompleted
         }
 
         if ($building instanceof Building) {
-            if ($building->hasCompletedQuickScan()) {
+            if ($building->hasCompletedQuickScan(HoomdossierSession::getInputSource(true))) {
                 return $next($request);
             } else {
                 $firstIncompleteStep = $building->getFirstIncompleteStep();

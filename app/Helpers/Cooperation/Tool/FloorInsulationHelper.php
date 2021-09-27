@@ -50,7 +50,13 @@ class FloorInsulationHelper extends ToolHelper
             'insulation_surface' => $buildingFeature->insulation_surface ?? null,
         ];
 
+        $step = Step::findByShort('floor-insulation');
         $this->setValues([
+            'considerables' => [
+                $step->id => [
+                    'is_considering' => $this->user->considers($step, $this->inputSource),
+                ],
+            ],
             'element' => [$floorInsulationElement->id => $floorInsulationElementValueId],
             'building_elements' => $floorInsulationBuildingElements,
             'building_features' => $floorBuildingFeatures,
@@ -100,13 +106,11 @@ class FloorInsulationHelper extends ToolHelper
         $floorInsulationElement = Element::findByShort('floor-insulation');
         $step = Step::findByShort('floor-insulation');
 
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
-
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         $elementData = $this->getValues('element');
 
-        if (array_key_exists($floorInsulationElement->id, $elementData) && 'no' !== $this->getValues('building_elements.extra.has_crawlspace')) {
+        if ($this->considers($step) && array_key_exists($floorInsulationElement->id, $elementData) && 'no' !== $this->getValues('building_elements.extra.has_crawlspace')) {
             $floorInsulationValue = ElementValue::where('element_id', $floorInsulationElement->id)
                 ->where('id', $elementData[$floorInsulationElement->id])
                 ->first();

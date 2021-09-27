@@ -3,8 +3,6 @@
 namespace App\Helpers\Cooperation\Tool;
 
 use App\Calculations\InsulatedGlazing;
-use App\Events\StepCleared;
-use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\BuildingInsulatedGlazing;
@@ -15,7 +13,6 @@ use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
-use App\Scopes\VisibleScope;
 use App\Services\ModelService;
 use App\Services\UserActionPlanAdviceService;
 use Illuminate\Support\Collection;
@@ -108,14 +105,12 @@ class InsulatedGlazingHelper extends ToolHelper
         $energyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
         $results = InsulatedGlazing::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
 
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
-
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
         foreach ($results['measure'] as $measureId => $data) {
-            if (array_key_exists('costs', $data) && $data['costs'] > 0) {
-                $measureApplication = MeasureApplication::where('id',
-                    $measureId)->where('step_id', $step->id)->first();
+            $measureApplication = MeasureApplication::where('id', $measureId)->where('step_id', $step->id)->first();
+
+            if ($this->considers($measureApplication) && array_key_exists('costs', $data) && $data['costs'] > 0) {
 
                 if ($measureApplication instanceof MeasureApplication) {
                     $actionPlanAdvice = new UserActionPlanAdvice($data);
@@ -134,7 +129,8 @@ class InsulatedGlazingHelper extends ToolHelper
 
         $keysToMeasure = [
             'paintwork' => 'paint-wood-elements',
-            'crack-sealing' => 'crack-sealing',
+            // moved to ventilation, keeping this commented for future reference
+            // 'crack-sealing' => 'crack-sealing',
         ];
 
         foreach ($keysToMeasure as $key => $measureShort) {
@@ -178,22 +174,6 @@ class InsulatedGlazingHelper extends ToolHelper
             'wood_rot_status_id' => $buildingPaintworkStatus->wood_rot_status_id ?? null,
         ];
 
-        $measureApplicationIds = MeasureApplication::whereIn('short', [
-            'hrpp-glass-only',
-            'hrpp-glass-frames',
-            'hr3p-frames',
-            'glass-in-lead',
-        ])->select('id')->get()->pluck('id')->toArray();
-
-        $userInterestsForInsulatedGlazing = $this->user
-            ->userInterests()
-            ->select('interest_id', 'interested_in_id', 'interested_in_type')
-            ->forInputSource($this->inputSource)
-            ->where('interested_in_type', MeasureApplication::class)
-            ->whereIn('interested_in_id', $measureApplicationIds)
-            ->get()
-            ->keyBy('interested_in_id')->toArray();
-
         /** @var Collection $buildingInsulatedGlazings */
         $buildingInsulatedGlazings = $this->building
             ->currentInsulatedGlazing()
@@ -225,8 +205,28 @@ class InsulatedGlazingHelper extends ToolHelper
         $buildingFrameElement = $buildingElements->where('element_id', $frames->id)->first();
         $buildingElementsArray[$frames->id] = $buildingFrameElement->element_value_id ?? null;
 
+
+        $measureApplicationIds = MeasureApplication::whereIn('short', [
+            'hrpp-glass-only',
+            'hrpp-glass-frames',
+            'hr3p-frames',
+            'glass-in-lead',
+        ])->select('id')->pluck('id');
+
+        $considerablesForMeasures =
+            $this->user
+                ->considerables(MeasureApplication::class)
+                ->wherePivot('input_source_id', $this->inputSource->id)
+                ->wherePivotIn('considerable_id', $measureApplicationIds)
+                ->get()->keyBy('pivot.considerable_id')
+                ->map(function($considerable) {
+                    return [
+                        'is_considering' => $considerable->pivot->is_considering
+                    ];
+                })->toArray();
+
         $this->setValues([
-            'user_interests' => $userInterestsForInsulatedGlazing,
+            'considerables' => $considerablesForMeasures,
             'building_insulated_glazings' => $buildingInsulatedGlazingArray,
             'building_elements' => $buildingElementsArray,
             'building_features' => ['window_surface' => $buildingFeature->window_surface ?? null],

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Http\Controllers\Controller;
-use App\Models\Step;
 
 class ToolController extends Controller
 {

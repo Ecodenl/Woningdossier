@@ -7,6 +7,7 @@ use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\CompletedQuestionnaire;
+use App\Models\Considerable;
 use App\Models\Cooperation;
 use App\Models\InputSource;
 use App\Models\User;
@@ -104,11 +105,10 @@ class UserService
 
         // remove the action plan advices from the user
         $user->actionPlanAdvices()->forInputSource($inputSource)->delete();
-        // remove the user interests
-        $user->userInterests()->forInputSource($inputSource)->delete();
         // remove the energy habits from a user
         $user->energyHabit()->forInputSource($inputSource)->delete();
-
+        // remove the considerables for the user
+        Considerable::forUser($user)->forInputSource($inputSource)->delete();
         // remove all the tool question anders for the building
         $building->toolQuestionAnswers()->forInputSource($inputSource)->delete();
         // remove the progress of the completed questionnaires
@@ -228,10 +228,7 @@ class UserService
      *
      * @throws \Exception
      */
-    public static function deleteUser(
-        User $user,
-        $shouldForceDeleteBuilding = false
-    )
+    public static function deleteUser(User $user, $shouldForceDeleteBuilding = false)
     {
         $accountId = $user->account_id;
         $building = $user->building;
@@ -248,8 +245,13 @@ class UserService
 
         // remove the action plan advices from the user
         $user->actionPlanAdvices()->withoutGlobalScopes()->delete();
+
         // remove the user interests
+        // we keep the user interests table until we are 100% sure it can be removed
+        // but because of gdpr we have to keep this until the table is removed
         $user->userInterests()->withoutGlobalScopes()->delete();
+        // we cant use the relationship because we just want to delete everything
+        Considerable::forUser($user)->allInputSources()->delete();
         // remove the energy habits from a user
         $user->energyHabit()->withoutGlobalScopes()->delete();
         // remove the notification settings

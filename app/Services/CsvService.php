@@ -30,7 +30,7 @@ class CsvService
     {
         // get the users from the cooperations
         $users = $cooperation->users()->whereHas('buildings')->get();
-
+        
         if ($anonymize) {
             $csvHeaders = [
                 __('woningdossier.cooperation.admin.cooperation.reports.csv-columns.created-at'),
@@ -145,9 +145,7 @@ class CsvService
             // get the action plan advices for the user, but only for the resident his input source
             $userActionPlanAdvices = $user
                 ->actionPlanAdvices()
-                //->withoutGlobalScope(VisibleScope::class)
                 ->forInputSource($inputSourceForDump)
-                //->leftJoin('measure_applications', 'user_action_plan_advices.measure_application_id', '=', 'measure_applications.id')
                 ->leftJoin('measure_applications', 'user_action_plan_advices.user_action_plan_advisable_id', '=', 'measure_applications.id')
                 ->leftJoin('steps', 'measure_applications.step_id', '=', 'steps.id')
                 ->where('user_action_plan_advices.user_action_plan_advisable_type', '=', MeasureApplication::class)
@@ -155,12 +153,11 @@ class CsvService
                 ->orderBy('measure_applications.measure_type')
                 ->select(['user_action_plan_advices.*'])
                 ->get();
-
             // get the user measures / advices
             foreach ($userActionPlanAdvices as $actionPlanAdvice) {
                 $measureName = $actionPlanAdvice->userActionPlanAdvisable->measure_name;
 
-                $plannedYear = UserActionPlanAdviceService::getYear($actionPlanAdvice);
+                $plannedYear = null;
                 // fill the measure with the planned year
                 $row[$key][$measureName] = $plannedYear;
             }
@@ -383,12 +380,13 @@ class CsvService
             ->whereHas('building')
             ->with(['building' => function ($query) use ($lastQuickScanStep, $masterInputSource) {
                     $query->with(['completedSteps' => function ($query) use ($lastQuickScanStep, $masterInputSource) {
-                        $query->withoutGlobalScope(GetValueScope::class)->where('input_source_id', '=', $masterInputSource)
+                        $query->withoutGlobalScope(GetValueScope::class)
+                            ->where('input_source_id', '=', $masterInputSource)
                             ->where('step_id', $lastQuickScanStep->id);
                     }]);
             }])->get();
 
-        $users = $users->filter(fn($u) => $u->building->hasCompletedQuickScan());
+        $users = $users->filter(fn($u) => $u->building->hasCompletedQuickScan($masterInputSource));
 
 //        $coachIds = [];
 //        $residentIds = [];

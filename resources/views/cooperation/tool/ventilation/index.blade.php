@@ -391,15 +391,16 @@
                             $("p#improvement").html(data.improvement);
                         }
 
-                        if (data.hasOwnProperty('advices') && data.advices.length !== 0) {
+                        console.log(data.considerables);
+                        if (data.hasOwnProperty('considerables') && data.considerables.length !== 0) {
                             var advices = $(".advices");
-                            advices.html('<div class="w-full sm:w-3/4"><strong>Verbetering</strong></div><div class="w-full sm:w-1/4"><strong>Interesse</strong></div>');
-                            $.each(data.advices, function (i, element) {
+                            advices.html('<div class="w-full sm:w-3/4"><strong>Verbetering</strong></div><div class="w-full sm:w-1/4"><strong>Meenemen in berekening ?</strong></div>');
+                            $.each(data.considerables, function (considerableId, considerable) {
                                 var checked = '';
-                                if (element.hasOwnProperty('interest') && element.interest === true) {
+                                if (considerable.hasOwnProperty('is_considerable') && considerable.is_considerable == true) {
                                     checked = ' checked="checked"';
                                 }
-                                advices.append('<div class="w-full sm:w-3/4">' + element.name + '</div><div class="w-full sm:w-1/4"><input type="checkbox" name="user_interests[]" value="' + element.id + '"' + checked + '></div>');
+                                advices.append('<div class="w-full sm:w-3/4">' + considerable.name + '</div><div class="w-full sm:w-1/4"><input type="checkbox" name="considerables['+considerableId+'][is_considering]" value="1" '+checked+'></div>');
                             });
                             indicationForCosts.show();
                         } else {

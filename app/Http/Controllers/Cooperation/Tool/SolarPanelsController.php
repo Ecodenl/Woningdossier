@@ -12,8 +12,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\SolarPanelFormRequest;
 use App\Models\PvPanelOrientation;
 use App\Models\Step;
+use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
 use Illuminate\Http\Request;
 
 class SolarPanelsController extends Controller
@@ -78,14 +78,13 @@ class SolarPanelsController extends Controller
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
 
-        $userInterests = $request->input('user_interests');
-        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+        ConsiderableService::save($this->step, $user, $inputSource, $request->validated()['considerables'][$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         (new SolarPanelHelper($user, $inputSource))
-            ->setValues($request->only('building_pv_panels', 'user_energy_habits', 'user_interests'))
+            ->setValues($request->only('building_pv_panels', 'user_energy_habits', 'considerables'))
             ->saveValues()
             ->createAdvices();
 

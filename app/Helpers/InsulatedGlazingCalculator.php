@@ -8,7 +8,6 @@ use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\InputSource;
 use App\Models\InsulatingGlazing;
-use App\Models\Interest;
 use App\Models\KeyFigureTemperature;
 use App\Models\MeasureApplication;
 use App\Models\PaintworkStatus;
@@ -18,12 +17,9 @@ use Carbon\Carbon;
 
 class InsulatedGlazingCalculator
 {
-    public static function calculateCosts(MeasureApplication $measureApplication, Interest $interest, $m2, $windows)
+    public static function calculateCosts(MeasureApplication $measureApplication, $m2, $windows)
     {
         if ($windows <= 0) {
-            return 0;
-        }
-        if ($interest->calculate_value > 3) {
             return 0;
         }
         if ($m2 <= 0) {

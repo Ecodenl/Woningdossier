@@ -7,10 +7,8 @@
           action="{{ route('cooperation.tool.roof-insulation.store', compact('cooperation')) }}">
 
         @csrf
-        @include('cooperation.tool.includes.interested', [
-            'translation' => 'roof-insulation.index.interested-in-improvement',
-            'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
-        ])
+
+        @include('cooperation.tool.includes.considerable', ['considerable' => $currentStep])
         <div class="flex flex-row flex-wrap w-full">
             <div id="current-situation" class="w-full">
 
@@ -546,10 +544,9 @@
         $('select[name*=element_value_id]').on('change', function () {
             @if(App::environment('local')) console.log("element_value_id change"); @endif
 
-            var interestedCalculateValue = $('#interest_element_{{$roofInsulation->id}} option:selected').data('calculate-value');
             var elementCalculateValue = $(this).find(':selected').data('calculate-value');
 
-            if (elementCalculateValue >= 3 /* && interestedCalculateValue <= 2 */) {
+            if (elementCalculateValue >= 3) {
                 if ($(this).attr('name').includes('flat')) {
                     $('.flat-hideable').hide();
                     $('#flat-info-alert').find('.alert').show();

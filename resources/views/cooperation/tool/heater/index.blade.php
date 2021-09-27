@@ -6,11 +6,9 @@
     <form  method="POST" id="heater-form"
           action="{{ route('cooperation.tool.heater.store', compact('cooperation')) }}">
         @csrf
-        
-        @include('cooperation.tool.includes.interested', [
-            'translation' => 'heater.index.interested-in-improvement', 
-            'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
-        ])
+
+        @include('cooperation.tool.includes.considerable', ['considerable' => $currentStep])
+
         <div id="heater">
             <div class="flex flex-row flex-wrap w-full sm:pad-x-6">
                 <div class="w-full sm:w-1/3">

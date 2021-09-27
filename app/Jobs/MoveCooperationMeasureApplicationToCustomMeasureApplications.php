@@ -12,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class MoveCooperationMeasureApplicationToCustomMeasureApplications implements ShouldQueue
@@ -53,6 +54,7 @@ class MoveCooperationMeasureApplicationToCustomMeasureApplications implements Sh
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         foreach ($advices as $advice) {
+            Log::debug("Advice ID: {$advice->id}");
             // The master input source makes this a massive pain
             // First we check if we haven't already processed this set
             // We need a valid building for this to work
@@ -103,7 +105,9 @@ class MoveCooperationMeasureApplicationToCustomMeasureApplications implements Sh
             }
         }
 
-        // Finally, delete the measure
-        $this->cooperationMeasureApplication->delete();
+        // And force delete the measure application.
+        $this->cooperationMeasureApplication->forceDelete();
+
+        Log::debug('finished');
     }
 }

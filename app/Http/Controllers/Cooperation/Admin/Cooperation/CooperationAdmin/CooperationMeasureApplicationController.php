@@ -61,11 +61,10 @@ class CooperationMeasureApplicationController extends Controller
 
     public function destroy(Cooperation $cooperation, CooperationMeasureApplication $cooperationMeasureApplication)
     {
-
         // first we soft delete it, this makes it impossible for users to add it.
         $cooperationMeasureApplication->delete();
 
-        MoveCooperationMeasureApplicationToCustomMeasureApplications::dispatch();
+        MoveCooperationMeasureApplicationToCustomMeasureApplications::dispatch($cooperationMeasureApplication);
 
         return redirect()->route('cooperation.admin.cooperation.cooperation-admin.cooperation-measure-applications.index')
             ->with('success', __('cooperation/admin/cooperation/cooperation-admin/cooperation-measure-applications.destroy.success'));

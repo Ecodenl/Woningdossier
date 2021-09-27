@@ -40,7 +40,7 @@ class MoveCooperationMeasureApplicationToCustomMeasureApplications implements Sh
         // if it's used in any UserActionPlanAdvices.
 
         // keep in mind that this could potentially pull 10000 records into one collection
-        // may need to cursor in the future.
+        // may need to cursor / chunk in the future.
         $advices = $this->cooperationMeasureApplication
             ->userActionPlanAdvices()
             ->allInputSources()

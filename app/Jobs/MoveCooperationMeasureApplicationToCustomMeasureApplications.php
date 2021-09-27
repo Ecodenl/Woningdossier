@@ -104,6 +104,7 @@ class MoveCooperationMeasureApplicationToCustomMeasureApplications implements Sh
             }
         }
 
+        // and truly delete the row from the database
         $this->cooperationMeasureApplication->forceDelete();
     }
 }

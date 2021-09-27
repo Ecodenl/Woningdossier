@@ -81,8 +81,11 @@ class VentilationController extends Controller
             ConsiderableService::save(MeasureApplication::findOrFail($considerableId), $buildingOwner, $inputSource, $considerableData);
         }
 
+        $valuesToSet = $request->only('building_ventilations');
+        $valuesToSet['considerables'] = $considerables;
+
         (new VentilationHelper($buildingOwner, $inputSource))
-            ->setValues($request->only('building_ventilations', 'considerables'))
+            ->setValues($valuesToSet)
             ->saveValues()
             ->createAdvices();
 

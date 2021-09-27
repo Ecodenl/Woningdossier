@@ -161,17 +161,17 @@ class Step extends Model
         return !is_null($this->parent_id);
     }
 
-    public function questionnaires()
+    public function questionnaires(): HasMany
     {
         return $this->hasMany(Questionnaire::class);
     }
 
-    public function hasQuestionnaires()
+    public function hasQuestionnaires(): bool
     {
         return $this->questionnaires()->count() > 0;
     }
 
-    public function hasActiveQuestionnaires()
+    public function hasActiveQuestionnaires(): bool
     {
         return $this->questionnaires()->active()->count() > 0;
     }

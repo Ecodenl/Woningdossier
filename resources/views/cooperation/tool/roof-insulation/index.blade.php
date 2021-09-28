@@ -21,12 +21,12 @@
                         ])
                             @slot('sourceSlot')
                                 @include('cooperation.tool.components.source-list', [
-                                    'inputType' => 'checkbox', 'inputValues' => $roofTypes,
+                                    'inputType' => 'checkbox', 'inputValues' => $secondaryRoofTypes,
                                     'userInputValues' => $currentRoofTypesForMe, 'userInputColumn' => 'roof_type_id'
                                 ])
                             @endslot
 
-                            @foreach($roofTypes as $roofType)
+                            @foreach($secondaryRoofTypes as $roofType)
                                 <div class="checkbox-wrapper">
                                     <input type="checkbox" data-calculate-value="{{$roofType->calculate_value}}"
                                            id="building-roof-type-{{$roofType->id}}"
@@ -47,13 +47,13 @@
                     <div class="flex flex-row flex-wrap w-full">
                         <div class="w-full">
                             @component('cooperation.tool.components.step-question', [
-                                'id' => 'building_features.roof_type_id', 
+                                'id' => 'building_features.roof_type_id',
                                 'translation' => 'roof-insulation.current-situation.main-roof', 'required' => false
                             ])
                                 @slot('sourceSlot')
                                     @include('cooperation.tool.components.source-list', [
-                                        'inputType' => 'select', 'inputValues' => $roofTypes, 
-                                        'userInputValues' => $building->buildingFeatures()->forMe()->get(), 
+                                        'inputType' => 'select', 'inputValues' => $secondaryRoofTypes,
+                                        'userInputValues' => $building->buildingFeatures()->forMe()->get(),
                                         'userInputModel' => 'roofType', 'userInputColumn' => 'roof_type_id'
                                     ])
                                 @endslot
@@ -61,7 +61,7 @@
                                 @component('cooperation.frontend.layouts.components.alpine-select')
                                     <select id="main_roof" class="form-input"
                                             name="building_features[roof_type_id]">
-                                        @foreach($roofTypes as $roofType)
+                                        @foreach($primaryRoofTypes as $roofType)
                                             <option @if(old('building_features.roof_type_id', Hoomdossier::getMostCredibleValue($building->buildingFeatures(), 'roof_type_id')) == $roofType->id) selected="selected"
                                                     @endif value="{{ $roofType->id }}">
                                                 {{ $roofType->name }}
@@ -73,7 +73,7 @@
                         </div>
                     </div>
 
-                    @foreach($roofTypes->whereIn('short', ['flat', 'pitched']) as $roofType)
+                    @foreach($secondaryRoofTypes->whereIn('short', ['flat', 'pitched']) as $roofType)
 
                         <?php
                         $roofCat = $roofType->short;
@@ -260,7 +260,7 @@
                                             'required' => false
                                         ])
                                             <?php
-                                                $default = isset($currentCategorizedRoofTypes[$roofCat]['extra']['measure_application_id']) ? $currentCategorizedRoofTypes[$roofCat]['extra']['measure_application_id'] : 0;
+                                            $default = isset($currentCategorizedRoofTypes[$roofCat]['extra']['measure_application_id']) ? $currentCategorizedRoofTypes[$roofCat]['extra']['measure_application_id'] : 0;
                                             ?>
                                             @slot('sourceSlot')
                                                 @include('cooperation.tool.components.source-list', [

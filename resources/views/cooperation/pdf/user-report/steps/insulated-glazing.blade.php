@@ -9,23 +9,20 @@
             <?php
                 // we dont need it, we will use the $buildingInsulatedGlazings
                 // we also MUST unset them otherwise they will be picked up later on and we will get duplicates
-                unset($dataForSubStep['user_interests'], $dataForSubStep['building_insulated_glazings']);
+                unset($dataForSubStep['considerables'], $dataForSubStep['building_insulated_glazings']);
             ?>
             @foreach($buildingInsulatedGlazings as $buildingInsulatedGlazing)
 
-                <?php
-
-                ?>
                 <p class="sub-lead">{{$buildingInsulatedGlazing->measureApplication->measure_name}}</p>
                 <table class="full-width">
                     <tbody>
                     <tr class="h-20">
-                        <td class="w-380">{{__('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.title.title')}}</td>
-                        <td>{{$user->userInterestsForSpecificType(get_class($buildingInsulatedGlazing->measureApplication), $buildingInsulatedGlazing->measureApplication->id, $inputSource)->first()->interest->name ?? $noInterest->name}}</td>
+                        <td class="w-380">{{__('default.considering', ['name' => $buildingInsulatedGlazing->measureApplication->measure_name])}}</td>
+                        <td>{{$user->considers($buildingInsulatedGlazing->measureApplication, $inputSource) ? __('default.yes') : __('default.no') }}</td>
                     </tr>
                     <tr class="h-20">
                         <td class="w-380">{{__('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.rooms-heated.title')}}</td>
-                        <td>{{$buildingInsulatedGlazing->buildingHeating->name}}</td>
+                        <td>{{optional($buildingInsulatedGlazing->buildingHeating)->name}}</td>
                     </tr>
                     <tr class="h-20">
                         <td class="w-380">{{__('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.m2.title')}}</td>

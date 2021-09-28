@@ -19,7 +19,7 @@
         @foreach (\Illuminate\Support\Arr::only($reportData[$stepShort], ['building-characteristics', 'current-state']) as $subStepShort => $dataForSubStep)
             <div class="question-answer-section">
                 <p class="lead">
-                    {{\App\Models\Step::findByShort($subStepShort)->name}}
+                    {{\App\Models\Step::withGeneralData()->where('short', $subStepShort)->first()->name}}
                 </p>
 
                 <table class="full-width">
@@ -28,7 +28,7 @@
                         <?php
                         $translationForAnswer = $reportTranslations['general-data.' . $subStepShort . '.' . $translationKey];
 
-                        $tableIsNotUserInterest = !\App\Helpers\Hoomdossier::columnContains($translationKey, 'user_interests');
+                        $tableIsNotUserInterest = !\App\Helpers\Hoomdossier::columnContains($translationKey, 'considerables');
 
                         $doesAnswerContainUnit = stripos($value, 'm2') !== false;
                         ?>
@@ -59,10 +59,10 @@
 @component('cooperation.pdf.components.new-page')
     <div class="container">
 
-        @foreach (\Illuminate\Support\Arr::only($reportData[$stepShort], ['usage', 'interest']) as $subStepShort => $dataForSubStep)
+        @foreach (\Illuminate\Support\Arr::only($reportData[$stepShort], ['usage']) as $subStepShort => $dataForSubStep)
             <div class="question-answer-section">
                 <p class="lead">
-                    {{\App\Models\Step::findByShort($subStepShort)->name}}
+                    {{\App\Models\Step::withGeneralData()->where('short', $subStepShort)->first()->name}}
                 </p>
 
                 <table class="full-width">
@@ -71,7 +71,7 @@
                         <?php
                         $translationForAnswer = $reportTranslations['general-data.' . $subStepShort . '.' . $translationKey];
 
-                        $tableIsNotUserInterest = !\App\Helpers\Hoomdossier::columnContains($translationKey, 'user_interests');
+                        $tableIsNotUserInterest = !\App\Helpers\Hoomdossier::columnContains($translationKey, 'considerables');
 
                         $doesAnswerContainUnit = stripos($value, 'm2') !== false;
                         ?>

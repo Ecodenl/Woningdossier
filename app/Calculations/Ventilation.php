@@ -36,6 +36,7 @@ class Ventilation
         $improvement = '';
         $advices = null;
         $remark = '';
+        $considerables = [];
         $result = [
             'crack_sealing' => [
                 'savings_co2' => null,

@@ -64,8 +64,8 @@
         @include('cooperation.pdf.user-report.parts.measure-page.filled-in-data', [
             'title' => __('pdf/user-report.ventilation.points-of-improvement'),
             'dataForSubStep' => \Illuminate\Support\Arr::dot(
-                $ventilationData['user_interests'],
-                'user_interests.'
+                $ventilationData['considerables'],
+                'considerables.'
             )
         ])
 

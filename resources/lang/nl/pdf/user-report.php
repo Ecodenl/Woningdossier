@@ -64,13 +64,14 @@ return [
 
         'resume-energy-saving-measures' => [
             'title' => 'Samenvatting van mogelijke energiebesparende maatregelen en onderhoudsmaatregelen',
-            'text' => 'Is er iets veranderd of past de volgorde van maatregelen niet bij uw persoonlijke planning? In het Hoomdossier kunt u alle gegevens aanpassen en bijhouden. In de bijlage vindt u alle details per maatregel.',
             'table' => [
-                'planned-year' => 'Jaar gepland',
                 'measure' => 'Maatregel',
                 'costs' => 'Kosten (€)',
                 'savings' => 'Besparing (€/jaar)',
             ],
+
+            'current-annual-energy-costs' => 'Huidige energiekosten per jaar:',
+            'expected-annual-energy-costs' => 'verwachtte energiekosten per jaar:'
         ],
 
         'comment-action-plan' => 'Toelichting op het stappenplan',

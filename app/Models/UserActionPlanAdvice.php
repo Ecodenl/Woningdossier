@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\GetValueScope;
 use App\Scopes\VisibleScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
@@ -9,6 +10,7 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Symfony\Component\Console\Input\Input;
 
 /**
  * App\Models\UserActionPlanAdvice
@@ -95,14 +97,17 @@ class UserActionPlanAdvice extends Model
      * @param Builder $query
      * @return Builder
      */
-    public function scopeWithoutDeletedCooperationMeasureApplications(Builder $query): Builder
+    public function scopeWithoutDeletedCooperationMeasureApplications(Builder $query, InputSource $inputSource): Builder
     {
         // this works because it boots the cooperation measure application model, which has the soft deletes trait
         return $query->whereHasMorph('userActionPlanAdvisable', [
             CooperationMeasureApplication::class,
+            MeasureApplication::class,
             CustomMeasureApplication::class,
-            MeasureApplication::class
-        ]);
+        ],
+            // cant use scopes.
+            fn (Builder $q) => $q->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)
+        );
     }
 
     public function scopeWithInvisible(Builder $query)

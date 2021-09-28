@@ -228,7 +228,7 @@ class Form extends Component
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                 ->where('user_id', $this->building->user->id)
-                ->withoutDeletedCooperationMeasureApplications()
+                ->withoutDeletedCooperationMeasureApplications($this->masterInputSource)
                 ->category($category)
                 ->orderBy('order')
                 ->get();
@@ -616,7 +616,7 @@ class Form extends Component
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $hiddenAdvices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                 ->invisible()
-                ->withoutDeletedCooperationMeasureApplications()
+                ->withoutDeletedCooperationMeasureApplications($this->masterInputSource)
                 ->where('user_id', $this->building->user->id)
                 ->category($category)
                 ->orderBy('order')

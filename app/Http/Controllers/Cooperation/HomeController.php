@@ -28,16 +28,21 @@ class HomeController extends Controller
 
         // todo: figure out why there is no use of forInputSource master
 
+//        dd('x');
+        $masterInputSource = InputSource::findByShort('master');
         // used the resident input source as this keeps the behaviour of the logic beneath in tact. (read above todo)
-        if ($building->hasCompletedQuickScan(HoomdossierSession::getInputSource(true))) {
+        if ($building->hasCompletedQuickScan($masterInputSource)) {
             $url = route('cooperation.frontend.tool.quick-scan.my-plan.index');
         } else {
             $mostRecentCompletedSubStep = optional($building->completedSubSteps()->orderByDesc('created_at')->first())->subStep;
 
+
+            $quickScanStepIds = Step::whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS)->pluck('id')->toArray();
+
             // get all the completed steps
             $mostRecentCompletedStep = optional($building->completedSteps()->whereIn(
                 'step_id',
-                Step::whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS)->pluck('id')->toArray()
+                $quickScanStepIds
             )->orderByDesc('created_at')->first())->step;
 
 

@@ -40,7 +40,6 @@ class QuickScanHelper
 
         // this will happen when the user completed each step, so we will redirect him to the action plan
         if (!$nextStep instanceof Step && !$nextSubStep instanceof SubStep) {
-            // todo: when housing plan bracnh is updated change this to the correct route.
             return route('cooperation.frontend.tool.quick-scan.index', compact('step', 'subStep'));
         }
 

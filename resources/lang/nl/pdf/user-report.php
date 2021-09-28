@@ -37,7 +37,7 @@ return [
     ],
 
     'ventilation' => [
-        'points-of-improvement' => 'Verbeteropties',
+        'points-of-improvement' => 'Geadviseerde verbeteropties',
     ],
 
     'general-data' => [

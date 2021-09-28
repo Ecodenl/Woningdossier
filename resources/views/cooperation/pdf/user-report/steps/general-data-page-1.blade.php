@@ -16,40 +16,29 @@
             </div>
         </div>
 
-        @foreach (\Illuminate\Support\Arr::only($reportData[$stepShort], ['building-characteristics', 'current-state']) as $subStepShort => $dataForSubStep)
-            <div class="question-answer-section">
-                <p class="lead">
-                    {{\App\Models\Step::withGeneralData()->where('short', $subStepShort)->first()->name}}
-                </p>
 
-                <table class="full-width">
-                    <tbody>
-                    @foreach ($dataForSubStep as $translationKey => $value)
-                        <?php
-                        $translationForAnswer = $reportTranslations['general-data.' . $subStepShort . '.' . $translationKey];
+        @php
 
-                        $tableIsNotUserInterest = !\App\Helpers\Hoomdossier::columnContains($translationKey, 'considerables');
+            $summaryStep =  \App\Models\Step::findByShort('building-data');
+            $summarySubStepOrder = $summaryStep->subSteps()->max('order');
 
-                        $doesAnswerContainUnit = stripos($value, 'm2') !== false;
-                        ?>
-                        @if($tableIsNotUserInterest || $subStepShort == 'interest')
-                            <tr class="h-20">
-                                <td class="w-380">{{$translationForAnswer}}</td>
-                                <td>{{$value}} {{$doesAnswerContainUnit ?'': \App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</td>
-                            </tr>
-                        @endif
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
+            $subStepsToSummarize = $summaryStep->subSteps()->where('order', '<', $summarySubStepOrder)->orderBy('order')->get();
 
-            @if(isset($commentsByStep[$stepShort][$subStepShort]) && !\App\Helpers\Arr::isWholeArrayEmpty($commentsByStep[$stepShort][$subStepShort]))
-                @include('cooperation.pdf.user-report.parts.measure-page.comments', [
-                    'title' => __('pdf/user-report.general-data.comment'),
-                    'comments' => $commentsByStep[$stepShort][$subStepShort],
-                ])
-            @endif
-        @endforeach
+        @endphp
+
+        @include('cooperation.pdf.user-report.parts.step-summary', compact('subStepsToSummarize', 'summaryStep'))
+
+
+        @php
+
+            $summaryStep =  \App\Models\Step::findByShort('residential-status');
+            $summarySubStepOrder = $summaryStep->subSteps()->max('order');
+
+            $subStepsToSummarize = $summaryStep->subSteps()->where('order', '<', $summarySubStepOrder)->orderBy('order')->get();
+
+        @endphp
+
+        @include('cooperation.pdf.user-report.parts.step-summary', compact('subStepsToSummarize', 'summaryStep'))
 
     </div>
 @endcomponent

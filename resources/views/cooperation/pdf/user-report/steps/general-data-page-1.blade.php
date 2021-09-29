@@ -48,40 +48,17 @@
 @component('cooperation.pdf.components.new-page')
     <div class="container">
 
-        @foreach (\Illuminate\Support\Arr::only($reportData[$stepShort], ['usage']) as $subStepShort => $dataForSubStep)
-            <div class="question-answer-section">
-                <p class="lead">
-                    {{\App\Models\Step::withGeneralData()->where('short', $subStepShort)->first()->name}}
-                </p>
+        @php
 
-                <table class="full-width">
-                    <tbody>
-                    @foreach ($dataForSubStep as $translationKey => $value)
-                        <?php
-                        $translationForAnswer = $reportTranslations['general-data.' . $subStepShort . '.' . $translationKey];
+            $summaryStep =  \App\Models\Step::findByShort('usage-quick-scan');
+            $summarySubStepOrder = $summaryStep->subSteps()->max('order');
 
-                        $tableIsNotUserInterest = !\App\Helpers\Hoomdossier::columnContains($translationKey, 'considerables');
+            $subStepsToSummarize = $summaryStep->subSteps()->where('order', '<', $summarySubStepOrder)->orderBy('order')->get();
 
-                        $doesAnswerContainUnit = stripos($value, 'm2') !== false;
-                        ?>
-                        @if($tableIsNotUserInterest || $subStepShort == 'interest')
-                            <tr class="h-20">
-                                <td class="w-380">{{$translationForAnswer}}</td>
-                                <td>{{$value}} {{$doesAnswerContainUnit ?'': \App\Helpers\Hoomdossier::getUnitForColumn($translationKey)}}</td>
-                            </tr>
-                        @endif
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
+        @endphp
 
-            @if(isset($commentsByStep[$stepShort][$subStepShort]) && !\App\Helpers\Arr::isWholeArrayEmpty($commentsByStep[$stepShort][$subStepShort]))
-                @include('cooperation.pdf.user-report.parts.measure-page.comments', [
-                    'title' => __('pdf/user-report.general-data.comment'),
-                    'comments' => $commentsByStep[$stepShort][$subStepShort],
-                ])
-            @endif
-        @endforeach
+        @include('cooperation.pdf.user-report.parts.step-summary', compact('subStepsToSummarize', 'summaryStep'))
+
 
     </div>
 @endcomponent

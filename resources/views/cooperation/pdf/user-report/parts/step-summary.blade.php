@@ -93,3 +93,10 @@
         </tbody>
     </table>
 </div>
+
+@if(isset($commentsByStep[$summaryStep->short]['-']))
+    @include('cooperation.pdf.user-report.parts.measure-page.comments', [
+        'title' => __('pdf/user-report.general-data.comment'),
+        'comments' => $commentsByStep[$summaryStep->short]['-'],
+    ])
+@endif

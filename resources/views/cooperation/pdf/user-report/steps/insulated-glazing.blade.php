@@ -10,6 +10,9 @@
                 // we dont need it, we will use the $buildingInsulatedGlazings
                 // we also MUST unset them otherwise they will be picked up later on and we will get duplicates
                 unset($dataForSubStep['considerables'], $dataForSubStep['building_insulated_glazings']);
+
+                $insulatedGlazingStep = App\Models\Step::findByShort($stepShort);
+                dd($userActionPlanAdvices, $insulatedGlazingStep);
             ?>
             @foreach($buildingInsulatedGlazings as $buildingInsulatedGlazing)
 

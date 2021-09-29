@@ -92,8 +92,6 @@ return [
 
         'attachment' => [
             'title' => 'Bijlage 1: overzicht maatregelen',
-            'lead' => 'U hebt aangegeven interesse te hebben in de volgende maatregelen:',
-
             'text' => 'Op de volgende bladzijden ziet u per maatregel een samenvatting van de ingevoerde gegevens en berekeningen voor de hierboven genoemde maatregelen. Meer informatie over de maatregelen kunt u ook vinden op de maatregelbladen in het Hoomdossier of op <a href="www.milieucentraal.nl">www.milieucentraal.nl</a>.',
         ],
     ],

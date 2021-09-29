@@ -5,10 +5,11 @@ namespace App\Models;
 use App\Scopes\VisibleScope;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CooperationMeasureApplication extends Model
 {
-    use HasTranslations;
+    use HasTranslations, SoftDeletes;
 
     protected $translatable = ['name', 'info'];
 

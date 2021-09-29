@@ -13,8 +13,6 @@ class CreateCooperationMeasureApplicationsTable extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('cooperation_measure_applications');
-
         Schema::create('cooperation_measure_applications', function (Blueprint $table) {
             $table->bigIncrements('id');
 

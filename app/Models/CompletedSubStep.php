@@ -18,15 +18,6 @@ class CompletedSubStep extends Model
 
     protected $fillable = ['sub_step_id', 'building_id', 'input_source_id'];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::saved(function ($completedSubStep) {
-
-        });
-    }
-
     public function subStep(): BelongsTo
     {
         return $this->belongsTo(SubStep::class);

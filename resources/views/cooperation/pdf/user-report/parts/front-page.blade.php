@@ -1,9 +1,13 @@
 <div id="front-page">
 
-    <div class="container bg-white" id="user-info">
+    <div class="container bg-white" id="user-info" style="height: 220px">
         <h1>{{$user->getFullName()}}</h1>
         <h1>{{$building->street}} {{$building->number}} {{$building->extension}}</h1>
         <h1>{{$building->postal_code}} {{$building->city}}</h1>
+        <br>
+        <h2>{{$cooperation->name}}</h2>
+        <h2>{{date('Y-m-d')}}</h2>
+        <h2>{{implode(', ', $connectedCoachNames)}}</h2>
     </div>
 
     <div id="img-front-page">

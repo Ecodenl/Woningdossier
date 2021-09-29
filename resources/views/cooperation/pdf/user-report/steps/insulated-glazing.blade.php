@@ -12,7 +12,16 @@
                 unset($dataForSubStep['considerables'], $dataForSubStep['building_insulated_glazings']);
 
                 $insulatedGlazingStep = App\Models\Step::findByShort($stepShort);
-                dd($userActionPlanAdvices, $insulatedGlazingStep);
+
+                // get all the advices for the insulated glazings step
+                // then pluck the measure application ids, that way we can only show those toes
+                $measureApplicationIds = $userActionPlanAdvices
+                    ->where('step_id', $insulatedGlazingStep->id)
+                    ->pluck('user_action_plan_advisable_id')
+                    ->toArray();
+
+                // we will only show the building insulated glazings which are shown on the woonplan
+                $buildingInsulatedGlazings = $buildingInsulatedGlazings->whereIn('measure_application_id', $measureApplicationIds)
             ?>
             @foreach($buildingInsulatedGlazings as $buildingInsulatedGlazing)
 

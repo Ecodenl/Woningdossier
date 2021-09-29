@@ -38,22 +38,22 @@
 @endcomponent
 
 
-{{--@foreach ($reportData as $stepShort => $dataForStep)--}}
-{{--    <?php--}}
-{{--        $hasResidentCompletedStep = $building->hasCompleted(--}}
-{{--            \App\Models\Step::withGeneralData()->where('short', $stepShort)->first(),--}}
-{{--            $inputSource--}}
-{{--        );--}}
-{{--    ?>--}}
-{{--    @if (array_key_exists($stepShort, $stepShorts) && $hasResidentCompletedStep)--}}
-{{--        @foreach ($dataForStep as $subStepShort => $dataForSubStep)--}}
-{{--            <?php--}}
-{{--                $shortToUseAsMainSubject = $subStepShort == '-' ? $stepShort : $subStepShort--}}
-{{--            ?>--}}
-{{--            @include('cooperation.pdf.user-report.parts.measure-page')--}}
-{{--        @endforeach--}}
-{{--    @endif--}}
-{{--@endforeach--}}
+@foreach ($reportData as $stepShort => $dataForStep)
+    <?php
+        $hasResidentCompletedStep = $building->hasCompleted(
+            \App\Models\Step::withGeneralData()->where('short', $stepShort)->first(),
+            $inputSource
+        );
+    ?>
+    @if (array_key_exists($stepShort, $stepShorts) && $hasResidentCompletedStep)
+        @foreach ($dataForStep as $subStepShort => $dataForSubStep)
+            <?php
+                $shortToUseAsMainSubject = $subStepShort == '-' ? $stepShort : $subStepShort
+            ?>
+            @include('cooperation.pdf.user-report.parts.measure-page')
+        @endforeach
+    @endif
+@endforeach
 
 @include('cooperation.pdf.user-report.parts.outro')
 

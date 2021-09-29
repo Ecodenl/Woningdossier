@@ -172,9 +172,9 @@ Route::domain('{cooperation}.' . config('hoomdossier.domain'))->group(function (
             });
 
             Route::group(['prefix' => 'tool', 'as' => 'tool.', 'namespace' => 'Tool', 'middleware' => 'ensure-quick-scan-completed'], function () {
-
-
-                Route::get('/', 'ToolController@index')->name('index');
+                Route::get('/', function () {
+                    return redirect()->route('cooperation.frontend.tool.quick-scan.my-plan.index');
+                })->name('index');
 
                 Route::group(['prefix' => 'questionnaire', 'as' => 'questionnaire.'], function () {
                     Route::post('', 'QuestionnaireController@store')->name('store');

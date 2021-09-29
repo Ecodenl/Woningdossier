@@ -3,12 +3,8 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\Ventilation;
-use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Cooperation\Tool\VentilationHelper;
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\StepHelper;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\VentilationFormRequest;
 use App\Models\BuildingService;
 use App\Models\MeasureApplication;
@@ -18,19 +14,8 @@ use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
 use Illuminate\Http\Request;
 
-class VentilationController extends Controller
+class VentilationController extends ToolController
 {
-    /**
-     * @var Step
-     */
-    protected $step;
-
-    public function __construct(Request $request)
-    {
-        $slug = str_replace('/tool/', '', $request->getRequestUri());
-        $this->step = Step::where('slug', $slug)->first();
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -90,18 +75,8 @@ class VentilationController extends Controller
             ->createAdvices();
 
         StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
-        StepHelper::complete($step, $building, $inputSource);
-        $building->update([
-            'has_answered_expert_question' => true,
-        ]);
-        StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
-        $nextStep = StepHelper::getNextStep($building, $inputSource, $step);
-        $url = $nextStep['url'];
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
-        }
 
-        return redirect($url);
+        return $this->completeStore($this->step, $building, $inputSource);
     }
 
     public function calculate(Request $request)

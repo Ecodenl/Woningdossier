@@ -90,7 +90,7 @@ class Buttons extends Component
 
                 // the first one can't have a previous one
                 if ($this->previousStep instanceof Step) {
-                    if ($this->previousStep->questionnaires()->active()->count() > 0) {
+                    if ($this->previousStep->hasActiveQuestionnaires()) {
                         // There are questionnaires we need to look at
                         $this->previousQuestionnaire = $this->previousStep->questionnaires()->active()
                             ->orderByDesc('order')->first();
@@ -138,7 +138,7 @@ class Buttons extends Component
             $lastSubStepForStep = $this->step->subSteps()->orderByDesc('order')->first();
             if ($lastSubStepForStep->id === $this->subStep->id) {
                 // Let's check if there's questionnaires left
-                if ($this->step->questionnaires()->active()->count() > 0) {
+                if ($this->step->hasActiveQuestionnaires()) {
                     $this->nextQuestionnaire = $this->step->questionnaires()->active()->orderBy('order')->first();
                 } else {
                     $this->nextStep = $this->step->nextQuickScan();

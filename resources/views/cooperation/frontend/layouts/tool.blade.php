@@ -39,46 +39,46 @@
             @endif
 
             <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
-{{--                <div class="flex flex-row flex-wrap w-full" x-data="tabs()">--}}
+                <div class="flex flex-row flex-wrap w-full" x-data="tabs()">
 {{--                    @if($currentSubStep instanceof \App\Models\Step)--}}
 {{--                        <h2 class="heading-2">--}}
 {{--                            {{$currentStep->name}}--}}
 {{--                        </h2>--}}
 {{--                    @endif--}}
-{{--                    <ul class="nav-tabs mt-5" x-ref="nav-tabs">--}}
-{{--                        @if(isset($currentStep))--}}
-{{--                            @php--}}
-{{--                                $subStepsForStep = $cooperation->getchildrenForStep($currentStep);--}}
-{{--                            @endphp--}}
-{{--                            @if($subStepsForStep->isEmpty())--}}
-{{--                                <li class="active @if($building->hasCompleted($currentStep)) completed @endif">--}}
-{{--                                    <a href="{{route("cooperation.tool.{$currentStep->short}.index")}}">--}}
-{{--                                        {{$currentStep->name}}--}}
-{{--                                    </a>--}}
-{{--                                </li>--}}
-{{--                            @endif--}}
-{{--                            @foreach($subStepsForStep as $subStep)--}}
-{{--                                <li class="@if($subStep->short == $currentSubStep->short) active @endif @if($building->hasCompleted($subStep)) completed @endif">--}}
-{{--                                    <a href="{{route("cooperation.tool.{$currentStep->short}.{$subStep->short}.index")}}">--}}
-{{--                                        {{$subStep->name}}--}}
-{{--                                    </a>--}}
-{{--                                </li>--}}
-{{--                            @endforeach--}}
-{{--                        @endif--}}
+                    <ul class="nav-tabs mt-5 hidden" x-ref="nav-tabs">
+                        @if(isset($currentStep))
+                            @php
+                                $subStepsForStep = $cooperation->getchildrenForStep($currentStep);
+                            @endphp
+                            @if($subStepsForStep->isEmpty())
+                                <li class="active @if($building->hasCompleted($currentStep)) completed @endif">
+                                    <a href="{{route("cooperation.tool.{$currentStep->short}.index")}}">
+                                        {{$currentStep->name}}
+                                    </a>
+                                </li>
+                            @endif
+                            @foreach($subStepsForStep as $subStep)
+                                <li class="@if($subStep->short == $currentSubStep->short) active @endif @if($building->hasCompleted($subStep)) completed @endif">
+                                    <a href="{{route("cooperation.tool.{$currentStep->short}.{$subStep->short}.index")}}">
+                                        {{$subStep->name}}
+                                    </a>
+                                </li>
+                            @endforeach
+                        @endif
 
-{{--                        @if(isset($currentStep) && $currentStep->hasQuestionnaires())--}}
-{{--                            @foreach($currentStep->questionnaires as $questionnaire)--}}
+                        @if(isset($currentStep) && $currentStep->hasQuestionnaires())
+                            @foreach($currentStep->questionnaires as $questionnaire)
 
-{{--                                @if($questionnaire->isActive())--}}
-{{--                                    <li class="@if($buildingOwner->hasCompletedQuestionnaire($questionnaire)) completed @endif">--}}
-{{--                                        <a href="#questionnaire-{{$questionnaire->id}}" x-bind="tab">--}}
-{{--                                            {{$questionnaire->name}}--}}
-{{--                                        </a>--}}
-{{--                                    </li>--}}
-{{--                                @endif--}}
-{{--                            @endforeach--}}
-{{--                        @endif--}}
-{{--                    </ul>--}}
+                                @if($questionnaire->isActive())
+                                    <li class="@if($buildingOwner->hasCompletedQuestionnaire($questionnaire)) completed @endif">
+                                        <a href="#questionnaire-{{$questionnaire->id}}" x-bind="tab">
+                                            {{$questionnaire->name}}
+                                        </a>
+                                    </li>
+                                @endif
+                            @endforeach
+                        @endif
+                    </ul>
 
                     <div class="w-full border border-solid border-blue-500 border-opacity-50 rounded-b-lg rounded-t-lg tab-content"
                         x-ref="tab-content">
@@ -172,7 +172,7 @@
                             </div>
                         </div>
                     </div>
-{{--                </div>--}}
+                </div>
             </div>
         @else
             @yield('content')

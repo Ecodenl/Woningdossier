@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\WallInsulation;
-use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Cooperation\Tool\WallInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\StepHelper;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\WallInsulationRequest;
 use App\Models\Building;
 use App\Models\BuildingElement;
@@ -16,29 +13,16 @@ use App\Models\BuildingFeature;
 use App\Models\FacadeDamagedPaintwork;
 use App\Models\FacadePlasteredSurface;
 use App\Models\FacadeSurface;
-use App\Models\Step;
 use App\Scopes\GetValueScope;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
-use Illuminate\Http\Request;
 
-class WallInsulationController extends Controller
+class WallInsulationController extends ToolController
 {
-    /**
-     * @var Step
-     */
-    protected $step;
-
-    public function __construct(Request $request)
-    {
-        $slug = str_replace('/tool/', '', $request->getRequestUri());
-        $this->step = Step::where('slug', $slug)->first() ;
-    }
-
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
@@ -62,7 +46,6 @@ class WallInsulationController extends Controller
         $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
         $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
 
-
         return view('cooperation.tool.wall-insulation.index', compact(
              'building', 'facadeInsulation', 'buildingFeaturesOrderedOnCredibility',
             'surfaces', 'buildingFeature', 'typeIds',
@@ -74,9 +57,9 @@ class WallInsulationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \App\Http\Requests\Cooperation\Tool\WallInsulationRequest  $request
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function store(WallInsulationRequest $request)
     {
@@ -94,20 +77,7 @@ class WallInsulationController extends Controller
             ->saveValues()
             ->createAdvices();
 
-        StepHelper::complete($this->step, $building, HoomdossierSession::getInputSource(true));
-        $building->update([
-            'has_answered_expert_question' => true,
-        ]);
-        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
-
-        $nextStep = StepHelper::getNextStep($building, HoomdossierSession::getInputSource(true), $this->step);
-        $url = $nextStep['url'];
-
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
-        }
-
-        return redirect($url);
+        return $this->completeStore($this->step, $building, $inputSource);
     }
 
     public function calculate(WallInsulationRequest $request)

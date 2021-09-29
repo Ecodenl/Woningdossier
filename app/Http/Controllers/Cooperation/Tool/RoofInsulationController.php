@@ -2,38 +2,22 @@
 
 namespace App\Http\Controllers\Cooperation\Tool;
 
-use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Cooperation\Tool\RoofInsulationHelper;
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
 use App\Helpers\RoofInsulation;
-use App\Helpers\StepHelper;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\RoofInsulationFormRequest;
 use App\Models\Building;
 use App\Models\BuildingHeating;
 use App\Models\Element;
 use App\Models\RoofTileStatus;
 use App\Models\RoofType;
-use App\Models\Step;
 use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-class RoofInsulationController extends Controller
+class RoofInsulationController extends ToolController
 {
-    /**
-     * @var Step
-     */
-    protected $step;
-
-    public function __construct(Request $request)
-    {
-        $slug = str_replace('/tool/', '', $request->getRequestUri());
-        $this->step = Step::where('slug', $slug)->first();
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -112,8 +96,8 @@ class RoofInsulationController extends Controller
     public function store(RoofInsulationFormRequest $request)
     {
         $building = HoomdossierSession::getBuilding(true);
-        $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
+        $user = $building->user;
 
         ConsiderableService::save($this->step, $user, $inputSource, $request->validated()['considerables'][$this->step->id]);
 
@@ -125,19 +109,6 @@ class RoofInsulationController extends Controller
             ->saveValues()
             ->createAdvices();
 
-        StepHelper::complete($this->step, $building, $inputSource);
-        $building->update([
-            'has_answered_expert_question' => true,
-        ]);
-        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
-
-        $nextStep = StepHelper::getNextStep($building, $inputSource, $this->step);
-        $url = $nextStep['url'];
-
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
-        }
-
-        return redirect($url);
+        return $this->completeStore($this->step, $building, $inputSource);
     }
 }

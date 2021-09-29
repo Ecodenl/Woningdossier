@@ -34,7 +34,8 @@ class RoofInsulationController extends ToolController
         $features = $building->buildingFeatures;
         $buildingFeaturesForMe = $building->buildingFeatures()->forMe()->get();
 
-        $roofTypes = RoofType::findByShorts(RoofType::SECONDARY_ROOF_TYPE_SHORTS);
+        $primaryRoofTypes = RoofType::orderBy('order')->get();
+        $secondaryRoofTypes = $primaryRoofTypes->whereIn('short', RoofType::SECONDARY_ROOF_TYPE_SHORTS);
 
         $currentRoofTypes = $building->roofTypes;
         $currentRoofTypesForMe = $building->roofTypes()->forMe()->get();
@@ -73,9 +74,9 @@ class RoofInsulationController extends ToolController
         }
 
         return view('cooperation.tool.roof-insulation.index', compact(
-            'building', 'features', 'roofTypes', 'typeIds', 'buildingFeaturesForMe',
-             'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
-             'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe'));
+            'building', 'features', 'primaryRoofTypes', 'secondaryRoofTypes', 'typeIds',
+            'buildingFeaturesForMe', 'currentRoofTypes', 'roofTileStatuses', 'roofInsulation', 'currentRoofTypesForMe',
+            'heatings', 'measureApplications', 'currentCategorizedRoofTypes', 'currentCategorizedRoofTypesForMe'));
     }
 
     public function calculate(Request $request)
@@ -83,7 +84,8 @@ class RoofInsulationController extends ToolController
         /** @var Building $building */
         $building = HoomdossierSession::getBuilding(true);
 
-        $result = \App\Calculations\RoofInsulation::calculate($building, HoomdossierSession::getInputSource(true), $building->user->energyHabit, $request->all());
+        $result = \App\Calculations\RoofInsulation::calculate($building,
+            HoomdossierSession::getInputSource(true), $building->user->energyHabit, $request->all());
 
         return response()->json($result);
     }

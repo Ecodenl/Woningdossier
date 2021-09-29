@@ -15,7 +15,10 @@
                 @include('cooperation.tool.components.source-list', [
                     'inputType' => 'radio',
                     'inputValues' => \App\Helpers\ConsiderableHelper::getConsiderableValues(),
-                    'userInputValues' => \App\Models\Considerable::forMe($buildingOwner)->get(),
+                    'userInputValues' => \App\Models\Considerable::forMe($buildingOwner)
+                        ->where('considerable_type', get_class($considerable))
+                        ->where('considerable_id', $considerable->id)
+                        ->get(),
                     'userInputColumn' => 'is_considering'
                 ])
             @endslot

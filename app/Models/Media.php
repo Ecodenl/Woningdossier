@@ -49,6 +49,16 @@ class Media extends \Plank\Mediable\Media
 {
     public function getUrl(): string
     {
-        return parent::getUrl();
+        $url =  parent::getUrl();
+
+        // Do some magic to ensure the correct subdomain is used within the host
+        $mediaUrlHost = Request::create($url)->getSchemeAndHttpHost();
+        $currentUrlHost = Request::getSchemeAndHttpHost();
+
+        if ($mediaUrlHost !== $currentUrlHost) {
+            $url = str_replace($mediaUrlHost, $currentUrlHost, $url);
+        }
+
+        return $url;
     }
 }

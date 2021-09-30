@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -37,7 +38,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class FileType extends Model
 {
-    use HasTranslations;
+    use HasTranslations, HasShortTrait;
 
     protected $translatable = [
         'name',

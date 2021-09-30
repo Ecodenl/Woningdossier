@@ -40,13 +40,6 @@ class UserReportController extends Controller
 
         $buildingInsulatedGlazings = $building->currentInsulatedGlazing->load('measureApplication', 'insulatedGlazing', 'buildingHeating');
 
-        // the comments that have been made on the action plan
-        $userActionPlanAdviceComments = UserActionPlanAdviceComments::forMe($user)
-            ->with('inputSource')
-            ->get()
-            ->pluck('comment', 'inputSource.name')
-            ->toArray();
-
         $steps = $userCooperation
             ->steps()
             ->withGeneralData()
@@ -56,8 +49,6 @@ class UserReportController extends Controller
             ->get();
 
         $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
-
-        $userActionPlanAdvices = UserActionPlanAdviceService::getPersonalPlan($user, $inputSource);
 
         $userActionPlanAdvices = $user
             ->actionPlanAdvices()

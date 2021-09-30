@@ -5,7 +5,7 @@
         <h1>{{$building->street}} {{$building->number}} {{$building->extension}}</h1>
         <h1>{{$building->postal_code}} {{$building->city}}</h1>
         <br>
-        <h2>{{$cooperation->name}}</h2>
+        <h2>{{$userCooperation->name}}</h2>
         <h2>{{date('Y-m-d')}}</h2>
         <h2>{{implode(', ', $connectedCoachNames)}}</h2>
     </div>

@@ -155,6 +155,7 @@ trait GetMyValuesTrait
             ->select([$this->getTable() . '.*']);
     }
 
+
     public function scopeForBuilding(Builder $query, $building)
     {
         $id = $building instanceof Building ? $building->id : $building;

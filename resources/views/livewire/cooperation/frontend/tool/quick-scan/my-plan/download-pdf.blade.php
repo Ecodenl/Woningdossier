@@ -1,7 +1,6 @@
 <div class="w-full flex pb-5">
     <div class="flex w-full justify-end space-x-5">
         <div wire:poll="checkIfFileIsProcessed">
-
             @if($fileStorage instanceof \App\Models\FileStorage)
                 <a href="{{route('cooperation.file-storage.download', compact('cooperation', 'fileStorage'))}}" class="btn btn-purple">
                     @lang('cooperation/frontend/tool.my-plan.download-report')
@@ -19,7 +18,5 @@
                 @endif
             </span>
         </button>
-
-
     </div>
 </div>

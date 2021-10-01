@@ -7,7 +7,6 @@ use App\Jobs\PdfReport;
 use App\Models\FileStorage;
 use App\Models\FileType;
 use App\Models\InputSource;
-use App\Models\Notification;
 use App\Models\User;
 use App\Services\FileStorageService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -29,18 +28,28 @@ class DownloadPdf extends Component
 
     public function mount(User $user)
     {
+        /** @var FileType $fileType */
         $fileType = FileType::findByShort('pdf-report');
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
         $inputSource = HoomdossierSession::getInputSource(true);
         $this->fill(compact('user', 'fileType', 'inputSource', 'masterInputSource'));
 
-        $this->isFileBeingProcessed = FileStorageService::isFileTypeBeingProcessedForUser($fileType, $user, $inputSource);
+        $this->isFileBeingProcessed = $fileType->isBeingProcessed();
         $this->fileStorage = $fileType->files()->forBuilding($user->building)->forInputSource($inputSource)->first();
 
         // as this checks for file processing, there's a chance it isn't picked up by the queue
         // so we check if it actually exisits
         if ($this->fileStorage instanceof FileStorage) {
             $this->authorize('download', [$this->fileStorage, $user->building]);
+        }
+    }
+
+    public function checkIfFileIsProcessed()
+    {
+        $this->isFileBeingProcessed = $this->fileType->isBeingProcessed();
+
+        if (!$this->isFileBeingProcessed) {
+            $this->fileStorage = $this->fileType->files()->forBuilding($this->user->building)->forInputSource($this->inputSource)->first();
         }
     }
 
@@ -55,12 +64,10 @@ class DownloadPdf extends Component
     public function generatePdf()
     {
         $this->isFileBeingProcessed = true;
-        $activeNotification = Notification::activeNotifications(
-            $this->user->building,
-            $this->inputSource
-        )->exists();
+        $this->fileStorage = null;
 
-        abort_if($this->fileType->isBeingProcessed() || $activeNotification, 403);
+
+        abort_if($this->fileType->isBeingProcessed(), 403);
 
         $this->handleExistingFiles();
 

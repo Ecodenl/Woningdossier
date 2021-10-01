@@ -4,12 +4,8 @@ namespace App\Http\Controllers\Cooperation;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\QuickScanHelper;
-use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
-use App\Jobs\PdfReport;
 use App\Models\Cooperation;
-use App\Models\FileStorage;
-use App\Models\FileType;
 use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
@@ -28,16 +24,6 @@ class HomeController extends Controller
 
         $building = HoomdossierSession::getBuilding(true);
         $masterInputSource = InputSource::findByShort('master');
-        $fileType = FileType::findByShort('pdf-report');
-
-        $fileStorage = FileStorage::create([
-            'building_id' => $building->id,
-            'cooperation_id' => $cooperation->id,
-            'input_source_id' => HoomdossierSession::getInputSource(),
-            'file_type_id' => $fileType->id,
-            'filename' => 'sdfafdsaf.pdf'
-        ]);
-        PdfReport::dispatchNow($building->user, $masterInputSource, $fileType, $fileStorage);
 
         // If the quick scan is complete, we just redirect to my plan
         if ($building->hasCompletedQuickScan($masterInputSource)) {

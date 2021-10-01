@@ -36,7 +36,6 @@ class RouteServiceProvider extends ServiceProvider
         Route::model('cooperation', Cooperation::class);
 
         Route::bind('cooperation', function ($value) {
-
             if ($this->getCurrentRequest()->hasHeader('X-Cooperation-Slug')) {
                 return Cooperation::whereSlug($this->getCurrentRequest()->header('X-Cooperation-Slug'))->firstOrFail();
             }

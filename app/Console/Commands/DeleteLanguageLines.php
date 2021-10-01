@@ -25,7 +25,7 @@ class DeleteLanguageLines extends Command
     protected $description = 'This command deletes the groups or/and keys given in the properties set, this command is here to be updated each time with new language lines to delete.';
 
     protected array $translationKeys = [
-        'pdf/user-report.general-data.resume-energy-saving-measures.table.measure',
+        'pdf/user-report.general-data.resume-energy-saving-measures.table.planned-year',
         'pdf/user-report.general-data.attachment.lead',
     ];
 
@@ -57,7 +57,14 @@ class DeleteLanguageLines extends Command
             if ($degenMode === false && $this->confirm("Do you want to remove the following translation \r\n $translationKey \r\n" . __($translationKey) . "\r\n")) {
                 LanguageLine::where(compact('group', 'key'))->delete();
                 $this->info("Deleted");
+            } else if ($degenMode === true) {
+                LanguageLine::where(compact('group', 'key'))->delete();
+                $this->info("Deleted");
+            } else {
+                $this->info("Skipped");
             }
         }
+
+        $this->call('cache:clear');
     }
 }

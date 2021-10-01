@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Cooperation;
 
 use App\Helpers\HoomdossierSession;
 use App\Helpers\QuickScanHelper;
-use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\InputSource;
@@ -22,6 +21,7 @@ class HomeController extends Controller
      */
     public function index(Cooperation $cooperation)
     {
+
         $building = HoomdossierSession::getBuilding(true);
         $masterInputSource = InputSource::findByShort('master');
 

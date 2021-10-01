@@ -9,23 +9,32 @@
             <?php
                 // we dont need it, we will use the $buildingInsulatedGlazings
                 // we also MUST unset them otherwise they will be picked up later on and we will get duplicates
-                unset($dataForSubStep['user_interests'], $dataForSubStep['building_insulated_glazings']);
+                unset($dataForSubStep['considerables'], $dataForSubStep['building_insulated_glazings']);
+
+                $insulatedGlazingStep = App\Models\Step::findByShort($stepShort);
+
+                // get all the advices for the insulated glazings step
+                // then pluck the measure application ids, that way we can only show those toes
+                $measureApplicationIds = $userActionPlanAdvices
+                    ->where('step_id', $insulatedGlazingStep->id)
+                    ->pluck('user_action_plan_advisable_id')
+                    ->toArray();
+
+                // we will only show the building insulated glazings which are shown on the woonplan
+                $buildingInsulatedGlazings = $buildingInsulatedGlazings->whereIn('measure_application_id', $measureApplicationIds)
             ?>
             @foreach($buildingInsulatedGlazings as $buildingInsulatedGlazing)
 
-                <?php
-
-                ?>
                 <p class="sub-lead">{{$buildingInsulatedGlazing->measureApplication->measure_name}}</p>
                 <table class="full-width">
                     <tbody>
                     <tr class="h-20">
-                        <td class="w-380">{{__('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.title.title')}}</td>
-                        <td>{{$user->userInterestsForSpecificType(get_class($buildingInsulatedGlazing->measureApplication), $buildingInsulatedGlazing->measureApplication->id, $inputSource)->first()->interest->name ?? $noInterest->name}}</td>
+                        <td class="w-380">{{__('default.considering', ['name' => $buildingInsulatedGlazing->measureApplication->measure_name])}}</td>
+                        <td>{{$user->considers($buildingInsulatedGlazing->measureApplication, $inputSource) ? __('default.yes') : __('default.no') }}</td>
                     </tr>
                     <tr class="h-20">
                         <td class="w-380">{{__('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.rooms-heated.title')}}</td>
-                        <td>{{$buildingInsulatedGlazing->buildingHeating->name}}</td>
+                        <td>{{optional($buildingInsulatedGlazing->buildingHeating)->name}}</td>
                     </tr>
                     <tr class="h-20">
                         <td class="w-380">{{__('insulated-glazing.'.$buildingInsulatedGlazing->measureApplication->short.'.m2.title')}}</td>

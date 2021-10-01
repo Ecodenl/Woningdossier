@@ -10,6 +10,7 @@ use App\Models\InputSource;
 use App\Models\User;
 use App\Services\FileStorageService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 // someday this will probably be refactored to a file storage download component.
@@ -113,7 +114,7 @@ class DownloadPdf extends Component
     {
         if ('pdf-report' == $fileType->short) {
             // 1234AB11-Bewonster-A-g-Bewoner.pdf;
-            $fileName = trim($user->building->postal_code).$user->building->number . '-' . \Illuminate\Support\Str::slug($user->getFullName()) . '-' . $inputSource->name . '.pdf';
+            $fileName = trim($user->building->postal_code).$user->building->number.'-'.Str::slug($user->getFullName()).'-'.$inputSource->name.'.pdf';
         }
 
         return $fileName;

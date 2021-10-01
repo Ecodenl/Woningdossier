@@ -27,8 +27,6 @@
             @endif
         @endforeach
 
-
-
         @php
             $electricityUsage = $userEnergyHabit->amount_electricity;
             $totalElectricitySaving = $userActionPlanAdvices->sum('savings_electricity');

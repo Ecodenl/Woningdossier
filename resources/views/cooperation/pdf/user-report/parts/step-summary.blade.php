@@ -71,11 +71,6 @@
 
                             // Format numbers
                             if ($toolQuestionToSummarize->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestionToSummarize->validation, 'numeric')) {
-                                $isInteger = \App\Helpers\Str::arrContains($toolQuestionToSummarize->validation, 'integer');
-                                $humanReadableAnswer = \App\Helpers\NumberFormatter::format($humanReadableAnswer, $isInteger ? 0 : 1);
-                                if ($isInteger) {
-                                    $humanReadableAnswer = str_replace('.', '', $humanReadableAnswer);
-                                }
                             } elseif($toolQuestionToSummarize->toolQuestionType->short === 'slider') {
                                 $humanReadableAnswer = str_replace('.', '', \App\Helpers\NumberFormatter::format($humanReadableAnswer, 0));
                             }

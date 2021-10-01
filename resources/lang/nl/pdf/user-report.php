@@ -17,6 +17,7 @@ return [
     ],
     'front-page' => [
         'intro' => [
+            'connected-coaches' => 'Energiecoach:|Energiecoaches:',
             'title' => 'Stappenplan voor het <br> verduurzamen van uw woning',
             'text' => 'U hebt het Hoomdossier voor uw woning ingevuld. Hieronder ziet u een samenvatting van de ingevoerde gegevens, de resultaten van de berekeningen en de stappen die u kunt ondernemen om uw woning duurzamer te maken.',
         ],
@@ -70,8 +71,8 @@ return [
                 'savings' => 'Besparing (€/jaar)',
             ],
 
-            'current-annual-energy-costs' => 'Huidige energiekosten per jaar:',
-            'expected-annual-energy-costs' => 'verwachtte energiekosten per jaar:'
+            'current-annual-energy-costs' => 'Indicatieve huidige energiekosten per jaar:',
+            'expected-annual-energy-costs' => 'indicatieve verwachtte energiekosten per jaar:'
         ],
 
         'comment-action-plan' => 'Toelichting op het stappenplan',

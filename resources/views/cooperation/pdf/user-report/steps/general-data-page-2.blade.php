@@ -26,28 +26,37 @@
             </tr>
             @endif
         @endforeach
+
+
+
+        @php
+            $electricityUsage = $userEnergyHabit->amount_electricity;
+            $totalElectricitySaving = $userActionPlanAdvices->sum('savings_electricity');
+
+            $currentCosts = $electricityUsage * \App\Helpers\Kengetallen::EURO_SAVINGS_ELECTRICITY;
+            $expectedCosts = ($electricityUsage - $totalElectricitySaving) * \App\Helpers\Kengetallen::EURO_SAVINGS_ELECTRICITY;
+        @endphp
+        <tr>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <p class="sub-lead">@lang('pdf/user-report.general-data.resume-energy-saving-measures.current-annual-energy-costs')</p>
+            </td>
+            <td>{{\App\Helpers\NumberFormatter::format($currentCosts)}} €</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <p class="sub-lead">@lang('pdf/user-report.general-data.resume-energy-saving-measures.expected-annual-energy-costs')</p>
+            </td>
+            <td>{{\App\Helpers\NumberFormatter::format($expectedCosts)}} €</td>
+            <td></td>
+        </tr>
         </tbody>
     </table>
 </div>
 
-
-<div class="question-answer-section">
-    @php
-    $electricityUsage = $userEnergyHabit->amount_electricity;
-    $totalElectricitySaving = $userActionPlanAdvices->sum('savings_electricity');
-
-    $currentCosts = $electricityUsage * \App\Helpers\Kengetallen::EURO_SAVINGS_ELECTRICITY;
-    $expectedCosts = ($electricityUsage - $totalElectricitySaving) * \App\Helpers\Kengetallen::EURO_SAVINGS_ELECTRICITY;
-    @endphp
-    <div class="question-answer">
-        <p class="sub-lead w-380">@lang('pdf/user-report.general-data.resume-energy-saving-measures.current-annual-energy-costs')</p>
-        <p>{{\App\Helpers\NumberFormatter::format($currentCosts)}} €</p>
-    </div>
-    <div class="question-answer">
-        <p class="sub-lead w-380">@lang('pdf/user-report.general-data.resume-energy-saving-measures.expected-annual-energy-costs')</p>
-        <p>{{\App\Helpers\NumberFormatter::format($expectedCosts)}} €</p>
-    </div>
-</div>
 
 @if(!\App\Helpers\Arr::isWholeArrayEmpty($userActionPlanAdviceComments))
     <div class="question-answer-section">

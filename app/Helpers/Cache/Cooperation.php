@@ -54,6 +54,7 @@ class Cooperation extends BaseCache
      */
     public static function getActiveOrderedSteps($cooperation): Collection
     {
+        // TODO: This should probably go
         if (! $cooperation instanceof \App\Models\Cooperation) {
             $cooperation = self::find($cooperation);
         }

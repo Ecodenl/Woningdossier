@@ -2,7 +2,7 @@
     $stepIconMap = [
     'wall-insulation' => 'icons/wall-insulation-excellent.svg',
     'ventilation' => 'icons/ventilation.svg',
-    'insulated-glazing' => 'images/insulated-glazing.png',
+    'insulated-glazing' => 'icons/glass-hr-tp.png',
     'floor-insulation' => 'icons/floor-insulation-excellent.svg',
     'roof-insulation' => 'icons/roof-insulation-excellent.svg',
     'high-efficiency-boiler' => 'icons/central-heater.svg',

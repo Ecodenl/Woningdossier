@@ -70,6 +70,8 @@ class DoUpgrade extends Command
                 \EnergyLabelsTableSeeder::class,
                 \CooperationMeasureApplicationsTableSeeder::class,
                 \MeasureApplicationsTableSeeder::class,
+                \ServiceValuesTableSeeder::class,
+                \ElementsValuesTableSeeder::class,
                 \ToolQuestionsTableSeeder::class,
             ];
 
@@ -80,7 +82,6 @@ class DoUpgrade extends Command
 
             $afterCommands = [
                 UpdateDataAfterDBUpgrade::class, // last. changes data on the spot
-                AddConfigurations::class,
             ];
 
             foreach ($afterCommands as $command) {

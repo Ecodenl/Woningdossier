@@ -2,14 +2,18 @@
     @foreach($toolQuestions as $toolQuestion)
         @php
             $disabled = ! $building->user->account->can('answer', $toolQuestion);
+            $humanReadableAnswer = null;
 
         switch($toolQuestion->short) {
             case 'building-type':
                 $rawAnswer = $building->getAnswer($masterInputSource, \App\Models\ToolQuestion::findByShort('building-type-category'));
-                $humanReadableAnswer = Str::lower(
-                    \App\Models\BuildingTypeCategory::find($rawAnswer)->name
-                );
-
+                // if there is an answer we can find the row and get the answer.
+                $model = \App\Models\BuildingTypeCategory::find($rawAnswer);
+                if ($model instanceof \App\Models\BuildingTypeCategory) {
+                    $humanReadableAnswer = Str::lower(
+                     $model->name
+                    );
+                }
                 break;
             default:
                 $humanReadableAnswer = null;

@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'considering' => 'Wilt u :name meenemen in de berekeningen ?',
     'buttons' => [
         'download' => 'Download bijlagen',
         'store' => 'Aanmaken',

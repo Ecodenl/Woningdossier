@@ -3,42 +3,56 @@
     <table class="full-width">
         <thead class="no-background">
         <tr>
-            <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.planned-year')}}</th>
             <th>{{__('pdf/user-report.general-data.resume-energy-saving-measures.table.measure')}}</th>
             <th>{!! __('pdf/user-report.general-data.resume-energy-saving-measures.table.costs') !!}</th>
             <th>{!! __('pdf/user-report.general-data.resume-energy-saving-measures.table.savings') !!}</th>
         </tr>
         </thead>
         <tbody>
-        <?php
-        $shownWarnings = [];
-        ?>
-        @foreach($userActionPlanAdvices as $year => $advices)
-            @foreach($advices as $adviceData)
-                @foreach($adviceData as $advice)
-                    <tr>
-                        <td>{{$year}}</td>
-                        <td>{{$advice['measure']}}</td>
-                        <td>{{\App\Helpers\NumberFormatter::format($advice['costs']['from'] ?? 0)}}</td>
-                        <td>{{\App\Helpers\NumberFormatter::format($advice['savings_money'])}}</td>
-                    </tr>
-                    @if(array_key_exists('warning', $advice) && is_string($advice['warning']) && !array_key_exists($advice['warning'], $shownWarnings))
-                        {{--so we can check on key, if it already exists we dont show it--}}
-                        <?php $shownWarnings[$advice['warning']] = null; ?>
-                    @endif
-                @endforeach
-            @endforeach
+        @foreach($userActionPlanAdvices as $userActionPlanAdvice)
+            @php
+                $name = null;
+                if ($userActionPlanAdvice->userActionPlanAdvisable instanceof \Illuminate\Database\Eloquent\Model) {
+                    $name = $userActionPlanAdvice->userActionPlanAdvisable->name ?? $userActionPlanAdvice->userActionPlanAdvisable->measure_name;
+                } else {
+                    \Illuminate\Support\Facades\Log::debug("User action plan advise its advisable does not exist; user_action_plan_advice_id: {$userActionPlanAdvice->id}");
+                }
+            @endphp
+            @if(!is_null($name))
+            <tr>
+                <td>{{$name}}</td>
+                <td>{{\App\Helpers\NumberFormatter::format($userActionPlanAdvice->costs['from'] ?? 0)}}</td>
+                <td>{{\App\Helpers\NumberFormatter::format($userActionPlanAdvice->savings_money)}}</td>
+            </tr>
+            @endif
         @endforeach
+
+        @php
+            $electricityUsage = $userEnergyHabit->amount_electricity;
+            $totalElectricitySaving = $userActionPlanAdvices->sum('savings_electricity');
+
+            $currentCosts = $electricityUsage * \App\Helpers\Kengetallen::EURO_SAVINGS_ELECTRICITY;
+            $expectedCosts = ($electricityUsage - $totalElectricitySaving) * \App\Helpers\Kengetallen::EURO_SAVINGS_ELECTRICITY;
+        @endphp
+        <tr>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <p class="sub-lead">@lang('pdf/user-report.general-data.resume-energy-saving-measures.current-annual-energy-costs')</p>
+            </td>
+            <td>{{\App\Helpers\NumberFormatter::format($currentCosts)}} €</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <p class="sub-lead">@lang('pdf/user-report.general-data.resume-energy-saving-measures.expected-annual-energy-costs')</p>
+            </td>
+            <td>{{\App\Helpers\NumberFormatter::format($expectedCosts)}} €</td>
+            <td></td>
+        </tr>
         </tbody>
     </table>
-
-    @foreach($shownWarnings as $warning => $nothing)
-        <p style="color: darkgray">{{$warning}}</p>
-        <br>
-    @endforeach
-
-
-    <p>{{__('pdf/user-report.general-data.resume-energy-saving-measures.text')}}</p>
 </div>
 
 
@@ -47,7 +61,8 @@
         <p class="lead">@lang('pdf/user-report.general-data.comment-action-plan')</p>
         @foreach($userActionPlanAdviceComments as $inputSourceName => $comment)
             {{-- The column can be a category, this will be the case when the comment is stored under a catergory--}}
-            <p class="sub-lead" style="margin-top: 25px">@lang('pdf/user-report.general-data.comment-action-plan-by', ['name' => $inputSourceName])</p>
+            <p class="sub-lead"
+               style="margin-top: 25px">@lang('pdf/user-report.general-data.comment-action-plan-by', ['name' => $inputSourceName])</p>
             <p style="word-wrap: break-word !important;">{!!  nl2br($comment, '<br>')!!}</p>
         @endforeach
     </div>

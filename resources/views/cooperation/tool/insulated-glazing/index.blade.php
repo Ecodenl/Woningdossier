@@ -43,48 +43,7 @@
                             ])
                         @endif
 
-                        @component('cooperation.tool.components.step-question', [
-                            'id' => 'user_interests.'.$measureApplication->id, 
-                            'translation' => 'insulated-glazing.'.$measureApplication->short.'.title', 
-                            'required' => false
-                        ])
-                            @slot('sourceSlot')
-                                @include('cooperation.tool.components.source-list', [
-                                    'inputType' => 'select', 'inputValues' => $interests,
-                                    'userInputValues' => $userInterestsForMe->where('interested_in_id', $measureApplication->id),
-                                    'userInputColumn' => 'interest_id'
-                                ])
-                            @endslot
-
-                            <input type="hidden"
-                                   name="user_interests[{{ $measureApplication->id }}][interested_in_type]"
-                                   value="{{get_class($measureApplication)}}">
-                            @component('cooperation.frontend.layouts.components.alpine-select')
-                                <select id="{{ $measureApplication->id }}" class="user-interest form-input"
-                                        name="user_interests[{{ $measureApplication->id }}][interest_id]">
-                                    <?php
-                                        /** @var \Illuminate\Support\Collection $interests */
-                                        $userSelectedInterest = $userInterests[$measureApplication->id] ?? null;
-                                        $userInput = old("user_interests.{$measureApplication->id}.interest_id", $userSelectedInterest)
-                                    ?>
-                                    @foreach($interests as $interest)
-                                        {{-- calculate_value 4 is the default --}}
-                                        <option data-calculate-value="{{$interest->calculate_value}}"
-                                                @if(!empty($userInput))
-                                                    @if($interest->id == $userInput)
-                                                        selected="selected"
-                                                    @endif
-                                                {{--when no answer is given select the default interest--}}
-                                                @elseif(is_null($userSelectedInterest) && $interest->calculate_value == 4)
-                                                   selected="selected"
-                                                @endif
-                                                value="{{ $interest->id }}">
-                                            {{ $interest->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            @endcomponent
-                        @endcomponent
+                        @include('cooperation.tool.includes.considerable', ['considerable' => $measureApplication])
                     </div>
 
                     <div class="values flex flex-row flex-wrap w-full sm:pad-x-6">
@@ -524,16 +483,14 @@
                 });
             }
 
-            $('.user-interest').change(function () {
-                // the input field
-                var userInterest = $(this);
-                // the user interest calculate value
-                var userInterestCalculateValue = userInterest.find('option:selected').data('calculate-value');
+            $('.considerable').change(function () {
+                // this holds the yes or no value.
+                var considers = $(this).find('input:checked').val();
 
+                console.log($(this));
                 // div that holds the inputs (m2 and windows)
-                var valueElements = userInterest.parents('[id*=glass-question-]').first().find('.values');
-
-                if (userInterestCalculateValue === 4 || userInterestCalculateValue === 5) {
+                var valueElements = $(this).parents('[id*=glass-question-]').first().find('.values');
+                if (considers == 0) {
                     valueElements.hide();
                     // clear the inputs, if the user filled in a faulty input it will still be send to the backend
                     // validation fails, inputs are hidden and the user would not know whats wrong
@@ -543,7 +500,7 @@
                 }
             });
 
-            $('.user-interest').trigger('change');
+            $('.considerable').trigger('change');
 
             // Trigger the change event so it will load the data
             formChange();

@@ -7,6 +7,7 @@ use App\Helpers\Kengetallen;
 use App\Helpers\NumberFormatter;
 use App\Helpers\StepHelper;
 use App\Models\Building;
+use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
 use App\Models\MeasureApplication;
@@ -15,6 +16,7 @@ use App\Models\UserActionPlanAdviceComments;
 use App\Models\UserEnergyHabit;
 use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use App\Helpers\Arr;
 use Illuminate\Support\Str;
@@ -226,9 +228,11 @@ class Form extends Component
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $advices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
                 ->where('user_id', $this->building->user->id)
+                ->withoutDeletedCooperationMeasureApplications($this->masterInputSource)
                 ->category($category)
                 ->orderBy('order')
                 ->get();
+
 
             $this->cards = array_merge($this->cards, $this->convertAdvicesToCards($advices, $category));
         }
@@ -249,6 +253,8 @@ class Form extends Component
 
     public function submit()
     {
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
         // Before we can validate, we must convert human format to proper format
         $costs = $this->custom_measure_application['costs'] ?? [];
         $costs['from'] = NumberFormatter::mathableFormat(str_replace('.', '', $costs['from'] ?? ''), 2);
@@ -311,6 +317,8 @@ class Form extends Component
 
     public function cardMoved($fromCategory, $toCategory, $id, $newOrder)
     {
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
         // Disclaimer: We have to do it like this, because JavaScript re-sorts arrays / objects to given numeric
         // keys, so we must ENSURE the order is 100% valid from top to bottom
 
@@ -383,6 +391,8 @@ class Form extends Component
 
     public function cardTrashed($fromCategory, $id)
     {
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
         // Get the original card object
         $cardData = Arr::where($this->cards[$fromCategory], function ($card, $order) use ($id) {
             return $card['id'] == $id;
@@ -543,6 +553,8 @@ class Form extends Component
 
     public function saveComment(string $sourceShort)
     {
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
         if ($sourceShort === InputSource::RESIDENT_SHORT || $sourceShort === InputSource::COACH_SHORT) {
             $commentShort = "{$sourceShort}Comment";
             $commentText = $this->{"{$sourceShort}CommentText"};
@@ -566,6 +578,8 @@ class Form extends Component
 
     public function addHiddenCardToBoard($category, $id)
     {
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
         $cardData = Arr::where($this->hiddenCards[$category], function ($card, $order) use ($id) {
             return $card['id'] == $id;
         });
@@ -601,10 +615,10 @@ class Form extends Component
     {
         foreach (UserActionPlanAdviceService::getCategories() as $category) {
             $hiddenAdvices = UserActionPlanAdvice::forInputSource($this->masterInputSource)
-                ->withoutGlobalScope(VisibleScope::class)
+                ->invisible()
+                ->withoutDeletedCooperationMeasureApplications($this->masterInputSource)
                 ->where('user_id', $this->building->user->id)
                 ->category($category)
-                ->where('visible', false)
                 ->orderBy('order')
                 ->get();
 
@@ -618,8 +632,10 @@ class Form extends Component
 
         // Order in the DB could have gaps or duplicates. For safe use, we set the order ourselves
         $order = 0;
+
         foreach ($advices as $advice) {
             $advisable = $advice->userActionPlanAdvisable;
+
             if ($advice->user_action_plan_advisable_type === MeasureApplication::class) {
                 $cards[$category][$order] = [
                     'name' => Str::limit($advisable->measure_name, 57),

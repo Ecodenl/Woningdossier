@@ -17,6 +17,7 @@ return [
     ],
     'front-page' => [
         'intro' => [
+            'connected-coaches' => 'Energiecoach:|Energiecoaches:',
             'title' => 'Stappenplan voor het <br> verduurzamen van uw woning',
             'text' => 'U hebt het Hoomdossier voor uw woning ingevuld. Hieronder ziet u een samenvatting van de ingevoerde gegevens, de resultaten van de berekeningen en de stappen die u kunt ondernemen om uw woning duurzamer te maken.',
         ],
@@ -37,7 +38,7 @@ return [
     ],
 
     'ventilation' => [
-        'points-of-improvement' => 'Verbeteropties',
+        'points-of-improvement' => 'Geadviseerde verbeteropties',
     ],
 
     'general-data' => [
@@ -64,13 +65,14 @@ return [
 
         'resume-energy-saving-measures' => [
             'title' => 'Samenvatting van mogelijke energiebesparende maatregelen en onderhoudsmaatregelen',
-            'text' => 'Is er iets veranderd of past de volgorde van maatregelen niet bij uw persoonlijke planning? In het Hoomdossier kunt u alle gegevens aanpassen en bijhouden. In de bijlage vindt u alle details per maatregel.',
             'table' => [
-                'planned-year' => 'Jaar gepland',
                 'measure' => 'Maatregel',
                 'costs' => 'Kosten (€)',
                 'savings' => 'Besparing (€/jaar)',
             ],
+
+            'current-annual-energy-costs' => 'Indicatieve huidige energiekosten per jaar:',
+            'expected-annual-energy-costs' => 'indicatieve verwachtte energiekosten per jaar:'
         ],
 
         'comment-action-plan' => 'Toelichting op het stappenplan',
@@ -91,8 +93,6 @@ return [
 
         'attachment' => [
             'title' => 'Bijlage 1: overzicht maatregelen',
-            'lead' => 'U hebt aangegeven interesse te hebben in de volgende maatregelen:',
-
             'text' => 'Op de volgende bladzijden ziet u per maatregel een samenvatting van de ingevoerde gegevens en berekeningen voor de hierboven genoemde maatregelen. Meer informatie over de maatregelen kunt u ook vinden op de maatregelbladen in het Hoomdossier of op <a href="www.milieucentraal.nl">www.milieucentraal.nl</a>.',
         ],
     ],

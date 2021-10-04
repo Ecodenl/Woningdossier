@@ -7,7 +7,10 @@ use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Cooperation;
 use App\Models\Interest;
+use App\Models\User;
+use App\Models\UserActionPlanAdvice;
 use App\Models\UserActionPlanAdviceComments;
+use App\Services\BuildingCoachStatusService;
 use App\Services\DumpService;
 use App\Services\UserActionPlanAdviceService;
 use App\Services\UserService;
@@ -37,16 +40,22 @@ class UserReportController extends Controller
 
         $buildingInsulatedGlazings = $building->currentInsulatedGlazing->load('measureApplication', 'insulatedGlazing', 'buildingHeating');
 
-        // the comments that have been made on the action plan
-        $userActionPlanAdviceComments = UserActionPlanAdviceComments::forMe($user)
-            ->with('inputSource')
-            ->get()
-            ->pluck('comment', 'inputSource.name')
-            ->toArray();
+        $steps = $userCooperation
+            ->steps()
+            ->withGeneralData()
+            ->where('steps.parent_id', '=', null)
+            ->orderBy('cooperation_steps.order')
+            ->where('cooperation_steps.is_active', '1')
+            ->get();
 
-        $steps = $userCooperation->getActiveOrderedSteps();
+        $userEnergyHabit = $user->energyHabit()->forInputSource($inputSource)->first();
 
-        $userActionPlanAdvices = UserActionPlanAdviceService::getPersonalPlan($user, $inputSource);
+        $userActionPlanAdvices = $user
+            ->actionPlanAdvices()
+            ->forInputSource($inputSource)
+            ->whereIn('category', [UserActionPlanAdviceService::CATEGORY_TO_DO, UserActionPlanAdviceService::CATEGORY_LATER])
+            ->with('userActionPlanAdvisable')
+            ->get();
 
         // we don't want the actual advices, we have to show them in a different way
         $measures = UserActionPlanAdviceService::getCategorizedActionPlan($user, $inputSource, false);
@@ -87,6 +96,12 @@ class UserReportController extends Controller
             ->flip()
             ->toArray();
 
+        $connectedCoaches = BuildingCoachStatusService::getConnectedCoachesByBuildingId($building->id);
+        $connectedCoachNames = [];
+        foreach ($connectedCoaches->pluck('coach_id') as $coachId) {
+            array_push($connectedCoachNames, User::find($coachId)->getFullName());
+        }
+
         // retrieve all the comments by for each input source on a step
         $commentsByStep = StepHelper::getAllCommentsByStep($building);
 
@@ -101,15 +116,15 @@ class UserReportController extends Controller
 
 //        /** @var \Barryvdh\DomPDF\PDF $pdf */
         $pdf = PDF::loadView('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource',
+            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'userEnergyHabit', 'connectedCoachNames',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
             'buildingFeatures', 'measures', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
         ));
-
+//
         return $pdf->stream();
 
         return view('cooperation.pdf.user-report.index', compact(
-            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource',
+            'user', 'building', 'userCooperation', 'stepShorts', 'inputSource', 'connectedCoachNames', 'userEnergyHabit',
             'commentsByStep', 'reportTranslations', 'reportData', 'userActionPlanAdvices', 'reportForUser', 'noInterest',
             'buildingFeatures', 'measures', 'steps', 'userActionPlanAdviceComments', 'buildingInsulatedGlazings', 'calculations'
         ));

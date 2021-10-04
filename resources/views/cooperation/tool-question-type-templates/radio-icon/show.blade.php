@@ -8,6 +8,8 @@
                    id="{{$id}}"
                    wire:model="filledInAnswers.{{$toolQuestion['id']}}"
                    value="{{$toolQuestionValue['value']}}"
+                   @if($disabled) disabled="disabled" @endif
+
             >
             <label for="{{$id}}">
                             <span class="media-icon-wrapper">

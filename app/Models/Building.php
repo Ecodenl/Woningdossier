@@ -134,7 +134,7 @@ class Building extends Model
                 $inputSources->where('short', InputSource::MASTER_SHORT)->first()->id,
             ],
         ];
-        // this means we should get the answer the "traditional way" , in a other table (not from the tool_question_answers)
+        // this means we should get the answer the "traditional way" , in another table (not from the tool_question_answers)
         if ( ! is_null($toolQuestion->save_in)) {
             $saveIn = ToolQuestionHelper::resolveSaveIn($toolQuestion, $this);
             $table  = $saveIn['table'];
@@ -145,7 +145,7 @@ class Building extends Model
                     Str::camel(Str::singular($table))
                 );
 
-            // these contain the human readable answers, we need this because the answer for a yes, no, unknown could be a 1,2,3
+            // these contain the human-readable answers, we need this because the answer for a yes, no, unknown could be a 1,2,3
             $questionValues = $toolQuestion->getQuestionValues()->pluck(
                 'name',
                 'value'
@@ -328,11 +328,11 @@ class Building extends Model
      *
      * @return bool
      */
-    public function hasCompletedQuickScan(): bool
+    public function hasCompletedQuickScan(InputSource $inputSource): bool
     {
-        $quickScanSteps = Step::whereIn('short', StepHelper::QUICK_SCAN_STEP_SHORTS)->get();
+        $quickScanSteps = Step::quickScan()->get();
         foreach ($quickScanSteps as $quickScanStep) {
-            if (! $this->hasCompleted($quickScanStep)) {
+            if (! $this->hasCompleted($quickScanStep, $inputSource)) {
                 return false;
             }
         }

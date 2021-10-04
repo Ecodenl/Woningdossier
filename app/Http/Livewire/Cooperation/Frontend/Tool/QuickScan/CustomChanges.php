@@ -65,6 +65,7 @@ class CustomChanges extends Component
 
     public function updatedSelectedCooperationMeasureApplications($value)
     {
+        abort_if(HoomdossierSession::isUserObserving(), 403);
         $key = 'cooperationMeasureApplications';
 
         // Let's diff with previous values, to define which index has changed
@@ -77,7 +78,7 @@ class CustomChanges extends Component
 
         $measure = $this->cooperationMeasureApplicationsFormData[$index] ?? null;
 
-        if (! empty($measure)) {
+        if (!empty($measure)) {
             $cooperationMeasureApplication = CooperationMeasureApplication::find($measure['id']);
 
             // No bogged data
@@ -114,6 +115,8 @@ class CustomChanges extends Component
 
     public function updatedSelectedCustomMeasureApplications($value)
     {
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
         $key = 'customMeasureApplications';
 
         // Let's diff with previous values, to define which index has changed
@@ -126,7 +129,7 @@ class CustomChanges extends Component
 
         $measure = $this->customMeasureApplicationsFormData[$index] ?? null;
 
-        if (! empty($measure)) {
+        if (!empty($measure)) {
             $masterCustomMeasureApplication = CustomMeasureApplication::forInputSource($this->masterInputSource)
                 ->where('hash', $measure['hash'])
                 ->where('id', $measure['id'])
@@ -161,10 +164,13 @@ class CustomChanges extends Component
 
     public function save($index)
     {
+        // unauth the user if this happens, this means the user is just messing around.
+        abort_if(HoomdossierSession::isUserObserving(), 403);
+
         $measure = $this->customMeasureApplicationsFormData[$index] ?? null;
 
         // We don't need to save each and every one every time one is saved, so we save by index
-        if (! empty($measure)) {
+        if (!empty($measure)) {
             // We must validate on index base, so we replace the wild card with the current index
             $customRules = [];
             foreach ($this->rules as $key => $rule) {
@@ -201,7 +207,7 @@ class CustomChanges extends Component
             ];
 
             // If a hash and ID are set, then a measure has been edited
-            if (! is_null($measure['hash']) && ! is_null($measure['id'])) {
+            if (!is_null($measure['hash']) && !is_null($measure['id'])) {
                 // ID is set for master input source, so we fetch the master input source custom measure
                 /** @var CustomMeasureApplication $customMeasureApplication */
                 $masterCustomMeasureApplication = CustomMeasureApplication::forInputSource($this->masterInputSource)
@@ -265,7 +271,8 @@ class CustomChanges extends Component
     {
         $this->customMeasureApplicationsFormData = [];
         // Retrieve the user's custom measures
-        $customMeasureApplications = $this->building->customMeasureApplications()->forInputSource($this->masterInputSource)->get();
+        $customMeasureApplications = $this->building->customMeasureApplications()
+            ->forInputSource($this->masterInputSource)->get();
 
         $this->cooperationMeasureApplicationsFormData = [];
         // Retrieve the cooperation's custom measures
@@ -291,7 +298,7 @@ class CustomChanges extends Component
                 ->first();
 
             if ($userActionPlanAdvice instanceof UserActionPlanAdvice && $userActionPlanAdvice->visible) {
-                $this->selectedCooperationMeasureApplications[] = (string) $index;
+                $this->selectedCooperationMeasureApplications[] = (string)$index;
             }
         }
 
@@ -305,16 +312,18 @@ class CustomChanges extends Component
                 ->forInputSource($this->masterInputSource)
                 ->first();
 
-            $costs = $userActionPlanAdvice->costs;
-            $this->customMeasureApplicationsFormData[$index]['costs'] = [
-                'from' => NumberFormatter::format($costs['from'] ?? '', 1),
-                'to' => NumberFormatter::format($costs['to'] ?? '', 1),
-            ];
+            if ($userActionPlanAdvice instanceof UserActionPlanAdvice) {
 
-            $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::format($userActionPlanAdvice->savings_money, 1);
+                $this->customMeasureApplicationsFormData[$index]['costs'] = [
+                    'from' => NumberFormatter::format($costs['from'] ?? '', 1),
+                    'to' => NumberFormatter::format($costs['to'] ?? '', 1),
+                ];
 
-            if ($userActionPlanAdvice->visible) {
-                $this->selectedCustomMeasureApplications[] = (string) $index;
+                $this->customMeasureApplicationsFormData[$index]['savings_money'] = NumberFormatter::format($userActionPlanAdvice->savings_money, 1);
+
+                if ($userActionPlanAdvice->visible) {
+                    $this->selectedCustomMeasureApplications[] = (string)$index;
+                }
             }
         }
 

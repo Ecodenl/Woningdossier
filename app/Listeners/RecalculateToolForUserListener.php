@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Console\Commands\Tool\RecalculateForUser;
 use App\Helpers\HoomdossierSession;
+use App\Models\InputSource;
 use App\Models\Notification;
 use App\Models\Step;
 use Illuminate\Support\Facades\Artisan;
@@ -47,17 +48,16 @@ class RecalculateToolForUserListener
             'heater',
         ];
 
-        // TODO: Make this work with the master input source. Perhaps pass input source in event?
         if (in_array($event->step->short, $stepsWhichNeedRecalculation)) {
-            // Currently this listener will only be triggered on a event that's dispatched while NOT running in the cli
-            // so we can safely access the input source from the session
-            //$inputSource = HoomdossierSession::getInputSource(true);
 
             // Theres nothing to recalculate if the user did not complete the main step.
-            if ($event->building->hasCompletedQuickScan()) {
+            if ($event->building->hasCompletedQuickScan(InputSource::findByShort(InputSource::MASTER_SHORT))) {
                 $userId = $event->building->user->id;
-                //Artisan::call(RecalculateForUser::class, ['--user' => [$userId], '--input-source' => [$inputSource->short]]);
-                Artisan::call(RecalculateForUser::class, ['--user' => [$userId],]);
+                // default for recalculate it set at resident
+
+                // yes we check for the master, but recalculate the resident.
+                // we always insert / update to resident and retrieve the master.
+                Artisan::call(RecalculateForUser::class, ['--user' => [$userId]]);
             }
         }
     }

@@ -15,6 +15,9 @@ class ToolQuestionPolicy
     {
         $currentInputSource = HoomdossierSession::getInputSource(true);
 
+        if (HoomdossierSession::isUserObserving()) {
+            return false;
+        }
         return is_null($toolQuestion->forSpecificInputSource) || $currentInputSource->short === $toolQuestion->forSpecificInputSource->short;
     }
 }

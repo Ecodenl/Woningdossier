@@ -87,33 +87,6 @@ class StepHelper
     }
 
     /**
-     * Method to check whether a user has interest in a step.
-     *
-     * @param InputSource $inputSource
-     * @param $interestedInType
-     * @param $interestedInId
-     */
-    public static function hasInterestInStep(User $user, $interestedInType, $interestedInId, $inputSource = null): bool
-    {
-        $noInterestIds = Interest::whereIn('calculate_value', [4, 5])->select('id')->get()->pluck('id')->toArray();
-
-        $userSelectedInterestedId = null;
-        if ($inputSource instanceof InputSource) {
-            $userSelectedUserInterest = $user->userInterestsForSpecificType($interestedInType,
-                $interestedInId, $inputSource)->first();
-        } else {
-            $userSelectedUserInterest = $user->userInterestsForSpecificType($interestedInType,
-                $interestedInId)->first();
-        }
-
-        if ($userSelectedUserInterest instanceof UserInterest) {
-            $userSelectedInterestedId = $userSelectedUserInterest->interest_id;
-        }
-
-        return ! in_array($userSelectedInterestedId, $noInterestIds);
-    }
-
-    /**
      * Method to retrieve the unfinished sub steps of a step for a building.
      *
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
@@ -140,7 +113,12 @@ class StepHelper
     /**
      * Get the next step for a user where the user shows interest in or the next questionnaire for a user.
      *
-     * @param Questionnaire $currentQuestionnaire
+     * @param  \App\Models\Building  $building
+     * @param  \App\Models\InputSource  $inputSource
+     * @param  \App\Models\Step  $current
+     * @param  \App\Models\Questionnaire|null  $currentQuestionnaire
+     *
+     * @return array
      */
     public static function getNextStep(
         Building $building,
@@ -149,7 +127,7 @@ class StepHelper
         Questionnaire $currentQuestionnaire = null
     ): array {
         /**
-         * some default stuff set so we dont get if else in this method all over the place.
+         * some default stuff set, so we don't get if else in this method all over the place.
          *
          * @var Step $parentStep
          * @var Step $subStep
@@ -159,66 +137,44 @@ class StepHelper
 
         $url = static::buildStepUrl($parentStep, $subStep);
 
-        // count all the active questionnaires for the current step
-        $allActiveQuestionnairesForCurrentStepCount = $parentStep->questionnaires()->active()->count();
         $user = $building->user;
 
         $nonCompletedSteps = collect();
-        // when there is a substep try to redirect them to the next sub step
+        // when there is a sub step, try to redirect them to the next sub step
         if ($subStep instanceof Step) {
             $nonCompletedSteps = static::getUnfinishedChildrenForStep($parentStep,
                 $building, $inputSource);
         }
 
-        // there are no uncompleted sub steps for the parent, try to redirect them to a questionnaire that may exists on the parent step.
-        if ($nonCompletedSteps->isEmpty() && $parentStep->hasQuestionnaires() && $allActiveQuestionnairesForCurrentStepCount > 0) {
-            // before we check for other steps we want to check if the current step has active additional questionnaires
-            // if it does and the user did not finish those we redirect to that tab
-            // create the base query to obtain the non completed questionnaires for the current step.
-            $nonCompletedSteps = $parentStep->questionnaires()
+        // there are no uncompleted sub steps for the parent, try to redirect them to a questionnaire that may exist
+        // on the parent step (child steps cannot have questionnaires).
+        if ($nonCompletedSteps->isEmpty() && $parentStep->hasActiveQuestionnaires()) {
+            // There are active questionnaires. We just grab the first next questionnaire.
+            $query =  $parentStep->questionnaires()
                 ->active()
-                ->whereNotExists(function (
-                    Builder $query
-                ) use ($user, $inputSource) {
-                    $query->select('*')
-                        ->from('completed_questionnaires')
-                        ->where('completed_questionnaires.input_source_id',
-                            $inputSource->id)
-                        ->whereRaw('questionnaires.id = completed_questionnaires.questionnaire_id')
-                        ->where('user_id',
-                            $user->id);
-                })->orderBy('order')->get();
-        }
+                ->orderBy('order');
 
-        // there are no uncompleted sub steps or uncompleted questionnaires left for this step.
-        // so we will redirect them to the next step.
-        // retrieve the non completed steps for a user.
-        // we leave out the general data step itself since thats not a "real" step anymore
-        if ($nonCompletedSteps->isEmpty()) {
-            $nonCompletedSteps = $user->cooperation
-                ->steps()
-                ->where('steps.short', '!=', 'general-data')
-                ->where('steps.parent_id', '=', null)
-                ->orderBy('cooperation_steps.order')
-                ->where('cooperation_steps.is_active', '1')
-                ->whereNotExists(function (Builder $query) use (
-                    $building,
-                    $inputSource
-                ) {
-                    $query->select('*')
-                        ->from('completed_steps')
-                        ->whereRaw('steps.id = completed_steps.step_id')
-                        ->where('building_id', $building->id)
-                        ->where('input_source_id', $inputSource->id);
-                })->get();
+            if ($currentQuestionnaire instanceof Questionnaire) {
+                // If we're currently on a questionnaire, we grab the next one
+                $query->where('order', '>', $currentQuestionnaire->order);
+            }
+
+            $nextQuestionnaire = $query->first();
+
+            if ($nextQuestionnaire instanceof Questionnaire) {
+                // Next questionnaire exists, let's redirect to there
+                return [
+                    'url' => $url,
+                    'tab_id' => 'questionnaire-'.$nextQuestionnaire->id,
+                ];
+            }
         }
 
         foreach ($nonCompletedSteps as $nonCompletedStep) {
-            // when the non completed step is a substep, we can always return it.
+            // when the non completed step is a sub step, we can always return it.
             // else we have to check whether the user has interest in the step
-            if ($nonCompletedStep instanceof Step && ($nonCompletedStep->isChild() || self::hasInterestInStep($user,
-                        Step::class, $nonCompletedStep->id))) {
-                // when its a substep we need to build it again for the sub step
+            if ($nonCompletedStep instanceof Step && $nonCompletedStep->isChild()) {
+                // when it's a sub step we need to build it again for the sub step
                 if ($nonCompletedStep->isChild()) {
                     $url = static::buildStepUrl($parentStep, $nonCompletedStep);
                 } else {
@@ -227,18 +183,12 @@ class StepHelper
 
                 return ['url' => $url, 'tab_id' => ''];
             }
-
-            if ($nonCompletedStep instanceof Questionnaire) {
-                return [
-                    'url' => $url,
-                    'tab_id' => 'questionnaire-'.$nonCompletedStep->id,
-                ];
-            }
         }
 
         // if the user has no steps left where they do not have any interest in, redirect them to their plan
         return [
-            'url' => route('cooperation.frontend.tool.quick-scan.my-plan.index'), 'tab_id' => '',
+            'url' => route('cooperation.frontend.tool.quick-scan.my-plan.index'),
+            'tab_id' => '',
         ];
     }
 

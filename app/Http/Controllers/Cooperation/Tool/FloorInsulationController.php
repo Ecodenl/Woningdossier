@@ -3,41 +3,24 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\FloorInsulation;
-use App\Events\StepDataHasBeenChanged;
-use App\Helpers\Arr;
 use App\Helpers\Cooperation\Tool\FloorInsulationHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\StepHelper;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\FloorInsulationFormRequest;
 use App\Models\Building;
 use App\Models\Cooperation;
 use App\Models\Element;
-use App\Models\Step;
+use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
-use Illuminate\Http\Request;
 
-class FloorInsulationController extends Controller
+class FloorInsulationController extends ToolController
 {
-    /**
-     * @var Step
-     */
-    protected $step;
-
-    public function __construct(Request $request)
-    {
-        $slug = str_replace('/tool/', '', $request->getRequestUri());
-        $this->step = Step::where('slug', $slug)->first();
-    }
-
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Cooperation $cooperation)
+    public function index()
     {
         $typeIds = [4];
         /** @var Building $building */
@@ -67,7 +50,6 @@ class FloorInsulationController extends Controller
         $buildingFeaturesOrderedOnInputSourceCredibility = Hoomdossier::orderRelationShipOnInputSourceCredibility(
             $building->buildingFeatures()
         )->get();
-
 
         return view('cooperation.tool.floor-insulation.index', compact(
             'floorInsulation', 'buildingInsulation', 'buildingInsulationForMe', 'buildingElementsOrderedOnInputSourceCredibility',
@@ -100,8 +82,7 @@ class FloorInsulationController extends Controller
         $user = $building->user;
         $inputSource = HoomdossierSession::getInputSource(true);
 
-        $userInterests = $request->input('user_interests');
-        UserInterestService::save($user, $inputSource, $userInterests['interested_in_type'], $userInterests['interested_in_id'], $userInterests['interest_id']);
+        ConsiderableService::save($this->step, $user, $inputSource, $request->validated()['considerables'][$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
@@ -111,19 +92,6 @@ class FloorInsulationController extends Controller
             ->saveValues()
             ->createAdvices();
 
-        StepHelper::complete($this->step, $building, $inputSource);
-        $building->update([
-            'has_answered_expert_question' => true,
-        ]);
-        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
-
-        $nextStep = StepHelper::getNextStep($building, $inputSource, $this->step);
-        $url = $nextStep['url'];
-
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
-        }
-
-        return redirect($url);
+        return $this->completeStore($this->step, $building, $inputSource);
     }
 }

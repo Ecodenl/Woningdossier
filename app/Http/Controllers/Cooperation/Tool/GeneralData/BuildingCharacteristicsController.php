@@ -8,7 +8,6 @@ use App\Helpers\HoomdossierSession;
 use App\Helpers\StepHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\GeneralData\BuildingCharacteristicsFormRequest;
-use App\Models\Building;
 use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\EnergyLabel;

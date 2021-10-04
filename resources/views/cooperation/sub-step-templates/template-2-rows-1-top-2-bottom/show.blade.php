@@ -13,6 +13,9 @@
             'label' => $top->name,
             'inputName' => "filledInAnswers.{$top->id}",
         ])
+            @php
+                $disabled = ! $building->user->account->can('answer', $top);
+            @endphp
             @slot('sourceSlot')
                 @include('cooperation.sub-step-templates.parts.source-slot-values', [
                     'values' => $filledInAnswersForAllInputSources[$top->id],
@@ -31,6 +34,9 @@
     </div>
     <div class="pt-5 grid grid-cols-1 gap-x-6 sm:grid-cols-2">
         @if($bottomLeft instanceof \App\Models\ToolQuestion)
+            @php
+                $disabled = ! $building->user->account->can('answer', $bottomLeft);
+            @endphp
             @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'form-group-heading w-full',
                 'label' => $bottomLeft->name,
@@ -54,6 +60,9 @@
         @endif
 
         @if($bottomRight instanceof \App\Models\ToolQuestion)
+                @php
+                    $disabled = ! $building->user->account->can('answer', $bottomRight);
+                @endphp
             @component('cooperation.frontend.layouts.components.form-group', [
                 'class' => 'form-group-heading w-full ',
                 'label' => $bottomRight->name,

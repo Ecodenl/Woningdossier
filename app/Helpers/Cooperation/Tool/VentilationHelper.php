@@ -7,8 +7,6 @@ use App\Models\BuildingVentilation;
 use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
-use App\Models\InputSource;
-use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 
 class VentilationHelper extends ToolHelper
@@ -39,17 +37,13 @@ class VentilationHelper extends ToolHelper
 
         $results = Ventilation::calculate($this->building, $this->inputSource, $energyHabit, $this->getValues());
 
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
-
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
-        // TODO: CHECK HOW TO HANDLE THIS (INTERESTS ARE IRRELEVANT...)
-        $interestsInMeasureApplications = $this->getValues('user_interests');
-        $relevantAdvices = collect($results['advices'])->whereIn('id', $interestsInMeasureApplications);
+        $considerables = $this->getValues('considerables');
 
-        foreach ($relevantAdvices as $advice) {
-            $measureApplication = MeasureApplication::find($advice['id']);
-            if ($measureApplication instanceof MeasureApplication) {
+        foreach ($considerables as $considerableId => $considerableData) {
+            $measureApplication = MeasureApplication::find($considerableId);
+            if ($this->considers($measureApplication) && $measureApplication instanceof MeasureApplication) {
                 if ('crack-sealing' == $measureApplication->short) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results['result']['crack_sealing'] ?? []);
                     $actionPlanAdvice->costs = ['from' => $results['result']['crack_sealing']['cost_indication'] ?? null]; // only outlier
@@ -81,33 +75,28 @@ class VentilationHelper extends ToolHelper
             ->forInputSource($this->inputSource)
             ->first();
 
-        // this is all necessary to build the interest array..
-        $measures = [
-            'ventilation-balanced-wtw',
-            'ventilation-decentral-wtw',
-            'ventilation-demand-driven',
-            'crack-sealing',
-        ];
-
-        $measures = array_flip($measures);
-
         $step = Step::findByShort('ventilation');
-        $advices = MeasureApplication::where('step_id', '=', $step->id)
-            ->whereIn('short', array_keys($measures))->get();
 
-        $advices->each(function ($advice) {
-            $advice->name = $advice->measure_name;
-        });
-        foreach ($advices as $advice) {
-            // exception for this page..
-            // 3 so the options "meer informatie" is also interested
-            if ($this->user->hasInterestIn($advice, $this->inputSource, 3)) {
-                $advice->interest = true;
-            }
+        $measureApplications = MeasureApplication::where('step_id', '=', $step->id)
+            ->whereIn('short', [
+                'ventilation-balanced-wtw',
+                'ventilation-decentral-wtw',
+                'ventilation-demand-driven',
+                'crack-sealing',
+            ])
+            ->get();
+
+        $considerables = [];
+
+        foreach ($measureApplications as $measureApplication) {
+            $considerables[$measureApplication->id] = [
+                'is_considerable' => $this->user->considers($measureApplication, $this->inputSource),
+                'name' => $measureApplication->measure_name
+            ];
         }
 
         $this->setValues([
-            'user_interests' => $advices->where('interest', true)->pluck('id')->toArray(),
+            'considerables' => $considerables,
             'building_ventilations' => [
                 'how' => optional($buildingVentilation)->how,
                 'living_situation' => optional($buildingVentilation)->living_situation,
@@ -212,7 +201,7 @@ class VentilationHelper extends ToolHelper
 
         $allWarnings = array_merge($allWarnings, self::getHowWarnings(), self::getUsageWarnings(), self::getLivingSituationWarnings());
 
-        if (! is_null($value)) {
+        if (!is_null($value)) {
             return $allWarnings[$value];
         }
 

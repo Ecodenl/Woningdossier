@@ -36,6 +36,7 @@ return [
         'update' => 'Opslaan',
         'general-data' => 'Algemene gegevens',
         'interest-in-measure' => 'Interesse in :item',
+        'is-considering' => 'Meenemen in berekening',
     ],
     'store' => [
         'success' => 'Voorbeeld woning toegevoegd',

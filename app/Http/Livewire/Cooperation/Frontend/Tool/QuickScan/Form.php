@@ -169,6 +169,10 @@ class Form extends Component
 
     public function save($nextUrl)
     {
+        if (HoomdossierSession::isUserObserving()) {
+            return redirect()->to($nextUrl);
+        }
+
         // Before we can validate (and save), we must reset the formatting from text to mathable
         foreach ($this->toolQuestions as $toolQuestion) {
             if ($toolQuestion->toolQuestionType->short === 'text' && \App\Helpers\Str::arrContains($toolQuestion->validation, 'numeric') && !\App\Helpers\Str::arrContains($toolQuestion->validation, 'integer')) {
@@ -271,6 +275,7 @@ class Form extends Component
 
             /** @var array|string $answerForInputSource */
             $answerForInputSource = $this->building->getAnswer($toolQuestion->forSpecificInputSource ?? $this->masterInputSource, $toolQuestion);
+
 
             // We don't have to set rules here, as that's done in the setToolQuestions function which gets called
             switch ($toolQuestion->toolQuestionType->short) {

@@ -1,4 +1,4 @@
-@php $isInExpertTool = \App\Helpers\Blade\RouteLogic::inExpertTool(Route::currentRouteName()); @endphp
+@php $isInExpertTool = RouteLogic::inExpertTool(Route::currentRouteName()); @endphp
 
 <div class="w-full divide-y divide-blue-500 divide-opacity-50"
      @if(($isTab ?? false)) x-cloak x-show="currentTab === $el" @endif

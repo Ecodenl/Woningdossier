@@ -23,13 +23,13 @@ $calculationsForStep = $calculations[$stepShort][$subStepShort] ?? [];
 
     @case('ventilation')
         @include('cooperation.pdf.user-report.steps.ventilation', [
-            'dataForSubStep' =>$dataForSubStep
+            'dataForSubStep' => $dataForSubStep
         ])
     @break
 
     @case('floor-insulation')
         @include('cooperation.pdf.user-report.steps.floor-insulation', [
-            'dataForSubStep' =>$dataForSubStep
+            'dataForSubStep' => $dataForSubStep
         ])
     @break
 

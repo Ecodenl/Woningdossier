@@ -16,7 +16,9 @@
                wire:model.lazy="filledInAnswers.{{$toolQuestion->id}}"
                x-ref="slider" x-on:input="updateVisuals()"
                x-on:livewire:load.window="updateVisuals({{ $filledInAnswers[$toolQuestion->id] ?? $default }})"
-               x-on:element:updated.window="if ($event.detail.field === $el.getAttribute('wire:model')) {updateVisuals();}">
+               x-on:element:updated.window="if ($event.detail.field === $el.getAttribute('wire:model')) {updateVisuals();}"
+                @if($disabled) disabled="disabled" @endif
+        >
         <div class="slider-bubble" x-show="initialized" x-ref="slider-bubble">
             <span x-text="value"></span>{!! $unit !!}
         </div>

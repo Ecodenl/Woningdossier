@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\GetValueScope;
 use App\Scopes\VisibleScope;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
@@ -9,6 +10,7 @@ use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Symfony\Component\Console\Input\Input;
 
 /**
  * App\Models\UserActionPlanAdvice
@@ -90,6 +92,41 @@ class UserActionPlanAdvice extends Model
     }
 
     /**
+     * Method to scope the advices without its deleted cooperation measure applications
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeWithoutDeletedCooperationMeasureApplications(Builder $query, InputSource $inputSource): Builder
+    {
+        // this works because it boots the cooperation measure application model, which has the soft deletes trait
+        return $query->whereHasMorph('userActionPlanAdvisable', [
+            CooperationMeasureApplication::class,
+            MeasureApplication::class,
+            CustomMeasureApplication::class,
+        ],
+            // cant use scopes.
+            fn (Builder $q) => $q->withoutGlobalScope(GetValueScope::class)->where('input_source_id', $inputSource->id)
+        );
+    }
+
+    public function scopeWithInvisible(Builder $query)
+    {
+        return $query->withoutGlobalScope(VisibleScope::class);
+    }
+
+    /**
+     * Method to only scope the invisible rows
+     *
+     * @param Builder $query
+     * @return mixed
+     */
+    public function scopeInvisible(Builder $query): Builder
+    {
+        return $query->withInvisible()->where('visible', false);
+    }
+
+    /**
      * Scope a query to only include results for the particular step.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
@@ -119,17 +156,5 @@ class UserActionPlanAdvice extends Model
     public function scopeCategory(Builder $query, string $category)
     {
         return $query->where('category', $category);
-    }
-
-    /**
-     * Check whether someone is interested in the measure.
-     */
-    public static function hasInterestInMeasure(Building $building, InputSource $inputSource, Step $step): bool
-    {
-        return self::forInputSource($inputSource)
-                ->where('user_id', $building->user_id)
-                ->where('step_id', $step->id)
-                ->where('planned', true)
-                ->first() instanceof UserActionPlanAdvice;
     }
 }

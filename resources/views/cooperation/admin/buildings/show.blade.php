@@ -241,6 +241,7 @@
 
             var appointmentDate = $('#appointment-date');
 
+            @if(\App\Helpers\Hoomdossier::user()->hasRoleAndIsCurrentRole(['cooperation-admin']))
             $('table').DataTable({
                 'order': [[0, 'desc']]
             });
@@ -249,6 +250,7 @@
             $('.nav-tabs a').on('shown.bs.tab', function (event) {
                 $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();
             });
+            @endif
 
             $('[data-toggle="tooltip"]').tooltip();
 

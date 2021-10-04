@@ -3,36 +3,21 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\HighEfficiencyBoiler;
-use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Cooperation\Tool\HighEfficiencyBoilerHelper;
 use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\StepHelper;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\HighEfficiencyBoilerFormRequest;
 use App\Models\Service;
-use App\Models\Step;
+use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
 use Illuminate\Http\Request;
 
-class HighEfficiencyBoilerController extends Controller
+class HighEfficiencyBoilerController extends ToolController
 {
-    /**
-     * @var Step
-     */
-    protected $step;
-
-    public function __construct(Request $request)
-    {
-        $slug = str_replace('/tool/', '', $request->getRequestUri());
-        $this->step = Step::where('slug', $slug)->first();
-    }
-
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
@@ -80,31 +65,16 @@ class HighEfficiencyBoilerController extends Controller
         $inputSource = HoomdossierSession::getInputSource(true);
         $user = $building->user;
 
-        // Save the building service
-        $userInterests = $request->input('user_interests');
-        UserInterestService::save($user, $inputSource, Step::class, $this->step->id, $userInterests['interest_id']);
+        ConsiderableService::save($this->step, $user, $inputSource, $request->validated()['considerables'][$this->step->id]);
 
         $stepComments = $request->input('step_comments');
         StepCommentService::save($building, $inputSource, $this->step, $stepComments['comment']);
 
         (new HighEfficiencyBoilerHelper($user, $inputSource))
-            ->setValues($request->only('user_energy_habits', 'building_services'))
+            ->setValues($request->only('user_energy_habits', 'building_services', 'considerables'))
             ->saveValues()
             ->createAdvices();
 
-        StepHelper::complete($this->step, $building, $inputSource);
-        $building->update([
-            'has_answered_expert_question' => true,
-        ]);
-        StepDataHasBeenChanged::dispatch($this->step, $building, Hoomdossier::user());
-
-        $nextStep = StepHelper::getNextStep($building, $inputSource, $this->step);
-        $url = $nextStep['url'];
-
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
-        }
-
-        return redirect($url);
+        return $this->completeStore($this->step, $building, $inputSource);
     }
 }

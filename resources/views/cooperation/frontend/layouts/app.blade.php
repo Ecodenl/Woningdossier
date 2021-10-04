@@ -47,7 +47,7 @@
 
 <script>
     @php
-        $inQuickScan = \App\Helpers\Blade\RouteLogic::inQuickScanTool(Route::currentRouteName()) & ! \App\Helpers\Blade\RouteLogic::inQuestionnaire(Route::currentRouteName());
+        $inQuickScan = RouteLogic::inQuickScanTool(Route::currentRouteName()) & ! RouteLogic::inQuestionnaire(Route::currentRouteName());
     @endphp
     {{-- We use @json so we get a proper boolean into JavaScript --}}
     window.inQuickScan = @json((bool) $inQuickScan);

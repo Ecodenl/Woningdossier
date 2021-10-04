@@ -130,7 +130,7 @@
                                                 $humanReadableAnswer = __('cooperation/frontend/tool.no-answer-given');
                                                 $answer = $answers[$toolQuestionToSummarize->short] ?? null;
 
-                                                if (! empty($answer)) {
+                                                if (! empty($answer) || (is_numeric($answer) && (int) $answer === 0)) {
                                                     $questionValues = $toolQuestionToSummarize->getQuestionValues();
 
                                                     if ($questionValues->isNotEmpty()) {
@@ -168,7 +168,7 @@
                                                             $humanReadableAnswer = str_replace('.', '', $humanReadableAnswer);
                                                         }
                                                     } elseif($toolQuestionToSummarize->toolQuestionType->short === 'slider') {
-                                                        $humanReadableAnswer = \App\Helpers\NumberFormatter::format($humanReadableAnswer, 0);
+                                                        $humanReadableAnswer = str_replace('.', '', \App\Helpers\NumberFormatter::format($humanReadableAnswer, 0));
                                                     }
                                                 }
                                             @endphp

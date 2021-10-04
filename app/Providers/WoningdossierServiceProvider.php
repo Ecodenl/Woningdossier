@@ -8,6 +8,7 @@ use App\Http\ViewComposers\ToolComposer;
 use App\Models\Account;
 use App\Models\Building;
 use App\Models\BuildingFeature;
+use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
@@ -17,8 +18,8 @@ use App\Models\Translation;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Observers\AccountObserver;
-use App\Observers\BuildingFeatureObserver;
 use App\Observers\BuildingObserver;
+use App\Observers\CompletedSubStepObserver;
 use App\Observers\CooperationObserver;
 use App\Observers\PrivateMessageObserver;
 use App\Observers\PrivateMessageViewObserver;
@@ -53,6 +54,7 @@ class WoningdossierServiceProvider extends ServiceProvider
         User::observe(UserObserver::class);
         Account::observe(AccountObserver::class);
         Translation::observe(TranslationObserver::class);
+        CompletedSubStep::observe(CompletedSubStepObserver::class);
 
         ToolQuestionAnswer::observe(ToolQuestionAnswerObserver::class);
 

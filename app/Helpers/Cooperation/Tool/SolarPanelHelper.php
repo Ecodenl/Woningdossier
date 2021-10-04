@@ -11,7 +11,6 @@ use App\Models\MeasureApplication;
 use App\Models\Step;
 use App\Models\UserActionPlanAdvice;
 use App\Scopes\GetValueScope;
-use App\Scopes\VisibleScope;
 use App\Services\UserActionPlanAdviceService;
 
 class SolarPanelHelper extends ToolHelper
@@ -41,11 +40,9 @@ class SolarPanelHelper extends ToolHelper
 
         $results = SolarPanel::calculate($this->building, $this->getValues());
 
-        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT)     ;
-
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
-        if (isset($results['cost_indication']) && $results['cost_indication'] > 0) {
+        if ($this->considers($step) && isset($results['cost_indication']) && $results['cost_indication'] > 0 ) {
             $measureApplication = MeasureApplication::where('short', 'solar-panels-place-replace')->first();
             if ($measureApplication instanceof MeasureApplication) {
                 $actionPlanAdvice = new UserActionPlanAdvice($results);
@@ -70,20 +67,17 @@ class SolarPanelHelper extends ToolHelper
         $buildingPvPanels = $this->building->pvPanels()->forInputSource($this->inputSource)->first();
         $userEnergyHabit = $this->user->energyHabit()->forInputSource($this->inputSource)->first();
 
-        $userInterestsForSolarPanels = $this
-            ->user
-            ->userInterestsForSpecificType(Step::class, Step::findByShort('solar-panels')->id, $this->inputSource)
-            ->first();
+        $step = Step::findByShort('solar-panels');
 
         $this->setValues([
             'building_pv_panels' => $buildingPvPanels instanceof BuildingPvPanel ? $buildingPvPanels->toArray() : [],
             'user_energy_habits' => [
                 'amount_electricity' => $userEnergyHabit->amount_electricity ?? null,
             ],
-            'user_interests' => [
-                'interested_in_id' => optional($userInterestsForSolarPanels)->interested_in_id,
-                'interested_in_type' => Step::class,
-                'interest_id' => optional($userInterestsForSolarPanels)->interest_id,
+            'considerables' => [
+                $step->id => [
+                    'is_considering' => $this->user->considers($step, $this->inputSource),
+                ]
             ],
         ]);
 

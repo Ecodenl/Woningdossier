@@ -11,7 +11,9 @@
             $id = $toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value'] ?? $toolQuestionValue['value'];
         @endphp
         <div class="checkbox-wrapper media-wrapper">
-            <input id="{{$id}}" type="checkbox" wire:model="filledInAnswers.{{$toolQuestion['id']}}"  name="{{$id}}" value="{{$toolQuestionValue['value']}}">
+            <input id="{{$id}}" type="checkbox" wire:model="filledInAnswers.{{$toolQuestion['id']}}"  name="{{$id}}" value="{{$toolQuestionValue['value']}}"
+                   @if($disabled) disabled="disabled" @endif
+            >
             <label for="{{$id}}">
                             <span class="media-icon-wrapper">
                                 <i class="{{$toolQuestionValue['extra']['icon'] ?? ''}}"></i>

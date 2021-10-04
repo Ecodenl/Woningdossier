@@ -109,7 +109,7 @@
         @endcomponent
     </div>
     <div class="w-full flex flex-wrap flex-row justify-center items-center"
-         x-data="draggables()"
+         @if(! \App\Helpers\HoomdossierSession::isUserObserving()) x-data="draggables()" @endif
          x-on:draggable-dragged.window="livewire.emitTo('cooperation.frontend.tool.quick-scan.my-plan.form', 'cardMoved', $event.detail.from.getAttribute('data-category'), $event.detail.to.getAttribute('data-category'), $event.detail.id, $event.detail.order)"
          x-on:draggable-trashed.window="livewire.emitTo('cooperation.frontend.tool.quick-scan.my-plan.form', 'cardTrashed', $event.detail.from.getAttribute('data-category'), $event.detail.id)">
         <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 px-3 lg:px-8">
@@ -118,7 +118,8 @@
                     @foreach($cardCollection as $order => $card)
                         <div class="card" id="{{ $card['id'] }}"
                              {{-- TODO: See if undefined draggable (on tablet, caused by polyfill) can be resolved --}}
-                             x-bind="draggable" draggable="true">
+                             x-bind="draggable"
+                             @if(\App\Helpers\HoomdossierSession::isUserObserving()) draggable="false" @else draggable="true" @endif>
                             <div class="icon-wrapper">
                                 <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
                             </div>
@@ -174,58 +175,60 @@
                 </div>
             @endforeach
         </div>
-        <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 py-8 mt-5">
+        <div class="w-full grid grid-rows-1 grid-cols-3 grid-flow-row gap-3 xl:gap-10 -mb-5">
             <div class="w-full">
                 {{-- White space --}}
             </div>
             <div class="w-full flex flex-row flex-wrap justify-center items-center">
-                <i class="icon-xl icon-trash-can-red p-4 rounded-lg transition duration-500 trash" x-bind="trash"></i>
+                <i class="w-20 h-20 icon-trash-can-red p-4 rounded-lg transition duration-500 trash" x-bind="trash"></i>
             </div>
 
-            @if(! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
-                <div x-data="modal()" class="w-full flex flex-wrap flex-row justify-end items-center px-3 lg:px-8">
-                    <i class="icon-md icon-plus-purple clickable" x-on:click="toggle()"></i>
-                    @component('cooperation.frontend.layouts.components.modal', [
-                        'header' => __('cooperation/frontend/tool.my-plan.cards.hidden.title')
-                    ])
-                        <p>
-                            @lang('cooperation/frontend/tool.my-plan.cards.hidden.help')
-                        </p>
+            @if(! \App\Helpers\HoomdossierSession::isUserObserving())
+                @if(! \App\Helpers\Arr::isWholeArrayEmpty($hiddenCards))
+                    <div x-data="modal()" class="w-full flex flex-wrap flex-row justify-end items-center px-3 lg:px-8">
+                        <i class="icon-md icon-plus-purple clickable" x-on:click="toggle()"></i>
+                        @component('cooperation.frontend.layouts.components.modal', [
+                            'header' => __('cooperation/frontend/tool.my-plan.cards.hidden.title')
+                        ])
+                            <p>
+                                @lang('cooperation/frontend/tool.my-plan.cards.hidden.help')
+                            </p>
 
-                        <div class="w-full h-full rounded-lg mt-4 bg-blue-100 pb-3">
-                            @foreach($hiddenCards as $cardCategory => $cardCollection)
-                                @if(! \App\Helpers\Arr::isWholeArrayEmpty($cardCollection))
-                                    <div class="card-wrapper pb-0" data-category="{{$cardCategory}}">
-                                        @foreach($cardCollection as $order => $card)
-                                            <div class="card clickable" id="{{ $card['id'] }}"
-                                                 wire:click="$emitTo('cooperation.frontend.tool.quick-scan.my-plan.form', 'addHiddenCardToBoard', '{{$cardCategory}}', '{{$card['id']}}')">
-                                                <div class="icon-wrapper">
-                                                    <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
-                                                </div>
-                                                <div class="info">
-                                                    <h6 class="heading-6 max-w-17/20">
-                                                        {{ $card['name'] }}
-                                                    </h6>
-                                                    <p class="-mt-1">
-                                                        {{-- This also triggers if both values are 0 --}}
-                                                        @if(empty($card['costs']['from']) && empty($card['costs']['to']))
-                                                            @lang('cooperation/frontend/tool.my-plan.cards.see-info')
-                                                        @else
-                                                            {{ \App\Helpers\NumberFormatter::range($card['costs']['from'], $card['costs']['to'], 0, ' - ', '€ ') }}
-                                                        @endif
+                            <div class="w-full h-full rounded-lg mt-4 bg-blue-100 pb-3">
+                                @foreach($hiddenCards as $cardCategory => $cardCollection)
+                                    @if(! \App\Helpers\Arr::isWholeArrayEmpty($cardCollection))
+                                        <div class="card-wrapper pb-0" data-category="{{$cardCategory}}">
+                                            @foreach($cardCollection as $order => $card)
+                                                <div class="card clickable" id="{{ $card['id'] }}"
+                                                     wire:click="$emitTo('cooperation.frontend.tool.quick-scan.my-plan.form', 'addHiddenCardToBoard', '{{$cardCategory}}', '{{$card['id']}}')">
+                                                    <div class="icon-wrapper">
+                                                        <i class="{{ $card['icon'] ?? 'icon-tools' }}"></i>
+                                                    </div>
+                                                    <div class="info">
+                                                        <h6 class="heading-6 max-w-17/20">
+                                                            {{ $card['name'] }}
+                                                        </h6>
+                                                        <p class="-mt-1">
+                                                            {{-- This also triggers if both values are 0 --}}
+                                                            @if(empty($card['costs']['from']) && empty($card['costs']['to']))
+                                                                @lang('cooperation/frontend/tool.my-plan.cards.see-info')
+                                                            @else
+                                                                {{ \App\Helpers\NumberFormatter::range($card['costs']['from'], $card['costs']['to'], 0, ' - ', '€ ') }}
+                                                            @endif
+                                                        </p>
+                                                    </div>
+                                                    <p class="font-bold absolute right-1 bottom-1 lg:right-3 lg:bottom-3">
+                                                        {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($card['savings'], 0, true) , '€ ') }}
                                                     </p>
                                                 </div>
-                                                <p class="font-bold absolute right-1 bottom-1 lg:right-3 lg:bottom-3">
-                                                    {{ \App\Helpers\NumberFormatter::prefix(\App\Helpers\NumberFormatter::format($card['savings'], 0, true) , '€ ') }}
-                                                </p>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @endif
-                            @endforeach
-                        </div>
-                    @endcomponent
-                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        @endcomponent
+                    </div>
+                @endif
             @endif
         </div>
     </div>
@@ -294,8 +297,8 @@
     <div class="w-full flex flex-wrap bg-blue-100 pb-8 px-3 lg:px-8"
          x-data="adaptiveInputs(128)" {{-- 128px === 8rem, default height for textareas --}}>
         @php
-            $disableResident = $currentInputSource->short !== $residentInputSource->short;
-            $disableCoach = $currentInputSource->short !== $coachInputSource->short;
+            $disableResident = \App\Helpers\HoomdossierSession::isUserObserving() || $currentInputSource->short !== $residentInputSource->short;
+            $disableCoach = \App\Helpers\HoomdossierSession::isUserObserving() || $currentInputSource->short !== $coachInputSource->short;
         @endphp
         @component('cooperation.frontend.layouts.components.form-group', [
             'label' => __('cooperation/frontend/tool.my-plan.comments.resident'),

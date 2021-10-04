@@ -20,6 +20,7 @@
 {{--    General data is not structured like $reportData--}}
 {{--    So have to create our own order.--}}
 
+
 @include('cooperation.pdf.user-report.steps.general-data-page-1', [
     'stepShort' => 'general-data'
 ])
@@ -40,7 +41,7 @@
 @foreach ($reportData as $stepShort => $dataForStep)
     <?php
         $hasResidentCompletedStep = $building->hasCompleted(
-            \App\Models\Step::findByShort($stepShort),
+            \App\Models\Step::withGeneralData()->where('short', $stepShort)->first(),
             $inputSource
         );
     ?>

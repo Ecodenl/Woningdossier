@@ -48,6 +48,9 @@ return [
             'resident' => 'Opmerkingen bewoner',
             'coach' => 'Opmerkingen coach',
         ],
+        'file-is-processing' => 'Rapportage wordt gemaakt..',
+        'download-report' => 'Download bestaand rapportage',
+        'create-report' => 'Maak rapportage',
         'loading' => 'Woonplan wordt berekend...',
     ],
 ];

@@ -62,7 +62,7 @@
             @endforeach
         @endif
     @endforeach
-    @php $inMyPlan = \App\Helpers\Blade\RouteLogic::inMyPlan(Route::currentRouteName()); @endphp
+    @php $inMyPlan = RouteLogic::inMyPlan(Route::currentRouteName()); @endphp
     <div class="border border-blue-500 border-opacity-50 h-1/2"></div>
     <a href="{{ route('cooperation.frontend.tool.quick-scan.my-plan.index') }}" class="no-underline">
         <div class="flex items-center justify-start">

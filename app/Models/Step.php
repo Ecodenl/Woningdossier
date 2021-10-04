@@ -70,6 +70,12 @@ class Step extends Model
         return 'slug';
     }
 
+
+    public function scopeWithGeneralData(Builder $query): Builder
+    {
+        return $query->withoutGlobalScope(NoGeneralDataScope::class);
+    }
+
     public function subSteps(): HasMany
     {
         return $this->hasMany(SubStep::class);
@@ -161,14 +167,19 @@ class Step extends Model
         return !is_null($this->parent_id);
     }
 
-    public function questionnaires()
+    public function questionnaires(): HasMany
     {
         return $this->hasMany(Questionnaire::class);
     }
 
-    public function hasQuestionnaires()
+    public function hasQuestionnaires(): bool
     {
         return $this->questionnaires()->count() > 0;
+    }
+
+    public function hasActiveQuestionnaires(): bool
+    {
+        return $this->questionnaires()->active()->count() > 0;
     }
 
     public function scopeOrdered(Builder $query)

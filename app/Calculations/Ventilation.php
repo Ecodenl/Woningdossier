@@ -36,6 +36,7 @@ class Ventilation
         $improvement = '';
         $advices = null;
         $remark = '';
+        $considerables = [];
         $result = [
             'crack_sealing' => [
                 'savings_co2' => null,
@@ -45,6 +46,8 @@ class Ventilation
                 'interest_comparable' => null,
             ],
         ];
+
+
 
         if ($buildingVentilationService instanceof BuildingService) {
             /** @var ServiceValue $buildingVentilation */
@@ -73,6 +76,7 @@ class Ventilation
             ];
             $measures = array_flip($measures);
 
+            // now check al the conditions for the measures.
             if ('natural' === $ventilationType) {
                 // "different" type which returns early
                 unset($measures['crack-sealing']);
@@ -157,13 +161,6 @@ class Ventilation
                 $remark = __('my-plan.warnings.ventilation');
             }
 
-            $advices = MeasureApplication::where('step_id', '=', $step->id)
-                ->whereIn('short', array_keys($measures))->get();
-
-            $advices->each(function ($advice) {
-                $advice->name = $advice->measure_name;
-            });
-
             if (array_key_exists('crack-sealing', $measures)) {
                 // Crack sealing gives a percentage of savings. This is dependent on the application (place or replace)
                 // and the gas usage (for heating)
@@ -201,24 +198,24 @@ class Ventilation
                         $result['crack_sealing']['savings_money']), 1);
                 }
             }
+            // al conditions have been checked, we can safely get the measures
+            $measureApplications = MeasureApplication::where('step_id', '=', $step->id)
+                ->whereIn('short', array_keys($measures))->get();
 
-            // Add interest (or not)
-            // This is needed for the javascript
-            $buildingOwner = $building->user;
+            $considerables = [];
 
-            foreach ($advices as $advice) {
-                // exception for this page..
-                // 3 so the options "meer informatie" is also interested
-                if ($buildingOwner->hasInterestIn($advice, $inputSource, 3)) {
-                    $advice->interest = true;
-                }
+            foreach ($measureApplications as $measureApplication) {
+                $considerables[$measureApplication->id] = [
+                    'is_considerable' => $building->user->considers($measureApplication, $inputSource),
+                    'name' => $measureApplication->measure_name
+                ];
             }
 
-            if (count($advices) > 0 && 'natural' !== $ventilationType) {
+            if (count($considerables) > 0 && 'natural' !== $ventilationType) {
                 $improvement .= '  Om de ventilatie verder te verbeteren kunt u de volgende opties overwegen:';
             }
         }
 
-        return compact('improvement', 'advices', 'remark', 'result');
+        return compact('improvement', 'considerables', 'remark', 'result');
     }
 }

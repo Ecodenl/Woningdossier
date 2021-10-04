@@ -3,36 +3,19 @@
 namespace App\Http\Controllers\Cooperation\Tool;
 
 use App\Calculations\Ventilation;
-use App\Events\StepDataHasBeenChanged;
 use App\Helpers\Cooperation\Tool\VentilationHelper;
-use App\Helpers\Hoomdossier;
 use App\Helpers\HoomdossierSession;
-use App\Helpers\StepHelper;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Cooperation\Tool\VentilationFormRequest;
 use App\Models\BuildingService;
-use App\Models\Interest;
 use App\Models\MeasureApplication;
 use App\Models\ServiceValue;
 use App\Models\Step;
-use App\Models\UserInterest;
+use App\Services\ConsiderableService;
 use App\Services\StepCommentService;
-use App\Services\UserInterestService;
 use Illuminate\Http\Request;
 
-class VentilationController extends Controller
+class VentilationController extends ToolController
 {
-    /**
-     * @var Step
-     */
-    protected $step;
-
-    public function __construct(Request $request)
-    {
-        $slug = str_replace('/tool/', '', $request->getRequestUri());
-        $this->step = Step::where('slug', $slug)->first();
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -69,44 +52,31 @@ class VentilationController extends Controller
 
         $step = Step::findByShort('ventilation');
 
-        $interestsInMeasureApplications = $request->input('user_interests', []);
-        $noInterestInMeasureApplications = $step->measureApplications()->whereNotIn('id', $interestsInMeasureApplications)->get();
+        // the actually checked considerables, so these are considered true
+        $considerables = $request->input('considerables', []);
 
-        // this will be the interest when the checkbox is not checked
-        $noInterest = Interest::where('calculate_value', 4)->first();
-
-        // default interest for measure application when checked: interest in the step itself
-        $defaultInterest = Interest::orderBy('calculate_value')->first();
-        $stepUserInterest = $building->user->userInterestsForSpecificType(get_class($step), $step->id, $inputSource)->first();
-        if ($stepUserInterest instanceof UserInterest) {
-            $defaultInterest = $stepUserInterest->interest;
+        // now get the measure applications the user did not check (so does not consider)
+        $notConsiderableMeasureApplications = $step->measureApplications()->whereNotIn('id', array_keys($considerables))->get();
+        // collect them al into one array, the VentilationHelper expects this format.
+        foreach ($notConsiderableMeasureApplications as $measureApplication) {
+            $considerables[$measureApplication->id] = ['is_considering' => false];
         }
 
-        foreach ($interestsInMeasureApplications as $measureApplicationId) {
-            UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationId, $defaultInterest->id);
+        foreach ($considerables as $considerableId => $considerableData) {
+            ConsiderableService::save(MeasureApplication::findOrFail($considerableId), $buildingOwner, $inputSource, $considerableData);
         }
-        foreach ($noInterestInMeasureApplications as $measureApplicationWithNoInterest) {
-            UserInterestService::save($buildingOwner, $inputSource, MeasureApplication::class, $measureApplicationWithNoInterest->id, $noInterest->id);
-        }
+
+        $valuesToSet = $request->only('building_ventilations');
+        $valuesToSet['considerables'] = $considerables;
 
         (new VentilationHelper($buildingOwner, $inputSource))
-            ->setValues($request->only('building_ventilations', 'user_interests'))
+            ->setValues($valuesToSet)
             ->saveValues()
             ->createAdvices();
 
         StepCommentService::save($building, $inputSource, $step, $request->input('step_comments.comment'));
-        StepHelper::complete($step, $building, $inputSource);
-        $building->update([
-            'has_answered_expert_question' => true,
-        ]);
-        StepDataHasBeenChanged::dispatch($step, $building, Hoomdossier::user());
-        $nextStep = StepHelper::getNextStep($building, $inputSource, $step);
-        $url = $nextStep['url'];
-        if (! empty($nextStep['tab_id'])) {
-            $url .= '#'.$nextStep['tab_id'];
-        }
 
-        return redirect($url);
+        return $this->completeStore($this->step, $building, $inputSource);
     }
 
     public function calculate(Request $request)

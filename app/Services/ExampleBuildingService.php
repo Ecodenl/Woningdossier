@@ -8,6 +8,7 @@ use App\Models\Building;
 use App\Models\BuildingElement;
 use App\Models\BuildingFeature;
 use App\Models\BuildingService;
+use App\Models\Considerable;
 use App\Models\Element;
 use App\Models\ElementValue;
 use App\Models\ExampleBuilding;
@@ -517,6 +518,17 @@ class ExampleBuildingService
                             )
                         );
                     }
+                    if ('considerables' == $columnOrTable){
+                        foreach($values as $modelClass => $modelConsideration){
+                            foreach($modelConsideration as $id => $considering){
+//                                $considering = ($considering == 1);
+                                self::log("Building " . $building->id . " Setting consideration for user " . $building->user->id . " for " . $modelClass . " (" . $id . ") to " . ((int) $considering));
+
+                                ConsiderableService::save($modelClass::find($id), $building->user, $inputSource, $considering);
+                            }
+                        }
+                    }
+                    // deprecated in favor of considerables.
                     if ('user_interests' == $columnOrTable){
                         foreach($values as $modelClass => $modelInterest){
                             foreach($modelInterest as $id => $interest){

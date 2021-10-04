@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\Cooperation\Tool;
 
+use App\Helpers\ConsiderableHelper;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class HighEfficiencyBoilerFormRequest extends FormRequest
 {
@@ -28,7 +30,7 @@ class HighEfficiencyBoilerFormRequest extends FormRequest
         $max = Carbon::now()->year;
 
         return [
-            'user_interests.interest_id' => 'required|exists:interests,id',
+            'considerables.*.is_considering' => ['required', Rule::in(array_keys(ConsiderableHelper::getConsiderableValues()))],
             'user_energy_habits.amount_gas' => 'required|numeric|min:0|max:10000',
             'user_energy_habits.resident_count' => 'nullable|numeric|min:1|max:8',
             'building_services.service_value_id' => 'exists:service_values,id',

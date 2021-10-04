@@ -7,9 +7,8 @@
            action="{{ route('cooperation.tool.solar-panels.store', ['cooperation' => $cooperation]) }}">
         @csrf
 
-        @include('cooperation.tool.includes.interested', [
-            'translation' => 'solar-panels.index.interested-in-improvement', 'interestedInType' => \App\Models\Step::class, 'interestedInId' => $currentStep->id,
-        ])
+        @include('cooperation.tool.includes.considerable', ['considerable' => $currentStep])
+
         <div id="solar-panels">
             <div class="flex flex-row flex-wrap w-full">
                 <div class="w-full sm:w-1/2 sm:pr-3">

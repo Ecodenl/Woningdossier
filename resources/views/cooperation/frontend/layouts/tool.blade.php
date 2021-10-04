@@ -31,12 +31,12 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20">
         @if(RouteLogic::inExpertTool(Route::currentRouteName()))
             {{-- Expert tool has a card-wrapper around the content --}}
-            @if(Auth::check() && ! Hoomdossier::user()->hasRoleAndIsCurrentRole(RoleHelper::ROLE_RESIDENT))
-                <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
+{{--            @if(Auth::check() && ! Hoomdossier::user()->hasRoleAndIsCurrentRole(RoleHelper::ROLE_RESIDENT))--}}
+{{--                <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">--}}
 {{--                    @include('cooperation.tool.includes.top-alerts')--}}
-                    @include('cooperation.tool.parts.progress')
-                </div>
-            @endif
+{{--                    @include('cooperation.tool.parts.progress')--}}
+{{--                </div>--}}
+{{--            @endif--}}
 
             <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">
                 <div class="flex flex-row flex-wrap w-full" x-data="tabs()">

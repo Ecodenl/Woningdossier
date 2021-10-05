@@ -312,7 +312,7 @@ class MapAnswers extends Command
                 'tool_question_id' => ToolQuestion::findByShort('comfort-priority')->id,
                 'building_id' => $user->building->id,
                 // the user motivations has no input_source_id, so we can do it this way.
-                'input_source_id' => InputSource::findByShort('resident')->id,
+                'input_source_id' => InputSource::findByShort(InputSource::RESIDENT_SHORT)->id,
             ];
             // as default
             $orderToRatingMap = $orderToRatingMapWith1;

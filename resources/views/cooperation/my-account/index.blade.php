@@ -280,7 +280,7 @@
                                   action="{{ route('cooperation.my-account.settings.reset-file', compact('cooperation')) }}">
                                 @csrf
                                 <input type="hidden" name="input_sources[id][]"
-                                       value="{{\App\Models\InputSource::findByShort('resident')->id}}">
+                                       value="{{\App\Models\InputSource::findByShort(\App\Models\InputSource::RESIDENT_SHORT)->id}}">
                                 <button type="button"
                                         class="reset-account btn btn-red">
                                     @lang('my-account.settings.reset-file.modal.reset-resident')
@@ -290,9 +290,9 @@
                                   action="{{ route('cooperation.my-account.settings.reset-file', compact('cooperation')) }}">
                                 @csrf
                                 <input type="hidden" name="input_sources[id][]"
-                                       value="{{\App\Models\InputSource::findByShort('resident')->id}}">
+                                       value="{{\App\Models\InputSource::findByShort(\App\Models\InputSource::RESIDENT_SHORT)->id}}">
                                 <input type="hidden" name="input_sources[id][]"
-                                       value="{{\App\Models\InputSource::findByShort('coach')->id}}">
+                                       value="{{\App\Models\InputSource::findByShort(\App\Models\InputSource::COACH_SHORT)->id}}">
                                 <button type="button"
                                         class="reset-account btn btn-red">
                                     @lang('my-account.settings.reset-file.modal.reset-both')

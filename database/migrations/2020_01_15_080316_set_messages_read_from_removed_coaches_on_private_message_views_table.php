@@ -66,13 +66,13 @@ class SetMessagesReadFromRemovedCoachesOnPrivateMessageViewsTable extends Migrat
                     $unreadMessagesForRemovedCoach = DB::table('private_message_views')
                         ->where('private_message_id', $privateMessage->id)
                         ->where('user_id', $user->id)
-                        ->where('input_source_id', InputSource::findByShort('coach')->id)
+                        ->where('input_source_id', InputSource::findByShort(InputSource::COACH_SHORT)->id)
                         ->where('read_at', null)->count();
 
                     if ($unreadMessagesForRemovedCoach > 0) {
                         DB::table('private_message_views')->where('private_message_id', $privateMessage->id)
                             ->where('user_id', $user->id)
-                            ->where('input_source_id', InputSource::findByShort('coach')->id)
+                            ->where('input_source_id', InputSource::findByShort(InputSource::COACH_SHORT)->id)
                             ->where('read_at', null)
                             ->update([
                                 'read_at' => \Carbon\Carbon::now(),

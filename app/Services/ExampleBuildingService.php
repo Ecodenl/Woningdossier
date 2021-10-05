@@ -44,7 +44,7 @@ class ExampleBuildingService
         ?InputSource $initiatingInputSource = null
     ) {
         $inputSource = $inputSource ?? InputSource::findByShort(
-                'example-building'
+                InputSource::EXAMPLE_BUILDING
             );
         // unless stated differently: compare to master input values
         $initiatingInputSource = $initiatingInputSource ?? InputSource::findByShort(
@@ -625,7 +625,7 @@ class ExampleBuildingService
     ) {
         /** @var InputSource $inputSource */
         $inputSource = $inputSource ?? InputSource::findByShort(
-                'example-building'
+                InputSource::EXAMPLE_BUILDING
             );
 
         Log::debug("Clearing example building for input source " . $inputSource->short);

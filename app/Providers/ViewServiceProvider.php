@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use App\Http\ViewComposers\Frontend\Layouts\Parts\SubNavComposer;
 use App\Http\ViewComposers\Frontend\Tool\QuickScanComposer;
-use App\Http\ViewComposers\Frontend\Tool\ToolComposer;
+use App\Http\ViewComposers\Frontend\Tool\NavbarComposer;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -36,7 +36,7 @@ class ViewServiceProvider extends ServiceProvider
             ],
             QuickScanComposer::class
         );
-        View::creator('cooperation.frontend.tool.quick-scan.*', ToolComposer::class);
+        View::creator('cooperation.frontend.layouts.parts.navbar', NavbarComposer::class);
 
         // https://stackoverflow.com/questions/38135455/how-to-have-one-time-push-in-laravel-blade
         // TODO: Deprecate this to @once when this is updated to Laravel 7.25

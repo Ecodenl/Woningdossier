@@ -92,7 +92,7 @@
 
             @if(($building = \App\Helpers\HoomdossierSession::getBuilding(true)) instanceof \App\Models\Building && $building->hasCompletedQuickScan(\App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT)))
                 @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-check-circle"></i>'])
-                    {{-- Loaded in respective Toolcomposers (depending on view) --}}
+                    {{-- Loaded in NavbarComposer --}}
                     @foreach($expertSteps as $expertStep)
                         <li>
                             <a href="{{ route("cooperation.tool.{$expertStep->short}.index", compact('cooperation')) }}"

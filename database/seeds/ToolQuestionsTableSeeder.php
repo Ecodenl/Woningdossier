@@ -1344,7 +1344,7 @@ class ToolQuestionsTableSeeder extends Seeder
                         $insertData['conditions'] = empty($insertData['conditions']) ? null : json_encode($insertData['conditions']);
                         $insertData['name'] = json_encode($insertData['name']);
                         $insertData['help_text'] = json_encode($insertData['help_text']);
-                        $insertData['placeholder'] = empty($insertData['placeholder']) ? null : json_encode($insertData['placeholder']);
+                        $insertData['placeholder'] = empty($insertData['placeholder']) ? null : json_encode(['nl' => $insertData['placeholder']]);
                         $insertData['options'] = empty($insertData['options']) ? null : json_encode($insertData['options']);
                         $insertData['validation'] = empty($insertData['validation']) ? null : json_encode($insertData['validation']);
 

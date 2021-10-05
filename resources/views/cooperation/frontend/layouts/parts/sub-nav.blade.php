@@ -1,7 +1,7 @@
 <div class="flex items-center justify-between w-full bg-blue-100 border-b-2 border-blue border-opacity-20 h-16 px-5 xl:px-20 relative z-30">
     @foreach($steps as $step)
         @php
-            $stepWasCompleted = $building->hasCompleted($step, \App\Helpers\HoomdossierSession::getInputSource(true));
+            $stepWasCompleted = $building->hasCompleted($step, \App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT));
             $route = route('cooperation.frontend.tool.quick-scan.index', ['step' => $step, 'subStep' => $step->subSteps()->orderBy('order')->first()]);
             if ($stepWasCompleted){
                 $route = route('cooperation.frontend.tool.quick-scan.index', ['step' => $step, 'subStep' => $step->subSteps()->orderByDesc('order')->first()]);
@@ -43,7 +43,7 @@
                    class="no-underline">
                     <div class="flex items-center">
                         {{-- $currentQuestionnaire gets injected in the SubNavComposer via the ViewServiceProvider --}}
-                        @if($building->user->hasCompletedQuestionnaire($questionnaire, \App\Helpers\HoomdossierSession::getInputSource(true)))
+                        @if($building->user->hasCompletedQuestionnaire($questionnaire, \App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT)))
                             <i class="icon-sm @if(isset($currentQuestionnaire) && $currentQuestionnaire->id == $questionnaire->id) icon-check-circle-purple @else icon-check-circle-dark @endif mr-1 border-purple"></i>
                         @elseif(isset($currentQuestionnaire) && $currentQuestionnaire->id == $questionnaire->id)
                             <i class="icon-sm bg-purple bg-opacity-25 rounded-full border border-solid border-purple mr-1"></i>

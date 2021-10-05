@@ -861,7 +861,7 @@ class ToolQuestionsTableSeeder extends Seeder
                                     ],
                                 ],
                                 'infrared' => [
-                                    'name' => 'Infrarood',
+                                    'name' => 'Warmtepanelen/Infrarood',
                                     'extra' => [
                                         'icon' => 'icon-infrared-heater',
                                     ],
@@ -1303,13 +1303,15 @@ class ToolQuestionsTableSeeder extends Seeder
                     ->where('step_id', $subStepData['step_id'])
                     ->first();
 
+                $subStepData['name'] = json_encode($names);
+                $subStepData['slug'] = json_encode($slugs);
+
                 // Usually we do an updateOrInsert, but since we have to use a JSON column to compare, we can't use
                 // it. The query builder won't properly handle unencoded JSON, but we need unencoded JSON to
-                // compare. We will not do an update in this seeder
-                if (! $subStep instanceof SubStep) {
-                    $subStepData['name'] = json_encode($names);
-                    $subStepData['slug'] = json_encode($slugs);
-
+                // compare.
+                if ($subStep instanceof SubStep) {
+                    DB::table('sub_steps')->where('id', $subStep->id)->update($subStepData);
+                } else {
                     DB::table('sub_steps')->insert($subStepData);
 
                     // Fetch again
@@ -1335,27 +1337,24 @@ class ToolQuestionsTableSeeder extends Seeder
                                 ? __($translation . '.help') : $translation,
                         ];
 
+                        $insertData = Arr::except($questionData,
+                            ['tool_question_values', 'tool_question_custom_values', 'extra', 'translation']);
+
+                        // Encode data for DB insert...
+                        $insertData['conditions'] = empty($insertData['conditions']) ? null : json_encode($insertData['conditions']);
+                        $insertData['name'] = json_encode($insertData['name']);
+                        $insertData['help_text'] = json_encode($insertData['help_text']);
+                        $insertData['placeholder'] = empty($insertData['placeholder']) ? null : json_encode($insertData['placeholder']);
+                        $insertData['options'] = empty($insertData['options']) ? null : json_encode($insertData['options']);
+                        $insertData['validation'] = empty($insertData['validation']) ? null : json_encode($insertData['validation']);
+
+                        // We can updateOrInsert this!
+                        DB::table('tool_questions')->updateOrInsert([
+                            'short' => $questionData['short'],
+                        ], $insertData);
+
                         $toolQuestion = ToolQuestion::where('short', $questionData['short'])
                             ->first();
-
-                        // If it doesn't exist, we create it
-                        if (! $toolQuestion instanceof ToolQuestion) {
-                            $insertData = Arr::except($questionData,
-                                ['tool_question_values', 'tool_question_custom_values', 'extra', 'translation']);
-
-                            // Encode data for DB insert...
-                            $insertData['conditions'] = empty($insertData['conditions']) ? null : json_encode($insertData['conditions']);
-                            $insertData['name'] = json_encode($insertData['name']);
-                            $insertData['help_text'] = json_encode($insertData['help_text']);
-                            $insertData['placeholder'] = empty($insertData['placeholder']) ? null : json_encode($insertData['placeholder']);
-                            $insertData['options'] = empty($insertData['options']) ? null : json_encode($insertData['options']);
-                            $insertData['validation'] = empty($insertData['validation']) ? null : json_encode($insertData['validation']);
-
-                            DB::table('tool_questions')->insert($insertData);
-
-                            $toolQuestion = ToolQuestion::where('short', $questionData['short'])
-                                ->first();
-                        }
 
                         $subStep->toolQuestions()->attach($toolQuestion, ['order' => $orderForSubStepToolQuestions]);
 
@@ -1365,26 +1364,22 @@ class ToolQuestionsTableSeeder extends Seeder
                                 $name = $customValueData['name'];
                                 $extra = $customValueData['extra'] ?? [];
 
-                                $toolQuestionCustomValue = ToolQuestionCustomValue::where('short',
-                                    $short)
-                                    ->where('tool_question_id', $toolQuestion->id)
-                                    ->first();
+                                $insertData = [
+                                    'tool_question_id' => $toolQuestion->id,
+                                    'order' => $toolQuestionCustomValueOrder,
+                                    'show' => true,
+                                    // so we will compare the short to determine what is what, but we will keep value for now
+                                    'short' => $short,
+                                    'name' => json_encode([
+                                        'nl' => $name,
+                                    ]),
+                                    'extra' => json_encode($extra),
+                                ];
 
-                                if (! $toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
-                                    $insertData = [
-                                        'tool_question_id' => $toolQuestion->id,
-                                        'order' => $toolQuestionCustomValueOrder,
-                                        'show' => true,
-                                        // so we will compare the short to determine what is what, but we will keep value for now
-                                        'short' => $short,
-                                        'name' => json_encode([
-                                            'nl' => $name,
-                                        ]),
-                                        'extra' => json_encode($extra),
-                                    ];
-
-                                    DB::table('tool_question_custom_values')->insert($insertData);
-                                }
+                                DB::table('tool_question_custom_values')->updateOrInsert([
+                                    'short' => $short,
+                                    'tool_question_id' => $toolQuestion->id,
+                                ], $insertData);
 
                                 $toolQuestionCustomValueOrder++;
                             }
@@ -1398,24 +1393,20 @@ class ToolQuestionsTableSeeder extends Seeder
                                     $extraData = $extra['data'][$toolQuestionValue->{$extra['column']}];
                                 }
 
-                                $toolQuestionValuable = ToolQuestionValuable::where('order',
-                                    $toolQuestionValueOrder)
-                                    ->where('tool_question_id', $toolQuestion->id)
-                                    ->first();
+                                $insertData = [
+                                    'tool_question_id' => $toolQuestion->id,
+                                    'order' => $toolQuestionValueOrder,
+                                    'show' => true,
+                                    'tool_question_valuable_type' => get_class($toolQuestionValue),
+                                    'tool_question_valuable_id' => $toolQuestionValue->id,
+                                    // We grab the extra data by the set column (e.g. calculate_value)
+                                    'extra' => json_encode(($extraData ?? $extra)),
+                                ];
 
-                                if (! $toolQuestionValuable instanceof ToolQuestionValuable) {
-                                    $insertData = [
-                                        'tool_question_id' => $toolQuestion->id,
-                                        'order' => $toolQuestionValueOrder,
-                                        'show' => true,
-                                        'tool_question_valuable_type' => get_class($toolQuestionValue),
-                                        'tool_question_valuable_id' => $toolQuestionValue->id,
-                                        // We grab the extra data by the set column (e.g. calculate_value)
-                                        'extra' => json_encode(($extraData ?? $extra)),
-                                    ];
-
-                                    DB::table('tool_question_valuables')->insert($insertData);
-                                }
+                                DB::table('tool_question_valuables')->updateOrInsert([
+                                    'order' => $toolQuestionValueOrder,
+                                    'tool_question_id' => $toolQuestion->id,
+                                ], $insertData);
                             }
                         }
                         $orderForSubStepToolQuestions++;

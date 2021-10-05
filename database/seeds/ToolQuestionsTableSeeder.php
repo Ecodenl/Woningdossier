@@ -861,7 +861,7 @@ class ToolQuestionsTableSeeder extends Seeder
                                     ],
                                 ],
                                 'infrared' => [
-                                    'name' => 'Warmtepanelen/Infrarood',
+                                    'name' => 'Warmtepanelen / Infrarood',
                                     'extra' => [
                                         'icon' => 'icon-infrared-heater',
                                     ],

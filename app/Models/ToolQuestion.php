@@ -7,6 +7,7 @@ use App\Traits\HasShortTrait;
 use App\Traits\Models\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -60,6 +61,11 @@ class ToolQuestion extends Model
     public function toolQuestionAnswers(): HasMany
     {
         return $this->hasMany(ToolQuestionAnswer::class);
+    }
+
+    public function subSteps(): BelongsToMany
+    {
+        return $this->belongsToMany(SubStep::class, 'sub_step_tool_questions');
     }
     /**
      * Method to return the intermediary morph table

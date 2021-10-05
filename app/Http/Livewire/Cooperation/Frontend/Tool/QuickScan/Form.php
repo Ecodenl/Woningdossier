@@ -463,9 +463,10 @@ class Form extends Component
             Log::debug($table . "." . $column . " has changed:");
             Log::debug($changes);
 
+            $oldBuildingFeature = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first();
             // apply the example building for the given changes.
             // we give him the old building features, otherwise we cant verify the changes
-            ApplyExampleBuildingForChanges::dispatch($this->building->buildingFeatures, $changes);
+            ApplyExampleBuildingForChanges::dispatchNow($oldBuildingFeature, $changes, $this->currentInputSource);
 
         }
 

@@ -2,11 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Models\Building;
 use App\Models\BuildingFeature;
 use App\Models\BuildingType;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
+use App\Models\ToolQuestion;
 use App\Services\ExampleBuildingService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -20,12 +22,18 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public array $changes;
+    public Building $building;
     public BuildingFeature $buildingFeature;
+    public InputSource $masterInputSource;
+    public InputSource $applyForInputSource;
 
-    public function __construct(BuildingFeature $buildingFeature, array $changes)
+    public function __construct(BuildingFeature $buildingFeature, array $changes, InputSource $applyForInputSource)
     {
         $this->changes = $changes;
         $this->buildingFeature = $buildingFeature;
+        $this->building = $buildingFeature->building;
+        $this->masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+        $this->applyForInputSource = $applyForInputSource;
     }
 
     /**
@@ -122,10 +130,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             $this->building->exampleBuilding()->associate($exampleBuilding)->save();
         }
 
-        // For the example building input source it could be that the build year isn't set.
-        // If so we use the build_year from the current input source
-        //$buildYear = $this->building->buildingFeatures->build_year ?? $this->building->buildingFeatures()->forInputSource($this->currentInputSource)->first()->build_year;
-        $buildYear = $this->building->buildingFeatures()->forInputSource($this->currentInputSource)->first()->build_year;
+        $buildYear = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first()->build_year;
 
         // manually trigger
         ExampleBuildingService::apply(
@@ -134,19 +139,22 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             $this->building
         );
 
+        $roofTypeToolQuestion = ToolQuestion::findByShort('roof-type');
+        // we need the first sub step that asks the roof type
+        $subStepForRoofType = $roofTypeToolQuestion->subSteps()->orderBy('order')->first();;
         $exampleBuildingShouldOverrideUserData = $this->building
                 ->completedSubSteps()
-                ->forInputSource(InputSource::findByShort(InputSource::MASTER_SHORT))
-                ->where('sub_step_id', '>', 3)
+                ->forInputSource($this->masterInputSource)
+                ->where('sub_step_id', '>', $subStepForRoofType->id)
                 ->count() <= 0;
 
         if ($exampleBuildingShouldOverrideUserData) {
+            Log::debug('Override user data with example building data.');
             ExampleBuildingService::apply(
                 $exampleBuilding,
-                //$this->building->buildingFeatures->build_year,
                 $buildYear,
                 $this->building,
-                $this->currentInputSource
+                $this->applyForInputSource
             );
         }
     }

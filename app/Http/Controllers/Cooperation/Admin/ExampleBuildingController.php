@@ -11,8 +11,10 @@ use App\Models\BuildingType;
 use App\Models\Cooperation;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
+use App\Models\Service;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class ExampleBuildingController extends Controller
 {
@@ -162,6 +164,16 @@ class ExampleBuildingController extends Controller
         $contentStructure['general-data']['interest'] = array_filter($contentStructure['general-data']['interest'], function ($key) {
             return false === stristr($key, 'user_interest');
         }, ARRAY_FILTER_USE_KEY);
+
+        // Remove total sun panels, we require the pv panels instead
+        $totalSolarPanels = Service::findByShort('total-sun-panels');
+        unset($contentStructure['general-data']['current-state']["service.{$totalSolarPanels->id}.extra.value"]);
+        // Remove general data considerables
+        foreach (($contentStructure['general-data']['interest'] ?? []) as $interestField => $interestData) {
+            if (Str::endsWith($interestField, 'is_considering')) {
+                unset($contentStructure['general-data']['interest'][$interestField]);
+            }
+        }
 
         return $contentStructure;
     }

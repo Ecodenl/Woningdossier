@@ -2,7 +2,7 @@
 
 @section('content')
 
-    {{-- THIS FILE ONLY GETS USED IN THE OLD SUB STEPS, so this file should not be used anymore and removed when the time is tipe  --}}
+    {{-- THIS FILE ONLY GETS USED IN THE OLD SUB STEPS, so this file should not be used anymore and removed when the time is ripe --}}
     <div class="container">
         <div class="row">
             <div class="col-md-12">

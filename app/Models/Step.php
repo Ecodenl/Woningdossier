@@ -82,7 +82,7 @@ class Step extends Model
     }
     public function nextQuickScan(): ?Step
     {
-        return Step::whereIn('short', ['building-data', 'usage-quick-scan', 'living-requirements', 'residential-status'])
+        return Step::quickScan()
             ->where('order', '>', $this->order)
             ->orderBy('order')
             ->first();
@@ -90,7 +90,7 @@ class Step extends Model
 
     public function previousQuickScan(): ?Step
     {
-        return Step::whereIn('short', ['building-data', 'usage-quick-scan', 'living-requirements', 'residential-status'])
+        return Step::quickScan()
             ->where('order', '<', $this->order)
             ->orderByDesc('order')
             ->first();

@@ -1356,6 +1356,8 @@ class ToolQuestionsTableSeeder extends Seeder
                         $toolQuestion = ToolQuestion::where('short', $questionData['short'])
                             ->first();
 
+                        // It might be attached, it might not. We detach to be safe.
+                        $subStep->toolQuestions()->detach($toolQuestion);
                         $subStep->toolQuestions()->attach($toolQuestion, ['order' => $orderForSubStepToolQuestions]);
 
                         if (isset($questionData['tool_question_custom_values'])) {

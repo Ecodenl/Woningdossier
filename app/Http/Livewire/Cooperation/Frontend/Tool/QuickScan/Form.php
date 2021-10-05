@@ -122,7 +122,7 @@ class Form extends Component
                         if ($this->toolQuestions->where('short', $condition['column'])->count() === 0) {
                             $otherSubStepToolQuestion = ToolQuestion::where('short', $condition['column'])->first();
                             if ($otherSubStepToolQuestion instanceof ToolQuestion) {
-                                $otherSubStepAnswer = $this->building->getAnswer($this->currentInputSource,
+                                $otherSubStepAnswer = $this->building->getAnswer($this->masterInputSource,
                                     $otherSubStepToolQuestion);
 
                                 $answers[$otherSubStepToolQuestion->short] = $otherSubStepAnswer;

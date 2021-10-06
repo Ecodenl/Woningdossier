@@ -50,11 +50,11 @@ $fallback = $content instanceof \App\Models\ExampleBuildingContent ? $content->b
             @foreach($dataForSubSteps as $subStep => $subStepData)
                 <?php $possibleSubStep = \App\Models\Step::findByShort($subStep); ?>
                 @if($possibleSubStep instanceof \App\Models\Step)
-                <tr>
-                    <td colspan="2">
-                        <h4>{{$possibleSubStep->name}}</h4>
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="2">
+                            <h4>{{$possibleSubStep->name}}</h4>
+                        </td>
+                    </tr>
                 @endif
                 @foreach($subStepData as $formFieldName => $rowData)
                     @if($formFieldName != 'calculations' )

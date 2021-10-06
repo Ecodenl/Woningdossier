@@ -154,7 +154,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
         // if this one is completed we wont override the user data with the example building data
         $nextSubStep = SubStep::where('order', '>', $subStepForRoofType->order)->orderBy('order')->first();
 
-        if ($this->building->completedSubSteps()->where('sub_step_id', $nextSubStep->id)->doesntExist()) {
+        if ($this->building->completedSubSteps()->forInputSource($this->masterInputSource)->where('sub_step_id', $nextSubStep->id)->doesntExist()) {
             Log::debug(__CLASS__. ' Override user data with example building data.');
             ExampleBuildingService::apply(
                 $exampleBuilding,

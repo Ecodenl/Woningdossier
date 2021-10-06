@@ -146,7 +146,45 @@ trait GetMyValuesTrait
 
     protected function deleteForMasterInputSource()
     {
+        // TODO: Since this is currently only for the building roof types, the full logic might not be complete!
 
+        $tablesToIgnore = [
+            'user_action_plan_advice_comments', 'step_comments',
+        ];
+
+        // Sometimes we won't need the master input source, so we will ignore these
+        if (! in_array($this->getTable(), $tablesToIgnore)) {
+            // When deleting a model (DB row), we need to find the corresponding master one, so we start with doing some
+            // similar things as within the save function
+            // TODO: Due to the similarities, maybe we can make this DRY?
+            $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
+
+            $wheres = [
+                'input_source_id' => $masterInputSource->id,
+            ];
+
+            $crucialRelationCombinationIds = [
+                'user_id', 'building_id', 'tool_question_id', 'tool_question_custom_value_id', 'element_id',
+                'service_id', 'hash', 'sub_step_id', 'short', 'step_id', 'interested_in_type', 'interested_in_id',
+                'considerable_id', 'considerable_type',
+            ];
+            $crucialRelationCombinationIds = array_merge($crucialRelationCombinationIds, $this->crucialRelations ?? []);
+
+            foreach ($crucialRelationCombinationIds as $crucialRelationCombinationId) {
+                if ($this->hasAttribute($crucialRelationCombinationId)) {
+                    $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
+                }
+            }
+
+            $modelToDelete = ($this)::withoutGlobalScope(VisibleScope::class)
+                ->allInputSources()
+                ->where($wheres)
+                ->first();
+
+            if ($modelToDelete instanceof static) {
+                $modelToDelete->delete();
+            }
+        }
     }
 
     /**

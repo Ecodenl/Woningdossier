@@ -130,7 +130,12 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             $this->building->exampleBuilding()->associate($exampleBuilding)->save();
         }
 
+        // more of a fallback
         $buildYear = $this->building->buildingFeatures()->forInputSource($this->masterInputSource)->first()->build_year;
+
+        if (array_key_exists('build_year', $this->changes)) {
+            $buildYear = $this->changes['build_year'];
+        }
 
         // manually trigger
         ExampleBuildingService::apply(

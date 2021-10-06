@@ -8,6 +8,7 @@ use App\Models\BuildingType;
 use App\Models\ExampleBuilding;
 use App\Models\ExampleBuildingContent;
 use App\Models\InputSource;
+use App\Models\SubStep;
 use App\Models\ToolQuestion;
 use App\Services\ExampleBuildingService;
 use Illuminate\Bus\Queueable;
@@ -46,9 +47,9 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
         $exampleBuilding = $this->getExampleBuildingIfChangeIsNeeded($this->changes);
 
         if ($exampleBuilding instanceof ExampleBuilding) {
-            Log::debug("Example building should be (re)applied!");
+            Log::debug(__CLASS__." Example building should be (re)applied!");
         } else {
-            Log::debug("No change in example building contents");
+            Log::debug(__CLASS__." No change in example building contents");
         }
 
         if ($exampleBuilding instanceof ExampleBuilding) {
@@ -115,7 +116,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
 
             }
         } else {
-            Log::debug("Building feature undefined, or build year not set for building {$this->building->id}");
+            Log::debug(__CLASS__." Building feature undefined, or build year not set for building {$this->building->id}");
         }
 
         return null;
@@ -125,7 +126,7 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
     {
         Log::debug(__METHOD__);
         if ($this->building->example_building_id !== $exampleBuilding->id) {
-            Log::debug("Example building ID changes (" . $this->building->example_building_id . " -> " . $exampleBuilding->id . ")");
+            Log::debug(__CLASS__." Example building ID changes (" . $this->building->example_building_id . " -> " . $exampleBuilding->id . ")");
             // change example building, let the observer do the rest
             $this->building->exampleBuilding()->associate($exampleBuilding)->save();
         }
@@ -144,17 +145,17 @@ class ApplyExampleBuildingForChanges implements ShouldQueue
             $this->building
         );
 
-        $roofTypeToolQuestion = ToolQuestion::findByShort('roof-type');
-        // we need the first sub step that asks the roof type
-        $subStepForRoofType = $roofTypeToolQuestion->subSteps()->orderBy('order')->first();;
-        $exampleBuildingShouldOverrideUserData = $this->building
-                ->completedSubSteps()
-                ->forInputSource($this->masterInputSource)
-                ->where('sub_step_id', '>', $subStepForRoofType->id)
-                ->count() <= 0;
+        $buildYearToolQuestion = ToolQuestion::findByShort('build-year');
+        // get the sub step of the build year, that way we can get the next sub step for it
+        // if the next sub step is completed we wont override the user his data with example building
+        $subStepForRoofType = $buildYearToolQuestion->subSteps()->orderBy('order')->first();
 
-        if ($exampleBuildingShouldOverrideUserData) {
-            Log::debug('Override user data with example building data.');
+        // the sub step that comes after the build year question sub step
+        // if this one is completed we wont override the user data with the example building data
+        $nextSubStep = SubStep::where('order', '>', $subStepForRoofType->order)->orderBy('order')->first();
+
+        if ($this->building->completedSubSteps()->where('sub_step_id', $nextSubStep->id)->doesntExist()) {
+            Log::debug(__CLASS__. ' Override user data with example building data.');
             ExampleBuildingService::apply(
                 $exampleBuilding,
                 $buildYear,

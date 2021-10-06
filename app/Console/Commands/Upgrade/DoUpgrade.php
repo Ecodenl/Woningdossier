@@ -2,10 +2,8 @@
 
 namespace App\Console\Commands\Upgrade;
 
-use App\Console\Commands\AddQuestionsToDatabase;
 use App\Console\Commands\ConvertUuidTranslationsToJson;
 use App\Models\Account;
-use App\Models\BuildingTypeCategory;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 

@@ -12,6 +12,11 @@
                     @lang('cooperation/auth/verify.success-log-in')
                 @endcomponent
             @endif
+            @if(session('success'))
+                @component('cooperation.frontend.layouts.parts.alert', ['color' => 'blue-800'])
+                    {{session('success')}}
+                @endcomponent
+            @endif
             @if(session('status'))
                 @component('cooperation.frontend.layouts.parts.alert', ['color' => 'green'])
                     {{ session('status') }}

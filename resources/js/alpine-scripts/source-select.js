@@ -22,6 +22,7 @@ export default (inputSource = 'no-match') => ({
         let children = this.$refs['source-select-options'].children;
 
         let masterAnswers = [];
+        let indexes = [];
 
         // If there's no children, then there's no answers
         if (children.length === 0) {
@@ -42,14 +43,24 @@ export default (inputSource = 'no-match') => ({
                 } else if (short === 'master') {
                     // TODO: Remove this when the tool is logical again
                     masterAnswers.push(children[i].getAttribute('data-input-value'));
-                    children[i].remove();
-
-                    if (children.length === 0) {
-                        this.disabled = true;
-                        inputSource = null;
-                    }
+                    indexes.push(i);
                 }
             }
+        }
+
+        // There might be masterAnswers that need to be removed
+        if (indexes.length > 0) {
+            // We reverse the indexes. If we remove from top to bottom, the index count isn't correct anymore
+            // Javascript HTML collections update immediately
+            indexes.reverse();
+            indexes.forEach(index => {
+                children[index].remove();
+
+                if (children.length === 0) {
+                    this.disabled = true;
+                    inputSource = null;
+                }
+            });
         }
 
         // Fetch related input group

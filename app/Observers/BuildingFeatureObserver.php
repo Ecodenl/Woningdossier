@@ -26,10 +26,10 @@ class BuildingFeatureObserver
         if ($buildingFeature->isDirty('roof_type_id') && $buildingFeature->input_source_id != $masterInputSource->id) {
             if (($building = $buildingFeature->building) instanceof Building) {
                 if (($primaryRoofType = $buildingFeature->roofType) instanceof RoofType) {
-                    $secondaryRoofTypes = $building->roofTypes;
+                    $currentInputSource = HoomdossierSession::getInputSource(true);
+                    $secondaryRoofTypes = $building->roofTypes()->forInputSource($currentInputSource)->get();
 
                     if (($roofTypeToLink = RoofType::findByShort(RoofType::PRIMARY_TO_SECONDARY_MAP[$primaryRoofType->short])) instanceof RoofType) {
-                        $currentInputSource = HoomdossierSession::getInputSource(true);
                         $shouldCreate = false;
 
                         if ($secondaryRoofTypes->count() === 0) {
@@ -63,7 +63,9 @@ class BuildingFeatureObserver
                                     ->save();
                             } else {
                                 // No example building data, we just built a new one
-                                $building->roofTypes()->create(['roof_type_id' => $roofTypeToLink->id]);
+                                $building->roofTypes()->create([
+                                    'roof_type_id' => $roofTypeToLink->id, 'input_source_id' => $currentInputSource->id
+                                ]);
                             }
                         }
                     }
@@ -72,8 +74,12 @@ class BuildingFeatureObserver
         }
     }
 
-    // I am just here to tell you this is not a good place for putting
-    // example building change detection as this will trigger an infinite loop.
+    ####################
+    ##
+    ## I am just here to tell you this is not a good place for putting
+    ## example building change detection as this will trigger an infinite loop.
+    ##
+    ####################
 
 //    public function saved(BuildingFeature $buildingFeature)
 //    {

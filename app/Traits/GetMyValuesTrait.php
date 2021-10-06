@@ -34,8 +34,6 @@ trait GetMyValuesTrait
         static::saved(function (Model $model) {
             // might be handy to prevent getting into an infinite loop (-:>
             if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING])) {
-                \Log::debug("SAVING");
-                \Log::debug($model);
                 $model->saveForMasterInputSource();
             }
         });
@@ -45,8 +43,6 @@ trait GetMyValuesTrait
             if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING])) {
                 // TODO: This needs to work for all models, but for now there's only time to make roof types work
                 if ($model instanceof BuildingRoofType) {
-                    \Log::debug("DELETING");
-                    \Log::debug($model);
                     $model->deleteForMasterInputSource();
                 }
             }
@@ -184,8 +180,6 @@ trait GetMyValuesTrait
                 ->first();
 
             if ($modelToDelete instanceof static) {
-                \Log::debug($modelToDelete);
-
                 $modelToDelete->delete();
             }
         }

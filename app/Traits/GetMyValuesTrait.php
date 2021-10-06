@@ -76,8 +76,9 @@ trait GetMyValuesTrait
             ];
 
             $crucialRelationCombinationIds = [
-                'user_id', 'building_id', 'tool_question_id', 'tool_question_custom_value_id', 'element_id', 'service_id',
-                'hash', 'sub_step_id', 'short', 'step_id', 'interested_in_type', 'interested_in_id', 'considerable_id', 'considerable_type'
+                'user_id', 'building_id', 'tool_question_id', 'tool_question_custom_value_id', 'element_id',
+                'service_id', 'hash', 'sub_step_id', 'short', 'step_id', 'interested_in_type', 'interested_in_id',
+                'considerable_id', 'considerable_type', 'building_roof_types.roof_type_id',
             ];
             $crucialRelationCombinationIds = array_merge($crucialRelationCombinationIds, $this->crucialRelations ?? []);
 
@@ -102,19 +103,27 @@ trait GetMyValuesTrait
             }
 
             foreach ($crucialRelationCombinationIds as $crucialRelationCombinationId) {
-                if ($this->hasAttribute($crucialRelationCombinationId)) {
-                    $shouldAdd = $crucialRelationCombinationId !== 'tool_question_custom_value_id';
+                // So sometimes, crucial relations are only on a specific table. Multiple tables can have the same
+                // column, but it will only be relevant for one table
+                $tableAndColumn = explode('.', $crucialRelationCombinationId);
+                $crucialRelationCombinationId = count($tableAndColumn) === 1 ? $tableAndColumn[0] : $tableAndColumn[1];
 
-                    if (! $shouldAdd) {
-                        // Conditional logic, tool_question_custom_value_id should only be evaluated if the
-                        // question is a checkbox
-                        if (! empty($data['tool_question_id']) && ($toolQuestion = ToolQuestion::find($data['tool_question_id'])) instanceof ToolQuestion) {
-                            $shouldAdd = $toolQuestion->toolQuestionType->short === 'checkbox-icon';
+                // If count is 1, then there's no table, else we check if the table match
+                if (count($tableAndColumn) === 1 || $this->getTable() === $tableAndColumn[0]) {
+                    if ($this->hasAttribute($crucialRelationCombinationId)) {
+                        $shouldAdd = $crucialRelationCombinationId !== 'tool_question_custom_value_id';
+
+                        if (! $shouldAdd) {
+                            // Conditional logic, tool_question_custom_value_id should only be evaluated if the
+                            // question is a checkbox
+                            if (! empty($data['tool_question_id']) && ($toolQuestion = ToolQuestion::find($data['tool_question_id'])) instanceof ToolQuestion) {
+                                $shouldAdd = $toolQuestion->toolQuestionType->short === 'checkbox-icon';
+                            }
                         }
-                    }
 
-                    if ($shouldAdd) {
-                        $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
+                        if ($shouldAdd) {
+                            $wheres[$crucialRelationCombinationId] = $this->getAttributeValue($crucialRelationCombinationId);
+                        }
                     }
                 }
             }

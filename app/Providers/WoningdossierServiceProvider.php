@@ -17,6 +17,7 @@ use App\Models\Translation;
 use App\Models\User;
 use App\Models\UserActionPlanAdvice;
 use App\Observers\AccountObserver;
+use App\Observers\BuildingFeatureObserver;
 use App\Observers\BuildingObserver;
 use App\Observers\CompletedSubStepObserver;
 use App\Observers\CooperationObserver;
@@ -47,7 +48,7 @@ class WoningdossierServiceProvider extends ServiceProvider
         UserActionPlanAdvice::observe(UserActionPlanAdviceObserver::class);
         PrivateMessageView::observe(PrivateMessageViewObserver::class);
         Building::observe(BuildingObserver::class);
-        //BuildingFeature::observe(BuildingFeatureObserver::class);
+        BuildingFeature::observe(BuildingFeatureObserver::class);
         User::observe(UserObserver::class);
         Account::observe(AccountObserver::class);
         Translation::observe(TranslationObserver::class);

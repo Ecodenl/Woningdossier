@@ -12,6 +12,7 @@ use App\Models\CompletedSubStep;
 use App\Models\Cooperation;
 use App\Models\PrivateMessage;
 use App\Models\PrivateMessageView;
+use App\Models\QuestionsAnswer;
 use App\Models\Step;
 use App\Models\Translation;
 use App\Models\User;
@@ -24,9 +25,11 @@ use App\Observers\CooperationObserver;
 use App\Observers\PrivateMessageObserver;
 use App\Observers\PrivateMessageViewObserver;
 use App\Observers\StepObserver;
+use App\Observers\ToolQuestionAnswerObserver;
 use App\Observers\TranslationObserver;
 use App\Observers\UserActionPlanAdviceObserver;
 use App\Observers\UserObserver;
+use App\Models\ToolQuestionAnswer;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
@@ -53,6 +56,9 @@ class WoningdossierServiceProvider extends ServiceProvider
         Account::observe(AccountObserver::class);
         Translation::observe(TranslationObserver::class);
         CompletedSubStep::observe(CompletedSubStepObserver::class);
+
+        ToolQuestionAnswer::observe(ToolQuestionAnswerObserver::class);
+
 
         View::creator('cooperation.tool.*', ToolComposer::class);
         View::creator('*', CooperationComposer::class);

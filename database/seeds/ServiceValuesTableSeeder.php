@@ -33,6 +33,9 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 1,
                         'calculate_value' => 1,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -40,6 +43,9 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 2,
                         'calculate_value' => 2,
+                        'configurations' => [
+                            'comfort' => 3,
+                        ],
                     ],
                     [
                         'value' => [
@@ -47,6 +53,9 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 3,
                         'calculate_value' => 3,
+                        'configurations' => [
+                            'comfort' => 3,
+                        ],
                     ],
                     [
                         'value' => [
@@ -54,6 +63,9 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 4,
                         'calculate_value' => 4,
+                        'configurations' => [
+                            'comfort' => 2,
+                        ],
                     ],
                     [
                         'value' => [
@@ -61,6 +73,9 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 5,
                         'calculate_value' => 5,
+                        'configurations' => [
+                            'comfort' => 2,
+                        ],
                     ],
                 ],
             ],
@@ -84,6 +99,9 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 1,
                         'calculate_value' => 1,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -91,6 +109,9 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 2,
                         'calculate_value' => 2,
+                        'configurations' => [
+                            'comfort' => 3,
+                        ],
                     ],
                     [
                         'value' => [
@@ -98,6 +119,9 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 3,
                         'calculate_value' => 3,
+                        'configurations' => [
+                            'comfort' => 1,
+                        ],
                     ],
                     [
                         'value' => [
@@ -105,10 +129,14 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 4,
                         'calculate_value' => 4,
+                        'configurations' => [
+                            'comfort' => 3,
+                        ],
                     ],
                 ],
             ],
             [
+                ########## DEPRECATED ##########
                 'name' => [
                     'nl' => 'HR CV ketel',
                 ],
@@ -128,6 +156,9 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 1,
                         'calculate_value' => 1,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -135,6 +166,9 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 2,
                         'calculate_value' => 1,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -142,6 +176,9 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 3,
                         'calculate_value' => 2,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -149,6 +186,9 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 4,
                         'calculate_value' => 2,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -156,6 +196,9 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 2,
                         'calculate_value' => 5,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                 ],
             ],
@@ -180,6 +223,9 @@ class ServiceValuesTableSeeder extends Seeder
                         'order' => 1,
                         'calculate_value' => 1,
                         'is_default' => false,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -188,6 +234,9 @@ class ServiceValuesTableSeeder extends Seeder
                         'order' => 2,
                         'calculate_value' => 2,
                         'is_default' => false,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -196,6 +245,9 @@ class ServiceValuesTableSeeder extends Seeder
                         'order' => 3,
                         'calculate_value' => 3,
                         'is_default' => false,
+                        'configurations' => [
+                            'comfort' => 1,
+                        ],
                     ],
                     [
                         'value' => [
@@ -204,6 +256,9 @@ class ServiceValuesTableSeeder extends Seeder
                         'order' => 4,
                         'calculate_value' => 4,
                         'is_default' => false,
+                        'configurations' => [
+                            'comfort' => 2,
+                        ],
                     ],
                     [
                         'value' => [
@@ -212,6 +267,9 @@ class ServiceValuesTableSeeder extends Seeder
                         'order' => 5,
                         'calculate_value' => 5,
                         'is_default' => true,
+                        'configurations' => [
+                            'comfort' => 3,
+                        ],
                     ],
                 ],
             ],
@@ -234,6 +292,9 @@ class ServiceValuesTableSeeder extends Seeder
 //                        ],
 //                        'order' => 1,
 //                        'calculate_value' => 1,
+//                        'configurations' => [
+//                            'comfort' => 0,
+//                        ],
 //                    ],
 //                    [
 //                        'value' => [
@@ -264,6 +325,9 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 1,
                         'calculate_value' => 1,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -271,6 +335,9 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 2,
                         'calculate_value' => 2,
+                        'configurations' => [
+                            'comfort' => 1,
+                        ],
                     ],
                     [
                         'value' => [
@@ -278,6 +345,9 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 3,
                         'calculate_value' => 3,
+                        'configurations' => [
+                            'comfort' => 3,
+                        ],
                     ],
                     [
                         'value' => [
@@ -285,6 +355,9 @@ class ServiceValuesTableSeeder extends Seeder
                         ],
                         'order' => 4,
                         'calculate_value' => 4,
+                        'configurations' => [
+                            'comfort' => 3,
+                        ],
                     ],
                 ],
             ],
@@ -395,21 +468,30 @@ class ServiceValuesTableSeeder extends Seeder
                 ->where("name->{$typeLocale}", $typeValue)
                 ->first();
 
-            if ($serviceType instanceof \stdClass) {
-                $serviceId = \DB::table('services')->insertGetId([
-                    'name' => json_encode($service['name']),
-                    'short' => $service['short'],
-                    'service_type_id' => $serviceType->id,
-                    'order' => $service['order'],
-                    'info' => json_encode($service['info']),
-                ]);
+            if ($serviceType instanceof stdClass) {
+                $dbService = DB::table('services')->where('short', $service['short'])->first();
+
+                if (! $dbService instanceof stdClass) {
+                    $serviceId = DB::table('services')->insertGetId([
+                        'name' => json_encode($service['name']),
+                        'short' => $service['short'],
+                        'service_type_id' => $serviceType->id,
+                        'order' => $service['order'],
+                        'info' => json_encode($service['info']),
+                    ]);
+                } else {
+                    $serviceId = $dbService->id;
+                }
 
                 foreach ($service['service_values'] as $serviceValue) {
-                    DB::table('service_values')->insert([
+                    DB::table('service_values')->updateOrInsert([
                         'service_id' => $serviceId,
-                        'value' => json_encode($serviceValue['value']),
+                        'calculate_value' => ($serviceValue['calculate_value'] ?? null),
                         'order' => $serviceValue['order'],
-                        'calculate_value' => isset($serviceValue['calculate_value']) ? $serviceValue['calculate_value'] : null,
+
+                    ], [
+                        'value' => json_encode($serviceValue['value']),
+                        'configurations' => json_encode($serviceValue['configurations']),
                         'is_default' => $serviceValue['is_default'] ?? false,
                     ]);
                 }

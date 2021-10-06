@@ -1,9 +1,7 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
-use App\Models\ToolQuestion;
-use App\Models\ToolQuestionCustomValue;
 use App\Traits\GetMyValuesTrait;
 use App\Traits\GetValueTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +14,11 @@ class ToolQuestionAnswer extends Model
     protected $fillable = [
         'building_id', 'input_source_id', 'tool_question_id', 'tool_question_custom_value_id', 'answer',
     ];
+
+    public function building(): BelongsTo
+    {
+        return $this->belongsTo(Building::class);
+    }
 
     public function toolQuestion(): BelongsTo
     {

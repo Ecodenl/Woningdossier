@@ -222,13 +222,15 @@ class RoofInsulationHelper extends ToolHelper
             $buildingFeatureData
         );
 
-        // we dont know which roof_type_id we will get, so we delete all the rows and create new ones.
-        ModelService::deleteAndCreate(BuildingRoofType::class,
+        // we don't know which roof_type_id we will get, so we delete all the rows and create new ones.
+        ModelService::deleteAndCreate(
+            BuildingRoofType::class,
             [
                 'building_id' => $this->building->id,
                 'input_source_id' => $this->inputSource->id,
             ],
-            $buildingRoofTypeCreateData
+            $buildingRoofTypeCreateData,
+            true
         );
 
         return $this;

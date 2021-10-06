@@ -269,7 +269,7 @@ class RoofInsulationHelper extends ToolHelper
         $this->setValues([
             'considerables' => [
                 $step->id => [
-                    'is_considerables' => $this->user->considers($step, $this->inputSource)
+                    'is_considering' => $this->user->considers($step, $this->inputSource)
                 ],
             ],
             'building_roof_types' => $buildingRoofTypesArray,

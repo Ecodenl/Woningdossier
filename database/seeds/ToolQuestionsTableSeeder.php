@@ -1387,6 +1387,16 @@ class ToolQuestionsTableSeeder extends Seeder
                         $insertData['options'] = empty($insertData['options']) ? null : json_encode($insertData['options']);
                         $insertData['validation'] = empty($insertData['validation']) ? null : json_encode($insertData['validation']);
 
+                        $toolQuestion = ToolQuestion::where('short', $questionData['short'])
+                            ->first();
+
+                        // We check if it exists already. Admins can change question names and help texts. We don't
+                        // want to override that
+                        if ($toolQuestion instanceof ToolQuestion) {
+                            $insertData['name'] = json_encode($toolQuestion->getTranslations('name'));
+                            $insertData['help_text'] = json_encode($toolQuestion->getTranslations('help_text'));
+                        }
+
                         // We can updateOrInsert this!
                         DB::table('tool_questions')->updateOrInsert([
                             'short' => $questionData['short'],

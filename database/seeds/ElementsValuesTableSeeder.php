@@ -32,24 +32,36 @@ class ElementsValuesTableSeeder extends Seeder
                             'nl' => 'Enkelglas',
                         ],
                         'order' => 0,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
                             'nl' => 'Dubbelglas',
                         ],
                         'order' => 1,
+                        'configurations' => [
+                            'comfort' => 3,
+                        ],
                     ],
                     [
                         'value' => [
                             'nl' => 'HR++ glas',
                         ],
                         'order' => 2,
+                        'configurations' => [
+                            'comfort' => 5,
+                        ],
                     ],
                     [
                         'value' => [
                             'nl' => 'Drievoudige beglazing',
                         ],
                         'order' => 3,
+                        'configurations' => [
+                            'comfort' => 5,
+                        ],
                     ],
                 ],
             ],
@@ -72,24 +84,36 @@ class ElementsValuesTableSeeder extends Seeder
                             'nl' => 'Enkelglas',
                         ],
                         'order' => 0,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
                             'nl' => 'Dubbelglas',
                         ],
                         'order' => 1,
+                        'configurations' => [
+                            'comfort' => 3,
+                        ],
                     ],
                     [
                         'value' => [
                             'nl' => 'HR++ glas',
                         ],
                         'order' => 2,
+                        'configurations' => [
+                            'comfort' => 5,
+                        ],
                     ],
                     [
                         'value' => [
                             'nl' => 'Drievoudige beglazing',
                         ],
                         'order' => 3,
+                        'configurations' => [
+                            'comfort' => 5,
+                        ],
                     ],
                 ],
             ],
@@ -113,6 +137,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 0,
                         'calculate_value' => 1,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -120,6 +147,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 1,
                         'calculate_value' => 2,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -127,6 +157,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 2,
                         'calculate_value' => 3,
+                        'configurations' => [
+                            'comfort' => 3,
+                        ],
                     ],
                     [
                         'value' => [
@@ -134,6 +167,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 3,
                         'calculate_value' => 4,
+                        'configurations' => [
+                            'comfort' => 3,
+                        ],
                     ],
                     [
                         'value' => [
@@ -141,6 +177,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 5,
                         'calculate_value' => 5,
+                        'configurations' => [
+                            'comfort' => 5,
+                        ],
                     ],
                 ],
             ],
@@ -164,6 +203,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 0,
                         'calculate_value' => 1,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -171,6 +213,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 1,
                         'calculate_value' => 2,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -178,6 +223,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 2,
                         'calculate_value' => 3,
+                        'configurations' => [
+                            'comfort' => 3,
+                        ],
                     ],
                     [
                         'value' => [
@@ -185,6 +233,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 3,
                         'calculate_value' => 4,
+                        'configurations' => [
+                            'comfort' => 3,
+                        ],
                     ],
                     [
                         'value' => [
@@ -192,6 +243,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 4,
                         'calculate_value' => 5,
+                        'configurations' => [
+                            'comfort' => 5,
+                        ],
                     ],
                     [
                         'value' => [
@@ -199,6 +253,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 5,
                         'calculate_value' => 6,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                 ],
             ],
@@ -222,6 +279,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 0,
                         'calculate_value' => 1,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -229,6 +289,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 1,
                         'calculate_value' => 2,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -236,6 +299,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 2,
                         'calculate_value' => 3,
+                        'configurations' => [
+                            'comfort' => 3,
+                        ],
                     ],
                     [
                         'value' => [
@@ -243,6 +309,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 3,
                         'calculate_value' => 4,
+                        'configurations' => [
+                            'comfort' => 3,
+                        ],
                     ],
                     [
                         'value' => [
@@ -250,6 +319,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 4,
                         'calculate_value' => 5,
+                        'configurations' => [
+                            'comfort' => 5,
+                        ],
                     ],
                     [
                         'value' => [
@@ -257,6 +329,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 5,
                         'calculate_value' => 6,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                 ],
             ],
@@ -280,6 +355,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 0,
                         'calculate_value' => 1,
+                        'configurations' => [
+                            'comfort' => 3,
+                        ],
                     ],
                     [
                         'value' => [
@@ -287,6 +365,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 1,
                         'calculate_value' => 2,
+                        'configurations' => [
+                            'comfort' => 1,
+                        ],
                     ],
                     [
                         'value' => [
@@ -294,6 +375,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 2,
                         'calculate_value' => 3,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -301,6 +385,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 3,
                         'calculate_value' => 4,
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                 ],
             ],
@@ -324,6 +411,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 0,
                         'calculate_value' => 1, // 100%
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -331,6 +421,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 1,
                         'calculate_value' => 0.7, // 70%
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -338,6 +431,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 2,
                         'calculate_value' => 0.3, // 30%
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -345,6 +441,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 3,
                         'calculate_value' => 0, // 0%
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -352,6 +451,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 4,
                         'calculate_value' => 0, // 0%
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                 ],
             ],
@@ -375,6 +477,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 0,
                         'calculate_value' => 10, // m2
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -382,6 +487,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 1,
                         'calculate_value' => 2.5, // m2
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -389,6 +497,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 2,
                         'calculate_value' => 5, // m2
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                 ],
             ],
@@ -412,6 +523,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 0,
                         'calculate_value' => 45, // cm
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -419,6 +533,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 1,
                         'calculate_value' => 30, // m2
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -426,6 +543,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 2,
                         'calculate_value' => 0, // m2
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                     [
                         'value' => [
@@ -433,6 +553,9 @@ class ElementsValuesTableSeeder extends Seeder
                         ],
                         'order' => 3,
                         'calculate_value' => 0, // m2
+                        'configurations' => [
+                            'comfort' => 0,
+                        ],
                     ],
                 ],
             ],
@@ -448,20 +571,28 @@ class ElementsValuesTableSeeder extends Seeder
                 ->first();
 
             if ($serviceType instanceof \stdClass) {
-                $elementId = DB::table('elements')->insertGetId([
-                    'name' => json_encode($element['name']),
-                    'short' => $element['short'],
-                    'service_type_id' => $serviceType->id,
-                    'order' => $element['order'],
-                    'info' => json_encode($element['info']),
-                ]);
+                $dbElement = DB::table('elements')->where('short', $element['short'])->first();
+
+                if (! $dbElement instanceof stdClass) {
+                    $elementId = DB::table('elements')->insertGetId([
+                        'name' => json_encode($element['name']),
+                        'short' => $element['short'],
+                        'service_type_id' => $serviceType->id,
+                        'order' => $element['order'],
+                        'info' => json_encode($element['info']),
+                    ]);
+                } else {
+                    $elementId = $dbElement->id;
+                }
 
                 foreach ($element['element_values'] as $elementValue) {
-                    DB::table('element_values')->insert([
+                    DB::table('element_values')->updateOrInsert([
                         'element_id' => $elementId,
-                        'value' => json_encode($elementValue['value']),
-                        'order' => $elementValue['order'],
                         'calculate_value' => ($elementValue['calculate_value'] ?? null),
+                        'order' => $elementValue['order'],
+                    ], [
+                        'value' => json_encode($elementValue['value']),
+                        'configurations' => json_encode($elementValue['configurations']),
                     ]);
                 }
             }

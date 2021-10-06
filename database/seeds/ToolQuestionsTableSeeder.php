@@ -1,128 +1,69 @@
 <?php
 
-namespace App\Console\Commands;
-
 use App\Helpers\Conditions\Clause;
-use App\Helpers\KeyFigures\Heater\KeyFigures as HeaterKeyFigures;
-use App\Helpers\KeyFigures\PvPanels\KeyFigures as SolarPanelsKeyFigures;
 use App\Models\BuildingHeating;
-use App\Models\BuildingHeatingApplication;
 use App\Models\BuildingType;
 use App\Models\ComfortLevelTapWater;
 use App\Models\Element;
 use App\Models\EnergyLabel;
-use App\Models\FacadeDamagedPaintwork;
-use App\Models\FacadePlasteredSurface;
-use App\Models\FacadeSurface;
 use App\Models\InputSource;
-use App\Models\InsulatingGlazing;
-use App\Models\PaintworkStatus;
-use App\Models\RoofTileStatus;
 use App\Models\RoofType;
 use App\Models\Service;
 use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\SubStepTemplate;
-use App\Models\SubStepToolQuestion;
 use App\Models\ToolQuestion;
 use App\Models\ToolQuestionCustomValue;
 use App\Models\ToolQuestionType;
 use App\Models\ToolQuestionValuable;
-use App\Models\WoodRotStatus;
-use Illuminate\Console\Command;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
-class AddQuestionsToDatabase extends Command
+class ToolQuestionsTableSeeder extends Seeder
 {
     /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'questions:to-database';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Adds all questions to the database';
-
-    /**
-     * Create a new command instance.
+     * Run the database seeds.
      *
      * @return void
      */
-    public function __construct()
+    public function run()
     {
-        parent::__construct();
-    }
+        // NOTE: This also seeds sub steps, tool question custom values and tool question valuables!
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
-    {
-        Schema::disableForeignKeyConstraints();
-        // TODO: Shouldn't this truncate sub steps too?
-        // TODO: And really, shouldn't this be an updateOrCreate?
-        SubStep::truncate();
-        SubStepToolQuestion::truncate();
-        ToolQuestionValuable::truncate();
-        ToolQuestion::truncate();
-        ToolQuestionCustomValue::truncate();
-        Schema::enableForeignKeyConstraints();
+        // First, we need to fetch all relevant models for the tool questions
+
         // General data - Elements (that are not queried later on step basis)
         $livingRoomsWindows = Element::findByShort('living-rooms-windows');
         $sleepingRoomsWindows = Element::findByShort('sleeping-rooms-windows');
         // General data - Services (that are not queried later on step basis)
         $heatPump = Service::findByShort('heat-pump');
         $ventilation = Service::findByShort('house-ventilation');
-        $buildingHeatingApplications = BuildingHeatingApplication::orderBy('order')->get();
 
         // Wall insulation
         $wallInsulation = Element::findByShort('wall-insulation');
-        $facadeDamages = FacadeDamagedPaintwork::orderBy('order')->get();
-        $surfaces = FacadeSurface::orderBy('order')->get();
-        $facadePlasteredSurfaces = FacadePlasteredSurface::orderBy('order')->get();
         $energyLabels = EnergyLabel::ordered()->get();
         $comfortLevelsTapWater = ComfortLevelTapWater::where('calculate_value', '<=', 3)->get();
 
         // Insulated glazing
-        $insulatedGlazings = InsulatingGlazing::all();
         $heatings = BuildingHeating::all();
         $crackSealing = Element::findByShort('crack-sealing');
-        $frames = Element::findByShort('frames');
-        $woodElements = Element::findByShort('wood-elements');
-        $paintworkStatuses = PaintworkStatus::orderBy('order')->get();
-        $woodRotStatuses = WoodRotStatus::orderBy('order')->get();
 
         // High efficiency boiler
         $boiler = Service::findByShort('boiler');
 
         // Solar panels
         $solarPanels = Service::findByShort('total-sun-panels');
-        $solarPanelsOptionsPeakPower = ['' => '-'] + SolarPanelsKeyFigures::getPeakPowers();
-        $solarPanelsOptionsAngle = ['' => '-'] + SolarPanelsKeyFigures::getAngles();
 
         $heater = Service::findByShort('sun-boiler');
-        $heaterOptionsAngle = ['' => '-'] + HeaterKeyFigures::getAngles();
-
 
         // Floor insulation
-        /** @var Element $floorInsulation */
         $floorInsulation = Element::findByShort('floor-insulation');
-        $crawlspace = Element::findByShort('crawlspace');
 
         // Roof insulation
         $roofInsulation = Element::findByShort('roof-insulation');
         $roofTypes = RoofType::orderBy('order')->get();
-        $roofTileStatuses = RoofTileStatus::orderBy('order')->get();
         $buildingTypes = BuildingType::all();
         $checkboxIconType = ToolQuestionType::findByShort('checkbox-icon');
         $radioIconType = ToolQuestionType::findByShort('radio-icon');
@@ -133,15 +74,18 @@ class AddQuestionsToDatabase extends Command
         $textareaType = ToolQuestionType::findByShort('textarea');
         $measurePriorityType = ToolQuestionType::findByShort('rating-slider');
 
+        // Input sources
         $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
         $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
 
+        // Templates
         $templateDefault = SubStepTemplate::findByShort('template-default');
         $template2rows1top2bottom = SubStepTemplate::findByShort('template-2-rows-1-top-2-bottom');
         $template2rows3top1bottom = SubStepTemplate::findByShort('template-2-rows-3-top-1-bottom');
         $templateCustomChanges = SubStepTemplate::findByShort('template-custom-changes');
         $templateSummary = SubStepTemplate::findByShort('template-summary');
 
+        // Quick scan steps
         $stepBuildingData = Step::findByShort('building-data');
         $stepUsageQuickScan = Step::findByShort('usage-quick-scan');
         $stepLivingRequirements = Step::findByShort('living-requirements');
@@ -1334,68 +1278,114 @@ class AddQuestionsToDatabase extends Command
                 ],
             ],
         ];
+
         foreach ($structure as $stepShort => $subQuestions) {
-            $this->info("Adding questions to {$stepShort}..     ");
             $step = Step::findByShort($stepShort);
             $orderForSubQuestions = 0;
+
             foreach ($subQuestions as $subQuestionName => $subQuestionData) {
+                $names = ['nl' => $subQuestionName];
+                $slugs = ['nl' => Str::slug($subQuestionName)];
 
                 $subStepData = [
-                    'name' => ['nl' => $subQuestionName],
+                    'name' => $names,
                     'order' =>  $orderForSubQuestions,
-                    'slug' => ['nl' => Str::slug($subQuestionName)],
+                    'slug' => $slugs,
                     'step_id' => $step->id,
                     'sub_step_template_id' => $subQuestionData['sub_step_template_id'],
                 ];
 
                 if (isset($subQuestionData['conditions'])) {
-                    $subStepData['conditions'] = $subQuestionData['conditions'];
+                    $subStepData['conditions'] = json_encode($subQuestionData['conditions']);
                 }
 
-                $subStep = SubStep::create($subStepData);
+                $subStep = SubStep::where('slug->nl', $slugs['nl'])
+                    ->where('step_id', $subStepData['step_id'])
+                    ->first();
+
+                // Usually we do an updateOrInsert, but since we have to use a JSON column to compare, we can't use
+                // it. The query builder won't properly handle unencoded JSON, but we need unencoded JSON to
+                // compare. We will not do an update in this seeder
+                if (! $subStep instanceof SubStep) {
+                    $subStepData['name'] = json_encode($names);
+                    $subStepData['slug'] = json_encode($slugs);
+
+                    DB::table('sub_steps')->insert($subStepData);
+
+                    // Fetch again
+                    $subStep = SubStep::where('slug->nl', $slugs['nl'])
+                        ->where('step_id', $subStepData['step_id'])
+                        ->first();
+                }
 
                 if (isset($subQuestionData['questions'])) {
                     $orderForSubStepToolQuestions = 0;
                     foreach ($subQuestionData['questions'] as $questionData) {
-                        // create the question itself
+                        // Create the question itself
 
                         // Translation can be a key or text. We compare the results, because if it's a key, then the
                         // result will be different
                         $translation = $questionData['translation'];
-                        $name = __($translation . '.title');
-                        $name = $name === $translation . '.title' ? $translation : $name;
-                        $help = __($questionData['translation'] . '.help');
-                        $help = $help === $translation . '.help' ? $translation : $help;
-
                         $questionData['name'] = [
-                            'nl' => $name,
+                            'nl' => \App\Helpers\Translation::hasTranslation($translation . '.title')
+                                ? __($translation . '.title') : $translation,
                         ];
                         $questionData['help_text'] = [
-                            'nl' => $help,
+                            'nl' => \App\Helpers\Translation::hasTranslation($translation . '.help')
+                                ? __($translation . '.help') : $translation,
                         ];
 
-                        /** @var ToolQuestion $toolQuestion */
-                        $toolQuestion = ToolQuestion::create(
-                            Arr::except($questionData, ['tool_question_values', 'tool_question_custom_values', 'extra'])
-                        );
+                        $toolQuestion = ToolQuestion::where('short', $questionData['short'])
+                            ->first();
+
+                        // If it doesn't exist, we create it
+                        if (! $toolQuestion instanceof ToolQuestion) {
+                            $insertData = Arr::except($questionData,
+                                ['tool_question_values', 'tool_question_custom_values', 'extra', 'translation']);
+
+                            // Encode data for DB insert...
+                            $insertData['conditions'] = empty($insertData['conditions']) ? null : json_encode($insertData['conditions']);
+                            $insertData['name'] = json_encode($insertData['name']);
+                            $insertData['help_text'] = json_encode($insertData['help_text']);
+                            $insertData['placeholder'] = empty($insertData['placeholder']) ? null : json_encode($insertData['placeholder']);
+                            $insertData['options'] = empty($insertData['options']) ? null : json_encode($insertData['options']);
+                            $insertData['validation'] = empty($insertData['validation']) ? null : json_encode($insertData['validation']);
+
+                            DB::table('tool_questions')->insert($insertData);
+
+                            $toolQuestion = ToolQuestion::where('short', $questionData['short'])
+                                ->first();
+                        }
 
                         $subStep->toolQuestions()->attach($toolQuestion, ['order' => $orderForSubStepToolQuestions]);
 
                         if (isset($questionData['tool_question_custom_values'])) {
                             $toolQuestionCustomValueOrder = 0;
-                            foreach ($questionData['tool_question_custom_values'] as $value => $customValueData) {
+                            foreach ($questionData['tool_question_custom_values'] as $short => $customValueData) {
                                 $name = $customValueData['name'];
                                 $extra = $customValueData['extra'] ?? [];
-                                $toolQuestion->toolQuestionCustomValues()->create([
-                                    'order' => $toolQuestionCustomValueOrder,
-                                    'show' => true,
-                                    // so we will compare the short to determine what is what, but we will keep value for now
-                                    'short' => $value,
-                                    'name' => [
-                                        'nl' => $name,
-                                    ],
-                                    'extra' => $extra,
-                                ]);
+
+                                $toolQuestionCustomValue = ToolQuestionCustomValue::where('short',
+                                    $short)
+                                    ->where('tool_question_id', $toolQuestion->id)
+                                    ->first();
+
+                                if (! $toolQuestionCustomValue instanceof ToolQuestionCustomValue) {
+                                    $insertData = [
+                                        'tool_question_id' => $toolQuestion->id,
+                                        'order' => $toolQuestionCustomValueOrder,
+                                        'show' => true,
+                                        // so we will compare the short to determine what is what, but we will keep value for now
+                                        'short' => $short,
+                                        'name' => json_encode([
+                                            'nl' => $name,
+                                        ]),
+                                        'extra' => json_encode($extra),
+                                    ];
+
+                                    DB::table('tool_question_custom_values')->insert($insertData);
+                                }
+
                                 $toolQuestionCustomValueOrder++;
                             }
                         }
@@ -1408,20 +1398,29 @@ class AddQuestionsToDatabase extends Command
                                     $extraData = $extra['data'][$toolQuestionValue->{$extra['column']}];
                                 }
 
-                                $toolQuestion->toolQuestionValuables()->create([
-                                    'order' => $toolQuestionValueOrder,
-                                    'show' => true,
-                                    'tool_question_valuable_type' => get_class($toolQuestionValue),
-                                    'tool_question_valuable_id' => $toolQuestionValue->id,
-                                    // We grab the extra data by the set column (e.g. calculate_value)
-                                    'extra' => $extraData ?? $extra
-                                ]);
+                                $toolQuestionValuable = ToolQuestionValuable::where('order',
+                                    $toolQuestionValueOrder)
+                                    ->where('tool_question_id', $toolQuestion->id)
+                                    ->first();
+
+                                if (! $toolQuestionValuable instanceof ToolQuestionValuable) {
+                                    $insertData = [
+                                        'tool_question_id' => $toolQuestion->id,
+                                        'order' => $toolQuestionValueOrder,
+                                        'show' => true,
+                                        'tool_question_valuable_type' => get_class($toolQuestionValue),
+                                        'tool_question_valuable_id' => $toolQuestionValue->id,
+                                        // We grab the extra data by the set column (e.g. calculate_value)
+                                        'extra' => json_encode(($extraData ?? $extra)),
+                                    ];
+
+                                    DB::table('tool_question_valuables')->insert($insertData);
+                                }
                             }
                         }
                         $orderForSubStepToolQuestions++;
                     }
                 }
-
                 $orderForSubQuestions++;
             }
         }

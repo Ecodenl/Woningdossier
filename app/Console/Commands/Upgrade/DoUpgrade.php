@@ -71,9 +71,13 @@ class DoUpgrade extends Command
                 \EnergyLabelsTableSeeder::class,
                 \CooperationMeasureApplicationsTableSeeder::class,
                 \MeasureApplicationsTableSeeder::class,
-                // order is important, categories before types.
+                \ServiceValuesTableSeeder::class,
+                \ElementsValuesTableSeeder::class,
+                // Order is important, categories before types.
                 \BuildingTypeCategoriesTableSeeder::class,
                 \BuildingTypesTableSeeder::class,
+                // Always run ToolQuestions as last
+                \ToolQuestionsTableSeeder::class,
             ];
 
             foreach ($seeders as $seeder) {
@@ -82,9 +86,7 @@ class DoUpgrade extends Command
             }
 
             $afterCommands = [
-                AddQuestionsToDatabase::class,
                 UpdateDataAfterDBUpgrade::class, // last. changes data on the spot
-                AddConfigurations::class,
             ];
 
             foreach ($afterCommands as $command) {

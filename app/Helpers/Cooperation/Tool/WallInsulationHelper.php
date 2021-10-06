@@ -22,6 +22,7 @@ class WallInsulationHelper extends ToolHelper
     {
         $buildingFeature = $this->building->buildingFeatures()->forInputSource($this->inputSource)->first();
         $wallInsulationElement = Element::findByShort('wall-insulation');
+        $step = Step::findByShort('wall-insulation');
 
         $wallInsulationBuildingElement = $this->building
             ->buildingElements()
@@ -30,6 +31,11 @@ class WallInsulationHelper extends ToolHelper
             ->first();
 
         $this->setValues([
+            'considerables' => [
+                $step->id => [
+                    'is_considering' => $this->user->considers($step, $this->inputSource),
+                ],
+            ],
             'element' => [$wallInsulationElement->id => $wallInsulationBuildingElement->element_value_id ?? null],
             'building_features' => [
                 'cavity_wall' => $buildingFeature->cavity_wall ?? null,

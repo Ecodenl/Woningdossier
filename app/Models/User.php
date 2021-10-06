@@ -119,7 +119,7 @@ class User extends Model implements AuthorizableContract
         return $this->considerables($related->getMorphClass())->wherePivot('considerable_id', $related->id);
     }
 
-    public function considers(Model $model, InputSource $inputSource)
+    public function considers(Model $model, InputSource $inputSource): bool
     {
         $considerableModel =  $this->considerablesForModel($model)
             ->wherePivot('input_source_id', $inputSource->id)

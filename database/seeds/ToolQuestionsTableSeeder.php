@@ -3,6 +3,7 @@
 use App\Helpers\Conditions\Clause;
 use App\Models\BuildingHeating;
 use App\Models\BuildingType;
+use App\Models\BuildingTypeCategory;
 use App\Models\ComfortLevelTapWater;
 use App\Models\Element;
 use App\Models\EnergyLabel;
@@ -13,9 +14,7 @@ use App\Models\Step;
 use App\Models\SubStep;
 use App\Models\SubStepTemplate;
 use App\Models\ToolQuestion;
-use App\Models\ToolQuestionCustomValue;
 use App\Models\ToolQuestionType;
-use App\Models\ToolQuestionValuable;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -94,7 +93,48 @@ class ToolQuestionsTableSeeder extends Seeder
         $structure = [
             'building-data' => [
                 // sub step name
+                'Woning type' => [
+                    // question data
+                    'sub_step_template_id' => $templateDefault->id,
+                    'questions' => [
+                        [
+                            'validation' => ['required', 'exists:building_type_categories,id'],
+                            'short' => 'building-type-category',
+                            'translation' => 'Wat voor soort woning heeft u?',
+                            'tool_question_type_id' => $radioIconType->id,
+                            'tool_question_values' => BuildingTypeCategory::all(),
+                            'extra' => [
+                                'column' => 'short',
+                                'data' => [
+                                    'detached-house' => [
+                                        'icon' => 'icon-detached-house',
+                                    ],
+                                    '2-homes-under-1-roof' => [
+                                        'icon' => 'icon-two-under-one-roof',
+                                    ],
+                                    'corner-house' => [
+                                        'icon' => 'icon-end-of-terrace-house',
+                                    ],
+                                    'terraced-house' => [
+                                        'icon' => 'icon-mid-terrace-house',
+                                    ],
+                                    'apartment' => [
+                                        'icon' => 'icon-apartment-mid-floor-between',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
+                ],
                 'Wat voor woning' => [
+                    'conditions' => [
+                        [
+                            [
+                                'column' => 'fn',
+                                'value' => 'BuildingType',
+                            ],
+                        ],
+                    ],
                     // question data
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -102,7 +142,7 @@ class ToolQuestionsTableSeeder extends Seeder
                             'validation' => ['required', 'exists:building_types,id'],
                             'save_in' => 'building_features.building_type_id',
                             'short' => 'building-type',
-                            'translation' => 'cooperation/tool/general-data/building-characteristics.index.building-type',
+                            'translation' => "Wat voor soort :name heeft u",
                             'tool_question_type_id' => $radioIconType->id,
                             'tool_question_values' => $buildingTypes,
                             'extra' => [
@@ -121,10 +161,10 @@ class ToolQuestionsTableSeeder extends Seeder
                                         'icon' => 'icon-mid-terrace-house',
                                     ],
                                     6 => [
-                                        'icon' => 'icon-apartment-ground-floor-corner', // TODO: See below
+                                        'icon' => 'icon-apartment-ground-floor-corner',
                                     ],
                                     7 => [
-                                        'icon' => 'icon-apartment-ground-floor-between', // TODO: See below
+                                        'icon' => 'icon-apartment-ground-floor-between',
                                     ],
                                     8 => [
                                         'icon' => 'icon-upstairs-apartment-corner',
@@ -143,7 +183,6 @@ class ToolQuestionsTableSeeder extends Seeder
                         ],
                     ]
                 ],
-                // TODO: wat voor type appartement heeft u moet nog komen. Dit moet de vorige vraag aanpassen, gezien de vorige vraag de optie van het type appartement nu al aangeeft
                 'Wat voor dak' => [
                     'sub_step_template_id' => $templateDefault->id,
                     'questions' => [
@@ -1347,6 +1386,16 @@ class ToolQuestionsTableSeeder extends Seeder
                         $insertData['placeholder'] = empty($insertData['placeholder']) ? null : json_encode(['nl' => $insertData['placeholder']]);
                         $insertData['options'] = empty($insertData['options']) ? null : json_encode($insertData['options']);
                         $insertData['validation'] = empty($insertData['validation']) ? null : json_encode($insertData['validation']);
+
+                        $toolQuestion = ToolQuestion::where('short', $questionData['short'])
+                            ->first();
+
+                        // We check if it exists already. Admins can change question names and help texts. We don't
+                        // want to override that
+                        if ($toolQuestion instanceof ToolQuestion) {
+                            $insertData['name'] = json_encode($toolQuestion->getTranslations('name'));
+                            $insertData['help_text'] = json_encode($toolQuestion->getTranslations('help_text'));
+                        }
 
                         // We can updateOrInsert this!
                         DB::table('tool_questions')->updateOrInsert([

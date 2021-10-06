@@ -58,7 +58,7 @@ class ExampleBuildingService
             'Lookup '.$exampleBuilding->name.' for '.$buildYear." (".$inputSource->name.")"
         );
         $contents = $exampleBuilding->getContentForYear($buildYear);
-//        dd($exampleBuilding->name, $contents, $buildYear);
+
         if ( ! $contents instanceof ExampleBuildingContent) {
             // There's nothing to apply
             self::log('No data to apply');

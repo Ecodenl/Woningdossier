@@ -35,7 +35,7 @@ class ConditionEvaluator
     }
 
     /**
-     * @param  Building  $building
+     * @param Building $building
      *
      * @return $this
      */
@@ -47,7 +47,7 @@ class ConditionEvaluator
     }
 
     /**
-     * @param  InputSource  $inputSource
+     * @param InputSource $inputSource
      *
      * @return $this
      */
@@ -91,17 +91,17 @@ class ConditionEvaluator
                         '=',
                         $this->building->id
                     )
-                             ->where(
-                                 'input_source_id',
-                                 '=',
-                                 $this->inputSource->id
-                             )->first();
+                        ->where(
+                            'input_source_id',
+                            '=',
+                            $this->inputSource->id
+                        )->first();
                     $answer = $row->$column ?? null;
                 }
             } else {
                 // tool question short
                 $toolQuestion = ToolQuestion::findByShort($questionKey);
-                if ( ! $toolQuestion instanceof ToolQuestion) {
+                if (!$toolQuestion instanceof ToolQuestion) {
                     continue; // just skip this.
                 }
                 // in case of checkbox $answer is array
@@ -127,12 +127,9 @@ class ConditionEvaluator
         return $this->evaluateCollection($conditions, $answers);
     }
 
-    public function evaluateCollection(
-        array $conditions,
-        Collection $collection
-    ) {
+    public function evaluateCollection(array $conditions, Collection $collection)
+    {
         $result = false;
-
         foreach ($conditions as $andClause) {
             $result = $result || $this->evaluateAnd($andClause, $collection);
         }
@@ -140,34 +137,30 @@ class ConditionEvaluator
         return empty($conditions) || $result;
     }
 
-    protected function evaluateAnd(
-        array $clauses,
-        Collection $collection
-    ): bool {
+    protected function evaluateAnd(array $clauses, Collection $collection): bool
+    {
         $result = true;
 
-        if ($this->explain){
+        if ($this->explain) {
             Log::debug("evaluateAnd EXPLAIN Before: Result is " . ($result ? "true" : "false"));
         }
 
         foreach ($clauses as $clause) {
             $result = $result && $this->evaluateClause($clause, $collection);
-            if ($this->explain){
+            if ($this->explain) {
                 Log::debug("evaluateAnd EXPLAIN Between: Result is " . ($result ? "true" : "false"));
             }
         }
 
-        if ($this->explain){
+        if ($this->explain) {
             Log::debug("evaluateAnd EXPLAIN After: Result is " . ($result ? "true" : "false"));
         }
 
         return $result;
     }
 
-    protected function evaluateClause(
-        array $clause,
-        Collection $collection
-    ): bool {
+    protected function evaluateClause(array $clause, Collection $collection): bool
+    {
         extract($clause);
         $operator = $operator ?? '';
         /**
@@ -182,7 +175,7 @@ class ConditionEvaluator
                 $v = json_encode($v);
             }
             Log::debug(
-                "evaluateClause EXPLAIN: ".sprintf(
+                "evaluateClause EXPLAIN: " . sprintf(
                     '%s %s %s',
                     $column,
                     $operator,
@@ -193,7 +186,13 @@ class ConditionEvaluator
             Log::debug($collection);
         }
 
-        if ( ! $collection->has($column)) {
+        // first check if its a custom evaluator
+        if ($column == "fn") {
+            $customEvaluatorClass = "App\Helpers\Conditions\Evaluators\\{$value}";
+            return $customEvaluatorClass::evaluate($this->building, $this->inputSource);
+        }
+
+        if (!$collection->has($column)) {
             return false;
         }
         $values = $collection->get($column);
@@ -211,6 +210,7 @@ class ConditionEvaluator
             // values is plain value
             return $values == $value;
         }
+
         // values will *probably* (should..) be containing a single value
         switch ($operator) {
             case Clause::GT:

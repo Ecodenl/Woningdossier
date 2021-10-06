@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands\Upgrade;
 
-use App\Console\Commands\AddQuestionsToDatabase;
 use App\Console\Commands\ConvertUuidTranslationsToJson;
 use App\Models\Account;
 use Illuminate\Console\Command;
@@ -72,6 +71,10 @@ class DoUpgrade extends Command
                 \MeasureApplicationsTableSeeder::class,
                 \ServiceValuesTableSeeder::class,
                 \ElementsValuesTableSeeder::class,
+                // Order is important, categories before types.
+                \BuildingTypeCategoriesTableSeeder::class,
+                \BuildingTypesTableSeeder::class,
+                // Always run ToolQuestions as last
                 \ToolQuestionsTableSeeder::class,
             ];
 

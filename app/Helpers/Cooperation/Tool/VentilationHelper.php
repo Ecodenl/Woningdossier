@@ -43,7 +43,6 @@ class VentilationHelper extends ToolHelper
 
         foreach ($considerables as $considerableId => $considerableData) {
             $measureApplication = MeasureApplication::find($considerableId);
-            dd($this->considers($measureApplication), $measureApplication->id);
             if ($this->considers($measureApplication) && $measureApplication instanceof MeasureApplication) {
                 if ('crack-sealing' == $measureApplication->short) {
                     $actionPlanAdvice = new UserActionPlanAdvice($results['result']['crack_sealing'] ?? []);

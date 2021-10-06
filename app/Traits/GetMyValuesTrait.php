@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
 use App\Models\BuildingInsulatedGlazing;
+use App\Models\BuildingRoofType;
 use App\Models\CooperationMeasureApplication;
 use App\Models\CustomMeasureApplication;
 use App\Models\InputSource;
@@ -39,6 +40,13 @@ trait GetMyValuesTrait
             // might be handy to prevent getting into an infinite loop (-:>
             if (! in_array(($model->inputSource->short ?? ''), [InputSource::MASTER_SHORT, InputSource::EXAMPLE_BUILDING])) {
                 $model->saveForMasterInputSource();
+            }
+        });
+
+        static::deleting(function (Model $model) {
+            // TODO: This needs to work for all models, but for now there's only time to make roof types work
+            if ($model instanceof BuildingRoofType) {
+                $model->deleteForMasterInputSource();
             }
         });
     }
@@ -133,6 +141,11 @@ trait GetMyValuesTrait
                     $data,
                 );
         }
+
+    }
+
+    protected function deleteForMasterInputSource()
+    {
 
     }
 

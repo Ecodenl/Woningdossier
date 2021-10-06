@@ -448,12 +448,14 @@ class ExampleBuildingService
                     if ('building_roof_types' == $columnOrTable) {
                         foreach ($values as $roofTypeId => $buildingRoofTypeData) {
                             $buildingRoofTypeData['roof_type_id'] = $roofTypeId;
-
                             if (isset($buildingRoofTypeData['roof_surface']) && (int)$buildingRoofTypeData['roof_surface'] > 0) {
                                 $building->roofTypes()->forInputSource(
                                     $inputSource
                                 )->updateOrCreate(
-                                    ['input_source_id' => $inputSource->id],
+                                    [
+                                        'input_source_id' => $inputSource->id,
+                                        'roof_type_id' => $roofTypeId,
+                                    ],
                                     $buildingRoofTypeData
                                 );
 

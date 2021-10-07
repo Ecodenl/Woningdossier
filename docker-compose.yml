@@ -67,24 +67,6 @@ services:
     networks:
       - hoomdossier
 
-  composer:
-    build:
-      context: .
-      dockerfile: docker/composer.dockerfile
-      args:
-        - PHPUSER=${PHPUSER:-www-data}
-        - PHPGROUP=${PHPGROUP:-www-data}
-    container_name: hoomdossier_composer
-    volumes:
-      - ./:/var/www/html
-    working_dir: /var/www/html
-    depends_on:
-      - php
-    user: ${PHPUSER:-www-data}
-    entrypoint: ['composer', '--ignore-platform-reqs']
-    networks:
-      - hoomdossier
-
   npm:
     image: node:13.7
     container_name: hoomdossier_npm
@@ -96,23 +78,6 @@ services:
     working_dir: /var/www/html
 #    entrypoint: ['npm']
 #    Disable this, so it doesn't automatically run npm in this container, we run node here too
-    networks:
-      - hoomdossier
-
-  artisan:
-    build:
-      context: .
-      dockerfile: docker/php.dockerfile
-      args:
-        - PHPUSER=${PHPUSER:-www-data}
-        - PHPGROUP=${PHPGROUP:-www-data}
-    container_name: hoomdossier_artisan
-    volumes:
-      - ./:/var/www/html:delegated
-    depends_on:
-      - mysql
-    working_dir: /var/www/html
-    entrypoint: ['php', '/var/www/html/artisan']
     networks:
       - hoomdossier
 

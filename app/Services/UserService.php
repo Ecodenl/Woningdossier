@@ -76,8 +76,10 @@ class UserService
         Log::debug(__METHOD__ . " " . $user->id . " for input source " . $inputSource->short);
         // only remove the example building id from the building
         $building = $user->building;
-        $building->example_building_id = null;
-        $building->save();
+        $building->update([
+            'example_building_id' => null,
+            'has_answered_expert_question' => false,
+        ]);
 
         // delete the services from a building
         $building->buildingServices()->forInputSource($inputSource)->delete();
@@ -102,6 +104,8 @@ class UserService
         $building->stepComments()->forInputSource($inputSource)->delete();
         // remove the answers on the custom questionnaires
         $building->questionAnswers()->forInputSource($inputSource)->delete();
+        // remove Custom Measure Applications the user has made
+        $building->customMeasureApplications()->forInputSourrce($inputSource)->delete();
 
         // remove the action plan advices from the user
         $user->actionPlanAdvices()->forInputSource($inputSource)->delete();

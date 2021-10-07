@@ -23,6 +23,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PdfReport implements ShouldQueue
 {
@@ -122,12 +124,12 @@ class PdfReport implements ShouldQueue
             }
         }
 
-        // intersect the data, we dont need the data we wont show anyway
+        // intersect the data, we don't need the data we won't show anyway
         $activeOrderedStepShorts = $steps->pluck('short')->flip()->toArray();
         $reportData = array_intersect_key($reportData, $activeOrderedStepShorts);
 
         // steps that are considered to be measures.
-        $stepShorts = \DB::table('steps')
+        $stepShorts = DB::table('steps')
             ->where('short', '!=', 'general-data')
             ->select('short', 'id')
             ->get()
@@ -161,7 +163,7 @@ class PdfReport implements ShouldQueue
         ));
 
         // save the pdf report
-        \Storage::disk('downloads')->put($this->fileStorage->filename, $pdf->output());
+        Storage::disk('downloads')->put($this->fileStorage->filename, $pdf->output());
 
         $this->fileStorage->isProcessed();
     }

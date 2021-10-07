@@ -38,8 +38,8 @@ class DownloadPdf extends Component
         $this->isFileBeingProcessed = $fileType->isBeingProcessed();
         $this->fileStorage = $fileType->files()->forBuilding($user->building)->forInputSource($inputSource)->first();
 
-        // as this checks for file processing, there's a chance it isn't picked up by the queue
-        // so we check if it actually exisits
+        // as this checks for file processing, there's a chance it isn't picked up by the queue,
+        // so we check if it actually exists
         if ($this->fileStorage instanceof FileStorage) {
             $this->authorize('download', [$this->fileStorage, $user->building]);
         }

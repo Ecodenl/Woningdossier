@@ -17,19 +17,23 @@ class BuildingElementObserver
     {
         $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
-        $livingRoomsWindows = Element::findByShort('living-rooms-windows');
-        $sleepingRoomsWindows = Element::findByShort('sleeping-rooms-windows');
-
-        // Check if we need to manipulate the insulated glazings. There's 2 elements that are relevant, so we check
-        // if it's either of those elements, and then if the value is dirty, we can continue
+        // We need the building for both situations, so we check it first
         // We don't need to execute this if the building element is from the master source. That will be handled by the
         // getMyValuesTrait
-        if (($buildingElement->element_id === $livingRoomsWindows->id || $buildingElement->element_id === $sleepingRoomsWindows->id)
-            && $buildingElement->isDirty('element_value_id') && $buildingElement->input_source_id != $masterInputSource->id
+        if (($building = $buildingElement->building) instanceof Building
+            && $buildingElement->input_source_id != $masterInputSource->id
         ) {
-            if (($building = $buildingElement->building) instanceof Building) {
-                $currentInputSource = HoomdossierSession::getInputSource(true);
+            $currentInputSource = HoomdossierSession::getInputSource(true);
 
+            ## Insulating Glazing
+            $livingRoomsWindows = Element::findByShort('living-rooms-windows');
+            $sleepingRoomsWindows = Element::findByShort('sleeping-rooms-windows');
+
+            // Check if we need to manipulate the insulated glazings. There's 2 elements that are relevant, so we check
+            // if it's either of those elements, and then if the value is dirty, we can continue
+            if (($buildingElement->element_id === $livingRoomsWindows->id || $buildingElement->element_id === $sleepingRoomsWindows->id)
+                && $buildingElement->isDirty('element_value_id')
+            ) {
                 // Let's see which insulated glazing we need to apply
                 if (($elementValue = $buildingElement->elementValue) instanceof ElementValue) {
                     $comfort = $elementValue->configurations['comfort'] ?? 0;

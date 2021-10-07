@@ -280,7 +280,7 @@ trait GetMyValuesTrait
      */
     public function scopeResidentInput($query)
     {
-        $residentInputSource = InputSource::findByShort('resident');
+        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
 
         return $query->where('input_source_id', $residentInputSource->id);
     }
@@ -291,7 +291,7 @@ trait GetMyValuesTrait
      */
     public static function hasCoachInputSource(Collection $inputSourcesForMe): bool
     {
-        $coachInputSource = InputSource::findByShort('coach');
+        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
         if ($inputSourcesForMe->contains('input_source_id', $coachInputSource->id)) {
             return true;
         }
@@ -306,7 +306,7 @@ trait GetMyValuesTrait
      */
     public static function hasResidentInputSource(Collection $inputSourcesForMe): bool
     {
-        $residentInputSource = InputSource::findByShort('resident');
+        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
         if ($inputSourcesForMe->contains('input_source_id', $residentInputSource->id)) {
             return true;
         }
@@ -321,7 +321,7 @@ trait GetMyValuesTrait
      */
     public static function getCoachInput(Collection $inputSourcesForMe)
     {
-        $coachInputSource = InputSource::findByShort('coach');
+        $coachInputSource = InputSource::findByShort(InputSource::COACH_SHORT);
         if (self::hasCoachInputSource($inputSourcesForMe)) {
             return $inputSourcesForMe->where('input_source_id',
                 $coachInputSource->id)->first();
@@ -335,7 +335,7 @@ trait GetMyValuesTrait
      */
     public static function getResidentInput(Collection $inputSourcesForMe)
     {
-        $residentInputSource = InputSource::findByShort('resident');
+        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
 
         if (self::hasResidentInputSource($inputSourcesForMe)) {
             return $inputSourcesForMe->where('input_source_id',

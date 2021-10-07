@@ -73,7 +73,7 @@ class SuccessFullLoginListener
 
         // if there is only one role set for the user, and that role does not have an input source we will set it to resident.
         if (! $role->inputSource instanceof InputSource) {
-            $inputSource = InputSource::findByShort('resident');
+            $inputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
         }
 
         // set the required sessions

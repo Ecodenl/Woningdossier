@@ -63,6 +63,7 @@ return [
             'my-account' => 'Mijn account',
             'disclaimer' => 'Disclaimer',
             'privacy' => 'Privacy',
+            'help' => 'Help',
             'start' => 'Start',
         ],
         'admin' => [

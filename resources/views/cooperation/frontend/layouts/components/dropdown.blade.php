@@ -1,4 +1,4 @@
-<div x-data="dropdown({{$initiallyOpen ?? false}})" x-ref="dropdown-wrapper"
+<div x-data="dropdown(!! '{{$initiallyOpen ?? false}}')" x-ref="dropdown-wrapper"
      class="dropdown-wrapper w-inherit flex items-center">
     <a href="#" x-on:click="toggle()" x-ref="dropdown-toggle" class="dropdown-toggle select-none flex mr-1 {{$class ?? ''}}">
         {!! $label !!}

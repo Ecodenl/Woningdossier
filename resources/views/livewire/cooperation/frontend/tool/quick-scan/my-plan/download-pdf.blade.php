@@ -11,7 +11,7 @@
         <button class="btn btn-purple" type="button" @if($isFileBeingProcessed) disabled="disabled" @endif wire:click="generatePdf">
             <span class="w-full mx-1 flex justify-between items-center">
                 @if($isFileBeingProcessed)
-                <i class="icon-md icon-ventilation-fan animate-spin-slow"></i>
+                    <i class="icon-md icon-ventilation-fan animate-spin-slow"></i>
                     @lang('cooperation/frontend/tool.my-plan.file-is-processing')
                 @else
                     @lang('cooperation/frontend/tool.my-plan.create-report')

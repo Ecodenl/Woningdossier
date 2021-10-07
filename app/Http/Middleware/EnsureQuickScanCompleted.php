@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Helpers\HoomdossierSession;
 use App\Models\Building;
+use App\Models\InputSource;
 use App\Models\Step;
 use App\Models\SubStep;
 use Closure;
@@ -28,7 +29,7 @@ class EnsureQuickScanCompleted
         }
 
         if ($building instanceof Building) {
-            if ($building->hasCompletedQuickScan(HoomdossierSession::getInputSource(true))) {
+            if ($building->hasCompletedQuickScan(InputSource::findByShort(InputSource::MASTER_SHORT))) {
                 return $next($request);
             } else {
                 $firstIncompleteStep = $building->getFirstIncompleteStep();

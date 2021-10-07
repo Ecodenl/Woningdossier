@@ -86,7 +86,8 @@ class RegisterController extends Controller
     {
         // the case for a user that connect itself to a other cooperation
         if ($this->guard()->user()->hasVerifiedEmail()) {
-            return redirect(RoleHelper::getUrlByRole($this->guard()->user()->user()->roles()->first()))
+            $this->guard()->logout();
+            return redirect()->route('cooperation.auth.login')
                 ->with('success', __('auth.register.form.message.account-connected'));
         }
 

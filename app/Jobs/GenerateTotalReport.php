@@ -47,7 +47,7 @@ class GenerateTotalReport implements ShouldQueue
         }
 
         // temporary session to get the right data for the dumb.
-        $residentInputSource = InputSource::findByShort('resident');
+        $residentInputSource = InputSource::findByShort(InputSource::RESIDENT_SHORT);
 
         $rows = CsvService::totalReport($this->cooperation, $this->anonymizeData);
 

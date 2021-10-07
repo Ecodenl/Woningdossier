@@ -23,7 +23,7 @@ class HomeController extends Controller
     {
 
         $building = HoomdossierSession::getBuilding(true);
-        $masterInputSource = InputSource::findByShort('master');
+        $masterInputSource = InputSource::findByShort(InputSource::MASTER_SHORT);
 
         // If the quick scan is complete, we just redirect to my plan
         if ($building->hasCompletedQuickScan($masterInputSource)) {

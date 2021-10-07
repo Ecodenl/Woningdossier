@@ -108,21 +108,27 @@
 
             @component('cooperation.frontend.layouts.components.dropdown', ['label' => '<i class="icon-md icon-account-circle"></i>'])
                 <li>
-                    <a href="{{ route('cooperation.my-account.index', ['cooperation' => $cooperation]) }}"
+                    <a href="{{ route('cooperation.my-account.index', compact('cooperation')) }}"
                        class="in-text">
                         @lang('woningdossier.cooperation.navbar.my-account')
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('cooperation.privacy.index', ['cooperation' => $cooperation]) }}"
+                    <a href="{{ route('cooperation.privacy.index', compact('cooperation')) }}"
                        class="in-text">
                         @lang('woningdossier.cooperation.navbar.privacy')
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('cooperation.disclaimer.index', ['cooperation' => $cooperation]) }}"
+                    <a href="{{ route('cooperation.disclaimer.index', compact('cooperation')) }}"
                        class="in-text">
                         @lang('woningdossier.cooperation.navbar.disclaimer')
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('cooperation.frontend.help.index', compact('cooperation')) }}"
+                       class="in-text">
+                        @lang('woningdossier.cooperation.navbar.help')
                     </a>
                 </li>
 {{--                <li>--}}

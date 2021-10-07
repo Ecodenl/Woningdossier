@@ -105,7 +105,7 @@ class UserService
         // remove the answers on the custom questionnaires
         $building->questionAnswers()->forInputSource($inputSource)->delete();
         // remove Custom Measure Applications the user has made
-        $building->customMeasureApplications()->forInputSourrce($inputSource)->delete();
+        $building->customMeasureApplications()->forInputSource($inputSource)->delete();
 
         // remove the action plan advices from the user
         $user->actionPlanAdvices()->forInputSource($inputSource)->delete();

@@ -34984,6 +34984,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     // The input-group div that will hold all inputs
     inputGroup: null,
     init: function init() {
+      var _this = this;
+
       // This is almost the same as the default alpine select, but this dropdown will behave differently. Inputs
       // must still be given, but these will be the sources for each question.
       var select = this.$refs['source-select'];
@@ -34991,7 +34993,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       // Get children injected by PHP
 
       var children = this.$refs['source-select-options'].children;
-      var masterAnswers = []; // If there's no children, then there's no answers
+      var masterAnswers = [];
+      var indexes = []; // If there's no children, then there's no answers
 
       if (children.length === 0) {
         this.disabled = true;
@@ -35011,14 +35014,24 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
           } else if (_short === 'master') {
             // TODO: Remove this when the tool is logical again
             masterAnswers.push(children[i].getAttribute('data-input-value'));
-            children[i].remove();
-
-            if (children.length === 0) {
-              this.disabled = true;
-              inputSource = null;
-            }
+            indexes.push(i);
           }
         }
+      } // There might be masterAnswers that need to be removed
+
+
+      if (indexes.length > 0) {
+        // We reverse the indexes. If we remove from top to bottom, the index count isn't correct anymore
+        // Javascript HTML collections update immediately
+        indexes.reverse();
+        indexes.forEach(function (index) {
+          children[index].remove();
+
+          if (children.length === 0) {
+            _this.disabled = true;
+            inputSource = null;
+          }
+        });
       } // Fetch related input group
 
 

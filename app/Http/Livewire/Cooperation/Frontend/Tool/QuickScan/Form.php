@@ -453,7 +453,6 @@ class Form extends Component
         // which will trigger the observer, which will start applying the
         // example building, which will delete and recreate records, which will
         // trigger the observer.. ah well: you get the idea.
-        $exampleBuilding = null;
         if (in_array($table, ['building_features']) && in_array($column, ['build_year', 'building_type_id'])) {
             // set the boolean to the appropriate value. Example building will
             // be applied AFTER saving the current form (for getting the

@@ -21,14 +21,28 @@ class ModelService
      * Delete the records with the matching the attributes and create it with the given values
      *
      * @param $model
+     * @param  array  $attributes
+     * @param  array  $values
+     * @param  bool  $withEvents
      */
-    public static function deleteAndCreate($model, array $attributes, array $values)
+    public static function deleteAndCreate($model, array $attributes, array $values, bool $withEvents = false)
     {
         // make the model
         $model = new $model();
 
         // delete the old values
-        $model->where($attributes)->delete();
+        if ($withEvents) {
+            // Sometimes we need to trigger delete events on the model.
+            // We delete each model individually on Eloquent basis to trigger these, instead of deleting them in
+            // SQL directly.
+            $modelsToDelete = $model->where($attributes)->get();
+            foreach ($modelsToDelete as $modelToDelete) {
+                $modelToDelete->delete();
+            }
+        } else {
+            $model->where($attributes)->delete();
+        }
+
 
         // insert the data
         foreach ($values as $columnName => $newValues) {

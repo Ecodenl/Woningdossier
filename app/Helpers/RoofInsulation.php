@@ -10,27 +10,24 @@ class RoofInsulation
 {
     public static function getRoofTypeCategory(RoofType $roofType)
     {
-        if ($roofType->calculate_value <= 2) {
-            return 'pitched';
-        }
-        if ($roofType->calculate_value <= 4) {
-            return 'flat';
-        }
-
-        return '';
+        // With the new roof types, we cannot trust the calculate value anymore
+        // TODO: When roof types get updated, this might need to be changed again
+        $short = RoofType::PRIMARY_TO_SECONDARY_MAP[$roofType->short];
+        return $short === 'none' ? '' : $short;
     }
 
     public static function getRoofTypeSubCategory(RoofType $roofType)
     {
-        if (1 == $roofType->calculate_value) {
+        // TODO: As above, also check if this is correct
+        if ($roofType->short === 'pitched') {
             return 'tiles';
         }
-        if (2 == $roofType->calculate_value) {
+        if ($roofType->short === 'flat') {
             return 'bitumen';
         }
-        if (4 == $roofType->calculate_value) {
-            return 'zinc';
-        }
+//        if (4 == $roofType->calculate_value) {
+//            return 'zinc';
+//        }
 
         return '';
     }

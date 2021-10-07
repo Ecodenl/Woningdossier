@@ -36,9 +36,11 @@ class RoofInsulationHelper extends ToolHelper
 
         $oldAdvices = UserActionPlanAdviceService::clearForStep($this->user, $this->inputSource, $step);
 
+        // Loop all building roof types
         $roofTypeIds = $this->getValues('building_roof_type_ids');
         foreach ($roofTypeIds as $roofTypeId) {
             $roofType = RoofType::findOrFail($roofTypeId);
+            // Get category and potential sub category
             if ($roofType instanceof RoofType) {
                 $cat = RoofInsulation::getRoofTypeCategory($roofType);
                 // add as key to result array
@@ -52,7 +54,7 @@ class RoofInsulationHelper extends ToolHelper
             foreach (array_keys($result) as $roofCat) {
                 $isBitumenOnPitchedRoof = 'pitched' == $roofCat && 'bitumen' == $results['pitched']['type'];
                 // It's a bitumen roof is the category is not pitched or none (so currently only: flat)
-                $isBitumenRoof = !in_array($roofCat, ['none', 'pitched']) || $isBitumenOnPitchedRoof;
+                $isBitumenRoof = ! in_array($roofCat, ['none', 'pitched']) || $isBitumenOnPitchedRoof;
 
                 // when "no roof" is selected there will still be a result, so extra ?? 0
                 $measureApplicationId = $buildingRoofTypeData[$roofCat]['extra']['measure_application_id'] ?? 0;
@@ -222,13 +224,15 @@ class RoofInsulationHelper extends ToolHelper
             $buildingFeatureData
         );
 
-        // we dont know which roof_type_id we will get, so we delete all the rows and create new ones.
-        ModelService::deleteAndCreate(BuildingRoofType::class,
+        // we don't know which roof_type_id we will get, so we delete all the rows and create new ones.
+        ModelService::deleteAndCreate(
+            BuildingRoofType::class,
             [
                 'building_id' => $this->building->id,
                 'input_source_id' => $this->inputSource->id,
             ],
-            $buildingRoofTypeCreateData
+            $buildingRoofTypeCreateData,
+            true
         );
 
         return $this;

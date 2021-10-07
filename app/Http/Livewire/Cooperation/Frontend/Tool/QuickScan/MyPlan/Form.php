@@ -440,6 +440,9 @@ class Form extends Component
                 $cardInvestment = (($from + $to) / 2);
             }
 
+            // Sometimes there is no data
+            $cardInvestment = $cardInvestment ?? 0;
+
             $investmentPerCard[$order] = $cardInvestment;
             $investment += $cardInvestment;
             $savings += $card['savings'] ?? 0;

@@ -30,6 +30,9 @@
 @section('main')
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-20 flex flex-wrap space-y-20">
         @if(RouteLogic::inExpertTool(Route::currentRouteName()))
+            @php
+                $masterInputSource = \App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT);
+            @endphp
             {{-- Expert tool has a card-wrapper around the content --}}
 {{--            @if(Auth::check() && ! Hoomdossier::user()->hasRoleAndIsCurrentRole(RoleHelper::ROLE_RESIDENT))--}}
 {{--                <div class="flex flex-row flex-wrap w-full items-center justify-between relative z-30">--}}
@@ -51,14 +54,14 @@
                                 $subStepsForStep = $cooperation->getchildrenForStep($currentStep);
                             @endphp
                             @if($subStepsForStep->isEmpty())
-                                <li class="active @if($building->hasCompleted($currentStep)) completed @endif">
+                                <li class="active @if($building->hasCompleted($currentStep, $masterInputSource)) completed @endif">
                                     <a href="{{route("cooperation.tool.{$currentStep->short}.index")}}">
                                         {{$currentStep->name}}
                                     </a>
                                 </li>
                             @endif
                             @foreach($subStepsForStep as $subStep)
-                                <li class="@if($subStep->short == $currentSubStep->short) active @endif @if($building->hasCompleted($subStep)) completed @endif">
+                                <li class="@if($subStep->short == $currentSubStep->short) active @endif @if($building->hasCompleted($subStep, $masterInputSource)) completed @endif">
                                     <a href="{{route("cooperation.tool.{$currentStep->short}.{$subStep->short}.index")}}">
                                         {{$subStep->name}}
                                     </a>
@@ -70,7 +73,7 @@
                             @foreach($currentStep->questionnaires as $questionnaire)
 
                                 @if($questionnaire->isActive())
-                                    <li class="@if($buildingOwner->hasCompletedQuestionnaire($questionnaire)) completed @endif">
+                                    <li class="@if($buildingOwner->hasCompletedQuestionnaire($questionnaire, $masterInputSource)) completed @endif">
                                         <a href="#questionnaire-{{$questionnaire->id}}" x-bind="tab">
                                             {{$questionnaire->name}}
                                         </a>

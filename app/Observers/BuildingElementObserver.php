@@ -81,6 +81,26 @@ class BuildingElementObserver
                     }
                 }
             }
+
+            ## Roof insulation
+            $roofInsulation = Element::findByShort('roof-insulation');
+
+            // Check if we need to manipulate the roof insulation. Same logic as above applied
+            if ($buildingElement->element_id === $roofInsulation->id
+                && $buildingElement->isDirty('element_value_id')
+            ) {
+                // Get all roof types that don't have this insulation
+                $roofTypesToUpdate = $building->roofTypes()
+                    ->forInputSource($currentInputSource)
+                    ->where('element_value_id', '!=', $buildingElement->element_value_id)
+                    ->get();
+
+                foreach ($roofTypesToUpdate as $roofTypeToUpdate) {
+                    $roofTypeToUpdate->update([
+                        'element_value_id' => $buildingElement->element_value_id,
+                    ]);
+                }
+            }
         }
     }
 }

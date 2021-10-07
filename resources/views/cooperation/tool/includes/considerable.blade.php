@@ -25,7 +25,7 @@
             @php
                 $considerablePivot = $buildingOwner
                     ->considerablesForModel($considerable)
-                    ->wherePivot('input_source_id', \App\Models\InputSource::findByShort('master')->id)
+                    ->wherePivot('input_source_id', \App\Models\InputSource::findByShort(\App\Models\InputSource::MASTER_SHORT)->id)
                     ->first();
             @endphp
             @foreach(\App\Helpers\ConsiderableHelper::getConsiderableValues() as $boolean => $considerableText)

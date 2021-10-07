@@ -21,7 +21,7 @@ class ToolSettingService
         // If a user changes the example building we dont to notify the all the other input-sources / users from this
         // so we only set the changed for the current input source.
         // else, we just notify all the input sources
-        if ($changedInputSourceId == InputSource::findByShort('example-building')->id) {
+        if ($changedInputSourceId == InputSource::findByShort(InputSource::EXAMPLE_BUILDING)->id) {
             ToolSetting::withoutGlobalScope(GetValueScope::class)
                 ->updateOrCreate(
                     [

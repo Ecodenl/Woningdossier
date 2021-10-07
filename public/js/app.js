@@ -34483,12 +34483,20 @@ __webpack_require__.r(__webpack_exports__);
   var initiallyOpen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
   return {
     // Is the dropdown open?
-    open: initiallyOpen,
+    open: false,
+    init: function init() {
+      // Handle the initiallyOpen variable in the init, so we can update the position as well
+      // Otherwise the dropdown might be open but in an ugly location
+      if (initiallyOpen) {
+        this.open = true;
+        this.updatePosition();
+      }
+    },
     toggle: function toggle() {
       this.$event.preventDefault();
       this.open = !this.open;
 
-      if (this.open == true) {
+      if (this.open) {
         this.updatePosition();
       }
     },
@@ -34500,7 +34508,9 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       var tries = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-      var dropdown = this.$refs['dropdown'];
+      var dropdown = this.$refs['dropdown']; // We have 5 tries. This is because when open is set, there is a slight delay before the dropdown is visible
+      // on the client screen. If it's not visible, then there won't be any sizes, and so we end up with the dropdown
+      // being outside of the screen
 
       if (tries <= 5) {
         if (getComputedStyle(dropdown).display === 'none') {

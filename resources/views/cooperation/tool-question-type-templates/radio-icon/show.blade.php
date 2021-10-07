@@ -1,5 +1,12 @@
 <div class="w-full grid grid-rows-1 grid-cols-4 grid-flow-row gap-4">
-    @foreach($toolQuestion->getQuestionValues() as $toolQuestionValue)
+    @php
+        $questionValues = \App\Helpers\QuestionValues\QuestionValue::getQuestionValues(
+            $toolQuestion,
+            $building,
+            $masterInputSource
+        );
+    @endphp
+    @foreach($questionValues as $toolQuestionValue)
         @php
             $id = $toolQuestionValue['short'] ?? $toolQuestionValue['calculate_value'] ?? $toolQuestionValue['value'];
         @endphp

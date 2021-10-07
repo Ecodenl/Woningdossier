@@ -6,7 +6,7 @@ use App\Helpers\Arr;
 use App\Helpers\StepHelper;
 use App\Helpers\ToolQuestionHelper;
 use App\Scopes\GetValueScope;
-use App\ToolQuestionAnswer;
+use App\Models\ToolQuestionAnswer;
 use App\Traits\ToolSettingTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -146,6 +146,7 @@ class Building extends Model
                 );
 
             // these contain the human-readable answers, we need this because the answer for a yes, no, unknown could be a 1,2,3
+            // we can just use this one, as it doesnt really matter.
             $questionValues = $toolQuestion->getQuestionValues()->pluck(
                 'name',
                 'value'

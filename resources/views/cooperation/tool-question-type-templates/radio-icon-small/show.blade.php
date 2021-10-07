@@ -1,5 +1,12 @@
 <div class="w-full flex justify-between">
-    @foreach($toolQuestion->getQuestionValues() as $toolQuestionValue)
+    @php
+        $questionValues = \App\Helpers\QuestionValues\QuestionValue::getQuestionValues(
+            $toolQuestion,
+            $building,
+            $masterInputSource
+        );
+    @endphp
+    @foreach($questionValues as $toolQuestionValue)
         @php
         $uuid = Str::uuid();
         @endphp

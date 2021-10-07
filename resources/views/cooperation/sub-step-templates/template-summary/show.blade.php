@@ -7,6 +7,9 @@
 
     @php
         $subStepsToSummarize = $step->subSteps()->where('id', '!=', $subStep->id)->orderBy('order')->get();
+
+        // TODO: Make this dynamic
+        $buildingTypeCategory = null;
     @endphp
 
     {{-- Loop all sub steps except for the current (summary) step --}}
@@ -87,6 +90,16 @@
                             if (\Illuminate\Support\Str::contains($toolQuestionToSummarize->short, 'comment')) {
                                 $showQuestion = false;
                             }
+
+                            // TODO: Make this more dynamic
+                            // ToolQuestion name could have a replacable
+                            if ($toolQuestionToSummarize->short === 'building-type') {
+                                $toolQuestionToSummarize->name = str_replace(
+                                    ':name',
+                                    \Illuminate\Support\Str::lower($buildingTypeCategory ?? ''),
+                                    $toolQuestionToSummarize->name
+                                );
+                            }
                         @endphp
 
                         @if ($showQuestion)
@@ -143,6 +156,11 @@
 
                                                             if (! empty($questionValue)) {
                                                                 $answerToAppend = $questionValue['name'];
+
+                                                                // TODO: Make this dynamic
+                                                                if ($toolQuestionToSummarize->short === 'building-type-category') {
+                                                                    $buildingTypeCategory = $answerToAppend;
+                                                                }
 
                                                                 if (! empty($questionValue['extra']['icon'])) {
                                                                     $answerToAppend .= '<i class="ml-1 w-8 h-8 ' . $questionValue['extra']['icon'] . '"></i>';

@@ -63,4 +63,9 @@ class Media extends \Plank\Mediable\Media
 
         return $url;
     }
+
+    public function getPath(): string
+    {
+        return parse_url($this->getUrl())['path'] ?? '';
+    }
 }

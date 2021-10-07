@@ -44,7 +44,7 @@ class HighEfficiencyBoilerHelper extends ToolHelper
     public function createValues(): ToolHelper
     {
         $boilerService = Service::findByShort('boiler');
-        $step = Step::findByShort('floor-insulation');
+        $step = Step::findByShort('high-efficiency-boiler');
         $userEnergyHabit = $this
             ->user
             ->energyHabit()
